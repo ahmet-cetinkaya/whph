@@ -98,5 +98,7 @@ sync:
     start_failed: Impossibile avviare modalità server - Controlla se la porta 44040 è disponibile
     start_tooltip: Avvia modalità server
     stop_tooltip: Ferma modalità server
+    start_menu: Avvia modalità server
+    stop_menu: Ferma modalità server
     error: Errore
     device_became_server: Questo dispositivo è ora il server di sincronizzazione

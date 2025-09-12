@@ -90,6 +90,7 @@ sync:
   qr_code:
     close_button: Kapat
     dialog_title: Senkronize Etmek için QR Kodu Tarayın
+    title: QR Kodunu Göster
   scanner:
     title: QR Kodu Tara
     instruction: QR kodunu çerçeve içinde konumlandırın
@@ -100,5 +101,21 @@ sync:
     start_failed: Sunucu modu başlatılamadı - 44040 portunun müsait olup olmadığını kontrol edin
     start_tooltip: Sunucu Modunu Başlat
     stop_tooltip: Sunucu Modunu Durdur
+    start_menu: Sunucu Modunu Başlat
+    stop_menu: Sunucu Modunu Durdur
     error: Hata
     device_became_server: Bu cihaz artık senkronizasyon sunucusu
+  add:
+    device: Cihaz Ekle
+    device_tooltip: QR kod tarama veya manuel IP girişi ile yeni cihaz ekle
+    sync_device: Senkronizasyon Cihazı Ekle
+    sync_device_title: Senkronizasyon Cihazı Ekle
+    sync_device_description: Yakınlardaki cihazları keşfedin veya manuel bağlantı kurarak verilerinizi cihazlar arasında senkronize edin.
+    scanning_for_devices: Yakınlardaki cihazlar taranıyor...
+    no_nearby_devices: Yakınlarda cihaz bulunamadı
+    no_nearby_devices_hint: Her iki cihazın da aynı Wi-Fi ağında olduğundan ve WHPH'nin çalıştığından emin olun.
+    alternative_methods_hint: Cihazınızı bulamıyor musunuz? Bu alternatif yöntemleri deneyin.
+    scan_qr_code: QR Kod Tara
+    refresh_scan: Taramayı Yenile
+    last_seen: "Son görülme: {time}"
+    already_added: Zaten eklendi

@@ -100,5 +100,7 @@ sync:
     start_failed: No se pudo iniciar el modo servidor - Verifica si el puerto 44040 está disponible
     start_tooltip: Iniciar modo servidor
     stop_tooltip: Detener modo servidor
+    start_menu: Iniciar modo servidor
+    stop_menu: Detener modo servidor
     error: Error
     device_became_server: Este dispositivo es ahora el servidor de sincronización

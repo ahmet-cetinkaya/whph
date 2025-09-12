@@ -22,22 +22,36 @@ class HelpMenu extends StatelessWidget {
     required this.markdownContentKey,
   });
 
-  void _showHelpModal(BuildContext context) {
+  /// Static method to show help modal from anywhere
+  static void showHelpModal({
+    required BuildContext context,
+    required String titleKey,
+    required String markdownContentKey,
+  }) {
+    final translationService = container.resolve<ITranslationService>();
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       size: DialogSize.medium,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).cardColor,
-          title: Text(_translationService.translate(titleKey)),
+          title: Text(translationService.translate(titleKey)),
         ),
         body: Padding(
           padding: const EdgeInsets.all(AppTheme.sizeMedium),
           child: MarkdownRenderer(
-            data: _translationService.translate(markdownContentKey),
+            data: translationService.translate(markdownContentKey),
           ),
         ),
       ),
+    );
+  }
+
+  void _showHelpModal(BuildContext context) {
+    showHelpModal(
+      context: context,
+      titleKey: titleKey,
+      markdownContentKey: markdownContentKey,
     );
   }
 

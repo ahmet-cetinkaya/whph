@@ -7,8 +7,8 @@ import 'package:whph/core/application/features/sync/commands/delete_sync_command
 import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/sync/components/sync_qr_scan_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_qr_code_button.dart';
 import 'package:whph/presentation/ui/shared/components/help_menu.dart';
@@ -23,6 +23,9 @@ import 'package:whph/core/application/features/settings/commands/save_setting_co
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card.dart';
+import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
+import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -65,6 +68,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     // CRITICAL: Use the same sync service instance from container
     // This ensures we listen to the same stream that's being updated
     _syncService = container.resolve<ISyncService>();
+    
     if (Platform.isAndroid) {
       _serverSyncService = container.resolve<AndroidServerSyncService>();
     }
@@ -482,6 +486,32 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     }
   }
 
+
+
+  /// Show the Add Sync Device page using ResponsiveDialogHelper
+  Future<void> _showAddDevicePage() async {
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
+      context: context,
+      size: DialogSize.large,
+      child: AddSyncDevicePage(
+        onDeviceAdded: () {
+          Logger.info('Device added from AddSyncDevicePage');
+          // Refresh device list to show the new device
+          if (mounted) {
+            refresh();
+          }
+        },
+      ),
+    );
+
+    if (result == true && mounted) {
+      Logger.info('AddSyncDevicePage completed successfully');
+      // Additional refresh to ensure the list is up to date
+      refresh();
+    }
+  }
+
+
   Widget _buildSyncStatusIndicator() {
     return AnimatedBuilder(
       animation: _syncIconAnimationController,
@@ -541,34 +571,79 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                   : _translationService.translate(SyncTranslationKeys.syncTooltip),
             ),
 
-          // Mobile sync mode controls
-          if (Platform.isAndroid) ...[
-            // Direct server mode toggle button
+          // Add Device button - only show when not in server mode
+          if (!_isServerMode)
             IconButton(
-              onPressed: _toggleServerMode,
-              icon: Icon(
-                _isServerMode ? Icons.stop : Icons.wifi_tethering,
-              ),
-              color: _isServerMode ? Colors.red : Theme.of(context).colorScheme.primary,
-              tooltip: _isServerMode
-                  ? _translationService.translate(SyncTranslationKeys.serverModeStopTooltip)
-                  : _translationService.translate(SyncTranslationKeys.serverModeStartTooltip),
+              onPressed: _showAddDevicePage,
+              icon: const Icon(Icons.add),
+              color: Theme.of(context).colorScheme.primary,
+              tooltip: _translationService.translate(SyncTranslationKeys.addDeviceTooltip),
             ),
-
-            // Show QR code if in server mode, otherwise show scanner
-            if (_isServerMode)
-              SyncQrCodeButton()
-            else
-              SyncQrScanButton(
-                onSyncComplete: refresh,
+          
+          // Kebab menu containing help, and mobile sync controls
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.primary),
+            onSelected: (value) {
+              switch (value) {
+                case 'show_qr':
+                  // Handle QR code display
+                  if (_isServerMode || PlatformUtils.isDesktop) {
+                    SyncQrCodeButton.showQrCodeModal(context);
+                  }
+                  break;
+                case 'show_help':
+                  // Handle help display
+                  HelpMenu.showHelpModal(
+                    context: context,
+                    titleKey: SharedTranslationKeys.helpTooltip,
+                    markdownContentKey: SyncTranslationKeys.helpContent,
+                  );
+                  break;
+                case 'toggle_server':
+                  // Toggle server mode
+                  _toggleServerMode();
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              // Show QR code option (only when in server mode or on desktop)
+              if (_isServerMode || PlatformUtils.isDesktop)
+                PopupMenuItem<String>(
+                  value: 'show_qr',
+                  child: Row(
+                    children: [
+                      Icon(Icons.qr_code, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 8),
+                      Text(_translationService.translate(SyncTranslationKeys.qrCodeTitle)),
+                    ],
+                  ),
+                ),
+              // Mobile sync mode toggle (only on Android)
+              if (Platform.isAndroid)
+                PopupMenuItem<String>(
+                  value: 'toggle_server',
+                  child: Row(
+                    children: [
+                      Icon(_isServerMode ? Icons.stop : Icons.wifi_tethering, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 8),
+                      Text(_isServerMode 
+                          ? _translationService.translate(SyncTranslationKeys.serverModeStopMenu) 
+                          : _translationService.translate(SyncTranslationKeys.serverModeStartMenu)),
+                    ],
+                  ),
+                ),
+              // Show help option (placed at the bottom)
+              PopupMenuItem<String>(
+                value: 'show_help',
+                child: Row(
+                  children: [
+                    Icon(Icons.help_outline, color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(width: 8),
+                    Text(_translationService.translate(SyncTranslationKeys.helpTitle)),
+                  ],
+                ),
               ),
-          ],
-
-          // Desktop QR code (existing behavior)
-          if (PlatformUtils.isDesktop) SyncQrCodeButton(),
-          HelpMenu(
-            titleKey: SyncTranslationKeys.helpTitle,
-            markdownContentKey: SyncTranslationKeys.helpContent,
+            ],
           ),
         ],
       ),
@@ -606,7 +681,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       ),
     );
   }
-}
+  }
 
 class SyncDeviceListItemWidget extends StatefulWidget {
   final SyncDeviceListItem item;
@@ -698,21 +773,51 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
   }
 
   Widget _buildDeviceInfoRow() {
-    return Row(
+    // Enhanced device info to show connection details
+    final fromIP = widget.item.fromIP;
+    final toIP = widget.item.toIP;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.sync_alt, size: AppTheme.iconSizeSmall, color: Theme.of(context).primaryColor),
-        SizedBox(width: AppTheme.sizeXSmall),
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text(
-              '${widget.item.fromIP} - ${widget.item.toIP}',
-              style: AppTheme.labelSmall.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+        Row(
+          children: [
+            Icon(Icons.sync_alt, size: AppTheme.iconSizeSmall, color: Theme.of(context).primaryColor),
+            SizedBox(width: AppTheme.sizeXSmall),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  '$fromIP ↔ $toIP',
+                  style: AppTheme.labelSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
+        // Show additional connection info if available
+        if (fromIP.contains(',') || toIP.contains(',')) ...[
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              Icon(Icons.network_check, size: AppTheme.iconSizeXSmall, 
+                   color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+              SizedBox(width: AppTheme.sizeXSmall),
+              Expanded(
+                child: Text(
+                  'Multi-interface connection',
+                  style: AppTheme.labelXSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }

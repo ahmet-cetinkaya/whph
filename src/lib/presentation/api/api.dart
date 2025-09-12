@@ -11,6 +11,8 @@ import 'package:whph/main.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 
 const int webSocketPort = 44040;
 
@@ -94,6 +96,42 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             'timestamp': DateTime.now().toIso8601String(),
           },
         )));
+        break;
+
+      case 'device_info':
+        // Send device information for handshake
+        Logger.info('📱 Processing device info request...');
+        try {
+          final deviceIdService = container.resolve<IDeviceIdService>();
+          final deviceId = await deviceIdService.getDeviceId();
+          final deviceName = await DeviceInfoHelper.getDeviceName();
+          
+          socket.add(JsonMapper.serialize(WebSocketMessage(
+            type: 'device_info_response',
+            data: {
+              'success': true,
+              'deviceId': deviceId,
+              'deviceName': deviceName,
+              'appName': 'WHPH',
+              'platform': Platform.isAndroid ? 'android' : 
+                         Platform.isIOS ? 'ios' :
+                         Platform.isLinux ? 'linux' :
+                         Platform.isWindows ? 'windows' :
+                         Platform.isMacOS ? 'macos' : 'unknown',
+              'timestamp': DateTime.now().toIso8601String(),
+            },
+          )));
+        } catch (e) {
+          Logger.error('❌ Failed to get device info: $e');
+          socket.add(JsonMapper.serialize(WebSocketMessage(
+            type: 'device_info_response',
+            data: {
+              'success': false,
+              'error': e.toString(),
+              'timestamp': DateTime.now().toIso8601String(),
+            },
+          )));
+        }
         break;
 
       case 'paginated_sync':
