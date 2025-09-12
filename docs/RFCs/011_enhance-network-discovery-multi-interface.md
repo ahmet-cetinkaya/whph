@@ -25,15 +25,32 @@ This forces users into troubleshooting network configurations or disabling inter
 
 ```dart
 abstract class INetworkInterfaceService {
+  /// Get all available local IP addresses from active network interfaces
   Future<List<String>> getLocalIPAddresses();
+  
+  /// Get detailed information about active network interfaces
   Future<List<NetworkInterfaceInfo>> getActiveNetworkInterfaces();
+  
+  /// Check if an IP address is valid for local network communication
   bool isValidLocalIPAddress(String ipAddress);
+  
+  /// Get preferred IP addresses sorted by connection quality/type
+  Future<List<String>> getPreferredIPAddresses();
+}
+
+class NetworkInterfaceInfo {
+  final String name;
+  final String ipAddress;
+  final InternetAddressType addressType;
+  final bool isWiFi;
+  final bool isEthernet;
+  final int priority; // Higher number = higher priority
 }
 
 class NetworkInterfaceService implements INetworkInterfaceService {
-  // Implementation to discover all local IP addresses
-  // Exclude loopback, link-local, and invalid addresses
-  // Support IPv4 primarily, with IPv6 consideration for future
+  // Comprehensive network interface discovery across platforms
+  // Priority-based IP address sorting (Ethernet > WiFi > Others)
+  // Platform-specific optimizations for mobile and desktop
 }
 ```
 
@@ -66,18 +83,28 @@ class SyncConnectionInfo {
 
 ```dart
 abstract class IConcurrentConnectionService {
+  /// Attempt to connect to any of the provided IP addresses concurrently
   Future<WebSocket?> connectToAnyAddress(
     List<String> ipAddresses,
     int port, {
     Duration timeout = const Duration(seconds: 5),
   });
+
+  /// Test connectivity to multiple addresses and return successful ones
+  Future<List<String>> testMultipleAddresses(
+    List<String> ipAddresses,
+    int port, {
+    Duration timeout = const Duration(seconds: 3),
+  });
+
+  /// Test WebSocket connectivity to a specific address
+  Future<bool> testWebSocketConnection(String ipAddress, int port, {Duration? timeout});
 }
 
 class ConcurrentConnectionService implements IConcurrentConnectionService {
-  // Attempt connections to all IP addresses simultaneously
-  // Return first successful connection
-  // Cancel remaining attempts
-  // Handle connection failures gracefully
+  // Implements intelligent connection logic with timeout handling
+  // Uses proper failure counting to avoid race conditions
+  // Validates connections with handshake protocol
 }
 ```
 
@@ -99,12 +126,47 @@ Update existing sync services to broadcast on all available interfaces:
 
 ```dart
 class ManualIPInputDialog extends StatefulWidget {
-  // Dialog for manual IP address entry
-  // Input validation for IP address format
-  // Port number input (with default)
-  // Connection attempt with progress indication
+  final VoidCallback? onSyncDeviceAdded;
+  final IConcurrentConnectionService? connectionService;
+  final String? initialIP;
+  final String? initialPort;
+  final String? initialDeviceName;
+  final String? preDiscoveredDeviceId;
+  
+  // Form validation for IP addresses and ports
+  // Connection testing with timeout handling
+  // Localized error messages and user feedback
+  // Pre-filling with discovered device information
+  // Stable device ID generation for manual entries (IP:port based)
 }
 ```
+
+### 6. Device Discovery UI
+
+**Location**: `src/lib/presentation/ui/features/sync/pages/add_sync_device_page.dart`
+
+```dart
+class AddSyncDevicePage extends StatefulWidget {
+  // Real-time network scanning with progress indication
+  // Discovered device list with connection status
+  // Alternative connection methods (QR code, manual IP)
+  // Device handshake verification and compatibility checking
+  // Duplicate device detection and already-added status
+  // Optimized scanning with early termination for better UX
+}
+```
+
+### 7. Device Handshake Service
+
+**Location**: `src/lib/core/application/features/sync/services/device_handshake_service.dart`
+
+```dart
+class DeviceHandshakeService {
+  // Verify device identity and compatibility
+  // Exchange device information securely  
+  // Prevent device ID mismatches during pairing
+  // Connection validation with proper error handling
+}
 
 ### 6. Updated QR Code Protocol
 
