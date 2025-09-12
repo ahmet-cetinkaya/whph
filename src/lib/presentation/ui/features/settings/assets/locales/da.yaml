@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Firewall-tilladelse
+      description: Tillad WHPH at kommunikere gennem {platform} firewall på port 44040 til enhedssynkronisering.
+      dialog_description: WHPH har brug for firewall-tilladelse for at tillade andre enheder at oprette forbindelse til synkronisering. Følg kommandoerne nedenfor for at konfigurere din {platform} firewall. Du kan også finde disse trin i hjælpemenuen.
+      dialog_info_text: "Bemærk: Du kan også finde disse trin i hjælpemenuen."
+      linux_manual_confirmation_button: "Jeg har konfigureret"
+      save_confirmation_error: Kunne ikke gemme firewall-bekræftelsesindstilling
+      rule_added_success: Firewall-regel tilføjet succesfuldt
+      rule_add_error: Kunne ikke tilføje firewall-regel. Prøv manuelle trin.
+      add_rule_button: "Tilføj firewall-regel"
+      windows_auto_description: "Klik på 'Tilføj firewall-regel' for automatisk at tilføje firewall-reglen med UAC-tilladelsesanmodning. Hvis du foretrækker at tilføje manuelt, følg trinnene nedenfor:"
+      instructions:
+        linux:
+          step1: "Åbn en terminal"
+          step2: "Tjek firewall-status:"
+          step3: "Tilføj firewall-regel (hvis UFW er aktiv):"
+          step4: "Bekræft at reglen blev tilføjet:"
+        windows:
+          step1: "Åbn Windows Defender Firewall fra Kontrolpanel"
+          step2: "Klik på Avancerede indstillinger til venstre"
+          step3: "I venstre rude, klik på Indgående regler"
+          step4: "I højre rude, klik på Ny regel..."
+          step5: "Vælg Port og klik på Næste"
+          step6: "Vælg TCP og indtast 44040 i feltet til specifikke lokale porte"
+          step7: "Vælg Tillad forbindelsen og klik på Næste"
+          step8: "Marker alle profiler (Domæne, Privat, Offentlig) og klik på Næste"
+          step9: "Indtast et navn som WHPH Sync Port 44040 og klik på Afslut"
+          alternative_command_prompt:
+            title: "Alternativ: Brug kommandoprompt"
+            steps:
+              cmd_step1: "Åbn kommandoprompt som administrator"
+              cmd_step2: "Tilføj firewall-regel:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

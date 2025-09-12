@@ -96,6 +96,39 @@ settings:
           step2: Allow notifications when prompted
       title: Notification Permission
     open_settings: Open Setting
+    open_terminal: Open Terminal
+    firewall:
+      title: Άδεια Τείχους Προστασίας
+      description: Επιτρέψτε στο WHPH να επικοινωνεί μέσω του τείχους προστασίας {platform} στη θύρα 44040 για συγχρονισμό συσκευών.
+      dialog_description: Το WHPH χρειάζεται άδεια τείχους προστασίας για να επιτρέψει σε άλλες συσκευές να συνδεθούν για συγχρονισμό. Ακολουθήστε τις παρακάτω εντολές για να διαμορφώσετε το τείχος προστασίας {platform}. Μπορείτε επίσης να βρείτε αυτά τα βήματα στο μενού βοήθειας.
+      dialog_info_text: "Σημείωση: Μπορείτε επίσης να βρείτε αυτά τα βήματα στο μενού βοήθειας."
+      linux_manual_confirmation_button: "Έχω διαμορφώσει"
+      save_confirmation_error: Αποτυχία αποθήκευσης της ρύθμισης επιβεβαίωσης τείχους προστασίας
+      rule_added_success: Ο κανόνας τείχους προστασίας προστέθηκε με επιτυχία
+      rule_add_error: Αποτυχία προσθήκης κανόνα τείχους προστασίας. Δοκιμάστε τα χειροκίνητα βήματα.
+      add_rule_button: "Προσθήκη κανόνα τείχους προστασίας"
+      windows_auto_description: "Κάντε κλικ στο 'Προσθήκη κανόνα τείχους προστασίας' για να προσθέσετε αυτόματα τον κανόνα τείχους προστασίας με αίτημα άδειας UAC. Αν προτιμάτε να προσθέσετε χειροκίνητα, ακολουθήστε τα παρακάτω βήματα:"
+      instructions:
+        linux:
+          step1: "Ανοίξτε ένα τερματικό"
+          step2: "Ελέγξτε την κατάσταση του τείχους προστασίας:"
+          step3: "Προσθέστε κανόνα τείχους προστασίας (αν το UFW είναι ενεργό):"
+          step4: "Επαληθεύστε ότι ο κανόνας προστέθηκε:"
+        windows:
+          step1: "Ανοίξτε το Windows Defender Firewall από τον Πίνακα Ελέγχου"
+          step2: "Κάντε κλικ στις Προηγμένες ρυθμίσεις στα αριστερά"
+          step3: "Στο αριστερό πλαίσιο, κάντε κλικ στους Εισερχόμενους Κανόνες"
+          step4: "Στο δεξί πλαίσιο, κάντε κλικ στο Νέος Κανόνας..."
+          step5: "Επιλέξτε Θύρα και κάντε κλικ στο Επόμενο"
+          step6: "Επιλέξτε TCP και εισαγάγετε 44040 στο πεδίο για συγκεκριμένες τοπικές θύρες"
+          step7: "Επιλέξτε Να επιτρέπεται η σύνδεση και κάντε κλικ στο Επόμενο"
+          step8: "Επιλέξτε όλα τα προφίλ (Τομέας, Ιδιωτικό, Δημόσιο) και κάντε κλικ στο Επόμενο"
+          step9: "Εισαγάγετε ένα όνομα όπως WHPH Sync Port 44040 και κάντε κλικ στο Τέλος"
+          alternative_command_prompt:
+            title: "Εναλλακτικά: Χρησιμοποιήστε τη Γραμμή Εντολών"
+            steps:
+              cmd_step1: "Ανοίξτε τη Γραμμή Εντολών ως Διαχειριστής"
+              cmd_step2: "Προσθέστε κανόνα τείχους προστασίας:"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.
