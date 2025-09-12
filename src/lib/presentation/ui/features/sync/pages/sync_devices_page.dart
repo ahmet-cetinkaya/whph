@@ -493,7 +493,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       size: DialogSize.large,
       child: AddSyncDevicePage(
         onDeviceAdded: () {
-          Logger.info('Device added from AddSyncDevicePage');
+          Logger.info('Device added from AddSyncDevicePage - refreshing device list');
           // Refresh device list to show the new device
           if (mounted) {
             refresh();
@@ -503,9 +503,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     );
 
     if (result == true && mounted) {
-      Logger.info('AddSyncDevicePage completed successfully');
+      Logger.info('AddSyncDevicePage completed successfully - performing final refresh');
       // Additional refresh to ensure the list is up to date
-      refresh();
+      await refresh();
     }
   }
 
