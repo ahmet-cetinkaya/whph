@@ -1,102 +1,140 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Erro ao carregar dispositivos de sincronização
+      removing: Erro ao remover dispositivo de sincronização
+      sync_failed: Erro ao sincronizar dispositivos
+    from_label: De
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Mantenha suas tarefas, hábitos, notas, configurações, etc. sincronizadas em todos os seus dispositivos. Todos os dados permanecem na sua rede local — nada é enviado para a nuvem.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Configuração rápida e segura
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Conecte seus dispositivos pela mesma rede Wi-Fi usando códigos QR. A sincronização começa automaticamente após o pareamento.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Móvel → Móvel:** Um dispositivo deve estar em **modo Servidor** para permitir o pareamento  
+        - 💻 **Desktop → Móvel:** O desktop mostra um código QR, o móvel o escaneia  
 
-        ## 📱 Mobile Devices
+        ## 📱 Dispositivos móveis
 
-        Android devices can work in two different modes:
+        Dispositivos Android podem funcionar em dois modos diferentes:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Modo Cliente:**  
+          - Escaneia códigos QR  
+          - Conecta-se a outros dispositivos para receber dados  
+        - 📡 **Modo Servidor:**  
+          - Mostra código QR para outros escanearem  
+          - Envia dados para dispositivos conectados  
+          - Pode ser alternado via ícone de hotspot Wi-Fi
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        Para sincronizar entre dois dispositivos móveis, um deve estar em **modo Servidor**.
 
-        ## 💻 Desktop Devices
+        ## 💻 Dispositivos desktop
 
-        Desktop apps always act as **Server** nodes:
+        Aplicativos desktop sempre atuam como nós **Servidor**:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Mostram código QR para pareamento  
+        - ✅ Aceitam conexões de entrada automaticamente  
+        - 🔄 Sincronizam dados em ambas as direções  
+        - 📊 Mostram status de sincronização ao vivo
 
-        ## 🛠️ Device Management
+        ## 🛠️ Gerenciamento de dispositivos
 
-        Manage all connected devices from one place:
+        Gerencie todos os dispositivos conectados em um só lugar:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Ver dispositivos conectados  
+        - ⏰ Ver últimos tempos de sincronização  
+        - 🔁 Acionar sincronização manual  
+        - 🗑️ Remover dispositivos antigos ou não utilizados
 
-        ## 💡 Best Practices
+        ## 💡 Melhores práticas
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Certifique-se de que todos os dispositivos estejam na mesma rede Wi-Fi  
+        - 📱 Mantenha os aplicativos abertos e ativos durante a sincronização  
+        - 🧹 Remova dispositivos que você não usa mais  
+        - ⏱️ Verifique os tempos de sincronização para garantir que tudo esteja atualizado
+      title: Ajuda de sincronização de dispositivos
+    last_sync_label: Última sincronização
+    no_devices_found: Nenhum dispositivo sincronizado
+    sync_tooltip: Sincronizar agora
+    title: Dispositivos de sincronização
+    to_label: Para
+    unnamed_device: Dispositivo sem nome
   error:
-    scan: Failed to scan
+    scan: Erro ao escanear
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Conexão falhou. Certifique-se:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Ambos os dispositivos estão na mesma rede
+      2. Ambas as apps estão abertas e executando
+      3. Nenhum firewall está bloqueando a conexão
+    device_mismatch: Erro de sincronização. O dispositivo que tenta sincronizar não está corretamente pareado com este dispositivo.
+    device_not_found: Dispositivo de sincronização não encontrado
+    ip_address: Não é possível obter o endereço IP local
+    parse_message: Não é possível analisar a mensagem escaneada
+    process_failed: O processo de sincronização falhou.
+    save_device: Erro ao salvar dispositivo de sincronização
+    scan: Erro ao escanear
+    sync_failed: A sincronização falhou. Tente novamente.
+    sync_timeout: Tempo limite de sincronização
+    version_mismatch: "Incompatibilidade de versão. Versão local: {currentVersion}, Versão remota: {remoteVersion}. Atualize ambas as aplicações para a mesma versão."
+    local_ip_error: Erro de IP local
+    device_already_paired: Dispositivo já pareado
+    no_active_interfaces: Nenhuma interface de rede ativa
+    device_discovery_failed: Descoberta de dispositivos falhou
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Este dispositivo já está pareado
+    sync_completed: Sincronização concluída com sucesso
+    sync_in_progress: Sincronizando...
+    testing_connection: Testando conexão...
+    device_added_success: Dispositivo adicionado com sucesso
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Fechar
+    dialog_title: Escanear código QR para sincronizar
+    title: Código QR
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Escanear código QR
+    instruction: Posicione o código QR dentro do quadro
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Iniciando modo servidor...
+    active: Modo servidor ativo - Mostrar código QR para outros dispositivos
+    stopped: Modo servidor parado - O dispositivo agora está em modo cliente
+    start_failed: Falha ao iniciar modo servidor - Verifique se a porta 44040 está disponível
+    start_tooltip: Iniciar modo servidor
+    stop_tooltip: Parar modo servidor
+    error: Erro
+    device_became_server: Este dispositivo é agora o servidor de sincronização
+    start_menu: Iniciar servidor
+    stop_menu: Parar servidor
+  manual:
+    connection: Conexão manual
+    description: Digite o endereço IP e a porta para conectar a outro dispositivo
+    ip_address: Endereço IP
+    port: Porta
+    device_name: Nome do dispositivo
+    optional: (Opcional)
+    connecting: Conectando...
+    cancel: Cancelar
+    connect: Conectar
+    ip_required: Endereço IP é obrigatório
+    invalid_ip: Formato de endereço IP inválido
+    port_required: Porta é obrigatória
+    invalid_port: Número de porta inválido
+    connection_failed: Conexão falhou
+    connection_error: Erro de conexão
+  add:
+    device: Adicionar dispositivo
+    device_tooltip: Adicionar novo dispositivo de sincronização
+    sync_device: Sincronizar dispositivo
+    sync_device_title: Sincronizar com dispositivo
+    sync_device_description: Conectar a outro dispositivo para sincronizar dados
+    scanning_for_devices: Escaneando dispositivos...
+    no_nearby_devices: Nenhum dispositivo próximo
+    no_nearby_devices_hint: Certifique-se de que os dispositivos estejam na mesma rede
+    alternative_methods_hint: Tente conexão manual ou código QR
+    scan_qr_code: Escanear código QR
+    refresh_scan: Atualizar escaneamento
+    last_seen: Visto pela última vez
+    already_added: Já adicionado

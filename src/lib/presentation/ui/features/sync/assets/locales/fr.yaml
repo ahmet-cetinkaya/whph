@@ -1,11 +1,9 @@
-error:
-  scan: Échec du scan
 sync:
   devices:
     errors:
-      loading: Impossible de charger les appareils de synchronisation
-      removing: Impossible de supprimer l'appareil de synchronisation
-      sync_failed: Impossible de synchroniser les appareils
+      loading: Échec du chargement des appareils de synchronisation
+      removing: Échec de la suppression de l'appareil de synchronisation
+      sync_failed: Échec de la synchronisation des appareils
     from_label: De
     help:
       content: |
@@ -13,19 +11,19 @@ sync:
 
         ## ⚡ Configuration rapide et sécurisée
 
-        Connectez vos appareils via le même réseau Wi-Fi en utilisant des codes QR. La synchronisation démarre automatiquement après l'appairage.
+        Connectez vos appareils via le même réseau Wi-Fi en utilisant des codes QR. La synchronisation commence automatiquement après l'appairage.
 
-        - 📱 **Mobile → Mobile :** Un appareil doit être en **mode Serveur** pour permettre l'appairage  
-        - 💻 **Bureau → Mobile :** Le bureau affiche un code QR, le mobile le scanne  
+        - 📱 **Mobile → Mobile:** Un appareil doit être en **mode Serveur** pour permettre l'appairage  
+        - 💻 **Bureau → Mobile:** Le bureau affiche un code QR, le mobile le scanne  
 
         ## 📱 Appareils mobiles
 
         Les appareils Android peuvent fonctionner en deux modes différents :
 
-        - 🔍 **Mode Client :**  
+        - 🔍 **Mode Client:**  
           - Scanne les codes QR  
           - Se connecte à d'autres appareils pour recevoir des données  
-        - 📡 **Mode Serveur :**  
+        - 📡 **Mode Serveur:**  
           - Affiche un code QR pour que d'autres le scannent  
           - Envoie des données aux appareils connectés  
           - Peut être basculé via l'icône hotspot Wi-Fi
@@ -39,16 +37,16 @@ sync:
         - 🖥️ Affichent un code QR pour l'appairage  
         - ✅ Acceptent automatiquement les connexions entrantes  
         - 🔄 Synchronisent les données dans les deux sens  
-        - 📊 Affichent le statut de synchronisation en temps réel
+        - 📊 Affichent l'état de synchronisation en direct
 
         ## 🛠️ Gestion des appareils
 
         Gérez tous les appareils connectés depuis un seul endroit :
 
         - 📋 Afficher les appareils connectés  
-        - ⏰ Voir les heures de dernière synchronisation  
+        - ⏰ Voir les dernières heures de synchronisation  
         - 🔁 Déclencher une synchronisation manuelle  
-        - 🗑️ Supprimer les appareils anciens ou inutilisés
+        - 🗑️ Supprimer les anciens ou inutilisés appareils
 
         ## 💡 Meilleures pratiques
 
@@ -56,51 +54,87 @@ sync:
         - 📱 Gardez les applications ouvertes et actives pendant la synchronisation  
         - 🧹 Supprimez les appareils que vous n'utilisez plus  
         - ⏱️ Vérifiez les heures de synchronisation pour vous assurer que tout est à jour
-      title: Aide de synchronisation des appareils
+      title: Aide à la synchronisation des appareils
     last_sync_label: Dernière synchronisation
     no_devices_found: Aucun appareil synchronisé
     sync_tooltip: Synchroniser maintenant
-    title: Synchroniser les appareils
+    title: Appareils de synchronisation
     to_label: Vers
     unnamed_device: Appareil sans nom
   error:
     scan: Échec du scan
   errors:
     connection_failed: |
-      Connexion échouée. Veuillez vous assurer que :
+      Connexion échouée. Veuillez vous assurer :
 
       1. Les deux appareils sont sur le même réseau
       2. Les deux applications sont ouvertes et en cours d'exécution
       3. Aucun pare-feu ne bloque la connexion
-    device_mismatch: Erreur de synchronisation. L'appareil tentant de se synchroniser n'est pas correctement apparié avec cet appareil.
+    device_mismatch: Erreur de synchronisation. L'appareil qui tente de synchroniser n'est pas correctement appairé avec cet appareil.
     device_not_found: Appareil de synchronisation non trouvé
     ip_address: Impossible de récupérer l'adresse IP locale
     parse_message: Impossible d'analyser le message scanné
-    process_failed: Processus de synchronisation échoué.
-    save_device: Impossible d'enregistrer l'appareil de synchronisation
-    scan: Impossible de scanner le code QR
-    sync_failed: Synchronisation échouée. Veuillez réessayer.
-    sync_timeout: Délai de synchronisation dépassé
-    version_mismatch: "Incompatibilité de version. Version locale : {currentVersion}, Version distante : {remoteVersion}. Veuillez mettre à jour les deux applications à la même version."
+    process_failed: Le processus de synchronisation a échoué.
+    save_device: Échec de la sauvegarde de l'appareil de synchronisation
+    scan: Échec du scan
+    sync_failed: La synchronisation a échoué. Veuillez réessayer.
+    sync_timeout: Délai d'attente de synchronisation
+    version_mismatch: "Incompatibilité de version. Version locale : {currentVersion}, Version distante : {remoteVersion}. Veuillez mettre à jour les deux applications vers la même version."
+    local_ip_error: Erreur d'IP locale
+    device_already_paired: Appareil déjà appairé
+    no_active_interfaces: Aucune interface réseau active
+    device_discovery_failed: Échec de la découverte des appareils
   messages:
-    device_already_paired: Cet appareil est déjà apparié
+    device_already_paired: Cet appareil est déjà appairé
     sync_completed: Synchronisation terminée avec succès
     sync_in_progress: Synchronisation en cours...
     testing_connection: Test de connexion...
+    device_added_success: Appareil ajouté avec succès
   qr_code:
     close_button: Fermer
     dialog_title: Scanner le code QR pour synchroniser
+    title: Code QR
   scanner:
     title: Scanner le code QR
     instruction: Positionnez le code QR dans le cadre
   server:
     starting: Démarrage du mode serveur...
-    active: Mode serveur actif - Montrez le code QR aux autres appareils
+    active: Mode serveur actif - Afficher le code QR aux autres appareils
     stopped: Mode serveur arrêté - L'appareil est maintenant en mode client
-    start_failed: Impossible de démarrer le mode serveur - Vérifiez si le port 44040 est disponible
+    start_failed: Échec du démarrage du mode serveur - Vérifiez si le port 44040 est disponible
     start_tooltip: Démarrer le mode serveur
     stop_tooltip: Arrêter le mode serveur
-    start_menu: Démarrer le mode serveur
-    stop_menu: Arrêter le mode serveur
     error: Erreur
     device_became_server: Cet appareil est maintenant le serveur de synchronisation
+    start_menu: Démarrer le serveur
+    stop_menu: Arrêter le serveur
+  manual:
+    connection: Connexion manuelle
+    description: Saisissez l'adresse IP et le port pour vous connecter à un autre appareil
+    ip_address: Adresse IP
+    port: Port
+    device_name: Nom de l'appareil
+    optional: (Optionnel)
+    connecting: Connexion en cours...
+    cancel: Annuler
+    connect: Se connecter
+    ip_required: L'adresse IP est requise
+    invalid_ip: Format d'adresse IP invalide
+    port_required: Le port est requis
+    invalid_port: Numéro de port invalide
+    connection_failed: Connexion échouée
+    connection_error: Erreur de connexion
+  add:
+    device: Ajouter un appareil
+    device_tooltip: Ajouter un nouvel appareil de synchronisation
+    sync_device: Synchroniser l'appareil
+    sync_device_title: Synchroniser avec l'appareil
+    sync_device_description: Se connecter à un autre appareil pour synchroniser les données
+    scanning_for_devices: Recherche d'appareils...
+    no_nearby_devices: Aucun appareil à proximité
+    no_nearby_devices_hint: Assurez-vous que les appareils sont sur le même réseau
+    alternative_methods_hint: Essayez la connexion manuelle ou le code QR
+    scan_qr_code: Scanner le code QR
+    refresh_scan: Actualiser le scan
+    last_seen: Vu pour la dernière fois
+    already_added: Déjà ajouté

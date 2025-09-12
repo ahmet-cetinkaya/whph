@@ -1,54 +1,52 @@
-error:
-  scan: Tarama başarısız
 sync:
   devices:
     errors:
-      loading: Senkronizasyon cihazları yüklenemedi
-      removing: Senkronizasyon cihazı kaldırılamadı
+      loading: Senkronizasyon cihazları yüklenirken hata oluştu
+      removing: Senkronizasyon cihazı silinirken hata oluştu
       sync_failed: Cihazlar senkronize edilirken hata oluştu
     from_label: Kimden
     help:
       content: |
-        🔄 Görevlerinizi, alışkanlıklarınızı, notlarınızı, ayarlarınızı vb. tüm cihazlarınızda senkronize edin. Tüm veriler yerel ağınızda kalır — buluta hiçbir şey gönderilmez.
+        🔄 Görevlerinizi, alışkanlıklarınızı, notlarınızı, ayarlarınızı vb. tüm cihazlarınızda senkronize tutun. Tüm veriler yerel ağınızda kalır — buluta hiçbir şey gönderilmez.
 
         ## ⚡ Hızlı ve Güvenli Kurulum
 
-        Cihazlarınızı aynı Wi-Fi ağı üzerinden QR kodları kullanarak bağlayın. Eşleştirmeden sonra senkronizasyon otomatik başlar.
+        Cihazlarınızı aynı Wi-Fi ağı üzerinden QR kodları kullanarak bağlayın. Eşleştirme sonrası senkronizasyon otomatik olarak başlar.
 
-        - 📱 **Mobil → Mobil:** Bir cihazın eşleştirmeye izin vermek için **Sunucu modunda** olması gerekir  
-        - 💻 **Masaüstü → Mobil:** Masaüstü QR kod gösterir, mobil tarar  
+        - 📱 **Mobil → Mobil:** Eşleştirmeye izin vermek için bir cihaz **Sunucu modunda** olmalıdır  
+        - 💻 **Masaüstü → Mobil:** Masaüstü QR kodu gösterir, mobil tarar  
 
         ## 📱 Mobil Cihazlar
 
         Android cihazlar iki farklı modda çalışabilir:
 
         - 🔍 **İstemci Modu:**  
-          - QR kodları tarar  
+          - QR kodlarını tarar  
           - Veri almak için diğer cihazlara bağlanır  
         - 📡 **Sunucu Modu:**  
-          - Diğerlerinin taraması için QR kod gösterir  
+          - Diğerlerinin taraması için QR kodu gösterir  
           - Bağlı cihazlara veri gönderir  
           - Wi-Fi hotspot simgesi ile değiştirilebilir
 
-        İki mobil cihaz arasında senkronizasyon için birinin **Sunucu modunda** olması gerekir.
+        İki mobil cihaz arasında senkronizasyon için biri **Sunucu modunda** olmalıdır.
 
         ## 💻 Masaüstü Cihazlar
 
-        Masaüstü uygulamaları her zaman **Sunucu** düğümü olarak çalışır:
+        Masaüstü uygulamaları her zaman **Sunucu** düğümleri olarak çalışır:
 
-        - 🖥️ Eşleştirme için QR kod gösterir  
+        - 🖥️ Eşleştirme için QR kodu gösterir  
         - ✅ Gelen bağlantıları otomatik kabul eder  
-        - 🔄 Verileri her iki yönde senkronize eder  
+        - 🔄 Verileri her iki yönde de senkronize eder  
         - 📊 Canlı senkronizasyon durumunu gösterir
 
         ## 🛠️ Cihaz Yönetimi
 
         Tüm bağlı cihazları tek yerden yönetin:
 
-        - 📋 Bağlı cihazları görüntüleyin  
-        - ⏰ Son senkronizasyon zamanlarını görün  
-        - 🔁 Manuel senkronizasyon başlatın  
-        - 🗑️ Eski veya kullanılmayan cihazları kaldırın
+        - 📋 Bağlı cihazları görüntüle  
+        - ⏰ Son senkronizasyon zamanlarını gör  
+        - 🔁 Manuel senkronizasyonu tetikle  
+        - 🗑️ Eski veya kullanılmayan cihazları kaldır
 
         ## 💡 En İyi Uygulamalar
 
@@ -60,65 +58,83 @@ sync:
     last_sync_label: Son Senkronizasyon
     no_devices_found: Senkronize edilmiş cihaz yok
     sync_tooltip: Şimdi Senkronize Et
-    title: Cihazları Senkronize Et
+    title: Senkronizasyon Cihazları
     to_label: Kime
     unnamed_device: İsimsiz Cihaz
   error:
-    scan: Tarama başarısız
+    scan: Tarama hatası
   errors:
     connection_failed: |
-      Bağlantı başarısız oldu. Lütfen şunlardan emin olun:
+      Bağlantı başarısız. Lütfen şunu sağlayın:
 
-      1. Her iki cihaz aynı ağda
-      2. Her iki uygulama açık ve çalışıyor
-      3. Güvenlik duvarı bağlantıyı engellemiyor
-    device_mismatch: Senkronizasyon hatası. Senkronizasyon yapmaya çalışan cihaz bu cihazla eşleştirilmemiş.
+      1. Her iki cihaz da aynı ağda
+      2. Her iki uygulama da açık ve çalışıyor
+      3. Hiçbir firewall bağlantıyı engellemiyor
+    device_mismatch: Senkronizasyon hatası. Senkronize etmeye çalışan cihaz bu cihazla düzgün eşleştirilmemiş.
     device_not_found: Senkronizasyon cihazı bulunamadı
     ip_address: Yerel IP adresi alınamadı
-    parse_message: Taranan mesaj işlenemedi
-    process_failed: Senkronizasyon işlemi başarısız oldu.
-    save_device: Senkronizasyon cihazı kaydedilemedi
-    scan: QR kodu taranamadı
-    sync_failed: Senkronizasyon başarısız oldu. Lütfen tekrar deneyin.
-    sync_timeout: Senkronizasyon zaman aşımına uğradı
-    version_mismatch: "Sürüm uyumsuzluğu. Yerel sürüm: {currentVersion}, Uzak sürüm: {remoteVersion}. Lütfen iki uygulamayı da aynı sürüme güncelleyin."
-    local_ip_error: Yerel IP adresi belirlenemiyor
-    device_already_paired: Bu cihaz zaten eşleştirilmiş
+    parse_message: Tarama mesajı ayrıştırılamadı
+    process_failed: Senkronizasyon işlemi başarısız.
+    save_device: Senkronizasyon cihazı kaydedilirken hata
+    scan: Tarama hatası
+    sync_failed: Senkronizasyon başarısız. Lütfen tekrar deneyin.
+    sync_timeout: Senkronizasyon zaman aşımı
+    version_mismatch: "Versiyon uyuşmazlığı. Yerel versiyon: {currentVersion}, Uzaktan versiyon: {remoteVersion}. Lütfen her iki uygulamayı da aynı versiyona güncelleyin."
+    local_ip_error: Yerel IP hatası
+    device_already_paired: Cihaz zaten eşleştirilmiş
+    no_active_interfaces: Aktif ağ arabirimi yok
+    device_discovery_failed: Cihaz keşfi başarısız
   messages:
     device_already_paired: Bu cihaz zaten eşleştirilmiş
     sync_completed: Senkronizasyon başarıyla tamamlandı
     sync_in_progress: Senkronizasyon devam ediyor...
     testing_connection: Bağlantı test ediliyor...
-    device_added_success: "{deviceName} senkronizasyon cihazlarına başarıyla eklendi"
+    device_added_success: Cihaz başarıyla eklendi
   qr_code:
     close_button: Kapat
-    dialog_title: Senkronize Etmek için QR Kodu Tarayın
-    title: QR Kodunu Göster
+    dialog_title: Senkronize etmek için QR kodunu tarayın
+    title: QR Kodu
   scanner:
-    title: QR Kodu Tara
-    instruction: QR kodunu çerçeve içinde konumlandırın
+    title: QR Kodu Tarayın
+    instruction: QR kodunu çerçeve içine yerleştirin
   server:
     starting: Sunucu modu başlatılıyor...
-    active: Sunucu modu aktif - QR kodunu diğer cihazlara gösterin
-    stopped: Sunucu modu durduruldu - Cihaz artık istemci modunda
-    start_failed: Sunucu modu başlatılamadı - 44040 portunun müsait olup olmadığını kontrol edin
+    active: Sunucu modu aktif - Diğer cihazlara QR kodu göster
+    stopped: Sunucu modu durduruldu - Cihaz şimdi istemci modunda
+    start_failed: Sunucu modu başlatılamadı - Port 44040'ın mevcut olup olmadığını kontrol edin
     start_tooltip: Sunucu Modunu Başlat
     stop_tooltip: Sunucu Modunu Durdur
-    start_menu: Sunucu Modunu Başlat
-    stop_menu: Sunucu Modunu Durdur
     error: Hata
-    device_became_server: Bu cihaz artık senkronizasyon sunucusu
+    device_became_server: Bu cihaz şimdi senkronizasyon sunucusu
+    start_menu: Sunucuyu Başlat
+    stop_menu: Sunucuyu Durdur
+  manual:
+    connection: Manuel Bağlantı
+    description: Başka bir cihaza bağlanmak için IP adresi ve portu girin
+    ip_address: IP Adresi
+    port: Port
+    device_name: Cihaz Adı
+    optional: (İsteğe bağlı)
+    connecting: Bağlanıyor...
+    cancel: İptal
+    connect: Bağlan
+    ip_required: IP adresi gerekli
+    invalid_ip: Geçersiz IP adresi formatı
+    port_required: Port gerekli
+    invalid_port: Geçersiz port numarası
+    connection_failed: Bağlantı başarısız
+    connection_error: Bağlantı hatası
   add:
     device: Cihaz Ekle
-    device_tooltip: QR kod tarama veya manuel IP girişi ile yeni cihaz ekle
-    sync_device: Senkronizasyon Cihazı Ekle
-    sync_device_title: Senkronizasyon Cihazı Ekle
-    sync_device_description: Yakınlardaki cihazları keşfedin veya manuel bağlantı kurarak verilerinizi cihazlar arasında senkronize edin.
-    scanning_for_devices: Yakınlardaki cihazlar taranıyor...
-    no_nearby_devices: Yakınlarda cihaz bulunamadı
-    no_nearby_devices_hint: Her iki cihazın da aynı Wi-Fi ağında olduğundan ve WHPH'nin çalıştığından emin olun.
-    alternative_methods_hint: Cihazınızı bulamıyor musunuz? Bu alternatif yöntemleri deneyin.
-    scan_qr_code: QR Kod Tara
-    refresh_scan: Taramayı Yenile
-    last_seen: "Son görülme: {time}"
+    device_tooltip: Yeni senkronizasyon cihazı ekle
+    sync_device: Cihaz Senkronize Et
+    sync_device_title: Cihaz ile Senkronize Et
+    sync_device_description: Veri senkronize etmek için başka bir cihaza bağlanın
+    scanning_for_devices: Cihazlar taranıyor...
+    no_nearby_devices: Yakınlarda cihaz yok
+    no_nearby_devices_hint: Cihazların aynı ağda olduğundan emin olun
+    alternative_methods_hint: Manuel bağlantı veya QR kodu deneyin
+    scan_qr_code: QR Kodu Tarayın
+    refresh_scan: Tarama Yenile
+    last_seen: Son görülme
     already_added: Zaten eklendi

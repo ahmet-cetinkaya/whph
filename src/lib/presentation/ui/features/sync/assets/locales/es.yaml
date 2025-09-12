@@ -1,26 +1,24 @@
-error:
-  scan: Fallo al escanear
 sync:
   devices:
     errors:
-      loading: No se pudieron cargar los dispositivos de sincronización
-      removing: No se pudo eliminar el dispositivo de sincronización
-      sync_failed: No se pudieron sincronizar los dispositivos
+      loading: Error al cargar dispositivos de sincronización
+      removing: Error al eliminar dispositivo de sincronización
+      sync_failed: Error al sincronizar dispositivos
     from_label: De
     help:
       content: |
-        🔄 Mantén tus tareas, hábitos, notas, configuraciones, etc. sincronizados en todos tus dispositivos. Todos los datos permanecen en tu red local — nada se envía a la nube.
+        🔄 Mantenga sus tareas, hábitos, notas, configuraciones, etc. sincronizadas en todos sus dispositivos. Todos los datos permanecen en su red local — nada se envía a la nube.
 
         ## ⚡ Configuración rápida y segura
 
-        Conecta tus dispositivos a través de la misma red Wi-Fi usando códigos QR. La sincronización comienza automáticamente después del emparejamiento.
+        Conecte sus dispositivos a través de la misma red Wi-Fi usando códigos QR. La sincronización comienza automáticamente después del emparejamiento.
 
         - 📱 **Móvil → Móvil:** Un dispositivo debe estar en **modo Servidor** para permitir el emparejamiento  
         - 💻 **Escritorio → Móvil:** El escritorio muestra un código QR, el móvil lo escanea  
 
         ## 📱 Dispositivos móviles
 
-        Los dispositivos Android pueden funcionar en dos modos diferentes:
+        Los dispositivos Android pueden trabajar en dos modos diferentes:
 
         - 🔍 **Modo Cliente:**  
           - Escanea códigos QR  
@@ -28,7 +26,7 @@ sync:
         - 📡 **Modo Servidor:**  
           - Muestra código QR para que otros lo escaneen  
           - Envía datos a dispositivos conectados  
-          - Se puede alternar con el icono de hotspot Wi-Fi
+          - Se puede alternar a través del icono de hotspot Wi-Fi
 
         Para sincronizar entre dos dispositivos móviles, uno debe estar en **modo Servidor**.
 
@@ -37,70 +35,106 @@ sync:
         Las aplicaciones de escritorio siempre actúan como nodos **Servidor**:
 
         - 🖥️ Muestran código QR para emparejamiento  
-        - ✅ Aceptan automáticamente conexiones entrantes  
+        - ✅ Aceptan conexiones entrantes automáticamente  
         - 🔄 Sincronizan datos en ambas direcciones  
         - 📊 Muestran estado de sincronización en vivo
 
         ## 🛠️ Gestión de dispositivos
 
-        Gestiona todos los dispositivos conectados desde un solo lugar:
+        Gestione todos los dispositivos conectados desde un solo lugar:
 
         - 📋 Ver dispositivos conectados  
-        - ⏰ Ver tiempos de última sincronización  
+        - ⏰ Ver últimos tiempos de sincronización  
         - 🔁 Activar sincronización manual  
         - 🗑️ Eliminar dispositivos antiguos o no utilizados
 
         ## 💡 Mejores prácticas
 
-        - 📶 Asegúrate de que todos los dispositivos estén en la misma red Wi-Fi  
-        - 📱 Mantén las aplicaciones abiertas y activas durante la sincronización  
-        - 🧹 Elimina dispositivos que ya no uses  
-        - ⏱️ Verifica los tiempos de sincronización para asegurar que todo esté actualizado
+        - 📶 Asegúrese de que todos los dispositivos estén en la misma red Wi-Fi  
+        - 📱 Mantenga las aplicaciones abiertas y activas durante la sincronización  
+        - 🧹 Elimine dispositivos que ya no use  
+        - ⏱️ Verifique los tiempos de sincronización para asegurar que todo esté actualizado
       title: Ayuda de sincronización de dispositivos
     last_sync_label: Última sincronización
-    no_devices_found: Sin dispositivos sincronizados
+    no_devices_found: No hay dispositivos sincronizados
     sync_tooltip: Sincronizar ahora
-    title: Sincronizar dispositivos
+    title: Dispositivos de sincronización
     to_label: A
     unnamed_device: Dispositivo sin nombre
   error:
-    scan: Fallo al escanear
+    scan: Error al escanear
   errors:
     connection_failed: |
-      Conexión fallida. Por favor asegúrate de que:
+      Conexión fallida. Por favor asegúrese:
 
       1. Ambos dispositivos están en la misma red
       2. Ambas aplicaciones están abiertas y ejecutándose
       3. Ningún firewall está bloqueando la conexión
-    device_mismatch: Error de sincronización. El dispositivo que intenta sincronizar no está emparejado correctamente con este dispositivo.
+    device_mismatch: Error de sincronización. El dispositivo que intenta sincronizar no está correctamente emparejado con este dispositivo.
     device_not_found: Dispositivo de sincronización no encontrado
-    ip_address: No se pudo obtener la dirección IP local
-    parse_message: No se pudo analizar el mensaje escaneado
-    process_failed: Proceso de sincronización fallido.
-    save_device: No se pudo guardar el dispositivo de sincronización
-    scan: No se pudo escanear el código QR
-    sync_failed: Sincronización fallida. Por favor inténtalo de nuevo.
-    sync_timeout: Tiempo de espera de sincronización agotado
-    version_mismatch: "Incompatibilidad de versión. Versión local: {currentVersion}, Versión remota: {remoteVersion}. Por favor actualiza ambas aplicaciones a la misma versión."
+    ip_address: No se puede obtener la dirección IP local
+    parse_message: No se puede analizar el mensaje escaneado
+    process_failed: El proceso de sincronización falló.
+    save_device: Error al guardar dispositivo de sincronización
+    scan: Error al escanear
+    sync_failed: La sincronización falló. Inténtelo de nuevo.
+    sync_timeout: Tiempo de espera de sincronización
+    version_mismatch: "Desajuste de versión. Versión local: {currentVersion}, Versión remota: {remoteVersion}. Actualice ambas aplicaciones a la misma versión."
+    local_ip_error: Error de IP local
+    device_already_paired: Dispositivo ya emparejado
+    no_active_interfaces: No hay interfaces de red activas
+    device_discovery_failed: Descubrimiento de dispositivos fallido
   messages:
     device_already_paired: Este dispositivo ya está emparejado
     sync_completed: Sincronización completada exitosamente
-    sync_in_progress: Sincronización en progreso...
+    sync_in_progress: Sincronizando...
     testing_connection: Probando conexión...
+    device_added_success: Dispositivo agregado exitosamente
   qr_code:
     close_button: Cerrar
     dialog_title: Escanear código QR para sincronizar
+    title: Código QR
   scanner:
     title: Escanear código QR
     instruction: Posicione el código QR dentro del marco
   server:
     starting: Iniciando modo servidor...
-    active: Modo servidor activo - Muestra el código QR a otros dispositivos
+    active: Modo servidor activo - Mostrar código QR a otros dispositivos
     stopped: Modo servidor detenido - El dispositivo ahora está en modo cliente
-    start_failed: No se pudo iniciar el modo servidor - Verifica si el puerto 44040 está disponible
+    start_failed: Error al iniciar modo servidor - Verifique si el puerto 44040 está disponible
     start_tooltip: Iniciar modo servidor
     stop_tooltip: Detener modo servidor
-    start_menu: Iniciar modo servidor
-    stop_menu: Detener modo servidor
     error: Error
     device_became_server: Este dispositivo es ahora el servidor de sincronización
+    start_menu: Iniciar servidor
+    stop_menu: Detener servidor
+  manual:
+    connection: Conexión manual
+    description: Ingrese dirección IP y puerto para conectar con otro dispositivo
+    ip_address: Dirección IP
+    port: Puerto
+    device_name: Nombre del dispositivo
+    optional: (Opcional)
+    connecting: Conectando...
+    cancel: Cancelar
+    connect: Conectar
+    ip_required: La dirección IP es requerida
+    invalid_ip: Formato de dirección IP inválido
+    port_required: El puerto es requerido
+    invalid_port: Número de puerto inválido
+    connection_failed: Conexión fallida
+    connection_error: Error de conexión
+  add:
+    device: Agregar dispositivo
+    device_tooltip: Agregar nuevo dispositivo de sincronización
+    sync_device: Sincronizar dispositivo
+    sync_device_title: Sincronizar con dispositivo
+    sync_device_description: Conectarse a otro dispositivo para sincronizar datos
+    scanning_for_devices: Escaneando dispositivos...
+    no_nearby_devices: No hay dispositivos cercanos
+    no_nearby_devices_hint: Asegúrese de que los dispositivos estén en la misma red
+    alternative_methods_hint: Pruebe conexión manual o código QR
+    scan_qr_code: Escanear código QR
+    refresh_scan: Actualizar escaneo
+    last_seen: Última vez visto
+    already_added: Ya agregado
