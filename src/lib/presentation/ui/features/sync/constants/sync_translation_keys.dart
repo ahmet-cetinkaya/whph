@@ -88,4 +88,8 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String refreshScan = 'sync.add.refresh_scan';
   static const String lastSeen = 'sync.add.last_seen';
   static const String alreadyAdded = 'sync.add.already_added';
+  
+  // Error Messages
+  static const String noActiveInterfacesError = 'sync.errors.no_active_interfaces';
+  static const String deviceDiscoveryFailedError = 'sync.errors.device_discovery_failed';
 }

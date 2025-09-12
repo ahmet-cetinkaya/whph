@@ -89,6 +89,8 @@ sync:
     version_mismatch: "Version mismatch. Local: {currentVersion}, Remote: {remoteVersion}. Update both apps."
     local_ip_error: Unable to determine local IP address
     device_already_paired: This device is already paired
+    no_active_interfaces: No active network interfaces found
+    device_discovery_failed: "Failed to start device discovery: {error}"
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully
