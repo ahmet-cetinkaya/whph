@@ -20,6 +20,7 @@ import 'package:whph/core/application/features/sync/commands/save_sync_command.d
 import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 import 'package:acore/acore.dart' show BusinessException;
 
 /// Page for adding new sync devices with network discovery capabilities
@@ -213,7 +214,8 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         HapticFeedback.lightImpact();
       }
     } catch (e) {
-      // Silently ignore connection failures during discovery
+      // Log connection failures during discovery for debugging purposes
+      Logger.debug('Device check failed for $ipAddress: $e');
     }
   }
 
@@ -628,8 +630,8 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                     ),
                   ),
                 );
-              }
-        final device = _discoveredDevices[index];
+              } else {
+                final device = _discoveredDevices[index];
         return Card(
           margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
           child: Padding(
@@ -743,6 +745,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
             ),
           ),
         );
+              }
             },
           ),
         ),
