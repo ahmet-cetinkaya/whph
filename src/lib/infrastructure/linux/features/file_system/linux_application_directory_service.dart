@@ -8,6 +8,9 @@ import 'package:whph/core/application/shared/services/abstraction/i_application_
 class LinuxApplicationDirectoryService implements IApplicationDirectoryService {
   static const String folderName = 'whph';
 
+  /// Get the folder name with debug prefix if in debug mode
+  String get _folderName => kDebugMode ? 'debug_$folderName' : folderName;
+
   @override
   Future<Directory> getApplicationDirectory() async {
     // Linux: Use ~/.local/share folder (XDG-compliant)
@@ -16,7 +19,7 @@ class LinuxApplicationDirectoryService implements IApplicationDirectoryService {
       throw StateError('Unable to find Linux HOME directory');
     }
 
-    final newDir = Directory(p.join(home, '.local', 'share', folderName));
+    final newDir = Directory(p.join(home, '.local', 'share', _folderName));
 
     // Check for migration from old Documents location
     await _migrateFromOldLocation(newDir);

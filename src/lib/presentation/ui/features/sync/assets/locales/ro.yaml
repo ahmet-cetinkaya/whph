@@ -1,102 +1,141 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Eroare la încărcarea dispozitivelor de sincronizare
+      removing: Eroare la eliminarea dispozitivului de sincronizare
+      sync_failed: Eroare la sincronizarea dispozitivelor
+    from_label: De la
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Păstrați sarcinile, obiceiurile, notele, setările etc. sincronizate pe toate dispozitivele dvs. Toate datele rămân în rețeaua locală — nimic nu este trimis în cloud.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Configurare rapidă și sigură
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Conectați dispozitivele dvs. prin aceeași rețea Wi-Fi folosind coduri QR. Sincronizarea începe automat după împerechere.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Mobil → Mobil:** Un dispozitiv trebuie să fie în **mod Server** pentru a permite împerecherea  
+        - 💻 **Desktop → Mobil:** Desktop-ul arată un cod QR, mobilul îl scanează  
 
-        ## 📱 Mobile Devices
+        ## 📱 Dispozitive mobile
 
-        Android devices can work in two different modes:
+        Dispozitivele Android pot funcționa în două moduri diferite:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Mod Client:**  
+          - Scanează coduri QR  
+          - Se conectează la alte dispozitive pentru a primi date  
+        - 📡 **Mod Server:**  
+          - Afișează cod QR pentru a fi scanat de alții  
+          - Trimite date către dispozitivele conectate  
+          - Poate fi alternat prin pictograma hotspot Wi-Fi
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        Pentru a sincroniza între două dispozitive mobile, unul trebuie să fie în **mod Server**.
 
-        ## 💻 Desktop Devices
+        ## 💻 Dispozitive desktop
 
-        Desktop apps always act as **Server** nodes:
+        Aplicațiile desktop acționează întotdeauna ca noduri **Server**:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Afișează cod QR pentru împerechere  
+        - ✅ Acceptă conexiuni în intrare automat  
+        - 🔄 Sincronizează date în ambele direcții  
+        - 📊 Afișează starea sincronizării live
 
-        ## 🛠️ Device Management
+        ## 🛠️ Gestionarea dispozitivelor
 
-        Manage all connected devices from one place:
+        Gestionați toate dispozitivele conectate de la un singur loc:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Vizualizați dispozitivele conectate  
+        - ⏰ Vizualizați ultimele timpuri de sincronizare  
+        - 🔁 Declansați sincronizare manuală  
+        - 🗑️ Eliminați dispozitivele vechi sau neutilizate
 
-        ## 💡 Best Practices
+        ## 💡 Cele mai bune practici
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Asigurați-vă că toate dispozitivele sunt în aceeași rețea Wi-Fi  
+        - 📱 Păstrați aplicațiile deschise și active în timpul sincronizării  
+        - 🧹 Eliminați dispozitivele pe care nu le mai folosiți  
+        - ⏱️ Verificați timpii de sincronizare pentru a vă asigura că totul este actualizat
+      title: Ajutor sincronizare dispozitive
+    last_sync_label: Ultima sincronizare
+    no_devices_found: Niciun dispozitiv sincronizat
+    sync_tooltip: Sincronizați acum
+    title: Dispozitive de sincronizare
+    to_label: Către
+    unnamed_device: Dispozitiv fără nume
   error:
-    scan: Failed to scan
+    scan: Eroare la scanare
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Conexiune eșuată. Asigurați-vă:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Ambele dispozitive sunt în aceeași rețea
+      2. Ambele aplicații sunt deschise și rulează
+      3. Niciun firewall nu blochează conexiunea
+    device_mismatch: Eroare de sincronizare. Dispozitivul care încearcă să se sincronizeze nu este corect împerecheat cu acest dispozitiv.
+    environment_mismatch: Sincronizarea nu poate continua între build-urile de debug și producție.
+    device_not_found: Dispozitiv de sincronizare negăsit
+    ip_address: Nu se poate obține adresa IP locală
+    parse_message: Nu se poate analiza mesajul scanat
+    process_failed: Procesul de sincronizare a eșuat.
+    save_device: Eroare la salvarea dispozitivului de sincronizare
+    scan: Eroare la scanare
+    sync_failed: Sincronizarea a eșuat. Încercați din nou.
+    sync_timeout: Timeout sincronizare
+    version_mismatch: "Incompatibilitate de versiune. Versiune locală: {currentVersion}, Versiune la distanță: {remoteVersion}. Actualizați ambele aplicații la aceeași versiune."
+    local_ip_error: Eroare IP local
+    device_already_paired: Dispozitiv deja împerecheat
+    no_active_interfaces: Niciun interfață de rețea activă
+    device_discovery_failed: Descoperirea dispozitivelor a eșuat
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Acest dispozitiv este deja împerecheat
+    sync_completed: Sincronizare completată cu succes
+    sync_in_progress: Sincronizare în curs...
+    testing_connection: Testare conexiune...
+    device_added_success: Dispozitiv adăugat cu succes
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Închide
+    dialog_title: Scanați codul QR pentru sincronizare
+    title: Cod QR
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Scanați codul QR
+    instruction: Poziționați codul QR în cadru
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Pornire mod server...
+    active: Mod server activ - Arătați codul QR altor dispozitive
+    stopped: Mod server oprit - Dispozitivul este acum în mod client
+    start_failed: Pornire mod server eșuată - Verificați dacă portul 44040 este disponibil
+    start_tooltip: Pornire mod server
+    stop_tooltip: Oprire mod server
+    error: Eroare
+    device_became_server: Acest dispozitiv este acum serverul de sincronizare
+    start_menu: Pornire server
+    stop_menu: Oprire server
+  manual:
+    connection: Conexiune manuală
+    description: Introduceți adresa IP și portul pentru a vă conecta la un alt dispozitiv
+    ip_address: Adresă IP
+    port: Port
+    device_name: Nume dispozitiv
+    optional: (Opțional)
+    connecting: Conectare...
+    cancel: Anulare
+    connect: Conectați
+    ip_required: Adresa IP este obligatorie
+    invalid_ip: Format adresă IP invalid
+    port_required: Portul este obligatoriu
+    invalid_port: Număr port invalid
+    connection_failed: Conexiune eșuată
+    connection_error: Eroare conexiune
+  add:
+    device: Adăugați dispozitiv
+    device_tooltip: Adăugați un nou dispozitiv de sincronizare
+    sync_device: Sincronizați dispozitiv
+    sync_device_title: Sincronizați cu dispozitiv
+    sync_device_description: Conectați-vă la un alt dispozitiv pentru a sincroniza datele
+    scanning_for_devices: Scănați dispozitivele...
+    no_nearby_devices: Niciun dispozitiv în apropiere
+    no_nearby_devices_hint: Asigurați-vă că dispozitivele sunt în aceeași rețea
+    alternative_methods_hint: Încercați conexiune manuală sau cod QR
+    scan_qr_code: Scanați codul QR
+    refresh_scan: Reîmprospătați scanarea
+    last_seen: Văzut ultima dată
+    already_added: Deja adăugat

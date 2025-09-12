@@ -1,102 +1,141 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Synkronointilaitteiden lataus epäonnistui
+      removing: Synkronointilaitteen poisto epäonnistui
+      sync_failed: Laitteiden synkronointi epäonnistui
+    from_label: Mistä
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Pidä tehtäväsi, tapasi, muistiinpanosi, asetuksesi jne. synkronoituna kaikilla laitteillasi. Kaikki tiedot pysyvät paikallisessa verkossa — mitään ei lähetetä pilveen.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Nopea ja turvallinen asennus
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Yhdistä laitteesi saman Wi-Fi-verkon kautta QR-koodeilla. Synkronointi alkaa automaattisesti parittamisen jälkeen.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Mobiili → Mobiili:** Yhden laitteen täytyy olla **Server-tilassa** parittamisen sallimiseksi  
+        - 💻 **Työpöytä → Mobiili:** Työpöytä näyttää QR-koodin, mobiili skannaa sen  
 
-        ## 📱 Mobile Devices
+        ## 📱 Mobiililaitteet
 
-        Android devices can work in two different modes:
+        Android-laitteet voivat toimia kahdessa eri tilassa:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Asiakastila:**  
+          - Skannaa QR-koodeja  
+          - Yhdistyy muihin laitteisiin tietojen vastaanottamiseksi  
+        - 📡 **Server-tila:**  
+          - Näyttää QR-koodin muille skannattavaksi  
+          - Lähettää tietoja yhdistettyihin laitteisiin  
+          - Voidaan vaihtaa Wi-Fi-hotspot-kuvakkeen kautta
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        Kahden mobiililaitteen synkronoimiseksi toisen täytyy olla **Server-tilassa**.
 
-        ## 💻 Desktop Devices
+        ## 💻 Työpöytälaitteet
 
-        Desktop apps always act as **Server** nodes:
+        Työpöytäsovellukset toimivat aina **server**-soluina:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Näyttää QR-koodin parittamiseen  
+        - ✅ Hyväksyy saapuvat yhteydet automaattisesti  
+        - 🔄 Synkronoi tietoja molempiin suuntiin  
+        - 📊 Näyttää reaaliaikaisen synkronointitilan
 
-        ## 🛠️ Device Management
+        ## 🛠️ Laitteiden hallinta
 
-        Manage all connected devices from one place:
+        Hallitse kaikkia yhdistettyjä laitteita yhdellä paikalla:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Näytä yhdistetyt laitteet  
+        - ⏰ Näytä viimeisimmät synkronointiajat  
+        - 🔁 Käynnistä manuaalinen synkronointi  
+        - 🗑️ Poista vanhat tai käyttämättömät laitteet
 
-        ## 💡 Best Practices
+        ## 💡 Parhaat käytännöt
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Varmista, että kaikki laitteet ovat samassa Wi-Fi-verkossa  
+        - 📱 Pidä sovellukset auki ja aktiivisina synkronoinnin aikana  
+        - 🧹 Poista laitteet, joita et enää käytä  
+        - ⏱️ Tarkista synkronointiajat varmistaaksesi, että kaikki on ajan tasalla
+      title: Laitteiden synkronointiapu
+    last_sync_label: Viimeisin synkronointi
+    no_devices_found: Ei synkronoituja laitteita
+    sync_tooltip: Synkronoi nyt
+    title: Synkronointilaitteet
+    to_label: Mihin
+    unnamed_device: Nimetön laite
   error:
-    scan: Failed to scan
+    scan: Skannaus epäonnistui
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Yhteys epäonnistui. Varmista:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Molemmat laitteet ovat samassa verkossa
+      2. Molemmat sovellukset ovat auki ja käynnissä
+      3. Mikään palomuuri ei estä yhteyttä
+    device_mismatch: Synkronointivirhe. Synkronoimaan yrittävä laite ei ole oikein paritettu tähän laitteeseen.
+    environment_mismatch: Synkronointi ei voi jatkua debug- ja tuotanto-versioiden välillä.
+    device_not_found: Synkronointilaitetta ei löytynyt
+    ip_address: Paikallisen IP-osoitteen hakeminen epäonnistui
+    parse_message: Skannatun viestin jäsentäminen epäonnistui
+    process_failed: Synkronointiprosessi epäonnistui.
+    save_device: Synkronointilaitteen tallennus epäonnistui
+    scan: Skannaus epäonnistui
+    sync_failed: Synkronointi epäonnistui. Kokeile uudelleen.
+    sync_timeout: Synkronointiaikakatkaisu
+    version_mismatch: "Version eroavaisuus. Paikallinen versio: {currentVersion}, Etäversio: {remoteVersion}. Päivitä molemmat sovellukset samaan versioon."
+    local_ip_error: Paikallinen IP-virhe
+    device_already_paired: Laite on jo paritettu
+    no_active_interfaces: Ei aktiivisia verkkoliittymiä
+    device_discovery_failed: Laitteen löytäminen epäonnistui
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Tämä laite on jo paritettu
+    sync_completed: Synkronointi valmistui onnistuneesti
+    sync_in_progress: Synkronointi meneillään...
+    testing_connection: Testaa yhteyttä...
+    device_added_success: Laite lisätty onnistuneesti
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Sulje
+    dialog_title: Skannaa QR-koodi synkronoimiseksi
+    title: QR-koodi
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Skannaa QR-koodi
+    instruction: Sijoita QR-koodi kehykseen
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Käynnistetään server-tilaa...
+    active: Server-tila aktiivinen - Näytä QR-koodi muille laitteille
+    stopped: Server-tila pysäytetty - Laite on nyt asiakastilassa
+    start_failed: Server-tilan käynnistys epäonnistui - Tarkista, onko portti 44040 käytettävissä
+    start_tooltip: Käynnistä Server-tila
+    stop_tooltip: Pysäytä Server-tila
+    error: Virhe
+    device_became_server: Tämä laite on nyt synkronointipalvelin
+    start_menu: Käynnistä palvelin
+    stop_menu: Pysäytä palvelin
+  manual:
+    connection: Manuaalinen yhteys
+    description: Anna IP-osoite ja portti toisen laitteen yhdistämiseksi
+    ip_address: IP-osoite
+    port: Portti
+    device_name: Laitteen nimi
+    optional: (Valinnainen)
+    connecting: Yhdistetään...
+    cancel: Peruuta
+    connect: Yhdistä
+    ip_required: IP-osoite on pakollinen
+    invalid_ip: Virheellinen IP-osoite muoto
+    port_required: Portti on pakollinen
+    invalid_port: Virheellinen porttinumero
+    connection_failed: Yhteys epäonnistui
+    connection_error: Yhteysvirhe
+  add:
+    device: Lisää laite
+    device_tooltip: Lisää uusi synkronointilaite
+    sync_device: Synkronoi laite
+    sync_device_title: Synkronoi laitteella
+    sync_device_description: Yhdistä toiseen laitteeseen tietojen synkronoimiseksi
+    scanning_for_devices: Etsitään laitteita...
+    no_nearby_devices: Ei lähellä olevia laitteita
+    no_nearby_devices_hint: Varmista, että laitteet ovat samassa verkossa
+    alternative_methods_hint: Kokeile manuaalista yhteyttä tai QR-koodia
+    scan_qr_code: Skannaa QR-koodi
+    refresh_scan: Päivitä skannaus
+    last_seen: Viimeksi nähty
+    already_added: Jo lisätty

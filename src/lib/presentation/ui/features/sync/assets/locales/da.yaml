@@ -1,102 +1,141 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Fejl ved indlæsning af synkroniseringsenheder
+      removing: Fejl ved fjernelse af synkroniseringsenhed
+      sync_failed: Fejl ved synkronisering af enheder
+    from_label: Fra
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Hold dine opgaver, vaner, noter, indstillinger osv. synkroniseret på tværs af alle dine enheder. Alle data forbliver inden for dit lokale netværk — intet sendes til skyen.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Hurtig og sikker opsætning
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Forbind dine enheder via det samme Wi-Fi-netværk ved hjælp af QR-koder. Synkronisering starter automatisk efter parring.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Mobil → Mobil:** En enhed skal være i **Server-tilstand** for at tillade parring  
+        - 💻 **Desktop → Mobil:** Desktop viser en QR-kode, mobil scanner den  
 
-        ## 📱 Mobile Devices
+        ## 📱 Mobile enheder
 
-        Android devices can work in two different modes:
+        Android-enheder kan arbejde i to forskellige tilstande:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Klient-tilstand:**  
+          - Scanner QR-koder  
+          - Forbinder til andre enheder for at modtage data  
+        - 📡 **Server-tilstand:**  
+          - Viser QR-kode for andre at scanne  
+          - Sender data til tilsluttede enheder  
+          - Kan skiftes via Wi-Fi-hotspot-ikonet
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        For at synkronisere mellem to mobile enheder skal en være i **Server-tilstand**.
 
-        ## 💻 Desktop Devices
+        ## 💻 Desktop-enheder
 
-        Desktop apps always act as **Server** nodes:
+        Desktop-applikationer fungerer altid som **server**-noder:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Viser QR-kode til parring  
+        - ✅ Accepterer indgående forbindelser automatisk  
+        - 🔄 Synkroniserer data i begge retninger  
+        - 📊 Viser live synkroniseringsstatus
 
-        ## 🛠️ Device Management
+        ## 🛠️ Enhedsadministration
 
-        Manage all connected devices from one place:
+        Administrer alle tilsluttede enheder ét sted:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Vis tilsluttede enheder  
+        - ⏰ Se sidste synkroniseringstider  
+        - 🔁 Udløs manuel synkronisering  
+        - 🗑️ Fjern gamle eller ubrugte enheder
 
-        ## 💡 Best Practices
+        ## 💡 Bedste praksis
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Sørg for, at alle enheder er på samme Wi-Fi-netværk  
+        - 📱 Hold apps åbne og aktive under synkronisering  
+        - 🧹 Fjern enheder, du ikke længere bruger  
+        - ⏱️ Tjek synkroniseringstider for at sikre, at alt er opdateret
+      title: Hjælp til enhedssynkronisering
+    last_sync_label: Sidste synkronisering
+    no_devices_found: Ingen synkroniserede enheder
+    sync_tooltip: Synkroniser nu
+    title: Synkroniser enheder
+    to_label: Til
+    unnamed_device: Unavngiven enhed
   error:
-    scan: Failed to scan
+    scan: Scanning fejlede
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Forbindelse mislykkedes. Sørg for:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Begge enheder er på samme netværk
+      2. Begge apps er åbne og kører
+      3. Ingen firewall blokerer forbindelsen
+    device_mismatch: Synkroniseringsfejl. Enheden, der forsøger at synkronisere, er ikke korrekt parret med denne enhed.
+    environment_mismatch: Synkronisering kan ikke fortsætte mellem debug- og produktionsbuilds.
+    device_not_found: Synkroniseringsenhed ikke fundet
+    ip_address: Kan ikke hente lokal IP-adresse
+    parse_message: Kan ikke parse scannet besked
+    process_failed: Synkroniseringsprocessen mislykkedes.
+    save_device: Fejl ved gemning af synkroniseringsenhed
+    scan: Scanning fejlede
+    sync_failed: Synkronisering mislykkedes. Prøv igen.
+    sync_timeout: Synkroniseringstimeout
+    version_mismatch: "Versionsuoverensstemmelse. Lokal version: {currentVersion}, Fjern version: {remoteVersion}. Opdater begge applikationer til samme version."
+    local_ip_error: Lokal IP-fejl
+    device_already_paired: Enhed allerede parret
+    no_active_interfaces: Ingen aktive netværksgrænseflader
+    device_discovery_failed: Enhedsopdagelse mislykkedes
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Denne enhed er allerede parret
+    sync_completed: Synkronisering fuldført succesfuldt
+    sync_in_progress: Synkronisering i gang...
+    testing_connection: Tester forbindelse...
+    device_added_success: Enhed tilføjet succesfuldt
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Luk
+    dialog_title: Scan QR-kode for at synkronisere
+    title: QR-kode
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Scan QR-kode
+    instruction: Placer QR-koden inden for rammen
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Starter server-tilstand...
+    active: Server-tilstand aktiv - Vis QR-kode til andre enheder
+    stopped: Server-tilstand stoppet - Enhed er nu i klient-tilstand
+    start_failed: Fejl ved start af server-tilstand - Tjek, om port 44040 er tilgængelig
+    start_tooltip: Start server-tilstand
+    stop_tooltip: Stop server-tilstand
+    error: Fejl
+    device_became_server: Denne enhed er nu synkroniserings-serveren
+    start_menu: Start server
+    stop_menu: Stop server
+  manual:
+    connection: Manuel forbindelse
+    description: Indtast IP-adresse og port for at forbinde til en anden enhed
+    ip_address: IP-adresse
+    port: Port
+    device_name: Enhedsnavn
+    optional: (Valgfrit)
+    connecting: Opretter forbindelse...
+    cancel: Annuller
+    connect: Forbind
+    ip_required: IP-adresse er påkrævet
+    invalid_ip: Ugyldigt IP-adresseformat
+    port_required: Port er påkrævet
+    invalid_port: Ugyldigt portnummer
+    connection_failed: Forbindelse mislykkedes
+    connection_error: Forbindelsesfejl
+  add:
+    device: Tilføj enhed
+    device_tooltip: Tilføj en ny synkroniseringsenhed
+    sync_device: Synkroniser enhed
+    sync_device_title: Synkroniser med enhed
+    sync_device_description: Forbind til en anden enhed for at synkronisere data
+    scanning_for_devices: Søger efter enheder...
+    no_nearby_devices: Ingen nærliggende enheder
+    no_nearby_devices_hint: Sørg for, at enhederne er på samme netværk
+    alternative_methods_hint: Prøv manuel forbindelse eller QR-kode
+    scan_qr_code: Scan QR-kode
+    refresh_scan: Opdater scan
+    last_seen: Sidst set
+    already_added: Allerede tilføjet

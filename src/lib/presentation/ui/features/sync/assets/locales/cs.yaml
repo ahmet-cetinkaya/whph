@@ -1,102 +1,141 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Selhání načtení synchronizačních zařízení
+      removing: Selhání odstranění synchronizačního zařízení
+      sync_failed: Selhání synchronizace zařízení
+    from_label: Od
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Udržujte své úkoly, návyky, poznámky, nastavení atd. synchronizované napříč všemi svými zařízeními. Všechna data zůstávají v místní síti — nic se neposílá do cloudu.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Rychlé a bezpečné nastavení
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Připojte svá zařízení přes stejnou Wi-Fi síť pomocí QR kódů. Synchronizace se spustí automaticky po spárování.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Mobil → Mobil:** Jedno zařízení musí být v **režimu serveru** pro umožnění spárování  
+        - 💻 **Desktop → Mobil:** Desktop zobrazí QR kód, mobil ho naskenuje  
 
-        ## 📱 Mobile Devices
+        ## 📱 Mobilní zařízení
 
-        Android devices can work in two different modes:
+        Android zařízení mohou pracovat ve dvou různých režimech:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Režim klienta:**  
+          - Skenuje QR kódy  
+          - Připojuje se k jiným zařízením pro příjem dat  
+        - 📡 **Režim serveru:**  
+          - Zobrazuje QR kód pro skenování ostatními  
+          - Odesílá data do připojených zařízení  
+          - Lze přepnout přes ikonu Wi-Fi hotspotu
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        Pro synchronizaci mezi dvěma mobilními zařízeními musí jedno být v **režimu serveru**.
 
-        ## 💻 Desktop Devices
+        ## 💻 Desktopová zařízení
 
-        Desktop apps always act as **Server** nodes:
+        Desktopové aplikace vždy fungují jako **serverové** uzly:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Zobrazují QR kód pro spárování  
+        - ✅ Automaticky přijímají příchozí připojení  
+        - 🔄 Synchronizují data oběma směry  
+        - 📊 Zobrazují živý stav synchronizace
 
-        ## 🛠️ Device Management
+        ## 🛠️ Správa zařízení
 
-        Manage all connected devices from one place:
+        Spravujte všechna připojená zařízení na jednom místě:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Zobrazte připojená zařízení  
+        - ⏰ Zobrazte poslední časy synchronizace  
+        - 🔁 Spusťte manuální synchronizaci  
+        - 🗑️ Odstraňte stará nebo nepoužívaná zařízení
 
-        ## 💡 Best Practices
+        ## 💡 Nejlepší postupy
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Ujistěte se, že všechna zařízení jsou ve stejné Wi-Fi síti  
+        - 📱 Během synchronizace držte aplikace otevřené a aktivní  
+        - 🧹 Odstraňte zařízení, která již nepoužíváte  
+        - ⏱️ Zkontrolujte časy synchronizace, aby bylo vše aktuální
+      title: Nápověda ke synchronizaci zařízení
+    last_sync_label: Poslední synchronizace
+    no_devices_found: Žádná synchronizovaná zařízení
+    sync_tooltip: Synchronizovat nyní
+    title: Synchronizovaná zařízení
+    to_label: Do
+    unnamed_device: Nepojmenované zařízení
   error:
-    scan: Failed to scan
+    scan: Selhání skenování
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Připojení selhalo. Ujistěte se prosím:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Oba zařízení jsou ve stejné síti
+      2. Oba aplikace jsou otevřené a běžící
+      3. Žádný firewall nepřekáží připojení
+    device_mismatch: Chyba synchronizace. Zařízení, které se pokouší synchronizovat, není správně spárováno s tímto zařízením.
+    environment_mismatch: Synchronizace nemůže proběhnout mezi debug a produkční sestavami.
+    device_not_found: Synchronizační zařízení nenalezeno
+    ip_address: Nelze získat lokální IP adresu
+    parse_message: Nelze parsovat skenovanou zprávu
+    process_failed: Proces synchronizace selhal.
+    save_device: Selhání uložení synchronizačního zařízení
+    scan: Selhání skenování
+    sync_failed: Synchronizace selhala. Zkuste to prosím znovu.
+    sync_timeout: Timeout synchronizace
+    version_mismatch: "Nesoulad verzí. Lokální verze: {currentVersion}, Vzdálená verze: {remoteVersion}. Prosím aktualizujte obě aplikace na stejnou verzi."
+    local_ip_error: Chyba lokální IP adresy
+    device_already_paired: Zařízení již spárováno
+    no_active_interfaces: Žádné aktivní síťové rozhraní
+    device_discovery_failed: Objevování zařízení selhalo
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Toto zařízení je již spárováno
+    sync_completed: Synchronizace dokončena úspěšně
+    sync_in_progress: Synchronizace probíhá...
+    testing_connection: Testování připojení...
+    device_added_success: Zařízení úspěšně přidáno
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Zavřít
+    dialog_title: Naskenujte QR kód pro synchronizaci
+    title: QR Kód
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Naskenujte QR kód
+    instruction: Umístěte QR kód do rámečku
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Spouštění režimu serveru...
+    active: Režim serveru aktivní - Zobrazte QR kód jiným zařízením
+    stopped: Režim serveru zastaven - Zařízení je nyní v režimu klienta
+    start_failed: Selhání spuštění režimu serveru - Zkontrolujte, zda je port 44040 dostupný
+    start_tooltip: Spustit režim serveru
+    stop_tooltip: Zastavit režim serveru
+    error: Chyba
+    device_became_server: Toto zařízení je nyní synchronizační server
+    start_menu: Spustit server
+    stop_menu: Zastavit server
+  manual:
+    connection: Manuální připojení
+    description: Zadejte IP adresu a port pro připojení k jinému zařízení
+    ip_address: IP adresa
+    port: Port
+    device_name: Název zařízení
+    optional: (Volitelné)
+    connecting: Připojování...
+    cancel: Zrušit
+    connect: Připojit
+    ip_required: IP adresa je povinná
+    invalid_ip: Neplatný formát IP adresy
+    port_required: Port je povinný
+    invalid_port: Neplatné číslo portu
+    connection_failed: Připojení selhalo
+    connection_error: Chyba připojení
+  add:
+    device: Přidat zařízení
+    device_tooltip: Přidat nové synchronizační zařízení
+    sync_device: Synchronizovat zařízení
+    sync_device_title: Synchronizovat se zařízením
+    sync_device_description: Připojte se k jinému zařízení pro synchronizaci dat
+    scanning_for_devices: Hledání zařízení...
+    no_nearby_devices: Žádná blízká zařízení
+    no_nearby_devices_hint: Ujistěte se, že zařízení jsou ve stejné síti
+    alternative_methods_hint: Zkuste manuální připojení nebo QR kód
+    scan_qr_code: Naskenujte QR kód
+    refresh_scan: Obnovit sken
+    last_seen: Naposledy viděno
+    already_added: Již přidáno

@@ -71,6 +71,7 @@ sync:
       2. 두 앱이 모두 열려 있고 실행 중인지
       3. 방화벽이 연결을 차단하지 않는지
     device_mismatch: 동기화 오류. 동기화를 시도하는 기기가 이 기기와 올바르게 페어링되지 않았습니다.
+    environment_mismatch: 디버그와 프로덕션 빌드 간의 동기화는 진행할 수 없습니다.
     device_not_found: 동기화 기기를 찾을 수 없습니다
     ip_address: 로컬 IP 주소를 가져올 수 없습니다
     parse_message: 스캔한 메시지를 파싱할 수 없습니다
@@ -80,14 +81,20 @@ sync:
     sync_failed: 동기화에 실패했습니다. 다시 시도해 주세요.
     sync_timeout: 동기화 시간 초과
     version_mismatch: "버전 불일치. 로컬 버전: {currentVersion}, 원격 버전: {remoteVersion}. 두 애플리케이션을 같은 버전으로 업데이트하세요."
+    local_ip_error: 로컬 IP 오류
+    device_already_paired: 기기는 이미 페어링되었습니다
+    no_active_interfaces: 활성 네트워크 인터페이스가 없습니다
+    device_discovery_failed: 기기 검색에 실패했습니다
   messages:
     device_already_paired: 이 기기는 이미 페어링되었습니다
     sync_completed: 동기화가 성공적으로 완료되었습니다
     sync_in_progress: 동기화 진행 중...
     testing_connection: 연결 테스트 중...
+    device_added_success: 기기가 성공적으로 추가되었습니다
   qr_code:
     close_button: 닫기
     dialog_title: QR 코드를 스캔하여 동기화
+    title: QR 코드
   scanner:
     title: QR 코드 스캔
     instruction: QR 코드를 프레임 안에 위치시키세요
@@ -100,3 +107,35 @@ sync:
     stop_tooltip: 서버 모드 중지
     error: 오류
     device_became_server: 이 기기가 동기화 서버가 되었습니다
+    start_menu: 서버 시작
+    stop_menu: 서버 중지
+  manual:
+    connection: 수동 연결
+    description: 다른 기기에 연결하기 위해 IP 주소와 포트를 입력하세요
+    ip_address: IP 주소
+    port: 포트
+    device_name: 기기 이름
+    optional: (선택 사항)
+    connecting: 연결 중...
+    cancel: 취소
+    connect: 연결
+    ip_required: IP 주소가 필요합니다
+    invalid_ip: IP 주소 형식이 잘못되었습니다
+    port_required: 포트가 필요합니다
+    invalid_port: 포트 번호가 잘못되었습니다
+    connection_failed: 연결에 실패했습니다
+    connection_error: 연결 오류
+  add:
+    device: 기기 추가
+    device_tooltip: 새 동기화 기기 추가
+    sync_device: 기기 동기화
+    sync_device_title: 기기와 동기화
+    sync_device_description: 데이터 동기화를 위해 다른 기기에 연결
+    scanning_for_devices: 기기 검색 중...
+    no_nearby_devices: 근처 기기가 없습니다
+    no_nearby_devices_hint: 기기가 같은 네트워크에 있는지 확인하세요
+    alternative_methods_hint: 수동 연결 또는 QR 코드를 시도해 보세요
+    scan_qr_code: QR 코드 스캔
+    refresh_scan: 검색 새로 고침
+    last_seen: 마지막으로 본 시간
+    already_added: 이미 추가됨

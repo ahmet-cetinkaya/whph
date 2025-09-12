@@ -1,102 +1,141 @@
 sync:
   devices:
     errors:
-      loading: Failed to load sync devices
-      removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
-    from_label: From
+      loading: Fout bij laden van sync-apparaten
+      removing: Fout bij verwijderen van sync-apparaat
+      sync_failed: Fout bij synchroniseren van apparaten
+    from_label: Van
     help:
       content: |
-        🔄 Keep your tasks, habits, notes, settings etc. synchronized across all your devices. All data stays within your local network — nothing is sent to the cloud.
+        🔄 Houd je taken, gewoonten, notities, instellingen, enz. gesynchroniseerd op al je apparaten. Alle gegevens blijven binnen je lokale netwerk — niets wordt naar de cloud gestuurd.
 
-        ## ⚡ Quick & Secure Setup
+        ## ⚡ Snelle en veilige setup
 
-        Connect your devices over the same Wi-Fi network using QR codes. Sync starts automatically after pairing.
+        Verbind je apparaten via hetzelfde Wi-Fi-netwerk met QR-codes. Synchronisatie start automatisch na pairing.
 
-        - 📱 **Mobile → Mobile:** One device must be in **Server mode** to allow pairing  
-        - 💻 **Desktop → Mobile:** Desktop shows a QR code, mobile scans it  
+        - 📱 **Mobiel → Mobiel:** Een apparaat moet in **Server-modus** zijn om pairing toe te staan  
+        - 💻 **Desktop → Mobiel:** Desktop toont een QR-code, mobiel scant het  
 
-        ## 📱 Mobile Devices
+        ## 📱 Mobiele apparaten
 
-        Android devices can work in two different modes:
+        Android-apparaten kunnen in twee verschillende modi werken:
 
-        - 🔍 **Client Mode:**  
-          - Scans QR codes  
-          - Connects to other devices to receive data  
-        - 📡 **Server Mode:**  
-          - Shows QR code for others to scan  
-          - Sends data to connected devices  
-          - Can be toggled via the Wi-Fi hotspot icon
+        - 🔍 **Client-modus:**  
+          - Scant QR-codes  
+          - Verbindt met andere apparaten om gegevens te ontvangen  
+        - 📡 **Server-modus:**  
+          - Toont QR-code voor anderen om te scannen  
+          - Stuurt gegevens naar verbonden apparaten  
+          - Kan worden geschakeld via het Wi-Fi-hotspot-icoon
 
-        To sync between two mobile devices, one must be in **Server mode**.
+        Om tussen twee mobiele apparaten te synchroniseren, moet één in **Server-modus** zijn.
 
-        ## 💻 Desktop Devices
+        ## 💻 Desktop-apparaten
 
-        Desktop apps always act as **Server** nodes:
+        Desktop-apps werken altijd als **Server**-knooppunten:
 
-        - 🖥️ Display a QR code for pairing  
-        - ✅ Automatically accept incoming connections  
-        - 🔄 Sync data in both directions  
-        - 📊 Show live sync status
+        - 🖥️ Toont QR-code voor pairing  
+        - ✅ Accepteert inkomende verbindingen automatisch  
+        - 🔄 Synchroniseert gegevens in beide richtingen  
+        - 📊 Toont live sync-status
 
-        ## 🛠️ Device Management
+        ## 🛠️ Apparaatbeheer
 
-        Manage all connected devices from one place:
+        Beheer alle verbonden apparaten op één plek:
 
-        - 📋 View connected devices  
-        - ⏰ See last sync times  
-        - 🔁 Trigger manual sync  
-        - 🗑️ Remove old or unused devices
+        - 📋 Toon verbonden apparaten  
+        - ⏰ Toon laatste sync-tijden  
+        - 🔁 Trigger handmatige sync  
+        - 🗑️ Verwijder oude of ongebruikte apparaten
 
-        ## 💡 Best Practices
+        ## 💡 Best practices
 
-        - 📶 Make sure all devices are on the same Wi-Fi network  
-        - 📱 Keep apps open and active during sync  
-        - 🧹 Remove devices you no longer use  
-        - ⏱️ Check sync times to ensure everything is up to date
-      title: Device Synchronization Help
-    last_sync_label: Last Sync
-    no_devices_found: No synced devices
-    sync_tooltip: Sync Now
-    title: Sync Devices
-    to_label: To
-    unnamed_device: Unnamed Device
+        - 📶 Zorg ervoor dat alle apparaten op hetzelfde Wi-Fi-netwerk staan  
+        - 📱 Houd apps open en actief tijdens synchronisatie  
+        - 🧹 Verwijder apparaten die je niet meer gebruikt  
+        - ⏱️ Controleer sync-tijden om te zorgen dat alles up-to-date is
+      title: Hulp bij apparaat-synchronisatie
+    last_sync_label: Laatste synchronisatie
+    no_devices_found: Geen gesynchroniseerde apparaten
+    sync_tooltip: Nu synchroniseren
+    title: Sync-apparaten
+    to_label: Naar
+    unnamed_device: Naamloos apparaat
   error:
-    scan: Failed to scan
+    scan: Scan mislukt
   errors:
     connection_failed: |
-      Connection failed. Please ensure:
+      Verbinding mislukt. Zorg ervoor:
 
-      1. Both devices are on the same network
-      2. Both apps are open and running
-      3. No firewall is blocking the connection
-    device_mismatch: Sync error. The device attempting to sync is not properly paired with this device.
-    device_not_found: Sync device not found
-    ip_address: Unable to fetch local IP address
-    parse_message: Unable to parse scanned message
-    process_failed: Sync process failed.
-    save_device: Failed to save sync device
-    scan: Failed to scan
-    sync_failed: Synchronization failed. Please try again.
-    sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local version: {currentVersion}, Remote version: {remoteVersion}. Please update both applications to the same version."
+      1. Beide apparaten zijn op hetzelfde netwerk
+      2. Beide apps zijn open en draaien
+      3. Geen firewall blokkeert de verbinding
+    device_mismatch: Sync-fout. Het apparaat dat probeert te synchroniseren is niet correct gepaart met dit apparaat.
+    environment_mismatch: Synchronisatie kan niet doorgaan tussen debug- en productiebuilds.
+    device_not_found: Sync-apparaat niet gevonden
+    ip_address: Kan lokale IP-adres niet ophalen
+    parse_message: Kan gescande bericht niet parseren
+    process_failed: Sync-proces mislukt.
+    save_device: Fout bij opslaan van sync-apparaat
+    scan: Scan mislukt
+    sync_failed: Synchronisatie mislukt. Probeer het opnieuw.
+    sync_timeout: Sync-timeout
+    version_mismatch: "Versie-mismatch. Lokale versie: {currentVersion}, Remote versie: {remoteVersion}. Update beide apps naar dezelfde versie."
+    local_ip_error: Lokale IP-fout
+    device_already_paired: Apparaat al gepaart
+    no_active_interfaces: Geen actieve netwerkinterfaces
+    device_discovery_failed: Apparaatontdekking mislukt
   messages:
-    device_already_paired: This device is already paired
-    sync_completed: Sync completed successfully
-    sync_in_progress: Syncing in progress...
-    testing_connection: Testing connection...
+    device_already_paired: Dit apparaat is al gepaart
+    sync_completed: Synchronisatie succesvol voltooid
+    sync_in_progress: Synchroniseren in uitvoering...
+    testing_connection: Test verbinding...
+    device_added_success: Apparaat succesvol toegevoegd
   qr_code:
-    close_button: Close
-    dialog_title: Scan QR Code to Sync
+    close_button: Sluiten
+    dialog_title: Scan QR-code om te synchroniseren
+    title: QR-code
   scanner:
-    title: Scan QR Code
-    instruction: Position QR code within the frame
+    title: Scan QR-code
+    instruction: Plaats QR-code binnen het frame
   server:
-    starting: Starting server mode...
-    active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
-    start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
-    error: Error
-    device_became_server: This device is now the sync server
+    starting: Server-modus starten...
+    active: Server-modus actief - Toon QR-code aan andere apparaten
+    stopped: Server-modus gestopt - Apparaat is nu in client-modus
+    start_failed: Starten van server-modus mislukt - Controleer of poort 44040 beschikbaar is
+    start_tooltip: Start server-modus
+    stop_tooltip: Stop server-modus
+    error: Fout
+    device_became_server: Dit apparaat is nu de sync-server
+    start_menu: Server starten
+    stop_menu: Server stoppen
+  manual:
+    connection: Handmatige verbinding
+    description: Voer IP-adres en poort in om te verbinden met een ander apparaat
+    ip_address: IP-adres
+    port: Poort
+    device_name: Apparaatnaam
+    optional: (Optioneel)
+    connecting: Verbinden...
+    cancel: Annuleren
+    connect: Verbinden
+    ip_required: IP-adres vereist
+    invalid_ip: Ongeldig IP-adresformaat
+    port_required: Poort vereist
+    invalid_port: Ongeldig poortnummer
+    connection_failed: Verbinding mislukt
+    connection_error: Verbindingsfout
+  add:
+    device: Apparaat toevoegen
+    device_tooltip: Nieuw sync-apparaat toevoegen
+    sync_device: Sync apparaat
+    sync_device_title: Sync met apparaat
+    sync_device_description: Verbind met een ander apparaat om gegevens te synchroniseren
+    scanning_for_devices: Scannen naar apparaten...
+    no_nearby_devices: Geen apparaten in de buurt
+    no_nearby_devices_hint: Zorg ervoor dat apparaten op hetzelfde netwerk staan
+    alternative_methods_hint: Probeer handmatige verbinding of QR-code
+    scan_qr_code: Scan QR-code
+    refresh_scan: Scan vernieuwen
+    last_seen: Laatst gezien
+    already_added: Al toegevoegd

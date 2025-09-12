@@ -8,12 +8,15 @@ import 'package:whph/core/application/shared/services/abstraction/i_application_
 class AndroidApplicationDirectoryService implements IApplicationDirectoryService {
   static const String folderName = 'whph';
 
+  /// Get the folder name with debug prefix if in debug mode
+  String get _folderName => kDebugMode ? 'debug_$folderName' : folderName;
+
   @override
   Future<Directory> getApplicationDirectory() async {
     try {
       // Android: Use application support directory
       final supportDir = await getApplicationSupportDirectory();
-      final newDir = Directory(p.join(supportDir.path, folderName));
+      final newDir = Directory(p.join(supportDir.path, _folderName));
 
       // Check for migration from old Documents location
       await _migrateFromOldLocation(newDir);

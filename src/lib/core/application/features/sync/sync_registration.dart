@@ -10,6 +10,11 @@ import 'package:whph/core/application/features/sync/queries/get_list_syncs_query
 import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/device_id_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
+import 'package:whph/core/application/features/sync/services/network_interface_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
+import 'package:whph/core/application/features/sync/services/concurrent_connection_service.dart';
+import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
@@ -62,6 +67,15 @@ void registerSyncFeature(
         applicationDirectoryService: applicationDirectoryService,
       ));
   final deviceIdService = container.resolve<IDeviceIdService>();
+
+  // Register network interface service
+  container.registerSingleton<INetworkInterfaceService>((_) => NetworkInterfaceService());
+
+  // Register concurrent connection service
+  container.registerSingleton<IConcurrentConnectionService>((_) => ConcurrentConnectionService());
+
+  // Register device handshake service
+  container.registerSingleton<DeviceHandshakeService>((_) => DeviceHandshakeService());
 
   mediator
     ..registerHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse, SaveSyncDeviceCommandHandler>(
