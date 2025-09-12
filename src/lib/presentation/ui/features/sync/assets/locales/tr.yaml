@@ -82,11 +82,14 @@ sync:
     sync_failed: Senkronizasyon başarısız oldu. Lütfen tekrar deneyin.
     sync_timeout: Senkronizasyon zaman aşımına uğradı
     version_mismatch: "Sürüm uyumsuzluğu. Yerel sürüm: {currentVersion}, Uzak sürüm: {remoteVersion}. Lütfen iki uygulamayı da aynı sürüme güncelleyin."
+    local_ip_error: Yerel IP adresi belirlenemiyor
+    device_already_paired: Bu cihaz zaten eşleştirilmiş
   messages:
     device_already_paired: Bu cihaz zaten eşleştirilmiş
     sync_completed: Senkronizasyon başarıyla tamamlandı
     sync_in_progress: Senkronizasyon devam ediyor...
     testing_connection: Bağlantı test ediliyor...
+    device_added_success: {deviceName} senkronizasyon cihazlarına başarıyla eklendi
   qr_code:
     close_button: Kapat
     dialog_title: Senkronize Etmek için QR Kodu Tarayın

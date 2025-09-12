@@ -293,7 +293,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
         // Get local device information
         final localIp = await NetworkUtils.getLocalIpAddress();
         if (localIp == null) {
-          throw BusinessException('Local IP address could not be determined', SyncTranslationKeys.ipAddressError);
+          throw BusinessException(SyncTranslationKeys.localIpError, SyncTranslationKeys.ipAddressError);
         }
 
         final localDeviceId = await deviceIdService.getDeviceId();
@@ -308,7 +308,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
         );
 
         if (existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null) {
-          throw BusinessException('This device is already paired', SyncTranslationKeys.deviceAlreadyPaired);
+          throw BusinessException(SyncTranslationKeys.deviceAlreadyPairedError, SyncTranslationKeys.deviceAlreadyPaired);
         }
 
         // Create the sync device
@@ -330,7 +330,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
           // Show success message
           OverlayNotificationHelper.showSuccess(
             context: context,
-            message: 'Successfully added $deviceName to sync devices',
+            message: SyncTranslationKeys.deviceAddedSuccess.tr(args: [deviceName]),
             duration: const Duration(seconds: 3),
           );
           
