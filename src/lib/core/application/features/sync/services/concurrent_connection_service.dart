@@ -174,7 +174,7 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
   /// Validate WebSocket connection by sending a test message
   Future<bool> _validateConnection(WebSocket socket) async {
     try {
-      // Send a test message and wait for any response
+      // Send a connection test message and wait for specific response
       final testMessage = WebSocketMessage(
         type: 'connection_test',
         data: {'timestamp': DateTime.now().toIso8601String()},
@@ -182,13 +182,22 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       
       socket.add(JsonMapper.serialize(testMessage));
       
-      // Wait for any response or timeout after 2 seconds
-      await socket.timeout(
+      // Wait for the specific connection_test_response or timeout after 2 seconds
+      final responseData = await socket.timeout(
         const Duration(seconds: 2),
         onTimeout: (_) => throw TimeoutException('Validation timeout'),
       ).first;
       
-      return true;
+      // Parse the response and check if it's a valid connection_test_response
+      final response = JsonMapper.deserialize<WebSocketMessage>(responseData);
+      final isValid = response?.type == 'connection_test_response' && 
+                     response?.data?['success'] == true;
+      
+      if (!isValid) {
+        Logger.debug('Invalid connection test response: ${response?.type}');
+      }
+      
+      return isValid;
     } catch (e) {
       Logger.debug('Connection validation failed: $e');
       return false;

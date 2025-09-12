@@ -134,6 +134,17 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         }
         break;
 
+      case 'connection_test':
+        // Send connection test response
+        socket.add(JsonMapper.serialize(WebSocketMessage(
+          type: 'connection_test_response',
+          data: {
+            'success': true,
+            'timestamp': DateTime.now().toIso8601String(),
+          },
+        )));
+        break;
+
       case 'paginated_sync':
         Logger.info('🔄 Processing paginated sync request...');
 
