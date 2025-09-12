@@ -149,44 +149,4 @@ class NetworkUtils {
     }
   }
 
-  /// Test multiple IP addresses concurrently and return successful ones
-  static Future<List<String>> testMultipleAddresses(
-    List<String> ipAddresses, {
-    int port = webSocketPort,
-    Duration timeout = const Duration(seconds: 3),
-  }) async {
-    if (ipAddresses.isEmpty) return [];
-
-    Logger.debug('Testing connectivity to ${ipAddresses.length} addresses concurrently');
-    
-    final futures = ipAddresses.map((ip) => _testSingleAddress(ip, port, timeout)).toList();
-    
-    try {
-      final results = await Future.wait(futures);
-      final successful = <String>[];
-      
-      for (int i = 0; i < results.length; i++) {
-        if (results[i]) {
-          successful.add(ipAddresses[i]);
-        }
-      }
-      
-      Logger.debug('Connectivity test completed: ${successful.length}/${ipAddresses.length} addresses reachable');
-      return successful;
-    } catch (e) {
-      Logger.error('Error during multi-address connectivity testing: $e');
-      return [];
-    }
-  }
-
-  /// Test single address connectivity (internal helper)
-  static Future<bool> _testSingleAddress(String ip, int port, Duration timeout) async {
-    try {
-      final socket = await Socket.connect(ip, port, timeout: timeout);
-      await socket.close();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 }

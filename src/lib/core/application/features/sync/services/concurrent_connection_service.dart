@@ -27,10 +27,10 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     
     final Completer<WebSocket?> completer = Completer();
     bool connectionSucceeded = false;
+    int failedAttempts = 0;
 
     // Create connection attempts for each IP address
-    for (int i = 0; i < ipAddresses.length; i++) {
-      final ipAddress = ipAddresses[i];
+    for (final ipAddress in ipAddresses) {
       unawaited(_attemptConnection(
         ipAddress,
         port,
@@ -49,8 +49,10 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
         },
         (error) {
           Logger.debug('❌ Connection failed to $ipAddress:$port: $error');
-          // If this is the last attempt and no connection succeeded, complete with null
-          if (!connectionSucceeded && i == ipAddresses.length - 1 && !completer.isCompleted) {
+          if (connectionSucceeded) return;
+
+          failedAttempts++;
+          if (failedAttempts == ipAddresses.length && !completer.isCompleted) {
             Logger.debug('All connection attempts failed');
             completer.complete(null);
           }

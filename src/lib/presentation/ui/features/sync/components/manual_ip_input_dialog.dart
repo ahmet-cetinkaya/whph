@@ -304,7 +304,7 @@ class _ManualIPInputDialogState extends State<ManualIPInputDialog> {
         final localDeviceName = await DeviceInfoHelper.getDeviceName();
         
         // Use pre-discovered device ID if available, otherwise generate one
-        final remoteDeviceId = widget.preDiscoveredDeviceId ?? 'manual-${DateTime.now().millisecondsSinceEpoch}';
+        final remoteDeviceId = widget.preDiscoveredDeviceId ?? 'manual-$ipAddress:$port';
         
         // Check if device already exists
         final existingDevice = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(

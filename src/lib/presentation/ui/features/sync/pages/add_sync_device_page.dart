@@ -379,11 +379,8 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
     // Notify parent and close the page
     widget.onDeviceAdded?.call();
     
-    // Pop twice to go back to sync devices page (once for this page, once for the dialog)
-    Navigator.pop(context, true);  // Close AddSyncDevicePage
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context, true);  // Close the dialog if it exists
-    }
+    // Pop once to close the dialog
+    Navigator.pop(context, true);
   }
 
   Future<void> _openQRScanner() async {
