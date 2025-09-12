@@ -8,6 +8,9 @@ import 'package:whph/core/application/shared/services/abstraction/i_application_
 class WindowsApplicationDirectoryService implements IApplicationDirectoryService {
   static const String folderName = 'whph';
 
+  /// Get the folder name with debug prefix if in debug mode
+  String get _folderName => kDebugMode ? 'debug_$folderName' : folderName;
+
   @override
   Future<Directory> getApplicationDirectory() async {
     // Windows: Use AppData folder
@@ -16,7 +19,7 @@ class WindowsApplicationDirectoryService implements IApplicationDirectoryService
       throw StateError('Unable to find Windows AppData directory');
     }
 
-    final newDir = Directory(p.join(appData, folderName));
+    final newDir = Directory(p.join(appData, _folderName));
 
     // Check for migration from old Documents location
     await _migrateFromOldLocation(newDir);

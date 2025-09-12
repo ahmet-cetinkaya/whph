@@ -24,6 +24,9 @@ class PaginatedSyncDataDto {
   final String appVersion;
   final SyncDevice syncDevice;
 
+  /// Debug mode flag to prevent debug-production sync mixing
+  final bool isDebugMode;
+
   /// The entity type being synchronized in this chunk
   final String entityType;
 
@@ -59,6 +62,7 @@ class PaginatedSyncDataDto {
   PaginatedSyncDataDto({
     required this.appVersion,
     required this.syncDevice,
+    required this.isDebugMode,
     required this.entityType,
     required this.pageIndex,
     required this.pageSize,
@@ -89,6 +93,7 @@ class PaginatedSyncDataDto {
     return {
       'appVersion': appVersion,
       'syncDevice': syncDevice.toJson(),
+      'isDebugMode': isDebugMode,
       'entityType': entityType,
       'pageIndex': pageIndex,
       'pageSize': pageSize,
@@ -124,6 +129,7 @@ class PaginatedSyncDataDto {
     return PaginatedSyncDataDto(
       appVersion: json['appVersion'] as String,
       syncDevice: SyncDevice.fromJson(json['syncDevice'] as Map<String, dynamic>),
+      isDebugMode: json['isDebugMode'] as bool? ?? false,
       entityType: json['entityType'] as String,
       pageIndex: (json['pageIndex'] as num).toInt(),
       pageSize: (json['pageSize'] as num).toInt(),
