@@ -72,7 +72,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       final interfaces = await _networkInterfaceService.getActiveNetworkInterfaces();
       if (interfaces.isEmpty) {
         setState(() {
-          _errorMessage = 'No active network interfaces found';
+          _errorMessage = _translationService.translate(SyncTranslationKeys.noActiveInterfacesError);
           _isScanning = false;
         });
         return;
@@ -92,7 +92,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Failed to start device discovery: $e';
+          _errorMessage = _translationService.translate(SyncTranslationKeys.deviceDiscoveryFailedError, namedArgs: {'error': e.toString()});
           _isScanning = false;
         });
       }
