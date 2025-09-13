@@ -111,7 +111,6 @@ sync:
     stop_menu: Stop server
   manual:
     connection: Manuel forbindelse
-    description: Indtast IP-adresse og port for at forbinde til en anden enhed
     ip_address: IP-adresse
     port: Port
     device_name: Enhedsnavn
@@ -127,7 +126,7 @@ sync:
     connection_error: Forbindelsesfejl
   add:
     device: Tilføj enhed
-    device_tooltip: Tilføj en ny synkroniseringsenhed
+    device_tooltip: Tilføj en ny enhed
     sync_device: Synkroniser enhed
     sync_device_title: Synkroniser med enhed
     sync_device_description: Forbind til en anden enhed for at synkronisere data

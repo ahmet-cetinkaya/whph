@@ -47,6 +47,7 @@ import 'package:whph/infrastructure/desktop/features/file_system/desktop_file_se
 import 'package:whph/infrastructure/desktop/features/single_instance/desktop_single_instance_service.dart';
 import 'package:whph/infrastructure/linux/features/file_system/linux_application_directory_service.dart';
 import 'package:whph/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
 void registerInfrastructure(IContainer container) {
   // Register Logger Service
@@ -194,6 +195,8 @@ void registerInfrastructure(IContainer container) {
   // Register AndroidServerSyncService as a separate service for mobile server mode
   container.registerSingleton<AndroidServerSyncService>((_) {
     final mediator = container.resolve<Mediator>();
-    return AndroidServerSyncService(mediator);
+    final deviceIdService = container.resolve<IDeviceIdService>();
+    final deviceInfoPlugin = container.resolve<DeviceInfoPlugin>();
+    return AndroidServerSyncService(mediator, deviceIdService, deviceInfoPlugin);
   });
 }

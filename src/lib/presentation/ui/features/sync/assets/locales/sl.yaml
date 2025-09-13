@@ -111,7 +111,6 @@ sync:
     stop_menu: Ustavi strežnik
   manual:
     connection: Ročna povezava
-    description: Vnesi IP naslov in vrata za povezavo z drugo napravo
     ip_address: IP naslov
     port: Vrata
     device_name: Ime naprave
@@ -127,7 +126,7 @@ sync:
     connection_error: Napaka povezave
   add:
     device: Dodaj napravo
-    device_tooltip: Dodaj novo napravo sinhronizacije
+    device_tooltip: Dodaj novo napravo
     sync_device: Sinhroniziraj napravo
     sync_device_title: Sinhroniziraj z napravo
     sync_device_description: Poveži se z drugo napravo za sinhronizacijo podatkov
