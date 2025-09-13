@@ -40,6 +40,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String connectInfoConnectionStringTitle = 'sync.connect_info.connection_string_title';
   static const String connectInfoConnectionStringDescription = 'sync.connect_info.connection_string_description';
   static const String connectInfoConnectionStringCopied = 'sync.connect_info.connection_string_copied';
+  static const String connectInfoServerDetailsDescription = 'sync.connect_info.server_details_description';
 
   // QR Scanner
   static const String scannerTitle = 'sync.scanner.title';
@@ -119,4 +120,22 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   // Error Messages
   static const String noActiveInterfacesError = 'sync.errors.no_active_interfaces';
   static const String deviceDiscoveryFailedError = 'sync.errors.device_discovery_failed';
+
+  // Manual Connection Dialog
+  static const String connectionStringTab = 'sync.manual.connection_string_tab';
+  static const String manualEntryTab = 'sync.manual.manual_entry_tab';
+  static const String connectionStringRequired = 'sync.manual.connection_string_required';
+  static const String invalidConnectionString = 'sync.manual.invalid_connection_string';
+  static const String connectionStringLabel = 'sync.manual.connection_string_label';
+  static const String testConnection = 'sync.manual.test_connection';
+  static const String enterServerDetails = 'sync.manual.enter_server_details';
+
+  // Sync Connect Info Dialog
+  static const String unknownIp = 'sync.connect_info.unknown_ip';
+  static const String errorLoadingConnectionInfo = 'sync.connect_info.error_loading_connection_info';
+  static const String retry = 'sync.connect_info.retry';
+  static const String manualConnectionTab = 'sync.connect_info.manual_connection_tab';
+  static const String serverDetailsTitle = 'sync.connect_info.server_details_title';
+  static const String connectionStringTitleAlt = 'sync.connect_info.connection_string_title_alt';
+  static const String copy = 'sync.connect_info.copy';
 }

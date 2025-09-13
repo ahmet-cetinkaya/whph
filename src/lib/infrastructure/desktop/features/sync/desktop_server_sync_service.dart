@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/presentation/api/controllers/paginated_sync_controller.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 
 const int webSocketPort = 44040;
@@ -18,8 +19,9 @@ class DesktopServerSyncService extends SyncService {
   final List<WebSocket> _activeConnections = [];
 
   final IDeviceIdService _deviceIdService;
+  final Mediator mediator;
 
-  DesktopServerSyncService(super.mediator, this._deviceIdService);
+  DesktopServerSyncService(this.mediator, this._deviceIdService) : super(mediator);
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {
@@ -147,10 +149,10 @@ class DesktopServerSyncService extends SyncService {
 
           Logger.debug(
               '📊 Desktop server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
-          final paginatedController = PaginatedSyncController();
 
           try {
-            final response = await paginatedController.paginatedSync(PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
             Logger.info('✅ Desktop server paginated sync processing completed successfully');
 
             WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {

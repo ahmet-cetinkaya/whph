@@ -78,11 +78,11 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
                 tabs: [
                   Tab(
                     icon: const Icon(Icons.link),
-                    text: 'Connection String',
+                    text: _translationService.translate(SyncTranslationKeys.connectionStringTab),
                   ),
                   Tab(
                     icon: const Icon(Icons.settings_input_antenna),
-                    text: 'Manual Entry',
+                    text: _translationService.translate(SyncTranslationKeys.manualEntryTab),
                   ),
                 ],
               ),
@@ -171,12 +171,12 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
 
   String? _validateConnectionString(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Connection string is required';
+      return _translationService.translate(SyncTranslationKeys.connectionStringRequired);
     }
 
     final connectionString = SyncConnectionString.fromString(value);
     if (connectionString == null || !connectionString.isValid) {
-      return 'Invalid connection string format';
+      return _translationService.translate(SyncTranslationKeys.invalidConnectionString);
     }
 
     return null;
@@ -213,7 +213,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
             TextFormField(
               controller: _connectionStringController,
               decoration: InputDecoration(
-                labelText: 'Connection String',
+                labelText: _translationService.translate(SyncTranslationKeys.connectionStringLabel),
                 hintText: 'whph://192.168.1.100:44040?name=Server&id=uuid',
                 prefixIcon: const Icon(Icons.link),
                 border: const OutlineInputBorder(),
@@ -230,7 +230,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
             ElevatedButton.icon(
               onPressed: _isConnecting ? null : _testConnectionString,
               icon: const Icon(Icons.wifi_find, size: 16),
-              label: const Text('Test Connection'),
+              label: Text(_translationService.translate(SyncTranslationKeys.testConnection)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 foregroundColor: Theme.of(context).colorScheme.onSecondary,
@@ -294,7 +294,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Enter server connection details manually',
+              _translationService.translate(SyncTranslationKeys.enterServerDetails),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
 
@@ -340,7 +340,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
             ElevatedButton.icon(
               onPressed: _isConnecting ? null : _testManualConnection,
               icon: const Icon(Icons.wifi_find, size: 16),
-              label: const Text('Test Connection'),
+              label: Text(_translationService.translate(SyncTranslationKeys.testConnection)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 foregroundColor: Theme.of(context).colorScheme.onSecondary,

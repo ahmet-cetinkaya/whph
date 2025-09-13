@@ -78,7 +78,7 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
 
       // Create QR code data
       final syncQrCodeMessage = SyncQrCodeMessage(
-        localIP: _ipAddress ?? 'Unknown IP',
+        localIP: _ipAddress ?? _translationService.translate(SyncTranslationKeys.unknownIp),
         deviceName: _deviceName!,
         deviceId: _deviceId!,
         platform: _platform!,
@@ -136,7 +136,7 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
                           ),
                           const SizedBox(height: AppTheme.sizeMedium),
                           Text(
-                            'Error loading connection info',
+                            _translationService.translate(SyncTranslationKeys.errorLoadingConnectionInfo),
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: AppTheme.sizeSmall),
@@ -149,7 +149,7 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
                           TextButton.icon(
                             onPressed: _loadConnectionInfo,
                             icon: const Icon(Icons.refresh),
-                            label: const Text('Retry'),
+                            label: Text(_translationService.translate(SyncTranslationKeys.retry)),
                           ),
                         ],
                       ),
@@ -218,7 +218,7 @@ class _ConnectInfoTabsState extends State<_ConnectInfoTabs> with TickerProviderS
               text: translationService.translate(SyncTranslationKeys.connectInfoQrTitle),
             ),
             Tab(
-              text: 'Manual Connection',
+              text: translationService.translate(SyncTranslationKeys.manualConnectionTab),
             ),
           ],
         ),
@@ -325,7 +325,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
         // Server Information Section
         Center(
           child: Text(
-            'Server Details',
+            translationService.translate(SyncTranslationKeys.serverDetailsTitle),
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -336,7 +336,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
           child: Text(
-            'Use these server details to connect manually from another device.',
+            translationService.translate(SyncTranslationKeys.connectInfoServerDetailsDescription),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
@@ -394,7 +394,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
         const SizedBox(height: AppTheme.sizeMedium),
         Center(
           child: Text(
-            'Connection String',
+            translationService.translate(SyncTranslationKeys.connectionStringTitleAlt),
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -442,7 +442,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
                   icon: const Icon(Icons.copy, size: 16),
-                  label: const Text('Copy'),
+                  label: Text(translationService.translate(SyncTranslationKeys.copy)),
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(text: connectionString!));
                     if (context.mounted) {
