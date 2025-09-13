@@ -124,7 +124,7 @@ class DesktopSyncService extends SyncService {
   Future<void> _startServerMode() async {
     Logger.debug('Starting desktop server mode');
 
-    _serverService = DesktopServerSyncService(_localMediator);
+    _serverService = DesktopServerSyncService(_localMediator, _deviceIdService);
 
     // Try to start as server
     final serverStarted = await _serverService!.startAsServer();

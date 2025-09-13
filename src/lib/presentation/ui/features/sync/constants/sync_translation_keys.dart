@@ -21,6 +21,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String deviceMismatchError = 'sync.errors.device_mismatch';
   static const String localIpError = 'sync.errors.local_ip_error';
   static const String deviceAlreadyPairedError = 'sync.errors.device_already_paired';
+  static const String noServerConfiguredError = 'sync.errors.no_server_configured';
 
   // QR Code Dialog
   static const String qrDialogTitle = 'sync.qr_code.dialog_title';
