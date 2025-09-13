@@ -111,7 +111,6 @@ sync:
     stop_menu: サーバーを停止
   manual:
     connection: 手動接続
-    description: 他のデバイスに接続するためのIPアドレスとポートを入力
     ip_address: IPアドレス
     port: ポート
     device_name: デバイス名
@@ -127,7 +126,7 @@ sync:
     connection_error: 接続エラー
   add:
     device: デバイスを追加
-    device_tooltip: 新しい同期デバイスを追加
+    device_tooltip: 新しいデバイスを追加
     sync_device: デバイスを同期
     sync_device_title: デバイスと同期
     sync_device_description: データ同期のために他のデバイスに接続

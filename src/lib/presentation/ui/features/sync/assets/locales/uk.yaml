@@ -111,7 +111,6 @@ sync:
     stop_menu: Зупинити сервер
   manual:
     connection: Ручне підключення
-    description: Введіть IP-адресу та порт для підключення до іншого пристрою
     ip_address: IP-адреса
     port: Порт
     device_name: Назва пристрою
@@ -127,7 +126,7 @@ sync:
     connection_error: Помилка підключення
   add:
     device: Додати пристрій
-    device_tooltip: Додати новий пристрій синхронізації
+    device_tooltip: Додати новий пристрій
     sync_device: Синхронізувати пристрій
     sync_device_title: Синхронізувати з пристроєм
     sync_device_description: Підключіться до іншого пристрою для синхронізації даних

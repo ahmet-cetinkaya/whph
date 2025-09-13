@@ -127,7 +127,7 @@ sync:
     connection_error: Eroare conexiune
   add:
     device: Adăugați dispozitiv
-    device_tooltip: Adăugați un nou dispozitiv de sincronizare
+    device_tooltip: Adăugați un nou dispozitiv
     sync_device: Sincronizați dispozitiv
     sync_device_title: Sincronizați cu dispozitiv
     sync_device_description: Conectați-vă la un alt dispozitiv pentru a sincroniza datele

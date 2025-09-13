@@ -111,7 +111,6 @@ sync:
     stop_menu: Διακοπή Server
   manual:
     connection: Χειροκίνητη Σύνδεση
-    description: Εισαγάγετε IP διεύθυνση και θύρα για σύνδεση με άλλη συσκευή
     ip_address: IP Διεύθυνση
     port: Θύρα
     device_name: Όνομα Συσκευής
@@ -127,7 +126,7 @@ sync:
     connection_error: Σφάλμα σύνδεσης
   add:
     device: Προσθήκη Συσκευής
-    device_tooltip: Προσθήκη νέας συσκευής συγχρονισμού
+    device_tooltip: Προσθήκη νέας συσκευής
     sync_device: Συγχρονισμός Συσκευής
     sync_device_title: Συγχρονισμός με Συσκευή
     sync_device_description: Σύνδεση με άλλη συσκευή για συγχρονισμό δεδομένων

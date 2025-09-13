@@ -111,7 +111,6 @@ sync:
     stop_menu: Ferma server
   manual:
     connection: Connessione manuale
-    description: Inserisci indirizzo IP e porta per connetterti a un altro dispositivo
     ip_address: Indirizzo IP
     port: Porta
     device_name: Nome dispositivo
@@ -127,7 +126,7 @@ sync:
     connection_error: Errore di connessione
   add:
     device: Aggiungi dispositivo
-    device_tooltip: Aggiungi nuovo dispositivo di sincronizzazione
+    device_tooltip: Aggiungi nuovo dispositivo
     sync_device: Sincronizza dispositivo
     sync_device_title: Sincronizza con dispositivo
     sync_device_description: Connettiti a un altro dispositivo per sincronizzare dati

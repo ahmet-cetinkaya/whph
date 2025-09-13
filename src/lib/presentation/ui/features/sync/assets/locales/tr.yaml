@@ -111,7 +111,6 @@ sync:
     stop_menu: Sunucuyu Durdur
   manual:
     connection: Manuel Bağlantı
-    description: Başka bir cihaza bağlanmak için IP adresi ve portu girin
     ip_address: IP Adresi
     port: Port
     device_name: Cihaz Adı
@@ -127,7 +126,7 @@ sync:
     connection_error: Bağlantı hatası
   add:
     device: Cihaz Ekle
-    device_tooltip: Yeni senkronizasyon cihazı ekle
+    device_tooltip: Yeni cihaz ekle
     sync_device: Cihaz Senkronize Et
     sync_device_title: Cihaz ile Senkronize Et
     sync_device_description: Veri senkronize etmek için başka bir cihaza bağlanın

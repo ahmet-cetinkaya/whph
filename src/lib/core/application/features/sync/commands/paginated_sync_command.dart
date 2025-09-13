@@ -345,13 +345,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       }
       throw BusinessException('Failed to process paginated sync data', SyncTranslationKeys.processFailedError);
     } else {
-      // Outgoing sync initiation - only Android can initiate
-      if (!PlatformUtils.isMobile) {
-        Logger.info('🖥️ Desktop platform detected - sync initiation disabled (passive mode only)');
-        return PaginatedSyncCommandResponse(isComplete: true);
-      }
-
-      Logger.info('📱 Android platform detected - proceeding with paginated sync initiation');
+      // Outgoing sync initiation
+      Logger.info('🔄 Proceeding with paginated sync initiation');
       return await _initiatePaginatedSync();
     }
   }
@@ -595,10 +590,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     );
 
     // Create DTO with only the relevant entity data populated
+    final debugMode = _isDeviceInDebugMode();
+    Logger.info('📤 Creating PaginatedSyncDataDto with isDebugMode: $debugMode for entity: $entityType');
+    Logger.info('🔍 Debug mode detection details:');
+    Logger.info('   kDebugMode: $kDebugMode, kReleaseMode: $kReleaseMode, kProfileMode: $kProfileMode');
+
     return PaginatedSyncDataDto(
       appVersion: AppInfo.version,
       syncDevice: syncDevice,
-      isDebugMode: kDebugMode,
+      isDebugMode: debugMode,
       entityType: entityType,
       pageIndex: paginatedData.pageIndex,
       pageSize: paginatedData.pageSize,
@@ -1977,10 +1977,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     SyncProgress? progress,
     PaginatedSyncData? entitySyncData,
   }) {
+    final debugMode = _isDeviceInDebugMode();
+    Logger.debug('📤 Creating server PaginatedSyncDataDto with isDebugMode: $debugMode for entity: $entityType');
+
     return PaginatedSyncDataDto(
       appVersion: appVersion,
       syncDevice: syncDevice,
-      isDebugMode: kDebugMode,
+      isDebugMode: debugMode,
       entityType: entityType,
       pageIndex: pageIndex,
       pageSize: pageSize,
@@ -2057,25 +2060,49 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     throw BusinessException('Device ID mismatch', SyncTranslationKeys.deviceMismatchError);
   }
 
-  /// Validates that the remote device is in the same environment mode (debug/production)
+  /// Detects if the device is running in debug mode using Flutter's built-in constants
+  bool _isDeviceInDebugMode() {
+    // Use assert-based detection as it's the most reliable method
+    bool isDebug = false;
+    assert(isDebug = true);
+
+    Logger.debug('Debug mode detection: $isDebug (kDebugMode: $kDebugMode)');
+    return isDebug;
+  }
+
+  /// Validates environment mode with enhanced detection but strict security policies
   void _validateEnvironmentMode(PaginatedSyncDataDto remoteData) {
-    final localIsDebug = kDebugMode;
+    final localIsDebug = _isDeviceInDebugMode();
     final remoteIsDebug = remoteData.isDebugMode;
+
+    Logger.debug('Environment mode validation:');
+    Logger.debug('Local device enhanced debug check: $localIsDebug (kDebugMode: $kDebugMode)');
+    Logger.debug('Remote device isDebugMode: $remoteIsDebug');
+    Logger.debug('Local kReleaseMode: $kReleaseMode, kProfileMode: $kProfileMode');
 
     if (localIsDebug != remoteIsDebug) {
       final localMode = localIsDebug ? 'debug' : 'production';
       final remoteMode = remoteIsDebug ? 'debug' : 'production';
 
-      Logger.error('Environment mode mismatch detected:');
-      Logger.error('Local device: $localMode mode');
-      Logger.error('Remote device: $remoteMode mode');
-      Logger.error('Sync cannot proceed between different environment modes');
+      Logger.error('🚫 Environment mode mismatch detected:');
+      Logger.error('   Local device: $localMode mode (enhanced detection)');
+      Logger.error('   Remote device: $remoteMode mode');
+      Logger.error('');
+      Logger.error('🔒 SECURITY: Sync between debug and production modes is not allowed');
+      Logger.error('📝 This prevents accidental data mixing between development and production environments');
+      Logger.error('');
+      Logger.error('💡 If both devices should be in debug mode:');
+      Logger.error('   - Ensure both are running from IDEs like VSCode in debug mode');
+      Logger.error('   - Check that both use the same Flutter build configuration');
+      Logger.error('   - Restart both applications if build mode detection seems incorrect');
 
-      throw BusinessException('Environment mode mismatch: local=$localMode, remote=$remoteMode',
+      throw BusinessException(
+          'Environment mode mismatch: local=$localMode, remote=$remoteMode. '
+          'Sync between debug and production modes is not allowed for security reasons.',
           SyncTranslationKeys.environmentMismatchError);
     }
 
-    Logger.debug('Environment mode validation passed: both devices in ${localIsDebug ? 'debug' : 'production'} mode');
+    Logger.debug('✅ Environment mode validation passed: both devices in ${localIsDebug ? 'debug' : 'production'} mode');
   }
 
   void _updateProgress({
@@ -2422,6 +2449,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           'totalItems': dto.totalItems,
           'isLastPage': dto.isLastPage,
           'appVersion': dto.appVersion,
+          'isDebugMode': dto.isDebugMode,
           'syncDevice': dto.syncDevice.toJson(),
           'progress': dto.progress?.toJson(),
           // Pass only the relevant entity data to minimize transfer
@@ -2810,6 +2838,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     result['totalItems'] = dto.totalItems;
     result['isLastPage'] = dto.isLastPage;
     result['appVersion'] = dto.appVersion;
+    result['isDebugMode'] = dto.isDebugMode;
 
     // Yield before heavy operations
     await _yieldToUIThreadMaximum();
@@ -3525,6 +3554,7 @@ Map<String, dynamic> _convertDtoToJsonInIsolateFixed(Map<String, dynamic> isolat
     result['totalItems'] = isolateData['totalItems'];
     result['isLastPage'] = isolateData['isLastPage'];
     result['appVersion'] = isolateData['appVersion'];
+    result['isDebugMode'] = isolateData['isDebugMode'];
     result['syncDevice'] = isolateData['syncDevice'];
 
     if (isolateData['progress'] != null) {

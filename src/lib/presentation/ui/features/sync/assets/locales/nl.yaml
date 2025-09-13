@@ -111,7 +111,6 @@ sync:
     stop_menu: Server stoppen
   manual:
     connection: Handmatige verbinding
-    description: Voer IP-adres en poort in om te verbinden met een ander apparaat
     ip_address: IP-adres
     port: Poort
     device_name: Apparaatnaam
@@ -127,7 +126,7 @@ sync:
     connection_error: Verbindingsfout
   add:
     device: Apparaat toevoegen
-    device_tooltip: Nieuw sync-apparaat toevoegen
+    device_tooltip: Nieuw apparaat toevoegen
     sync_device: Sync apparaat
     sync_device_title: Sync met apparaat
     sync_device_description: Verbind met een ander apparaat om gegevens te synchroniseren

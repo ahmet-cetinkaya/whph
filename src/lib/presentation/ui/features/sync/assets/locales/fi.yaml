@@ -111,7 +111,6 @@ sync:
     stop_menu: Pysäytä palvelin
   manual:
     connection: Manuaalinen yhteys
-    description: Anna IP-osoite ja portti toisen laitteen yhdistämiseksi
     ip_address: IP-osoite
     port: Portti
     device_name: Laitteen nimi
@@ -127,7 +126,7 @@ sync:
     connection_error: Yhteysvirhe
   add:
     device: Lisää laite
-    device_tooltip: Lisää uusi synkronointilaite
+    device_tooltip: Lisää uusi laite
     sync_device: Synkronoi laite
     sync_device_title: Synkronoi laitteella
     sync_device_description: Yhdistä toiseen laitteeseen tietojen synkronoimiseksi
