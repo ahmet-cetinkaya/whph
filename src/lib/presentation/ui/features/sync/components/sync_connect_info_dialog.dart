@@ -93,7 +93,7 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
           deviceId: _deviceId!,
           deviceName: _deviceName!,
           ipAddress: _ipAddress!,
-          port: webSocketPort, // Dynamic port from API
+          port: webSocketPort,
         );
         _connectionString = syncConnectionString.toConnectionString();
       }

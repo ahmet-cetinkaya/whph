@@ -411,7 +411,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
       port = connectionString.port;
     } else {
       // Manual entry tab
-      if (_validateIPAddress(_ipController.text) != null || _validatePort(_portController.text) != null) {
+      if (!_manualEntryFormKey.currentState!.validate()) {
         return;
       }
 
