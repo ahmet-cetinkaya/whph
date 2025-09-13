@@ -734,11 +734,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           );
         }
 
-        // Try to use saved server connection or default to localhost
-        String serverAddress = '192.168.1.1'; // Default fallback
+        // Load saved server settings - required for client mode
+        String? serverAddress;
         int serverPort = 44040;
 
-        // Load saved server settings if available
         try {
           final addressSetting = await _settingRepository.getByKey(_desktopServerAddressSettingKey);
           final portSetting = await _settingRepository.getByKey(_desktopServerPortSettingKey);
@@ -749,6 +748,19 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           }
         } catch (e) {
           Logger.warning('Could not load saved server settings: $e');
+        }
+
+        // If no saved server settings, prompt user to configure server connection
+        if (serverAddress == null || serverAddress.isEmpty) {
+          if (mounted) {
+            OverlayNotificationHelper.hideNotification();
+            OverlayNotificationHelper.showError(
+              context: context,
+              message: _translationService.translate(SyncTranslationKeys.noServerConfiguredError),
+              duration: const Duration(seconds: 5),
+            );
+          }
+          return;
         }
 
         await _desktopSyncService!.switchToClientMode(serverAddress, serverPort);

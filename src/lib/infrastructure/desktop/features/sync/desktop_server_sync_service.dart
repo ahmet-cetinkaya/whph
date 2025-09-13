@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/presentation/api/controllers/paginated_sync_controller.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
@@ -16,7 +17,9 @@ class DesktopServerSyncService extends SyncService {
   Timer? _serverKeepAlive;
   final List<WebSocket> _activeConnections = [];
 
-  DesktopServerSyncService(super.mediator);
+  final IDeviceIdService _deviceIdService;
+
+  DesktopServerSyncService(super.mediator, this._deviceIdService);
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {
@@ -205,7 +208,7 @@ class DesktopServerSyncService extends SyncService {
         type: 'device_info_response',
         data: {
           'success': true,
-          'deviceId': 'desktop-server-${DateTime.now().millisecondsSinceEpoch}',
+          'deviceId': await _deviceIdService.getDeviceId(),
           'deviceName': 'Desktop Server',
           'appName': 'WHPH',
           'platform': Platform.operatingSystem,
@@ -242,7 +245,7 @@ class DesktopServerSyncService extends SyncService {
         type: 'client_connected',
         data: {
           'success': true,
-          'serverId': 'desktop-server-${DateTime.now().millisecondsSinceEpoch}',
+          'serverId': await _deviceIdService.getDeviceId(),
           'serverName': 'Desktop Server',
           'syncInterval': 1800, // 30 minutes
           'supportedOperations': ['paginated_sync'],

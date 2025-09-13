@@ -105,6 +105,7 @@ sync:
     device_already_paired: This device is already paired
     no_active_interfaces: No active network interfaces found
     device_discovery_failed: "Failed to start device discovery: {error}"
+    no_server_configured: No server configured. Please add a sync device first or use manual connection to set up a server connection.
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully
