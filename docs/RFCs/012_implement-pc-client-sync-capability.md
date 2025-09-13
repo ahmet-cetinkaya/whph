@@ -55,7 +55,7 @@ class DesktopClientSyncService extends SyncService {
 Mirror the mobile server functionality for desktop platforms:
 
 ```dart
-class DesktopServerSyncService extends DesktopSyncService {
+class DesktopServerSyncService extends SyncService {
   HttpServer? _server;
   List<WebSocket> _activeConnections = [];
   Timer? _serverKeepAlive;
@@ -74,6 +74,8 @@ class DesktopServerSyncService extends DesktopSyncService {
 }
 ```
 
+Note: `DesktopServerSyncService` extends `SyncService` directly to avoid circular dependencies. The main `DesktopSyncService` acts as a coordinator that creates and manages instances of both `DesktopServerSyncService` and `DesktopClientSyncService`.
+
 ### 3. Enhanced Desktop Sync Service
 
 **Location**: Update `src/lib/infrastructure/desktop/features/sync/desktop_sync_service.dart`
@@ -81,7 +83,7 @@ class DesktopServerSyncService extends DesktopSyncService {
 ```dart
 enum DesktopSyncMode { server, client, disabled }
 
-class EnhancedDesktopSyncService extends SyncService {
+class DesktopSyncService extends SyncService {
   DesktopSyncMode _currentMode = DesktopSyncMode.server;
   DesktopServerSyncService? _serverService;
   DesktopClientSyncService? _clientService;
@@ -99,6 +101,8 @@ class EnhancedDesktopSyncService extends SyncService {
   bool get isConnectedAsClient;
 }
 ```
+
+Note: `DesktopSyncService` acts as the main coordinator for sync operations, managing instances of `DesktopServerSyncService` and `DesktopClientSyncService` without inheritance cycles.
 
 ### 4. Sync Settings and Persistence
 
