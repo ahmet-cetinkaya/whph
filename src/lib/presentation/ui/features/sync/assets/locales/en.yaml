@@ -128,6 +128,14 @@ sync:
     connection_string_title: Connection String
     connection_string_description: Alternatively, you can share this connection string to connect devices manually.
     connection_string_copied: Connection string copied to clipboard
+    unknown_ip: Unknown IP
+    error_loading_connection_info: Error loading connection info
+    retry: Retry
+    manual_connection_tab: Manual Connection
+    server_details_title: Server Details
+    server_details_description: Use these server details to connect manually from another device.
+    connection_string_title_alt: Connection String
+    copy: Copy
   scanner:
     title: Scan QR Code
     instruction: Position QR code within the frame
@@ -157,6 +165,13 @@ sync:
     invalid_port: Port must be between 1 and 65535
     connection_failed: Failed to connect to device
     connection_error: "Connection error: {0}"
+    connection_string_tab: Connection String
+    manual_entry_tab: Manual Entry
+    connection_string_required: Connection string is required
+    invalid_connection_string: Invalid connection string format
+    connection_string_label: Connection String
+    test_connection: Test Connection
+    enter_server_details: Enter server connection details manually
   add:
     device: Add Device
     device_tooltip: Add new device
