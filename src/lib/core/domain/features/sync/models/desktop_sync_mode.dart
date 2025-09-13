@@ -2,10 +2,10 @@
 enum DesktopSyncMode {
   /// Desktop acts as sync server (default behavior)
   server,
-  
-  /// Desktop acts as sync client connecting to other servers  
+
+  /// Desktop acts as sync client connecting to other servers
   client,
-  
+
   /// Sync is disabled
   disabled;
 

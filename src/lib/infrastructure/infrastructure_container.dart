@@ -182,7 +182,8 @@ void registerInfrastructure(IContainer container) {
     final mediator = container.resolve<Mediator>();
 
     if (PlatformUtils.isDesktop) {
-      return DesktopSyncService(mediator);
+      final deviceIdService = container.resolve<IDeviceIdService>();
+      return DesktopSyncService(mediator, deviceIdService);
     }
 
     if (Platform.isAndroid) {

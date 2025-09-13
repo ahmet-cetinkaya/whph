@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_settings.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_server_sync_service.dart';
@@ -14,17 +15,18 @@ class DesktopSyncService extends SyncService {
 
   DesktopSyncMode _currentMode = DesktopSyncMode.server;
   DesktopSyncSettings _settings = const DesktopSyncSettings();
-  
+
   DesktopServerSyncService? _serverService;
   DesktopClientSyncService? _clientService;
 
   final Mediator _localMediator;
+  final IDeviceIdService _deviceIdService;
 
-  DesktopSyncService(super.mediator) : _localMediator = mediator;
+  DesktopSyncService(super.mediator, this._deviceIdService) : _localMediator = mediator;
 
   /// Get current sync mode
   DesktopSyncMode get currentMode => _currentMode;
-  
+
   /// Get current settings
   DesktopSyncSettings get settings => _settings;
 
@@ -43,7 +45,7 @@ class DesktopSyncService extends SyncService {
   /// Update sync settings
   Future<void> updateSettings(DesktopSyncSettings newSettings) async {
     _settings = newSettings;
-    
+
     // If mode changed, switch to new mode
     if (_currentMode != newSettings.preferredMode) {
       await switchToMode(newSettings.preferredMode);
@@ -63,7 +65,7 @@ class DesktopSyncService extends SyncService {
       lastServerAddress: serverAddress,
       lastServerPort: serverPort,
     );
-    
+
     await switchToMode(DesktopSyncMode.client);
   }
 
@@ -121,9 +123,9 @@ class DesktopSyncService extends SyncService {
 
   Future<void> _startServerMode() async {
     Logger.debug('Starting desktop server mode');
-    
+
     _serverService = DesktopServerSyncService(_localMediator);
-    
+
     // Try to start as server
     final serverStarted = await _serverService!.startAsServer();
     if (!serverStarted) {
@@ -136,8 +138,8 @@ class DesktopSyncService extends SyncService {
 
   Future<void> _startClientMode() async {
     Logger.debug('Starting desktop client mode');
-    
-    _clientService = DesktopClientSyncService(_localMediator);
+
+    _clientService = DesktopClientSyncService(_localMediator, _deviceIdService);
 
     // Try to connect to server if settings available
     if (_settings.hasValidClientSettings && _settings.autoReconnectToServer) {
@@ -145,7 +147,7 @@ class DesktopSyncService extends SyncService {
         _settings.lastServerAddress!,
         _settings.lastServerPort!,
       );
-      
+
       if (!connected) {
         Logger.warning('Failed to connect to server: ${_settings.lastServerAddress}:${_settings.lastServerPort}');
         // Could implement retry logic here based on settings

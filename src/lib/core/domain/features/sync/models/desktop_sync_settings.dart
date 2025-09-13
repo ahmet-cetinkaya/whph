@@ -115,10 +115,8 @@ class DesktopSyncSettings {
   int get effectiveServerPort => customServerPort ?? 44040;
 
   /// Check if client mode has valid connection settings
-  bool get hasValidClientSettings => 
-      lastServerAddress != null && 
-      lastServerAddress!.isNotEmpty && 
-      lastServerPort != null;
+  bool get hasValidClientSettings =>
+      lastServerAddress != null && lastServerAddress!.isNotEmpty && lastServerPort != null;
 
   @override
   String toString() {

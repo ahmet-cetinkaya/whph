@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/shared/utils/logger.dart';
@@ -17,11 +18,13 @@ class DesktopClientSyncService extends SyncService {
   bool _isConnected = false;
   StreamSubscription? _messageSubscription;
 
+  final IDeviceIdService _deviceIdService;
+
   static const Duration _heartbeatInterval = Duration(minutes: 2);
   static const Duration _syncInterval = Duration(minutes: 30);
   static const Duration _connectionTimeout = Duration(seconds: 10);
 
-  DesktopClientSyncService(super.mediator);
+  DesktopClientSyncService(super.mediator, this._deviceIdService);
 
   /// Connect to a WHPH server as client
   Future<bool> connectToServer(String serverAddress, int serverPort) async {
@@ -37,7 +40,7 @@ class DesktopClientSyncService extends SyncService {
 
       // Set up message handling
       final completer = Completer<bool>();
-      
+
       _messageSubscription = _clientChannel!.stream.listen(
         (message) async {
           await _handleServerMessage(message, completer);
@@ -74,10 +77,10 @@ class DesktopClientSyncService extends SyncService {
         _connectedServerAddress = serverAddress;
         _connectedServerPort = serverPort;
         _isConnected = true;
-        
+
         _startHeartbeat();
         Logger.info('✅ Successfully connected to server $serverAddress:$serverPort');
-        
+
         // Start periodic sync
         await startSync();
       } else {
@@ -104,7 +107,7 @@ class DesktopClientSyncService extends SyncService {
   bool get isConnectedToServer => _isConnected && _clientChannel != null;
 
   /// Get connected server info
-  Map<String, dynamic>? get connectedServerInfo => _isConnected 
+  Map<String, dynamic>? get connectedServerInfo => _isConnected
       ? {
           'address': _connectedServerAddress,
           'port': _connectedServerPort,
@@ -169,7 +172,7 @@ class DesktopClientSyncService extends SyncService {
 
     try {
       Logger.info('🔄 Starting client paginated sync');
-      
+
       // Update sync status to syncing
       updateSyncStatus(SyncStatus(
         state: SyncState.syncing,
@@ -187,14 +190,13 @@ class DesktopClientSyncService extends SyncService {
     }
   }
 
-
   Future<void> _sendHandshakeRequest() async {
     if (_clientChannel == null) return;
 
     final handshake = WebSocketMessage(
       type: 'client_connect',
       data: {
-        'clientId': 'desktop-client-${DateTime.now().millisecondsSinceEpoch}',
+        'clientId': await _deviceIdService.getDeviceId(),
         'clientName': 'Desktop Client',
         'platform': 'desktop',
         'requestedServices': ['sync'],
@@ -286,7 +288,7 @@ class DesktopClientSyncService extends SyncService {
   Future<void> _cleanupConnection() async {
     _heartbeatTimer?.cancel();
     _heartbeatTimer = null;
-    
+
     _syncTimer?.cancel();
     _syncTimer = null;
 
@@ -298,7 +300,7 @@ class DesktopClientSyncService extends SyncService {
     } catch (e) {
       Logger.debug('Warning: Failed to close WebSocket: $e');
     }
-    
+
     _clientChannel = null;
     _isConnected = false;
     _connectedServerAddress = null;

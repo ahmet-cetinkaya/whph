@@ -590,8 +590,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
             ),
 
           // Connection Info Button - show only when in server mode
-          if (_isServerMode)
-            SyncConnectInfoButton(),
+          if (_isServerMode) SyncConnectInfoButton(),
 
           // Kebab menu containing help, and mobile sync controls
           PopupMenuButton<String>(
@@ -641,7 +640,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                       Icon(_desktopSyncMode == DesktopSyncMode.client ? Icons.stop : Icons.wifi_tethering,
                           color: Theme.of(context).colorScheme.primary),
                       const SizedBox(width: 8),
-                      Text(_desktopSyncMode == DesktopSyncMode.client 
+                      Text(_desktopSyncMode == DesktopSyncMode.client
                           ? _translationService.translate(SyncTranslationKeys.desktopSyncModeStopMenu)
                           : _translationService.translate(SyncTranslationKeys.desktopSyncModeStartMenu)),
                     ],
@@ -666,7 +665,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         children: [
           // Firewall permission card (desktop only)
           const FirewallPermissionCard(),
-
 
           // Device list content
           Expanded(
@@ -706,17 +704,17 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       if (_desktopSyncMode == DesktopSyncMode.client) {
         // Stop client mode - switch back to server mode (default)
         Logger.info('🛑 Stopping desktop client mode...');
-        
+
         await _desktopSyncService!.switchToMode(DesktopSyncMode.server);
-        
+
         // Save server mode preference
         await _saveDesktopSyncModePreference(DesktopSyncMode.server);
-        
+
         setState(() {
           _desktopSyncMode = DesktopSyncMode.server;
           _isServerMode = true;
         });
-        
+
         if (mounted) {
           OverlayNotificationHelper.showInfo(
             context: context,
@@ -727,7 +725,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       } else {
         // Start client mode - try to connect to saved server or default
         Logger.info('🚀 Starting desktop client mode...');
-        
+
         if (mounted) {
           OverlayNotificationHelper.showLoading(
             context: context,
@@ -735,16 +733,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
             duration: const Duration(seconds: 5),
           );
         }
-        
+
         // Try to use saved server connection or default to localhost
         String serverAddress = '192.168.1.1'; // Default fallback
         int serverPort = 44040;
-        
+
         // Load saved server settings if available
         try {
           final addressSetting = await _settingRepository.getByKey(_desktopServerAddressSettingKey);
           final portSetting = await _settingRepository.getByKey(_desktopServerPortSettingKey);
-          
+
           if (addressSetting != null && portSetting != null) {
             serverAddress = addressSetting.value;
             serverPort = int.tryParse(portSetting.value) ?? 44040;
@@ -752,17 +750,18 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         } catch (e) {
           Logger.warning('Could not load saved server settings: $e');
         }
-        
+
         await _desktopSyncService!.switchToClientMode(serverAddress, serverPort);
-        
+
         // Save client mode preference
-        await _saveDesktopSyncModePreference(DesktopSyncMode.client, serverAddress: serverAddress, serverPort: serverPort);
-        
+        await _saveDesktopSyncModePreference(DesktopSyncMode.client,
+            serverAddress: serverAddress, serverPort: serverPort);
+
         setState(() {
           _desktopSyncMode = DesktopSyncMode.client;
           _isServerMode = false;
         });
-        
+
         if (mounted) {
           OverlayNotificationHelper.hideNotification();
           OverlayNotificationHelper.showSuccess(
@@ -774,7 +773,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       }
     } catch (e) {
       Logger.error('Failed to toggle desktop sync mode: $e');
-      
+
       // Hide loading and show error
       if (mounted) {
         OverlayNotificationHelper.hideNotification();
@@ -786,7 +785,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       }
     }
   }
-
 
   /// Load desktop sync mode preference from settings
   Future<void> _loadDesktopSyncModePreference() async {
@@ -801,16 +799,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           (m) => m.name == modeValue,
           orElse: () => DesktopSyncMode.server,
         );
-        
+
         // Load server connection settings if in client mode
         if (mode == DesktopSyncMode.client) {
           final addressSetting = await _settingRepository.getByKey(_desktopServerAddressSettingKey);
           final portSetting = await _settingRepository.getByKey(_desktopServerPortSettingKey);
-          
+
           if (addressSetting != null && portSetting != null) {
             final address = addressSetting.value;
             final port = int.tryParse(portSetting.value) ?? 44040;
-            
+
             // Switch to client mode with saved server info
             await _desktopSyncService!.switchToClientMode(address, port);
           }
@@ -848,7 +846,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           value: serverAddress,
           valueType: SettingValueType.string,
         ));
-        
+
         await _mediator.send(SaveSettingCommand(
           key: _desktopServerPortSettingKey,
           value: serverPort.toString(),

@@ -25,7 +25,7 @@ class SyncConnectionString {
     try {
       // Validate and parse the URI
       final uri = Uri.parse(connectionString);
-      
+
       if (uri.scheme != 'whph') {
         return null;
       }
@@ -39,17 +39,16 @@ class SyncConnectionString {
 
       final deviceName = queryParams['name'];
       final deviceId = queryParams['id'];
-      
+
       if (deviceName == null || deviceId == null) {
         return null;
       }
 
       final accessToken = queryParams['token'];
-      
+
       // Extract additional parameters (excluding known ones)
       final additionalParams = Map<String, String>.from(queryParams);
-      additionalParams.removeWhere((key, value) => 
-          ['name', 'id', 'token'].contains(key));
+      additionalParams.removeWhere((key, value) => ['name', 'id', 'token'].contains(key));
 
       return SyncConnectionString(
         deviceId: deviceId,
@@ -125,19 +124,18 @@ class SyncConnectionString {
   static SyncConnectionString? fromQRCodeJson(String jsonData) {
     try {
       final data = jsonDecode(jsonData) as Map<String, dynamic>;
-      
+
       final deviceId = data['deviceId'] as String?;
       final deviceName = data['deviceName'] as String?;
       final ipAddress = data['ipAddress'] as String?;
       final port = data['port'] as int?;
-      
-      if (deviceId == null || deviceName == null || 
-          ipAddress == null || port == null) {
+
+      if (deviceId == null || deviceName == null || ipAddress == null || port == null) {
         return null;
       }
 
       final accessToken = data['accessToken'] as String?;
-      
+
       // Extract additional parameters (excluding known ones)
       final additionalParams = <String, String>{};
       data.forEach((key, value) {
@@ -162,11 +160,11 @@ class SyncConnectionString {
   /// Validate if the connection string has valid format and data
   bool get isValid {
     return deviceId.isNotEmpty &&
-           deviceName.isNotEmpty &&
-           ipAddress.isNotEmpty &&
-           port > 0 &&
-           port < 65536 &&
-           _isValidIPAddress(ipAddress);
+        deviceName.isNotEmpty &&
+        ipAddress.isNotEmpty &&
+        port > 0 &&
+        port < 65536 &&
+        _isValidIPAddress(ipAddress);
   }
 
   /// Check if IP address format is valid (basic validation)

@@ -228,7 +228,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       // Check if device already exists in either direction (bidirectional sync)
       final existingDevice1 = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
           GetSyncDeviceQuery(fromDeviceId: deviceId, toDeviceId: localDeviceId));
-      
+
       final existingDevice2 = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
           GetSyncDeviceQuery(fromDeviceId: localDeviceId, toDeviceId: deviceId));
 
@@ -368,27 +368,28 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       }
     }();
   }
-Future<void> _openQRScanner() async {
-  HapticFeedback.selectionClick();
 
-  final result = await Navigator.pushNamed(
-    context,
-    QRCodeScannerPage.route,
-  );
+  Future<void> _openQRScanner() async {
+    HapticFeedback.selectionClick();
 
-  if (result != null && mounted) {
-    widget.onDeviceAdded?.call();
+    final result = await Navigator.pushNamed(
+      context,
+      QRCodeScannerPage.route,
+    );
 
-    // Small delay to ensure callback processing completes
-    await Future.delayed(const Duration(milliseconds: 100));
+    if (result != null && mounted) {
+      widget.onDeviceAdded?.call();
 
-    if (mounted) {
-      Navigator.pop(context, true);
+      // Small delay to ensure callback processing completes
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      if (mounted) {
+        Navigator.pop(context, true);
+      }
     }
   }
-}
 
-/// Gets the appropriate icon for a platform
+  /// Gets the appropriate icon for a platform
   IconData _getPlatformIcon(String platform) {
     switch (platform.toLowerCase()) {
       case 'android':
@@ -418,23 +419,24 @@ Future<void> _openQRScanner() async {
           if (!PlatformUtils.isDesktop)
             IconButton(
               onPressed: _openQRScanner,
-              icon: Icon(Icons.qr_code_scanner, 
-              color: Theme.of(context).colorScheme.primary,
+              icon: Icon(
+                Icons.qr_code_scanner,
+                color: Theme.of(context).colorScheme.primary,
               ),
               tooltip: _translationService.translate(SyncTranslationKeys.scanQRCode),
             ),
           // Manual Connection Button
           ManualConnectionButton(
-            onConnect: (String ipAddress, int port) async {
+            onConnect: (DeviceInfo deviceInfo) async {
               try {
-                // Create a DiscoveredDevice from the connection details
+                // Create a DiscoveredDevice from the device info retrieved from handshake
                 final device = DiscoveredDevice(
-                  name: 'Connected Server', // Default name; can be customized if needed
-                  ipAddress: ipAddress,
-                  port: port,
+                  name: deviceInfo.deviceName,
+                  ipAddress: deviceInfo.ipAddress,
+                  port: deviceInfo.port,
                   lastSeen: DateTime.now(),
-                  deviceId: '', // Will be fetched during connection
-                  platform: 'unknown',
+                  deviceId: deviceInfo.deviceId, // Now properly populated from handshake
+                  platform: deviceInfo.platform,
                   isAlreadyAdded: false,
                 );
 
@@ -797,16 +799,16 @@ Future<void> _openQRScanner() async {
               OutlinedButton.icon(
                 onPressed: () => ManualConnectionButton.showManualConnectionDialog(
                   context,
-                  onConnect: (String ipAddress, int port) async {
+                  onConnect: (DeviceInfo deviceInfo) async {
                     try {
-                      // Create a DiscoveredDevice from the connection details
+                      // Create a DiscoveredDevice from the device info retrieved from handshake
                       final device = DiscoveredDevice(
-                        name: 'Connected Server',
-                        ipAddress: ipAddress,
-                        port: port,
+                        name: deviceInfo.deviceName,
+                        ipAddress: deviceInfo.ipAddress,
+                        port: deviceInfo.port,
                         lastSeen: DateTime.now(),
-                        deviceId: '',
-                        platform: 'unknown',
+                        deviceId: deviceInfo.deviceId, // Now properly populated from handshake
+                        platform: deviceInfo.platform,
                         isAlreadyAdded: false,
                       );
 

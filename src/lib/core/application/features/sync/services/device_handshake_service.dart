@@ -35,17 +35,13 @@ class DeviceHandshakeService {
                 // Parse capabilities if present
                 DeviceCapabilities? capabilities;
                 if (data['capabilities'] != null) {
-                  capabilities = DeviceCapabilities.fromJson(
-                    data['capabilities'] as Map<String, dynamic>
-                  );
+                  capabilities = DeviceCapabilities.fromJson(data['capabilities'] as Map<String, dynamic>);
                 }
 
                 // Parse server info if present
                 ServerInfo? serverInfo;
                 if (data['serverInfo'] != null) {
-                  serverInfo = ServerInfo.fromJson(
-                    data['serverInfo'] as Map<String, dynamic>
-                  );
+                  serverInfo = ServerInfo.fromJson(data['serverInfo'] as Map<String, dynamic>);
                 }
 
                 final deviceInfo = DeviceInfo(
@@ -59,7 +55,8 @@ class DeviceHandshakeService {
                   serverInfo: serverInfo,
                 );
 
-                Logger.info('✅ Device handshake successful: ${deviceInfo.deviceName} (${deviceInfo.deviceId}) - Capabilities: ${deviceInfo.capabilitiesText}');
+                Logger.info(
+                    '✅ Device handshake successful: ${deviceInfo.deviceName} (${deviceInfo.deviceId}) - Capabilities: ${deviceInfo.capabilitiesText}');
                 if (!completer.isCompleted) {
                   completer.complete(deviceInfo);
                 }
@@ -160,10 +157,8 @@ class DeviceCapabilities {
     return DeviceCapabilities(
       canActAsServer: json['canActAsServer'] as bool? ?? false,
       canActAsClient: json['canActAsClient'] as bool? ?? false,
-      supportedModes: (json['supportedModes'] as List<dynamic>?)
-          ?.cast<String>() ?? const [],
-      supportedOperations: (json['supportedOperations'] as List<dynamic>?)
-          ?.cast<String>() ?? const [],
+      supportedModes: (json['supportedModes'] as List<dynamic>?)?.cast<String>() ?? const [],
+      supportedOperations: (json['supportedOperations'] as List<dynamic>?)?.cast<String>() ?? const [],
     );
   }
 
@@ -254,7 +249,8 @@ class DeviceInfo {
   }
 
   @override
-  String toString() => 'DeviceInfo(name: $deviceName, id: $deviceId, platform: $platform, address: $ipAddress:$port, capabilities: $capabilitiesText)';
+  String toString() =>
+      'DeviceInfo(name: $deviceName, id: $deviceId, platform: $platform, address: $ipAddress:$port, capabilities: $capabilitiesText)';
 
   @override
   bool operator ==(Object other) =>

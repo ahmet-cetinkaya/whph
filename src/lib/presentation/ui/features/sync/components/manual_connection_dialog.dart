@@ -11,7 +11,7 @@ import 'package:whph/main.dart';
 
 /// Dialog for manual connection to a WHPH server as client
 class ManualConnectionDialog extends StatefulWidget {
-  final Function(String serverAddress, int serverPort) onConnect;
+  final Function(DeviceInfo deviceInfo) onConnect;
   final VoidCallback? onCancel;
 
   const ManualConnectionDialog({
@@ -24,16 +24,15 @@ class ManualConnectionDialog extends StatefulWidget {
   State<ManualConnectionDialog> createState() => _ManualConnectionDialogState();
 }
 
-class _ManualConnectionDialogState extends State<ManualConnectionDialog>
-    with SingleTickerProviderStateMixin {
+class _ManualConnectionDialogState extends State<ManualConnectionDialog> with SingleTickerProviderStateMixin {
   final _connectionStringFormKey = GlobalKey<FormState>();
   final _manualEntryFormKey = GlobalKey<FormState>();
   final _connectionStringController = TextEditingController();
   final _ipController = TextEditingController();
   final _portController = TextEditingController(text: '44040');
-  
+
   bool _isCancelled = false;
-  
+
   final _translationService = container.resolve<ITranslationService>();
   final _handshakeService = container.resolve<DeviceHandshakeService>();
 
@@ -60,7 +59,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
   @override
   Widget build(BuildContext context) {
     final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
-    
+
     return AlertDialog(
       title: Text(
         _translationService.translate(SyncTranslationKeys.manualConnection),
@@ -73,35 +72,35 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-                // Tab bar
-                TabBar(
+              // Tab bar
+              TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(
+                    icon: const Icon(Icons.link),
+                    text: 'Connection String',
+                  ),
+                  Tab(
+                    icon: const Icon(Icons.settings_input_antenna),
+                    text: 'Manual Entry',
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: AppTheme.sizeMedium),
+
+              // Tab content - adjust height based on keyboard visibility
+              SizedBox(
+                height: keyboardVisible ? 180 : 250,
+                child: TabBarView(
                   controller: _tabController,
-                  tabs: [
-                    Tab(
-                      icon: const Icon(Icons.link),
-                      text: 'Connection String',
-                    ),
-                    Tab(
-                      icon: const Icon(Icons.settings_input_antenna),
-                      text: 'Manual Entry',
-                    ),
+                  children: [
+                    _buildConnectionStringTab(),
+                    _buildManualEntryTab(),
                   ],
                 ),
-
-                const SizedBox(height: AppTheme.sizeMedium),
-
-                // Tab content - adjust height based on keyboard visibility
-                SizedBox(
-                  height: keyboardVisible ? 180 : 250,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _buildConnectionStringTab(),
-                      _buildManualEntryTab(),
-                    ],
-                  ),
-                ),
-              ],
+              ),
+            ],
           ),
         ),
       ),
@@ -208,9 +207,9 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
               'Paste a WHPH connection string (whph://...)',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            
+
             const SizedBox(height: AppTheme.sizeMedium),
-            
+
             TextFormField(
               controller: _connectionStringController,
               decoration: InputDecoration(
@@ -404,7 +403,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
     if (_tabController.index == 0) {
       // Connection string tab
       if (!_connectionStringFormKey.currentState!.validate()) return;
-      
+
       final connectionString = SyncConnectionString.fromString(_connectionStringController.text);
       if (connectionString == null) return;
 
@@ -412,8 +411,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
       port = connectionString.port;
     } else {
       // Manual entry tab
-      if (_validateIPAddress(_ipController.text) != null ||
-          _validatePort(_portController.text) != null) {
+      if (_validateIPAddress(_ipController.text) != null || _validatePort(_portController.text) != null) {
         return;
       }
 
@@ -429,14 +427,13 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
 
     try {
       // Test connection with timeout and cancellation check
-      final deviceInfo = await _handshakeService.getDeviceInfo(ipAddress, port)
-          .timeout(const Duration(seconds: 10));
-      
+      final deviceInfo = await _handshakeService.getDeviceInfo(ipAddress, port).timeout(const Duration(seconds: 10));
+
       // Check if operation was cancelled
       if (_isCancelled || !mounted) {
         return;
       }
-      
+
       if (deviceInfo == null) {
         if (mounted) {
           setState(() {
@@ -447,9 +444,9 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
         return;
       }
 
-      // Connection successful, call onConnect callback
-      widget.onConnect(ipAddress, port);
-      
+      // Connection successful, call onConnect callback with device info
+      widget.onConnect(deviceInfo);
+
       if (mounted) {
         Navigator.of(context).pop(true);
       }
@@ -457,7 +454,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
       if (_isCancelled || !mounted) {
         return;
       }
-      
+
       if (mounted) {
         setState(() {
           if (e is TimeoutException) {
@@ -474,7 +471,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
 
   Future<void> _testConnectionString() async {
     if (!_connectionStringFormKey.currentState!.validate()) return;
-    
+
     final connectionString = SyncConnectionString.fromString(_connectionStringController.text);
     if (connectionString == null) return;
 
@@ -482,14 +479,13 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
   }
 
   Future<void> _testManualConnection() async {
-    if (_validateIPAddress(_ipController.text) != null ||
-        _validatePort(_portController.text) != null) {
+    if (_validateIPAddress(_ipController.text) != null || _validatePort(_portController.text) != null) {
       return;
     }
 
     final ipAddress = _ipController.text.trim();
     final port = int.parse(_portController.text.trim());
-    
+
     await _testConnection(ipAddress, port);
   }
 
@@ -501,14 +497,13 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
     });
 
     try {
-      final deviceInfo = await _handshakeService.getDeviceInfo(ipAddress, port)
-          .timeout(const Duration(seconds: 10));
-      
+      final deviceInfo = await _handshakeService.getDeviceInfo(ipAddress, port).timeout(const Duration(seconds: 10));
+
       // Check if operation was cancelled
       if (_isCancelled || !mounted) {
         return;
       }
-      
+
       if (deviceInfo == null) {
         if (mounted) {
           setState(() {
@@ -525,7 +520,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
           _errorMessage = null;
           _isConnecting = false;
         });
-        
+
         // Show success notification
         OverlayNotificationHelper.showSuccess(
           context: context,
@@ -536,7 +531,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog>
       if (_isCancelled || !mounted) {
         return;
       }
-      
+
       if (mounted) {
         setState(() {
           if (e is TimeoutException) {

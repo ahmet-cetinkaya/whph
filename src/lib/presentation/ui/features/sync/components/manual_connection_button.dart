@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/presentation/ui/features/sync/components/manual_connection_dialog.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -6,7 +7,7 @@ import 'package:whph/presentation/ui/features/sync/constants/sync_translation_ke
 import 'package:whph/main.dart';
 
 class ManualConnectionButton extends StatelessWidget {
-  final Function(String serverAddress, int serverPort) onConnect;
+  final Function(DeviceInfo deviceInfo) onConnect;
   final _themeService = container.resolve<IThemeService>();
   final _translationService = container.resolve<ITranslationService>();
 
@@ -18,7 +19,7 @@ class ManualConnectionButton extends StatelessWidget {
   /// Static method to show manual connection dialog from anywhere
   static void showManualConnectionDialog(
     BuildContext context, {
-    required Function(String serverAddress, int serverPort) onConnect,
+    required Function(DeviceInfo deviceInfo) onConnect,
     VoidCallback? onCancel,
   }) async {
     final result = await showDialog<bool>(

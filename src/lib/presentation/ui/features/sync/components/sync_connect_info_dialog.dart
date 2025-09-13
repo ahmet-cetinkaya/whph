@@ -207,7 +207,7 @@ class _ConnectInfoTabsState extends State<_ConnectInfoTabs> with TickerProviderS
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -231,7 +231,7 @@ class _ConnectInfoTabsState extends State<_ConnectInfoTabs> with TickerProviderS
             children: [
               // QR Code Tab Content
               _QrCodeTabContent(qrData: widget.qrData),
-              
+
               // Connection String Tab Content
               _ConnectionStringTabContent(
                 connectionString: widget.connectionString,
@@ -254,7 +254,7 @@ class _QrCodeTabContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -262,12 +262,12 @@ class _QrCodeTabContent extends StatelessWidget {
         Text(
           translationService.translate(SyncTranslationKeys.connectInfoQrDescription),
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-          ),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppTheme.sizeMedium),
-        
+
         // QR Code
         SizedBox(
           width: 200.0,
@@ -307,7 +307,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
-    
+
     if (connectionString == null) {
       return Center(
         child: Text(
@@ -321,14 +321,14 @@ class _ConnectionStringTabContent extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Connection String Description
-  
+
         // Server Information Section
         Center(
           child: Text(
             'Server Details',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+                  fontWeight: FontWeight.w600,
+                ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -338,8 +338,8 @@ class _ConnectionStringTabContent extends StatelessWidget {
           child: Text(
             'Use these server details to connect manually from another device.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -396,8 +396,8 @@ class _ConnectionStringTabContent extends StatelessWidget {
           child: Text(
             'Connection String',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+                  fontWeight: FontWeight.w600,
+                ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -407,8 +407,8 @@ class _ConnectionStringTabContent extends StatelessWidget {
           child: Text(
             translationService.translate(SyncTranslationKeys.connectInfoConnectionStringDescription),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -429,9 +429,9 @@ class _ConnectionStringTabContent extends StatelessWidget {
                     child: Text(
                       connectionString!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontFamily: 'monospace',
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                            fontFamily: 'monospace',
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                       softWrap: true,
                     ),
                   ),
