@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/shared/utils/logger.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/presentation/api/controllers/paginated_sync_controller.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
@@ -10,7 +10,7 @@ import 'package:whph/core/application/features/sync/models/paginated_sync_data_d
 const int webSocketPort = 44040;
 
 /// Desktop server sync service that acts as WebSocket server for WHPH clients
-class DesktopServerSyncService extends DesktopSyncService {
+class DesktopServerSyncService extends SyncService {
   HttpServer? _server;
   bool _isServerMode = false;
   Timer? _serverKeepAlive;
@@ -185,15 +185,15 @@ class DesktopServerSyncService extends DesktopSyncService {
           break;
 
         default:
-          socket.add(JsonMapper.serialize(WebSocketMessage(
-              type: 'error', data: {'message': 'Unknown message type', 'server_type': 'desktop'})));
+          socket.add(JsonMapper.serialize(
+              WebSocketMessage(type: 'error', data: {'message': 'Unknown message type', 'server_type': 'desktop'})));
           await socket.close();
           break;
       }
     } catch (e) {
       Logger.error('Error processing WebSocket message in desktop server: $e');
-      socket.add(JsonMapper.serialize(WebSocketMessage(
-          type: 'error', data: {'message': e.toString(), 'server_type': 'desktop'})));
+      socket.add(JsonMapper.serialize(
+          WebSocketMessage(type: 'error', data: {'message': e.toString(), 'server_type': 'desktop'})));
       await socket.close();
       rethrow;
     }
@@ -254,7 +254,7 @@ class DesktopServerSyncService extends DesktopSyncService {
       Logger.info('✅ Client connected successfully: $clientName');
     } catch (e) {
       Logger.error('Failed to handle client connect: $e');
-      
+
       final errorResponse = WebSocketMessage(
         type: 'client_connected',
         data: {
@@ -263,7 +263,7 @@ class DesktopServerSyncService extends DesktopSyncService {
           'timestamp': DateTime.now().toIso8601String(),
         },
       );
-      
+
       socket.add(JsonMapper.serialize(errorResponse));
     }
   }
@@ -271,7 +271,7 @@ class DesktopServerSyncService extends DesktopSyncService {
   Future<void> _handleHeartbeat(WebSocketMessage message, WebSocket socket) async {
     try {
       Logger.debug('💓 Received heartbeat from client');
-      
+
       final response = WebSocketMessage(
         type: 'heartbeat_response',
         data: {

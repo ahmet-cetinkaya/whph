@@ -594,7 +594,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     Logger.info('📤 Creating PaginatedSyncDataDto with isDebugMode: $debugMode for entity: $entityType');
     Logger.info('🔍 Debug mode detection details:');
     Logger.info('   kDebugMode: $kDebugMode, kReleaseMode: $kReleaseMode, kProfileMode: $kProfileMode');
-    
+
     return PaginatedSyncDataDto(
       appVersion: AppInfo.version,
       syncDevice: syncDevice,
@@ -1979,7 +1979,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   }) {
     final debugMode = _isDeviceInDebugMode();
     Logger.debug('📤 Creating server PaginatedSyncDataDto with isDebugMode: $debugMode for entity: $entityType');
-    
+
     return PaginatedSyncDataDto(
       appVersion: appVersion,
       syncDevice: syncDevice,
@@ -2064,15 +2064,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   bool _isDeviceInDebugMode() {
     Logger.debug('🔍 Debug mode detection starting...');
     Logger.debug('   kDebugMode: $kDebugMode');
-    Logger.debug('   kReleaseMode: $kReleaseMode'); 
+    Logger.debug('   kReleaseMode: $kReleaseMode');
     Logger.debug('   kProfileMode: $kProfileMode');
-    
+
     // Primary check: Flutter's kDebugMode
     if (kDebugMode) {
       Logger.debug('✅ Debug mode detected via kDebugMode');
       return true;
     }
-    
+
     // Secondary check: Use assert-based detection for debug mode
     // This is more reliable than kDebugMode in some IDE scenarios
     bool debugModeDetected = false;
@@ -2081,7 +2081,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       Logger.debug('✅ Debug mode detected via assert mechanism (more reliable than kDebugMode)');
       return true;
     }
-    
+
     // Additional check: Look for debug build indicators
     // In VSCode or other IDEs, this might be more reliable than kDebugMode
     final isDebugBuild = !kReleaseMode && !kProfileMode;
@@ -2089,26 +2089,26 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       Logger.debug('✅ Debug mode detected via build mode indicators (!kReleaseMode && !kProfileMode)');
       return true;
     }
-    
+
     // DEVELOPMENT OVERRIDE: Force debug mode detection for known development scenarios
     // This is a workaround for Flutter's inconsistent debug mode detection on Android
     try {
       // Check if we can detect any debugging indicators
       bool hasDebuggingIndicators = false;
-      
+
       // Multiple assert-based checks to catch debug builds that Flutter misidentifies
       assert(() {
         hasDebuggingIndicators = true;
         return true;
       }());
-      
+
       // Alternative assert pattern that might work when the first doesn't
       if (!hasDebuggingIndicators) {
         bool alternativeDebugCheck = false;
         assert(alternativeDebugCheck = true);
         hasDebuggingIndicators = alternativeDebugCheck;
       }
-      
+
       if (hasDebuggingIndicators) {
         Logger.info('✅ Debug mode detected via comprehensive assert checks');
         Logger.info('   This handles Flutter Android debug mode detection issues in IDEs');
@@ -2117,7 +2117,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     } catch (e) {
       Logger.debug('Comprehensive debug check failed: $e');
     }
-    
+
     Logger.warning('❌ No debug mode detected - this may be incorrect for VSCode/Android');
     Logger.warning('⚠️  If running from VSCode in debug mode, this is a known Flutter Android issue');
     Logger.warning('🔧 Both devices should show debug detection logs when creating sync data');
@@ -2149,12 +2149,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       Logger.error('   - Ensure both are running from IDEs like VSCode in debug mode');
       Logger.error('   - Check that both use the same Flutter build configuration');
       Logger.error('   - Restart both applications if build mode detection seems incorrect');
-      
+
       throw BusinessException(
-        'Environment mode mismatch: local=$localMode, remote=$remoteMode. '
-        'Sync between debug and production modes is not allowed for security reasons.',
-        SyncTranslationKeys.environmentMismatchError
-      );
+          'Environment mode mismatch: local=$localMode, remote=$remoteMode. '
+          'Sync between debug and production modes is not allowed for security reasons.',
+          SyncTranslationKeys.environmentMismatchError);
     }
 
     Logger.debug('✅ Environment mode validation passed: both devices in ${localIsDebug ? 'debug' : 'production'} mode');

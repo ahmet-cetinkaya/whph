@@ -30,7 +30,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String connectionStringTitle = 'sync.qr_code.connection_string_title';
   static const String connectionStringDescription = 'sync.qr_code.connection_string_description';
   static const String connectionStringCopied = 'sync.qr_code.connection_string_copied';
-  
+
   // Connect Info Dialog
   static const String connectInfoDialogTitle = 'sync.connect_info.dialog_title';
   static const String connectInfoMenuTitle = 'sync.connect_info.menu_title';
