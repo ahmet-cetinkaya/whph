@@ -2060,68 +2060,14 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     throw BusinessException('Device ID mismatch', SyncTranslationKeys.deviceMismatchError);
   }
 
-  /// Enhanced debug mode detection that considers multiple factors
+  /// Detects if the device is running in debug mode using Flutter's built-in constants
   bool _isDeviceInDebugMode() {
-    Logger.debug('🔍 Debug mode detection starting...');
-    Logger.debug('   kDebugMode: $kDebugMode');
-    Logger.debug('   kReleaseMode: $kReleaseMode');
-    Logger.debug('   kProfileMode: $kProfileMode');
+    // Use assert-based detection as it's the most reliable method
+    bool isDebug = false;
+    assert(isDebug = true);
 
-    // Primary check: Flutter's kDebugMode
-    if (kDebugMode) {
-      Logger.debug('✅ Debug mode detected via kDebugMode');
-      return true;
-    }
-
-    // Secondary check: Use assert-based detection for debug mode
-    // This is more reliable than kDebugMode in some IDE scenarios
-    bool debugModeDetected = false;
-    assert(debugModeDetected = true);
-    if (debugModeDetected) {
-      Logger.debug('✅ Debug mode detected via assert mechanism (more reliable than kDebugMode)');
-      return true;
-    }
-
-    // Additional check: Look for debug build indicators
-    // In VSCode or other IDEs, this might be more reliable than kDebugMode
-    final isDebugBuild = !kReleaseMode && !kProfileMode;
-    if (isDebugBuild) {
-      Logger.debug('✅ Debug mode detected via build mode indicators (!kReleaseMode && !kProfileMode)');
-      return true;
-    }
-
-    // DEVELOPMENT OVERRIDE: Force debug mode detection for known development scenarios
-    // This is a workaround for Flutter's inconsistent debug mode detection on Android
-    try {
-      // Check if we can detect any debugging indicators
-      bool hasDebuggingIndicators = false;
-
-      // Multiple assert-based checks to catch debug builds that Flutter misidentifies
-      assert(() {
-        hasDebuggingIndicators = true;
-        return true;
-      }());
-
-      // Alternative assert pattern that might work when the first doesn't
-      if (!hasDebuggingIndicators) {
-        bool alternativeDebugCheck = false;
-        assert(alternativeDebugCheck = true);
-        hasDebuggingIndicators = alternativeDebugCheck;
-      }
-
-      if (hasDebuggingIndicators) {
-        Logger.info('✅ Debug mode detected via comprehensive assert checks');
-        Logger.info('   This handles Flutter Android debug mode detection issues in IDEs');
-        return true;
-      }
-    } catch (e) {
-      Logger.debug('Comprehensive debug check failed: $e');
-    }
-
-    Logger.warning('❌ No debug mode detected - this may be incorrect for VSCode/Android');
-    Logger.warning('⚠️  If running from VSCode in debug mode, this is a known Flutter Android issue');
-    Logger.warning('🔧 Both devices should show debug detection logs when creating sync data');
-    return false;
+    Logger.debug('Debug mode detection: $isDebug (kDebugMode: $kDebugMode)');
+    return isDebug;
   }
 
   /// Validates environment mode with enhanced detection but strict security policies
