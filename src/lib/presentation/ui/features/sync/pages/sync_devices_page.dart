@@ -10,7 +10,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/features/sync/components/sync_qr_code_button.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_button.dart';
 import 'package:whph/presentation/ui/shared/components/help_menu.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
@@ -26,6 +26,8 @@ import 'package:whph/presentation/ui/features/sync/components/firewall_permissio
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -39,6 +41,9 @@ class SyncDevicesPage extends StatefulWidget {
 class _SyncDevicesPageState extends State<SyncDevicesPage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   static const String _serverModeSettingKey = 'sync_server_mode_enabled';
+  static const String _desktopSyncModeSettingKey = 'desktop_sync_mode';
+  static const String _desktopServerAddressSettingKey = 'desktop_server_address';
+  static const String _desktopServerPortSettingKey = 'desktop_server_port';
 
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
@@ -58,6 +63,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   Timer? _syncStatusDebounceTimer;
   SyncState? _lastProcessedState;
 
+  // Desktop sync mode management
+  DesktopSyncService? _desktopSyncService;
+  DesktopSyncMode _desktopSyncMode = DesktopSyncMode.server;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -73,9 +82,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       _serverSyncService = container.resolve<AndroidServerSyncService>();
     }
 
-    // Desktop is always in server mode (passive)
+    // Initialize desktop sync service for enhanced mode switching
     if (PlatformUtils.isDesktop) {
-      _isServerMode = true;
+      _desktopSyncService = _syncService as DesktopSyncService;
+      _desktopSyncMode = _desktopSyncService!.currentMode;
+      _isServerMode = _desktopSyncMode == DesktopSyncMode.server;
     }
 
     // Initialize sync icon animation controller
@@ -92,6 +103,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
     _setupSyncStatusListener();
     _loadServerModePreference();
+    _loadDesktopSyncModePreference();
     refresh();
   }
 
@@ -545,8 +557,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
               child: _buildSyncStatusIndicator(),
             ),
 
-          // Sync Now button - only show in client mode (quick access)
-          if (!_isServerMode)
+          // Sync Now button - only show in client mode with devices (quick access)
+          if (!_isServerMode && (list?.items.isNotEmpty ?? false))
             IconButton(
               onPressed: _currentSyncStatus.isSyncing ? null : _sync,
               icon: _currentSyncStatus.isSyncing
@@ -577,17 +589,15 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
               tooltip: _translationService.translate(SyncTranslationKeys.addDeviceTooltip),
             ),
 
+          // Connection Info Button - show only when in server mode
+          if (_isServerMode)
+            SyncConnectInfoButton(),
+
           // Kebab menu containing help, and mobile sync controls
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.primary),
             onSelected: (value) {
               switch (value) {
-                case 'show_qr':
-                  // Handle QR code display
-                  if (_isServerMode || PlatformUtils.isDesktop) {
-                    SyncQrCodeButton.showQrCodeModal(context);
-                  }
-                  break;
                 case 'show_help':
                   // Handle help display
                   HelpMenu.showHelpModal(
@@ -600,21 +610,13 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                   // Toggle server mode
                   _toggleServerMode();
                   break;
+                case 'toggle_client':
+                  // Toggle desktop sync mode
+                  _toggleDesktopSyncMode();
+                  break;
               }
             },
             itemBuilder: (context) => [
-              // Show QR code option (only when in server mode or on desktop)
-              if (_isServerMode || PlatformUtils.isDesktop)
-                PopupMenuItem<String>(
-                  value: 'show_qr',
-                  child: Row(
-                    children: [
-                      Icon(Icons.qr_code, color: Theme.of(context).colorScheme.primary),
-                      const SizedBox(width: 8),
-                      Text(_translationService.translate(SyncTranslationKeys.qrCodeTitle)),
-                    ],
-                  ),
-                ),
               // Mobile sync mode toggle (only on Android)
               if (Platform.isAndroid)
                 PopupMenuItem<String>(
@@ -627,6 +629,21 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                       Text(_isServerMode
                           ? _translationService.translate(SyncTranslationKeys.serverModeStopMenu)
                           : _translationService.translate(SyncTranslationKeys.serverModeStartMenu)),
+                    ],
+                  ),
+                ),
+              // Desktop sync mode toggle (only on Desktop) - matches mobile pattern
+              if (PlatformUtils.isDesktop)
+                PopupMenuItem<String>(
+                  value: 'toggle_client',
+                  child: Row(
+                    children: [
+                      Icon(_desktopSyncMode == DesktopSyncMode.client ? Icons.stop : Icons.wifi_tethering,
+                          color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 8),
+                      Text(_desktopSyncMode == DesktopSyncMode.client 
+                          ? _translationService.translate(SyncTranslationKeys.desktopSyncModeStopMenu)
+                          : _translationService.translate(SyncTranslationKeys.desktopSyncModeStartMenu)),
                     ],
                   ),
                 ),
@@ -649,6 +666,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         children: [
           // Firewall permission card (desktop only)
           const FirewallPermissionCard(),
+
 
           // Device list content
           Expanded(
@@ -678,6 +696,168 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         ],
       ),
     );
+  }
+
+  /// Toggle desktop sync mode between server (default) and client mode - like mobile toggle
+  Future<void> _toggleDesktopSyncMode() async {
+    if (!PlatformUtils.isDesktop || _desktopSyncService == null) return;
+
+    try {
+      if (_desktopSyncMode == DesktopSyncMode.client) {
+        // Stop client mode - switch back to server mode (default)
+        Logger.info('🛑 Stopping desktop client mode...');
+        
+        await _desktopSyncService!.switchToMode(DesktopSyncMode.server);
+        
+        // Save server mode preference
+        await _saveDesktopSyncModePreference(DesktopSyncMode.server);
+        
+        setState(() {
+          _desktopSyncMode = DesktopSyncMode.server;
+          _isServerMode = true;
+        });
+        
+        if (mounted) {
+          OverlayNotificationHelper.showInfo(
+            context: context,
+            message: _translationService.translate(SyncTranslationKeys.desktopClientModeStopped),
+            duration: const Duration(seconds: 3),
+          );
+        }
+      } else {
+        // Start client mode - try to connect to saved server or default
+        Logger.info('🚀 Starting desktop client mode...');
+        
+        if (mounted) {
+          OverlayNotificationHelper.showLoading(
+            context: context,
+            message: _translationService.translate(SyncTranslationKeys.desktopClientModeStarting),
+            duration: const Duration(seconds: 5),
+          );
+        }
+        
+        // Try to use saved server connection or default to localhost
+        String serverAddress = '192.168.1.1'; // Default fallback
+        int serverPort = 44040;
+        
+        // Load saved server settings if available
+        try {
+          final addressSetting = await _settingRepository.getByKey(_desktopServerAddressSettingKey);
+          final portSetting = await _settingRepository.getByKey(_desktopServerPortSettingKey);
+          
+          if (addressSetting != null && portSetting != null) {
+            serverAddress = addressSetting.value;
+            serverPort = int.tryParse(portSetting.value) ?? 44040;
+          }
+        } catch (e) {
+          Logger.warning('Could not load saved server settings: $e');
+        }
+        
+        await _desktopSyncService!.switchToClientMode(serverAddress, serverPort);
+        
+        // Save client mode preference
+        await _saveDesktopSyncModePreference(DesktopSyncMode.client, serverAddress: serverAddress, serverPort: serverPort);
+        
+        setState(() {
+          _desktopSyncMode = DesktopSyncMode.client;
+          _isServerMode = false;
+        });
+        
+        if (mounted) {
+          OverlayNotificationHelper.hideNotification();
+          OverlayNotificationHelper.showSuccess(
+            context: context,
+            message: _translationService.translate(SyncTranslationKeys.desktopClientModeStarted),
+            duration: const Duration(seconds: 3),
+          );
+        }
+      }
+    } catch (e) {
+      Logger.error('Failed to toggle desktop sync mode: $e');
+      
+      // Hide loading and show error
+      if (mounted) {
+        OverlayNotificationHelper.hideNotification();
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: 'Failed to switch sync mode: $e',
+          duration: const Duration(seconds: 5),
+        );
+      }
+    }
+  }
+
+
+  /// Load desktop sync mode preference from settings
+  Future<void> _loadDesktopSyncModePreference() async {
+    if (!PlatformUtils.isDesktop || _desktopSyncService == null) return;
+
+    try {
+      // Load sync mode preference
+      final syncModeSetting = await _settingRepository.getByKey(_desktopSyncModeSettingKey);
+      if (syncModeSetting != null) {
+        final modeValue = syncModeSetting.value;
+        final mode = DesktopSyncMode.values.firstWhere(
+          (m) => m.name == modeValue,
+          orElse: () => DesktopSyncMode.server,
+        );
+        
+        // Load server connection settings if in client mode
+        if (mode == DesktopSyncMode.client) {
+          final addressSetting = await _settingRepository.getByKey(_desktopServerAddressSettingKey);
+          final portSetting = await _settingRepository.getByKey(_desktopServerPortSettingKey);
+          
+          if (addressSetting != null && portSetting != null) {
+            final address = addressSetting.value;
+            final port = int.tryParse(portSetting.value) ?? 44040;
+            
+            // Switch to client mode with saved server info
+            await _desktopSyncService!.switchToClientMode(address, port);
+          }
+        } else {
+          // Switch to server mode
+          await _desktopSyncService!.switchToMode(mode);
+        }
+
+        setState(() {
+          _desktopSyncMode = mode;
+          _isServerMode = mode == DesktopSyncMode.server;
+        });
+      }
+    } catch (e) {
+      Logger.error('Failed to load desktop sync mode preference: $e');
+    }
+  }
+
+  /// Save desktop sync mode preference to settings
+  Future<void> _saveDesktopSyncModePreference(DesktopSyncMode mode, {String? serverAddress, int? serverPort}) async {
+    if (!PlatformUtils.isDesktop) return;
+
+    try {
+      // Save sync mode
+      await _mediator.send(SaveSettingCommand(
+        key: _desktopSyncModeSettingKey,
+        value: mode.name,
+        valueType: SettingValueType.string,
+      ));
+
+      // Save server connection info if in client mode
+      if (mode == DesktopSyncMode.client && serverAddress != null && serverPort != null) {
+        await _mediator.send(SaveSettingCommand(
+          key: _desktopServerAddressSettingKey,
+          value: serverAddress,
+          valueType: SettingValueType.string,
+        ));
+        
+        await _mediator.send(SaveSettingCommand(
+          key: _desktopServerPortSettingKey,
+          value: serverPort.toString(),
+          valueType: SettingValueType.int,
+        ));
+      }
+    } catch (e) {
+      Logger.error('Failed to save desktop sync mode preference: $e');
+    }
   }
 }
 

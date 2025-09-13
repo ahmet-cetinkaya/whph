@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
@@ -15,7 +18,14 @@ class AndroidServerSyncService extends AndroidSyncService {
   Timer? _serverKeepAlive;
   final List<WebSocket> _activeConnections = [];
 
-  AndroidServerSyncService(super.mediator);
+  final IDeviceIdService _deviceIdService;
+  final DeviceInfoPlugin _deviceInfoPlugin;
+
+  AndroidServerSyncService(
+    super.mediator,
+    this._deviceIdService,
+    this._deviceInfoPlugin,
+  );
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {
@@ -98,6 +108,63 @@ class AndroidServerSyncService extends AndroidSyncService {
       }
 
       switch (parsedMessage.type) {
+        case 'device_info':
+          Logger.info('🤝 Mobile server handling device_info handshake request');
+          try {
+            final localDeviceId = await _deviceIdService.getDeviceId();
+            final androidInfo = await _deviceInfoPlugin.androidInfo;
+            final deviceName = androidInfo.model ?? 'Android Device';
+            const appName = 'WHPH';
+            const platform = 'android';
+
+            final capabilities = DeviceCapabilities(
+              canActAsServer: true,
+              canActAsClient: true,
+              supportedModes: ['mobile', 'paginated_sync'],
+              supportedOperations: ['sync', 'paginated_sync', 'device_handshake'],
+            );
+
+            final serverInfo = ServerInfo(
+              isServerActive: true,
+              serverPort: webSocketPort,
+              activeConnections: _activeConnections.length,
+            );
+
+            final responseData = {
+              'success': true,
+              'deviceId': localDeviceId,
+              'deviceName': deviceName,
+              'appName': appName,
+              'platform': platform,
+              'capabilities': capabilities.toJson(),
+              'serverInfo': serverInfo.toJson(),
+            };
+
+            final responseMessage = WebSocketMessage(
+              type: 'device_info_response',
+              data: responseData,
+            );
+
+            socket.add(JsonMapper.serialize(responseMessage));
+            Logger.info('✅ Mobile server sent device_info_response: $deviceName ($localDeviceId)');
+
+            // Close after handshake response
+            await Future.delayed(const Duration(milliseconds: 100));
+            await socket.close();
+          } catch (e) {
+            Logger.error('❌ Failed to prepare device_info response: $e');
+            final errorData = {
+              'success': false,
+              'error': 'Failed to prepare device information: ${e.toString()}',
+            };
+            final errorMessage = WebSocketMessage(
+              type: 'device_info_response',
+              data: errorData,
+            );
+            socket.add(JsonMapper.serialize(errorMessage));
+            await socket.close();
+          }
+          break;
         case 'test':
           socket.add(JsonMapper.serialize(WebSocketMessage(
             type: 'test_response',

@@ -6,7 +6,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_netwo
 import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
-import 'package:whph/presentation/ui/features/sync/components/manual_ip_input_dialog.dart';
+import 'package:whph/presentation/ui/features/sync/components/manual_connection_button.dart';
 import 'package:whph/presentation/ui/features/sync/pages/qr_code_scanner_page.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -21,7 +21,7 @@ import 'package:whph/core/application/features/sync/queries/get_sync_query.dart'
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
-import 'package:acore/acore.dart' show BusinessException;
+import 'package:acore/acore.dart' show BusinessException, PlatformUtils;
 
 /// Page for adding new sync devices with network discovery capabilities
 class AddSyncDevicePage extends StatefulWidget {
@@ -225,11 +225,19 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       final deviceIdService = container.resolve<IDeviceIdService>();
       final localDeviceId = await deviceIdService.getDeviceId();
 
-      // Check if device already exists
-      final existingDevice = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
+      // Check if device already exists in either direction (bidirectional sync)
+      final existingDevice1 = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
           GetSyncDeviceQuery(fromDeviceId: deviceId, toDeviceId: localDeviceId));
+      
+      final existingDevice2 = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
+          GetSyncDeviceQuery(fromDeviceId: localDeviceId, toDeviceId: deviceId));
 
-      return existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null;
+      // Device is considered already added if it exists in either direction
+      // Note: The base repository automatically filters out soft deleted devices
+      final device1Exists = existingDevice1?.id.isNotEmpty == true;
+      final device2Exists = existingDevice2?.id.isNotEmpty == true;
+
+      return device1Exists || device2Exists;
     } catch (e) {
       return false; // If we can't check, assume it's not added
     }
@@ -360,51 +368,27 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       }
     }();
   }
+Future<void> _openQRScanner() async {
+  HapticFeedback.selectionClick();
 
-  Future<void> _openQRScanner() async {
-    HapticFeedback.selectionClick();
+  final result = await Navigator.pushNamed(
+    context,
+    QRCodeScannerPage.route,
+  );
 
-    final result = await Navigator.pushNamed(
-      context,
-      QRCodeScannerPage.route,
-    );
+  if (result != null && mounted) {
+    widget.onDeviceAdded?.call();
 
-    if (result != null && mounted) {
-      widget.onDeviceAdded?.call();
+    // Small delay to ensure callback processing completes
+    await Future.delayed(const Duration(milliseconds: 100));
 
-      // Small delay to ensure callback processing completes
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      if (mounted) {
-        Navigator.pop(context, true);
-      }
+    if (mounted) {
+      Navigator.pop(context, true);
     }
   }
+}
 
-  Future<void> _openManualConnection() async {
-    HapticFeedback.selectionClick();
-
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => ManualIPInputDialog(
-        onSyncDeviceAdded: () {
-          widget.onDeviceAdded?.call();
-        },
-        connectionService: _connectionService,
-      ),
-    );
-
-    if (result == true && mounted) {
-      // Small delay to ensure any processing completes
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      if (mounted) {
-        Navigator.pop(context, true);
-      }
-    }
-  }
-
-  /// Gets the appropriate icon for a platform
+/// Gets the appropriate icon for a platform
   IconData _getPlatformIcon(String platform) {
     switch (platform.toLowerCase()) {
       case 'android':
@@ -430,17 +414,41 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         elevation: 0,
         title: Text(_translationService.translate(SyncTranslationKeys.addSyncDevice)),
         actions: [
-          // QR Code Scanner Button
-          IconButton(
-            onPressed: _openQRScanner,
-            icon: const Icon(Icons.qr_code_scanner),
-            tooltip: _translationService.translate(SyncTranslationKeys.scanQRCode),
-          ),
+          // QR Code Scanner Button (mobile only)
+          if (!PlatformUtils.isDesktop)
+            IconButton(
+              onPressed: _openQRScanner,
+              icon: Icon(Icons.qr_code_scanner, 
+              color: Theme.of(context).colorScheme.primary,
+              ),
+              tooltip: _translationService.translate(SyncTranslationKeys.scanQRCode),
+            ),
           // Manual Connection Button
-          IconButton(
-            onPressed: _openManualConnection,
-            icon: const Icon(Icons.add_link),
-            tooltip: _translationService.translate(SyncTranslationKeys.manualConnection),
+          ManualConnectionButton(
+            onConnect: (String ipAddress, int port) async {
+              try {
+                // Create a DiscoveredDevice from the connection details
+                final device = DiscoveredDevice(
+                  name: 'Connected Server', // Default name; can be customized if needed
+                  ipAddress: ipAddress,
+                  port: port,
+                  lastSeen: DateTime.now(),
+                  deviceId: '', // Will be fetched during connection
+                  platform: 'unknown',
+                  isAlreadyAdded: false,
+                );
+
+                // Use existing connection logic
+                await _connectToDevice(device);
+
+                // Notify parent and close
+                widget.onDeviceAdded?.call();
+              } catch (e) {
+                // Connection failed, error is already handled by _connectToDevice
+                // Just ensure any loading states are cleared
+                OverlayNotificationHelper.hideNotification();
+              }
+            },
           ),
         ],
       ),
@@ -771,22 +779,50 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              OutlinedButton.icon(
-                onPressed: _openQRScanner,
-                icon: const Icon(Icons.qr_code_scanner, size: 18),
-                label: Text(_translationService.translate(SyncTranslationKeys.scanQRCode)),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.sizeSmall,
-                    vertical: AppTheme.sizeSmall,
+              // QR Code Scanner Button (mobile only)
+              if (!PlatformUtils.isDesktop)
+                OutlinedButton.icon(
+                  onPressed: _openQRScanner,
+                  icon: const Icon(Icons.qr_code_scanner, size: 18),
+                  label: Text(_translationService.translate(SyncTranslationKeys.scanQRCode)),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.sizeSmall,
+                      vertical: AppTheme.sizeSmall,
+                    ),
+                    textStyle: Theme.of(context).textTheme.bodySmall,
                   ),
-                  textStyle: Theme.of(context).textTheme.bodySmall,
                 ),
-              ),
-              const SizedBox(width: AppTheme.sizeSmall),
+              if (!PlatformUtils.isDesktop) const SizedBox(width: AppTheme.sizeSmall),
               OutlinedButton.icon(
-                onPressed: _openManualConnection,
-                icon: const Icon(Icons.add_link, size: 18),
+                onPressed: () => ManualConnectionButton.showManualConnectionDialog(
+                  context,
+                  onConnect: (String ipAddress, int port) async {
+                    try {
+                      // Create a DiscoveredDevice from the connection details
+                      final device = DiscoveredDevice(
+                        name: 'Connected Server',
+                        ipAddress: ipAddress,
+                        port: port,
+                        lastSeen: DateTime.now(),
+                        deviceId: '',
+                        platform: 'unknown',
+                        isAlreadyAdded: false,
+                      );
+
+                      // Use existing connection logic
+                      await _connectToDevice(device);
+
+                      // Notify parent and close
+                      widget.onDeviceAdded?.call();
+                    } catch (e) {
+                      // Connection failed, error is already handled by _connectToDevice
+                      // Just ensure any loading states are cleared
+                      OverlayNotificationHelper.hideNotification();
+                    }
+                  },
+                ),
+                icon: const Icon(Icons.settings_input_antenna, size: 18),
                 label: Text(_translationService.translate(SyncTranslationKeys.manualConnection)),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
