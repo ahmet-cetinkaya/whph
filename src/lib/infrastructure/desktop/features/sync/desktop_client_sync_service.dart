@@ -274,11 +274,21 @@ class DesktopClientSyncService extends SyncService {
               final dto = PaginatedSyncDataDto.fromJson(data['paginatedSyncDataDto'] as Map<String, dynamic>);
               Logger.info('🔄 Processing sync data from server: ${dto.entityType} (page ${dto.pageIndex + 1}/${dto.totalPages})');
 
-              // Process the data from the server
+              // Process the data from the server and get data to send back
               final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
-              await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+              final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
               Logger.info('✅ Successfully processed sync data from server');
+
+              // Send client's data back to the server for bidirectional sync
+              if (response.paginatedSyncDataDto != null) {
+                final responseMessage = WebSocketMessage(
+                  type: 'paginated_sync',
+                  data: response.paginatedSyncDataDto!.toJson(),
+                );
+                _clientChannel!.sink.add(JsonMapper.serialize(responseMessage));
+                Logger.debug('📤 Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
+              }
 
               // Update sync status to completed if this was the last page
               if (dto.isLastPage) {

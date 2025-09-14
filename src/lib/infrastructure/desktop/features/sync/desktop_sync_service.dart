@@ -10,7 +10,6 @@ import 'package:whph/infrastructure/desktop/features/sync/desktop_client_sync_se
 /// Enhanced desktop sync service with mode switching capabilities
 class DesktopSyncService extends SyncService {
   Timer? _periodicTimer;
-  static const Duration _syncInterval = Duration(minutes: 30);
 
   DesktopSyncMode _currentMode = DesktopSyncMode.server;
   DesktopSyncSettings _settings = const DesktopSyncSettings();
@@ -127,11 +126,13 @@ class DesktopSyncService extends SyncService {
     // Try to start as server
     final serverStarted = await _serverService!.startAsServer();
     if (!serverStarted) {
-      Logger.warning('Failed to start server, falling back to periodic sync only');
+      Logger.error('Failed to start server - server mode requires successful server startup');
+      throw Exception('Failed to start desktop server');
     }
 
-    // Start periodic sync
-    await _startPeriodicSync();
+    // Server mode should be passive - no periodic sync needed
+    // Servers only respond to sync requests from clients
+    Logger.info('✅ Desktop server mode started - waiting for client connections');
   }
 
   Future<void> _startClientMode() async {
@@ -155,24 +156,6 @@ class DesktopSyncService extends SyncService {
     }
   }
 
-  Future<void> _startPeriodicSync() async {
-    Logger.debug('Starting desktop periodic sync (30 minutes)');
-
-    // Run initial sync
-    await runSync();
-
-    // Start periodic sync
-    _periodicTimer = Timer.periodic(_syncInterval, (timer) async {
-      try {
-        Logger.debug('Running periodic sync at ${DateTime.now()}');
-        await runSync();
-      } catch (e) {
-        Logger.error('Periodic sync failed: $e');
-      }
-    });
-
-    Logger.debug('Started desktop periodic sync with interval: ${_syncInterval.inMinutes} minutes');
-  }
 
   @override
   Future<void> startSync() async {
