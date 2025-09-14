@@ -9,6 +9,8 @@ import 'package:whph/core/application/features/sync/commands/paginated_sync_comm
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:flutter/foundation.dart';
 
 const int webSocketPort = 44040;
 const int defaultSyncInterval = 1800; // 30 minutes in seconds
@@ -19,6 +21,7 @@ class DesktopServerSyncService extends SyncService {
   bool _isServerMode = false;
   Timer? _serverKeepAlive;
   final List<WebSocket> _activeConnections = [];
+  final Map<WebSocket, String> _connectionIPs = {}; // Track client IPs for each WebSocket
 
   final IDeviceIdService _deviceIdService;
 
@@ -60,6 +63,10 @@ class DesktopServerSyncService extends SyncService {
           final ws = await WebSocketTransformer.upgrade(req);
           _activeConnections.add(ws);
 
+          // Store the client IP for this WebSocket connection
+          final clientIP = req.connectionInfo?.remoteAddress.address ?? '127.0.0.1';
+          _connectionIPs[ws] = clientIP;
+
           Logger.info(
               '🖥️ Desktop server: Client connected from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
 
@@ -71,11 +78,13 @@ class DesktopServerSyncService extends SyncService {
             onError: (e) {
               Logger.error('❌ Desktop server connection error: $e');
               _activeConnections.remove(ws);
+              _connectionIPs.remove(ws); // Clean up IP mapping
               ws.close();
             },
             onDone: () {
               Logger.debug('🔚 Desktop server: Client disconnected');
               _activeConnections.remove(ws);
+              _connectionIPs.remove(ws); // Clean up IP mapping
             },
             cancelOnError: true,
           );
@@ -144,6 +153,11 @@ class DesktopServerSyncService extends SyncService {
         case 'paginated_sync_start':
           Logger.info('🔄 Desktop server received paginated sync start request');
           await _handlePaginatedSyncStart(parsedMessage, socket);
+          break;
+
+        case 'paginated_sync_request':
+          Logger.info('🔄 Desktop server received data page request');
+          await _handlePaginatedSyncRequest(parsedMessage, socket);
           break;
 
         case 'paginated_sync':
@@ -321,6 +335,106 @@ class DesktopServerSyncService extends SyncService {
     }
   }
 
+  /// Handle paginated sync data request from client
+  Future<void> _handlePaginatedSyncRequest(WebSocketMessage message, WebSocket socket) async {
+    try {
+      final data = message.data as Map<String, dynamic>?;
+      if (data == null) {
+        throw FormatException('paginated_sync_request message missing data');
+      }
+
+      final entityType = data['entityType'] as String?;
+      final pageIndex = data['pageIndex'] as int?;
+      final pageSize = data['pageSize'] as int? ?? 50;
+      final clientId = data['clientId'] as String?;
+
+      if (entityType == null || pageIndex == null || clientId == null) {
+        throw FormatException('Missing required fields: entityType, pageIndex, or clientId');
+      }
+
+      Logger.info('📄 Desktop server: Client requested page $pageIndex of $entityType (size: $pageSize)');
+
+      // Create a paginated sync command to get the requested data
+      // Get real IP addresses from the connection context
+      final deviceId = await _deviceIdService.getDeviceId();
+      final serverLocalIp = _getServerLocalIp();
+      final clientRemoteIp = _getClientRemoteIp(socket);
+
+      final syncDevice = SyncDevice(
+        id: deviceId,
+        createdDate: DateTime.now(),
+        fromIp: serverLocalIp,
+        toIp: clientRemoteIp,
+        fromDeviceId: deviceId,
+        toDeviceId: clientId,
+        name: await DeviceInfoHelper.getDeviceName(),
+      );
+
+      final requestDto = PaginatedSyncDataDto(
+        appVersion: AppInfo.version,
+        syncDevice: syncDevice,
+        isDebugMode: kDebugMode,
+        entityType: entityType,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalPages: 1, // Will be updated by the handler
+        totalItems: 0, // Will be updated by the handler
+        isLastPage: false, // Will be updated by the handler
+      );
+
+      final command = PaginatedSyncCommand(paginatedSyncDataDto: requestDto);
+      final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+
+      if (response.paginatedSyncDataDto != null) {
+        final populatedData = response.paginatedSyncDataDto!.getPopulatedSyncData();
+        final itemCount = populatedData?.data.getTotalItemCount() ?? 0;
+        Logger.info('✅ Desktop server: Found $itemCount items for page $pageIndex of $entityType');
+
+        final responseMessage = WebSocketMessage(
+          type: 'paginated_sync',
+          data: {
+            'success': true,
+            'paginatedSyncDataDto': response.paginatedSyncDataDto!.toJson(),
+            'timestamp': DateTime.now().toIso8601String(),
+            'server_type': 'desktop'
+          },
+        );
+
+        _sendMessage(socket, responseMessage, '📤 Desktop server: Sent page $pageIndex data to client');
+      } else {
+        Logger.info('📄 Desktop server: No data found for page $pageIndex of $entityType');
+
+        final emptyResponseMessage = WebSocketMessage(
+          type: 'paginated_sync_complete',
+          data: {
+            'success': true,
+            'paginatedSyncDataDto': null,
+            'isComplete': true,
+            'message': 'No data available for requested page',
+            'timestamp': DateTime.now().toIso8601String(),
+            'server_type': 'desktop'
+          },
+        );
+
+        _sendMessage(socket, emptyResponseMessage, '📤 Desktop server: Sent empty response for page $pageIndex');
+      }
+
+    } catch (e, stackTrace) {
+      Logger.error('❌ Desktop server: Failed to handle paginated_sync_request: $e');
+      Logger.error('Stack trace: $stackTrace');
+
+      final errorMessage = WebSocketMessage(
+        type: 'paginated_sync_error',
+        data: {
+          'success': false,
+          'message': 'Failed to process data request: ${e.toString()}',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      _sendMessage(socket, errorMessage);
+    }
+  }
 
   Future<void> _handleHeartbeat(WebSocketMessage message, WebSocket socket) async {
     try {
@@ -346,7 +460,11 @@ class DesktopServerSyncService extends SyncService {
         Logger.debug('🖥️ Desktop server heartbeat - Active connections: ${_activeConnections.length}');
 
         // Clean up closed connections
-        _activeConnections.removeWhere((ws) => ws.readyState == WebSocket.closed);
+        final closedConnections = _activeConnections.where((ws) => ws.readyState == WebSocket.closed).toList();
+        for (final ws in closedConnections) {
+          _activeConnections.remove(ws);
+          _connectionIPs.remove(ws); // Clean up IP mapping
+        }
 
         // Log server health for debugging
         if (_activeConnections.isEmpty) {
@@ -380,6 +498,7 @@ class DesktopServerSyncService extends SyncService {
         }
       }
       _activeConnections.clear();
+      _connectionIPs.clear(); // Clean up IP mappings
 
       // Close the server
       await _server?.close();
@@ -408,5 +527,39 @@ class DesktopServerSyncService extends SyncService {
     if (logMessage != null) {
       Logger.debug(logMessage);
     }
+  }
+
+  /// Get the server's local IP address from the bound server
+  String _getServerLocalIp() {
+    try {
+      // Get the server's bound address - this is the local IP the server is listening on
+      final serverAddress = _server?.address;
+      if (serverAddress != null) {
+        // If server is bound to anyIPv4 (0.0.0.0), we need to get the actual local IP
+        if (serverAddress.address == '0.0.0.0') {
+          // For simplicity, return localhost - in production this could be enhanced
+          // to get the actual network interface IP
+          return '127.0.0.1';
+        }
+        return serverAddress.address;
+      }
+    } catch (e) {
+      Logger.debug('Could not determine server local IP: $e');
+    }
+    return '127.0.0.1'; // Fallback to localhost
+  }
+
+  /// Get the client's remote IP address from the WebSocket connection
+  String _getClientRemoteIp(WebSocket socket) {
+    try {
+      // Get the stored IP for this WebSocket connection
+      final clientIP = _connectionIPs[socket];
+      if (clientIP != null) {
+        return clientIP;
+      }
+    } catch (e) {
+      Logger.debug('Could not determine client remote IP: $e');
+    }
+    return '127.0.0.1'; // Fallback to localhost
   }
 }

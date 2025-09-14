@@ -28,6 +28,7 @@ import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart'
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:whph/presentation/ui/features/sync/components/manual_connection_dialog.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -922,17 +923,49 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           Logger.warning('Could not load saved server settings: $e');
         }
 
-        // If no saved server settings, prompt user to configure server connection
+        // If no saved server settings, show manual connection dialog to configure server
         if (serverAddress == null || serverAddress.isEmpty) {
           if (mounted) {
             OverlayNotificationHelper.hideNotification();
-            OverlayNotificationHelper.showError(
-              context: context,
-              message: _translationService.translate(SyncTranslationKeys.noServerConfiguredError),
-              duration: const Duration(seconds: 5),
-            );
+
+            // Show manual connection dialog instead of just an error
+            final shouldConnect = await _showManualConnectionDialog();
+            if (!shouldConnect) {
+              if (mounted) {
+                OverlayNotificationHelper.showInfo(
+                  context: context,
+                  message: _translationService.translate(SyncTranslationKeys.cancel), // Use existing translation
+                  duration: const Duration(seconds: 3),
+                );
+              }
+              return;
+            }
+
+            // If connection was successful, get the newly saved settings
+            try {
+              final addressSetting = await _settingRepository.getByKey(_desktopServerAddressSettingKey);
+              final portSetting = await _settingRepository.getByKey(_desktopServerPortSettingKey);
+
+              if (addressSetting != null && portSetting != null) {
+                serverAddress = addressSetting.value;
+                serverPort = int.tryParse(portSetting.value) ?? 44040;
+              } else {
+                if (mounted) {
+                  OverlayNotificationHelper.showError(
+                    context: context,
+                    message: _translationService.translate(SyncTranslationKeys.noServerConfiguredError),
+                    duration: const Duration(seconds: 5),
+                  );
+                }
+                return;
+              }
+            } catch (e) {
+              Logger.error('Failed to load server settings after configuration: $e');
+              return;
+            }
+          } else {
+            return;
           }
-          return;
         }
 
         await _desktopSyncService!.switchToClientMode(serverAddress, serverPort);
@@ -1009,6 +1042,41 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     } catch (e) {
       Logger.error('Failed to load desktop sync mode preference: $e');
     }
+  }
+
+  /// Show manual connection dialog for configuring desktop client mode
+  Future<bool> _showManualConnectionDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ManualConnectionDialog(
+        onConnect: (deviceInfo) async {
+          // Save the connection details to settings for desktop client mode
+          try {
+            await _mediator.send(SaveSettingCommand(
+              key: _desktopServerAddressSettingKey,
+              value: deviceInfo.ipAddress,
+              valueType: SettingValueType.string,
+            ));
+
+            await _mediator.send(SaveSettingCommand(
+              key: _desktopServerPortSettingKey,
+              value: deviceInfo.port.toString(),
+              valueType: SettingValueType.int,
+            ));
+
+            Logger.info('✅ Saved server connection details: ${deviceInfo.ipAddress}:${deviceInfo.port}');
+          } catch (e) {
+            Logger.error('Failed to save connection details: $e');
+          }
+        },
+        onCancel: () {
+          Logger.info('Manual connection dialog cancelled');
+        },
+      ),
+    );
+
+    return result == true;
   }
 
   /// Save desktop sync mode preference to settings
