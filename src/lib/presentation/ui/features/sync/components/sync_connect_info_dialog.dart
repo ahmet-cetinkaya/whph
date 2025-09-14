@@ -255,40 +255,42 @@ class _QrCodeTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // QR Code Description
-        Text(
-          translationService.translate(SyncTranslationKeys.connectInfoQrDescription),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: AppTheme.sizeMedium),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // QR Code Description
+          Text(
+            translationService.translate(SyncTranslationKeys.connectInfoQrDescription),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
 
-        // QR Code
-        SizedBox(
-          width: 200.0,
-          height: 200.0,
-          child: Center(
-            child: QrImageView(
-              data: qrData,
-              version: QrVersions.auto,
-              size: 200.0,
-              eyeStyle: QrEyeStyle(
-                eyeShape: QrEyeShape.square,
-                color: AppTheme.textColor,
-              ),
-              dataModuleStyle: QrDataModuleStyle(
-                dataModuleShape: QrDataModuleShape.circle,
-                color: AppTheme.textColor,
+          // QR Code
+          SizedBox(
+            width: 200.0,
+            height: 200.0,
+            child: Center(
+              child: QrImageView(
+                data: qrData,
+                version: QrVersions.auto,
+                size: 200.0,
+                eyeStyle: QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
+                  color: AppTheme.textColor,
+                ),
+                dataModuleStyle: QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.circle,
+                  color: AppTheme.textColor,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -317,21 +319,20 @@ class _ConnectionStringTabContent extends StatelessWidget {
       );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Connection String Description
-
-        // Server Information Section
-        Center(
-          child: Text(
-            translationService.translate(SyncTranslationKeys.serverDetailsTitle),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-            textAlign: TextAlign.center,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Server Information Section
+          Center(
+            child: Text(
+              translationService.translate(SyncTranslationKeys.serverDetailsTitle),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
         const SizedBox(height: AppTheme.sizeSmall),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
@@ -458,6 +459,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
           ),
         ),
       ],
-    );
+    ),
+  );
   }
 }
