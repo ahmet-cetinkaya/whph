@@ -9,6 +9,7 @@ import 'package:whph/infrastructure/android/features/sync/android_sync_service.d
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/presentation/api/controllers/paginated_sync_controller.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/core/domain/shared/constants/app_info.dart';
 
 const int webSocketPort = 44040;
 
@@ -113,8 +114,8 @@ class AndroidServerSyncService extends AndroidSyncService {
           try {
             final localDeviceId = await _deviceIdService.getDeviceId();
             final androidInfo = await _deviceInfoPlugin.androidInfo;
-            final deviceName = androidInfo.model ?? 'Android Device';
-            const appName = 'WHPH';
+            final deviceName = androidInfo.model;
+            const appName = AppInfo.shortName;
             const platform = 'android';
 
             final capabilities = DeviceCapabilities(
