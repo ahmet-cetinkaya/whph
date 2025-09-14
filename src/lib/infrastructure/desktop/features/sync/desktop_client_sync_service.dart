@@ -266,22 +266,22 @@ class DesktopClientSyncService extends SyncService {
           }
           break;
 
-        case 'paginated_sync_complete':
-          Logger.debug('📨 Received sync response from server');
+        case 'paginated_sync':
+          Logger.debug('📨 Received paginated sync data from server');
           final data = response.data as Map<String, dynamic>;
           if (data['success'] == true && data['paginatedSyncDataDto'] != null) {
             try {
               final dto = PaginatedSyncDataDto.fromJson(data['paginatedSyncDataDto'] as Map<String, dynamic>);
               Logger.info('🔄 Processing sync data from server: ${dto.entityType} (page ${dto.pageIndex + 1}/${dto.totalPages})');
 
-              // Process the data from the server and get data to send back
+              // Process the data from the server
               final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
               final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
               Logger.info('✅ Successfully processed sync data from server');
 
-              // Send client's data back to the server for bidirectional sync
-              if (response.paginatedSyncDataDto != null) {
+              // Send client's data back to the server for bidirectional sync if more data
+              if (response.paginatedSyncDataDto != null && !dto.isLastPage) {
                 final responseMessage = WebSocketMessage(
                   type: 'paginated_sync',
                   data: response.paginatedSyncDataDto!.toJson(),
@@ -289,24 +289,37 @@ class DesktopClientSyncService extends SyncService {
                 _clientChannel!.sink.add(JsonMapper.serialize(responseMessage));
                 Logger.debug('📤 Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
               }
-
-              // Update sync status to completed if this was the last page
-              if (dto.isLastPage) {
-                updateSyncStatus(SyncStatus(
-                  state: SyncState.completed,
-                  lastSyncTime: DateTime.now(),
-                ));
-              }
             } catch (e) {
-              Logger.error('❌ Failed to process paginated_sync_complete data: $e');
-              updateSyncStatus(SyncStatus(
-                state: SyncState.error,
-                lastSyncTime: DateTime.now(),
-              ));
+              Logger.error('❌ Failed to process paginated_sync data: $e');
             }
           } else {
-            Logger.warning('⚠️ Received paginated_sync_complete with no data or failed status');
+            Logger.warning('⚠️ Received paginated_sync with no data or failed status');
           }
+          break;
+
+        case 'paginated_sync_complete':
+          Logger.debug('📨 Received final sync completion from server');
+          final data = response.data as Map<String, dynamic>;
+          if (data['success'] == true && data['paginatedSyncDataDto'] != null) {
+            try {
+              final dto = PaginatedSyncDataDto.fromJson(data['paginatedSyncDataDto'] as Map<String, dynamic>);
+              Logger.info('🔄 Processing final sync data from server: ${dto.entityType}');
+
+              // Process the final data from the server
+              final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
+              await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+
+              Logger.info('✅ Successfully processed final sync data from server');
+            } catch (e) {
+              Logger.error('❌ Failed to process paginated_sync_complete data: $e');
+            }
+          }
+
+          // Update sync status to completed
+          updateSyncStatus(SyncStatus(
+            state: SyncState.completed,
+            lastSyncTime: DateTime.now(),
+          ));
           break;
 
         case 'error':
