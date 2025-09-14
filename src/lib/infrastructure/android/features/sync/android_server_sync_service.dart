@@ -1,11 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/presentation/api/controllers/paginated_sync_controller.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/main.dart';
 
 const int webSocketPort = 44040;
 
@@ -15,7 +22,35 @@ class AndroidServerSyncService extends AndroidSyncService {
   Timer? _serverKeepAlive;
   final List<WebSocket> _activeConnections = [];
 
-  AndroidServerSyncService(super.mediator);
+  final IDeviceIdService _deviceIdService;
+  final DeviceInfoPlugin _deviceInfoPlugin;
+
+  AndroidServerSyncService(
+    super.mediator,
+    this._deviceIdService,
+    this._deviceInfoPlugin,
+  );
+
+  @override
+  void updateSyncStatus(SyncStatus status) {
+    Logger.info('📡 AndroidServerSyncService: updateSyncStatus called with: $status');
+    super.updateSyncStatus(status);
+    
+    // Also update the main ISyncService instance if it's different
+    try {
+      final mainSyncService = container.resolve<ISyncService>();
+      if (mainSyncService != this) {
+        Logger.info('📡 AndroidServerSyncService: Also updating main ISyncService instance');
+        mainSyncService.updateSyncStatus(status);
+      } else {
+        Logger.info('📡 AndroidServerSyncService: Same instance as ISyncService');
+      }
+    } catch (e) {
+      Logger.error('📡 AndroidServerSyncService: Failed to resolve main ISyncService: $e');
+    }
+    
+    Logger.info('📡 AndroidServerSyncService: updateSyncStatus completed');
+  }
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {
@@ -35,6 +70,14 @@ class AndroidServerSyncService extends AndroidSyncService {
       Logger.info('✅ Mobile WebSocket server started on port $webSocketPort');
       Logger.info('🌐 Mobile server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
       Logger.info('📱 Ready to receive sync requests from other mobile devices');
+
+      // Notify that server is ready (but not syncing yet)
+      Logger.info('📡 Android server: Notifying server ready status');
+      updateSyncStatus(SyncStatus(
+        state: SyncState.idle,
+        isManual: false,
+        lastSyncTime: DateTime.now(),
+      ));
 
       return true;
     } catch (e) {
@@ -98,6 +141,63 @@ class AndroidServerSyncService extends AndroidSyncService {
       }
 
       switch (parsedMessage.type) {
+        case 'device_info':
+          Logger.info('🤝 Mobile server handling device_info handshake request');
+          try {
+            final localDeviceId = await _deviceIdService.getDeviceId();
+            final androidInfo = await _deviceInfoPlugin.androidInfo;
+            final deviceName = androidInfo.model;
+            const appName = AppInfo.shortName;
+            const platform = 'android';
+
+            final capabilities = DeviceCapabilities(
+              canActAsServer: true,
+              canActAsClient: true,
+              supportedModes: ['mobile', 'paginated_sync'],
+              supportedOperations: ['sync', 'paginated_sync', 'device_handshake'],
+            );
+
+            final serverInfo = ServerInfo(
+              isServerActive: true,
+              serverPort: webSocketPort,
+              activeConnections: _activeConnections.length,
+            );
+
+            final responseData = {
+              'success': true,
+              'deviceId': localDeviceId,
+              'deviceName': deviceName,
+              'appName': appName,
+              'platform': platform,
+              'capabilities': capabilities.toJson(),
+              'serverInfo': serverInfo.toJson(),
+            };
+
+            final responseMessage = WebSocketMessage(
+              type: 'device_info_response',
+              data: responseData,
+            );
+
+            socket.add(JsonMapper.serialize(responseMessage));
+            Logger.info('✅ Mobile server sent device_info_response: $deviceName ($localDeviceId)');
+
+            // Close after handshake response
+            await Future.delayed(const Duration(milliseconds: 100));
+            await socket.close();
+          } catch (e) {
+            Logger.error('❌ Failed to prepare device_info response: $e');
+            final errorData = {
+              'success': false,
+              'error': 'Failed to prepare device information: ${e.toString()}',
+            };
+            final errorMessage = WebSocketMessage(
+              type: 'device_info_response',
+              data: errorData,
+            );
+            socket.add(JsonMapper.serialize(errorMessage));
+            await socket.close();
+          }
+          break;
         case 'test':
           socket.add(JsonMapper.serialize(WebSocketMessage(
             type: 'test_response',
@@ -123,6 +223,18 @@ class AndroidServerSyncService extends AndroidSyncService {
 
         case 'paginated_sync':
           Logger.info('🔄 Mobile server processing paginated sync request...');
+          
+          // Update sync status to syncing when server starts processing
+          Logger.info('📡 Android server: Updating sync status to SYNCING');
+          final syncingStatus = SyncStatus(
+            state: SyncState.syncing,
+            isManual: false,
+            lastSyncTime: DateTime.now(),
+          );
+          Logger.info('📡 Android server: Created sync status: $syncingStatus');
+          updateSyncStatus(syncingStatus);
+          Logger.info('📡 Android server: Sync status update sent to stream');
+          
           final paginatedSyncData = parsedMessage.data;
           if (paginatedSyncData == null) {
             throw FormatException('Paginated sync message missing data');
@@ -130,10 +242,10 @@ class AndroidServerSyncService extends AndroidSyncService {
 
           Logger.debug(
               '📊 Mobile server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
-          final paginatedController = PaginatedSyncController();
 
           try {
-            final response = await paginatedController.paginatedSync(PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
             Logger.info('✅ Mobile server paginated sync processing completed successfully');
 
             WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
@@ -146,11 +258,42 @@ class AndroidServerSyncService extends AndroidSyncService {
             socket.add(JsonMapper.serialize(responseMessage));
             Logger.info('📤 Mobile server paginated sync response sent to client');
 
+            // Update sync status to completed after successful processing
+            updateSyncStatus(SyncStatus(
+              state: SyncState.completed,
+              isManual: false,
+              lastSyncTime: DateTime.now(),
+            ));
+
+            // Reset to idle after a short delay
+            Timer(const Duration(seconds: 2), () {
+              updateSyncStatus(SyncStatus(
+                state: SyncState.idle,
+                lastSyncTime: DateTime.now(),
+              ));
+            });
+
             await Future.delayed(const Duration(milliseconds: 200));
             await socket.close();
           } catch (e, stackTrace) {
             Logger.error('Mobile server paginated sync processing failed: $e');
             Logger.error('Stack trace: $stackTrace');
+
+            // Update sync status to error on failure
+            updateSyncStatus(SyncStatus(
+              state: SyncState.error,
+              errorMessage: e.toString(),
+              isManual: false,
+              lastSyncTime: DateTime.now(),
+            ));
+
+            // Reset to idle after error delay
+            Timer(const Duration(seconds: 5), () {
+              updateSyncStatus(SyncStatus(
+                state: SyncState.idle,
+                lastSyncTime: DateTime.now(),
+              ));
+            });
 
             final errorData = <String, dynamic>{
               'success': false,
