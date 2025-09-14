@@ -175,6 +175,8 @@ sync:
     connection_timeout: Connection timeout. Please check the server address and try again.
     connection_test_successful: Connection test successful!
     connection_test_timeout: Connection test timeout. Please check the server address and try again.
+    connection_test_failed_no_response: Connection test failed - no response from server
+    connection_test_failed_generic: "Connection test failed: {0}"
   add:
     device: Add Device
     device_tooltip: Add new device

@@ -255,14 +255,14 @@ class DesktopClientSyncService extends SyncService {
 
   void _startHeartbeat() {
     _heartbeatTimer?.cancel();
-    _heartbeatTimer = Timer.periodic(_heartbeatInterval, (timer) {
+    _heartbeatTimer = Timer.periodic(_heartbeatInterval, (timer) async {
       if (_isConnected && _clientChannel != null) {
         try {
           final heartbeat = WebSocketMessage(
             type: 'heartbeat',
             data: {
               'timestamp': DateTime.now().toIso8601String(),
-              'clientId': _connectedServerId,
+              'clientId': await _deviceIdService.getDeviceId(),
             },
           );
           _clientChannel!.sink.add(JsonMapper.serialize(heartbeat));
