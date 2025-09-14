@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
 /// Desktop client sync service that connects to WHPH servers
@@ -167,12 +167,12 @@ class DesktopClientSyncService extends SyncService {
 
   @override
   Future<void> runPaginatedSync({bool isManual = false}) async {
-    if (!_isConnected) {
+    if (!_isConnected || _clientChannel == null) {
       throw Exception('Not connected to server');
     }
 
     try {
-      Logger.info('🔄 Starting client paginated sync');
+      Logger.info('🔄 Starting client paginated sync over persistent connection');
 
       // Update sync status to syncing
       updateSyncStatus(SyncStatus(
@@ -181,15 +181,35 @@ class DesktopClientSyncService extends SyncService {
         lastSyncTime: DateTime.now(),
       ));
 
-      // Call mediator directly with target device ID to sync only with connected server
-      final command = PaginatedSyncCommand(targetDeviceId: _connectedServerId);
-      await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+      // Use persistent connection for sync instead of creating new connections
+      await _performPaginatedSyncOverPersistentConnection();
 
       Logger.info('✅ Client paginated sync completed');
     } catch (e) {
       Logger.error('❌ Client paginated sync failed: $e');
       rethrow;
     }
+  }
+
+  /// Perform paginated sync using the persistent WebSocket connection
+  Future<void> _performPaginatedSyncOverPersistentConnection() async {
+    final localDeviceId = await _deviceIdService.getDeviceId();
+
+    // Send initial sync request through persistent connection
+    final syncRequest = WebSocketMessage(
+      type: 'paginated_sync_start',
+      data: {
+        'clientId': localDeviceId,
+        'serverId': _connectedServerId,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+
+    _clientChannel!.sink.add(JsonMapper.serialize(syncRequest));
+    Logger.debug('📤 Sent paginated sync start request over persistent connection');
+
+    // The sync process will continue through the WebSocket message handler
+    // which will handle paginated_sync_response messages from the server
   }
 
   Future<void> _sendHandshakeRequest() async {
@@ -199,7 +219,7 @@ class DesktopClientSyncService extends SyncService {
       type: 'client_connect',
       data: {
         'clientId': await _deviceIdService.getDeviceId(),
-        'clientName': 'Desktop Client',
+        'clientName': await DeviceInfoHelper.getDeviceName(),
         'platform': 'desktop',
         'requestedServices': ['sync'],
         'clientCapabilities': ['paginated_sync'],

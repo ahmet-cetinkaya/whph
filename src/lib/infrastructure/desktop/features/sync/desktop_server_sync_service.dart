@@ -6,7 +6,9 @@ import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/core/domain/shared/constants/app_info.dart';
 
 const int webSocketPort = 44040;
 
@@ -135,7 +137,7 @@ class DesktopServerSyncService extends SyncService {
             'server_type': 'desktop'
           });
           socket.add(JsonMapper.serialize(deprecationMessage));
-          await socket.close();
+          // Keep connection alive for modern sync methods
           break;
 
         case 'paginated_sync':
@@ -163,8 +165,7 @@ class DesktopServerSyncService extends SyncService {
             socket.add(JsonMapper.serialize(responseMessage));
             Logger.info('📤 Desktop server paginated sync response sent to client');
 
-            await Future.delayed(const Duration(milliseconds: 200));
-            await socket.close();
+            // Keep connection alive for potential additional sync requests
           } catch (e, stackTrace) {
             Logger.error('Desktop server paginated sync processing failed: $e');
             Logger.error('Stack trace: $stackTrace');
@@ -183,14 +184,14 @@ class DesktopServerSyncService extends SyncService {
 
             WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
             socket.add(JsonMapper.serialize(errorMessage));
-            await socket.close();
+            // Keep connection alive even after errors
           }
           break;
 
         default:
           socket.add(JsonMapper.serialize(
               WebSocketMessage(type: 'error', data: {'message': 'Unknown message type', 'server_type': 'desktop'})));
-          await socket.close();
+          // Keep connection alive in case client sends valid messages later
           break;
       }
     } catch (e) {
@@ -209,8 +210,8 @@ class DesktopServerSyncService extends SyncService {
         data: {
           'success': true,
           'deviceId': await _deviceIdService.getDeviceId(),
-          'deviceName': 'Desktop Server',
-          'appName': 'WHPH',
+          'deviceName': await DeviceInfoHelper.getDeviceName(),
+          'appName': AppInfo.shortName,
           'platform': Platform.operatingSystem,
           'capabilities': {
             'canActAsServer': true,
@@ -246,7 +247,7 @@ class DesktopServerSyncService extends SyncService {
         data: {
           'success': true,
           'serverId': await _deviceIdService.getDeviceId(),
-          'serverName': 'Desktop Server',
+          'serverName': await DeviceInfoHelper.getDeviceName(),
           'syncInterval': 1800, // 30 minutes
           'supportedOperations': ['paginated_sync'],
           'timestamp': DateTime.now().toIso8601String(),
