@@ -26,7 +26,6 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
 APP_INFO_FILE="$PROJECT_ROOT/src/lib/core/domain/shared/constants/app_info.dart"
 INSTALLER_FILE="$PROJECT_ROOT/src/windows/setup-wizard/installer.iss"
-FDROID_METADATA_FILE="$PROJECT_ROOT/src/android/fdroid/metadata/me.ahmetcetinkaya.whph.yml"
 
 # Extract current version from pubspec.yaml
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')
@@ -76,14 +75,6 @@ sed -i "s/static const String version = \".*\";/static const String version = \"
 echo "Updating $INSTALLER_FILE..."
 sed -i "s/AppVersion=.*/AppVersion=$NEW_VERSION/" "$INSTALLER_FILE"
 
-# First update F-Droid metadata without commit hash
-echo "Updating $FDROID_METADATA_FILE (initial)..."
-sed -i "s/versionName: .*/versionName: $NEW_VERSION/" "$FDROID_METADATA_FILE"
-sed -i "s/versionCode: .*/versionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
-sed -i "s/CurrentVersion: .*/CurrentVersion: $NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
-sed -i "s/CurrentVersionCode: .*/CurrentVersionCode: $NEW_BUILD/" "$FDROID_METADATA_FILE"
-sed -i "s/--build-name=.*/--build-name=$NEW_VERSION+$NEW_BUILD/" "$FDROID_METADATA_FILE"
-
 # Generate changelog
 echo "Generating changelog..."
 cd "$PROJECT_ROOT"
@@ -93,10 +84,8 @@ bash scripts/create_changelog.sh "$NEW_BUILD" --auto
 echo ""
 echo "Files have been updated and changelog generated."
 echo "The following git operations will be performed:"
-echo "  1. Commit F-Droid metadata changes in submodule"
-echo "  2. Commit main repository changes (version files + changelog)"
-echo "  3. Update F-Droid metadata with commit hash"
-echo "  4. Create version tag: v$NEW_VERSION"
+echo "  1. Commit main repository changes (version files + changelog)"
+echo "  2. Create version tag: v$NEW_VERSION"
 echo ""
 read -p "Do you want to proceed with git operations? (y/N): " -n 1 -r
 echo ""
@@ -109,36 +98,14 @@ fi
 # Git operations - Create version bump commit first
 echo "Creating version bump commit..."
 
-# First, stage changes in the F-Droid submodule
-echo "Staging F-Droid metadata changes in submodule..."
-cd "$PROJECT_ROOT/src/android/fdroid"
-git add "metadata/me.ahmetcetinkaya.whph.yml"
-git commit -m "feat(me.ahmetcetinkaya.whph): update app version to $NEW_VERSION"
-cd "$PROJECT_ROOT"
-
-# Then, stage changes in the main repository (including submodule update)
+# Stage changes in the main repository
 echo "Staging main repository changes..."
-git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "src/android/fdroid" "CHANGELOG.md"
+git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "CHANGELOG.md"
 for d in fastlane/metadata/android/*/ ; do
     git add "${d}changelogs"
 
 done
 git commit -m "chore: update app version to $NEW_VERSION"
-
-# Get the commit hash of the version bump commit
-VERSION_COMMIT=$(git rev-parse HEAD)
-
-# Now update F-Droid metadata with the correct commit hash
-echo "Updating F-Droid metadata with commit hash..."
-cd "$PROJECT_ROOT/src/android/fdroid"
-sed -i "s/commit: .*/commit: $VERSION_COMMIT/" "metadata/me.ahmetcetinkaya.whph.yml"
-git add "metadata/me.ahmetcetinkaya.whph.yml"
-git commit -m "build(me.ahmetcetinkaya.whph): update commit hash for F-Droid build"
-cd "$PROJECT_ROOT"
-
-# Update the submodule reference in main repo
-git add "src/android/fdroid"
-git commit -m "chore: update F-Droid submodule with commit hash"
 
 # Create version tag
 git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION"
@@ -148,20 +115,16 @@ echo "Updated files:"
 echo "  - $PUBSPEC_FILE (version: $NEW_VERSION+$NEW_BUILD)"
 echo "  - $APP_INFO_FILE (version: $NEW_VERSION)"
 echo "  - $INSTALLER_FILE (version: $NEW_VERSION)"
-echo "  - $FDROID_METADATA_FILE (versionName: $NEW_VERSION, versionCode: $NEW_BUILD, commit: $VERSION_COMMIT)"
 echo "  - CHANGELOG.md (generated for version $NEW_VERSION)"
 echo "  - fastlane/metadata/android/*/changelogs/ (generated for version code $NEW_BUILD)"
 echo ""
 
 # Git operations completed
 echo "Git operations completed:"
-echo "  - Created version bump commit: $VERSION_COMMIT"
-echo "  - Updated F-Droid metadata with correct commit hash"
+echo "  - Created version bump commit"
 echo "  - Created version tag: v$NEW_VERSION"
 echo ""
 echo "To push changes and tags to remote:"
-echo "  rps version:push"
+echo "  git push && git push --tags"
 echo ""
-echo "This will:"
-echo "  1. Push F-Droid submodule changes"
-echo "  2. Push main repository changes and tags"
+echo "This will push main repository changes and tags."
