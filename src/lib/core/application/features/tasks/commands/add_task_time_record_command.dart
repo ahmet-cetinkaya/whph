@@ -7,10 +7,12 @@ import 'package:acore/acore.dart';
 class AddTaskTimeRecordCommand implements IRequest<AddTaskTimeRecordCommandResponse> {
   final String taskId;
   final int duration;
+  final DateTime? customDateTime;
 
   AddTaskTimeRecordCommand({
     required this.taskId,
     required this.duration,
+    this.customDateTime,
   });
 }
 
@@ -32,8 +34,8 @@ class AddTaskTimeRecordCommandHandler
 
   @override
   Future<AddTaskTimeRecordCommandResponse> call(AddTaskTimeRecordCommand request) async {
-    final now = DateTime.now().toUtc();
-    final startOfHour = DateTime.utc(now.year, now.month, now.day, now.hour);
+    final targetDate = request.customDateTime ?? DateTime.now().toUtc();
+    final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
 
     final filter = CustomWhereFilter(
@@ -51,7 +53,7 @@ class AddTaskTimeRecordCommandHandler
       id: KeyHelper.generateStringId(),
       taskId: request.taskId,
       duration: request.duration,
-      createdDate: now,
+      createdDate: startOfHour, // Use hour bucket start time for consistency
     );
 
     await _taskTimeRecordRepository.add(taskTimeRecord);

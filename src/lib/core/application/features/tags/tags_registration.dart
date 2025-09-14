@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/commands/add_tag_tag_command.dart';
 import 'package:whph/core/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/core/application/features/tags/commands/remove_tag_tag_command.dart';
@@ -34,6 +35,7 @@ void registerTagsFeature(
   ITaskTimeRecordRepository taskTimeRecordRepository,
   IHabitRepository habitRepository,
   IHabitRecordRepository habitRecordRepository,
+  IHabitTimeRecordRepository habitTimeRecordRepository,
   IHabitTagsRepository habitTagRepository,
   INoteTagRepository noteTagRepository,
 ) {
@@ -79,6 +81,7 @@ void registerTagsFeature(
         taskTagRepository: taskTagRepository,
         habitRepository: habitRepository,
         habitRecordRepository: habitRecordRepository,
+        habitTimeRecordRepository: habitTimeRecordRepository,
         habitTagRepository: habitTagRepository,
         tagRepository: tagRepository,
       ),

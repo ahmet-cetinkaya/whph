@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
@@ -71,6 +72,7 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
   final ITaskTagRepository _taskTagRepository;
   final IHabitRepository _habitRepository;
   final IHabitRecordRepository _habitRecordRepository;
+  final IHabitTimeRecordRepository _habitTimeRecordRepository;
   final IHabitTagsRepository _habitTagRepository;
   final ITagRepository _tagRepository;
 
@@ -82,6 +84,7 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
     required ITaskTagRepository taskTagRepository,
     required IHabitRepository habitRepository,
     required IHabitRecordRepository habitRecordRepository,
+    required IHabitTimeRecordRepository habitTimeRecordRepository,
     required IHabitTagsRepository habitTagRepository,
     required ITagRepository tagRepository,
   })  : _appUsageTimeRecordRepository = appUsageTimeRecordRepository,
@@ -91,6 +94,7 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
         _taskTagRepository = taskTagRepository,
         _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
+        _habitTimeRecordRepository = habitTimeRecordRepository,
         _habitTagRepository = habitTagRepository,
         _tagRepository = tagRepository;
 
@@ -332,10 +336,25 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
           1000, // Large number to get all records
         );
 
-        // Calculate duration based on habit records and estimated time
-        final recordCount = records.items.length;
-        final estimatedTimeMinutes = habit.estimatedTime ?? 0;
-        final duration = recordCount * estimatedTimeMinutes * 60; // Convert to seconds
+        // Calculate duration: Try to get actual time from HabitTimeRecord, fallback to estimated
+        int duration = 0;
+
+        // First, try to get actual tracked time for this habit
+        final actualTime = await _habitTimeRecordRepository.getTotalDurationByHabitId(
+          habit.id,
+          startDate: request.startDate,
+          endDate: request.endDate,
+        );
+
+        if (actualTime > 0) {
+          // Use actual tracked time
+          duration = actualTime;
+        } else {
+          // Fallback to estimated time calculation
+          final recordCount = records.items.length;
+          final estimatedTimeMinutes = habit.estimatedTime ?? 0;
+          duration = recordCount * estimatedTimeMinutes * 60; // Convert to seconds
+        }
 
         // Only include habits with records
         if (duration > 0) {
