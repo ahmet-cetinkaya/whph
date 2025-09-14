@@ -1,0 +1,467 @@
+# Time Tracking Enhancements — Architecture and Implementation Plan
+
+> RFC: 013
+
+> Status: Draft
+
+> Related Issues: [#60](https://github.com/ahmet-cetinkaya/whph/issues/60)
+
+## Summary
+
+This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a dual-mode timer (Normal + Pomodoro), enabling manual time logging and editing for tasks, and adding real timing support for habits with clarified semantics. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
+
+## Motivation
+
+The current time tracking implementation has several limitations:
+
+- **Timer inflexibility**: Only Pomodoro timer is available, limiting users who prefer simple stopwatch functionality
+- **No retroactive logging**: Users cannot manually log time for completed tasks or correct inaccurate time records
+- **Habit time estimation**: Habits use estimated time calculations (count × estimatedTime) rather than actual tracked time
+- **Analytics gaps**: Time analytics rely on approximations for habits, reducing accuracy of productivity insights
+
+Users frequently request the ability to:
+- Use a simple timer without Pomodoro constraints
+- Log time for tasks completed offline or without timer usage
+- Track actual time spent on habits rather than estimates
+- Edit or correct time records for accuracy
+
+## Detailed Design
+
+### 1. Current State Analysis
+
+#### Timer Implementation
+- **Pomodoro-only widget**: `presentation/ui/features/tasks/components/pomodoro_timer.dart`
+- **Usage**: Marathon page integration with `onTimeUpdate` callbacks
+- **Persistence**: Hour-bucketed time records via `AddTaskTimeRecordCommand`
+
+#### Task Time Tracking
+- **Domain**: `TaskTimeRecord` entity with duration, createdDate
+- **Commands**: `AddTaskTimeRecordCommand`, `SaveTaskTimeRecordCommand`
+- **Queries**: `getTotalDurationByTaskId`
+- **UI**: Total duration display in task details
+
+#### Habits
+- **Current**: `HabitRecord` with occurrence timestamps only
+- **Analytics**: Estimated time as `count(records) × estimatedTime`
+- **Limitation**: No actual time tracking capability
+
+### 2. Enhanced Architecture
+
+#### A. Dual-Mode Timer System
+
+**Location**: `src/lib/presentation/ui/shared/components/combined_timer.dart`
+
+```dart
+enum TimerMode { normal, pomodoro }
+
+class CombinedTimer extends StatefulWidget {
+  final TimerMode initialMode;
+  final void Function(Duration delta) onTimeUpdate;
+  final VoidCallback? onStart;
+  final VoidCallback? onStop;
+  final VoidCallback? onModeChange;
+
+  // Segmented control for mode switching
+  // Normal mode: Simple start/pause/stop stopwatch
+  // Pomodoro mode: Existing PomodoroTimer integration
+}
+```
+
+**Features**:
+- Segmented control for Normal/Pomodoro switching
+- Unified callback interface for both modes
+- System tray integration and keep-screen-awake support
+- Debug mode acceleration for both timer types
+
+#### B. Manual Time Logging
+
+**Location**: `src/lib/core/application/features/tasks/commands/add_task_time_record_command.dart`
+
+```dart
+class AddTaskTimeRecordCommand implements IRequest<AddTaskTimeRecordCommandResponse> {
+  final String taskId;
+  final int duration;
+  final DateTime? customDateTime; // New: Support retroactive logging
+
+  AddTaskTimeRecordCommand({
+    required this.taskId,
+    required this.duration,
+    this.customDateTime, // Defaults to DateTime.now() if not provided
+  });
+}
+```
+
+**Capabilities**:
+- Retroactive time entry with custom timestamps
+- Hour-bucket preservation for existing analytics
+- "Set total for day" functionality with delta calculations
+- Manual time adjustment commands
+
+#### C. Habit Time Tracking
+
+**Location**: `src/lib/core/domain/features/habits/habit_time_record.dart`
+
+```dart
+@jsonSerializable
+class HabitTimeRecord extends BaseEntity<String> {
+  final String habitId;
+  final int duration; // Duration in seconds
+
+  HabitTimeRecord({
+    required super.id,
+    required this.habitId,
+    required this.duration,
+    required super.createdDate,
+    super.modifiedDate,
+    super.deletedDate,
+  });
+}
+```
+
+**Database Schema**:
+```sql
+CREATE TABLE habit_time_record_table (
+  id TEXT NOT NULL PRIMARY KEY,
+  habit_id TEXT NOT NULL,
+  duration INTEGER NOT NULL,
+  created_date INTEGER NOT NULL,
+  modified_date INTEGER,
+  deleted_date INTEGER
+);
+
+CREATE INDEX idx_habit_time_record_habit_date
+ON habit_time_record_table(habit_id, created_date);
+```
+
+### 3. Data Layer Implementation
+
+#### A. Repository Interface
+
+**Location**: `src/lib/core/domain/features/habits/i_habit_time_record_repository.dart`
+
+```dart
+abstract class IHabitTimeRecordRepository extends IBaseRepository<HabitTimeRecord, String> {
+  Future<int> getTotalDurationByHabitId(String habitId, {DateTime? startDate, DateTime? endDate});
+  Future<List<HabitTimeRecord>> getByHabitId(String habitId);
+  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end);
+}
+```
+
+#### B. Drift Repository Implementation
+
+**Location**: `src/lib/infrastructure/persistence/features/habits/drift_habit_time_record_repository.dart`
+
+```dart
+class DriftHabitTimeRecordRepository extends BaseDriftRepository<HabitTimeRecord, String>
+    implements IHabitTimeRecordRepository {
+
+  @override
+  Future<int> getTotalDurationByHabitId(String habitId, {DateTime? startDate, DateTime? endDate}) {
+    // Query sum of duration for habit within date range
+  }
+
+  @override
+  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) {
+    // Query habit time records within date range
+  }
+}
+```
+
+### 4. Command and Query Updates
+
+#### A. Enhanced Task Commands
+
+**Location**: Update existing task time record commands
+
+```dart
+class AddTaskTimeRecordCommandHandler implements IRequestHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse> {
+  @override
+  Future<AddTaskTimeRecordCommandResponse> handle(AddTaskTimeRecordCommand request) async {
+    final targetDate = request.customDateTime ?? DateTime.now().toUtc();
+    final hourBucket = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
+
+    // Find or create record within hour bucket
+    // Apply duration with proper bucketing logic
+  }
+}
+```
+
+#### B. New Habit Commands
+
+**Location**: `src/lib/core/application/features/habits/commands/`
+
+```dart
+class AddHabitTimeRecordCommand implements IRequest<AddHabitTimeRecordCommandResponse> {
+  final String habitId;
+  final int duration;
+  final DateTime? customDateTime;
+}
+
+class SaveHabitTimeRecordCommand implements IRequest<SaveHabitTimeRecordCommandResponse> {
+  final String habitId;
+  final int totalDuration;
+  final DateTime targetDate;
+}
+```
+
+#### C. Updated Analytics Queries
+
+**Location**: Update `src/lib/core/application/features/tags/queries/get_tag_times_data_query.dart`
+
+```dart
+class GetTagTimesDataQueryHandler {
+  Future<GetTagTimesDataQueryResponse> handle(GetTagTimesDataQuery request) async {
+    // For habits: Try to get actual time from HabitTimeRecord
+    final habitActualTime = await _habitTimeRecordRepository.getTotalDurationByHabitId(
+      habitId,
+      startDate: request.startDate,
+      endDate: request.endDate
+    );
+
+    // Fallback to estimated time if no actual records
+    final habitTime = habitActualTime > 0
+      ? habitActualTime
+      : habitOccurrenceCount * habit.estimatedTime;
+  }
+}
+```
+
+### 5. User Interface Components
+
+#### A. Combined Timer Integration
+
+**Location**: Update `src/lib/presentation/ui/features/tasks/pages/marathon_page.dart`
+
+```dart
+class MarathonPage extends StatefulWidget {
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          // Replace PomodoroTimer with CombinedTimer
+          CombinedTimer(
+            initialMode: TimerMode.normal,
+            onTimeUpdate: _handleTimerUpdate,
+            onStart: _onTimerStart,
+            onStop: _onTimerStop,
+          ),
+          // Existing task list and controls
+        ],
+      ),
+    );
+  }
+}
+```
+
+#### B. Manual Logging UI
+
+**Location**: `src/lib/presentation/ui/features/tasks/components/task_time_logging_dialog.dart`
+
+```dart
+class TaskTimeLoggingDialog extends StatefulWidget {
+  final String taskId;
+
+  // DateTime picker for retroactive logging
+  // Duration input (hours:minutes:seconds)
+  // "Log Time" vs "Set Total for Day" options
+  // Validation and error handling
+}
+```
+
+**Integration**: Add to task details page as action buttons
+
+#### C. Habit Timer Integration
+
+**Location**: Update `src/lib/presentation/ui/features/habits/components/habit_details_content.dart`
+
+```dart
+class HabitDetailsContent extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Existing habit info
+
+        // Add timer section
+        CombinedTimer(
+          initialMode: TimerMode.normal,
+          onTimeUpdate: (delta) => _addHabitTimeRecord(habit.id, delta),
+        ),
+
+        // Time display: actual vs estimated
+        HabitTimeDisplay(
+          habitId: habit.id,
+          showActualTime: true,
+        ),
+      ],
+    );
+  }
+}
+```
+
+#### D. Enhanced Time Display
+
+**Location**: `src/lib/presentation/ui/features/habits/components/habit_time_display.dart`
+
+```dart
+class HabitTimeDisplay extends StatelessWidget {
+  final String habitId;
+  final bool showActualTime;
+
+  // Shows "Time spent today: 1h 30m" for actual time
+  // Shows "Time spent today: ~45m (estimated)" for calculated time
+  // Tooltip explaining the difference
+}
+```
+
+### 6. Database Migration
+
+**Location**: Update `src/lib/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart`
+
+```dart
+@DriftDatabase(
+  tables: [
+    // Existing tables...
+    HabitTimeRecordTable,
+  ],
+  version: 15, // Increment version
+)
+class DriftAppContext extends _$DriftAppContext {
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (migrator, from, to) async {
+      if (from < 15) {
+        // Create habit_time_record_table
+        await migrator.createTable(habitTimeRecordTable);
+        await migrator.createIndex(Index('idx_habit_time_record_habit_date',
+          'habit_time_record_table', ['habit_id', 'created_date']));
+      }
+    },
+  );
+}
+```
+
+## Implementation Plan
+
+### Phase 1: Core Infrastructure (Week 1-2)
+
+1. **Data Model Creation**
+   - Create `HabitTimeRecord` entity
+   - Implement Drift table and repository
+   - Add database migration for new table
+   - Register repository in DI container
+
+2. **Command Enhancement**
+   - Update `AddTaskTimeRecordCommand` with `customDateTime`
+   - Create `AddHabitTimeRecordCommand` and handler
+   - Implement hour-bucket logic for custom dates
+
+### Phase 2: Timer Implementation (Week 2-3)
+
+1. **Normal Timer Component**
+   - Create `NormalTimer` widget with start/pause/stop
+   - Implement periodic increment reporting
+   - Add system tray and keep-awake integration
+
+2. **Combined Timer**
+   - Create `CombinedTimer` with mode switching
+   - Integrate existing `PomodoroTimer`
+   - Add segmented control UI
+
+### Phase 3: Manual Logging (Week 3-4)
+
+1. **Task Time Logging**
+   - Create time logging dialog component
+   - Implement "Log Time" functionality
+   - Add "Set Total for Day" with delta calculation
+
+2. **Habit Time Logging**
+   - Create habit-specific logging UI
+   - Implement actual vs estimated time display
+   - Add manual time entry for habits
+
+### Phase 4: Analytics Integration (Week 4-5)
+
+1. **Query Updates**
+   - Update tag time queries to use actual habit time
+   - Implement fallback to estimated time logic
+   - Ensure backward compatibility
+
+2. **UI Integration**
+   - Update MarathonPage with CombinedTimer
+   - Add timer to TodayPage (compact version)
+   - Update task and habit details pages
+
+### Phase 5: Testing and Polish (Week 5-6)
+
+1. **Comprehensive Testing**
+   - Unit tests for all new commands and queries
+   - Widget tests for timer components
+   - Integration tests for time tracking workflows
+
+2. **Documentation and Localization**
+   - Update help documentation
+   - Add new translation keys
+   - Update user guides
+
+## Security Considerations
+
+- **Input Validation**: Validate duration inputs to prevent negative or excessive values
+- **Date Constraints**: Limit retroactive logging to reasonable time ranges (e.g., last 30 days)
+- **Data Integrity**: Ensure hour-bucket consistency when inserting custom-dated records
+- **Performance**: Index optimization for habit time record queries by date range
+
+## Testing Strategy
+
+### Unit Tests
+
+- Command handlers for task and habit time records
+- Hour-bucket logic with custom dates
+- Analytics query fallback behavior
+- Timer component state management
+
+### Widget Tests
+
+- `CombinedTimer` mode switching functionality
+- Manual logging dialog form validation
+- Time display components (actual vs estimated)
+- Timer integration in task and habit pages
+
+### Integration Tests
+
+- Database migration from version 14 to 15
+- End-to-end time tracking workflows
+- Analytics accuracy with mixed actual/estimated data
+- Sync protocol compatibility with new data structures
+
+## Success Criteria
+
+- **Functionality**: Users can switch between Normal and Pomodoro timers seamlessly
+- **Manual Logging**: Users can log time for past dates with hour-bucket accuracy
+- **Habit Timing**: Habit time analytics reflect actual tracked time when available
+- **Performance**: Timer operations remain responsive under normal usage
+- **Compatibility**: No regressions in existing time tracking functionality
+- **Adoption**: >60% of active users try the new timer modes within 30 days
+
+## Dependencies
+
+- Existing CQRS infrastructure (`mediatr` package)
+- Drift ORM for database operations
+- Timer and notification services
+- Device platform integration (system tray, keep-awake)
+- Sync protocol and data structures
+
+## Migration Strategy
+
+1. **Gradual Rollout**: Feature flag for new timer modes
+2. **Data Migration**: Automatic database schema upgrade
+3. **User Education**: In-app notifications about new features
+4. **Fallback Support**: Maintain estimated time calculations as backup
+
+## References
+
+- [GitHub Issue #60](https://github.com/ahmet-cetinkaya/whph/issues/60): Original feature request
+- [Pomodoro Technique](https://francescocirillo.com/pages/pomodoro-technique): Original productivity method
+- [Drift Documentation](https://drift.simonbinder.eu/): ORM and database operations
+- [Flutter Timer](https://api.flutter.dev/flutter/dart-async/Timer-class.html): Timer implementation patterns
+- Existing sync services and CQRS architecture patterns
