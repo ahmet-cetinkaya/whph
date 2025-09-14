@@ -7,7 +7,7 @@ import 'package:whph/core/application/features/sync/services/device_handshake_se
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/presentation/api/controllers/paginated_sync_controller.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
@@ -242,10 +242,10 @@ class AndroidServerSyncService extends AndroidSyncService {
 
           Logger.debug(
               '📊 Mobile server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
-          final paginatedController = PaginatedSyncController();
 
           try {
-            final response = await paginatedController.paginatedSync(PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
             Logger.info('✅ Mobile server paginated sync processing completed successfully');
 
             WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {

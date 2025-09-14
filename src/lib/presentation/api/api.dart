@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/presentation/api/controllers/paginated_sync_controller.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
@@ -174,9 +174,11 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
         Logger.debug(
             '📊 Paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
-        final paginatedController = PaginatedSyncController();
+        
         try {
-          final response = await paginatedController.paginatedSync(PaginatedSyncDataDto.fromJson(paginatedSyncData));
+          final mediator = container.resolve<Mediator>();
+          final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
+          final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
           Logger.info('✅ Paginated sync processing completed successfully');
 
           // Update lastSyncDate for the sync device on server-side completion
