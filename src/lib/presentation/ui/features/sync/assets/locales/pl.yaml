@@ -1,4 +1,17 @@
 sync:
+  desktop:
+    mode_title: Tryb synchronizacji pulpitu
+    client_mode_start: Połącz jako klient
+    client_mode_stop: Przełącz na tryb serwera
+    client_mode_description: Połącz się z serwerem innego urządzenia, aby zsynchronizować dane
+    server_mode_description: Pozwól innym urządzeniom na połączenie i synchronizację z tym urządzeniem
+    sync_mode_start: Uruchom tryb klienta
+    sync_mode_stop: Zatrzymaj tryb klienta
+    sync_mode_start_menu: Uruchom tryb klienta
+    sync_mode_stop_menu: Zatrzymaj tryb klienta
+    client_mode_starting: Uruchamianie trybu klienta...
+    client_mode_started: Tryb klienta uruchomiony
+    client_mode_stopped: Przełączono z powrotem do trybu serwera
   devices:
     errors:
       loading: Błąd podczas ładowania urządzeń synchronizacji
@@ -7,53 +20,95 @@ sync:
     from_label: Od
     help:
       content: |
-        🔄 Utrzymuj swoje zadania, nawyki, notatki, ustawienia itp. zsynchronizowane na wszystkich urządzeniach. Wszystkie dane pozostają w lokalnej sieci — nic nie jest wysyłane do chmury.
+        🔄 **Co to jest Sync?**
 
-        ## ⚡ Szybka i bezpieczna konfiguracja
+        Sync utrzymuje Twoje nawyki, zadania, notatki i dane zaktualizowane na wszystkich urządzeniach (telefony, tablety, laptopy, komputery stacjonarne) w tej samej sieci Wi-Fi. Bez chmury lub internetu — dane pozostają prywatne i lokalne.
 
-        Połącz swoje urządzenia przez tę samą sieć Wi-Fi za pomocą kodów QR. Synchronizacja zaczyna się automatycznie po sparowaniu.
+        Jest prosty w użyciu: skonfiguruj raz, a zmiany synchronizują się automatycznie lub na żądanie. Przełączaj się między urządzeniami bezproblemowo, np. zacznij na telefonie i dokończ na PC.
 
-        - 📱 **Mobilne → Mobilne:** Jedno urządzenie musi być w **trybie Serwera**, aby umożliwić sparowanie  
-        - 💻 **Desktop → Mobilne:** Desktop pokazuje kod QR, mobilne go skanuje  
+        ## 🔗 **Tryby Sync**
 
-        ## 📱 Urządzenia mobilne
+        Wszystkie urządzenia obsługują tryby klienta lub serwera dla elastycznej synchronizacji. Serwer prowadzi (dzieli się danymi), klienci dołączają i wymieniają. Potrzebny jest co najmniej jeden serwer.
 
-        Urządzenia Android mogą pracować w dwóch różnych trybach:
+        - **Tryb klienta:** Łączy się z serwerem w celu synchronizacji. Idealny do dołączania do grup za pomocą QR lub ręcznego wprowadzenia.
+        - **Tryb serwera:** Działa jako hub; pokazuje QR lub ciąg dla innych do połączenia.
 
-        - 🔍 **Tryb Klienta:**  
-          - Skanuje kody QR  
-          - Łączy się z innymi urządzeniami, aby odbierać dane  
-        - 📡 **Tryb Serwera:**  
-          - Wyświetla kod QR dla innych do skanowania  
-          - Wysyła dane do połączonych urządzeń  
-          - Może być przełączany za pomocą ikony hotspotu Wi-Fi
+        **Uwagi dotyczące platform:**
+        - **Mobilne:** Przełączaj za pomocą ikony hotspotu Wi-Fi. Serwer dla przenośnych hubów.
+        - **Pulpit (Domyślnie: Serwer):** Przełącz w ustawieniach Sync. Klient dla laptopów synchronizujących z głównymi PC.
 
-        Aby synchronizować między dwoma urządzeniami mobilnymi, jedno musi być w **trybie Serwera**.
+        **Przykłady:** Mobilne do mobilnego (jeden serwer), pulpit do mobilnego (w obie strony), pulpit do pulpitu (jeden serwer, jeden klient).
 
-        ## 💻 Urządzenia desktopowe
+        Przełączaj tryby w ustawieniach Sync; aplikacja pamięta Twój wybór.
 
-        Aplikacje desktopowe zawsze działają jako węzły **Serwera**:
+        ## 🛠️ **Włączanie Sync**
 
-        - 🖥️ Wyświetlają kod QR do sparowania  
-        - ✅ Automatycznie akceptują przychodzące połączenia  
-        - 🔄 Synchronizują dane w obu kierunkach  
-        - 📊 Wyświetlają status synchronizacji na żywo
+        Urządzenia muszą dzielić Wi-Fi; utrzymuj WHPH otwartą.
 
-        ## 🛠️ Zarządzanie urządzeniami
+        ### **Konfiguracja z kodem QR**
+        1. Serwer: Uruchom tryb serwera w Sync — pojawi się QR.
+        2. Klient: „Dodaj urządzenie” > Skanuj QR.
+        3. Automatycznie łączy się i synchronizuje.
 
-        Zarządzaj wszystkimi połączonymi urządzeniami z jednego miejsca:
+        Obsługuje wszystkie kombinacje.
 
-        - 📋 Wyświetl połączone urządzenia  
-        - ⏰ Wyświetl ostatnie czasy synchronizacji  
-        - 🔁 Uruchom ręczną synchronizację  
-        - 🗑️ Usuń stare lub nieużywane urządzenia
+        ### **Ciąg połączenia**
+        1. Serwer: Skopiuj ciąg (np. „whph://IP:44040?...”) z Sync.
+        2. Klient: „Dodaj urządzenie” > Ręczne > Wklej ciąg > Połącz.
 
-        ## 💡 Najlepsze praktyki
+        Nie wymaga aparatu.
 
-        - 📶 Upewnij się, że wszystkie urządzenia są w tej samej sieci Wi-Fi  
-        - 📱 Trzymaj aplikacje otwarte i aktywne podczas synchronizacji  
-        - 🧹 Usuń urządzenia, których już nie używasz  
-        - ⏱️ Sprawdź czasy synchronizacji, aby upewnić się, że wszystko jest aktualne
+        ### **Ręczne wprowadzenie**
+        1. Serwer: Zapisz IP/port (domyślnie 44040) z informacji o połączeniu.
+        2. Klient: „Dodaj urządzenie” > Ręczne > Wprowadź IP, port, nazwę > Test > Połącz.
+
+        **Klienci pulpitu:** Najpierw przełącz na tryb klienta, potem połącz. Automatyczna synchronizacja; przełącz powrotem w dowolnym momencie.
+
+        Włącz automatyczne ponowne połączenie w ustawieniach dla niezawodności.
+
+        ## 📋 **Zarządzanie urządzeniami**
+
+        - **Wyświetl:** Zobacz urządzenia, czasy synchronizacji, status w ustawieniach Sync.
+        - **Ręczna synchronizacja:** Naciśnij przycisk dla każdego urządzenia.
+        - **Usuń:** Wybierz i usuń, aby zatrzymać synchronizację.
+
+        ## 🔧 **Rozwiązywanie problemów**
+
+        **Problemy z połączeniem:**
+        1. Ta sama Wi-Fi? Bez VPN.
+        2. Uruchom ponownie aplikację.
+        3. Sprawdź tryb serwera.
+        4. Testuj bez firewalla.
+
+        **Brak urządzeń?**
+        - Stabilne Wi-Fi, bez proxy.
+        - Odśwież skanowanie.
+        - Użyj ręcznego IP.
+
+        **Synchronizacja nie powiodła się/Timeout:**
+        1. Ręczna synchronizacja.
+        2. Dopasuj wersje aplikacji.
+        3. Poczekaj na duże dane.
+
+        **Firewall (Port 44040):**
+
+        Jeśli połączenia nie działają, zapora ogniowa Twojego komputera może blokować sygnał synchronizacji. Otwórz port 44040, aby urządzenia mogły komunikować się lokalnie — jest bezpieczny dla sieci domowej.
+
+        **Windows (GUI):**
+        1. Otwórz Defender Firewall > Zaawansowane > Reguły przychodzące > Nowa reguła.
+        2. Port > TCP > 44040 > Zezwól > Wszystkie profile > Nazwij „WHPH Sync” > Zakończ.
+
+        **Windows (CMD Administrator):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        Wskazówki: Uruchom ponownie router, używaj sieci prywatnych. Ponownie sparuj w przypadku błędów „nie znaleziono”.
       title: Pomoc synchronizacji urządzeń
     last_sync_label: Ostatnia synchronizacja
     no_devices_found: Brak zsynchronizowanych urządzeń
@@ -67,9 +122,10 @@ sync:
     connection_failed: |
       Połączenie nie powiodło się. Upewnij się:
 
-      1. Oba urządzenia są w tej samej sieci
+      1. Oba urządzenia są w tej samej sieci Wi-Fi
       2. Oba aplikacje są otwarte i działają
-      3. Żaden firewall nie blokuje połączenia
+      3. Firewall pulpitu pozwala na port 44040 (sprawdź ustawienia synchronizacji)
+      4. Brak VPN lub proxy interferujących z lokalną siecią
     device_mismatch: Błąd synchronizacji. Urządzenie próbujące synchronizować nie jest prawidłowo sparowane z tym urządzeniem.
     environment_mismatch: Synchronizacja nie może być kontynuowana między buildami debug i produkcyjnymi.
     device_not_found: Urządzenie synchronizacji nie znalezione
@@ -81,20 +137,41 @@ sync:
     sync_failed: Synchronizacja nie powiodła się. Spróbuj ponownie.
     sync_timeout: Limit czasu synchronizacji
     version_mismatch: "Niezgodność wersji. Lokalna wersja: {currentVersion}, Zdalna wersja: {remoteVersion}. Zaktualizuj obie aplikacje do tej samej wersji."
-    local_ip_error: Błąd lokalnego IP
-    device_already_paired: Urządzenie już sparowane
-    no_active_interfaces: Brak aktywnych interfejsów sieciowych
-    device_discovery_failed: Odkrywanie urządzeń nie powiodło się
+    local_ip_error: Nie można określić lokalnego adresu IP
+    device_already_paired: To urządzenie jest już sparowane
+    no_active_interfaces: Nie znaleziono aktywnych interfejsów sieciowych
+    device_discovery_failed: "Nie udało się uruchomić odkrywania urządzeń: {error}"
+    no_server_configured: Brak skonfigurowanego serwera. Najpierw dodaj urządzenie synchronizacji lub użyj ręcznego połączenia, aby skonfigurować połączenie z serwerem.
   messages:
     device_already_paired: To urządzenie jest już sparowane
     sync_completed: Synchronizacja zakończona pomyślnie
     sync_in_progress: Synchronizowanie...
     testing_connection: Testowanie połączenia...
-    device_added_success: Urządzenie dodane pomyślnie
+    device_added_success: "Pomyślnie dodano {deviceName} do urządzeń synchronizacji"
   qr_code:
     close_button: Zamknij
     dialog_title: Skanuj kod QR, aby synchronizować
-    title: Kod QR
+    title: Pokaż kod QR
+    description: Inne urządzenia mogą zeskanować ten kod QR, aby połączyć się i zsynchronizować z tym urządzeniem.
+    connection_string_title: Ciąg połączenia
+    connection_string_description: Alternatywnie możesz udostępnić ten ciąg połączenia, aby ręcznie połączyć urządzenia.
+    connection_string_copied: Ciąg połączenia skopiowany do schowka
+  connect_info:
+    dialog_title: Informacje o połączeniu urządzenia
+    menu_title: Informacje o połączeniu
+    qr_title: Kod QR
+    qr_description: Inne urządzenia mogą zeskanować ten kod QR, aby połączyć się i zsynchronizować z tym urządzeniem.
+    connection_string_title: Ciąg połączenia
+    connection_string_description: Alternatywnie możesz udostępnić ten ciąg połączenia, aby ręcznie połączyć urządzenia.
+    connection_string_copied: Ciąg połączenia skopiowany do schowka
+    unknown_ip: Nieznany IP
+    error_loading_connection_info: Błąd podczas ładowania informacji o połączeniu
+    retry: Spróbuj ponownie
+    manual_connection_tab: Ręczne połączenie
+    server_details_title: Szczegóły serwera
+    server_details_description: Użyj tych szczegółów serwera, aby ręcznie połączyć się z innego urządzenia.
+    connection_string_title_alt: Ciąg połączenia
+    copy: Kopiuj
   scanner:
     title: Skanuj kod QR
     instruction: Umieść kod QR w ramce
@@ -105,36 +182,51 @@ sync:
     start_failed: Uruchomienie trybu serwera nie powiodło się - Sprawdź, czy port 44040 jest dostępny
     start_tooltip: Uruchom tryb serwera
     stop_tooltip: Zatrzymaj tryb serwera
+    start_menu: Uruchom tryb serwera
+    stop_menu: Zatrzymaj tryb serwera
     error: Błąd
     device_became_server: To urządzenie jest teraz serwerem synchronizacji
-    start_menu: Uruchom serwer
-    stop_menu: Zatrzymaj serwer
   manual:
     connection: Ręczne połączenie
     ip_address: Adres IP
     port: Port
     device_name: Nazwa urządzenia
     optional: (Opcjonalne)
-    connecting: Łączenie...
+    connecting: Łączenie z urządzeniem...
     cancel: Anuluj
     connect: Połącz
     ip_required: Adres IP jest wymagany
     invalid_ip: Nieprawidłowy format adresu IP
     port_required: Port jest wymagany
-    invalid_port: Nieprawidłowy numer portu
-    connection_failed: Połączenie nie powiodło się
-    connection_error: Błąd połączenia
+    invalid_port: Port musi być między 1 a 65535
+    connection_failed: Nie udało się połączyć z urządzeniem
+    connection_error: "Błąd połączenia: {0}"
+    connection_string_tab: Ciąg połączenia
+    manual_entry_tab: Ręczne wprowadzanie
+    connection_string_required: Wymagany ciąg połączenia
+    invalid_connection_string: Nieprawidłowy format ciągu połączenia
+    connection_string_label: Ciąg połączenia
+    test_connection: Testuj połączenie
+    enter_server_details: Wprowadź szczegóły połączenia serwera ręcznie
+    connection_timeout: Limit czasu połączenia. Sprawdź adres serwera i spróbuj ponownie.
+    connection_test_successful: Test połączenia udany!
+    connection_test_timeout: Limit czasu testu połączenia. Sprawdź adres serwera i spróbuj ponownie.
+    connection_test_failed_no_response: Test połączenia nieudany - brak odpowiedzi z serwera
+    connection_test_failed_generic: "Test połączenia nieudany: {0}"
+    connection_string_instruction: Wklej tutaj ciąg połączenia dostarczony przez urządzenie serwera, aby połączyć ręcznie.
   add:
     device: Dodaj urządzenie
     device_tooltip: Dodaj nowe urządzenie
-    sync_device: Synchronizuj urządzenie
-    sync_device_title: Synchronizuj z urządzeniem
-    sync_device_description: Połącz się z innym urządzeniem, aby synchronizować dane
-    scanning_for_devices: Skanowanie urządzeń...
-    no_nearby_devices: Brak urządzeń w pobliżu
-    no_nearby_devices_hint: Upewnij się, że urządzenia są w tej samej sieci
-    alternative_methods_hint: Spróbuj ręcznego połączenia lub kodu QR
+    sync_device: Dodaj urządzenie synchronizacji
+    sync_device_title: Dodaj urządzenie synchronizacji
+    sync_device_description: Odkrywaj pobliskie urządzenia lub łącz ręcznie, aby synchronizować dane między urządzeniami.
+    scanning_for_devices: Skanowanie pobliskich urządzeń...
+    no_nearby_devices: Nie znaleziono pobliskich urządzeń
+    no_nearby_devices_hint: Upewnij się, że oba urządzenia są w tej samej sieci Wi-Fi i mają uruchomioną aplikację WHPH.
+    alternative_methods_hint: Nie możesz znaleźć swojego urządzenia? Spróbuj tych alternatywnych metod połączenia.
     scan_qr_code: Skanuj kod QR
     refresh_scan: Odśwież skanowanie
-    last_seen: Ostatnio widziany
+    last_seen: "Ostatnio widziany o {time}"
     already_added: Już dodany
+
+  multi_interface_connection: Połączenie wielo-interfejsowe

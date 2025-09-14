@@ -7,53 +7,95 @@ sync:
     from_label: Van
     help:
       content: |
-        🔄 Houd je taken, gewoonten, notities, instellingen, enz. gesynchroniseerd op al je apparaten. Alle gegevens blijven binnen je lokale netwerk — niets wordt naar de cloud gestuurd.
+        🔄 **Wat is Sync?**
 
-        ## ⚡ Snelle en veilige setup
+        Sync houdt je gewoonten, taken, notities en data up-to-date op alle apparaten (telefoons, tablets, laptops, desktops) in hetzelfde Wi-Fi-netwerk. Geen cloud of internet — data blijven privé en lokaal.
 
-        Verbind je apparaten via hetzelfde Wi-Fi-netwerk met QR-codes. Synchronisatie start automatisch na pairing.
+        Het is eenvoudig te gebruiken: Stel het één keer in, en wijzigingen synchroniseren automatisch of op verzoek. Schakel naadloos tussen apparaten, zoals beginnen op je telefoon en afmaken op je PC.
 
-        - 📱 **Mobiel → Mobiel:** Een apparaat moet in **Server-modus** zijn om pairing toe te staan  
-        - 💻 **Desktop → Mobiel:** Desktop toont een QR-code, mobiel scant het  
+        ## 🔗 **Sync-modi**
 
-        ## 📱 Mobiele apparaten
+        Alle apparaten ondersteunen Client- of Server-modi voor flexibele synchronisatie. Server leidt (deelt data), Clients sluiten aan en wisselen uit. Je hebt minstens één Server nodig.
 
-        Android-apparaten kunnen in twee verschillende modi werken:
+        - **Client-modus:** Verbindt met een Server om te synchroniseren. Ideaal voor het aansluiten bij groepen via QR of handmatige invoer.
+        - **Server-modus:** Fungeert als hub; toont QR of string voor anderen om aan te sluiten.
 
-        - 🔍 **Client-modus:**  
-          - Scant QR-codes  
-          - Verbindt met andere apparaten om gegevens te ontvangen  
-        - 📡 **Server-modus:**  
-          - Toont QR-code voor anderen om te scannen  
-          - Stuurt gegevens naar verbonden apparaten  
-          - Kan worden geschakeld via het Wi-Fi-hotspot-icoon
+        **Platform-opmerkingen:**
+        - **Mobiel:** Schakel via Wi-Fi-hotspot-icoon. Server voor draagbare hubs.
+        - **Desktop (Standaard: Server):** Schakel in Sync-instellingen. Client voor laptops die synchroniseren met hoofd-PC's.
 
-        Om tussen twee mobiele apparaten te synchroniseren, moet één in **Server-modus** zijn.
+        **Voorbeelden:** Mobiel-naar-mobiel (één Server), desktop-naar-mobiel (beide kanten op), desktop-naar-desktop (één Server, één Client).
 
-        ## 💻 Desktop-apparaten
+        Schakel modi in Sync-instellingen; de app onthoudt je keuze.
 
-        Desktop-apps werken altijd als **Server**-knooppunten:
+        ## 🛠️ **Sync inschakelen**
 
-        - 🖥️ Toont QR-code voor pairing  
-        - ✅ Accepteert inkomende verbindingen automatisch  
-        - 🔄 Synchroniseert gegevens in beide richtingen  
-        - 📊 Toont live sync-status
+        Apparaten moeten Wi-Fi delen; houd WHPH open.
 
-        ## 🛠️ Apparaatbeheer
+        ### **QR-code-setup**
+        1. Server: Start Server-modus in Sync — QR verschijnt.
+        2. Client: "Apparaat toevoegen" > Scan QR.
+        3. Verbindt en synchroniseert automatisch.
 
-        Beheer alle verbonden apparaten op één plek:
+        Ondersteunt alle combinaties.
 
-        - 📋 Toon verbonden apparaten  
-        - ⏰ Toon laatste sync-tijden  
-        - 🔁 Trigger handmatige sync  
-        - 🗑️ Verwijder oude of ongebruikte apparaten
+        ### **Verbindingsstring**
+        1. Server: Kopieer string (bijv. "whph://IP:44040?...") uit Sync.
+        2. Client: "Apparaat toevoegen" > Handmatig > Plak string > Verbind.
 
-        ## 💡 Best practices
+        Geen camera vereist.
 
-        - 📶 Zorg ervoor dat alle apparaten op hetzelfde Wi-Fi-netwerk staan  
-        - 📱 Houd apps open en actief tijdens synchronisatie  
-        - 🧹 Verwijder apparaten die je niet meer gebruikt  
-        - ⏱️ Controleer sync-tijden om te zorgen dat alles up-to-date is
+        ### **Handmatige invoer**
+        1. Server: Noteer IP/poort (standaard 44040) uit Verbindingsinfo.
+        2. Client: "Apparaat toevoegen" > Handmatig > Voer IP, poort, naam in > Test > Verbind.
+
+        **Desktop-clients:** Schakel eerst naar Client-modus, dan verbinden. Synchroniseert automatisch; schakel terug wanneer je wilt.
+
+        Schakel auto-herverbinding in in instellingen voor betrouwbaarheid.
+
+        ## 📋 **Apparaten beheren**
+
+        - **Bekijk:** Zie apparaten, sync-tijden, status in Sync-instellingen.
+        - **Handmatige Sync:** Tik knop per apparaat.
+        - **Verwijder:** Selecteer en verwijder om synchronisatie te stoppen.
+
+        ## 🔧 **Probleemoplossing**
+
+        **Verbindingsproblemen:**
+        1. Zelfde Wi-Fi? Geen VPN's.
+        2. Herstart app.
+        3. Bevestig Server-modus.
+        4. Test zonder firewall.
+
+        **Geen apparaten?**
+        - Stabiele Wi-Fi, geen proxies.
+        - Vernieuw scan.
+        - Gebruik handmatige IP.
+
+        **Sync mislukt/time-outs:**
+        1. Handmatige sync.
+        2. Match app-versies.
+        3. Wacht op grote data.
+
+        **Firewall (Poort 44040):**
+
+        Als verbindingen niet werken, blokkeert de firewall van je computer mogelijk het sync-signaal. Open poort 44040 om apparaten lokaal te laten communiceren — het is veilig voor je thuisnetwerk.
+
+        **Windows (GUI):**
+        1. Open Defender Firewall > Geavanceerd > Inkomende regels > Nieuwe regel.
+        2. Poort > TCP > 44040 > Toestaan > Alle profielen > Naam "WHPH Sync" > Voltooien.
+
+        **Windows (Admin CMD):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        Tips: Herstart router, gebruik privé-netwerken. Her-pair bij "niet gevonden" fouten.
       title: Hulp bij apparaat-synchronisatie
     last_sync_label: Laatste synchronisatie
     no_devices_found: Geen gesynchroniseerde apparaten
@@ -85,6 +127,7 @@ sync:
     device_already_paired: Apparaat al gepaart
     no_active_interfaces: Geen actieve netwerkinterfaces
     device_discovery_failed: Apparaatontdekking mislukt
+    no_server_configured: Geen server geconfigureerd. Voeg eerst een sync-apparaat toe of gebruik handmatige verbinding om een serververbinding in te stellen.
   messages:
     device_already_paired: Dit apparaat is al gepaart
     sync_completed: Synchronisatie succesvol voltooid
@@ -95,6 +138,10 @@ sync:
     close_button: Sluiten
     dialog_title: Scan QR-code om te synchroniseren
     title: QR-code
+    description: Andere apparaten kunnen deze QR-code scannen om te verbinden en te synchroniseren met dit apparaat.
+    connection_string_title: Verbindingsreeks
+    connection_string_description: Alternatief kunt u deze verbindingsreeks delen om apparaten handmatig te verbinden.
+    connection_string_copied: Verbindingsreeks gekopieerd naar klembord
   scanner:
     title: Scan QR-code
     instruction: Plaats QR-code binnen het frame
@@ -124,6 +171,19 @@ sync:
     invalid_port: Ongeldig poortnummer
     connection_failed: Verbinding mislukt
     connection_error: Verbindingsfout
+    connection_string_tab: Verbindingsreeks
+    manual_entry_tab: Handmatige invoer
+    connection_string_required: Verbindingsreeks vereist
+    invalid_connection_string: Ongeldig verbindingsreeksformaat
+    connection_string_label: Verbindingsreeks
+    test_connection: Test verbinding
+    enter_server_details: Voer serververbindingdetails handmatig in
+    connection_timeout: Verbindingstimeout. Controleer het serveradres en probeer het opnieuw.
+    connection_test_successful: Verbindingstest succesvol!
+    connection_test_timeout: Verbindingstest timeout. Controleer het serveradres en probeer het opnieuw.
+    connection_test_failed_no_response: Verbindingstest mislukt - geen reactie van server
+    connection_test_failed_generic: "Verbindingstest mislukt: {0}"
+    connection_string_instruction: Plak hier de verbindingsreeks die is verstrekt door het serverapparaat om handmatig te verbinden.
   add:
     device: Apparaat toevoegen
     device_tooltip: Nieuw apparaat toevoegen
@@ -138,3 +198,36 @@ sync:
     refresh_scan: Scan vernieuwen
     last_seen: Laatst gezien
     already_added: Al toegevoegd
+
+  connect_info:
+    dialog_title: Apparaatverbindinginformatie
+    menu_title: Verbindingsinfo
+    qr_title: QR-code
+    qr_description: Andere apparaten kunnen deze QR-code scannen om te verbinden en te synchroniseren met dit apparaat.
+    connection_string_title: Verbindingsreeks
+    connection_string_description: Alternatief kunt u deze verbindingsreeks delen om apparaten handmatig te verbinden.
+    connection_string_copied: Verbindingsreeks gekopieerd naar klembord
+    server_details_description: Gebruik deze serverdetails om handmatig te verbinden vanaf een ander apparaat.
+    unknown_ip: Onbekende IP
+    error_loading_connection_info: Fout bij laden van verbindingsinfo
+    retry: Opnieuw proberen
+    manual_connection_tab: Handmatige verbinding
+    server_details_title: Serverdetails
+    connection_string_title_alt: Verbindingsreeks
+    copy: Kopiëren
+
+  desktop:
+    mode_title: Desktop Sync Modus
+    client_mode_start: Verbinden als Client
+    client_mode_stop: Schakel naar Server Modus
+    client_mode_description: Verbind met de server van een ander apparaat om gegevens te synchroniseren
+    server_mode_description: Laat andere apparaten verbinden en synchroniseren met dit apparaat
+    sync_mode_start: Start Client Modus
+    sync_mode_stop: Stop Client Modus
+    sync_mode_start_menu: Start Client Modus
+    sync_mode_stop_menu: Stop Client Modus
+    client_mode_starting: Start client modus...
+    client_mode_started: Client modus gestart
+    client_mode_stopped: Teruggeschakeld naar server modus
+
+  multi_interface_connection: Multi-interface verbinding
