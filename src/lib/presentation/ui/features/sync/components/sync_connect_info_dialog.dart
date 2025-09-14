@@ -333,133 +333,133 @@ class _ConnectionStringTabContent extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-        const SizedBox(height: AppTheme.sizeSmall),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
-          child: Text(
-            translationService.translate(SyncTranslationKeys.connectInfoServerDetailsDescription),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(height: AppTheme.sizeMedium),
-        Container(
-          padding: const EdgeInsets.all(AppTheme.sizeMedium),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+          const SizedBox(height: AppTheme.sizeSmall),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
+            child: Text(
+              translationService.translate(SyncTranslationKeys.connectInfoServerDetailsDescription),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+              textAlign: TextAlign.center,
             ),
           ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.public,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: AppTheme.sizeSmall),
-                  Expanded(
-                    child: Text(
-                      'IP Address: $ipAddress',
-                      style: Theme.of(context).textTheme.bodyMedium,
+          const SizedBox(height: AppTheme.sizeMedium),
+          Container(
+            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.public,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppTheme.sizeSmall),
-              Row(
-                children: [
-                  Icon(
-                    Icons.network_check,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: AppTheme.sizeSmall),
-                  Expanded(
-                    child: Text(
-                      'Port: $port',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    const SizedBox(width: AppTheme.sizeSmall),
+                    Expanded(
+                      child: Text(
+                        'IP Address: $ipAddress',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppTheme.sizeMedium),
-        Center(
-          child: Text(
-            translationService.translate(SyncTranslationKeys.connectionStringTitleAlt),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
+                  ],
                 ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(height: AppTheme.sizeSmall),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
-          child: Text(
-            translationService.translate(SyncTranslationKeys.connectInfoConnectionStringDescription),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(height: AppTheme.sizeMedium),
-        Container(
-          padding: const EdgeInsets.all(AppTheme.sizeMedium),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      connectionString!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                      softWrap: true,
+                const SizedBox(height: AppTheme.sizeSmall),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.network_check,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppTheme.sizeSmall),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  icon: const Icon(Icons.copy, size: 16),
-                  label: Text(translationService.translate(SyncTranslationKeys.copy)),
-                  onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: connectionString!));
-                    if (context.mounted) {
-                      OverlayNotificationHelper.showSuccess(
-                        context: context,
-                        message: translationService.translate(SyncTranslationKeys.connectInfoConnectionStringCopied),
-                      );
-                    }
-                  },
+                    const SizedBox(width: AppTheme.sizeSmall),
+                    Expanded(
+                      child: Text(
+                        'Port: $port',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+          const SizedBox(height: AppTheme.sizeMedium),
+          Center(
+            child: Text(
+              translationService.translate(SyncTranslationKeys.connectionStringTitleAlt),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: AppTheme.sizeSmall),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
+            child: Text(
+              translationService.translate(SyncTranslationKeys.connectInfoConnectionStringDescription),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
+          Container(
+            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        connectionString!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontFamily: 'monospace',
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.sizeSmall),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.copy, size: 16),
+                    label: Text(translationService.translate(SyncTranslationKeys.copy)),
+                    onPressed: () async {
+                      await Clipboard.setData(ClipboardData(text: connectionString!));
+                      if (context.mounted) {
+                        OverlayNotificationHelper.showSuccess(
+                          context: context,
+                          message: translationService.translate(SyncTranslationKeys.connectInfoConnectionStringCopied),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

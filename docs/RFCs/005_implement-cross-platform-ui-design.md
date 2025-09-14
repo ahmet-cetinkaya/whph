@@ -65,4 +65,3 @@ Phases: 1) Theme/responsive base (Week 1), 2) Navigation (Week 2), 3) Visuals (W
 - Flutter: [Material](https://docs.flutter.dev/ui/design/material).
 - go_router: [Routing](https://pub.dev/packages/go_router).
 - fl_chart: [Visualization](https://pub.dev/packages/fl_chart).
-

@@ -11,6 +11,7 @@ This RFC proposes enhancing the sync feature's network discovery mechanism to ut
 ## Motivation
 
 Currently, the sync feature appears to select only one IP address for discovery and connection, causing failures when:
+
 - Devices are connected to multiple networks simultaneously (Wi-Fi + Ethernet)
 - Peer devices are on different subnets or can only reach non-selected IP addresses
 - Network configurations require specific interface usage
@@ -27,13 +28,13 @@ This forces users into troubleshooting network configurations or disabling inter
 abstract class INetworkInterfaceService {
   /// Get all available local IP addresses from active network interfaces
   Future<List<String>> getLocalIPAddresses();
-  
+
   /// Get detailed information about active network interfaces
   Future<List<NetworkInterfaceInfo>> getActiveNetworkInterfaces();
-  
+
   /// Check if an IP address is valid for local network communication
   bool isValidLocalIPAddress(String ipAddress);
-  
+
   /// Get preferred IP addresses sorted by connection quality/type
   Future<List<String>> getPreferredIPAddresses();
 }
@@ -113,10 +114,12 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
 Update existing sync services to broadcast on all available interfaces:
 
 **Desktop Implementation** (`src/lib/infrastructure/desktop/features/sync/desktop_sync_service.dart`):
+
 - Bind UDP broadcast sockets to all active interfaces
 - Include all local IP addresses in discovery messages
 
 **Mobile Implementation** (`src/lib/infrastructure/android/features/sync/android_sync_service.dart`):
+
 - Use all available network interfaces for peer discovery
 - Update nearby connections to work with multiple interfaces
 
@@ -132,7 +135,7 @@ class ManualIPInputDialog extends StatefulWidget {
   final String? initialPort;
   final String? initialDeviceName;
   final String? preDiscoveredDeviceId;
-  
+
   // Form validation for IP addresses and ports
   // Connection testing with timeout handling
   // Localized error messages and user feedback
@@ -160,10 +163,10 @@ class AddSyncDevicePage extends StatefulWidget {
 
 **Location**: `src/lib/core/application/features/sync/services/device_handshake_service.dart`
 
-```dart
+````dart
 class DeviceHandshakeService {
   // Verify device identity and compatibility
-  // Exchange device information securely  
+  // Exchange device information securely
   // Prevent device ID mismatches during pairing
   // Connection validation with proper error handling
 }
@@ -180,7 +183,7 @@ class SyncQRCodeMessage {
   final int port;
   final String? token; // For security
 }
-```
+````
 
 ### 9. Enhanced Sync Device Discovery
 
@@ -198,26 +201,31 @@ class EnhancedSyncDiscovery {
 ## Implementation Plan
 
 ### Phase 1: Network Interface Discovery
+
 1. Implement `NetworkInterfaceService` for IP address discovery
 2. Add platform-specific network interface detection
 3. Create tests for IP address filtering and validation
 
 ### Phase 2: Connection Enhancement
+
 1. Implement `ConcurrentConnectionService` for multi-IP connections
 2. Update existing connection logic to use new service
 3. Add connection attempt prioritization (local network first)
 
 ### Phase 3: Broadcasting Updates
+
 1. Enhance broadcasting to use all network interfaces
 2. Update QR code generation for multiple IPs
 3. Modify peer discovery to handle multiple IP addresses
 
 ### Phase 4: UI Components
+
 1. Add manual IP address entry dialog
 2. Update sync device list to show multiple IP addresses
 3. Add connection status indicators for different interfaces
 
 ### Phase 5: Integration & Testing
+
 1. Integrate all components into existing sync services
 2. Test across different network configurations
 3. Performance optimization and error handling
@@ -225,6 +233,7 @@ class EnhancedSyncDiscovery {
 ## Protocol Changes
 
 ### Discovery Message Format
+
 ```json
 {
   "deviceId": "uuid",
@@ -237,6 +246,7 @@ class EnhancedSyncDiscovery {
 ```
 
 ### Connection Attempt Strategy
+
 1. **Concurrent Attempts**: Try all IP addresses simultaneously
 2. **Timeout Handling**: 3-5 second timeout per attempt
 3. **Success Handling**: Use first successful connection, cancel others
@@ -246,16 +256,19 @@ class EnhancedSyncDiscovery {
 ## Platform Considerations
 
 ### Android
+
 - Request network permissions if not already present
 - Handle network state changes and interface updates
 - Work with existing nearby connections implementation
 
 ### Desktop (Linux/Windows)
+
 - Use native network interface enumeration
 - Handle virtual interfaces and VPN connections appropriately
 - Integrate with existing UDP broadcast implementation
 
 ### Cross-Platform
+
 - Abstract platform differences behind service interfaces
 - Maintain consistent behavior across all platforms
 - Handle platform-specific network limitations
@@ -286,18 +299,22 @@ class EnhancedSyncDiscovery {
 ## Alternatives Considered
 
 ### 1. Manual Interface Selection
+
 **Approach**: Settings dropdown for network interface selection  
 **Rejected**: Requires technical knowledge, breaks seamless UX
 
 ### 2. mDNS-Only Discovery
+
 **Approach**: Rely solely on mDNS for cross-network discovery  
 **Rejected**: Can be blocked in corporate networks, less reliable
 
 ### 3. Single IP with Fallback
+
 **Approach**: Try primary IP, fallback to others sequentially  
 **Rejected**: Slower than concurrent attempts, poor UX
 
 ### 4. Network Configuration Detection
+
 **Approach**: Automatically detect and adapt to network topology  
 **Rejected**: Complex implementation, may not cover all scenarios
 
@@ -333,6 +350,6 @@ class EnhancedSyncDiscovery {
 ## References
 
 - [Issue #53](https://github.com/ahmet-cetinkaya/whph/issues/53): Multi-interface network discovery
-- [RFC 006](./006_implement-peer-to-peer-synchronization.md): Original sync implementation  
+- [RFC 006](./006_implement-peer-to-peer-synchronization.md): Original sync implementation
 - [Flutter network_info_plus](https://pub.dev/packages/network_info_plus): Network interface detection
 - [LocalSend](https://localsend.org/): Reference implementation for multi-interface discovery

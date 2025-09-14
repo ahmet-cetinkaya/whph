@@ -281,7 +281,8 @@ class DesktopClientSyncService extends SyncService {
           if (data['success'] == true && data['paginatedSyncDataDto'] != null) {
             try {
               final dto = PaginatedSyncDataDto.fromJson(data['paginatedSyncDataDto'] as Map<String, dynamic>);
-              Logger.info('🔄 Processing sync data from server: ${dto.entityType} (page ${dto.pageIndex + 1}/${dto.totalPages})');
+              Logger.info(
+                  '🔄 Processing sync data from server: ${dto.entityType} (page ${dto.pageIndex + 1}/${dto.totalPages})');
 
               // Process the data from the server
               final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
@@ -301,14 +302,16 @@ class DesktopClientSyncService extends SyncService {
                     'clientId': await _deviceIdService.getDeviceId(),
                   },
                 );
-                _sendMessage(nextPageRequest, '📤 Requested next page ${dto.pageIndex + 1} from server for entity ${dto.entityType}');
+                _sendMessage(nextPageRequest,
+                    '📤 Requested next page ${dto.pageIndex + 1} from server for entity ${dto.entityType}');
               } else if (response.paginatedSyncDataDto != null) {
                 // Send client's data back to the server for bidirectional sync
                 final responseMessage = WebSocketMessage(
                   type: 'paginated_sync',
                   data: response.paginatedSyncDataDto!.toJson(),
                 );
-                _sendMessage(responseMessage, '📤 Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
+                _sendMessage(responseMessage,
+                    '📤 Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
               }
             } catch (e) {
               Logger.error('❌ Failed to process paginated_sync data: $e');

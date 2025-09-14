@@ -60,4 +60,3 @@ Phases: 1) Models/DB (Week 2), 2) Tracking UI (Week 3), 3) Calendar/streaks (Wee
 - Flutter: [Local Notifications](https://pub.dev/packages/flutter_local_notifications).
 - fl_chart: [Charts](https://pub.dev/packages/fl_chart).
 - Drift: [ORM](https://pub.dev/packages/drift).
-
