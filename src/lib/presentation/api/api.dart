@@ -27,6 +27,7 @@ void startWebSocketServer() async {
     final server = await HttpServer.bind(
       InternetAddress.anyIPv4,
       webSocketPort,
+      shared: true,
     );
 
     Logger.info('✅ WebSocket Server successfully started on port $webSocketPort');
