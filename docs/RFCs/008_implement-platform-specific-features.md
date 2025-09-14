@@ -64,4 +64,3 @@ Phases: 1) Desktop infra (infrastructure/desktop/, Week 9), 2) Mobile plugins (i
 - [MODULES.md: Platform-Specific Infrastructure](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L332-L353).
 - Flutter Documentation: [Platform Channels](https://docs.flutter.dev/platform-integration/platform-channels).
 - tray_manager: [Desktop Tray](https://pub.dev/packages/tray_manager).
-

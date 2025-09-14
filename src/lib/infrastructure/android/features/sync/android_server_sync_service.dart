@@ -35,7 +35,7 @@ class AndroidServerSyncService extends AndroidSyncService {
   void updateSyncStatus(SyncStatus status) {
     Logger.info('📡 AndroidServerSyncService: updateSyncStatus called with: $status');
     super.updateSyncStatus(status);
-    
+
     // Also update the main ISyncService instance if it's different
     try {
       final mainSyncService = container.resolve<ISyncService>();
@@ -48,7 +48,7 @@ class AndroidServerSyncService extends AndroidSyncService {
     } catch (e) {
       Logger.error('📡 AndroidServerSyncService: Failed to resolve main ISyncService: $e');
     }
-    
+
     Logger.info('📡 AndroidServerSyncService: updateSyncStatus completed');
   }
 
@@ -223,7 +223,7 @@ class AndroidServerSyncService extends AndroidSyncService {
 
         case 'paginated_sync':
           Logger.info('🔄 Mobile server processing paginated sync request...');
-          
+
           // Update sync status to syncing when server starts processing
           Logger.info('📡 Android server: Updating sync status to SYNCING');
           final syncingStatus = SyncStatus(
@@ -234,7 +234,7 @@ class AndroidServerSyncService extends AndroidSyncService {
           Logger.info('📡 Android server: Created sync status: $syncingStatus');
           updateSyncStatus(syncingStatus);
           Logger.info('📡 Android server: Sync status update sent to stream');
-          
+
           final paginatedSyncData = parsedMessage.data;
           if (paginatedSyncData == null) {
             throw FormatException('Paginated sync message missing data');
@@ -244,7 +244,8 @@ class AndroidServerSyncService extends AndroidSyncService {
               '📊 Mobile server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
 
           try {
-            final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final command =
+                PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
             final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
             Logger.info('✅ Mobile server paginated sync processing completed successfully');
 

@@ -537,7 +537,8 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
           if (e is TimeoutException) {
             _errorMessage = _translationService.translate(SyncTranslationKeys.connectionTestTimeout);
           } else {
-            _errorMessage = _translationService.translate(SyncTranslationKeys.connectionTestFailedGeneric, namedArgs: {'0': e.toString()});
+            _errorMessage = _translationService
+                .translate(SyncTranslationKeys.connectionTestFailedGeneric, namedArgs: {'0': e.toString()});
           }
           _isConnecting = false;
         });

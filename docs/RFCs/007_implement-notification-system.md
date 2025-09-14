@@ -61,4 +61,3 @@ Phases: 1) Plugin setup and basic scheduling (Week 5), 2) Integration with modul
 - [PRD Section 3.3: Notification System features](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/PRD.md#L110-L115).
 - Flutter Documentation: [Local Notifications](https://pub.dev/packages/flutter_local_notifications).
 - audioplayers Package: [Audio Playback](https://pub.dev/packages/audioplayers).
-

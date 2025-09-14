@@ -60,4 +60,3 @@ Phases: 1) Channels/logging (Week 6-7), 2) DB/rules (Week 8), 3) UI/analytics (W
 - Flutter: [Platform Channels](https://docs.flutter.dev/platform-integration/platform-channels).
 - fl_chart: [Charts](https://pub.dev/packages/fl_chart).
 - Drift: [ORM](https://pub.dev/packages/drift).
-

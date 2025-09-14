@@ -9,16 +9,16 @@ import 'package:whph/main.dart';
 class KebabMenu extends StatelessWidget {
   /// Translation key for the help title (optional)
   final String? helpTitleKey;
-  
+
   /// Translation key for the help markdown content (optional)
   final String? helpMarkdownContentKey;
-  
+
   /// Whether to show the help menu item (defaults to true if help keys are provided)
   final bool? showHelp;
-  
+
   /// Additional menu items to display above the help option
   final List<PopupMenuEntry<String>>? additionalMenuItems;
-  
+
   /// Callback for handling additional menu item selections
   final void Function(String value)? onMenuItemSelected;
 
@@ -73,7 +73,7 @@ class KebabMenu extends StatelessWidget {
       itemBuilder: (context) => [
         // Additional menu items first (if any)
         if (additionalMenuItems != null) ...additionalMenuItems!,
-        
+
         // Help option (at the bottom, if enabled)
         if (_shouldShowHelp)
           PopupMenuItem<String>(

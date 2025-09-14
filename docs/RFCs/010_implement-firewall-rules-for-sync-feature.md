@@ -23,7 +23,7 @@ Extending `ISetupService` in `core/application/shared/services/abstraction/i_set
 /// Checks whether a firewall rule with the specified name already exists.
 Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'});
 
-/// Adds a firewall rule for the specified application path with the given port, 
+/// Adds a firewall rule for the specified application path with the given port,
 /// protocol, and direction.
 Future<void> addFirewallRule({
   required String ruleName,
@@ -42,6 +42,7 @@ Future<void> removeFirewallRule({required String ruleName});
 #### Windows (`windows_setup_service.dart`)
 
 Uses `netsh advfirewall firewall` commands via `Process.run`:
+
 - Check: `netsh advfirewall firewall show rule name="{ruleName}"`
 - Add: `netsh advfirewall firewall add rule name="{ruleName}" dir={direction} action=allow program="{appPath}" protocol={protocol} localport={port}`
 - Remove: `netsh advfirewall firewall delete rule name="{ruleName}"`
@@ -51,6 +52,7 @@ Handles UAC elevation using PowerShell `Start-Process -Verb RunAs` for flexible 
 #### Linux (`linux_setup_service.dart`)
 
 Targets the `ufw` (Uncomplicated Firewall) tool:
+
 - Check: Parse `ufw status` output and verify both port/protocol match AND ALLOW action
 - Add: `sudo ufw allow {port}/{protocol}`
 - Remove: `sudo ufw delete allow {port}/{protocol}`
@@ -60,6 +62,7 @@ On permission failures, provides clear error messages instructing users to run c
 ### Error Handling and Idempotency
 
 All implementations:
+
 1. Use `checkFirewallRule` to verify rule existence before adding (idempotency)
 2. Capture and throw meaningful exceptions for:
    - Permission denied errors
@@ -70,6 +73,7 @@ All implementations:
 ### Integration with Sync Module
 
 The firewall rule management integrates with the existing sync setup process:
+
 1. During initial setup, the application checks for existing firewall rules
 2. If no rules exist, it attempts to add them with appropriate permissions
 3. If permission is denied, it informs the user with clear instructions

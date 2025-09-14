@@ -174,7 +174,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
         Logger.debug(
             '📊 Paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
-        
+
         try {
           final mediator = container.resolve<Mediator>();
           final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));

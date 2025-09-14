@@ -51,10 +51,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   final _settingRepository = container.resolve<ISettingRepository>();
   late final ISyncService _syncService;
   AndroidServerSyncService? _serverSyncService;
-  
+
   // Server sync event tracking
   StreamSubscription<dynamic>? _serverSyncEventSubscription;
-  
+
   // Server sync timeout tracking
   Timer? _serverSyncTimeoutTimer;
   DateTime? _lastSyncActivityTime;
@@ -91,7 +91,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     if (Platform.isAndroid) {
       _serverSyncService = container.resolve<AndroidServerSyncService>();
       Logger.info('📡 SyncDevicesPage: Resolved server sync service: ${_serverSyncService.runtimeType}');
-      
+
       // Check if they are the same instance
       if (_syncService == _serverSyncService) {
         Logger.info('📡 SyncDevicesPage: ✅ Same instance - sync status will work');
@@ -187,8 +187,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     _syncStatusSubscription = _syncService.syncStatusStream.listen((status) {
       if (mounted) {
         _currentSyncStatus = status;
-        Logger.info('📡 Sync status received: ${status.state} (manual: ${status.isManual}) - serverMode: $_isServerMode, syncActive: $_isServerSyncActive');
-        
+        Logger.info(
+            '📡 Sync status received: ${status.state} (manual: ${status.isManual}) - serverMode: $_isServerMode, syncActive: $_isServerSyncActive');
+
         // Update last sync activity time ONLY for actual sync events in server mode
         if (_isServerMode && status.state == SyncState.syncing) {
           _lastSyncActivityTime = DateTime.now();
@@ -227,11 +228,12 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     // Listen to server sync service's own sync status stream if it's different from main service
     if (_serverSyncService != _syncService) {
       Logger.info('📡 Server sync service is different from main sync service - setting up additional listener');
-      
+
       _serverSyncEventSubscription = _serverSyncService!.syncStatusStream.listen((status) {
         if (mounted) {
-          Logger.info('📡 Server sync status received from AndroidServerSyncService: ${status.state} (manual: ${status.isManual})');
-          
+          Logger.info(
+              '📡 Server sync status received from AndroidServerSyncService: ${status.state} (manual: ${status.isManual})');
+
           // Forward to main sync service to ensure UI gets updated
           _syncService.updateSyncStatus(status);
         }
@@ -245,7 +247,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     // Cancel any existing debounce timer
     _syncStatusDebounceTimer?.cancel();
 
-    Logger.info('📡 Server mode sync status update: ${status.state} (manual: ${status.isManual}, serverMode: $_isServerMode, active: $_isServerSyncActive)');
+    Logger.info(
+        '📡 Server mode sync status update: ${status.state} (manual: ${status.isManual}, serverMode: $_isServerMode, active: $_isServerSyncActive)');
 
     // Handle syncing state immediately - this is the critical path for starting animation
     if (status.state == SyncState.syncing) {
@@ -261,7 +264,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       }
       // Reset inactivity timer only on actual sync events
       _lastSyncActivityTime = DateTime.now();
-      
+
       // For syncing state, don't update lastProcessedState yet to allow continuous updates
       // but still debounce to prevent excessive setState calls
       _syncStatusDebounceTimer = Timer(const Duration(milliseconds: 200), () {
@@ -289,7 +292,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     final previousState = _lastProcessedState;
     _lastProcessedState = status.state;
 
-    Logger.info('📡 Processing server sync status change: $previousState → ${status.state} (serverMode: $_isServerMode, active: $_isServerSyncActive)');
+    Logger.info(
+        '📡 Processing server sync status change: $previousState → ${status.state} (serverMode: $_isServerMode, active: $_isServerSyncActive)');
 
     switch (status.state) {
       case SyncState.syncing:
@@ -315,7 +319,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           _syncIconAnimationController.stop();
           _syncIconAnimationController.reset();
           setState(() {});
-          
+
           if (status.state == SyncState.completed) {
             Logger.info('✅ Server sync completed successfully ($previousState → ${status.state})');
             refresh(); // Refresh device list
@@ -402,16 +406,17 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
       try {
         final isServerRunning = _serverSyncService!.isServerMode;
-        
+
         if (isServerRunning && _isServerMode) {
           // Server is running - only check for sync activity timeout, don't start animation just because server is ready
           if (_isServerSyncActive && _lastSyncActivityTime != null) {
             final now = DateTime.now();
             final inactivityTimeout = const Duration(seconds: 30); // Timeout after sync events
-            
+
             // Check for full inactivity timeout (30s after last sync activity)
             if (now.difference(_lastSyncActivityTime!) > inactivityTimeout) {
-              Logger.info('🛑 Server sync timeout - no activity for ${inactivityTimeout.inSeconds}s, stopping animation');
+              Logger.info(
+                  '🛑 Server sync timeout - no activity for ${inactivityTimeout.inSeconds}s, stopping animation');
               _handleServerSyncStop();
             }
           }
@@ -431,30 +436,26 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     Logger.info('✅ Android server sync monitoring active - animation starts only on real sync events');
   }
 
-
-
   void _handleServerSyncStop() {
     _isServerSyncActive = false;
     _lastSyncActivityTime = null;
-    
+
     if (_syncIconAnimationController.isAnimating) {
       _syncIconAnimationController.stop();
       _syncIconAnimationController.reset();
     }
-    
+
     if (mounted) {
       setState(() {});
     }
-    
+
     // Cancel timeout timer
     _serverSyncTimeoutTimer?.cancel();
     _serverSyncTimeoutTimer = null;
-    
+
     // Emit idle status
-    _syncService.updateSyncStatus(
-      const SyncStatus(state: SyncState.idle, isManual: false)
-    );
-    
+    _syncService.updateSyncStatus(const SyncStatus(state: SyncState.idle, isManual: false));
+
     Logger.info('🛑 Server sync animation stopped - sync activity ended');
   }
 

@@ -2073,7 +2073,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   bool _isDeviceInDebugMode() {
     // Use Flutter's kDebugMode constant for simpler detection
     final isDebug = kDebugMode;
-    
+
     Logger.debug('Debug mode detection: $isDebug (kDebugMode: $kDebugMode)');
     return isDebug;
   }

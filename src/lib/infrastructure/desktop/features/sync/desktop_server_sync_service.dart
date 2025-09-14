@@ -136,10 +136,8 @@ class DesktopServerSyncService extends SyncService {
       // Validate message size
       if (message.length > maxMessageSizeBytes) {
         Logger.warning('🚫 Message rejected: size ${message.length} exceeds limit $maxMessageSizeBytes');
-        _sendMessage(socket, WebSocketMessage(
-          type: 'error',
-          data: {'message': 'Message too large', 'server_type': 'desktop'}
-        ));
+        _sendMessage(
+            socket, WebSocketMessage(type: 'error', data: {'message': 'Message too large', 'server_type': 'desktop'}));
         return;
       }
 
@@ -157,10 +155,8 @@ class DesktopServerSyncService extends SyncService {
         parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
       } catch (e) {
         Logger.warning('🚫 Invalid JSON message received: $e');
-        _sendMessage(socket, WebSocketMessage(
-          type: 'error',
-          data: {'message': 'Invalid JSON format', 'server_type': 'desktop'}
-        ));
+        _sendMessage(socket,
+            WebSocketMessage(type: 'error', data: {'message': 'Invalid JSON format', 'server_type': 'desktop'}));
         return;
       }
 
@@ -171,10 +167,8 @@ class DesktopServerSyncService extends SyncService {
       // Validate message structure
       if (!_isValidWebSocketMessage(parsedMessage)) {
         Logger.warning('🚫 Invalid message structure received');
-        _sendMessage(socket, WebSocketMessage(
-          type: 'error',
-          data: {'message': 'Invalid message structure', 'server_type': 'desktop'}
-        ));
+        _sendMessage(socket,
+            WebSocketMessage(type: 'error', data: {'message': 'Invalid message structure', 'server_type': 'desktop'}));
         return;
       }
 
@@ -184,15 +178,17 @@ class DesktopServerSyncService extends SyncService {
           break;
 
         case 'test':
-          _sendMessage(socket, WebSocketMessage(
-            type: 'test_response',
-            data: {
-              'success': true,
-              'timestamp': DateTime.now().toIso8601String(),
-              'server_type': 'desktop',
-              'platform': Platform.operatingSystem,
-            },
-          ));
+          _sendMessage(
+              socket,
+              WebSocketMessage(
+                type: 'test_response',
+                data: {
+                  'success': true,
+                  'timestamp': DateTime.now().toIso8601String(),
+                  'server_type': 'desktop',
+                  'platform': Platform.operatingSystem,
+                },
+              ));
           break;
 
         case 'client_connect':
@@ -236,7 +232,8 @@ class DesktopServerSyncService extends SyncService {
               '📊 Desktop server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
 
           try {
-            final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
+            final command =
+                PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
             final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
             Logger.info('✅ Desktop server paginated sync processing completed successfully');
 
@@ -274,7 +271,8 @@ class DesktopServerSyncService extends SyncService {
           break;
 
         default:
-          _sendMessage(socket, WebSocketMessage(type: 'error', data: {'message': 'Unknown message type', 'server_type': 'desktop'}));
+          _sendMessage(socket,
+              WebSocketMessage(type: 'error', data: {'message': 'Unknown message type', 'server_type': 'desktop'}));
           // Keep connection alive in case client sends valid messages later
           break;
       }
@@ -382,7 +380,6 @@ class DesktopServerSyncService extends SyncService {
       // Acknowledge the sync start but don't immediately push data
       // The client will request data pages as needed
       Logger.info('🔄 Desktop server: Acknowledged sync start request from client');
-
     } catch (e, stackTrace) {
       Logger.error('❌ Desktop server: Failed to handle paginated_sync_start: $e');
       Logger.error('Stack trace: $stackTrace');
@@ -483,7 +480,6 @@ class DesktopServerSyncService extends SyncService {
 
         _sendMessage(socket, emptyResponseMessage, '📤 Desktop server: Sent empty response for page $pageIndex');
       }
-
     } catch (e, stackTrace) {
       Logger.error('❌ Desktop server: Failed to handle paginated_sync_request: $e');
       Logger.error('Stack trace: $stackTrace');
@@ -525,9 +521,8 @@ class DesktopServerSyncService extends SyncService {
         Logger.debug('🖥️ Desktop server heartbeat - Active connections: ${_activeConnections.length}');
 
         // Clean up closed connections and expired connections
-        final closedConnections = _activeConnections.where((ws) =>
-          ws.readyState == WebSocket.closed || _isConnectionExpired(ws)
-        ).toList();
+        final closedConnections =
+            _activeConnections.where((ws) => ws.readyState == WebSocket.closed || _isConnectionExpired(ws)).toList();
         for (final ws in closedConnections) {
           if (_isConnectionExpired(ws)) {
             Logger.debug('🕒 Closing expired connection');
@@ -668,18 +663,15 @@ class DesktopServerSyncService extends SyncService {
 
         // 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8
         return (first == 10) ||
-               (first == 172 && second >= 16 && second <= 31) ||
-               (first == 192 && second == 168) ||
-               (first == 127);
+            (first == 172 && second >= 16 && second <= 31) ||
+            (first == 192 && second == 168) ||
+            (first == 127);
       }
 
       // Check for private IPv6 ranges
       if (address.type == InternetAddressType.IPv6) {
         // fe80::/10 (link-local), ::1 (localhost), fc00::/7 (unique local)
-        return ip.startsWith('fe80:') ||
-               ip == '::1' ||
-               ip.startsWith('fc') ||
-               ip.startsWith('fd');
+        return ip.startsWith('fe80:') || ip == '::1' || ip.startsWith('fc') || ip.startsWith('fd');
       }
     } catch (e) {
       Logger.debug('Error parsing IP address $ip: $e');
@@ -705,8 +697,14 @@ class DesktopServerSyncService extends SyncService {
 
     // Check for known message types
     const validTypes = {
-      'device_info', 'test', 'client_connect', 'heartbeat',
-      'sync', 'paginated_sync_start', 'paginated_sync_request', 'paginated_sync'
+      'device_info',
+      'test',
+      'client_connect',
+      'heartbeat',
+      'sync',
+      'paginated_sync_start',
+      'paginated_sync_request',
+      'paginated_sync'
     };
 
     if (!validTypes.contains(message.type)) {

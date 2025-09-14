@@ -67,4 +67,3 @@ Phases: 1) Pairing/handshake (Week 7-8), 2) Diff/queue (Week 9), 3) Transfer (We
 - Flutter: [Connectivity](https://pub.dev/packages/connectivity_plus).
 - nearby_connections: [P2P](https://pub.dev/packages/nearby_connections).
 - Drift: [ORM](https://pub.dev/packages/drift).
-

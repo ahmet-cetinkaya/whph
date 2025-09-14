@@ -191,7 +191,6 @@ class DesktopSyncService extends SyncService {
     }
   }
 
-
   @override
   Future<void> startSync() async {
     await _startCurrentMode();

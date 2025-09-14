@@ -57,4 +57,3 @@ Phases: 1) Models/DB FTS (Week 4), 2) Editor UI (Week 5), 3) Search/linking (Wee
 - [MODULES.md: Notes Module](https://github.com/ahmet-cetinkaya/whph/blob/ea71256c1/docs/MODULES.md#L134-L160).
 - Flutter: [Markdown](https://pub.dev/packages/flutter_markdown).
 - Drift FTS5: [Full-Text Search](https://drift.simonbinder.eu/docs/advanced-features/full-text-search/).
-
