@@ -1,0 +1,6 @@
+• Clear in-app guides and simple manual setup to connect your phone and desktop effortlessly.
+• Stronger security and smoother handling when syncing with multiple devices.
+• Real-time status updates right in the app, so you always know when your data is flowing.
+• Faster syncing by breaking data into bite-sized chunks for quicker, hassle-free transfers.
+• True two-way sync that works in the background, keeping everything up-to-date without slowing you down.
+• Seamless handling of big sync sessions from start to finish on desktop.

@@ -7,6 +7,88 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2025-09-14
+
+### Added
+- Add comprehensive sync help and manual connection UI translations
+- Add security and concurrency controls to desktop sync service
+- Enhance Android server sync status monitoring and UI feedback
+- Separate paginated sync processing from completion
+- Enable bidirectional sync and async server processing
+- Handle paginated sync start and completion in desktop services
+- Implement paginated sync over persistent websocket connections
+- Add targeted device syncing for clients
+- Add i18n for connection test messages
+- Add i18n support to connection dialogs and refactor server sync service
+- Integrate device ID service and validate server config
+- Enhance connection UX with manual dialogs and desktop mode switching
+- Implement desktop sync with server and client modes
+- Start background sync after adding device
+- Add translations for manual connection and device addition UI
+- Add firewall settings translations
+- Implement multi-interface network discovery for device syncing
+- Add firewall permission management for desktop platforms
+- Automate and enhance firewall rule management for sync
+- Add firewall rule management for Linux and Windows
+- Introduce habit completion service
+- Adjust habit card counter padding and sizing
+- Refine icons and data fetching for period-based goals
+- Support multiple habit occurrences with progress tracking
+- Complete multiple habit occurrences implementation
+- Add daily target translations for multiple languages
+- Complete Phase 3-4 of multiple habit occurrences implementation
+- Implement Phase 2 - application logic for multiple occurrences
+- Implement Phase 1 - foundation for multiple daily occurrences
+- Add untitled display and auto-focus for new items
+- Add platform-specific display for quick add task dialog
+- Implement working minimized startup for Hyprland/Wayland
+- Add useParentScroll parameter to control list scrolling
+
+### Changed
+- Implement client-driven paginated sync and manual connection UI
+- Batch fetch records for period-based habits
+- Add database index and clean up dead code
+
+### Fixed
+- Add scrollability to connect info dialog tabs
+- Use tagId instead of id in task tags retrieval
+- Implement client-driven paginated sync and reconnection logic
+- Use device ID in heartbeat and add connection error i18n
+- Enhance desktop client connections with device info and ID injection
+- Add debug logging for device discovery failures
+- Enhance concurrent connection logic and device ID generation
+- Replace hardcoded error messages in add sync device page
+- Replace hardcoded error messages with translation keys in manual IP input dialog
+- Improve hashCode implementation in network interface service
+- Fix late initialization and improve hashCode in device handshake service
+- Improve connection validation and cleanup in concurrent connection service
+- Add translations for manual connection and error messages
+- Add missing program parameter to manual Windows command
+- Improve Windows firewall rule detection robustness
+- Improve port extraction regex robustness
+- Clean up FirewallPermissionCard for production
+- Replace hardcoded port 44040 with webSocketPort constant
+- Add protocol parameter to checkFirewallRule interface
+- Make Windows removeFirewallRule idempotent
+- Improve Linux firewall rule checking and removal
+- Remove firewall cleanup on application exit
+- Remove redundant firewall rule check in Linux
+- Quote netsh command arguments for Windows firewall rules
+- Resolve build failure with -Werror,-Wunused-result flags
+- Improve keyboard handling in responsive bottom sheets
+- Correct daily goal completion check and period calculation
+- Cast tagIds properly in getListHabits query
+- Resolve N+1 query performance issues in habit list and widget services
+- Add period-aware filtering for completed habits
+- Use daily scores for goal-based streak calculations
+- Remove shadows from tag time chart titles
+- Improve tag time chart title display and readability
+- Display untitled translation for empty tag names
+- Remove focusedBorder none from task title input
+- Adjust note card title text style for better density
+- Resolve tag field flickering and visibility issues in habit details
+- Improve quick add dialog stability and keyboard positioning
+
 ## [0.14.1] - 2025-09-04
 
 ### Changed
