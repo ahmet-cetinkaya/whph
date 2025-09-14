@@ -261,6 +261,17 @@ class DesktopClientSyncService extends SyncService {
           final data = response.data as Map<String, dynamic>;
           if (data['success'] == true) {
             Logger.debug('✅ Paginated sync session established with server');
+            // Initiate the actual data exchange by requesting the first data page
+            final firstDataRequest = WebSocketMessage(
+              type: 'paginated_sync_request',
+              data: {
+                'entityType': 'tasks', // Start with tasks
+                'pageIndex': 0,
+                'pageSize': 50,
+                'clientId': await _deviceIdService.getDeviceId(),
+              },
+            );
+            _sendMessage(firstDataRequest, '📤 Sent first data page request to server');
           }
           break;
 

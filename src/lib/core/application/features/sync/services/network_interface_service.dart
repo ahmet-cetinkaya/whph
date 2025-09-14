@@ -35,9 +35,14 @@ class NetworkInterfaceService implements INetworkInterfaceService {
     final List<NetworkInterfaceInfo> networkInterfaces = [];
 
     try {
-      if (PlatformUtils.isMobile) {
-        // For mobile, use network_info_plus to get WiFi info
-        await _addMobileNetworkInterfaces(networkInterfaces);
+      // Safely check if platform is mobile - handle null case in test environment
+      try {
+        if (PlatformUtils.isMobile) {
+          // For mobile, use network_info_plus to get WiFi info
+          await _addMobileNetworkInterfaces(networkInterfaces);
+        }
+      } catch (e) {
+        Logger.debug('PlatformUtils not available (likely test environment): $e');
       }
 
       // For all platforms, also use NetworkInterface for comprehensive detection
