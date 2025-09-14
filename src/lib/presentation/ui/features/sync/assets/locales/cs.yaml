@@ -111,7 +111,6 @@ sync:
     stop_menu: Zastavit server
   manual:
     connection: Manuální připojení
-    description: Zadejte IP adresu a port pro připojení k jinému zařízení
     ip_address: IP adresa
     port: Port
     device_name: Název zařízení
@@ -127,7 +126,7 @@ sync:
     connection_error: Chyba připojení
   add:
     device: Přidat zařízení
-    device_tooltip: Přidat nové synchronizační zařízení
+    device_tooltip: Přidat nové zařízení
     sync_device: Synchronizovat zařízení
     sync_device_title: Synchronizovat se zařízením
     sync_device_description: Připojte se k jinému zařízení pro synchronizaci dat

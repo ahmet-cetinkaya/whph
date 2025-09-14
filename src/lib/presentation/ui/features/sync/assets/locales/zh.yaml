@@ -111,7 +111,6 @@ sync:
     stop_menu: 停止服务器
   manual:
     connection: 手动连接
-    description: 输入 IP 地址和端口以连接到其他设备
     ip_address: IP 地址
     port: 端口
     device_name: 设备名称
@@ -127,7 +126,7 @@ sync:
     connection_error: 连接错误
   add:
     device: 添加设备
-    device_tooltip: 添加新的同步设备
+    device_tooltip: 添加新设备
     sync_device: 同步设备
     sync_device_title: 与设备同步
     sync_device_description: 连接到其他设备以同步数据

@@ -111,7 +111,6 @@ sync:
     stop_menu: 서버 중지
   manual:
     connection: 수동 연결
-    description: 다른 기기에 연결하기 위해 IP 주소와 포트를 입력하세요
     ip_address: IP 주소
     port: 포트
     device_name: 기기 이름
@@ -127,7 +126,7 @@ sync:
     connection_error: 연결 오류
   add:
     device: 기기 추가
-    device_tooltip: 새 동기화 기기 추가
+    device_tooltip: 새 기기 추가
     sync_device: 기기 동기화
     sync_device_title: 기기와 동기화
     sync_device_description: 데이터 동기화를 위해 다른 기기에 연결

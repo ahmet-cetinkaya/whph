@@ -1,4 +1,17 @@
 sync:
+  desktop:
+    mode_title: Desktop Sync Mode
+    client_mode_start: Connect as Client
+    client_mode_stop: Switch to Server Mode
+    client_mode_description: Connect to another device's server to sync data
+    server_mode_description: Allow other devices to connect and sync with this device
+    sync_mode_start: Start Client Mode
+    sync_mode_stop: Stop Client Mode
+    sync_mode_start_menu: Start Client Mode
+    sync_mode_stop_menu: Stop Client Mode
+    client_mode_starting: Starting client mode...
+    client_mode_started: Client mode started
+    client_mode_stopped: Switched back to server mode
   devices:
     errors:
       loading: Failed to load sync devices
@@ -92,6 +105,7 @@ sync:
     device_already_paired: This device is already paired
     no_active_interfaces: No active network interfaces found
     device_discovery_failed: "Failed to start device discovery: {error}"
+    no_server_configured: No server configured. Please add a sync device first or use manual connection to set up a server connection.
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully
@@ -102,6 +116,26 @@ sync:
     close_button: Close
     dialog_title: Scan QR Code to Sync
     title: Show QR Code
+    description: Other devices can scan this QR code to connect and sync with this device.
+    connection_string_title: Connection String
+    connection_string_description: Alternatively, you can share this connection string to connect devices manually.
+    connection_string_copied: Connection string copied to clipboard
+  connect_info:
+    dialog_title: Device Connection Information
+    menu_title: Connection Info
+    qr_title: QR Code
+    qr_description: Other devices can scan this QR code to connect and sync with this device.
+    connection_string_title: Connection String
+    connection_string_description: Alternatively, you can share this connection string to connect devices manually.
+    connection_string_copied: Connection string copied to clipboard
+    unknown_ip: Unknown IP
+    error_loading_connection_info: Error loading connection info
+    retry: Retry
+    manual_connection_tab: Manual Connection
+    server_details_title: Server Details
+    server_details_description: Use these server details to connect manually from another device.
+    connection_string_title_alt: Connection String
+    copy: Copy
   scanner:
     title: Scan QR Code
     instruction: Position QR code within the frame
@@ -118,7 +152,6 @@ sync:
     device_became_server: This device is now the sync server
   manual:
     connection: Manual Connection
-    description: Enter the IP address and port of the device you want to connect to manually.
     ip_address: IP Address
     port: Port
     device_name: Device Name
@@ -132,9 +165,21 @@ sync:
     invalid_port: Port must be between 1 and 65535
     connection_failed: Failed to connect to device
     connection_error: "Connection error: {0}"
+    connection_string_tab: Connection String
+    manual_entry_tab: Manual Entry
+    connection_string_required: Connection string is required
+    invalid_connection_string: Invalid connection string format
+    connection_string_label: Connection String
+    test_connection: Test Connection
+    enter_server_details: Enter server connection details manually
+    connection_timeout: Connection timeout. Please check the server address and try again.
+    connection_test_successful: Connection test successful!
+    connection_test_timeout: Connection test timeout. Please check the server address and try again.
+    connection_test_failed_no_response: Connection test failed - no response from server
+    connection_test_failed_generic: "Connection test failed: {0}"
   add:
     device: Add Device
-    device_tooltip: Add a new device via QR code scan or manual IP entry
+    device_tooltip: Add new device
     sync_device: Add Sync Device
     sync_device_title: Add Sync Device
     sync_device_description: Discover nearby devices or manually connect to sync your data across devices.

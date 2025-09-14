@@ -21,11 +21,26 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String deviceMismatchError = 'sync.errors.device_mismatch';
   static const String localIpError = 'sync.errors.local_ip_error';
   static const String deviceAlreadyPairedError = 'sync.errors.device_already_paired';
+  static const String noServerConfiguredError = 'sync.errors.no_server_configured';
 
   // QR Code Dialog
   static const String qrDialogTitle = 'sync.qr_code.dialog_title';
   static const String qrDialogCloseButton = 'sync.qr_code.close_button';
   static const String qrCodeTitle = 'sync.qr_code.title';
+  static const String qrCodeDescription = 'sync.qr_code.description';
+  static const String connectionStringTitle = 'sync.qr_code.connection_string_title';
+  static const String connectionStringDescription = 'sync.qr_code.connection_string_description';
+  static const String connectionStringCopied = 'sync.qr_code.connection_string_copied';
+
+  // Connect Info Dialog
+  static const String connectInfoDialogTitle = 'sync.connect_info.dialog_title';
+  static const String connectInfoMenuTitle = 'sync.connect_info.menu_title';
+  static const String connectInfoQrTitle = 'sync.connect_info.qr_title';
+  static const String connectInfoQrDescription = 'sync.connect_info.qr_description';
+  static const String connectInfoConnectionStringTitle = 'sync.connect_info.connection_string_title';
+  static const String connectInfoConnectionStringDescription = 'sync.connect_info.connection_string_description';
+  static const String connectInfoConnectionStringCopied = 'sync.connect_info.connection_string_copied';
+  static const String connectInfoServerDetailsDescription = 'sync.connect_info.server_details_description';
 
   // QR Scanner
   static const String scannerTitle = 'sync.scanner.title';
@@ -59,7 +74,6 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
 
   // Manual IP Entry Dialog
   static const String manualConnection = 'sync.manual.connection';
-  static const String manualConnectionDescription = 'sync.manual.description';
   static const String ipAddress = 'sync.manual.ip_address';
   static const String port = 'sync.manual.port';
   static const String deviceName = 'sync.manual.device_name';
@@ -89,7 +103,53 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String lastSeen = 'sync.add.last_seen';
   static const String alreadyAdded = 'sync.add.already_added';
 
+  // Desktop Sync Mode
+  static const String desktopSyncMode = 'sync.desktop.mode_title';
+  static const String desktopClientModeStart = 'sync.desktop.client_mode_start';
+  static const String desktopClientModeStop = 'sync.desktop.client_mode_stop';
+  static const String desktopClientModeDescription = 'sync.desktop.client_mode_description';
+  static const String desktopServerModeDescription = 'sync.desktop.server_mode_description';
+  static const String desktopSyncModeStart = 'sync.desktop.sync_mode_start';
+  static const String desktopSyncModeStop = 'sync.desktop.sync_mode_stop';
+  static const String desktopSyncModeStartMenu = 'sync.desktop.sync_mode_start_menu';
+  static const String desktopSyncModeStopMenu = 'sync.desktop.sync_mode_stop_menu';
+  static const String desktopClientModeStarting = 'sync.desktop.client_mode_starting';
+  static const String desktopClientModeStarted = 'sync.desktop.client_mode_started';
+  static const String desktopClientModeStopped = 'sync.desktop.client_mode_stopped';
+
   // Error Messages
   static const String noActiveInterfacesError = 'sync.errors.no_active_interfaces';
   static const String deviceDiscoveryFailedError = 'sync.errors.device_discovery_failed';
+
+  // Manual Connection Dialog
+  static const String connectionStringTab = 'sync.manual.connection_string_tab';
+  static const String manualEntryTab = 'sync.manual.manual_entry_tab';
+  static const String connectionStringRequired = 'sync.manual.connection_string_required';
+  static const String invalidConnectionString = 'sync.manual.invalid_connection_string';
+  static const String connectionStringLabel = 'sync.manual.connection_string_label';
+  static const String testConnection = 'sync.manual.test_connection';
+  static const String enterServerDetails = 'sync.manual.enter_server_details';
+
+  // Sync Connect Info Dialog
+  static const String unknownIp = 'sync.connect_info.unknown_ip';
+  static const String errorLoadingConnectionInfo = 'sync.connect_info.error_loading_connection_info';
+  static const String retry = 'sync.connect_info.retry';
+  static const String manualConnectionTab = 'sync.connect_info.manual_connection_tab';
+  static const String serverDetailsTitle = 'sync.connect_info.server_details_title';
+  static const String connectionStringTitleAlt = 'sync.connect_info.connection_string_title_alt';
+  static const String copy = 'sync.connect_info.copy';
+
+  // Additional connection test messages
+  static const String connectionTimeout = 'sync.manual.connection_timeout';
+  static const String connectionTestSuccessful = 'sync.manual.connection_test_successful';
+  static const String connectionTestTimeout = 'sync.manual.connection_test_timeout';
+  static const String connectionTestFailedNoResponse = 'sync.manual.connection_test_failed_no_response';
+  static const String connectionTestFailedGeneric = 'sync.manual.connection_test_failed_generic';
+ 
+  // Multi-interface connection text
+  static const String multiInterfaceConnection = 'sync.multi_interface_connection';
+  
+  // Manual connection string instruction
+  static const String manualConnectionStringInstruction = 'sync.manual.connection_string_instruction';
+  
 }
