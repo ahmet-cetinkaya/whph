@@ -304,25 +304,9 @@ class DesktopServerSyncService extends SyncService {
       socket.add(JsonMapper.serialize(response));
       Logger.info('📤 Desktop server: Sent paginated_sync_started response');
 
-      // Now trigger the actual sync process by calling the mediator
-      // This initiates the server-side sync that will send data back to the client
-      final command = PaginatedSyncCommand(targetDeviceId: clientId);
-      final syncResponse = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
-
-      // Send the sync data back to the client
-      final syncDataMessage = WebSocketMessage(
-        type: 'paginated_sync_complete',
-        data: {
-          'success': true,
-          'paginatedSyncDataDto': syncResponse.paginatedSyncDataDto?.toJson(),
-          'isComplete': syncResponse.isComplete,
-          'timestamp': DateTime.now().toIso8601String(),
-          'server_type': 'desktop',
-        },
-      );
-
-      socket.add(JsonMapper.serialize(syncDataMessage));
-      Logger.info('📤 Desktop server: Sent sync data to client via paginated_sync_complete');
+      // Start an asynchronous sync process that will send data over the persistent connection
+      Logger.info('🔄 Desktop server: Starting sync data gathering for client');
+      _startSyncDataGathering(clientId, socket);
 
     } catch (e, stackTrace) {
       Logger.error('❌ Desktop server: Failed to handle paginated_sync_start: $e');
@@ -339,6 +323,52 @@ class DesktopServerSyncService extends SyncService {
 
       socket.add(JsonMapper.serialize(errorMessage));
     }
+  }
+
+  /// Start async sync data gathering using persistent connection
+  void _startSyncDataGathering(String? clientId, WebSocket socket) {
+    // Run the sync data gathering asynchronously to avoid blocking the response
+    Future(() async {
+      try {
+        Logger.info('🔄 Desktop server: Gathering sync data for client over persistent connection');
+
+        // Use the mediator to get sync data, but keep the connection open
+        final command = PaginatedSyncCommand(targetDeviceId: clientId);
+        final syncResponse = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+
+        // Send the sync data back to the client over persistent connection
+        final syncDataMessage = WebSocketMessage(
+          type: 'paginated_sync_complete',
+          data: {
+            'success': true,
+            'paginatedSyncDataDto': syncResponse.paginatedSyncDataDto?.toJson(),
+            'isComplete': syncResponse.isComplete,
+            'timestamp': DateTime.now().toIso8601String(),
+            'server_type': 'desktop',
+          },
+        );
+
+        socket.add(JsonMapper.serialize(syncDataMessage));
+        Logger.info('📤 Desktop server: Sent sync data to client via persistent connection');
+
+      } catch (e, stackTrace) {
+        Logger.error('❌ Desktop server: Failed to gather sync data: $e');
+        Logger.error('Stack trace: $stackTrace');
+
+        final errorMessage = WebSocketMessage(
+          type: 'paginated_sync_error',
+          data: {
+            'success': false,
+            'message': 'Failed to gather sync data: ${e.toString()}',
+            'timestamp': DateTime.now().toIso8601String(),
+          },
+        );
+
+        socket.add(JsonMapper.serialize(errorMessage));
+      }
+    }).catchError((e) {
+      Logger.error('❌ Desktop server: Unhandled error in sync data gathering: $e');
+    });
   }
 
   Future<void> _handleHeartbeat(WebSocketMessage message, WebSocket socket) async {
