@@ -6,7 +6,7 @@ import 'package:whph/presentation/ui/features/notes/components/note_list_options
 import 'package:whph/presentation/ui/features/notes/components/notes_list.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/pages/note_details_page.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
@@ -87,9 +87,9 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
               initialTitle: _searchQuery,
               initialTagIds: _selectedTagIds,
             ),
-            HelpMenu(
-              titleKey: NoteTranslationKeys.helpTitle,
-              markdownContentKey: NoteTranslationKeys.helpContent,
+            KebabMenu(
+              helpTitleKey: NoteTranslationKeys.helpTitle,
+              helpMarkdownContentKey: NoteTranslationKeys.helpContent,
             ),
           ],
         ),

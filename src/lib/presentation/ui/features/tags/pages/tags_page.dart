@@ -4,7 +4,7 @@ import 'package:whph/core/application/features/tags/queries/get_list_tags_query.
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_defaults.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_list_options.dart';
@@ -177,9 +177,9 @@ class _TagsPageState extends State<TagsPage> {
           initialName: _searchFilterQuery,
           initialArchived: _showArchived,
         ),
-        HelpMenu(
-          titleKey: TagTranslationKeys.overviewHelpTitle,
-          markdownContentKey: TagTranslationKeys.overviewHelpContent,
+        KebabMenu(
+          helpTitleKey: TagTranslationKeys.overviewHelpTitle,
+          helpMarkdownContentKey: TagTranslationKeys.overviewHelpContent,
         ),
       ],
       builder: (context) => Align(
