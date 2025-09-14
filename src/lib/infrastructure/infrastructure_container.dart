@@ -48,6 +48,7 @@ import 'package:whph/infrastructure/desktop/features/single_instance/desktop_sin
 import 'package:whph/infrastructure/linux/features/file_system/linux_application_directory_service.dart';
 import 'package:whph/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/core/application/features/sync/services/device_id_service.dart';
 
 void registerInfrastructure(IContainer container) {
   // Register Logger Service
@@ -69,6 +70,11 @@ void registerInfrastructure(IContainer container) {
     }
     throw Exception('Unsupported platform for application directory service.');
   });
+
+  // Register DeviceIdService after IApplicationDirectoryService is registered
+  container.registerSingleton<IDeviceIdService>((_) => DeviceIdService(
+        applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
+      ));
 
   // Register DeviceInfoPlugin for device-specific information
   container.registerSingleton<DeviceInfoPlugin>((_) => DeviceInfoPlugin());
