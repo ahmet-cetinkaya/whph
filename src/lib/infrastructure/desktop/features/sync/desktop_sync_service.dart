@@ -19,6 +19,9 @@ class DesktopSyncService extends SyncService {
 
   final IDeviceIdService _deviceIdService;
 
+  // State guards to prevent concurrent operations
+  bool _isModeSwitching = false;
+
   DesktopSyncService(super.mediator, this._deviceIdService);
 
   /// Get current sync mode
@@ -68,40 +71,72 @@ class DesktopSyncService extends SyncService {
 
   /// Switch to specified sync mode
   Future<void> switchToMode(DesktopSyncMode mode) async {
+    // Prevent concurrent mode switches
+    if (_isModeSwitching) {
+      Logger.warning('⚠️ Mode switch already in progress, ignoring request');
+      return;
+    }
+
     if (_currentMode == mode) {
       Logger.debug('Already in ${mode.name} mode');
       return;
     }
 
-    Logger.info('🔄 Switching desktop sync from ${_currentMode.name} to ${mode.name} mode');
+    _isModeSwitching = true;
 
-    // Stop current mode
-    await _stopCurrentMode();
+    try {
+      Logger.info('🔄 Switching desktop sync from ${_currentMode.name} to ${mode.name} mode');
 
-    _currentMode = mode;
+      // Stop current mode with explicit cleanup
+      await _stopCurrentMode();
 
-    // Start new mode
-    await _startCurrentMode();
+      _currentMode = mode;
 
-    Logger.info('✅ Successfully switched to ${mode.name} mode');
+      // Start new mode
+      await _startCurrentMode();
+
+      Logger.info('✅ Successfully switched to ${mode.name} mode');
+    } finally {
+      _isModeSwitching = false;
+    }
   }
 
   Future<void> _stopCurrentMode() async {
+    Logger.debug('🛑 Stopping current sync mode: ${_currentMode.name}');
+
     // Stop periodic sync
     _periodicTimer?.cancel();
     _periodicTimer = null;
 
-    // Stop server service
+    // Stop server service with proper cleanup
     if (_serverService != null) {
-      await _serverService!.stopServer();
-      _serverService = null;
+      try {
+        Logger.debug('🛑 Stopping server service...');
+        await _serverService!.stopServer();
+        Logger.debug('✅ Server service stopped');
+      } catch (e) {
+        Logger.error('❌ Error stopping server service: $e');
+      } finally {
+        _serverService?.dispose();
+        _serverService = null;
+      }
     }
 
-    // Stop client service
+    // Stop client service with proper cleanup
     if (_clientService != null) {
-      await _clientService!.disconnectFromServer();
-      _clientService = null;
+      try {
+        Logger.debug('🛑 Disconnecting client service...');
+        await _clientService!.disconnectFromServer();
+        Logger.debug('✅ Client service disconnected');
+      } catch (e) {
+        Logger.error('❌ Error disconnecting client service: $e');
+      } finally {
+        _clientService?.dispose();
+        _clientService = null;
+      }
     }
+
+    Logger.debug('✅ Current mode stopped and cleaned up');
   }
 
   Future<void> _startCurrentMode() async {
@@ -169,7 +204,15 @@ class DesktopSyncService extends SyncService {
 
   @override
   void dispose() {
-    _stopCurrentMode();
+    Logger.debug('🗑️ Disposing DesktopSyncService');
+    try {
+      _stopCurrentMode();
+    } catch (e) {
+      Logger.error('❌ Error during disposal cleanup: $e');
+    }
     super.dispose();
   }
+
+  /// Check if the service is currently switching modes
+  bool get isModeSwitching => _isModeSwitching;
 }

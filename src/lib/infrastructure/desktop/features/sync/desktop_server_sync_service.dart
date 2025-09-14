@@ -14,6 +14,9 @@ import 'package:flutter/foundation.dart';
 
 const int webSocketPort = 44040;
 const int defaultSyncInterval = 1800; // 30 minutes in seconds
+const int maxConcurrentConnections = 10; // Maximum number of concurrent connections for security
+const int connectionTimeoutSeconds = 300; // 5 minutes timeout for idle connections
+const int maxMessageSizeBytes = 1024 * 1024; // 1MB max message size
 
 /// Desktop server sync service that acts as WebSocket server for WHPH clients
 class DesktopServerSyncService extends SyncService {
@@ -22,6 +25,8 @@ class DesktopServerSyncService extends SyncService {
   Timer? _serverKeepAlive;
   final List<WebSocket> _activeConnections = [];
   final Map<WebSocket, String> _connectionIPs = {}; // Track client IPs for each WebSocket
+  final Map<WebSocket, DateTime> _connectionTimes = {}; // Track connection start times
+  final Map<String, int> _ipConnectionCounts = {}; // Track connections per IP for rate limiting
 
   final IDeviceIdService _deviceIdService;
 
@@ -60,15 +65,39 @@ class DesktopServerSyncService extends SyncService {
     await for (HttpRequest req in _server!) {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
+          final clientIP = req.connectionInfo?.remoteAddress.address ?? '127.0.0.1';
+
+          // Check connection limits before accepting
+          if (!_canAcceptNewConnection(clientIP)) {
+            Logger.warning('🚫 Connection rejected: limits exceeded from $clientIP');
+            req.response
+              ..statusCode = HttpStatus.serviceUnavailable
+              ..headers.add('Retry-After', '60')
+              ..write('Connection limit exceeded')
+              ..close();
+            continue;
+          }
+
+          // Validate IP is from private network for security
+          if (!_isPrivateIP(clientIP)) {
+            Logger.warning('🚫 Connection rejected: non-private IP $clientIP');
+            req.response
+              ..statusCode = HttpStatus.forbidden
+              ..write('Only private network connections allowed')
+              ..close();
+            continue;
+          }
+
           final ws = await WebSocketTransformer.upgrade(req);
           _activeConnections.add(ws);
 
-          // Store the client IP for this WebSocket connection
-          final clientIP = req.connectionInfo?.remoteAddress.address ?? '127.0.0.1';
+          // Store the client IP and connection time for this WebSocket connection
           _connectionIPs[ws] = clientIP;
+          _connectionTimes[ws] = DateTime.now();
+          _ipConnectionCounts[clientIP] = (_ipConnectionCounts[clientIP] ?? 0) + 1;
 
           Logger.info(
-              '🖥️ Desktop server: Client connected from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
+              '🖥️ Desktop server: Client connected from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort} (${_activeConnections.length}/$maxConcurrentConnections)');
 
           ws.listen(
             (data) async {
@@ -77,14 +106,12 @@ class DesktopServerSyncService extends SyncService {
             },
             onError: (e) {
               Logger.error('❌ Desktop server connection error: $e');
-              _activeConnections.remove(ws);
-              _connectionIPs.remove(ws); // Clean up IP mapping
+              _cleanupConnection(ws);
               ws.close();
             },
             onDone: () {
               Logger.debug('🔚 Desktop server: Client disconnected');
-              _activeConnections.remove(ws);
-              _connectionIPs.remove(ws); // Clean up IP mapping
+              _cleanupConnection(ws);
             },
             cancelOnError: true,
           );
@@ -106,11 +133,49 @@ class DesktopServerSyncService extends SyncService {
 
   Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
     try {
+      // Validate message size
+      if (message.length > maxMessageSizeBytes) {
+        Logger.warning('🚫 Message rejected: size ${message.length} exceeds limit $maxMessageSizeBytes');
+        _sendMessage(socket, WebSocketMessage(
+          type: 'error',
+          data: {'message': 'Message too large', 'server_type': 'desktop'}
+        ));
+        return;
+      }
+
+      // Check connection timeout
+      if (_isConnectionExpired(socket)) {
+        Logger.warning('🕒 Connection expired, closing socket');
+        await socket.close();
+        return;
+      }
+
       Logger.debug('Processing message in desktop server: $message');
 
-      WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
+      WebSocketMessage? parsedMessage;
+      try {
+        parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
+      } catch (e) {
+        Logger.warning('🚫 Invalid JSON message received: $e');
+        _sendMessage(socket, WebSocketMessage(
+          type: 'error',
+          data: {'message': 'Invalid JSON format', 'server_type': 'desktop'}
+        ));
+        return;
+      }
+
       if (parsedMessage == null) {
         throw FormatException('Error parsing WebSocket message');
+      }
+
+      // Validate message structure
+      if (!_isValidWebSocketMessage(parsedMessage)) {
+        Logger.warning('🚫 Invalid message structure received');
+        _sendMessage(socket, WebSocketMessage(
+          type: 'error',
+          data: {'message': 'Invalid message structure', 'server_type': 'desktop'}
+        ));
+        return;
       }
 
       switch (parsedMessage.type) {
@@ -459,11 +524,16 @@ class DesktopServerSyncService extends SyncService {
       if (_server != null && _isServerMode) {
         Logger.debug('🖥️ Desktop server heartbeat - Active connections: ${_activeConnections.length}');
 
-        // Clean up closed connections
-        final closedConnections = _activeConnections.where((ws) => ws.readyState == WebSocket.closed).toList();
+        // Clean up closed connections and expired connections
+        final closedConnections = _activeConnections.where((ws) =>
+          ws.readyState == WebSocket.closed || _isConnectionExpired(ws)
+        ).toList();
         for (final ws in closedConnections) {
-          _activeConnections.remove(ws);
-          _connectionIPs.remove(ws); // Clean up IP mapping
+          if (_isConnectionExpired(ws)) {
+            Logger.debug('🕒 Closing expired connection');
+            ws.close();
+          }
+          _cleanupConnection(ws);
         }
 
         // Log server health for debugging
@@ -499,6 +569,8 @@ class DesktopServerSyncService extends SyncService {
       }
       _activeConnections.clear();
       _connectionIPs.clear(); // Clean up IP mappings
+      _connectionTimes.clear(); // Clean up connection times
+      _ipConnectionCounts.clear(); // Clean up IP connection counts
 
       // Close the server
       await _server?.close();
@@ -561,5 +633,106 @@ class DesktopServerSyncService extends SyncService {
       Logger.debug('Could not determine client remote IP: $e');
     }
     return '127.0.0.1'; // Fallback to localhost
+  }
+
+  /// Check if a new connection can be accepted based on limits
+  bool _canAcceptNewConnection(String clientIP) {
+    // Check total connection limit
+    if (_activeConnections.length >= maxConcurrentConnections) {
+      return false;
+    }
+
+    // Check per-IP connection limit (max 3 connections per IP)
+    final ipConnections = _ipConnectionCounts[clientIP] ?? 0;
+    if (ipConnections >= 3) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /// Check if an IP address is from a private network
+  bool _isPrivateIP(String ip) {
+    try {
+      final address = InternetAddress(ip);
+
+      // Check for private IPv4 ranges
+      if (address.type == InternetAddressType.IPv4) {
+        final parts = ip.split('.');
+        if (parts.length != 4) return false;
+
+        final first = int.tryParse(parts[0]);
+        final second = int.tryParse(parts[1]);
+
+        if (first == null || second == null) return false;
+
+        // 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8
+        return (first == 10) ||
+               (first == 172 && second >= 16 && second <= 31) ||
+               (first == 192 && second == 168) ||
+               (first == 127);
+      }
+
+      // Check for private IPv6 ranges
+      if (address.type == InternetAddressType.IPv6) {
+        // fe80::/10 (link-local), ::1 (localhost), fc00::/7 (unique local)
+        return ip.startsWith('fe80:') ||
+               ip == '::1' ||
+               ip.startsWith('fc') ||
+               ip.startsWith('fd');
+      }
+    } catch (e) {
+      Logger.debug('Error parsing IP address $ip: $e');
+      return false;
+    }
+
+    return false;
+  }
+
+  /// Check if a connection has exceeded the timeout
+  bool _isConnectionExpired(WebSocket socket) {
+    final connectionTime = _connectionTimes[socket];
+    if (connectionTime == null) return false;
+
+    final elapsed = DateTime.now().difference(connectionTime);
+    return elapsed.inSeconds > connectionTimeoutSeconds;
+  }
+
+  /// Validate WebSocket message structure
+  bool _isValidWebSocketMessage(WebSocketMessage message) {
+    // Check required fields
+    if (message.type.isEmpty) return false;
+
+    // Check for known message types
+    const validTypes = {
+      'device_info', 'test', 'client_connect', 'heartbeat',
+      'sync', 'paginated_sync_start', 'paginated_sync_request', 'paginated_sync'
+    };
+
+    if (!validTypes.contains(message.type)) {
+      Logger.debug('Unknown message type: ${message.type}');
+      return false;
+    }
+
+    return true;
+  }
+
+  /// Clean up connection tracking data
+  void _cleanupConnection(WebSocket socket) {
+    final clientIP = _connectionIPs[socket];
+
+    _activeConnections.remove(socket);
+    _connectionIPs.remove(socket);
+    _connectionTimes.remove(socket);
+
+    // Decrement IP connection count
+    if (clientIP != null) {
+      final currentCount = _ipConnectionCounts[clientIP] ?? 0;
+      if (currentCount > 1) {
+        _ipConnectionCounts[clientIP] = currentCount - 1;
+      } else {
+        _ipConnectionCounts.remove(clientIP);
+      }
+    }
   }
 }
