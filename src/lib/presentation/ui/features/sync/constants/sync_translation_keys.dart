@@ -145,4 +145,11 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String connectionTestTimeout = 'sync.manual.connection_test_timeout';
   static const String connectionTestFailedNoResponse = 'sync.manual.connection_test_failed_no_response';
   static const String connectionTestFailedGeneric = 'sync.manual.connection_test_failed_generic';
+ 
+  // Multi-interface connection text
+  static const String multiInterfaceConnection = 'sync.multi_interface_connection';
+  
+  // Manual connection string instruction
+  static const String manualConnectionStringInstruction = 'sync.manual.connection_string_instruction';
+  
 }

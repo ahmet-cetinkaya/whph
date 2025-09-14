@@ -204,7 +204,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Paste a WHPH connection string (whph://...)',
+              _translationService.translate(SyncTranslationKeys.manualConnectionStringInstruction),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
 
