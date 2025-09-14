@@ -7,53 +7,95 @@ sync:
     from_label: Mistä
     help:
       content: |
-        🔄 Pidä tehtäväsi, tapasi, muistiinpanosi, asetuksesi jne. synkronoituna kaikilla laitteillasi. Kaikki tiedot pysyvät paikallisessa verkossa — mitään ei lähetetä pilveen.
+        🔄 **Mikä on Sync?**
 
-        ## ⚡ Nopea ja turvallinen asennus
+        Sync pitää tapasi, tehtäväsi, muistiinpanosi ja tietosi ajan tasalla eri laitteilla (puhelimet, tabletit, kannettavat, työpöydät) samassa Wi-Fi-verkossa. Ei pilveä tai internetiä — tiedot pysyvät yksityisinä ja paikallisina.
 
-        Yhdistä laitteesi saman Wi-Fi-verkon kautta QR-koodeilla. Synkronointi alkaa automaattisesti parittamisen jälkeen.
+        Se on helppo käyttää: Aseta se kerralla, ja muutokset synkronoituvat automaattisesti tai pyynnöstä. Vaihda laitteita saumattomasti, kuten aloita puhelimella ja lopeta PC:llä.
 
-        - 📱 **Mobiili → Mobiili:** Yhden laitteen täytyy olla **Server-tilassa** parittamisen sallimiseksi  
-        - 💻 **Työpöytä → Mobiili:** Työpöytä näyttää QR-koodin, mobiili skannaa sen  
+        ## 🔗 **Synkronointitilat**
 
-        ## 📱 Mobiililaitteet
+        Kaikki laitteet tukevat Klientti- tai Server-tiloja joustavaan synkronointiin. Server johtaa (jakaa tietoja), Klientit liittyvät ja vaihtavat. Tarvitset ainakin yhden Serverin.
 
-        Android-laitteet voivat toimia kahdessa eri tilassa:
+        - **Klientti-tila:** Yhdistyy Serveriin synkronoimiseksi. Ihanteellinen ryhmien liittymiseen QR:llä tai manuaalisella syötteellä.
+        - **Server-tila:** Toimii keskuspaikkana; näyttää QR:n tai merkkijonon muille liittymään.
 
-        - 🔍 **Asiakastila:**  
-          - Skannaa QR-koodeja  
-          - Yhdistyy muihin laitteisiin tietojen vastaanottamiseksi  
-        - 📡 **Server-tila:**  
-          - Näyttää QR-koodin muille skannattavaksi  
-          - Lähettää tietoja yhdistettyihin laitteisiin  
-          - Voidaan vaihtaa Wi-Fi-hotspot-kuvakkeen kautta
+        **Alustahuomautukset:**
+        - **Mobiili:** Vaihda Wi-Fi-hotspot-kuvakkeen kautta. Server kannettaville keskuspaikoille.
+        - **Työpöytä (Oletus: Server):** Vaihda Sync-asetuksissa. Klientti kannettaville, jotka synkronoivat pää-PC:ihin.
 
-        Kahden mobiililaitteen synkronoimiseksi toisen täytyy olla **Server-tilassa**.
+        **Esimerkit:** Mobiili-mobiilille (yksi Server), työpöytä-mobiilille (kumpaankin suuntaan), työpöytä-työpöydälle (yksi Server, yksi Klientti).
 
-        ## 💻 Työpöytälaitteet
+        Vaihda tiloja Sync-asetuksissa; sovellus muistaa valintasi.
 
-        Työpöytäsovellukset toimivat aina **server**-soluina:
+        ## 🛠️ **Synkronoinnin Käynnistäminen**
 
-        - 🖥️ Näyttää QR-koodin parittamiseen  
-        - ✅ Hyväksyy saapuvat yhteydet automaattisesti  
-        - 🔄 Synkronoi tietoja molempiin suuntiin  
-        - 📊 Näyttää reaaliaikaisen synkronointitilan
+        Laitteiden täytyy jakaa Wi-Fi; pidä WHPH auki.
 
-        ## 🛠️ Laitteiden hallinta
+        ### **QR-Koodin Asetus**
+        1. Server: Käynnistä Server-tila Syncissä — QR ilmestyy.
+        2. Klientti: "Lisää laite" > Skannaa QR.
+        3. Yhdistyy ja synkronoi automaattisesti.
 
-        Hallitse kaikkia yhdistettyjä laitteita yhdellä paikalla:
+        Tukee kaikkia yhdistelmiä.
 
-        - 📋 Näytä yhdistetyt laitteet  
-        - ⏰ Näytä viimeisimmät synkronointiajat  
-        - 🔁 Käynnistä manuaalinen synkronointi  
-        - 🗑️ Poista vanhat tai käyttämättömät laitteet
+        ### **Yhteyden Merkkijono**
+        1. Server: Kopioi merkkijono (esim. "whph://IP:44040?...") Syncistä.
+        2. Klientti: "Lisää laite" > Manuaalinen > Liitä merkkijono > Yhdistä.
 
-        ## 💡 Parhaat käytännöt
+        Ei vaadi kameraa.
 
-        - 📶 Varmista, että kaikki laitteet ovat samassa Wi-Fi-verkossa  
-        - 📱 Pidä sovellukset auki ja aktiivisina synkronoinnin aikana  
-        - 🧹 Poista laitteet, joita et enää käytä  
-        - ⏱️ Tarkista synkronointiajat varmistaaksesi, että kaikki on ajan tasalla
+        ### **Manuaalinen Syöttö**
+        1. Server: Merkitse IP/portti (oletus 44040) Yhteyden tiedoista.
+        2. Klientti: "Lisää laite" > Manuaalinen > Syötä IP, portti, nimi > Testaa > Yhdistä.
+
+        **Työpöydän Klientit:** Vaihda Klientti-tilaan ensin, sitten yhdistä. Synkronoi automaattisesti; vaihda takaisin milloin tahansa.
+
+        Ota käyttöön automaattinen uudelleenyhteys asetuksissa luotettavuuden vuoksi.
+
+        ## 📋 **Laitteiden Hallinta**
+
+        - **Näytä:** Näet laitteet, synkronointiajat, tilan Sync-asetuksissa.
+        - **Manuaalinen Sync:** Napauta nappia per laite.
+        - **Poista:** Valitse ja poista synkronoinnin lopettamiseksi.
+
+        ## 🔧 **Vianetsintä**
+
+        **Yhteysongelmat:**
+        1. Sama Wi-Fi? Ei VPN:ää.
+        2. Käynnistä sovellus uudelleen.
+        3. Vahvista Server-tila.
+        4. Testaa ilman palomuuria.
+
+        **Ei laitteita?**
+        - Vakaa Wi-Fi, ei proxyja.
+        - Päivitä skannaus.
+        - Käytä manuaalista IP:tä.
+
+        **Sync Epäonnistuu/Aikakatkot:**
+        1. Manuaalinen sync.
+        2. Vastaa sovelluksen versioita.
+        3. Odota suuria tietoja.
+
+        **Palomuuri (Portti 44040):**
+
+        Jos yhteydet eivät toimi, tietokoneesi palomuuri saattaa estää sync-signaalin. Avaa portti 44040, jotta laitteet voivat kommunikoida paikallisesti — se on turvallista kotiverkollesi.
+
+        **Windows (GUI):**
+        1. Avaa Defender Palomuuri > Edistynyt > Saapuvat säännöt > Uusi sääntö.
+        2. Portti > TCP > 44040 > Salli > Kaikki profiilit > Nimi "WHPH Sync" > Valmis.
+
+        **Windows (Admin CMD):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        Vinkkejä: Käynnistä reititin uudelleen, käytä yksityisiä verkkoja. Yhdistä uudelleen "ei löytynyt" virheissä.
       title: Laitteiden synkronointiapu
     last_sync_label: Viimeisin synkronointi
     no_devices_found: Ei synkronoituja laitteita
@@ -85,6 +127,7 @@ sync:
     device_already_paired: Laite on jo paritettu
     no_active_interfaces: Ei aktiivisia verkkoliittymiä
     device_discovery_failed: Laitteen löytäminen epäonnistui
+    no_server_configured: Ei serveriä konfiguroitu. Lisää ensin synkronointilaite tai käytä manuaalista yhteyttä server-yhteyden asettamiseksi.
   messages:
     device_already_paired: Tämä laite on jo paritettu
     sync_completed: Synkronointi valmistui onnistuneesti
@@ -95,6 +138,10 @@ sync:
     close_button: Sulje
     dialog_title: Skannaa QR-koodi synkronoimiseksi
     title: QR-koodi
+    description: Muut laitteet voivat skannata tämän QR-koodin yhdistääkseen ja synkronoidakseen tämän laitteen kanssa.
+    connection_string_title: Yhteysmerkkijono
+    connection_string_description: Vaihtoehtoisesti voit jakaa tämän yhteysmerkkijonon manuaaliseen laiteluonnisteluun.
+    connection_string_copied: Yhteysmerkkijono kopioitu leikepöydälle
   scanner:
     title: Skannaa QR-koodi
     instruction: Sijoita QR-koodi kehykseen
@@ -124,6 +171,19 @@ sync:
     invalid_port: Virheellinen porttinumero
     connection_failed: Yhteys epäonnistui
     connection_error: Yhteysvirhe
+    connection_string_tab: Yhteysmerkkijono
+    manual_entry_tab: Manuaalinen syöttö
+    connection_string_required: Yhteysmerkkijono vaaditaan
+    invalid_connection_string: Virheellinen yhteysmerkkijono muoto
+    connection_string_label: Yhteysmerkkijono
+    test_connection: Testaa yhteys
+    enter_server_details: Syötä server-yhteyden tiedot manuaalisesti
+    connection_timeout: Yhteys aikakatkaistu. Tarkista server-osoite ja yritä uudelleen.
+    connection_test_successful: Yhteyden testi onnistui!
+    connection_test_timeout: Yhteyden testin aikakatkaistu. Tarkista server-osoite ja yritä uudelleen.
+    connection_test_failed_no_response: Yhteyden testi epäonnistui - ei vastausta serveriltä
+    connection_test_failed_generic: "Yhteyden testi epäonnistui: {0}"
+    connection_string_instruction: Liitä tähän server-laitteen tarjoama yhteysmerkkijono manuaaliseen yhdistämiseen.
   add:
     device: Lisää laite
     device_tooltip: Lisää uusi laite
@@ -138,3 +198,36 @@ sync:
     refresh_scan: Päivitä skannaus
     last_seen: Viimeksi nähty
     already_added: Jo lisätty
+
+  connect_info:
+    dialog_title: Laitteen yhteys tiedot
+    menu_title: Yhteyden tiedot
+    qr_title: QR-koodi
+    qr_description: Muut laitteet voivat skannata tämän QR-koodin yhdistääkseen ja synkronoidakseen tämän laitteen kanssa.
+    connection_string_title: Yhteysmerkkijono
+    connection_string_description: Vaihtoehtoisesti voit jakaa tämän yhteysmerkkijonon manuaaliseen laiteluonnisteluun.
+    connection_string_copied: Yhteysmerkkijono kopioitu leikepöydälle
+    server_details_description: Käytä näitä server-tietoja manuaaliseen yhdistämiseen muusta laitteesta.
+    unknown_ip: Tuntematon IP
+    error_loading_connection_info: Virhe yhteyden tietojen latauksessa
+    retry: Yritä uudelleen
+    manual_connection_tab: Manuaalinen yhteys
+    server_details_title: Server-tiedot
+    connection_string_title_alt: Yhteysmerkkijono
+    copy: Kopioi
+
+  desktop:
+    mode_title: Työpöydän synkronointitila
+    client_mode_start: Yhdistä asiakastilassa
+    client_mode_stop: Vaihda server-tilaan
+    client_mode_description: Yhdistä toisen laitteen serveriin tietojen synkronoimiseksi
+    server_mode_description: Salli muiden laitteiden yhdistää ja synkronoida tämän laitteen kanssa
+    sync_mode_start: Käynnistä asiakastila
+    sync_mode_stop: Lopeta asiakastila
+    sync_mode_start_menu: Käynnistä asiakastila
+    sync_mode_stop_menu: Lopeta asiakastila
+    client_mode_starting: Käynnistetään asiakastilaa...
+    client_mode_started: Asiakastila käynnistetty
+    client_mode_stopped: Palattu server-tilaan
+
+  multi_interface_connection: Moniliitäntäyhteys

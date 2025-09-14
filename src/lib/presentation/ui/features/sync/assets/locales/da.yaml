@@ -7,53 +7,95 @@ sync:
     from_label: Fra
     help:
       content: |
-        🔄 Hold dine opgaver, vaner, noter, indstillinger osv. synkroniseret på tværs af alle dine enheder. Alle data forbliver inden for dit lokale netværk — intet sendes til skyen.
+        🔄 **Hvad er Sync?**
 
-        ## ⚡ Hurtig og sikker opsætning
+        Sync holder dine vaner, opgaver, noter og data opdateret på tværs af enheder (telefoner, tablets, laptops, desktops) på samme Wi-Fi. Ingen cloud eller internet — data forbliver private og lokale.
 
-        Forbind dine enheder via det samme Wi-Fi-netværk ved hjælp af QR-koder. Synkronisering starter automatisk efter parring.
+        Det er enkelt at bruge: Opsæt det én gang, og ændringer synkroniseres automatisk eller på forespørgsel. Skift mellem enheder sømløst, som at starte på din telefon og afslutte på din PC.
 
-        - 📱 **Mobil → Mobil:** En enhed skal være i **Server-tilstand** for at tillade parring  
-        - 💻 **Desktop → Mobil:** Desktop viser en QR-kode, mobil scanner den  
+        ## 🔗 **Sync-tilstande**
 
-        ## 📱 Mobile enheder
+        Alle enheder understøtter Klient- eller Server-tilstande for fleksibel synkronisering. Server leder (deler data), Klienter tilslutter og udveksler. Du har brug for mindst én Server.
 
-        Android-enheder kan arbejde i to forskellige tilstande:
+        - **Klient-tilstand:** Tilslutter til en Server for at synkronisere. Ideel til at tilslutte grupper via QR eller manuel input.
+        - **Server-tilstand:** Fungerer som hub; viser QR eller streng for andre at tilslutte.
 
-        - 🔍 **Klient-tilstand:**  
-          - Scanner QR-koder  
-          - Forbinder til andre enheder for at modtage data  
-        - 📡 **Server-tilstand:**  
-          - Viser QR-kode for andre at scanne  
-          - Sender data til tilsluttede enheder  
-          - Kan skiftes via Wi-Fi-hotspot-ikonet
+        **Platform-bemærkninger:**
+        - **Mobil:** Skift via Wi-Fi hotspot-ikonet. Server for bærbare hubs.
+        - **Desktop (Standard: Server):** Skift i Sync-indstillinger. Klient for laptops, der synkroniserer til hoved-PC'er.
 
-        For at synkronisere mellem to mobile enheder skal en være i **Server-tilstand**.
+        **Eksempler:** Mobil-til-mobil (én Server), desktop-til-mobil (begge veje), desktop-til-desktop (én Server, én Klient).
 
-        ## 💻 Desktop-enheder
+        Skift tilstande i Sync-indstillinger; appen husker dit valg.
 
-        Desktop-applikationer fungerer altid som **server**-noder:
+        ## 🛠️ **Aktivering af Sync**
 
-        - 🖥️ Viser QR-kode til parring  
-        - ✅ Accepterer indgående forbindelser automatisk  
-        - 🔄 Synkroniserer data i begge retninger  
-        - 📊 Viser live synkroniseringsstatus
+        Enheder skal dele Wi-Fi; hold WHPH åben.
 
-        ## 🛠️ Enhedsadministration
+        ### **QR-kode-opsætning**
+        1. Server: Start Server-tilstand i Sync — QR vises.
+        2. Klient: "Tilføj enhed" > Scan QR.
+        3. Auto-forbinder og synkroniserer.
 
-        Administrer alle tilsluttede enheder ét sted:
+        Understøtter alle kombinationer.
 
-        - 📋 Vis tilsluttede enheder  
-        - ⏰ Se sidste synkroniseringstider  
-        - 🔁 Udløs manuel synkronisering  
-        - 🗑️ Fjern gamle eller ubrugte enheder
+        ### **Forbindelsesstreng**
+        1. Server: Kopier streng (f.eks. "whph://IP:44040?...") fra Sync.
+        2. Klient: "Tilføj enhed" > Manuel > Indsæt streng > Tilslut.
 
-        ## 💡 Bedste praksis
+        Ingen kamera kræves.
 
-        - 📶 Sørg for, at alle enheder er på samme Wi-Fi-netværk  
-        - 📱 Hold apps åbne og aktive under synkronisering  
-        - 🧹 Fjern enheder, du ikke længere bruger  
-        - ⏱️ Tjek synkroniseringstider for at sikre, at alt er opdateret
+        ### **Manuel indtastning**
+        1. Server: Notér IP/port (standard 44040) fra Forbindelsesinfo.
+        2. Klient: "Tilføj enhed" > Manuel > Indtast IP, port, navn > Test > Tilslut.
+
+        **Desktop-klienter:** Skift til Klient-tilstand først, derefter tilslut. Auto-synkroniserer; skift tilbage når som helst.
+
+        Aktivér auto-genforbindelse i indstillinger for pålidelighed.
+
+        ## 📋 **Håndtering af enheder**
+
+        - **Vis:** Se enheder, synkroniseringstider, status i Sync-indstillinger.
+        - **Manuel Sync:** Tryk knap pr. enhed.
+        - **Fjern:** Vælg og fjern for at stoppe synkronisering.
+
+        ## 🔧 **Fejlfinding**
+
+        **Forbindelsesproblemer:**
+        1. Samme Wi-Fi? Ingen VPN'er.
+        2. Genstart app.
+        3. Bekræft Server-tilstand.
+        4. Test uden firewall.
+
+        **Ingen enheder?**
+        - Stabil Wi-Fi, ingen proxies.
+        - Opdater scan.
+        - Brug manuel IP.
+
+        **Sync fejler/timeouts:**
+        1. Manuel sync.
+        2. Match app-versioner.
+        3. Vent på store data.
+
+        **Firewall (Port 44040):**
+
+        Hvis forbindelser ikke virker, kan din computers firewall blokere sync-signalet. Åbn port 44040 for at lade enheder kommunikere lokalt — det er sikkert for dit hjemmenetværk.
+
+        **Windows (GUI):**
+        1. Åbn Defender Firewall > Avanceret > Indgående regler > Ny regel.
+        2. Port > TCP > 44040 > Tillad > Alle profiler > Navn "WHPH Sync" > Færdig.
+
+        **Windows (Admin CMD):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        Tips: Genstart router, brug private netværk. Gen-par ved "ikke fundet" fejl.
       title: Hjælp til enhedssynkronisering
     last_sync_label: Sidste synkronisering
     no_devices_found: Ingen synkroniserede enheder
@@ -85,6 +127,7 @@ sync:
     device_already_paired: Enhed allerede parret
     no_active_interfaces: Ingen aktive netværksgrænseflader
     device_discovery_failed: Enhedsopdagelse mislykkedes
+    no_server_configured: Ingen server konfigureret. Tilføj først en synkroniseringsenhed eller brug manuel forbindelse til at opsætte serverforbindelse.
   messages:
     device_already_paired: Denne enhed er allerede parret
     sync_completed: Synkronisering fuldført succesfuldt
@@ -95,6 +138,10 @@ sync:
     close_button: Luk
     dialog_title: Scan QR-kode for at synkronisere
     title: QR-kode
+    description: Andre enheder kan scanne denne QR-kode for at forbinde og synkronisere med denne enhed.
+    connection_string_title: Forbindelsesstreng
+    connection_string_description: Alternativt kan du dele denne forbindelsesstreng for at forbinde enheder manuelt.
+    connection_string_copied: Forbindelsesstreng kopieret til udklipsholder
   scanner:
     title: Scan QR-kode
     instruction: Placer QR-koden inden for rammen
@@ -124,6 +171,19 @@ sync:
     invalid_port: Ugyldigt portnummer
     connection_failed: Forbindelse mislykkedes
     connection_error: Forbindelsesfejl
+    connection_string_tab: Forbindelsesstreng
+    manual_entry_tab: Manuel indtastning
+    connection_string_required: Forbindelsesstreng er påkrævet
+    invalid_connection_string: Ugyldigt forbindelsesstrengformat
+    connection_string_label: Forbindelsesstreng
+    test_connection: Test forbindelse
+    enter_server_details: Indtast serverforbindelsesdetaljer manuelt
+    connection_timeout: Forbindelse timeout. Tjek serveradressen og prøv igen.
+    connection_test_successful: Forbindelsetest succesfuld!
+    connection_test_timeout: Forbindelsetest timeout. Tjek serveradressen og prøv igen.
+    connection_test_failed_no_response: Forbindelsetest mislykkedes - ingen svar fra server
+    connection_test_failed_generic: "Forbindelsetest mislykkedes: {0}"
+    connection_string_instruction: Indsæt forbindelsesstrengen leveret af serverenheden her for manuel forbindelse.
   add:
     device: Tilføj enhed
     device_tooltip: Tilføj en ny enhed
@@ -138,3 +198,36 @@ sync:
     refresh_scan: Opdater scan
     last_seen: Sidst set
     already_added: Allerede tilføjet
+
+  connect_info:
+    dialog_title: Enhedsforbindelsesinformation
+    menu_title: Forbindelsesinfo
+    qr_title: QR-kode
+    qr_description: Andre enheder kan scanne denne QR-kode for at forbinde og synkronisere med denne enhed.
+    connection_string_title: Forbindelsesstreng
+    connection_string_description: Alternativt kan du dele denne forbindelsesstreng for at forbinde enheder manuelt.
+    connection_string_copied: Forbindelsesstreng kopieret til udklipsholder
+    server_details_description: Brug disse serverdetaljer til at forbinde manuelt fra en anden enhed.
+    unknown_ip: Ukendt IP
+    error_loading_connection_info: Fejl ved indlæsning af forbindelsesinfo
+    retry: Prøv igen
+    manual_connection_tab: Manuel forbindelse
+    server_details_title: Serverdetaljer
+    connection_string_title_alt: Forbindelsesstreng
+    copy: Kopier
+
+  desktop:
+    mode_title: Desktop Synkroniseringsmode
+    client_mode_start: Forbind som klient
+    client_mode_stop: Skift til servermode
+    client_mode_description: Forbind til en anden enheds server for at synkronisere data
+    server_mode_description: Tillad andre enheder at forbinde og synkronisere med denne enhed
+    sync_mode_start: Start klientmode
+    sync_mode_stop: Stop klientmode
+    sync_mode_start_menu: Start klientmode
+    sync_mode_stop_menu: Stop klientmode
+    client_mode_starting: Starter klientmode...
+    client_mode_started: Klientmode startet
+    client_mode_stopped: Skiftet tilbage til servermode
+
+  multi_interface_connection: Multi-interface forbindelse

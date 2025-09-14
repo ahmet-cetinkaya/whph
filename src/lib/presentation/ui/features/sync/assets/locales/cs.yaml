@@ -7,53 +7,95 @@ sync:
     from_label: Od
     help:
       content: |
-        🔄 Udržujte své úkoly, návyky, poznámky, nastavení atd. synchronizované napříč všemi svými zařízeními. Všechna data zůstávají v místní síti — nic se neposílá do cloudu.
+        🔄 **Co je Sync?**
 
-        ## ⚡ Rychlé a bezpečné nastavení
+        Sync udržuje vaše návyky, úkoly, poznámky a data aktualizované napříč zařízeními (telefony, tablety, notebooky, desktopy) ve stejné Wi-Fi síti. Žádný cloud nebo internet — data zůstávají soukromá a lokální.
 
-        Připojte svá zařízení přes stejnou Wi-Fi síť pomocí QR kódů. Synchronizace se spustí automaticky po spárování.
+        Je jednoduché na použití: Nastavte to jednou a změny se synchronizují automaticky nebo na požádání. Přepínejte mezi zařízeními plynule, např. začněte na telefonu a dokončete na PC.
 
-        - 📱 **Mobil → Mobil:** Jedno zařízení musí být v **režimu serveru** pro umožnění spárování  
-        - 💻 **Desktop → Mobil:** Desktop zobrazí QR kód, mobil ho naskenuje  
+        ## 🔗 **Režimy Sync**
 
-        ## 📱 Mobilní zařízení
+        Všechna zařízení podporují režimy Klienta nebo Serveru pro flexibilní synchronizaci. Server vede (sdílí data), Klienti se připojují a vyměňují. Potřebujete nejméně jeden Server.
 
-        Android zařízení mohou pracovat ve dvou různých režimech:
+        - **Režim klienta:** Připojuje se k Serveru pro synchronizaci. Ideální pro připojení k skupinám přes QR nebo manuální vstup.
+        - **Režim serveru:** Funguje jako uzel; zobrazuje QR nebo řetězec pro připojení ostatních.
 
-        - 🔍 **Režim klienta:**  
-          - Skenuje QR kódy  
-          - Připojuje se k jiným zařízením pro příjem dat  
-        - 📡 **Režim serveru:**  
-          - Zobrazuje QR kód pro skenování ostatními  
-          - Odesílá data do připojených zařízení  
-          - Lze přepnout přes ikonu Wi-Fi hotspotu
+        **Poznámky k platformám:**
+        - **Mobil:** Přepínejte přes ikonu Wi-Fi hotspotu. Server pro přenosné uzly.
+        - **Desktop (Výchozí: Server):** Přepínejte v nastavení Sync. Klient pro notebooky synchronizující s hlavními PC.
 
-        Pro synchronizaci mezi dvěma mobilními zařízeními musí jedno být v **režimu serveru**.
+        **Příklady:** Mobil-k-mobilu (jeden Server), desktop-k-mobilu (obě cesty), desktop-k-desktopu (jeden Server, jeden Klient).
 
-        ## 💻 Desktopová zařízení
+        Přepínejte režimy v nastavení Sync; aplikace si zapamatuje vaši volbu.
 
-        Desktopové aplikace vždy fungují jako **serverové** uzly:
+        ## 🛠️ **Povolení Sync**
 
-        - 🖥️ Zobrazují QR kód pro spárování  
-        - ✅ Automaticky přijímají příchozí připojení  
-        - 🔄 Synchronizují data oběma směry  
-        - 📊 Zobrazují živý stav synchronizace
+        Zařízení musí sdílet Wi-Fi; udržujte WHPH otevřený.
 
-        ## 🛠️ Správa zařízení
+        ### **Nastavení QR Kódu**
+        1. Server: Spusťte režim Serveru v Sync — objeví se QR.
+        2. Klient: "Přidat zařízení" > Skenovat QR.
+        3. Automaticky se připojí a synchronizuje.
 
-        Spravujte všechna připojená zařízení na jednom místě:
+        Podporuje všechny kombinace.
 
-        - 📋 Zobrazte připojená zařízení  
-        - ⏰ Zobrazte poslední časy synchronizace  
-        - 🔁 Spusťte manuální synchronizaci  
-        - 🗑️ Odstraňte stará nebo nepoužívaná zařízení
+        ### **Řetězec Připojení**
+        1. Server: Zkopírujte řetězec (např. "whph://IP:44040?...") ze Sync.
+        2. Klient: "Přidat zařízení" > Manuální > Vložit řetězec > Připojit.
 
-        ## 💡 Nejlepší postupy
+        Není potřeba kamera.
 
-        - 📶 Ujistěte se, že všechna zařízení jsou ve stejné Wi-Fi síti  
-        - 📱 Během synchronizace držte aplikace otevřené a aktivní  
-        - 🧹 Odstraňte zařízení, která již nepoužíváte  
-        - ⏱️ Zkontrolujte časy synchronizace, aby bylo vše aktuální
+        ### **Manuální Vstup**
+        1. Server: Zapište IP/port (výchozí 44040) z Informací o připojení.
+        2. Klient: "Přidat zařízení" > Manuální > Zadat IP, port, název > Test > Připojit.
+
+        **Desktopoví Klienti:** Nejprve přepněte do režimu Klienta, pak se připojte. Automaticky synchronizuje; přepněte zpět kdykoli.
+
+        Povolte automatické opětovné připojení v nastavení pro spolehlivost.
+
+        ## 📋 **Správa Zařízení**
+
+        - **Zobrazit:** Vidíte zařízení, časy synchronizace, stav v nastavení Sync.
+        - **Manuální Sync:** Klepněte na tlačítko pro každé zařízení.
+        - **Odstranit:** Vyberte a odstraňte pro zastavení synchronizace.
+
+        ## 🔧 **Řešení problémů**
+
+        **Problémy s připojením:**
+        1. Stejná Wi-Fi? Žádné VPN.
+        2. Restartujte aplikaci.
+        3. Ověřte režim Serveru.
+        4. Testujte bez firewallu.
+
+        **Žádná zařízení?**
+        - Stabilní Wi-Fi, žádné proxy.
+        - Obnovte sken.
+        - Použijte manuální IP.
+
+        **Selhání Sync/Timeouts:**
+        1. Manuální sync.
+        2. Shodněte verze aplikací.
+        3. Počkejte na velká data.
+
+        **Firewall (Port 44040):**
+
+        Pokud připojení nefungují, firewall vašeho počítače může blokovat signál sync. Otevřete port 44040, aby zařízení mohla lokálně komunikovat — je bezpečné pro vaši domácí síť.
+
+        **Windows (GUI):**
+        1. Otevřete Defender Firewall > Pokročilé > Pravidla příchozích > Nové pravidlo.
+        2. Port > TCP > 44040 > Povolit > Všechny profily > Název "WHPH Sync" > Dokončit.
+
+        **Windows (Admin CMD):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        Tipy: Restartujte router, používejte soukromé sítě. Znovu spárujte při chybách "nenalezeno".
       title: Nápověda ke synchronizaci zařízení
     last_sync_label: Poslední synchronizace
     no_devices_found: Žádná synchronizovaná zařízení
@@ -85,6 +127,7 @@ sync:
     device_already_paired: Zařízení již spárováno
     no_active_interfaces: Žádné aktivní síťové rozhraní
     device_discovery_failed: Objevování zařízení selhalo
+    no_server_configured: Žádný server není nakonfigurován. Nejprve přidejte synchronizační zařízení nebo použijte manuální připojení k nastavení serverového připojení.
   messages:
     device_already_paired: Toto zařízení je již spárováno
     sync_completed: Synchronizace dokončena úspěšně
@@ -95,6 +138,10 @@ sync:
     close_button: Zavřít
     dialog_title: Naskenujte QR kód pro synchronizaci
     title: QR Kód
+    description: Jiná zařízení mohou naskenovat tento QR kód pro připojení a synchronizaci s tímto zařízením.
+    connection_string_title: Připojovací řetězec
+    connection_string_description: Alternativně můžete sdílet tento připojovací řetězec pro manuální připojení zařízení.
+    connection_string_copied: Připojovací řetězec zkopírován do schránky
   scanner:
     title: Naskenujte QR kód
     instruction: Umístěte QR kód do rámečku
@@ -124,6 +171,19 @@ sync:
     invalid_port: Neplatné číslo portu
     connection_failed: Připojení selhalo
     connection_error: Chyba připojení
+    connection_string_tab: Připojovací řetězec
+    manual_entry_tab: Manuální zadání
+    connection_string_required: Připojovací řetězec je povinný
+    invalid_connection_string: Neplatný formát připojovacího řetězce
+    connection_string_label: Připojovací řetězec
+    test_connection: Testovat připojení
+    enter_server_details: Zadejte detaily serverového připojení manuálně
+    connection_timeout: Připojení vypršelo. Zkontrolujte adresu serveru a zkuste to znovu.
+    connection_test_successful: Test připojení úspěšný!
+    connection_test_timeout: Test připojení vypršel. Zkontrolujte adresu serveru a zkuste to znovu.
+    connection_test_failed_no_response: Test připojení selhal - žádná odpověď ze serveru
+    connection_test_failed_generic: "Test připojení selhal: {0}"
+    connection_string_instruction: Sem vložte připojovací řetězec poskytnutý serverovým zařízením pro manuální připojení.
   add:
     device: Přidat zařízení
     device_tooltip: Přidat nové zařízení
@@ -138,3 +198,36 @@ sync:
     refresh_scan: Obnovit sken
     last_seen: Naposledy viděno
     already_added: Již přidáno
+
+  connect_info:
+    dialog_title: Informace o připojení zařízení
+    menu_title: Informace o připojení
+    qr_title: QR kód
+    qr_description: Jiná zařízení mohou naskenovat tento QR kód pro připojení a synchronizaci s tímto zařízením.
+    connection_string_title: Připojovací řetězec
+    connection_string_description: Alternativně můžete sdílet tento připojovací řetězec pro manuální připojení zařízení.
+    connection_string_copied: Připojovací řetězec zkopírován do schránky
+    server_details_description: Použijte tyto detaily serveru pro manuální připojení z jiného zařízení.
+    unknown_ip: Neznámá IP
+    error_loading_connection_info: Chyba při načítání informací o připojení
+    retry: Znovu
+    manual_connection_tab: Manuální připojení
+    server_details_title: Detaily serveru
+    connection_string_title_alt: Připojovací řetězec
+    copy: Kopírovat
+
+  desktop:
+    mode_title: Režim synchronizace na desktopu
+    client_mode_start: Připojit se jako klient
+    client_mode_stop: Přepnout do režimu serveru
+    client_mode_description: Připojte se k serveru jiného zařízení pro synchronizaci dat
+    server_mode_description: Umožněte jiným zařízením připojit se a synchronizovat s tímto zařízením
+    sync_mode_start: Spustit režim klienta
+    sync_mode_stop: Zastavit režim klienta
+    sync_mode_start_menu: Spustit režim klienta
+    sync_mode_stop_menu: Zastavit režim klienta
+    client_mode_starting: Spouštění režimu klienta...
+    client_mode_started: Režim klienta spuštěn
+    client_mode_stopped: Přepnuto zpět do režimu serveru
+
+  multi_interface_connection: Připojení přes více rozhraní

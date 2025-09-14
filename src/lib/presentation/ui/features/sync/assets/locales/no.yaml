@@ -1,4 +1,17 @@
 sync:
+  desktop:
+    mode_title: Desktop Synkroniseringsmodus
+    client_mode_start: Koble som klient
+    client_mode_stop: Bytt til servermodus
+    client_mode_description: Koble til en annen enhets server for å synkronisere data
+    server_mode_description: Tillat andre enheter å koble til og synkronisere med denne enheten
+    sync_mode_start: Start klientmodus
+    sync_mode_stop: Stopp klientmodus
+    sync_mode_start_menu: Start klientmodus
+    sync_mode_stop_menu: Stopp klientmodus
+    client_mode_starting: Starter klientmodus...
+    client_mode_started: Klientmodus startet
+    client_mode_stopped: Byttet tilbake til servermodus
   devices:
     errors:
       loading: Feil ved lasting av synkroniseringsenheter
@@ -7,53 +20,95 @@ sync:
     from_label: Fra
     help:
       content: |
-        🔄 Hold oppgavene, vanene, notatene, innstillingene osv. synkronisert på alle enhetene dine. Alle data forblir i det lokale nettverket — ingenting sendes til skyen.
+        🔄 **Hva er Sync?**
 
-        ## ⚡ Rask og sikker oppsett
+        Sync holder vanene, oppgavene, notatene og dataene dine oppdatert på tvers av enheter (telefoner, nettbrett, bærbare datamaskiner, stasjonære) på samme Wi-Fi. Ingen sky eller internett — data forblir private og lokale.
 
-        Koble enhetene dine via det samme Wi-Fi-nettverket med QR-koder. Synkronisering starter automatisk etter paring.
+        Det er enkelt å bruke: Sett det opp én gang, og endringer synkroniseres automatisk eller på forespørsel. Bytt enheter sømløst, som å starte på telefonen og fullføre på PC-en.
 
-        - 📱 **Mobil → Mobil:** En enhet må være i **Server-modus** for å tillate paring  
-        - 💻 **Skrivebord → Mobil:** Skrivebordet viser en QR-kode, mobil scanner den  
+        ## 🔗 **Synkroniseringsmoduser**
 
-        ## 📱 Mobile enheter
+        Alle enheter støtter klient- eller servermodus for fleksibel synkronisering. Serveren leder (deler data), klientene blir med og utveksler. Du trenger minst én server.
 
-        Android-enheter kan fungere i to forskjellige moduser:
+        - **Klientmodus:** Kobler til en server for å synkronisere. Ideell for å bli med i grupper via QR eller manuell inntasting.
+        - **Servermodus:** Fungerer som nav; viser QR eller streng for andre å koble til.
 
-        - 🔍 **Klient-modus:**  
-          - Skanner QR-koder  
-          - Kobler til andre enheter for å motta data  
-        - 📡 **Server-modus:**  
-          - Viser QR-kode for andre å skanne  
-          - Sender data til tilkoblede enheter  
-          - Kan byttes via Wi-Fi-hotspot-ikonet
+        **Plattformnotater:**
+        - **Mobil:** Bytt via Wi-Fi-hotspot-ikonet. Server for bærbare nav.
+        - **Skrivebord (Standard: Server):** Bytt i synkroniseringsinnstillinger. Klient for bærbare som synkroniserer til hoved-PC-er.
 
-        For å synkronisere mellom to mobile enheter, må en være i **Server-modus**.
+        **Eksempler:** Mobil-til-mobil (én server), skrivebord-til-mobil (begge veier), skrivebord-til-skrivebord (én server, én klient).
 
-        ## 💻 Skrivebord-enheter
+        Bytt moduser i synkroniseringsinnstillingene; appen husker valget ditt.
 
-        Skrivebordsapper fungerer alltid som **Server**-noder:
+        ## 🛠️ **Aktivere Sync**
 
-        - 🖥️ Viser QR-kode for paring  
-        - ✅ Aksepterer innkommende tilkoblinger automatisk  
-        - 🔄 Synkroniserer data i begge retninger  
-        - 📊 Viser live synkroniseringsstatus
+        Enhetene må dele Wi-Fi; hold WHPH åpen.
 
-        ## 🛠️ Enhetsadministrasjon
+        ### **QR-kodeoppsett**
+        1. Server: Start servermodus i Sync — QR vises.
+        2. Klient: "Legg til enhet" > Skann QR.
+        3. Kobler til og synkroniserer automatisk.
 
-        Administrer alle tilkoblede enheter fra ett sted:
+        Støtter alle kombinasjoner.
 
-        - 📋 Vis tilkoblede enheter  
-        - ⏰ Vis siste synkroniseringstider  
-        - 🔁 Utløs manuell synkronisering  
-        - 🗑️ Fjern gamle eller ubrukte enheter
+        ### **Tilkoblingsstreng**
+        1. Server: Kopier strengen (f.eks. "whph://IP:44040?...") fra Sync.
+        2. Klient: "Legg til enhet" > Manuell > Lim inn streng > Koble til.
 
-        ## 💡 Beste praksis
+        Krever ikke kamera.
 
-        - 📶 Sørg for at alle enheter er på samme Wi-Fi-nettverk  
-        - 📱 Hold appene åpne og aktive under synkronisering  
-        - 🧹 Fjern enheter du ikke lenger bruker  
-        - ⏱️ Sjekk synkroniseringstider for å sikre at alt er oppdatert
+        ### **Manuell inntasting**
+        1. Server: Noter IP/port (standard 44040) fra tilkoblingsinfo.
+        2. Klient: "Legg til enhet" > Manuell > Skriv inn IP, port, navn > Test > Koble til.
+
+        **Skrivebordsklienter:** Bytt til klientmodus først, deretter koble til. Synkroniserer automatisk; bytt tilbake når som helst.
+
+        Aktiver automatisk gjenkobling i innstillingene for pålitelighet.
+
+        ## 📋 **Håndtere enheter**
+
+        - **Vis:** Se enheter, synkroniseringstider, status i synkroniseringsinnstillingene.
+        - **Manuell synkronisering:** Trykk knapp per enhet.
+        - **Fjern:** Velg og fjern for å stoppe synkronisering.
+
+        ## 🔧 **Feilsøking**
+
+        **Tilkoblingsproblemer:**
+        1. Samme Wi-Fi? Ingen VPN-er.
+        2. Start appen på nytt.
+        3. Bekreft servermodus.
+        4. Test uten brannmur.
+
+        **Ingen enheter?**
+        - Stabil Wi-Fi, ingen proxyer.
+        - Oppdater skanning.
+        - Bruk manuell IP.
+
+        **Synkronisering mislykkes/timeout:**
+        1. Manuell synkronisering.
+        2. Matcher app-versjoner.
+        3. Vent på store data.
+
+        **Brannmur (Port 44040):**
+
+        Hvis tilkoblinger ikke fungerer, kan brannmuren på datamaskinen blokkere synkroniseringssignalet. Åpne port 44040 for å la enhetene kommunisere lokalt — det er trygt for hjemmenettverket ditt.
+
+        **Windows (GUI):**
+        1. Åpne Defender-brannmur > Avansert > Inngående regler > Ny regel.
+        2. Port > TCP > 44040 > Tillat > Alle profiler > Navngi "WHPH Sync" > Fullfør.
+
+        **Windows (Admin CMD):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        Tips: Start ruteren på nytt, bruk private nettverk. Par på nytt ved "ikke funnet"-feil.
       title: Hjelp til enhetssynkronisering
     last_sync_label: Siste synkronisering
     no_devices_found: Ingen synkroniserte enheter
@@ -67,9 +122,10 @@ sync:
     connection_failed: |
       Tilkobling mislyktes. Sørg for:
 
-      1. Begge enhetene er på samme nettverk
+      1. Begge enhetene er på samme Wi-Fi-nettverk
       2. Begge appene er åpne og kjører
-      3. Ingen brannmur blokkerer tilkoblingen
+      3. Skrivebordets brannmur tillater port 44040 (sjekk synkroniseringsinnstillinger)
+      4. Ingen VPN eller proxy forstyrrer det lokale nettverket
     device_mismatch: Synkroniseringsfeil. Enheten som prøver å synkronisere er ikke riktig paret med denne enheten.
     environment_mismatch: Synkronisering kan ikke fortsette mellom debug- og produksjonsbygg.
     device_not_found: Synkroniseringsenhet ikke funnet
@@ -81,20 +137,41 @@ sync:
     sync_failed: Synkronisering mislyktes. Prøv igjen.
     sync_timeout: Synkroniseringstimeout
     version_mismatch: "Versjonsmismatch. Lokal versjon: {currentVersion}, Fjern versjon: {remoteVersion}. Oppdater begge applikasjonene til samme versjon."
-    local_ip_error: Lokal IP-feil
-    device_already_paired: Enhet allerede paret
-    no_active_interfaces: Ingen aktive nettverksgrensesnitt
-    device_discovery_failed: Enhetsoppdagelse mislyktes
+    local_ip_error: Kan ikke bestemme lokal IP-adresse
+    device_already_paired: Denne enheten er allerede paret
+    no_active_interfaces: Ingen aktive nettverksgrensesnitt funnet
+    device_discovery_failed: "Mislyktes å starte enhetsoppdagelse: {error}"
+    no_server_configured: Ingen server konfigurert. Legg til en synkroniseringsenhet først eller bruk manuell tilkobling for å sette opp en serverforbindelse.
   messages:
     device_already_paired: Denne enheten er allerede paret
     sync_completed: Synkronisering fullført vellykket
     sync_in_progress: Synkroniserer...
     testing_connection: Tester tilkobling...
-    device_added_success: Enhet lagt til vellykket
+    device_added_success: "Vellykket lagt til {deviceName} til synkroniseringsenheter"
   qr_code:
     close_button: Lukk
     dialog_title: Skann QR-kode for å synkronisere
-    title: QR-kode
+    title: Vis QR-kode
+    description: Andre enheter kan skanne denne QR-koden for å koble til og synkronisere med denne enheten.
+    connection_string_title: Tilkoblingsstreng
+    connection_string_description: Alternativt, kan du dele denne tilkoblingsstrengen for å koble enheter manuelt.
+    connection_string_copied: Tilkoblingsstreng kopiert til utklippstavlen
+  connect_info:
+    dialog_title: Enhets tilkoblingsinformasjon
+    menu_title: Tilkoblingsinfo
+    qr_title: QR-kode
+    qr_description: Andre enheter kan skanne denne QR-koden for å koble til og synkronisere med denne enheten.
+    connection_string_title: Tilkoblingsstreng
+    connection_string_description: Alternativt, kan du dele denne tilkoblingsstrengen for å koble enheter manuelt.
+    connection_string_copied: Tilkoblingsstreng kopiert til utklippstavlen
+    unknown_ip: Ukjent IP
+    error_loading_connection_info: Feil ved lasting av tilkoblingsinfo
+    retry: Prøv igjen
+    manual_connection_tab: Manuell tilkobling
+    server_details_title: Serverdetaljer
+    server_details_description: Bruk disse serverdetaljene for å koble manuelt fra en annen enhet.
+    connection_string_title_alt: Tilkoblingsstreng
+    copy: Kopier
   scanner:
     title: Skann QR-kode
     instruction: Plasser QR-koden innenfor rammen
@@ -102,39 +179,54 @@ sync:
     starting: Starter server-modus...
     active: Server-modus aktiv - Vis QR-kode til andre enheter
     stopped: Server-modus stoppet - Enheten er nå i klient-modus
-    start_failed: Start av server-modus mislyktes - Sjekk om port 44040 er tilgjengelig
+    start_failed: Mislyktes å starte server-modus - Sjekk om port 44040 er tilgjengelig
     start_tooltip: Start server-modus
     stop_tooltip: Stop server-modus
+    start_menu: Start server-modus
+    stop_menu: Stop server-modus
     error: Feil
     device_became_server: Denne enheten er nå synkroniserings-serveren
-    start_menu: Start server
-    stop_menu: Stop server
   manual:
     connection: Manuell tilkobling
     ip_address: IP-adresse
     port: Port
     device_name: Enhetsnavn
     optional: (Valgfritt)
-    connecting: Kobler til...
+    connecting: Kobler til enhet...
     cancel: Avbryt
     connect: Koble til
     ip_required: IP-adresse kreves
     invalid_ip: Ugyldig IP-adresseformat
     port_required: Port kreves
-    invalid_port: Ugyldig portnummer
-    connection_failed: Tilkobling mislyktes
-    connection_error: Tilkoblingsfeil
+    invalid_port: Port må være mellom 1 og 65535
+    connection_failed: Mislyktes å koble til enhet
+    connection_error: "Tilkoblingsfeil: {0}"
+    connection_string_tab: Tilkoblingsstreng
+    manual_entry_tab: Manuell inntasting
+    connection_string_required: Tilkoblingsstreng kreves
+    invalid_connection_string: Ugyldig tilkoblingsstrengformat
+    connection_string_label: Tilkoblingsstreng
+    test_connection: Test tilkobling
+    enter_server_details: Skriv inn servertilkoblingsdetaljer manuelt
+    connection_timeout: Tilkoblingstimeout. Sjekk serveradressen og prøv igjen.
+    connection_test_successful: Tilkoblingstest vellykket!
+    connection_test_timeout: Tilkoblingstest timeout. Sjekk serveradressen og prøv igjen.
+    connection_test_failed_no_response: Tilkoblingstest mislyktes - ingen svar fra server
+    connection_test_failed_generic: "Tilkoblingstest mislyktes: {0}"
+    connection_string_instruction: Lim inn tilkoblingsstrengen levert av serverenheten her for manuell tilkobling.
   add:
     device: Legg til enhet
     device_tooltip: Legg til ny enhet
-    sync_device: Synkroniser enhet
-    sync_device_title: Synkroniser med enhet
-    sync_device_description: Koble til en annen enhet for å synkronisere data
-    scanning_for_devices: Skanner etter enheter...
-    no_nearby_devices: Ingen enheter i nærheten
-    no_nearby_devices_hint: Sørg for at enhetene er på samme nettverk
-    alternative_methods_hint: Prøv manuell tilkobling eller QR-kode
+    sync_device: Legg til synkroniseringsenhet
+    sync_device_title: Legg til synkroniseringsenhet
+    sync_device_description: Oppdag nærliggende enheter eller koble manuelt for å synkronisere data på tvers av enheter.
+    scanning_for_devices: Skanner etter nærliggende enheter...
+    no_nearby_devices: Ingen nærliggende enheter funnet
+    no_nearby_devices_hint: Sørg for at begge enhetene er på samme Wi-Fi-nettverk og har WHPH kjørende.
+    alternative_methods_hint: Kan ikke finne enheten din? Prøv disse alternative metodene for å koble til.
     scan_qr_code: Skann QR-kode
     refresh_scan: Oppdater skanning
-    last_seen: Sist sett
+    last_seen: "Sist sett kl. {time}"
     already_added: Allerede lagt til
+
+  multi_interface_connection: Multi-interface tilkobling

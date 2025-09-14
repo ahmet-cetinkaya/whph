@@ -20,59 +20,95 @@ sync:
     from_label: From
     help:
       content: |
-        🔄 Synchronize your data across all devices on the same Wi-Fi network. No cloud storage - all data stays local.
+        🔄 **What is Sync?**
 
-        ## 🔗 Quick Setup
+        Sync keeps your habits, tasks, notes, and data updated across devices (phones, tablets, laptops, desktops) on the same Wi-Fi. No cloud or internet—data stays private and local.
 
-        Connect devices using QR codes:
-        - 📱 **Mobile → Mobile:** One device in **Server mode** 
-        - 💻 **Desktop → Mobile:** Desktop shows QR code, mobile scans it
+        It's simple to use: Set it up once, and changes sync automatically or on demand. Switch devices seamlessly, like starting on your phone and finishing on your PC.
 
-        ## 📱 Mobile Device Modes
+        ## 🔗 **Sync Modes**
 
-        - 🔍 **Client Mode:** Scans QR codes and receives data
-        - 📡 **Server Mode:** Shows QR code and sends data (toggle via Wi-Fi hotspot icon)
+        All devices support Client or Server modes for flexible syncing. Server leads (shares data), Clients join and exchange. Need at least one Server.
 
-        Two mobile devices need one in **Server mode** to sync.
+        - **Client Mode:** Connects to a Server to sync. Ideal for joining groups via QR or manual input.
+        - **Server Mode:** Acts as hub; shows QR or string for others to connect.
 
-        ## 💻 Desktop Devices
+        **Platform Notes:**
+        - **Mobile:** Toggle via Wi-Fi hotspot icon. Server for portable hubs.
+        - **Desktop (Default: Server):** Switch in Sync settings. Client for laptops syncing to main PCs.
 
-        Always act as **Server** nodes:
-        - 🖥️ Display QR code for pairing
-        - ✅ Auto-accept connections
-        - 🔄 Two-way sync
-        - 📊 Live sync status
+        **Examples:** Mobile-to-mobile (one Server), desktop-to-mobile (either way), desktop-to-desktop (one Server, one Client).
 
-        ## 🛠️ Device Management
+        Switch modes in Sync settings; app remembers your choice.
 
-        - 📋 View connected devices
-        - ⏰ See last sync times
-        - 🔁 Manual sync
-        - 🗑️ Remove old devices
+        ## 🛠️ **Enabling Sync**
 
-        ## 🔥 Firewall Setup (Port 44040)
+        Devices must share Wi-Fi; keep WHPH open.
 
-        ### 🐧 **Linux (UFW)**
+        ### **QR Code Setup**
+        1. Server: Start Server mode in Sync—QR appears.
+        2. Client: "Add Device" > Scan QR.
+        3. Auto-connects and syncs.
+
+        Supports all combinations.
+
+        ### **Connection String**
+        1. Server: Copy string (e.g., "whph://IP:44040?...") from Sync.
+        2. Client: "Add Device" > Manual > Paste string > Connect.
+
+        No camera required.
+
+        ### **Manual Entry**
+        1. Server: Note IP/port (default 44040) from Connection Info.
+        2. Client: "Add Device" > Manual > Enter IP, port, name > Test > Connect.
+
+        **Desktop Clients:** Switch to Client mode first, then connect. Auto-syncs; switch back anytime.
+
+        Enable auto-reconnect in settings for reliability.
+
+        ## 📋 **Managing Devices**
+
+        - **View:** See devices, sync times, status in Sync settings.
+        - **Manual Sync:** Tap button per device.
+        - **Remove:** Select and remove to stop syncing.
+
+        ## 🔧 **Troubleshooting**
+
+        **Connection Issues:**
+        1. Same Wi-Fi? No VPNs.
+        2. Restart app.
+        3. Verify Server mode.
+        4. Test without firewall.
+
+        **No Devices?**
+        - Stable Wi-Fi, no proxies.
+        - Refresh scan.
+        - Use manual IP.
+
+        **Sync Fails/Timeouts:**
+        1. Manual sync.
+        2. Match app versions.
+        3. Wait for large data.
+
+        **Firewall (Port 44040):**
+
+        If connections aren't working, your computer's firewall might be blocking the sync signal. Open port 44040 to let devices communicate locally—it's safe for your home network.
+
+        **Windows (GUI):**
+        1. Open Defender Firewall > Advanced > Inbound Rules > New Rule.
+        2. Port > TCP > 44040 > Allow > All profiles > Name "WHPH Sync" > Finish.
+
+        **Windows (Admin CMD):**
         ```
-        sudo ufw allow 44040/tcp
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
         ```
 
-        ### 🪟 **Windows**
-        **Via Windows Defender Firewall GUI:**
-        1. Open **Windows Defender Firewall** from Control Panel
-        2. Click **Advanced settings** on the left
-        3. In the left pane, click **Inbound Rules**
-        4. In the right pane, click **New Rule...**
-        5. Select **Port** and click **Next**
-        6. Select **TCP** and enter **44040** in the specific local ports field
-        7. Select **Allow the connection** and click **Next**
-        8. Check all profiles (Domain, Private, Public) and click **Next**
-        9. Enter a name like **WHPH Sync Port 44040** and click **Finish**
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
 
-        **Via Command Prompt (as Administrator):**
-        ```
-        netsh advfirewall firewall add rule name="WHPH Sync Port 44040" dir=in action=allow protocol=TCP localport=44040
-        ```
+        Tips: Restart router, use private networks. Re-pair if "not found" errors.
       title: Device Synchronization Help
     last_sync_label: Last Sync
     no_devices_found: No synced devices
@@ -177,6 +213,7 @@ sync:
     connection_test_timeout: Connection test timeout. Please check the server address and try again.
     connection_test_failed_no_response: Connection test failed - no response from server
     connection_test_failed_generic: "Connection test failed: {0}"
+    connection_string_instruction: Paste the connection string provided by the server device here to connect manually.
   add:
     device: Add Device
     device_tooltip: Add new device
@@ -191,3 +228,5 @@ sync:
     refresh_scan: Refresh Scan
     last_seen: "Last seen at {time}"
     already_added: Already added
+
+  multi_interface_connection: Multi-interface connection

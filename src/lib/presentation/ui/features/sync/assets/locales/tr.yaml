@@ -7,53 +7,95 @@ sync:
     from_label: Kimden
     help:
       content: |
-        🔄 Görevlerinizi, alışkanlıklarınızı, notlarınızı, ayarlarınızı vb. tüm cihazlarınızda senkronize tutun. Tüm veriler yerel ağınızda kalır — buluta hiçbir şey gönderilmez.
+        🔄 **Sync Nedir?**
 
-        ## ⚡ Hızlı ve Güvenli Kurulum
+        Sync, alışkanlıklarınızı, görevlerinizi, notlarınızı ve verilerinizi aynı Wi-Fi üzerinden cihazlar (telefonlar, tabletler, dizüstüler, masaüstler) arasında güncel tutar. Bulut veya internet yok—veri özel ve yerel kalır.
 
-        Cihazlarınızı aynı Wi-Fi ağı üzerinden QR kodları kullanarak bağlayın. Eşleştirme sonrası senkronizasyon otomatik olarak başlar.
+        Kullanımı basit: Bir kez kurun, değişiklikler otomatik veya isteğe bağlı olarak senkronize olur. Cihazlar arasında sorunsuz geçiş yapın, telefonunuzda başlayıp PC'nizde bitirin gibi.
 
-        - 📱 **Mobil → Mobil:** Eşleştirmeye izin vermek için bir cihaz **Sunucu modunda** olmalıdır  
-        - 💻 **Masaüstü → Mobil:** Masaüstü QR kodu gösterir, mobil tarar  
+        ## 🔗 **Sync Modları**
 
-        ## 📱 Mobil Cihazlar
+        Tüm cihazlar esnek senkronizasyon için İstemci veya Sunucu modlarını destekler. Sunucu liderlik eder (veri paylaşır), İstemciler katılır ve değiş tokuş eder. En az bir Sunucuya ihtiyaç var.
 
-        Android cihazlar iki farklı modda çalışabilir:
+        - **İstemci Modu:** Senkronize olmak için Sunucuya bağlanır. QR veya manuel giriş ile gruplara katılmak için ideal.
+        - **Sunucu Modu:** Hub olarak davranır; başkalarının bağlanması için QR veya dize gösterir.
 
-        - 🔍 **İstemci Modu:**  
-          - QR kodlarını tarar  
-          - Veri almak için diğer cihazlara bağlanır  
-        - 📡 **Sunucu Modu:**  
-          - Diğerlerinin taraması için QR kodu gösterir  
-          - Bağlı cihazlara veri gönderir  
-          - Wi-Fi hotspot simgesi ile değiştirilebilir
+        **Platform Notları:**
+        - **Mobil:** Wi-Fi hotspot simgesi ile değiştirin. Taşınabilir hub'lar için Sunucu.
+        - **Masaüstü (Varsayılan: Sunucu):** Sync ayarlarında değiştirin. Ana PC'lere senkronize eden dizüstüler için İstemci.
 
-        İki mobil cihaz arasında senkronizasyon için biri **Sunucu modunda** olmalıdır.
+        **Örnekler:** Mobil-mobil (bir Sunucu), masaüstü-mobil (her iki şekilde), masaüstü-masaüstü (bir Sunucu, bir İstemci).
 
-        ## 💻 Masaüstü Cihazlar
+        Sync ayarlarında modları değiştirin; uygulama tercihinizi hatırlar.
 
-        Masaüstü uygulamaları her zaman **Sunucu** düğümleri olarak çalışır:
+        ## 🛠️ **Sync'i Etkinleştirme**
 
-        - 🖥️ Eşleştirme için QR kodu gösterir  
-        - ✅ Gelen bağlantıları otomatik kabul eder  
-        - 🔄 Verileri her iki yönde de senkronize eder  
-        - 📊 Canlı senkronizasyon durumunu gösterir
+        Cihazlar Wi-Fi paylaşmalı; WHPH'yi açık tutun.
 
-        ## 🛠️ Cihaz Yönetimi
+        ### **QR Kod Kurulumu**
+        1. Sunucu: Sync'te Sunucu modunu başlatın—QR görünür.
+        2. İstemci: "Cihaz Ekle" > QR Tara.
+        3. Otomatik bağlanır ve senkronize olur.
 
-        Tüm bağlı cihazları tek yerden yönetin:
+        Tüm kombinasyonları destekler.
 
-        - 📋 Bağlı cihazları görüntüle  
-        - ⏰ Son senkronizasyon zamanlarını gör  
-        - 🔁 Manuel senkronizasyonu tetikle  
-        - 🗑️ Eski veya kullanılmayan cihazları kaldır
+        ### **Bağlantı Dizesi**
+        1. Sunucu: Sync'ten dizeyi kopyalayın (ör. "whph://IP:44040?...").
+        2. İstemci: "Cihaz Ekle" > Manuel > Diziyi Yapıştır > Bağlan.
 
-        ## 💡 En İyi Uygulamalar
+        Kamera gerekmez.
 
-        - 📶 Tüm cihazların aynı Wi-Fi ağında olduğundan emin olun  
-        - 📱 Senkronizasyon sırasında uygulamaları açık ve aktif tutun  
-        - 🧹 Artık kullanmadığınız cihazları kaldırın  
-        - ⏱️ Her şeyin güncel olduğundan emin olmak için senkronizasyon zamanlarını kontrol edin
+        ### **Manuel Giriş**
+        1. Sunucu: Bağlantı Bilgisi'nden IP/port'u not edin (varsayılan 44040).
+        2. İstemci: "Cihaz Ekle" > Manuel > IP, port, isim girin > Test > Bağlan.
+
+        **Masaüstü İstemciler:** Önce İstemci moduna geçin, sonra bağlanın. Otomatik senkronize olur; istediğiniz zaman geri dönün.
+
+        Güvenilirlik için ayarlar'da otomatik yeniden bağlanmayı etkinleştirin.
+
+        ## 📋 **Cihazları Yönetme**
+
+        - **Görüntüle:** Sync ayarlarında cihazları, senkronizasyon zamanlarını, durumu görün.
+        - **Manuel Sync:** Cihaz başına butona dokunun.
+        - **Kaldır:** Senkronizasyonu durdurmak için seçin ve kaldırın.
+
+        ## 🔧 **Sorun Giderme**
+
+        **Bağlantı Sorunları:**
+        1. Aynı Wi-Fi? VPN yok.
+        2. Uygulamayı yeniden başlatın.
+        3. Sunucu modunu doğrulayın.
+        4. Firewall olmadan test edin.
+
+        **Cihaz Yok?**
+        - Kararlı Wi-Fi, proxy yok.
+        - Tarama yenileyin.
+        - Manuel IP kullanın.
+
+        **Sync Başarısız/Zaman Aşımı:**
+        1. Manuel sync.
+        2. Uygulama sürümlerini eşleştirin.
+        3. Büyük veriler için bekleyin.
+
+        **Firewall (Port 44040):**
+
+        Bağlantılar çalışmıyorsa, bilgisayarınızın firewall'ı senkronizasyon sinyalini engelliyor olabilir. Cihazların yerel olarak iletişim kurması için port 44040'ı açın—ev ağınız için güvenlidir.
+
+        **Windows (GUI):**
+        1. Defender Firewall > Gelişmiş > Gelen Kurallar > Yeni Kural.
+        2. Port > TCP > 44040 > İzin Ver > Tüm profiller > "WHPH Sync" adlandır > Bitir.
+
+        **Windows (Admin CMD):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        İpuçları: Yönlendiriciyi yeniden başlatın, özel ağlar kullanın. "bulunamadı" hatalarında yeniden eşleştirin.
       title: Cihaz Senkronizasyonu Yardımı
     last_sync_label: Son Senkronizasyon
     no_devices_found: Senkronize edilmiş cihaz yok
@@ -85,6 +127,7 @@ sync:
     device_already_paired: Cihaz zaten eşleştirilmiş
     no_active_interfaces: Aktif ağ arabirimi yok
     device_discovery_failed: Cihaz keşfi başarısız
+    no_server_configured: Yapılandırılmış sunucu yok. Lütfen önce bir senkronizasyon cihazı ekleyin veya manuel bağlantıyı kullanarak sunucu bağlantısını kurun.
   messages:
     device_already_paired: Bu cihaz zaten eşleştirilmiş
     sync_completed: Senkronizasyon başarıyla tamamlandı
@@ -95,6 +138,10 @@ sync:
     close_button: Kapat
     dialog_title: Senkronize etmek için QR kodunu tarayın
     title: QR Kodu
+    description: Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize olabilir.
+    connection_string_title: Bağlantı Dizesi
+    connection_string_description: Alternatif olarak, cihazları manuel olarak bağlamak için bu bağlantı dizesini paylaşabilirsiniz.
+    connection_string_copied: Bağlantı dizesi panoya kopyalandı
   scanner:
     title: QR Kodu Tarayın
     instruction: QR kodunu çerçeve içine yerleştirin
@@ -124,6 +171,19 @@ sync:
     invalid_port: Geçersiz port numarası
     connection_failed: Bağlantı başarısız
     connection_error: Bağlantı hatası
+    connection_string_tab: Bağlantı Dizesi
+    manual_entry_tab: Manuel Giriş
+    connection_string_required: Bağlantı dizesi gerekli
+    invalid_connection_string: Geçersiz bağlantı dizesi formatı
+    connection_string_label: Bağlantı Dizesi
+    test_connection: Bağlantıyı Test Et
+    enter_server_details: Sunucu bağlantı detaylarını manuel olarak girin
+    connection_timeout: Bağlantı zaman aşımı. Lütfen sunucu adresini kontrol edin ve tekrar deneyin.
+    connection_test_successful: Bağlantı testi başarılı!
+    connection_test_timeout: Bağlantı testi zaman aşımı. Lütfen sunucu adresini kontrol edin ve tekrar deneyin.
+    connection_test_failed_no_response: Bağlantı testi başarısız - sunucudan yanıt yok
+    connection_test_failed_generic: "Bağlantı testi başarısız: {0}"
+    connection_string_instruction: Manuel bağlantı için sunucu cihaz tarafından sağlanan bağlantı dizesini buraya yapıştırın.
   add:
     device: Cihaz Ekle
     device_tooltip: Yeni cihaz ekle
@@ -138,3 +198,36 @@ sync:
     refresh_scan: Tarama Yenile
     last_seen: Son görülme
     already_added: Zaten eklendi
+
+  connect_info:
+    dialog_title: Cihaz Bağlantı Bilgileri
+    menu_title: Bağlantı Bilgisi
+    qr_title: QR Kodu
+    qr_description: Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize olabilir.
+    connection_string_title: Bağlantı Dizesi
+    connection_string_description: Alternatif olarak, cihazları manuel olarak bağlamak için bu bağlantı dizesini paylaşabilirsiniz.
+    connection_string_copied: Bağlantı dizesi panoya kopyalandı
+    server_details_description: Başka bir cihazdan manuel bağlantı için bu sunucu detaylarını kullanın.
+    unknown_ip: Bilinmeyen IP
+    error_loading_connection_info: Bağlantı bilgisi yüklenirken hata
+    retry: Tekrar Dene
+    manual_connection_tab: Manuel Bağlantı
+    server_details_title: Sunucu Detayları
+    connection_string_title_alt: Bağlantı Dizesi
+    copy: Kopyala
+
+  desktop:
+    mode_title: Masaüstü Senkronizasyon Modu
+    client_mode_start: İstemci Olarak Bağlan
+    client_mode_stop: Sunucu Moduna Geç
+    client_mode_description: Veri senkronize etmek için başka bir cihazın sunucusuna bağlanın
+    server_mode_description: Diğer cihazların bu cihaza bağlanıp senkronize etmesine izin verin
+    sync_mode_start: İstemci Modunu Başlat
+    sync_mode_stop: İstemci Modunu Durdur
+    sync_mode_start_menu: İstemci Modunu Başlat
+    sync_mode_stop_menu: İstemci Modunu Durdur
+    client_mode_starting: İstemci modu başlatılıyor...
+    client_mode_started: İstemci modu başlatıldı
+    client_mode_stopped: Sunucu moduna geri dönüldü
+
+  multi_interface_connection: Çoklu arabirim bağlantısı

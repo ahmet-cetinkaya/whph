@@ -7,53 +7,95 @@ sync:
     from_label: Da
     help:
       content: |
-        🔄 Mantieni le tue attività, abitudini, note, impostazioni, ecc. sincronizzate su tutti i tuoi dispositivi. Tutti i dati rimangono nella tua rete locale — nulla viene inviato al cloud.
+        🔄 **Cos'è Sync?**
 
-        ## ⚡ Configurazione rapida e sicura
+        Sync mantiene le tue abitudini, attività, note e dati aggiornati su tutti i dispositivi (telefoni, tablet, laptop, desktop) nella stessa rete Wi-Fi. Nessun cloud o internet — i dati rimangono privati e locali.
 
-        Connetti i tuoi dispositivi attraverso la stessa rete Wi-Fi usando codici QR. La sincronizzazione inizia automaticamente dopo l'abbinamento.
+        È semplice da usare: Impostalo una volta e i cambiamenti si sincronizzano automaticamente o su richiesta. Passa da un dispositivo all'altro senza intoppi, come iniziare sul telefono e finire sul PC.
 
-        - 📱 **Mobile → Mobile:** Un dispositivo deve essere in **modalità Server** per permettere l'abbinamento  
-        - 💻 **Desktop → Mobile:** Il desktop mostra un codice QR, il mobile lo scansiona  
+        ## 🔗 **Modalità Sync**
 
-        ## 📱 Dispositivi mobili
+        Tutti i dispositivi supportano modalità Client o Server per sincronizzazione flessibile. Il Server guida (condivide dati), i Client si uniscono e scambiano. Serve almeno un Server.
 
-        I dispositivi Android possono lavorare in due modalità diverse:
+        - **Modalità Client:** Si connette a un Server per sincronizzare. Ideale per unirsi a gruppi tramite QR o input manuale.
+        - **Modalità Server:** Funge da hub; mostra QR o stringa per gli altri per connettersi.
 
-        - 🔍 **Modalità Client:**  
-          - Scansiona codici QR  
-          - Si connette ad altri dispositivi per ricevere dati  
-        - 📡 **Modalità Server:**  
-          - Mostra codice QR per la scansione da parte di altri  
-          - Invia dati ai dispositivi connessi  
-          - Può essere alternata tramite l'icona hotspot Wi-Fi
+        **Note sulla Piattaforma:**
+        - **Mobile:** Passa tramite icona hotspot Wi-Fi. Server per hub portatili.
+        - **Desktop (Predefinito: Server):** Passa nelle impostazioni Sync. Client per laptop che sincronizzano con PC principali.
 
-        Per sincronizzare tra due dispositivi mobili, uno deve essere in **modalità Server**.
+        **Esempi:** Mobile-a-mobile (un Server), desktop-a-mobile (in entrambi i modi), desktop-a-desktop (un Server, un Client).
 
-        ## 💻 Dispositivi desktop
+        Passa modalità nelle impostazioni Sync; l'app ricorda la tua scelta.
 
-        Le applicazioni desktop agiscono sempre come nodi **Server**:
+        ## 🛠️ **Abilitare Sync**
 
-        - 🖥️ Mostrano codice QR per l'abbinamento  
-        - ✅ Accettano connessioni in ingresso automaticamente  
-        - 🔄 Sincronizzano dati in entrambe le direzioni  
-        - 📊 Mostrano lo stato di sincronizzazione in tempo reale
+        I dispositivi devono condividere Wi-Fi; mantieni WHPH aperto.
 
-        ## 🛠️ Gestione dispositivi
+        ### **Setup con Codice QR**
+        1. Server: Avvia modalità Server in Sync — appare QR.
+        2. Client: "Aggiungi Dispositivo" > Scansiona QR.
+        3. Si connette e sincronizza automaticamente.
 
-        Gestisci tutti i dispositivi connessi da un unico luogo:
+        Supporta tutte le combinazioni.
 
-        - 📋 Visualizza dispositivi connessi  
-        - ⏰ Visualizza ultimi tempi di sincronizzazione  
-        - 🔁 Avvia sincronizzazione manuale  
-        - 🗑️ Rimuovi dispositivi vecchi o non utilizzati
+        ### **Stringa di Connessione**
+        1. Server: Copia stringa (es. "whph://IP:44040?...") da Sync.
+        2. Client: "Aggiungi Dispositivo" > Manuale > Incolla stringa > Connetti.
 
-        ## 💡 Migliori pratiche
+        Non richiede fotocamera.
 
-        - 📶 Assicurati che tutti i dispositivi siano sulla stessa rete Wi-Fi  
-        - 📱 Mantieni le app aperte e attive durante la sincronizzazione  
-        - 🧹 Rimuovi i dispositivi che non usi più  
-        - ⏱️ Controlla i tempi di sincronizzazione per assicurarti che tutto sia aggiornato
+        ### **Ingresso Manuale**
+        1. Server: Nota IP/porta (predefinita 44040) da Info Connessione.
+        2. Client: "Aggiungi Dispositivo" > Manuale > Inserisci IP, porta, nome > Test > Connetti.
+
+        **Client Desktop:** Passa a modalità Client prima, poi connetti. Sincronizza automaticamente; passa indietro quando vuoi.
+
+        Abilita riconnessione automatica nelle impostazioni per affidabilità.
+
+        ## 📋 **Gestire Dispositivi**
+
+        - **Visualizza:** Vedi dispositivi, tempi sync, stato nelle impostazioni Sync.
+        - **Sync Manuale:** Tocca pulsante per dispositivo.
+        - **Rimuovi:** Seleziona e rimuovi per fermare sync.
+
+        ## 🔧 **Risoluzione Problemi**
+
+        **Problemi di Connessione:**
+        1. Stessa Wi-Fi? Nessun VPN.
+        2. Riavvia app.
+        3. Verifica modalità Server.
+        4. Test senza firewall.
+
+        **Nessun Dispositivo?**
+        - Wi-Fi stabile, nessun proxy.
+        - Aggiorna scansione.
+        - Usa IP manuale.
+
+        **Sync Fallisce/Timeouts:**
+        1. Sync manuale.
+        2. Abbina versioni app.
+        3. Aspetta dati grandi.
+
+        **Firewall (Porta 44040):**
+
+        Se le connessioni non funzionano, il firewall del tuo computer potrebbe bloccare il segnale sync. Apri la porta 44040 per permettere ai dispositivi di comunicare localmente — è sicuro per la tua rete domestica.
+
+        **Windows (GUI):**
+        1. Apri Defender Firewall > Avanzato > Regole in Ingresso > Nuova Regola.
+        2. Porta > TCP > 44040 > Consenti > Tutti i profili > Nome "WHPH Sync" > Fine.
+
+        **Windows (Admin CMD):**
+        ```
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+        ```
+
+        **Linux (UFW):**
+        ```
+        sudo ufw allow 44040/tcp && sudo ufw reload
+        ```
+
+        Suggerimenti: Riavvia router, usa reti private. Ri-accoppia se errori "non trovato".
       title: Aiuto alla sincronizzazione dei dispositivi
     last_sync_label: Ultima sincronizzazione
     no_devices_found: Nessun dispositivo sincronizzato
@@ -85,6 +127,7 @@ sync:
     device_already_paired: Dispositivo già abbinato
     no_active_interfaces: Nessuna interfaccia di rete attiva
     device_discovery_failed: Scoperta del dispositivo fallita
+    no_server_configured: Nessun server configurato. Aggiungi prima un dispositivo di sincronizzazione o usa una connessione manuale per configurare una connessione al server.
   messages:
     device_already_paired: Questo dispositivo è già abbinato
     sync_completed: Sincronizzazione completata con successo
@@ -95,6 +138,10 @@ sync:
     close_button: Chiudi
     dialog_title: Scansiona codice QR per sincronizzare
     title: Codice QR
+    description: Altri dispositivi possono scansionare questo codice QR per connettersi e sincronizzare con questo dispositivo.
+    connection_string_title: Stringa di connessione
+    connection_string_description: In alternativa, puoi condividere questa stringa di connessione per connettere i dispositivi manualmente.
+    connection_string_copied: Stringa di connessione copiata negli appunti
   scanner:
     title: Scansiona codice QR
     instruction: Posiziona il codice QR all'interno del frame
@@ -124,6 +171,19 @@ sync:
     invalid_port: Numero porta non valido
     connection_failed: Connessione fallita
     connection_error: Errore di connessione
+    connection_string_tab: Stringa di connessione
+    manual_entry_tab: Inserimento manuale
+    connection_string_required: Stringa di connessione richiesta
+    invalid_connection_string: Formato stringa di connessione non valido
+    connection_string_label: Stringa di connessione
+    test_connection: Testa connessione
+    enter_server_details: Inserisci dettagli di connessione server manualmente
+    connection_timeout: Timeout connessione. Controlla l'indirizzo del server e riprova.
+    connection_test_successful: Test connessione riuscito!
+    connection_test_timeout: Timeout test connessione. Controlla l'indirizzo del server e riprova.
+    connection_test_failed_no_response: Test connessione fallito - nessuna risposta dal server
+    connection_test_failed_generic: "Test connessione fallito: {0}"
+    connection_string_instruction: Incolla qui la stringa di connessione fornita dal dispositivo server per connettersi manualmente.
   add:
     device: Aggiungi dispositivo
     device_tooltip: Aggiungi nuovo dispositivo
@@ -138,3 +198,36 @@ sync:
     refresh_scan: Aggiorna scansione
     last_seen: Ultima vista
     already_added: Già aggiunto
+
+  connect_info:
+    dialog_title: Informazioni di connessione del dispositivo
+    menu_title: Info connessione
+    qr_title: Codice QR
+    qr_description: Altri dispositivi possono scansionare questo codice QR per connettersi e sincronizzare con questo dispositivo.
+    connection_string_title: Stringa di connessione
+    connection_string_description: In alternativa, puoi condividere questa stringa di connessione per connettere i dispositivi manualmente.
+    connection_string_copied: Stringa di connessione copiata negli appunti
+    server_details_description: Usa questi dettagli del server per connetterti manualmente da un altro dispositivo.
+    unknown_ip: IP sconosciuta
+    error_loading_connection_info: Errore nel caricamento delle informazioni di connessione
+    retry: Riprova
+    manual_connection_tab: Connessione manuale
+    server_details_title: Dettagli server
+    connection_string_title_alt: Stringa di connessione
+    copy: Copia
+
+  desktop:
+    mode_title: Modalità sincronizzazione desktop
+    client_mode_start: Connettiti come client
+    client_mode_stop: Passa alla modalità server
+    client_mode_description: Connettiti al server di un altro dispositivo per sincronizzare i dati
+    server_mode_description: Consenti ad altri dispositivi di connettersi e sincronizzare con questo dispositivo
+    sync_mode_start: Avvia modalità client
+    sync_mode_stop: Ferma modalità client
+    sync_mode_start_menu: Avvia modalità client
+    sync_mode_stop_menu: Ferma modalità client
+    client_mode_starting: Avvio modalità client...
+    client_mode_started: Modalità client avviata
+    client_mode_stopped: Tornato alla modalità server
+
+  multi_interface_connection: Connessione multi-interfaccia
