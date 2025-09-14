@@ -231,7 +231,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     final taskTags = await mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
       GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: double.maxFinite.toInt()),
     );
-    return taskTags.items.map((tag) => tag.id).toList();
+    return taskTags.items.map((tag) => tag.tagId).toList();
   }
 
   /// Calculates the next recurrence count, decrementing if needed
