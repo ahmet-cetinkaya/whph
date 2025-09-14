@@ -4,7 +4,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_ignore_rule_list.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_tag_rule_form.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_tag_rule_list.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_ignore_rule_form.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -45,9 +45,9 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
         elevation: 0,
         title: Text(_translationService.translate(AppUsageTranslationKeys.rulesTitle)),
         actions: [
-          HelpMenu(
-            titleKey: AppUsageTranslationKeys.rulesHelpTitle,
-            markdownContentKey: AppUsageTranslationKeys.rulesHelpContent,
+          KebabMenu(
+            helpTitleKey: AppUsageTranslationKeys.rulesHelpTitle,
+            helpMarkdownContentKey: AppUsageTranslationKeys.rulesHelpContent,
           ),
           const SizedBox(width: AppTheme.sizeSmall),
         ],

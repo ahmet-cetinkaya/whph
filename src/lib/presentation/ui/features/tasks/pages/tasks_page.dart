@@ -12,7 +12,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
@@ -295,9 +295,9 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
               initialDeadlineDate: _filterEndDate,
               initialCompleted: _showCompletedTasks,
             ),
-            HelpMenu(
-              titleKey: TaskTranslationKeys.tasksHelpTitle,
-              markdownContentKey: TaskTranslationKeys.tasksHelpContent,
+            KebabMenu(
+              helpTitleKey: TaskTranslationKeys.tasksHelpTitle,
+              helpMarkdownContentKey: TaskTranslationKeys.tasksHelpContent,
             ),
           ],
         ),

@@ -15,7 +15,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/app_usage_permission.dart';
@@ -160,9 +160,9 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           color: _themeService.primaryColor,
           tooltip: _translationService.translate(SharedTranslationKeys.refreshTooltip),
         ),
-        HelpMenu(
-          titleKey: AppUsageTranslationKeys.viewHelpTitle,
-          markdownContentKey: AppUsageTranslationKeys.viewHelpContent,
+        KebabMenu(
+          helpTitleKey: AppUsageTranslationKeys.viewHelpTitle,
+          helpMarkdownContentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
       ],
       builder: (context) => Column(

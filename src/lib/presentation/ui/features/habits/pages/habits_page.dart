@@ -17,7 +17,7 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 
@@ -225,9 +225,9 @@ class _HabitsPageState extends State<HabitsPage> {
           initialName: _searchQuery,
           initialArchived: _filterByArchived,
         ),
-        HelpMenu(
-          titleKey: HabitTranslationKeys.overviewHelpTitle,
-          markdownContentKey: HabitTranslationKeys.overviewHelpContent,
+        KebabMenu(
+          helpTitleKey: HabitTranslationKeys.overviewHelpTitle,
+          helpMarkdownContentKey: HabitTranslationKeys.overviewHelpContent,
         ),
       ],
       builder: (context) => Column(

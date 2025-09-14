@@ -21,7 +21,7 @@ import 'package:whph/core/application/features/tasks/commands/add_task_time_reco
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
@@ -417,9 +417,9 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             AnimatedOpacity(
                               opacity: _isDimmed ? _dimmingOpacity : 1.0,
                               duration: const Duration(milliseconds: 500),
-                              child: HelpMenu(
-                                titleKey: TaskTranslationKeys.marathonHelpTitle,
-                                markdownContentKey: TaskTranslationKeys.marathonHelpContent,
+                              child: KebabMenu(
+                                helpTitleKey: TaskTranslationKeys.marathonHelpTitle,
+                                helpMarkdownContentKey: TaskTranslationKeys.marathonHelpContent,
                               ),
                             ),
                           ],

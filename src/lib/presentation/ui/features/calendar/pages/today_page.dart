@@ -19,7 +19,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
@@ -270,9 +270,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           color: _themeService.primaryColor,
           tooltip: _translationService.translate(TaskTranslationKeys.marathon),
         ),
-        HelpMenu(
-          titleKey: CalendarTranslationKeys.todayHelpTitle,
-          markdownContentKey: CalendarTranslationKeys.todayHelpContent,
+        KebabMenu(
+          helpTitleKey: CalendarTranslationKeys.todayHelpTitle,
+          helpMarkdownContentKey: CalendarTranslationKeys.todayHelpContent,
         ),
       ],
       // Add floating action button for mobile devices

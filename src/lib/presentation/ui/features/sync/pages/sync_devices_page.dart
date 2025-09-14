@@ -11,7 +11,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_button.dart';
-import 'package:whph/presentation/ui/shared/components/help_menu.dart';
+import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
@@ -766,29 +766,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           if (_isServerMode) SyncConnectInfoButton(),
 
           // Kebab menu containing help, and mobile sync controls
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.primary),
-            onSelected: (value) {
-              switch (value) {
-                case 'show_help':
-                  // Handle help display
-                  HelpMenu.showHelpModal(
-                    context: context,
-                    titleKey: SharedTranslationKeys.helpTooltip,
-                    markdownContentKey: SyncTranslationKeys.helpContent,
-                  );
-                  break;
-                case 'toggle_server':
-                  // Toggle server mode
-                  _toggleServerMode();
-                  break;
-                case 'toggle_client':
-                  // Toggle desktop sync mode
-                  _toggleDesktopSyncMode();
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
+          KebabMenu(
+            helpTitleKey: SharedTranslationKeys.helpTooltip,
+            helpMarkdownContentKey: SyncTranslationKeys.helpContent,
+            additionalMenuItems: [
               // Mobile sync mode toggle (only on Android)
               if (Platform.isAndroid)
                 PopupMenuItem<String>(
@@ -819,18 +800,19 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                     ],
                   ),
                 ),
-              // Show help option (placed at the bottom)
-              PopupMenuItem<String>(
-                value: 'show_help',
-                child: Row(
-                  children: [
-                    Icon(Icons.help_outline, color: Theme.of(context).colorScheme.primary),
-                    const SizedBox(width: 8),
-                    Text(_translationService.translate(SyncTranslationKeys.helpTitle)),
-                  ],
-                ),
-              ),
             ],
+            onMenuItemSelected: (value) {
+              switch (value) {
+                case 'toggle_server':
+                  // Toggle server mode
+                  _toggleServerMode();
+                  break;
+                case 'toggle_client':
+                  // Toggle desktop sync mode
+                  _toggleDesktopSyncMode();
+                  break;
+              }
+            },
           ),
         ],
       ),
