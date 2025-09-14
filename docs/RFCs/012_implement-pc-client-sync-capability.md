@@ -11,6 +11,7 @@ This RFC proposes enabling PC/Desktop applications to function as sync clients, 
 ## Motivation
 
 The current sync architecture has an asymmetric limitation where:
+
 - Desktop applications can only act as servers (`DesktopSyncService` with timer-based periodic sync)
 - Mobile devices can act as both servers (`AndroidServerSyncService`) and clients
 - Users cannot establish desktop-to-desktop sync with one device as primary server
@@ -27,22 +28,22 @@ This forces users into suboptimal sync topologies and prevents common use cases 
 ```dart
 class DesktopClientSyncService extends SyncService {
   WebSocketChannel? _clientChannel;
-  Timer? _heartbeatTimer; 
+  Timer? _heartbeatTimer;
   String? _connectedServerAddress;
   int? _connectedServerPort;
-  
+
   /// Connect to a WHPH server as client
   Future<bool> connectToServer(String serverAddress, int serverPort);
-  
+
   /// Disconnect from current server
   Future<void> disconnectFromServer();
-  
+
   /// Perform client-side sync with connected server
   Future<void> performClientSync();
-  
+
   /// Start heartbeat to maintain connection
   void _startHeartbeat();
-  
+
   /// Handle server messages and sync responses
   Future<void> _handleServerMessage(dynamic message);
 }
@@ -59,16 +60,16 @@ class DesktopServerSyncService extends SyncService {
   HttpServer? _server;
   List<WebSocket> _activeConnections = [];
   Timer? _serverKeepAlive;
-  
+
   /// Start as WebSocket server on desktop
   Future<bool> startAsServer();
-  
+
   /// Stop server and close all connections
   Future<void> stopServer();
-  
+
   /// Handle incoming WebSocket connections
   void _handleServerConnections();
-  
+
   /// Process WebSocket messages from clients
   Future<void> _handleWebSocketMessage(String message, WebSocket socket);
 }
@@ -87,16 +88,16 @@ class DesktopSyncService extends SyncService {
   DesktopSyncMode _currentMode = DesktopSyncMode.server;
   DesktopServerSyncService? _serverService;
   DesktopClientSyncService? _clientService;
-  
+
   /// Switch to server mode (current behavior)
   Future<void> switchToServerMode();
-  
+
   /// Switch to client mode with server connection
   Future<void> switchToClientMode(String serverAddress, int serverPort);
-  
+
   /// Get current sync mode
   DesktopSyncMode get currentMode => _currentMode;
-  
+
   /// Check if connected as client
   bool get isConnectedAsClient;
 }
@@ -116,7 +117,7 @@ class DesktopSyncSettings {
   final bool autoReconnectToServer;
   final Duration clientHeartbeatInterval;
   final bool rememberServerConnection;
-  
+
   // Settings persistence in local storage
   // User preference for sync mode
   // Auto-reconnection configuration
@@ -134,13 +135,13 @@ class SyncConnectionString {
   final String ipAddress;
   final int port;
   final String? accessToken;
-  
+
   /// Parse connection string: whph://192.168.1.100:44040?name=Desktop-Server&id=uuid
   static SyncConnectionString? fromString(String connectionString);
-  
+
   /// Generate connection string for sharing
   String toConnectionString();
-  
+
   /// Generate QR code data
   String toQRCodeData();
 }
@@ -230,7 +231,7 @@ Update `DeviceHandshakeService` to exchange capability information:
 }
 
 {
-  "type": "client_connected", 
+  "type": "client_connected",
   "data": {
     "success": true,
     "serverId": "uuid",
@@ -254,30 +255,35 @@ Implement full server functionality on desktop platforms:
 ## Implementation Plan
 
 ### Phase 1: Core Infrastructure (Week 1-2)
+
 1. Create `DesktopClientSyncService` with WebSocket client functionality
 2. Implement basic server connection and disconnection
 3. Add client-side sync protocol handling
 4. Create sync mode enumeration and settings
 
-### Phase 2: Desktop Server Service (Week 2-3) 
+### Phase 2: Desktop Server Service (Week 2-3)
+
 1. Implement `DesktopServerSyncService` mirroring mobile server functionality
 2. Port WebSocket server handling to desktop platforms
 3. Add server-side connection management
 4. Implement message routing and sync operations
 
 ### Phase 3: Enhanced Sync Management (Week 3-4)
+
 1. Update `DesktopSyncService` with mode switching capabilities
 2. Integrate server and client services
 3. Add connection persistence and auto-reconnection
 4. Implement heartbeat and connection health monitoring
 
 ### Phase 4: UI Components (Week 4-5)
+
 1. Create desktop sync mode selector UI
 2. Implement server connection dialog with manual input
 3. Add connection string parsing and generation
 4. Update device discovery UI for desktop capabilities
 
 ### Phase 5: Integration & Testing (Week 5-6)
+
 1. Integrate all components with existing sync infrastructure
 2. Test desktop-to-desktop sync scenarios
 3. Test mixed platform sync (desktop client to mobile server)
@@ -292,7 +298,7 @@ Include server capabilities in QR code data:
 ```json
 {
   "deviceId": "uuid",
-  "deviceName": "Desktop Server", 
+  "deviceName": "Desktop Server",
   "ipAddress": "192.168.1.100",
   "port": 44040,
   "capabilities": ["server", "client"],
@@ -312,16 +318,19 @@ whph://192.168.1.100:44040?name=Desktop-Server&id=uuid&token=access-token
 ## Platform Considerations
 
 ### Windows Desktop
+
 - Native TCP socket implementation for server functionality
 - Windows firewall configuration guidance
 - System tray integration for connection status
 
-### Linux Desktop  
+### Linux Desktop
+
 - Cross-platform socket implementation
 - Network interface handling
 - Desktop environment integration
 
 ### Cross-Platform
+
 - Consistent WebSocket implementation across desktop platforms
 - Shared protocol handling between mobile and desktop servers
 - Platform-agnostic sync service abstraction
@@ -337,39 +346,46 @@ whph://192.168.1.100:44040?name=Desktop-Server&id=uuid&token=access-token
 ## Testing Strategy
 
 ### Unit Tests
+
 - Desktop client connection management
-- Server service WebSocket handling  
+- Server service WebSocket handling
 - Sync mode switching functionality
 - Connection string parsing and validation
 - Settings persistence and retrieval
 
 ### Integration Tests
+
 - Desktop-to-desktop sync scenarios
 - Mixed platform connections (desktop client to mobile server)
 - Connection failure and recovery scenarios
 - Mode switching during active connections
 
 ### End-to-End Tests
+
 - Complete sync workflows in all modes
-- QR code and connection string workflows  
+- QR code and connection string workflows
 - Settings persistence across application restarts
 - Multi-device sync topologies with desktop clients
 
 ## Alternatives Considered
 
 ### 1. Server-Only Enhancement
+
 **Approach**: Improve desktop server discovery without client capability  
 **Rejected**: Doesn't address core use case of desktop-as-client
 
 ### 2. Hybrid Mode Only
+
 **Approach**: Desktop always acts as both server and client simultaneously  
 **Rejected**: Resource intensive and complex connection management
 
 ### 3. Cloud Relay Service
+
 **Approach**: Use cloud service for desktop-to-desktop connections  
 **Rejected**: Contradicts privacy-focused P2P design, introduces dependencies
 
 ### 4. Separate Desktop Client Application
+
 **Approach**: Create separate lightweight client application  
 **Rejected**: Fragments user experience, increases maintenance burden
 
@@ -408,7 +424,7 @@ whph://192.168.1.100:44040?name=Desktop-Server&id=uuid&token=access-token
 ## References
 
 - [Issue #36](https://github.com/ahmet-cetinkaya/whph/issues/36): Original feature request
-- [RFC 006](./006_implement-peer-to-peer-synchronization.md): P2P sync implementation  
+- [RFC 006](./006_implement-peer-to-peer-synchronization.md): P2P sync implementation
 - [RFC 011](./011_enhance-network-discovery-multi-interface.md): Network discovery enhancements
 - Existing sync services: `AndroidServerSyncService`, `DesktopSyncService`
 - WebSocket protocol documentation: [RFC 6455](https://tools.ietf.org/html/rfc6455)
