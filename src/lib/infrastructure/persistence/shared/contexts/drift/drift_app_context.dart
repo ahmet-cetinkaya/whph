@@ -15,6 +15,7 @@ import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart'
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_tag.dart';
+import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/core/domain/features/notes/note.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
@@ -33,6 +34,7 @@ import 'package:whph/infrastructure/persistence/features/app_usages/drift_app_us
 import 'package:whph/infrastructure/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/drift_habit_tags_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/drift_habits_repository.dart';
+import 'package:whph/infrastructure/persistence/features/habits/drift_habit_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/features/notes/drift_note_repository.dart';
 import 'package:whph/infrastructure/persistence/features/notes/drift_note_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/settings/drift_settings_repository.dart';
@@ -59,6 +61,7 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
     HabitRecordTable,
     HabitTable,
     HabitTagTable,
+    HabitTimeRecordTable,
     NoteTable,
     NoteTagTable,
     SettingTable,
@@ -97,7 +100,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 24;
+  int get schemaVersion => 25;
 
   @override
   MigrationStrategy get migration {
@@ -507,6 +510,14 @@ class AppDatabase extends _$AppDatabase {
           // Step 5: Add index for performance on habit records
           await customStatement(
               'CREATE INDEX idx_habit_record_habit_occurred_at ON habit_record_table (habit_id, occurred_at)');
+        },
+        from24To25: (m, schema) async {
+          // Create HabitTimeRecord table for tracking actual time spent on habits
+          await m.createTable(habitTimeRecordTable);
+
+          // Add index for efficient queries by habit and date
+          await customStatement(
+              'CREATE INDEX idx_habit_time_record_habit_date ON habit_time_record_table (habit_id, created_date)');
         },
       ),
     );
