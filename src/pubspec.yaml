@@ -36,7 +36,7 @@ scripts:
   version:major: bash ../scripts/version_bump.sh major
   version:minor: bash ../scripts/version_bump.sh minor
   version:patch: bash ../scripts/version_bump.sh patch
-  version:push: cd android/fdroid && git push origin HEAD:me.ahmetcetinkaya.whph && cd ../../.. && git push && git push --tags
+  version:push: cd ../ && git push && git push --tags
 
 dependencies:
   flutter:
