@@ -199,16 +199,18 @@ class DesktopClientSyncService extends SyncService {
 
     // Send initial sync request through persistent connection
     final syncRequest = WebSocketMessage(
-      type: 'paginated_sync_start',
+      type: 'paginated_sync',
       data: {
         'clientId': localDeviceId,
         'serverId': _connectedServerId,
         'timestamp': DateTime.now().toIso8601String(),
+        'pageIndex': 0,
+        'pageSize': 10, // Default page size
+        'entityType': 'SyncDevice', // Start with SyncDevice as first entity
       },
     );
 
-    _clientChannel!.sink.add(JsonMapper.serialize(syncRequest));
-    Logger.debug('📤 Sent paginated sync start request over persistent connection');
+    _sendMessage(syncRequest, '📤 Sent paginated sync start request over persistent connection');
 
     // The sync process will continue through the WebSocket message handler
     // which will handle paginated_sync_response messages from the server
@@ -229,8 +231,7 @@ class DesktopClientSyncService extends SyncService {
       },
     );
 
-    _clientChannel!.sink.add(JsonMapper.serialize(handshake));
-    Logger.debug('📤 Sent client handshake request');
+    _sendMessage(handshake, '📤 Sent client handshake request');
   }
 
   Future<void> _handleServerMessage(dynamic message, Completer<bool>? connectionCompleter) async {
@@ -280,14 +281,26 @@ class DesktopClientSyncService extends SyncService {
 
               Logger.info('✅ Successfully processed sync data from server');
 
-              // Send client's data back to the server for bidirectional sync if more data
-              if (response.paginatedSyncDataDto != null && !dto.isLastPage) {
+              // Continue with next page if available, or send client's data for bidirectional sync
+              if (!dto.isLastPage) {
+                // Request next page from server
+                final nextPageRequest = WebSocketMessage(
+                  type: 'paginated_sync_request',
+                  data: {
+                    'entityType': dto.entityType,
+                    'pageIndex': dto.pageIndex + 1,
+                    'pageSize': dto.pageSize,
+                    'clientId': await _deviceIdService.getDeviceId(),
+                  },
+                );
+                _sendMessage(nextPageRequest, '📤 Requested next page ${dto.pageIndex + 1} from server for entity ${dto.entityType}');
+              } else if (response.paginatedSyncDataDto != null) {
+                // Send client's data back to the server for bidirectional sync
                 final responseMessage = WebSocketMessage(
                   type: 'paginated_sync',
                   data: response.paginatedSyncDataDto!.toJson(),
                 );
-                _clientChannel!.sink.add(JsonMapper.serialize(responseMessage));
-                Logger.debug('📤 Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
+                _sendMessage(responseMessage, '📤 Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
               }
             } catch (e) {
               Logger.error('❌ Failed to process paginated_sync data: $e');
@@ -315,11 +328,19 @@ class DesktopClientSyncService extends SyncService {
             }
           }
 
-          // Update sync status to completed
-          updateSyncStatus(SyncStatus(
-            state: SyncState.completed,
-            lastSyncTime: DateTime.now(),
-          ));
+          // Check if we need to send more data from the client side for bidirectional sync
+          if (data['isComplete'] == false) {
+            // Server indicates it's not complete, we might need to send more client data
+            Logger.debug('🔄 Server indicates sync not complete, preparing client data');
+            // In a proper implementation, we would trigger sending client data here
+            // For now, we'll just update the status but leave the connection open for further messages
+          } else {
+            // Update sync status to completed
+            updateSyncStatus(SyncStatus(
+              state: SyncState.completed,
+              lastSyncTime: DateTime.now(),
+            ));
+          }
           break;
 
         case 'error':
@@ -347,8 +368,7 @@ class DesktopClientSyncService extends SyncService {
               'clientId': await _deviceIdService.getDeviceId(),
             },
           );
-          _clientChannel!.sink.add(JsonMapper.serialize(heartbeat));
-          Logger.debug('💓 Sent heartbeat to server');
+          _sendMessage(heartbeat, '💓 Sent heartbeat to server');
         } catch (e) {
           Logger.error('❌ Failed to send heartbeat: $e');
           _handleConnectionError();
@@ -360,13 +380,15 @@ class DesktopClientSyncService extends SyncService {
   void _handleConnectionError() {
     Logger.warning('⚠️ Connection error detected');
     _isConnected = false;
-    // Could implement reconnection logic here
+    // Implement reconnection logic based on settings
+    _attemptReconnection();
   }
 
   void _handleConnectionClosed() {
     Logger.info('🔚 Connection closed');
     _isConnected = false;
-    // Could implement reconnection logic here
+    // Implement reconnection logic based on settings
+    _attemptReconnection();
   }
 
   Future<void> _cleanupConnection() async {
@@ -396,5 +418,22 @@ class DesktopClientSyncService extends SyncService {
   void dispose() {
     _cleanupConnection();
     super.dispose();
+  }
+
+  /// Helper method to send WebSocket messages and handle serialization
+  void _sendMessage(WebSocketMessage message, [String? logMessage]) {
+    if (_clientChannel != null) {
+      _clientChannel!.sink.add(JsonMapper.serialize(message));
+      if (logMessage != null) {
+        Logger.debug(logMessage);
+      }
+    }
+  }
+
+  /// Attempt to reconnect to the server based on settings
+  void _attemptReconnection() {
+    // This would be implemented based on the settings and reconnection logic
+    // For now, we'll just log that reconnection would be attempted
+    Logger.info('🔄 Attempting reconnection to server (not implemented in this fix)');
   }
 }

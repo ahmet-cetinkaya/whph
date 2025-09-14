@@ -11,6 +11,7 @@ import 'package:whph/core/application/features/sync/models/paginated_sync_data_d
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 
 const int webSocketPort = 44040;
+const int defaultSyncInterval = 1800; // 30 minutes in seconds
 
 /// Desktop server sync service that acts as WebSocket server for WHPH clients
 class DesktopServerSyncService extends SyncService {
@@ -109,7 +110,7 @@ class DesktopServerSyncService extends SyncService {
           break;
 
         case 'test':
-          socket.add(JsonMapper.serialize(WebSocketMessage(
+          _sendMessage(socket, WebSocketMessage(
             type: 'test_response',
             data: {
               'success': true,
@@ -117,7 +118,7 @@ class DesktopServerSyncService extends SyncService {
               'server_type': 'desktop',
               'platform': Platform.operatingSystem,
             },
-          )));
+          ));
           break;
 
         case 'client_connect':
@@ -136,7 +137,7 @@ class DesktopServerSyncService extends SyncService {
             'timestamp': DateTime.now().toIso8601String(),
             'server_type': 'desktop'
           });
-          socket.add(JsonMapper.serialize(deprecationMessage));
+          _sendMessage(socket, deprecationMessage);
           // Keep connection alive for modern sync methods
           break;
 
@@ -160,15 +161,15 @@ class DesktopServerSyncService extends SyncService {
             final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
             Logger.info('✅ Desktop server paginated sync processing completed successfully');
 
-            WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
+            // For paginated sync, send the data back as paginated_sync, not paginated_sync_complete
+            WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync', data: {
               'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
               'success': true,
               'isComplete': response.isComplete,
               'timestamp': DateTime.now().toIso8601String(),
               'server_type': 'desktop'
             });
-            socket.add(JsonMapper.serialize(responseMessage));
-            Logger.info('📤 Desktop server paginated sync response sent to client');
+            _sendMessage(socket, responseMessage, '📤 Desktop server paginated sync response sent to client');
 
             // Keep connection alive for potential additional sync requests
           } catch (e, stackTrace) {
@@ -188,21 +189,19 @@ class DesktopServerSyncService extends SyncService {
             };
 
             WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
-            socket.add(JsonMapper.serialize(errorMessage));
+            _sendMessage(socket, errorMessage);
             // Keep connection alive even after errors
           }
           break;
 
         default:
-          socket.add(JsonMapper.serialize(
-              WebSocketMessage(type: 'error', data: {'message': 'Unknown message type', 'server_type': 'desktop'})));
+          _sendMessage(socket, WebSocketMessage(type: 'error', data: {'message': 'Unknown message type', 'server_type': 'desktop'}));
           // Keep connection alive in case client sends valid messages later
           break;
       }
     } catch (e) {
       Logger.error('Error processing WebSocket message in desktop server: $e');
-      socket.add(JsonMapper.serialize(
-          WebSocketMessage(type: 'error', data: {'message': e.toString(), 'server_type': 'desktop'})));
+      _sendMessage(socket, WebSocketMessage(type: 'error', data: {'message': e.toString(), 'server_type': 'desktop'}));
       await socket.close();
       rethrow;
     }
@@ -232,8 +231,7 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      socket.add(JsonMapper.serialize(response));
-      Logger.debug('📤 Sent device info response');
+      _sendMessage(socket, response, '📤 Sent device info response');
     } catch (e) {
       Logger.error('Failed to handle device info request: $e');
     }
@@ -253,14 +251,13 @@ class DesktopServerSyncService extends SyncService {
           'success': true,
           'serverId': await _deviceIdService.getDeviceId(),
           'serverName': await DeviceInfoHelper.getDeviceName(),
-          'syncInterval': 1800, // 30 minutes
+          'syncInterval': defaultSyncInterval, // 30 minutes
           'supportedOperations': ['paginated_sync'],
           'timestamp': DateTime.now().toIso8601String(),
         },
       );
 
-      socket.add(JsonMapper.serialize(response));
-      Logger.info('✅ Client connected successfully: $clientName');
+      _sendMessage(socket, response, '✅ Client connected successfully: $clientName');
     } catch (e) {
       Logger.error('Failed to handle client connect: $e');
 
@@ -273,7 +270,7 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      socket.add(JsonMapper.serialize(errorResponse));
+      _sendMessage(socket, errorResponse);
     }
   }
 
@@ -301,8 +298,7 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      socket.add(JsonMapper.serialize(response));
-      Logger.info('📤 Desktop server: Sent paginated_sync_started response');
+      _sendMessage(socket, response, '📤 Desktop server: Sent paginated_sync_started response');
 
       // Start an asynchronous sync process that will send data over the persistent connection
       Logger.info('🔄 Desktop server: Starting sync data gathering for client');
@@ -321,7 +317,7 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      socket.add(JsonMapper.serialize(errorMessage));
+      _sendMessage(socket, errorMessage);
     }
   }
 
@@ -338,7 +334,7 @@ class DesktopServerSyncService extends SyncService {
 
         // Send the sync data back to the client over persistent connection
         final syncDataMessage = WebSocketMessage(
-          type: 'paginated_sync_complete',
+          type: 'paginated_sync',
           data: {
             'success': true,
             'paginatedSyncDataDto': syncResponse.paginatedSyncDataDto?.toJson(),
@@ -348,8 +344,7 @@ class DesktopServerSyncService extends SyncService {
           },
         );
 
-        socket.add(JsonMapper.serialize(syncDataMessage));
-        Logger.info('📤 Desktop server: Sent sync data to client via persistent connection');
+        _sendMessage(socket, syncDataMessage, '📤 Desktop server: Sent sync data to client via persistent connection');
 
       } catch (e, stackTrace) {
         Logger.error('❌ Desktop server: Failed to gather sync data: $e');
@@ -364,7 +359,7 @@ class DesktopServerSyncService extends SyncService {
           },
         );
 
-        socket.add(JsonMapper.serialize(errorMessage));
+        _sendMessage(socket, errorMessage);
       }
     }).catchError((e) {
       Logger.error('❌ Desktop server: Unhandled error in sync data gathering: $e');
@@ -383,7 +378,7 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      socket.add(JsonMapper.serialize(response));
+      _sendMessage(socket, response);
     } catch (e) {
       Logger.error('Failed to handle heartbeat: $e');
     }
@@ -450,4 +445,12 @@ class DesktopServerSyncService extends SyncService {
 
   /// Check if the server is running and healthy
   bool get isServerHealthy => _isServerMode && _server != null;
+
+  /// Helper method to send WebSocket messages and handle serialization
+  void _sendMessage(WebSocket socket, WebSocketMessage message, [String? logMessage]) {
+    socket.add(JsonMapper.serialize(message));
+    if (logMessage != null) {
+      Logger.debug(logMessage);
+    }
+  }
 }
