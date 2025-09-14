@@ -5,6 +5,8 @@ import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
@@ -256,8 +258,45 @@ class DesktopClientSyncService extends SyncService {
           Logger.debug('📨 Received server test response');
           break;
 
+        case 'paginated_sync_started':
+          Logger.info('🤝 Server acknowledged sync start');
+          final data = response.data as Map<String, dynamic>;
+          if (data['success'] == true) {
+            Logger.debug('✅ Paginated sync session established with server');
+          }
+          break;
+
         case 'paginated_sync_complete':
           Logger.debug('📨 Received sync response from server');
+          final data = response.data as Map<String, dynamic>;
+          if (data['success'] == true && data['paginatedSyncDataDto'] != null) {
+            try {
+              final dto = PaginatedSyncDataDto.fromJson(data['paginatedSyncDataDto'] as Map<String, dynamic>);
+              Logger.info('🔄 Processing sync data from server: ${dto.entityType} (page ${dto.pageIndex + 1}/${dto.totalPages})');
+
+              // Process the data from the server
+              final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
+              await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+
+              Logger.info('✅ Successfully processed sync data from server');
+
+              // Update sync status to completed if this was the last page
+              if (dto.isLastPage) {
+                updateSyncStatus(SyncStatus(
+                  state: SyncState.completed,
+                  lastSyncTime: DateTime.now(),
+                ));
+              }
+            } catch (e) {
+              Logger.error('❌ Failed to process paginated_sync_complete data: $e');
+              updateSyncStatus(SyncStatus(
+                state: SyncState.error,
+                lastSyncTime: DateTime.now(),
+              ));
+            }
+          } else {
+            Logger.warning('⚠️ Received paginated_sync_complete with no data or failed status');
+          }
           break;
 
         case 'error':
