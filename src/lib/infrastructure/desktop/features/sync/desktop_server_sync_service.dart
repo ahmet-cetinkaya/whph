@@ -300,9 +300,9 @@ class DesktopServerSyncService extends SyncService {
 
       _sendMessage(socket, response, '📤 Desktop server: Sent paginated_sync_started response');
 
-      // Start an asynchronous sync process that will send data over the persistent connection
-      Logger.info('🔄 Desktop server: Starting sync data gathering for client');
-      _startSyncDataGathering(clientId, socket);
+      // Acknowledge the sync start but don't immediately push data
+      // The client will request data pages as needed
+      Logger.info('🔄 Desktop server: Acknowledged sync start request from client');
 
     } catch (e, stackTrace) {
       Logger.error('❌ Desktop server: Failed to handle paginated_sync_start: $e');
@@ -321,50 +321,6 @@ class DesktopServerSyncService extends SyncService {
     }
   }
 
-  /// Start async sync data gathering using persistent connection
-  void _startSyncDataGathering(String? clientId, WebSocket socket) {
-    // Run the sync data gathering asynchronously to avoid blocking the response
-    Future(() async {
-      try {
-        Logger.info('🔄 Desktop server: Gathering sync data for client over persistent connection');
-
-        // Use the mediator to get sync data, but keep the connection open
-        final command = PaginatedSyncCommand(targetDeviceId: clientId);
-        final syncResponse = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
-
-        // Send the sync data back to the client over persistent connection
-        final syncDataMessage = WebSocketMessage(
-          type: 'paginated_sync',
-          data: {
-            'success': true,
-            'paginatedSyncDataDto': syncResponse.paginatedSyncDataDto?.toJson(),
-            'isComplete': syncResponse.isComplete,
-            'timestamp': DateTime.now().toIso8601String(),
-            'server_type': 'desktop',
-          },
-        );
-
-        _sendMessage(socket, syncDataMessage, '📤 Desktop server: Sent sync data to client via persistent connection');
-
-      } catch (e, stackTrace) {
-        Logger.error('❌ Desktop server: Failed to gather sync data: $e');
-        Logger.error('Stack trace: $stackTrace');
-
-        final errorMessage = WebSocketMessage(
-          type: 'paginated_sync_error',
-          data: {
-            'success': false,
-            'message': 'Failed to gather sync data: ${e.toString()}',
-            'timestamp': DateTime.now().toIso8601String(),
-          },
-        );
-
-        _sendMessage(socket, errorMessage);
-      }
-    }).catchError((e) {
-      Logger.error('❌ Desktop server: Unhandled error in sync data gathering: $e');
-    });
-  }
 
   Future<void> _handleHeartbeat(WebSocketMessage message, WebSocket socket) async {
     try {

@@ -199,14 +199,11 @@ class DesktopClientSyncService extends SyncService {
 
     // Send initial sync request through persistent connection
     final syncRequest = WebSocketMessage(
-      type: 'paginated_sync',
+      type: 'paginated_sync_start',
       data: {
         'clientId': localDeviceId,
         'serverId': _connectedServerId,
         'timestamp': DateTime.now().toIso8601String(),
-        'pageIndex': 0,
-        'pageSize': 10, // Default page size
-        'entityType': 'SyncDevice', // Start with SyncDevice as first entity
       },
     );
 
@@ -432,8 +429,15 @@ class DesktopClientSyncService extends SyncService {
 
   /// Attempt to reconnect to the server based on settings
   void _attemptReconnection() {
-    // This would be implemented based on the settings and reconnection logic
-    // For now, we'll just log that reconnection would be attempted
-    Logger.info('🔄 Attempting reconnection to server (not implemented in this fix)');
+    // Implement reconnection logic based on settings
+    if (_connectedServerAddress != null && _connectedServerPort != null) {
+      Logger.info('🔄 Attempting reconnection to server $_connectedServerAddress:$_connectedServerPort');
+      // Add a delay before attempting reconnection
+      Future.delayed(const Duration(seconds: 5), () {
+        connectToServer(_connectedServerAddress!, _connectedServerPort!);
+      });
+    } else {
+      Logger.warning('⚠️ Cannot attempt reconnection - no server address/port stored');
+    }
   }
 }
