@@ -441,27 +441,27 @@ class AppDatabase extends _$AppDatabase {
           await customStatement('''
             CREATE TABLE task_table_new (
               id TEXT NOT NULL,
-              parent_task_id TEXT,
+              parent_task_id TEXT NULL,
               title TEXT NOT NULL,
-              description TEXT,
-              priority INTEGER,
-              planned_date INTEGER,
-              deadline_date INTEGER,
-              estimated_time INTEGER,
-              is_completed INTEGER NOT NULL DEFAULT 0,
+              description TEXT NULL,
+              priority INTEGER NULL,
+              planned_date INTEGER NULL,
+              deadline_date INTEGER NULL,
+              estimated_time INTEGER NULL,
+              is_completed INTEGER NOT NULL DEFAULT (0) CHECK ("is_completed" IN (0, 1)),
               created_date INTEGER NOT NULL,
-              modified_date INTEGER,
-              deleted_date INTEGER,
+              modified_date INTEGER NULL,
+              deleted_date INTEGER NULL,
               "order" REAL NOT NULL DEFAULT 0.0,
               planned_date_reminder_time INTEGER NOT NULL DEFAULT 0,
               deadline_date_reminder_time INTEGER NOT NULL DEFAULT 0,
               recurrence_type INTEGER NOT NULL DEFAULT 0,
-              recurrence_interval INTEGER,
-              recurrence_days_string TEXT,
-              recurrence_start_date INTEGER,
-              recurrence_end_date INTEGER,
-              recurrence_count INTEGER,
-              recurrence_parent_id TEXT,
+              recurrence_interval INTEGER NULL,
+              recurrence_days_string TEXT NULL,
+              recurrence_start_date INTEGER NULL,
+              recurrence_end_date INTEGER NULL,
+              recurrence_count INTEGER NULL,
+              recurrence_parent_id TEXT NULL,
               PRIMARY KEY (id)
             )
           ''');
@@ -482,10 +482,10 @@ class AppDatabase extends _$AppDatabase {
             CREATE TABLE habit_record_table_new (
               id TEXT NOT NULL,
               created_date INTEGER NOT NULL,
-              modified_date INTEGER,
-              deleted_date INTEGER,
+              modified_date INTEGER NULL,
+              deleted_date INTEGER NULL,
               habit_id TEXT NOT NULL,
-              occurred_at INTEGER NOT NULL,
+              occurred_at INTEGER NULL,
               PRIMARY KEY (id)
             )
           ''');
