@@ -138,4 +138,9 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String serverDetailsTitle = 'sync.connect_info.server_details_title';
   static const String connectionStringTitleAlt = 'sync.connect_info.connection_string_title_alt';
   static const String copy = 'sync.connect_info.copy';
+
+  // Additional connection test messages
+  static const String connectionTimeout = 'sync.manual.connection_timeout';
+  static const String connectionTestSuccessful = 'sync.manual.connection_test_successful';
+  static const String connectionTestTimeout = 'sync.manual.connection_test_timeout';
 }

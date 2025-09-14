@@ -458,7 +458,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
       if (mounted) {
         setState(() {
           if (e is TimeoutException) {
-            _errorMessage = 'Connection timeout. Please check the server address and try again.';
+            _errorMessage = _translationService.translate(SyncTranslationKeys.connectionTimeout);
           } else {
             _errorMessage =
                 _translationService.translate(SyncTranslationKeys.connectionError, namedArgs: {'0': e.toString()});
@@ -524,7 +524,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
         // Show success notification
         OverlayNotificationHelper.showSuccess(
           context: context,
-          message: 'Connection test successful!',
+          message: _translationService.translate(SyncTranslationKeys.connectionTestSuccessful),
         );
       }
     } catch (e) {
@@ -535,7 +535,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
       if (mounted) {
         setState(() {
           if (e is TimeoutException) {
-            _errorMessage = 'Connection test timeout. Please check the server address and try again.';
+            _errorMessage = _translationService.translate(SyncTranslationKeys.connectionTestTimeout);
           } else {
             _errorMessage = 'Connection test failed: ${e.toString()}';
           }

@@ -172,6 +172,9 @@ sync:
     connection_string_label: Connection String
     test_connection: Test Connection
     enter_server_details: Enter server connection details manually
+    connection_timeout: Connection timeout. Please check the server address and try again.
+    connection_test_successful: Connection test successful!
+    connection_test_timeout: Connection test timeout. Please check the server address and try again.
   add:
     device: Add Device
     device_tooltip: Add new device
