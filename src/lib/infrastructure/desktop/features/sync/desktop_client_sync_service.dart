@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
 /// Desktop client sync service that connects to WHPH servers
@@ -180,8 +181,9 @@ class DesktopClientSyncService extends SyncService {
         lastSyncTime: DateTime.now(),
       ));
 
-      // Use the base implementation which calls the mediator
-      await super.runPaginatedSync(isManual: isManual);
+      // Call mediator directly with target device ID to sync only with connected server
+      final command = PaginatedSyncCommand(targetDeviceId: _connectedServerId);
+      await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
       Logger.info('✅ Client paginated sync completed');
     } catch (e) {

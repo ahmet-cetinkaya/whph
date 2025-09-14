@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
@@ -19,9 +18,8 @@ class DesktopServerSyncService extends SyncService {
   final List<WebSocket> _activeConnections = [];
 
   final IDeviceIdService _deviceIdService;
-  final Mediator mediator;
 
-  DesktopServerSyncService(this.mediator, this._deviceIdService) : super(mediator);
+  DesktopServerSyncService(super.mediator, this._deviceIdService);
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {

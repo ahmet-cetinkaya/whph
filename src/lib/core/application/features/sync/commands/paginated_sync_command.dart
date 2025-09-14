@@ -95,8 +95,9 @@ class PaginatedSyncResult {
 
 class PaginatedSyncCommand implements IRequest<PaginatedSyncCommandResponse> {
   final PaginatedSyncDataDto? paginatedSyncDataDto;
+  final String? targetDeviceId;
 
-  PaginatedSyncCommand({this.paginatedSyncDataDto});
+  PaginatedSyncCommand({this.paginatedSyncDataDto, this.targetDeviceId});
 }
 
 @jsonSerializable
@@ -347,20 +348,28 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     } else {
       // Outgoing sync initiation
       Logger.info('🔄 Proceeding with paginated sync initiation');
-      return await _initiatePaginatedSync();
+      return await _initiatePaginatedSync(targetDeviceId: request.targetDeviceId);
     }
   }
 
-  Future<PaginatedSyncCommandResponse> _initiatePaginatedSync() async {
+  Future<PaginatedSyncCommandResponse> _initiatePaginatedSync({String? targetDeviceId}) async {
     final localDeviceId = await deviceIdService.getDeviceId();
     final localIP = await NetworkUtils.getLocalIpAddress();
     final allDevices = await syncDeviceRepository.getAll();
 
     Logger.debug('🔍 Local device details - ID: $localDeviceId, IP: $localIP');
 
-    final syncDevices = allDevices
+    var syncDevices = allDevices
         .where((device) => device.fromDeviceId == localDeviceId || device.toDeviceId == localDeviceId)
         .toList();
+
+    // If targetDeviceId is specified, filter to only sync with that device
+    if (targetDeviceId != null) {
+      syncDevices = syncDevices
+          .where((device) => device.fromDeviceId == targetDeviceId || device.toDeviceId == targetDeviceId)
+          .toList();
+      Logger.info('🎯 Filtering sync to target device: $targetDeviceId');
+    }
 
     if (syncDevices.isEmpty) {
       Logger.info('🔍 No remote devices found to sync with');

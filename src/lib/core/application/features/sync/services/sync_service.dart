@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
@@ -10,6 +11,10 @@ import 'abstraction/i_sync_service.dart';
 
 class SyncService implements ISyncService {
   final Mediator _mediator;
+
+  /// Protected getter for mediator access in subclasses
+  @protected
+  Mediator get mediator => _mediator;
 
   final _syncCompleteController = StreamController<bool>.broadcast();
   WebSocketChannel? _channel;
