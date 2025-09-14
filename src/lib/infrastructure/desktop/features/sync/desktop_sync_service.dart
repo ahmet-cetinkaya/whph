@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
@@ -19,10 +18,9 @@ class DesktopSyncService extends SyncService {
   DesktopServerSyncService? _serverService;
   DesktopClientSyncService? _clientService;
 
-  final Mediator _localMediator;
   final IDeviceIdService _deviceIdService;
 
-  DesktopSyncService(super.mediator, this._deviceIdService) : _localMediator = mediator;
+  DesktopSyncService(super.mediator, this._deviceIdService);
 
   /// Get current sync mode
   DesktopSyncMode get currentMode => _currentMode;
@@ -124,7 +122,7 @@ class DesktopSyncService extends SyncService {
   Future<void> _startServerMode() async {
     Logger.debug('Starting desktop server mode');
 
-    _serverService = DesktopServerSyncService(_localMediator, _deviceIdService);
+    _serverService = DesktopServerSyncService(mediator, _deviceIdService);
 
     // Try to start as server
     final serverStarted = await _serverService!.startAsServer();
@@ -139,7 +137,7 @@ class DesktopSyncService extends SyncService {
   Future<void> _startClientMode() async {
     Logger.debug('Starting desktop client mode');
 
-    _clientService = DesktopClientSyncService(_localMediator, _deviceIdService);
+    _clientService = DesktopClientSyncService(mediator, _deviceIdService);
 
     // Try to connect to server if settings available
     if (_settings.hasValidClientSettings && _settings.autoReconnectToServer) {

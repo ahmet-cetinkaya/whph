@@ -507,7 +507,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
       if (deviceInfo == null) {
         if (mounted) {
           setState(() {
-            _errorMessage = 'Connection test failed - no response from server';
+            _errorMessage = _translationService.translate(SyncTranslationKeys.connectionTestFailedNoResponse);
             _isConnecting = false;
           });
         }
@@ -537,7 +537,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
           if (e is TimeoutException) {
             _errorMessage = _translationService.translate(SyncTranslationKeys.connectionTestTimeout);
           } else {
-            _errorMessage = 'Connection test failed: ${e.toString()}';
+            _errorMessage = _translationService.translate(SyncTranslationKeys.connectionTestFailedGeneric, namedArgs: {'0': e.toString()});
           }
           _isConnecting = false;
         });
