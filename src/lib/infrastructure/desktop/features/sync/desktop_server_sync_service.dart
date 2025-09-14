@@ -140,6 +140,11 @@ class DesktopServerSyncService extends SyncService {
           // Keep connection alive for modern sync methods
           break;
 
+        case 'paginated_sync_start':
+          Logger.info('🔄 Desktop server received paginated sync start request');
+          await _handlePaginatedSyncStart(parsedMessage, socket);
+          break;
+
         case 'paginated_sync':
           Logger.info('🔄 Desktop server processing paginated sync request...');
           final paginatedSyncData = parsedMessage.data;
@@ -269,6 +274,70 @@ class DesktopServerSyncService extends SyncService {
       );
 
       socket.add(JsonMapper.serialize(errorResponse));
+    }
+  }
+
+  /// Handle paginated sync start request from client
+  Future<void> _handlePaginatedSyncStart(WebSocketMessage message, WebSocket socket) async {
+    try {
+      final data = message.data as Map<String, dynamic>?;
+      if (data == null) {
+        throw FormatException('paginated_sync_start message missing data');
+      }
+
+      final clientId = data['clientId'] as String?;
+      final serverId = data['serverId'] as String?;
+
+      Logger.info('🤝 Desktop server: Client ($clientId) initiated paginated sync with server ($serverId)');
+
+      // Acknowledge the sync start and initiate the actual sync process
+      final response = WebSocketMessage(
+        type: 'paginated_sync_started',
+        data: {
+          'success': true,
+          'serverId': await _deviceIdService.getDeviceId(),
+          'message': 'Paginated sync session started',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      socket.add(JsonMapper.serialize(response));
+      Logger.info('📤 Desktop server: Sent paginated_sync_started response');
+
+      // Now trigger the actual sync process by calling the mediator
+      // This initiates the server-side sync that will send data back to the client
+      final command = PaginatedSyncCommand(targetDeviceId: clientId);
+      final syncResponse = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+
+      // Send the sync data back to the client
+      final syncDataMessage = WebSocketMessage(
+        type: 'paginated_sync_complete',
+        data: {
+          'success': true,
+          'paginatedSyncDataDto': syncResponse.paginatedSyncDataDto?.toJson(),
+          'isComplete': syncResponse.isComplete,
+          'timestamp': DateTime.now().toIso8601String(),
+          'server_type': 'desktop',
+        },
+      );
+
+      socket.add(JsonMapper.serialize(syncDataMessage));
+      Logger.info('📤 Desktop server: Sent sync data to client via paginated_sync_complete');
+
+    } catch (e, stackTrace) {
+      Logger.error('❌ Desktop server: Failed to handle paginated_sync_start: $e');
+      Logger.error('Stack trace: $stackTrace');
+
+      final errorMessage = WebSocketMessage(
+        type: 'paginated_sync_error',
+        data: {
+          'success': false,
+          'message': 'Failed to start paginated sync: ${e.toString()}',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
+      socket.add(JsonMapper.serialize(errorMessage));
     }
   }
 
