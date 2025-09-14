@@ -14,7 +14,6 @@ import 'package:whph/core/application/features/sync/services/network_interface_s
 import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
 import 'package:whph/core/application/features/sync/services/concurrent_connection_service.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
@@ -57,9 +56,6 @@ void registerSyncFeature(
 ) {
   // ISyncService is registered in infrastructure_container.dart with platform-specific implementations
   final syncService = container.resolve<ISyncService>();
-
-  // IApplicationDirectoryService is registered in infrastructure_container.dart with platform-specific implementations
-  final applicationDirectoryService = container.resolve<IApplicationDirectoryService>();
 
   final deviceIdService = container.resolve<IDeviceIdService>();
 
