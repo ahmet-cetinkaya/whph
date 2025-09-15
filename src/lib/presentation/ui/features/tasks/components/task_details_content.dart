@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.da
 import 'package:whph/presentation/ui/features/tasks/components/priority_select_field.dart';
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_time_logging_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_date_field.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
@@ -80,6 +81,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   static const String keyTags = 'tags';
   static const String keyPriority = 'priority';
   static const String keyEstimatedTime = 'estimatedTime';
+  static const String keyElapsedTime = 'elapsedTime';
   static const String keyPlannedDate = 'plannedDate';
   static const String keyDeadlineDate = 'deadlineDate';
   static const String keyDescription = 'description';
@@ -177,6 +179,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _task!.priority != null;
       case keyEstimatedTime:
         return _task!.estimatedTime != null && _task!.estimatedTime! > 0;
+      case keyElapsedTime:
+        return _task!.totalDuration > 0;
       case keyPlannedDate:
         return _task!.plannedDate != null;
       case keyDeadlineDate:
@@ -392,6 +396,25 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void _forceImmediateUpdate() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _saveTaskImmediately();
+  }
+
+  /// Show the time logging dialog
+  Future<void> _showTimeLoggingDialog() async {
+    if (_task == null) return;
+
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
+      context: context,
+      size: DialogSize.medium,
+      child: TaskTimeLoggingDialog(
+        taskId: _task!.id,
+        taskName: _task!.title,
+      ),
+    );
+
+    // If time was logged successfully, refresh the task data
+    if (result == true) {
+      await _getTask();
+    }
   }
 
   /// Helper method to check if any date picker interaction is currently active
@@ -952,6 +975,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       keyTags,
       keyPriority,
       keyEstimatedTime,
+      keyElapsedTime,
       keyPlannedDate,
       keyDeadlineDate,
       keyDescription,
@@ -960,8 +984,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Reminder fields are handled with their corresponding date fields
     ].where((field) => _shouldShowAsChip(field)).toList();
 
-    // Should hide elapsed time if it's 0
-    final bool showElapsedTime = _task!.totalDuration > 0;
+    // Show elapsed time if it has data OR if manually enabled as optional field
+    final bool showElapsedTime = _task!.totalDuration > 0 || _visibleOptionalFields.contains(keyElapsedTime);
 
     return SingleChildScrollView(
       child: Column(
@@ -998,7 +1022,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           const SizedBox(height: AppTheme.size2XSmall),
 
           // Display optional fields section
-          if (_visibleOptionalFields.isNotEmpty || (_task!.parentTask != null)) ...[
+          if (_visibleOptionalFields.isNotEmpty || (_task!.parentTask != null) || showElapsedTime) ...[
             // Only fields that are manually set as visible (excluding description which is handled separately)
             DetailTable(
               rowData: [
@@ -1112,9 +1136,25 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             bottom: AppTheme.sizeSmall,
             left: AppTheme.sizeSmall,
           ),
-          child: Text(
-            SharedUiConstants.formatDurationHuman((_task!.totalDuration / 60).round(), _translationService),
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _task!.totalDuration > 0
+                      ? SharedUiConstants.formatDurationHuman((_task!.totalDuration / 60).round(), _translationService)
+                      : SharedUiConstants.formatDurationHuman(0, _translationService),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () => _showTimeLoggingDialog(),
+                tooltip: 'Edit time',
+                iconSize: AppTheme.iconSizeSmall,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: const EdgeInsets.all(4),
+              ),
+            ],
           ),
         ),
       );
@@ -1290,6 +1330,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _translationService.translate(TaskTranslationKeys.priorityLabel);
       case keyEstimatedTime:
         return _translationService.translate(TaskTranslationKeys.estimatedTimeLabel);
+      case keyElapsedTime:
+        return _translationService.translate(TaskTranslationKeys.elapsedTimeLabel);
       case keyPlannedDate:
         return _translationService.translate(TaskTranslationKeys.plannedDateLabel);
       case keyDeadlineDate:
@@ -1318,6 +1360,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return TaskUiConstants.priorityIcon;
       case keyEstimatedTime:
         return TaskUiConstants.estimatedTimeIcon;
+      case keyElapsedTime:
+        return TaskUiConstants.timerIcon;
       case keyPlannedDate:
         return TaskUiConstants.plannedDateIcon;
       case keyDeadlineDate:
