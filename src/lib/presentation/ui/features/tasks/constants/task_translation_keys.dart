@@ -30,6 +30,15 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String pomodoroKeepScreenAwakeSectionLabel = 'tasks.pomodoro.settings.keep_screen_awake_section';
   static const String pomodoroKeepScreenAwakeLabel = 'tasks.pomodoro.settings.keep_screen_awake';
 
+  // Timer Mode
+  static const String timerModeTitle = 'tasks.timer.mode.title';
+  static const String timerModeDescription = 'tasks.timer.mode.description';
+  static const String timerModeNormal = 'tasks.timer.mode.normal';
+  static const String timerModePomodoro = 'tasks.timer.mode.pomodoro';
+  static const String timerModeStopwatch = 'tasks.timer.mode.stopwatch';
+  static const String timerSettingsDurationLabel = 'tasks.timer.settings.duration_label';
+  static const String timerSettingsDurationTitle = 'tasks.timer.settings.duration_title';
+
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';
   static const String priorityUrgentImportant = 'tasks.priority.types.urgent_important';

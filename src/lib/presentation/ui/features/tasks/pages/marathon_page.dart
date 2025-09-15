@@ -14,7 +14,7 @@ import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart'
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/features/tasks/components/pomodoro_timer.dart';
+import 'package:whph/presentation/ui/features/tasks/components/timer.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
@@ -408,7 +408,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             ),
                             // Removed Expanded widget here
                             Center(
-                              child: PomodoroTimer(
+                              child: AppTimer(
                                 onTimeUpdate: _handleTimerUpdate,
                                 onTimerStart: _onTimerStart,
                                 onTimerStop: _onTimerStop,

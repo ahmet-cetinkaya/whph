@@ -19,6 +19,7 @@ class SettingKeys {
   static const String tickingVolume = 'TICKING_VOLUME';
   static const String tickingSpeed = 'TICKING_SPEED';
   static const String keepScreenAwake = 'KEEP_SCREEN_AWAKE';
+  static const String defaultTimerMode = 'DEFAULT_TIMER_MODE';
 
   // Filter and sort settings
   static const String tasksListOptionsSettings = 'TASKS_LIST_OPTIONS_SETTINGS';

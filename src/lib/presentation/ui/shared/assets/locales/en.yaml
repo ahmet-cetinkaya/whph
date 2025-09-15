@@ -140,6 +140,9 @@ shared:
     search: Search
   help:
     tooltip: Help
+  timer:
+    normal: Normal
+    pomodoro: Pomodoro
   messages:
     confirm_delete: Are you sure you want to delete this item?
     no_items_found: No items
