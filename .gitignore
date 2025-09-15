@@ -13,3 +13,6 @@ QWEN.md
 
 # FVM Version Cache
 .fvm/
+
+# Other
+*.log
