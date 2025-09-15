@@ -11,7 +11,7 @@ void main() {
       final analyzer = TranslationKeysAnalyzer();
       final result = await analyzer.analyze();
 
-      print('\n${'-' * 50}');
+      print('-' * 50);
 
       if (result.missingTranslations.isNotEmpty) {
         print('\n# 🚨 MISSING TRANSLATIONS:');
@@ -99,8 +99,6 @@ class TranslationKeysAnalyzer {
     for (final path in translationKeyPaths) {
       final file = File(path);
       if (!file.existsSync()) continue;
-
-      print('🔍 Analyzing translations for: $path');
 
       // Extract keys from TranslationKey file
       final keys = await _extractKeysFromFile(file);

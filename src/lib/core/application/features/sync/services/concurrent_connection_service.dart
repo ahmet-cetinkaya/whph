@@ -19,11 +19,9 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     Duration timeout = _defaultTimeout,
   }) async {
     if (ipAddresses.isEmpty) {
-      Logger.debug('No IP addresses provided for connection');
       return null;
     }
 
-    Logger.debug('Attempting concurrent connections to ${ipAddresses.length} addresses: ${ipAddresses.join(', ')}');
 
     final Completer<WebSocket?> completer = Completer();
     bool connectionSucceeded = false;
@@ -38,7 +36,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
         (socket) {
           if (!connectionSucceeded) {
             connectionSucceeded = true;
-            Logger.debug('✅ First successful connection established to $ipAddress:$port');
             if (!completer.isCompleted) {
               completer.complete(socket);
             }
@@ -48,12 +45,10 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
           }
         },
         (error) {
-          Logger.debug('❌ Connection failed to $ipAddress:$port: $error');
           if (connectionSucceeded) return;
 
           failedAttempts++;
           if (failedAttempts == ipAddresses.length && !completer.isCompleted) {
-            Logger.debug('All connection attempts failed');
             completer.complete(null);
           }
         },
@@ -63,7 +58,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     // Set up timeout for the entire operation
     Timer(timeout, () {
       if (!completer.isCompleted) {
-        Logger.debug('⏰ Connection timeout after ${timeout.inSeconds}s, no successful connections');
         completer.complete(null);
       }
     });
@@ -84,7 +78,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       return [];
     }
 
-    Logger.debug('Testing connectivity to ${ipAddresses.length} addresses');
 
     final List<Future<ConnectionAttemptResult>> testFutures =
         ipAddresses.map((ip) => _testSingleAddress(ip, port, timeout)).toList();
@@ -93,7 +86,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       final results = await Future.wait(testFutures);
       final successful = results.where((result) => result.successful).map((result) => result.ipAddress).toList();
 
-      Logger.debug('Connectivity test completed: ${successful.length}/${ipAddresses.length} addresses reachable');
       return successful;
     } catch (e) {
       Logger.error('Error during connectivity testing: $e');
@@ -119,7 +111,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       final stopwatch = Stopwatch()..start();
       final wsUrl = 'ws://$ipAddress:$port';
 
-      Logger.debug('🔍 Attempting WebSocket connection to $wsUrl');
 
       final socket = await WebSocket.connect(wsUrl).timeout(timeout);
       stopwatch.stop();
@@ -128,15 +119,12 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       final isValid = await _validateConnection(socket);
 
       if (isValid) {
-        Logger.debug('✅ Connection validated to $ipAddress:$port (${stopwatch.elapsedMilliseconds}ms)');
         onSuccess(socket);
       } else {
-        Logger.debug('❌ Connection validation failed to $ipAddress:$port');
         socket.close();
         onError('Connection validation failed');
       }
     } catch (e) {
-      Logger.debug('❌ Connection attempt failed to $ipAddress:$port: $e');
       onError(e.toString());
     }
   }
@@ -151,7 +139,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       await socket.close();
       stopwatch.stop();
 
-      Logger.debug('✅ Socket test passed for $ipAddress:$port (${stopwatch.elapsedMilliseconds}ms)');
       return ConnectionAttemptResult(
         ipAddress: ipAddress,
         successful: true,
@@ -159,7 +146,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       );
     } catch (e) {
       stopwatch.stop();
-      Logger.debug('❌ Socket test failed for $ipAddress:$port: $e (${stopwatch.elapsedMilliseconds}ms)');
       return ConnectionAttemptResult(
         ipAddress: ipAddress,
         successful: false,
@@ -193,12 +179,10 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       final isValid = response?.type == 'connection_test_response' && response?.data?['success'] == true;
 
       if (!isValid) {
-        Logger.debug('Invalid connection test response: ${response?.type}');
       }
 
       return isValid;
     } catch (e) {
-      Logger.debug('Connection validation failed: $e');
       return false;
     }
   }
