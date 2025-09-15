@@ -8,6 +8,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -77,9 +78,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     required ITaskRepository taskService,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
-  }) : _taskRepository = taskService,
-       _taskTagRepository = taskTagRepository,
-       _taskTimeRecordRepository = taskTimeRecordRepository;
+  })  : _taskRepository = taskService,
+        _taskTagRepository = taskTagRepository,
+        _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
   Future<SaveTaskCommandResponse> call(SaveTaskCommand request) async {
@@ -160,7 +161,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           priority: request.priority,
           plannedDate: request.plannedDate,
           deadlineDate: request.deadlineDate,
-          estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null,
+          estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
+              ? request.estimatedTime
+              : TaskUiConstants.defaultEstimatedTime,
           isCompleted: request.isCompleted,
           parentTaskId: request.parentTaskId,
           order: newOrder,
