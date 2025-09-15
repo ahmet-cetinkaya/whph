@@ -51,9 +51,8 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
   static const int _minTimerValue = 1;
   static const int _maxTimerValue = 120;
 
-  // Debouncer for saving settings
+  // Debounce for saving settings
   Timer? _saveDebounceTimer;
-  static const Duration _debounceDuration = Duration(milliseconds: 500);
 
   // Track which settings need to be saved
   final Set<String> _pendingSaves = <String>{};

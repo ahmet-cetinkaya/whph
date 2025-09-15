@@ -467,7 +467,11 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build estimated time widget
   Widget _buildEstimatedTimeWidget() {
-    if (widget.habit.estimatedTime == null || widget.isMiniLayout) {
+    // Use actual time if available, otherwise fall back to estimated time
+    final timeToDisplay = widget.habit.actualTime ?? widget.habit.estimatedTime;
+    final isActualTime = widget.habit.actualTime != null;
+
+    if (timeToDisplay == null || widget.isMiniLayout) {
       return const SizedBox.shrink();
     }
 
@@ -477,12 +481,12 @@ class _HabitCardState extends State<HabitCard> {
         Icon(
           HabitUiConstants.estimatedTimeIcon,
           size: AppTheme.iconSizeSmall,
-          color: HabitUiConstants.estimatedTimeColor,
+          color: isActualTime ? Colors.green : HabitUiConstants.estimatedTimeColor,
         ),
         Text(
-          SharedUiConstants.formatMinutes(widget.habit.estimatedTime),
+          SharedUiConstants.formatMinutes(timeToDisplay),
           style: AppTheme.bodySmall.copyWith(
-            color: HabitUiConstants.estimatedTimeColor,
+            color: isActualTime ? Colors.green : HabitUiConstants.estimatedTimeColor,
           ),
         ),
       ],

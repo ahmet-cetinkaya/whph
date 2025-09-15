@@ -10,7 +10,10 @@
 
 This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a multi-mode timer (Normal + Pomodoro + Stopwatch), enabling manual time logging and editing for tasks, and adding real timing support for habits with clarified semantics. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
 
-**Status Update**: The multi-mode timer system has been successfully implemented in `AppTimer` component with comprehensive settings integration. The next major milestone is implementing manual time logging capabilities.
+**Status Update**:
+- ✅ Multi-mode timer system completed in `AppTimer` component with settings integration
+- ✅ Task manual time logging completed with `TaskTimeLoggingDialog` and task details integration
+- ⏳ Next milestones: Habit time logging and analytics integration
 
 ## Motivation
 
@@ -372,24 +375,27 @@ class DriftAppContext extends _$DriftAppContext {
 
 ### Phase 2: Timer Enhancement (Week 2-3)
 
-1. **Multi-Mode Timer Component**
+1. **Multi-Mode Timer Component** ✅ COMPLETED
    - Enhanced `AppTimer` with three modes: Normal, Pomodoro, Stopwatch
    - Implemented unified interface with `onTimeUpdate`, `onTimerStart`, `onTimerStop` callbacks
    - Added system tray and keep-awake integration for all modes
 
-2. **Settings Integration**
+2. **Settings Integration** ✅ COMPLETED
    - Created `TimerSettingsDialog` with mode selection and configuration
    - Implemented debounced saving and real-time settings updates
    - Added comprehensive settings management for all timer modes
 
-### Phase 3: Manual Logging (Week 3-4)
+### Phase 3: Manual Logging (Week 3-4) ✅ PARTIALLY COMPLETED
 
-1. **Task Time Logging**
-   - Create time logging dialog component
-   - Implement "Log Time" functionality
-   - Add "Set Total for Day" with delta calculation
+1. **Task Time Logging** ✅ COMPLETED
+   - Created `TaskTimeLoggingDialog` component with comprehensive UI
+   - Implemented "Add Time" and "Set Total for Day" modes
+   - Added delta calculation for total time setting
+   - Integrated with task details page as optional field
+   - Added `GetTotalDurationByTaskIdQuery` for current time retrieval
+   - Full internationalization support
 
-2. **Habit Time Logging**
+2. **Habit Time Logging** - PENDING
    - Create habit-specific logging UI
    - Implement actual vs estimated time display
    - Add manual time entry for habits
@@ -401,10 +407,11 @@ class DriftAppContext extends _$DriftAppContext {
    - Implement fallback to estimated time logic
    - Ensure backward compatibility
 
-2. **UI Integration**
-   - AppTimer already integrated in MarathonPage with multi-mode support
+2. **UI Integration** ✅ PARTIALLY COMPLETED
+   - AppTimer already integrated in MarathonPage with multi-mode support ✅
+   - Task details page updated with manual time logging ✅
    - Add timer to TodayPage (compact version) - PENDING
-   - Update task and habit details pages - PENDING
+   - Update habit details pages - PENDING
 
 ### Phase 5: Testing and Polish (Week 5-6)
 

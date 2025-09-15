@@ -15,7 +15,7 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.da
 import 'package:whph/presentation/ui/features/tasks/components/priority_select_field.dart';
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_time_logging_dialog.dart';
+import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_date_field.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
@@ -405,9 +405,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
       size: DialogSize.medium,
-      child: TaskTimeLoggingDialog(
-        taskId: _task!.id,
-        taskName: _task!.title,
+      child: TimeLoggingDialog(
+        entityId: _task!.id,
+        entityName: _task!.title,
+        entityType: EntityType.task,
       ),
     );
 

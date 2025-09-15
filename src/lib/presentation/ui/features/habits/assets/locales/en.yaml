@@ -28,6 +28,7 @@ habits:
     description: Description
     estimated_time: Estimated Time
     estimated_time_not_set: Not set
+    elapsed_time: Elapsed Time
     help:
       content: |
         Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
@@ -205,6 +206,21 @@ habits:
   tags:
     add_tooltip: Add tag
     select_tooltip: Select tag
+  time_logging:
+    dialog_title: Log Time
+    mode: Logging Mode
+    add_time: Add Time
+    set_total: Set Total
+    date: Date
+    duration: Duration to Add
+    total_time: Total Time for Day
+    hours: Hours
+    minutes: Minutes
+    add_time_description: Add the specified time to existing records
+    set_total_description: Set the total time for the selected day
+    log_time: Log Time
+    invalid_input: Please enter valid hours and minutes
+    cancel: Cancel
   tooltips:
     add_habit: Add Habit
     decrease_estimated_time: Decrease estimated time

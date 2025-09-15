@@ -228,6 +228,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String selectDateRangeTitle = 'shared.datepicker.select_date_range_title';
   static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
 
+  static const String date = 'shared.date';
+
   // Helper Methods
   static String getWeekDayKey(int weekday) {
     if (weekday < 1 || weekday > 7) {
