@@ -100,7 +100,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 25;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration {
@@ -488,15 +488,16 @@ class AppDatabase extends _$AppDatabase {
               modified_date INTEGER NULL,
               deleted_date INTEGER NULL,
               habit_id TEXT NOT NULL,
-              occurred_at INTEGER NULL,
+              occurred_at INTEGER NOT NULL,
               PRIMARY KEY (id)
             )
           ''');
 
           // Step 2: Copy data from old table, mapping date to occurred_at
+          // Ensure occurred_at is never NULL by using created_date as fallback
           await customStatement('''
             INSERT INTO habit_record_table_new (id, created_date, modified_date, deleted_date, habit_id, occurred_at)
-            SELECT id, created_date, modified_date, deleted_date, habit_id, date
+            SELECT id, created_date, modified_date, deleted_date, habit_id, COALESCE(date, created_date)
             FROM habit_record_table
           ''');
 
@@ -510,12 +511,11 @@ class AppDatabase extends _$AppDatabase {
           // Step 5: Add index for performance on habit records
           await customStatement(
               'CREATE INDEX idx_habit_record_habit_occurred_at ON habit_record_table (habit_id, occurred_at)');
-        },
-        from24To25: (m, schema) async {
-          // Create HabitTimeRecord table for tracking actual time spent on habits
+
+          // Step 6: Create HabitTimeRecord table for tracking actual time spent on habits
           await m.createTable(habitTimeRecordTable);
 
-          // Add index for efficient queries by habit and date
+          // Step 7: Add index for efficient queries by habit and date
           await customStatement(
               'CREATE INDEX idx_habit_time_record_habit_date ON habit_time_record_table (habit_id, created_date)');
         },
