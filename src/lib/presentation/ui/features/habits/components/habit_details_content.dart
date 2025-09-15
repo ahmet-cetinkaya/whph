@@ -68,6 +68,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   GetListHabitRecordsQueryResponse? _habitRecords;
   GetListHabitTagsQueryResponse? _habitTags;
   bool _forceTagsRefresh = false;
+  int _totalDuration = 0; // Cache total duration to avoid repeated queries
 
   DateTime currentMonth = DateTime.now();
 
@@ -87,6 +88,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     _getHabit();
     _getHabitRecordsForMonth(currentMonth);
     _getHabitTags();
+    _refreshTotalDuration(); // Initialize total duration
 
     // Add event listeners
     _habitsService.onHabitUpdated.addListener(_handleHabitUpdated);
@@ -131,6 +133,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     _getHabitRecordsForMonth(currentMonth);
     _getHabitStatisticsOnly(); // Refresh only statistics, not tags
+    _refreshTotalDuration(); // Refresh elapsed time when records change
   }
 
   Future<void> _getHabitStatisticsOnly() async {
@@ -314,6 +317,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             }
           });
           _processFieldVisibility();
+          _refreshTotalDuration(); // Refresh total duration after habit is loaded
         }
       },
     );
@@ -386,6 +390,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           // Update records and statistics without triggering tag field refresh
           _getHabitRecordsForMonth(currentMonth);
           _getHabitStatisticsOnly();
+          _refreshTotalDuration(); // Explicitly refresh elapsed time after deletion
 
           // Notify service that a record was removed to trigger statistics refresh
           _habitsService.notifyHabitRecordRemoved(widget.habitId);
@@ -673,6 +678,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       // Make fields with content automatically visible
       if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
       if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
+      if (_hasFieldContent(keyElapsedTime)) _visibleOptionalFields.add(keyElapsedTime);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
       if (_hasFieldContent(keyReminder)) _visibleOptionalFields.add(keyReminder);
       if (_hasFieldContent(keyGoal)) _visibleOptionalFields.add(keyGoal);
@@ -717,7 +723,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       case keyGoal:
         return _habit!.hasGoal;
       case keyElapsedTime:
-        return false; // Always show as optional field
+        return _totalDuration > 0;
       default:
         return false;
     }
@@ -957,38 +963,32 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
         label: _translationService.translate(HabitTranslationKeys.elapsedTimeLabel),
         icon: HabitUiConstants.estimatedTimeIcon,
-        widget: FutureBuilder<int>(
-          future: _getHabitTotalDuration(),
-          builder: (context, snapshot) {
-            final totalDuration = snapshot.data ?? 0;
-            return Padding(
-              padding: const EdgeInsets.only(
-                top: AppTheme.sizeSmall,
-                bottom: AppTheme.sizeSmall,
-                left: AppTheme.sizeSmall,
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _totalDuration > 0
+                      ? SharedUiConstants.formatDurationHuman(_totalDuration, _translationService)
+                      : SharedUiConstants.formatDurationHuman(0, _translationService),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      totalDuration > 0
-                          ? SharedUiConstants.formatDurationHuman(totalDuration, _translationService)
-                          : SharedUiConstants.formatDurationHuman(0, _translationService),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => _showHabitTimeLoggingDialog(),
-                    tooltip: 'Edit time',
-                    iconSize: AppTheme.iconSizeSmall,
-                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                    padding: const EdgeInsets.all(4),
-                  ),
-                ],
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () => _showHabitTimeLoggingDialog(),
+                tooltip: 'Edit time',
+                iconSize: AppTheme.iconSizeSmall,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: const EdgeInsets.all(4),
               ),
-            );
-          },
+            ],
+          ),
         ),
       );
 
@@ -1330,6 +1330,21 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     }
   }
 
+  // Refresh total duration and update the state
+  Future<void> _refreshTotalDuration() async {
+    try {
+      final newTotalDuration = await _getHabitTotalDuration();
+      if (mounted && _totalDuration != newTotalDuration) {
+        setState(() {
+          _totalDuration = newTotalDuration;
+        });
+        _processFieldVisibility(); // Update field visibility when total duration changes
+      }
+    } catch (e) {
+      // Error getting total duration, keep existing value
+    }
+  }
+
   // Show habit time logging dialog
   Future<void> _showHabitTimeLoggingDialog() async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
@@ -1345,6 +1360,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     // If time was logged successfully, refresh the habit data
     if (result == true) {
       await _getHabitStatisticsOnly();
+      await _refreshTotalDuration(); // Refresh elapsed time after manual logging
     }
   }
 }

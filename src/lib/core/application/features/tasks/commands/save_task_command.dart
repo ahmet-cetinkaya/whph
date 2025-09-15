@@ -3,9 +3,11 @@ import 'package:whph/core/application/features/tasks/constants/task_translation_
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
+import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -69,10 +71,15 @@ class SaveTaskCommandResponse {
 class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTaskCommandResponse> {
   final ITaskRepository _taskRepository;
   final ITaskTagRepository _taskTagRepository;
+  final ITaskTimeRecordRepository _taskTimeRecordRepository;
 
-  SaveTaskCommandHandler({required ITaskRepository taskService, required ITaskTagRepository taskTagRepository})
-      : _taskRepository = taskService,
-        _taskTagRepository = taskTagRepository;
+  SaveTaskCommandHandler({
+    required ITaskRepository taskService,
+    required ITaskTagRepository taskTagRepository,
+    required ITaskTimeRecordRepository taskTimeRecordRepository,
+  }) : _taskRepository = taskService,
+       _taskTagRepository = taskTagRepository,
+       _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
   Future<SaveTaskCommandResponse> call(SaveTaskCommand request) async {
@@ -170,6 +177,30 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       }
 
       await _taskRepository.add(task);
+    }
+
+    // Auto-add time record when task is completed and has estimated time but no existing time records
+    if (request.isCompleted && task.estimatedTime != null && task.estimatedTime! > 0) {
+      // Check if there are already time records for this task
+      final existingTimeRecords = await _taskTimeRecordRepository.getList(
+        0, 1, // Only need to check if any exist
+        customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [task.id]),
+      );
+
+      // If no time records exist, create one with the estimated time
+      if (existingTimeRecords.items.isEmpty) {
+        final now = DateTime.now().toUtc();
+        final startOfHour = DateTime.utc(now.year, now.month, now.day, now.hour);
+
+        final taskTimeRecord = TaskTimeRecord(
+          id: KeyHelper.generateStringId(),
+          taskId: task.id,
+          duration: task.estimatedTime! * 60, // Convert minutes to seconds
+          createdDate: startOfHour, // Use hour bucket start time for consistency
+        );
+
+        await _taskTimeRecordRepository.add(taskTimeRecord);
+      }
     }
 
     // Add initial tags if provided

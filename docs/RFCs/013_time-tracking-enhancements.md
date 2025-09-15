@@ -7,13 +7,14 @@
 > Related Issues: [#60](https://github.com/ahmet-cetinkaya/whph/issues/60)
 
 ## Summary
+This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a multi-mode timer (Normal + Pomodoro + Stopwatch), enabling manual time logging and editing for tasks, adding real timing support for habits with clarified semantics, and automatic insertion of estimated time records when habits are marked completed, with removal on unmarking to maintain accurate progress tracking for custom goals. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
 
 This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a multi-mode timer (Normal + Pomodoro + Stopwatch), enabling manual time logging and editing for tasks, and adding real timing support for habits with clarified semantics. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
 
 **Status Update**:
 - ✅ Multi-mode timer system completed in `AppTimer` component with settings integration
 - ✅ Task manual time logging completed with `TaskTimeLoggingDialog` and task details integration
-- ⏳ Next milestones: Habit time logging and analytics integration
+- ⏳ Next milestones: Habit time logging, automatic estimated time insertion on completion, and analytics integration
 
 ## Motivation
 
@@ -22,12 +23,14 @@ The current time tracking implementation has several limitations:
 - **Timer inflexibility**: Only Pomodoro timer is available, limiting users who prefer simple stopwatch functionality
 - **No retroactive logging**: Users cannot manually log time for completed tasks or correct inaccurate time records
 - **Habit time estimation**: Habits use estimated time calculations (count × estimatedTime) rather than actual tracked time
+- **No automatic time logging for habits**: Currently, no time is logged automatically when habits are completed; users must manually start timers or log time
 - **Analytics gaps**: Time analytics rely on approximations for habits, reducing accuracy of productivity insights
 
 Users frequently request the ability to:
 - Use a simple timer without Pomodoro constraints
 - Log time for tasks completed offline or without timer usage
 - Track actual time spent on habits rather than estimates
+- Automatically log estimated time when completing a habit for the day
 - Edit or correct time records for accuracy
 
 ## Detailed Design
@@ -107,6 +110,8 @@ class AddTaskTimeRecordCommand implements IRequest<AddTaskTimeRecordCommandRespo
 #### C. Habit Time Tracking
 
 **Location**: `src/lib/core/domain/features/habits/habit_time_record.dart`
+
+Additionally, when a habit is marked as completed for a specific day (via `HabitRecord` creation or update), an automatic `HabitTimeRecord` will be inserted with the habit's `estimatedTime` as the duration for that day's timestamp. If the habit is later unmarked as uncompleted, the corresponding `HabitTimeRecord` for that day will be removed or its duration set to 0, ensuring accurate tracking. This automatic mechanism integrates with custom goals and progress tracking by updating derived calculations (e.g., goal progress percentages) that rely on total time spent, using the actual or estimated time records as the source of truth. Manual overrides via timer or logging will take precedence over automatic estimates.
 
 ```dart
 @jsonSerializable
@@ -195,13 +200,33 @@ class AddTaskTimeRecordCommandHandler implements IRequestHandler<AddTaskTimeReco
 
 #### B. New Habit Commands
 
+These commands support both manual and automatic time logging for habits. The automatic insertion/removal is triggered in the handler for habit completion updates.
+
 **Location**: `src/lib/core/application/features/habits/commands/`
 
 ```dart
 class AddHabitTimeRecordCommand implements IRequest<AddHabitTimeRecordCommandResponse> {
   final String habitId;
   final int duration;
-  final DateTime? customDateTime;
+  final DateTime? customDateTime; // For manual or automatic insertion
+  final bool isEstimated; // Flag to indicate if this is an automatic estimated entry
+
+  AddHabitTimeRecordCommand({
+    required this.habitId,
+    required this.duration,
+    this.customDateTime,
+    this.isEstimated = false,
+  });
+}
+
+class RemoveHabitTimeRecordCommand implements IRequest<RemoveHabitTimeRecordCommandResponse> {
+  final String habitId;
+  final DateTime targetDate; // Remove estimated entry for this day
+
+  RemoveHabitTimeRecordCommand({
+    required this.habitId,
+    required this.targetDate,
+  });
 }
 
 class SaveHabitTimeRecordCommand implements IRequest<SaveHabitTimeRecordCommandResponse> {
@@ -218,17 +243,16 @@ class SaveHabitTimeRecordCommand implements IRequest<SaveHabitTimeRecordCommandR
 ```dart
 class GetTagTimesDataQueryHandler {
   Future<GetTagTimesDataQueryResponse> handle(GetTagTimesDataQuery request) async {
-    // For habits: Try to get actual time from HabitTimeRecord
-    final habitActualTime = await _habitTimeRecordRepository.getTotalDurationByHabitId(
+    // For habits: Try to get actual or automatic estimated time from HabitTimeRecord
+    final habitTrackedTime = await _habitTimeRecordRepository.getTotalDurationByHabitId(
       habitId,
       startDate: request.startDate,
       endDate: request.endDate
     );
 
-    // Fallback to estimated time if no actual records
-    final habitTime = habitActualTime > 0
-      ? habitActualTime
-      : habitOccurrenceCount * habit.estimatedTime;
+    // No fallback needed as automatic estimated records ensure coverage for completed habits;
+    // If no record (uncompleted), time is 0
+    final habitTime = habitTrackedTime;
   }
 }
 ```
@@ -285,6 +309,8 @@ class TaskTimeLoggingDialog extends StatefulWidget {
 **Integration**: Add to task details page as action buttons
 
 #### C. Habit Timer Integration
+
+In addition to manual timer usage, habit completion toggles (marking as completed/uncompleted for a day) will automatically trigger `AddHabitTimeRecordCommand` with estimated time or `RemoveHabitTimeRecordCommand`, respectively, via the habit update handler.
 
 **Location**: Update `src/lib/presentation/ui/features/habits/components/habit_details_content.dart`
 
@@ -399,6 +425,8 @@ class DriftAppContext extends _$DriftAppContext {
    - Create habit-specific logging UI
    - Implement actual vs estimated time display
    - Add manual time entry for habits
+   - Integrate automatic estimated time insertion on habit completion/uncompletion in `UpdateHabitRecordCommandHandler`
+   - Ensure removal of estimated records affects custom goal progress calculations
 
 ### Phase 4: Analytics Integration (Week 4-5)
 

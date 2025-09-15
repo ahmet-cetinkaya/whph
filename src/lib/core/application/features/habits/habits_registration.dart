@@ -56,13 +56,21 @@ void registerHabitsFeature(
       ),
     )
     ..registerHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse, AddHabitRecordCommandHandler>(
-      () => AddHabitRecordCommandHandler(habitRecordRepository: habitRecordRepository),
+      () => AddHabitRecordCommandHandler(
+        habitRecordRepository: habitRecordRepository,
+        habitRepository: habitRepository,
+        habitTimeRecordRepository: habitTimeRecordRepository,
+      ),
     )
     ..registerHandler<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse, AddHabitTimeRecordCommandHandler>(
       () => AddHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
     )
     ..registerHandler<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse, DeleteHabitRecordCommandHandler>(
-      () => DeleteHabitRecordCommandHandler(habitRecordRepository: habitRecordRepository),
+      () => DeleteHabitRecordCommandHandler(
+        habitRecordRepository: habitRecordRepository,
+        habitRepository: habitRepository,
+        habitTimeRecordRepository: habitTimeRecordRepository,
+      ),
     )
     ..registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
       () => GetListHabitRecordsQueryHandler(habitRecordRepository: habitRecordRepository),

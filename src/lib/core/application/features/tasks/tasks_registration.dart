@@ -33,7 +33,11 @@ void registerTasksFeature(
 
   mediator
     ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
-      () => SaveTaskCommandHandler(taskService: taskRepository, taskTagRepository: taskTagRepository),
+      () => SaveTaskCommandHandler(
+        taskService: taskRepository,
+        taskTagRepository: taskTagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
+      ),
     )
     ..registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse, DeleteTaskCommandHandler>(
       () => DeleteTaskCommandHandler(
