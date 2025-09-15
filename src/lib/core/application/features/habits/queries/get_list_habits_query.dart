@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
@@ -12,6 +13,7 @@ enum HabitSortFields {
   createdDate,
   modifiedDate,
   estimatedTime,
+  actualTime,
   archivedDate,
 }
 
@@ -48,6 +50,7 @@ class HabitListItem {
   String name;
   List<TagListItem> tags;
   int? estimatedTime;
+  int? actualTime; // Total logged time in minutes
   bool hasReminder;
   String? reminderTime;
   List<int> reminderDays;
@@ -63,6 +66,7 @@ class HabitListItem {
     required this.name,
     this.tags = const [],
     this.estimatedTime,
+    this.actualTime,
     this.hasReminder = false,
     this.reminderTime,
     this.reminderDays = const [],
@@ -89,16 +93,19 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   late final IHabitTagsRepository _habitTagsRepository;
   late final ITagRepository _tagRepository;
   late final IHabitRecordRepository _habitRecordRepository;
+  late final IHabitTimeRecordRepository _habitTimeRecordRepository;
 
   GetListHabitsQueryHandler({
     required IHabitRepository habitRepository,
     required IHabitTagsRepository habitTagRepository,
     required ITagRepository tagRepository,
     required IHabitRecordRepository habitRecordRepository,
+    required IHabitTimeRecordRepository habitTimeRecordRepository,
   })  : _habitRepository = habitRepository,
         _habitTagsRepository = habitTagRepository,
         _tagRepository = tagRepository,
-        _habitRecordRepository = habitRecordRepository;
+        _habitRecordRepository = habitRecordRepository,
+        _habitTimeRecordRepository = habitTimeRecordRepository;
 
   @override
   Future<GetListHabitsQueryResponse> call(GetListHabitsQuery request) async {
@@ -169,15 +176,28 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       }
     }
 
+    // Fetch actual time for each habit (total logged time)
+    final Map<String, int> habitActualTimeMap = {};
+    for (final habit in filteredHabits) {
+      try {
+        final totalDuration = await _habitTimeRecordRepository.getTotalDurationByHabitId(habit.id);
+        habitActualTimeMap[habit.id] = totalDuration;
+      } catch (e) {
+        habitActualTimeMap[habit.id] = 0;
+      }
+    }
+
     // Create habit items with their tags
     for (final habit in filteredHabits) {
       final tagItems = habitTagsMap.containsKey(habit.id) ? habitTagsMap[habit.id]! : <TagListItem>[];
+      final actualTime = habitActualTimeMap[habit.id] ?? 0;
 
       habitItems.add(HabitListItem(
         id: habit.id,
         name: habit.name,
         tags: tagItems,
         estimatedTime: habit.estimatedTime,
+        actualTime: actualTime > 0 ? actualTime : null,
         hasReminder: habit.hasReminder,
         reminderTime: habit.reminderTime,
         reminderDays: habit.getReminderDaysAsList(),
@@ -188,6 +208,22 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         targetFrequency: habit.targetFrequency,
         periodDays: habit.periodDays,
       ));
+    }
+
+    // Apply in-memory sorting for actualTime if requested
+    if (request.sortBy != null && !request.sortByCustomSort) {
+      for (var sortOption in request.sortBy!) {
+        if (sortOption.field == HabitSortFields.actualTime) {
+          habitItems.sort((a, b) {
+            final aTime = a.actualTime ?? 0;
+            final bTime = b.actualTime ?? 0;
+            return sortOption.direction == SortDirection.asc
+                ? aTime.compareTo(bTime)
+                : bTime.compareTo(aTime);
+          });
+          break; // Only apply the first actualTime sort to avoid conflicts
+        }
+      }
     }
 
     return GetListHabitsQueryResponse(
@@ -293,6 +329,10 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
       } else if (option.field == HabitSortFields.estimatedTime) {
         customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
+      } else if (option.field == HabitSortFields.actualTime) {
+        // Note: actualTime sorting will be handled after fetching time records
+        // as it's not a database field but calculated from time records
+        customOrders.add(CustomOrder(field: "actual_time", direction: option.direction));
       } else if (option.field == HabitSortFields.archivedDate) {
         customOrders.add(CustomOrder(field: "archived_date", direction: option.direction));
       }

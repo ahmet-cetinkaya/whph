@@ -5,26 +5,36 @@ import 'package:mediatr/mediatr.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_total_duration_by_task_id_query.dart';
+import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
+import 'package:whph/core/application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 
-class TaskTimeLoggingDialog extends StatefulWidget {
-  final String taskId;
-  final String taskName;
+enum EntityType { task, habit }
 
-  const TaskTimeLoggingDialog({
+enum LoggingMode { addTime, setTotalForDay }
+
+class TimeLoggingDialog extends StatefulWidget {
+  final String entityId;
+  final String entityName;
+  final EntityType entityType;
+
+  const TimeLoggingDialog({
     super.key,
-    required this.taskId,
-    required this.taskName,
+    required this.entityId,
+    required this.entityName,
+    required this.entityType,
   });
 
   @override
-  State<TaskTimeLoggingDialog> createState() => _TaskTimeLoggingDialogState();
+  State<TimeLoggingDialog> createState() => _TimeLoggingDialogState();
 }
 
-class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
+class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
@@ -78,7 +88,7 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
   Future<void> _logTime() async {
     if (!_isValidInput()) {
       setState(() {
-        _errorMessage = _translationService.translate(TaskTranslationKeys.timeLoggingInvalidInput);
+        _errorMessage = _getInvalidInputMessage();
       });
       return;
     }
@@ -93,35 +103,15 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
 
       if (_selectedMode == LoggingMode.setTotalForDay) {
         // Calculate current total for the day and determine delta
-        final currentTotalResponse = await _mediator.send<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse>(
-          GetTotalDurationByTaskIdQuery(
-            taskId: widget.taskId,
-            startDate: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day),
-            endDate: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 23, 59, 59),
-          ),
-        );
-
-        final currentTotal = currentTotalResponse.totalDuration;
+        final currentTotal = await _getCurrentTotalDuration();
         final delta = durationInSeconds - currentTotal;
 
         if (delta != 0) {
-          await _mediator.send<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse>(
-            AddTaskTimeRecordCommand(
-              taskId: widget.taskId,
-              duration: delta,
-              customDateTime: _selectedDate,
-            ),
-          );
+          await _addTimeRecord(delta);
         }
       } else {
         // Simple time addition
-        await _mediator.send<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse>(
-          AddTaskTimeRecordCommand(
-            taskId: widget.taskId,
-            duration: durationInSeconds,
-            customDateTime: _selectedDate,
-          ),
-        );
+        await _addTimeRecord(durationInSeconds);
       }
 
       if (mounted) {
@@ -138,11 +128,78 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
     }
   }
 
+  Future<int> _getCurrentTotalDuration() async {
+    final startDate = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+    final endDate = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 23, 59, 59);
+
+    if (widget.entityType == EntityType.task) {
+      final response = await _mediator.send<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse>(
+        GetTotalDurationByTaskIdQuery(
+          taskId: widget.entityId,
+          startDate: startDate,
+          endDate: endDate,
+        ),
+      );
+      return response.totalDuration;
+    } else {
+      final response = await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(
+        GetTotalDurationByHabitIdQuery(
+          habitId: widget.entityId,
+          startDate: startDate,
+          endDate: endDate,
+        ),
+      );
+      return response.totalDuration;
+    }
+  }
+
+  Future<void> _addTimeRecord(int duration) async {
+    final customDateTime = _selectedDate;
+
+    if (widget.entityType == EntityType.task) {
+      await _mediator.send<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse>(
+        AddTaskTimeRecordCommand(
+          taskId: widget.entityId,
+          duration: duration,
+          customDateTime: customDateTime,
+        ),
+      );
+    } else {
+      await _mediator.send<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse>(
+        AddHabitTimeRecordCommand(
+          habitId: widget.entityId,
+          duration: duration,
+          customDateTime: customDateTime,
+        ),
+      );
+    }
+  }
+
+  String _getInvalidInputMessage() {
+    if (widget.entityType == EntityType.task) {
+      return _translationService.translate(TaskTranslationKeys.timeLoggingInvalidInput);
+    } else {
+      return _translationService.translate(HabitTranslationKeys.timeLoggingInvalidInput);
+    }
+  }
+
+  String _getTranslation(String key) {
+    if (widget.entityType == EntityType.task) {
+      return _translationService.translate('tasks.$key');
+    } else {
+      return _translationService.translate('habits.$key');
+    }
+  }
+
+  String _getSharedTranslation(String key) {
+    return _translationService.translate(key);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_translationService.translate(TaskTranslationKeys.timeLoggingDialogTitle)),
+        title: Text(_getTranslation('time_logging.dialog_title')),
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: Padding(
@@ -150,16 +207,16 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Task name
+            // Entity name
             Text(
-              widget.taskName,
+              widget.entityName,
               style: AppTheme.headlineSmall,
             ),
             const SizedBox(height: AppTheme.sizeLarge),
 
             // Mode selection
             Text(
-              _translationService.translate(TaskTranslationKeys.timeLoggingMode),
+              _getTranslation('time_logging.mode'),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -167,11 +224,11 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
               segments: [
                 ButtonSegment(
                   value: LoggingMode.addTime,
-                  label: Text(_translationService.translate(TaskTranslationKeys.timeLoggingAddTime)),
+                  label: Text(_getTranslation('time_logging.add_time')),
                 ),
                 ButtonSegment(
                   value: LoggingMode.setTotalForDay,
-                  label: Text(_translationService.translate(TaskTranslationKeys.timeLoggingSetTotal)),
+                  label: Text(_getTranslation('time_logging.set_total')),
                 ),
               ],
               selected: {_selectedMode},
@@ -185,7 +242,9 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
 
             // Date selection
             Text(
-              _translationService.translate(TaskTranslationKeys.timeLoggingDate),
+              widget.entityType == EntityType.task
+                  ? _getTranslation('time_logging.date')
+                  : _getSharedTranslation(SharedTranslationKeys.date),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -225,8 +284,8 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
             // Time input
             Text(
               _selectedMode == LoggingMode.addTime
-                  ? _translationService.translate(TaskTranslationKeys.timeLoggingDuration)
-                  : _translationService.translate(TaskTranslationKeys.timeLoggingTotalTime),
+                  ? _getTranslation('time_logging.duration')
+                  : _getTranslation('time_logging.total_time'),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -238,7 +297,9 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
-                      labelText: _translationService.translate(TaskTranslationKeys.timeLoggingHours),
+                      labelText: widget.entityType == EntityType.task
+                          ? _getTranslation('time_logging.hours')
+                          : _getSharedTranslation(SharedTranslationKeys.hours),
                       border: const OutlineInputBorder(),
                     ),
                   ),
@@ -250,7 +311,9 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
-                      labelText: _translationService.translate(TaskTranslationKeys.timeLoggingMinutes),
+                      labelText: widget.entityType == EntityType.task
+                          ? _getTranslation('time_logging.minutes')
+                          : _getSharedTranslation(SharedTranslationKeys.minutes),
                       border: const OutlineInputBorder(),
                     ),
                   ),
@@ -260,8 +323,8 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
             const SizedBox(height: AppTheme.sizeSmall),
             Text(
               _selectedMode == LoggingMode.addTime
-                  ? _translationService.translate(TaskTranslationKeys.timeLoggingAddTimeDescription)
-                  : _translationService.translate(TaskTranslationKeys.timeLoggingSetTotalDescription),
+                  ? _getTranslation('time_logging.add_time_description')
+                  : _getTranslation('time_logging.set_total_description'),
               style: AppTheme.bodySmall.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -292,7 +355,11 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-                    child: Text(_translationService.translate(TaskTranslationKeys.cancel)),
+                    child: Text(
+                      widget.entityType == EntityType.task
+                          ? _getTranslation('cancel')
+                          : _getSharedTranslation(SharedTranslationKeys.cancelButton),
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppTheme.sizeMedium),
@@ -305,7 +372,11 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text(_translationService.translate(TaskTranslationKeys.timeLoggingLogTime)),
+                        : Text(
+                            widget.entityType == EntityType.task
+                                ? _getTranslation('time_logging.log_time')
+                                : _getSharedTranslation(SharedTranslationKeys.doneButton),
+                          ),
                   ),
                 ),
               ],
@@ -315,9 +386,4 @@ class _TaskTimeLoggingDialogState extends State<TaskTimeLoggingDialog> {
       ),
     );
   }
-}
-
-enum LoggingMode {
-  addTime,
-  setTotalForDay,
 }

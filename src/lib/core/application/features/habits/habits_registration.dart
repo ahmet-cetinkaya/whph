@@ -9,6 +9,7 @@ import 'package:whph/core/application/features/habits/commands/normalize_habit_o
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
+import 'package:whph/core/application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_command.dart';
@@ -45,6 +46,7 @@ void registerHabitsFeature(
         habitTagRepository: habitTagRepository,
         tagRepository: tagRepository,
         habitRecordRepository: habitRecordRepository,
+        habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
     ..registerHandler<GetHabitQuery, GetHabitQueryResponse, GetHabitQueryHandler>(
@@ -82,5 +84,8 @@ void registerHabitsFeature(
     )
     ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
       () => NormalizeHabitOrdersCommandHandler(habitRepository),
+    )
+    ..registerHandler<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse, GetTotalDurationByHabitIdQueryHandler>(
+      () => GetTotalDurationByHabitIdQueryHandler(habitTimeRecordRepository: habitTimeRecordRepository),
     );
 }
