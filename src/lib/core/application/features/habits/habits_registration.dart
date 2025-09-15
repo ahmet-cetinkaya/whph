@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
+import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
@@ -15,6 +16,7 @@ import 'package:whph/core/application/features/habits/queries/get_list_habits_qu
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 
 void registerHabitsFeature(
@@ -23,6 +25,7 @@ void registerHabitsFeature(
   IHabitRepository habitRepository,
   IHabitRecordRepository habitRecordRepository,
   IHabitTagsRepository habitTagRepository,
+  IHabitTimeRecordRepository habitTimeRecordRepository,
   ITagRepository tagRepository,
 ) {
   mediator
@@ -52,6 +55,9 @@ void registerHabitsFeature(
     )
     ..registerHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse, AddHabitRecordCommandHandler>(
       () => AddHabitRecordCommandHandler(habitRecordRepository: habitRecordRepository),
+    )
+    ..registerHandler<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse, AddHabitTimeRecordCommandHandler>(
+      () => AddHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
     )
     ..registerHandler<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse, DeleteHabitRecordCommandHandler>(
       () => DeleteHabitRecordCommandHandler(habitRecordRepository: habitRecordRepository),
