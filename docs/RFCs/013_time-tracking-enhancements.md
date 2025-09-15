@@ -8,7 +8,9 @@
 
 ## Summary
 
-This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a dual-mode timer (Normal + Pomodoro), enabling manual time logging and editing for tasks, and adding real timing support for habits with clarified semantics. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
+This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a multi-mode timer (Normal + Pomodoro + Stopwatch), enabling manual time logging and editing for tasks, and adding real timing support for habits with clarified semantics. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
+
+**Status Update**: The multi-mode timer system has been successfully implemented in `AppTimer` component with comprehensive settings integration. The next major milestone is implementing manual time logging capabilities.
 
 ## Motivation
 
@@ -47,31 +49,33 @@ Users frequently request the ability to:
 
 ### 2. Enhanced Architecture
 
-#### A. Dual-Mode Timer System
+#### A. Multi-Mode Timer System
 
-**Location**: `src/lib/presentation/ui/shared/components/combined_timer.dart`
+**Location**: `src/lib/presentation/ui/features/tasks/components/timer.dart`
 
 ```dart
-enum TimerMode { normal, pomodoro }
+enum TimerMode { normal, pomodoro, stopwatch }
 
-class CombinedTimer extends StatefulWidget {
-  final TimerMode initialMode;
-  final void Function(Duration delta) onTimeUpdate;
-  final VoidCallback? onStart;
-  final VoidCallback? onStop;
-  final VoidCallback? onModeChange;
+class AppTimer extends StatefulWidget {
+  final Function(Duration) onTimeUpdate;
+  final VoidCallback? onTimerStart;
+  final VoidCallback? onTimerStop;
 
-  // Segmented control for mode switching
-  // Normal mode: Simple start/pause/stop stopwatch
-  // Pomodoro mode: Existing PomodoroTimer integration
+  // Supports three timer modes with unified interface:
+  // - Normal mode: Simple countdown timer with configurable duration
+  // - Pomodoro mode: Traditional Pomodoro technique with work/break cycles
+  // - Stopwatch mode: Count-up timer for open-ended time tracking
 }
 ```
 
 **Features**:
-- Segmented control for Normal/Pomodoro switching
-- Unified callback interface for both modes
+- Three distinct timer modes in a single component
+- Mode switching via settings dialog integration
+- Unified callback interface for all modes
 - System tray integration and keep-screen-awake support
-- Debug mode acceleration for both timer types
+- Debug mode acceleration for all timer types
+- Responsive UI that adapts to screen size
+- Comprehensive settings management for each mode
 
 #### B. Manual Time Logging
 
@@ -228,9 +232,11 @@ class GetTagTimesDataQueryHandler {
 
 ### 5. User Interface Components
 
-#### A. Combined Timer Integration
+#### A. Multi-Mode Timer Integration
 
-**Location**: Update `src/lib/presentation/ui/features/tasks/pages/marathon_page.dart`
+**Location**: `src/lib/presentation/ui/features/tasks/pages/marathon_page.dart`
+
+The existing `AppTimer` component is already integrated and supports all three timer modes:
 
 ```dart
 class MarathonPage extends StatefulWidget {
@@ -238,12 +244,11 @@ class MarathonPage extends StatefulWidget {
     return Scaffold(
       body: Column(
         children: [
-          // Replace PomodoroTimer with CombinedTimer
-          CombinedTimer(
-            initialMode: TimerMode.normal,
+          // AppTimer with multi-mode support
+          AppTimer(
             onTimeUpdate: _handleTimerUpdate,
-            onStart: _onTimerStart,
-            onStop: _onTimerStop,
+            onTimerStart: _onTimerStart,
+            onTimerStop: _onTimerStop,
           ),
           // Existing task list and controls
         ],
@@ -252,6 +257,12 @@ class MarathonPage extends StatefulWidget {
   }
 }
 ```
+
+**Current Implementation**:
+- Mode switching via settings dialog (gear icon when timer is stopped)
+- Persistent settings storage with real-time updates
+- Responsive UI that scales based on screen size
+- Integration with system tray and notification services
 
 #### B. Manual Logging UI
 
@@ -281,10 +292,11 @@ class HabitDetailsContent extends StatelessWidget {
       children: [
         // Existing habit info
 
-        // Add timer section
-        CombinedTimer(
-          initialMode: TimerMode.normal,
+        // Add timer section using existing AppTimer
+        AppTimer(
           onTimeUpdate: (delta) => _addHabitTimeRecord(habit.id, delta),
+          onTimerStart: () => _onHabitTimerStart(),
+          onTimerStop: () => _onHabitTimerStop(),
         ),
 
         // Time display: actual vs estimated
@@ -297,6 +309,8 @@ class HabitDetailsContent extends StatelessWidget {
   }
 }
 ```
+
+**Note**: The existing `AppTimer` component can be reused for habit time tracking with appropriate callback handlers.
 
 #### D. Enhanced Time Display
 
@@ -356,17 +370,17 @@ class DriftAppContext extends _$DriftAppContext {
    - Create `AddHabitTimeRecordCommand` and handler
    - Implement hour-bucket logic for custom dates
 
-### Phase 2: Timer Implementation (Week 2-3)
+### Phase 2: Timer Enhancement (Week 2-3)
 
-1. **Normal Timer Component**
-   - Create `NormalTimer` widget with start/pause/stop
-   - Implement periodic increment reporting
-   - Add system tray and keep-awake integration
+1. **Multi-Mode Timer Component**
+   - Enhanced `AppTimer` with three modes: Normal, Pomodoro, Stopwatch
+   - Implemented unified interface with `onTimeUpdate`, `onTimerStart`, `onTimerStop` callbacks
+   - Added system tray and keep-awake integration for all modes
 
-2. **Combined Timer**
-   - Create `CombinedTimer` with mode switching
-   - Integrate existing `PomodoroTimer`
-   - Add segmented control UI
+2. **Settings Integration**
+   - Created `TimerSettingsDialog` with mode selection and configuration
+   - Implemented debounced saving and real-time settings updates
+   - Added comprehensive settings management for all timer modes
 
 ### Phase 3: Manual Logging (Week 3-4)
 
@@ -388,9 +402,9 @@ class DriftAppContext extends _$DriftAppContext {
    - Ensure backward compatibility
 
 2. **UI Integration**
-   - Update MarathonPage with CombinedTimer
-   - Add timer to TodayPage (compact version)
-   - Update task and habit details pages
+   - AppTimer already integrated in MarathonPage with multi-mode support
+   - Add timer to TodayPage (compact version) - PENDING
+   - Update task and habit details pages - PENDING
 
 ### Phase 5: Testing and Polish (Week 5-6)
 
