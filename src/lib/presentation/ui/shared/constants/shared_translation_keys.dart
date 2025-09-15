@@ -175,6 +175,10 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   // Help
   static const String helpTooltip = 'shared.help.tooltip';
 
+  // Timer
+  static const String normalTimer = 'shared.timer.normal';
+  static const String pomodoroTimer = 'shared.timer.pomodoro';
+
   // Sections
   static const String specialFiltersLabel = 'shared.sections.special_filters';
   static const String tagsLabel = 'shared.sections.tags';

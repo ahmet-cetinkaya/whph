@@ -8,12 +8,12 @@ import 'package:acore/acore.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
+import 'package:whph/presentation/ui/features/tasks/components/timer_settings_dialog.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_sounds.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
@@ -23,13 +23,14 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 
-class PomodoroTimer extends StatefulWidget {
+class AppTimer extends StatefulWidget {
   final Function(Duration) onTimeUpdate;
   final VoidCallback? onTimerStart;
   final VoidCallback? onTimerStop;
 
-  const PomodoroTimer({
+  const AppTimer({
     super.key,
     required this.onTimeUpdate,
     this.onTimerStart,
@@ -37,10 +38,10 @@ class PomodoroTimer extends StatefulWidget {
   });
 
   @override
-  State<PomodoroTimer> createState() => _PomodoroTimerState();
+  State<AppTimer> createState() => _AppTimerState();
 }
 
-class _PomodoroTimerState extends State<PomodoroTimer> {
+class _AppTimerState extends State<AppTimer> {
   final _mediator = container.resolve<Mediator>();
   final _soundPlayer = container.resolve<ISoundPlayer>();
   final _notificationService = container.resolve<INotificationService>();
@@ -48,8 +49,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   final _translationService = container.resolve<ITranslationService>();
   final _wakelockService = container.resolve<IWakelockService>();
 
-  static const int _minTimerValue = 5;
-  static const int _maxTimerValue = 120;
 
   // Helper methods for time calculations
   int _getTimeInSeconds(int value) {
@@ -57,13 +56,15 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   String _getDisplayTime() {
+    final timeToDisplay = _timerMode == TimerMode.stopwatch ? _elapsedTime : _remainingTime;
+
     if (AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall)) {
-      final minutes = _remainingTime.inMinutes;
+      final minutes = timeToDisplay.inMinutes;
       return '${minutes}m';
     }
 
     // On regular screens, show full time format
-    return SharedUiConstants.formatDuration(_remainingTime);
+    return SharedUiConstants.formatDuration(timeToDisplay);
   }
 
   late Timer _timer;
@@ -95,8 +96,15 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   int _completedSessions = 0;
   bool _isLongBreak = false;
   bool _isAlarmPlaying = false;
+  TimerMode _timerMode = TimerMode.pomodoro;
+  Duration _elapsedTime = const Duration(); // For stopwatch mode
 
   int _getTotalDurationInSeconds() {
+    if (_timerMode == TimerMode.normal) {
+      return _getTimeInSeconds(_workDuration); // Use work duration as the timer duration in normal mode
+    }
+
+    // Pomodoro mode logic
     if (_isWorking) return _getTimeInSeconds(_workDuration);
     if (_isLongBreak) return _getTimeInSeconds(_longBreakDuration);
     return _getTimeInSeconds(_breakDuration);
@@ -135,6 +143,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   Future<void> _initializeSettings() async {
+    _timerMode = await _getTimerModeSetting();
     _defaultWorkDuration = await _getSetting(SettingKeys.workTime, 25);
     _defaultBreakDuration = await _getSetting(SettingKeys.breakTime, 5);
     _defaultLongBreakDuration = await _getSetting(SettingKeys.longBreakTime, 15);
@@ -165,6 +174,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
         _tickingVolume = _defaultTickingVolume;
         _tickingSpeed = _defaultTickingSpeed;
         _remainingTime = Duration(seconds: _getTimeInSeconds(_workDuration));
+        _elapsedTime = const Duration(); // Reset stopwatch
         _isLongBreak = false;
         _completedSessions = 0;
       });
@@ -179,6 +189,17 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       return response.getValue<bool>();
     } catch (_) {
       return defaultValue;
+    }
+  }
+
+  Future<TimerMode> _getTimerModeSetting() async {
+    try {
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        GetSettingQuery(key: SettingKeys.defaultTimerMode),
+      );
+      return TimerMode.fromString(response.getValue<String>());
+    } catch (_) {
+      return TimerMode.pomodoro; // Default value
     }
   }
 
@@ -202,22 +223,24 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     await _mediator.send(command);
   }
 
-  Future<void> _saveBoolSetting(String key, bool value) async {
-    final command = SaveSettingCommand(
-      key: key,
-      value: value.toString(),
-      valueType: SettingValueType.bool,
-    );
-    await _mediator.send(command);
-  }
 
   void _startAlarm() {
+    // Ensure ticking is completely stopped before starting alarm
+    _stopTicking();
+
     setState(() {
       _isAlarmPlaying = true;
     });
 
-    _soundPlayer.setLoop(true);
-    _soundPlayer.play(SharedSounds.alarmDone, volume: 1.0);
+    // Add a small delay to ensure ticking sounds are completely stopped
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted && _isAlarmPlaying) {
+        // Stop any remaining sounds and start alarm
+        _soundPlayer.stop();
+        _soundPlayer.setLoop(true);
+        _soundPlayer.play(SharedSounds.alarmDone, volume: 1.0);
+      }
+    });
 
     _sendNotification();
   }
@@ -270,6 +293,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     widget.onTimerStart?.call();
 
     if (mounted) {
+      _soundPlayer.setLoop(false);
       _soundPlayer.play(SharedSounds.button, volume: 1.0);
       _setSystemTrayIcon();
       _addTimerMenuItems();
@@ -290,33 +314,43 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   void _startRegularTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingTime.inSeconds > 0) {
-        if (!mounted) return;
+      if (!mounted) return;
 
-        // Calculate the actual elapsed time increment for debug vs production
-        final elapsedIncrement = kDebugMode
-            ? const Duration(minutes: 1) // In debug mode, 1 minute of progress per second
-            : const Duration(seconds: 1); // In production, 1 second of progress per second
+      // Calculate the actual elapsed time increment for debug vs production
+      final elapsedIncrement = kDebugMode
+          ? const Duration(minutes: 1) // In debug mode, 1 minute of progress per second
+          : const Duration(seconds: 1); // In production, 1 second of progress per second
 
-        setState(() {
+      setState(() {
+        if (_timerMode == TimerMode.stopwatch) {
+          // Stopwatch mode: count up indefinitely
+          _elapsedTime += elapsedIncrement;
+        } else {
+          // Normal and Pomodoro modes: count down
           _remainingTime -= elapsedIncrement;
-        });
+        }
+      });
 
-        // Pass the actual elapsed time increment to the callback
-        widget.onTimeUpdate(elapsedIncrement);
-        _updateSystemTrayTimer();
-      } else {
+      // Pass the actual elapsed time increment to the callback
+      widget.onTimeUpdate(elapsedIncrement);
+      _updateSystemTrayTimer();
+
+      // Check if countdown timer modes should finish
+      if (_timerMode != TimerMode.stopwatch && _remainingTime.inSeconds <= 0) {
         _timer.cancel();
         _isRunning = false;
+        _stopTicking(); // Stop ticking sound when timer completes
         _startAlarm();
 
-        // Auto-start next session if enabled
-        if (_isWorking && _autoStartBreak || !_isWorking && _autoStartWork) {
-          Future.delayed(const Duration(seconds: 3), () {
-            if (mounted && _isAlarmPlaying) {
-              _toggleWorkBreak();
-            }
-          });
+        // Only auto-start next session in Pomodoro mode
+        if (_timerMode == TimerMode.pomodoro) {
+          if (_isWorking && _autoStartBreak || !_isWorking && _autoStartWork) {
+            Future.delayed(const Duration(seconds: 3), () {
+              if (mounted && _isAlarmPlaying) {
+                _toggleWorkBreak();
+              }
+            });
+          }
         }
       }
     });
@@ -336,8 +370,15 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   void _stopTimer() {
     if (mounted) {
-      _soundPlayer.play(SharedSounds.button, volume: 1.0);
+      // Stop ticking timer first
       _stopTicking();
+
+      // Stop any playing sounds before playing button sound
+      _soundPlayer.stop();
+
+      // Disable looping and play button sound
+      _soundPlayer.setLoop(false);
+      _soundPlayer.play(SharedSounds.button, volume: 1.0);
 
       // Disable wakelock when stopping timer
       _wakelockService.disable();
@@ -345,15 +386,23 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       setState(() {
         _isRunning = false;
         _isAlarmPlaying = false; // Reset alarm state
-        if (!_isWorking) {
-          // If in break mode, switch back to work mode
-          _isWorking = true;
+
+        if (_timerMode == TimerMode.stopwatch) {
+          _elapsedTime = const Duration(); // Reset stopwatch
+        } else {
+          if (_timerMode == TimerMode.pomodoro) {
+            if (!_isWorking) {
+              // If in break mode, switch back to work mode
+              _isWorking = true;
+            }
+            _completedSessions = 0; // Reset completed sessions
+            _isLongBreak = false; // Reset long break flag
+          }
+
+          _remainingTime = Duration(
+            seconds: _getTimeInSeconds(_workDuration), // Always set to work duration
+          );
         }
-        _remainingTime = Duration(
-          seconds: _getTimeInSeconds(_workDuration), // Always set to work duration
-        );
-        _completedSessions = 0; // Reset completed sessions
-        _isLongBreak = false; // Reset long break flag
 
         // Stop timer
         _timer.cancel();
@@ -380,88 +429,122 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   void _toggleWorkBreak() {
-    if (mounted) {
-      _stopAlarm();
+    if (!mounted) return;
+
+    _stopAlarm();
+
+    if (_timerMode == TimerMode.stopwatch) {
+      // In stopwatch mode, just restart the timer
       setState(() {
-        if (_isWorking) {
-          // Work session completed
-          _completedSessions++;
-          _isWorking = false;
-          _isLongBreak = _completedSessions >= _sessionsCount;
-
-          if (_isLongBreak) {
-            _completedSessions = 0; // Reset session count after long break
-          }
-
-          _remainingTime = Duration(
-            seconds: _getTimeInSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
-          );
-        } else {
-          // Break completed, start work
-          _isWorking = true;
-          _isLongBreak = false;
-          _remainingTime = Duration(
-            seconds: _getTimeInSeconds(_workDuration),
-          );
-        }
+        _elapsedTime = const Duration();
       });
       _startTimer();
+      return;
     }
+
+    if (_timerMode == TimerMode.normal) {
+      // In normal mode, just restart the timer
+      setState(() {
+        _remainingTime = Duration(seconds: _getTimeInSeconds(_workDuration));
+      });
+      _startTimer();
+      return;
+    }
+
+    // Pomodoro mode logic
+    setState(() {
+      if (_isWorking) {
+        // Work session completed
+        _completedSessions++;
+        _isWorking = false;
+        _isLongBreak = _completedSessions >= _sessionsCount;
+
+        if (_isLongBreak) {
+          _completedSessions = 0; // Reset session count after long break
+        }
+
+        _remainingTime = Duration(
+          seconds: _getTimeInSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
+        );
+      } else {
+        // Break completed, start work
+        _isWorking = true;
+        _isLongBreak = false;
+        _remainingTime = Duration(
+          seconds: _getTimeInSeconds(_workDuration),
+        );
+      }
+    });
+    _startTimer();
   }
 
   Future<void> _showSettingsModal() async {
-    final previousWorkDuration = _workDuration;
-    final previousBreakDuration = _breakDuration;
-
     if (mounted) {
-      setState(() {
-        _isWorking = true;
-        _isRunning = false;
-        _workDuration = _defaultWorkDuration;
-        _breakDuration = _defaultBreakDuration;
-      });
-    }
+      await ResponsiveDialogHelper.showResponsiveDialog(
+        context: context,
+        size: DialogSize.medium,
+        child: TimerSettingsDialog(
+          initialTimerMode: _timerMode,
+          initialWorkDuration: _workDuration,
+          initialBreakDuration: _breakDuration,
+          initialLongBreakDuration: _longBreakDuration,
+          initialSessionsCount: _sessionsCount,
+          initialAutoStartBreak: _autoStartBreak,
+          initialAutoStartWork: _autoStartWork,
+          initialTickingEnabled: _tickingEnabled,
+          initialKeepScreenAwake: _keepScreenAwake,
+          initialTickingVolume: _tickingVolume,
+          initialTickingSpeed: _tickingSpeed,
+          onSettingsChanged: (timerMode, workDuration, breakDuration, longBreakDuration, sessionsCount, autoStartBreak, autoStartWork, tickingEnabled, keepScreenAwake, tickingVolume, tickingSpeed) async {
+            // Save settings
+            await _saveSetting(SettingKeys.workTime, workDuration);
+            await _saveSetting(SettingKeys.breakTime, breakDuration);
+            await _saveSetting(SettingKeys.longBreakTime, longBreakDuration);
+            await _saveSetting(SettingKeys.sessionsBeforeLongBreak, sessionsCount);
 
-    await ResponsiveDialogHelper.showResponsiveDialog(
-      context: context,
-      child: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).cardColor,
-              title: Text(_translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel)),
-              automaticallyImplyLeading: false,
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
-                ),
-              ],
-            ),
-            body: _buildSettingsContent(setState),
-          );
-        },
-      ),
-      size: DialogSize.medium,
-    );
+            if (mounted) {
+              setState(() {
+                _isWorking = true;
+                _isRunning = false;
+                _timerMode = timerMode;
+                _workDuration = workDuration;
+                _breakDuration = breakDuration;
+                _longBreakDuration = longBreakDuration;
+                _sessionsCount = sessionsCount;
+                _autoStartBreak = autoStartBreak;
+                _autoStartWork = autoStartWork;
+                _tickingEnabled = tickingEnabled;
+                _keepScreenAwake = keepScreenAwake;
+                _tickingVolume = tickingVolume;
+                _tickingSpeed = tickingSpeed;
+                _isLongBreak = false;
+                _completedSessions = 0;
 
-    // Save settings
-    _saveSetting(SettingKeys.workTime, _workDuration);
-    _saveSetting(SettingKeys.breakTime, _breakDuration);
-    _saveSetting(SettingKeys.longBreakTime, _longBreakDuration);
-    _saveSetting(SettingKeys.sessionsBeforeLongBreak, _sessionsCount);
+                // Update timer display based on current mode
+                if (_timerMode == TimerMode.stopwatch) {
+                  // Reset stopwatch to 0:00
+                  _elapsedTime = const Duration();
+                } else {
+                  // Update countdown timer
+                  _remainingTime = Duration(seconds: _getTimeInSeconds(_workDuration));
+                }
+              });
 
-    _defaultWorkDuration = _workDuration;
-    _defaultBreakDuration = _breakDuration;
-    _defaultLongBreakDuration = _longBreakDuration;
-    _defaultSessionsCount = _sessionsCount;
-
-    // Update current timer if settings changed
-    if (mounted && (previousWorkDuration != _workDuration || previousBreakDuration != _breakDuration)) {
-      setState(() {
-        _remainingTime =
-            Duration(minutes: _isWorking ? _workDuration : (_isLongBreak ? _longBreakDuration : _breakDuration));
-      });
+              // Update defaults
+              _defaultWorkDuration = workDuration;
+              _defaultBreakDuration = breakDuration;
+              _defaultLongBreakDuration = longBreakDuration;
+              _defaultSessionsCount = sessionsCount;
+              _defaultAutoStartBreak = autoStartBreak;
+              _defaultAutoStartWork = autoStartWork;
+              _defaultTickingEnabled = tickingEnabled;
+              _defaultKeepScreenAwake = keepScreenAwake;
+              _defaultTickingVolume = tickingVolume;
+              _defaultTickingSpeed = tickingSpeed;
+            }
+          },
+        ),
+      );
     }
   }
 
@@ -476,8 +559,13 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
     final double buttonSize = baseButtonSize * multiplier;
     final double spacing = baseSpacing * multiplier;
 
-    final double progress =
-        _isRunning || _isAlarmPlaying ? 1.0 - (_remainingTime.inSeconds / _getTotalDurationInSeconds()) : 0.0;
+    final double progress;
+    if (_timerMode == TimerMode.stopwatch) {
+      // For stopwatch, we don't show progress (or could show elapsed time as a visual indicator)
+      progress = 0.0;
+    } else {
+      progress = _isRunning || _isAlarmPlaying ? 1.0 - (_remainingTime.inSeconds / _getTotalDurationInSeconds()) : 0.0;
+    }
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -543,12 +631,23 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
 
   Color _getBackgroundColor(BuildContext context) {
     final normalColor = AppTheme.surface2;
+    final stopwatchColor = AppTheme.infoColor.withAlpha((255 * 0.8).toInt());
     final breakColor = AppTheme.successColor.withAlpha((255 * 1).toInt());
     final longBreakColor = AppTheme.infoColor.withAlpha((255 * 1).toInt());
     final workEndColor = AppTheme.successColor.withAlpha((255 * 1).toInt());
     final breakEndColor = AppTheme.errorColor.withAlpha((255 * 1).toInt());
     final longBreakEndColor = AppTheme.infoColor.withAlpha((255 * 1).toInt());
 
+    if (_timerMode == TimerMode.stopwatch) {
+      return _isRunning ? stopwatchColor : normalColor;
+    }
+
+    if (_timerMode == TimerMode.normal) {
+      if (_isAlarmPlaying) return workEndColor;
+      return normalColor;
+    }
+
+    // Pomodoro mode logic
     if (_isAlarmPlaying) {
       if (_isWorking) return workEndColor;
       return _isLongBreak ? longBreakEndColor : breakEndColor;
@@ -558,270 +657,60 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   }
 
   IconData _getButtonIcon() {
-    if (_isAlarmPlaying) return TaskUiConstants.pomodoroNextIcon;
+    if (_isAlarmPlaying) {
+      if (_timerMode == TimerMode.stopwatch || _timerMode == TimerMode.normal) {
+        return TaskUiConstants.pomodoroStopIcon; // In stopwatch/normal mode, show stop to reset
+      }
+      return TaskUiConstants.pomodoroNextIcon; // In pomodoro mode, show next to continue
+    }
     if (_isRunning) return TaskUiConstants.pomodoroStopIcon;
     return TaskUiConstants.pomodoroPlayIcon;
   }
 
   VoidCallback _getButtonAction() {
-    if (_isAlarmPlaying) return _toggleWorkBreak;
+    if (_isAlarmPlaying) {
+      if (_timerMode == TimerMode.stopwatch || _timerMode == TimerMode.normal) {
+        return _stopTimer; // In stopwatch/normal mode, stop/reset the timer
+      }
+      return _toggleWorkBreak; // In pomodoro mode, continue to next phase
+    }
     if (_isRunning) return _stopTimer;
     return _startTimer;
   }
 
-  Widget _buildSettingsContent(StateSetter setState) {
-    return Padding(
-      padding: const EdgeInsets.all(AppTheme.sizeLarge),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              _translationService.translate(TaskTranslationKeys.pomodoroTimerSettingsLabel),
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
-            ),
-            _buildSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroWorkLabel),
-              _workDuration,
-              (adjustment) {
-                if (!mounted) return;
-                setState(() {
-                  _workDuration = (_workDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
-                });
-              },
-              showMinutes: true,
-            ),
-            _buildSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroBreakLabel),
-              _breakDuration,
-              (adjustment) {
-                if (!mounted) return;
-                setState(() {
-                  _breakDuration = (_breakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
-                });
-              },
-              showMinutes: true,
-            ),
-            _buildSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroLongBreakLabel),
-              _longBreakDuration,
-              (adjustment) {
-                if (!mounted) return;
-                setState(() {
-                  _longBreakDuration = (_longBreakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
-                });
-              },
-              showMinutes: true,
-            ),
-            _buildSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroSessionsCountLabel),
-              _sessionsCount,
-              (adjustment) {
-                if (!mounted) return;
-                setState(() {
-                  _sessionsCount = (_sessionsCount + adjustment).clamp(1, 10);
-                });
-              },
-              step: 1,
-              minValue: 1,
-              maxValue: 10,
-              showMinutes: false,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              _translationService.translate(TaskTranslationKeys.pomodoroAutoStartSectionLabel),
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
-            ),
-            const SizedBox(height: 8),
-            _buildSwitchSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroAutoStartBreakLabel),
-              _autoStartBreak,
-              (value) {
-                if (!mounted) return;
-                setState(() {
-                  _autoStartBreak = value;
-                });
-                _saveBoolSetting(SettingKeys.autoStartBreak, value);
-              },
-            ),
-            _buildSwitchSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroAutoStartWorkLabel),
-              _autoStartWork,
-              (value) {
-                if (!mounted) return;
-                setState(() {
-                  _autoStartWork = value;
-                });
-                _saveBoolSetting(SettingKeys.autoStartWork, value);
-              },
-            ),
-            const SizedBox(height: 24),
-            Text(
-              _translationService.translate(TaskTranslationKeys.pomodoroTickingSoundSectionLabel),
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
-            ),
-            const SizedBox(height: 8),
-            _buildSwitchSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroTickingSoundLabel),
-              _tickingEnabled,
-              (value) {
-                if (!mounted) return;
-                setState(() {
-                  _tickingEnabled = value;
-                });
-                _saveBoolSetting(SettingKeys.tickingEnabled, value);
-                if (!value) _stopTicking();
-              },
-            ),
-            if (_tickingEnabled) ...[
-              _buildSettingRow(
-                _translationService.translate(TaskTranslationKeys.pomodoroTickingVolumeLabel),
-                _tickingVolume,
-                (adjustment) {
-                  if (!mounted) return;
-                  setState(() {
-                    _tickingVolume = (_tickingVolume + adjustment).clamp(5, 100);
-                  });
-                  _saveSetting(SettingKeys.tickingVolume, _tickingVolume);
-                },
-                step: 5,
-                minValue: 5,
-                maxValue: 100,
-                showMinutes: false,
-              ),
-              _buildSettingRow(
-                _translationService.translate(TaskTranslationKeys.pomodoroTickingSpeedLabel),
-                _tickingSpeed,
-                (adjustment) {
-                  if (!mounted) return;
-                  setState(() {
-                    _tickingSpeed = (_tickingSpeed + adjustment).clamp(1, 5);
-                  });
-                  _saveSetting(SettingKeys.tickingSpeed, _tickingSpeed);
-                  _stopTicking();
-                  if (_isRunning) _startTicking();
-                },
-                step: 1,
-                minValue: 1,
-                maxValue: 5,
-                showMinutes: false,
-              ),
-            ],
-            const SizedBox(height: 24),
-            Text(
-              _translationService.translate(TaskTranslationKeys.pomodoroKeepScreenAwakeSectionLabel),
-              style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
-            ),
-            const SizedBox(height: 8),
-            _buildSwitchSettingRow(
-              _translationService.translate(TaskTranslationKeys.pomodoroKeepScreenAwakeLabel),
-              _keepScreenAwake,
-              (value) {
-                if (!mounted) return;
-                setState(() {
-                  _keepScreenAwake = value;
-                });
-                _saveBoolSetting(SettingKeys.keepScreenAwake, value);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+  void _stopTicking() {
+    _tickingTimer?.cancel();
+    _tickingTimer = null;
+    _isTickSound = true; // Reset to start with tick sound next time
   }
 
-  Widget _buildSettingRow(
-    String label,
-    int value,
-    Function(int) onAdjust, {
-    int? minValue,
-    int? maxValue,
-    int step = 5,
-    bool showMinutes = true,
-  }) {
-    final min = minValue ?? _minTimerValue;
-    final max = maxValue ?? _maxTimerValue;
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 2,
-              child: Text(
-                label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: AppTheme.sizeSmall),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: value > min ? () => onAdjust(-step) : null,
-                  visualDensity: VisualDensity.compact,
-                ),
-                SizedBox(
-                  width: 40,
-                  child: Center(
-                    child: Text(
-                      "$value${showMinutes ? " ${_translationService.translate(SharedTranslationKeys.minutesShort)}" : ''}",
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: value < max ? () => onAdjust(step) : null,
-                  visualDensity: VisualDensity.compact,
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: AppTheme.size2XSmall),
-      ],
-    );
-  }
+  Color _getProgressBarColor(BuildContext context) {
+    if (_isRunning || _isAlarmPlaying) {
+      if (_timerMode == TimerMode.stopwatch) {
+        return AppTheme.infoColor.withValues(alpha: 0.3);
+      }
 
-  Widget _buildSwitchSettingRow(
-    String label,
-    bool value,
-    Function(bool) onChanged,
-  ) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: AppTheme.sizeSmall),
-            Switch(
-              value: value,
-              onChanged: onChanged,
-            ),
-          ],
-        ),
-        const SizedBox(height: AppTheme.size2XSmall),
-      ],
-    );
+      if (_timerMode == TimerMode.normal) {
+        return AppTheme.successColor.withValues(alpha: 0.3);
+      }
+
+      // Pomodoro mode logic
+      if (_isWorking) {
+        return AppTheme.successColor.withValues(alpha: 0.3);
+      } else if (_isLongBreak) {
+        return AppTheme.infoColor.withValues(alpha: 0.3);
+      } else {
+        return AppTheme.errorColor.withValues(alpha: 0.6);
+      }
+    }
+
+    return Colors.transparent;
   }
 
   static const String _stopTimerMenuKey = 'stop_timer';
   static const String _pomodoroTimerSeparatorKey = 'pomodoro_timer_separator';
   bool _isTimerMenuAdded = false;
+
   void _addTimerMenuItems() {
     if (_isTimerMenuAdded) return;
 
@@ -865,25 +754,5 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
       );
       _isTickSound = !_isTickSound; // Toggle for next sound
     });
-  }
-
-  void _stopTicking() {
-    _tickingTimer?.cancel();
-    _tickingTimer = null;
-    _isTickSound = true; // Reset to start with tick sound next time
-  }
-
-  Color _getProgressBarColor(BuildContext context) {
-    if (_isRunning || _isAlarmPlaying) {
-      if (_isWorking) {
-        return AppTheme.successColor.withValues(alpha: 0.3);
-      } else if (_isLongBreak) {
-        return AppTheme.infoColor.withValues(alpha: 0.3);
-      } else {
-        return AppTheme.errorColor.withValues(alpha: 0.6);
-      }
-    }
-
-    return Colors.transparent;
   }
 }
