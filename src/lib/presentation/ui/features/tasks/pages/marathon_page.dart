@@ -420,6 +420,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                               child: KebabMenu(
                                 helpTitleKey: TaskTranslationKeys.marathonHelpTitle,
                                 helpMarkdownContentKey: TaskTranslationKeys.marathonHelpContent,
+                                iconColor: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ],

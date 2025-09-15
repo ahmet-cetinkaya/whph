@@ -209,6 +209,22 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String deadlineTimeInvalid = 'tasks.validation.deadline_time_invalid';
   static const String deadlineCannotBeBeforePlanned = 'tasks.validation.deadline_cannot_be_before_planned';
 
+  // Time Logging
+  static const String timeLoggingDialogTitle = 'tasks.time_logging.dialog_title';
+  static const String timeLoggingMode = 'tasks.time_logging.mode';
+  static const String timeLoggingAddTime = 'tasks.time_logging.add_time';
+  static const String timeLoggingSetTotal = 'tasks.time_logging.set_total';
+  static const String timeLoggingDate = 'tasks.time_logging.date';
+  static const String timeLoggingDuration = 'tasks.time_logging.duration';
+  static const String timeLoggingTotalTime = 'tasks.time_logging.total_time';
+  static const String timeLoggingHours = 'tasks.time_logging.hours';
+  static const String timeLoggingMinutes = 'tasks.time_logging.minutes';
+  static const String timeLoggingAddTimeDescription = 'tasks.time_logging.add_time_description';
+  static const String timeLoggingSetTotalDescription = 'tasks.time_logging.set_total_description';
+  static const String timeLoggingLogTime = 'tasks.time_logging.log_time';
+  static const String timeLoggingInvalidInput = 'tasks.time_logging.invalid_input';
+  static const String cancel = 'tasks.time_logging.cancel';
+
   // Helper Method for Reminder Types
   static String getReminderTypeKey(ReminderTime reminderTime) {
     // Get the enum value part after the dot: "ReminderTime.atTime" -> "atTime"
