@@ -14,6 +14,9 @@ import 'package:whph/core/application/features/habits/commands/remove_habit_tag_
 import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
 import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart';
+import 'package:whph/presentation/ui/features/tasks/components/timer.dart';
+import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_time_display.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_reminder_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_goal_dialog.dart';
@@ -70,6 +73,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   bool _forceTagsRefresh = false;
   int _totalDuration = 0; // Cache total duration to avoid repeated queries
 
+  // Timer state variables
+  DateTime? _timerStartTime;
+  bool _isTimerRunning = false;
+
   DateTime currentMonth = DateTime.now();
 
   // Set to track which optional fields are visible
@@ -79,6 +86,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   static const String keyTags = 'tags';
   static const String keyEstimatedTime = 'estimatedTime';
   static const String keyElapsedTime = 'elapsedTime';
+  static const String keyTimer = 'timer';
   static const String keyDescription = 'description';
   static const String keyReminder = 'reminder';
   static const String keyGoal = 'goal';
@@ -679,6 +687,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
       if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
       if (_hasFieldContent(keyElapsedTime)) _visibleOptionalFields.add(keyElapsedTime);
+      if (_hasFieldContent(keyTimer)) _visibleOptionalFields.add(keyTimer);
       if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
       if (_hasFieldContent(keyReminder)) _visibleOptionalFields.add(keyReminder);
       if (_hasFieldContent(keyGoal)) _visibleOptionalFields.add(keyGoal);
@@ -724,6 +733,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return _habit!.hasGoal;
       case keyElapsedTime:
         return _totalDuration > 0;
+      case keyTimer:
+        return false; // Timer is always available as an optional field, never auto-shown
       default:
         return false;
     }
@@ -744,6 +755,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return _translationService.translate(HabitTranslationKeys.goalSettings);
       case keyElapsedTime:
         return _translationService.translate(HabitTranslationKeys.elapsedTimeLabel);
+      case keyTimer:
+        return _translationService.translate(HabitTranslationKeys.timerLabel);
       default:
         return '';
     }
@@ -764,6 +777,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         return Icons.track_changes;
       case keyElapsedTime:
         return HabitUiConstants.estimatedTimeIcon;
+      case keyTimer:
+        return Icons.timer;
       default:
         return Icons.add;
     }
@@ -804,6 +819,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       keyTags,
       keyEstimatedTime,
       keyElapsedTime,
+      keyTimer,
       keyDescription,
       if (!_habit!.isArchived) keyReminder,
       if (!_habit!.isArchived) keyGoal,
@@ -845,6 +861,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           if (_isFieldVisible(keyTags) ||
               _isFieldVisible(keyEstimatedTime) ||
               _isFieldVisible(keyElapsedTime) ||
+              _isFieldVisible(keyTimer) ||
               _isFieldVisible(keyReminder) ||
               _isFieldVisible(keyGoal) ||
               _habit!.archivedDate != null) ...[
@@ -853,6 +870,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 if (_isFieldVisible(keyTags)) _buildTagsSection(),
                 if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
                 if (_isFieldVisible(keyElapsedTime)) _buildElapsedTimeSection(),
+                if (_isFieldVisible(keyTimer)) _buildTimerSection(),
                 if (_isFieldVisible(keyReminder)) _buildReminderSection(),
                 if (_isFieldVisible(keyGoal)) _buildGoalSection(),
                 if (_habit!.archivedDate != null) _buildArchivedDateSection(),
@@ -972,11 +990,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  _totalDuration > 0
-                      ? SharedUiConstants.formatDurationHuman(_totalDuration, _translationService)
-                      : SharedUiConstants.formatDurationHuman(0, _translationService),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                child: HabitTimeDisplay(
+                  habitId: widget.habitId,
+                  showActualTime: true,
                 ),
               ),
               IconButton(
@@ -990,6 +1006,22 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             ],
           ),
         ),
+      );
+
+  DetailTableRowData _buildTimerSection() => DetailTableRowData(
+        label: _translationService.translate(HabitTranslationKeys.timerLabel),
+        icon: Icons.timer,
+        widget: Container(
+          constraints: BoxConstraints(
+            maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
+          ),
+          child: AppTimer(
+            onTimeUpdate: _onHabitTimeUpdate,
+            onTimerStart: _onHabitTimerStart,
+            onTimerStop: _onHabitTimerStop,
+          ),
+        ),
+        removePadding: true,
       );
 
   DetailTableRowData _buildReminderSection() {
@@ -1361,6 +1393,41 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     if (result == true) {
       await _getHabitStatisticsOnly();
       await _refreshTotalDuration(); // Refresh elapsed time after manual logging
+    }
+  }
+
+  // Timer event handlers
+  void _onHabitTimerStart() {
+    setState(() {
+      _timerStartTime = DateTime.now().toUtc();
+      _isTimerRunning = true;
+    });
+  }
+
+  void _onHabitTimerStop() {
+    if (_timerStartTime != null) {
+      setState(() {
+        _isTimerRunning = false;
+      });
+    }
+  }
+
+  Future<void> _onHabitTimeUpdate(Duration duration) async {
+    if (_timerStartTime != null && _isTimerRunning) {
+      // Automatically log the time when timer stops
+      try {
+        final command = AddHabitTimeRecordCommand(
+          habitId: widget.habitId,
+          duration: duration.inSeconds,
+          customDateTime: _timerStartTime,
+        );
+        await _mediator.send<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse>(command);
+
+        // Refresh the total duration display
+        await _refreshTotalDuration();
+      } catch (e) {
+        // Handle error silently or show a snackbar if needed
+      }
     }
   }
 }

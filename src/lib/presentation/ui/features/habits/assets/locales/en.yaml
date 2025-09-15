@@ -221,6 +221,13 @@ habits:
     log_time: Log Time
     invalid_input: Please enter valid hours and minutes
     cancel: Cancel
+  timer:
+    label: Timer
+  time_display:
+    actual_time_tooltip: Actual time tracked for this day
+    estimated_time_tooltip: Estimated time based on habit settings
+    no_time_logged_tooltip: No time logged for this day
+    estimated: estimated
   tooltips:
     add_habit: Add Habit
     decrease_estimated_time: Decrease estimated time
