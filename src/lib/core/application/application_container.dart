@@ -91,7 +91,7 @@ void registerApplication(IContainer container) {
   // Register Features
   registerAppUsagesFeature(container, mediator, appUsageService, appUsageRepository, tagRepository,
       appUsageTagRepository, appUsageTagRuleRepository, appUsageTimeRecordRepository, appUsageIgnoreRuleRepository);
-  registerHabitsFeature(container, mediator, habitRepository, habitRecordRepository, habitTagRepository, tagRepository);
+  registerHabitsFeature(container, mediator, habitRepository, habitRecordRepository, habitTagRepository, habitTimeRecordRepository, tagRepository);
   registerNotesFeature(
     container,
     mediator,
