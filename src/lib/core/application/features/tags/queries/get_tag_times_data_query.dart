@@ -4,6 +4,8 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:acore/acore.dart';
 
 class GetTagTimesDataQuery implements IRequest<GetTagTimesDataQueryResponse> {
@@ -31,23 +33,30 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
+  final IHabitTagsRepository _habitTagRepository;
+  final IHabitTimeRecordRepository _habitTimeRecordRepository;
 
   GetTagTimesDataQueryHandler(
       {required IAppUsageTagRepository appUsageTagRepository,
       required IAppUsageTimeRecordRepository appUsageTimeRecordRepository,
       required ITaskRepository taskRepository,
       required ITaskTagRepository taskTagRepository,
-      required ITaskTimeRecordRepository taskTimeRecordRepository})
+      required ITaskTimeRecordRepository taskTimeRecordRepository,
+      required IHabitTagsRepository habitTagRepository,
+      required IHabitTimeRecordRepository habitTimeRecordRepository})
       : _appUsageTagRepository = appUsageTagRepository,
         _appUsageTimeRecordRepository = appUsageTimeRecordRepository,
         _taskTagRepository = taskTagRepository,
-        _taskTimeRecordRepository = taskTimeRecordRepository;
+        _taskTimeRecordRepository = taskTimeRecordRepository,
+        _habitTagRepository = habitTagRepository,
+        _habitTimeRecordRepository = habitTimeRecordRepository;
 
   @override
   Future<GetTagTimesDataQueryResponse> call(GetTagTimesDataQuery request) async {
     int time = 0;
     time += await _getAppUsageTagTimes(request);
     time += await _getTaskTagTimes(request);
+    time += await _getHabitTagTimes(request);
 
     return GetTagTimesDataQueryResponse(tagId: request.tagId, time: time);
   }
@@ -86,6 +95,27 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
         endDate: request.endDate,
       );
       totalTime += taskTime;
+    }
+
+    return totalTime;
+  }
+
+  Future<int> _getHabitTagTimes(GetTagTimesDataQuery request) async {
+    // Get habit tags within date range
+    final habitTags = await _habitTagRepository.getAll(
+        customWhereFilter: CustomWhereFilter("tag_id = ? AND deleted_date IS NULL", [request.tagId]));
+
+    if (habitTags.isEmpty) return 0;
+
+    int totalTime = 0;
+    for (final habitTag in habitTags) {
+      // Get actual tracked time from habit time records
+      final habitTime = await _habitTimeRecordRepository.getTotalDurationByHabitId(
+        habitTag.habitId,
+        startDate: request.startDate,
+        endDate: request.endDate,
+      );
+      totalTime += habitTime;
     }
 
     return totalTime;

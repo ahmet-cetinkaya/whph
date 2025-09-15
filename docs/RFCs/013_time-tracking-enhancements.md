@@ -9,12 +9,11 @@
 ## Summary
 This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a multi-mode timer (Normal + Pomodoro + Stopwatch), enabling manual time logging and editing for tasks, adding real timing support for habits with clarified semantics, and automatic insertion of estimated time records when habits are marked completed, with removal on unmarking to maintain accurate progress tracking for custom goals. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
 
-This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a multi-mode timer (Normal + Pomodoro + Stopwatch), enabling manual time logging and editing for tasks, and adding real timing support for habits with clarified semantics. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
-
 **Status Update**:
 - ✅ Multi-mode timer system completed in `AppTimer` component with settings integration
 - ✅ Task manual time logging completed with `TaskTimeLoggingDialog` and task details integration
-- ⏳ Next milestones: Habit time logging, automatic estimated time insertion on completion, and analytics integration
+- ✅ Habit time record infrastructure implemented: entity (`HabitTimeRecord`), repository (`IHabitTimeRecordRepository` and `DriftHabitTimeRecordRepository`), commands (`AddHabitTimeRecordCommand`, `RemoveHabitTimeRecordCommand`, `SaveHabitTimeRecordCommand`), database schema (`habit_time_record_table` in v24), and supporting tests
+- ⏳ Next milestones: Habit time logging UI integration, automatic estimated time insertion on completion/uncompletion, and analytics integration
 
 ## Motivation
 
@@ -63,7 +62,6 @@ Users frequently request the ability to:
 enum TimerMode { normal, pomodoro, stopwatch }
 
 class AppTimer extends StatefulWidget {
-  final Function(Duration) onTimeUpdate;
   final VoidCallback? onTimerStart;
   final VoidCallback? onTimerStop;
 
@@ -77,9 +75,7 @@ class AppTimer extends StatefulWidget {
 **Features**:
 - Three distinct timer modes in a single component
 - Mode switching via settings dialog integration
-- Unified callback interface for all modes
 - System tray integration and keep-screen-awake support
-- Debug mode acceleration for all timer types
 - Responsive UI that adapts to screen size
 - Comprehensive settings management for each mode
 
@@ -273,7 +269,6 @@ class MarathonPage extends StatefulWidget {
         children: [
           // AppTimer with multi-mode support
           AppTimer(
-            onTimeUpdate: _handleTimerUpdate,
             onTimerStart: _onTimerStart,
             onTimerStop: _onTimerStop,
           ),
@@ -323,7 +318,6 @@ class HabitDetailsContent extends StatelessWidget {
 
         // Add timer section using existing AppTimer
         AppTimer(
-          onTimeUpdate: (delta) => _addHabitTimeRecord(habit.id, delta),
           onTimerStart: () => _onHabitTimerStart(),
           onTimerStop: () => _onHabitTimerStop(),
         ),
@@ -338,8 +332,6 @@ class HabitDetailsContent extends StatelessWidget {
   }
 }
 ```
-
-**Note**: The existing `AppTimer` component can be reused for habit time tracking with appropriate callback handlers.
 
 #### D. Enhanced Time Display
 
@@ -366,14 +358,14 @@ class HabitTimeDisplay extends StatelessWidget {
     // Existing tables...
     HabitTimeRecordTable,
   ],
-  version: 15, // Increment version
+  version: 24, // Updated to v24 with HabitTimeRecordTable
 )
 class DriftAppContext extends _$DriftAppContext {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) async {
-      if (from < 15) {
+      if (from < 24) {
         // Create habit_time_record_table
         await migrator.createTable(habitTimeRecordTable);
         await migrator.createIndex(Index('idx_habit_time_record_habit_date',
@@ -386,50 +378,45 @@ class DriftAppContext extends _$DriftAppContext {
 
 ## Implementation Plan
 
-### Phase 1: Core Infrastructure (Week 1-2)
-
+### Phase 1: Core Infrastructure ✅ COMPLETED
 1. **Data Model Creation**
-   - Create `HabitTimeRecord` entity
-   - Implement Drift table and repository
-   - Add database migration for new table
-   - Register repository in DI container
+   - Create `HabitTimeRecord` entity ✅
+   - Implement Drift table and repository ✅
+   - Add database migration for new table (v24) ✅
+   - Register repository in DI container ✅
 
 2. **Command Enhancement**
-   - Update `AddTaskTimeRecordCommand` with `customDateTime`
-   - Create `AddHabitTimeRecordCommand` and handler
-   - Implement hour-bucket logic for custom dates
+   - Update `AddTaskTimeRecordCommand` with `customDateTime` ✅
+   - Create `AddHabitTimeRecordCommand` and handler ✅
+   - Implement hour-bucket logic for custom dates ✅
 
-### Phase 2: Timer Enhancement (Week 2-3)
-
+### Phase 2: Timer Enhancement ✅ COMPLETED
 1. **Multi-Mode Timer Component** ✅ COMPLETED
-   - Enhanced `AppTimer` with three modes: Normal, Pomodoro, Stopwatch
-   - Implemented unified interface with `onTimeUpdate`, `onTimerStart`, `onTimerStop` callbacks
-   - Added system tray and keep-awake integration for all modes
+   - Enhanced `AppTimer` with three modes: Normal, Pomodoro, Stopwatch ✅
+   - Added system tray and keep-awake integration for all modes ✅
 
 2. **Settings Integration** ✅ COMPLETED
-   - Created `TimerSettingsDialog` with mode selection and configuration
-   - Implemented debounced saving and real-time settings updates
-   - Added comprehensive settings management for all timer modes
+   - Created `TimerSettingsDialog` with mode selection and configuration ✅
+   - Implemented debounced saving and real-time settings updates ✅
+   - Added comprehensive settings management for all timer modes ✅
 
-### Phase 3: Manual Logging (Week 3-4) ✅ PARTIALLY COMPLETED
-
+### Phase 3: Manual Logging ✅ PARTIALLY COMPLETED
 1. **Task Time Logging** ✅ COMPLETED
-   - Created `TaskTimeLoggingDialog` component with comprehensive UI
-   - Implemented "Add Time" and "Set Total for Day" modes
-   - Added delta calculation for total time setting
-   - Integrated with task details page as optional field
-   - Added `GetTotalDurationByTaskIdQuery` for current time retrieval
-   - Full internationalization support
+   - Created `TaskTimeLoggingDialog` component with comprehensive UI ✅
+   - Implemented "Add Time" and "Set Total for Day" modes ✅
+   - Added delta calculation for total time setting ✅
+   - Integrated with task details page as optional field ✅
+   - Added `GetTotalDurationByTaskIdQuery` for current time retrieval ✅
+   - Full internationalization support ✅
 
-2. **Habit Time Logging** - PENDING
-   - Create habit-specific logging UI
-   - Implement actual vs estimated time display
-   - Add manual time entry for habits
-   - Integrate automatic estimated time insertion on habit completion/uncompletion in `UpdateHabitRecordCommandHandler`
-   - Ensure removal of estimated records affects custom goal progress calculations
+2. **Habit Time Logging** - PARTIALLY COMPLETED
+   - Create habit-specific logging UI - PENDING
+   - Implement actual vs estimated time display - PENDING
+   - Add manual time entry for habits - PENDING
+   - Integrate automatic estimated time insertion on habit completion/uncompletion in `UpdateHabitRecordCommandHandler` - PENDING
+   - Ensure removal of estimated records affects custom goal progress calculations - PENDING
 
-### Phase 4: Analytics Integration (Week 4-5)
-
+### Phase 4: Analytics Integration - PENDING
 1. **Query Updates**
    - Update tag time queries to use actual habit time
    - Implement fallback to estimated time logic
@@ -438,20 +425,18 @@ class DriftAppContext extends _$DriftAppContext {
 2. **UI Integration** ✅ PARTIALLY COMPLETED
    - AppTimer already integrated in MarathonPage with multi-mode support ✅
    - Task details page updated with manual time logging ✅
-   - Add timer to TodayPage (compact version) - PENDING
    - Update habit details pages - PENDING
 
-### Phase 5: Testing and Polish (Week 5-6)
-
-1. **Comprehensive Testing**
-   - Unit tests for all new commands and queries
-   - Widget tests for timer components
-   - Integration tests for time tracking workflows
+### Phase 5: Testing and Polish - PARTIALLY COMPLETED
+1. **Comprehensive Testing** - PARTIALLY COMPLETED
+   - Unit tests for all new commands and queries ✅ (Added tests for `AddHabitTimeRecordCommand`, `HabitTimeRecord`, repository interface, Drift repo, `TimerMode`)
+   - Widget tests for timer components - PENDING
+   - Integration tests for time tracking workflows - PENDING
 
 2. **Documentation and Localization**
-   - Update help documentation
-   - Add new translation keys
-   - Update user guides
+   - Update help documentation - PENDING
+   - Add new translation keys - PENDING
+   - Update user guides - PENDING
 
 ## Security Considerations
 
@@ -464,24 +449,24 @@ class DriftAppContext extends _$DriftAppContext {
 
 ### Unit Tests
 
-- Command handlers for task and habit time records
-- Hour-bucket logic with custom dates
-- Analytics query fallback behavior
-- Timer component state management
+- Command handlers for task and habit time records ✅
+- Hour-bucket logic with custom dates ✅
+- Analytics query fallback behavior - PENDING
+- Timer component state management - PENDING
 
 ### Widget Tests
 
-- `CombinedTimer` mode switching functionality
-- Manual logging dialog form validation
-- Time display components (actual vs estimated)
-- Timer integration in task and habit pages
+- `CombinedTimer` mode switching functionality - PENDING
+- Manual logging dialog form validation - PENDING
+- Time display components (actual vs estimated) - PENDING
+- Timer integration in task and habit pages - PENDING
 
 ### Integration Tests
 
-- Database migration from version 14 to 15
-- End-to-end time tracking workflows
-- Analytics accuracy with mixed actual/estimated data
-- Sync protocol compatibility with new data structures
+- Database migration from version 23 to 24 ✅
+- End-to-end time tracking workflows - PENDING
+- Analytics accuracy with mixed actual/estimated data - PENDING
+- Sync protocol compatibility with new data structures - PENDING
 
 ## Success Criteria
 

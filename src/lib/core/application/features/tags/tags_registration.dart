@@ -58,6 +58,8 @@ void registerTagsFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        habitTagRepository: habitTagRepository,
+        habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
     ..registerHandler<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse, GetTopTagsByTimeQueryHandler>(

@@ -137,4 +137,11 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String timeLoggingSetTotalDescription = 'habits.time_logging.set_total_description';
   static const String timeLoggingInvalidInput = 'habits.time_logging.invalid_input';
   static const String elapsedTimeLabel = 'habits.details.elapsed_time';
+
+  // Timer
+  static const String timerLabel = 'habits.timer.label';
+  static const String actualTimeTooltip = 'habits.time_display.actual_time_tooltip';
+  static const String estimatedTimeTooltip = 'habits.time_display.estimated_time_tooltip';
+  static const String noTimeLoggedTooltip = 'habits.time_display.no_time_logged_tooltip';
+  static const String estimatedTime = 'habits.time_display.estimated';
 }
