@@ -49,16 +49,7 @@ class DeleteHabitRecordCommandHandler
       final existingRecord = await _habitTimeRecordRepository.getFirst(filter);
 
       if (existingRecord != null) {
-        // Subtract the estimated time from the existing record
-        existingRecord.duration -= habit.estimatedTime! * 60;
-
-        if (existingRecord.duration <= 0) {
-          // If duration becomes 0 or negative, delete the record entirely
-          await _habitTimeRecordRepository.delete(existingRecord);
-        } else {
-          // Otherwise, update with the reduced duration
-          await _habitTimeRecordRepository.update(existingRecord);
-        }
+        await _adjustOrDeleteTimeRecord(existingRecord, habit.estimatedTime! * 60);
       } else {
         // If no record found in the hour bucket, look for records on the same day as a fallback
         final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
@@ -71,13 +62,7 @@ class DeleteHabitRecordCommandHandler
         final dailyRecord = await _habitTimeRecordRepository.getFirst(dailyRecordFilter);
 
         if (dailyRecord != null) {
-          dailyRecord.duration -= habit.estimatedTime! * 60;
-
-          if (dailyRecord.duration <= 0) {
-            await _habitTimeRecordRepository.delete(dailyRecord);
-          } else {
-            await _habitTimeRecordRepository.update(dailyRecord);
-          }
+          await _adjustOrDeleteTimeRecord(dailyRecord, habit.estimatedTime! * 60);
         }
       }
     }
@@ -86,5 +71,18 @@ class DeleteHabitRecordCommandHandler
     await _habitRecordRepository.delete(habitRecord);
 
     return DeleteHabitRecordCommandResponse();
+  }
+
+  /// Adjusts the duration of a time record by subtracting the specified amount.
+  /// If the duration becomes 0 or negative, the record is deleted entirely.
+  /// Otherwise, the record is updated with the reduced duration.
+  Future<void> _adjustOrDeleteTimeRecord(dynamic record, int durationToSubtract) async {
+    record.duration -= durationToSubtract;
+
+    if (record.duration <= 0) {
+      await _habitTimeRecordRepository.delete(record);
+    } else {
+      await _habitTimeRecordRepository.update(record);
+    }
   }
 }

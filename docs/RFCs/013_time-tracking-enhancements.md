@@ -246,9 +246,10 @@ class GetTagTimesDataQueryHandler {
       endDate: request.endDate
     );
 
-    // No fallback needed as automatic estimated records ensure coverage for completed habits;
-    // If no record (uncompleted), time is 0
-    final habitTime = habitTrackedTime;
+    // Fallback to estimated time calculation if no actual time is tracked
+    // This ensures coverage for cases where automatic estimated records don't exist
+    final habitTime = habitTrackedTime > 0 ? habitTrackedTime :
+      (habit.estimatedTime * habitRecordCount * 60); // Convert minutes to seconds
   }
 }
 ```

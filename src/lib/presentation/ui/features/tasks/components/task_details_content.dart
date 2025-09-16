@@ -34,6 +34,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/optional_field_chip.dart';
+import 'package:whph/presentation/ui/shared/components/time_display.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 
@@ -1137,25 +1138,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             bottom: AppTheme.sizeSmall,
             left: AppTheme.sizeSmall,
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  _task!.totalDuration > 0
-                      ? SharedUiConstants.formatDurationHuman((_task!.totalDuration / 60).round(), _translationService)
-                      : SharedUiConstants.formatDurationHuman(0, _translationService),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: () => _showTimeLoggingDialog(),
-                tooltip: 'Edit time',
-                iconSize: AppTheme.iconSizeSmall,
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                padding: const EdgeInsets.all(4),
-              ),
-            ],
+          child: TimeDisplay(
+            totalSeconds: _task!.totalDuration,
+            showEstimatedFallback: false,
+            onTap: _showTimeLoggingDialog,
           ),
         ),
       );
