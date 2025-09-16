@@ -74,4 +74,45 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
               (t) => t.habitId.equals(habitId) & t.createdDate.isBetweenValues(start, end) & t.deletedDate.isNull()))
         .get();
   }
+
+  @override
+  Future<Map<String, int>> getTotalDurationsByHabitIds(List<String> habitIds,
+      {DateTime? startDate, DateTime? endDate}) async {
+    if (habitIds.isEmpty) return {};
+
+    final placeholders = habitIds.map((_) => '?').join(',');
+    final query = database.customSelect(
+      '''
+      SELECT habit_id, COALESCE(SUM(duration), 0) as total_duration
+      FROM habit_time_record_table
+      WHERE habit_id IN ($placeholders)
+        AND deleted_date IS NULL
+        ${startDate != null ? 'AND created_date >= ?' : ''}
+        ${endDate != null ? 'AND created_date <= ?' : ''}
+      GROUP BY habit_id
+      ''',
+      variables: [
+        ...habitIds.map((id) => Variable<String>(id)),
+        if (startDate != null) Variable<DateTime>(startDate),
+        if (endDate != null) Variable<DateTime>(endDate),
+      ],
+      readsFrom: {table},
+    );
+
+    final results = await query.get();
+    final map = <String, int>{};
+
+    for (final result in results) {
+      final habitId = result.data['habit_id'] as String;
+      final totalDuration = result.data['total_duration'] as int? ?? 0;
+      map[habitId] = totalDuration;
+    }
+
+    // Ensure all habitIds have an entry, even if they have no time records
+    for (final habitId in habitIds) {
+      map.putIfAbsent(habitId, () => 0);
+    }
+
+    return map;
+  }
 }

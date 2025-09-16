@@ -104,27 +104,22 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
 
   Future<void> _saveTimerModeSetting(TimerMode mode) async {
     try {
-      debugPrint('Attempting to save timer mode: ${mode.value}');
       final command = SaveSettingCommand(
         key: SettingKeys.defaultTimerMode,
         value: mode.value,
         valueType: SettingValueType.string,
       );
       await _mediator.send(command);
-      debugPrint('Successfully saved timer mode: ${mode.value}');
 
       // Immediately update parent timer component
       _notifyParentOfChanges();
-    } catch (e, stackTrace) {
-      debugPrint('Error saving timer mode ${mode.value}: $e');
-      debugPrint('Stack trace: $stackTrace');
+    } catch (e) {
       rethrow;
     }
   }
 
   Future<void> _notifyParentOfChanges() async {
     try {
-      debugPrint('Notifying parent of settings changes');
       await widget.onSettingsChanged(
         _timerMode,
         _workDuration,
@@ -138,64 +133,42 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
         _tickingVolume,
         _tickingSpeed,
       );
-      debugPrint('Parent successfully updated with new settings');
     } catch (e) {
-      debugPrint('Error notifying parent of settings changes: $e');
+      // Settings notification failed - not critical
     }
   }
 
   Future<void> _saveBoolSetting(String key, bool value) async {
     try {
-      debugPrint('Attempting to save bool setting: $key = $value');
       final command = SaveSettingCommand(
         key: key,
         value: value.toString(),
         valueType: SettingValueType.bool,
       );
       await _mediator.send(command);
-      debugPrint('Successfully saved bool setting: $key = $value');
-    } catch (e, stackTrace) {
-      debugPrint('Error saving bool setting $key: $e');
-      debugPrint('Stack trace: $stackTrace');
+    } catch (e) {
       rethrow;
     }
   }
 
   void _debouncedSaveBoolSetting(String key, bool value) {
-    // Temporarily save immediately for debugging
-    debugPrint('Immediate save triggered for bool: $key = $value');
-    _saveBoolSetting(key, value).then((_) {
-      // Immediately update parent timer component after saving
-      _notifyParentOfChanges();
+    _pendingSaves.add(key);
+    _saveDebounceTimer?.cancel();
+    _saveDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      await _savePendingSettings();
     });
-
-    // Original debounced code (commented out for debugging)
-    // _pendingSaves.add(key);
-    // _saveDebounceTimer?.cancel();
-    // _saveDebounceTimer = Timer(_debounceDuration, () async {
-    //   await _savePendingSettings();
-    // });
   }
 
   void _debouncedSaveIntSetting(String key, int value) {
-    // Temporarily save immediately for debugging
-    debugPrint('Immediate save triggered for int: $key = $value');
-    _saveIntSetting(key, value).then((_) {
-      // Immediately update parent timer component after saving
-      _notifyParentOfChanges();
+    _pendingSaves.add(key);
+    _saveDebounceTimer?.cancel();
+    _saveDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      await _savePendingSettings();
     });
-
-    // Original debounced code (commented out for debugging)
-    // _pendingSaves.add(key);
-    // _saveDebounceTimer?.cancel();
-    // _saveDebounceTimer = Timer(_debounceDuration, () async {
-    //   await _savePendingSettings();
-    // });
   }
 
   Future<void> _savePendingSettings() async {
     try {
-      debugPrint('Saving pending settings: ${_pendingSaves.toList()}');
       final saves = <Future<void>>[];
 
       for (final key in _pendingSaves) {
@@ -235,26 +208,20 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
 
       await Future.wait(saves);
       _pendingSaves.clear();
-      debugPrint('Successfully saved all pending settings');
-    } catch (e, stackTrace) {
-      debugPrint('Error saving pending settings: $e');
-      debugPrint('Stack trace: $stackTrace');
+    } catch (e) {
+      // Setting save failed - will be retried on next debounced save
     }
   }
 
   Future<void> _saveIntSetting(String key, int value) async {
     try {
-      debugPrint('Attempting to save int setting: $key = $value');
       final command = SaveSettingCommand(
         key: key,
         value: value.toString(),
         valueType: SettingValueType.int,
       );
       await _mediator.send(command);
-      debugPrint('Successfully saved int setting: $key = $value');
-    } catch (e, stackTrace) {
-      debugPrint('Error saving int setting $key: $e');
-      debugPrint('Stack trace: $stackTrace');
+    } catch (e) {
       rethrow;
     }
   }

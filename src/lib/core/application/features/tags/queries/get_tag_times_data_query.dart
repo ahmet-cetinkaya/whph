@@ -107,15 +107,18 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
 
     if (habitTags.isEmpty) return 0;
 
+    // Get actual tracked time for all habits in a single batch query to avoid N+1 problem
+    final habitIds = habitTags.map((habitTag) => habitTag.habitId).toList();
+    final habitTimeMap = await _habitTimeRecordRepository.getTotalDurationsByHabitIds(
+      habitIds,
+      startDate: request.startDate,
+      endDate: request.endDate,
+    );
+
+    // Sum up all the times
     int totalTime = 0;
-    for (final habitTag in habitTags) {
-      // Get actual tracked time from habit time records
-      final habitTime = await _habitTimeRecordRepository.getTotalDurationByHabitId(
-        habitTag.habitId,
-        startDate: request.startDate,
-        endDate: request.endDate,
-      );
-      totalTime += habitTime;
+    for (final habitId in habitIds) {
+      totalTime += habitTimeMap[habitId] ?? 0;
     }
 
     return totalTime;

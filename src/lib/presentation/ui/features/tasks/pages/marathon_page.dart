@@ -124,8 +124,22 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     _startDimmingTimer();
   }
 
-  void _onTimerStop() {
+  Future<void> _handleTimerStop(Duration totalElapsed) async {
     _stopDimmingTimer();
+
+    // Log the total elapsed time for the session
+    if (_selectedTask == null) return;
+
+    final command = AddTaskTimeRecordCommand(
+      taskId: _selectedTask!.id,
+      duration: totalElapsed.inSeconds,
+    );
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
+      operation: () => _mediator.send<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse>(command),
+    );
   }
 
   void _onSelectTask(TaskListItem task) async {
@@ -261,26 +275,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     _onTasksChanged();
   }
 
-  void _handleTimerUpdate(Duration elapsedIncrement) async {
-    if (_selectedTask == null) return;
-
-    // Add the actual elapsed time increment to the task's time record
-    final command = AddTaskTimeRecordCommand(
-      taskId: _selectedTask!.id,
-      duration: elapsedIncrement.inSeconds, // Use the actual elapsed time increment
-    );
-
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
-      operation: () async {
-        await _mediator.send(command);
-        // Update local state for UI display
-        _selectedTask!.totalElapsedTime += elapsedIncrement.inSeconds;
-      },
-    );
-  }
-
   Future<void> _refreshSelectedTask() async {
     if (_selectedTask == null) return;
 
@@ -409,9 +403,9 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             // Removed Expanded widget here
                             Center(
                               child: AppTimer(
-                                onTimeUpdate: _handleTimerUpdate,
+                                onTick: null, // No UI updates needed
                                 onTimerStart: _onTimerStart,
-                                onTimerStop: _onTimerStop,
+                                onTimerStop: _handleTimerStop,
                               ),
                             ),
                             AnimatedOpacity(
