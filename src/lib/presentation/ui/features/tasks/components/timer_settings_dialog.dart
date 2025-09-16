@@ -22,7 +22,18 @@ class TimerSettingsDialog extends StatefulWidget {
   final bool initialKeepScreenAwake;
   final int initialTickingVolume;
   final int initialTickingSpeed;
-  final Function(TimerMode timerMode, int workDuration, int breakDuration, int longBreakDuration, int sessionsCount, bool autoStartBreak, bool autoStartWork, bool tickingEnabled, bool keepScreenAwake, int tickingVolume, int tickingSpeed) onSettingsChanged;
+  final Function(
+      TimerMode timerMode,
+      int workDuration,
+      int breakDuration,
+      int longBreakDuration,
+      int sessionsCount,
+      bool autoStartBreak,
+      bool autoStartWork,
+      bool tickingEnabled,
+      bool keepScreenAwake,
+      int tickingVolume,
+      int tickingSpeed) onSettingsChanged;
 
   const TimerSettingsDialog({
     super.key,
@@ -273,7 +284,6 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -504,12 +514,10 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.surface,
-                    foregroundColor: isSelected
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : Theme.of(context).colorScheme.onSurface,
+                    backgroundColor:
+                        isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
+                    foregroundColor:
+                        isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     minimumSize: const Size(0, 40),
                     shape: RoundedRectangleBorder(

@@ -197,7 +197,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         name: habit.name,
         tags: tagItems,
         estimatedTime: habit.estimatedTime,
-        actualTime: actualTime > 0 ? actualTime : null,
+        actualTime: actualTime > 0 ? (actualTime / 60).round() : null,
         hasReminder: habit.hasReminder,
         reminderTime: habit.reminderTime,
         reminderDays: habit.getReminderDaysAsList(),
@@ -210,21 +210,10 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       ));
     }
 
-    // Apply in-memory sorting for actualTime if requested
-    if (request.sortBy != null && !request.sortByCustomSort) {
-      for (var sortOption in request.sortBy!) {
-        if (sortOption.field == HabitSortFields.actualTime) {
-          habitItems.sort((a, b) {
-            final aTime = a.actualTime ?? 0;
-            final bTime = b.actualTime ?? 0;
-            return sortOption.direction == SortDirection.asc
-                ? aTime.compareTo(bTime)
-                : bTime.compareTo(aTime);
-          });
-          break; // Only apply the first actualTime sort to avoid conflicts
-        }
-      }
-    }
+    // TODO: Implement database-level sorting for actualTime
+    // Currently skipping in-memory sorting for actualTime as it only sorts the current page
+    // which leads to incorrect results. This should be implemented at the database level
+    // using a LEFT JOIN with habit_time_record_table to calculate and sort by total duration.
 
     return GetListHabitsQueryResponse(
       items: habitItems,

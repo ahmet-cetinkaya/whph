@@ -24,9 +24,9 @@ class DeleteHabitRecordCommandHandler
     required IHabitRecordRepository habitRecordRepository,
     required IHabitRepository habitRepository,
     required IHabitTimeRecordRepository habitTimeRecordRepository,
-  }) : _habitRecordRepository = habitRecordRepository,
-       _habitRepository = habitRepository,
-       _habitTimeRecordRepository = habitTimeRecordRepository;
+  })  : _habitRecordRepository = habitRecordRepository,
+        _habitRepository = habitRepository,
+        _habitTimeRecordRepository = habitTimeRecordRepository;
 
   @override
   Future<DeleteHabitRecordCommandResponse> call(DeleteHabitRecordCommand request) async {
@@ -50,7 +50,7 @@ class DeleteHabitRecordCommandHandler
 
       if (existingRecord != null) {
         // Subtract the estimated time from the existing record
-        existingRecord.duration -= habit.estimatedTime!;
+        existingRecord.duration -= habit.estimatedTime! * 60;
 
         if (existingRecord.duration <= 0) {
           // If duration becomes 0 or negative, delete the record entirely
@@ -60,20 +60,23 @@ class DeleteHabitRecordCommandHandler
           await _habitTimeRecordRepository.update(existingRecord);
         }
       } else {
-        // If no record found in the hour bucket, find the most recent time record and subtract from it
-        // This handles cases where time zone or hour bucket issues occur
-        final recentRecordFilter = CustomWhereFilter(
-            'habit_id = ? AND duration >= ?', [habitRecord.habitId, habit.estimatedTime!]);
+        // If no record found in the hour bucket, look for records on the same day as a fallback
+        final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
+        final endOfDay = startOfDay.add(const Duration(days: 1));
 
-        final recentRecord = await _habitTimeRecordRepository.getFirst(recentRecordFilter);
+        final dailyRecordFilter = CustomWhereFilter(
+            'habit_id = ? AND created_date >= ? AND created_date < ? AND duration >= ?',
+            [habitRecord.habitId, startOfDay, endOfDay, habit.estimatedTime! * 60]);
 
-        if (recentRecord != null) {
-          recentRecord.duration -= habit.estimatedTime!;
+        final dailyRecord = await _habitTimeRecordRepository.getFirst(dailyRecordFilter);
 
-          if (recentRecord.duration <= 0) {
-            await _habitTimeRecordRepository.delete(recentRecord);
+        if (dailyRecord != null) {
+          dailyRecord.duration -= habit.estimatedTime! * 60;
+
+          if (dailyRecord.duration <= 0) {
+            await _habitTimeRecordRepository.delete(dailyRecord);
           } else {
-            await _habitTimeRecordRepository.update(recentRecord);
+            await _habitTimeRecordRepository.update(dailyRecord);
           }
         }
       }

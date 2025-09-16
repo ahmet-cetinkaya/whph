@@ -60,7 +60,8 @@ class _HabitTimeDisplayState extends State<HabitTimeDisplay> {
       final endOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
 
       // Get actual tracked time
-      final actualTimeResponse = await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(
+      final actualTimeResponse =
+          await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(
         GetTotalDurationByHabitIdQuery(
           habitId: widget.habitId,
           startDate: startOfDay,

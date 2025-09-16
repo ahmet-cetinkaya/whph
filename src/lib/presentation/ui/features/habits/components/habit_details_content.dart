@@ -1355,7 +1355,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   Future<int> _getHabitTotalDuration() async {
     try {
       final query = GetTotalDurationByHabitIdQuery(habitId: widget.habitId);
-      final result = await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(query);
+      final result =
+          await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(query);
       return result.totalDuration;
     } catch (e) {
       return 0;

@@ -28,9 +28,9 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
     required IHabitRecordRepository habitRecordRepository,
     required IHabitRepository habitRepository,
     required IHabitTimeRecordRepository habitTimeRecordRepository,
-  }) : _habitRecordRepository = habitRecordRepository,
-       _habitRepository = habitRepository,
-       _habitTimeRecordRepository = habitTimeRecordRepository;
+  })  : _habitRecordRepository = habitRecordRepository,
+        _habitRepository = habitRepository,
+        _habitTimeRecordRepository = habitTimeRecordRepository;
 
   @override
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
@@ -61,7 +61,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
 
       if (existingRecord != null) {
         // Add the estimated time to the existing record
-        existingRecord.duration += habit.estimatedTime!;
+        existingRecord.duration += habit.estimatedTime! * 60;
         await _habitTimeRecordRepository.update(existingRecord);
       } else {
         // Create a new time record
@@ -69,7 +69,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
           id: KeyHelper.generateStringId(),
           createdDate: startOfHour, // Use hour bucket start time for consistency
           habitId: request.habitId,
-          duration: habit.estimatedTime!, // Use estimated time as duration
+          duration: habit.estimatedTime! * 60, // Use estimated time as duration
         );
         await _habitTimeRecordRepository.add(timeRecord);
       }
