@@ -22,7 +22,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       return null;
     }
 
-
     final Completer<WebSocket?> completer = Completer();
     bool connectionSucceeded = false;
     int failedAttempts = 0;
@@ -78,7 +77,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       return [];
     }
 
-
     final List<Future<ConnectionAttemptResult>> testFutures =
         ipAddresses.map((ip) => _testSingleAddress(ip, port, timeout)).toList();
 
@@ -110,7 +108,6 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
     try {
       final stopwatch = Stopwatch()..start();
       final wsUrl = 'ws://$ipAddress:$port';
-
 
       final socket = await WebSocket.connect(wsUrl).timeout(timeout);
       stopwatch.stop();
@@ -178,8 +175,7 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
       final response = JsonMapper.deserialize<WebSocketMessage>(responseData);
       final isValid = response?.type == 'connection_test_response' && response?.data?['success'] == true;
 
-      if (!isValid) {
-      }
+      if (!isValid) {}
 
       return isValid;
     } catch (e) {

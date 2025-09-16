@@ -28,7 +28,20 @@ class HabitUiConstants {
 
   // Options
   static const int defaultEstimatedTime = 10;
-  static const List<int> defaultEstimatedTimeOptions = [5, defaultEstimatedTime, 15, 20, 25, 30, 45, 60, 90, 120, 180, 240];
+  static const List<int> defaultEstimatedTimeOptions = [
+    5,
+    defaultEstimatedTime,
+    15,
+    20,
+    25,
+    30,
+    45,
+    60,
+    90,
+    120,
+    180,
+    240
+  ];
 
   // Utility Methods
   static String formatRecordCount(int count) {

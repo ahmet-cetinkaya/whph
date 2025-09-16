@@ -49,7 +49,6 @@ class _AppTimerState extends State<AppTimer> {
   final _translationService = container.resolve<ITranslationService>();
   final _wakelockService = container.resolve<IWakelockService>();
 
-
   // Helper methods for time calculations
   int _getTimeInSeconds(int value) {
     return value * 60;
@@ -222,7 +221,6 @@ class _AppTimerState extends State<AppTimer> {
     );
     await _mediator.send(command);
   }
-
 
   void _startAlarm() {
     // Ensure ticking is completely stopped before starting alarm
@@ -495,7 +493,8 @@ class _AppTimerState extends State<AppTimer> {
           initialKeepScreenAwake: _keepScreenAwake,
           initialTickingVolume: _tickingVolume,
           initialTickingSpeed: _tickingSpeed,
-          onSettingsChanged: (timerMode, workDuration, breakDuration, longBreakDuration, sessionsCount, autoStartBreak, autoStartWork, tickingEnabled, keepScreenAwake, tickingVolume, tickingSpeed) async {
+          onSettingsChanged: (timerMode, workDuration, breakDuration, longBreakDuration, sessionsCount, autoStartBreak,
+              autoStartWork, tickingEnabled, keepScreenAwake, tickingVolume, tickingSpeed) async {
             // Save settings
             await _saveSetting(SettingKeys.workTime, workDuration);
             await _saveSetting(SettingKeys.breakTime, breakDuration);

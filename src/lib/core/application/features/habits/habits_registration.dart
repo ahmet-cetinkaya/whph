@@ -93,7 +93,8 @@ void registerHabitsFeature(
     ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
       () => NormalizeHabitOrdersCommandHandler(habitRepository),
     )
-    ..registerHandler<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse, GetTotalDurationByHabitIdQueryHandler>(
+    ..registerHandler<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse,
+        GetTotalDurationByHabitIdQueryHandler>(
       () => GetTotalDurationByHabitIdQueryHandler(habitTimeRecordRepository: habitTimeRecordRepository),
     );
 }

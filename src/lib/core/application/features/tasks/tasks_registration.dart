@@ -80,7 +80,8 @@ void registerTasksFeature(
     ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
       () => AddTaskTimeRecordCommandHandler(taskTimeRecordRepository: taskTimeRecordRepository),
     )
-    ..registerHandler<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse, GetTotalDurationByTaskIdQueryHandler>(
+    ..registerHandler<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse,
+        GetTotalDurationByTaskIdQueryHandler>(
       () => GetTotalDurationByTaskIdQueryHandler(taskTimeRecordRepository: taskTimeRecordRepository),
     );
 }

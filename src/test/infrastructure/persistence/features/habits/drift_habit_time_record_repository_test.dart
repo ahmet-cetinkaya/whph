@@ -32,18 +32,24 @@ void main() {
 
     test('should create HabitTimeRecord table in database', () async {
       // Verify table exists by trying to query it
-      final result = await database.customSelect('SELECT name FROM sqlite_master WHERE type="table" AND name="habit_time_record_table"').get();
+      final result = await database
+          .customSelect('SELECT name FROM sqlite_master WHERE type="table" AND name="habit_time_record_table"')
+          .get();
       expect(result.length, 1);
       expect(result.first.data['name'], 'habit_time_record_table');
     });
 
     test('should create index on habit_time_record table', () async {
       // Check for habit time record related index (SQLite auto-creates indexes for primary keys)
-      final habitTimeRecordIndexes = await database.customSelect('SELECT name FROM sqlite_master WHERE type="index" AND name LIKE "%habit_time_record%"').get();
-      expect(habitTimeRecordIndexes.length, greaterThan(0), reason: 'Should have at least one habit time record related index');
+      final habitTimeRecordIndexes = await database
+          .customSelect('SELECT name FROM sqlite_master WHERE type="index" AND name LIKE "%habit_time_record%"')
+          .get();
+      expect(habitTimeRecordIndexes.length, greaterThan(0),
+          reason: 'Should have at least one habit time record related index');
 
       // Verify the auto-generated primary key index exists
-      final autoIndex = habitTimeRecordIndexes.where((idx) => (idx.data['name'] as String).contains('autoindex')).toList();
+      final autoIndex =
+          habitTimeRecordIndexes.where((idx) => (idx.data['name'] as String).contains('autoindex')).toList();
       expect(autoIndex.length, 1, reason: 'Should have auto-generated primary key index');
     });
 
