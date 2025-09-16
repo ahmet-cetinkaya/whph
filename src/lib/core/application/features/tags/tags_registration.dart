@@ -58,6 +58,8 @@ void registerTagsFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        habitRepository: habitRepository,
+        habitRecordRepository: habitRecordRepository,
         habitTagRepository: habitTagRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
       ),

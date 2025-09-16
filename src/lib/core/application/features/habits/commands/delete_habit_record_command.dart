@@ -65,8 +65,8 @@ class DeleteHabitRecordCommandHandler
         final endOfDay = startOfDay.add(const Duration(days: 1));
 
         final dailyRecordFilter = CustomWhereFilter(
-            'habit_id = ? AND created_date >= ? AND created_date < ? AND duration >= ?',
-            [habitRecord.habitId, startOfDay, endOfDay, habit.estimatedTime! * 60]);
+            'habit_id = ? AND created_date >= ? AND created_date < ?',
+            [habitRecord.habitId, startOfDay, endOfDay]);
 
         final dailyRecord = await _habitTimeRecordRepository.getFirst(dailyRecordFilter);
 
