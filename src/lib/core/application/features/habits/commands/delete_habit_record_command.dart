@@ -38,31 +38,58 @@ class DeleteHabitRecordCommandHandler
     // Get the habit to check if it has an estimated time
     final habit = await _habitRepository.getById(habitRecord.habitId);
     if (habit?.estimatedTime != null && habit!.estimatedTime! > 0) {
-      // Find the time record in the same hour bucket as the habit record
       final targetDate = habitRecord.occurredAt;
+      final estimatedTimeInSeconds = habit.estimatedTime! * 60;
+
+
+      // Strategy 1: Look for exact time record created at hour boundary (this matches the add logic)
       final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
+      final exactTimeRecord = await _findTimeRecordByExactTime(habitRecord.habitId, startOfHour, estimatedTimeInSeconds);
+
+      if (exactTimeRecord != null) {
+        await _adjustOrDeleteTimeRecord(exactTimeRecord, estimatedTimeInSeconds);
+        return DeleteHabitRecordCommandResponse();
+      }
+
+      // Strategy 2: Look in hour bucket
       final endOfHour = startOfHour.add(const Duration(hours: 1));
 
-      final filter = CustomWhereFilter(
-          'habit_id = ? AND created_date >= ? AND created_date < ?', [habitRecord.habitId, startOfHour, endOfHour]);
+      final hourFilter = CustomWhereFilter(
+          'habit_id = ? AND created_date >= ? AND created_date <= ?', [habitRecord.habitId, startOfHour, endOfHour]);
 
-      final existingRecord = await _habitTimeRecordRepository.getFirst(filter);
+      final hourRecord = await _habitTimeRecordRepository.getFirst(hourFilter);
 
-      if (existingRecord != null) {
-        await _adjustOrDeleteTimeRecord(existingRecord, habit.estimatedTime! * 60);
+      if (hourRecord != null) {
+        await _adjustOrDeleteTimeRecord(hourRecord, estimatedTimeInSeconds);
+        return DeleteHabitRecordCommandResponse();
+      }
+
+      // Strategy 3: Look in daily range as fallback
+      final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));
+
+      final dailyFilter = CustomWhereFilter(
+          'habit_id = ? AND created_date >= ? AND created_date <= ?',
+          [habitRecord.habitId, startOfDay, endOfDay]);
+
+      final dailyRecord = await _habitTimeRecordRepository.getFirst(dailyFilter);
+
+      if (dailyRecord != null) {
+        await _adjustOrDeleteTimeRecord(dailyRecord, estimatedTimeInSeconds);
       } else {
-        // If no record found in the hour bucket, look for records on the same day as a fallback
-        final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
-        final endOfDay = startOfDay.add(const Duration(days: 1));
+        // Strategy 4: Find the most suitable time record to adjust
+        // This handles cases where time records were created on different days
+        final allTimeRecords = await _habitTimeRecordRepository.getByHabitId(habitRecord.habitId);
 
-        final dailyRecordFilter = CustomWhereFilter(
-            'habit_id = ? AND created_date >= ? AND created_date < ?',
-            [habitRecord.habitId, startOfDay, endOfDay]);
+        if (allTimeRecords.isNotEmpty) {
+          // Find a time record that has at least the estimated duration
+          final suitableRecord = allTimeRecords
+              .where((record) => record.duration >= estimatedTimeInSeconds)
+              .firstOrNull;
 
-        final dailyRecord = await _habitTimeRecordRepository.getFirst(dailyRecordFilter);
-
-        if (dailyRecord != null) {
-          await _adjustOrDeleteTimeRecord(dailyRecord, habit.estimatedTime! * 60);
+          if (suitableRecord != null) {
+            await _adjustOrDeleteTimeRecord(suitableRecord, estimatedTimeInSeconds);
+          }
         }
       }
     }
@@ -71,6 +98,21 @@ class DeleteHabitRecordCommandHandler
     await _habitRecordRepository.delete(habitRecord);
 
     return DeleteHabitRecordCommandResponse();
+  }
+
+  /// Looks for a time record created at the exact time with approximately the expected duration
+  Future<dynamic> _findTimeRecordByExactTime(String habitId, DateTime exactTime, int expectedDuration) async {
+    final filter = CustomWhereFilter(
+        'habit_id = ? AND created_date = ?', [habitId, exactTime]);
+
+    final record = await _habitTimeRecordRepository.getFirst(filter);
+
+    // Only return the record if it contains the expected duration (it might have been accumulated)
+    if (record != null && record.duration >= expectedDuration) {
+      return record;
+    }
+
+    return null;
   }
 
   /// Adjusts the duration of a time record by subtracting the specified amount.
@@ -85,4 +127,5 @@ class DeleteHabitRecordCommandHandler
       await _habitTimeRecordRepository.update(record);
     }
   }
+
 }

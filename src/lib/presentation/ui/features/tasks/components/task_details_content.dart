@@ -3,13 +3,16 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
+import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, DateFormatService, DateFormatType, WeekDays;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/components/priority_select_field.dart';
@@ -35,6 +38,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/optional_field_chip.dart';
 import 'package:whph/presentation/ui/shared/components/time_display.dart';
+import 'package:whph/presentation/ui/features/tasks/components/timer.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 
@@ -90,6 +94,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   static const String keyDeadlineDateReminder = 'deadlineDateReminder';
   static const String keyRecurrence = 'recurrence';
   static const String keyParentTask = 'parentTask';
+  static const String keyTimer = 'timer';
 
   late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
@@ -132,6 +137,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Make fields with content automatically visible
       if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
       if (_hasFieldContent(keyPriority)) _visibleOptionalFields.add(keyPriority);
+      if (_hasFieldContent(keyElapsedTime)) _visibleOptionalFields.add(keyElapsedTime);
       if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
       if (_hasFieldContent(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDate);
       if (_hasFieldContent(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDate);
@@ -403,13 +409,39 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _showTimeLoggingDialog() async {
     if (_task == null) return;
 
-    final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
+    final result = await showDialog<bool>(
       context: context,
-      size: DialogSize.medium,
-      child: TimeLoggingDialog(
+      builder: (context) => TimeLoggingDialog(
         entityId: _task!.id,
-        entityName: _task!.title,
-        entityType: EntityType.task,
+        onCancel: () {
+          // Handle cancel if needed
+        },
+        onTimeLoggingSubmitted: (event) async {
+          await AsyncErrorHandler.executeVoid(
+            context: context,
+            operation: () async {
+              if (event.isSetTotalMode) {
+                // Set total duration for the day
+                await _mediator.send(SaveTaskTimeRecordCommand(
+                  taskId: event.entityId,
+                  duration: event.durationInSeconds,
+                  targetDate: event.date,
+                ));
+              } else {
+                // Add duration to existing
+                await _mediator.send(AddTaskTimeRecordCommand(
+                  taskId: event.entityId,
+                  duration: event.durationInSeconds,
+                  customDateTime: event.date,
+                ));
+              }
+            },
+            onSuccess: () {
+              // Notify task service that the task was updated
+              _tasksService.notifyTaskUpdated(_task!.id);
+            },
+          );
+        },
       ),
     );
 
@@ -472,6 +504,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
   }
 
+  // TODO
   /// Custom date parsing for common display formats that might not be handled by DateFormatService
   DateTime? _parseCustomDateFormat(String dateStr) {
     if (dateStr.trim().isEmpty) return null;
@@ -588,32 +621,15 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     final plannedDate = _parseDateFromController(_plannedDateController);
     final deadlineDate = _parseDateFromController(_deadlineDateController);
 
-    if (kDebugMode) {
-      print('Building save command with dates:');
-      print('  Planned date text: "${_plannedDateController.text}" -> $plannedDate');
-      print('  Deadline date text: "${_deadlineDateController.text}" -> $deadlineDate');
-    }
-
     // Handle parsing failures gracefully
     DateTime? finalPlannedDate = plannedDate;
     DateTime? finalDeadlineDate = deadlineDate;
 
     // If parsing failed but user has text, preserve the existing task date to avoid data loss
     if (_plannedDateController.text.isNotEmpty && plannedDate == null) {
-      if (kDebugMode) {
-        print('WARNING: Failed to parse planned date: "${_plannedDateController.text}"');
-        print('Using existing task planned date to prevent data loss.');
-      }
-      // Use the existing task date instead of null to preserve data
       finalPlannedDate = _task?.plannedDate;
     }
-
     if (_deadlineDateController.text.isNotEmpty && deadlineDate == null) {
-      if (kDebugMode) {
-        print('WARNING: Failed to parse deadline date: "${_deadlineDateController.text}"');
-        print('Using existing task deadline date to prevent data loss.');
-      }
-      // Use the existing task date instead of null to preserve data
       finalDeadlineDate = _task?.deadlineDate;
     }
 
@@ -976,18 +992,16 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     final List<String> availableChipFields = [
       keyTags,
       keyPriority,
-      keyEstimatedTime,
+      keyTimer,
       keyElapsedTime,
+      keyEstimatedTime,
       keyPlannedDate,
       keyDeadlineDate,
-      keyDescription,
       keyRecurrence,
+      keyDescription,
       // keyParentTask - Parent task should never appear as chip, only when data exists
       // Reminder fields are handled with their corresponding date fields
     ].where((field) => _shouldShowAsChip(field)).toList();
-
-    // Show elapsed time if it has data OR if manually enabled as optional field
-    final bool showElapsedTime = _task!.totalDuration > 0 || _visibleOptionalFields.contains(keyElapsedTime);
 
     return SingleChildScrollView(
       child: Column(
@@ -1024,14 +1038,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           const SizedBox(height: AppTheme.size2XSmall),
 
           // Display optional fields section
-          if (_visibleOptionalFields.isNotEmpty || (_task!.parentTask != null) || showElapsedTime) ...[
-            // Only fields that are manually set as visible (excluding description which is handled separately)
+          if (_visibleOptionalFields.isNotEmpty) ...[
             DetailTable(
               rowData: [
-                if (showElapsedTime) _buildElapsedTimeSection(),
                 if (_task!.parentTask != null) _buildParentTaskSection(),
                 if (_visibleOptionalFields.contains(keyTags)) _buildTagsSection(),
                 if (_visibleOptionalFields.contains(keyPriority)) _buildPrioritySection(),
+                if (_visibleOptionalFields.contains(keyTimer)) _buildTimerSection(),
+                if (_visibleOptionalFields.contains(keyElapsedTime)) _buildElapsedTimeSection(),
                 if (_visibleOptionalFields.contains(keyEstimatedTime)) _buildEstimatedTimeSection(),
                 if (_visibleOptionalFields.contains(keyPlannedDate)) _buildPlannedDateSection(),
                 if (_visibleOptionalFields.contains(keyDeadlineDate)) _buildDeadlineDateSection(),
@@ -1140,7 +1154,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: TimeDisplay(
             totalSeconds: _task!.totalDuration,
-            showEstimatedFallback: false,
             onTap: _showTimeLoggingDialog,
           ),
         ),
@@ -1319,6 +1332,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         return _translationService.translate(TaskTranslationKeys.estimatedTimeLabel);
       case keyElapsedTime:
         return _translationService.translate(TaskTranslationKeys.elapsedTimeLabel);
+      case keyTimer:
+        return _translationService.translate(HabitTranslationKeys.timerLabel);
       case keyPlannedDate:
         return _translationService.translate(TaskTranslationKeys.plannedDateLabel);
       case keyDeadlineDate:
@@ -1348,6 +1363,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       case keyEstimatedTime:
         return TaskUiConstants.estimatedTimeIcon;
       case keyElapsedTime:
+        return TaskUiConstants.timerIcon;
+      case keyTimer:
         return TaskUiConstants.timerIcon;
       case keyPlannedDate:
         return TaskUiConstants.plannedDateIcon;
@@ -1423,5 +1440,36 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         },
       ),
     );
+  }
+
+  DetailTableRowData _buildTimerSection() => DetailTableRowData(
+        label: _translationService.translate(HabitTranslationKeys.timerLabel),
+        icon: TaskUiConstants.timerIcon,
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
+          ),
+          child: AppTimer(
+            isMiniLayout: true,
+            onTick: _onTaskTimerTick,
+          ),
+        ),
+      );
+
+  // Timer event handlers
+  int _lastElapsedDuration = 0;
+  void _onTaskTimerTick(Duration elapsed) {
+    if (!mounted) return;
+    if (_task?.id == null) return;
+
+    final int durationForSave = elapsed.inSeconds - _lastElapsedDuration;
+    _lastElapsedDuration = elapsed.inSeconds;
+
+    final command =
+        AddTaskTimeRecordCommand(duration: durationForSave, taskId: _task!.id, customDateTime: DateTime.now());
+    _mediator.send(command);
+    _tasksService.notifyTaskUpdated(_task!.id);
   }
 }

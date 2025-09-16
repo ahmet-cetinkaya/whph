@@ -16,6 +16,7 @@ import 'package:whph/core/application/features/habits/queries/get_total_duration
 import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
+import 'package:whph/core/application/features/habits/commands/save_habit_time_record_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_reminder_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_goal_dialog.dart';
@@ -30,8 +31,6 @@ import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
@@ -72,9 +71,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   GetListHabitTagsQueryResponse? _habitTags;
   bool _forceTagsRefresh = false;
   int _totalDuration = 0; // Cache total duration to avoid repeated queries
-
-  // Timer state variables
-  DateTime? _timerStartTime;
 
   DateTime currentMonth = DateTime.now();
 
@@ -392,12 +388,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         final command = DeleteHabitRecordCommand(id: id);
         await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
       },
-      onSuccess: () {
+      onSuccess: () async {
         if (mounted) {
           // Update records and statistics without triggering tag field refresh
-          _getHabitRecordsForMonth(currentMonth);
-          _getHabitStatisticsOnly();
-          _refreshTotalDuration(); // Explicitly refresh elapsed time after deletion
+          await _getHabitRecordsForMonth(currentMonth);
+          await _getHabitStatisticsOnly();
+          await _refreshTotalDuration(); // Explicitly refresh elapsed time after deletion
 
           // Notify service that a record was removed to trigger statistics refresh
           _habitsService.notifyHabitRecordRemoved(widget.habitId);
@@ -816,12 +812,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     // Don't show fields with content in the chips section
     final List<String> availableChipFields = [
       keyTags,
-      keyEstimatedTime,
-      keyElapsedTime,
       keyTimer,
-      keyDescription,
+      keyElapsedTime,
+      keyEstimatedTime,
       if (!_habit!.isArchived) keyReminder,
       if (!_habit!.isArchived) keyGoal,
+      keyDescription,
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
@@ -867,9 +863,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             DetailTable(
               rowData: [
                 if (_isFieldVisible(keyTags)) _buildTagsSection(),
-                if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
-                if (_isFieldVisible(keyElapsedTime)) _buildElapsedTimeSection(),
                 if (_isFieldVisible(keyTimer)) _buildTimerSection(),
+                if (_isFieldVisible(keyElapsedTime)) _buildElapsedTimeSection(),
+                if (_isFieldVisible(keyEstimatedTime)) _buildEstimatedTimeSection(),
                 if (_isFieldVisible(keyReminder)) _buildReminderSection(),
                 if (_isFieldVisible(keyGoal)) _buildGoalSection(),
                 if (_habit!.archivedDate != null) _buildArchivedDateSection(),
@@ -988,8 +984,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           ),
           child: TimeDisplay(
             totalSeconds: _totalDuration,
-            estimatedMinutes: _habit!.estimatedTime,
-            showEstimatedFallback: true,
             onTap: _showHabitTimeLoggingDialog,
           ),
         ),
@@ -998,17 +992,22 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   DetailTableRowData _buildTimerSection() => DetailTableRowData(
         label: _translationService.translate(HabitTranslationKeys.timerLabel),
         icon: Icons.timer,
-        widget: Container(
-          constraints: BoxConstraints(
-            maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
+        widget: Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall,
           ),
-          child: AppTimer(
-            onTick: null, // No UI updates needed for habit details
-            onTimerStart: _onHabitTimerStart,
-            onTimerStop: _onHabitTimerStop,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
+            ),
+            child: AppTimer(
+              onTick: _onHabitTimerTick,
+              isMiniLayout: true,
+            ),
           ),
         ),
-        removePadding: true,
       );
 
   DetailTableRowData _buildReminderSection() {
@@ -1367,13 +1366,35 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   // Show habit time logging dialog
   Future<void> _showHabitTimeLoggingDialog() async {
-    final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
+    final result = await showDialog<bool>(
       context: context,
-      size: DialogSize.medium,
-      child: TimeLoggingDialog(
+      builder: (context) => TimeLoggingDialog(
         entityId: widget.habitId,
-        entityName: _habit?.name ?? '',
-        entityType: EntityType.habit,
+        onCancel: () {
+          // Handle cancel if needed
+        },
+        onTimeLoggingSubmitted: (event) async {
+          await AsyncErrorHandler.executeVoid(
+            context: context,
+            operation: () async {
+              if (event.isSetTotalMode) {
+                // Set total duration for the day
+                await _mediator.send(SaveHabitTimeRecordCommand(
+                  habitId: event.entityId,
+                  totalDuration: event.durationInSeconds,
+                  targetDate: event.date,
+                ));
+              } else {
+                // Add duration to existing
+                await _mediator.send(AddHabitTimeRecordCommand(
+                  habitId: event.entityId,
+                  duration: event.durationInSeconds,
+                  customDateTime: event.date,
+                ));
+              }
+            },
+          );
+        },
       ),
     );
 
@@ -1385,35 +1406,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   // Timer event handlers
-  void _onHabitTimerStart() {
-    setState(() {
-      _timerStartTime = DateTime.now().toUtc();
-    });
-  }
+  int _lastElapsedDuration = 0;
+  void _onHabitTimerTick(Duration elapsed) {
+    if (!mounted) return;
+    if (_habit?.id == null) return;
 
-  Future<void> _onHabitTimerStop(Duration totalElapsed) async {
-    if (_timerStartTime != null) {
-      // Log the total elapsed time for the session
-      try {
-        final command = AddHabitTimeRecordCommand(
-          habitId: widget.habitId,
-          duration: totalElapsed.inSeconds,
-          customDateTime: _timerStartTime,
-        );
-        await _mediator.send<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse>(command);
+    final int durationForSave = elapsed.inSeconds - _lastElapsedDuration;
+    _lastElapsedDuration = elapsed.inSeconds;
 
-        // Refresh the total duration display
-        await _refreshTotalDuration();
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error logging time: $e'),
-              backgroundColor: AppTheme.errorColor,
-            ),
-          );
-        }
-      }
-    }
+    final command =
+        AddHabitTimeRecordCommand(habitId: _habit!.id, duration: durationForSave, customDateTime: DateTime.now());
+    _mediator.send(command);
   }
 }

@@ -29,12 +29,14 @@ class AppTimer extends StatefulWidget {
   final Function(Duration)? onTick; // For UI updates only - receives current elapsed/remaining time
   final VoidCallback? onTimerStart;
   final Function(Duration)? onTimerStop; // For data persistence - receives total elapsed duration
+  final bool isMiniLayout; // Use compact layout for detail tables
 
   const AppTimer({
     super.key,
     this.onTick,
     this.onTimerStart,
     this.onTimerStop,
+    this.isMiniLayout = false,
   });
 
   @override
@@ -560,9 +562,13 @@ class _AppTimerState extends State<AppTimer> {
     final screenWidth = MediaQuery.sizeOf(context).width;
 
     // Calculate responsive sizes with running state multiplier
-    final double multiplier = !_isRunning && !_isAlarmPlaying ? 1.0 : 2.0;
-    final double baseButtonSize = screenWidth < 600 ? AppTheme.iconSizeLarge : AppTheme.iconSizeXLarge;
-    final double baseSpacing = screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge;
+    final double multiplier = widget.isMiniLayout ? 1.0 : (!_isRunning && !_isAlarmPlaying ? 1.0 : 2.0);
+    final double baseButtonSize = widget.isMiniLayout
+        ? AppTheme.iconSizeSmall
+        : (screenWidth < 600 ? AppTheme.iconSizeLarge : AppTheme.iconSizeXLarge);
+    final double baseSpacing = widget.isMiniLayout
+        ? AppTheme.size2XSmall
+        : (screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge);
     final double buttonSize = baseButtonSize * multiplier;
     final double spacing = baseSpacing * multiplier;
 
@@ -575,30 +581,31 @@ class _AppTimerState extends State<AppTimer> {
     }
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       padding: EdgeInsets.zero, // Padding will be handled by the inner content
       decoration: BoxDecoration(
-        color: _getBackgroundColor(context),
+        color: widget.isMiniLayout ? Colors.transparent : _getBackgroundColor(context),
         borderRadius: BorderRadius.circular(buttonSize),
       ),
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Progress Bar
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(buttonSize),
-              child: LinearProgressIndicator(
-                value: progress,
-                backgroundColor: Colors.transparent, // Transparent to show container color
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  _getProgressBarColor(context),
+          // Progress Bar (hidden in mini layout)
+          if (!widget.isMiniLayout)
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(buttonSize),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.transparent, // Transparent to show container color
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    _getProgressBarColor(context),
+                  ),
+                  minHeight: buttonSize * 2, // Ensure progress bar has enough height
                 ),
-                minHeight: buttonSize * 2, // Ensure progress bar has enough height
               ),
             ),
-          ),
           // Timer Content
           Padding(
             padding: EdgeInsets.all(spacing),
@@ -614,8 +621,10 @@ class _AppTimerState extends State<AppTimer> {
                 if (!_isRunning && !_isAlarmPlaying) SizedBox(width: spacing),
                 // Text area for the timer display
                 AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 300),
-                  style: _isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium,
+                  duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
+                  style: widget.isMiniLayout
+                      ? AppTheme.bodyMedium
+                      : (_isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium),
                   child: Text(
                     _getDisplayTime(),
                     overflow: TextOverflow.ellipsis,

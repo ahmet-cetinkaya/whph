@@ -39,6 +39,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String timerSettingsDurationLabel = 'tasks.timer.settings.duration_label';
   static const String timerSettingsDurationTitle = 'tasks.timer.settings.duration_title';
 
+  static const String minutesSuffix = 'tasks.timer.settings.minutes_suffix';
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';
   static const String priorityUrgentImportant = 'tasks.priority.types.urgent_important';
