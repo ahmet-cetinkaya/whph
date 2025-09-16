@@ -231,15 +231,11 @@ class _AppTimerState extends State<AppTimer> {
       _isAlarmPlaying = true;
     });
 
-    // Add a small delay to ensure ticking sounds are completely stopped
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted && _isAlarmPlaying) {
-        // Stop any remaining sounds and start alarm
-        _soundPlayer.stop();
-        _soundPlayer.setLoop(true);
-        _soundPlayer.play(SharedSounds.alarmDone, volume: 1.0);
-      }
-    });
+    // The sound player's play() method handles stopping previous sounds internally
+    if (mounted && _isAlarmPlaying) {
+      _soundPlayer.setLoop(true);
+      _soundPlayer.play(SharedSounds.alarmDone, volume: 1.0);
+    }
 
     _sendNotification();
   }

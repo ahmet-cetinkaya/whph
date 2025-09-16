@@ -16,7 +16,6 @@ import 'package:whph/core/application/features/habits/queries/get_total_duration
 import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
-import 'package:whph/presentation/ui/features/habits/components/habit_time_display.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_reminder_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_goal_dialog.dart';
@@ -24,6 +23,7 @@ import 'package:whph/presentation/ui/features/habits/services/habits_service.dar
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
+import 'package:whph/presentation/ui/shared/components/time_display.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
@@ -986,23 +986,11 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             bottom: AppTheme.sizeSmall,
             left: AppTheme.sizeSmall,
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: HabitTimeDisplay(
-                  habitId: widget.habitId,
-                  showActualTime: true,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: () => _showHabitTimeLoggingDialog(),
-                tooltip: 'Edit time',
-                iconSize: AppTheme.iconSizeSmall,
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                padding: const EdgeInsets.all(4),
-              ),
-            ],
+          child: TimeDisplay(
+            totalSeconds: _totalDuration,
+            estimatedMinutes: _habit!.estimatedTime,
+            showEstimatedFallback: true,
+            onTap: _showHabitTimeLoggingDialog,
           ),
         ),
       );
