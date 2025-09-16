@@ -75,7 +75,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   // Timer state variables
   DateTime? _timerStartTime;
-  bool _isTimerRunning = false;
 
   DateTime currentMonth = DateTime.now();
 
@@ -1016,7 +1015,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
           ),
           child: AppTimer(
-            onTimeUpdate: _onHabitTimeUpdate,
+            onTick: null, // No UI updates needed for habit details
             onTimerStart: _onHabitTimerStart,
             onTimerStop: _onHabitTimerStop,
           ),
@@ -1401,25 +1400,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   void _onHabitTimerStart() {
     setState(() {
       _timerStartTime = DateTime.now().toUtc();
-      _isTimerRunning = true;
     });
   }
 
-  void _onHabitTimerStop() {
+  Future<void> _onHabitTimerStop(Duration totalElapsed) async {
     if (_timerStartTime != null) {
-      setState(() {
-        _isTimerRunning = false;
-      });
-    }
-  }
-
-  Future<void> _onHabitTimeUpdate(Duration duration) async {
-    if (_timerStartTime != null && _isTimerRunning) {
-      // Automatically log the time when timer stops
+      // Log the total elapsed time for the session
       try {
         final command = AddHabitTimeRecordCommand(
           habitId: widget.habitId,
-          duration: duration.inSeconds,
+          duration: totalElapsed.inSeconds,
           customDateTime: _timerStartTime,
         );
         await _mediator.send<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse>(command);
@@ -1427,7 +1417,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
         // Refresh the total duration display
         await _refreshTotalDuration();
       } catch (e) {
-        // Handle error silently or show a snackbar if needed
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error logging time: $e'),
+              backgroundColor: AppTheme.errorColor,
+            ),
+          );
+        }
       }
     }
   }

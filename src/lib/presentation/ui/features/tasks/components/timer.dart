@@ -26,13 +26,13 @@ import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart'
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 
 class AppTimer extends StatefulWidget {
-  final Function(Duration) onTimeUpdate;
+  final Function(Duration)? onTick; // For UI updates only - receives current elapsed/remaining time
   final VoidCallback? onTimerStart;
-  final VoidCallback? onTimerStop;
+  final Function(Duration)? onTimerStop; // For data persistence - receives total elapsed duration
 
   const AppTimer({
     super.key,
-    required this.onTimeUpdate,
+    this.onTick,
     this.onTimerStart,
     this.onTimerStop,
   });
@@ -97,6 +97,7 @@ class _AppTimerState extends State<AppTimer> {
   bool _isAlarmPlaying = false;
   TimerMode _timerMode = TimerMode.pomodoro;
   Duration _elapsedTime = const Duration(); // For stopwatch mode
+  Duration _sessionTotalElapsed = const Duration(); // Total elapsed time for the entire session
 
   int _getTotalDurationInSeconds() {
     if (_timerMode == TimerMode.normal) {
@@ -287,6 +288,9 @@ class _AppTimerState extends State<AppTimer> {
   void _startTimer() {
     if (_isRunning || _isAlarmPlaying) return;
 
+    // Reset session total elapsed time for new session
+    _sessionTotalElapsed = const Duration();
+
     // Call the onTimerStart callback if provided
     widget.onTimerStart?.call();
 
@@ -329,8 +333,14 @@ class _AppTimerState extends State<AppTimer> {
         }
       });
 
-      // Pass the actual elapsed time increment to the callback
-      widget.onTimeUpdate(elapsedIncrement);
+      // Update session total elapsed time
+      _sessionTotalElapsed += elapsedIncrement;
+
+      // Call onTick for UI updates (passes current elapsed/remaining time, not increments)
+      if (widget.onTick != null) {
+        final timeToDisplay = _timerMode == TimerMode.stopwatch ? _elapsedTime : _remainingTime;
+        widget.onTick!(timeToDisplay);
+      }
       _updateSystemTrayTimer();
 
       // Check if countdown timer modes should finish
@@ -413,8 +423,10 @@ class _AppTimerState extends State<AppTimer> {
       // Reset system tray title/body when stopping timer
       _resetSystemTrayToDefault();
 
-      // Call the onTimerStop callback if provided
-      widget.onTimerStop?.call();
+      // Call the onTimerStop callback with total elapsed duration for the session
+      if (widget.onTimerStop != null) {
+        widget.onTimerStop!(_sessionTotalElapsed);
+      }
     }
   }
 

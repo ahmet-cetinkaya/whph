@@ -309,6 +309,14 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
       );
       final habits = await _habitRepository.getAll(customWhereFilter: filter);
 
+      // Get actual time for all habits in a single batch query to avoid N+1 problem
+      final habitIds = habits.map((habit) => habit.id).toList();
+      final habitActualTimeMap = await _habitTimeRecordRepository.getTotalDurationsByHabitIds(
+        habitIds,
+        startDate: request.startDate,
+        endDate: request.endDate,
+      );
+
       // Get records for each habit
       final elementTimes = <ElementTimeData>[];
       for (final habit in habits) {
@@ -336,15 +344,11 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
           1000, // Large number to get all records
         );
 
-        // Calculate duration: Try to get actual time from HabitTimeRecord, fallback to estimated
+        // Calculate duration: Use cached actual time from batch query, fallback to estimated
         int duration = 0;
 
-        // First, try to get actual tracked time for this habit
-        final actualTime = await _habitTimeRecordRepository.getTotalDurationByHabitId(
-          habit.id,
-          startDate: request.startDate,
-          endDate: request.endDate,
-        );
+        // First, try to use actual tracked time from the cached results
+        final actualTime = habitActualTimeMap[habit.id] ?? 0;
 
         if (actualTime > 0) {
           // Use actual tracked time

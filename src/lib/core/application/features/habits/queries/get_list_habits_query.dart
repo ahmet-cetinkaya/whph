@@ -176,16 +176,9 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       }
     }
 
-    // Fetch actual time for each habit (total logged time)
-    final Map<String, int> habitActualTimeMap = {};
-    for (final habit in filteredHabits) {
-      try {
-        final totalDuration = await _habitTimeRecordRepository.getTotalDurationByHabitId(habit.id);
-        habitActualTimeMap[habit.id] = totalDuration;
-      } catch (e) {
-        habitActualTimeMap[habit.id] = 0;
-      }
-    }
+    // Fetch actual time for all habits in a single batch query
+    final habitIdsForTimeQuery = filteredHabits.map((habit) => habit.id).toList();
+    final habitActualTimeMap = await _habitTimeRecordRepository.getTotalDurationsByHabitIds(habitIdsForTimeQuery);
 
     // Create habit items with their tags
     for (final habit in filteredHabits) {
