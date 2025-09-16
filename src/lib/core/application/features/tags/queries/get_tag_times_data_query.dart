@@ -4,6 +4,8 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:acore/acore.dart';
@@ -33,6 +35,8 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
+  final IHabitRepository _habitRepository;
+  final IHabitRecordRepository _habitRecordRepository;
   final IHabitTagsRepository _habitTagRepository;
   final IHabitTimeRecordRepository _habitTimeRecordRepository;
 
@@ -42,12 +46,16 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
       required ITaskRepository taskRepository,
       required ITaskTagRepository taskTagRepository,
       required ITaskTimeRecordRepository taskTimeRecordRepository,
+      required IHabitRepository habitRepository,
+      required IHabitRecordRepository habitRecordRepository,
       required IHabitTagsRepository habitTagRepository,
       required IHabitTimeRecordRepository habitTimeRecordRepository})
       : _appUsageTagRepository = appUsageTagRepository,
         _appUsageTimeRecordRepository = appUsageTimeRecordRepository,
         _taskTagRepository = taskTagRepository,
         _taskTimeRecordRepository = taskTimeRecordRepository,
+        _habitRepository = habitRepository,
+        _habitRecordRepository = habitRecordRepository,
         _habitTagRepository = habitTagRepository,
         _habitTimeRecordRepository = habitTimeRecordRepository;
 
@@ -115,10 +123,37 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
       endDate: request.endDate,
     );
 
-    // Sum up all the times
+    // Get habits data for fallback to estimated time
+    final habitFilter = CustomWhereFilter('id IN (${habitIds.map((_) => '?').join(',')})', habitIds);
+    final habits = await _habitRepository.getAll(customWhereFilter: habitFilter);
+    final habitMap = {for (var habit in habits) habit.id: habit};
+
+    // Sum up all the times with fallback to estimated time
     int totalTime = 0;
     for (final habitId in habitIds) {
-      totalTime += habitTimeMap[habitId] ?? 0;
+      final actualTime = habitTimeMap[habitId] ?? 0;
+
+      if (actualTime > 0) {
+        // Use actual tracked time
+        totalTime += actualTime;
+      } else {
+        // Fallback to estimated time calculation
+        final habit = habitMap[habitId];
+        if (habit != null && habit.estimatedTime != null) {
+          // Get habit records for the date range to calculate estimated time
+          final records = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+            habitId,
+            request.startDate,
+            request.endDate,
+            0,
+            1000, // Large number to get all records
+          );
+          final recordCount = records.items.length;
+          final estimatedTimeMinutes = habit.estimatedTime!;
+          final estimatedDuration = recordCount * estimatedTimeMinutes * 60; // Convert to seconds
+          totalTime += estimatedDuration;
+        }
+      }
     }
 
     return totalTime;

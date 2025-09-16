@@ -8,7 +8,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/core/domain/features/tasks/task_constants.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -163,7 +163,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           deadlineDate: request.deadlineDate,
           estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
               ? request.estimatedTime
-              : TaskUiConstants.defaultEstimatedTime,
+              : TaskConstants.defaultEstimatedTime,
           isCompleted: request.isCompleted,
           parentTaskId: request.parentTaskId,
           order: newOrder,
