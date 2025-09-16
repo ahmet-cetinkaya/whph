@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
@@ -8,6 +9,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 class TimerSettingsDialog extends StatefulWidget {
@@ -289,14 +291,14 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
           _buildSettingRow(
             _translationService.translate(TaskTranslationKeys.pomodoroWorkLabel),
             _workDuration,
-            (adjustment) {
+            (newValue) {
               if (!mounted) return;
               setState(() {
-                _workDuration = (_workDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
+                _workDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
               });
               _debouncedSaveIntSetting(SettingKeys.workTime, _workDuration);
             },
-            showMinutes: true,
+            valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
           ),
         ],
         // Only show Pomodoro-specific settings in Pomodoro mode
@@ -304,41 +306,40 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
           _buildSettingRow(
             _translationService.translate(TaskTranslationKeys.pomodoroBreakLabel),
             _breakDuration,
-            (adjustment) {
+            (newValue) {
               if (!mounted) return;
               setState(() {
-                _breakDuration = (_breakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
+                _breakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
               });
               _debouncedSaveIntSetting(SettingKeys.breakTime, _breakDuration);
             },
-            showMinutes: true,
+            valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
           ),
           _buildSettingRow(
             _translationService.translate(TaskTranslationKeys.pomodoroLongBreakLabel),
             _longBreakDuration,
-            (adjustment) {
+            (newValue) {
               if (!mounted) return;
               setState(() {
-                _longBreakDuration = (_longBreakDuration + adjustment).clamp(_minTimerValue, _maxTimerValue);
+                _longBreakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
               });
               _debouncedSaveIntSetting(SettingKeys.longBreakTime, _longBreakDuration);
             },
-            showMinutes: true,
+            valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
           ),
           _buildSettingRow(
             _translationService.translate(TaskTranslationKeys.pomodoroSessionsCountLabel),
             _sessionsCount,
-            (adjustment) {
+            (newValue) {
               if (!mounted) return;
               setState(() {
-                _sessionsCount = (_sessionsCount + adjustment).clamp(1, 10);
+                _sessionsCount = newValue.clamp(1, 10);
               });
               _debouncedSaveIntSetting(SettingKeys.sessionsBeforeLongBreak, _sessionsCount);
             },
             step: 1,
             minValue: 1,
             maxValue: 10,
-            showMinutes: false,
           ),
           // Only show auto-start settings in Pomodoro mode
           const SizedBox(height: 24),
@@ -391,32 +392,30 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
           _buildSettingRow(
             _translationService.translate(TaskTranslationKeys.pomodoroTickingVolumeLabel),
             _tickingVolume,
-            (adjustment) {
+            (newValue) {
               if (!mounted) return;
               setState(() {
-                _tickingVolume = (_tickingVolume + adjustment).clamp(5, 100);
+                _tickingVolume = newValue.clamp(5, 100);
               });
               _debouncedSaveIntSetting(SettingKeys.tickingVolume, _tickingVolume);
             },
             step: 5,
             minValue: 5,
             maxValue: 100,
-            showMinutes: false,
           ),
           _buildSettingRow(
             _translationService.translate(TaskTranslationKeys.pomodoroTickingSpeedLabel),
             _tickingSpeed,
-            (adjustment) {
+            (newValue) {
               if (!mounted) return;
               setState(() {
-                _tickingSpeed = (_tickingSpeed + adjustment).clamp(1, 5);
+                _tickingSpeed = newValue.clamp(1, 5);
               });
               _debouncedSaveIntSetting(SettingKeys.tickingSpeed, _tickingSpeed);
             },
             step: 1,
             minValue: 1,
             maxValue: 5,
-            showMinutes: false,
           ),
         ],
         const SizedBox(height: 24),
@@ -520,19 +519,20 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
   Widget _buildSettingRow(
     String label,
     int value,
-    Function(int) onAdjust, {
+    Function(int) onValueChanged, {
     int? minValue,
     int? maxValue,
     int step = 5,
-    bool showMinutes = true,
+    String? valueSuffix,
   }) {
     final min = minValue ?? _minTimerValue;
     final max = maxValue ?? _maxTimerValue;
+
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               flex: 2,
@@ -543,38 +543,18 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
             ),
             Expanded(
               flex: 3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: value > min ? () => onAdjust(-step) : null,
-                    icon: const Icon(Icons.remove, size: 18),
-                    style: IconButton.styleFrom(
-                      minimumSize: const Size(32, 32),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        showMinutes ? '${value}m' : value.toString(),
-                        style: AppTheme.bodyMedium,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: value < max ? () => onAdjust(step) : null,
-                    icon: const Icon(Icons.add, size: 18),
-                    style: IconButton.styleFrom(
-                      minimumSize: const Size(32, 32),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ),
-                ],
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: NumericInput(
+                  initialValue: value,
+                  onValueChanged: onValueChanged,
+                  minValue: min,
+                  maxValue: max,
+                  incrementValue: step,
+                  decrementValue: step,
+                  valueSuffix: valueSuffix,
+                  iconSize: 18,
+                ),
               ),
             ),
           ],

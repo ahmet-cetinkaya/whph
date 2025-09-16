@@ -83,3 +83,4 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   // Tooltips
   static const String editNameTooltip = 'app_usages.tooltips.edit_name';
 }
+  const String minutesUnit = 'app_usages.units.minutes';

@@ -7,10 +7,12 @@ import 'package:acore/acore.dart';
 class SaveTaskTimeRecordCommand implements IRequest<SaveTaskTimeRecordCommandResponse> {
   final String taskId;
   final int duration;
+  final DateTime? targetDate;
 
   SaveTaskTimeRecordCommand({
     required this.taskId,
     required this.duration,
+    this.targetDate,
   });
 }
 
@@ -32,29 +34,38 @@ class SaveTaskTimeRecordCommandHandler
 
   @override
   Future<SaveTaskTimeRecordCommandResponse> call(SaveTaskTimeRecordCommand request) async {
-    final now = DateTime.now().toUtc();
-    final startOfHour = DateTime.utc(now.year, now.month, now.day, now.hour);
-    final endOfHour = startOfHour.add(const Duration(hours: 1));
+    final targetDate = request.targetDate ?? DateTime.now().toUtc();
+    final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    final filter = CustomWhereFilter(
-        'task_id = ? AND created_date >= ? AND created_date < ?', [request.taskId, startOfHour, endOfHour]);
+    // Get existing records for the target date - use DateTime objects directly like habits do
+    final existingRecordsFilter = CustomWhereFilter(
+      'task_id = ? AND created_date >= ? AND created_date < ?',
+      [request.taskId, startOfDay, endOfDay],
+    );
+    final existingRecords = await _taskTimeRecordRepository.getAll(customWhereFilter: existingRecordsFilter);
 
-    final existingRecord = await _taskTimeRecordRepository.getFirst(filter);
-
-    if (existingRecord != null) {
-      existingRecord.duration = request.duration;
-      await _taskTimeRecordRepository.update(existingRecord);
-      return SaveTaskTimeRecordCommandResponse(id: existingRecord.id);
+    // Delete existing records for the day
+    for (final record in existingRecords) {
+      await _taskTimeRecordRepository.delete(record);
     }
 
-    final taskTimeRecord = TaskTimeRecord(
-      id: KeyHelper.generateStringId(),
-      taskId: request.taskId,
-      duration: request.duration,
-      createdDate: now,
-    );
+    // Add new record if duration > 0
+    if (request.duration > 0) {
+      // Use the start of the hour for the target date
+      final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
 
-    await _taskTimeRecordRepository.add(taskTimeRecord);
-    return SaveTaskTimeRecordCommandResponse(id: taskTimeRecord.id);
+      final taskTimeRecord = TaskTimeRecord(
+        id: KeyHelper.generateStringId(),
+        taskId: request.taskId,
+        duration: request.duration,
+        createdDate: startOfHour,
+      );
+
+      await _taskTimeRecordRepository.add(taskTimeRecord);
+      return SaveTaskTimeRecordCommandResponse(id: taskTimeRecord.id);
+    }
+
+    return SaveTaskTimeRecordCommandResponse(id: KeyHelper.generateStringId());
   }
 }

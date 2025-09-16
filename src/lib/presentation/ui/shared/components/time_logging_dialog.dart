@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:mediatr/mediatr.dart';
 import 'package:intl/intl.dart';
-import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
-import 'package:whph/core/application/features/tasks/queries/get_total_duration_by_task_id_query.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
-import 'package:whph/core/application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
+import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
+import 'package:acore/components/numeric_input.dart';
 
-enum EntityType { task, habit }
+// Event class for time logging
+class TimeLoggingSubmittedEvent {
+  final String entityId;
+  final DateTime date;
+  final int durationInSeconds;
+  final bool isSetTotalMode; // True for setTotalForDay, false for addTime
+
+  TimeLoggingSubmittedEvent({
+    required this.entityId,
+    required this.date,
+    required this.durationInSeconds,
+    required this.isSetTotalMode,
+  });
+}
 
 enum LoggingMode { addTime, setTotalForDay }
 
 class TimeLoggingDialog extends StatefulWidget {
   final String entityId;
-  final String entityName;
-  final EntityType entityType;
+  final VoidCallback? onCancel;
+  final Future<void> Function(TimeLoggingSubmittedEvent event)? onTimeLoggingSubmitted;
 
   const TimeLoggingDialog({
     super.key,
     required this.entityId,
-    required this.entityName,
-    required this.entityType,
+    this.onCancel,
+    this.onTimeLoggingSubmitted,
   });
 
   @override
@@ -35,11 +41,11 @@ class TimeLoggingDialog extends StatefulWidget {
 }
 
 class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
-  final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
 
-  final _hoursController = TextEditingController();
-  final _minutesController = TextEditingController();
+  int _hours = 0;
+  int _minutes = 0;
+  final _dateController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
@@ -47,48 +53,54 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
   LoggingMode _selectedMode = LoggingMode.addTime;
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize date controller with current date
+    _dateController.text = DateFormat.yMd().format(_selectedDate);
+  }
+
+  @override
   void dispose() {
-    _hoursController.dispose();
-    _minutesController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
-  Future<void> _selectDate() async {
-    final result = await showCalendarDatePicker2Dialog(
-      context: context,
-      config: CalendarDatePicker2WithActionButtonsConfig(
-        calendarType: CalendarDatePicker2Type.single,
-        selectedDayHighlightColor: Theme.of(context).colorScheme.primary,
-        firstDate: DateTime.now().subtract(const Duration(days: 30)),
-        lastDate: DateTime.now(),
-        currentDate: _selectedDate,
-      ),
-      dialogSize: const Size(325, 400),
-    );
-
-    if (result != null && result.isNotEmpty && result[0] != null) {
+  void _onDateSelected(DateTime? selectedDate) {
+    if (selectedDate != null) {
       setState(() {
-        _selectedDate = result[0]!;
+        _selectedDate = selectedDate;
+        // Update the date controller text
+        _dateController.text = DateFormat.yMd().format(selectedDate);
       });
     }
   }
 
   int _getDurationInSeconds() {
-    final hours = int.tryParse(_hoursController.text) ?? 0;
-    final minutes = int.tryParse(_minutesController.text) ?? 0;
-    return (hours * 3600) + (minutes * 60);
+    return (_hours * 3600) + (_minutes * 60);
+  }
+
+  void _onHoursChanged(int value) {
+    setState(() {
+      _hours = value;
+    });
+  }
+
+  void _onMinutesChanged(int value) {
+    setState(() {
+      _minutes = value;
+    });
   }
 
   bool _isValidInput() {
-    final hours = int.tryParse(_hoursController.text) ?? 0;
-    final minutes = int.tryParse(_minutesController.text) ?? 0;
-    return hours >= 0 && minutes >= 0 && (hours > 0 || minutes > 0) && minutes < 60;
+    final isZeroAllowed = _selectedMode == LoggingMode.setTotalForDay;
+    return _hours >= 0 && _minutes >= 0 && _minutes < 60 &&
+        (isZeroAllowed || (_hours > 0 || _minutes > 0));
   }
 
   Future<void> _logTime() async {
     if (!_isValidInput()) {
       setState(() {
-        _errorMessage = _getInvalidInputMessage();
+        _errorMessage = _translationService.translate(SharedTranslationKeys.unexpectedError);
       });
       return;
     }
@@ -101,17 +113,15 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
     try {
       final durationInSeconds = _getDurationInSeconds();
 
-      if (_selectedMode == LoggingMode.setTotalForDay) {
-        // Calculate current total for the day and determine delta
-        final currentTotal = await _getCurrentTotalDuration();
-        final delta = durationInSeconds - currentTotal;
-
-        if (delta != 0) {
-          await _addTimeRecord(delta);
-        }
-      } else {
-        // Simple time addition
-        await _addTimeRecord(durationInSeconds);
+      // Emit event instead of calling commands directly
+      if (widget.onTimeLoggingSubmitted != null) {
+        final event = TimeLoggingSubmittedEvent(
+          entityId: widget.entityId,
+          date: _selectedDate,
+          durationInSeconds: durationInSeconds,
+          isSetTotalMode: _selectedMode == LoggingMode.setTotalForDay,
+        );
+        await widget.onTimeLoggingSubmitted!(event);
       }
 
       if (mounted) {
@@ -128,95 +138,23 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
     }
   }
 
-  Future<int> _getCurrentTotalDuration() async {
-    final startDate = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
-    final endDate = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, 23, 59, 59);
-
-    if (widget.entityType == EntityType.task) {
-      final response = await _mediator.send<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse>(
-        GetTotalDurationByTaskIdQuery(
-          taskId: widget.entityId,
-          startDate: startDate,
-          endDate: endDate,
-        ),
-      );
-      return response.totalDuration;
-    } else {
-      final response = await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(
-        GetTotalDurationByHabitIdQuery(
-          habitId: widget.entityId,
-          startDate: startDate,
-          endDate: endDate,
-        ),
-      );
-      return response.totalDuration;
-    }
-  }
-
-  Future<void> _addTimeRecord(int duration) async {
-    final customDateTime = _selectedDate;
-
-    if (widget.entityType == EntityType.task) {
-      await _mediator.send<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse>(
-        AddTaskTimeRecordCommand(
-          taskId: widget.entityId,
-          duration: duration,
-          customDateTime: customDateTime,
-        ),
-      );
-    } else {
-      await _mediator.send<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse>(
-        AddHabitTimeRecordCommand(
-          habitId: widget.entityId,
-          duration: duration,
-          customDateTime: customDateTime,
-        ),
-      );
-    }
-  }
-
-  String _getInvalidInputMessage() {
-    if (widget.entityType == EntityType.task) {
-      return _translationService.translate(TaskTranslationKeys.timeLoggingInvalidInput);
-    } else {
-      return _translationService.translate(HabitTranslationKeys.timeLoggingInvalidInput);
-    }
-  }
-
   String _getTranslation(String key) {
-    if (widget.entityType == EntityType.task) {
-      return _translationService.translate('tasks.$key');
-    } else {
-      return _translationService.translate('habits.$key');
-    }
-  }
-
-  String _getSharedTranslation(String key) {
     return _translationService.translate(key);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_getTranslation('time_logging.dialog_title')),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-      ),
-      body: Padding(
+    return AlertDialog(
+      title: const Text('Log Time'), // TODO: Add proper translation key
+      content: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Entity name
-            Text(
-              widget.entityName,
-              style: AppTheme.headlineSmall,
-            ),
-            const SizedBox(height: AppTheme.sizeLarge),
-
             // Mode selection
             Text(
-              _getTranslation('time_logging.mode'),
+              'Mode', // TODO: Add proper translation key
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -224,11 +162,29 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               segments: [
                 ButtonSegment(
                   value: LoggingMode.addTime,
-                  label: Text(_getTranslation('time_logging.add_time')),
+                  label: Row(
+                    children: [
+                      Icon(
+                        Icons.add,
+                        size: 16,
+                      ),
+                      const SizedBox(width: AppTheme.sizeSmall),
+                      const Text('Add Time'), // TODO: Add proper translation key
+                    ],
+                  ),
                 ),
                 ButtonSegment(
                   value: LoggingMode.setTotalForDay,
-                  label: Text(_getTranslation('time_logging.set_total')),
+                  label: Row(
+                    children: [
+                      Icon(
+                        Icons.equalizer,
+                        size: 16,
+                      ),
+                      const SizedBox(width: AppTheme.sizeSmall),
+                      const Text('Set Total'), // TODO: Add proper translation key
+                    ],
+                  ),
                 ),
               ],
               selected: {_selectedMode},
@@ -240,94 +196,62 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             ),
             const SizedBox(height: AppTheme.sizeLarge),
 
+            // Short description moved to top
+            Text(
+              _selectedMode == LoggingMode.addTime
+                  ? 'Add time to the existing total for this day' // TODO: Add proper translation key
+                  : 'Set the total time for this day (will adjust by the difference)', // TODO: Add proper translation key
+              style: AppTheme.bodySmall.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppTheme.sizeLarge),
+
             // Date selection
             Text(
-              widget.entityType == EntityType.task
-                  ? _getTranslation('time_logging.date')
-                  : _getSharedTranslation(SharedTranslationKeys.date),
+              _getTranslation(SharedTranslationKeys.date),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
-            InkWell(
-              onTap: _selectDate,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.sizeMedium,
-                  vertical: AppTheme.sizeSmall,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).colorScheme.outline),
-                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(width: AppTheme.sizeSmall),
-                    Text(
-                      DateFormat.yMd().format(_selectedDate),
-                      style: AppTheme.bodyMedium,
-                    ),
-                    const Spacer(),
-                    Icon(
-                      Icons.arrow_drop_down,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ],
-                ),
-              ),
+            DateTimePickerField(
+              controller: _dateController,
+              hintText: DateFormat.yMd().format(_selectedDate),
+              onConfirm: _onDateSelected,
+              minDateTime: DateTime.now().subtract(const Duration(days: 30)),
+              maxDateTime: DateTime.now(),
+              initialValue: _selectedDate,
             ),
             const SizedBox(height: AppTheme.sizeLarge),
 
             // Time input
             Text(
-              _selectedMode == LoggingMode.addTime
-                  ? _getTranslation('time_logging.duration')
-                  : _getTranslation('time_logging.total_time'),
+              _selectedMode == LoggingMode.addTime ? 'Duration' : 'Total Time', // TODO: Add proper translation key
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    controller: _hoursController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      labelText: widget.entityType == EntityType.task
-                          ? _getTranslation('time_logging.hours')
-                          : _getSharedTranslation(SharedTranslationKeys.hours),
-                      border: const OutlineInputBorder(),
-                    ),
+                  child: NumericInput(
+                    initialValue: 0,
+                    minValue: 0,
+                    onValueChanged: _onHoursChanged,
+                    valueSuffix: _getTranslation(SharedTranslationKeys.hours),
                   ),
                 ),
                 const SizedBox(width: AppTheme.sizeMedium),
                 Expanded(
-                  child: TextFormField(
-                    controller: _minutesController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      labelText: widget.entityType == EntityType.task
-                          ? _getTranslation('time_logging.minutes')
-                          : _getSharedTranslation(SharedTranslationKeys.minutes),
-                      border: const OutlineInputBorder(),
-                    ),
+                  child: NumericInput(
+                    initialValue: 0,
+                    minValue: 0,
+                    maxValue: 59,
+                    decrementValue: 5,
+                    incrementValue: 5,
+                    onValueChanged: _onMinutesChanged,
+                    valueSuffix: _getTranslation(SharedTranslationKeys.minutes),
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: AppTheme.sizeSmall),
-            Text(
-              _selectedMode == LoggingMode.addTime
-                  ? _getTranslation('time_logging.add_time_description')
-                  : _getTranslation('time_logging.set_total_description'),
-              style: AppTheme.bodySmall.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
             ),
 
             if (_errorMessage != null) ...[
@@ -347,24 +271,21 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               ),
             ],
 
-            const Spacer(),
-
-            // Action buttons
+            // Action buttons with default style
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-                    child: Text(
-                      widget.entityType == EntityType.task
-                          ? _getTranslation('cancel')
-                          : _getSharedTranslation(SharedTranslationKeys.cancelButton),
-                    ),
+                  child: TextButton(
+                    onPressed: _isLoading ? null : () {
+                      widget.onCancel?.call();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(_getTranslation(SharedTranslationKeys.cancelButton)),
                   ),
                 ),
                 const SizedBox(width: AppTheme.sizeMedium),
                 Expanded(
-                  child: ElevatedButton(
+                  child: TextButton(
                     onPressed: _isLoading || !_isValidInput() ? null : _logTime,
                     child: _isLoading
                         ? const SizedBox(
@@ -372,11 +293,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text(
-                            widget.entityType == EntityType.task
-                                ? _getTranslation('time_logging.log_time')
-                                : _getSharedTranslation(SharedTranslationKeys.doneButton),
-                          ),
+                        : Text(_getTranslation(SharedTranslationKeys.doneButton)),
                   ),
                 ),
               ],

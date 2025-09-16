@@ -203,10 +203,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       ));
     }
 
-    // TODO: Implement database-level sorting for actualTime
-    // Currently skipping in-memory sorting for actualTime as it only sorts the current page
-    // which leads to incorrect results. This should be implemented at the database level
-    // using a LEFT JOIN with habit_time_record_table to calculate and sort by total duration.
+    // Database-level sorting for actualTime is now implemented in DriftHabitRepository
 
     return GetListHabitsQueryResponse(
       items: habitItems,
@@ -312,8 +309,7 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       } else if (option.field == HabitSortFields.estimatedTime) {
         customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
       } else if (option.field == HabitSortFields.actualTime) {
-        // Note: actualTime sorting will be handled after fetching time records
-        // as it's not a database field but calculated from time records
+        // actualTime sorting is now handled at the database level with LEFT JOIN
         customOrders.add(CustomOrder(field: "actual_time", direction: option.direction));
       } else if (option.field == HabitSortFields.archivedDate) {
         customOrders.add(CustomOrder(field: "archived_date", direction: option.direction));
