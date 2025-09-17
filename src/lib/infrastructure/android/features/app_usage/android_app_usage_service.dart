@@ -14,7 +14,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
     super.appUsageTimeRecordRepository,
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
-    super.appUsageIgnoreRuleRepository,
+    super.appUsageFilterService,
   );
 
   @override

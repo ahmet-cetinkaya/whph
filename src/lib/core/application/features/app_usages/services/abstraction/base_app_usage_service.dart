@@ -15,7 +15,7 @@ import 'i_app_usage_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
 
 abstract class BaseAppUsageService implements IAppUsageService {
   @protected
@@ -25,7 +25,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final IAppUsageTagRuleRepository _appUsageTagRuleRepository;
   final IAppUsageTagRepository _appUsageTagRepository;
-  final IAppUsageIgnoreRuleRepository _appUsageIgnoreRuleRepository;
+  final IAppUsageFilterService _appUsageFilterService;
 
   // Protected getter for subclasses
   @protected
@@ -49,7 +49,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
     this._appUsageTimeRecordRepository,
     this._appUsageTagRuleRepository,
     this._appUsageTagRepository,
-    this._appUsageIgnoreRuleRepository,
+    this._appUsageFilterService,
   );
 
   @override
@@ -71,26 +71,11 @@ abstract class BaseAppUsageService implements IAppUsageService {
     // Does nothing by default, platform-specific implementations can override
   }
 
-  Future<bool> _shouldIgnoreApp(String appName) async {
-    final rules = await _appUsageIgnoreRuleRepository.getAll();
-
-    for (final rule in rules) {
-      try {
-        if (RegExp(rule.pattern).hasMatch(appName)) {
-          return true;
-        }
-      } catch (e) {
-        Logger.error('Invalid ignore pattern in rule ${rule.id}: ${e.toString()}');
-      }
-    }
-
-    return false;
-  }
-
   @override
   @protected
   Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false, DateTime? customDateTime}) async {
-    if (await _shouldIgnoreApp(appName)) return;
+    final bool shouldExcludeApp = await _appUsageFilterService.shouldExcludeApp(appName);
+    if (shouldExcludeApp) return;
 
     final recordDateTime = customDateTime ?? DateTime.now().toUtc();
     final appUsage = await _getOrCreateAppUsage(appName, createdDate: recordDateTime);

@@ -13,7 +13,7 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
     super.appUsageTimeRecordRepository,
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
-    super.settingRepository,
+    super.appUsageFilterService,
   );
 
   @protected
