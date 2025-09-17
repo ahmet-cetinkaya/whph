@@ -90,7 +90,14 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     );
 
     final results = await query.get();
-    return {for (final result in results) result.read<String>('task_id'): result.read<int>('total_duration')};
+    final map = {for (final result in results) result.read<String>('task_id'): result.read<int>('total_duration')};
+
+    // Ensure all taskIds have an entry, even if they have no time records
+    for (final taskId in taskIds) {
+      map.putIfAbsent(taskId, () => 0);
+    }
+
+    return map;
   }
 
   @override
