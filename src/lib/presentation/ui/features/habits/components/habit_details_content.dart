@@ -330,15 +330,29 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
       operation: () async {
-        final firstDayOfMonth = DateTime(month.year, month.month - 1, 23).toUtc();
-        final lastDayOfMonth = DateTime(month.year, month.month + 1, 0).toUtc();
+        // Calculate the actual date range displayed in the calendar grid
+        // This includes previous month's trailing days and next month's leading days
+        final firstDayOfMonth = DateTime(month.year, month.month, 1);
+        final firstWeekdayOfMonth = firstDayOfMonth.weekday;
+        final previousMonthDays = firstWeekdayOfMonth - 1;
+
+        // Get the first displayed date (could be from previous month)
+        final firstDisplayedDate = firstDayOfMonth.subtract(Duration(days: previousMonthDays));
+
+        // Calculate last day of current month
+        final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
+        final lastWeekdayOfMonth = lastDayOfMonth.weekday;
+        final nextMonthDays = 7 - lastWeekdayOfMonth;
+
+        // Get the last displayed date (could be from next month)
+        final lastDisplayedDate = lastDayOfMonth.add(Duration(days: nextMonthDays));
 
         final query = GetListHabitRecordsQuery(
           pageIndex: 0,
-          pageSize: 37,
+          pageSize: 50, // Increase page size to accommodate wider date range
           habitId: widget.habitId,
-          startDate: firstDayOfMonth,
-          endDate: lastDayOfMonth,
+          startDate: firstDisplayedDate.toUtc(),
+          endDate: lastDisplayedDate.toUtc(),
         );
         return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
       },
