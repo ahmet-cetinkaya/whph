@@ -70,6 +70,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
           createdDate: startOfHour, // Use hour bucket start time for consistency
           habitId: request.habitId,
           duration: habit.estimatedTime! * 60, // Use estimated time as duration
+          occurredAt: request.occurredAt,
         );
         await _habitTimeRecordRepository.add(timeRecord);
       }

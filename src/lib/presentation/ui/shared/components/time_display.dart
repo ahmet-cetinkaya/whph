@@ -55,9 +55,8 @@ class _TimeDisplayState extends State<TimeDisplay> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final textColor = (widget.totalSeconds > 0)
-        ? theme.colorScheme.onSurface
-        : theme.colorScheme.onSurface.withValues(alpha: 0.7);
+    final textColor =
+        (widget.totalSeconds > 0) ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withValues(alpha: 0.7);
 
     final textWidget = Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
