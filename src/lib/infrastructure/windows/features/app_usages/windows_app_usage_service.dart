@@ -11,7 +11,7 @@ class WindowsAppUsageService extends BaseDesktopAppUsageService {
     super.appUsageTimeRecordRepository,
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
-    super.settingRepository,
+    super.appUsageFilterService,
   );
 
   @override

@@ -102,6 +102,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  mockito: ^5.4.4
   build_runner: ^2.4.13
   rps: ^0.7.0
   drift_dev: ^2.21.2

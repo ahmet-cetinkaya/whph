@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/app_usage_filter_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
@@ -56,6 +58,9 @@ void registerInfrastructure(IContainer container) {
 
   final settingRepository = container.resolve<ISettingRepository>();
   final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
+
+  final appUsageFilterService = AppUsageFilterService(appUsageIgnoreRuleRepository);
+  container.registerSingleton<IAppUsageFilterService>((_) => appUsageFilterService);
 
   // Register platform-specific application directory service
   container.registerSingleton<IApplicationDirectoryService>((_) {
@@ -115,16 +120,16 @@ void registerInfrastructure(IContainer container) {
 
     if (Platform.isLinux) {
       return LinuxAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, appUsageIgnoreRuleRepository);
+          appUsageTagRepository, appUsageFilterService);
     }
     if (Platform.isWindows) {
       return WindowsAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, appUsageIgnoreRuleRepository);
+          appUsageTagRepository, appUsageFilterService);
     }
 
     if (Platform.isAndroid) {
       return AndroidAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
-          appUsageTagRepository, appUsageIgnoreRuleRepository);
+          appUsageTagRepository, appUsageFilterService);
     }
 
     throw Exception('Unsupported platform for app usage service.');
