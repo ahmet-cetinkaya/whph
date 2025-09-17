@@ -91,7 +91,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       if (mounted &&
           contentSelection.isValid &&
           contentSelection.baseOffset <= _contentController.text.length &&
-          contentSelection.extentOffset <= _contentController.text.length) {
+          contentSelection.extentOffset <= _contentController.text.length &&
+          _contentController.text.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             _contentController.selection = contentSelection;
@@ -150,8 +151,9 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
                 }
               });
             }
-          } else if (contentSelection.isValid) {
-            // Restore selection if content didn't change
+          } else if (contentSelection.isValid && _contentController.text.isNotEmpty) {
+            // Only restore selection if content didn't change and field has content
+            // Skip selection restoration for empty fields to avoid paste conflicts
             _contentController.selection = contentSelection;
           }
         });
@@ -274,7 +276,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Restore cursor position after successful save
           if (contentSelection.isValid &&
               contentSelection.baseOffset <= _contentController.text.length &&
-              contentSelection.extentOffset <= _contentController.text.length) {
+              contentSelection.extentOffset <= _contentController.text.length &&
+              _contentController.text.isNotEmpty) {
             // Use a post-frame callback to ensure the UI is updated before setting selection
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
