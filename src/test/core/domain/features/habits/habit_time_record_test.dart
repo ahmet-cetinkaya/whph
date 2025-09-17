@@ -16,6 +16,7 @@ void main() {
         habitId: habitId,
         duration: duration,
         createdDate: createdDate,
+        occurredAt: createdDate,
       );
 
       // Assert
@@ -41,6 +42,7 @@ void main() {
         habitId: habitId,
         duration: duration,
         createdDate: createdDate,
+        occurredAt: createdDate,
         modifiedDate: modifiedDate,
       );
 
@@ -56,6 +58,7 @@ void main() {
         habitId: 'habit-123',
         duration: 1800,
         createdDate: DateTime.utc(2024, 1, 15, 14),
+        occurredAt: DateTime.utc(2024, 1, 15, 14),
       );
 
       // Act
@@ -85,6 +88,7 @@ void main() {
           habitId: 'habit-123',
           duration: duration,
           createdDate: DateTime.utc(2024, 1, 15, 14),
+          occurredAt: DateTime.utc(2024, 1, 15, 14),
         );
 
         expect(record.duration, duration);

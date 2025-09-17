@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, ISoundPlayer;
 import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
-import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
@@ -358,8 +357,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, occurredAt: DateTimeHelper.toUtcDateTime(date));
-        await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
         if (mounted) {
@@ -380,13 +379,19 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     );
   }
 
-  Future<void> _deleteHabitRecord(String id) async {
+  Future<void> _deleteAllHabitRecordsForDay(DateTime date) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.deletingRecordError),
       operation: () async {
-        final command = DeleteHabitRecordCommand(id: id);
-        await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+        // Use ToggleHabitCompletionCommand to delete all records for a day
+        // This handles both habit records and time records properly
+        final command = ToggleHabitCompletionCommand(
+          habitId: widget.habitId,
+          date: date,
+          useIncrementalBehavior: false, // Use calendar behavior (toggle)
+        );
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () async {
         if (mounted) {
@@ -912,10 +917,14 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             HabitCalendarView(
               currentMonth: currentMonth,
               records: _habitRecords!.items,
-              onDeleteRecord: _deleteHabitRecord,
+              onDeleteAllRecordsForDay: _deleteAllHabitRecordsForDay,
               onCreateRecord: _createHabitRecord,
               onPreviousMonth: _previousMonth,
               onNextMonth: _nextMonth,
+              onRecordChanged: () {
+                // Refresh records when changed
+                _getHabitRecordsForMonth(currentMonth);
+              },
               habitId: widget.habitId,
               archivedDate: _habit!.archivedDate != null ? DateTimeHelper.toLocalDateTime(_habit!.archivedDate!) : null,
               hasGoal: _habit!.hasGoal,
@@ -1226,12 +1235,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     return _habitRecords!.items.where((record) => DateTimeHelper.isSameDay(record.date, DateTime.now())).length;
   }
 
-  /// Gets all habit records for today
-  List<HabitRecordListItem> _getTodayRecords() {
-    if (_habitRecords == null) return [];
-    return _habitRecords!.items.where((record) => DateTimeHelper.isSameDay(record.date, DateTime.now())).toList();
-  }
-
   /// Builds the daily record button with cross or chain icon based on completion status
   Widget _buildDailyRecordButton() {
     final int dailyCompletionCount = _getTodayRecordCount();
@@ -1289,17 +1292,11 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 : () async {
                     if (hasCustomGoals && isDailyGoalMet) {
                       // Reset to 0 (remove all records for today)
-                      final todayRecords = _getTodayRecords();
-                      for (final record in todayRecords) {
-                        await _deleteHabitRecord(record.id);
-                      }
+                      await _deleteAllHabitRecordsForDay(DateTime.now());
                     } else if (!hasCustomGoals && hasRecords) {
                       // For habits without custom goals, remove ALL records for today
                       // (handles case where multiple records exist from when custom goals were enabled)
-                      final todayRecords = _getTodayRecords();
-                      for (final record in todayRecords) {
-                        await _deleteHabitRecord(record.id);
-                      }
+                      await _deleteAllHabitRecordsForDay(DateTime.now());
                     } else {
                       // Add a new record
                       await _createHabitRecord(widget.habitId, DateTime.now().toUtc());
@@ -1351,15 +1348,23 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   // Refresh total duration and update the state
   Future<void> _refreshTotalDuration() async {
+    print('🔄 Refreshing total duration for habit ${widget.habitId}');
+    print('   Current total duration: ${_totalDuration}s');
     try {
       final newTotalDuration = await _getHabitTotalDuration();
+      print('   New total duration from query: ${newTotalDuration}s');
       if (mounted && _totalDuration != newTotalDuration) {
+        print('   Total duration changed, updating state');
         setState(() {
           _totalDuration = newTotalDuration;
         });
         _processFieldVisibility(); // Update field visibility when total duration changes
+        print('   ✅ Total duration updated successfully');
+      } else {
+        print('   Total duration unchanged, no state update needed');
       }
     } catch (e) {
+      print('   ❌ Error getting total duration: $e');
       // Error getting total duration, keep existing value
     }
   }
@@ -1374,23 +1379,33 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           // Handle cancel if needed
         },
         onTimeLoggingSubmitted: (event) async {
+          print('🕒 Manual time logging submitted:');
+          print('   Entity ID: ${event.entityId}');
+          print('   Duration: ${event.durationInSeconds}s');
+          print('   Date: ${event.date}');
+          print('   Is set total mode: ${event.isSetTotalMode}');
+
           await AsyncErrorHandler.executeVoid(
             context: context,
             operation: () async {
               if (event.isSetTotalMode) {
                 // Set total duration for the day
+                print('📝 Sending SaveHabitTimeRecordCommand');
                 await _mediator.send(SaveHabitTimeRecordCommand(
                   habitId: event.entityId,
                   totalDuration: event.durationInSeconds,
                   targetDate: event.date,
                 ));
+                print('✅ SaveHabitTimeRecordCommand completed');
               } else {
                 // Add duration to existing
+                print('➕ Sending AddHabitTimeRecordCommand');
                 await _mediator.send(AddHabitTimeRecordCommand(
                   habitId: event.entityId,
                   duration: event.durationInSeconds,
                   customDateTime: event.date,
                 ));
+                print('✅ AddHabitTimeRecordCommand completed');
               }
             },
           );
@@ -1400,8 +1415,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     // If time was logged successfully, refresh the habit data
     if (result == true) {
+      print('📊 Time logging dialog completed successfully, refreshing habit data');
       await _getHabitStatisticsOnly();
       await _refreshTotalDuration(); // Refresh elapsed time after manual logging
+      print('✅ Habit data refresh completed after manual time logging');
     }
   }
 
@@ -1414,8 +1431,15 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     final int durationForSave = elapsed.inSeconds - _lastElapsedDuration;
     _lastElapsedDuration = elapsed.inSeconds;
 
+    print('⏱️ Timer tick for habit time logging:');
+    print('   Habit ID: ${_habit!.id}');
+    print('   Duration for save: ${durationForSave}s');
+    print('   Total elapsed: ${elapsed.inSeconds}s');
+    print('   Custom date time: ${DateTime.now()}');
+
     final command =
         AddHabitTimeRecordCommand(habitId: _habit!.id, duration: durationForSave, customDateTime: DateTime.now());
+    print('🚀 Sending AddHabitTimeRecordCommand from timer');
     _mediator.send(command);
   }
 }

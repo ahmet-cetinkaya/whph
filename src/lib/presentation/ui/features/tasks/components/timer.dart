@@ -566,9 +566,8 @@ class _AppTimerState extends State<AppTimer> {
     final double baseButtonSize = widget.isMiniLayout
         ? AppTheme.iconSizeSmall
         : (screenWidth < 600 ? AppTheme.iconSizeLarge : AppTheme.iconSizeXLarge);
-    final double baseSpacing = widget.isMiniLayout
-        ? AppTheme.size2XSmall
-        : (screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge);
+    final double baseSpacing =
+        widget.isMiniLayout ? AppTheme.size2XSmall : (screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge);
     final double buttonSize = baseButtonSize * multiplier;
     final double spacing = baseSpacing * multiplier;
 

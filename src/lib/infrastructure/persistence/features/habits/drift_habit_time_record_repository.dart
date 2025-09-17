@@ -13,6 +13,7 @@ class HabitTimeRecordTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get habitId => text().references(HabitTable, #id, onDelete: KeyAction.cascade)();
   IntColumn get duration => integer()();
+  DateTimeColumn get occurredAt => dateTime().nullable()();
 
   @override
   Set<Column>? get primaryKey => {id};
@@ -28,6 +29,15 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
   }
 
   @override
+  Future<void> add(HabitTimeRecord item) async {
+    // Preserve the original createdDate instead of auto-setting it
+    final originalCreatedDate = item.createdDate;
+    item.createdDate = originalCreatedDate; // Don't let base class override this
+    HabitTimeRecord insertedItem = await database.into(table).insertReturning(toCompanion(item));
+    item.id = insertedItem.id;
+  }
+
+  @override
   Insertable<HabitTimeRecord> toCompanion(HabitTimeRecord entity) {
     return HabitTimeRecordTableCompanion.insert(
       id: entity.id,
@@ -36,6 +46,7 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
       deletedDate: Value(entity.deletedDate),
       habitId: entity.habitId,
       duration: entity.duration,
+      occurredAt: Value(entity.occurredAt),
     );
   }
 
@@ -70,8 +81,11 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
   @override
   Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async {
     return (database.select(table)
-          ..where(
-              (t) => t.habitId.equals(habitId) & t.createdDate.isBetweenValues(start, end) & t.deletedDate.isNull()))
+          ..where((t) =>
+              t.habitId.equals(habitId) &
+              (t.occurredAt.isBetweenValues(start, end) |
+                  (t.occurredAt.isNull() & t.createdDate.isBetweenValues(start, end))) &
+              t.deletedDate.isNull()))
         .get();
   }
 

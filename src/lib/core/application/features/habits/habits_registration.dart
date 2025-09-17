@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/habits/commands/add_habit_tag_com
 import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_time_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/remove_habit_tag_command.dart';
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
@@ -66,7 +67,8 @@ void registerHabitsFeature(
     ..registerHandler<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse, AddHabitTimeRecordCommandHandler>(
       () => AddHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
     )
-    ..registerHandler<SaveHabitTimeRecordCommand, SaveHabitTimeRecordCommandResponse, SaveHabitTimeRecordCommandHandler>(
+    ..registerHandler<SaveHabitTimeRecordCommand, SaveHabitTimeRecordCommandResponse,
+        SaveHabitTimeRecordCommandHandler>(
       () => SaveHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
     )
     ..registerHandler<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse, DeleteHabitRecordCommandHandler>(
@@ -100,5 +102,13 @@ void registerHabitsFeature(
     ..registerHandler<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse,
         GetTotalDurationByHabitIdQueryHandler>(
       () => GetTotalDurationByHabitIdQueryHandler(habitTimeRecordRepository: habitTimeRecordRepository),
+    )
+    ..registerHandler<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse,
+        ToggleHabitCompletionCommandHandler>(
+      () => ToggleHabitCompletionCommandHandler(
+        habitRepository: habitRepository,
+        habitRecordRepository: habitRecordRepository,
+        habitTimeRecordRepository: habitTimeRecordRepository,
+      ),
     );
 }

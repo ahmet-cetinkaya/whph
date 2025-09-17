@@ -89,16 +89,13 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,
       List<acore.CustomOrder>? customOrder}) async {
-
     // Check if sorting by actualTime is requested
     final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
 
     if (!hasActualTimeSort) {
       // Use default implementation if no actualTime sorting
       return super.getList(pageIndex, pageSize,
-          includeDeleted: includeDeleted,
-          customWhereFilter: customWhereFilter,
-          customOrder: customOrder);
+          includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
     }
 
     // Build custom query with LEFT JOIN for actualTime sorting

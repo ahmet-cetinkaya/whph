@@ -93,8 +93,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
 
   bool _isValidInput() {
     final isZeroAllowed = _selectedMode == LoggingMode.setTotalForDay;
-    return _hours >= 0 && _minutes >= 0 && _minutes < 60 &&
-        (isZeroAllowed || (_hours > 0 || _minutes > 0));
+    return _hours >= 0 && _minutes >= 0 && _minutes < 60 && (isZeroAllowed || (_hours > 0 || _minutes > 0));
   }
 
   Future<void> _logTime() async {
@@ -115,9 +114,25 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
 
       // Emit event instead of calling commands directly
       if (widget.onTimeLoggingSubmitted != null) {
+        // For manual time logging, use actual current time if logging for today,
+        // otherwise use the selected date with current time-of-day
+        final now = DateTime.now();
+        final selectedDateOnly = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+        final todayOnly = DateTime(now.year, now.month, now.day);
+
+        final DateTime occurredAt;
+        if (selectedDateOnly.isAtSameMomentAs(todayOnly)) {
+          // Logging for today - use current timestamp to preserve actual time
+          occurredAt = now;
+        } else {
+          // Logging for past/future date - use selected date with current time-of-day
+          occurredAt = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day, now.hour, now.minute,
+              now.second, now.millisecond);
+        }
+
         final event = TimeLoggingSubmittedEvent(
           entityId: widget.entityId,
-          date: _selectedDate,
+          date: occurredAt,
           durationInSeconds: durationInSeconds,
           isSetTotalMode: _selectedMode == LoggingMode.setTotalForDay,
         );
@@ -276,10 +291,12 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               children: [
                 Expanded(
                   child: TextButton(
-                    onPressed: _isLoading ? null : () {
-                      widget.onCancel?.call();
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            widget.onCancel?.call();
+                            Navigator.of(context).pop();
+                          },
                     child: Text(_getTranslation(SharedTranslationKeys.cancelButton)),
                   ),
                 ),

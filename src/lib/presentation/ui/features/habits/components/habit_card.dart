@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
-import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:acore/acore.dart' as acore;
@@ -19,13 +18,12 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/features/habits/services/habit_completion_service.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
-  final void Function(AddHabitRecordCommandResponse)? onRecordCreated;
-  final void Function(DeleteHabitRecordCommandResponse)? onRecordDeleted;
+  final VoidCallback? onRecordCreated;
+  final VoidCallback? onRecordDeleted;
   final bool isMiniLayout;
   final bool isDateLabelShowing;
   final int dateRange;
@@ -57,7 +55,6 @@ class _HabitCardState extends State<HabitCard> {
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
-  final _completionService = container.resolve<HabitCompletionService>();
   GetListHabitRecordsQueryResponse? _habitRecords;
 
   @override
@@ -179,63 +176,41 @@ class _HabitCardState extends State<HabitCard> {
 
   // Event handler for calendar day tap
   Future<void> _onCalendarDayTap(DateTime date) async {
-    if (_habitRecords == null) return;
-
-    await _completionService.toggleHabitCompletion(
-      habit: widget.habit,
-      date: date,
-      habitRecords: _habitRecords!,
-      deleteRecord: _deleteHabitRecord,
-      createRecord: _createHabitRecord,
-    );
-  }
-
-  // Event handler for checkbox tap with smart logic for multiple occurrences
-  Future<void> _onCheckboxTap() async {
-    if (_habitRecords == null) return;
-
-    final today = DateTime.now();
-    await _completionService.toggleHabitCompletion(
-      habit: widget.habit,
-      date: today,
-      habitRecords: _habitRecords!,
-      deleteRecord: _deleteHabitRecord,
-      createRecord: _createHabitRecord,
-      useIncrementalBehavior: true, // Checkbox uses incremental behavior
-    );
-  }
-
-  Future<void> _createHabitRecord(String habitId, DateTime date) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = AddHabitRecordCommand(habitId: habitId, occurredAt: acore.DateTimeHelper.toUtcDateTime(date));
-        final response = await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(command);
+        final command = ToggleHabitCompletionCommand(
+          habitId: widget.habit.id,
+          date: date,
+          useIncrementalBehavior: false, // Calendar uses toggle behavior
+        );
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
 
         await _refreshHabitRecords();
-
-        // Notify service that a record was added
-        _habitsService.notifyHabitRecordAdded(habitId);
-        widget.onRecordCreated?.call(response);
+        _habitsService.notifyHabitRecordAdded(widget.habit.id);
         _soundPlayer.play(SharedSounds.done, volume: 1.0);
       },
     );
   }
 
-  Future<void> _deleteHabitRecord(String id) async {
+  // Event handler for checkbox tap with smart logic for multiple occurrences
+  Future<void> _onCheckboxTap() async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.deletingRecordError),
+      errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = DeleteHabitRecordCommand(id: id);
-        final response = await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(command);
+        final today = DateTime.now();
+        final command = ToggleHabitCompletionCommand(
+          habitId: widget.habit.id,
+          date: today,
+          useIncrementalBehavior: true, // Checkbox uses incremental behavior
+        );
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
 
         await _refreshHabitRecords();
-
-        // Notify service that a record was removed
-        _habitsService.notifyHabitRecordRemoved(widget.habit.id);
-        widget.onRecordDeleted?.call(response);
+        _habitsService.notifyHabitRecordAdded(widget.habit.id);
+        _soundPlayer.play(SharedSounds.done, volume: 1.0);
       },
     );
   }

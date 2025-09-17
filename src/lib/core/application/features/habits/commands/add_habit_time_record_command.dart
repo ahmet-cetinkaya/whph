@@ -54,6 +54,7 @@ class AddHabitTimeRecordCommandHandler
       habitId: request.habitId,
       duration: request.duration,
       createdDate: startOfHour, // Use hour bucket start time for consistency
+      occurredAt: request.customDateTime ?? DateTime.now().toUtc(),
     );
 
     await _habitTimeRecordRepository.add(habitTimeRecord);
