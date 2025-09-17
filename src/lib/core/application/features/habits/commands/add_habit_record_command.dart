@@ -34,25 +34,22 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
 
   @override
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
-    final now = DateTime.now().toUtc();
-
     // Create the habit record
-    HabitRecord habitRecord = HabitRecord(
+    await _habitRecordRepository.add(HabitRecord(
       id: KeyHelper.generateStringId(),
-      createdDate: now,
+      createdDate: DateTime.now().toUtc(),
       habitId: request.habitId,
-      occurredAt: request.occurredAt, // This is now guaranteed to be non-null from the command constructor
-    );
-    await _habitRecordRepository.add(habitRecord);
+      occurredAt: request.occurredAt,
+    ));
 
-    // Get the habit to check if it has an estimated time
+    // Add estimated time if habit has it
     final habit = await _habitRepository.getById(request.habitId);
     if (habit?.estimatedTime != null && habit!.estimatedTime! > 0) {
-      await HabitTimeRecordService.addDurationToHabitTimeRecord(
+      await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
         repository: _habitTimeRecordRepository,
         habitId: request.habitId,
         targetDate: request.occurredAt,
-        durationToAdd: habit.estimatedTime! * 60,
+        estimatedDuration: habit.estimatedTime! * 60,
       );
     }
 

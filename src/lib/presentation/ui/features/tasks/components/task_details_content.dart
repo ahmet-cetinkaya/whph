@@ -503,7 +503,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
   }
 
-
   /// Helper method to build save command with current form data
   SaveTaskCommand _buildSaveCommand() {
     final plannedDate = _parseDateFromController(_plannedDateController);
@@ -1353,11 +1352,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     // Only save if there's actual time elapsed
     if (totalElapsed.inSeconds > 0) {
-      final command = AddTaskTimeRecordCommand(
-        duration: totalElapsed.inSeconds,
-        taskId: _task!.id,
-        customDateTime: DateTime.now()
-      );
+      final command =
+          AddTaskTimeRecordCommand(duration: totalElapsed.inSeconds, taskId: _task!.id, customDateTime: DateTime.now());
       _mediator.send(command);
       _tasksService.notifyTaskUpdated(_task!.id);
     }

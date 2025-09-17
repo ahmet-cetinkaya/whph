@@ -90,10 +90,7 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     );
 
     final results = await query.get();
-    return {
-      for (final result in results)
-        result.read<String>('task_id'): result.read<int>('total_duration')
-    };
+    return {for (final result in results) result.read<String>('task_id'): result.read<int>('total_duration')};
   }
 
   @override
