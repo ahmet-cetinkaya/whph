@@ -4,10 +4,10 @@ import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
@@ -193,16 +193,13 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       // If no time records exist, create one with the estimated time
       if (existingTimeRecords.items.isEmpty) {
         final now = DateTime.now().toUtc();
-        final startOfHour = DateTime.utc(now.year, now.month, now.day, now.hour);
 
-        final taskTimeRecord = TaskTimeRecord(
-          id: KeyHelper.generateStringId(),
+        await TaskTimeRecordService.addDurationToTaskTimeRecord(
+          repository: _taskTimeRecordRepository,
           taskId: task.id,
-          duration: task.estimatedTime! * 60, // Convert minutes to seconds
-          createdDate: startOfHour, // Use hour bucket start time for consistency
+          targetDate: now,
+          durationToAdd: task.estimatedTime! * 60, // Convert minutes to seconds
         );
-
-        await _taskTimeRecordRepository.add(taskTimeRecord);
       }
     }
 
