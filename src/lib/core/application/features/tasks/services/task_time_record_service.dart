@@ -21,10 +21,8 @@ class TaskTimeRecordService {
   }) async {
     final (startOfHour, endOfHour) = createHourBoundaries(targetDate);
 
-    final filter = CustomWhereFilter(
-      'task_id = ? AND created_date >= ? AND created_date < ?',
-      [taskId, startOfHour, endOfHour]
-    );
+    final filter =
+        CustomWhereFilter('task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHour, endOfHour]);
 
     final existingRecord = await repository.getFirst(filter);
 

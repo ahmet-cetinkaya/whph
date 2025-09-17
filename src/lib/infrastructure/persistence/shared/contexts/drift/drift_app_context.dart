@@ -100,7 +100,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 26;
+  int get schemaVersion => 27;
 
   @override
   MigrationStrategy get migration {
@@ -595,8 +595,11 @@ class AppDatabase extends _$AppDatabase {
                   'CREATE INDEX IF NOT EXISTS idx_habit_time_record_habit_date ON habit_time_record_table (habit_id, created_date);');
             });
           },
+          from26To27: (m, schema) async {
+            // Add isEstimated column to habit_time_record_table
+            await m.addColumn(habitTimeRecordTable, habitTimeRecordTable.isEstimated);
+          },
         )(m, from, to);
-
       },
     );
   }

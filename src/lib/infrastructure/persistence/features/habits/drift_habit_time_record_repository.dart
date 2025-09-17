@@ -14,6 +14,7 @@ class HabitTimeRecordTable extends Table {
   TextColumn get habitId => text().references(HabitTable, #id, onDelete: KeyAction.cascade)();
   IntColumn get duration => integer()();
   DateTimeColumn get occurredAt => dateTime().nullable()();
+  BoolColumn get isEstimated => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column>? get primaryKey => {id};
@@ -47,6 +48,7 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
       habitId: entity.habitId,
       duration: entity.duration,
       occurredAt: Value(entity.occurredAt),
+      isEstimated: Value(entity.isEstimated),
     );
   }
 

@@ -74,7 +74,6 @@ void registerHabitsFeature(
     ..registerHandler<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse, DeleteHabitRecordCommandHandler>(
       () => DeleteHabitRecordCommandHandler(
         habitRecordRepository: habitRecordRepository,
-        habitRepository: habitRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )

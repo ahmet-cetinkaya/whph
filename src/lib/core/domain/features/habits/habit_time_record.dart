@@ -6,12 +6,14 @@ class HabitTimeRecord extends BaseEntity<String> {
   String habitId;
   int duration;
   DateTime? occurredAt;
+  bool isEstimated;
 
   HabitTimeRecord({
     required super.id,
     required this.habitId,
     required this.duration,
     this.occurredAt,
+    this.isEstimated = false,
     required super.createdDate,
     super.modifiedDate,
     super.deletedDate,
@@ -23,6 +25,7 @@ class HabitTimeRecord extends BaseEntity<String> {
         'habitId': habitId,
         'duration': duration,
         'occurredAt': occurredAt?.toIso8601String(),
+        'isEstimated': isEstimated,
       };
 
   factory HabitTimeRecord.fromJson(Map<String, dynamic> json) {
@@ -41,6 +44,7 @@ class HabitTimeRecord extends BaseEntity<String> {
       habitId: json['habitId'] as String,
       duration: duration,
       occurredAt: json['occurredAt'] != null ? DateTime.parse(json['occurredAt'] as String) : null,
+      isEstimated: json['isEstimated'] as bool? ?? false,
     );
   }
 }

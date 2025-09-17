@@ -1355,8 +1355,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           _totalDuration = newTotalDuration;
         });
         _processFieldVisibility(); // Update field visibility when total duration changes
-      } else {
-      }
+      } else {}
     } catch (e) {
       // Error getting total duration, keep existing value
     }
@@ -1372,7 +1371,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           // Handle cancel if needed
         },
         onTimeLoggingSubmitted: (event) async {
-
           await AsyncErrorHandler.executeVoid(
             context: context,
             operation: () async {
@@ -1412,10 +1410,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     // Only save if there's actual time elapsed
     if (totalElapsed.inSeconds > 0) {
       final command = AddHabitTimeRecordCommand(
-        habitId: _habit!.id,
-        duration: totalElapsed.inSeconds,
-        customDateTime: DateTime.now()
-      );
+          habitId: _habit!.id, duration: totalElapsed.inSeconds, customDateTime: DateTime.now());
       _mediator.send(command);
     }
   }

@@ -21,10 +21,8 @@ class HabitTimeRecordService {
   }) async {
     final (startOfHour, endOfHour) = createHourBoundaries(targetDate);
 
-    final filter = CustomWhereFilter(
-      'habit_id = ? AND created_date >= ? AND created_date < ?',
-      [habitId, startOfHour, endOfHour]
-    );
+    final filter =
+        CustomWhereFilter('habit_id = ? AND created_date >= ? AND created_date < ?', [habitId, startOfHour, endOfHour]);
 
     final existingRecord = await repository.getFirst(filter);
 
@@ -38,6 +36,7 @@ class HabitTimeRecordService {
         habitId: habitId,
         duration: initialDuration,
         occurredAt: targetDate,
+        isEstimated: false, // Default to false, caller can specify if it's estimated
       );
       await repository.add(newRecord);
       return newRecord;
@@ -50,6 +49,7 @@ class HabitTimeRecordService {
     required String habitId,
     required DateTime targetDate,
     required int durationToAdd,
+    bool isEstimated = false,
   }) async {
     final record = await findOrCreateHabitTimeRecord(
       repository: repository,
@@ -59,8 +59,28 @@ class HabitTimeRecordService {
     );
 
     record.duration += durationToAdd;
+    // Update isEstimated flag if this is adding estimated time to a new record
+    if (record.duration == durationToAdd && isEstimated) {
+      record.isEstimated = true;
+    }
     await repository.update(record);
     return record;
+  }
+
+  /// Adds estimated duration to a habit time record in the hour bucket
+  static Future<HabitTimeRecord> addEstimatedDurationToHabitTimeRecord({
+    required IHabitTimeRecordRepository repository,
+    required String habitId,
+    required DateTime targetDate,
+    required int estimatedDuration,
+  }) async {
+    return addDurationToHabitTimeRecord(
+      repository: repository,
+      habitId: habitId,
+      targetDate: targetDate,
+      durationToAdd: estimatedDuration,
+      isEstimated: true,
+    );
   }
 
   /// Sets total duration for a habit time record in the hour bucket
