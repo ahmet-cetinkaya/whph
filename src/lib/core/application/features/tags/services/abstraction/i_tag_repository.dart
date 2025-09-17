@@ -9,4 +9,6 @@ abstract class ITagRepository extends app.IRepository<Tag, String> {
     CustomWhereFilter? customWhereFilter,
     List<CustomOrder>? customOrder,
   });
+
+  Future<Map<String, Tag>> getByIds(List<String> tagIds);
 }

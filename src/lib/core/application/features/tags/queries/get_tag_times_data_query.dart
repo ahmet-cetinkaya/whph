@@ -95,14 +95,18 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
 
     if (taskTags.isEmpty) return 0;
 
+    // Get task IDs and fetch time durations in a single batch query to avoid N+1 problem
+    final taskIds = taskTags.map((taskTag) => taskTag.taskId).toList();
+    final taskTimeMap = await _taskTimeRecordRepository.getTotalDurationsByTaskIds(
+      taskIds,
+      startDate: request.startDate,
+      endDate: request.endDate,
+    );
+
+    // Sum up all the task times
     int totalTime = 0;
-    for (final taskTag in taskTags) {
-      final taskTime = await _taskTimeRecordRepository.getTotalDurationByTaskId(
-        taskTag.taskId,
-        startDate: request.startDate,
-        endDate: request.endDate,
-      );
-      totalTime += taskTime;
+    for (final taskId in taskIds) {
+      totalTime += taskTimeMap[taskId] ?? 0;
     }
 
     return totalTime;

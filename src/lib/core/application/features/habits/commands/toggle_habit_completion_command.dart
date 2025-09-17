@@ -70,7 +70,6 @@ class ToggleHabitCompletionCommandHandler
     final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
 
     if (hasCustomGoals && dailyTarget > 1) {
-      print('🔄 Handling MULTI-OCCURRENCE habit');
       await _handleMultiOccurrenceHabit(
         habit: habit,
         date: request.date,
@@ -80,7 +79,6 @@ class ToggleHabitCompletionCommandHandler
         existingRecords: habitRecords.items,
       );
     } else {
-      print('🔄 Handling TRADITIONAL habit');
       await _handleTraditionalHabit(
         habit: habit,
         date: request.date,
@@ -104,19 +102,15 @@ class ToggleHabitCompletionCommandHandler
     if (useIncrementalBehavior) {
       // Checkbox behavior: increment until target, then reset
       if (dailyCompletionCount < dailyTarget) {
-        print('📈 CHECKBOX: Adding habit record (under target)');
         await _addHabitRecord(habit.id, date, habit);
       } else {
-        print('🔄 CHECKBOX: Resetting to 0 (at/over target)');
         await _deleteAllHabitRecordsForDay(habit, date, existingRecords);
       }
     } else {
       // Calendar behavior: toggle between complete/incomplete
       if (dailyCompletionCount >= dailyTarget) {
-        print('✖️ CALENDAR: Uncompleting (removing all records)');
         await _deleteAllHabitRecordsForDay(habit, date, existingRecords);
       } else {
-        print('✅ CALENDAR: Completing (adding record)');
         await _addHabitRecord(habit.id, date, habit);
       }
     }
@@ -130,11 +124,9 @@ class ToggleHabitCompletionCommandHandler
     required List<dynamic> existingRecords,
   }) async {
     if (dailyCompletionCount > 0) {
-      print('✖️ TRADITIONAL: Uncompleting (removing all records)');
       // Remove ALL records for this date (handles case where multiple records exist from when custom goals were enabled)
       await _deleteAllHabitRecordsForDay(habit, date, existingRecords);
     } else {
-      print('✅ TRADITIONAL: Completing (adding record)');
       await _addHabitRecord(habit.id, date, habit);
     }
   }
@@ -185,19 +177,12 @@ class ToggleHabitCompletionCommandHandler
 
   /// Delete all habit records for a day (includes proper time record management)
   Future<void> _deleteAllHabitRecordsForDay(dynamic habit, DateTime date, List<dynamic> existingRecords) async {
-    print('🗑️ DELETE ALL HABIT RECORDS FOR DAY called:');
-    print('   Habit ID: ${habit.id}');
-    print('   Date: $date');
-    print('   Existing records count: ${existingRecords.length}');
 
     // Use the same date conversion as when creating records to ensure we find the right time records
     final occurredAt = DateTimeHelper.toUtcDateTime(date);
     final targetDate = DateTime.utc(occurredAt.year, occurredAt.month, occurredAt.day);
     final nextDay = targetDate.add(const Duration(days: 1));
 
-    print('   🔍 Original date: $date');
-    print('   🔍 Occurred at (UTC): $occurredAt');
-    print('   🔍 Target date (UTC): $targetDate');
 
     // Get all habit records for the habit on the same date
     final habitRecords = await _habitRecordRepository.getListByHabitIdAndRangeDate(
@@ -208,10 +193,8 @@ class ToggleHabitCompletionCommandHandler
       1000, // Sufficient for a single day
     );
 
-    print('   🔍 Found ${habitRecords.items.length} habit records in date range:');
     for (int i = 0; i < habitRecords.items.length; i++) {
       final record = habitRecords.items[i];
-      print('   Record $i: ${record.id}, occurredAt: ${record.occurredAt}, createdDate: ${record.createdDate}');
     }
 
     // Get ALL time records for the habit and filter them by date manually
@@ -240,17 +223,10 @@ class ToggleHabitCompletionCommandHandler
       return isSameDayByCreatedDate;
     }).toList();
 
-    print('   🔍 Original date (local): ${DateTimeHelper.toLocalDateTime(date)}');
-    print('   🔍 Target date (local): ${DateTimeHelper.toLocalDateTime(targetDate)}');
-    print('   🔍 Found ${timeRecords.length} time records for the day:');
     for (int i = 0; i < timeRecords.length; i++) {
       final record = timeRecords[i];
       final occurredAtLocal = record.occurredAt != null ? DateTimeHelper.toLocalDateTime(record.occurredAt!) : null;
       final createdAtLocal = DateTimeHelper.toLocalDateTime(record.createdDate);
-      print(
-          '   Record $i: ${record.id}, duration: ${record.duration}s');
-      print('     occurredAt: ${record.occurredAt} (local: $occurredAtLocal)');
-      print('     createdDate: ${record.createdDate} (local: $createdAtLocal)');
     }
 
     // Delete all time records for the specified date

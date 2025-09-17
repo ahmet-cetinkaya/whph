@@ -53,10 +53,18 @@ class GetListTagTagsQueryHandler implements IRequestHandler<GetListTagTagsQuery,
       request.pageSize,
     );
 
+    // Get all unique tag IDs and fetch them in batch to avoid N+1 problem
+    final allTagIds = <String>{};
+    for (final tagTag in tagTags.items) {
+      allTagIds.add(tagTag.primaryTagId);
+      allTagIds.add(tagTag.secondaryTagId);
+    }
+    final tagsMap = await _tagRepository.getByIds(allTagIds.toList());
+
     List<TagTagListItem> listItems = [];
     for (final tagTag in tagTags.items) {
-      Tag primaryTag = (await _tagRepository.getById(tagTag.primaryTagId))!;
-      Tag secondaryTag = (await _tagRepository.getById(tagTag.secondaryTagId))!;
+      Tag primaryTag = tagsMap[tagTag.primaryTagId]!;
+      Tag secondaryTag = tagsMap[tagTag.secondaryTagId]!;
       listItems.add(TagTagListItem(
         id: tagTag.id,
         primaryTagId: tagTag.primaryTagId,
