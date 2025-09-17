@@ -1493,8 +1493,8 @@ class HabitRecordTable extends Table with TableInfo<HabitRecordTable, HabitRecor
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   late final GeneratedColumn<String> habitId =
       GeneratedColumn<String>('habit_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  late final GeneratedColumn<DateTime> occurredAt = GeneratedColumn<DateTime>('occurred_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<DateTime> occurredAt = GeneratedColumn<DateTime>('occurred_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, occurredAt];
   @override
@@ -1513,7 +1513,7 @@ class HabitRecordTable extends Table with TableInfo<HabitRecordTable, HabitRecor
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
-      occurredAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}occurred_at']),
+      occurredAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}occurred_at'])!,
     );
   }
 
@@ -1529,14 +1529,14 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
   final DateTime? modifiedDate;
   final DateTime? deletedDate;
   final String habitId;
-  final DateTime? occurredAt;
+  final DateTime occurredAt;
   const HabitRecordTableData(
       {required this.id,
       required this.createdDate,
       this.modifiedDate,
       this.deletedDate,
       required this.habitId,
-      this.occurredAt});
+      required this.occurredAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1549,9 +1549,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       map['deleted_date'] = Variable<DateTime>(deletedDate);
     }
     map['habit_id'] = Variable<String>(habitId);
-    if (!nullToAbsent || occurredAt != null) {
-      map['occurred_at'] = Variable<DateTime>(occurredAt);
-    }
+    map['occurred_at'] = Variable<DateTime>(occurredAt);
     return map;
   }
 
@@ -1562,7 +1560,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       modifiedDate: modifiedDate == null && nullToAbsent ? const Value.absent() : Value(modifiedDate),
       deletedDate: deletedDate == null && nullToAbsent ? const Value.absent() : Value(deletedDate),
       habitId: Value(habitId),
-      occurredAt: occurredAt == null && nullToAbsent ? const Value.absent() : Value(occurredAt),
+      occurredAt: Value(occurredAt),
     );
   }
 
@@ -1574,7 +1572,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       modifiedDate: serializer.fromJson<DateTime?>(json['modifiedDate']),
       deletedDate: serializer.fromJson<DateTime?>(json['deletedDate']),
       habitId: serializer.fromJson<String>(json['habitId']),
-      occurredAt: serializer.fromJson<DateTime?>(json['occurredAt']),
+      occurredAt: serializer.fromJson<DateTime>(json['occurredAt']),
     );
   }
   @override
@@ -1586,7 +1584,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       'modifiedDate': serializer.toJson<DateTime?>(modifiedDate),
       'deletedDate': serializer.toJson<DateTime?>(deletedDate),
       'habitId': serializer.toJson<String>(habitId),
-      'occurredAt': serializer.toJson<DateTime?>(occurredAt),
+      'occurredAt': serializer.toJson<DateTime>(occurredAt),
     };
   }
 
@@ -1596,14 +1594,14 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
           Value<DateTime?> modifiedDate = const Value.absent(),
           Value<DateTime?> deletedDate = const Value.absent(),
           String? habitId,
-          Value<DateTime?> occurredAt = const Value.absent()}) =>
+          DateTime? occurredAt}) =>
       HabitRecordTableData(
         id: id ?? this.id,
         createdDate: createdDate ?? this.createdDate,
         modifiedDate: modifiedDate.present ? modifiedDate.value : this.modifiedDate,
         deletedDate: deletedDate.present ? deletedDate.value : this.deletedDate,
         habitId: habitId ?? this.habitId,
-        occurredAt: occurredAt.present ? occurredAt.value : this.occurredAt,
+        occurredAt: occurredAt ?? this.occurredAt,
       );
   HabitRecordTableData copyWithCompanion(HabitRecordTableCompanion data) {
     return HabitRecordTableData(
@@ -1649,7 +1647,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
   final Value<String> habitId;
-  final Value<DateTime?> occurredAt;
+  final Value<DateTime> occurredAt;
   final Value<int> rowid;
   const HabitRecordTableCompanion({
     this.id = const Value.absent(),
@@ -1666,11 +1664,12 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     required String habitId,
-    this.occurredAt = const Value.absent(),
+    required DateTime occurredAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
-        habitId = Value(habitId);
+        habitId = Value(habitId),
+        occurredAt = Value(occurredAt);
   static Insertable<HabitRecordTableData> custom({
     Expression<String>? id,
     Expression<DateTime>? createdDate,
@@ -1697,7 +1696,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
       Value<String>? habitId,
-      Value<DateTime?>? occurredAt,
+      Value<DateTime>? occurredAt,
       Value<int>? rowid}) {
     return HabitRecordTableCompanion(
       id: id ?? this.id,
@@ -2574,6 +2573,279 @@ class HabitTagTableCompanion extends UpdateCompanion<HabitTagTableData> {
           ..write('deletedDate: $deletedDate, ')
           ..write('habitId: $habitId, ')
           ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class HabitTimeRecordTable extends Table with TableInfo<HabitTimeRecordTable, HabitTimeRecordTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  HabitTimeRecordTable(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<String> habitId =
+      GeneratedColumn<String>('habit_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<int> duration =
+      GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, duration];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habit_time_record_table';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HabitTimeRecordTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitTimeRecordTableData(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
+      duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
+    );
+  }
+
+  @override
+  HabitTimeRecordTable createAlias(String alias) {
+    return HabitTimeRecordTable(attachedDatabase, alias);
+  }
+}
+
+class HabitTimeRecordTableData extends DataClass implements Insertable<HabitTimeRecordTableData> {
+  final String id;
+  final DateTime createdDate;
+  final DateTime? modifiedDate;
+  final DateTime? deletedDate;
+  final String habitId;
+  final int duration;
+  const HabitTimeRecordTableData(
+      {required this.id,
+      required this.createdDate,
+      this.modifiedDate,
+      this.deletedDate,
+      required this.habitId,
+      required this.duration});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || modifiedDate != null) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate);
+    }
+    if (!nullToAbsent || deletedDate != null) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate);
+    }
+    map['habit_id'] = Variable<String>(habitId);
+    map['duration'] = Variable<int>(duration);
+    return map;
+  }
+
+  HabitTimeRecordTableCompanion toCompanion(bool nullToAbsent) {
+    return HabitTimeRecordTableCompanion(
+      id: Value(id),
+      createdDate: Value(createdDate),
+      modifiedDate: modifiedDate == null && nullToAbsent ? const Value.absent() : Value(modifiedDate),
+      deletedDate: deletedDate == null && nullToAbsent ? const Value.absent() : Value(deletedDate),
+      habitId: Value(habitId),
+      duration: Value(duration),
+    );
+  }
+
+  factory HabitTimeRecordTableData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HabitTimeRecordTableData(
+      id: serializer.fromJson<String>(json['id']),
+      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      modifiedDate: serializer.fromJson<DateTime?>(json['modifiedDate']),
+      deletedDate: serializer.fromJson<DateTime?>(json['deletedDate']),
+      habitId: serializer.fromJson<String>(json['habitId']),
+      duration: serializer.fromJson<int>(json['duration']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'modifiedDate': serializer.toJson<DateTime?>(modifiedDate),
+      'deletedDate': serializer.toJson<DateTime?>(deletedDate),
+      'habitId': serializer.toJson<String>(habitId),
+      'duration': serializer.toJson<int>(duration),
+    };
+  }
+
+  HabitTimeRecordTableData copyWith(
+          {String? id,
+          DateTime? createdDate,
+          Value<DateTime?> modifiedDate = const Value.absent(),
+          Value<DateTime?> deletedDate = const Value.absent(),
+          String? habitId,
+          int? duration}) =>
+      HabitTimeRecordTableData(
+        id: id ?? this.id,
+        createdDate: createdDate ?? this.createdDate,
+        modifiedDate: modifiedDate.present ? modifiedDate.value : this.modifiedDate,
+        deletedDate: deletedDate.present ? deletedDate.value : this.deletedDate,
+        habitId: habitId ?? this.habitId,
+        duration: duration ?? this.duration,
+      );
+  HabitTimeRecordTableData copyWithCompanion(HabitTimeRecordTableCompanion data) {
+    return HabitTimeRecordTableData(
+      id: data.id.present ? data.id.value : this.id,
+      createdDate: data.createdDate.present ? data.createdDate.value : this.createdDate,
+      modifiedDate: data.modifiedDate.present ? data.modifiedDate.value : this.modifiedDate,
+      deletedDate: data.deletedDate.present ? data.deletedDate.value : this.deletedDate,
+      habitId: data.habitId.present ? data.habitId.value : this.habitId,
+      duration: data.duration.present ? data.duration.value : this.duration,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitTimeRecordTableData(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('habitId: $habitId, ')
+          ..write('duration: $duration')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, createdDate, modifiedDate, deletedDate, habitId, duration);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HabitTimeRecordTableData &&
+          other.id == this.id &&
+          other.createdDate == this.createdDate &&
+          other.modifiedDate == this.modifiedDate &&
+          other.deletedDate == this.deletedDate &&
+          other.habitId == this.habitId &&
+          other.duration == this.duration);
+}
+
+class HabitTimeRecordTableCompanion extends UpdateCompanion<HabitTimeRecordTableData> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> habitId;
+  final Value<int> duration;
+  final Value<int> rowid;
+  const HabitTimeRecordTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.habitId = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HabitTimeRecordTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String habitId,
+    required int duration,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        habitId = Value(habitId),
+        duration = Value(duration);
+  static Insertable<HabitTimeRecordTableData> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? habitId,
+    Expression<int>? duration,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (habitId != null) 'habit_id': habitId,
+      if (duration != null) 'duration': duration,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HabitTimeRecordTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? habitId,
+      Value<int>? duration,
+      Value<int>? rowid}) {
+    return HabitTimeRecordTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      habitId: habitId ?? this.habitId,
+      duration: duration ?? this.duration,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (habitId.present) {
+      map['habit_id'] = Variable<String>(habitId.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<int>(duration.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitTimeRecordTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('habitId: $habitId, ')
+          ..write('duration: $duration, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5727,6 +5999,7 @@ class DatabaseAtV24 extends GeneratedDatabase {
   late final HabitRecordTable habitRecordTable = HabitRecordTable(this);
   late final HabitTable habitTable = HabitTable(this);
   late final HabitTagTable habitTagTable = HabitTagTable(this);
+  late final HabitTimeRecordTable habitTimeRecordTable = HabitTimeRecordTable(this);
   late final NoteTable noteTable = NoteTable(this);
   late final NoteTagTable noteTagTable = NoteTagTable(this);
   late final SettingTable settingTable = SettingTable(this);
@@ -5748,6 +6021,7 @@ class DatabaseAtV24 extends GeneratedDatabase {
         habitRecordTable,
         habitTable,
         habitTagTable,
+        habitTimeRecordTable,
         noteTable,
         noteTagTable,
         settingTable,

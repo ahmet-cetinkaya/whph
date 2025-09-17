@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
@@ -24,6 +25,7 @@ import 'package:whph/infrastructure/persistence/features/app_usages/drift_app_us
 import 'package:whph/infrastructure/persistence/features/habits/drift_habit_records_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/drift_habit_tags_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/drift_habits_repository.dart';
+import 'package:whph/infrastructure/persistence/features/habits/drift_habit_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/features/notes/drift_note_repository.dart';
 import 'package:whph/infrastructure/persistence/features/notes/drift_note_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/settings/drift_settings_repository.dart';
@@ -46,6 +48,7 @@ void registerPersistence(IContainer container) {
   container.registerSingleton<IAppUsageTimeRecordRepository>((_) => DriftAppUsageTimeRecordRepository());
   container.registerSingleton<IHabitRecordRepository>((_) => DriftHabitRecordRepository());
   container.registerSingleton<IHabitRepository>((_) => DriftHabitRepository());
+  container.registerSingleton<IHabitTimeRecordRepository>((_) => DriftHabitTimeRecordRepository());
   container.registerSingleton<IHabitTagsRepository>((_) => DriftHabitTagRepository());
   container.registerSingleton<INoteRepository>((_) => DriftNoteRepository());
   container.registerSingleton<INoteTagRepository>((_) => DriftNoteTagRepository());

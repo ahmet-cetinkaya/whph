@@ -8,5 +8,11 @@ abstract class ITaskTimeRecordRepository extends app.IRepository<TaskTimeRecord,
     DateTime? endDate,
   });
 
+  Future<Map<String, int>> getTotalDurationsByTaskIds(
+    List<String> taskIds, {
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
   Future<List<TaskTimeRecord>> getByTaskId(String taskId);
 }

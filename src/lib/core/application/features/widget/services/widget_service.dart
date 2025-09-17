@@ -13,7 +13,7 @@ import 'package:whph/core/application/features/tasks/commands/save_task_command.
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
+import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart';
@@ -188,8 +188,8 @@ Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, Str
       // Smart behavior for multi-occurrence habits with custom goals
       if (todayCount < dailyTarget) {
         // Add new record (increment)
-        await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-          AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+        await mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+          ToggleHabitCompletionCommand(habitId: habitId, date: today, useIncrementalBehavior: true),
         );
 
         // Play completion sound
@@ -218,8 +218,8 @@ Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, Str
         }
       } else {
         // Add new record
-        await mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-          AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+        await mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+          ToggleHabitCompletionCommand(habitId: habitId, date: today, useIncrementalBehavior: true),
         );
 
         // Play completion sound
@@ -628,8 +628,8 @@ class WidgetService {
         // Smart behavior for multi-occurrence habits with custom goals
         if (todayCount < dailyTarget) {
           // Add new record (increment)
-          await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-            AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+          await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+            ToggleHabitCompletionCommand(habitId: habitId, date: today, useIncrementalBehavior: true),
           );
         } else {
           // Reset to 0 (remove all records for today)
@@ -650,8 +650,8 @@ class WidgetService {
           }
         } else {
           // Add new record
-          await _mediator.send<AddHabitRecordCommand, AddHabitRecordCommandResponse>(
-            AddHabitRecordCommand(habitId: habitId, occurredAt: today),
+          await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+            ToggleHabitCompletionCommand(habitId: habitId, date: today, useIncrementalBehavior: true),
           );
         }
       }

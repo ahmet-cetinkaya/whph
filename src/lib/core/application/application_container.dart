@@ -12,6 +12,7 @@ import 'package:whph/core/application/features/habits/habits_registration.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/notes/notes_registration.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
@@ -57,6 +58,7 @@ void registerApplication(IContainer container) {
   final appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
   final habitRecordRepository = container.resolve<IHabitRecordRepository>();
   final habitRepository = container.resolve<IHabitRepository>();
+  final habitTimeRecordRepository = container.resolve<IHabitTimeRecordRepository>();
   final habitTagRepository = container.resolve<IHabitTagsRepository>();
   final noteRepository = container.resolve<INoteRepository>();
   final noteTagRepository = container.resolve<INoteTagRepository>();
@@ -89,7 +91,8 @@ void registerApplication(IContainer container) {
   // Register Features
   registerAppUsagesFeature(container, mediator, appUsageService, appUsageRepository, tagRepository,
       appUsageTagRepository, appUsageTagRuleRepository, appUsageTimeRecordRepository, appUsageIgnoreRuleRepository);
-  registerHabitsFeature(container, mediator, habitRepository, habitRecordRepository, habitTagRepository, tagRepository);
+  registerHabitsFeature(container, mediator, habitRepository, habitRecordRepository, habitTagRepository,
+      habitTimeRecordRepository, tagRepository);
   registerNotesFeature(
     container,
     mediator,
@@ -117,6 +120,7 @@ void registerApplication(IContainer container) {
     taskTimeRecordRepository,
     habitRepository,
     habitRecordRepository,
+    habitTimeRecordRepository,
     habitTagRepository,
     noteTagRepository,
   );

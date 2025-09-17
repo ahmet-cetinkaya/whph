@@ -131,7 +131,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           _refreshQuickSelection();
         }
       });
-    } else {}
+    }
   }
 
   void _refreshQuickSelection() {

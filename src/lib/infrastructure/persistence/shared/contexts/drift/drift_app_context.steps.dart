@@ -7422,6 +7422,7 @@ final class Schema24 extends i0.VersionedSchema {
     habitRecordTable,
     habitTable,
     habitTagTable,
+    habitTimeRecordTable,
     noteTable,
     noteTagTable,
     settingTable,
@@ -7588,6 +7589,25 @@ final class Schema24 extends i0.VersionedSchema {
           _column_3,
           _column_11,
           _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape34 habitTimeRecordTable = Shape34(
+      source: i0.VersionedTable(
+        entityName: 'habit_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_11,
+          _column_7,
         ],
         attachedDatabase: database,
       ),
@@ -7787,7 +7807,7 @@ class Shape32 extends i0.VersionedTable {
 }
 
 i1.GeneratedColumn<DateTime> _column_58(String aliasedName) =>
-    i1.GeneratedColumn<DateTime>('occurred_at', aliasedName, true, type: i1.DriftSqlType.dateTime);
+    i1.GeneratedColumn<DateTime>('occurred_at', aliasedName, false, type: i1.DriftSqlType.dateTime);
 
 class Shape33 extends i0.VersionedTable {
   Shape33({required super.source, required super.alias}) : super.aliased();
@@ -7811,6 +7831,1212 @@ class Shape33 extends i0.VersionedTable {
 
 i1.GeneratedColumn<int> _column_59(String aliasedName) =>
     i1.GeneratedColumn<int>('daily_target', aliasedName, true, type: i1.DriftSqlType.int);
+
+class Shape34 extends i0.VersionedTable {
+  Shape34({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id => columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get createdDate => columnsByName['created_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get modifiedDate => columnsByName['modified_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get deletedDate => columnsByName['deleted_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get habitId => columnsByName['habit_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get duration => columnsByName['duration']! as i1.GeneratedColumn<int>;
+}
+
+final class Schema25 extends i0.VersionedSchema {
+  Schema25({required super.database}) : super(version: 25);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    appUsageIgnoreRuleTable,
+    appUsageTable,
+    appUsageTagRuleTable,
+    appUsageTagTable,
+    appUsageTimeRecordTable,
+    habitRecordTable,
+    habitTable,
+    habitTagTable,
+    habitTimeRecordTable,
+    noteTable,
+    noteTagTable,
+    settingTable,
+    syncDeviceTable,
+    tagTable,
+    tagTagTable,
+    taskTable,
+    taskTagTable,
+    taskTimeRecordTable,
+  ];
+  late final Shape18 appUsageIgnoreRuleTable = Shape18(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_ignore_rule_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_32,
+          _column_14,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape16 appUsageTable = Shape16(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_34,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape19 appUsageTagRuleTable = Shape19(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_tag_rule_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_32,
+          _column_9,
+          _column_14,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 appUsageTagTable = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_8,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape30 appUsageTimeRecordTable = Shape30(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_8,
+          _column_7,
+          _column_57,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape32 habitRecordTable = Shape32(
+      source: i0.VersionedTable(
+        entityName: 'habit_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_11,
+          _column_58,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape33 habitTable = Shape33(
+      source: i0.VersionedTable(
+        entityName: 'habit_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_10,
+          _column_18,
+          _column_46,
+          _column_41,
+          _column_42,
+          _column_43,
+          _column_54,
+          _column_55,
+          _column_56,
+          _column_59,
+          _column_38,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape3 habitTagTable = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'habit_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_11,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape35 habitTimeRecordTable = Shape35(
+      source: i0.VersionedTable(
+        entityName: 'habit_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_60,
+          _column_7,
+          _column_61,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape23 noteTable = Shape23(
+      source: i0.VersionedTable(
+        entityName: 'note_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_13,
+          _column_39,
+          _column_38,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape24 noteTagTable = Shape24(
+      source: i0.VersionedTable(
+        entityName: 'note_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_40,
+          _column_9,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 settingTable = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'setting_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_25,
+          _column_26,
+          _column_27,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape20 syncDeviceTable = Shape20(
+      source: i0.VersionedTable(
+        entityName: 'sync_device_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_28,
+          _column_29,
+          _column_35,
+          _column_36,
+          _column_30,
+          _column_31,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape7 tagTable = Shape7(
+      source: i0.VersionedTable(
+        entityName: 'tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_6,
+          _column_22,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 tagTagTable = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'tag_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_23,
+          _column_24,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape28 taskTable = Shape28(
+      source: i0.VersionedTable(
+        entityName: 'task_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_37,
+          _column_13,
+          _column_14,
+          _column_15,
+          _column_16,
+          _column_17,
+          _column_18,
+          _column_20,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_38,
+          _column_44,
+          _column_45,
+          _column_47,
+          _column_48,
+          _column_49,
+          _column_50,
+          _column_51,
+          _column_52,
+          _column_53,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape6 taskTagTable = Shape6(
+      source: i0.VersionedTable(
+        entityName: 'task_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_21,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape12 taskTimeRecordTable = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'task_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_21,
+          _column_7,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+}
+
+class Shape35 extends i0.VersionedTable {
+  Shape35({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id => columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get createdDate => columnsByName['created_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get modifiedDate => columnsByName['modified_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get deletedDate => columnsByName['deleted_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get habitId => columnsByName['habit_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get duration => columnsByName['duration']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<DateTime> get occurredAt => columnsByName['occurred_at']! as i1.GeneratedColumn<DateTime>;
+}
+
+i1.GeneratedColumn<String> _column_60(String aliasedName) => i1.GeneratedColumn<String>('habit_id', aliasedName, false,
+    type: i1.DriftSqlType.string,
+    defaultConstraints: i1.GeneratedColumn.constraintIsAlways('REFERENCES habit_table (id) ON DELETE CASCADE'));
+i1.GeneratedColumn<DateTime> _column_61(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('occurred_at', aliasedName, true, type: i1.DriftSqlType.dateTime);
+
+final class Schema26 extends i0.VersionedSchema {
+  Schema26({required super.database}) : super(version: 26);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    appUsageIgnoreRuleTable,
+    appUsageTable,
+    appUsageTagRuleTable,
+    appUsageTagTable,
+    appUsageTimeRecordTable,
+    habitRecordTable,
+    habitTable,
+    habitTagTable,
+    habitTimeRecordTable,
+    noteTable,
+    noteTagTable,
+    settingTable,
+    syncDeviceTable,
+    tagTable,
+    tagTagTable,
+    taskTable,
+    taskTagTable,
+    taskTimeRecordTable,
+  ];
+  late final Shape18 appUsageIgnoreRuleTable = Shape18(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_ignore_rule_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_32,
+          _column_14,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape16 appUsageTable = Shape16(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_34,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape19 appUsageTagRuleTable = Shape19(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_tag_rule_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_32,
+          _column_9,
+          _column_14,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 appUsageTagTable = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_8,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape30 appUsageTimeRecordTable = Shape30(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_8,
+          _column_7,
+          _column_57,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape32 habitRecordTable = Shape32(
+      source: i0.VersionedTable(
+        entityName: 'habit_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_11,
+          _column_58,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape33 habitTable = Shape33(
+      source: i0.VersionedTable(
+        entityName: 'habit_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_10,
+          _column_18,
+          _column_46,
+          _column_41,
+          _column_42,
+          _column_43,
+          _column_54,
+          _column_55,
+          _column_56,
+          _column_59,
+          _column_38,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape3 habitTagTable = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'habit_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_11,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape35 habitTimeRecordTable = Shape35(
+      source: i0.VersionedTable(
+        entityName: 'habit_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_60,
+          _column_7,
+          _column_61,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape23 noteTable = Shape23(
+      source: i0.VersionedTable(
+        entityName: 'note_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_13,
+          _column_39,
+          _column_38,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape24 noteTagTable = Shape24(
+      source: i0.VersionedTable(
+        entityName: 'note_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_40,
+          _column_9,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 settingTable = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'setting_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_25,
+          _column_26,
+          _column_27,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape20 syncDeviceTable = Shape20(
+      source: i0.VersionedTable(
+        entityName: 'sync_device_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_28,
+          _column_29,
+          _column_35,
+          _column_36,
+          _column_30,
+          _column_31,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape7 tagTable = Shape7(
+      source: i0.VersionedTable(
+        entityName: 'tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_6,
+          _column_22,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 tagTagTable = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'tag_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_23,
+          _column_24,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape28 taskTable = Shape28(
+      source: i0.VersionedTable(
+        entityName: 'task_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_37,
+          _column_13,
+          _column_14,
+          _column_15,
+          _column_16,
+          _column_17,
+          _column_18,
+          _column_20,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_38,
+          _column_44,
+          _column_45,
+          _column_47,
+          _column_48,
+          _column_49,
+          _column_50,
+          _column_51,
+          _column_52,
+          _column_53,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape6 taskTagTable = Shape6(
+      source: i0.VersionedTable(
+        entityName: 'task_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_21,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape12 taskTimeRecordTable = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'task_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_21,
+          _column_7,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+}
+
+final class Schema27 extends i0.VersionedSchema {
+  Schema27({required super.database}) : super(version: 27);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    appUsageIgnoreRuleTable,
+    appUsageTable,
+    appUsageTagRuleTable,
+    appUsageTagTable,
+    appUsageTimeRecordTable,
+    habitRecordTable,
+    habitTable,
+    habitTagTable,
+    habitTimeRecordTable,
+    noteTable,
+    noteTagTable,
+    settingTable,
+    syncDeviceTable,
+    tagTable,
+    tagTagTable,
+    taskTable,
+    taskTagTable,
+    taskTimeRecordTable,
+  ];
+  late final Shape18 appUsageIgnoreRuleTable = Shape18(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_ignore_rule_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_32,
+          _column_14,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape16 appUsageTable = Shape16(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_5,
+          _column_6,
+          _column_34,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape19 appUsageTagRuleTable = Shape19(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_tag_rule_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_32,
+          _column_9,
+          _column_14,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 appUsageTagTable = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_8,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape30 appUsageTimeRecordTable = Shape30(
+      source: i0.VersionedTable(
+        entityName: 'app_usage_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_8,
+          _column_7,
+          _column_57,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape32 habitRecordTable = Shape32(
+      source: i0.VersionedTable(
+        entityName: 'habit_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_11,
+          _column_58,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape33 habitTable = Shape33(
+      source: i0.VersionedTable(
+        entityName: 'habit_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_10,
+          _column_18,
+          _column_46,
+          _column_41,
+          _column_42,
+          _column_43,
+          _column_54,
+          _column_55,
+          _column_56,
+          _column_59,
+          _column_38,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape3 habitTagTable = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'habit_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_11,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape36 habitTimeRecordTable = Shape36(
+      source: i0.VersionedTable(
+        entityName: 'habit_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_60,
+          _column_7,
+          _column_61,
+          _column_62,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape23 noteTable = Shape23(
+      source: i0.VersionedTable(
+        entityName: 'note_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_13,
+          _column_39,
+          _column_38,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape24 noteTagTable = Shape24(
+      source: i0.VersionedTable(
+        entityName: 'note_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_40,
+          _column_9,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 settingTable = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'setting_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_25,
+          _column_26,
+          _column_27,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape20 syncDeviceTable = Shape20(
+      source: i0.VersionedTable(
+        entityName: 'sync_device_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_28,
+          _column_29,
+          _column_35,
+          _column_36,
+          _column_30,
+          _column_31,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape7 tagTable = Shape7(
+      source: i0.VersionedTable(
+        entityName: 'tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_4,
+          _column_6,
+          _column_22,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 tagTagTable = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'tag_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_23,
+          _column_24,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape28 taskTable = Shape28(
+      source: i0.VersionedTable(
+        entityName: 'task_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_37,
+          _column_13,
+          _column_14,
+          _column_15,
+          _column_16,
+          _column_17,
+          _column_18,
+          _column_20,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_38,
+          _column_44,
+          _column_45,
+          _column_47,
+          _column_48,
+          _column_49,
+          _column_50,
+          _column_51,
+          _column_52,
+          _column_53,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape6 taskTagTable = Shape6(
+      source: i0.VersionedTable(
+        entityName: 'task_tag_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+          _column_21,
+          _column_9,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape12 taskTimeRecordTable = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'task_time_record_table',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_21,
+          _column_7,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+}
+
+class Shape36 extends i0.VersionedTable {
+  Shape36({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id => columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get createdDate => columnsByName['created_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get modifiedDate => columnsByName['modified_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get deletedDate => columnsByName['deleted_date']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get habitId => columnsByName['habit_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get duration => columnsByName['duration']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<DateTime> get occurredAt => columnsByName['occurred_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<bool> get isEstimated => columnsByName['is_estimated']! as i1.GeneratedColumn<bool>;
+}
+
+i1.GeneratedColumn<bool> _column_62(String aliasedName) => i1.GeneratedColumn<bool>('is_estimated', aliasedName, false,
+    type: i1.DriftSqlType.bool,
+    defaultConstraints: i1.GeneratedColumn.constraintIsAlways('CHECK ("is_estimated" IN (0, 1))'),
+    defaultValue: const CustomExpression('0'));
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -7835,6 +9061,9 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema22 schema) from21To22,
   required Future<void> Function(i1.Migrator m, Schema23 schema) from22To23,
   required Future<void> Function(i1.Migrator m, Schema24 schema) from23To24,
+  required Future<void> Function(i1.Migrator m, Schema25 schema) from24To25,
+  required Future<void> Function(i1.Migrator m, Schema26 schema) from25To26,
+  required Future<void> Function(i1.Migrator m, Schema27 schema) from26To27,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -7953,6 +9182,21 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from23To24(migrator, schema);
         return 24;
+      case 24:
+        final schema = Schema25(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from24To25(migrator, schema);
+        return 25;
+      case 25:
+        final schema = Schema26(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from25To26(migrator, schema);
+        return 26;
+      case 26:
+        final schema = Schema27(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from26To27(migrator, schema);
+        return 27;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -7983,6 +9227,9 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema22 schema) from21To22,
   required Future<void> Function(i1.Migrator m, Schema23 schema) from22To23,
   required Future<void> Function(i1.Migrator m, Schema24 schema) from23To24,
+  required Future<void> Function(i1.Migrator m, Schema25 schema) from24To25,
+  required Future<void> Function(i1.Migrator m, Schema26 schema) from25To26,
+  required Future<void> Function(i1.Migrator m, Schema27 schema) from26To27,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
@@ -8009,4 +9256,7 @@ i1.OnUpgrade stepByStep({
       from21To22: from21To22,
       from22To23: from22To23,
       from23To24: from23To24,
+      from24To25: from24To25,
+      from25To26: from25To26,
+      from26To27: from26To27,
     ));

@@ -14,8 +14,8 @@ class HabitCalendarView extends StatefulWidget {
   final String habitId;
   final DateTime currentMonth;
   final List<HabitRecordListItem> records;
-  final Function(String) onDeleteRecord;
   final Function(String, DateTime) onCreateRecord;
+  final Function(DateTime) onDeleteAllRecordsForDay;
   final Function() onPreviousMonth;
   final Function() onNextMonth;
   final VoidCallback? onRecordChanged;
@@ -30,8 +30,8 @@ class HabitCalendarView extends StatefulWidget {
     required this.habitId,
     required this.currentMonth,
     required this.records,
-    required this.onDeleteRecord,
     required this.onCreateRecord,
+    required this.onDeleteAllRecordsForDay,
     required this.onPreviousMonth,
     required this.onNextMonth,
     this.onRecordChanged,
@@ -249,10 +249,8 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
                 // Custom goal behavior - use daily target logic
                 if (dailyCompletionCount > 0 && dailyCompletionCount >= widget.dailyTarget) {
                   // If daily goal is met, remove ALL records for this day (reset to 0)
-                  final recordsForDay = widget.records.where((record) => _isSameDay(record.date, date)).toList();
-                  for (final record in recordsForDay) {
-                    await widget.onDeleteRecord(record.id);
-                  }
+                  await widget.onDeleteAllRecordsForDay(date);
+                  _soundPlayer.play(SharedSounds.done, volume: 1.0);
                 } else {
                   // Add a new record
                   await widget.onCreateRecord(widget.habitId, date);
@@ -263,10 +261,7 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
                 // (handles case where multiple records exist from when custom goals were enabled)
                 if (hasRecords) {
                   // Remove ALL records for this day
-                  final recordsForDay = widget.records.where((record) => _isSameDay(record.date, date)).toList();
-                  for (final record in recordsForDay) {
-                    await widget.onDeleteRecord(record.id);
-                  }
+                  await widget.onDeleteAllRecordsForDay(date);
                 } else {
                   // Add a new record
                   await widget.onCreateRecord(widget.habitId, date);

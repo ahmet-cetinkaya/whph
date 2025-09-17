@@ -224,6 +224,16 @@ tasks:
       complete_title: Pomodoro Complete
       tap_to_open: Tap to open
       timer_running: Timer running
+  timer:
+    mode:
+      title: Timer Mode
+      description: Choose between Pomodoro technique, countdown timer, or stopwatch
+      normal: Normal Timer
+      pomodoro: Pomodoro
+      stopwatch: Stopwatch
+    settings:
+      duration_label: Timer Duration
+      duration_title: Duration
   priorities:
     not_urgent_important: Not Urgent but Important
     not_urgent_not_important: Not Urgent or Important
@@ -306,6 +316,21 @@ tasks:
     oneHourBefore: 1 hour before
     plannedReminderLabel: Planned Date Reminder
   task_details: Task Details
+  time_logging:
+    dialog_title: Log Time
+    mode: Logging Mode
+    add_time: Add Time
+    set_total: Set Total
+    date: Date
+    duration: Duration to Add
+    total_time: Total Time for Day
+    hours: Hours
+    minutes: Minutes
+    add_time_description: Add the specified time to existing records
+    set_total_description: Set the total time for the selected day
+    log_time: Log Time
+    invalid_input: Please enter valid hours and minutes
+    cancel: Cancel
   title: Tasks
   tooltips:
     clear_date: Clear date

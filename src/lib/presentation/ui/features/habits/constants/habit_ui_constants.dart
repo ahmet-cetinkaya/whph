@@ -27,7 +27,21 @@ class HabitUiConstants {
   static const double gridSpacing = 4.0;
 
   // Options
-  static const List<int> defaultEstimatedTimeOptions = [5, 10, 15, 20, 25, 30, 45, 60, 90, 120, 180, 240];
+  static const int defaultEstimatedTime = 10;
+  static const List<int> defaultEstimatedTimeOptions = [
+    5,
+    defaultEstimatedTime,
+    15,
+    20,
+    25,
+    30,
+    45,
+    60,
+    90,
+    120,
+    180,
+    240
+  ];
 
   // Utility Methods
   static String formatRecordCount(int count) {

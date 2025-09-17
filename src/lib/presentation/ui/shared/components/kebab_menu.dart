@@ -22,16 +22,19 @@ class KebabMenu extends StatelessWidget {
   /// Callback for handling additional menu item selections
   final void Function(String value)? onMenuItemSelected;
 
+  final Color? iconColor;
+
   final _translationService = container.resolve<ITranslationService>();
 
-  KebabMenu({
-    super.key,
-    this.helpTitleKey,
-    this.helpMarkdownContentKey,
-    this.showHelp,
-    this.additionalMenuItems,
-    this.onMenuItemSelected,
-  }) : assert(
+  KebabMenu(
+      {super.key,
+      this.helpTitleKey,
+      this.helpMarkdownContentKey,
+      this.showHelp,
+      this.additionalMenuItems,
+      this.onMenuItemSelected,
+      this.iconColor})
+      : assert(
           (helpTitleKey != null && helpMarkdownContentKey != null) || showHelp == false,
           'helpTitleKey and helpMarkdownContentKey must be provided if help is enabled',
         );
@@ -51,7 +54,7 @@ class KebabMenu extends StatelessWidget {
     }
 
     return PopupMenuButton<String>(
-      icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.primary),
+      icon: Icon(Icons.more_vert, color: iconColor ?? Theme.of(context).colorScheme.primary),
       onSelected: (value) {
         switch (value) {
           case 'show_help':

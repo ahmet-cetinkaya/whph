@@ -175,6 +175,10 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   // Help
   static const String helpTooltip = 'shared.help.tooltip';
 
+  // Timer
+  static const String normalTimer = 'shared.timer.normal';
+  static const String pomodoroTimer = 'shared.timer.pomodoro';
+
   // Sections
   static const String specialFiltersLabel = 'shared.sections.special_filters';
   static const String tagsLabel = 'shared.sections.tags';
@@ -223,6 +227,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String selectDateTimeTitle = 'shared.datepicker.select_date_time_title';
   static const String selectDateRangeTitle = 'shared.datepicker.select_date_range_title';
   static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
+
+  static const String date = 'shared.date';
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {

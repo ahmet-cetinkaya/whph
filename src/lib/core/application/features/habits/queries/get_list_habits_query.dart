@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
@@ -12,6 +13,7 @@ enum HabitSortFields {
   createdDate,
   modifiedDate,
   estimatedTime,
+  actualTime,
   archivedDate,
 }
 
@@ -48,6 +50,7 @@ class HabitListItem {
   String name;
   List<TagListItem> tags;
   int? estimatedTime;
+  int? actualTime; // Total logged time in minutes
   bool hasReminder;
   String? reminderTime;
   List<int> reminderDays;
@@ -63,6 +66,7 @@ class HabitListItem {
     required this.name,
     this.tags = const [],
     this.estimatedTime,
+    this.actualTime,
     this.hasReminder = false,
     this.reminderTime,
     this.reminderDays = const [],
@@ -89,16 +93,19 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   late final IHabitTagsRepository _habitTagsRepository;
   late final ITagRepository _tagRepository;
   late final IHabitRecordRepository _habitRecordRepository;
+  late final IHabitTimeRecordRepository _habitTimeRecordRepository;
 
   GetListHabitsQueryHandler({
     required IHabitRepository habitRepository,
     required IHabitTagsRepository habitTagRepository,
     required ITagRepository tagRepository,
     required IHabitRecordRepository habitRecordRepository,
+    required IHabitTimeRecordRepository habitTimeRecordRepository,
   })  : _habitRepository = habitRepository,
         _habitTagsRepository = habitTagRepository,
         _tagRepository = tagRepository,
-        _habitRecordRepository = habitRecordRepository;
+        _habitRecordRepository = habitRecordRepository,
+        _habitTimeRecordRepository = habitTimeRecordRepository;
 
   @override
   Future<GetListHabitsQueryResponse> call(GetListHabitsQuery request) async {
@@ -169,15 +176,21 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       }
     }
 
+    // Fetch actual time for all habits in a single batch query
+    final habitIdsForTimeQuery = filteredHabits.map((habit) => habit.id).toList();
+    final habitActualTimeMap = await _habitTimeRecordRepository.getTotalDurationsByHabitIds(habitIdsForTimeQuery);
+
     // Create habit items with their tags
     for (final habit in filteredHabits) {
       final tagItems = habitTagsMap.containsKey(habit.id) ? habitTagsMap[habit.id]! : <TagListItem>[];
+      final actualTime = habitActualTimeMap[habit.id] ?? 0;
 
       habitItems.add(HabitListItem(
         id: habit.id,
         name: habit.name,
         tags: tagItems,
         estimatedTime: habit.estimatedTime,
+        actualTime: actualTime > 0 ? (actualTime / 60).round() : null,
         hasReminder: habit.hasReminder,
         reminderTime: habit.reminderTime,
         reminderDays: habit.getReminderDaysAsList(),
@@ -189,6 +202,8 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         periodDays: habit.periodDays,
       ));
     }
+
+    // Database-level sorting for actualTime is now implemented in DriftHabitRepository
 
     return GetListHabitsQueryResponse(
       items: habitItems,
@@ -293,6 +308,9 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
       } else if (option.field == HabitSortFields.estimatedTime) {
         customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
+      } else if (option.field == HabitSortFields.actualTime) {
+        // actualTime sorting is now handled at the database level with LEFT JOIN
+        customOrders.add(CustomOrder(field: "actual_time", direction: option.direction));
       } else if (option.field == HabitSortFields.archivedDate) {
         customOrders.add(CustomOrder(field: "archived_date", direction: option.direction));
       }
