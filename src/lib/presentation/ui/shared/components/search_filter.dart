@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
@@ -33,6 +34,7 @@ class _SearchFilterState extends State<SearchFilter> {
   final TextEditingController _controller = TextEditingController();
   final _translationService = container.resolve<ITranslationService>();
   bool _isExpanded = false;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _SearchFilterState extends State<SearchFilter> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -57,18 +60,30 @@ class _SearchFilterState extends State<SearchFilter> {
   void didUpdateWidget(SearchFilter oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Update text controller when initialValue changes from parent
-    if (widget.initialValue != oldWidget.initialValue && widget.initialValue != _controller.text) {
-      // Preserve cursor position when updating text
-      final currentSelection = _controller.selection;
-      _controller.value = TextEditingValue(
-        text: widget.initialValue ?? '',
-        selection: currentSelection.isValid && (widget.initialValue?.length ?? 0) >= currentSelection.end
-            ? currentSelection
-            : TextSelection.collapsed(offset: widget.initialValue?.length ?? 0),
-      );
-      // Don't trigger onSearch here, as it would cause a loop
+    // Only update text controller when initialValue changes from parent AND the user isn't currently typing
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text &&
+        !_isExpanded) {
+      // Only update when search is collapsed to avoid interfering with user input
+      _controller.text = widget.initialValue ?? '';
     }
+  }
+
+  void _onSearchTextChanged(String value) {
+    // Cancel any existing timer
+    _debounceTimer?.cancel();
+
+    // Set up a new timer for debouncing
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
+
+      // Only search if the text has at least 2 characters or is empty (for clearing)
+      if (value.isEmpty) {
+        widget.onSearch(null);
+      } else if (value.length >= 2) {
+        widget.onSearch(value);
+      }
+    });
   }
 
   void _toggleSearch() {
@@ -77,15 +92,11 @@ class _SearchFilterState extends State<SearchFilter> {
       if (_isExpanded) {
         // When expanding, if there's an initial value, trigger search
         if (_controller.text.isNotEmpty) {
-          widget.onSearch(_controller.text);
-
-          // Set cursor at the end of text for better editing experience
-          Future.microtask(() {
-            _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
-          });
+          _onSearchTextChanged(_controller.text);
         }
       } else {
         // When collapsing, clear the search
+        _debounceTimer?.cancel();
         _controller.clear();
         widget.onSearch(null);
       }
@@ -130,18 +141,7 @@ class _SearchFilterState extends State<SearchFilter> {
                   ),
                   fillColor: AppTheme.surface1,
                 ),
-                onChanged: (value) {
-                  // Always call onSearch with the current value, even if it's empty
-                  widget.onSearch(value.isEmpty ? null : value);
-                },
-                // Prevent text selection on focus
-                onTap: () {
-                  if (_controller.selection.start == 0 &&
-                      _controller.selection.end == _controller.text.length &&
-                      _controller.text.isNotEmpty) {
-                    _controller.selection = TextSelection.collapsed(offset: _controller.text.length);
-                  }
-                },
+                onChanged: _onSearchTextChanged,
               ),
             )
           : FilterIconButton(

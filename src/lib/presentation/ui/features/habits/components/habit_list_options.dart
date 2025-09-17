@@ -340,7 +340,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                 // Search filter
                 if (widget.showSearchFilter && widget.onSearchChange != null)
                   SearchFilter(
-                    key: ValueKey<String?>(lastSearchQuery),
                     initialValue: lastSearchQuery,
                     onSearch: _onSearchChanged,
                     placeholder: _translationService.translate(SharedTranslationKeys.searchPlaceholder),

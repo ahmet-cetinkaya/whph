@@ -378,9 +378,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
             physics: const NeverScrollableScrollPhysics(),
             styleSheet: MarkdownStyleSheet(
               p: theme.textTheme.bodyMedium?.copyWith(
-                color: text.isEmpty
-                    ? theme.colorScheme.onSurface.withValues(alpha: 0.6)
-                    : theme.colorScheme.onSurface,
+                color: text.isEmpty ? theme.colorScheme.onSurface.withValues(alpha: 0.6) : theme.colorScheme.onSurface,
                 height: 1.5,
               ),
               h1: theme.textTheme.displayLarge?.copyWith(
