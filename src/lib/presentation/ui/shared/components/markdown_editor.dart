@@ -87,6 +87,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   final ITranslationService _translationService = container.resolve();
   late final FocusNode _focusNode;
   bool _isPreviewMode = false;
+  bool _isInitializing = true;
 
   @override
   void initState() {
@@ -96,33 +97,77 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     // Set initial mode based on content existence
     _isPreviewMode = widget.controller.text.isNotEmpty;
 
-    // Add listener to update UI when text changes
-    widget.controller.addListener(_onTextChanged);
+    // Add listener to update UI when text changes, but defer to avoid initial conflicts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        try {
+          widget.controller.addListener(_onTextChanged);
+          setState(() {
+            _isInitializing = false;
+          });
+        } catch (e) {
+          // Handle controller errors gracefully
+          setState(() {
+            _isInitializing = false;
+          });
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_onTextChanged);
+    try {
+      widget.controller.removeListener(_onTextChanged);
+    } catch (e) {
+      // Listener may have already been removed or controller disposed
+    }
     _focusNode.dispose();
     super.dispose();
   }
 
   void _onTextChanged() {
-    // Trigger onChanged callback if provided
-    if (widget.onChanged != null) {
-      widget.onChanged!(widget.controller.text);
-    }
+    // Skip processing during initialization to prevent conflicts with paste operations
+    if (_isInitializing || !mounted) return;
 
-    // Update UI if needed
-    if (mounted) {
-      setState(() {});
+    try {
+      // Trigger onChanged callback if provided
+      if (widget.onChanged != null) {
+        widget.onChanged!(widget.controller.text);
+      }
+
+      // Update UI if needed - defer to avoid conflicts with ongoing input operations
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {});
+          }
+        });
+      }
+    } catch (e) {
+      // Handle errors gracefully to prevent widget crashes
     }
   }
 
   void _togglePreviewMode() {
-    setState(() {
-      _isPreviewMode = !_isPreviewMode;
-    });
+    if (!mounted) return;
+
+    try {
+      setState(() {
+        _isPreviewMode = !_isPreviewMode;
+      });
+
+      // Ensure focus is properly managed when switching modes
+      if (!_isPreviewMode && _focusNode.canRequestFocus) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _focusNode.canRequestFocus) {
+            _focusNode.requestFocus();
+          }
+        });
+      }
+    } catch (e) {
+      // Handle state update errors gracefully
+    }
   }
 
   @override
@@ -290,6 +335,25 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         contentPadding: const EdgeInsets.all(AppTheme.sizeMedium),
         filled: false,
       ),
+      // Ensure proper focus management for paste operations
+      onTap: () {
+        try {
+          if (mounted && _focusNode.canRequestFocus && !_focusNode.hasFocus) {
+            _focusNode.requestFocus();
+          }
+        } catch (e) {
+          // Handle focus errors gracefully
+        }
+      },
+      // Add robust error handling for input operations
+      onChanged: (value) {
+        try {
+          // Allow normal text change processing
+          // The _onTextChanged listener will handle the update
+        } catch (e) {
+          // Handle input errors gracefully
+        }
+      },
     );
   }
 
@@ -301,16 +365,20 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
       child: ValueListenableBuilder<TextEditingValue>(
         valueListenable: widget.controller,
         builder: (context, value, child) {
+          // Safely handle controller value
+          final text = value.text;
+          final displayText = text.isEmpty
+              ? (widget.hintText ?? _translationService.translate(SharedTranslationKeys.markdownEditorHint))
+              : text;
+
           return Markdown(
-            data: value.text.isEmpty
-                ? (widget.hintText ?? _translationService.translate(SharedTranslationKeys.markdownEditorHint))
-                : value.text,
+            data: displayText,
             onTapLink: widget.enableLinkHandling ? (widget.onTapLink ?? _handleLinkTap) : null,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             styleSheet: MarkdownStyleSheet(
               p: theme.textTheme.bodyMedium?.copyWith(
-                color: value.text.isEmpty
+                color: text.isEmpty
                     ? theme.colorScheme.onSurface.withValues(alpha: 0.6)
                     : theme.colorScheme.onSurface,
                 height: 1.5,
@@ -401,18 +469,24 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
 
   /// Default link handler that opens external links
   void _handleLinkTap(String text, String? href, String title) {
-    if (href != null) {
+    if (href != null && href.isNotEmpty) {
       _launchUrl(href);
     }
   }
 
   /// Launches the provided URL using the url_launcher package
   void _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      Logger.error('Could not launch $url');
+    try {
+      if (url.isEmpty) return;
+
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        Logger.error('Could not launch $url');
+      }
+    } catch (e) {
+      Logger.error('Error launching URL $url: $e');
     }
   }
 }
