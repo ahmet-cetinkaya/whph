@@ -9,6 +9,7 @@ import 'package:whph/core/application/features/tasks/commands/update_task_order_
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_total_duration_by_task_id_query.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
@@ -32,7 +33,11 @@ void registerTasksFeature(
 
   mediator
     ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
-      () => SaveTaskCommandHandler(taskService: taskRepository, taskTagRepository: taskTagRepository),
+      () => SaveTaskCommandHandler(
+        taskService: taskRepository,
+        taskTagRepository: taskTagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
+      ),
     )
     ..registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse, DeleteTaskCommandHandler>(
       () => DeleteTaskCommandHandler(
@@ -74,5 +79,9 @@ void registerTasksFeature(
     )
     ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
       () => AddTaskTimeRecordCommandHandler(taskTimeRecordRepository: taskTimeRecordRepository),
+    )
+    ..registerHandler<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse,
+        GetTotalDurationByTaskIdQueryHandler>(
+      () => GetTotalDurationByTaskIdQueryHandler(taskTimeRecordRepository: taskTimeRecordRepository),
     );
 }

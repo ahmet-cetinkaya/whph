@@ -34,7 +34,8 @@ class TaskUiConstants {
   static const Color totalElapsedTimeColor = Colors.purple;
 
   // Time options
-  static const List<int> defaultEstimatedTimeOptions = [10, 30, 50, 90, 120];
+  static const int defaultEstimatedTime = 10;
+  static const List<int> defaultEstimatedTimeOptions = [defaultEstimatedTime, 30, 50, 90, 120];
 
   // Priority Colors & Tooltips
   static Color getPriorityColor(EisenhowerPriority? priority) {

@@ -125,4 +125,23 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String unarchiveHabitTooltip = 'habits.archive.unarchive_tooltip';
   static const String errorLoadingArchiveStatus = 'habits.errors.loading_archive_status';
   static const String errorTogglingArchive = 'habits.errors.toggling_archive';
+
+  // Time Logging
+  static const String timeLoggingDialogTitle = 'habits.time_logging.dialog_title';
+  static const String timeLoggingMode = 'habits.time_logging.mode';
+  static const String timeLoggingAddTime = 'habits.time_logging.add_time';
+  static const String timeLoggingSetTotal = 'habits.time_logging.set_total';
+  static const String timeLoggingDuration = 'habits.time_logging.duration';
+  static const String timeLoggingTotalTime = 'habits.time_logging.total_time';
+  static const String timeLoggingAddTimeDescription = 'habits.time_logging.add_time_description';
+  static const String timeLoggingSetTotalDescription = 'habits.time_logging.set_total_description';
+  static const String timeLoggingInvalidInput = 'habits.time_logging.invalid_input';
+  static const String elapsedTimeLabel = 'habits.details.elapsed_time';
+
+  // Timer
+  static const String timerLabel = 'habits.timer.label';
+  static const String actualTimeTooltip = 'habits.time_display.actual_time_tooltip';
+  static const String estimatedTimeTooltip = 'habits.time_display.estimated_time_tooltip';
+  static const String noTimeLoggedTooltip = 'habits.time_display.no_time_logged_tooltip';
+  static const String estimatedTime = 'habits.time_display.estimated';
 }

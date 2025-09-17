@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_repositor
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:acore/acore.dart' as acore;
 
 @UseRowClass(Habit)
 class HabitTable extends Table {
@@ -83,6 +84,91 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     });
   }
 
-  // No need to override getById and getList methods anymore
+  @override
+  Future<acore.PaginatedList<Habit>> getList(int pageIndex, int pageSize,
+      {bool includeDeleted = false,
+      acore.CustomWhereFilter? customWhereFilter,
+      List<acore.CustomOrder>? customOrder}) async {
+    // Check if sorting by actualTime is requested
+    final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
+
+    if (!hasActualTimeSort) {
+      // Use default implementation if no actualTime sorting
+      return super.getList(pageIndex, pageSize,
+          includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
+    }
+
+    // Build custom query with LEFT JOIN for actualTime sorting
+    List<String> whereClauses = [
+      if (customWhereFilter != null) "(${customWhereFilter.query})",
+      if (!includeDeleted) 'h.deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+
+    // Build ORDER BY clause with special handling for actual_time
+    String? orderByClause;
+    if (customOrder?.isNotEmpty == true) {
+      final orderClauses = customOrder!.map((order) {
+        if (order.field == "actual_time") {
+          return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else {
+          return "`h.${order.field}` IS NULL, `h.${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        }
+      }).join(', ');
+      orderByClause = ' ORDER BY $orderClauses ';
+    }
+
+    final query = database.customSelect(
+      """
+      SELECT h.*
+      FROM habit_table h
+      LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL
+      ${whereClause ?? ''}
+      GROUP BY h.id
+      ${orderByClause ?? ''}
+      LIMIT ? OFFSET ?
+      """,
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
+      readsFrom: {table, database.habitTimeRecordTable},
+    ).map((row) => table.map(row.data));
+    final result = await query.get();
+
+    // Get count using the same JOIN logic
+    final count = await database.customSelect(
+      """
+      SELECT COUNT(DISTINCT h.id) AS count
+      FROM habit_table h
+      LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL
+      ${whereClause ?? ''}
+      """,
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+      ],
+    ).getSingleOrNull();
+    final totalCount = count?.data['count'] as int? ?? 0;
+
+    return acore.PaginatedList(
+      items: await Future.wait(result.map((entity) => entity is Future<Habit> ? entity : Future.value(entity))),
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalItemCount: totalCount,
+    );
+  }
+
+  Variable _convertToQueryVariable(Object value) {
+    if (value is String) return Variable.withString(value);
+    if (value is int) return Variable.withInt(value);
+    if (value is double) return Variable.withReal(value);
+    if (value is bool) return Variable.withBool(value);
+    if (value is DateTime) return Variable.withDateTime(value);
+    if (value is List<int>) return Variable.withBlob(Uint8List.fromList(value));
+    return Variable(value);
+  }
+
+  // No need to override getById method anymore
   // The conversion between String and List<int> is handled automatically by Habit class
 }
