@@ -104,10 +104,7 @@ class GetTagTimesDataQueryHandler implements IRequestHandler<GetTagTimesDataQuer
     );
 
     // Sum up all the task times
-    int totalTime = 0;
-    for (final taskId in taskIds) {
-      totalTime += taskTimeMap[taskId] ?? 0;
-    }
+    int totalTime = taskTimeMap.values.fold(0, (prev, element) => prev + element);
 
     return totalTime;
   }

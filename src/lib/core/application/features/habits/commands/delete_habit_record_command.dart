@@ -35,11 +35,10 @@ class DeleteHabitRecordCommandHandler
     final startOfDay = DateTime.utc(date.year, date.month, date.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    final timeRecords = await _habitTimeRecordRepository.getAll(
-      customWhereFilter: CustomWhereFilter(
-        'habit_id = ? AND ((occurred_at >= ? AND occurred_at < ?) OR (occurred_at IS NULL AND created_date >= ? AND created_date < ?))',
-        [habitRecord.habitId, startOfDay, endOfDay, startOfDay, endOfDay]
-      )
+    final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
+      habitRecord.habitId,
+      startOfDay,
+      endOfDay,
     );
 
     for (final timeRecord in timeRecords) {

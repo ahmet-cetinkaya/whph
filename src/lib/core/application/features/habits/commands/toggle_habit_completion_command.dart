@@ -114,11 +114,11 @@ class ToggleHabitCompletionCommandHandler
       }
 
       // Remove all time records for the day
-      final timeRecordsFilter = CustomWhereFilter(
-        'habit_id = ? AND ((occurred_at >= ? AND occurred_at < ?) OR (occurred_at IS NULL AND created_date >= ? AND created_date < ?))',
-        [request.habitId, startOfDay, endOfDay, startOfDay, endOfDay]
+      final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
+        request.habitId,
+        startOfDay,
+        endOfDay,
       );
-      final timeRecords = await _habitTimeRecordRepository.getAll(customWhereFilter: timeRecordsFilter);
 
       for (final timeRecord in timeRecords) {
         await _habitTimeRecordRepository.delete(timeRecord);
