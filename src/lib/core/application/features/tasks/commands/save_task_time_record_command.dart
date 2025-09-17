@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
+import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
 
 class SaveTaskTimeRecordCommand implements IRequest<SaveTaskTimeRecordCommandResponse> {
@@ -52,18 +52,14 @@ class SaveTaskTimeRecordCommandHandler
 
     // Add new record if duration > 0
     if (request.duration > 0) {
-      // Use the start of the hour for the target date
-      final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
-
-      final taskTimeRecord = TaskTimeRecord(
-        id: KeyHelper.generateStringId(),
+      final record = await TaskTimeRecordService.setTotalDurationForTaskTimeRecord(
+        repository: _taskTimeRecordRepository,
         taskId: request.taskId,
-        duration: request.duration,
-        createdDate: startOfHour,
+        targetDate: targetDate,
+        totalDuration: request.duration,
       );
 
-      await _taskTimeRecordRepository.add(taskTimeRecord);
-      return SaveTaskTimeRecordCommandResponse(id: taskTimeRecord.id);
+      return SaveTaskTimeRecordCommandResponse(id: record.id);
     }
 
     return SaveTaskTimeRecordCommandResponse(id: KeyHelper.generateStringId());

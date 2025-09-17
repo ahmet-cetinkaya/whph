@@ -82,8 +82,10 @@ class DeleteHabitRecordCommandHandler
         final startOfDay = DateTime.utc(recordDate.year, recordDate.month, recordDate.day);
         final endOfDay = startOfDay.add(const Duration(days: 1));
 
+        // Find the most recent time record with sufficient duration on the same day
+        // Order by created_date DESC to get the most recent record first (deterministic)
         final sameDayFilter = CustomWhereFilter(
-          'habit_id = ? AND created_date >= ? AND created_date < ? AND duration >= ?',
+          'habit_id = ? AND created_date >= ? AND created_date < ? AND duration >= ? ORDER BY created_date DESC',
           [habitRecord.habitId, startOfDay, endOfDay, estimatedTimeInSeconds]
         );
 

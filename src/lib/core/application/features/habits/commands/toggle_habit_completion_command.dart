@@ -6,8 +6,8 @@ import 'package:whph/core/application/features/habits/services/i_habit_record_re
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:acore/acore.dart';
 
 class ToggleHabitCompletionCommand implements IRequest<ToggleHabitCompletionCommandResponse> {
@@ -60,9 +60,6 @@ class ToggleHabitCompletionCommandHandler
       1000, // Sufficient for a single day
     );
 
-    for (int i = 0; i < habitRecords.items.length; i++) {
-      final record = habitRecords.items[i];
-    }
 
     // Count records for the specific date
     final dailyCompletionCount = _countRecordsForDate(habitRecords.items, request.date);
@@ -147,32 +144,13 @@ class ToggleHabitCompletionCommandHandler
 
     // Handle time records for habits with estimated time
     if (habit.estimatedTime != null && habit.estimatedTime! > 0) {
-      final targetDate = occurredAt;
-      final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
-      final endOfHour = startOfHour.add(const Duration(hours: 1));
-
-      // Check if there's already a time record for this hour
-      final filter = CustomWhereFilter(
-          'habit_id = ? AND created_date >= ? AND created_date < ?', [habitId, startOfHour, endOfHour]);
-
-      final existingRecord = await _habitTimeRecordRepository.getFirst(filter);
-
-      if (existingRecord != null) {
-        // Add the estimated time to the existing record
-        existingRecord.duration = (existingRecord.duration + (habit.estimatedTime! * 60)).toInt();
-        await _habitTimeRecordRepository.update(existingRecord);
-      } else {
-        // Create a new time record
-        HabitTimeRecord timeRecord = HabitTimeRecord(
-          id: KeyHelper.generateStringId(),
-          createdDate: startOfHour, // Use hour bucket start time for consistency
-          habitId: habitId,
-          duration: (habit.estimatedTime! * 60).toInt(), // Use estimated time as duration
-          occurredAt: occurredAt, // Set when the time was actually logged
-        );
-        await _habitTimeRecordRepository.add(timeRecord);
-      }
-    } else {}
+      await HabitTimeRecordService.addDurationToHabitTimeRecord(
+        repository: _habitTimeRecordRepository,
+        habitId: habitId,
+        targetDate: occurredAt,
+        durationToAdd: (habit.estimatedTime! * 60).toInt(),
+      );
+    }
   }
 
   /// Delete all habit records for a day (includes proper time record management)
@@ -193,9 +171,6 @@ class ToggleHabitCompletionCommandHandler
       1000, // Sufficient for a single day
     );
 
-    for (int i = 0; i < habitRecords.items.length; i++) {
-      final record = habitRecords.items[i];
-    }
 
     // Get ALL time records for the habit and filter them by date manually
     // This ensures we catch all records for the day, regardless of how they were created
@@ -223,11 +198,6 @@ class ToggleHabitCompletionCommandHandler
       return isSameDayByCreatedDate;
     }).toList();
 
-    for (int i = 0; i < timeRecords.length; i++) {
-      final record = timeRecords[i];
-      final occurredAtLocal = record.occurredAt != null ? DateTimeHelper.toLocalDateTime(record.occurredAt!) : null;
-      final createdAtLocal = DateTimeHelper.toLocalDateTime(record.createdDate);
-    }
 
     // Delete all time records for the specified date
     for (int i = 0; i < timeRecords.length; i++) {
