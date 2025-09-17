@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
@@ -160,7 +161,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Log Time'), // TODO: Add proper translation key
+      title: Text(_getTranslation(TaskTranslationKeys.timeLoggingDialogTitle)),
       content: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
@@ -169,7 +170,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
           children: [
             // Mode selection
             Text(
-              'Mode', // TODO: Add proper translation key
+              _getTranslation(TaskTranslationKeys.timeLoggingMode),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -184,7 +185,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                         size: 16,
                       ),
                       const SizedBox(width: AppTheme.sizeSmall),
-                      const Text('Add Time'), // TODO: Add proper translation key
+                      Text(_getTranslation(TaskTranslationKeys.timeLoggingAddTime)),
                     ],
                   ),
                 ),
@@ -197,7 +198,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                         size: 16,
                       ),
                       const SizedBox(width: AppTheme.sizeSmall),
-                      const Text('Set Total'), // TODO: Add proper translation key
+                      Text(_getTranslation(TaskTranslationKeys.timeLoggingSetTotal)),
                     ],
                   ),
                 ),
@@ -214,8 +215,8 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             // Short description moved to top
             Text(
               _selectedMode == LoggingMode.addTime
-                  ? 'Add time to the existing total for this day' // TODO: Add proper translation key
-                  : 'Set the total time for this day (will adjust by the difference)', // TODO: Add proper translation key
+                  ? _getTranslation(TaskTranslationKeys.timeLoggingAddTimeDescription)
+                  : _getTranslation(TaskTranslationKeys.timeLoggingSetTotalDescription),
               style: AppTheme.bodySmall.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -240,7 +241,9 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
 
             // Time input
             Text(
-              _selectedMode == LoggingMode.addTime ? 'Duration' : 'Total Time', // TODO: Add proper translation key
+              _selectedMode == LoggingMode.addTime
+                  ? _getTranslation(TaskTranslationKeys.timeLoggingDuration)
+                  : _getTranslation(TaskTranslationKeys.timeLoggingTotalTime),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),

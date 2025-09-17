@@ -1012,7 +1012,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
             ),
             child: AppTimer(
-              onTick: _onHabitTimerTick,
+              onTimerStop: _onHabitTimerStop,
               isMiniLayout: true,
             ),
           ),
@@ -1348,23 +1348,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   // Refresh total duration and update the state
   Future<void> _refreshTotalDuration() async {
-    print('🔄 Refreshing total duration for habit ${widget.habitId}');
-    print('   Current total duration: ${_totalDuration}s');
     try {
       final newTotalDuration = await _getHabitTotalDuration();
-      print('   New total duration from query: ${newTotalDuration}s');
       if (mounted && _totalDuration != newTotalDuration) {
-        print('   Total duration changed, updating state');
         setState(() {
           _totalDuration = newTotalDuration;
         });
         _processFieldVisibility(); // Update field visibility when total duration changes
-        print('   ✅ Total duration updated successfully');
       } else {
-        print('   Total duration unchanged, no state update needed');
       }
     } catch (e) {
-      print('   ❌ Error getting total duration: $e');
       // Error getting total duration, keep existing value
     }
   }
@@ -1379,33 +1372,24 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           // Handle cancel if needed
         },
         onTimeLoggingSubmitted: (event) async {
-          print('🕒 Manual time logging submitted:');
-          print('   Entity ID: ${event.entityId}');
-          print('   Duration: ${event.durationInSeconds}s');
-          print('   Date: ${event.date}');
-          print('   Is set total mode: ${event.isSetTotalMode}');
 
           await AsyncErrorHandler.executeVoid(
             context: context,
             operation: () async {
               if (event.isSetTotalMode) {
                 // Set total duration for the day
-                print('📝 Sending SaveHabitTimeRecordCommand');
                 await _mediator.send(SaveHabitTimeRecordCommand(
                   habitId: event.entityId,
                   totalDuration: event.durationInSeconds,
                   targetDate: event.date,
                 ));
-                print('✅ SaveHabitTimeRecordCommand completed');
               } else {
                 // Add duration to existing
-                print('➕ Sending AddHabitTimeRecordCommand');
                 await _mediator.send(AddHabitTimeRecordCommand(
                   habitId: event.entityId,
                   duration: event.durationInSeconds,
                   customDateTime: event.date,
                 ));
-                print('✅ AddHabitTimeRecordCommand completed');
               }
             },
           );
@@ -1415,31 +1399,24 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     // If time was logged successfully, refresh the habit data
     if (result == true) {
-      print('📊 Time logging dialog completed successfully, refreshing habit data');
       await _getHabitStatisticsOnly();
       await _refreshTotalDuration(); // Refresh elapsed time after manual logging
-      print('✅ Habit data refresh completed after manual time logging');
     }
   }
 
   // Timer event handlers
-  int _lastElapsedDuration = 0;
-  void _onHabitTimerTick(Duration elapsed) {
+  void _onHabitTimerStop(Duration totalElapsed) {
     if (!mounted) return;
     if (_habit?.id == null) return;
 
-    final int durationForSave = elapsed.inSeconds - _lastElapsedDuration;
-    _lastElapsedDuration = elapsed.inSeconds;
-
-    print('⏱️ Timer tick for habit time logging:');
-    print('   Habit ID: ${_habit!.id}');
-    print('   Duration for save: ${durationForSave}s');
-    print('   Total elapsed: ${elapsed.inSeconds}s');
-    print('   Custom date time: ${DateTime.now()}');
-
-    final command =
-        AddHabitTimeRecordCommand(habitId: _habit!.id, duration: durationForSave, customDateTime: DateTime.now());
-    print('🚀 Sending AddHabitTimeRecordCommand from timer');
-    _mediator.send(command);
+    // Only save if there's actual time elapsed
+    if (totalElapsed.inSeconds > 0) {
+      final command = AddHabitTimeRecordCommand(
+        habitId: _habit!.id,
+        duration: totalElapsed.inSeconds,
+        customDateTime: DateTime.now()
+      );
+      _mediator.send(command);
+    }
   }
 }

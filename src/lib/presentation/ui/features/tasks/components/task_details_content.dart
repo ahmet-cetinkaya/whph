@@ -478,8 +478,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         // Third try: Use direct parsing without locale
         parsedDate ??= DateFormatService.parseDateTime(controller.text, assumeLocal: true);
 
-        // Fourth try: Custom parsing for common display formats
-        parsedDate ??= _parseCustomDateFormat(controller.text);
+        // If all DateFormatService attempts fail, the date is likely in an unsupported format
 
         final result = parsedDate != null ? DateTimeHelper.toUtcDateTime(parsedDate) : null;
 
@@ -504,117 +503,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
   }
 
-  // TODO
-  /// Custom date parsing for common display formats that might not be handled by DateFormatService
-  DateTime? _parseCustomDateFormat(String dateStr) {
-    if (dateStr.trim().isEmpty) return null;
-
-    try {
-      // Custom parsing attempt
-
-      // Handle Turkish format: "5 Ağu 2025 00:00" or "5 Ağu 2025"
-      // Use \S+ instead of \w+ to handle Turkish characters properly
-      final turkishFormat = RegExp(r'^(\d{1,2})\s+(\S+)\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
-      final turkishMatch = turkishFormat.firstMatch(dateStr.trim());
-
-      if (turkishMatch != null) {
-        final day = int.parse(turkishMatch.group(1)!);
-        final monthStr = turkishMatch.group(2)!.toLowerCase();
-        final year = int.parse(turkishMatch.group(3)!);
-        final hour = turkishMatch.group(4) != null ? int.parse(turkishMatch.group(4)!) : 0;
-        final minute = turkishMatch.group(5) != null ? int.parse(turkishMatch.group(5)!) : 0;
-
-        // Turkish format matched
-
-        // Turkish month mapping
-        const turkishMonths = {
-          'oca': 1,
-          'ocak': 1,
-          'şub': 2,
-          'şubat': 2,
-          'mar': 3,
-          'mart': 3,
-          'nis': 4,
-          'nisan': 4,
-          'may': 5,
-          'mayıs': 5,
-          'haz': 6,
-          'haziran': 6,
-          'tem': 7,
-          'temmuz': 7,
-          'ağu': 8,
-          'ağustos': 8,
-          'eyl': 9,
-          'eylül': 9,
-          'eki': 10,
-          'ekim': 10,
-          'kas': 11,
-          'kasım': 11,
-          'ara': 12,
-          'aralık': 12,
-        };
-
-        final month = turkishMonths[monthStr];
-        // Month lookup completed
-
-        if (month != null && day >= 1 && day <= 31) {
-          final result = DateTime(year, month, day, hour, minute);
-          // Custom Turkish parsing successful
-          return result;
-        }
-      }
-
-      // Handle other common formats like "Aug 5, 2025 14:30"
-      final englishFormat = RegExp(r'^(\S+)\s+(\d{1,2}),\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$');
-      final englishMatch = englishFormat.firstMatch(dateStr.trim());
-
-      if (englishMatch != null) {
-        final monthStr = englishMatch.group(1)!.toLowerCase();
-        final day = int.parse(englishMatch.group(2)!);
-        final year = int.parse(englishMatch.group(3)!);
-        final hour = englishMatch.group(4) != null ? int.parse(englishMatch.group(4)!) : 0;
-        final minute = englishMatch.group(5) != null ? int.parse(englishMatch.group(5)!) : 0;
-
-        // English month mapping
-        const englishMonths = {
-          'jan': 1,
-          'january': 1,
-          'feb': 2,
-          'february': 2,
-          'mar': 3,
-          'march': 3,
-          'apr': 4,
-          'april': 4,
-          'may': 5,
-          'jun': 6,
-          'june': 6,
-          'jul': 7,
-          'july': 7,
-          'aug': 8,
-          'august': 8,
-          'sep': 9,
-          'september': 9,
-          'oct': 10,
-          'october': 10,
-          'nov': 11,
-          'november': 11,
-          'dec': 12,
-          'december': 12,
-        };
-
-        final month = englishMonths[monthStr];
-        if (month != null && day >= 1 && day <= 31) {
-          return DateTime(year, month, day, hour, minute);
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error in custom date parsing: $e');
-      }
-    }
-
-    return null;
-  }
 
   /// Helper method to build save command with current form data
   SaveTaskCommand _buildSaveCommand() {
@@ -1453,23 +1341,25 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: AppTimer(
             isMiniLayout: true,
-            onTick: _onTaskTimerTick,
+            onTimerStop: _onTaskTimerStop,
           ),
         ),
       );
 
   // Timer event handlers
-  int _lastElapsedDuration = 0;
-  void _onTaskTimerTick(Duration elapsed) {
+  void _onTaskTimerStop(Duration totalElapsed) {
     if (!mounted) return;
     if (_task?.id == null) return;
 
-    final int durationForSave = elapsed.inSeconds - _lastElapsedDuration;
-    _lastElapsedDuration = elapsed.inSeconds;
-
-    final command =
-        AddTaskTimeRecordCommand(duration: durationForSave, taskId: _task!.id, customDateTime: DateTime.now());
-    _mediator.send(command);
-    _tasksService.notifyTaskUpdated(_task!.id);
+    // Only save if there's actual time elapsed
+    if (totalElapsed.inSeconds > 0) {
+      final command = AddTaskTimeRecordCommand(
+        duration: totalElapsed.inSeconds,
+        taskId: _task!.id,
+        customDateTime: DateTime.now()
+      );
+      _mediator.send(command);
+      _tasksService.notifyTaskUpdated(_task!.id);
+    }
   }
 }

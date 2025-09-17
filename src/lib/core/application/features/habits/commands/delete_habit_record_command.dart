@@ -55,7 +55,7 @@ class DeleteHabitRecordCommandHandler
       final endOfHour = startOfHour.add(const Duration(hours: 1));
 
       final hourFilter = CustomWhereFilter(
-          'habit_id = ? AND created_date >= ? AND created_date <= ?', [habitRecord.habitId, startOfHour, endOfHour]);
+          'habit_id = ? AND created_date >= ? AND created_date < ?', [habitRecord.habitId, startOfHour, endOfHour]);
 
       final hourRecord = await _habitTimeRecordRepository.getFirst(hourFilter);
 
@@ -76,18 +76,21 @@ class DeleteHabitRecordCommandHandler
       if (dailyRecord != null) {
         await _adjustOrDeleteTimeRecord(dailyRecord, estimatedTimeInSeconds);
       } else {
-        // Strategy 4: Find the most suitable time record to adjust
-        // This handles cases where time records were created on different days
-        final allTimeRecords = await _habitTimeRecordRepository.getByHabitId(habitRecord.habitId);
+        // Strategy 4: Find the most suitable time record to adjust on the same day
+        // This limits the search to the same day as the habit record to avoid deleting unrelated time data
+        final recordDate = habitRecord.occurredAt;
+        final startOfDay = DateTime.utc(recordDate.year, recordDate.month, recordDate.day);
+        final endOfDay = startOfDay.add(const Duration(days: 1));
 
-        if (allTimeRecords.isNotEmpty) {
-          // Find a time record that has at least the estimated duration
-          final suitableRecord =
-              allTimeRecords.where((record) => record.duration >= estimatedTimeInSeconds).firstOrNull;
+        final sameDayFilter = CustomWhereFilter(
+          'habit_id = ? AND created_date >= ? AND created_date < ? AND duration >= ?',
+          [habitRecord.habitId, startOfDay, endOfDay, estimatedTimeInSeconds]
+        );
 
-          if (suitableRecord != null) {
-            await _adjustOrDeleteTimeRecord(suitableRecord, estimatedTimeInSeconds);
-          }
+        final suitableRecord = await _habitTimeRecordRepository.getFirst(sameDayFilter);
+
+        if (suitableRecord != null) {
+          await _adjustOrDeleteTimeRecord(suitableRecord, estimatedTimeInSeconds);
         }
       }
     }

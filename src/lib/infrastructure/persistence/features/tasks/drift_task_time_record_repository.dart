@@ -63,6 +63,40 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
   }
 
   @override
+  Future<Map<String, int>> getTotalDurationsByTaskIds(
+    List<String> taskIds, {
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    if (taskIds.isEmpty) return {};
+
+    final placeholders = taskIds.map((_) => '?').join(',');
+    final query = database.customSelect(
+      '''
+      SELECT task_id, COALESCE(SUM(duration), 0) as total_duration
+      FROM task_time_record_table
+      WHERE task_id IN ($placeholders)
+        AND deleted_date IS NULL
+        ${startDate != null ? 'AND created_date >= ?' : ''}
+        ${endDate != null ? 'AND created_date < ?' : ''}
+      GROUP BY task_id
+      ''',
+      variables: [
+        ...taskIds.map((id) => Variable<String>(id)),
+        if (startDate != null) Variable<DateTime>(startDate),
+        if (endDate != null) Variable<DateTime>(endDate),
+      ],
+      readsFrom: {table},
+    );
+
+    final results = await query.get();
+    return {
+      for (final result in results)
+        result.read<String>('task_id'): result.read<int>('total_duration')
+    };
+  }
+
+  @override
   Future<List<TaskTimeRecord>> getByTaskId(String taskId) async {
     return (database.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
   }

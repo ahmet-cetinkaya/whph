@@ -109,4 +109,15 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       pageSize: tags.pageSize,
     );
   }
+
+  @override
+  Future<Map<String, Tag>> getByIds(List<String> tagIds) async {
+    if (tagIds.isEmpty) return {};
+
+    final query = database.select(table)
+      ..where((t) => t.id.isIn(tagIds) & t.deletedDate.isNull());
+
+    final tags = await query.get();
+    return {for (final tag in tags) tag.id: tag};
+  }
 }
