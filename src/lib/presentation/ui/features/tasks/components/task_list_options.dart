@@ -514,9 +514,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
 
                 // Search filter
                 if (widget.showSearchFilter && widget.onSearchChange != null)
-                  // Use key based on search value to force recreation when lastSearchQuery changes
                   SearchFilter(
-                    key: ValueKey<String?>(lastSearchQuery),
                     initialValue: lastSearchQuery ?? widget.search,
                     onSearch: _onSearchChanged,
                     placeholder: _translationService.translate(TaskTranslationKeys.searchTasksPlaceholder),

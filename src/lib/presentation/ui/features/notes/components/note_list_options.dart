@@ -267,7 +267,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                 // Search filter
                 if (widget.showSearchFilter && widget.onSearchChange != null)
                   SearchFilter(
-                    key: ValueKey<String?>(lastSearchQuery),
                     initialValue: lastSearchQuery ?? widget.search,
                     onSearch: _onSearchChanged,
                     placeholder: _translationService.translate(NoteTranslationKeys.searchPlaceholder),
