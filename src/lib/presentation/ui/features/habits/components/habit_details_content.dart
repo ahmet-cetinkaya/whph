@@ -213,8 +213,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             if (_descriptionController.text != _habit!.description) {
               _descriptionController.text = _habit!.description;
               // Don't restore selection if text changed
-            } else if (descriptionSelection.isValid) {
-              // Restore selection if text didn't change
+            } else if (descriptionSelection.isValid && _descriptionController.text.isNotEmpty) {
+              // Only restore selection if text didn't change and field has content
+              // Skip selection restoration for empty fields to avoid paste conflicts
               _descriptionController.selection = descriptionSelection;
             }
 
@@ -296,8 +297,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             if (_descriptionController.text != _habit!.description) {
               _descriptionController.text = _habit!.description;
               // Don't restore selection if text changed
-            } else if (descriptionSelection.isValid) {
-              // Restore selection if text didn't change
+            } else if (descriptionSelection.isValid && _descriptionController.text.isNotEmpty) {
+              // Only restore selection if text didn't change and field has content
+              // Skip selection restoration for empty fields to avoid paste conflicts
               _descriptionController.selection = descriptionSelection;
             }
 
