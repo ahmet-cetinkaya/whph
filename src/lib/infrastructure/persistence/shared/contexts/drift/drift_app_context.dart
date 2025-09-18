@@ -514,7 +514,17 @@ class AppDatabase extends _$AppDatabase {
                 'CREATE INDEX idx_habit_record_habit_occurred_at ON habit_record_table (habit_id, occurred_at)');
 
             // Step 6: Create HabitTimeRecord table for tracking actual time spent on habits
-            await m.createTable(habitTimeRecordTable);
+            await customStatement('''
+              CREATE TABLE habit_time_record_table (
+                id TEXT NOT NULL,
+                created_date INTEGER NOT NULL,
+                modified_date INTEGER NULL,
+                deleted_date INTEGER NULL,
+                habit_id TEXT NOT NULL,
+                duration INTEGER NOT NULL,
+                PRIMARY KEY (id)
+              )
+            ''');
 
             // Step 7: Add index for efficient queries by habit and date
             await customStatement(
@@ -540,12 +550,12 @@ class AppDatabase extends _$AppDatabase {
               await customStatement('DROP TABLE IF EXISTS habit_table;');
               await customStatement('''
                 CREATE TABLE habit_table (
-                  id TEXT NOT NULL PRIMARY KEY,
+                  id TEXT NOT NULL,
                   created_date INTEGER NOT NULL,
                   modified_date INTEGER NULL,
                   deleted_date INTEGER NULL,
                   name TEXT NOT NULL,
-                  description TEXT NULL,
+                  description TEXT NOT NULL,
                   estimated_time INTEGER NULL,
                   archived_date INTEGER NULL,
                   has_reminder INTEGER NOT NULL DEFAULT 0 CHECK (has_reminder IN (0, 1)),
@@ -555,7 +565,8 @@ class AppDatabase extends _$AppDatabase {
                   target_frequency INTEGER NOT NULL DEFAULT 1,
                   period_days INTEGER NOT NULL DEFAULT 7,
                   daily_target INTEGER NULL,
-                  `order` REAL NOT NULL DEFAULT 0.0
+                  `order` REAL NOT NULL DEFAULT 0.0,
+                  PRIMARY KEY (id)
                 );
               ''');
 
@@ -571,13 +582,14 @@ class AppDatabase extends _$AppDatabase {
               await customStatement('DROP TABLE IF EXISTS habit_time_record_table;');
               await customStatement('''
                 CREATE TABLE habit_time_record_table (
-                  id TEXT NOT NULL PRIMARY KEY,
+                  id TEXT NOT NULL,
                   created_date INTEGER NOT NULL,
                   modified_date INTEGER NULL,
                   deleted_date INTEGER NULL,
                   habit_id TEXT NOT NULL REFERENCES habit_table(id) ON DELETE CASCADE,
                   duration INTEGER NOT NULL,
-                  occurred_at INTEGER NULL
+                  occurred_at INTEGER NULL,
+                  PRIMARY KEY (id)
                 );
               ''');
 

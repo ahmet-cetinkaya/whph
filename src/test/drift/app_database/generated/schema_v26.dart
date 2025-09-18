@@ -1819,7 +1819,7 @@ class HabitTable extends Table with TableInfo<HabitTable, HabitTableData> {
   String get actualTableName => $name;
   static const String $name = 'habit_table';
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   HabitTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
