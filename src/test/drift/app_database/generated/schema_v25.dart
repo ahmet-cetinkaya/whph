@@ -2594,8 +2594,7 @@ class HabitTimeRecordTable extends Table with TableInfo<HabitTimeRecordTable, Ha
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   late final GeneratedColumn<String> habitId = GeneratedColumn<String>('habit_id', aliasedName, false,
       type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES habit_table (id) ON DELETE CASCADE'));
+      requiredDuringInsert: true);
   late final GeneratedColumn<int> duration =
       GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
   late final GeneratedColumn<DateTime> occurredAt = GeneratedColumn<DateTime>('occurred_at', aliasedName, true,
