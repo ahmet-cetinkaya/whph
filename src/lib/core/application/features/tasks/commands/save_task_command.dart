@@ -30,6 +30,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final DateTime? recurrenceStartDate;
   final DateTime? recurrenceEndDate;
   final int? recurrenceCount;
+  final String? recurrenceParentId;
 
   SaveTaskCommand({
     this.id,
@@ -51,6 +52,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     DateTime? recurrenceStartDate,
     DateTime? recurrenceEndDate,
     this.recurrenceCount,
+    this.recurrenceParentId,
   })  : plannedDate = plannedDate != null ? DateTimeHelper.toUtcDateTime(plannedDate) : null,
         deadlineDate = deadlineDate != null ? DateTimeHelper.toUtcDateTime(deadlineDate) : null,
         recurrenceStartDate = recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(recurrenceStartDate) : null,
@@ -127,6 +129,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.recurrenceStartDate = request.recurrenceStartDate;
         task.recurrenceEndDate = request.recurrenceEndDate;
         task.recurrenceCount = request.recurrenceCount;
+        if (request.recurrenceParentId != null) {
+          task.recurrenceParentId = request.recurrenceParentId;
+        }
       } else {
         // Clear recurrence settings if type is none
         task.recurrenceInterval = null;
@@ -173,7 +178,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           recurrenceInterval: request.recurrenceInterval,
           recurrenceStartDate: request.recurrenceStartDate,
           recurrenceEndDate: request.recurrenceEndDate,
-          recurrenceCount: request.recurrenceCount);
+          recurrenceCount: request.recurrenceCount,
+          recurrenceParentId: request.recurrenceParentId);
 
       if (request.recurrenceDays != null) {
         task.setRecurrenceDays(request.recurrenceDays);
