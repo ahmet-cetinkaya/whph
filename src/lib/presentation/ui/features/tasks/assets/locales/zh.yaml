@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: 预计时间
     is_completed: 已完成
+    parent_task:
+      label: 父任务
+      tooltip: 点击导航到父任务
     planned_date:
       label: 计划日期
     priority:
       label: 优先级
     sub_tasks:
       label: 子任务
-    parent_task:
-      label: 父任务
-      tooltip: 点击导航到父任务
     tags:
       hint: 选择要关联的标签
       label: 标签
@@ -186,10 +186,10 @@ tasks:
   new_task: 新任务
   no_tasks: 没有任务
   notifications:
-    deadline_message: "您的任务截止时间是 {time}"
-    deadline_title: "任务截止：{title}"
-    planned_message: "您的任务计划在 {time}"
-    reminder_title: "任务提醒：{title}"
+    deadline_message: 您的任务截止时间是 {time}
+    deadline_title: 任务截止：{title}
+    planned_message: 您的任务计划在 {time}
+    reminder_title: 任务提醒：{title}
   page:
     completed_tasks_title: 已完成任务
     title: 任务
@@ -199,7 +199,7 @@ tasks:
     notifications:
       break_completed: 休息会话已完成！
       long_break_completed: 长休息已完成！
-      time_remaining_prefix: "剩余时间："
+      time_remaining_prefix: 剩余时间：
       timer_completed: 计时器已完成！
       title: 番茄钟计时器
       work_completed: 工作会话已完成！
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: 自动开始选项
       auto_start_work: 休息后自动开始工作
       break_duration: 休息时长
+      keep_screen_awake: 会话期间保持屏幕唤醒
+      keep_screen_awake_section: 保持屏幕唤醒
       long_break_duration: 长休息时长
       sessions_before_long_break: 长休息前的会话数
       ticking_sound: 启用滴答声
       ticking_sound_section: 滴答声
       ticking_speed: 速度
       ticking_volume: 音量
-      keep_screen_awake_section: 保持屏幕唤醒
-      keep_screen_awake: 会话期间保持屏幕唤醒
       timer_label: 会话时长
       title: 计时器设置
       work_duration: 工作时长
@@ -256,12 +256,12 @@ tasks:
     title_hint: 请输入描述性的任务标题...
     title_placeholder: 需要做什么？
     tooltips:
-      deadline_date: "截止日期：{date}"
-      deadline_date_not_set: "截止日期：未设置"
-      estimated_time: "预计时间：{time}"
-      estimated_time_not_set: "预计时间：未设置"
-      planned_date: "计划日期：{date}"
-      planned_date_not_set: "计划日期：未设置"
+      deadline_date: 截止日期：{date}
+      deadline_date_not_set: 截止日期：未设置
+      estimated_time: 预计时间：{time}
+      estimated_time_not_set: 预计时间：未设置
+      planned_date: 计划日期：{date}
+      planned_date_not_set: 计划日期：未设置
   recurrence:
     count: 发生次数
     custom: 自定义
@@ -288,17 +288,15 @@ tasks:
       endsAfter: 结束于
       endsOnDate: 结束日期
       occurrences: 次
-      on: 于
+      true: 于
       everyDay: 每天
       starts: 开始
+      "on": "于"
     weekDays: 星期
     weekSuffix: 周
     weekly: 每周
     yearSuffix: 年
     yearly: 每年
-  validation:
-    deadline_time_invalid: 截止时间无效
-    deadline_cannot_be_before_planned: 截止日期必须在计划日期之后
   reminder:
     atTime: 在预定时间
     deadlineReminderLabel: 截止日期提醒
@@ -318,3 +316,6 @@ tasks:
     set_reminder: 设置提醒
     show_completed_tasks: 筛选已完成任务
     show_subtasks: 显示子任务
+  validation:
+    deadline_cannot_be_before_planned: 截止日期必须在计划日期之后
+    deadline_time_invalid: 截止时间无效

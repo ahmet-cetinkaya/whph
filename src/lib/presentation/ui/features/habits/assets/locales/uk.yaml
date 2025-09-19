@@ -9,7 +9,6 @@ habits:
     unarchive: Відновити з архіву
     unarchive_confirm: Ви впевнені, що хочете відновити цю звичку з архіву?
     unarchive_tooltip: Відновити цю звичку з архіву
-
   calendar:
     week_days:
       fri: Пт
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: Архівовано
     create_record_tooltip: Позначити як виконане сьогодні
+    daily_target: Щоденна частота
+    daily_target_hint: разів на день
     description: Опис
     estimated_time: Орієнтовний час
     estimated_time_not_set: Не встановлено
@@ -78,22 +79,20 @@ habits:
     statistics:
       archived_note: "Архівовано:"
       archived_on: Архівовано
-      archived_warning: "Статистика показана до дати архівування. {startDate} - {archivedDate}"
+      archived_warning: Статистика показана до дати архівування. {startDate} - {archivedDate}
+      completions: завершення
       from: Від
       monthly: Щомісяця
+      no_streaks_yet: Поки немає серій. Почніть будувати послідовність!
       overall: Загалом
       records: Записи
       score_trends: Тенденції балів
       to: До
       top_streaks: Топ серії
-      no_streaks_yet: Поки немає серій. Почніть будувати послідовність!
-      completions: завершення
       yearly: Щорічно
     statistics_label: Статистика
     tags: Теги
     tags_hint: Виберіть теги для зв'язування
-    daily_target: "Щоденна частота"
-    daily_target_hint: "разів на день"
   errors:
     adding_tag: Не вдалося додати тег
     creating_record: Не вдалося створити запис звички
@@ -116,21 +115,21 @@ habits:
   goals:
     current_goal: Ціль
     days_unit: днів
-    description: Чи хочете ви практикувати звичку з певною частотою замість щодня? Тоді встановіть користувацьку ціль.
+    description:
+      Чи хочете ви практикувати звичку з певною частотою замість щодня?
+      Тоді встановіть користувацьку ціль.
     enable: Увімкнути користувацькі цілі
     goal: Користувацька ціль
     goal_format: "{count} разів за {dayCount} днів"
     period_days: Дні періоду
     settings: Налаштування користувацької цілі
-    target_frequency: "Частота періоду"
-    times_unit: "разів на період"
-  help:
-    description: Опис допомоги
+    target_frequency: Частота періоду
+    times_unit: разів на період
   list:
     all_habits_done: Всі звички виконані!
     no_habits_found: Немає звичок
-  new_habit: Нова звичка
   name_placeholder: Введіть значущу назву звички...
+  new_habit: Нова звичка
   notifications:
     reminder_message: "Пам'ятайте про виконання своєї звички: {name}"
     reminder_title: "Нагадування про звичку: {name}"
@@ -207,8 +206,8 @@ habits:
     select_tooltip: Вибрати тег
   tooltips:
     add_habit: Додати звичку
+    decrease_daily_target: Зменшити щоденну мету
     decrease_estimated_time: Зменшити орієнтовний час
     edit_name: Редагувати назву
+    increase_daily_target: Збільшити щоденну мету
     increase_estimated_time: Збільшити орієнтовний час
-    decrease_daily_target: "Зменшити щоденну мету"
-    increase_daily_target: "Збільшити щоденну мету"

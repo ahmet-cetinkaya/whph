@@ -1,5 +1,4 @@
 shared:
-  untitled: "제목 없음"
   buttons:
     add: 추가
     back: 뒤로
@@ -65,6 +64,7 @@ shared:
     created_date_label: 생성일
     modified_date_label: 수정일
     name_label: 이름
+  date: 날짜
   date_filter:
     title: 날짜 범위 선택
     tooltips:
@@ -72,6 +72,24 @@ shared:
       filter: 날짜로 필터링
   date_format:
     hint: YYYY/MM/DD
+  datepicker:
+    cannot_select_date_after_max_date: "{date} 이후 날짜는 선택할 수 없습니다"
+    cannot_select_date_before_min_date: "{date} 이전 날짜는 선택할 수 없습니다"
+    cannot_select_time_after_max_date: "{time} 이후 시간은 선택할 수 없습니다"
+    cannot_select_time_before_min_date: "{time} 이전 시간은 선택할 수 없습니다"
+    deadline_cannot_be_before_planned_date: 마감일은 계획된 날짜와 같거나 이후여야 합니다
+    end_date_cannot_be_after_max_date: 종료일은 {date} 이후가 될 수 없습니다
+    end_date_must_be_at_or_before: 종료일은 {date} 이전이어야 합니다
+    select_date_range_title: 기간 선택
+    select_date_time_title: 날짜와 시간 선택
+    selected_date_must_be_at_or_after: 선택한 날짜는 {date} 이후여야 합니다
+    selected_date_must_be_at_or_before: 선택한 날짜는 {date} 이전이어야 합니다
+    selected_date_time_must_be_after: 선택한 날짜와 시간은 {dateTime} 이후여야 합니다
+    start_date_cannot_be_after_end_date: 시작일은 종료일 이후가 될 수 없습니다
+    start_date_cannot_be_before_min_date: 시작일은 {date} 이전이 될 수 없습니다
+    start_date_must_be_at_or_after: 시작일은 {date} 이후여야 합니다
+    time_must_be_at_or_after: 시간은 {time} 이후여야 합니다
+    time_must_be_at_or_before: 시간은 {time} 이전이어야 합니다
   days:
     friday: 금요일
     friday_short: 금
@@ -92,19 +110,19 @@ shared:
       hint: 마크다운 형식으로 작성할 수 있습니다...
       tooltips:
         bold: 굵게
-        italic: 기울임
-        strikethrough: 취소선
-        code: 코드
-        link: 링크
-        quote: 인용
         bulleted_list: 글머리 기호 목록
-        numbered_list: 번호 목록
-        horizontal_rule: 수평선
-        edit: 편집
-        preview: 미리보기
-        image: 이미지
-        heading: 제목
         checkbox: 체크박스
+        code: 코드
+        edit: 편집
+        heading: 제목
+        horizontal_rule: 수평선
+        image: 이미지
+        italic: 기울임
+        link: 링크
+        numbered_list: 번호 목록
+        preview: 미리보기
+        quote: 인용
+        strikethrough: 취소선
   errors:
     deleting: 데이터 삭제 중 오류가 발생했습니다
     file_not_found: 파일을 찾을 수 없습니다
@@ -138,8 +156,6 @@ shared:
     unexpected: 예상치 못한 오류가 발생했습니다
   filters:
     search: 검색
-  help:
-    tooltip: 도움말
   messages:
     confirm_delete: 이 항목을 삭제하시겠습니까?
     no_items_found: 항목 없음
@@ -153,17 +169,17 @@ shared:
       tags: 태그
       tasks: 작업
       today: 오늘
-  none_option: "태그 없음"
+  none_option: 태그 없음
   regex_help:
     examples:
       chat: '"Slack" 또는 "Discord"와 일치'
       chrome: '"Chrome"을 포함하는 창 제목과 일치'
-      exact_chrome: '정확히 "Chrome"과 일치'
+      exact_chrome: 정확히 "Chrome"과 일치
       pdf: 모든 PDF 파일과 일치
       vscode: 모든 VS Code 창과 일치
     tips:
       any_chars: '".*"로 모든 문자와 일치'
-      dot: "\"\\.\"로 점과 일치"
+      dot: '"\."로 점과 일치'
       end: '"$"로 텍스트 끝과 일치'
       or: '"|"는 OR 연산자'
       start: '"^"로 텍스트 시작과 일치'
@@ -187,11 +203,11 @@ shared:
       description: 드래그 앤 드롭으로 항목 순서 변경
       title: 사용자 정의 정렬
     descending: 내림차순
+    disable_reordering_tooltip: 재정렬 모드 비활성화
+    enable_reordering_tooltip: 재정렬 모드 활성화
     remove_criteria: 조건 제거
     reset_to_default: 기본값으로 재설정
     sort: 정렬
-    enable_reordering_tooltip: 재정렬 모드 활성화
-    disable_reordering_tooltip: 재정렬 모드 비활성화
   statistics:
     daily_usage:
       description: 요일별 총 사용 시간을 표시
@@ -200,7 +216,24 @@ shared:
       description: 시간대별 총 사용 시간을 표시
       title: 시간별 사용량
   time:
-    not_set: "설정되지 않음"
+    not_set: 설정되지 않음
+  time_display:
+    elapsed: 경과
+    elapsed_time_tooltip: 이 작업에 소요된 시간
+    estimated: 예상
+    estimated_time_tooltip: 이 작업을 완료하는 데 예상되는 시간
+    no_time_logged_tooltip: 아직 기록된 시간이 없습니다
+  time_logging:
+    add_time: 시간 추가
+    add_time_description: 기존 총 시간에 시간 추가
+    dialog_title: 시간 기록
+    duration: 기간
+    invalid_input: 유효한 시간을 입력하세요
+    log_time: 시간 기록
+    mode: 모드
+    set_total: 총 시간 설정
+    set_total_description: 총 소요 시간 설정
+    total_time: 총 시간
   time_periods:
     custom: 사용자 정의
     last_month: 지난달
@@ -210,6 +243,11 @@ shared:
     this_three_months: 최근 3개월
     this_week: 이번 주
     today: 오늘
+  timer:
+    label: 타이머
+    normal: 일반
+    pomodoro: 포모도로
+    stopwatch: 스톱워치
   tooltips:
     compare_with_previous: 이전 기간과 비교
     filter_by_tags: 태그로 필터링
@@ -222,6 +260,7 @@ shared:
     minutes: 분
     minutes_short: 분
     seconds: 초
+  untitled: 제목 없음
   update_dialog:
     buttons:
       download_page: 다운로드 페이지
@@ -229,28 +268,11 @@ shared:
       update_now: 지금 업데이트
     downloading: 업데이트 다운로드 중...
     failed: 업데이트에 실패했습니다.
-    message: "새 버전({version})을 사용할 수 있습니다."
+    message: 새 버전({version})을 사용할 수 있습니다.
     question: 지금 업데이트하시겠습니까?
     success: 업데이트 다운로드가 완료되었습니다!
     title: 업데이트 사용 가능!
   validation:
+    deadline_cannot_be_before_planned: 마감일은 계획된 날짜보다 이르게 설정할 수 없습니다.
     required: "{field}이(가) 필요합니다."
-    deadline_cannot_be_before_planned: "마감일은 계획된 날짜보다 이르게 설정할 수 없습니다."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "마감일은 계획된 날짜와 같거나 이후여야 합니다"
-    selected_date_must_be_at_or_after: "선택한 날짜는 {date} 이후여야 합니다"
-    selected_date_must_be_at_or_before: "선택한 날짜는 {date} 이전이어야 합니다"
-    start_date_cannot_be_after_end_date: "시작일은 종료일 이후가 될 수 없습니다"
-    start_date_must_be_at_or_after: "시작일은 {date} 이후여야 합니다"
-    end_date_must_be_at_or_before: "종료일은 {date} 이전이어야 합니다"
-    cannot_select_date_before_min_date: "{date} 이전 날짜는 선택할 수 없습니다"
-    cannot_select_date_after_max_date: "{date} 이후 날짜는 선택할 수 없습니다"
-    start_date_cannot_be_before_min_date: "시작일은 {date} 이전이 될 수 없습니다"
-    end_date_cannot_be_after_max_date: "종료일은 {date} 이후가 될 수 없습니다"
-    cannot_select_time_before_min_date: "{time} 이전 시간은 선택할 수 없습니다"
-    cannot_select_time_after_max_date: "{time} 이후 시간은 선택할 수 없습니다"
-    time_must_be_at_or_after: "시간은 {time} 이후여야 합니다"
-    time_must_be_at_or_before: "시간은 {time} 이전이어야 합니다"
-    selected_date_time_must_be_after: "선택한 날짜와 시간은 {dateTime} 이후여야 합니다"
-    select_date_time_title: "날짜와 시간 선택"
-    select_date_range_title: "기간 선택"
+  help: 도움말

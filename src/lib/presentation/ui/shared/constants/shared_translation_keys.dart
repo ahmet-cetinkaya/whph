@@ -172,12 +172,13 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String updateSuccessMessage = 'shared.update_dialog.success';
   static const String updateFailedMessage = 'shared.update_dialog.failed';
 
-  // Help
-  static const String helpTooltip = 'shared.help.tooltip';
-
   // Timer
   static const String normalTimer = 'shared.timer.normal';
   static const String pomodoroTimer = 'shared.timer.pomodoro';
+  static const String stopwatchTimer = 'shared.timer.stopwatch';
+
+  // Timer - Generic label extracted from habits
+  static const String timerLabel = 'shared.timer.label';
 
   // Sections
   static const String specialFiltersLabel = 'shared.sections.special_filters';
@@ -229,6 +230,27 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
 
   static const String date = 'shared.date';
+
+  // Time Logging - Extracted from habits and tasks features to reduce redundancy
+  static const String timeLoggingDialogTitle = 'shared.time_logging.dialog_title';
+  static const String timeLoggingMode = 'shared.time_logging.mode';
+  static const String timeLoggingAddTime = 'shared.time_logging.add_time';
+  static const String timeLoggingSetTotal = 'shared.time_logging.set_total';
+  static const String timeLoggingDuration = 'shared.time_logging.duration';
+  static const String timeLoggingTotalTime = 'shared.time_logging.total_time';
+  static const String timeLoggingAddTimeDescription = 'shared.time_logging.add_time_description';
+  static const String timeLoggingSetTotalDescription = 'shared.time_logging.set_total_description';
+  static const String timeLoggingLogTime = 'shared.time_logging.log_time';
+  static const String timeLoggingInvalidInput = 'shared.time_logging.invalid_input';
+
+  // Time Display
+  static const String timeDisplayEstimated = 'shared.time_display.estimated';
+  static const String timeDisplayEstimatedTimeTooltip = 'shared.time_display.estimated_time_tooltip';
+  static const String timeDisplayElapsed = 'shared.time_display.elapsed';
+  static const String timeDisplayElapsedTimeTooltip = 'shared.time_display.elapsed_time_tooltip';
+  static const String timeDisplayNoTimeLoggedTooltip = 'shared.time_display.no_time_logged_tooltip';
+
+  static const String help = "shared.help";
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {

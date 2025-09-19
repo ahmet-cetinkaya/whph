@@ -4,9 +4,9 @@ import 'package:whph/core/application/features/habits/queries/get_total_duration
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 
 class HabitTimeDisplay extends StatefulWidget {
   final String habitId;
@@ -102,7 +102,7 @@ class _HabitTimeDisplayState extends State<HabitTimeDisplay> {
     } else if (_estimatedTime > 0) {
       // Show estimated time with indicator
       final estimatedDisplay = SharedUiConstants.formatDurationHuman(_estimatedTime, _translationService);
-      return '~$estimatedDisplay (${_translationService.translate(HabitTranslationKeys.estimatedTime)})';
+      return '~$estimatedDisplay (${_translationService.translate(SharedTranslationKeys.timeDisplayEstimated)})';
     } else {
       // No time tracked or estimated
       return SharedUiConstants.formatDurationHuman(0, _translationService);
@@ -113,11 +113,11 @@ class _HabitTimeDisplayState extends State<HabitTimeDisplay> {
     if (_isLoading) return '';
 
     if (widget.showActualTime && _actualTime > 0) {
-      return _translationService.translate(HabitTranslationKeys.actualTimeTooltip);
+      return _translationService.translate(SharedTranslationKeys.timeDisplayElapsedTimeTooltip);
     } else if (_estimatedTime > 0) {
-      return _translationService.translate(HabitTranslationKeys.estimatedTimeTooltip);
+      return _translationService.translate(SharedTranslationKeys.timeDisplayEstimated);
     } else {
-      return _translationService.translate(HabitTranslationKeys.noTimeLoggedTooltip);
+      return _translationService.translate(SharedTranslationKeys.timeDisplayNoTimeLoggedTooltip);
     }
   }
 

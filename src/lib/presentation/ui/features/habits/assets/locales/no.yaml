@@ -1,214 +1,232 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Arkiver
+    archive_confirm: Er du sikker på at du vil arkivere denne vanen?
+    archive_tooltip: Arkiver denne vanen
+    archived_date: Arkivert Dato
+    hide_archived: Skjul arkiverte
+    show_archived: Vis arkiverte
+    unarchive: Fjern fra arkiv
+    unarchive_confirm: Er du sikker på at du vil fjerne denne vanen fra arkivet?
+    unarchive_tooltip: Fjern denne vanen fra arkivet
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Fre
+      mon: Man
+      sat: Lør
+      sun: Søn
+      thu: Tor
+      tue: Tir
+      wed: Ons
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Er du sikker på at du vil slette denne vanen?
+    confirm_title: Slett Vane
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
+    archived_status: Arkivert
+    create_record_tooltip: Merk som fullført i dag
+    daily_target: Daglig Frekvens
+    daily_target_hint: ganger per dag
+    description: Beskrivelse
+    elapsed_time: Forløpt Tid
+    estimated_time: Estimert Tid
+    estimated_time_not_set: Ikke satt
     help:
       content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+        Bygg bærekraftige daglige rutiner gjennom systematisk vanesporing som forvandler intensjonene dine til konsistente handlinger og målbare fremskritt mot målene dine.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Hvorfor Er Det Viktig?
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+        Vanedannelse er hjørnesteinen i personlig utvikling og bærekraftig prestasjon. Konsistente daglige handlinger akkumuleres over tid for å skape bemerkelsesverdige resultater, mens systematisk sporing sikrer at du opprettholder momentum og gjør kontinuerlige forbedringer i rutinene dine.
 
-        ## ⚙️ Strategic Habit Design
+        ## ⚙️ Strategisk Vanedesign
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+        Skap vaner som integreres sømløst i livet ditt og støtter dine langsiktige mål. Velldesignede vaner blir automatiske atferder som krever minimal viljestyrke å opprettholde.
 
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
+        - 📝 Design klare, spesifikke vaner med handlingsrettede beskrivelser
+        - 📅 Etabler konsistente tidsplaner som passer dine naturlige rytmer
+        - 🏷️ Organiser lignende vaner i sammenhengende grupper for systematisk sporing
+        - 🎯 Koble hver vane til meningsfulle utfall og personlige verdier
 
-        ## ⏱️ Performance Monitoring
+        ## ⏱️ Ytelsesmonitorering
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+        Spor utførelsen av vanene dine for å forstå mønstre, måle fremgang og optimalisere tilnærmingen din for maksimal effektivitet og bærekraftig vekst.
 
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+        - ⏳ Registrer fullførings ganger for å forstå vanens varighet og effektivitet
+        - 📊 Analyser tidsinvesteringer på tvers av vanekategorier for balansert utvikling
+        - 📈 Overvåk ytelsestrender for å identifisere forbedringsmuligheter og optimal timing
+        - 🔄 Bruk data innsikt for å raffinere vanens vanskelighetsgrad og planlegging for bærekraftig suksess
 
-        ## 📅 Consistency & Momentum
+        ## 📅 Konsistens & Momentum
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+        Bygg og oppretthold konsistensen som kreves for varig atferdsendring gjennom systematisk sporing og strategisk gjennomgang av fremgangsmønstrene dine.
 
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+        - 📚 Gå gjennom fullføringshistorikk for å vurdere fremgang og identifisere suksessmønstre
+        - 🔗 Spor daglige streker for å bygge og opprettholde momentum for langsiktig suksess
+        - 📌 Overvåk konsistensmetrikker for å forbedre motivasjon og engasjement
+        - 🎯 Feir milepæler og prestasjoner for å forsterke positiv atferdsendring
 
-        ## 🚀 Optimization Strategies
+        ## 🚀 Optimaliseringsstrategier
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+        Bruk beviste teknikker for vaneoptimalisering som akselererer fremgang og sikrer at innsatsen din oversettes til meningsfulle, varige forbedringer i livet og produktiviteten din.
 
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
-    records: Records
-    remove_record_tooltip: Remove today's completion
+        - 🐾 **Start Smått:** Begynn med håndterbare vaner som garanterer tidlige seire
+        - 🏷️ **Strategisk Gruppering:** Organiser vaner etter livsområde eller tid på dagen
+        - 📊 **Data-Drevne Justerings:** Bruk sporinginnsikt for å optimalisere timing og tilnærming
+        - 🌅 **Topptid Fokus:** Planlegg viktige vaner under dine topp energiperioder
+      description: Hjelpebeskrivelse
+      title: Vanedannelse & Ytelses Sporingsguide
+    records: Poster
+    remove_record_tooltip: Fjern dagens fullføring
     statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
-      records: Records
+      archived_note: "Arkivert på:"
+      archived_on: Arkivert på
+      archived_warning: Statistikk vises frem til arkiveringsdato. {startDate} - {archivedDate}
+      completions: fullføringer
+      from: Fra
+      monthly: Månedlig
+      no_streaks_yet: Ingen streker ennå. Begynn å bygge konsistens!
+      overall: Samlet
+      records: Poster
       score_trends: Score Trends
-      to: To
-      top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
-    tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Daglig frekvens"
-    daily_target_hint: "ganger per dag"
+      to: Til
+      top_streaks: Top Streker
+      yearly: Årlig
+    statistics_label: Statistikk
+    tags: Etiketter
+    tags_hint: Velg etiketter å assosiere
   errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
+    adding_tag: Feilet med å legge til etikett
+    creating_record: Feilet med å opprette vanepost
+    deleting: Uventet feil oppstod under sletting av vane
+    deleting_record: Feilet med å slette vanepost
+    habit_not_found: Vane ikke funnet
+    habit_record_not_found: Vanepost ikke funnet
+    habit_tag_not_found: Vaneetikett ikke funnet
+    loading_archive_status: Feilet med å laste arkivstatus
+    loading_details: Feilet med å laste vanedetaljer
+    loading_habit: Feilet med å laste vane
+    loading_habits: Feilet med å laste vaner
+    loading_records: Feilet med å laste vaneposter
+    loading_tags: Feilet med å laste vaneetiketter
+    removing_tag: Feilet med å fjerne etikett
+    saving_details: Feilet med å lagre vane
+    saving_habit: Feilet med å lagre vane
+    tag_already_exists: Denne etiketten er allerede lagt til
+    toggling_archive: Feilet med å veksle arkivstatus
   goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
-    target_frequency: "Periode frekvens"
-    times_unit: "ganger per periode"
-  help:
-    description: Help description
+    current_goal: Mål
+    days_unit: dager
+    description: |
+      Vil du øve vanen med en spesifikk frekvens i stedet for
+      hver dag? Sett da et tilpasset mål.
+    enable: Aktiver Tilpassede Mål
+    goal: Tilpasset Mål
+    goal_format: "{count} ganger i {dayCount} dager"
+    period_days: Periode Dager
+    settings: Tilpasset Mål Innstillinger
+    target_frequency: Periode Frekvens
+    times_unit: ganger per periode
   list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
+    all_habits_done: Alle vaner fullført!
+    no_habits_found: Ingen vaner
+  name_placeholder: Skriv inn et meningsfullt vanenavn...
+  new_habit: Ny Vane
   notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Husk å fullføre vanen din: {name}"
+    reminder_title: "Vane Påminnelse: {name}"
   overview:
-    filter_by_tags_tooltip: Filter by tags
+    filter_by_tags_tooltip: Filtrer etter etiketter
     help:
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Mestre dine daglige rutiner gjennom systematisk vanesporing som bygger konsistens, skaper positiv momentum og driver meningsfull fremgang mot dine langsiktige mål.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Hvorfor Er Det Viktig?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        Daglig vanestyring er grunnlaget for personlig excellence og bærekraftig vekst. Konsistent utførelse av velplanlagte vaner skaper kumulative fordeler over tid, mens systematisk sporing sikrer at du opprettholder ansvarlighet og gjør data-drevne forbedringer i rutinene dine.
 
-        ## 📅 Daily Execution & Tracking
+        ## 📅 Daglig Utførelse & Sporing
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Utvikle et pålitelig system for å utføre og overvåke vanene dine som skaper konsistens og bygger ustoppelig momentum mot dine mål.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - ✅ **Daglig Fullføring:** Merk vaner som fullført for å bygge konsistenskjeder
+        - 📆 **Multi-Dag Visning:** Overvåk mønstre over dager og uker for omfattende innsikt
+        - 🔄 **Strek Bygging:** Oppretthold påfølgende fullføringsdager for å maksimere motivasjonsmomentum
+        - 📊 **Fremgang Visualisering:** Spor fullføringsrater og mønstre over tid
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Tid Analyse & Optimalisering
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Overvåk tidsinvesteringer i vanene dine for å optimalisere din daglige tidsplan og sikre balansert utvikling på tvers av alle viktige livsområder.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ **Varighet Sporing:** Registrer faktisk brukt tid for å forstå vanekrav
+        - 🏷️ **Kategori Analyse:** Grupper vaner etter etiketter for å se tidsfordeling på tvers av livsområder
+        - ⏰ **Tidsplan Optimalisering:** Balanser vanetiming for bærekraftig daglig utførelse
+        - 📈 **Effektivitet Forbedring:** Identifiser muligheter for å strømlinje vanesutførelse
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strategisk Organisering
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+        Skap et organisasjonssystem som støtter konsistent utførelse mens det gir fleksibilitet til å tilpasse seg etter som målene og omstendighetene dine utvikler seg.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        - 🏷️ **Meningsfull Kategorisering:** Grupper vaner etter livsområde, tid eller prioriteringsnivå
+        - ⚙️ **Fleksibel Planlegging:** Design vanetiming som fungerer med din livsstil og energimønstre
+        - 🎯 **Prioritet Fokus:** Sørg for at dine viktigste vaner mottar passende oppmerksomhet og energi
 
-        ## 💡 Mastery Principles
+        ## 💡 Mestre Prinsipper
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+        Bruk beviste strategier for vanemestring som sikrer at innsatsen din akkumuleres til varig atferdsendring og målbare livsforbedringer.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        - 🐾 **Start Smått:** Begynn med vaner du kan utføre konsistent, øk deretter vanskelighetsgraden gradvis
+        - 🏷️ **Strategisk Gruppering:** Organiser vaner for å skape logiske sekvenser og støttesystemer
+        - 📊 **Ytelse Gjennomgang:** Bruk tidsporingdata for å forstå mønstre og optimalisere tilnærmingen din
+        - 🌅 **Topptid Utførelse:** Planlegg dine viktigste vaner under topp energiperioder
 
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
+        ### 📊 Bruke Kalendervisningen
+        - 📅 Vis flere dager samtidig i kalendervisningen.
+        - ✅ Spor visuelt dine fullføringsmønstre.
+        - ⚡ Spar tid med rask fullføringsmarkering.
+        - 🎯 Øk motivasjon med visuell streksporing.
+        - 🔄 Utforsk tidligere og fremtidige vaner med fleksibel datumnavigering.
+      title: Daglig Vanestyring & Rutineoptimaliseringsguide
+    title: Vaner
   reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
+    enableReminders: Aktiver påminnelser
+    everyDay: Hver dag
+    noReminder: Ingen påminnelse satt
+    reminderDays: Påminnelsesdager
+    reminderSettings: Påminnelse Innstillinger
+    reminderTime: Påminningstid
+    selectDaysWarning: Vennligst velg minst én dag for påminnelser
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
+    enable: Aktiver påminnelser
+    select_days_warning: Vennligst velg minst én dag for påminnelser
   statistics:
-    archived_on: Archived on
-    from: From
-    to: To
+    archived_on: Arkivert på
+    from: Fra
+    to: Til
   tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    add_tooltip: Legg til etikett
+    select_tooltip: Velg etikett
+  time_display:
+    actual_time_tooltip: Faktisk sporet tid for denne dagen
+    estimated: estimert
+    estimated_time_tooltip: Estimert tid basert på vaneinnstillinger
+    no_time_logged_tooltip: Ingen tid logget for denne dagen
+  time_logging:
+    add_time: Legg Til Tid
+    add_time_description: Legg den spesifiserte tiden til eksisterende poster
+    dialog_title: Logg Tid
+    duration: Varighet Å Legge Til
+    invalid_input: Vennligst skriv inn gyldige timer og minutter
+    log_time: Logg Tid
+    mode: Loggingsmodus
+    set_total: Sett Total
+    set_total_description: Sett total tid for den valgte dagen
+    total_time: Total Tid For Dag
+  timer:
+    label: Timer
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Reduser daglig mål"
-    increase_daily_target: "Øk daglig mål"
+    add_habit: Legg Til Vane
+    decrease_daily_target: Reduser daglig mål
+    decrease_estimated_time: Reduser estimert tid
+    edit_name: Rediger Navn
+    increase_daily_target: Øk daglig mål
+    increase_estimated_time: Øk estimert tid

@@ -1,7 +1,4 @@
 shared:
-  untitled: "Sans titre"
-  validation:
-    required: "{field} est requis."
   buttons:
     add: Ajouter
     back: Retour
@@ -67,6 +64,7 @@ shared:
     created_date_label: Date de création
     modified_date_label: Date de modification
     name_label: Nom
+  date: Date
   date_filter:
     title: Sélectionner une plage de dates
     tooltips:
@@ -74,6 +72,44 @@ shared:
       filter: Filtrer par date
   date_format:
     hint: JJ/MM/AAAA
+  datepicker:
+    cannot_select_date_after_max_date:
+      Impossible de sélectionner une date après le
+      {date}
+    cannot_select_date_before_min_date:
+      Impossible de sélectionner une date avant
+      le {date}
+    cannot_select_time_after_max_date:
+      Impossible de sélectionner une heure après
+      {time}
+    cannot_select_time_before_min_date:
+      Impossible de sélectionner une heure avant
+      {time}
+    deadline_cannot_be_before_planned_date:
+      La date limite doit être égale ou postérieure
+      à la date planifiée
+    end_date_cannot_be_after_max_date: La date de fin ne peut pas être après le {date}
+    end_date_must_be_at_or_before: La date de fin doit être le {date} ou avant
+    select_date_range_title: Sélectionner la plage de dates
+    select_date_time_title: Sélectionner la date et l'heure
+    selected_date_must_be_at_or_after:
+      La date sélectionnée doit être le {date} ou
+      après
+    selected_date_must_be_at_or_before:
+      La date sélectionnée doit être le {date} ou
+      avant
+    selected_date_time_must_be_after:
+      La date et l'heure sélectionnées doivent être
+      après {dateTime}
+    start_date_cannot_be_after_end_date:
+      La date de début ne peut pas être après la
+      date de fin
+    start_date_cannot_be_before_min_date:
+      La date de début ne peut pas être avant
+      le {date}
+    start_date_must_be_at_or_after: La date de début doit être le {date} ou après
+    time_must_be_at_or_after: L'heure doit être à {time} ou après
+    time_must_be_at_or_before: L'heure doit être à {time} ou avant
   days:
     friday: Vendredi
     friday_short: Ven
@@ -94,19 +130,19 @@ shared:
       hint: Vous pouvez écrire en format Markdown...
       tooltips:
         bold: Gras
-        italic: Italique
-        strikethrough: Barré
-        code: Code
-        link: Lien
-        quote: Citation
         bulleted_list: Liste à puces
-        numbered_list: Liste numérotée
-        horizontal_rule: Ligne horizontale
-        edit: Modifier
-        preview: Aperçu
-        image: Image
-        heading: Titre
         checkbox: Case à cocher
+        code: Code
+        edit: Modifier
+        heading: Titre
+        horizontal_rule: Ligne horizontale
+        image: Image
+        italic: Italique
+        link: Lien
+        numbered_list: Liste numérotée
+        preview: Aperçu
+        quote: Citation
+        strikethrough: Barré
   errors:
     deleting: Erreur lors de la suppression des données
     file_not_found: Fichier non trouvé
@@ -140,8 +176,6 @@ shared:
     unexpected: Une erreur inattendue s'est produite
   filters:
     search: Rechercher
-  help:
-    tooltip: Aide
   messages:
     confirm_delete: Êtes-vous sûr de vouloir supprimer cet élément ?
     no_items_found: Aucun élément
@@ -152,19 +186,19 @@ shared:
       more: Plus
       notes: Notes
       settings: Paramètres
-      tags: Tags
+      tags: Étiquettes
       tasks: Tâches
       today: Aujourd'hui
-  none_option: "Aucun tag"
+  none_option: Aucune étiquette
   regex_help:
     examples:
-      chat: 'Correspond à "Slack" ou "Discord"'
-      chrome: 'Correspond à tout titre de fenêtre contenant "Chrome"'
-      exact_chrome: 'Correspond exactement à "Chrome"'
+      chat: Correspond à "Slack" ou "Discord"
+      chrome: Correspond à tout titre de fenêtre contenant "Chrome"
+      exact_chrome: Correspond exactement à "Chrome"
       pdf: Correspond à tout fichier PDF
       vscode: Correspond à toute fenêtre VS Code
     tips:
-      any_chars: 'Utilisez ".*" pour correspondre à n''importe quels caractères'
+      any_chars: Utilisez ".*" pour correspondre à n'importe quels caractères
       dot: '"\\." correspond à un point'
       end: '"$" correspond à la fin du texte'
       or: '"|" signifie OU'
@@ -180,7 +214,7 @@ shared:
     habits: Habitudes
     special_filters: Filtres spéciaux
     statistics: Statistiques
-    tags: Tags
+    tags: Étiquettes
     tasks: Tâches
     time: Temps
   sort:
@@ -189,11 +223,11 @@ shared:
       description: Activer le glisser-déposer pour réorganiser les éléments
       title: Tri personnalisé
     descending: Décroissant
+    disable_reordering_tooltip: Désactiver le mode de réorganisation
+    enable_reordering_tooltip: Activer le mode de réorganisation
     remove_criteria: Supprimer le critère
     reset_to_default: Remettre par défaut
     sort: Trier
-    enable_reordering_tooltip: Activer le mode de réorganisation
-    disable_reordering_tooltip: Désactiver le mode de réorganisation
   statistics:
     daily_usage:
       description: Affiche le temps d'utilisation total par jour de la semaine
@@ -202,7 +236,24 @@ shared:
       description: Affiche le temps d'utilisation total par heure de la journée
       title: Utilisation horaire
   time:
-    not_set: "Non défini"
+    not_set: Non défini
+  time_display:
+    elapsed: Écoulé
+    elapsed_time_tooltip: Temps passé sur cette tâche
+    estimated: Estimé
+    estimated_time_tooltip: Temps estimé pour terminer cette tâche
+    no_time_logged_tooltip: Aucun temps enregistré pour le moment
+  time_logging:
+    add_time: Ajouter du temps
+    add_time_description: Ajouter du temps au total existant
+    dialog_title: Enregistrer le temps
+    duration: Durée
+    invalid_input: Veuillez entrer une heure valide
+    log_time: Enregistrer le temps
+    mode: Mode
+    set_total: Définir le total
+    set_total_description: Définir le temps total passé
+    total_time: Temps total
   time_periods:
     custom: Personnalisé
     last_month: Mois dernier
@@ -212,6 +263,11 @@ shared:
     this_three_months: Ces 3 mois
     this_week: Cette semaine
     today: Aujourd'hui
+  timer:
+    label: Minuteur
+    normal: Normal
+    pomodoro: Pomodoro
+    stopwatch: Chronomètre
   tooltips:
     compare_with_previous: Comparer avec la période précédente
     filter_by_tags: Filtrer par tags
@@ -224,6 +280,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sec
+  untitled: Sans titre
   update_dialog:
     buttons:
       download_page: Page de téléchargement
@@ -235,21 +292,6 @@ shared:
     question: Voulez-vous mettre à jour maintenant ?
     success: Mise à jour téléchargée avec succès !
     title: Mise à jour disponible !
-  datepicker:
-    deadline_cannot_be_before_planned_date: "La date limite doit être égale ou postérieure à la date planifiée"
-    selected_date_must_be_at_or_after: La date sélectionnée doit être le {date} ou après
-    selected_date_must_be_at_or_before: La date sélectionnée doit être le {date} ou avant
-    start_date_cannot_be_after_end_date: La date de début ne peut pas être après la date de fin
-    start_date_must_be_at_or_after: La date de début doit être le {date} ou après
-    end_date_must_be_at_or_before: La date de fin doit être le {date} ou avant
-    cannot_select_date_before_min_date: Impossible de sélectionner une date avant le {date}
-    cannot_select_date_after_max_date: Impossible de sélectionner une date après le {date}
-    start_date_cannot_be_before_min_date: La date de début ne peut pas être avant le {date}
-    end_date_cannot_be_after_max_date: La date de fin ne peut pas être après le {date}
-    cannot_select_time_before_min_date: Impossible de sélectionner une heure avant {time}
-    cannot_select_time_after_max_date: Impossible de sélectionner une heure après {time}
-    time_must_be_at_or_after: L'heure doit être à {time} ou après
-    time_must_be_at_or_before: L'heure doit être à {time} ou avant
-    selected_date_time_must_be_after: La date et l'heure sélectionnées doivent être après {dateTime}
-    select_date_time_title: Sélectionner la date et l'heure
-    select_date_range_title: Sélectionner la plage de dates
+  validation:
+    required: "{field} est requis."
+  help: Aide

@@ -1,102 +1,102 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Avbryt
 
 settings:
   about:
-    title: About
+    title: Om
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Eksport mislyktes
+    import_failed: Import mislyktes
+    setting_not_found: Innstilling ikke funnet
+    version_mismatch: Versjon ikke funnet
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
-    title: Export
-    canceled: Export canceled by user
+    csv_description: Du kan bruke dette til å vise i Excel og lignende applikasjoner.
+    error: Eksport mislyktes
+    in_progress: Eksporterer data, vennligst vent...
+    json_description: Eksporter data i lesbart JSON-format for utvikling og feilsøking.
+    select_directory: Velg eksportkatalog
+    select_path: Velg lagringssted
+    select_type: Velg eksportformat
+    success: "Eksport vellykket. Filplassering:"
+    title: Eksport
+    canceled: Eksport avbrutt av bruker
   export_data:
-    title: Export Data
+    title: Eksporter data
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Import mislyktes
+    error.entity: Feil i type
+    in_progress: Importerer data, vennligst vent...
+    migration_failed: Import mislyktes. Sørg for at du har installert den nyeste versjonen av appen.
+    select_file: Velg fil
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
+      merge: Slå sammen med eksisterende data
+      replace: Slett eksisterende data og legg til nye
+      title: Importstrategi
+    success: Import vellykket
     title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+    unsupported_version: Ikke støttet versjon
+    version_mismatch: Versjon ikke funnet
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
-    title: Import/Export
+    description: Eksporter dataene dine i ulike formater eller importer data fra backup-filer
+    select_action: Velg import/eksport handling
+    title: Import/Eksport
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Velg språket ditt
+    title: Språk
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Kunne ikke deaktivere varsler
+    enable_error: Kunne ikke aktivere varsler
+    title: Varsler
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Denne appen trenger tillatelse til å få tilgang til app-bruksstatistikk for å spore app-bruksmønstrene dine nøyaktig.
+      instructions: "Instruksjoner:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Trykk på "Åpne Innstilling"-knappen
+        step2: På brukstilgang-innstillingsskjermen som åpnes, finn "{appName}" i listen
+        step3: Trykk på "{appName}"
+        step4: Aktiver "Tillat brukstilgang" eller veksle bryteren til PÅ
+      title: App-brukstillatelse
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: For pålitelige varsler må denne appen ekskluderes fra batterioptimalisering. Uten dette kan påminnelser forsinkes eller ikke leveres i det hele tatt.
+      importance: Plasseringen av denne innstillingen kan variere avhengig av enhetsprodusenten din.
+      instructions: "Instruksjoner:"
+      not_disabled: Batterioptimalisering er fortsatt aktivert. Gi tillatelse slik at den relevante funksjonen fungerer riktig.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Trykk på "Åpne Innstilling"-knappen
+        step2: På innstillingsskjermen som åpnes, finn "{appName}"
+        step3: Trykk på "{appName}"
+        step4: Sørg for at "Tillat bakgrunnsbruk" er aktivert på siden som åpnes
+        step5: Trykk på "Tillat bakgrunnsbruk"
+        step6: Velg "Ubegrenset"
+      title: Batterioptimalisering
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ krever tillatelse til å planlegge eksakte alarmer for at påminnelser skal fungere riktig.
+      instructions: "Instruksjoner:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Gå til Alarmer & påminnelser og aktiver tillatelse
+          step3: Bekreft eksakt alarmtillatelse
+        step1: Trykk på "Åpne Innstilling"-knappen
+        step2: 'På den åpne {appName}-appen Alarmer & påminnelser-side, aktiver "Tillat å sette alarmer og påminnelser"'
+      title: Eksakt alarmtillatelse
+    fix_it: Fiks det
+    granted: Tillatelse gitt
+    instructions: Instruksjoner
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Varseltillatelse kreves for å motta påminnelser. Uten denne tillatelsen vil du ikke motta noen varsler.
+      instructions: "Instruksjoner:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Trykk på "Åpne Innstilling"-knappen
+          step2: Tillat varsler når du blir bedt om det
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Trykk på "Åpne Innstilling"-knappen
+          step2: Tillat varsler når du blir bedt om det
+      title: Varseltillatelse
+    open_settings: Åpne Innstilling
+    open_terminal: Åpne Terminal
     firewall:
       title: Brannmur-tillatelse
       description: Tillat WHPH å kommunisere gjennom {platform} brannmuren på port 44040 for enhetssynkronisering.
@@ -130,71 +130,70 @@ settings:
               cmd_step1: "Åpne kommandoprompt som administrator"
               cmd_step2: "Legg til brannmur-regel:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: For at appen skal starte automatisk med enheten din kreves auto-start-tillatelse. Dette sikrer at påminnelser og varsler fungerer riktig selv etter enhetsgenstarter.
+      importance: Plasseringen av auto-start-innstillingen varierer eller kan mangle avhengig av enhetsprodusent.
+      instructions: "Instruksjoner:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Trykk på "Åpne Innstilling"-knappen
+        step2: 'På innstillingsskjermen som åpnes, finn "{appName}" app'
+        step3: 'Aktiver "Auto-start", "Autorun", "Start ved oppstart" eller lignende tillatelse'
+      title: Auto-start-tillatelse
+    title: Tillatelser
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Kunne ikke deaktivere oppstartsinnstilling
+    enable_error: Kunne ikke aktivere oppstartsinnstilling
+    subtitle: Trykk for å åpne systeminnstillinger og aktivere auto-start-tillatelse for appen
+    title: Start ved oppstart
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Synkroniser enheter
+  title: Innstillinger
   backup:
-    title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    title: Sikkerhetskopi
+    description: Opprett og gjenopprett komprimerte sikkerhetskopier av applikasjonsdataene dine ved bruk av det sikre .whph-formatet
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Opprett sikkerhetskopi
+      description: Eksporter alle dataene dine til en komprimert .whph-sikkerhetskopifil
+      in_progress: Oppretter sikkerhetskopi, vennligst vent...
+      success: "Sikkerhetskopi opprettet vellykket. Filplassering:"
+      error: Kunne ikke opprette sikkerhetskopi
+      select_path: Velg sikkerhetskopi-lagringssted
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Gjenopprett sikkerhetskopi
+      description: Importer data fra en tidligere opprettet .whph-sikkerhetskopifil
+      in_progress: Gjenoppretter sikkerhetskopi, vennligst vent...
+      success: Sikkerhetskopi gjenopprettet vellykket
+      error: Kunne ikke gjenopprette sikkerhetskopi
+      select_file: Velg sikkerhetskopifil
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Gjenopprettingsstrategi
+        replace: Slett eksisterende data og gjenopprett
+        merge: Slå sammen med eksisterende data
+    canceled: Sikkerhetskopi-operasjon avbrutt av bruker
+    export_failed: Sikkerhetskopi-eksport mislyktes
+    import_failed: Sikkerhetskopi-import mislyktes
+    invalid_format: Ugyldig sikkerhetskopifilformat
+    invalid_format_error: Ugyldig sikkerhetskopifilformat
+    corrupted: Sikkerhetskopifilen er korrupt eller skadet
+    export_description: Opprett en komprimert sikkerhetskopifil som inneholder alle dataene dine
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Tema
+    description: Tilpass utseendet til WHPH
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Temamodus
+      light: Lys
+      dark: Mørk
       auto:
         title: Auto
-        description: Follow system theme settings
+        description: Følg systemtema-innstillinger
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Dynamisk aksentfarge
+      description: Hvis systemet ditt støtter det, vil primærfargen tilpasse seg basert på systemets dynamiske fargeskjema
+      feature: Dynamisk
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Egendefinert aksentfarge
+      description: Velg en egendefinert aksentfarge for å personalisere appens utseende
+      feature: Egendefinert
+    error: Kunne ikke laste temainnstillinger
   ui_density:
     title: Tetthet
     description: Juster størrelsen på tekst og UI-elementer for å forbedre lesbarheten på skjermer med høy DPI
@@ -202,7 +201,7 @@ settings:
     normal: Normal
     large: Stor
     larger: Større
-    error: Kunne ikke laste inn UI-tetthetsinnstillinger
+    error: Kunne ikke laste UI-tetthetsinnstillinger
   advanced:
     title: Avansert
     description: Avanserte innstillinger og utviklerverktøy
@@ -230,5 +229,5 @@ settings:
       dialog_title: Eksporter feilsøkingslogger
       error: Feil ved eksport av logger
       success: Loggfil eksportert vellykket
-      no_logs_available: Ingen logger tilgjengelig for eksport
-      file_not_exist: Loggfil eksisterer ikke
+      no_logs_available: Ingen logger tilgjengelig for eksport. Generer noen logger først.
+      file_not_exist: Loggfil eksisterer ikke. Aktiver feilsøkingslogging og generer noen logger først.

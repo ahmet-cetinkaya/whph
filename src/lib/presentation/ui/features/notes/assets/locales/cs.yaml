@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Vytvořte komplexní systém správy znalostí, který zachytí vaše nápady, efektivně organizuje informace a usnadní přístup k důležitým postřehům, když je potřebujete.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Proč je to důležité?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Efektivní psaní poznámek a správa znalostí jsou nezbytné pro produktivitu a učení. Dobře organizovaný systém poznámek zabraňuje ztrátě cenných postřehů, urychluje rozhodování a vytváří spolehlivou externí paměť, která s časem nabývá na hodnotě.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Snadné zachycení informací
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Vytvořte plynulý pracovní postup pro zachycení a zpracování informací, který zajistí, že nic důležitého neunikne, přičemž udrží soustředění na vaši současnou práci.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Rychle zachyťte nápady bez narušení vašeho toku
+      - ✏️ Editujte a upravujte informace s vývojem porozumění
+      - 🗑️ Systematicky odstraňte zastaralé nebo irelevantní informace
+      - 📌 Udržujte kritické informace snadno přístupné a organizované
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Strategická organizace
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Vyvíjejte organizační systém, který se škáluje s vaší databází znalostí a činí vyhledávání informací rychlým a spolehlivým bez ohledu na objem.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Aplikujte konzistentní strategie označování pro rychlou kategorizaci
+      - 🔍 Používejte výkonné vyhledávací schopnosti pro okamžité nalezení informací
+      - 📚 Sdružujte související poznámky pro vytvoření komplexních oblastí znalostí
+      - 🎯 Udržujte soustředění prostřednictvím organizované informační architektury
 
-      ## 📄 Professional Content Creation
+      ## 📄 Profesionální tvorba obsahu
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Využívejte pokročilé nástroje formátování pro vytvoření jasného, dobře strukturovaného obsahu, který efektivně komunikuje a vydrží zkoušku času.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Bohaté formátování:** Používejte Markdown pro profesionální strukturu dokumentu
+      - 📋 **Jasná struktura:** Organizujte obsah pomocí záhlaví, seznamů a důrazu
+      - 🔗 **Propojené znalosti:** Propojujte související koncepty a informace
+      - 📖 **Čitelný výstup:** Formátujte obsah pro snadné pochopení a sdílení
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Produktivní výhody
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Přeměňte svou praxi psaní poznámek na multiplikátor produktivity, který zlepšuje vaše myšlení, urychluje učení a zlepšuje kvalitu rozhodování.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Zlepšené myšlení:** Externí paměť uvolňuje mentální kapacitu pro kreativní práci
+      - ⚡ **Rychlejší přístup:** Organizované informace snižují čas strávený hledáním
+      - 🌐 **Univerzální dostupnost:** Přistupujte k vaší databázi znalostí z jakéhokoli zařízení
+      - 📈 **Nepřetržitý pokrok:** Vylepšený obsah nabývá na hodnotě s časem
+    title: Průvodce správou znalostí a organizací poznámek
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Přidat poznámku
+    delete: Smazat poznámku
+    edit: Upravit poznámku
+    save: Uložit poznámku
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Přidat štítek
+      content_placeholder: Napište obsah poznámky zde...
+      save_button: Uložit
+      saved_message: Poznámka úspěšně uložena
+      title_placeholder: Nadpis poznámky
+      update_button: Aktualizovat
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Žádné poznámky nenalezeny
+      loading: Načítání poznámek...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Jste si jisti, že chcete smazat tuto poznámku?
+    confirm_title: Smazat poznámku
   details:
-    content: Content
+    content: Obsah
     tags:
-      hint: Select tags for note
-      label: Tags
-    title: Title
+      hint: Vyberte štítky pro poznámku
+      label: Štítky
+    title: Nadpis
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Selhání přidání štítku
+    deleting: Došlo k neočekávané chybě při mazání poznámky
+    getting_notes: Chyba při získávání poznámek
+    loading_details: Selhání načtení detailů poznámky
+    loading_tags: Selhání načtení štítků poznámky
+    note_not_found: Poznámka nenalezena
+    note_tag_not_found: Štítek poznámky nenalezen
+    removing_tag: Selhání odstranění štítku
+    saving_note: Selhání uložení poznámky
+    tag_already_exists: Tento štítek je již přidán
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Hledat poznámky...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filtrovat podle štítků
+  new_note: Nová poznámka
+  title_placeholder: Zadejte popisný nadpis poznámky...
+  no_notes: Žádné poznámky
+  note_details: Detaily poznámky
+  notes: Poznámky
+  title: Poznámky
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Přidat poznámku
+    delete_note: Smazat poznámku
+    edit_name: Upravit nadpis

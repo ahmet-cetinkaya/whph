@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Geschätzte Zeit
     is_completed: Erledigt
+    parent_task:
+      label: Übergeordnete Aufgabe
+      tooltip: Klicken, um zur übergeordneten Aufgabe zu navigieren
     planned_date:
       label: Geplantes Datum
     priority:
       label: Priorität
     sub_tasks:
       label: Unteraufgaben
-    parent_task:
-      label: Übergeordnete Aufgabe
-      tooltip: Klicken, um zur übergeordneten Aufgabe zu navigieren
     tags:
       hint: Tags zum Verknüpfen auswählen
       label: Tags
@@ -186,9 +186,9 @@ tasks:
   new_task: Neue Aufgabe
   no_tasks: Keine Aufgaben
   notifications:
-    deadline_message: "Ihre Aufgabenfrist ist um {time}"
+    deadline_message: Ihre Aufgabenfrist ist um {time}
     deadline_title: "Aufgabenfrist: {title}"
-    planned_message: "Ihre Aufgabe ist für {time} geplant"
+    planned_message: Ihre Aufgabe ist für {time} geplant
     reminder_title: "Aufgabenerinnerung: {title}"
   page:
     completed_tasks_title: Erledigte Aufgaben
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: Auto-Start-Optionen
       auto_start_work: Arbeit nach Pause automatisch starten
       break_duration: Pausendauer
+      keep_screen_awake: Bildschirm während Sitzungen wach halten
+      keep_screen_awake_section: Bildschirm wach halten
       long_break_duration: Lange Pausendauer
       sessions_before_long_break: Sitzungen vor langer Pause
       ticking_sound: Tickgeräusch aktivieren
       ticking_sound_section: Tickgeräusch
       ticking_speed: Geschwindigkeit
       ticking_volume: Lautstärke
-      keep_screen_awake_section: Bildschirm wach halten
-      keep_screen_awake: Bildschirm während Sitzungen wach halten
       timer_label: Sitzungsdauern
       title: Timer-Einstellungen
       work_duration: Arbeitsdauer
@@ -246,11 +246,16 @@ tasks:
       urgent_not_important: Dringend aber nicht wichtig
   quick_task:
     create_error: Fehler beim Erstellen der Aufgabe
-    lock_description: Eigenschaften sperren, um ihre Werte beim Erstellen mehrerer ähnlicher Aufgaben beizubehalten. Gesperrte Eigenschaften werden beim Zurücksetzen des Formulars nicht gelöscht.
+    lock_description:
+      Eigenschaften sperren, um ihre Werte beim Erstellen mehrerer
+      ähnlicher Aufgaben beizubehalten. Gesperrte Eigenschaften werden beim Zurücksetzen
+      des Formulars nicht gelöscht.
     lock_settings: Sperreinstellungen
     reset_all: Alle Felder zurücksetzen
     reset_confirm:
-      message: Sind Sie sicher, dass Sie alle Felder zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+      message:
+        Sind Sie sicher, dass Sie alle Felder zurücksetzen möchten? Diese Aktion
+        kann nicht rückgängig gemacht werden.
       title: Alle Felder zurücksetzen
     title: Schnellaufgabe
     title_hint: Aufgabentitel
@@ -288,17 +293,15 @@ tasks:
       endsAfter: endet nach
       endsOnDate: endet am
       occurrences: Wiederholungen
-      on: am
+      true: am
       everyDay: jeden Tag
       starts: beginnt
+      "on": "an"
     weekDays: Wochentage
     weekSuffix: Woche(n)
     weekly: Wöchentlich
     yearSuffix: Jahr(e)
     yearly: Jährlich
-  validation:
-    deadline_time_invalid: Termin-Uhrzeit ist ungültig
-    deadline_cannot_be_before_planned: Das Fälligkeitsdatum darf nicht vor dem geplanten Datum liegen
   reminder:
     atTime: Zur geplanten Zeit
     deadlineReminderLabel: Fristerinnerung
@@ -318,3 +321,8 @@ tasks:
     set_reminder: Erinnerung setzen
     show_completed_tasks: Erledigte Aufgaben filtern
     show_subtasks: Unteraufgaben anzeigen
+  validation:
+    deadline_cannot_be_before_planned:
+      Das Fälligkeitsdatum darf nicht vor dem geplanten
+      Datum liegen
+    deadline_time_invalid: Termin-Uhrzeit ist ungültig

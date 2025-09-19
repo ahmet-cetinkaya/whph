@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Byg et omfattende videnstyringssystem, der fanger dine idéer, organiserer information effektivt og gør vigtige indsigter let tilgængelige, når du har brug for dem.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Hvorfor er det vigtigt?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Effektiv notetagning og videnstyring er essentielle for produktivitet og læring. Et velorganiseret notesystem forhindrer værdifulde indsigter i at blive tabt, accelererer beslutningstagning og skaber en pålidelig ekstern hukommelse, der bliver mere værdifuld over tid.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Udfri informationfangst
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Opret en sømløs workflow til at fange og behandle information, der sikrer, at intet vigtigt falder igennem revnerne, mens du opretholder fokus på dit nuværende arbejde.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Fang idéer hurtigt uden at forstyrre din flow
+      - ✏️ Rediger og forfin information, efterhånden som forståelsen udvikler sig
+      - 🗑️ Fjern forældede eller irrelevante informationer systematisk
+      - 📌 Hold kritiske informationer let tilgængelige og organiseret
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Strategisk organisering
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Udvikl et organisationssystem, der skalerer med din videnbase og gør informationshentning hurtig og pålidelig, uanset volumen.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Anvend konsistente tagging-strategier for hurtig kategorisering
+      - 🔍 Brug kraftfulde søgefunktioner til at finde information øjeblikkeligt
+      - 📚 Gruppér relaterede noter for at skabe omfattende videnområder
+      - 🎯 Oprethold fokus gennem organiseret informationsarkitektur
 
-      ## 📄 Professional Content Creation
+      ## 📄 Professionel indholdsskabelse
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Udnyt avancerede formateringsværktøjer til at skabe klar, velstruktureret indhold, der kommunikerer effektivt og holder tidens prøve.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Rig formatering:** Brug Markdown til professionel dokumentstruktur
+      - 📋 **Klar struktur:** Organisér indhold med overskrifter, lister og vægtning
+      - 🔗 **Forbundne viden:** Link relaterede koncepter og information
+      - 📖 **Læseligt output:** Formater indhold for let forståelse og deling
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Produktivitetsfordele
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Forvandle din notetagningspraxis til en produktivitetsmultiplikator, der forbedrer din tænkning, accelererer læring og forbedrer beslutningstagningens kvalitet.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Forbedret tænkning:** Ekstern hukommelse frigør mental kapacitet til kreativt arbejde
+      - ⚡ **Hurtigere adgang:** Organiseret information reducerer tid brugt på søgning
+      - 🌐 **Universel tilgængelighed:** Adgang til din videnbase fra enhver enhed
+      - 📈 **Kontinuerlig forbedring:** Forfinet indhold bliver mere værdifuldt over tid
+    title: Vejledning i videnstyring og notorganisation
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Tilføj note
+    delete: Slet note
+    edit: Redigér note
+    save: Gem note
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Tilføj tag
+      content_placeholder: Skriv noteindhold her...
+      save_button: Gem
+      saved_message: Note gemt succesfuldt
+      title_placeholder: Notetitel
+      update_button: Opdatér
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Ingen noter fundet
+      loading: Indlæser noter...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Er du sikker på, at du vil slette denne note?
+    confirm_title: Slet note
   details:
-    content: Content
+    content: Indhold
     tags:
-      hint: Select tags for note
+      hint: Vælg tags til note
       label: Tags
-    title: Title
+    title: Titel
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Kunne ikke tilføje tag
+    deleting: Uventet fejl opstod under sletning af note
+    getting_notes: Fejl opstod under hentning af noter
+    loading_details: Kunne ikke indlæse notedetaljer
+    loading_tags: Kunne ikke indlæse notetags
+    note_not_found: Note ikke fundet
+    note_tag_not_found: Notetag ikke fundet
+    removing_tag: Kunne ikke fjerne tag
+    saving_note: Kunne ikke gemme note
+    tag_already_exists: Dette tag er allerede tilføjet
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Søg noter...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filtrér efter tags
+  new_note: Ny note
+  title_placeholder: Indtast en beskrivende notetitel...
+  no_notes: Ingen noter
+  note_details: Notedetaljer
+  notes: Noter
+  title: Noter
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Tilføj note
+    delete_note: Slet note
+    edit_name: Redigér titel

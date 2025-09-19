@@ -1,320 +1,323 @@
 tasks:
   add_button:
-    tooltip: Add new task
-  all_tasks_done: All tasks completed!
+    tooltip: Tilføj ny opgave
+  all_tasks_done: Alle opgaver færdige!
   card:
     schedule:
-      today: Schedule for today
-      tomorrow: Schedule for tomorrow
+      today: Planlæg til i dag
+      tomorrow: Planlæg til i morgen
     tooltips:
-      schedule: Schedule task
+      schedule: Planlæg opgave
   complete:
-    error: Unexpected error occurred while saving task completion.
+    error: Uventet fejl opstod under lagring af opgavefærdiggørelse.
   date_selection:
-    deadline_date_title: Select deadline date
-    planned_date_title: Select planned date
+    deadline_date_title: Vælg fristdato
+    planned_date_title: Vælg planlagt dato
   delete:
-    error: Unexpected error occurred while deleting task.
-    message: Are you sure you want to delete this task?
-    title: Delete Task
+    error: Uventet fejl opstod under sletning af opgave.
+    message: Er du sikker på, at du vil slette denne opgave?
+    title: Slet opgave
   details:
     deadline_date:
-      label: Deadline Date
+      label: Fristdato
     description:
-      hint: Add description...
-      label: Description
+      hint: Tilføj beskrivelse...
+      label: Beskrivelse
     elapsed_time:
-      label: Elapsed Time
+      label: Forløbet tid
     estimated_time:
-      label: Estimated Time
-    is_completed: Completed
-    planned_date:
-      label: Planned Date
-    priority:
-      label: Priority
-    sub_tasks:
-      label: Sub-tasks
+      label: Estimeret tid
+    is_completed: Færdig
     parent_task:
-      label: Parent Task
-      tooltip: Click to navigate to parent task
+      label: Overordnet opgave
+      tooltip: Klik for at navigere til overordnet opgave
+    planned_date:
+      label: Planlagt dato
+    priority:
+      label: Prioritet
+    sub_tasks:
+      label: Underopgaver
     tags:
-      hint: Select tags to associate
+      hint: Vælg tags at associer
       label: Tags
-    tags_hint: Select tags for task
+    tags_hint: Vælg tags for opgave
     title:
-      label: Title
-    total_elapsed_time: Total Elapsed Time
+      label: Titel
+    total_elapsed_time: Total forløbet tid
   errors:
-    add_tag: Unexpected error occurred while adding tag
-    adding_tag: Failed to add tag
-    get_tags: Error occurred while fetching tags
-    get_task: Unexpected error occurred while loading task
-    loading_tags: Failed to load task tags
-    loading_task: Failed to load task
-    loading_tasks: Failed to load tasks
-    remove_tag: Unexpected error occurred while removing tag
-    removing_tag: Failed to remove tag
-    same_tag: Cannot add the same tag twice
-    save_task: Unexpected error occurred while saving task
-    saving_task: Failed to save task
-    sort_field_not_supported: Sort field not supported
-    task_not_found: Task not found
-    task_tag_already_deleted: Task tag is already deleted
-    task_tag_already_exists: This task tag already exists
-    task_tag_not_found: Task tag not found
+    add_tag: Uventet fejl opstod under tilføjelse af tag
+    adding_tag: Kunne ikke tilføje tag
+    get_tags: Fejl opstod under hentning af tags
+    get_task: Uventet fejl opstod under indlæsning af opgave
+    loading_tags: Kunne ikke indlæse opgavemærker
+    loading_task: Kunne ikke indlæse opgave
+    loading_tasks: Kunne ikke indlæse opgaver
+    remove_tag: Uventet fejl opstod under fjernelse af tag
+    removing_tag: Kunne ikke fjerne tag
+    same_tag: Kan ikke tilføje samme tag to gange
+    save_task: Uventet fejl opstod under lagring af opgave
+    saving_task: Kunne ikke gemme opgave
+    sort_field_not_supported: Sorteringsfelt ikke understøttet
+    task_not_found: Opgave ikke fundet
+    task_tag_already_deleted: Opgavetag er allerede slettet
+    task_tag_already_exists: Denne opgavetag findes allerede
+    task_tag_not_found: Opgavetag ikke fundet
   filters:
-    completion: By Completion Status
-    deadline_date: By Deadline Date
-    planned_date: By Planned Date
+    completion: Efter færdiggørelsesstatus
+    deadline_date: Efter fristdato
+    planned_date: Efter planlagt dato
     search:
-      placeholder: Search tasks
-    tags: By Tags
+      placeholder: Søg opgaver...
+    tags: Efter tags
     tooltips:
-      filter_by_tags: Filter by tags
+      filter_by_tags: Filtrer efter tags
   help:
     details:
       content: |
-        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
+        Mestre din opgavehåndtering og maksimer produktivitet ved at organisere, prioritere og spore din arbejde effektivt.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Hvorfor er det vigtigt?
 
-        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
+        Effektiv opgavehåndtering er fundamentet for produktivitet. Korrekte struktureret opgaver med klare prioriteter og deadlines hjælper dig med at fokusere på det, der betyder mest, og forhindre vigtigt arbejde i at falde igennem revnerne.
 
-        ## 📝 Task Organization
+        ## 📝 Opgaveorganisation
 
-        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
+        Strukturer dine opgaver med omfattende detaljer for at opretholde klarhed og fokus. Brug tags, prioriteter og tidsestimater til at skabe en systematisk tilgang til din arbejdsbyrde.
 
-        - 🏷️ Categorize tasks with meaningful tags
-        - ⚖️ Set priorities using proven frameworks
-        - ⏱️ Estimate time requirements accurately
-        - 📅 Plan realistic deadlines and schedules
+        - 🏷️ Kategoriser opgaver med meningsfulde tags
+        - ⚖️ Sæt prioriteter ved hjælp af beviste rammer
+        - ⏱️ Estimér tidsbehov præcist
+        - 📅 Planlæg realistiske deadlines og tidsplaner
 
-        ## ⏰ Time Management
+        ## ⏰ Tidsstyring
 
-        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
+        Spor dine tidsinvesteringer for at forstå dine arbejdsrutiner og forbedre effektivitet. Korrekte tidsstyring transformerer spredte indsatser til fokuseret produktivitet.
 
-        - 📊 Monitor actual vs. estimated time
-        - 🎯 Focus on high-impact activities
-        - 📈 Analyze productivity patterns over time
-        - ⏳ Balance urgent and important tasks
+        - 📊 Overvåg faktisk vs. estimeret tid
+        - 🎯 Fokuser på høj-impact aktiviteter
+        - 📈 Analysér produktivitetsmønstre over tid
+        - ⏳ Balancér presserende og vigtige opgaver
 
-        ## 📊 Priority Framework (Eisenhower Matrix)
+        ## 📊 Prioritetsramme (Eisenhower Matrix)
 
-        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
+        Organisér dine opgaver ved hjælp af denne beviste prioriteringsmetode for at sikre, at du altid arbejder på de rigtige ting på det rigtige tidspunkt.
 
-        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
-        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
-        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
-        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
-      title: Task Management & Productivity Guide
+        - 🔥 **Presserende & Vigtig:** Håndter umiddelbart - krisehåndtering og deadlines
+        - 📈 **Vigtig, Ikke Presserende:** Planlæg strategisk - planlægning og færdighedsudvikling
+        - ⚡ **Presserende, Ikke Vigtig:** Delegér når muligt - afbrydelser og nogle møder
+        - 🗑️ **Hverken Presserende eller Vigtig:** Eliminér - tidspildere og lav-værdi aktiviteter
+      title: Opgavehåndtering & Produktivitetsguide
     overview:
       content: |
-        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+        Transformér din produktivitet med systematisk opgavehåndtering, der hjælper dig med at forblive organiseret, fokuseret og i kontrol over din arbejdsbyrde.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Hvorfor er det vigtigt?
 
-        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+        Effektiv opgavehåndtering er hjørnestenen i personlig og professionel succes. Ved at organisere dit arbejde systematisk reducerer du stress, opfylder deadlines konsekvent og skaber plads til meningsfuld fremskridt på vigtige mål.
 
-        ## 📋 Task Organization
+        ## 📋 Opgaveorganisation
 
-        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+        Skab en struktureret tilgang til håndtering af dine ansvar. Velorganiserede opgaver fører til klare prioriteter og effektiv udførelse af dit daglige arbejde.
 
-        - ✅ Create and categorize tasks systematically
-        - 🏷️ Group related work with meaningful tags
-        - ⚖️ Set clear priorities and deadlines
-        - 🔍 Use filters and search for quick access
+        - ✅ Skab og kategorisér opgaver systematisk
+        - 🏷️ Grupper relateret arbejde med meningsfulde tags
+        - ⚖️ Sæt klare prioriteter og deadlines
+        - 🔍 Brug filtre og søgning for hurtig adgang
 
-        ## ⏱️ Time Tracking & Focus
+        ## ⏱️ Tidssporing & Fokus
 
-        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+        Overvåg dine tidsinvesteringer for at forstå produktivitetsmønstre og optimere din workflow. Tidsbevidsthed fører til bedre planlægning og forbedret ydeevne.
 
-        - ⏰ Track actual time spent per task
-        - 🎯 Use Marathon Mode for focused work sessions
-        - 📊 Analyze completion patterns and trends
-        - 🔄 Review and adjust time estimates regularly
+        - ⏰ Spor faktisk tid brugt pr. opgave
+        - 🎯 Brug Marathon Mode til fokuserede arbejdssessioner
+        - 📊 Analysér færdiggørelsesmønstre og trends
+        - 🔄 Gennemgå og justér tidsestimater regelmæssigt
 
-        ## 📈 Progress Monitoring
+        ## 📈 Fremskridtsmonitorering
 
-        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+        Hold styr på dine præstationer og lær af dine arbejdsrutiner. Regelmæssig gennemgang og refleksion driver kontinuerlig forbedring i dit produktivitetssystem.
 
-        - 📈 Monitor task completion rates
-        - 📅 Review daily and weekly progress
-        - 🎯 Identify bottlenecks and optimization opportunities
-        - 🏆 Celebrate achievements and milestone completions
-      title: Task Management & Workflow Guide
+        - 📈 Overvåg opgavefærdiggørelsesrater
+        - 📅 Gennemgå daglig og ugentlig fremskridt
+        - 🎯 Identificér flaskenhalse og optimiseringsmuligheder
+        - 🏆 Fejr præstationer og milepælsfærdiggørelser
+      title: Opgavehåndtering & Workflow guide
   marathon:
     details:
-      title: Task Details
+      title: Opgavedetaljer
     help:
       content: |
-        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
+        Maksimer dit fokus og produktivitet med struktureret arbejdssessioner, der hjælper dig med at opretholde dyb koncentration mens du forhindrer udbrændthed.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Hvorfor er det vigtigt?
 
-        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
+        Fokuserede arbejdssessioner er essentielle for dybt arbejde og høj kvalitet output. Ved at arbejde i struktureret intervaller med regelmæssige pauser opretholder du peak mentalt ydeevne mens du undgår træthed, der kommer fra forlængede, ude-fokuserede arbejdsperioder.
 
-        ## ⏰ Time-Boxed Focus Sessions
+        ## ⏰ Tid-boksede fokus sessioner
 
-        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
+        Brug beviste tidsstyringsteknikker til at strukturere dit arbejde for maksimal effektivitet. Strukturerede sessioner hjælper dig med at opretholde koncentration og fuldføre opgaver mere effektivt.
 
-        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
-        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
-        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
-        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
+        - 🎯 **Klassisk fokus:** 25 minutter arbejde / 5 minutter pause
+        - 📈 **Udvidet fokus:** 50 minutter arbejde / 10 minutter pause
+        - 🔄 **Lang pause:** 15-30 minutter efter 4 sessioner
+        - ⚖️ **Egendefineret timing:** Juster intervaller til at matche din naturlige rytme
 
-        ## 🧠 Cognitive Benefits
+        ## 🧠 Kognitive fordele
 
-        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
+        Strukturerede arbejdssessioner udnytter hjernens naturlige opmærksomhedscyklusser til at optimere ydeevne og forhindre mental træthed, der reducerer kvalitet og kreativitet.
 
-        - 🎯 Enhanced focus and deep concentration
-        - 🔋 Reduced mental fatigue and burnout
-        - 💪 Sustained motivation through regular accomplishments
-        - ⚡ Improved time awareness and planning accuracy
+        - 🎯 Forbedret fokus og dyb koncentration
+        - 🔋 Reduceret mental træthed og udbrændthed
+        - 💪 Bæredygtig motivation gennem regelmæssige præstationer
+        - ⚡ Forbedret tidsbevidsthed og planlægningsnøjagtighed
 
-        ## 📊 Performance Optimization
+        ## 📊 Ydeevneoptimering
 
-        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
+        Spor dine fokuserede arbejdsrutiner for at forstå dine peak produktivitetstider og optimere din tidsplan for maksimal effektivitet.
 
-        - 🏷️ Categorize focus sessions with tags for analysis
-        - 📈 Monitor productivity patterns across different times
-        - 🚫 Eliminate distractions before starting sessions
-        - 🚶 Use breaks for physical movement and mental reset
-      title: Focused Work Sessions & Time Management Guide
-      tooltip: Marathon help tooltip
+        - 🏷️ Kategorisér fokus sessioner med tags for analyse
+        - 📈 Overvåg produktivitetsmønstre på tværs af forskellige tider
+        - 🚫 Eliminér distraktioner før sessioner starter
+        - 🚶 Brug pauser til fysisk bevægelse og mental nulstilling
+      title: Fokuserede arbejdssessioner & Tidsstyringsguide
+      tooltip: Marathon hjælp tooltip
     label: Marathon Mode
-    unpin_task_tooltip: Unpin current task
-  new_task: New Task
-  no_tasks: No tasks
+    unpin_task_tooltip: Udfjær nuværende opgave
+  new_task: Ny opgave
+  no_tasks: Ingen opgaver
   notifications:
-    deadline_message: "Your task deadline is at {time}"
-    deadline_title: "Task Deadline: {title}"
-    planned_message: "Your task is planned for {time}"
-    reminder_title: "Task Reminder: {title}"
+    deadline_message: Din opgavefrist er kl. {time}
+    deadline_title: "Opgavefrist: {title}"
+    planned_message: Din opgave er planlagt til {time}
+    reminder_title: "Opgavepåmindelse: {title}"
   page:
-    completed_tasks_title: Completed tasks
-    title: Tasks
+    completed_tasks_title: Færdige opgaver
+    title: Opgaver
   pomodoro:
     actions:
       stop_timer: Stop Timer
     notifications:
-      break_completed: Break session completed!
-      long_break_completed: Long break completed!
-      time_remaining_prefix: "Time remaining:"
-      timer_completed: Timer completed!
+      break_completed: Pausesession færdig!
+      long_break_completed: Lang pause færdig!
+      time_remaining_prefix: "Tid tilbage:"
+      timer_completed: Timer færdig!
       title: Pomodoro Timer
-      work_completed: Work session completed!
+      work_completed: Arbejdssession færdig!
     settings:
-      auto_start_break: Auto-start break after work
-      auto_start_section: Auto-Start Options
-      auto_start_work: Auto-start work after break
-      break_duration: Break Duration
-      long_break_duration: Long Break Duration
-      sessions_before_long_break: Sessions before Long Break
-      ticking_sound: Enable ticking sound
+      auto_start_break: Auto-start pause efter arbejde
+      auto_start_section: Auto-Start Indstillinger
+      auto_start_work: Auto-start arbejde efter pause
+      break_duration: Pauseduration
+      keep_screen_awake: Hold skærm vågen under sessioner
+      keep_screen_awake_section: Hold Skærm Vågen
+      long_break_duration: Lang Pauseduration
+      sessions_before_long_break: Sessioner før Lang Pause
+      ticking_sound: Aktivér tikke lyde
+      ticking_volume: Tiklydsvolumen
+      ticking_speed: Tikhastighed
       ticking_sound_section: Ticking Sound
-      ticking_speed: Speed
-      ticking_volume: Volume
-      keep_screen_awake_section: Keep Screen Awake
-      keep_screen_awake: Keep screen awake during sessions
-      timer_label: Session durations
-      title: Timer Settings
-      work_duration: Work Duration
+      timer_label: Sessiondurationer
+      title: Timer Indstillinger
+      work_duration: Arbejdsduration
     system_tray:
-      app_running: App Running
-      complete_title: Pomodoro Complete
-      tap_to_open: Tap to open
-      timer_running: Timer running
+      app_running: App kører
+      complete_title: Pomodoro Færdig
+      tap_to_open: Tryk for at åbne
+      timer_running: Timer kører
   priorities:
-    not_urgent_important: Not Urgent but Important
-    not_urgent_not_important: Not Urgent or Important
-    urgent_important: Urgent and Important
-    urgent_not_important: Urgent but Not Important
+    not_urgent_important: Ikke presserende men vigtig
+    not_urgent_not_important: Ikke presserende eller vigtig
+    urgent_important: Presserende og vigtig
+    urgent_not_important: Presserende men ikke vigtig
   priority:
     selection:
-      title: Select Priority
+      title: Vælg prioritet
     tooltips:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Ingen prioritet
+      not_urgent_important: Ikke presserende men vigtig
+      not_urgent_not_important: Ikke presserende & ikke vigtig
+      urgent_important: Presserende & vigtig
+      urgent_not_important: Presserende men ikke vigtig
     types:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Ingen prioritet
+      not_urgent_important: Ikke presserende men vigtig
+      not_urgent_not_important: Ikke presserende & ikke vigtig
+      urgent_important: Presserende & vigtig
+      urgent_not_important: Presserende men ikke vigtig
   quick_task:
-    create_error: Error creating task
-    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
-    lock_settings: Lock Settings
-    reset_all: Reset all fields
+    create_error: Fejl ved oprettelse af opgave
+    lock_description: |
+      Lås egenskaber for at beholde deres værdier, når du opretter flere
+      lignende opgaver. Låste egenskaber vil ikke blive ryddet, når du nulstiller formularen.
+    lock_settings: Lås Indstillinger
+    reset_all: Nulstil alle felter
     reset_confirm:
-      message: Are you sure you want to reset all fields? This action cannot be undone.
-      title: Reset All Fields
-    title: Quick Task
-    title_hint: Enter a descriptive task title...
-    title_placeholder: What needs to be done?
+      message: Er du sikker på, at du vil nulstille alle felter? Denne handling kan ikke fortrydes.
+      title: Nulstil Alle Felter
+    title: Hurtig opgave
+    title_hint: Indtast en beskrivende opgavetitel...
+    title_placeholder: Hvad der skal gøres?
     tooltips:
-      deadline_date: "Deadline: {date}"
-      deadline_date_not_set: "Deadline: Not set"
-      estimated_time: "Estimated Time: {time}"
-      estimated_time_not_set: "Estimated Time: Not set"
-      planned_date: "Planned: {date}"
-      planned_date_not_set: "Planned: Not set"
+      deadline_date: "Frist: {date}"
+      deadline_date_not_set: "Frist: Ikke sat"
+      estimated_time: "Estimeret tid: {time}"
+      estimated_time_not_set: "Estimeret tid: Ikke sat"
+      planned_date: "Planlagt: {date}"
+      planned_date_not_set: "Planlagt: Ikke sat"
   recurrence:
-    count: Number of occurrences
-    custom: Custom
-    daily: Daily
-    daySuffix: day(s)
-    endDate: End date
-    enterCountHint: Enter count
+    count: Antal forekomster
+    custom: Tilpasset
+    daily: Dagligt
+    daySuffix: dag(e)
+    endDate: Slutdato
+    enterCountHint: Indtast antal
     interval:
-      label: Repeat every
-      prefix: every
+      label: Gentag hver
+      prefix: hver
       suffix:
-        days: day(s)
-        months: month(s)
-        weeks: week(s)
-        years: year(s)
-    label: Recurrence
-    monthSuffix: month(s)
-    monthly: Monthly
-    none: No recurrence
-    range: Range
-    selectDateHint: Select date
-    startDate: Start date
+        days: dag(e)
+        months: måned(er)
+        weeks: uge(r)
+        years: år
+    label: Gentagelse
+    monthSuffix: måned(er)
+    monthly: Månedligt
+    none: Ingen gentagelse
+    range: Omfang
+    selectDateHint: Vælg dato
+    startDate: Startdato
     summary:
-      endsAfter: ends after
-      endsOnDate: ends on
-      occurrences: occurrences
-      on: on
+      endsAfter: slutter efter
+      endsOnDate: slutter den
       everyDay: hver dag
-      starts: starts
-    weekDays: Days of week
-    weekSuffix: week(s)
-    weekly: Weekly
-    yearSuffix: year(s)
-    yearly: Yearly
-  validation:
-    deadline_time_invalid: Deadline tidspunkt er ugyldigt
-    deadline_cannot_be_before_planned: Deadline dato skal være efter den planlagte dato
+      occurrences: forekomster
+      true: sand
+      starts: starter
+      on: på
+    weekDays: Dage i ugen
+    weekSuffix: uge(r)
+    weekly: Ugentligt
+    yearSuffix: år
+    yearly: Årligt
   reminder:
-    atTime: At the scheduled time
-    deadlineReminderLabel: Deadline Reminder
-    fifteenMinutesBefore: 15 minutes before
-    fiveMinutesBefore: 5 minutes before
-    none: No reminder
-    oneDayBefore: 1 day before
-    oneHourBefore: 1 hour before
-    plannedReminderLabel: Planned Date Reminder
-  task_details: Task Details
-  title: Tasks
+    atTime: På den planlagte tid
+    deadlineReminderLabel: Fristpåmindelse
+    fifteenMinutesBefore: 15 minutter før
+    fiveMinutesBefore: 5 minutter før
+    none: Ingen påmindelse
+    oneDayBefore: 1 dag før
+    oneHourBefore: 1 time før
+    plannedReminderLabel: Planlagt Dato Påmindelse
+  task_details: Opgavedetaljer
+  title: Opgaver
   tooltips:
-    clear_date: Clear date
-    decrease_estimated_time: Decrease estimated time
-    edit_title: Edit title
-    increase_estimated_time: Increase estimated time
-    set_reminder: Set reminder
-    show_completed_tasks: Filter completed tasks
+    clear_date: Ryd dato
+    decrease_estimated_time: Formindsk estimeret tid
+    edit_title: Rediger titel
+    increase_estimated_time: Øg estimeret tid
+    set_reminder: Sæt påmindelse
+    show_completed_tasks: Filtrer færdige opgaver
     show_subtasks: Vis underopgaver
+  validation:
+    deadline_cannot_be_before_planned: Frist skal være efter den planlagte dato
+    deadline_time_invalid: Indtast gyldig fristtid

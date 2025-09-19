@@ -1,5 +1,4 @@
 shared:
-  untitled: "Başlıksız"
   buttons:
     add: Ekle
     back: Geri
@@ -65,6 +64,7 @@ shared:
     created_date_label: Oluşturulma Tarihi
     modified_date_label: Değiştirilme Tarihi
     name_label: İsim
+  date: Tarih
   date_filter:
     title: Tarih Aralığı Seç
     tooltips:
@@ -72,6 +72,28 @@ shared:
       filter: Tarihe göre filtrele
   date_format:
     hint: GG/AA/YYYY
+  datepicker:
+    cannot_select_date_after_max_date: "{date} tarihinden sonra bir tarih seçilemez"
+    cannot_select_date_before_min_date: "{date} tarihinden önce bir tarih seçilemez"
+    cannot_select_time_after_max_date: "{time} saatinden sonra bir saat seçilemez"
+    cannot_select_time_before_min_date: "{time} saatinden önce bir saat seçilemez"
+    deadline_cannot_be_before_planned_date:
+      Bitiş tarihi planlanan tarihte veya sonrasında
+      olmalıdır
+    end_date_cannot_be_after_max_date: Bitiş tarihi {date} tarihinden sonra olamaz
+    end_date_must_be_at_or_before: Bitiş tarihi {date} veya öncesi olmalıdır
+    select_date_range_title: Tarih aralığı seçin
+    select_date_time_title: Tarih ve saat seçin
+    selected_date_must_be_at_or_after: Seçilen tarih {date} veya sonrası olmalıdır
+    selected_date_must_be_at_or_before: Seçilen tarih {date} veya öncesi olmalıdır
+    selected_date_time_must_be_after: Seçilen tarih ve saat {dateTime} sonrası olmalıdır
+    start_date_cannot_be_after_end_date: Başlangıç tarihi bitiş tarihinden sonra olamaz
+    start_date_cannot_be_before_min_date:
+      Başlangıç tarihi {date} tarihinden önce
+      olamaz
+    start_date_must_be_at_or_after: Başlangıç tarihi {date} veya sonrası olmalıdır
+    time_must_be_at_or_after: Saat {time} veya sonrası olmalıdır
+    time_must_be_at_or_before: Saat {time} veya öncesi olmalıdır
   days:
     friday: Cuma
     friday_short: Cum
@@ -92,19 +114,19 @@ shared:
       hint: Markdown formatını kullanarak yazabilirsiniz...
       tooltips:
         bold: Kalın
-        italic: İtalik
-        strikethrough: Üstü Çizili
-        code: Kod
-        link: Bağlantı
-        quote: Alıntı
         bulleted_list: Madde Listesi
-        numbered_list: Numaralı Liste
-        horizontal_rule: Yatay Çizgi
-        edit: Düzenle
-        preview: Önizleme
-        image: Resim
-        heading: Başlık
         checkbox: Onay kutusu
+        code: Kod
+        edit: Düzenle
+        heading: Başlık
+        horizontal_rule: Yatay Çizgi
+        image: Resim
+        italic: İtalik
+        link: Bağlantı
+        numbered_list: Numaralı Liste
+        preview: Önizleme
+        quote: Alıntı
+        strikethrough: Üstü Çizili
   errors:
     deleting: Veri silinirken hata oluştu
     file_not_found: Dosya bulunamadı
@@ -138,8 +160,6 @@ shared:
     unexpected: Beklenmedik bir hata oluştu
   filters:
     search: Ara
-  help:
-    tooltip: Yardım
   messages:
     confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
     no_items_found: Öğe yok
@@ -153,7 +173,7 @@ shared:
       tags: Etiketler
       tasks: Görevler
       today: Bugün
-  none_option: "Hiçbir etiket yok"
+  none_option: Hiçbir etiket yok
   regex_help:
     examples:
       chat: \"Slack\" veya \"Discord\" ile eşleşir
@@ -190,11 +210,11 @@ shared:
       description: Öğeleri yeniden sıralamak için sürükleyi etkinleştirin
       title: Özel Sıralama
     descending: Azalan
+    disable_reordering_tooltip: Yeniden sıralama modunu devre dışı bırak
+    enable_reordering_tooltip: Yeniden sıralama modunu etkinleştir
     remove_criteria: Kriteri Kaldır
     reset_to_default: Varsayılana Sıfırla
     sort: Sırala
-    enable_reordering_tooltip: Yeniden sıralama modunu etkinleştir
-    disable_reordering_tooltip: Yeniden sıralama modunu devre dışı bırak
   statistics:
     daily_usage:
       description: Haftanın günlerine göre toplam kullanım süresini gösterir
@@ -204,6 +224,23 @@ shared:
       title: Saatlik Kullanım
   time:
     not_set: Ayarlanmadı
+  time_display:
+    elapsed: Geçen
+    elapsed_time_tooltip: Bu göreve harcanan süre
+    estimated: Tahmini
+    estimated_time_tooltip: Bu görevi tamamlamak için tahmini süre
+    no_time_logged_tooltip: Henüz zaman kaydedilmedi
+  time_logging:
+    add_time: Zaman Ekle
+    add_time_description: Mevcut toplama zaman ekleyin
+    dialog_title: Zamanı Kaydet
+    duration: Süre
+    invalid_input: Lütfen geçerli bir zaman girin
+    log_time: Zamanı Kaydet
+    mode: Mod
+    set_total: Toplamı Ayarla
+    set_total_description: Toplam harcanan zamanı ayarlayın
+    total_time: Toplam Zaman
   time_periods:
     custom: Özel
     last_month: Son Ay
@@ -213,6 +250,11 @@ shared:
     this_three_months: Bu 3 Ay
     this_week: Bu Hafta
     today: Bugün
+  timer:
+    label: Zamanlayıcı
+    normal: Normal
+    pomodoro: Pomodoro
+    stopwatch: Kronometre
   tooltips:
     compare_with_previous: Önceki dönemle karşılaştır
     filter_by_tags: Etiketlere göre filtrele
@@ -225,6 +267,7 @@ shared:
     minutes: dk
     minutes_short: dk
     seconds: sn
+  untitled: Başlıksız
   update_dialog:
     buttons:
       download_page: İndirme Sayfası
@@ -238,21 +281,4 @@ shared:
     title: Güncelleme Mevcut!
   validation:
     required: "{field} zorunludur."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Bitiş tarihi planlanan tarihte veya sonrasında olmalıdır"
-    selected_date_must_be_at_or_after: "Seçilen tarih {date} veya sonrası olmalıdır"
-    selected_date_must_be_at_or_before: "Seçilen tarih {date} veya öncesi olmalıdır"
-    start_date_cannot_be_after_end_date: "Başlangıç tarihi bitiş tarihinden sonra olamaz"
-    start_date_must_be_at_or_after: "Başlangıç tarihi {date} veya sonrası olmalıdır"
-    end_date_must_be_at_or_before: "Bitiş tarihi {date} veya öncesi olmalıdır"
-    cannot_select_date_before_min_date: "{date} tarihinden önce bir tarih seçilemez"
-    cannot_select_date_after_max_date: "{date} tarihinden sonra bir tarih seçilemez"
-    start_date_cannot_be_before_min_date: "Başlangıç tarihi {date} tarihinden önce olamaz"
-    end_date_cannot_be_after_max_date: "Bitiş tarihi {date} tarihinden sonra olamaz"
-    cannot_select_time_before_min_date: "{time} saatinden önce bir saat seçilemez"
-    cannot_select_time_after_max_date: "{time} saatinden sonra bir saat seçilemez"
-    time_must_be_at_or_after: "Saat {time} veya sonrası olmalıdır"
-    time_must_be_at_or_before: "Saat {time} veya öncesi olmalıdır"
-    selected_date_time_must_be_after: "Seçilen tarih ve saat {dateTime} sonrası olmalıdır"
-    select_date_time_title: "Tarih ve saat seçin"
-    select_date_range_title: "Tarih aralığı seçin"
+  help: Yardım

@@ -9,7 +9,6 @@ habits:
     unarchive: Unarchive
     unarchive_confirm: Are you sure you want to unarchive this habit?
     unarchive_tooltip: Unarchive this habit
-
   calendar:
     week_days:
       fri: Fri
@@ -25,10 +24,12 @@ habits:
   details:
     archived_status: Archived
     create_record_tooltip: Mark as completed today
+    daily_target: Daily Frequency
+    daily_target_hint: times per daily
     description: Description
+    elapsed_time: Elapsed Time
     estimated_time: Estimated Time
     estimated_time_not_set: Not set
-    elapsed_time: Elapsed Time
     help:
       content: |
         Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
@@ -79,22 +80,20 @@ habits:
     statistics:
       archived_note: "Archived on:"
       archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
+      archived_warning: Statistics are shown up to archive date. {startDate} - {archivedDate}
+      completions: completions
       from: From
       monthly: Monthly
+      no_streaks_yet: No streaks yet. Start building consistency!
       overall: Overall
       records: Records
       score_trends: Score Trends
       to: To
       top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
       yearly: Yearly
     statistics_label: Statistics
     tags: Tags
     tags_hint: Select tags to associate
-    daily_target: "Daily Frequency"
-    daily_target_hint: "times per daily"
   errors:
     adding_tag: Failed to add tag
     creating_record: Failed to create habit record
@@ -117,7 +116,9 @@ habits:
   goals:
     current_goal: Goal
     days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
+    description:
+      Do you want to practice the habit with a specific frequency rather
+      than every day? Then set a custom goal.
     enable: Enable Custom Goals
     goal: Custom Goal
     goal_format: "{count} times in {dayCount} days"
@@ -125,13 +126,11 @@ habits:
     settings: Custom Goal Settings
     target_frequency: Period Frequency
     times_unit: times per period
-  help:
-    description: Help description
   list:
     all_habits_done: All habits completed!
     no_habits_found: No habits
-  new_habit: New Habit
   name_placeholder: Enter a meaningful habit name...
+  new_habit: New Habit
   notifications:
     reminder_message: "Remember to complete your habit: {name}"
     reminder_title: "Habit Reminder: {name}"
@@ -206,32 +205,28 @@ habits:
   tags:
     add_tooltip: Add tag
     select_tooltip: Select tag
-  time_logging:
-    dialog_title: Log Time
-    mode: Logging Mode
-    add_time: Add Time
-    set_total: Set Total
-    date: Date
-    duration: Duration to Add
-    total_time: Total Time for Day
-    hours: Hours
-    minutes: Minutes
-    add_time_description: Add the specified time to existing records
-    set_total_description: Set the total time for the selected day
-    log_time: Log Time
-    invalid_input: Please enter valid hours and minutes
-    cancel: Cancel
-  timer:
-    label: Timer
   time_display:
     actual_time_tooltip: Actual time tracked for this day
+    estimated: estimated
     estimated_time_tooltip: Estimated time based on habit settings
     no_time_logged_tooltip: No time logged for this day
-    estimated: estimated
+  time_logging:
+    add_time: Add Time
+    add_time_description: Add the specified time to existing records
+    dialog_title: Log Time
+    duration: Duration to Add
+    invalid_input: Please enter valid hours and minutes
+    log_time: Log Time
+    mode: Logging Mode
+    set_total: Set Total
+    set_total_description: Set the total time for the selected day
+    total_time: Total Time for Day
+  timer:
+    label: Timer
   tooltips:
     add_habit: Add Habit
+    decrease_daily_target: Decrease daily target
     decrease_estimated_time: Decrease estimated time
     edit_name: Edit Name
+    increase_daily_target: Increase daily target
     increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Decrease daily target"
-    increase_daily_target: "Increase daily target"

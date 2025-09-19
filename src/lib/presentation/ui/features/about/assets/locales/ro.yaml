@@ -1,49 +1,48 @@
 about:
-  about_title: "About"
-  version: Version {version}
+  about_title: "Despre"
+  version: Versiune {version}
   description: >
-    {appName} is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    {appName} este o aplicație cuprinzătoare concepută pentru a vă îmbunătăți productivitatea personală; vă permite să vă gestionați eficient sarcinile, să dezvoltați noi obiceiuri și să faceți cel mai bun folos de timpul dumneavoastră. În plus, vă întărește concentrarea prin urmărirea timpului petrecut în diferite aplicații. Analizându-vă progresul, puteți sărbători realizările și obține motivația necesară pentru o viață mai productivă.
   links:
-    website: Website
-    source_code: Source Code
+    website: Site web
+    source_code: Cod sursă
     feedback: Feedback
     contact: Contact
-    check_update: Check for Updates
+    check_update: Verifică actualizări
   support_me:
-    title: Support {appName}
+    title: Susține {appName}
     description: >
-      {appName} is a completely free and open-source software. Everyone is free to use, explore, improve, and share it. 
+      {appName} este un software complet gratuit și open-source. Oricine este liber să îl folosească, să îl exploreze, să îl îmbunătățească și să îl distribuie. 
 
-
-      While you continue to enjoy using it, I keep working to make it even better. If you'd like to support the continuation of this effort, you can buy me a coffee; your support will directly contribute to the development and sustainability of {appName}. 😊
-    button_text: Buy me a coffee
+      În timp ce continuați să vă bucurați de utilizarea sa, eu continui să lucrez pentru a-l face și mai bun. Dacă doriți să susțineți continuarea acestui efort, puteți să îmi cumpărați o cafea; susținerea dumneavoastră va contribui direct la dezvoltarea și sustenabilitatea {appName}. 😊
+    button_text: Cumpără-mi o cafea
   onboarding:
     step1:
-      title: "Welcome to {appName}"
-      description: "Your personal companion for building better habits, managing tasks, and tracking time effectively. Let's explore the key features together!"
+      title: "Bine ați venit la {appName}"
+      description: "Companionul dumneavoastră personal pentru construirea unor obiceiuri mai bune, gestionarea sarcinilor și urmărirea timpului eficient. Să explorăm împreună funcționalitățile cheie!"
     step2:
-      title: "Task Management"
-      description: "Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks."
+      title: "Gestionarea sarcinilor"
+      description: "Creați și organizați sarcini cu priorități, termene limită și remindere. Utilizați cronometrul Pomodoro pentru a rămâne concentrat și a urmări progresul în sarcinile importante."
     step3:
-      title: "Habit Building"
-      description: "Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics."
+      title: "Construirea obiceiurilor"
+      description: "Construiți obiceiuri durabile urmărind activitățile zilnice. Setați remindere, monitorizați șirurile și vizualizați progresul cu statistici detaliate."
     step4:
-      title: "Note Taking"
-      description: "Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access."
+      title: "Luarea de notițe"
+      description: "Păstrați informațiile importante organizate cu un sistem puternic de notițe. Etichetați notițele pentru categorizare ușoară și acces rapid."
     step5:
-      title: "App Usage & Time Insights"
-      description: "Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity."
+      title: "Utilizarea aplicațiilor & Insight-uri de timp"
+      description: "Monitorizați modelele de utilizare a aplicațiilor și analizați timpul petrecut în diferite activități. Obțineți insight-uri în obiceiurile digitale și optimizați productivitatea."
     step6:
-      title: "Smart Tagging System"
-      description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
+      title: "Sistem inteligent de etichetare"
+      description: "Utilizați etichete pentru a organiza și grupa sarcinile, obiceiurile și aplicațiile. Urmăriți timpul petrecut în diferite activități pe etichete pentru a înțelege unde merge timpul și a optimiza fluxul de lucru."
     step7:
-      title: "App Permissions"
-      description: "{appName} needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."
-      review_permissions: "Review Permissions"
+      title: "Permisiuni aplicație"
+      description: "{appName} are nevoie de anumite permisiuni pentru a funcționa corect. Puteți revizui permisiunile pe care doriți să le acordați pentru funcții de sistem precum notificările și urmărirea aplicațiilor."
+      review_permissions: "Revizuiește permisiunile"
     step8:
-      title: "Ready to Transform Your Life?"
-      description: "You have all the tools you need to build better habits, stay focused, and achieve your goals. Start your journey to a more productive and fulfilling life today!"
+      title: "Gata să vă transformați viața?"
+      description: "Aveți toate instrumentele necesare pentru a construi obiceiuri mai bune, a rămâne concentrat și a atinge obiectivele. Începeți călătoria spre o viață mai productivă și împlinită astăzi!"
     buttons:
-      next: "Next"
-      back: "Back"
-      start: "Get Started"
+      next: "Următorul"
+      back: "Înapoi"
+      start: "Începeți"

@@ -1,5 +1,4 @@
 shared:
-  untitled: "Bez tytułu"
   buttons:
     add: Dodaj
     back: Wstecz
@@ -65,6 +64,7 @@ shared:
     created_date_label: Data utworzenia
     modified_date_label: Data modyfikacji
     name_label: Nazwa
+  date: Data
   date_filter:
     title: Wybierz zakres dat
     tooltips:
@@ -72,6 +72,28 @@ shared:
       filter: Filtruj według daty
   date_format:
     hint: DD/MM/YYYY
+  datepicker:
+    cannot_select_date_after_max_date: Nie można wybrać daty po {date}
+    cannot_select_date_before_min_date: Nie można wybrać daty przed {date}
+    cannot_select_time_after_max_date: Nie można wybrać czasu po {time}
+    cannot_select_time_before_min_date: Nie można wybrać czasu przed {time}
+    deadline_cannot_be_before_planned_date:
+      Termin musi być w dniu zaplanowanej daty
+      lub później
+    end_date_cannot_be_after_max_date: Data zakończenia nie może być po {date}
+    end_date_must_be_at_or_before: Data zakończenia musi być {date} lub wcześniej
+    select_date_range_title: Wybierz zakres dat
+    select_date_time_title: Wybierz datę i czas
+    selected_date_must_be_at_or_after: Wybrana data musi być {date} lub później
+    selected_date_must_be_at_or_before: Wybrana data musi być {date} lub wcześniej
+    selected_date_time_must_be_after: Wybrana data i czas muszą być po {dateTime}
+    start_date_cannot_be_after_end_date:
+      Data rozpoczęcia nie może być późniejsza
+      niż data zakończenia
+    start_date_cannot_be_before_min_date: Data rozpoczęcia nie może być przed {date}
+    start_date_must_be_at_or_after: Data rozpoczęcia musi być {date} lub później
+    time_must_be_at_or_after: Czas musi być o {time} lub później
+    time_must_be_at_or_before: Czas musi być o {time} lub wcześniej
   days:
     friday: Piątek
     friday_short: Pt
@@ -92,19 +114,19 @@ shared:
       hint: Możesz pisać używając formatu Markdown...
       tooltips:
         bold: Pogrubienie
-        italic: Kursywa
-        strikethrough: Przekreślenie
-        code: Kod
-        link: Link
-        quote: Cytat
         bulleted_list: Lista punktowana
-        numbered_list: Lista numerowana
-        horizontal_rule: Linia pozioma
-        edit: Edytuj
-        preview: Podgląd
-        image: Obraz
-        heading: Nagłówek
         checkbox: Pole wyboru
+        code: Kod
+        edit: Edytuj
+        heading: Nagłówek
+        horizontal_rule: Linia pozioma
+        image: Obraz
+        italic: Kursywa
+        link: Link
+        numbered_list: Lista numerowana
+        preview: Podgląd
+        quote: Cytat
+        strikethrough: Przekreślenie
   errors:
     deleting: Wystąpił błąd podczas usuwania danych
     file_not_found: Nie znaleziono pliku
@@ -138,8 +160,6 @@ shared:
     unexpected: Wystąpił nieoczekiwany błąd
   filters:
     search: Szukaj
-  help:
-    tooltip: Pomoc
   messages:
     confirm_delete: Czy na pewno chcesz usunąć ten element?
     no_items_found: Brak elementów
@@ -153,7 +173,7 @@ shared:
       tags: Tagi
       tasks: Zadania
       today: Dzisiaj
-  none_option: "Brak tagów"
+  none_option: Brak tagów
   regex_help:
     examples:
       chat: Pasuje do \"Slack\" lub \"Discord\"
@@ -187,11 +207,11 @@ shared:
       description: Włącz przeciąganie i upuszczanie aby zmienić kolejność elementów
       title: Sortowanie niestandardowe
     descending: Malejąco
+    disable_reordering_tooltip: Wyłącz tryb zmiany kolejności
+    enable_reordering_tooltip: Włącz tryb zmiany kolejności
     remove_criteria: Usuń kryteria
     reset_to_default: Przywróć domyślne
     sort: Sortuj
-    enable_reordering_tooltip: Włącz tryb zmiany kolejności
-    disable_reordering_tooltip: Wyłącz tryb zmiany kolejności
   statistics:
     daily_usage:
       description: Pokazuje całkowity czas użytkowania na dzień tygodnia
@@ -200,7 +220,24 @@ shared:
       description: Pokazuje całkowity czas użytkowania na godzinę dnia
       title: Użycie godzinowe
   time:
-    not_set: "Nie ustawiono"
+    not_set: Nie ustawiono
+  time_display:
+    elapsed: Upłynął
+    elapsed_time_tooltip: Czas spędzony na tym zadaniu
+    estimated: Szacowany
+    estimated_time_tooltip: Szacowany czas na wykonanie tego zadania
+    no_time_logged_tooltip: Nie zalogowano jeszcze czasu
+  time_logging:
+    add_time: Dodaj czas
+    add_time_description: Dodaj czas do istniejącego sumy
+    dialog_title: Zaloguj czas
+    duration: Czas trwania
+    invalid_input: Proszę wprowadzić poprawny czas
+    log_time: Zaloguj czas
+    mode: Tryb
+    set_total: Ustaw całkowity
+    set_total_description: Ustaw całkowity spędzony czas
+    total_time: Całkowity czas
   time_periods:
     custom: Niestandardowy
     last_month: Ostatni miesiąc
@@ -210,6 +247,11 @@ shared:
     this_three_months: Te 3 miesiące
     this_week: Ten tydzień
     today: Dzisiaj
+  timer:
+    label: Minutnik
+    normal: Normalny
+    pomodoro: Pomodoro
+    stopwatch: Stoper
   tooltips:
     compare_with_previous: Porównaj z poprzednim okresem
     filter_by_tags: Filtruj według tagów
@@ -222,6 +264,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sek
+  untitled: Bez tytułu
   update_dialog:
     buttons:
       download_page: Strona pobierania
@@ -235,21 +278,4 @@ shared:
     title: Dostępna aktualizacja!
   validation:
     required: "{field} jest wymagane."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Termin musi być w dniu zaplanowanej daty lub później"
-    selected_date_must_be_at_or_after: Wybrana data musi być {date} lub później
-    selected_date_must_be_at_or_before: Wybrana data musi być {date} lub wcześniej
-    start_date_cannot_be_after_end_date: Data rozpoczęcia nie może być późniejsza niż data zakończenia
-    start_date_must_be_at_or_after: Data rozpoczęcia musi być {date} lub później
-    end_date_must_be_at_or_before: Data zakończenia musi być {date} lub wcześniej
-    cannot_select_date_before_min_date: Nie można wybrać daty przed {date}
-    cannot_select_date_after_max_date: Nie można wybrać daty po {date}
-    start_date_cannot_be_before_min_date: Data rozpoczęcia nie może być przed {date}
-    end_date_cannot_be_after_max_date: Data zakończenia nie może być po {date}
-    cannot_select_time_before_min_date: Nie można wybrać czasu przed {time}
-    cannot_select_time_after_max_date: Nie można wybrać czasu po {time}
-    time_must_be_at_or_after: Czas musi być o {time} lub później
-    time_must_be_at_or_before: Czas musi być o {time} lub wcześniej
-    selected_date_time_must_be_after: Wybrana data i czas muszą być po {dateTime}
-    select_date_time_title: Wybierz datę i czas
-    select_date_range_title: Wybierz zakres dat
+  help: Pomoc

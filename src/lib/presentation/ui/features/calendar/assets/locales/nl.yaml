@@ -3,49 +3,49 @@ calendar:
     today:
       help:
         content: |
-          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
+          Optimaliseer uw dagelijkse productiviteit met een uniforme weergave die taken, gewoonten en tijdstracking integreert om u te helpen uw focus te behouden en uw doelen efficiënt te bereiken.
 
-          ## ⚡ Why Is It Important?
+          ## ⚡ Waarom is dit belangrijk?
 
-          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
+          Dagelijkse productiviteitsbeheer is de hoeksteen van effectief tijdgebruik en doelbereiking. Door uw dagelijkse activiteiten te centraliseren in één weergave, elimineert u contextwisselingen, behoudt u duidelijke prioriteiten en creëert u een systematische aanpak voor het volbrengen van uw belangrijkste werk.
 
-          ## 🔄 Habit Consistency
+          ## 🔄 Gewoonteconsistentie
 
-          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
+          Monitor en behoud uw dagelijkse routines met gestroomlijnde gewoontetracking die momentum opbouwt en positieve gedrags patronen versterkt gedurende uw dag.
 
-          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
-          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
-          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
-          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
+          - ✅ **Snelle beoordeling:** Bekijk alle dagelijkse gewoonten in één oogopslag voor snelle voortgangsevaluatie
+          - ✔️ **Directe voltooiing:** Markeer gewoonten als voltooid met eenvoudige interacties die de flow behouden
+          - 🔄 **Routineversterking:** Versterk dagelijkse patronen door consistente tracking en erkenning
+          - 📈 **Momentumopbouw:** Visuele voortgangindicatoren die motivatie geven voor voortdurende consistentie
 
-          ## 📋 Task Execution
+          ## 📋 Taakeffectuering
 
-          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+          Richt uw taakbeheer met een duidelijke weergave van de prioriteiten van vandaag die u helpen effectief uit te voeren zonder het zicht op deadlines en commitments te verliezen.
 
-          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
-          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
-          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
-          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+          - 🗓️ **Prioriteitsduidelijkheid:** Bekijk geplande en vervallen taken georganiseerd voor optimale uitvoering
+          - ➕ **Snelle vastlegging:** Voeg nieuwe taken snel toe zonder de huidige workflow te verstoren
+          - ✔️ **Voortgangstracking:** Monitor voltooiingsstatus om verantwoordelijkheid en momentum te behouden
+          - 🎯 **Focusbehoud:** Duidelijke dagelijkse weergave voorkomt overweldiging door toekomstige verplichtingen
 
-          ## ⏰ Time Investment Analysis
+          ## ⏰ Tijdsinvesteringsanalyse
 
-          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+          Begrijp hoe u uw tijd besteedt door categorische analyse die productiviteitspatronen onthult en helpt uw dagelijkse schema te optimaliseren voor maximale effectiviteit.
 
-          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
-          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
-          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
-          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+          - 📊 **Categorie-inzichten:** Analyseer tijdverdeling over verschillende activiteitstags en projecten
+          - 📈 **Patroonherkenning:** Identificeer productiviteitstrends en piekprestatiesperioden
+          - 🕒 **Activiteitsmonitoring:** Volg tijd besteed aan verschillende dagelijkse activiteiten en verantwoordelijkheden
+          - 🎯 **Optimalisatiemogelijkheden:** Gebruik data om geïnformeerde beslissingen te nemen over tijdallocatie
 
-          ## ⚙️ Productivity Shortcuts
+          ## ⚙️ Productiviteitssnelkoppelingen
 
-          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+          Gebruik snelle acties en efficiënte workflows die wrijving minimaliseren en uw vermogen maximaliseren om focus te behouden op hoogwaardige activiteiten gedurende uw dag.
 
-          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
-          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
-          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
-          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
-        title: Daily Productivity Management Guide
-      title: Today
+          - ▶️ **Focussessies:** Start geconcentreerde werkperioden met integratie van Marathon-modus timer
+          - 🔎 **Slim filtering:** Gebruik tag-gebaseerd filtering om te focussen op specifieke projecten of levensgebieden
+          - ✅ **Efficiënte voltooiing:** Voltooi gewoonten en taken met gestroomlijnde, afleidingsvrije interacties
+          - 📊 **Prestatiesinzichten:** Toegang tot tijdgrafieken voor onmiddellijke feedback op dagelijkse productiviteitspatronen
+        title: Gids voor dagelijkse productiviteitsbeheer
+      title: Vandaag
   sections:
-    habits: Habits
-    tasks: Tasks
+    habits: Gewoonten
+    tasks: Taken

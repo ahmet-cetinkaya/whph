@@ -1,5 +1,4 @@
 shared:
-  untitled: "无标题"
   buttons:
     add: 添加
     back: 返回
@@ -65,6 +64,7 @@ shared:
     created_date_label: 创建日期
     modified_date_label: 修改日期
     name_label: 名称
+  date: 日期
   date_filter:
     title: 选择日期范围
     tooltips:
@@ -72,6 +72,24 @@ shared:
       filter: 按日期筛选
   date_format:
     hint: YYYY/MM/DD
+  datepicker:
+    cannot_select_date_after_max_date: 不能选择 {date} 之后的日期
+    cannot_select_date_before_min_date: 不能选择 {date} 之前的日期
+    cannot_select_time_after_max_date: 不能选择 {time} 之后的时间
+    cannot_select_time_before_min_date: 不能选择 {time} 之前的时间
+    deadline_cannot_be_before_planned_date: 截止日期必须等于或晚于计划日期
+    end_date_cannot_be_after_max_date: 结束日期不能晚于 {date}
+    end_date_must_be_at_or_before: 结束日期必须在 {date} 或之前
+    select_date_range_title: 选择日期范围
+    select_date_time_title: 选择日期和时间
+    selected_date_must_be_at_or_after: 选定的日期必须在 {date} 或之后
+    selected_date_must_be_at_or_before: 选定的日期必须在 {date} 或之前
+    selected_date_time_must_be_after: 选定的日期和时间必须在 {dateTime} 之后
+    start_date_cannot_be_after_end_date: 开始日期不能晚于结束日期
+    start_date_cannot_be_before_min_date: 开始日期不能早于 {date}
+    start_date_must_be_at_or_after: 开始日期必须在 {date} 或之后
+    time_must_be_at_or_after: 时间必须在 {time} 或之后
+    time_must_be_at_or_before: 时间必须在 {time} 或之前
   days:
     friday: 星期五
     friday_short: 五
@@ -92,19 +110,19 @@ shared:
       hint: 您可以使用 Markdown 格式编写...
       tooltips:
         bold: 粗体
-        italic: 斜体
-        strikethrough: 删除线
-        code: 代码
-        link: 链接
-        quote: 引用
         bulleted_list: 项目符号列表
-        numbered_list: 编号列表
-        horizontal_rule: 水平线
-        edit: 编辑
-        preview: 预览
-        image: 图片
-        heading: 标题
         checkbox: 复选框
+        code: 代码
+        edit: 编辑
+        heading: 标题
+        horizontal_rule: 水平线
+        image: 图片
+        italic: 斜体
+        link: 链接
+        numbered_list: 编号列表
+        preview: 预览
+        quote: 引用
+        strikethrough: 删除线
   errors:
     deleting: 删除数据时发生错误
     file_not_found: 文件未找到
@@ -138,8 +156,6 @@ shared:
     unexpected: 发生意外错误
   filters:
     search: 搜索
-  help:
-    tooltip: 帮助
   messages:
     confirm_delete: 您确定要删除此项目吗？
     no_items_found: 没有项目
@@ -153,20 +169,20 @@ shared:
       tags: 标签
       tasks: 任务
       today: 今天
-  none_option: "无标签"
+  none_option: 无标签
   regex_help:
     examples:
-      chat: '匹配 "Slack" 或 "Discord"'
-      chrome: '匹配包含 "Chrome" 的窗口标题'
-      exact_chrome: '精确匹配 "Chrome"'
+      chat: 匹配 "Slack" 或 "Discord"
+      chrome: 匹配包含 "Chrome" 的窗口标题
+      exact_chrome: 精确匹配 "Chrome"
       pdf: 匹配任何 PDF 文件
       vscode: 匹配任何 VS Code 窗口
     tips:
-      any_chars: '使用 ".*" 匹配任何字符'
-      dot: "使用 \"\\.\" 匹配点号"
-      end: '使用 "$" 匹配文本结尾'
+      any_chars: 使用 ".*" 匹配任何字符
+      dot: 使用 "\." 匹配点号
+      end: 使用 "$" 匹配文本结尾
       or: '"|" 表示或运算符'
-      start: '使用 "^" 匹配文本开头'
+      start: 使用 "^" 匹配文本开头
     tips_title: 💡 提示
     title: 模式示例
   report_error: 报告错误
@@ -187,11 +203,11 @@ shared:
       description: 拖放以重新排序项目
       title: 自定义排序
     descending: 降序
+    disable_reordering_tooltip: 禁用重新排序模式
+    enable_reordering_tooltip: 启用重新排序模式
     remove_criteria: 移除条件
     reset_to_default: 重置为默认
     sort: 排序
-    enable_reordering_tooltip: 启用重新排序模式
-    disable_reordering_tooltip: 禁用重新排序模式
   statistics:
     daily_usage:
       description: 显示每周各天的总使用时间
@@ -200,7 +216,24 @@ shared:
       description: 显示每天各小时的总使用时间
       title: 每小时使用情况
   time:
-    not_set: "未设置"
+    not_set: 未设置
+  time_display:
+    elapsed: 已用
+    elapsed_time_tooltip: 此任务已用时间
+    estimated: 预计
+    estimated_time_tooltip: 完成此任务的预计时间
+    no_time_logged_tooltip: 尚未记录时间
+  time_logging:
+    add_time: 添加时间
+    add_time_description: 添加时间到现有总计
+    dialog_title: 记录时间
+    duration: 持续时间
+    invalid_input: 请输入有效的时间
+    log_time: 记录时间
+    mode: 模式
+    set_total: 设置总计
+    set_total_description: 设置总耗时
+    total_time: 总时间
   time_periods:
     custom: 自定义
     last_month: 上个月
@@ -210,6 +243,11 @@ shared:
     this_three_months: 最近3个月
     this_week: 本周
     today: 今天
+  timer:
+    label: 计时器
+    normal: 普通
+    pomodoro: 番茄工作法
+    stopwatch: 秒表
   tooltips:
     compare_with_previous: 与上一期间比较
     filter_by_tags: 按标签筛选
@@ -222,6 +260,7 @@ shared:
     minutes: 分钟
     minutes_short: 分
     seconds: 秒
+  untitled: 无标题
   update_dialog:
     buttons:
       download_page: 下载页面
@@ -229,27 +268,10 @@ shared:
       update_now: 立即更新
     downloading: 正在下载更新...
     failed: 更新失败。
-    message: "新版本 ({version}) 可用。"
+    message: 新版本 ({version}) 可用。
     question: 您想现在更新吗？
     success: 更新下载成功！
     title: 有可用更新！
   validation:
     required: "{field}是必需的。"
-  datepicker:
-    deadline_cannot_be_before_planned_date: "截止日期必须等于或晚于计划日期"
-    selected_date_must_be_at_or_after: "选定的日期必须在 {date} 或之后"
-    selected_date_must_be_at_or_before: "选定的日期必须在 {date} 或之前"
-    start_date_cannot_be_after_end_date: "开始日期不能晚于结束日期"
-    start_date_must_be_at_or_after: "开始日期必须在 {date} 或之后"
-    end_date_must_be_at_or_before: "结束日期必须在 {date} 或之前"
-    cannot_select_date_before_min_date: "不能选择 {date} 之前的日期"
-    cannot_select_date_after_max_date: "不能选择 {date} 之后的日期"
-    start_date_cannot_be_before_min_date: "开始日期不能早于 {date}"
-    end_date_cannot_be_after_max_date: "结束日期不能晚于 {date}"
-    cannot_select_time_before_min_date: "不能选择 {time} 之前的时间"
-    cannot_select_time_after_max_date: "不能选择 {time} 之后的时间"
-    time_must_be_at_or_after: "时间必须在 {time} 或之后"
-    time_must_be_at_or_before: "时间必须在 {time} 或之前"
-    selected_date_time_must_be_after: "选定的日期和时间必须在 {dateTime} 之后"
-    select_date_time_title: "选择日期和时间"
-    select_date_range_title: "选择日期范围"
+  help: 帮助

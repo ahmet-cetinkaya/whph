@@ -1,49 +1,48 @@
 about:
-  about_title: "About"
-  version: Version {version}
+  about_title: "Over"
+  version: Versie {version}
   description: >
-    {appName} is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    {appName} is een uitgebreide app ontworpen om uw persoonlijke productiviteit te verbeteren; het stelt u in staat om uw taken effectief te beheren, nieuwe gewoonten te ontwikkelen en optimaal gebruik te maken van uw tijd. Bovendien versterkt het uw focus door bij te houden hoeveel tijd u doorbrengt in verschillende apps. Door uw voortgang te analyseren, kunt u uw prestaties vieren en de motivatie krijgen die nodig is voor een productiever leven.
   links:
     website: Website
-    source_code: Source Code
+    source_code: Broncode
     feedback: Feedback
     contact: Contact
-    check_update: Check for Updates
+    check_update: Controleren op updates
   support_me:
-    title: Support {appName}
+    title: Ondersteun {appName}
     description: >
-      {appName} is a completely free and open-source software. Everyone is free to use, explore, improve, and share it. 
+      {appName} is volledig gratis en open source software. Iedereen is vrij om het te gebruiken, te verkennen, te verbeteren en te delen. 
 
-
-      While you continue to enjoy using it, I keep working to make it even better. If you'd like to support the continuation of this effort, you can buy me a coffee; your support will directly contribute to the development and sustainability of {appName}. 😊
-    button_text: Buy me a coffee
+      Terwijl u doorgaat met het genieten van het gebruik ervan, blijf ik werken om het nog beter te maken. Als u de voortzetting van deze inspanning wilt ondersteunen, kunt u mij een koffie kopen; uw steun draagt direct bij aan de ontwikkeling en duurzaamheid van {appName}. 😊
+    button_text: Koop mij een koffie
   onboarding:
     step1:
-      title: "Welcome to {appName}"
-      description: "Your personal companion for building better habits, managing tasks, and tracking time effectively. Let's explore the key features together!"
+      title: "Welkom bij {appName}"
+      description: "Uw persoonlijke metgezel voor het opbouwen van betere gewoonten, het beheren van taken en het effectief bijhouden van tijd. Laten we de belangrijkste functies samen verkennen!"
     step2:
-      title: "Task Management"
-      description: "Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks."
+      title: "Taakbeheer"
+      description: "Maak en organiseer taken met prioriteiten, deadlines en herinneringen. Gebruik de Pomodoro-timer om gefocust te blijven en uw voortgang bij belangrijke taken bij te houden."
     step3:
-      title: "Habit Building"
-      description: "Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics."
+      title: "Gewoontevorming"
+      description: "Bouw duurzame gewoonten op door dagelijkse activiteiten bij te houden. Stel herinneringen in, volg uw streaks en visualiseer uw voortgang met gedetailleerde statistieken."
     step4:
-      title: "Note Taking"
-      description: "Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access."
+      title: "Notities maken"
+      description: "Houd belangrijke informatie georganiseerd met een krachtig notitiesysteem. Tag uw notities voor eenvoudige categorisatie en snelle toegang."
     step5:
-      title: "App Usage & Time Insights"
-      description: "Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity."
+      title: "App-gebruik & tijdinzichten"
+      description: "Monitor app-gebruikspatronen en analyseer tijd besteed aan verschillende activiteiten. Krijg inzichten in uw digitale gewoonten en optimaliseer uw productiviteit."
     step6:
-      title: "Smart Tagging System"
-      description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
+      title: "Slimme tag-systeem"
+      description: "Gebruik tags om uw taken, gewoonten en apps te organiseren en te groeperen. Volg tijd besteed aan verschillende activiteiten per tag om te begrijpen waar uw tijd naartoe gaat en uw workflow te optimaliseren."
     step7:
-      title: "App Permissions"
-      description: "{appName} needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."
-      review_permissions: "Review Permissions"
+      title: "App-machtigingen"
+      description: "{appName} heeft bepaalde machtigingen nodig om correct te functioneren. U kunt de machtigingen die u wilt verlenen voor systeemeigenschappen zoals meldingen en app-tracking bekijken."
+      review_permissions: "Bekijk machtigingen"
     step8:
-      title: "Ready to Transform Your Life?"
-      description: "You have all the tools you need to build better habits, stay focused, and achieve your goals. Start your journey to a more productive and fulfilling life today!"
+      title: "Klaar om uw leven te transformeren?"
+      description: "U hebt alle tools die u nodig hebt om betere gewoonten op te bouwen, gefocust te blijven en uw doelen te bereiken. Begin vandaag aan uw reis naar een productiever en vervullender leven!"
     buttons:
-      next: "Next"
-      back: "Back"
-      start: "Get Started"
+      next: "Volgende"
+      back: "Terug"
+      start: "Aan de slag"

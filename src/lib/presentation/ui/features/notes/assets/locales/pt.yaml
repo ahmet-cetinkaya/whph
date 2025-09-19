@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Construa um sistema abrangente de gestão de conhecimento que capture suas ideias, organize informações de forma eficiente e torne insights importantes facilmente acessíveis quando você precisar deles.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Por Que É Importante?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      A tomada de notas eficaz e a gestão de conhecimento são essenciais para a produtividade e o aprendizado. Um sistema de notas bem organizado impede que insights valiosos se percam, acelera a tomada de decisões e cria uma memória externa confiável que se torna mais valiosa com o tempo.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Captura de Informações Sem Esforço
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Crie um fluxo de trabalho contínuo para capturar e processar informações que garante que nada importante escape, mantendo o foco no seu trabalho atual.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Capture ideias rapidamente sem interromper seu fluxo
+      - ✏️ Edite e refine informações à medida que o entendimento se desenvolve
+      - 🗑️ Remova informações desatualizadas ou irrelevantes de forma sistemática
+      - 📌 Mantenha informações críticas facilmente acessíveis e organizadas
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Organização Estratégica
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Desenvolva um sistema de organização que escale com sua base de conhecimento e torne a recuperação de informações rápida e confiável, independentemente do volume.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Aplique estratégias consistentes de etiquetagem para categorização rápida
+      - 🔍 Use capacidades poderosas de pesquisa para encontrar informações instantaneamente
+      - 📚 Agrupe notas relacionadas para criar áreas abrangentes de conhecimento
+      - 🎯 Mantenha o foco através de uma arquitetura de informação organizada
 
-      ## 📄 Professional Content Creation
+      ## 📄 Criação de Conteúdo Profissional
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Aproveite ferramentas avançadas de formatação para criar conteúdo claro e bem estruturado que se comunique efetivamente e resista ao teste do tempo.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Formatação Rica:** Use Markdown para estrutura profissional de documentos
+      - 📋 **Estrutura Clara:** Organize conteúdo com cabeçalhos, listas e ênfase
+      - 🔗 **Conhecimento Conectado:** Vincule conceitos e informações relacionados
+      - 📖 **Saída Legível:** Formate conteúdo para compreensão e compartilhamento fáceis
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Benefícios de Produtividade
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Transforme sua prática de tomada de notas em um multiplicador de produtividade que aprimora seu pensamento, acelera o aprendizado e melhora a qualidade da tomada de decisões.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Pensamento Aprimorado:** Memória externa libera capacidade mental para trabalho criativo
+      - ⚡ **Acesso Mais Rápido:** Informações organizadas reduzem o tempo gasto em buscas
+      - 🌐 **Disponibilidade Universal:** Acesse sua base de conhecimento de qualquer dispositivo
+      - 📈 **Melhoria Contínua:** Conteúdo refinado se torna mais valioso com o tempo
+    title: Guia de Gestão de Conhecimento e Organização de Notas
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Adicionar Nota
+    delete: Excluir Nota
+    edit: Editar Nota
+    save: Salvar Nota
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Adicionar etiqueta
+      content_placeholder: Escreva o conteúdo da nota aqui...
+      save_button: Salvar
+      saved_message: Nota salva com sucesso
+      title_placeholder: Título da Nota
+      update_button: Atualizar
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Nenhuma nota encontrada
+      loading: Carregando notas...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Tem certeza de que deseja excluir esta nota?
+    confirm_title: Excluir Nota
   details:
-    content: Content
+    content: Conteúdo
     tags:
-      hint: Select tags for note
-      label: Tags
-    title: Title
+      hint: Selecione etiquetas para a nota
+      label: Etiquetas
+    title: Título
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Falha ao adicionar etiqueta
+    deleting: Ocorreu um erro inesperado ao excluir a nota
+    getting_notes: Erro ao obter notas
+    loading_details: Falha ao carregar detalhes da nota
+    loading_tags: Falha ao carregar etiquetas da nota
+    note_not_found: Nota não encontrada
+    note_tag_not_found: Etiqueta da nota não encontrada
+    removing_tag: Falha ao remover etiqueta
+    saving_note: Falha ao salvar nota
+    tag_already_exists: Esta etiqueta já foi adicionada
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Pesquisar notas...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filtrar por etiquetas
+  new_note: Nova Nota
+  title_placeholder: Digite um título descritivo para a nota...
+  no_notes: Nenhuma nota
+  note_details: Detalhes da Nota
+  notes: Notas
+  title: Notas
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Adicionar nota
+    delete_note: Excluir nota
+    edit_name: Editar título

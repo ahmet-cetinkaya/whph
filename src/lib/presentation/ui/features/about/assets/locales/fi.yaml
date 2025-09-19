@@ -1,49 +1,48 @@
 about:
-  about_title: "About"
-  version: Version {version}
+  about_title: "Tietoja"
+  version: Versio {version}
   description: >
-    {appName} is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    {appName} on kattava sovellus, joka on suunniteltu parantamaan henkilökohtaista tuottavuuttasi; se mahdollistaa tehtäviesi tehokkaan hallinnan, uusien tapojen kehittämisen ja ajan maksimaalisen hyödyntämisen. Lisäksi se vahvistaa keskittymistäsi seuraamalla, kuinka paljon aikaa vietät eri sovelluksissa. Analysoimalla edistymistäsi voit juhlia saavutuksiasi ja saada motivaatiota tuottavampaan elämään.
   links:
-    website: Website
-    source_code: Source Code
-    feedback: Feedback
-    contact: Contact
-    check_update: Check for Updates
+    website: Verkkosivusto
+    source_code: Lähdekoodi
+    feedback: Palaute
+    contact: Yhteystiedot
+    check_update: Tarkista päivitykset
   support_me:
-    title: Support {appName}
+    title: Tue {appName}:ta
     description: >
-      {appName} is a completely free and open-source software. Everyone is free to use, explore, improve, and share it. 
+      {appName} on täysin ilmainen ja avoimen lähdekoodin ohjelmisto. Kaikki saavat vapaasti käyttää, tutkia, parantaa ja jakaa sitä. 
 
-
-      While you continue to enjoy using it, I keep working to make it even better. If you'd like to support the continuation of this effort, you can buy me a coffee; your support will directly contribute to the development and sustainability of {appName}. 😊
-    button_text: Buy me a coffee
+      Kun jatkat sen käytön nauttimista, jatkan sen tekemistä entistä paremmaksi. Jos haluat tukea tämän pyrkimyksen jatkumista, voit ostaa minulle kahvin; tukesi edistää suoraan {appName}:n kehitystä ja kestävyyttä. 😊
+    button_text: Osta minulle kahvi
   onboarding:
     step1:
-      title: "Welcome to {appName}"
-      description: "Your personal companion for building better habits, managing tasks, and tracking time effectively. Let's explore the key features together!"
+      title: "Tervetuloa {appName}:een"
+      description: "Henkilökohtainen kumppanisi parempien tapojen rakentamiseen, tehtävien hallintaan ja tehokkaaseen ajan seurantaan. Tutustutaan yhdessä keskeisiin ominaisuuksiin!"
     step2:
-      title: "Task Management"
-      description: "Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks."
+      title: "Tehtävien hallinta"
+      description: "Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla. Käytä Pomodoro-ajastinta keskittyäksesi ja seurataaksesi edistymistäsi tärkeissä tehtävissä."
     step3:
-      title: "Habit Building"
-      description: "Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics."
+      title: "Tapojen rakentaminen"
+      description: "Rakenna kestäviä tapoja seuraamalla päivittäisiä toimintoja. Aseta muistutuksia, seuraa sarjojasi ja visualisoi edistymistäsi yksityiskohtaisilla tilastoilla."
     step4:
-      title: "Note Taking"
-      description: "Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access."
+      title: "Muistiinpanojen tekeminen"
+      description: "Pidä tärkeät tiedot järjestettynä tehokkaalla muistiinpanojen järjestelmällä. Merkitse muistiinpanosi helpottamaan luokittelua ja nopeaa pääsyä."
     step5:
-      title: "App Usage & Time Insights"
-      description: "Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity."
+      title: "Sovellusten käyttö & ajan oivallukset"
+      description: "Seuraa sovellusten käyttökuvioita ja analysoi eri toiminnoille kulutettua aikaa. Saat oivalluksia digitaalisista tavoistasi ja optimoi tuottavuutesi."
     step6:
-      title: "Smart Tagging System"
-      description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
+      title: "Älykäs tunnistejärjestelmä"
+      description: "Käytä tunnisteita tehtäviesi, tapojesi ja sovellustesi järjestämiseen ja ryhmittelyyn. Seuraa eri toiminnoille kulutettua aikaa tunnisteiden mukaan ymmärtääksesi, mihin aikasi menee, ja optimoidaksesi työvirtaasi."
     step7:
-      title: "App Permissions"
-      description: "{appName} needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."
-      review_permissions: "Review Permissions"
+      title: "Sovelluksen käyttöoikeudet"
+      description: "{appName} tarvitsee tiettyjä käyttöoikeuksia toimiakseen oikein. Voit tarkistaa käyttöoikeudet, jotka haluat myöntää järjestelmäominaisuuksille, kuten ilmoituksille ja sovellusseurannalle."
+      review_permissions: "Tarkista käyttöoikeudet"
     step8:
-      title: "Ready to Transform Your Life?"
-      description: "You have all the tools you need to build better habits, stay focused, and achieve your goals. Start your journey to a more productive and fulfilling life today!"
+      title: "Valmis muuttamaan elämäsi?"
+      description: "Sinulla on kaikki työkalut, joita tarvitset parempien tapojen rakentamiseen, keskittymiseen ja tavoitteidesi saavuttamiseen. Aloita matkasi tuottavampaan ja täyttävämpään elämään tänään!"
     buttons:
-      next: "Next"
-      back: "Back"
-      start: "Get Started"
+      next: "Seuraava"
+      back: "Takaisin"
+      start: "Aloita"

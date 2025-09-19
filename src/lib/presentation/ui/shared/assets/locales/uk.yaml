@@ -2,7 +2,6 @@ settings:
   import:
     version_mismatch: Невідповідність версій
 shared:
-  untitled: "Без назви"
   buttons:
     add: Додати
     back: Назад
@@ -15,7 +14,6 @@ shared:
     load_more: Завантажити більше
     save: Зберегти
     saved: Збережено
-
   calendar:
     months:
       apr: Квітень
@@ -69,6 +67,7 @@ shared:
     created_date_label: Дата створення
     modified_date_label: Дата зміни
     name_label: Назва
+  date: Дата
   date_filter:
     title: Вибрати діапазон дат
     tooltips:
@@ -76,6 +75,26 @@ shared:
       filter: Фільтрувати за датою
   date_format:
     hint: ДД/ММ/РРРР
+  datepicker:
+    cannot_select_date_after_max_date: Не можна вибрати дату пізніше {date}
+    cannot_select_date_before_min_date: Не можна вибрати дату раніше {date}
+    cannot_select_time_after_max_date: Не можна вибрати час пізніше {time}
+    cannot_select_time_before_min_date: Не можна вибрати час раніше {time}
+    deadline_cannot_be_before_planned_date:
+      Кінцевий термін має бути в день запланованої
+      дати або пізніше
+    end_date_cannot_be_after_max_date: Дата завершення не може бути пізніше {date}
+    end_date_must_be_at_or_before: Дата завершення має бути не пізніше {date}
+    select_date_range_title: Виберіть діапазон дат
+    select_date_time_title: Виберіть дату і час
+    selected_date_must_be_at_or_after: Вибрана дата має бути не раніше {date}
+    selected_date_must_be_at_or_before: Вибрана дата має бути не пізніше {date}
+    selected_date_time_must_be_after: Вибрані дата і час мають бути пізніше {dateTime}
+    start_date_cannot_be_after_end_date: Дата початку не може бути пізніше дати завершення
+    start_date_cannot_be_before_min_date: Дата початку не може бути раніше {date}
+    start_date_must_be_at_or_after: Дата початку має бути не раніше {date}
+    time_must_be_at_or_after: Час має бути не раніше {time}
+    time_must_be_at_or_before: Час має бути не пізніше {time}
   days:
     friday: П'ятниця
     friday_short: Пт
@@ -96,19 +115,19 @@ shared:
       hint: Ви можете писати використовуючи формат Markdown...
       tooltips:
         bold: Жирний
-        italic: Курсив
-        strikethrough: Закреслений
-        code: Код
-        link: Посилання
-        quote: Цитата
         bulleted_list: Маркований список
-        numbered_list: Нумерований список
-        horizontal_rule: Горизонтальна лінія
-        edit: Редагувати
-        preview: Попередній перегляд
-        image: Зображення
-        heading: Заголовок
         checkbox: Прапорець
+        code: Код
+        edit: Редагувати
+        heading: Заголовок
+        horizontal_rule: Горизонтальна лінія
+        image: Зображення
+        italic: Курсив
+        link: Посилання
+        numbered_list: Нумерований список
+        preview: Попередній перегляд
+        quote: Цитата
+        strikethrough: Закреслений
   errors:
     deleting: Сталася помилка під час видалення даних
     file_not_found: Файл не знайдено
@@ -142,8 +161,6 @@ shared:
     unexpected: Сталася неочікувана помилка
   filters:
     search: Пошук
-  help:
-    tooltip: Допомога
   messages:
     confirm_delete: Ви впевнені, що хочете видалити цей елемент?
     no_items_found: Немає елементів
@@ -157,7 +174,7 @@ shared:
       tags: Теги
       tasks: Завдання
       today: Сьогодні
-  none_option: "Немає тегів"
+  none_option: Немає тегів
   regex_help:
     examples:
       chat: Відповідає "Slack" або "Discord"
@@ -167,7 +184,7 @@ shared:
       vscode: Відповідає будь-якому вікну VS Code
     tips:
       any_chars: Використовуйте ".*" для відповідності будь-яким символам
-      dot: "\"\\.\" відповідає крапці"
+      dot: '"\." відповідає крапці'
       end: '"$" відповідає кінцю тексту'
       or: '"|" означає АБО'
       start: '"^" відповідає початку тексту'
@@ -191,11 +208,11 @@ shared:
       description: Увімкніть перетягування для зміни порядку елементів
       title: Користувацьке сортування
     descending: За спаданням
+    disable_reordering_tooltip: Вимкнути режим перестановки
+    enable_reordering_tooltip: Увімкнути режим перестановки
     remove_criteria: Видалити критерії
     reset_to_default: Скинути до стандартних
     sort: Сортувати
-    enable_reordering_tooltip: Увімкнути режим перестановки
-    disable_reordering_tooltip: Вимкнути режим перестановки
   statistics:
     daily_usage:
       description: Показує загальний час використання за день тижня
@@ -204,7 +221,24 @@ shared:
       description: Показує загальний час використання за годину дня
       title: Погодинне використання
   time:
-    not_set: "Не встановлено"
+    not_set: Не встановлено
+  time_display:
+    elapsed: Минуло
+    elapsed_time_tooltip: Час, витрачений на це завдання
+    estimated: Орієнтовний
+    estimated_time_tooltip: Орієнтовний час для завершення цього завдання
+    no_time_logged_tooltip: Час ще не записано
+  time_logging:
+    add_time: Додати час
+    add_time_description: Додати час до існуючого загального
+    dialog_title: Запис часу
+    duration: Тривалість
+    invalid_input: Будь ласка, введіть дійсний час
+    log_time: Записати час
+    mode: Режим
+    set_total: Встановити загалом
+    set_total_description: Встановити загальний витрачений час
+    total_time: Загальний час
   time_periods:
     custom: Користувацький
     last_month: Минулий місяць
@@ -214,6 +248,11 @@ shared:
     this_three_months: Ці 3 місяці
     this_week: Цей тиждень
     today: Сьогодні
+  timer:
+    label: Таймер
+    normal: Звичайний
+    pomodoro: Pomodoro
+    stopwatch: Секундомір
   tooltips:
     compare_with_previous: Порівняти з попереднім періодом
     filter_by_tags: Фільтрувати за тегами
@@ -226,6 +265,7 @@ shared:
     minutes: хв
     minutes_short: хв
     seconds: сек
+  untitled: Без назви
   update_dialog:
     buttons:
       download_page: Сторінка завантаження
@@ -239,21 +279,4 @@ shared:
     title: Доступне оновлення!
   validation:
     required: "{field} є обов'язковим."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Кінцевий термін має бути в день запланованої дати або пізніше"
-    selected_date_must_be_at_or_after: "Вибрана дата має бути не раніше {date}"
-    selected_date_must_be_at_or_before: "Вибрана дата має бути не пізніше {date}"
-    start_date_cannot_be_after_end_date: "Дата початку не може бути пізніше дати завершення"
-    start_date_must_be_at_or_after: "Дата початку має бути не раніше {date}"
-    end_date_must_be_at_or_before: "Дата завершення має бути не пізніше {date}"
-    cannot_select_date_before_min_date: "Не можна вибрати дату раніше {date}"
-    cannot_select_date_after_max_date: "Не можна вибрати дату пізніше {date}"
-    start_date_cannot_be_before_min_date: "Дата початку не може бути раніше {date}"
-    end_date_cannot_be_after_max_date: "Дата завершення не може бути пізніше {date}"
-    cannot_select_time_before_min_date: "Не можна вибрати час раніше {time}"
-    cannot_select_time_after_max_date: "Не можна вибрати час пізніше {time}"
-    time_must_be_at_or_after: "Час має бути не раніше {time}"
-    time_must_be_at_or_before: "Час має бути не пізніше {time}"
-    selected_date_time_must_be_after: "Вибрані дата і час мають бути пізніше {dateTime}"
-    select_date_time_title: "Виберіть дату і час"
-    select_date_range_title: "Виберіть діапазон дат"
+  help: Допомога

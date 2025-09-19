@@ -1,5 +1,4 @@
 shared:
-  untitled: "Brez naslova"
   buttons:
     add: Dodaj
     back: Nazaj
@@ -65,6 +64,7 @@ shared:
     created_date_label: Datum nastanka
     modified_date_label: Datum spremembe
     name_label: Ime
+  date: Datum
   date_filter:
     title: Izberi obseg datumov
     tooltips:
@@ -72,6 +72,26 @@ shared:
       filter: Filtriraj po datumu
   date_format:
     hint: DD/MM/LLLL
+  datepicker:
+    cannot_select_date_after_max_date: Ne morete izbrati datuma po {date}
+    cannot_select_date_before_min_date: Ne morete izbrati datuma pred {date}
+    cannot_select_time_after_max_date: Ne morete izbrati časa po {time}
+    cannot_select_time_before_min_date: Ne morete izbrati časa pred {time}
+    deadline_cannot_be_before_planned_date:
+      Rok mora biti na načrtovani datum ali
+      kasneje
+    end_date_cannot_be_after_max_date: Končni datum ne more biti po {date}
+    end_date_must_be_at_or_before: Končni datum mora biti na ali pred {date}
+    select_date_range_title: Izberite obdobje
+    select_date_time_title: Izberite datum in čas
+    selected_date_must_be_at_or_after: Izbrani datum mora biti na ali po {date}
+    selected_date_must_be_at_or_before: Izbrani datum mora biti na ali pred {date}
+    selected_date_time_must_be_after: Izbrani datum in čas morata biti po {dateTime}
+    start_date_cannot_be_after_end_date: Začetni datum ne more biti po končnem datumu
+    start_date_cannot_be_before_min_date: Začetni datum ne more biti pred {date}
+    start_date_must_be_at_or_after: Začetni datum mora biti na ali po {date}
+    time_must_be_at_or_after: Čas mora biti ob ali po {time}
+    time_must_be_at_or_before: Čas mora biti ob ali pred {time}
   days:
     friday: Petek
     friday_short: Pet
@@ -92,19 +112,19 @@ shared:
       hint: Lahko pišete z uporabo Markdown formata...
       tooltips:
         bold: Krepko
-        italic: Ležeče
-        strikethrough: Prečrtano
-        code: Koda
-        link: Povezava
-        quote: Citat
         bulleted_list: Seznam z alinejami
-        numbered_list: Oštevilčen seznam
-        horizontal_rule: Vodoravna črta
-        edit: Uredi
-        preview: Predogled
-        image: Slika
-        heading: Naslov
         checkbox: Potrditveno polje
+        code: Koda
+        edit: Uredi
+        heading: Naslov
+        horizontal_rule: Vodoravna črta
+        image: Slika
+        italic: Ležeče
+        link: Povezava
+        numbered_list: Oštevilčen seznam
+        preview: Predogled
+        quote: Citat
+        strikethrough: Prečrtano
   errors:
     deleting: Napaka pri brisanju podatkov
     file_not_found: Datoteka ni najdena
@@ -138,8 +158,6 @@ shared:
     unexpected: Zgodila se je nepričakovana napaka
   filters:
     search: Išči
-  help:
-    tooltip: Pomoč
   messages:
     confirm_delete: Ali ste prepričani, da želite izbrisati ta element?
     no_items_found: Ni elementov
@@ -153,16 +171,16 @@ shared:
       tags: Oznake
       tasks: Naloge
       today: Danes
-  none_option: "Brez oznak"
+  none_option: Brez oznak
   regex_help:
     examples:
-      chat: 'Se ujema z "Slack" ali "Discord"'
-      chrome: 'Se ujema s katerim koli naslovom okna, ki vsebuje "Chrome"'
-      exact_chrome: 'Se natančno ujema z "Chrome"'
+      chat: Se ujema z "Slack" ali "Discord"
+      chrome: Se ujema s katerim koli naslovom okna, ki vsebuje "Chrome"
+      exact_chrome: Se natančno ujema z "Chrome"
       pdf: Se ujema s katero koli PDF datoteko
       vscode: Se ujema s katerim koli VS Code oknom
     tips:
-      any_chars: 'Uporabite ".*" za ujemanje s katerimi koli znaki'
+      any_chars: Uporabite ".*" za ujemanje s katerimi koli znaki
       dot: '"\." se ujema s piko'
       end: '"$" se ujema s koncem besedila'
       or: '"|" pomeni ALI'
@@ -187,11 +205,11 @@ shared:
       description: Omogoči povleci in spusti za preureditev elementov
       title: Razvrščanje po meri
     descending: Padajoče
+    disable_reordering_tooltip: Onemogoči način prerazporeditve
+    enable_reordering_tooltip: Omogoči način prerazporeditve
     remove_criteria: Odstrani kriterij
     reset_to_default: Ponastavi na privzeto
     sort: Razvrsti
-    enable_reordering_tooltip: Omogoči način prerazporeditve
-    disable_reordering_tooltip: Onemogoči način prerazporeditve
   statistics:
     daily_usage:
       description: Prikazuje skupni čas uporabe na dan v tednu
@@ -200,7 +218,24 @@ shared:
       description: Prikazuje skupni čas uporabe na uro v dnevu
       title: Urna uporaba
   time:
-    not_set: "Ni nastavljeno"
+    not_set: Ni nastavljeno
+  time_display:
+    elapsed: Preteklo
+    elapsed_time_tooltip: Čas, porabljen za to nalogo
+    estimated: Ocenjeno
+    estimated_time_tooltip: Ocenjen čas za dokončanje te naloge
+    no_time_logged_tooltip: Ni še zabeleženega časa
+  time_logging:
+    add_time: Dodaj čas
+    add_time_description: Dodaj čas k obstoječemu skupnemu času
+    dialog_title: Beleženje časa
+    duration: Trajanje
+    invalid_input: Vnesite veljaven čas
+    log_time: Beleži čas
+    mode: Način
+    set_total: Nastavi skupno
+    set_total_description: Nastavi skupni porabljen čas
+    total_time: Skupni čas
   time_periods:
     custom: Po meri
     last_month: Prejšnji mesec
@@ -210,6 +245,11 @@ shared:
     this_three_months: Ti 3 meseci
     this_week: Ta teden
     today: Danes
+  timer:
+    label: Časovnik
+    normal: Normalno
+    pomodoro: Pomodoro
+    stopwatch: Štoparica
   tooltips:
     compare_with_previous: Primerjaj s prejšnjim obdobjem
     filter_by_tags: Filtriraj po oznakah
@@ -222,6 +262,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sek
+  untitled: Brez naslova
   update_dialog:
     buttons:
       download_page: Stran za prenos
@@ -234,23 +275,6 @@ shared:
     success: Posodobitev uspešno prenesena!
     title: Posodobitev na voljo!
   validation:
+    deadline_cannot_be_before_planned: Rok ne more biti pred načrtovanim datumom.
     required: "{field} je obvezno"
-    deadline_cannot_be_before_planned: "Rok ne more biti pred načrtovanim datumom."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Rok mora biti na načrtovani datum ali kasneje"
-    selected_date_must_be_at_or_after: "Izbrani datum mora biti na ali po {date}"
-    selected_date_must_be_at_or_before: "Izbrani datum mora biti na ali pred {date}"
-    start_date_cannot_be_after_end_date: "Začetni datum ne more biti po končnem datumu"
-    start_date_must_be_at_or_after: "Začetni datum mora biti na ali po {date}"
-    end_date_must_be_at_or_before: "Končni datum mora biti na ali pred {date}"
-    cannot_select_date_before_min_date: "Ne morete izbrati datuma pred {date}"
-    cannot_select_date_after_max_date: "Ne morete izbrati datuma po {date}"
-    start_date_cannot_be_before_min_date: "Začetni datum ne more biti pred {date}"
-    end_date_cannot_be_after_max_date: "Končni datum ne more biti po {date}"
-    cannot_select_time_before_min_date: "Ne morete izbrati časa pred {time}"
-    cannot_select_time_after_max_date: "Ne morete izbrati časa po {time}"
-    time_must_be_at_or_after: "Čas mora biti ob ali po {time}"
-    time_must_be_at_or_before: "Čas mora biti ob ali pred {time}"
-    selected_date_time_must_be_after: "Izbrani datum in čas morata biti po {dateTime}"
-    select_date_time_title: "Izberite datum in čas"
-    select_date_range_title: "Izberite obdobje"
+  help: Pomoč

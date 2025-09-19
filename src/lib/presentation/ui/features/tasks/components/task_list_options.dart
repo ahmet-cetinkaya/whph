@@ -588,12 +588,12 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.estimatedTime,
                         direction: SortDirection.desc,
-                        translationKey: TaskTranslationKeys.estimatedTimeLabel,
+                        translationKey: SharedTranslationKeys.timeDisplayEstimated,
                       ),
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.totalDuration,
                         direction: SortDirection.desc,
-                        translationKey: TaskTranslationKeys.elapsedTimeLabel,
+                        translationKey: SharedTranslationKeys.timeDisplayElapsed,
                       ),
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.createdDate,

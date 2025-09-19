@@ -1,128 +1,128 @@
 tags:
   actions:
-    add: Add Tag
-    archive: Archive Tag
-    delete: Delete Tag
-    edit: Edit Tag
-    hide_archived: Hide archived tags
-    show_archived: Show archived tags
-    unarchive: Unarchive Tag
+    add: Adăugare Etichetă
+    archive: Arhivare Etichetă
+    delete: Ștergere Etichetă
+    edit: Editare Etichetă
+    hide_archived: Ascundere etichete arhivate
+    show_archived: Afișare etichete arhivate
+    unarchive: De-arhivare Etichetă
   categories:
-    all: All
-    app_usage: App Usage
-    habits: Habits
-    tasks: Tasks
-
+    all: Toate
+    app_usage: Utilizare Aplicație
+    habits: Obiceiuri
+    tasks: Sarcini
+  default_name: Etichetă Nouă
   details:
-    archived: Archived
-    color: Color
+    archived: Arhivat
+    color: Culoare
     help:
-      description: Details help description
-      title: Details Help Title
-    name: Name
-    related_tags: Related Tags
-    select_tag: Select tag
-    tasks_label: Tasks
+      description: Descriere ajutor detalii
+      title: Titlu Ajutor Detalii
+    name: Nume
+    related_tags: Etichete Înrudite
+    select_tag: Selectare etichetă
+    tasks_label: Sarcini
   errors:
-    creating: Failed to create tag
-    deleting: Failed to delete tag
-    get_tags: Error occurred while fetching tags
-    loading: Failed to load tags
-    loading_archive_status: Failed to load archive status
-    same_tag: Primary and secondary tags cannot be the same
-    saving: Failed to save tag
-    tag_not_found: Tag not found
-    tag_tag_already_exists: This tag relationship already exists
-    tag_tag_not_found: Tag relationship not found
-    toggling_archive: Failed to toggle archive status
+    creating: Eșec la crearea etichetei
+    deleting: Eșec la ștergerea etichetei
+    get_tags: Eroare la obținerea etichetelor
+    loading: Eșec la încărcarea etichetelor
+    loading_archive_status: Eșec la încărcarea stării de arhivare
+    same_tag: Etichetele primară și secundară nu pot fi aceleași
+    saving: Eșec la salvarea etichetei
+    tag_not_found: Etichetă negăsită
+    tag_tag_already_exists: Această relație de etichetă există deja
+    tag_tag_not_found: Relație de etichetă negăsită
+    toggling_archive: Eșec la comutarea stării de arhivare
   filter:
-    all_categories: All Categories
-    select_category: Select Category
-  filter_tooltip: Filter by tags
+    all_categories: Toate Categoriile
+    select_category: Selectare Categorie
+  filter_tooltip: Filtru după etichete
   help:
-    content: Tag help content
+    content: Conținut ajutor etichetă
     overview:
       content: |
-        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+        Transformă-ți productivitatea cu etichetare strategică care te ajută să organizezi munca, să urmărești investițiile de timp și să menții un focus clar pe ceea ce contează cel mai mult.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ De Ce Este Important?
 
-        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+        Organizarea bazată pe etichete este fundamentală pentru gestionarea eficientă a timpului și productivitate. Prin categorizarea activităților tale cu etichete semnificative, obții insights clare despre cum îți petreci timpul și poți lua decizii informate pentru a optimiza focusul și eficiența ta.
 
-        ## 📊 Time Investment Analysis
+        ## 📊 Analiză Investiții de Timp
 
-        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+        Înțelege unde merge timpul tău și ia decizii bazate pe date despre priorități. Urmărirea timpului cu etichete dezvăluie modele care te ajută să optimizezi programul și obiceiurile de muncă.
 
-        - ⏱️ Monitor time spent across different activity categories
-        - 📅 Track time investments over specific periods and trends
-        - ⚖️ Compare time allocation across projects and responsibilities
-        - 📈 Identify productivity patterns and peak performance times
-        - 🎯 Focus your energy on high-impact activities
+        - ⏱️ Monitorizează timpul petrecut în diferite categorii de activități
+        - 📅 Urmărește investițiile de timp pe perioade specifice și tendințe
+        - ⚖️ Compară alocarea timpului între proiecte și responsabilități
+        - 📈 Identifică modele de productivitate și ore de vârf de performanță
+        - 🎯 Concentrează-ți energia pe activități cu impact ridicat
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Organizare Strategică
 
-        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+        Creează o abordare sistematică pentru organizarea muncii tale care se scalează cu nevoile tale. Etichetele bine structurate formează baza unui sistem de productivitate eficient.
 
-        - 🔍 Filter and find information quickly with multi-tag searches
-        - 🗄️ Archive completed projects to maintain clean organization
-        - 🧩 Build hierarchical structures that reflect your work patterns
-        - 👥 Group related activities for better project management
-        - ⏳ Enable comprehensive time tracking across all activities
+        - 🔍 Filtrează și găsește informații rapid cu căutări multi-etichetă
+        - 🗄️ Arhivează proiectele finalizate pentru a menține organizarea curată
+        - 🧩 Construiește structuri ierarhice care reflectă modelele tale de muncă
+        - 👥 Grupă activități înrudite pentru un management mai bun al proiectelor
+        - ⏳ Activează urmărirea comprehensivă a timpului în toate activitățile
 
-        ## 💡 Optimization Strategies
+        ## 💡 Strategii de Optimizare
 
-        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+        Folosește tehnici avansate de etichetare pentru a maximiza eficacitatea sistemului tău organizațional și a menține creșterea pe termen lung a productivității.
 
-        - 🏷️ Use clear, descriptive names that remain meaningful over time
-        - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
-        - 📊 Review time analysis reports regularly to identify improvement opportunities
-        - 🗄️ Maintain system cleanliness by archiving completed work
-        - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
-      title: Tag-Based Organization & Time Management Guide
-    title: Tag Help
+        - 🏷️ Folosește nume clare, descriptive care rămân semnificative în timp
+        - 🔗 **Creează structuri ierarhice:** Proiecte → Departamente → Zone
+        - 📊 Revizuiește rapoartele de analiză a timpului regulat pentru a identifica oportunități de îmbunătățire
+        - 🗄️ Menține curățenia sistemului arhivând munca finalizată
+        - 🎯 Aplică filtrare focalizată pentru a elimina distragerile și a îmbunătăți concentrarea
+      title: Organizare Bazată pe Etichete & Ghid Gestionare Timp
+    title: Ajutor Etichetă
   labels:
-    color: Color
-    description: Description
-    name: Name
-    tags: Tags
+    color: Culoare
+    description: Descriere
+    name: Nume
+    tags: Etichete
   list:
-    filter_tooltip: Filter by tags
-    no_tags: No tags
+    filter_tooltip: Filtru după etichete
+    no_tags: Nicio etichetă
   messages:
-    archive_confirm: Are you sure you want to archive this tag?
-    confirm_archive: Are you sure you want to archive this tag?
-    confirm_delete: Are you sure you want to delete this tag?
-    confirm_unarchive: Are you sure you want to unarchive this tag?
-    unarchive_confirm: Are you sure you want to unarchive this tag?
-  new_tag: New Tag
-  name_placeholder: Enter a descriptive tag name...
-  no_tags: No tags
-  none_option: None
+    archive_confirm: Ești sigur că vrei să arhivezi această etichetă?
+    confirm_archive: Ești sigur că vrei să arhivezi această etichetă?
+    confirm_delete: Ești sigur că vrei să ștergi această etichetă?
+    confirm_unarchive: Ești sigur că vrei să de-arhivezi această etichetă?
+    unarchive_confirm: Ești sigur că vrei să de-arhivezi această etichetă?
+  new_tag: Etichetă Nouă
+  name_placeholder: Introdu un nume descriptiv pentru etichetă...
+  no_tags: Nicio etichetă
+  none_option: Niciuna
   search:
-    clear_all: Clear All
-    label: Search tags
+    clear_all: Șterge Tot
+    label: Căutare etichete
   sections:
-    list: Tags
+    list: Etichete
   selection:
-    done: Done
-  tag_details: Tag Details
+    done: Gata
+  tag_details: Detalii Etichetă
   time_bar_chart:
-    by_element: By element
-    no_data: No data
-    title: Time Distribution
+    by_element: După element
+    no_data: Niciun date
+    title: Distribuție Timp
   time_chart:
-    no_data: No data
-    other_category: Other
-  time_distribution: Time Distribution
-  time_records: Time Records
-  title: Tags
+    no_data: Niciun date
+    other_category: Altă
+  time_distribution: Distribuție Timp
+  time_records: Înregistrări Timp
+  title: Etichete
   tooltips:
-    add_tag: Add tag
-    add_task: Add new task
-    archive_tag: Archive tag
-    color: Click to assign color to tag
-    delete_tag: Delete tag
-    edit_name: Edit name
-    remove_tag: Remove tag
-    select: Click to select tag
-    unarchive_tag: Unarchive tag
+    add_tag: Adăugare etichetă
+    add_task: Adăugare sarcină nouă
+    archive_tag: Arhivare etichetă
+    color: Click pentru a atribui culoare etichetei
+    delete_tag: Ștergere etichetă
+    edit_name: Editare nume
+    remove_tag: Eliminare etichetă
+    select: Click pentru a selecta eticheta
+    unarchive_tag: De-arhivare etichetă

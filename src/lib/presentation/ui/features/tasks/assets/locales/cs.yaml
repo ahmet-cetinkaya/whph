@@ -1,320 +1,322 @@
 tasks:
   add_button:
-    tooltip: Add new task
-  all_tasks_done: All tasks completed!
+    tooltip: Přidat nový úkol
+  all_tasks_done: Všechny úkoly dokončeny!
   card:
     schedule:
-      today: Schedule for today
-      tomorrow: Schedule for tomorrow
+      today: Naplánovat na dnes
+      tomorrow: Naplánovat na zítřek
     tooltips:
-      schedule: Schedule task
+      schedule: Naplánovat úkol
   complete:
-    error: Unexpected error occurred while saving task completion.
+    error: Neočekávaná chyba při ukládání dokončení úkolu.
   date_selection:
-    deadline_date_title: Select deadline date
-    planned_date_title: Select planned date
+    deadline_date_title: Vyberte datum splatnosti
+    planned_date_title: Vyberte plánované datum
   delete:
-    error: Unexpected error occurred while deleting task.
-    message: Are you sure you want to delete this task?
-    title: Delete Task
+    error: Neočekávaná chyba při mazání úkolu.
+    message: Jste si jisti, že chcete smazat tento úkol?
+    title: Smazat úkol
   details:
     deadline_date:
-      label: Deadline Date
+      label: Datum splatnosti
     description:
-      hint: Add description...
-      label: Description
+      hint: Přidejte popis...
+      label: Popis
     elapsed_time:
-      label: Elapsed Time
+      label: Uplynulý čas
     estimated_time:
-      label: Estimated Time
-    is_completed: Completed
-    planned_date:
-      label: Planned Date
-    priority:
-      label: Priority
-    sub_tasks:
-      label: Sub-tasks
+      label: Odhadovaný čas
+    is_completed: Dokončeno
     parent_task:
-      label: Parent Task
-      tooltip: Click to navigate to parent task
+      label: Nadřazený úkol
+      tooltip: Klikněte pro navigaci k nadřazenému úkolu
+    planned_date:
+      label: Plánované datum
+    priority:
+      label: Priorita
+    sub_tasks:
+      label: Podúkoly
     tags:
-      hint: Select tags to associate
-      label: Tags
-    tags_hint: Select tags for task
+      hint: Vyberte štítky k přiřazení
+      label: Štítky
+    tags_hint: Vyberte štítky pro úkol
     title:
-      label: Title
-    total_elapsed_time: Total Elapsed Time
+      label: Titulek
+    total_elapsed_time: Celkový uplynulý čas
   errors:
-    add_tag: Unexpected error occurred while adding tag
-    adding_tag: Failed to add tag
-    get_tags: Error occurred while fetching tags
-    get_task: Unexpected error occurred while loading task
-    loading_tags: Failed to load task tags
-    loading_task: Failed to load task
-    loading_tasks: Failed to load tasks
-    remove_tag: Unexpected error occurred while removing tag
-    removing_tag: Failed to remove tag
-    same_tag: Cannot add the same tag twice
-    save_task: Unexpected error occurred while saving task
-    saving_task: Failed to save task
-    sort_field_not_supported: Sort field not supported
-    task_not_found: Task not found
-    task_tag_already_deleted: Task tag is already deleted
-    task_tag_already_exists: This task tag already exists
-    task_tag_not_found: Task tag not found
+    add_tag: Neočekávaná chyba při přidávání štítku
+    adding_tag: Selhání přidání štítku
+    get_tags: Chyba při získávání štítků
+    get_task: Neočekávaná chyba při načítání úkolu
+    loading_tags: Selhání načtení štítků úkolu
+    loading_task: Selhání načtení úkolu
+    loading_tasks: Selhání načtení úkolů
+    remove_tag: Neočekávaná chyba při odstranění štítku
+    removing_tag: Selhání odstranění štítku
+    same_tag: Nelze přidat stejný štítek dvakrát
+    save_task: Neočekávaná chyba při ukládání úkolu
+    saving_task: Selhání uložení úkolu
+    sort_field_not_supported: Pole třídění nepodporováno
+    task_not_found: Úkol nenalezen
+    task_tag_already_deleted: Štítek úkolu již smazán
+    task_tag_already_exists: Tento štítek úkolu již existuje
+    task_tag_not_found: Štítek úkolu nenalezen
   filters:
-    completion: By Completion Status
-    deadline_date: By Deadline Date
-    planned_date: By Planned Date
+    completion: Podle stavu dokončení
+    deadline_date: Podle data splatnosti
+    planned_date: Podle plánovaného data
     search:
-      placeholder: Search tasks
-    tags: By Tags
+      placeholder: Hledat úkoly...
+    tags: Podle štítků
     tooltips:
-      filter_by_tags: Filter by tags
+      filter_by_tags: Filtrovat podle štítků
   help:
     details:
       content: |
-        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
+        Řiďte své úkoly a maximalizujte produktivitu organizovaným plánováním, prioritizací a sledováním času.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Proč je to důležité?
 
-        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
+        Efektivní management úkolů je základ produktivity. Správně strukturované úkoly s jasnými prioritami a termíny vám pomohou udržet soustředění na to nejdůležitější a zabránit, aby důležitá práce propadla skrz.
 
-        ## 📝 Task Organization
+        ## 📝 Organizace úkolů
 
-        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
+        Strukturovaný přístup k managementu úkolů vám umožní jasně prioritizovat a plánovat vaši práci. Dobře organizované úkoly vedou k lepšímu rozhodování a efektivnějšímu využití času.
 
-        - 🏷️ Categorize tasks with meaningful tags
-        - ⚖️ Set priorities using proven frameworks
-        - ⏱️ Estimate time requirements accurately
-        - 📅 Plan realistic deadlines and schedules
+        - 🏷️ Kategorizujte úkoly pomocí smysluplných štítků
+        - ⚖️ Nastavte priority pomocí osvědčených rámců
+        - ⏱️ Odhadujte časové požadavky přesně
+        - 📅 Plánujte realistické termíny a harmonogramy
 
-        ## ⏰ Time Management
+        ## ⏰ Řízení času
 
-        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
+        Sledujte své investice času pro porozumění vašim pracovním vzorcům a zlepšení efektivity. Správný management času transformuje rozptýlené snahy v zaměřenou produktivitu.
 
-        - 📊 Monitor actual vs. estimated time
-        - 🎯 Focus on high-impact activities
-        - 📈 Analyze productivity patterns over time
-        - ⏳ Balance urgent and important tasks
+        - 📊 Monitorujte aktuální vs. odhadovaný čas
+        - 🎯 Zaměřte se na aktivity s vysokým dopadem
+        - 📈 Analyzujte produktivní vzorce v čase
+        - ⏳ Vyvažte naléhavé a důležité úkoly
 
-        ## 📊 Priority Framework (Eisenhower Matrix)
+        ## 📊 Rámec prioritizace (Eisenhowerova matice)
 
-        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
+        Organizujte své úkoly pomocí této osvědčené metody prioritizace, abyste zajistili, že vždy pracujete na správných věcech ve správný čas.
 
-        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
-        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
-        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
-        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
-      title: Task Management & Productivity Guide
+        - 🔥 **Naléhavé a důležité:** Řešte okamžitě - management krizí a termíny
+        - 📈 **Důležité, ne naléhavé:** Plánujte strategicky - plánování a rozvoj dovedností
+        - ⚡ **Naléhavé, ne důležité:** Delegujte, když je to možné - přerušení a některé schůzky
+        - 🗑️ **Ani naléhavé ani důležité:** Eliminujte - časové zloděje a nízkohodnotné aktivity
+      title: Průvodce managementem úkolů a produktivitou
     overview:
       content: |
-        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+        Transformujte svou produktivitu systematickým managementem úkolů, který vám pomůže zůstat organizovaným, zaměřeným a v kontrolě nad svým pracovním objemem.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Proč je to důležité?
 
-        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+        Efektivní management úkolů je základním kamenem osobního a profesionálního úspěchu. Organizací vaší práce systematicky snižujete stres, konzistentně splňujete termíny a vytváříte prostor pro smysluplný pokrok na důležitých cílech.
 
-        ## 📋 Task Organization
+        ## 📋 Organizace úkolů
 
-        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+        Vytvořte strukturovaný přístup k řízení svých odpovědností. Dobře organizované úkoly vedou k jasným prioritám a efektivní exekuci vaší denní práce.
 
-        - ✅ Create and categorize tasks systematically
-        - 🏷️ Group related work with meaningful tags
-        - ⚖️ Set clear priorities and deadlines
-        - 🔍 Use filters and search for quick access
+        - ✅ Vytvářejte a kategorizujte úkoly systematicky
+        - 🏷️ Grupujte související práci smysluplnými štítky
+        - ⚖️ Nastavte jasné priority a termíny
+        - 🔍 Používejte filtry a vyhledávání pro rychlý přístup
 
-        ## ⏱️ Time Tracking & Focus
+        ## ⏱️ Sledování času a fokus
 
-        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+        Sledujte své investice času pro porozumění produktivním vzorcům a optimalizaci workflow. Povědomí o čase vede k lepšímu plánování a zlepšenému výkonu.
 
-        - ⏰ Track actual time spent per task
-        - 🎯 Use Marathon Mode for focused work sessions
-        - 📊 Analyze completion patterns and trends
-        - 🔄 Review and adjust time estimates regularly
+        - ⏰ Sledujte skutečný čas strávený na úkol
+        - 🎯 Používejte Maratonový režim pro zaměřené pracovní relace
+        - 📊 Analyzujte vzorce dokončování a trendy
+        - 🔄 Pravidelně revidujte a upravujte odhady času
 
-        ## 📈 Progress Monitoring
+        ## 📈 Monitorování pokroku
 
-        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+        Sledujte své úspěchy a naučte se z vašich pracovních vzorců. Pravidelný přehled a reflexe pohánějí kontinuální zlepšení ve vašem produktivním systému.
 
-        - 📈 Monitor task completion rates
-        - 📅 Review daily and weekly progress
-        - 🎯 Identify bottlenecks and optimization opportunities
-        - 🏆 Celebrate achievements and milestone completions
-      title: Task Management & Workflow Guide
+        - 📈 Monitorujte míru dokončení úkolů
+        - 📅 Přehlídejte denní a týdenní pokrok
+        - 🎯 Identifikujte úzká místa a příležitosti k optimalizaci
+        - 🏆 Oslavujte úspěchy a dokončení milníků
+      title: Průvodce managementem úkolů a workflow
   marathon:
     details:
-      title: Task Details
+      title: Detaily úkolu
     help:
       content: |
-        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
+        Maximalizujte svůj fokus a produktivitu strukturovanými pracovními relacemi, které vám pomohou udržet hlubokou koncentraci při prevenci vyhoření.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Proč je to důležité?
 
-        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
+        Zaměřené pracovní relace jsou esenciální pro hlubokou práci a kvalitní výstup. Práce strukturovanými intervaly s pravidelnými přestávkami udržuje špičkový mentální výkon při vyhýbání se únavě z prodloužených, nezaměřených pracovních období.
 
-        ## ⏰ Time-Boxed Focus Sessions
+        ## ⏰ Časové rámce zaměřených relací
 
-        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
+        Používejte osvědčené techniky managementu času k strukturování vaší práce pro maximální efektivitu. Strukturované relace vám pomohou udržet koncentraci a dokončit úkoly efektivněji.
 
-        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
-        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
-        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
-        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
+        - 🎯 **Klasický fokus:** 25 minut práce / 5 minut přestávka
+        - 📈 **Rozšířené fokus:** 50 minut práce / 10 minut přestávka
+        - 🔄 **Dlouhá přestávka:** 15-30 minut po 4 relacích
+        - ⚖️ **Vlastní časování:** Upravte intervaly podle svého přirozeného rytmu
 
-        ## 🧠 Cognitive Benefits
+        ## 🧠 Kognitivní výhody
 
-        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
+        Strukturované pracovní relace využívají přirozené cykly pozornosti mozku k optimalizaci výkonu a prevenci mentální únavy, která snižuje kvalitu a kreativitu.
 
-        - 🎯 Enhanced focus and deep concentration
-        - 🔋 Reduced mental fatigue and burnout
-        - 💪 Sustained motivation through regular accomplishments
-        - ⚡ Improved time awareness and planning accuracy
+        - 🎯 Zlepšená koncentrace a hluboké soustředění
+        - 🔋 Snížení mentální únavy a vyhoření
+        - 💪 Udržení motivace prostřednictvím pravidelných úspěchů
+        - ⚡ Zlepšené povědomí o čase a přesnost plánování
 
-        ## 📊 Performance Optimization
+        ## 📊 Optimalizace výkonu
 
-        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
+        Sledujte své zaměřené pracovní vzorce pro porozumění vašim špičkovým produktivním časům a optimalizaci vašeho harmonogramu pro maximální efektivitu.
 
-        - 🏷️ Categorize focus sessions with tags for analysis
-        - 📈 Monitor productivity patterns across different times
-        - 🚫 Eliminate distractions before starting sessions
-        - 🚶 Use breaks for physical movement and mental reset
-      title: Focused Work Sessions & Time Management Guide
-      tooltip: Marathon help tooltip
-    label: Marathon Mode
-    unpin_task_tooltip: Unpin current task
-  new_task: New Task
-  no_tasks: No tasks
+        - 🏷️ Kategorizujte fokusové relace štítky pro analýzu
+        - 📈 Monitorujte produktivní vzorce napříč různými časy
+        - 🚫 Eliminujte rušivé prvky před zahájením relací
+        - 🚶 Používejte přestávky pro fyzické hnutí a mentální reset
+      title: Zaměřené pracovní relace a průvodce managementem času
+      tooltip: Nápověda maratón
+    label: Maratonový režim
+    unpin_task_tooltip: Odstraňte aktuální úkol
+  new_task: Nový úkol
+  no_tasks: Žádné úkoly
   notifications:
-    deadline_message: "Your task deadline is at {time}"
-    deadline_title: "Task Deadline: {title}"
-    planned_message: "Your task is planned for {time}"
-    reminder_title: "Task Reminder: {title}"
+    deadline_message: Váš úkol splatnosti je v {time}
+    deadline_title: "Úkol splatnosti: {title}"
+    planned_message: Váš úkol je plánován na {time}
+    reminder_title: "Připomínka úkolu: {title}"
   page:
-    completed_tasks_title: Completed tasks
-    title: Tasks
+    completed_tasks_title: Dokončené úkoly
+    title: Úkoly
   pomodoro:
     actions:
-      stop_timer: Stop Timer
+      stop_timer: Zastavit časovač
     notifications:
-      break_completed: Break session completed!
-      long_break_completed: Long break completed!
-      time_remaining_prefix: "Time remaining:"
-      timer_completed: Timer completed!
-      title: Pomodoro Timer
-      work_completed: Work session completed!
+      break_completed: Relace přestávky dokončena!
+      long_break_completed: Dlouhá přestávka dokončena!
+      time_remaining_prefix: "Zbývající čas:"
+      timer_completed: Časovač dokončen!
+      title: Pomodoro časovač
+      work_completed: Relace práce dokončena!
     settings:
-      auto_start_break: Auto-start break after work
-      auto_start_section: Auto-Start Options
-      auto_start_work: Auto-start work after break
-      break_duration: Break Duration
-      long_break_duration: Long Break Duration
-      sessions_before_long_break: Sessions before Long Break
-      ticking_sound: Enable ticking sound
-      ticking_sound_section: Ticking Sound
-      ticking_speed: Speed
-      ticking_volume: Volume
-      keep_screen_awake_section: Keep Screen Awake
-      keep_screen_awake: Keep screen awake during sessions
-      timer_label: Session durations
-      title: Timer Settings
-      work_duration: Work Duration
+      auto_start_break: Automaticky spustit přestávku po práci
+      auto_start_section: Možnosti automatického spuštění
+      auto_start_work: Automaticky spustit práci po přestávce
+      break_duration: Doba přestávky
+      keep_screen_awake: Udržet obrazovku zapnutou během relací
+      keep_screen_awake_section: Udržet obrazovku zapnutou
+      long_break_duration: Doba dlouhé přestávky
+      sessions_before_long_break: Relace před dlouhou přestávkou
+      ticking_sound: Povolit tikající zvuk
+      ticking_volume: Hlasitost tikání
+      ticking_speed: Rychlost tikání
+      ticking_sound_section: Tikající zvuk
+      timer_label: Trvání relace
+      title: Nastavení časovače
+      work_duration: Doba práce
     system_tray:
-      app_running: App Running
-      complete_title: Pomodoro Complete
-      tap_to_open: Tap to open
-      timer_running: Timer running
+      app_running: Aplikace běží
+      complete_title: Pomodoro dokončeno
+      tap_to_open: Klepněte pro otevření
+      timer_running: Časovač běží
   priorities:
-    not_urgent_important: Not Urgent but Important
-    not_urgent_not_important: Not Urgent or Important
-    urgent_important: Urgent and Important
-    urgent_not_important: Urgent but Not Important
+    not_urgent_important: Ne naléhavé, ale důležité
+    not_urgent_not_important: Ani naléhavé ani důležité
+    urgent_important: Naléhavé a důležité
+    urgent_not_important: Naléhavé, ale ne důležité
   priority:
     selection:
-      title: Select Priority
+      title: Vybrat prioritu
     tooltips:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Žádná priorita
+      not_urgent_important: Ne naléhavé, ale důležité
+      not_urgent_not_important: Ani naléhavé ani důležité
+      urgent_important: Naléhavé a důležité
+      urgent_not_important: Naléhavé, ale ne důležité
     types:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Žádná priorita
+      not_urgent_important: Ne naléhavé, ale důležité
+      not_urgent_not_important: Ani naléhavé ani důležité
+      urgent_important: Naléhavé a důležité
+      urgent_not_important: Naléhavé, ale ne důležité
   quick_task:
-    create_error: Error creating task
-    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
-    lock_settings: Lock Settings
-    reset_all: Reset all fields
+    create_error: Chyba při vytváření úkolu
+    lock_description: |
+      Zamkněte vlastnosti, aby si zachovaly své hodnoty při vytváření více podobných úkolů. Zamknuté vlastnosti nebudou vymazány, když resetujete formulář.
+    lock_settings: Nastavení zámku
+    reset_all: Resetovat všechna pole
     reset_confirm:
-      message: Are you sure you want to reset all fields? This action cannot be undone.
-      title: Reset All Fields
-    title: Quick Task
-    title_hint: Enter a descriptive task title...
-    title_placeholder: What needs to be done?
+      message: Jste si jisti, že chcete resetovat všechna pole? Tato akce nelze vrátit zpět.
+      title: Resetovat všechna pole
+    title: Rychlý úkol
+    title_hint: Zadejte popisný titulek úkolu...
+    title_placeholder: Co je potřeba udělat?
     tooltips:
-      deadline_date: "Deadline: {date}"
-      deadline_date_not_set: "Deadline: Not set"
-      estimated_time: "Estimated Time: {time}"
-      estimated_time_not_set: "Estimated Time: Not set"
-      planned_date: "Planned: {date}"
-      planned_date_not_set: "Planned: Not set"
+      deadline_date: "Termín: {date}"
+      deadline_date_not_set: "Termín: Není nastaveno"
+      estimated_time: "Odhadovaný čas: {time}"
+      estimated_time_not_set: "Odhadovaný čas: Není nastaveno"
+      planned_date: "Plánováno: {date}"
+      planned_date_not_set: "Plánováno: Není nastaveno"
   recurrence:
-    count: Number of occurrences
-    custom: Custom
-    daily: Daily
-    daySuffix: day(s)
-    endDate: End date
-    enterCountHint: Enter count
+    count: Počet výskytů
+    custom: Vlastní
+    daily: Denně
+    daySuffix: den(y)
+    endDate: Datum konce
+    enterCountHint: Zadejte počet
     interval:
-      label: Repeat every
-      prefix: every
+      label: Opakovat každých
+      prefix: každých
       suffix:
-        days: day(s)
-        months: month(s)
-        weeks: week(s)
-        years: year(s)
-    label: Recurrence
-    monthSuffix: month(s)
-    monthly: Monthly
-    none: No recurrence
-    range: Range
-    selectDateHint: Select date
-    startDate: Start date
+        days: den(y)
+        months: měsíc(ů)
+        weeks: týden(ů)
+        years: rok(y)
+    label: Opakování
+    monthSuffix: měsíc(ů)
+    monthly: Měsíčně
+    none: Žádné opakování
+    range: Rozsah
+    selectDateHint: Vyberte datum
+    startDate: Datum zahájení
     summary:
-      endsAfter: ends after
-      endsOnDate: ends on
-      occurrences: výskyty
-      on: v
+      endsAfter: končí po
+      endsOnDate: končí
       everyDay: každý den
+      occurrences: výskytech
+      true: true
       starts: začíná
-    weekDays: Dny v týdnu
-    weekSuffix: týden(y)
+      on: na
+    weekDays: Dny týdne
+    weekSuffix: týden(ů)
     weekly: Týdně
     yearSuffix: rok(y)
     yearly: Ročně
-  validation:
-    deadline_time_invalid: Čas termínu je neplatný
-    deadline_cannot_be_before_planned: Terminín musí být po plánovaném datu
   reminder:
-    atTime: At the scheduled time
-    deadlineReminderLabel: Deadline Reminder
-    fifteenMinutesBefore: 15 minutes before
-    fiveMinutesBefore: 5 minutes before
-    none: No reminder
-    oneDayBefore: 1 day before
-    oneHourBefore: 1 hour before
-    plannedReminderLabel: Planned Date Reminder
-  task_details: Task Details
-  title: Tasks
+    atTime: V plánovaném čase
+    deadlineReminderLabel: Připomínka splatnosti
+    fifteenMinutesBefore: 15 minut před
+    fiveMinutesBefore: 5 minut před
+    none: Žádná připomínka
+    oneDayBefore: 1 den před
+    oneHourBefore: 1 hodina před
+    plannedReminderLabel: Připomínka plánovaného data
+  task_details: Detaily úkolu
+  title: Úkoly
   tooltips:
-    clear_date: Clear date
-    decrease_estimated_time: Decrease estimated time
-    edit_title: Edit title
-    increase_estimated_time: Increase estimated time
-    set_reminder: Set reminder
-    show_completed_tasks: Filter completed tasks
-    show_subtasks: Zobrazit dílčí úkoly
+    clear_date: Vymazat datum
+    decrease_estimated_time: Zmenšit odhadovaný čas
+    edit_title: Upravit titulek
+    increase_estimated_time: Zvětšit odhadovaný čas
+    set_reminder: Nastavit připomínku
+    show_completed_tasks: Filtrovat dokončené úkoly
+    show_subtasks: Zobrazit podúkoly
+  validation:
+    deadline_cannot_be_before_planned: Datum splatnosti musí být po plánovaném datu
+    deadline_time_invalid: Prosím zadejte platný čas splatnosti

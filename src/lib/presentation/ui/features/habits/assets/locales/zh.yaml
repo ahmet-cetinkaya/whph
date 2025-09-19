@@ -9,7 +9,6 @@ habits:
     unarchive: 取消归档
     unarchive_confirm: 您确定要取消归档此习惯吗？
     unarchive_tooltip: 取消归档此习惯
-
   calendar:
     week_days:
       fri: 五
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: 已归档
     create_record_tooltip: 标记为今天已完成
+    daily_target: 每日目标
+    daily_target_hint: 输入您的每日目标（例如，10 分钟或 5 次重复）
     description: 描述
     estimated_time: 预计时间
     estimated_time_not_set: 未设置
@@ -76,24 +77,22 @@ habits:
     records: 记录
     remove_record_tooltip: 移除今天的完成记录
     statistics:
-      archived_note: "归档于："
+      archived_note: 归档于：
       archived_on: 归档于
-      archived_warning: "统计显示到归档日期。{startDate} - {archivedDate}"
+      archived_warning: 统计显示到归档日期。{startDate} - {archivedDate}
+      completions: 完成次数
       from: 从
       monthly: 月度
+      no_streaks_yet: 还没有连续记录。开始建立一致性！
       overall: 总体
       records: 记录
       score_trends: 分数趋势
       to: 到
       top_streaks: 最高连续记录
-      no_streaks_yet: 还没有连续记录。开始建立一致性！
-      completions: 完成次数
       yearly: 年度
     statistics_label: 统计
     tags: 标签
     tags_hint: 选择要关联的标签
-    daily_target: "每日目标"
-    daily_target_hint: "输入您的每日目标（例如，10 分钟或 5 次重复）"
   errors:
     adding_tag: 添加标签失败
     creating_record: 创建习惯记录失败
@@ -122,18 +121,16 @@ habits:
     goal_format: "{dayCount}天内{count}次"
     period_days: 期间天数
     settings: 自定义目标设置
-    target_frequency: "周期频率"
-    times_unit: "每周期次数"
-  help:
-    description: 帮助描述
+    target_frequency: 周期频率
+    times_unit: 每周期次数
   list:
     all_habits_done: 所有习惯已完成！
     no_habits_found: 没有习惯
-  new_habit: 新习惯
   name_placeholder: 请输入有意义的习惯名称...
+  new_habit: 新习惯
   notifications:
-    reminder_message: "记得完成您的习惯：{name}"
-    reminder_title: "习惯提醒：{name}"
+    reminder_message: 记得完成您的习惯：{name}
+    reminder_title: 习惯提醒：{name}
   overview:
     filter_by_tags_tooltip: 按标签筛选
     help:
@@ -207,8 +204,8 @@ habits:
     select_tooltip: 选择标签
   tooltips:
     add_habit: 添加习惯
+    decrease_daily_target: 减少每日目标
     decrease_estimated_time: 减少预计时间
     edit_name: 编辑名称
+    increase_daily_target: 增加每日目标
     increase_estimated_time: 增加预计时间
-    decrease_daily_target: "减少每日目标"
-    increase_daily_target: "增加每日目标"

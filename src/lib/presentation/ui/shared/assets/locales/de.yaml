@@ -1,5 +1,4 @@
 shared:
-  untitled: "Unbenannt"
   buttons:
     add: Hinzufügen
     back: Zurück
@@ -65,6 +64,7 @@ shared:
     created_date_label: Erstellungsdatum
     modified_date_label: Änderungsdatum
     name_label: Name
+  date: Datum
   date_filter:
     title: Datumsbereich auswählen
     tooltips:
@@ -72,6 +72,32 @@ shared:
       filter: Nach Datum filtern
   date_format:
     hint: TT/MM/JJJJ
+  datepicker:
+    cannot_select_date_after_max_date: Datum kann nicht nach dem {date} gewählt werden
+    cannot_select_date_before_min_date: Datum kann nicht vor dem {date} gewählt werden
+    cannot_select_time_after_max_date: Zeit kann nicht nach {time} gewählt werden
+    cannot_select_time_before_min_date: Zeit kann nicht vor {time} gewählt werden
+    deadline_cannot_be_before_planned_date:
+      Fälligkeitsdatum muss am oder nach dem
+      geplanten Datum liegen
+    end_date_cannot_be_after_max_date: Enddatum kann nicht nach dem {date} liegen
+    end_date_must_be_at_or_before: Enddatum muss am oder vor dem {date} sein
+    select_date_range_title: Datumsbereich auswählen
+    select_date_time_title: Datum und Uhrzeit auswählen
+    selected_date_must_be_at_or_after:
+      Ausgewähltes Datum muss am oder nach dem {date}
+      sein
+    selected_date_must_be_at_or_before:
+      Ausgewähltes Datum muss am oder vor dem {date}
+      sein
+    selected_date_time_must_be_after:
+      Ausgewähltes Datum und Uhrzeit müssen nach {dateTime}
+      sein
+    start_date_cannot_be_after_end_date: Startdatum kann nicht nach dem Enddatum liegen
+    start_date_cannot_be_before_min_date: Startdatum kann nicht vor dem {date} liegen
+    start_date_must_be_at_or_after: Startdatum muss am oder nach dem {date} sein
+    time_must_be_at_or_after: Zeit muss um oder nach {time} sein
+    time_must_be_at_or_before: Zeit muss um oder vor {time} sein
   days:
     friday: Freitag
     friday_short: Fr
@@ -92,19 +118,19 @@ shared:
       hint: Sie können im Markdown-Format schreiben...
       tooltips:
         bold: Fett
-        italic: Kursiv
-        strikethrough: Durchgestrichen
-        code: Code
-        link: Link
-        quote: Zitat
         bulleted_list: Aufzählungsliste
-        numbered_list: Nummerierte Liste
-        horizontal_rule: Horizontale Linie
-        edit: Bearbeiten
-        preview: Vorschau
-        image: Bild
-        heading: Überschrift
         checkbox: Kontrollkästchen
+        code: Code
+        edit: Bearbeiten
+        heading: Überschrift
+        horizontal_rule: Horizontale Linie
+        image: Bild
+        italic: Kursiv
+        link: Link
+        numbered_list: Nummerierte Liste
+        preview: Vorschau
+        quote: Zitat
+        strikethrough: Durchgestrichen
   errors:
     deleting: Fehler beim Löschen der Daten
     file_not_found: Datei nicht gefunden
@@ -138,8 +164,6 @@ shared:
     unexpected: Ein unerwarteter Fehler ist aufgetreten
   filters:
     search: Suchen
-  help:
-    tooltip: Hilfe
   messages:
     confirm_delete: Sind Sie sicher, dass Sie dieses Element löschen möchten?
     no_items_found: Keine Elemente
@@ -150,19 +174,19 @@ shared:
       more: Mehr
       notes: Notizen
       settings: Einstellungen
-      tags: Tags
+      tags: Etiketten
       tasks: Aufgaben
       today: Heute
-  none_option: "Keine Tags"
+  none_option: Keine Etiketten
   regex_help:
     examples:
-      chat: 'Entspricht entweder "Slack" oder "Discord"'
-      chrome: 'Entspricht jedem Fenstertitel, der "Chrome" enthält'
-      exact_chrome: 'Entspricht genau "Chrome"'
+      chat: Entspricht entweder "Slack" oder "Discord"
+      chrome: Entspricht jedem Fenstertitel, der "Chrome" enthält
+      exact_chrome: Entspricht genau "Chrome"
       pdf: Entspricht jeder PDF-Datei
       vscode: Entspricht jedem VS Code-Fenster
     tips:
-      any_chars: 'Verwenden Sie ".*" um beliebige Zeichen zu finden'
+      any_chars: Verwenden Sie ".*" um beliebige Zeichen zu finden
       dot: '"\." entspricht einem Punkt'
       end: '"$" entspricht dem Textende'
       or: '"|" bedeutet ODER'
@@ -178,7 +202,7 @@ shared:
     habits: Gewohnheiten
     special_filters: Spezialfilter
     statistics: Statistiken
-    tags: Tags
+    tags: Etiketten
     tasks: Aufgaben
     time: Zeit
   sort:
@@ -187,11 +211,11 @@ shared:
       description: Drag & Drop aktivieren, um Elemente neu zu ordnen
       title: Benutzerdefinierte Sortierung
     descending: Absteigend
+    disable_reordering_tooltip: Neuordnung deaktivieren
+    enable_reordering_tooltip: Neuordnung aktivieren
     remove_criteria: Kriterium entfernen
     reset_to_default: Auf Standard zurücksetzen
     sort: Sortieren
-    enable_reordering_tooltip: Neuordnung aktivieren
-    disable_reordering_tooltip: Neuordnung deaktivieren
   statistics:
     daily_usage:
       description: Zeigt die gesamte Nutzungszeit pro Wochentag
@@ -200,7 +224,24 @@ shared:
       description: Zeigt die gesamte Nutzungszeit pro Tagesstunde
       title: Stündliche Nutzung
   time:
-    not_set: "Nicht festgelegt"
+    not_set: Nicht festgelegt
+  time_display:
+    elapsed: Verstrichen
+    elapsed_time_tooltip: Auf diese Aufgabe aufgewendete Zeit
+    estimated: Geschätzt
+    estimated_time_tooltip: Geschätzte Zeit zur Fertigstellung dieser Aufgabe
+    no_time_logged_tooltip: Noch keine Zeit erfasst
+  time_logging:
+    add_time: Zeit hinzufügen
+    add_time_description: Zeit zur bestehenden Summe hinzufügen
+    dialog_title: Zeit erfassen
+    duration: Dauer
+    invalid_input: Bitte geben Sie eine gültige Zeit ein
+    log_time: Zeit erfassen
+    mode: Modus
+    set_total: Gesamtzeit festlegen
+    set_total_description: Gesamte aufgewendete Zeit festlegen
+    total_time: Gesamtzeit
   time_periods:
     custom: Benutzerdefiniert
     last_month: Letzter Monat
@@ -210,6 +251,11 @@ shared:
     this_three_months: Diese 3 Monate
     this_week: Diese Woche
     today: Heute
+  timer:
+    label: Timer
+    normal: Normal
+    pomodoro: Pomodoro
+    stopwatch: Stoppuhr
   tooltips:
     compare_with_previous: Mit vorherigem Zeitraum vergleichen
     filter_by_tags: Nach Tags filtern
@@ -222,6 +268,7 @@ shared:
     minutes: Min
     minutes_short: m
     seconds: Sek
+  untitled: Unbenannt
   update_dialog:
     buttons:
       download_page: Download-Seite
@@ -235,21 +282,4 @@ shared:
     title: Update verfügbar!
   validation:
     required: "{field} ist erforderlich."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Fälligkeitsdatum muss am oder nach dem geplanten Datum liegen"
-    selected_date_must_be_at_or_after: Ausgewähltes Datum muss am oder nach dem {date} sein
-    selected_date_must_be_at_or_before: Ausgewähltes Datum muss am oder vor dem {date} sein
-    start_date_cannot_be_after_end_date: Startdatum kann nicht nach dem Enddatum liegen
-    start_date_must_be_at_or_after: Startdatum muss am oder nach dem {date} sein
-    end_date_must_be_at_or_before: Enddatum muss am oder vor dem {date} sein
-    cannot_select_date_before_min_date: Datum kann nicht vor dem {date} gewählt werden
-    cannot_select_date_after_max_date: Datum kann nicht nach dem {date} gewählt werden
-    start_date_cannot_be_before_min_date: Startdatum kann nicht vor dem {date} liegen
-    end_date_cannot_be_after_max_date: Enddatum kann nicht nach dem {date} liegen
-    cannot_select_time_before_min_date: Zeit kann nicht vor {time} gewählt werden
-    cannot_select_time_after_max_date: Zeit kann nicht nach {time} gewählt werden
-    time_must_be_at_or_after: Zeit muss um oder nach {time} sein
-    time_must_be_at_or_before: Zeit muss um oder vor {time} sein
-    selected_date_time_must_be_after: Ausgewähltes Datum und Uhrzeit müssen nach {dateTime} sein
-    select_date_time_title: Datum und Uhrzeit auswählen
-    select_date_range_title: Datumsbereich auswählen
+  help: Hilfe

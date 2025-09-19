@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Construiți un sistem cuprinzător de management al cunoștințelor care capturează ideile voastre, organizează informațiile eficient și face insight-urile importante ușor accesibile când aveți nevoie de ele.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ De ce este important?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Luarea de notițe eficientă și managementul cunoștințelor sunt esențiale pentru productivitate și învățare. Un sistem de notițe bine organizat previne pierderea insight-urilor valoroase, accelerează luarea deciziilor și creează o memorie externă de încredere care devine mai valoroasă în timp.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Capturarea ușoară a informațiilor
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Creați un flux de lucru seamless pentru capturarea și procesarea informațiilor care asigură că nimic important nu scapă, menținând în același timp concentrarea pe munca curentă.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Capturați idei rapid fără a întrerupe fluxul
+      - ✏️ Editați și rafinați informațiile pe măsură ce înțelegerea se dezvoltă
+      - 🗑️ Eliminați informațiile învechite sau irelevante sistematic
+      - 📌 Păstrați informațiile critice ușor accesibile și organizate
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Organizare strategică
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Dezvoltați un sistem de organizare care se scalează cu baza voastră de cunoștințe și face recuperarea informațiilor rapidă și de încredere, indiferent de volum.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Aplicați strategii consistente de etichetare pentru categorizare rapidă
+      - 🔍 Utilizați capabilități puternice de căutare pentru a găsi informații instant
+      - 📚 Grupati notele relevante pentru a crea zone cuprinzătoare de cunoștințe
+      - 🎯 Mențineți concentrarea prin arhitectură informațională organizată
 
-      ## 📄 Professional Content Creation
+      ## 📄 Creare de conținut profesional
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Utilizați instrumente avansate de formatare pentru a crea conținut clar, bine structurat care comunică eficient și rezistă testului timpului.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Formatare bogată:** Utilizați Markdown pentru structura profesională a documentelor
+      - 📋 **Structură clară:** Organizați conținutul cu anteturi, liste și accentuări
+      - 🔗 **Cunoștințe conectate:** Legați concepte și informații relevante
+      - 📖 **Ieșire lizibilă:** Formatați conținutul pentru înțelegere ușoară și partajare
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Beneficii de productivitate
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Transformați practica voastră de luare a notițelor într-un multiplicator de productivitate care îmbunătățește gândirea, accelerează învățarea și îmbunătățește calitatea luării deciziilor.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Gândire îmbunătățită:** Memoria externă eliberează capacitatea mentală pentru muncă creativă
+      - ⚡ **Acces mai rapid:** Informațiile organizate reduc timpul petrecut căutând
+      - 🌐 **Disponibilitate universală:** Accesați baza voastră de cunoștințe de pe orice dispozitiv
+      - 📈 **Îmbunătățire continuă:** Conținutul rafinat devine mai valoros în timp
+    title: Ghid de management al cunoștințelor și organizare a notițelor
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Adaugă Notă
+    delete: Șterge Notă
+    edit: Editează Notă
+    save: Salvează Notă
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Adaugă etichetă
+      content_placeholder: Scrie conținutul notei aici...
+      save_button: Salvează
+      saved_message: Notă salvată cu succes
+      title_placeholder: Titlu Notă
+      update_button: Actualizează
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Nicio notă găsită
+      loading: Se încarcă notele...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Sunteți sigur că doriți să ștergeți această notă?
+    confirm_title: Șterge Notă
   details:
-    content: Content
+    content: Conținut
     tags:
-      hint: Select tags for note
-      label: Tags
-    title: Title
+      hint: Selectați etichete pentru notă
+      label: Etichete
+    title: Titlu
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Eșec la adăugarea etichetei
+    deleting: A apărut o eroare neașteptată la ștergerea notei
+    getting_notes: Eroare la obținerea notelor
+    loading_details: Eșec la încărcarea detaliilor notei
+    loading_tags: Eșec la încărcarea etichetelor notei
+    note_not_found: Notă negăsită
+    note_tag_not_found: Etichetă notă negăsită
+    removing_tag: Eșec la eliminarea etichetei
+    saving_note: Eșec la salvarea notei
+    tag_already_exists: Această etichetă este deja adăugată
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Căutare note...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filtrează după etichete
+  new_note: Notă Nouă
+  title_placeholder: Introduceți un titlu descriptiv pentru notă...
+  no_notes: Nicio notă
+  note_details: Detalii Notă
+  notes: Note
+  title: Note
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Adaugă notă
+    delete_note: Șterge notă
+    edit_name: Editează titlu
