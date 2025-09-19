@@ -3,49 +3,49 @@ calendar:
     today:
       help:
         content: |
-          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
+          Optimizirajte svojo dnevno produktivnost z enotnim pogledom, ki integrira naloge, navade in sledenje času, da vam pomaga ohranjati fokus in učinkovito dosegati cilje.
 
-          ## ⚡ Why Is It Important?
+          ## ⚡ Zakaj je to pomembno?
 
-          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
+          Dnevno upravljanje produktivnosti je temelj učinkovite uporabe časa in doseganja ciljev. S centralizacijo vaših dnevnih aktivnosti v enem pogledu odpravite preklapljanje konteksta, ohranite jasne prioritete in ustvarite sistematičen pristop k izvajanju vašega najpomembnejšega dela.
 
-          ## 🔄 Habit Consistency
+          ## 🔄 Konsistentnost navad
 
-          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
+          Spremljajte in ohranjajte svoje dnevne rutine z optimiziranim sledenjem navad, ki gradi zagon in krepi pozitivne vedenjske vzorce skozi dan.
 
-          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
-          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
-          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
-          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
+          - ✅ **Hitra ocena:** Poglejte vse dnevne navade naenkrat za hitro oceno napredka
+          - ✔️ **Takojšnja dokončanje:** Oznaki navade kot dokončane z enostavnimi interakcijami, ki ohranjajo tok
+          - 🔄 **Krepitev rutine:** Okrepiti dnevne vzorce z doslednim sledenjem in priznanjem
+          - 📈 **Gradnja zagon:** Vizualni indikatorji napredka, ki motivirajo za nadaljnjo doslednost
 
-          ## 📋 Task Execution
+          ## 📋 Izvajanje nalog
 
-          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+          Osredotočite se na upravljanje nalog z jasnim pogledom na današnje prioritete, ki vam pomagajo učinkovito izvajati brez izgube pogleda na roke in zaveze.
 
-          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
-          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
-          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
-          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+          - 🗓️ **Jasnost prioritet:** Poglejte načrtovane in zapadle naloge, organizirane za optimalno izvajanje
+          - ➕ **Hitro zajemanje:** Dodajte nove naloge hitro brez motenja trenutnega delovnega toka
+          - ✔️ **Sledenje napredku:** Spremljajte status dokončanja za ohranjanje odgovornosti in zagon
+          - 🎯 **Ohranjanje fokusa:** Jasen dnevni pogled preprečuje preobremenitev z budućimi obveznostmi
 
-          ## ⏰ Time Investment Analysis
+          ## ⏰ Analiza investicije časa
 
-          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+          Razumite, kako porabite čas z kategorizirano analizo, ki razkriva vzorce produktivnosti in pomaga optimizirati vaš dnevni urnik za maksimalno učinkovitost.
 
-          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
-          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
-          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
-          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+          - 📊 **Pogledi na kategorije:** Analizirajte porazdelitev časa po različnih oznakah aktivnosti in projektih
+          - 📈 **Prepoznavanje vzorcev:** Identificirajte trende produktivnosti in obdobja vrhunskih nastopov
+          - 🕒 **Spremljanje aktivnosti:** Spremljajte čas, porabljen za različne dnevne aktivnosti in odgovornosti
+          - 🎯 **Možnosti optimizacije:** Uporabite podatke za informirane odločitve o alokaciji časa
 
-          ## ⚙️ Productivity Shortcuts
+          ## ⚙️ Oskrbe produktivnosti
 
-          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+          Izkoristite hitre akcije in učinkovite delovne tokove, ki minimizirajo trenje in maksimizirajo vašo sposobnost ohranjanja fokusa na visokovrednih aktivnostih skozi dan.
 
-          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
-          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
-          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
-          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
-        title: Daily Productivity Management Guide
-      title: Today
+          - ▶️ **Fokusne seje:** Začnite koncentrirane delovne obdobje z integracijo časovnika v načinu Marathon
+          - 🔎 **Pametno filtriranje:** Uporabite filtriranje na podlagi oznak za fokus na specifične projekte ali področja življenja
+          - ✅ **Učinkovito dokončanje:** Dokončajte navade in naloge z optimiziranimi interakcijami brez motenj
+          - 📊 **Pogledi na uspešnost:** Dostop do časovnih grafov za takojšnjo povratno informacijo o dnevnih vzorcih produktivnosti
+        title: Vodnik za dnevno upravljanje produktivnosti
+      title: Danes
   sections:
-    habits: Habits
-    tasks: Tasks
+    habits: Navade
+    tasks: Naloge

@@ -9,7 +9,6 @@ habits:
     unarchive: Przywróć z archiwum
     unarchive_confirm: Czy na pewno chcesz przywrócić ten nawyk z archiwum?
     unarchive_tooltip: Przywróć ten nawyk z archiwum
-
   calendar:
     week_days:
       fri: Pt
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: Zarchiwizowane
     create_record_tooltip: Oznacz jako ukończone dzisiaj
+    daily_target: Codzienna częstotliwość
+    daily_target_hint: razy dziennie
     description: Opis
     estimated_time: Szacowany czas
     estimated_time_not_set: Nie ustawiono
@@ -78,22 +79,22 @@ habits:
     statistics:
       archived_note: "Zarchiwizowane:"
       archived_on: Zarchiwizowane
-      archived_warning: "Statystyki są pokazane do daty archiwizacji. {startDate} - {archivedDate}"
+      archived_warning:
+        Statystyki są pokazane do daty archiwizacji. {startDate} -
+        {archivedDate}
+      completions: ukończenia
       from: Od
       monthly: Miesięcznie
+      no_streaks_yet: Jeszcze brak serii. Zacznij budować konsekwencję!
       overall: Ogólnie
       records: Rekordy
       score_trends: Trendy wyników
       to: Do
       top_streaks: Najlepsze serie
-      no_streaks_yet: Jeszcze brak serii. Zacznij budować konsekwencję!
-      completions: ukończenia
       yearly: Rocznie
     statistics_label: Statystyki
     tags: Tagi
     tags_hint: Wybierz tagi do powiązania
-    daily_target: "Codzienna częstotliwość"
-    daily_target_hint: "razy dziennie"
   errors:
     adding_tag: Nie udało się dodać tagu
     creating_record: Nie udało się utworzyć rekordu nawyku
@@ -116,21 +117,21 @@ habits:
   goals:
     current_goal: Cel
     days_unit: dni
-    description: Czy chcesz praktykować nawyk z określoną częstotliwością zamiast codziennie? Wtedy ustaw niestandardowy cel.
+    description:
+      Czy chcesz praktykować nawyk z określoną częstotliwością zamiast
+      codziennie? Wtedy ustaw niestandardowy cel.
     enable: Włącz niestandardowe cele
     goal: Niestandardowy cel
     goal_format: "{count} razy w {dayCount} dni"
     period_days: Dni okresu
     settings: Ustawienia niestandardowego celu
-    target_frequency: "Częstotliwość okresu"
-    times_unit: "razy na okres"
-  help:
-    description: Opis pomocy
+    target_frequency: Częstotliwość okresu
+    times_unit: razy na okres
   list:
     all_habits_done: Wszystkie nawyki ukończone!
     no_habits_found: Brak nawyków
-  new_habit: Nowy nawyk
   name_placeholder: Wprowadź znaczącą nazwę nawyku...
+  new_habit: Nowy nawyk
   notifications:
     reminder_message: "Pamiętaj o ukończeniu swojego nawyku: {name}"
     reminder_title: "Przypomnienie o nawyku: {name}"
@@ -207,8 +208,8 @@ habits:
     select_tooltip: Wybierz tag
   tooltips:
     add_habit: Dodaj nawyk
+    decrease_daily_target: Zmniejsz codzienny cel
     decrease_estimated_time: Zmniejsz szacowany czas
     edit_name: Edytuj nazwę
+    increase_daily_target: Zwiększ codzienny cel
     increase_estimated_time: Zwiększ szacowany czas
-    decrease_daily_target: "Zmniejsz codzienny cel"
-    increase_daily_target: "Zwiększ codzienny cel"

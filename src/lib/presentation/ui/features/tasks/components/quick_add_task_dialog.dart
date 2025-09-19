@@ -524,7 +524,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           ),
                           // Estimated time lock options
                           _buildLockOptionCheckboxTile(
-                            title: _translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
+                            title: _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
                             icon: TaskUiConstants.estimatedTimeOutlinedIcon,
                             iconColor: TaskUiConstants.estimatedTimeColor,
                             value: _lockEstimatedTime,

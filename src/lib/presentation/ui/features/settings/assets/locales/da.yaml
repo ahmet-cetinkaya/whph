@@ -1,102 +1,102 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Annuller
 
 settings:
   about:
-    title: About
+    title: Om
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Eksport mislykkedes
+    import_failed: Import mislykkedes
+    setting_not_found: Indstilling ikke fundet
+    version_mismatch: Version ikke fundet
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
-    title: Export
-    canceled: Export canceled by user
+    csv_description: Du kan bruge dette til at vise i Excel og lignende applikationer.
+    error: Eksport mislykkedes
+    in_progress: Eksporterer data, vent venligst...
+    json_description: Eksportér data i læsbart JSON-format til udvikling og fejlfinding.
+    select_directory: Vælg eksportmappe
+    select_path: Vælg gemmested
+    select_type: Vælg eksportformat
+    success: "Eksport lykkedes. Filplacering:"
+    title: Eksport
+    canceled: Eksport annulleret af bruger
   export_data:
-    title: Export Data
+    title: Eksportér data
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Import mislykkedes
+    error.entity: Fejl i type
+    in_progress: Importerer data, vent venligst...
+    migration_failed: Import mislykkedes. Sørg for at du har installeret den seneste version af appen.
+    select_file: Vælg fil
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
+      merge: Flet med eksisterende data
+      replace: Slet eksisterende data og tilføj nye
+      title: Importstrategi
+    success: Import lykkedes
     title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+    unsupported_version: Uunderstøttet version
+    version_mismatch: Version ikke fundet
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
-    title: Import/Export
+    description: Eksportér dine data i forskellige formater eller importér data fra backup-filer
+    select_action: Vælg import/eksport handling
+    title: Import/Eksport
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Vælg dit sprog
+    title: Sprog
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Kunne ikke deaktivere notifikationer
+    enable_error: Kunne ikke aktivere notifikationer
+    title: Notifikationer
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Denne app har brug for tilladelse til at få adgang til app-brugsstatistik for at spore dine app-brugsmønstre præcist.
+      instructions: "Instruktioner:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Tryk på knappen "Åbn Indstilling"
+        step2: På brugsadgang-indstillingsskærmen, der åbnes, find "{appName}" i listen
+        step3: Tryk på "{appName}"
+        step4: Aktivér "Tillad brugsadgang" eller skift bryderen til TÆNDT
+      title: App-brugstilladelse
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: For pålidelige notifikationer skal denne app udelukkes fra batterioptimering. Uden dette kan påmindelser forsinkes eller ikke leveres overhovedet.
+      importance: Placeringen af denne indstilling kan variere afhængigt af din enhedsproducent.
+      instructions: "Instruktioner:"
+      not_disabled: Batterioptimering er stadig aktiveret. Giv tilladelse for at den relevante funktion virker korrekt.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Tryk på knappen "Åbn Indstilling"
+        step2: På indstillingsskærmen, der åbnes, find "{appName}"
+        step3: Tryk på "{appName}"
+        step4: Sørg for at "Tillad baggrundsbrug" er aktiveret på den åbnede side
+        step5: Tryk på "Tillad baggrundsbrug"
+        step6: Vælg "Ubegrænset"
+      title: Batterioptimering
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ kræver tilladelse til at planlægge præcise alarmer for at påmindelser fungerer korrekt.
+      instructions: "Instruktioner:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Gå til Alarmer & påmindelser og aktivér tilladelse
+          step3: Bekræft præcis alarmtilladelse
+        step1: Tryk på knappen "Åbn Indstilling"
+        step2: 'På den åbnede {appName} apps Alarmer & påmindelser side, aktivér "Tillad indstilling af alarmer og påmindelser"'
+      title: Præcis alarmtilladelse
+    fix_it: Rett det
+    granted: Tilladelse givet
+    instructions: Instruktioner
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Notifikationstilladelse kræves for at modtage påmindelser. Uden denne tilladelse modtager du ingen notifikationer.
+      instructions: "Instruktioner:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Tryk på knappen "Åbn Indstilling"
+          step2: Tillad notifikationer, når du bliver spurgt
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Tryk på knappen "Åbn Indstilling"
+          step2: Tillad notifikationer, når du bliver spurgt
+      title: Notifikationstilladelse
+    open_settings: Åbn Indstilling
+    open_terminal: Åbn Terminal
     firewall:
       title: Firewall-tilladelse
       description: Tillad WHPH at kommunikere gennem {platform} firewall på port 44040 til enhedssynkronisering.
@@ -130,71 +130,70 @@ settings:
               cmd_step1: "Åbn kommandoprompt som administrator"
               cmd_step2: "Tilføj firewall-regel:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: For at appen starter automatisk med din enhed kræves auto-start tilladelse. Dette sikrer at påmindelser og notifikationer fungerer korrekt selv efter enhedsgenstart.
+      importance: Placeringen af auto-start indstilling varierer eller kan mangle afhængigt af enhedsproducent.
+      instructions: "Instruktioner:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Tryk på knappen "Åbn Indstilling"
+        step2: 'På indstillingsskærmen, der åbnes, find "{appName}" app'
+        step3: 'Aktivér "Auto-start", "Autorun", "Start ved opstart" eller lignende tilladelse'
+      title: Auto-start tilladelse
+    title: Tilladelser
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Kunne ikke deaktivere startindstilling
+    enable_error: Kunne ikke aktivere startindstilling
+    subtitle: Tryk for at åbne systemindstillinger og aktivere auto-start tilladelse for appen
+    title: Start ved opstart
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Synkroniser enheder
+  title: Indstillinger
   backup:
     title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    description: Opret og gendan komprimerede backups af dine applikationsdata ved hjælp af det sikre .whph format
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Opret backup
+      description: Eksportér alle dine data til en komprimeret .whph backup-fil
+      in_progress: Opretter backup, vent venligst...
+      success: "Backup oprettet succesfuldt. Filplacering:"
+      error: Kunne ikke oprette backup
+      select_path: Vælg backup-gemmested
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Gendan backup
+      description: Importér data fra en tidligere oprettet .whph backup-fil
+      in_progress: Gendanner backup, vent venligst...
+      success: Backup gendannet succesfuldt
+      error: Kunne ikke gendanne backup
+      select_file: Vælg backup-fil
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Gendan strategi
+        replace: Slet eksisterende data og gendan
+        merge: Flet med eksisterende data
+    canceled: Backup-operation annulleret af bruger
+    export_failed: Backup-eksport mislykkedes
+    import_failed: Backup-import mislykkedes
+    invalid_format: Ugyldigt backup-filformat
+    invalid_format_error: Ugyldigt backup-filformat
+    corrupted: Backup-fil er korrupt eller beskadiget
+    export_description: Opret en komprimeret backup-fil indeholdende alle dine data
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Tema
+    description: Tilpas udseendet af WHPH
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Temamode
+      light: Lys
+      dark: Mørk
       auto:
         title: Auto
-        description: Follow system theme settings
+        description: Følg systemtema-indstillinger
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Dynamisk accentfarve
+      description: Hvis dit system understøtter det, vil primærfarven tilpasse sig baseret på systemets dynamiske farveskema
+      feature: Dynamisk
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Brugerdefineret accentfarve
+      description: Vælg en brugerdefineret accentfarve for at personliggøre dit apps udseende
+      feature: Brugerdefineret
+    error: Kunne ikke indlæse temaindstillinger
   ui_density:
     title: Tæthed
     description: Juster størrelsen på tekst og UI-elementer for at forbedre læsbarheden på skærme med høj DPI
@@ -202,7 +201,7 @@ settings:
     normal: Normal
     large: Stor
     larger: Større
-    error: Kunne ikke indlæse indstillinger for UI-tæthed
+    error: Kunne ikke indlæse UI-tæthedsindstillinger
   advanced:
     title: Avanceret
     description: Avancerede indstillinger og udviklerværktøjer

@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Szacowany czas
     is_completed: Ukończone
+    parent_task:
+      label: Zadanie nadrzędne
+      tooltip: Kliknij aby przejść do zadania nadrzędnego
     planned_date:
       label: Planowana data
     priority:
       label: Priorytet
     sub_tasks:
       label: Podzadania
-    parent_task:
-      label: Zadanie nadrzędne
-      tooltip: Kliknij aby przejść do zadania nadrzędnego
     tags:
       hint: Wybierz tagi do powiązania
       label: Tagi
@@ -186,9 +186,9 @@ tasks:
   new_task: Nowe zadanie
   no_tasks: Brak zadań
   notifications:
-    deadline_message: "Termin twojego zadania jest o {time}"
+    deadline_message: Termin twojego zadania jest o {time}
     deadline_title: "Termin zadania: {title}"
-    planned_message: "Twoje zadanie jest zaplanowane na {time}"
+    planned_message: Twoje zadanie jest zaplanowane na {time}
     reminder_title: "Przypomnienie o zadaniu: {title}"
   page:
     completed_tasks_title: Ukończone zadania
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: Opcje automatycznego startu
       auto_start_work: Automatycznie rozpocznij pracę po przerwie
       break_duration: Czas trwania przerwy
+      keep_screen_awake: Utrzymuj ekran aktywny podczas sesji
+      keep_screen_awake_section: Utrzymuj ekran aktywny
       long_break_duration: Czas trwania długiej przerwy
       sessions_before_long_break: Sesje przed długą przerwą
       ticking_sound: Włącz dźwięk tykania
       ticking_sound_section: Dźwięk tykania
       ticking_speed: Prędkość
       ticking_volume: Głośność
-      keep_screen_awake_section: Utrzymuj ekran aktywny
-      keep_screen_awake: Utrzymuj ekran aktywny podczas sesji
       timer_label: Czas trwania sesji
       title: Ustawienia timera
       work_duration: Czas trwania pracy
@@ -246,11 +246,16 @@ tasks:
       urgent_not_important: Pilne ale nieważne
   quick_task:
     create_error: Błąd tworzenia zadania
-    lock_description: Zablokuj właściwości, aby zachować ich wartości podczas tworzenia wielu podobnych zadań. Zablokowane właściwości nie zostaną wyczyszczone po zresetowaniu formularza.
+    lock_description:
+      Zablokuj właściwości, aby zachować ich wartości podczas tworzenia
+      wielu podobnych zadań. Zablokowane właściwości nie zostaną wyczyszczone po zresetowaniu
+      formularza.
     lock_settings: Ustawienia blokady
     reset_all: Resetuj wszystkie pola
     reset_confirm:
-      message: Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być cofnięta.
+      message:
+        Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być
+        cofnięta.
       title: Resetuj wszystkie pola
     title: Szybkie zadanie
     title_hint: Wprowadź opisowy tytuł zadania...
@@ -288,17 +293,15 @@ tasks:
       endsAfter: kończy się po
       endsOnDate: kończy się w dniu
       occurrences: wystąpienia
-      on: w
+      true: w
       everyDay: każdy dzień
       starts: rozpoczyna się
+      "on": "w"
     weekDays: Dni tygodnia
     weekSuffix: tydzień/tygodnie
     weekly: Tygodniowo
     yearSuffix: rok/lata
     yearly: Rocznie
-  validation:
-    deadline_time_invalid: Nieprawidłowy czas terminu
-    deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana
   reminder:
     atTime: O zaplanowanej godzinie
     deadlineReminderLabel: Przypomnienie o terminie
@@ -318,3 +321,6 @@ tasks:
     set_reminder: Ustaw przypomnienie
     show_completed_tasks: Filtruj ukończone zadania
     show_subtasks: Pokaż podzadania
+  validation:
+    deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana
+    deadline_time_invalid: Nieprawidłowy czas terminu

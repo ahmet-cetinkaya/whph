@@ -1,128 +1,128 @@
 tags:
   actions:
-    add: Add Tag
-    archive: Archive Tag
-    delete: Delete Tag
-    edit: Edit Tag
-    hide_archived: Hide archived tags
-    show_archived: Show archived tags
-    unarchive: Unarchive Tag
+    add: Adicionar Tag
+    archive: Arquivar Tag
+    delete: Excluir Tag
+    edit: Editar Tag
+    hide_archived: Ocultar tags arquivadas
+    show_archived: Mostrar tags arquivadas
+    unarchive: Desarquivar Tag
   categories:
-    all: All
-    app_usage: App Usage
-    habits: Habits
-    tasks: Tasks
-
+    all: Todas
+    app_usage: Uso do App
+    habits: Hábitos
+    tasks: Tarefas
+  default_name: Nova Tag
   details:
-    archived: Archived
-    color: Color
+    archived: Arquivado
+    color: Cor
     help:
-      description: Details help description
-      title: Details Help Title
-    name: Name
-    related_tags: Related Tags
-    select_tag: Select tag
-    tasks_label: Tasks
+      description: Descrição de ajuda dos detalhes
+      title: Título de Ajuda dos Detalhes
+    name: Nome
+    related_tags: Tags Relacionadas
+    select_tag: Selecionar tag
+    tasks_label: Tarefas
   errors:
-    creating: Failed to create tag
-    deleting: Failed to delete tag
-    get_tags: Error occurred while fetching tags
-    loading: Failed to load tags
-    loading_archive_status: Failed to load archive status
-    same_tag: Primary and secondary tags cannot be the same
-    saving: Failed to save tag
-    tag_not_found: Tag not found
-    tag_tag_already_exists: This tag relationship already exists
-    tag_tag_not_found: Tag relationship not found
-    toggling_archive: Failed to toggle archive status
+    creating: Falha ao criar tag
+    deleting: Falha ao excluir tag
+    get_tags: Erro ao buscar tags
+    loading: Falha ao carregar tags
+    loading_archive_status: Falha ao carregar status de arquivamento
+    same_tag: Tags primária e secundária não podem ser as mesmas
+    saving: Falha ao salvar tag
+    tag_not_found: Tag não encontrada
+    tag_tag_already_exists: Esta relação de tag já existe
+    tag_tag_not_found: Relação de tag não encontrada
+    toggling_archive: Falha ao alternar status de arquivamento
   filter:
-    all_categories: All Categories
-    select_category: Select Category
-  filter_tooltip: Filter by tags
+    all_categories: Todas as Categorias
+    select_category: Selecionar Categoria
+  filter_tooltip: Filtrar por tags
   help:
-    content: Tag help content
+    content: Conteúdo de ajuda da tag
     overview:
       content: |
-        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+        Transforme sua produtividade com tagging estratégico que ajuda a organizar o trabalho, rastrear investimentos de tempo e manter foco claro no que mais importa.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Por Que É Importante?
 
-        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+        A organização baseada em tags é fundamental para o gerenciamento eficaz de tempo e produtividade. Ao categorizar suas atividades com tags significativas, você obtém insights claros sobre como gasta seu tempo e pode tomar decisões informadas para otimizar seu foco e eficiência.
 
-        ## 📊 Time Investment Analysis
+        ## 📊 Análise de Investimento de Tempo
 
-        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+        Entenda onde seu tempo vai e tome decisões baseadas em dados sobre suas prioridades. O rastreamento de tempo com tags revela padrões que ajudam a otimizar sua agenda e hábitos de trabalho.
 
-        - ⏱️ Monitor time spent across different activity categories
-        - 📅 Track time investments over specific periods and trends
-        - ⚖️ Compare time allocation across projects and responsibilities
-        - 📈 Identify productivity patterns and peak performance times
-        - 🎯 Focus your energy on high-impact activities
+        - ⏱️ Monitore tempo gasto em diferentes categorias de atividades
+        - 📅 Rastreie investimentos de tempo em períodos específicos e tendências
+        - ⚖️ Compare alocação de tempo em projetos e responsabilidades
+        - 📈 Identifique padrões de produtividade e horários de pico de desempenho
+        - 🎯 Foque sua energia em atividades de alto impacto
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Organização Estratégica
 
-        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+        Crie uma abordagem sistemática para organizar seu trabalho que escala com suas necessidades. Tags bem estruturadas formam a base de um sistema de produtividade eficiente.
 
-        - 🔍 Filter and find information quickly with multi-tag searches
-        - 🗄️ Archive completed projects to maintain clean organization
-        - 🧩 Build hierarchical structures that reflect your work patterns
-        - 👥 Group related activities for better project management
-        - ⏳ Enable comprehensive time tracking across all activities
+        - 🔍 Filtre e encontre informações rapidamente com buscas multi-tag
+        - 🗄️ Arquive projetos concluídos para manter organização limpa
+        - 🧩 Construa estruturas hierárquicas que reflitam seus padrões de trabalho
+        - 👥 Agrupe atividades relacionadas para melhor gerenciamento de projetos
+        - ⏳ Habilite rastreamento de tempo abrangente em todas as atividades
 
-        ## 💡 Optimization Strategies
+        ## 💡 Estratégias de Otimização
 
-        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+        Aproveite técnicas avançadas de tagging para maximizar a efetividade de seu sistema organizacional e manter o crescimento de longo prazo em produtividade.
 
-        - 🏷️ Use clear, descriptive names that remain meaningful over time
-        - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
-        - 📊 Review time analysis reports regularly to identify improvement opportunities
-        - 🗄️ Maintain system cleanliness by archiving completed work
-        - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
-      title: Tag-Based Organization & Time Management Guide
-    title: Tag Help
+        - 🏷️ Use nomes claros e descritivos que permaneçam significativos ao longo do tempo
+        - 🔗 **Crie estruturas hierárquicas:** Projetos → Departamentos → Áreas
+        - 📊 Revise relatórios de análise de tempo regularmente para identificar oportunidades de melhoria
+        - 🗄️ Mantenha a limpeza do sistema arquivando trabalho concluído
+        - 🎯 Aplique filtragem focada para eliminar distrações e melhorar a concentração
+      title: Organização Baseada em Tags & Guia de Gerenciamento de Tempo
+    title: Ajuda de Tag
   labels:
-    color: Color
-    description: Description
-    name: Name
+    color: Cor
+    description: Descrição
+    name: Nome
     tags: Tags
   list:
-    filter_tooltip: Filter by tags
-    no_tags: No tags
+    filter_tooltip: Filtrar por tags
+    no_tags: Nenhuma tag
   messages:
-    archive_confirm: Are you sure you want to archive this tag?
-    confirm_archive: Are you sure you want to archive this tag?
-    confirm_delete: Are you sure you want to delete this tag?
-    confirm_unarchive: Are you sure you want to unarchive this tag?
-    unarchive_confirm: Are you sure you want to unarchive this tag?
-  new_tag: New Tag
-  name_placeholder: Enter a descriptive tag name...
-  no_tags: No tags
-  none_option: None
+    archive_confirm: Tem certeza de que deseja arquivar esta tag?
+    confirm_archive: Tem certeza de que deseja arquivar esta tag?
+    confirm_delete: Tem certeza de que deseja excluir esta tag?
+    confirm_unarchive: Tem certeza de que deseja desarquivar esta tag?
+    unarchive_confirm: Tem certeza de que deseja desarquivar esta tag?
+  new_tag: Nova Tag
+  name_placeholder: Digite um nome descritivo para a tag...
+  no_tags: Nenhuma tag
+  none_option: Nenhuma
   search:
-    clear_all: Clear All
-    label: Search tags
+    clear_all: Limpar Tudo
+    label: Pesquisar tags
   sections:
     list: Tags
   selection:
-    done: Done
-  tag_details: Tag Details
+    done: Concluído
+  tag_details: Detalhes da Tag
   time_bar_chart:
-    by_element: By element
-    no_data: No data
-    title: Time Distribution
+    by_element: Por elemento
+    no_data: Nenhum dado
+    title: Distribuição de Tempo
   time_chart:
-    no_data: No data
-    other_category: Other
-  time_distribution: Time Distribution
-  time_records: Time Records
+    no_data: Nenhum dado
+    other_category: Outra
+  time_distribution: Distribuição de Tempo
+  time_records: Registros de Tempo
   title: Tags
   tooltips:
-    add_tag: Add tag
-    add_task: Add new task
-    archive_tag: Archive tag
-    color: Click to assign color to tag
-    delete_tag: Delete tag
-    edit_name: Edit name
-    remove_tag: Remove tag
-    select: Click to select tag
-    unarchive_tag: Unarchive tag
+    add_tag: Adicionar tag
+    add_task: Adicionar nova tarefa
+    archive_tag: Arquivar tag
+    color: Clique para atribuir cor à tag
+    delete_tag: Excluir tag
+    edit_name: Editar nome
+    remove_tag: Remover tag
+    select: Clique para selecionar tag
+    unarchive_tag: Desarquivar tag

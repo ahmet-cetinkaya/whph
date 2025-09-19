@@ -1,5 +1,4 @@
 shared:
-  untitled: "Без названия"
   buttons:
     add: Добавить
     back: Назад
@@ -65,6 +64,7 @@ shared:
     created_date_label: Дата создания
     modified_date_label: Дата изменения
     name_label: Название
+  date: Дата
   date_filter:
     title: Выбрать диапазон дат
     tooltips:
@@ -72,6 +72,26 @@ shared:
       filter: Фильтровать по дате
   date_format:
     hint: ДД/ММ/ГГГГ
+  datepicker:
+    cannot_select_date_after_max_date: Нельзя выбрать дату позже {date}
+    cannot_select_date_before_min_date: Нельзя выбрать дату раньше {date}
+    cannot_select_time_after_max_date: Нельзя выбрать время позже {time}
+    cannot_select_time_before_min_date: Нельзя выбрать время раньше {time}
+    deadline_cannot_be_before_planned_date:
+      Срок должен быть в день запланированной
+      даты или позже
+    end_date_cannot_be_after_max_date: Дата окончания не может быть позже {date}
+    end_date_must_be_at_or_before: Дата окончания должна быть не позже {date}
+    select_date_range_title: Выберите диапазон дат
+    select_date_time_title: Выберите дату и время
+    selected_date_must_be_at_or_after: Выбранная дата должна быть не раньше {date}
+    selected_date_must_be_at_or_before: Выбранная дата должна быть не позже {date}
+    selected_date_time_must_be_after: Выбранные дата и время должны быть позже {dateTime}
+    start_date_cannot_be_after_end_date: Дата начала не может быть позже даты окончания
+    start_date_cannot_be_before_min_date: Дата начала не может быть раньше {date}
+    start_date_must_be_at_or_after: Дата начала должна быть не раньше {date}
+    time_must_be_at_or_after: Время должно быть не раньше {time}
+    time_must_be_at_or_before: Время должно быть не позже {time}
   days:
     friday: Пятница
     friday_short: Пт
@@ -92,19 +112,19 @@ shared:
       hint: Вы можете писать в формате Markdown...
       tooltips:
         bold: Жирный
-        italic: Курсив
-        strikethrough: Зачёркнутый
-        code: Код
-        link: Ссылка
-        quote: Цитата
         bulleted_list: Маркированный список
-        numbered_list: Нумерованный список
-        horizontal_rule: Горизонтальная линия
-        edit: Редактировать
-        preview: Предпросмотр
-        image: Изображение
-        heading: Заголовок
         checkbox: Флажок
+        code: Код
+        edit: Редактировать
+        heading: Заголовок
+        horizontal_rule: Горизонтальная линия
+        image: Изображение
+        italic: Курсив
+        link: Ссылка
+        numbered_list: Нумерованный список
+        preview: Предпросмотр
+        quote: Цитата
+        strikethrough: Зачёркнутый
   errors:
     deleting: Ошибка при удалении данных
     file_not_found: Файл не найден
@@ -138,8 +158,6 @@ shared:
     unexpected: Произошла неожиданная ошибка
   filters:
     search: Поиск
-  help:
-    tooltip: Справка
   messages:
     confirm_delete: Вы уверены, что хотите удалить этот элемент?
     no_items_found: Нет элементов
@@ -153,16 +171,16 @@ shared:
       tags: Теги
       tasks: Задачи
       today: Сегодня
-  none_option: "Без тегов"
+  none_option: Без тегов
   regex_help:
     examples:
-      chat: 'Соответствует "Slack" или "Discord"'
-      chrome: 'Соответствует любому заголовку окна, содержащему "Chrome"'
-      exact_chrome: 'Точно соответствует "Chrome"'
+      chat: Соответствует "Slack" или "Discord"
+      chrome: Соответствует любому заголовку окна, содержащему "Chrome"
+      exact_chrome: Точно соответствует "Chrome"
       pdf: Соответствует любому PDF-файлу
       vscode: Соответствует любому окну VS Code
     tips:
-      any_chars: 'Используйте ".*" для соответствия любым символам'
+      any_chars: Используйте ".*" для соответствия любым символам
       dot: '"\\." соответствует точке'
       end: '"$" соответствует концу текста'
       or: '"|" означает ИЛИ'
@@ -187,11 +205,11 @@ shared:
       description: Включить перетаскивание для изменения порядка элементов
       title: Пользовательская сортировка
     descending: По убыванию
+    disable_reordering_tooltip: Отключить режим перестановки
+    enable_reordering_tooltip: Включить режим перестановки
     remove_criteria: Удалить критерий
     reset_to_default: Сбросить по умолчанию
     sort: Сортировать
-    enable_reordering_tooltip: Включить режим перестановки
-    disable_reordering_tooltip: Отключить режим перестановки
   statistics:
     daily_usage:
       description: Показывает общее время использования по дням недели
@@ -200,7 +218,24 @@ shared:
       description: Показывает общее время использования по часам дня
       title: Почасовое использование
   time:
-    not_set: "Не установлено"
+    not_set: Не установлено
+  time_display:
+    elapsed: Прошло
+    elapsed_time_tooltip: Время, затраченное на задачу
+    estimated: Оценка
+    estimated_time_tooltip: Оценка времени для завершения задачи
+    no_time_logged_tooltip: Время еще не записано
+  time_logging:
+    add_time: Добавить время
+    add_time_description: Добавить время к существующему итогу
+    dialog_title: Запись времени
+    duration: Продолжительность
+    invalid_input: Пожалуйста, введите корректное время
+    log_time: Записать время
+    mode: Режим
+    set_total: Установить итог
+    set_total_description: Установить общее затраченное время
+    total_time: Общее время
   time_periods:
     custom: Пользовательский
     last_month: Прошлый месяц
@@ -210,6 +245,11 @@ shared:
     this_three_months: Эти 3 месяца
     this_week: Эта неделя
     today: Сегодня
+  timer:
+    label: Таймер
+    normal: Обычный
+    pomodoro: Помодоро
+    stopwatch: Секундомер
   tooltips:
     compare_with_previous: Сравнить с предыдущим периодом
     filter_by_tags: Фильтровать по тегам
@@ -222,6 +262,7 @@ shared:
     minutes: мин
     minutes_short: м
     seconds: сек
+  untitled: Без названия
   update_dialog:
     buttons:
       download_page: Страница загрузки
@@ -235,21 +276,4 @@ shared:
     title: Доступно обновление!
   validation:
     required: "{field} обязательно."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Срок должен быть в день запланированной даты или позже"
-    selected_date_must_be_at_or_after: Выбранная дата должна быть не раньше {date}
-    selected_date_must_be_at_or_before: Выбранная дата должна быть не позже {date}
-    start_date_cannot_be_after_end_date: Дата начала не может быть позже даты окончания
-    start_date_must_be_at_or_after: Дата начала должна быть не раньше {date}
-    end_date_must_be_at_or_before: Дата окончания должна быть не позже {date}
-    cannot_select_date_before_min_date: Нельзя выбрать дату раньше {date}
-    cannot_select_date_after_max_date: Нельзя выбрать дату позже {date}
-    start_date_cannot_be_before_min_date: Дата начала не может быть раньше {date}
-    end_date_cannot_be_after_max_date: Дата окончания не может быть позже {date}
-    cannot_select_time_before_min_date: Нельзя выбрать время раньше {time}
-    cannot_select_time_after_max_date: Нельзя выбрать время позже {time}
-    time_must_be_at_or_after: Время должно быть не раньше {time}
-    time_must_be_at_or_before: Время должно быть не позже {time}
-    selected_date_time_must_be_after: Выбранные дата и время должны быть позже {dateTime}
-    select_date_time_title: Выберите дату и время
-    select_date_range_title: Выберите диапазон дат
+  help: Помощь

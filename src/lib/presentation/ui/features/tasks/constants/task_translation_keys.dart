@@ -30,16 +30,6 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String pomodoroKeepScreenAwakeSectionLabel = 'tasks.pomodoro.settings.keep_screen_awake_section';
   static const String pomodoroKeepScreenAwakeLabel = 'tasks.pomodoro.settings.keep_screen_awake';
 
-  // Timer Mode
-  static const String timerModeTitle = 'tasks.timer.mode.title';
-  static const String timerModeDescription = 'tasks.timer.mode.description';
-  static const String timerModeNormal = 'tasks.timer.mode.normal';
-  static const String timerModePomodoro = 'tasks.timer.mode.pomodoro';
-  static const String timerModeStopwatch = 'tasks.timer.mode.stopwatch';
-  static const String timerSettingsDurationLabel = 'tasks.timer.settings.duration_label';
-  static const String timerSettingsDurationTitle = 'tasks.timer.settings.duration_title';
-
-  static const String minutesSuffix = 'tasks.timer.settings.minutes_suffix';
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';
   static const String priorityUrgentImportant = 'tasks.priority.types.urgent_important';
@@ -105,8 +95,6 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String tagsLabel = 'tasks.details.tags.label';
   static const String tagsHint = 'tasks.details.tags.hint';
   static const String priorityLabel = 'tasks.details.priority.label';
-  static const String estimatedTimeLabel = 'tasks.details.estimated_time.label';
-  static const String elapsedTimeLabel = 'tasks.details.elapsed_time.label';
   static const String plannedDateLabel = 'tasks.details.planned_date.label';
   static const String deadlineDateLabel = 'tasks.details.deadline_date.label';
   static const String descriptionLabel = 'tasks.details.description.label';
@@ -209,22 +197,6 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // Validation Messages
   static const String deadlineTimeInvalid = 'tasks.validation.deadline_time_invalid';
   static const String deadlineCannotBeBeforePlanned = 'tasks.validation.deadline_cannot_be_before_planned';
-
-  // Time Logging
-  static const String timeLoggingDialogTitle = 'tasks.time_logging.dialog_title';
-  static const String timeLoggingMode = 'tasks.time_logging.mode';
-  static const String timeLoggingAddTime = 'tasks.time_logging.add_time';
-  static const String timeLoggingSetTotal = 'tasks.time_logging.set_total';
-  static const String timeLoggingDate = 'tasks.time_logging.date';
-  static const String timeLoggingDuration = 'tasks.time_logging.duration';
-  static const String timeLoggingTotalTime = 'tasks.time_logging.total_time';
-  static const String timeLoggingHours = 'tasks.time_logging.hours';
-  static const String timeLoggingMinutes = 'tasks.time_logging.minutes';
-  static const String timeLoggingAddTimeDescription = 'tasks.time_logging.add_time_description';
-  static const String timeLoggingSetTotalDescription = 'tasks.time_logging.set_total_description';
-  static const String timeLoggingLogTime = 'tasks.time_logging.log_time';
-  static const String timeLoggingInvalidInput = 'tasks.time_logging.invalid_input';
-  static const String cancel = 'tasks.time_logging.cancel';
 
   // Helper Method for Reminder Types
   static String getReminderTypeKey(ReminderTime reminderTime) {

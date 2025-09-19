@@ -9,7 +9,6 @@ habits:
     unarchive: 보관 해제
     unarchive_confirm: 이 습관의 보관을 해제하시겠습니까?
     unarchive_tooltip: 이 습관 보관 해제
-
   calendar:
     week_days:
       fri: 금
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: 보관됨
     create_record_tooltip: 오늘 완료로 표시
+    daily_target: 일일 빈도
+    daily_target_hint: 일당 횟수
     description: 설명
     estimated_time: 예상 시간
     estimated_time_not_set: 설정되지 않음
@@ -78,22 +79,20 @@ habits:
     statistics:
       archived_note: "보관일:"
       archived_on: 보관일
-      archived_warning: "통계는 보관일까지 표시됩니다. {startDate} - {archivedDate}"
+      archived_warning: 통계는 보관일까지 표시됩니다. {startDate} - {archivedDate}
+      completions: 완료
       from: 시작
       monthly: 월별
+      no_streaks_yet: 아직 연속 기록이 없습니다. 일관성을 구축하기 시작하세요!
       overall: 전체
       records: 기록
       score_trends: 점수 트렌드
       to: 종료
       top_streaks: 최고 연속 기록
-      no_streaks_yet: 아직 연속 기록이 없습니다. 일관성을 구축하기 시작하세요!
-      completions: 완료
       yearly: 연별
     statistics_label: 통계
     tags: 태그
     tags_hint: 연결할 태그 선택
-    daily_target: "일일 빈도"
-    daily_target_hint: "일당 횟수"
   errors:
     adding_tag: 태그 추가에 실패했습니다
     creating_record: 습관 기록 생성에 실패했습니다
@@ -122,15 +121,13 @@ habits:
     goal_format: "{dayCount}일 동안 {count}회"
     period_days: 기간 일수
     settings: 사용자 정의 목표 설정
-    target_frequency: "기간 빈도"
-    times_unit: "기간당 횟수"
-  help:
-    description: 도움말 설명
+    target_frequency: 기간 빈도
+    times_unit: 기간당 횟수
   list:
     all_habits_done: 모든 습관이 완료되었습니다!
     no_habits_found: 습관 없음
-  new_habit: 새 습관
   name_placeholder: 의미 있는 습관 이름을 입력하세요...
+  new_habit: 새 습관
   notifications:
     reminder_message: "습관을 완료하는 것을 잊지 마세요: {name}"
     reminder_title: "습관 알림: {name}"
@@ -207,8 +204,8 @@ habits:
     select_tooltip: 태그 선택
   tooltips:
     add_habit: 습관 추가
+    decrease_daily_target: 일일 목표 감소
     decrease_estimated_time: 예상 시간 줄이기
     edit_name: 이름 편집
+    increase_daily_target: 일일 목표 증가
     increase_estimated_time: 예상 시간 늘리기
-    decrease_daily_target: "일일 목표 감소"
-    increase_daily_target: "일일 목표 증가"

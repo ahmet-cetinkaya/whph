@@ -1,178 +1,178 @@
 app_usages:
   delete:
-    confirm_title: Delete App Usage
-    error: An unexpected error occurred while deleting app usage
+    confirm_title: Διαγραφή Χρήσης Εφαρμογής
+    error: Εμφανίστηκε απροσδόκητο σφάλμα κατά τη διαγραφή της χρήσης εφαρμογής
   details:
     color:
-      hint: Click to change color
-      label: Color
+      hint: Κάντε κλικ για να αλλάξετε χρώμα
+      label: Χρώμα
     device:
-      label: Device
-      unknown: Unknown Device
+      label: Συσκευή
+      unknown: Άγνωστη Συσκευή
     help:
       content: |
-        See exactly how much time you spend on apps and stay in control by organizing them with tags.
+        Δείτε ακριβώς πόσο χρόνο ξοδεύετε σε εφαρμογές και διατηρήστε τον έλεγχο οργανώνοντάς τις με ετικέτες.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Γιατί Είναι Σημαντικό;
 
-        Time management is the key to your productivity. Tracking your app usage and tagging them with the right categories improves your focus and helps prevent unnecessary time loss.
+        Η διαχείριση του χρόνου είναι το κλειδί για την παραγωγικότητά σας. Η παρακολούθηση της χρήσης των εφαρμογών σας και η ετικετοποίησή τους με τις σωστές κατηγορίες βελτιώνει την εστίασή σας και βοηθά στην πρόληψη περιττής απώλειας χρόνου.
 
-        ## ⏱️ Time Tracking
+        ## ⏱️ Παρακολούθηση Χρόνου
 
-        Track your daily usage habits to accurately analyze your time. With in-app detailed usage durations and active window tracking, easily see how much focus you give to each app. This data guides you on where improvements are needed.
+        Παρακολουθήστε τις καθημερινές σας συνήθειες χρήσης για να αναλύσετε με ακρίβεια τον χρόνο σας. Με λεπτομερείς διαρκείες χρήσης εντός της εφαρμογής και παρακολούθηση ενεργών παραθύρων, δείτε εύκολα πόση προσοχή δίνετε σε κάθε εφαρμογή. Αυτά τα δεδομένα σας καθοδηγούν σχετικά με το πού χρειάζονται βελτιώσεις.
 
-        - ⏳ Review daily usage durations  
-        - 🔍 Track active windows  
-        - 📊 Understand your time distribution with detailed reports
+        - ⏳ Εξέταση ημερήσιων διαρκειών χρήσης  
+        - 🔍 Παρακολούθηση ενεργών παραθύρων  
+        - 📊 Κατανόηση της κατανομής του χρόνου σας με λεπτομερή αναφορές
 
-        ## 🏷️ Tag Management
+        ## 🏷️ Διαχείριση Ετικετών
 
-        Categorizing and organizing your apps boosts productivity. With the tagging system, you can group your apps and speed up your workflow using automation rules. This helps you maintain focus and use your time more efficiently.
+        Η κατηγοριοποίηση και οργάνωση των εφαρμογών σας ενισχύει την παραγωγικότητα. Με το σύστημα ετικετοποίησης, μπορείτε να ομαδοποιείτε τις εφαρμογές σας και να επιταχύνετε τη ροή εργασιών σας χρησιμοποιώντας κανόνες αυτοματισμού. Αυτό σας βοηθά να διατηρείτε την εστίαση και να χρησιμοποιείτε τον χρόνο σας πιο αποδοτικά.
 
-        - 🏷️ Tag apps with meaningful categories  
-        - ⚙️ Create automatic tagging rules  
-        - 🔄 Save time by reducing manual tasks
+        - 🏷️ Ετικετοποιήστε εφαρμογές με σημαντικές κατηγορίες  
+        - ⚙️ Δημιουργήστε κανόνες αυτόματης ετικετοποίησης  
+        - 🔄 Εξοικονομήστε χρόνο μειώνοντας χειροκίνητες εργασίες
 
-        ## 📈 Analysis & Productivity Tracking
+        ## 📈 Ανάλυση & Παρακολούθηση Παραγωγικότητας
 
-        Visualize your own usage patterns to discover your strengths and weaknesses. Tracking your productive time is critical for enhancing focus. With in-app comparison and reporting tools, you can clearly see your progress.
+        Οπτικοποιήστε τα δικά σας μοτίβα χρήσης για να ανακαλύψετε τα δυνατά και αδύνατα σημεία σας. Η παρακολούθηση του παραγωγικού σας χρόνου είναι κρίσιμη για την ενίσχυση της εστίασης. Με εργαλεία σύγκρισης και αναφοράς εντός της εφαρμογής, μπορείτε να δείτε καθαρά την πρόοδό σας.
 
-        - 📊 Visualize your usage patterns  
-        - 🤝 Compare with similar apps  
-        - 🚀 Track productive vs. unproductive time
-      title: Time & Productivity Tracking Guide
+        - 📊 Οπτικοποιήστε τα μοτίβα χρήσης σας  
+        - 🤝 Συγκρίνετε με παρόμοιες εφαρμογές  
+        - 🚀 Παρακολουθήστε παραγωγικό vs μη παραγωγικό χρόνο
+      title: Οδηγός Παρακολούθησης Χρόνου & Παραγωγικότητας
     tags:
-      hint: Select tags
-      label: Tags
+      hint: Επιλογή ετικετών
+      label: Ετικέτες
   device_filter:
-    clear_all: Clear All
+    clear_all: Καθαρισμός Όλων
     search:
-      label: Search devices
+      label: Αναζήτηση συσκευών
   errors:
-    add_tag: An unexpected error occurred while adding tag
-    app_usage_ignore_rule_not_found: Ignore rule not found
-    app_usage_not_found: App usage not found
-    app_usage_tag_not_found: App usage tag not found
-    delete: An unexpected error occurred while deleting app usage
-    app_usage_tag_rule_not_found: Tag rule not found
-    get_tags: Error occurred while fetching app usage tags
-    get_usage: An unexpected error occurred while fetching app usage
-    remove_tag: An unexpected error occurred while removing tag
-    save_rule: An unexpected error occurred while saving ignore rules
-    save_usage: An unexpected error occurred while saving app usage
-    statistics: An unexpected error occurred while fetching statistics
-    tag_already_exists: This tag is already added
+    add_tag: Εμφανίστηκε απροσδόκητο σφάλμα κατά την προσθήκη ετικέτας
+    app_usage_ignore_rule_not_found: Δεν βρέθηκε κανόνας αγνόησης
+    app_usage_not_found: Δεν βρέθηκε χρήση εφαρμογής
+    app_usage_tag_not_found: Δεν βρέθηκε ετικέτα χρήσης εφαρμογής
+    delete: Εμφανίστηκε απροσδόκητο σφάλμα κατά τη διαγραφή χρήσης εφαρμογής
+    app_usage_tag_rule_not_found: Δεν βρέθηκε κανόνας ετικέτας
+    get_tags: Σφάλμα κατά την ανάκτηση ετικετών χρήσης εφαρμογής
+    get_usage: Εμφανίστηκε απροσδόκητο σφάλμα κατά την ανάκτηση χρήσης εφαρμογής
+    remove_tag: Εμφανίστηκε απροσδόκητο σφάλμα κατά την αφαίρεση ετικέτας
+    save_rule: Εμφανίστηκε απροσδόκητο σφάλμα κατά την αποθήκευση κανόνων αγνόησης
+    save_usage: Εμφανίστηκε απροσδόκητο σφάλμα κατά την αποθήκευση χρήσης εφαρμογής
+    statistics: Εμφανίστηκε απροσδόκητο σφάλμα κατά την ανάκτηση στατιστικών
+    tag_already_exists: Αυτή η ετικέτα έχει ήδη προστεθεί
   form:
     description:
-      hint: Enter a description for this rule
-      label: Description (Optional)
+      hint: Εισαγάγετε περιγραφή για αυτόν τον κανόνα
+      label: Περιγραφή (Προαιρετική)
     pattern:
-      help_tooltip: Show regex help
-      hint: Enter regex pattern
-      label: Pattern
-      required: Pattern is required
-    save: Save
-    saved: Saved
+      help_tooltip: Εμφάνιση βοήθειας regex
+      hint: Εισαγάγετε πρότυπο regex
+      label: Πρότυπο
+      required: Το πρότυπο είναι απαραίτητο
+    save: Αποθήκευση
+    saved: Αποθηκεύτηκε
   ignore_rules:
-    delete_confirm: 'Are you sure you want to delete the ignore rule "{pattern}"?'
-    delete_title: Delete Rule
-    delete_tooltip: Delete rule
-    no_rules: No ignore rules
-    pattern_label: Pattern
-  no_usage: No app usage yet
+    delete_confirm: 'Είστε βέβαιοι ότι θέλετε να διαγράψετε τον κανόνα αγνόησης "{pattern}";'
+    delete_title: Διαγραφή Κανόνα
+    delete_tooltip: Διαγραφή κανόνα
+    no_rules: Κανένας κανόνας αγνόησης
+    pattern_label: Πρότυπο
+  no_usage: Κανένα χρήση εφαρμογής ακόμα
   pages:
     view:
       buttons:
-        filter_tags: Filter Tags
-        filter_devices: Filter Devices
-        tag_rules: Tag Rules
+        filter_tags: Φίλτρο Ετικετών
+        filter_devices: Φίλτρο Συσκευών
+        tag_rules: Κανόνες Ετικετοποίησης
       help:
         content: |
-          Analyze, organize, and take control of your app usage to work more efficiently. With tagging and analysis tools, see, manage, and improve how you spend your time.
+          Αναλύστε, οργανώστε και ελέγξτε τη χρήση εφαρμογών σας για να εργαστείτε πιο αποδοτικά. Με εργαλεία ετικετοποίησης και ανάλυσης, δείτε, διαχειριστείτε και βελτιώστε πώς ξοδεύετε τον χρόνο σας.
 
-          ## ⏱️ Usage Tracking
+          ## ⏱️ Παρακολούθηση Χρήσης
 
-          Discover your daily usage habits. Track active windows and durations to understand where your time goes. This helps you identify focus areas and reduce time waste.
+          Ανακαλύψτε τις καθημερινές σας συνήθειες χρήσης. Παρακολουθήστε ενεργά παράθυρα και διαρκείες για να κατανοήσετε πού πηγαίνει ο χρόνος σας. Αυτό σας βοηθά να προσδιορίσετε περιοχές εστίασης και να μειώσετε σπατάλη χρόνου.
 
-          - ⌛ Review app usage durations  
-          - 📅 Analyze daily patterns  
-          - 🖥️ Track active window history  
+          - ⌛ Εξέταση διαρκειών χρήσης εφαρμογών  
+          - 📅 Ανάλυση ημερήσιων μοτίβων  
+          - 🖥️ Παρακολούθηση ιστορικού ενεργών παραθύρων  
 
-          ## 🏷️ Tagging and Categorization
+          ## 🏷️ Ετικετοποίηση και Κατηγοριοποίηση
 
-          Create an organized structure by grouping apps. With the tagging system, make your data more meaningful and easily analyze how much time you spend per category.
+          Δημιουργήστε δομημένη δομή ομαδοποιώντας εφαρμογές. Με το σύστημα ετικετοποίησης, κάντε τα δεδομένα σας πιο σημαντικά και αναλύστε εύκολα πόσο χρόνο ξοδεύετε ανά κατηγορία.
 
-          - 🏷️ Assign meaningful tags to apps  
-          - ⚙️ Define automatic tagging rules  
-          - 📚 View usage time by category  
+          - 🏷️ Αντιστοίχιση σημαντικών ετικετών σε εφαρμογές  
+          - ⚙️ Ορισμός κανόνων αυτόματης ετικετοποίησης  
+          - 📚 Προβολή χρόνου χρήσης ανά κατηγορία  
 
-          ## 📊 Usage Analysis
+          ## 📊 Ανάλυση Χρήσης
 
-          Analyze how efficiently you use your time. Through app comparisons and usage patterns, see which tools are actually beneficial for you.
+          Αναλύστε πόσο αποδοτικά χρησιμοποιείτε τον χρόνο σας. Μέσω συγκρίσεων εφαρμογών και μοτίβων χρήσης, δείτε ποιες εργαλεία είναι πραγματικά ωφέλιμες για εσάς.
 
-          - 📈 Analyze your own usage patterns  
-          - 🔄 Compare different apps  
-          - 🚀 Track your productive and unproductive time  
+          - 📊 Αναλύστε τα μοτίβα χρήσης σας  
+          - 🔄 Συγκρίνετε διαφορετικές εφαρμογές  
+          - 🚀 Παρακολουθήστε παραγωγικό vs μη παραγωγικό χρόνο  
 
-          ## ⚙️ Management Tools
+          ## ⚙️ Εργαλεία Διαχείρισης
 
-          Use rules and filtering options to better control app behaviors. Especially with automation, save valuable time.
+          Χρησιμοποιήστε κανόνες και επιλογές φιλτραρίσματος για καλύτερο έλεγχο συμπεριφοράς εφαρμογών. Ειδικά με αυτοματισμό, εξοικονομήστε πολύτιμο χρόνο.
 
-          - 🛠️ Define new rules or edit existing ones  
-          - 🗑️ Remove unnecessary rules  
-          - 🔍 Filter by tag and date range
-        title: App Usage & Time Management Guide
+          - 🛠️ Ορίστε νέους κανόνες ή επεξεργαστείτε υπάρχοντες  
+          - 🗑️ Αφαιρέστε μη απαραίτητους κανόνες  
+          - 🔍 Φιλτράρισμα ανά ετικέτα και εύρος ημερομηνιών
+        title: Οδηγός Χρήσης Εφαρμογών & Διαχείρισης Χρόνου
 
-      title: App Usage
+      title: Χρήση Εφαρμογών
   rules:
-    add_new_rule: Add New Rule
-    delete_confirm_message: Are you sure you want to delete this rule?
-    delete_confirm_title: Delete Rule
+    add_new_rule: Προσθήκη Νέου Κανόνα
+    delete_confirm_message: Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτόν τον κανόνα;
+    delete_confirm_title: Διαγραφή Κανόνα
     errors:
-      delete_rule: An unexpected error occurred while deleting rule
-      get_rules: An unexpected error occurred while fetching rules
-    existing_rules: Existing Rules
+      delete_rule: Εμφανίστηκε απροσδόκητο σφάλμα κατά τη διαγραφή κανόνα
+      get_rules: Εμφανίστηκε απροσδόκητο σφάλμα κατά την ανάκτηση κανόνων
+    existing_rules: Υπάρχοντες Κανόνες
     help:
       content: |
-        Use rules to manage app data in an organized, consistent, and efficient way. Customize app tracking with automatic tagging and exclusion options to strengthen your time management.
+        Χρησιμοποιήστε κανόνες για να διαχειριστείτε δεδομένα εφαρμογών με οργανωμένο, συνεπή και αποδοτικό τρόπο. Προσαρμόστε την παρακολούθηση εφαρμογών με αυτόματη ετικετοποίηση και επιλογές εξαίρεσης για να ενισχύσετε τη διαχείριση χρόνου σας.
 
-        ## 🏷️ Automatic Tagging Rules
+        ## 🏷️ Κανόνες Αυτόματης Ετικετοποίησης
 
-        Create rules for your apps so the system can assign the correct tags on your behalf. This eliminates the need for manual tagging.
+        Δημιουργήστε κανόνες για τις εφαρμογές σας ώστε το σύστημα να μπορεί να σας εκπροσωπεί και να σας εκχωρεί τις σωστές ετικέτες. Αυτό εξαλείφει την ανάγκη για χειροκίνητη ετικετοποίηση.
 
-        - 🧠 Automatically tag apps based on their names  
-        - 🗂️ Match multiple tags with a single rule  
-        - ⏱️ Automatically track time spent on tagged apps  
+        - 🧠 Ετικετοποιήστε αυτόματα εφαρμογές βάσει ονομάτων  
+        - 🗂️ Αντιστοίχιση πολλαπλών ετικετών με έναν κανόνα  
+        - ⏱️ Αυτόματη παρακολούθηση χρόνου σε ετικετοποιημένες εφαρμογές  
 
-        ## ⚙️ Rule Management
+        ## ⚙️ Διαχείριση Κανόνων
 
-        Use the flexible rule management screen to build your own system. Delete unnecessary rules, add new ones, and update existing ones.
+        Χρησιμοποιήστε την ευέλικτη οθόνη διαχείρισης κανόνων για να χτίσετε το δικό σας σύστημα. Διαγράψτε μη απαραίτητους κανόνες, προσθέστε νέους και ενημερώστε υπάρχοντες.
 
-        - ➕ Define new rules  
-        - ✏️ Edit existing rules  
-        - 🗑️ Remove rules you no longer use  
+        - ➕ Ορίστε νέους κανόνες  
+        - ✏️ Επεξεργαστείτε υπάρχοντες κανόνες  
+        - 🗑️ Αφαιρέστε κανόνες που δεν χρησιμοποιείτε πλέον  
 
-        ## 🚫 Ignore Rules
+        ## 🚫 Κανόνες Αγνόησης
 
-        Exclude system or background apps that might distort your productivity analysis. With these rules, you can focus only on what's truly important.
+        Εξαιρέστε εφαρμογές συστήματος ή παρασκηνίου που μπορεί να διαστρεβλώσουν την ανάλυση παραγωγικότητάς σας. Με αυτούς τους κανόνες, μπορείτε να εστιάσετε μόνο σε ό,τι είναι πραγματικά σημαντικό.
 
-        - 🧹 Exclude specific apps from tracking  
-        - 🖥️ Omit system processes and helper tools  
-        - 🔕 Filter out background-running apps  
+        - 🧹 Εξαίρεση συγκεκριμένων εφαρμογών από την παρακολούθηση  
+        - 🖥️ Παράλειψη διεργασιών συστήματος και βοηθητικών εργαλείων  
+        - 🔕 Φιλτράρισμα εφαρμογών που εκτελούνται στο παρασκήνιο  
 
-        ## 🧩 Advanced Matching Options
+        ## 🧩 Προχωρημένες Επιλογές Αντιστοίχισης
 
-        Enhance your rules with advanced pattern-matching options.
+        Ενισχύστε τους κανόνες σας με προχωρημένες επιλογές αντιστοίχισης προτύπων.
 
-        - ✳️ Create flexible rules using wildcards  
-        - 🧾 Match exact app names  
-        - 🔠 Choose case sensitivity settings
-      title: Tagging & Exclusion Rules Guide
-    ignore_rules: Ignore Rules
-    no_rules: No rules
-    tag_rules: Tag Rules
-    title: App Usage Rules
+        - ✳️ Δημιουργήστε ευέλικτους κανόνες χρησιμοποιώντας γενικούς όρους  
+        - 🧾 Αντιστοίχιση ακριβών ονομάτων εφαρμογών  
+        - 🔠 Επιλογή ρυθμίσεων ευαισθησίας πεζών/κεφαλαίων
+      title: Οδηγός Κανόνων Ετικετοποίησης & Εξαίρεσης
+    ignore_rules: Κανόνες Αγνόησης
+    no_rules: Κανένας κανόνας
+    tag_rules: Κανόνες Ετικετοποίησης
+    title: Κανόνες Χρήσης Εφαρμογών
   tooltips:
-    edit_name: Edit Name
+    edit_name: Επεξεργασία Ονόματος
   units:
-    minutes: min
+    minutes: λεπτά

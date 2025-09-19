@@ -1,111 +1,111 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Avbryt
 
 settings:
   about:
-    title: About
+    title: Om
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Export misslyckades
+    import_failed: Import misslyckades
+    setting_not_found: Inställning inte hittad
+    version_mismatch: Version inte hittad
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
+    csv_description: Du kan använda detta för att visa i Excel och liknande applikationer.
+    error: Export misslyckades
+    in_progress: Exporterar data, var god vänta...
+    json_description: Exportera data i läsbar JSON-format för utveckling och felsökning.
+    select_directory: Välj exportkatalog
+    select_path: Välj spara plats
+    select_type: Välj exportformat
+    success: "Export lyckades. Filplats:"
     title: Export
-    canceled: Export canceled by user
+    canceled: Export avbruten av användare
   export_data:
-    title: Export Data
+    title: Exportera data
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Import misslyckades
+    error.entity: Fel i typ
+    in_progress: Importerar data, var god vänta...
+    migration_failed: Import misslyckades. Se till att du har installerat den senaste versionen av appen.
+    select_file: Välj fil
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
+      merge: Slå samman med befintliga data
+      replace: Radera befintliga data och lägg till nya
+      title: Importstrategi
+    success: Import lyckades
     title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+    unsupported_version: Version ej stödd
+    version_mismatch: Version inte hittad
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
+    description: Exportera dina data i olika format eller importera data från backup-filer
+    select_action: Välj import/export-åtgärd
     title: Import/Export
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Välj ditt språk
+    title: Språk
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Misslyckades med att inaktivera notiser
+    enable_error: Misslyckades med att aktivera notiser
+    title: Notiser
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Denna app behöver behörighet för att komma åt app-användningsstatistik för att spåra dina app-användningsmönster korrekt.
+      instructions: "Instruktioner:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Tryck på "Öppna Inställning"-knappen
+        step2: På skärmen för åtkomst till användning som öppnas, hitta "{appName}" i listan
+        step3: Tryck på "{appName}"
+        step4: Aktivera "Tillåt åtkomst till användning" eller växla strömbrytaren till PÅ
+      title: App-användningsbehörighet
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: För pålitliga notiser måste denna app exkluderas från batterioptimering. Utan detta kan påminnelser försenas eller inte levereras alls.
+      importance: Platsen för denna inställning kan variera beroende på tillverkaren av din enhet.
+      instructions: "Instruktioner:"
+      not_disabled: Batterioptimering är fortfarande aktiverat. Ge behörighet så att den relevanta funktionen fungerar korrekt.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Tryck på "Öppna Inställning"-knappen
+        step2: På inställningsskärmen som öppnas, hitta "{appName}"
+        step3: Tryck på "{appName}"
+        step4: Se till att "Tillåt bakgrundsanvändning" är aktiverat på sidan som öppnas
+        step5: Tryck på "Tillåt bakgrundsanvändning"
+        step6: Välj "Obegränsad"
+      title: Batterioptimering
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ kräver behörighet för att schemalägga exakta alarm för att påminnelser ska fungera korrekt.
+      instructions: "Instruktioner:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Gå till Alarm & påminnelser och aktivera behörighet
+          step3: Bekräfta exakt alarmbehörighet
+        step1: Tryck på "Öppna Inställning"-knappen
+        step2: 'På den öppnade {appName}-appens Alarm & påminnelser-sida, aktivera "Tillåt att ställa in alarm och påminnelser"'
+      title: Exakt alarmbehörighet
+    fix_it: Åtgärda det
+    granted: Behörighet beviljad
+    instructions: Instruktioner
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Notisbehörighet krävs för att ta emot påminnelser. Utan denna behörighet får du inga notiser.
+      instructions: "Instruktioner:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Tryck på "Öppna Inställning"-knappen
+          step2: Tillåt notiser när du uppmanas
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Tryck på "Öppna Inställning"-knappen
+          step2: Tillåt notiser när du uppmanas
+      title: Notisbehörighet
+    open_settings: Öppna inställning
+    open_terminal: Öppna terminal
     firewall:
       title: Brandväggsbehörighet
       description: Tillåt WHPH att kommunicera via {platform}s brandvägg på port 44040 för enhetssynkronisering.
       dialog_description: WHPH behöver brandväggsbehörighet för att tillåta andra enheter att ansluta för synkronisering. Följ kommandona nedan för att konfigurera din {platform} brandvägg. Du kan också hitta dessa steg i hjälpmenyn.
       dialog_info_text: "Obs: Du kan också hitta dessa steg i hjälpmenyn."
       linux_manual_confirmation_button: "Jag har konfigurerat"
-      save_confirmation_error: Det gick inte att spara brandväggsbekräftelseinställningen
-      rule_added_success: Brandväggsregel har lagts till
-      rule_add_error: Det gick inte att lägga till brandväggsregel. Försök med manuella steg.
+      save_confirmation_error: Det gick inte att spara brandväggsbehörighet
+      rule_added_success: Brandväggsregel tillagd framgångsrikt
+      rule_add_error: Det gick inte att lägga till brandväggsregel. Prova manuella steg.
       add_rule_button: "Lägg till brandväggsregel"
       windows_auto_description: "Klicka på 'Lägg till brandväggsregel' för att automatiskt lägga till brandväggsregeln med UAC-behörighetsbegäran. Om du föredrar att lägga till manuellt, följ stegen nedan:"
       instructions:
@@ -113,7 +113,7 @@ settings:
           step1: "Öppna en terminal"
           step2: "Kontrollera brandväggsstatus:"
           step3: "Lägg till brandväggsregel (om UFW är aktiv):"
-          step4: "Verifiera att regeln har lagts till:"
+          step4: "Verifiera att regeln lades till:"
         windows:
           step1: "Öppna Windows Defender Brandvägg från Kontrollpanelen"
           step2: "Klicka på Avancerade inställningar till vänster"
@@ -130,86 +130,85 @@ settings:
               cmd_step1: "Öppna Kommandotolk som administratör"
               cmd_step2: "Lägg till brandväggsregel:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: För att appen ska starta automatiskt med din enhet krävs auto-start-behörighet. Detta säkerställer att påminnelser och notiser fungerar korrekt även efter enhetsåterstarter.
+      importance: Platsen för auto-start-inställningen varierar eller kan saknas beroende på tillverkaren av din enhet.
+      instructions: "Instruktioner:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Tryck på "Öppna Inställning"-knappen
+        step2: 'På inställningsskärmen som öppnas, hitta "{appName}" app'
+        step3: 'Aktivera "Auto-start", "Autorun", "Start vid uppstart" eller liknande behörighet'
+      title: Auto-start-behörighet
+    title: Behörigheter
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Misslyckades med att inaktivera startinställning
+    enable_error: Misslyckades med att aktivera startinställning
+    subtitle: Tryck för att öppna systeminställningar och aktivera auto-start-behörighet för appen
+    title: Start vid uppstart
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Synkronisera enheter
+  title: Inställningar
   backup:
-    title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    title: Säkerhetskopia
+    description: Skapa och återställ komprimerade säkerhetskopior av dina appdata med det säkra .whph-formatet
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Skapa säkerhetskopia
+      description: Exportera alla dina data till en komprimerad .whph-säkerhetskopi
+      in_progress: Skapar säkerhetskopia, var god vänta...
+      success: "Säkerhetskopia skapad framgångsrikt. Filplats:"
+      error: Säkerhetskopia misslyckades
+      select_path: Välj plats för att spara säkerhetskopian
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Återställ säkerhetskopia
+      description: Importera data från en tidigare skapad .whph-säkerhetskopi
+      in_progress: Återställer säkerhetskopia, var god vänta...
+      success: Säkerhetskopia återställd framgångsrikt
+      error: Återställning av säkerhetskopia misslyckades
+      select_file: Välj säkerhetskopi
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Återställningsstrategi
+        replace: Radera befintliga data och återställ
+        merge: Slå samman med befintliga data
+    canceled: Säkerhetskopia-operation avbruten av användare
+    export_failed: Säkerhetskopia-export misslyckades
+    import_failed: Säkerhetskopia-import misslyckades
+    invalid_format: Ogiltigt säkerhetskopia-filformat
+    invalid_format_error: Ogiltigt säkerhetskopia-filformat
+    corrupted: Säkerhetskopia-filen är korrupt eller skadad
+    export_description: Skapa en komprimerad säkerhetskopia-fil som innehåller alla dina data
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Tema
+    description: Anpassa WHPH:s utseende
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Temaninställning
+      light: Ljus
+      dark: Mörk
       auto:
         title: Auto
-        description: Follow system theme settings
+        description: Följ systemets tema-inställningar
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Dynamisk accentfärg
+      description: Om ditt system stödjer det anpassas primärfärgen baserat på systemets dynamiska färgschema
+      feature: Dynamisk
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Anpassad accentfärg
+      description: Välj en anpassad accentfärg för att personifiera din apps utseende
+      feature: Anpassad
+    error: Misslyckades med att ladda temainställningar
   ui_density:
     title: Täthet
-    description: Justera storleken på text och gränssnittselement för att förbättra läsbarheten på skärmar med hög DPI
+    description: Justera storleken på text och UI-element för att förbättra läsbarheten på skärmar med hög DPI
     compact: Kompakt
     normal: Normal
     large: Stor
     larger: Större
-    error: Det gick inte att läsa in inställningarna för gränssnittstäthet
+    error: Det gick inte att läsa in UI-täthetsinställningar
   advanced:
     title: Avancerat
     description: Avancerade inställningar och utvecklarverktyg
   debug_logs:
     title: Felsökningsloggar
     description: Aktivera detaljerad loggning till fil för felsökning och support
-    load_settings_error: Fel vid laddning av felsökningslogg-inställningar
+    load_settings_error: Fel vid inläsning av felsökningslogg-inställningar
     update_settings_error: Fel vid uppdatering av felsökningslogg-inställningar
     view:
       title: Visa felsökningsloggar
@@ -222,13 +221,13 @@ settings:
       copy: Kopiera till urklipp
       save_as: Spara som fil
       copied: Felsökningsloggar kopierade till urklipp
-      load_error: Fel vid laddning av felsökningsloggar
+      load_error: Fel vid inläsning av felsökningsloggar
       not_enabled: Felsökningsloggning är inte aktiverat. Aktivera det i Avancerade inställningar för att börja samla loggar.
-      no_file: Ingen felsökningsloggfil hittades. Loggar kommer att skapas efter aktivering av felsökningsloggning och appen genererar loggposter.
-      empty: Felsökningsloggfilen är tom. Inga loggposter har registrerats än.
+      no_file: Ingen felsökningsloggfil hittades. Loggar kommer att skapas efter aktivering av felsökningsloggning och när appen genererar loggposter.
+      empty: Felsökningsloggfilen är tom. Inga loggposter har registrerats ännu.
     export:
       dialog_title: Exportera felsökningsloggar
       error: Fel vid export av loggar
       success: Loggfil exporterad framgångsrikt
-      no_logs_available: Inga loggar tillgängliga för export
-      file_not_exist: Loggfilen finns inte
+      no_logs_available: Inga loggar tillgängliga för export. Generera några loggar först.
+      file_not_exist: Loggfilen finns inte. Aktivera felsökningsloggning och generera några loggar först.

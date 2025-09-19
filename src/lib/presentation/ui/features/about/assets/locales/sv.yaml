@@ -1,49 +1,48 @@
 about:
-  about_title: "About"
-  version: Version {version}
+  about_title: "Om"
+  version: "Version {version}"
   description: >
-    {appName} is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    {appName} är en omfattande app utformad för att förbättra din personliga produktivitet; den låter dig effektivt hantera dina uppgifter, utveckla nya vanor och få ut det mesta av din tid. Dessutom stärker den din fokus genom att spåra hur mycket tid du spenderar på olika appar. Genom att analysera din framsteg kan du fira dina prestationer och få motivationen som behövs för ett mer produktivt liv.
   links:
-    website: Website
-    source_code: Source Code
-    feedback: Feedback
-    contact: Contact
-    check_update: Check for Updates
+    website: "Webbplats"
+    source_code: "Källkod"
+    feedback: "Feedback"
+    contact: "Kontakt"
+    check_update: "Kontrollera uppdateringar"
   support_me:
-    title: Support {appName}
+    title: "Stöd {appName}"
     description: >
-      {appName} is a completely free and open-source software. Everyone is free to use, explore, improve, and share it. 
+      {appName} är helt gratis och öppen källkod-programvara. Alla är fria att använda, utforska, förbättra och dela den. 
 
-
-      While you continue to enjoy using it, I keep working to make it even better. If you'd like to support the continuation of this effort, you can buy me a coffee; your support will directly contribute to the development and sustainability of {appName}. 😊
-    button_text: Buy me a coffee
+      Medan du fortsätter att njuta av att använda den, fortsätter jag att arbeta för att göra den ännu bättre. Om du vill stödja fortsättningen av detta arbete kan du köpa en kaffe till mig; ditt stöd kommer direkt att bidra till utvecklingen och hållbarheten av {appName}. 😊
+    button_text: "Köp mig en kaffe"
   onboarding:
     step1:
-      title: "Welcome to {appName}"
-      description: "Your personal companion for building better habits, managing tasks, and tracking time effectively. Let's explore the key features together!"
+      title: "Välkommen till {appName}"
+      description: "Din personliga följeslagare för att bygga bättre vanor, hantera uppgifter och spåra tid effektivt. Låt oss utforska de viktigaste funktionerna tillsammans!"
     step2:
-      title: "Task Management"
-      description: "Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks."
+      title: "Uppgifts hantering"
+      description: "Skapa och organisera uppgifter med prioriteringar, deadlines och påminnelser. Använd Pomodoro-timern för att hålla dig fokuserad och spåra ditt framsteg på viktiga uppgifter."
     step3:
-      title: "Habit Building"
-      description: "Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics."
+      title: "Vanbildning"
+      description: "Bygg varaktiga vanor genom att spåra dagliga aktiviteter. Ställ in påminnelser, övervaka dina serier och visualisera ditt framsteg med detaljerad statistik."
     step4:
-      title: "Note Taking"
-      description: "Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access."
+      title: "Antecknings tagning"
+      description: "Håll viktig information organiserad med ett kraftfullt anteckningssystem. Märk dina anteckningar för enkel kategorisering och snabb åtkomst."
     step5:
-      title: "App Usage & Time Insights"
-      description: "Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity."
+      title: "App-användning & tidsinsikter"
+      description: "Övervaka app-användningsmönster och analysera tid spenderad på olika aktiviteter. Få insikter i dina digitala vanor och optimera din produktivitet."
     step6:
-      title: "Smart Tagging System"
-      description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
+      title: "Smart märkningssystem"
+      description: "Använd taggar för att organisera och gruppera dina uppgifter, vanor och appar. Spåra tid spenderad på olika aktiviteter via taggar för att förstå var din tid går och optimera ditt arbetsflöde."
     step7:
-      title: "App Permissions"
-      description: "{appName} needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."
-      review_permissions: "Review Permissions"
+      title: "App-behörigheter"
+      description: "{appName} behöver vissa behörigheter för att fungera korrekt. Du kan granska behörigheterna du vill bevilja för systemfunktioner som notiser och app-spårning."
+      review_permissions: "Granska behörigheter"
     step8:
-      title: "Ready to Transform Your Life?"
-      description: "You have all the tools you need to build better habits, stay focused, and achieve your goals. Start your journey to a more productive and fulfilling life today!"
+      title: "Redo att transformera ditt liv?"
+      description: "Du har alla verktyg du behöver för att bygga bättre vanor, hålla dig fokuserad och uppnå dina mål. Börja din resa mot ett mer produktivt och tillfredsställande liv idag!"
     buttons:
-      next: "Next"
-      back: "Back"
-      start: "Get Started"
+      next: "Nästa"
+      back: "Tillbaka"
+      start: "Kom igång"

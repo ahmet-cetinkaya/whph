@@ -1,214 +1,187 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Arhivare
+    archive_confirm: Ești sigur că vrei să arhivezi acest obicei?
+    archive_tooltip: Arhivează acest obicei
+    archived_date: Data Arhivării
+    hide_archived: Ascunde arhivate
+    show_archived: Arată arhivate
+    unarchive: Dezarhivează
+    unarchive_confirm: Ești sigur că vrei să dezarhivezi acest obicei?
+    unarchive_tooltip: Dezarhivează acest obicei
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Vin
+      mon: Lun
+      sat: Sâm
+      sun: Dum
+      thu: Joi
+      tue: Mar
+      wed: Mie
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Ești sigur că vrei să ștergi acest obicei?
+    confirm_title: Șterge Obicei
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
+    archived_status: Arhivat
+    create_record_tooltip: Marchează ca finalizat astăzi
+    daily_target: Frecvență Zilnică
+    daily_target_hint: ori pe zi
+    description: Descriere
+    elapsed_time: Timp Scurs
+    estimated_time: Timp Estimat
+    estimated_time_not_set: Nesetat
     help:
       content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+        Construiește rutine zilnice sustenabile prin urmărirea sistematică a obiceiurilor care transformă intențiile tale în acțiuni consistente și progres măsurabil către obiectivele tale.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ De Ce Este Important?
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+        Formarea obiceiurilor este piatra de temelie a dezvoltării personale și a realizărilor sustenabile. Acțiunile zilnice consistente se acumulează în timp pentru a crea rezultate remarcabile, în timp ce urmărirea sistematică asigură că menții momentumul și faci îmbunătățiri continue în rutinele tale.
 
-        ## ⚙️ Strategic Habit Design
+        ## ⚙️ Design Strategic al Obiceiurilor
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+        Creează obiceiuri care se integrează perfect în viața ta și susțin obiectivele tale pe termen lung. Obiceiurile bine proiectate devin comportamente automate care necesită voință minimă pentru a fi menținute.
 
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
+        - 📝 Proiectează obiceiuri clare, specifice cu descrieri acționabile
+        - 📅 Stabilește programări consistente care se aliniază cu ritmurile tale naturale
+        - 🏷️ Organizează obiceiuri similare în grupuri coerente pentru urmărire sistematică
+        - 🎯 Conectează fiecare obicei la rezultate semnificative și valori personale
 
-        ## ⏱️ Performance Monitoring
+        ## ⏱️ Monitorizare Performanță
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+        Urmărește execuția obiceiurilor tale pentru a înțelege modele, a măsura progresul și a optimiza abordarea pentru eficiență maximă și creștere sustenabilă.
 
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+        - ⏳ Înregistrează timpii de finalizare pentru a înțelege durata și eficiența obiceiului
+        - 📊 Analizează investițiile de timp în categorii de obiceiuri pentru dezvoltare echilibrată
+        - 📈 Monitorizează tendințe de performanță pentru a identifica oportunități de îmbunătățire și timing optim
+        - 🔄 Folosește insights din date pentru a rafina dificultatea obiceiului și planificarea pentru succes sustenabil
 
-        ## 📅 Consistency & Momentum
+        ## 📅 Consistență & Momentum
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+        Construiește și menține consistența necesară pentru schimbare comportamentală durabilă prin urmărire sistematică și revizuire strategică a modelelor tale de progres.
 
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+        - 📚 Revizuiește istoricul finalizărilor pentru a evalua progresul și a identifica modele de succes
+        - 🔗 Urmărește serii zilnice pentru a construi și menține momentum pentru succes pe termen lung
+        - 📌 Monitorizează metrici de consistență pentru a îmbunătăți motivația și angajamentul
+        - 🎯 Sărbătorește milepietre și realizări pentru a întări schimbarea comportamentală pozitivă
 
-        ## 🚀 Optimization Strategies
+        ## 🚀 Strategii de Optimizare
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+        Aplică tehnici dovedite de optimizare a obiceiurilor care accelerează progresul și asigură că eforturile tale se traduc în îmbunătățiri semnificative și durabile în viața și productivitatea ta.
 
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
-    records: Records
-    remove_record_tooltip: Remove today's completion
+        - 🐾 **Începe Mic:** Începe cu obiceiuri gestionabile care garantează victorii timpurii
+        - 🏷️ **Grupare Strategică:** Organizează obiceiuri după aria de viață sau oră a zilei
+        - 📊 **Ajustări Bazate pe Date:** Folosește insights din urmărire pentru a optimiza timingul și abordarea
+        - 🌅 **Focus pe Timp Principal:** Planifică obiceiuri importante în perioadele tale de vârf de energie
+      description: Descriere ajutor
+      title: Ghid Formare Obiceiuri & Urmărire Performanță
+    records: Înregistrări
+    remove_record_tooltip: Elimină finalizarea de astăzi
     statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
-      records: Records
-      score_trends: Score Trends
-      to: To
-      top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
-    tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Frecvență zilnică"
-    daily_target_hint: "ori pe zi"
+      archived_note: "Arhivat la:"
+      archived_on: Arhivat la
+      archived_warning: Statisticile sunt afișate până la data arhivării. {startDate} - {archivedDate}
+      completions: finalizări
+      from: De la
+      monthly: Lunar
+      no_streaks_yet: Nicio serie încă. Începe să construiești consistență!
+      overall: General
+      records: Înregistrări
+      score_trends: Tendințe Scor
+      to: Până la
+      top_streaks: Principale Serie
+      yearly: Anual
+    statistics_label: Statistică
+    tags: Etichete
+    tags_hint: Selectează etichete pentru asociere
   errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
+    adding_tag: Eșec la adăugarea etichetei
+    creating_record: Eșec la crearea înregistrării de obicei
+    deleting: A apărut o eroare neașteptată în timpul ștergerii obiceiului
+    deleting_record: Eșec la ștergerea înregistrării de obicei
+    habit_not_found: Obicei negăsit
+    habit_record_not_found: Înregistrare de obicei negăsită
+    habit_tag_not_found: Etichetă de obicei negăsită
+    loading_archive_status: Eșec la încărcarea stării de arhivare
+    loading_details: Eșec la încărcarea detaliilor obiceiului
+    loading_habit: Eșec la încărcarea obiceiului
+    loading_habits: Eșec la încărcarea obiceiurilor
+    loading_records: Eșec la încărcarea înregistrărilor de obicei
+    loading_tags: Eșec la încărcarea etichetelor de obicei
+    removing_tag: Eșec la eliminarea etichetei
+    saving_details: Eșec la salvarea obiceiului
+    saving_habit: Eșec la salvarea obiceiului
+    tag_already_exists: Această etichetă a fost deja adăugată
+    toggling_archive: Eșec la comutarea stării de arhivare
   goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
-    target_frequency: "Frecvența perioadei"
-    times_unit: "ori pe perioadă"
-  help:
-    description: Help description
+    current_goal: Țintă
+    days_unit: zile
+    description: |
+      Vrei să practici obiceiul cu o frecvență specifică în loc de
+      în fiecare zi? Atunci setează o țintă personalizată.
+    enable: Activează Ținte Personalizate
+    goal: Țintă Personalizată
+    goal_format: "{count} ori în {dayCount} zile"
+    period_days: Zile Perioadă
+    settings: Setări Țintă Personalizată
+    target_frequency: Frecvența Perioadei
+    times_unit: ori pe perioadă
   list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
+    all_habits_done: Toate obiceiurile finalizate!
+    no_habits_found: Niciun obicei
+  name_placeholder: Introdu un nume de obicei semnificativ...
+  new_habit: Nou Obicei
   notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Amintește-ți să finalizezi obiceiul tău: {name}"
+    reminder_title: "Amintește Obicei: {name}"
   overview:
-    filter_by_tags_tooltip: Filter by tags
+    title: Obiceiuri
+    filter_by_tags_tooltip: Filtrează după etichete
     help:
+      title: Ghid pentru Gestionarea Obiceiurilor Zilnice și Optimizarea Rutinei
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Stăpânește-ți rutinele zilnice prin urmărirea sistematică a obiceiurilor care construiește consistență, creează momentum pozitiv și impulsionează progres semnificativ către obiectivele tale pe termen lung.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ De Ce Este Important?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        Gestionarea zilnică a obiceiurilor este baza excelenței personale și a creșterii sustenabile. Execuția consistentă a obiceiurilor bine planificate creează beneficii compuse în timp, în timp ce urmărirea sistematică asigură că menții responsabilitatea și faci îmbunătățiri bazate pe date în rutinele tale.
 
-        ## 📅 Daily Execution & Tracking
+        ## 📅 Execuție Zilnică & Urmărire
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Dezvoltă un sistem fiabil pentru execuția și monitorizarea obiceiurilor tale care creează consistență și construiește momentum de neoprit către obiectivele tale.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - ✅ **Finalizare Zilnică:** Marchează obiceiurile ca finalizate pentru a construi lanțuri de consistență
+        - 📆 **Vizualizare Multi-Zile:** Monitorizează modelele în zile și săptămâni pentru insights cuprinzătoare
+        - 🔄 **Construire Serie:** Menține zile consecutive de finalizare pentru a maximiza momentumul motivațional
+        - 📊 **Vizualizare Progres:** Urmărește ratele și modelele de finalizare în timp
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Analiză & Optimizare Timp
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Monitorizează investițiile de timp în obiceiurile tale pentru a optimiza programul zilnic și a asigura dezvoltare echilibrată în toate ariile importante ale vieții.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ **Urmărire Durată:** Înregistrează timpul real petrecut pentru a înțelege cerințele obiceiului
+        - 🏷️ **Analiză Categorie:** Grupează obiceiurile după etichete pentru a vedea alocarea timpului în arii de viață
+        - ⏰ **Optimizare Program:** E
 
-        ## 🗂️ Strategic Organization
-
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
-
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
-
-        ## 💡 Mastery Principles
-
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
-
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
-
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
-  reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
-  statistics:
-    archived_on: Archived on
-    from: From
-    to: To
-  tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    enable: Activează mementouri
+    select_days_warning: Vă rugăm să selectați cel puțin o zi pentru mementouri
+
+  reminder:
+    reminderSettings: Setări Memento
+    reminderTime: Ora mementoului
+    reminderDays: Zilele mementoului
+    noReminder: Niciun memento setat
+    everyDay: În fiecare zi
+
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Scade ținta zilnică"
-    increase_daily_target: "Crește ținta zilnică"
+    edit_name: Editează Numele
+    decrease_estimated_time: Scade timpul estimat
+    increase_estimated_time: Crește timpul estimat
+    decrease_daily_target: Scade ținta zilnică
+    increase_daily_target: Crește ținta zilnică
+    add_habit: Adaugă Obicei
+
+  tags:
+    add_tooltip: Adaugă etichetă
+    select_tooltip: Selectați etichetă

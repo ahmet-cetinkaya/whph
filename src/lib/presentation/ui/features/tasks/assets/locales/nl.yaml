@@ -1,320 +1,344 @@
 tasks:
   add_button:
-    tooltip: Add new task
-  all_tasks_done: All tasks completed!
+    tooltip: Nieuwe taak toevoegen
+  all_tasks_done: Alle taken voltooid!
   card:
     schedule:
-      today: Schedule for today
-      tomorrow: Schedule for tomorrow
+      today: Plannen voor vandaag
+      tomorrow: Plannen voor morgen
     tooltips:
-      schedule: Schedule task
+      schedule: Taak plannen
   complete:
-    error: Unexpected error occurred while saving task completion.
+    error: Onverwachte fout opgetreden bij het opslaan van taakvoltooiing.
   date_selection:
-    deadline_date_title: Select deadline date
-    planned_date_title: Select planned date
+    deadline_date_title: Selecteer deadline datum
+    planned_date_title: Selecteer geplande datum
   delete:
-    error: Unexpected error occurred while deleting task.
-    message: Are you sure you want to delete this task?
-    title: Delete Task
+    error: Onverwachte fout opgetreden bij het verwijderen van taak.
+    message: Weet je zeker dat je deze taak wilt verwijderen?
+    title: Taak Verwijderen
   details:
     deadline_date:
-      label: Deadline Date
+      label: Deadline Datum
     description:
-      hint: Add description...
-      label: Description
+      hint: Beschrijving toevoegen...
+      label: Beschrijving
     elapsed_time:
-      label: Elapsed Time
+      label: Verstreken Tijd
     estimated_time:
-      label: Estimated Time
-    is_completed: Completed
-    planned_date:
-      label: Planned Date
-    priority:
-      label: Priority
-    sub_tasks:
-      label: Sub-tasks
+      label: Geschatte Tijd
+    is_completed: Voltooid
     parent_task:
-      label: Parent Task
-      tooltip: Click to navigate to parent task
+      label: Ouder Taak
+      tooltip: Klik om naar ouder taak te navigeren
+    planned_date:
+      label: Geplande Datum
+    priority:
+      label: Prioriteit
+    sub_tasks:
+      label: Subtaken
     tags:
-      hint: Select tags to associate
+      hint: Selecteer tags om te associëren
       label: Tags
-    tags_hint: Select tags for task
+    tags_hint: Selecteer tags voor taak
     title:
-      label: Title
-    total_elapsed_time: Total Elapsed Time
+      label: Titel
+    total_elapsed_time: Totale Verstreken Tijd
   errors:
-    add_tag: Unexpected error occurred while adding tag
-    adding_tag: Failed to add tag
-    get_tags: Error occurred while fetching tags
-    get_task: Unexpected error occurred while loading task
-    loading_tags: Failed to load task tags
-    loading_task: Failed to load task
-    loading_tasks: Failed to load tasks
-    remove_tag: Unexpected error occurred while removing tag
-    removing_tag: Failed to remove tag
-    same_tag: Cannot add the same tag twice
-    save_task: Unexpected error occurred while saving task
-    saving_task: Failed to save task
-    sort_field_not_supported: Sort field not supported
-    task_not_found: Task not found
-    task_tag_already_deleted: Task tag is already deleted
-    task_tag_already_exists: This task tag already exists
-    task_tag_not_found: Task tag not found
+    add_tag: Onverwachte fout opgetreden bij het toevoegen van tag
+    adding_tag: Mislukt om tag toe te voegen
+    get_tags: Fout opgetreden bij het ophalen van tags
+    get_task: Onverwachte fout opgetreden bij het laden van taak
+    loading_tags: Mislukt om taak tags te laden
+    loading_task: Mislukt om taak te laden
+    loading_tasks: Mislukt om taken te laden
+    remove_tag: Onverwachte fout opgetreden bij het verwijderen van tag
+    removing_tag: Mislukt om tag te verwijderen
+    same_tag: Kan dezelfde tag niet twee keer toevoegen
+    save_task: Onverwachte fout opgetreden bij het opslaan van taak
+    saving_task: Mislukt om taak op te slaan
+    sort_field_not_supported: Sorteerveld niet ondersteund
+    task_not_found: Taak niet gevonden
+    task_tag_already_deleted: Taak tag is al verwijderd
+    task_tag_already_exists: Deze taak tag bestaat al
+    task_tag_not_found: Taak tag niet gevonden
   filters:
-    completion: By Completion Status
-    deadline_date: By Deadline Date
-    planned_date: By Planned Date
+    completion: Op Voltooiingsstatus
+    deadline_date: Op Deadline Datum
+    planned_date: Op Geplande Datum
     search:
-      placeholder: Search tasks
-    tags: By Tags
+      placeholder: Taken zoeken
+    tags: Op Tags
     tooltips:
-      filter_by_tags: Filter by tags
+      filter_by_tags: Filteren op tags
   help:
     details:
       content: |
-        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
+        Beheers je taakmanagement en maximaliseer productiviteit door werk effectief te organiseren, prioriteren en bij te houden.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Waarom Is Het Belangrijk?
 
-        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
+        Effectief taakmanagement is de basis van productiviteit. Goed gestructureerde taken met duidelijke prioriteiten en deadlines helpen je te focussen op wat het belangrijkste is en voorkomen dat belangrijk werk door de vingers glipt.
 
-        ## 📝 Task Organization
+        ## 📝 Taakorganisatie
 
-        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
+        Structureer je taken met uitgebreide details om duidelijkheid en focus te behouden. Gebruik tags, prioriteiten en tijdsschattingen om een systematische aanpak van je werklast te creëren.
 
-        - 🏷️ Categorize tasks with meaningful tags
-        - ⚖️ Set priorities using proven frameworks
-        - ⏱️ Estimate time requirements accurately
-        - 📅 Plan realistic deadlines and schedules
+        - 🏷️ Categoriseer taken met betekenisvolle tags
+        - ⚖️ Stel prioriteiten in met bewezen frameworks
+        - ⏱️ Schat tijdvereisten nauwkeurig in
+        - 📅 Plan realistische deadlines en schema's
 
-        ## ⏰ Time Management
+        ## ⏰ Tijdmanagement
 
-        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
+        Volg je tijdsinvesteringen om je werkpatronen te begrijpen en efficiëntie te verbeteren. Goed tijdmanagement transformeert verspreide inspanningen in gefocuste productiviteit.
 
-        - 📊 Monitor actual vs. estimated time
-        - 🎯 Focus on high-impact activities
-        - 📈 Analyze productivity patterns over time
-        - ⏳ Balance urgent and important tasks
+        - 📊 Monitor werkelijke vs geschatte tijd
+        - 🎯 Focus op activiteiten met hoge impact
+        - 📈 Analyseer productiviteitspatronen in de loop van de tijd
+        - ⏳ Balanseer urgente en belangrijke taken
 
-        ## 📊 Priority Framework (Eisenhower Matrix)
+        ## 📊 Prioriteitsframework (Eisenhower Matrix)
 
-        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
+        Organiseer je taken met deze bewezen prioriteringsmethode om te zorgen dat je altijd aan de juiste dingen werkt op het juiste moment.
 
-        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
-        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
-        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
-        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
-      title: Task Management & Productivity Guide
+        - 🔥 **Dringend & Belangrijk:** Behandel onmiddellijk - crisismanagement en deadlines
+        - 📈 **Belangrijk, Niet Dringend:** Plan strategisch - planning en vaardigheidsontwikkeling  
+        - ⚡ **Dringend, Niet Belangrijk:** Delegeren indien mogelijk - onderbrekingen en sommige vergaderingen
+        - 🗑️ **Noch Dringend noch Belangrijk:** Elimineer - tijdverspillers en activiteiten met lage waarde
+      title: Taakmanagement & Productiviteitsgids
     overview:
       content: |
-        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+        Transformeer je productiviteit met systematisch taakmanagement dat helpt georganiseerd, gefocust en in controle van je werklast te blijven.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Waarom Is Het Belangrijk?
 
-        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+        Effectief taakmanagement is de hoeksteen van persoonlijk en professioneel succes. Door je werk systematisch te organiseren, verminder je stress, houd je deadlines en creëer je ruimte voor betekenisvolle vooruitgang op belangrijke doelen.
 
-        ## 📋 Task Organization
+        ## 📋 Taakorganisatie
 
-        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+        Creëer een gestructureerde aanpak voor het beheren van je verantwoordelijkheden. Goed georganiseerde taken leiden tot duidelijke prioriteiten en efficiënte uitvoering van je dagelijkse werk.
 
-        - ✅ Create and categorize tasks systematically
-        - 🏷️ Group related work with meaningful tags
-        - ⚖️ Set clear priorities and deadlines
-        - 🔍 Use filters and search for quick access
+        - ✅ Creëer en categoriseer taken systematisch
+        - 🏷️ Groepeer gerelateerd werk met betekenisvolle tags
+        - ⚖️ Stel duidelijke prioriteiten en deadlines in
+        - 🔍 Gebruik filters en zoekopdrachten voor snelle toegang
 
-        ## ⏱️ Time Tracking & Focus
+        ## ⏱️ Tijdtracking & Focus
 
-        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+        Monitor je tijdsinvesteringen om productiviteitspatronen te begrijpen en je workflow te optimaliseren. Tijdbesef leidt tot betere planning en verbeterde prestaties.
 
-        - ⏰ Track actual time spent per task
-        - 🎯 Use Marathon Mode for focused work sessions
-        - 📊 Analyze completion patterns and trends
-        - 🔄 Review and adjust time estimates regularly
+        - ⏰ Volg werkelijke tijd per taak
+        - 🎯 Gebruik Marathon Mode voor gefocuste werksessies
+        - 📊 Analyseer voltooiingspatronen en trends
+        - 🔄 Herzie en pas tijdsschattingen regelmatig aan
 
-        ## 📈 Progress Monitoring
+        ## 📈 Voortgangsmonitoring
 
-        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+        Houd je prestaties bij en leer van je werkpatronen. Regelmatige herziening en reflectie drijven continue verbetering in je productiviteitssysteem.
 
-        - 📈 Monitor task completion rates
-        - 📅 Review daily and weekly progress
-        - 🎯 Identify bottlenecks and optimization opportunities
-        - 🏆 Celebrate achievements and milestone completions
-      title: Task Management & Workflow Guide
+        - 📈 Monitor taakvoltooiingspercentages
+        - 📅 Herzie dagelijkse en wekelijkse vooruitgang
+        - 🎯 Identificeer knelpunten en optimalisatiemogelijkheden
+        - 🏆 Vier prestaties en mijlpaalvoltooiingen
+      title: Taakmanagement & Workflow Gids
   marathon:
     details:
-      title: Task Details
+      title: Taakdetails
     help:
       content: |
-        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
+        Maximaliseer je focus en productiviteit met gestructureerde werksessies die je helpen diepe concentratie te behouden terwijl burnout wordt voorkomen.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Waarom Is Het Belangrijk?
 
-        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
+        Gefocuste werksessies zijn essentieel voor diep werk en hoogwaardige output. Door te werken in gestructureerde intervallen met regelmatige pauzes, behoud je piek mentale prestaties terwijl je vermoeidheid vermijdt van langdurige, ongefocuste werkperiodes.
 
-        ## ⏰ Time-Boxed Focus Sessions
+        ## ⏰ Tijdsgebonden Focus Sessies
 
-        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
+        Gebruik bewezen tijdmanagementtechnieken om je werk te structureren voor maximale efficiëntie. Gestructureerde sessies helpen je concentratie te behouden en taken effectiever te voltooien.
 
-        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
-        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
-        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
-        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
+        - 🎯 **Klassieke Focus:** 25 minuten werk / 5 minuten pauze
+        - 📈 **Uitgebreide Focus:** 50 minuten werk / 10 minuten pauze  
+        - 🔄 **Lange Pauze:** 15-30 minuten na 4 sessies
+        - ⚖️ **Aangepaste Timing:** Pas intervallen aan aan je natuurlijke ritme
 
-        ## 🧠 Cognitive Benefits
+        ## 🧠 Cognitieve Voordelen
 
-        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
+        Gestructureerde werksessies benutten de natuurlijke aandachtscycli van je hersenen om prestaties te optimaliseren en mentale vermoeidheid te voorkomen die kwaliteit en creativiteit vermindert.
 
-        - 🎯 Enhanced focus and deep concentration
-        - 🔋 Reduced mental fatigue and burnout
-        - 💪 Sustained motivation through regular accomplishments
-        - ⚡ Improved time awareness and planning accuracy
+        - 🎯 Verbeterde focus en diepe concentratie
+        - 🔋 Verminderde mentale vermoeidheid en burnout
+        - 💪 Volgehouden motivatie door regelmatige prestaties
+        - ⚡ Verbeterde tijdwaarneming en planningsnauwkeurigheid
 
-        ## 📊 Performance Optimization
+        ## 📊 Prestatieoptimalisatie
 
-        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
+        Volg je gefocuste werkpatronen om je piekproductiviteitstijden te begrijpen en je schema te optimaliseren voor maximale effectiviteit.
 
-        - 🏷️ Categorize focus sessions with tags for analysis
-        - 📈 Monitor productivity patterns across different times
-        - 🚫 Eliminate distractions before starting sessions
-        - 🚶 Use breaks for physical movement and mental reset
-      title: Focused Work Sessions & Time Management Guide
-      tooltip: Marathon help tooltip
+        - 🏷️ Categoriseer focus sessies met tags voor analyse
+        - 📈 Monitor productiviteitspatronen over verschillende tijden
+        - 🚫 Elimineer afleidingen voor het starten van sessies
+        - 🚶 Gebruik pauzes voor fysieke beweging en mentale reset
+      title: Gefocuste Werksessies & Tijdmanagement Gids
+      tooltip: Marathon hulp tooltip
     label: Marathon Mode
-    unpin_task_tooltip: Unpin current task
-  new_task: New Task
-  no_tasks: No tasks
+    unpin_task_tooltip: Ontpin huidige taak
+  new_task: Nieuwe Taak
+  no_tasks: Geen taken
   notifications:
-    deadline_message: "Your task deadline is at {time}"
-    deadline_title: "Task Deadline: {title}"
-    planned_message: "Your task is planned for {time}"
-    reminder_title: "Task Reminder: {title}"
+    deadline_message: Je taak deadline is om {time}
+    deadline_title: "Taak Deadline: {title}"
+    planned_message: Je taak is gepland voor {time}
+    reminder_title: "Taak Herinnering: {title}"
   page:
-    completed_tasks_title: Completed tasks
-    title: Tasks
+    completed_tasks_title: Voltooide taken
+    title: Taken
   pomodoro:
     actions:
       stop_timer: Stop Timer
     notifications:
-      break_completed: Break session completed!
-      long_break_completed: Long break completed!
-      time_remaining_prefix: "Time remaining:"
-      timer_completed: Timer completed!
+      break_completed: Pauzesessie voltooid!
+      long_break_completed: Lange pauze voltooid!
+      time_remaining_prefix: "Resterende tijd:"
+      timer_completed: Timer voltooid!
       title: Pomodoro Timer
-      work_completed: Work session completed!
+      work_completed: Werksessie voltooid!
     settings:
-      auto_start_break: Auto-start break after work
-      auto_start_section: Auto-Start Options
-      auto_start_work: Auto-start work after break
-      break_duration: Break Duration
-      long_break_duration: Long Break Duration
-      sessions_before_long_break: Sessions before Long Break
-      ticking_sound: Enable ticking sound
-      ticking_sound_section: Ticking Sound
-      ticking_speed: Speed
+      auto_start_break: Automatisch pauze starten na werk
+      auto_start_section: Auto-Start Opties
+      auto_start_work: Automatisch werk starten na pauze
+      break_duration: Pauzeduur
+      keep_screen_awake: Scherm wakker houden tijdens sessies
+      keep_screen_awake_section: Scherm Wakker Houden
+      long_break_duration: Lange Pauzeduur
+      sessions_before_long_break: Sessies voor Lange Pauze
+      ticking_sound: Tikgeluid inschakelen
+      ticking_sound_section: Tikgeluid
+      ticking_speed: Snelheid
       ticking_volume: Volume
-      keep_screen_awake_section: Keep Screen Awake
-      keep_screen_awake: Keep screen awake during sessions
-      timer_label: Session durations
-      title: Timer Settings
-      work_duration: Work Duration
+      timer_label: Sessieduur
+      title: Timer Instellingen
+      work_duration: Werkduur
     system_tray:
-      app_running: App Running
-      complete_title: Pomodoro Complete
-      tap_to_open: Tap to open
-      timer_running: Timer running
+      app_running: App Draait
+      complete_title: Pomodoro Voltooid
+      tap_to_open: Tik om te openen
+      timer_running: Timer draait
   priorities:
-    not_urgent_important: Not Urgent but Important
-    not_urgent_not_important: Not Urgent or Important
-    urgent_important: Urgent and Important
-    urgent_not_important: Urgent but Not Important
+    not_urgent_important: Niet Dringend maar Belangrijk
+    not_urgent_not_important: Noch Dringend noch Belangrijk
+    urgent_important: Dringend en Belangrijk
+    urgent_not_important: Dringend maar Niet Belangrijk
   priority:
     selection:
-      title: Select Priority
+      title: Selecteer Prioriteit
     tooltips:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Geen Prioriteit
+      not_urgent_important: Niet Dringend maar Belangrijk
+      not_urgent_not_important: Niet Dringend & Niet Belangrijk
+      urgent_important: Dringend & Belangrijk
+      urgent_not_important: Dringend maar Niet Belangrijk
     types:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Geen Prioriteit
+      not_urgent_important: Niet Dringend maar Belangrijk
+      not_urgent_not_important: Niet Dringend & Niet Belangrijk
+      urgent_important: Dringend & Belangrijk
+      urgent_not_important: Dringend maar Niet Belangrijk
   quick_task:
-    create_error: Error creating task
-    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
-    lock_settings: Lock Settings
-    reset_all: Reset all fields
+    create_error: Fout bij creëren taak
+    lock_description:
+      Lock eigenschappen om hun waarden te behouden bij het creëren van meerdere
+      vergelijkbare taken. Gelockte eigenschappen worden niet gewist bij het resetten van het formulier.
+    lock_settings: Lock Instellingen
+    reset_all: Reset alle velden
     reset_confirm:
-      message: Are you sure you want to reset all fields? This action cannot be undone.
-      title: Reset All Fields
-    title: Quick Task
-    title_hint: Enter a descriptive task title...
-    title_placeholder: What needs to be done?
+      message: Weet je zeker dat je alle velden wilt resetten? Deze actie kan niet ongedaan gemaakt worden.
+      title: Reset Alle Velden
+    title: Snelle Taak
+    title_hint: Voer een beschrijvende taak titel in...
+    title_placeholder: Wat moet er gedaan worden?
     tooltips:
       deadline_date: "Deadline: {date}"
-      deadline_date_not_set: "Deadline: Not set"
-      estimated_time: "Estimated Time: {time}"
-      estimated_time_not_set: "Estimated Time: Not set"
-      planned_date: "Planned: {date}"
-      planned_date_not_set: "Planned: Not set"
+      deadline_date_not_set: "Deadline: Niet ingesteld"
+      estimated_time: "Geschatte Tijd: {time}"
+      estimated_time_not_set: "Geschatte Tijd: Niet ingesteld"
+      planned_date: "Gepland: {date}"
+      planned_date_not_set: "Gepland: Niet ingesteld"
   recurrence:
-    count: Number of occurrences
-    custom: Custom
-    daily: Daily
-    daySuffix: day(s)
-    endDate: End date
-    enterCountHint: Enter count
+    count: Aantal herhalingen
+    custom: Aangepast
+    daily: Dagelijks
+    daySuffix: dag(en)
+    endDate: Einddatum
+    enterCountHint: Voer aantal in
     interval:
-      label: Repeat every
-      prefix: every
+      label: Herhaal elke
+      prefix: elke
       suffix:
-        days: day(s)
-        months: month(s)
-        weeks: week(s)
-        years: year(s)
-    label: Recurrence
-    monthSuffix: month(s)
-    monthly: Monthly
-    none: No recurrence
-    range: Range
-    selectDateHint: Select date
-    startDate: Start date
+        days: dag(en)
+        months: maand(en)
+        weeks: week(en)
+        years: jaar(en)
+    label: Herhaling
+    monthSuffix: maand(en)
+    monthly: Maandelijks
+    none: Geen herhaling
+    range: Bereik
+    selectDateHint: Selecteer datum
+    startDate: Startdatum
     summary:
-      endsAfter: ends after
-      endsOnDate: ends on
-      occurrences: voorvallen
-      on: op
+      endsAfter: eindigt na
+      endsOnDate: eindigt op
       everyDay: elke dag
+      occurrences: voorvallen
+      true: op
       starts: begint
+      on:  "op"
     weekDays: Dagen van de week
-    weekSuffix: wek/weken
+    weekSuffix: week(en)
     weekly: Wekelijks
-    yearSuffix: jaar/jaren
+    yearSuffix: jaar(en)
     yearly: Jaarlijks
-  validation:
-    deadline_time_invalid: Deadline tijd is ongeldig
-    deadline_cannot_be_before_planned: Deadline datum moet na de geplande datum liggen
   reminder:
-    atTime: At the scheduled time
-    deadlineReminderLabel: Deadline Reminder
-    fifteenMinutesBefore: 15 minutes before
-    fiveMinutesBefore: 5 minutes before
-    none: No reminder
-    oneDayBefore: 1 day before
-    oneHourBefore: 1 hour before
-    plannedReminderLabel: Planned Date Reminder
-  task_details: Task Details
-  title: Tasks
+    atTime: Op het geplande tijdstip
+    deadlineReminderLabel: Deadline Herinnering
+    fifteenMinutesBefore: 15 minuten ervoor
+    fiveMinutesBefore: 5 minuten ervoor
+    none: Geen herinnering
+    oneDayBefore: 1 dag ervoor
+    oneHourBefore: 1 uur ervoor
+    plannedReminderLabel: Geplande Datum Herinnering
+  task_details: Taakdetails
+  time_logging:
+    add_time: Tijd Toevoegen
+    add_time_description: Voeg de opgegeven tijd toe aan bestaande records
+    dialog_title: Tijd Loggen
+    duration: Duur om Toe Te Voegen
+    invalid_input: Voer geldige uren en minuten in
+    log_time: Tijd Loggen
+    mode: Log Modus
+    set_total: Totaal Instellen
+    set_total_description: Stel de totale tijd in voor de geselecteerde dag
+    total_time: Totale Tijd voor Dag
+  timer:
+    mode:
+      description: Kies tussen Pomodoro techniek, afteltimer of stopwatch
+      normal: Normale Timer
+      pomodoro: Pomodoro
+      stopwatch: Stopwatch
+      title: Timer Modus
+    settings:
+      duration_label: Timer Duur
+      duration_title: Duur
+  title: Taken
   tooltips:
-    clear_date: Clear date
-    decrease_estimated_time: Decrease estimated time
-    edit_title: Edit title
-    increase_estimated_time: Increase estimated time
-    set_reminder: Set reminder
-    show_completed_tasks: Filter completed tasks
+    clear_date: Datum wissen
+    decrease_estimated_time: Geschatte tijd verlagen
+    edit_title: Titel bewerken
+    increase_estimated_time: Geschatte tijd verhogen
+    set_reminder: Herinnering instellen
+    show_completed_tasks: Gefilterde voltooide taken
     show_subtasks: Subtaken tonen
+  validation:
+    deadline_cannot_be_before_planned: Deadline moet na de geplande datum zijn
+    deadline_time_invalid: Deadline tijd is ongeldig

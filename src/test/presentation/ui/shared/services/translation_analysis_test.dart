@@ -38,6 +38,62 @@ void main() {
       expect(totalMissingTranslations, equals(0),
           reason: 'All translation keys must have corresponding translations in all supported languages');
     }, timeout: Timeout(Duration(minutes: 5)));
+
+    test('should detect untranslated strings (remaining in English)', () async {
+      final analyzer = TranslationKeysAnalyzer();
+      final result = await analyzer.analyzeUntranslatedStrings();
+
+      print('-' * 50);
+
+      if (result.untranslatedStrings.isNotEmpty) {
+        print('\n# ⚠️ UNTRANSLATED STRINGS (Remaining in English):');
+        for (final entry in result.untranslatedStrings.entries) {
+          print('\n- 📁 ${entry.key}:');
+
+          // Group by translation key
+          final groupedByKey = <String, List<String>>{};
+          for (final untranslated in entry.value) {
+            groupedByKey.putIfAbsent(untranslated.key, () => []).add(untranslated.language);
+          }
+
+          for (final keyEntry in groupedByKey.entries) {
+            final languages = keyEntry.value.join(', ');
+            print('  - 🔤 ${keyEntry.key} (languages: $languages)');
+          }
+        }
+      } else {
+        print('\n✅ All translations have been properly localized!');
+      }
+
+      // Report test results
+      final totalUntranslatedStrings =
+          result.untranslatedStrings.values.fold<int>(0, (sum, untranslated) => sum + untranslated.length);
+
+      // List all affected locale files
+      if (result.untranslatedStrings.isNotEmpty) {
+        final affectedFiles = <String>{};
+        for (final entry in result.untranslatedStrings.entries) {
+          final featureName = analyzer._extractFeatureNameFromPath(entry.key);
+          for (final untranslated in entry.value) {
+            affectedFiles.add(analyzer._getYamlPathForFeature(featureName, untranslated.language));
+          }
+        }
+
+        print('\n# 📄 AFFECTED LOCALE FILES:');
+        for (final file in affectedFiles.toList()..sort()) {
+          print('- $file');
+        }
+      }
+
+      print('\n# 📊 SUMMARY:');
+      print('- Untranslated strings count: $totalUntranslatedStrings');
+
+      print('\n${'-' * 50}');
+
+      // Assert that there are no untranslated strings
+      expect(totalUntranslatedStrings, equals(0),
+          reason: 'All translation values should be properly translated, not remaining in English');
+    }, timeout: Timeout(Duration(minutes: 5)));
   });
 }
 
@@ -116,6 +172,30 @@ class TranslationKeysAnalyzer {
     );
   }
 
+  Future<UntranslatedAnalysisResult> analyzeUntranslatedStrings() async {
+    final untranslatedStrings = <String, List<UntranslatedString>>{};
+
+    // Analyze each TranslationKey file
+    for (final path in translationKeyPaths) {
+      final file = File(path);
+      if (!file.existsSync()) continue;
+
+      // Extract keys from TranslationKey file
+      final keys = await _extractKeysFromFile(file);
+      if (keys.isEmpty) continue;
+
+      // Find untranslated strings
+      final untranslated = await _findUntranslatedStrings(keys, path);
+      if (untranslated.isNotEmpty) {
+        untranslatedStrings[path] = untranslated;
+      }
+    }
+
+    return UntranslatedAnalysisResult(
+      untranslatedStrings: untranslatedStrings,
+    );
+  }
+
   /// Extracts translation keys from TranslationKey file
   Future<Map<String, String>> _extractKeysFromFile(File file) async {
     final content = await file.readAsString();
@@ -176,6 +256,62 @@ class TranslationKeysAnalyzer {
     return missingTranslations;
   }
 
+  /// Finds untranslated strings (remaining in English)
+  Future<List<UntranslatedString>> _findUntranslatedStrings(Map<String, String> keys, String translationKeyPath) async {
+    final untranslatedStrings = <UntranslatedString>[];
+
+    // Extract feature name from path
+    final featureName = _extractFeatureNameFromPath(translationKeyPath);
+
+    // Get English translations as reference
+    final englishYamlPath = _getYamlPathForFeature(featureName, 'en');
+    final englishYamlFile = File(englishYamlPath);
+
+    if (!englishYamlFile.existsSync()) return untranslatedStrings;
+
+    final englishYamlContent = await englishYamlFile.readAsString();
+    final englishYamlData = loadYaml(englishYamlContent) as Map?;
+    if (englishYamlData == null) return untranslatedStrings;
+
+    // Check other languages for untranslated strings
+    for (final language in supportedLanguages) {
+      if (language == 'en') continue; // Skip English itself
+
+      // Find related YAML file
+      final yamlPath = _getYamlPathForFeature(featureName, language);
+      final yamlFile = File(yamlPath);
+
+      if (!yamlFile.existsSync()) continue;
+
+      // Parse YAML file
+      final yamlContent = await yamlFile.readAsString();
+      final yamlData = loadYaml(yamlContent) as Map?;
+      if (yamlData == null) continue;
+
+      // Check each translation key
+      for (final translationKey in keys.values) {
+        final englishValue = _getTranslationValue(englishYamlData, translationKey);
+        final localizedValue = _getTranslationValue(yamlData, translationKey);
+
+        // If the localized value is the same as English value, it's likely untranslated
+        if (englishValue != null &&
+            localizedValue != null &&
+            englishValue == localizedValue &&
+            englishValue.trim().isNotEmpty &&
+            englishValue.length > 20 &&
+            !englishValue.contains('{')) {
+          untranslatedStrings.add(UntranslatedString(
+            key: translationKey,
+            value: localizedValue,
+            language: language,
+          ));
+        }
+      }
+    }
+
+    return untranslatedStrings;
+  }
+
   /// Extracts feature name from TranslationKey file path
   String _extractFeatureNameFromPath(String path) {
     if (path.contains('/shared/')) return 'shared';
@@ -210,6 +346,22 @@ class TranslationKeysAnalyzer {
 
     return current != null;
   }
+
+  /// Gets the translation value for a specific key from YAML data
+  String? _getTranslationValue(Map yamlData, String translationKey) {
+    final keyParts = translationKey.split('.');
+    dynamic current = yamlData;
+
+    for (final part in keyParts) {
+      if (current is Map && current.containsKey(part)) {
+        current = current[part];
+      } else {
+        return null;
+      }
+    }
+
+    return current?.toString();
+  }
 }
 
 class AnalysisResult {
@@ -226,6 +378,26 @@ class MissingTranslation {
 
   const MissingTranslation({
     required this.key,
+    required this.language,
+  });
+}
+
+class UntranslatedAnalysisResult {
+  final Map<String, List<UntranslatedString>> untranslatedStrings;
+
+  const UntranslatedAnalysisResult({
+    required this.untranslatedStrings,
+  });
+}
+
+class UntranslatedString {
+  final String key;
+  final String value;
+  final String language;
+
+  const UntranslatedString({
+    required this.key,
+    required this.value,
     required this.language,
   });
 }

@@ -762,7 +762,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       case keyTags:
         return _translationService.translate(HabitTranslationKeys.tagsLabel);
       case keyEstimatedTime:
-        return _translationService.translate(HabitTranslationKeys.estimatedTimeLabel);
+        return _translationService.translate(SharedTranslationKeys.timeDisplayEstimated);
       case keyDescription:
         return _translationService.translate(HabitTranslationKeys.descriptionLabel);
       case keyReminder:
@@ -770,9 +770,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       case keyGoal:
         return _translationService.translate(HabitTranslationKeys.goalSettings);
       case keyElapsedTime:
-        return _translationService.translate(HabitTranslationKeys.elapsedTimeLabel);
+        return _translationService.translate(SharedTranslationKeys.timeDisplayElapsed);
       case keyTimer:
-        return _translationService.translate(HabitTranslationKeys.timerLabel);
+        return _translationService.translate(SharedTranslationKeys.timerLabel);
       default:
         return '';
     }
@@ -976,7 +976,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
-        label: _translationService.translate(HabitTranslationKeys.estimatedTimeLabel),
+        label: _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
         icon: HabitUiConstants.estimatedTimeIcon,
         widget: NumericInput(
           initialValue: _habit!.estimatedTime ?? HabitUiConstants.defaultEstimatedTimeOptions.first,
@@ -999,7 +999,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       );
 
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
-        label: _translationService.translate(HabitTranslationKeys.elapsedTimeLabel),
+        label: _translationService.translate(SharedTranslationKeys.timeDisplayElapsed),
         icon: HabitUiConstants.estimatedTimeIcon,
         widget: Padding(
           padding: const EdgeInsets.only(
@@ -1015,7 +1015,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       );
 
   DetailTableRowData _buildTimerSection() => DetailTableRowData(
-        label: _translationService.translate(HabitTranslationKeys.timerLabel),
+        label: _translationService.translate(SharedTranslationKeys.timerLabel),
         icon: Icons.timer,
         widget: Padding(
           padding: const EdgeInsets.only(

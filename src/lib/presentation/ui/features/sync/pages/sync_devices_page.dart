@@ -8,7 +8,6 @@ import 'package:whph/core/application/features/sync/queries/get_list_syncs_query
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_button.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
@@ -768,7 +767,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
           // Kebab menu containing help, and mobile sync controls
           KebabMenu(
-            helpTitleKey: SharedTranslationKeys.helpTooltip,
+            helpTitleKey: SyncTranslationKeys.helpTitle,
             helpMarkdownContentKey: SyncTranslationKeys.helpContent,
             additionalMenuItems: [
               // Mobile sync mode toggle (only on Android)

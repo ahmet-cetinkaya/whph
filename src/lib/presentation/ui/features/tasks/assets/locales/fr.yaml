@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Temps estimé
     is_completed: Terminé
+    parent_task:
+      label: Tâche parente
+      tooltip: Cliquer pour naviguer vers la tâche parente
     planned_date:
       label: Date prévue
     priority:
       label: Priorité
     sub_tasks:
       label: Sous-tâches
-    parent_task:
-      label: Tâche parente
-      tooltip: Cliquer pour naviguer vers la tâche parente
     tags:
       hint: Sélectionner des tags à associer
       label: Tags
@@ -186,9 +186,9 @@ tasks:
   new_task: Nouvelle tâche
   no_tasks: Aucune tâche
   notifications:
-    deadline_message: "L'échéance de votre tâche est à {time}"
+    deadline_message: L'échéance de votre tâche est à {time}
     deadline_title: "Échéance de tâche : {title}"
-    planned_message: "Votre tâche est prévue pour {time}"
+    planned_message: Votre tâche est prévue pour {time}
     reminder_title: "Rappel de tâche : {title}"
   page:
     completed_tasks_title: Tâches terminées
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: Options de démarrage automatique
       auto_start_work: Démarrer automatiquement le travail après la pause
       break_duration: Durée de la pause
+      keep_screen_awake: Garder l'écran allumé pendant les sessions
+      keep_screen_awake_section: Garder l'écran allumé
       long_break_duration: Durée de la pause longue
       sessions_before_long_break: Sessions avant la pause longue
       ticking_sound: Activer le son de tic-tac
       ticking_sound_section: Son de tic-tac
       ticking_speed: Vitesse
       ticking_volume: Volume
-      keep_screen_awake_section: Garder l'écran allumé
-      keep_screen_awake: Garder l'écran allumé pendant les sessions
       timer_label: Durées des sessions
       title: Paramètres du minuteur
       work_duration: Durée de travail
@@ -246,11 +246,16 @@ tasks:
       urgent_not_important: Urgent mais pas important
   quick_task:
     create_error: Erreur lors de la création de la tâche
-    lock_description: Verrouillez les propriétés pour conserver leurs valeurs lors de la création de plusieurs tâches similaires. Les propriétés verrouillées ne seront pas effacées lors de la réinitialisation du formulaire.
+    lock_description:
+      Verrouillez les propriétés pour conserver leurs valeurs lors
+      de la création de plusieurs tâches similaires. Les propriétés verrouillées ne
+      seront pas effacées lors de la réinitialisation du formulaire.
     lock_settings: Paramètres de verrouillage
     reset_all: Réinitialiser tous les champs
     reset_confirm:
-      message: Êtes-vous sûr de vouloir réinitialiser tous les champs ? Cette action ne peut pas être annulée.
+      message:
+        Êtes-vous sûr de vouloir réinitialiser tous les champs ? Cette action
+        ne peut pas être annulée.
       title: Réinitialiser tous les champs
     title: Tâche rapide
     title_hint: Titre de la tâche
@@ -288,17 +293,15 @@ tasks:
       endsAfter: se termine après
       endsOnDate: se termine le
       occurrences: occurrences
-      on: le
+      true: le
       everyDay: tous les jours
       starts: commence
+      "on": "le"
     weekDays: Jours de la semaine
     weekSuffix: semaine(s)
     weekly: Hebdomadaire
     yearSuffix: année(s)
     yearly: Annuel
-  validation:
-    deadline_time_invalid: L'heure d'échéance n'est pas valide
-    deadline_cannot_be_before_planned: La date d'échéance doit être postérieure à la date planifiée
   reminder:
     atTime: À l'heure prévue
     deadlineReminderLabel: Rappel d'échéance
@@ -318,3 +321,8 @@ tasks:
     set_reminder: Définir un rappel
     show_completed_tasks: Filtrer les tâches terminées
     show_subtasks: Afficher les sous-tâches
+  validation:
+    deadline_cannot_be_before_planned:
+      La date d'échéance doit être postérieure à
+      la date planifiée
+    deadline_time_invalid: L'heure d'échéance n'est pas valide

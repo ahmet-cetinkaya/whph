@@ -454,11 +454,11 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
     String getTimerModeDisplay(TimerMode mode) {
       switch (mode) {
         case TimerMode.pomodoro:
-          return _translationService.translate(TaskTranslationKeys.timerModePomodoro);
+          return _translationService.translate(SharedTranslationKeys.pomodoroTimer);
         case TimerMode.normal:
-          return _translationService.translate(TaskTranslationKeys.timerModeNormal);
+          return _translationService.translate(SharedTranslationKeys.normalTimer);
         case TimerMode.stopwatch:
-          return _translationService.translate(TaskTranslationKeys.timerModeStopwatch);
+          return _translationService.translate(SharedTranslationKeys.stopwatchTimer);
       }
     }
 

@@ -9,7 +9,6 @@ habits:
     unarchive: アーカイブ解除
     unarchive_confirm: この習慣のアーカイブを解除してもよろしいですか？
     unarchive_tooltip: この習慣のアーカイブを解除
-
   calendar:
     week_days:
       fri: 金
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: アーカイブ済み
     create_record_tooltip: 今日完了としてマーク
+    daily_target: 毎日の頻度
+    daily_target_hint: 1日あたりの回数
     description: 説明
     estimated_time: 予想時間
     estimated_time_not_set: 未設定
@@ -78,22 +79,20 @@ habits:
     statistics:
       archived_note: "アーカイブ日:"
       archived_on: アーカイブ日
-      archived_warning: "統計はアーカイブ日まで表示されます。{startDate} - {archivedDate}"
+      archived_warning: 統計はアーカイブ日まで表示されます。{startDate} - {archivedDate}
+      completions: 完了
       from: 開始
       monthly: 月別
+      no_streaks_yet: まだ連続記録がありません。一貫性を築き始めましょう！
       overall: 全体
       records: 記録
       score_trends: スコア傾向
       to: 終了
       top_streaks: トップ連続記録
-      no_streaks_yet: まだ連続記録がありません。一貫性を築き始めましょう！
-      completions: 完了
       yearly: 年別
     statistics_label: 統計
     tags: タグ
     tags_hint: 関連付けるタグを選択
-    daily_target: "毎日の頻度"
-    daily_target_hint: "1日あたりの回数"
   errors:
     adding_tag: タグの追加に失敗しました
     creating_record: 習慣記録の作成に失敗しました
@@ -122,15 +121,13 @@ habits:
     goal_format: "{dayCount}日間で{count}回"
     period_days: 期間日数
     settings: カスタム目標設定
-    target_frequency: "期間頻度"
-    times_unit: "期間あたりの回数"
-  help:
-    description: ヘルプの説明
+    target_frequency: 期間頻度
+    times_unit: 期間あたりの回数
   list:
     all_habits_done: すべての習慣が完了しました！
     no_habits_found: 習慣がありません
-  new_habit: 新しい習慣
   name_placeholder: 意味のある習慣名を入力してください...
+  new_habit: 新しい習慣
   notifications:
     reminder_message: "習慣を完了することを忘れずに: {name}"
     reminder_title: "習慣リマインダー: {name}"
@@ -207,8 +204,8 @@ habits:
     select_tooltip: タグを選択
   tooltips:
     add_habit: 習慣を追加
+    decrease_daily_target: 毎日の目標を減らす
     decrease_estimated_time: 予想時間を減らす
     edit_name: 名前を編集
+    increase_daily_target: 毎日の目標を増やす
     increase_estimated_time: 予想時間を増やす
-    decrease_daily_target: "毎日の目標を減らす"
-    increase_daily_target: "毎日の目標を増やす"

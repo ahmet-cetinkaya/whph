@@ -1,5 +1,4 @@
 shared:
-  untitled: "Zonder titel"
   buttons:
     add: Toevoegen
     back: Terug
@@ -65,6 +64,7 @@ shared:
     created_date_label: Aanmaakdatum
     modified_date_label: Wijzigingsdatum
     name_label: Naam
+  date: Datum
   date_filter:
     title: Datumbereik selecteren
     tooltips:
@@ -72,6 +72,32 @@ shared:
       filter: Filteren op datum
   date_format:
     hint: DD/MM/JJJJ
+  datepicker:
+    cannot_select_date_after_max_date: Kan geen datum na {date} selecteren
+    cannot_select_date_before_min_date: Kan geen datum voor {date} selecteren
+    cannot_select_time_after_max_date: Kan geen tijd na {time} selecteren
+    cannot_select_time_before_min_date: Kan geen tijd voor {time} selecteren
+    deadline_cannot_be_before_planned_date:
+      De deadline moet op of na de geplande
+      datum liggen
+    end_date_cannot_be_after_max_date: De einddatum kan niet na {date} zijn
+    end_date_must_be_at_or_before: De einddatum moet op of voor {date} zijn
+    select_date_range_title: Selecteer datumbereik
+    select_date_time_title: Selecteer datum en tijd
+    selected_date_must_be_at_or_after:
+      De geselecteerde datum moet op of na {date}
+      zijn
+    selected_date_must_be_at_or_before:
+      De geselecteerde datum moet op of voor {date}
+      zijn
+    selected_date_time_must_be_after:
+      De geselecteerde datum en tijd moeten na {dateTime}
+      zijn
+    start_date_cannot_be_after_end_date: De startdatum kan niet na de einddatum zijn
+    start_date_cannot_be_before_min_date: De startdatum kan niet voor {date} zijn
+    start_date_must_be_at_or_after: De startdatum moet op of na {date} zijn
+    time_must_be_at_or_after: De tijd moet op of na {time} zijn
+    time_must_be_at_or_before: De tijd moet op of voor {time} zijn
   days:
     friday: Vrijdag
     friday_short: Vr
@@ -92,19 +118,19 @@ shared:
       hint: Je kunt schrijven met Markdown-opmaak...
       tooltips:
         bold: Vet
-        italic: Cursief
-        strikethrough: Doorgestreept
-        code: Code
-        link: Link
-        quote: Citaat
         bulleted_list: Opsommingslijst
-        numbered_list: Genummerde lijst
-        horizontal_rule: Horizontale lijn
-        edit: Bewerken
-        preview: Voorbeeld
-        image: Afbeelding
-        heading: Kop
         checkbox: Selectievakje
+        code: Code
+        edit: Bewerken
+        heading: Kop
+        horizontal_rule: Horizontale lijn
+        image: Afbeelding
+        italic: Cursief
+        link: Link
+        numbered_list: Genummerde lijst
+        preview: Voorbeeld
+        quote: Citaat
+        strikethrough: Doorgestreept
   errors:
     deleting: Fout bij het verwijderen van gegevens
     file_not_found: Bestand niet gevonden
@@ -138,8 +164,6 @@ shared:
     unexpected: Er is een onverwachte fout opgetreden
   filters:
     search: Zoeken
-  help:
-    tooltip: Help
   messages:
     confirm_delete: Weet je zeker dat je dit item wilt verwijderen?
     no_items_found: Geen items
@@ -150,19 +174,19 @@ shared:
       more: Meer
       notes: Notities
       settings: Instellingen
-      tags: Tags
+      tags: Etiketten
       tasks: Taken
       today: Vandaag
-  none_option: "Geen tags"
+  none_option: Geen etiketten
   regex_help:
     examples:
-      chat: 'Komt overeen met "Slack" of "Discord"'
-      chrome: 'Komt overeen met elke venstertitel die "Chrome" bevat'
-      exact_chrome: 'Komt exact overeen met "Chrome"'
+      chat: Komt overeen met "Slack" of "Discord"
+      chrome: Komt overeen met elke venstertitel die "Chrome" bevat
+      exact_chrome: Komt exact overeen met "Chrome"
       pdf: Komt overeen met elk PDF-bestand
       vscode: Komt overeen met elk VS Code-venster
     tips:
-      any_chars: 'Gebruik ".*" om overeen te komen met alle tekens'
+      any_chars: Gebruik ".*" om overeen te komen met alle tekens
       dot: '"\." komt overeen met een punt'
       end: '"$" komt overeen met het einde van tekst'
       or: '"|" betekent OF'
@@ -178,7 +202,7 @@ shared:
     habits: Gewoontes
     special_filters: Speciale filters
     statistics: Statistieken
-    tags: Tags
+    tags: Etiketten
     tasks: Taken
     time: Tijd
   sort:
@@ -187,11 +211,11 @@ shared:
       description: Schakel slepen en neerzetten in om items opnieuw te ordenen
       title: Aangepaste sortering
     descending: Aflopend
+    disable_reordering_tooltip: Herordenmodus uitschakelen
+    enable_reordering_tooltip: Herordenmodus inschakelen
     remove_criteria: Criterium verwijderen
     reset_to_default: Terugzetten naar standaard
     sort: Sorteren
-    enable_reordering_tooltip: Herordenmodus inschakelen
-    disable_reordering_tooltip: Herordenmodus uitschakelen
   statistics:
     daily_usage:
       description: Toont de totale gebruikstijd per dag van de week
@@ -200,7 +224,24 @@ shared:
       description: Toont de totale gebruikstijd per uur van de dag
       title: Uurlijks gebruik
   time:
-    not_set: "Niet ingesteld"
+    not_set: Niet ingesteld
+  time_display:
+    elapsed: Verstreken
+    elapsed_time_tooltip: Tijd besteed aan deze taak
+    estimated: Geschat
+    estimated_time_tooltip: Geschatte tijd om deze taak te voltooien
+    no_time_logged_tooltip: Nog geen tijd geregistreerd
+  time_logging:
+    add_time: Tijd toevoegen
+    add_time_description: Tijd toevoegen aan het bestaande totaal
+    dialog_title: Tijd registreren
+    duration: Duur
+    invalid_input: Voer een geldige tijd in
+    log_time: Tijd registreren
+    mode: Modus
+    set_total: Totaal instellen
+    set_total_description: Stel de totale bestede tijd in
+    total_time: Totale tijd
   time_periods:
     custom: Aangepast
     last_month: Vorige maand
@@ -210,6 +251,11 @@ shared:
     this_three_months: Deze 3 maanden
     this_week: Deze week
     today: Vandaag
+  timer:
+    label: Timer
+    normal: Normaal
+    pomodoro: Pomodoro
+    stopwatch: Stopwatch
   tooltips:
     compare_with_previous: Vergelijken met vorige periode
     filter_by_tags: Filteren op tags
@@ -222,6 +268,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sec
+  untitled: Zonder titel
   update_dialog:
     buttons:
       download_page: Downloadpagina
@@ -235,21 +282,4 @@ shared:
     title: Update beschikbaar!
   validation:
     required: "{field} is verplicht."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "De deadline moet op of na de geplande datum liggen"
-    selected_date_must_be_at_or_after: De geselecteerde datum moet op of na {date} zijn
-    selected_date_must_be_at_or_before: De geselecteerde datum moet op of voor {date} zijn
-    start_date_cannot_be_after_end_date: De startdatum kan niet na de einddatum zijn
-    start_date_must_be_at_or_after: De startdatum moet op of na {date} zijn
-    end_date_must_be_at_or_before: De einddatum moet op of voor {date} zijn
-    cannot_select_date_before_min_date: Kan geen datum voor {date} selecteren
-    cannot_select_date_after_max_date: Kan geen datum na {date} selecteren
-    start_date_cannot_be_before_min_date: De startdatum kan niet voor {date} zijn
-    end_date_cannot_be_after_max_date: De einddatum kan niet na {date} zijn
-    cannot_select_time_before_min_date: Kan geen tijd voor {time} selecteren
-    cannot_select_time_after_max_date: Kan geen tijd na {time} selecteren
-    time_must_be_at_or_after: De tijd moet op of na {time} zijn
-    time_must_be_at_or_before: De tijd moet op of voor {time} zijn
-    selected_date_time_must_be_after: De geselecteerde datum en tijd moeten na {dateTime} zijn
-    select_date_time_title: Selecteer datum en tijd
-    select_date_range_title: Selecteer datumbereik
+  help: Help

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
@@ -1008,7 +1007,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildEstimatedTimeSection() => DetailTableRowData(
-        label: _translationService.translate(TaskTranslationKeys.estimatedTimeLabel),
+        label: _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
         icon: TaskUiConstants.estimatedTimeIcon,
         widget: Padding(
           padding: const EdgeInsets.only(
@@ -1032,7 +1031,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       );
 
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
-        label: _translationService.translate(TaskTranslationKeys.elapsedTimeLabel),
+        label: _translationService.translate(SharedTranslationKeys.timeDisplayElapsed),
         icon: TaskUiConstants.timerIcon,
         widget: Padding(
           padding: const EdgeInsets.only(
@@ -1217,11 +1216,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       case keyPriority:
         return _translationService.translate(TaskTranslationKeys.priorityLabel);
       case keyEstimatedTime:
-        return _translationService.translate(TaskTranslationKeys.estimatedTimeLabel);
+        return _translationService.translate(SharedTranslationKeys.timeDisplayEstimated);
       case keyElapsedTime:
-        return _translationService.translate(TaskTranslationKeys.elapsedTimeLabel);
+        return _translationService.translate(SharedTranslationKeys.timeDisplayElapsed);
       case keyTimer:
-        return _translationService.translate(HabitTranslationKeys.timerLabel);
+        return _translationService.translate(SharedTranslationKeys.timerLabel);
       case keyPlannedDate:
         return _translationService.translate(TaskTranslationKeys.plannedDateLabel);
       case keyDeadlineDate:
@@ -1331,7 +1330,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   DetailTableRowData _buildTimerSection() => DetailTableRowData(
-        label: _translationService.translate(HabitTranslationKeys.timerLabel),
+        label: _translationService.translate(SharedTranslationKeys.timerLabel),
         icon: TaskUiConstants.timerIcon,
         widget: Padding(
           padding: const EdgeInsets.only(

@@ -1,214 +1,230 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Archivovat
+    archive_confirm: Jste si jisti, že chcete archivovat tento návyk?
+    archive_tooltip: Archivovat tento návyk
+    archived_date: Datum archivace
+    hide_archived: Skrýt archivované
+    show_archived: Zobrazit archivované
+    unarchive: Odarchivovat
+    unarchive_confirm: Jste si jisti, že chcete odarchivovat tento návyk?
+    unarchive_tooltip: Odarchivovat tento návyk
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Pá
+      mon: Po
+      sat: So
+      sun: Ne
+      thu: Čt
+      tue: Út
+      wed: St
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Jste si jisti, že chcete smazat tento návyk?
+    confirm_title: Smazat návyk
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
+    archived_status: Archivováno
+    create_record_tooltip: Označit jako dokončeno dnes
+    daily_target: Denní frekvence
+    daily_target_hint: krát denně
+    description: Popis
+    elapsed_time: Uplynulý čas
+    estimated_time: Odhadovaný čas
+    estimated_time_not_set: Není nastaveno
     help:
       content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+        Vytvořte udržitelné denní rutiny prostřednictvím systematického sledování návyků, které promění vaše záměry v konzistentní akce a měřitelný pokrok směrem k vašim cílům.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Proč je to důležité?
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+        Formování návyků je základem osobního rozvoje a udržitelného úspěchu. Konzistentní denní akce se kumulují v čase a vytvářejí pozoruhodné výsledky, zatímco systematické sledování zajišťuje, že udržíte hybnost a neustále zlepšujete své rutiny.
 
-        ## ⚙️ Strategic Habit Design
+        ## ⚙️ Strategické navržení návyků
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+        Vytvářejte návyky, které se bezproblémově integrují do vašeho života a podporují vaše dlouhodobé cíle. Dobře navržené návyky se stávají automatickými chováními, která vyžadují minimální sílu vůle k udržení.
 
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
+        - 📝 Navrhněte jasné, specifické návyky s akčními popisy
+        - 📅 Zřiďte konzistentní plány, které se shodují s vašimi přirozenými rytmy
+        - 🏷️ Organizujte podobné návyky do koherentních skupin pro systematické sledování
+        - 🎯 Spojte každý návyk s smysluplnými výsledky a osobními hodnotami
 
-        ## ⏱️ Performance Monitoring
+        ## ⏱️ Monitorování výkonu
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+        Sledujte provádění vašich návyků, abyste pochopili vzorce, změřili pokrok a optimalizovali svůj přístup pro maximální efektivitu a udržitelný růst.
 
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+        - ⏳ Zaznamenávejte časy dokončení, abyste pochopili délku a efektivitu návyků
+        - 📊 Analyzujte investice času napříč kategoriemi návyků pro vyvážený rozvoj
+        - 📈 Sledujte trendy výkonu, abyste identifikovali příležitosti k zlepšení a optimální časování
+        - 🔄 Používejte data k vylepšení obtížnosti a plánování návyků pro udržitelný úspěch
 
-        ## 📅 Consistency & Momentum
+        ## 📅 Konzistence a hybnost
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+        Vytvářejte a udržujte konzistenci potřebnou pro trvalou změnu chování prostřednictvím systematického sledování a strategického přezkoumání vašich vzorců pokroku.
 
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+        - 📚 Přezkoumejte historii dokončení, abyste vyhodnotili pokrok a identifikovali úspěšné vzorce
+        - 🔗 Sledujte denní série, abyste budovali a udržovali hybnost pro dlouhodobý úspěch
+        - 📌 Monitorujte metriky konzistence, abyste zvýšili motivaci a závazek
+        - 🎯 Oslavte milníky a úspěchy, abyste posílili pozitivní změnu chování
 
-        ## 🚀 Optimization Strategies
+        ## 🚀 Strategie optimalizace
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+        Aplikovat osvědčené techniky pro optimalizaci návyků, které urychlují pokrok a zajišťují, že vaše úsilí se promění v smysluplná, trvalá zlepšení ve vašem životě a produktivitě.
 
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
-    records: Records
-    remove_record_tooltip: Remove today's completion
+        - 🐾 **Začněte malými:** Začněte s návyky, které můžete konzistentně provádět, pak postupně zvyšujte obtížnost
+        - 🏷️ **Strategické seskupení:** Organizujte návyky podle oblasti života nebo času dne
+        - 📊 **Úpravy na základě dat:** Používejte insights ze sledování k optimalizaci časování a přístupu
+        - 🌅 **Fokus na prime time:** Plánujte důležité návyky během vašich špičkových energetických období
+      description: Popis pomoci
+      title: Průvodce formováním návyků a sledováním výkonu
+    records: Záznamy
+    remove_record_tooltip: Odstranit dokončení dneška
     statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
-      records: Records
-      score_trends: Score Trends
-      to: To
-      top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
-    tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Denní frekvence"
-    daily_target_hint: "krát denně"
+      archived_note: "Archivováno:"
+      archived_on: Archivováno dne
+      archived_warning: Statistiky jsou zobrazeny až do data archivace. {startDate} - {archivedDate}
+      completions: dokončení
+      from: Od
+      monthly: Měsíčně
+      no_streaks_yet: Žádné série ještě. Začněte budovat konzistenci!
+      overall: Celkově
+      records: Záznamy
+      score_trends: Trendy skóre
+      to: Do
+      top_streaks: Nejlepší série
+      yearly: Ročně
+    statistics_label: Statistiky
+    tags: Značky
+    tags_hint: Vyberte značky k asociaci
   errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
+    adding_tag: Selhalo přidání značky
+    creating_record: Selhalo vytvoření záznamu návyku
+    deleting: Došlo k neočekávané chybě při mazání návyku
+    deleting_record: Selhalo mazání záznamu návyku
+    habit_not_found: Návyk nenalezen
+    habit_record_not_found: Záznam návyku nenalezen
+    habit_tag_not_found: Značka návyku nenalezena
+    loading_archive_status: Selhalo načtení stavu archivace
+    loading_details: Selhalo načtení detailů návyku
+    loading_habit: Selhalo načtení návyku
+    loading_habits: Selhalo načtení návyků
+    loading_records: Selhalo načtení záznamů návyku
+    loading_tags: Selhalo načtení značek návyku
+    removing_tag: Selhalo odstranění značky
+    saving_details: Selhalo uložení detailů návyku
+    saving_habit: Selhalo uložení návyku
+    tag_already_exists: Tato značka je již přidána
+    toggling_archive: Selhalo přepnutí stavu archivace
   goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
+    current_goal: Cíl
+    days_unit: dny
+    description: Chcete cvičit návyk s určitou frekvencí spíše než každý den? Pak nastavte vlastní cíl.
+    enable: Povolit vlastní cíle
+    goal: Vlastní cíl
+    goal_format: "{count} krát za {dayCount} dní"
+    period_days: Dny období
+    settings: Nastavení vlastního cíle
     target_frequency: Frekvence období
-    times_unit: "krát za období"
-  help:
-    description: Help description
+    times_unit: krát za období
   list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
+    all_habits_done: Všechny návyky dokončeny!
+    no_habits_found: Žádné návyky
+  name_placeholder: Zadejte smysluplný název návyku...
+  new_habit: Nový návyk
   notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Připomeňte si dokončit svůj návyk: {name}"
+    reminder_title: "Připomínka návyku: {name}"
   overview:
-    filter_by_tags_tooltip: Filter by tags
+    filter_by_tags_tooltip: Filtrovat podle značek
     help:
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Ovládněte své denní rutiny systematickým sledováním návyků, které buduje konzistenci, vytváří pozitivní hybnost a pohání smysluplný pokrok směrem k vašim dlouhodobým cílům.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Proč je to důležité?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        Denní správa návyků je základem osobní excellence a udržitelného růstu. Konzistentní provádění dobře naplánovaných návyků vytváří kumulativní výhody v čase, zatímco systematické sledování zajišťuje, že udržíte odpovědnost a provádíte zlepšení na základě dat ve vašich rutinách.
 
-        ## 📅 Daily Execution & Tracking
+        ## 📅 Denní provádění a sledování
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Vyvíjejte spolehlivý systém pro provádění a monitorování vašich návyků, který vytváří konzistenci a buduje nezastavitelnou hybnost směrem k vašim cílům.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - ✅ **Denní dokončení:** Označte návyky jako dokončené k vytvoření řetězců konzistence
+        - 📆 **Pohled na více dní:** Monitorujte vzorce napříč dny a týdny pro komplexní insights
+        - 🔄 **Budování série:** Udržujte po sobě jdoucí dny dokončení k maximalizaci motivační hybnosti
+        - 📊 **Vizualizace pokroku:** Sledujte míry dokončení a vzorce v čase
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Analýza a optimalizace času
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Monitorujte investice času do vašich návyků k optimalizaci vašeho denního plánu a zajištění vyváženého rozvoje napříč všemi důležitými oblastmi života.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ **Sledování délky:** Zaznamenávejte skutečný čas strávený k pochopení požadavků návyků
+        - 🏷️ **Analýza kategorií:** Grupujte návyky podle značek k vidění alokace času napříč oblastmi života
+        - ⏰ **Optimalizace plánu:** Vyvažte časování návyků pro udržitelnou denní exekuci
+        - 📈 **Zlepšení efektivity:** Identifikujte příležitosti k zjednodušení provádění návyků
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strategická organizace
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+        Vytvořte organizační systém, který podporuje konzistentní provádění, přičemž poskytuje flexibilitu k adaptaci s vašimi cíli a okolnostmi.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        - 🏷️ **Smysluplná kategorizace:** Grupujte návyky podle oblasti života, času nebo úrovně priority
+        - ⚙️ **Flexibilní plánování:** Navrhněte časování návyků, které funguje s vaším životním stylem a energetickými vzorci
+        - 🎯 **Fokus na priority:** Zajistěte, že vaše nejdůležitější návyky dostávají vhodnou pozornost a energii
 
-        ## 💡 Mastery Principles
+        ## 💡 Principy mistrovství
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+        Aplikovat osvědčené strategie pro mistrovství návyků, které zajišťují, že vaše úsilí se kumuluje v trvalou změnu chování a měřitelná zlepšení života.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        - 🐾 **Začněte malými:** Začněte s návyky, které můžete provádět konzistentně, pak postupně zvyšujte obtížnost
+        - 🏷️ **Strategické seskupení:** Organizujte návyky k vytvoření logických sekvencí a podpůrných systémů
+        - 📊 **Přezkoumání výkonu:** Používejte data ze sledování času k pochopení vzorců a optimalizaci přístupu
+        - 🌅 **Exekuce v prime time:** Plánujte vaše nejdůležitější návyky během špičkových energetických období
 
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
+        ### 📊 Používání pohledu kalendáře
+        - 📅 Zobrazte více dní současně v pohledu kalendáře.
+        - ✅ Vizualně sledujte vaše vzorce dokončení.
+        - ⚡ Ušetřete čas s rychlým označením dokončení.
+        - 🎯 Zvyšte motivaci s vizuálním sledováním sérií.
+        - 🔄 Prozkoumávejte minulé a budoucí návyky s flexibilní navigací dat.
+      title: Denní správa návyků a optimalizace rutiny
+    title: Zvyky
   reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
+    enableReminders: Povolit připomínky
+    everyDay: Každý den
+    noReminder: Žádná připomínka nastavena
+    reminderDays: Dny připomínek
+    reminderSettings: Nastavení připomínek
+    reminderTime: Čas připomínky
+    selectDaysWarning: Prosím vyberte alespoň jeden den pro připomínky
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
+    enable: Povolit připomínky
+    select_days_warning: Prosím vyberte alespoň jeden den pro připomínky
   statistics:
-    archived_on: Archived on
-    from: From
-    to: To
+    archived_on: Archivováno
+    from: Od
+    to: Do
   tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    add_tooltip: Přidat značku
+    select_tooltip: Vybrat značku
+  time_display:
+    actual_time_tooltip: Skutečný sledovaný čas pro tento den
+    estimated: odhadovaný
+    estimated_time_tooltip: Odhadovaný čas na základě nastavení návyku
+    no_time_logged_tooltip: Žádný čas zaznamenaný pro tento den
+  time_logging:
+    add_time: Přidat čas
+    add_time_description: Přidat zadaný čas k existujícím záznamům
+    dialog_title: Zaznamenat čas
+    duration: Délka k přidání
+    invalid_input: Prosím zadejte platné hodiny a minuty
+    log_time: Zaznamenat čas
+    mode: Režim zaznamenávání
+    set_total: Nastavit celkem
+    set_total_description: Nastavit celkový čas pro vybraný den
+    total_time: Celkový čas pro den
+  timer:
+    label: Časovač
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Snížit denní cíl"
-    increase_daily_target: "Zvýšit denní cíl"
+    add_habit: Přidat návyk
+    decrease_daily_target: Snížit denní cíl
+    decrease_estimated_time: Snížit odhadovaný čas
+    edit_name: Upravit název
+    increase_daily_target: Zvýšit denní cíl
+    increase_estimated_time: Zvýšit odhadovaný čas

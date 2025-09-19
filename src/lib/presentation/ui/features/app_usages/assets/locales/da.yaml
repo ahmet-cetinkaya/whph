@@ -1,178 +1,178 @@
 app_usages:
   delete:
-    confirm_title: Delete App Usage
-    error: An unexpected error occurred while deleting app usage
+    confirm_title: Slet app-brug
+    error: Der opstod en uventet fejl under sletning af app-brug
   details:
     color:
-      hint: Click to change color
-      label: Color
+      hint: Klik for at ændre farve
+      label: Farve
     device:
-      label: Device
-      unknown: Unknown Device
+      label: Enhed
+      unknown: Ukendt enhed
     help:
       content: |
-        See exactly how much time you spend on apps and stay in control by organizing them with tags.
+        Se præcis, hvor meget tid du bruger på apps, og behold kontrollen ved at organisere dem med tags.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Hvorfor er det vigtigt?
 
-        Time management is the key to your productivity. Tracking your app usage and tagging them with the right categories improves your focus and helps prevent unnecessary time loss.
+        Tidshåndtering er nøglen til din produktivitet. At spore din app-brug og tagge dem med de rigtige kategorier forbedrer din fokus og hjælper med at forhindre unødvendig tidsspild.
 
-        ## ⏱️ Time Tracking
+        ## ⏱️ Tidsporing
 
-        Track your daily usage habits to accurately analyze your time. With in-app detailed usage durations and active window tracking, easily see how much focus you give to each app. This data guides you on where improvements are needed.
+        Spor dine daglige brugsvaner for at analysere din tid præcist. Med detaljerede brugsvarigheder i appen og aktiv vindussporing kan du nemt se, hvor meget fokus du giver til hver app. Disse data guider dig til, hvor forbedringer er nødvendige.
 
-        - ⏳ Review daily usage durations  
-        - 🔍 Track active windows  
-        - 📊 Understand your time distribution with detailed reports
+        - ⏳ Gennemgå daglige brugsvarigheder  
+        - 🔍 Spor aktive vinduer  
+        - 📊 Forstå din tidsfordeling med detaljerede rapporter
 
-        ## 🏷️ Tag Management
+        ## 🏷️ Tag-håndtering
 
-        Categorizing and organizing your apps boosts productivity. With the tagging system, you can group your apps and speed up your workflow using automation rules. This helps you maintain focus and use your time more efficiently.
+        Kategorisering og organisering af dine apps booster produktiviteten. Med tagsystemet kan du gruppere dine apps og accelerere din arbejdsgang ved hjælp af automatiseringregler. Dette hjælper dig med at opretholde fokus og bruge din tid mere effektivt.
 
-        - 🏷️ Tag apps with meaningful categories  
-        - ⚙️ Create automatic tagging rules  
-        - 🔄 Save time by reducing manual tasks
+        - 🏷️ Tag apps med meningsfulde kategorier  
+        - ⚙️ Opret automatiske tag-regler  
+        - 🔄 Spar tid ved at reducere manuelle opgaver
 
-        ## 📈 Analysis & Productivity Tracking
+        ## 📈 Analyse & Produktivitetssporing
 
-        Visualize your own usage patterns to discover your strengths and weaknesses. Tracking your productive time is critical for enhancing focus. With in-app comparison and reporting tools, you can clearly see your progress.
+        Visualiser dine egne brugsmønstre for at opdage dine styrker og svagheder. Sporing af din produktive tid er afgørende for at forbedre fokus. Med in-app sammenligning og rapporteringsværktøjer kan du klart se din fremgang.
 
-        - 📊 Visualize your usage patterns  
-        - 🤝 Compare with similar apps  
-        - 🚀 Track productive vs. unproductive time
-      title: Time & Productivity Tracking Guide
+        - 📊 Visualiser dine brugsmønstre  
+        - 🤝 Sammenlign med lignende apps  
+        - 🚀 Spor produktivt vs. uproduktivt tid
+      title: Tid & Produktivitetssporing Guide
     tags:
-      hint: Select tags
+      hint: Vælg tags
       label: Tags
   device_filter:
-    clear_all: Clear All
+    clear_all: Ryd alle
     search:
-      label: Search devices
+      label: Søg enheder
   errors:
-    add_tag: An unexpected error occurred while adding tag
-    app_usage_ignore_rule_not_found: Ignore rule not found
-    app_usage_not_found: App usage not found
-    app_usage_tag_not_found: App usage tag not found
-    delete: An unexpected error occurred while deleting app usage
-    app_usage_tag_rule_not_found: Tag rule not found
-    get_tags: Error occurred while fetching app usage tags
-    get_usage: An unexpected error occurred while fetching app usage
-    remove_tag: An unexpected error occurred while removing tag
-    save_rule: An unexpected error occurred while saving ignore rules
-    save_usage: An unexpected error occurred while saving app usage
-    statistics: An unexpected error occurred while fetching statistics
-    tag_already_exists: This tag is already added
+    add_tag: Der opstod en uventet fejl under tilføjelse af tag
+    app_usage_ignore_rule_not_found: Ignorer regel ikke fundet
+    app_usage_not_found: App-brug ikke fundet
+    app_usage_tag_not_found: App-brug tag ikke fundet
+    delete: Der opstod en uventet fejl under sletning af app-brug
+    app_usage_tag_rule_not_found: Tag-regel ikke fundet
+    get_tags: Fejl opstod under hentning af app-brug tags
+    get_usage: Der opstod en uventet fejl under hentning af app-brug
+    remove_tag: Der opstod en uventet fejl under fjernelse af tag
+    save_rule: Der opstod en uventet fejl under gemning af ignorér-regler
+    save_usage: Der opstod en uventet fejl under gemning af app-brug
+    statistics: Der opstod en uventet fejl under hentning af statistik
+    tag_already_exists: Dette tag er allerede tilføjet
   form:
     description:
-      hint: Enter a description for this rule
-      label: Description (Optional)
+      hint: Indtast en beskrivelse for denne regel
+      label: Beskrivelse (Valgfrit)
     pattern:
-      help_tooltip: Show regex help
-      hint: Enter regex pattern
-      label: Pattern
-      required: Pattern is required
-    save: Save
-    saved: Saved
+      help_tooltip: Vis regex-hjælp
+      hint: Indtast regex-mønster
+      label: Mønster
+      required: Mønster er påkrævet
+    save: Gem
+    saved: Gemt
   ignore_rules:
-    delete_confirm: 'Are you sure you want to delete the ignore rule "{pattern}"?'
-    delete_title: Delete Rule
-    delete_tooltip: Delete rule
-    no_rules: No ignore rules
-    pattern_label: Pattern
-  no_usage: No app usage yet
+    delete_confirm: 'Er du sikker på, at du vil slette ignorér-reglen "{pattern}"?'
+    delete_title: Slet regel
+    delete_tooltip: Slet regel
+    no_rules: Ingen ignorér-regler
+    pattern_label: Mønster
+  no_usage: Ingen app-brug endnu
   pages:
     view:
       buttons:
-        filter_tags: Filter Tags
-        filter_devices: Filter Devices
-        tag_rules: Tag Rules
+        filter_tags: Filtrer tags
+        filter_devices: Filtrer enheder
+        tag_rules: Tag-regler
       help:
         content: |
-          Analyze, organize, and take control of your app usage to work more efficiently. With tagging and analysis tools, see, manage, and improve how you spend your time.
+          Analyser, organiser og tag kontrol over din app-brug for at arbejde mere effektivt. Med tag- og analyseværktøjer ser du, administrerer og forbedrer, hvordan du bruger din tid.
 
-          ## ⏱️ Usage Tracking
+          ## ⏱️ Brugsporing
 
-          Discover your daily usage habits. Track active windows and durations to understand where your time goes. This helps you identify focus areas and reduce time waste.
+          Oplev dine daglige brugsvaner. Spor aktive vinduer og varigheder for at forstå, hvor din tid går hen. Dette hjælper dig med at identificere fokusområder og reducere tidsspild.
 
-          - ⌛ Review app usage durations  
-          - 📅 Analyze daily patterns  
-          - 🖥️ Track active window history  
+          - ⌛ Gennemgå app-brugsvarigheder  
+          - 📅 Analyser daglige mønstre  
+          - 🖥️ Spor aktiv vindueshistorik  
 
-          ## 🏷️ Tagging and Categorization
+          ## 🏷️ Tagning og kategorisering
 
-          Create an organized structure by grouping apps. With the tagging system, make your data more meaningful and easily analyze how much time you spend per category.
+          Opret en organiseret struktur ved at gruppere apps. Med tagsystemet gør du dine data mere meningsfulde og analyserer let, hvor meget tid du bruger pr. kategori.
 
-          - 🏷️ Assign meaningful tags to apps  
-          - ⚙️ Define automatic tagging rules  
-          - 📚 View usage time by category  
+          - 🏷️ Tildel meningsfulde tags til apps  
+          - ⚙️ Definer automatiske tag-regler  
+          - 📚 Se brugstid pr. kategori  
 
-          ## 📊 Usage Analysis
+          ## 📊 Brugsanalyse
 
-          Analyze how efficiently you use your time. Through app comparisons and usage patterns, see which tools are actually beneficial for you.
+          Analyser, hvor effektivt du bruger din tid. Gennem app-sammenligninger og brugsmønstre ser du, hvilke værktøjer der faktisk er gavnlige for dig.
 
-          - 📈 Analyze your own usage patterns  
-          - 🔄 Compare different apps  
-          - 🚀 Track your productive and unproductive time  
+          - 📈 Analyser dine egne brugsmønstre  
+          - 🔄 Sammenlign forskellige apps  
+          - 🚀 Spor din produktive og uproduktive tid  
 
-          ## ⚙️ Management Tools
+          ## ⚙️ Administrationsværktøjer
 
-          Use rules and filtering options to better control app behaviors. Especially with automation, save valuable time.
+          Brug regler og filtreringsmuligheder til bedre at kontrollere app-adfærd. Især med automatisering sparer du værdifuld tid.
 
-          - 🛠️ Define new rules or edit existing ones  
-          - 🗑️ Remove unnecessary rules  
-          - 🔍 Filter by tag and date range
-        title: App Usage & Time Management Guide
+          - 🛠️ Definer nye regler eller rediger eksisterende  
+          - 🗑️ Fjern unødvendige regler  
+          - 🔍 Filtrer efter tag og datointerval
+        title: App-brug & Tidsstyring Guide
 
-      title: App Usage
+      title: App-brug
   rules:
-    add_new_rule: Add New Rule
-    delete_confirm_message: Are you sure you want to delete this rule?
-    delete_confirm_title: Delete Rule
+    add_new_rule: Tilføj ny regel
+    delete_confirm_message: Er du sikker på, at du vil slette denne regel?
+    delete_confirm_title: Slet regel
     errors:
-      delete_rule: An unexpected error occurred while deleting rule
-      get_rules: An unexpected error occurred while fetching rules
-    existing_rules: Existing Rules
+      delete_rule: Der opstod en uventet fejl under sletning af regel
+      get_rules: Der opstod en uventet fejl under hentning af regler
+    existing_rules: Eksisterende regler
     help:
       content: |
-        Use rules to manage app data in an organized, consistent, and efficient way. Customize app tracking with automatic tagging and exclusion options to strengthen your time management.
+        Brug regler til at administrere app-data på en organiseret, konsistent og effektiv måde. Tilpas app-sporing med automatiske tag- og udelukkelsesmuligheder for at styrke din tidsstyring.
 
-        ## 🏷️ Automatic Tagging Rules
+        ## 🏷️ Automatiske tag-regler
 
-        Create rules for your apps so the system can assign the correct tags on your behalf. This eliminates the need for manual tagging.
+        Opret regler for dine apps, så systemet kan tildele de rigtige tags på dine vegne. Dette eliminerer behovet for manuel tagging.
 
-        - 🧠 Automatically tag apps based on their names  
-        - 🗂️ Match multiple tags with a single rule  
-        - ⏱️ Automatically track time spent on tagged apps  
+        - 🧠 Tag apps automatisk baseret på deres navne  
+        - 🗂️ Match flere tags med en enkelt regel  
+        - ⏱️ Spor automatisk tid brugt på taggede apps  
 
-        ## ⚙️ Rule Management
+        ## ⚙️ Regeladministration
 
-        Use the flexible rule management screen to build your own system. Delete unnecessary rules, add new ones, and update existing ones.
+        Brug den fleksible regeladministrationsskærm til at bygge dit eget system. Slet unødvendige regler, tilføj nye og opdater eksisterende.
 
-        - ➕ Define new rules  
-        - ✏️ Edit existing rules  
-        - 🗑️ Remove rules you no longer use  
+        - ➕ Definer nye regler  
+        - ✏️ Rediger eksisterende regler  
+        - 🗑️ Fjern regler, du ikke længere bruger  
 
-        ## 🚫 Ignore Rules
+        ## 🚫 Ignorer-regler
 
-        Exclude system or background apps that might distort your productivity analysis. With these rules, you can focus only on what's truly important.
+        Udeluk system- eller baggrunds-apps, der kan forvride din produktivitetsanalyse. Med disse regler kan du fokusere kun på det, der virkelig er vigtigt.
 
-        - 🧹 Exclude specific apps from tracking  
-        - 🖥️ Omit system processes and helper tools  
-        - 🔕 Filter out background-running apps  
+        - 🧹 Udeluk specifikke apps fra sporing  
+        - 🖥️ Udelad systemprocesser og hjælpeværktøjer  
+        - 🔕 Filtrer baggrundskørende apps  
 
-        ## 🧩 Advanced Matching Options
+        ## 🧩 Avancerede matchingsmuligheder
 
-        Enhance your rules with advanced pattern-matching options.
+        Forbedr dine regler med avancerede møntermuligheder.
 
-        - ✳️ Create flexible rules using wildcards  
-        - 🧾 Match exact app names  
-        - 🔠 Choose case sensitivity settings
-      title: Tagging & Exclusion Rules Guide
-    ignore_rules: Ignore Rules
-    no_rules: No rules
-    tag_rules: Tag Rules
-    title: App Usage Rules
+        - ✳️ Opret fleksible regler ved hjælp af jokertegn  
+        - 🧾 Match nøjagtige app-navne  
+        - 🔠 Vælg store-/småbogstavsfølsomhedsindstillinger
+      title: Tag- & Udelukkelsesregler Guide
+    ignore_rules: Ignorer-regler
+    no_rules: Ingen regler
+    tag_rules: Tag-regler
+    title: App-brugsregler
   tooltips:
-    edit_name: Edit Name
+    edit_name: Rediger navn
   units:
     minutes: min
