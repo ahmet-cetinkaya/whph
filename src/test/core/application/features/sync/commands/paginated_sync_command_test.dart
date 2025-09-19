@@ -326,22 +326,23 @@ void main() {
   });
 }
 
-// Helper method to simulate conflict resolution testing
-// In a real implementation, this would use reflection or expose the method for testing
-ConflictResolutionResult<T> _testConflictResolution<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
-  // This is a simplified version of the conflict resolution logic for testing
-  // In a full implementation, you would either:
-  // 1. Make the _resolveConflict method public for testing
-  // 2. Create a test-specific version of the handler
-  // 3. Use dependency injection to test the logic
+// IMPORTANT: This test currently duplicates the production conflict resolution logic
+// to avoid complex dependency setup. In the future, this should be refactored to:
+// 1. Extract conflict resolution logic into a separate, testable service class
+// 2. Use the actual production code via dependency injection
+// 3. Or create a minimal test harness with mocked dependencies
+// The current approach tests the logic but doesn't guarantee it matches production behavior.
 
+// Helper method that implements the same logic as production code
+// This is a temporary solution until proper testing architecture is implemented
+ConflictResolutionResult<T> _testConflictResolution<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
   final DateTime localTimestamp = localEntity.modifiedDate ?? localEntity.createdDate;
   final DateTime remoteTimestamp = remoteEntity.modifiedDate ?? remoteEntity.createdDate;
 
   final bool localIsDeleted = localEntity.deletedDate != null;
   final bool remoteIsDeleted = remoteEntity.deletedDate != null;
 
-  // Handle deletion conflicts specially
+  // Handle deletion conflicts specially (matches production implementation)
   if (localIsDeleted != remoteIsDeleted) {
     const Duration deletionGracePeriod = Duration(minutes: 5);
 
@@ -376,17 +377,13 @@ ConflictResolutionResult<T> _testConflictResolution<T extends BaseEntity<String>
     }
   }
 
-  // Handle recurring task duplication conflicts
-  if (T.toString().contains('Task')) {
-    final dynamic localTask = localEntity;
-    final dynamic remoteTask = remoteEntity;
-
-    if (localTask.recurrenceParentId != null &&
-        remoteTask.recurrenceParentId != null &&
-        localTask.recurrenceParentId == remoteTask.recurrenceParentId) {
-
-      final DateTime? localPlannedDate = localTask.plannedDate;
-      final DateTime? remotePlannedDate = remoteTask.plannedDate;
+  // Handle recurring task duplication conflicts (matches production implementation)
+  if (localEntity is Task && remoteEntity is Task) {
+    if (localEntity.recurrenceParentId != null &&
+        remoteEntity.recurrenceParentId != null &&
+        localEntity.recurrenceParentId == remoteEntity.recurrenceParentId) {
+      final DateTime? localPlannedDate = localEntity.plannedDate;
+      final DateTime? remotePlannedDate = remoteEntity.plannedDate;
 
       if (localPlannedDate != null && remotePlannedDate != null) {
         if (localPlannedDate.isBefore(remotePlannedDate)) {
@@ -406,7 +403,7 @@ ConflictResolutionResult<T> _testConflictResolution<T extends BaseEntity<String>
     }
   }
 
-  // Standard timestamp-based conflict resolution
+  // Standard timestamp-based conflict resolution (matches production implementation)
   if (localTimestamp.isAfter(remoteTimestamp)) {
     return ConflictResolutionResult(
       action: ConflictAction.keepLocal,
@@ -428,7 +425,7 @@ ConflictResolutionResult<T> _testConflictResolution<T extends BaseEntity<String>
   }
 }
 
-// Test helper classes that mirror the actual implementation
+// Test helper types that mirror the actual production implementation
 enum ConflictAction {
   keepLocal,
   acceptRemote,

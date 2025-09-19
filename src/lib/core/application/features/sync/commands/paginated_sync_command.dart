@@ -1140,6 +1140,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   }
 
   ConflictResolutionResult<T> _resolveConflict<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
+    return resolveConflictForTesting(localEntity, remoteEntity);
+  }
+
+  @visibleForTesting
+  ConflictResolutionResult<T> resolveConflictForTesting<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
     final DateTime localTimestamp = _getEffectiveTimestamp(localEntity);
     final DateTime remoteTimestamp = _getEffectiveTimestamp(remoteEntity);
 
@@ -1147,7 +1152,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     final bool remoteIsDeleted = remoteEntity.deletedDate != null;
 
     // Enhanced logging for habit records to help debug sync issues
-    if (T.toString().contains('HabitRecord')) {
+    if (localEntity is HabitRecord) {
       Logger.debug('🔄 Resolving habit record conflict for ${localEntity.id}:');
       Logger.debug('   Local: deleted=$localIsDeleted, timestamp=$localTimestamp');
       Logger.debug('   Remote: deleted=$remoteIsDeleted, timestamp=$remoteTimestamp');
@@ -1176,7 +1181,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             reason:
                 'Preferring non-deleted remote entity over recent local deletion (deletion time: $localTimestamp, remote time: $remoteTimestamp)',
           );
-          if (T.toString().contains('HabitRecord')) {
+          if (localEntity is HabitRecord) {
             Logger.debug('   Resolution: Accept remote (non-deleted)');
           }
           return result;
@@ -1199,7 +1204,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             reason:
                 'Preferring non-deleted local entity over recent remote deletion (deletion time: $remoteTimestamp, local time: $localTimestamp)',
           );
-          if (T.toString().contains('HabitRecord')) {
+          if (localEntity is HabitRecord) {
             Logger.debug('   Resolution: Keep local (non-deleted)');
           }
           return result;
@@ -1208,19 +1213,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     // Handle recurring task duplication conflicts
-    if (T.toString().contains('Task')) {
-      // Cast to dynamic to access task-specific properties safely
-      final dynamic localTask = localEntity;
-      final dynamic remoteTask = remoteEntity;
-
+    if (localEntity is Task && remoteEntity is Task) {
       // Check if both tasks have recurrenceParentId (indicating they are recurring task instances)
-      if (localTask.recurrenceParentId != null &&
-          remoteTask.recurrenceParentId != null &&
-          localTask.recurrenceParentId == remoteTask.recurrenceParentId) {
+      if (localEntity.recurrenceParentId != null &&
+          remoteEntity.recurrenceParentId != null &&
+          localEntity.recurrenceParentId == remoteEntity.recurrenceParentId) {
         // Both are instances of the same recurring task
         // Prefer the instance that was created earlier (closer to the original planned date)
-        final DateTime? localPlannedDate = localTask.plannedDate;
-        final DateTime? remotePlannedDate = remoteTask.plannedDate;
+        final DateTime? localPlannedDate = localEntity.plannedDate;
+        final DateTime? remotePlannedDate = remoteEntity.plannedDate;
 
         if (localPlannedDate != null && remotePlannedDate != null) {
           // Prefer the instance with the earlier planned date (original occurrence)
