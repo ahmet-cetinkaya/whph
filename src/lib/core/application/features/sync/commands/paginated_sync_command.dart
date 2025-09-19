@@ -2280,6 +2280,48 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         '📊 Progress: ${progress.progressPercentage.toStringAsFixed(1)}% - $operation $currentEntity (page ${currentPage + 1}/$totalPages)');
   }
 
+  /// Check for recurring task duplicates based on recurrenceParentId and plannedDate
+  /// This prevents creating duplicate task instances when multiple devices independently
+  /// create instances for the same recurring task
+  Future<T?> _checkForRecurringTaskDuplicate<T extends BaseEntity<String>>(
+    T item,
+    IRepository<T, String> repository,
+  ) async {
+    // Only check for Task entities with recurrence information
+    if (item is! Task || item.recurrenceParentId == null || item.plannedDate == null) {
+      return null;
+    }
+
+    // Only check tasks repository - cast is safe since we know repository handles Task type
+    if (repository is! ITaskRepository) {
+      return null;
+    }
+
+    final taskRepo = repository as ITaskRepository;
+
+    try {
+      // Query for existing tasks with same recurrenceParentId and plannedDate
+      final existingTasks = await taskRepo.getList(
+        0, // page
+        10, // pageSize - should be enough, most cases will have 0-1 matches
+        customWhereFilter: CustomWhereFilter(
+          'recurrence_parent_id = ? AND planned_date = ? AND deleted_date IS NULL',
+          [item.recurrenceParentId!, item.plannedDate!.toIso8601String()],
+        ),
+      );
+
+      if (existingTasks.items.isNotEmpty) {
+        // Return the first matching task as T (safe cast since we verified repository type)
+        return existingTasks.items.first as T;
+      }
+
+      return null;
+    } catch (e) {
+      Logger.error('Error checking for recurring task duplicates: $e');
+      return null; // Fall back to normal processing if check fails
+    }
+  }
+
   /// Maximum yielding processing that processes one item at a time with aggressive yielding
   /// specifically for database operations taking >15ms each
   Future<int> _processItemsWithMaximumYielding<T extends BaseEntity<String>>(
@@ -2351,7 +2393,31 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           await _yieldToUIThreadMaximum();
 
           if (existingItem == null) {
-            await repository.add(item);
+            // Check for recurring task deduplication before creating
+            T? duplicateTask = await _checkForRecurringTaskDuplicate(item, repository);
+
+            if (duplicateTask != null) {
+              // Found a duplicate recurring task - resolve conflict with existing task
+              final resolution = _resolveConflict(duplicateTask, item);
+              conflicts = 1;
+
+              Logger.debug('🔄 Found duplicate recurring task during create: ${item.id} vs ${duplicateTask.id}');
+
+              switch (resolution.action) {
+                case ConflictAction.acceptRemote:
+                case ConflictAction.acceptRemoteForceUpdate:
+                  // Remote (incoming) item wins - update the existing task
+                  await repository.update(item);
+                  break;
+                case ConflictAction.keepLocal:
+                  // Local (existing) item wins - skip creating the remote item
+                  Logger.debug('🏠 Keeping local recurring task ${duplicateTask.id}, skipping remote ${item.id}');
+                  break;
+              }
+            } else {
+              // No duplicate found - proceed with normal creation
+              await repository.add(item);
+            }
           } else {
             await repository.update(item);
             conflicts = 1;

@@ -103,14 +103,19 @@ void main() {
     });
 
     group('Recurring Task Sync Conflicts', () {
-      test('should prefer task with earlier planned date when same recurrence parent', () {
-        // Arrange
+      // NOTE: These tests cover same-ID recurring task conflicts that can occur when
+      // the same recurring task instance is modified on different devices before sync.
+      // Different-ID deduplication (when devices independently create instances for
+      // the same recurrence) is now handled separately in the create logic.
+
+      test('should prefer task with earlier planned date when same ID and recurrence parent', () {
+        // Arrange - Same task ID modified on different devices with different planned dates
         final now = DateTime.now().toUtc();
         final tomorrow = now.add(const Duration(days: 1));
         final dayAfterTomorrow = now.add(const Duration(days: 2));
 
         final localTask = Task(
-          id: 'task-instance-1',
+          id: 'task-instance-1', // Same ID
           createdDate: now,
           title: 'Recurring Task',
           isCompleted: false,
@@ -120,7 +125,7 @@ void main() {
         );
 
         final remoteTask = Task(
-          id: 'task-instance-2',
+          id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
           isCompleted: false,
@@ -138,14 +143,14 @@ void main() {
         expect(result.winningEntity, localTask);
       });
 
-      test('should prefer remote task with earlier planned date', () {
-        // Arrange
+      test('should prefer remote task with earlier planned date when same ID', () {
+        // Arrange - Same task ID modified on different devices with different planned dates
         final now = DateTime.now().toUtc();
         final tomorrow = now.add(const Duration(days: 1));
         final dayAfterTomorrow = now.add(const Duration(days: 2));
 
         final localTask = Task(
-          id: 'task-instance-1',
+          id: 'task-instance-1', // Same ID
           createdDate: now,
           title: 'Recurring Task',
           isCompleted: false,
@@ -155,7 +160,7 @@ void main() {
         );
 
         final remoteTask = Task(
-          id: 'task-instance-2',
+          id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
           isCompleted: false,
@@ -174,13 +179,13 @@ void main() {
       });
 
       test('should fall back to timestamp resolution when planned dates are same', () {
-        // Arrange
+        // Arrange - Same task ID modified on different devices with same planned date
         final now = DateTime.now().toUtc();
         final tomorrow = now.add(const Duration(days: 1));
         final oneMinuteAgo = now.subtract(const Duration(minutes: 1));
 
         final localTask = Task(
-          id: 'task-instance-1',
+          id: 'task-instance-1', // Same ID
           createdDate: oneMinuteAgo,
           title: 'Recurring Task',
           isCompleted: false,
@@ -190,7 +195,7 @@ void main() {
         );
 
         final remoteTask = Task(
-          id: 'task-instance-2',
+          id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
           isCompleted: false,
@@ -208,12 +213,12 @@ void main() {
       });
 
       test('should not apply recurring task logic for different parents', () {
-        // Arrange
+        // Arrange - Same task ID but different recurrence parents
         final now = DateTime.now().toUtc();
         final tomorrow = now.add(const Duration(days: 1));
 
         final localTask = Task(
-          id: 'task-instance-1',
+          id: 'task-instance-1', // Same ID
           createdDate: now,
           title: 'Recurring Task',
           isCompleted: false,
@@ -223,7 +228,7 @@ void main() {
         );
 
         final remoteTask = Task(
-          id: 'task-instance-2',
+          id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
           isCompleted: false,
@@ -326,6 +331,20 @@ void main() {
   });
 }
 
+// SYNC CONFLICT RESOLUTION TESTING ARCHITECTURE
+//
+// This test suite covers different types of sync conflicts:
+//
+// 1. SAME-ID CONFLICTS (tested here):
+//    - When the same entity is modified on different devices before sync
+//    - Handled by _resolveConflict() method during updateSync processing
+//    - Tests use duplicate logic due to complex dependency injection requirements
+//
+// 2. DIFFERENT-ID CONFLICTS (handled in production):
+//    - When devices independently create instances for the same recurring task
+//    - Handled by _checkForRecurringTaskDuplicate() during createSync processing
+//    - Not covered in these tests due to integration complexity
+//
 // KNOWN LIMITATION: This test duplicates production logic due to complex dependency injection requirements
 //
 // FUTURE IMPROVEMENT: To properly test production code, one of these approaches should be used:
