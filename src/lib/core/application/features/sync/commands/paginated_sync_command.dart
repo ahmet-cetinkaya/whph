@@ -2280,6 +2280,44 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         '📊 Progress: ${progress.progressPercentage.toStringAsFixed(1)}% - $operation $currentEntity (page ${currentPage + 1}/$totalPages)');
   }
 
+  /// Copy remote task data to existing task while preserving the existing task's ID
+  /// This is used when resolving duplicate recurring tasks where the remote version wins
+  T _copyRemoteDataToExistingTask<T extends BaseEntity<String>>(T existingTask, T remoteTask) {
+    // Only works for Task entities
+    if (existingTask is! Task || remoteTask is! Task) {
+      return existingTask; // Return unchanged if not tasks
+    }
+
+    // Create a copy of the remote task but with the existing task's ID
+    // This preserves database consistency while applying remote changes
+    final updatedTask = Task(
+      id: existingTask.id, // Keep existing ID
+      createdDate: remoteTask.createdDate,
+      modifiedDate: remoteTask.modifiedDate,
+      deletedDate: remoteTask.deletedDate,
+      title: remoteTask.title,
+      description: remoteTask.description,
+      priority: remoteTask.priority,
+      plannedDate: remoteTask.plannedDate,
+      deadlineDate: remoteTask.deadlineDate,
+      estimatedTime: remoteTask.estimatedTime,
+      isCompleted: remoteTask.isCompleted,
+      parentTaskId: remoteTask.parentTaskId,
+      order: remoteTask.order,
+      plannedDateReminderTime: remoteTask.plannedDateReminderTime,
+      deadlineDateReminderTime: remoteTask.deadlineDateReminderTime,
+      recurrenceType: remoteTask.recurrenceType,
+      recurrenceInterval: remoteTask.recurrenceInterval,
+      recurrenceDaysString: remoteTask.recurrenceDaysString,
+      recurrenceStartDate: remoteTask.recurrenceStartDate,
+      recurrenceEndDate: remoteTask.recurrenceEndDate,
+      recurrenceCount: remoteTask.recurrenceCount,
+      recurrenceParentId: remoteTask.recurrenceParentId,
+    );
+
+    return updatedTask as T; // Safe cast since we verified types
+  }
+
   /// Check for recurring task duplicates based on recurrenceParentId and plannedDate
   /// This prevents creating duplicate task instances when multiple devices independently
   /// create instances for the same recurring task
@@ -2406,8 +2444,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               switch (resolution.action) {
                 case ConflictAction.acceptRemote:
                 case ConflictAction.acceptRemoteForceUpdate:
-                  // Remote (incoming) item wins - update the existing task
-                  await repository.update(item);
+                  // Remote (incoming) item wins - copy remote data to existing task and update it
+                  final updatedTask = _copyRemoteDataToExistingTask(duplicateTask, item);
+                  await repository.update(updatedTask);
+                  Logger.debug('📝 Updated existing task ${duplicateTask.id} with remote data from ${item.id}');
                   break;
                 case ConflictAction.keepLocal:
                   // Local (existing) item wins - skip creating the remote item
