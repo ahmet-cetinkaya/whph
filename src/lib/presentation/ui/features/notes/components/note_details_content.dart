@@ -46,7 +46,12 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final FocusNode _titleFocusNode = FocusNode();
+  final FocusNode _contentFocusNode = FocusNode();
   Timer? _debounce;
+
+  // Track active input fields to prevent text selection conflicts
+  bool _isTitleFieldActive = false;
+  bool _isContentFieldActive = false;
 
   final _translationService = container.resolve<ITranslationService>();
 
@@ -60,12 +65,19 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   void initState() {
     super.initState();
     _notesService.onNoteUpdated.addListener(_handleNoteUpdated);
+
+    // Track focus state to prevent text selection conflicts
+    _titleFocusNode.addListener(_handleTitleFocusChange);
+    _contentFocusNode.addListener(_handleContentFocusChange);
+
     _getInitialData();
   }
 
   @override
   void dispose() {
     _notesService.onNoteUpdated.removeListener(_handleNoteUpdated);
+    _titleFocusNode.removeListener(_handleTitleFocusChange);
+    _contentFocusNode.removeListener(_handleContentFocusChange);
 
     // Notify parent about title changes before disposing
     if (widget.onTitleUpdated != null && _titleController.text.isNotEmpty) {
@@ -75,12 +87,16 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     _titleController.dispose();
     _contentController.dispose();
     _titleFocusNode.dispose();
+    _contentFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
 
   void _handleNoteUpdated() {
     if (!mounted || _notesService.onNoteUpdated.value != widget.noteId) return;
+
+    // Skip refresh if any field is actively being edited to prevent input conflicts
+    if (_isTitleFieldActive || _isContentFieldActive) return;
 
     // Store current cursor position before updating
     final contentSelection = _contentController.selection;
@@ -92,13 +108,28 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           contentSelection.isValid &&
           contentSelection.baseOffset <= _contentController.text.length &&
           contentSelection.extentOffset <= _contentController.text.length &&
-          _contentController.text.isNotEmpty) {
+          _contentController.text.isNotEmpty &&
+          !_isContentFieldActive) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             _contentController.selection = contentSelection;
           }
         });
       }
+    });
+  }
+
+  void _handleTitleFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isTitleFieldActive = _titleFocusNode.hasFocus;
+    });
+  }
+
+  void _handleContentFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isContentFieldActive = _contentFocusNode.hasFocus;
     });
   }
 
@@ -121,8 +152,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Update title if it's different
           if (_titleController.text != response.title) {
             _titleController.text = response.title;
-          } else if (titleSelection.isValid) {
-            // Restore selection if title didn't change
+          } else if (titleSelection.isValid && !_isTitleFieldActive) {
+            // Restore selection if title didn't change and field is not actively being edited
             _titleController.selection = titleSelection;
           }
 
@@ -140,19 +171,20 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           final content = response.content ?? '';
           if (_contentController.text != content) {
             _contentController.text = content;
-            // Only restore selection if content controller had focus and selection was valid
+            // Only restore selection if content controller had focus and selection was valid and field is not active
             if (contentSelection.isValid &&
                 contentSelection.baseOffset <= content.length &&
-                contentSelection.extentOffset <= content.length) {
+                contentSelection.extentOffset <= content.length &&
+                !_isContentFieldActive) {
               // Use a post-frame callback to ensure the text is updated before setting selection
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted && _contentController.text == content) {
+                if (mounted && _contentController.text == content && !_isContentFieldActive) {
                   _contentController.selection = contentSelection;
                 }
               });
             }
-          } else if (contentSelection.isValid && _contentController.text.isNotEmpty) {
-            // Only restore selection if content didn't change and field has content
+          } else if (contentSelection.isValid && _contentController.text.isNotEmpty && !_isContentFieldActive) {
+            // Only restore selection if content didn't change and field has content and field is not actively being edited
             // Skip selection restoration for empty fields to avoid paste conflicts
             _contentController.selection = contentSelection;
           }
@@ -252,10 +284,14 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
   // Event handler methods
   void _onTitleChanged(String value) {
+    // Update active state to prevent data refresh conflicts during typing
+    _isTitleFieldActive = true;
     _handleFieldChange(value, () => widget.onTitleUpdated?.call(value));
   }
 
   void _onContentChanged(String value) {
+    // Update active state to prevent data refresh conflicts during typing
+    _isContentFieldActive = true;
     _handleFieldChange<String>(value, null);
   }
 

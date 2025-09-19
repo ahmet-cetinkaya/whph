@@ -44,6 +44,9 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   final _nameController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
   Timer? _debounce;
+
+  // Track active input fields to prevent text selection conflicts
+  bool _isNameFieldActive = false;
   GetTagQueryResponse? _tag;
   GetListTagTagsQueryResponse? _tagTags;
 
@@ -57,12 +60,17 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   @override
   void initState() {
+    // Track focus state to prevent text selection conflicts
+    _nameFocusNode.addListener(_handleNameFocusChange);
+
     _getInitialData();
     super.initState();
   }
 
   @override
   void dispose() {
+    _nameFocusNode.removeListener(_handleNameFocusChange);
+
     // Notify parent about name changes before disposing
     if (widget.onNameUpdated != null && _nameController.text.isNotEmpty) {
       widget.onNameUpdated!(_nameController.text);
@@ -72,6 +80,13 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     _nameFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
+  }
+
+  void _handleNameFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isNameFieldActive = _nameFocusNode.hasFocus;
+    });
   }
 
   // Process field content and update UI after tag data is loaded
@@ -139,7 +154,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
           if (_nameController.text != response.name) {
             _nameController.text = response.name;
             widget.onNameUpdated?.call(response.name);
-          } else if (nameSelection.isValid) {
+          } else if (nameSelection.isValid && !_isNameFieldActive) {
+            // Restore selection if name didn't change and field is not actively being edited
             _nameController.selection = nameSelection;
           }
 
@@ -272,6 +288,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   // Event handler methods
   void _onNameChanged(String value) {
+    // Update active state to prevent data refresh conflicts during typing
+    _isNameFieldActive = true;
     _handleFieldChange(value, () => widget.onNameUpdated?.call(value));
   }
 
