@@ -158,8 +158,11 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     COMPONENT Runtime)
 endif()
 
-# Install desktop file and icons
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/whph.desktop"
+# Configure and install desktop file with proper icon path
+set(ICON_PATH "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps/whph.png")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/whph.desktop.in"
+               "${CMAKE_BINARY_DIR}/whph.desktop" @ONLY)
+install(FILES "${CMAKE_BINARY_DIR}/whph.desktop"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications"
 )
 

@@ -104,7 +104,16 @@ exit 0
   Future<void> _updateDesktopFile(String filePath, String iconPath) async {
     if (await File(filePath).exists()) {
       var content = await File(filePath).readAsString();
-      content = content.replaceAll('Icon=whph', 'Icon=$iconPath');
+
+      // Handle both old format (Icon=whph) and new format (Icon=full/path)
+      // Replace with the local user icon path
+      if (content.contains('Icon=whph')) {
+        content = content.replaceAll('Icon=whph', 'Icon=$iconPath');
+      } else {
+        // If the desktop file already has a full path, replace it with the user-local path
+        content = content.replaceAll(RegExp(r'Icon=.*'), 'Icon=$iconPath');
+      }
+
       await File(filePath).writeAsString(content);
     }
   }
