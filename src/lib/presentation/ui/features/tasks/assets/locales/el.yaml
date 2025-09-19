@@ -293,7 +293,7 @@ tasks:
       occurrences: επαναλήψεις
       true: στις
       starts: ξεκινά
-      on: στις
+      on: "στις"
     weekDays: Ημέρες εβδομάδας
     weekSuffix: εβδομάδα(ες)
     weekly: Εβδομαδιαία

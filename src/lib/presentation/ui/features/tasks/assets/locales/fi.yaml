@@ -293,7 +293,7 @@ tasks:
       occurrences: esiintymiä
       true: päivässä
       starts: alkaa
-      on: ""
+      on: päivänä
     weekDays: Viikon Päivät
     weekSuffix: viikko(a)
     weekly: Viikoittain

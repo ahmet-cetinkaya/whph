@@ -293,7 +293,7 @@ tasks:
       occurrences: ocorrências
       true: em
       starts: inicia
-      on: na
+      on:  "na"
     weekDays: Dias da semana
     weekSuffix: semana(s)
     weekly: Semanal

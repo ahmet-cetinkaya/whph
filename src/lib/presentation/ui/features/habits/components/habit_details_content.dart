@@ -999,7 +999,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       );
 
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
-        label: _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
+        label: _translationService.translate(SharedTranslationKeys.timeDisplayElapsed),
         icon: HabitUiConstants.estimatedTimeIcon,
         widget: Padding(
           padding: const EdgeInsets.only(

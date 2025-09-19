@@ -293,7 +293,7 @@ tasks:
       occurrences: voorvallen
       true: op
       starts: begint
-      on: op
+      on:  "op"
     weekDays: Dagen van de week
     weekSuffix: week(en)
     weekly: Wekelijks

@@ -293,7 +293,7 @@ tasks:
       occurrences: forekomster
       true: sand
       starts: starter
-      on: på
+      on: "på"
     weekDays: Dage i ugen
     weekSuffix: uge(r)
     weekly: Ugentligt
