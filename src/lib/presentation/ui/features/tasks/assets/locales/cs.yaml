@@ -292,7 +292,7 @@ tasks:
       occurrences: výskytech
       true: true
       starts: začíná
-      on: na
+      on: "na"
     weekDays: Dny týdne
     weekSuffix: týden(ů)
     weekly: Týdně
