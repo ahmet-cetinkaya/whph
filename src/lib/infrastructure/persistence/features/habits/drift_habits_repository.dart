@@ -31,6 +31,9 @@ class HabitTable extends Table {
   IntColumn get dailyTarget => integer().nullable()();
 
   RealColumn get order => real().withDefault(const Constant(0.0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable> implements IHabitRepository {
