@@ -65,6 +65,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final TextEditingController _descriptionController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
   Timer? _debounce;
+  bool _isNameFieldActive = false;
 
   GetListHabitRecordsQueryResponse? _habitRecords;
   GetListHabitTagsQueryResponse? _habitTags;
@@ -97,6 +98,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordChanged);
     _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordChanged);
 
+    // Track focus state to prevent text selection conflicts
+    _nameFocusNode.addListener(_handleNameFocusChange);
+
     super.initState();
   }
 
@@ -105,6 +109,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     _habitsService.onHabitUpdated.removeListener(_handleHabitUpdated);
     _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChanged);
     _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChanged);
+    _nameFocusNode.removeListener(_handleNameFocusChange);
 
     // Notify parent about name changes before disposing
     if (widget.onNameUpdated != null && _nameController.text.isNotEmpty) {
@@ -120,8 +125,19 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   void _handleHabitUpdated() {
     if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId) return;
+
+    // Skip refresh if name field is actively being edited to prevent input conflicts
+    if (_isNameFieldActive) return;
+
     _getHabit();
     _getHabitTags(); // Also refresh tags when habit is updated
+  }
+
+  void _handleNameFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isNameFieldActive = _nameFocusNode.hasFocus;
+    });
   }
 
   void _handleHabitRecordChanged() {
@@ -204,8 +220,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               _nameController.text = _habit!.name;
               widget.onNameUpdated?.call(_habit!.name);
               // Don't restore selection for name if it changed
-            } else if (nameSelection.isValid) {
-              // Restore selection if name didn't change
+            } else if (nameSelection.isValid && !_isNameFieldActive) {
+              // Restore selection if name didn't change and field is not actively being edited
               _nameController.selection = nameSelection;
             }
 
@@ -278,8 +294,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               _nameController.text = _habit!.name;
               widget.onNameUpdated?.call(_habit!.name);
               // Don't restore selection for name if it changed
-            } else if (nameSelection.isValid) {
-              // Restore selection if name didn't change
+            } else if (nameSelection.isValid && !_isNameFieldActive) {
+              // Restore selection if name didn't change and field is not actively being edited
               _nameController.selection = nameSelection;
             }
 
@@ -639,6 +655,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
   // Event handler methods
   void _onNameChanged(String value) {
+    // Update active state to prevent data refresh conflicts during typing
+    _isNameFieldActive = true;
     _handleFieldChange(value, () => widget.onNameUpdated?.call(value));
   }
 

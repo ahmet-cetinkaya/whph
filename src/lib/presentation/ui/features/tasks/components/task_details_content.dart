@@ -72,11 +72,15 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _deadlineDateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final _titleController = TextEditingController();
+  final FocusNode _titleFocusNode = FocusNode();
   Timer? _debounce;
 
   // Track date picker interaction state to prevent controller conflicts
   bool _isPlannedDatePickerActive = false;
   bool _isDeadlineDatePickerActive = false;
+
+  // Track active input fields to prevent text selection conflicts
+  bool _isTitleFieldActive = false;
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
@@ -107,17 +111,28 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void _setupEventListeners() {
     _tasksService.onTaskUpdated.addListener(_getTask);
     _tagsService.onTagUpdated.addListener(_handleTagUpdated);
+
+    // Track focus state to prevent text selection conflicts
+    _titleFocusNode.addListener(_handleTitleFocusChange);
   }
 
   void _removeEventListeners() {
     _tasksService.onTaskUpdated.removeListener(_getTask);
     _tagsService.onTagUpdated.removeListener(_handleTagUpdated);
+    _titleFocusNode.removeListener(_handleTitleFocusChange);
   }
 
   void _handleTagUpdated() {
     if (!mounted) return;
     // Refresh task tags when any tag is updated to get the latest tag names/colors
     _getTaskTags();
+  }
+
+  void _handleTitleFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isTitleFieldActive = _titleFocusNode.hasFocus;
+    });
   }
 
   @override
@@ -229,6 +244,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
 
     _titleController.dispose();
+    _titleFocusNode.dispose();
     _plannedDateController.dispose();
     _deadlineDateController.dispose();
     _descriptionController.dispose();
@@ -243,6 +259,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _getTask() async {
     // Skip refresh if we're in the middle of date picker interactions to prevent conflicts
     if (_isDatePickerInteractionActive()) {
+      return;
+    }
+
+    // Skip refresh if title field is actively being edited to prevent input conflicts
+    if (_isTitleFieldActive) {
       return;
     }
 
@@ -270,8 +291,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             _titleController.text = response.title;
             widget.onTitleUpdated?.call(response.title);
             // Don't restore selection for title if it changed
-          } else if (titleSelection.isValid) {
-            // Restore selection if title didn't change
+          } else if (titleSelection.isValid && !_isTitleFieldActive) {
+            // Restore selection if title didn't change and field is not actively being edited
             _titleController.selection = titleSelection;
           }
 
@@ -692,6 +713,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   /// Event handler for title changes
   void _onTitleChanged(String value) {
+    // Update active state to prevent data refresh conflicts during typing
+    _isTitleFieldActive = true;
     // Notify title change immediately
     widget.onTitleUpdated?.call(value);
     // Trigger debounced save
@@ -911,6 +934,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               Expanded(
                 child: TextFormField(
                   controller: _titleController,
+                  focusNode: _titleFocusNode,
                   maxLines: null,
                   onChanged: _onTitleChanged,
                   decoration: InputDecoration(

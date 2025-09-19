@@ -48,7 +48,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   final _translationService = container.resolve<ITranslationService>();
 
   final _nameController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
   Timer? _debounce;
+
+  // Track active input fields to prevent text selection conflicts
+  bool _isNameFieldActive = false;
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
@@ -59,6 +63,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   @override
   void initState() {
+    // Track focus state to prevent text selection conflicts
+    _nameFocusNode.addListener(_handleNameFocusChange);
+
     _getAppUsage();
     _getAppUsageTags();
     _appUsagesService.onAppUsageUpdated.addListener(_handleAppUsageUpdate);
@@ -68,6 +75,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   @override
   void dispose() {
     _appUsagesService.onAppUsageUpdated.removeListener(_handleAppUsageUpdate);
+    _nameFocusNode.removeListener(_handleNameFocusChange);
 
     // Notify parent about name changes before disposing
     if (widget.onNameUpdated != null && _nameController.text.isNotEmpty) {
@@ -75,14 +83,26 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     }
 
     _nameController.dispose();
+    _nameFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
   }
 
   void _handleAppUsageUpdate() {
     if (!mounted || _appUsagesService.onAppUsageUpdated.value != widget.id) return;
+
+    // Skip refresh if name field is actively being edited to prevent input conflicts
+    if (_isNameFieldActive) return;
+
     _getAppUsage();
     _getAppUsageTags(); // Also refresh tags when app usage is updated
+  }
+
+  void _handleNameFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isNameFieldActive = _nameFocusNode.hasFocus;
+    });
   }
 
   Future<void> _getAppUsage() async {
@@ -108,8 +128,8 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             _nameController.text = response.displayName ?? response.name;
             widget.onNameUpdated?.call(response.displayName ?? response.name);
             // Don't restore selection for name if it changed
-          } else if (nameSelection.isValid) {
-            // Restore selection if name didn't change
+          } else if (nameSelection.isValid && !_isNameFieldActive) {
+            // Restore selection if name didn't change and field is not actively being edited
             _nameController.selection = nameSelection;
           }
         });
@@ -144,6 +164,8 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   // Event handler methods
   void _onNameChanged(String value) {
+    // Update active state to prevent data refresh conflicts during typing
+    _isNameFieldActive = true;
     _handleFieldChange(value, () => widget.onNameUpdated?.call(value));
   }
 
@@ -393,6 +415,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
           // App Usage Name
           TextFormField(
             controller: _nameController,
+            focusNode: _nameFocusNode,
             maxLines: null,
             onChanged: _onNameChanged,
             decoration: InputDecoration(
