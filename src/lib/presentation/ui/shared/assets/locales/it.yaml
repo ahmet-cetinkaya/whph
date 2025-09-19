@@ -1,5 +1,4 @@
 shared:
-  untitled: "Senza titolo"
   buttons:
     add: Aggiungi
     back: Indietro
@@ -65,6 +64,7 @@ shared:
     created_date_label: Data di creazione
     modified_date_label: Data di modifica
     name_label: Nome
+  date: Data
   date_filter:
     title: Seleziona intervallo di date
     tooltips:
@@ -72,6 +72,46 @@ shared:
       filter: Filtra per data
   date_format:
     hint: GG/MM/AAAA
+  datepicker:
+    cannot_select_date_after_max_date:
+      Impossibile selezionare una data successiva
+      al {date}
+    cannot_select_date_before_min_date:
+      Impossibile selezionare una data precedente
+      al {date}
+    cannot_select_time_after_max_date:
+      Impossibile selezionare un orario successivo
+      alle {time}
+    cannot_select_time_before_min_date:
+      Impossibile selezionare un orario precedente
+      alle {time}
+    deadline_cannot_be_before_planned_date:
+      La scadenza deve essere alla data pianificata
+      o successivamente
+    end_date_cannot_be_after_max_date:
+      La data di fine non può essere successiva al
+      {date}
+    end_date_must_be_at_or_before: La data di fine deve essere il {date} o precedente
+    select_date_range_title: Seleziona intervallo date
+    select_date_time_title: Seleziona data e ora
+    selected_date_must_be_at_or_after:
+      La data selezionata deve essere il {date} o
+      successiva
+    selected_date_must_be_at_or_before:
+      La data selezionata deve essere il {date}
+      o precedente
+    selected_date_time_must_be_after:
+      La data e l'ora selezionate devono essere successive
+      a {dateTime}
+    start_date_cannot_be_after_end_date:
+      La data di inizio non può essere successiva
+      alla data di fine
+    start_date_cannot_be_before_min_date:
+      La data di inizio non può essere precedente
+      al {date}
+    start_date_must_be_at_or_after: La data di inizio deve essere il {date} o successiva
+    time_must_be_at_or_after: L'orario deve essere alle {time} o successivo
+    time_must_be_at_or_before: L'orario deve essere alle {time} o precedente
   days:
     friday: Venerdì
     friday_short: Ven
@@ -92,19 +132,19 @@ shared:
       hint: Puoi scrivere usando il formato Markdown...
       tooltips:
         bold: Grassetto
-        italic: Corsivo
-        strikethrough: Barrato
-        code: Codice
-        link: Link
-        quote: Citazione
         bulleted_list: Elenco puntato
-        numbered_list: Elenco numerato
-        horizontal_rule: Linea orizzontale
-        edit: Modifica
-        preview: Anteprima
-        image: Immagine
-        heading: Intestazione
         checkbox: Casella di controllo
+        code: Codice
+        edit: Modifica
+        heading: Intestazione
+        horizontal_rule: Linea orizzontale
+        image: Immagine
+        italic: Corsivo
+        link: Link
+        numbered_list: Elenco numerato
+        preview: Anteprima
+        quote: Citazione
+        strikethrough: Barrato
   errors:
     deleting: Errore durante l'eliminazione dei dati
     file_not_found: File non trovato
@@ -138,8 +178,6 @@ shared:
     unexpected: Si è verificato un errore imprevisto
   filters:
     search: Cerca
-  help:
-    tooltip: Aiuto
   messages:
     confirm_delete: Sei sicuro di voler eliminare questo elemento?
     no_items_found: Nessun elemento
@@ -150,19 +188,19 @@ shared:
       more: Altro
       notes: Note
       settings: Impostazioni
-      tags: Tag
+      tags: Etichette
       tasks: Attività
       today: Oggi
-  none_option: "Nessun tag"
+  none_option: Nessuna etichetta
   regex_help:
     examples:
-      chat: 'Corrisponde a "Slack" o "Discord"'
-      chrome: 'Corrisponde a qualsiasi titolo di finestra contenente "Chrome"'
-      exact_chrome: 'Corrisponde esattamente a "Chrome"'
+      chat: Corrisponde a "Slack" o "Discord"
+      chrome: Corrisponde a qualsiasi titolo di finestra contenente "Chrome"
+      exact_chrome: Corrisponde esattamente a "Chrome"
       pdf: Corrisponde a qualsiasi file PDF
       vscode: Corrisponde a qualsiasi finestra VS Code
     tips:
-      any_chars: 'Usa ".*" per corrispondere a qualsiasi carattere'
+      any_chars: Usa ".*" per corrispondere a qualsiasi carattere
       dot: '"\\." corrisponde a un punto'
       end: '"$" corrisponde alla fine del testo'
       or: '"|" significa O'
@@ -178,7 +216,7 @@ shared:
     habits: Abitudini
     special_filters: Filtri speciali
     statistics: Statistiche
-    tags: Tag
+    tags: Etichette
     tasks: Attività
     time: Tempo
   sort:
@@ -187,11 +225,11 @@ shared:
       description: Abilita trascina e rilascia per riordinare gli elementi
       title: Ordinamento personalizzato
     descending: Decrescente
+    disable_reordering_tooltip: Disabilita modalità riordinamento
+    enable_reordering_tooltip: Abilita modalità riordinamento
     remove_criteria: Rimuovi criterio
     reset_to_default: Ripristina predefinito
     sort: Ordina
-    enable_reordering_tooltip: Abilita modalità riordinamento
-    disable_reordering_tooltip: Disabilita modalità riordinamento
   statistics:
     daily_usage:
       description: Mostra il tempo totale di utilizzo per giorno della settimana
@@ -200,7 +238,24 @@ shared:
       description: Mostra il tempo totale di utilizzo per ora del giorno
       title: Utilizzo orario
   time:
-    not_set: "Non impostato"
+    not_set: Non impostato
+  time_display:
+    elapsed: Trascorso
+    elapsed_time_tooltip: Tempo trascorso su questa attività
+    estimated: Stimato
+    estimated_time_tooltip: Tempo stimato per completare questa attività
+    no_time_logged_tooltip: Nessun tempo registrato ancora
+  time_logging:
+    add_time: Aggiungi tempo
+    add_time_description: Aggiungi tempo al totale esistente
+    dialog_title: Registra tempo
+    duration: Durata
+    invalid_input: Inserisci un orario valido
+    log_time: Registra tempo
+    mode: Modalità
+    set_total: Imposta totale
+    set_total_description: Imposta il tempo totale trascorso
+    total_time: Tempo totale
   time_periods:
     custom: Personalizzato
     last_month: Mese scorso
@@ -210,6 +265,11 @@ shared:
     this_three_months: Questi 3 mesi
     this_week: Questa settimana
     today: Oggi
+  timer:
+    label: Timer
+    normal: Normale
+    pomodoro: Pomodoro
+    stopwatch: Cronometro
   tooltips:
     compare_with_previous: Confronta con periodo precedente
     filter_by_tags: Filtra per tag
@@ -222,6 +282,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sec
+  untitled: Senza titolo
   update_dialog:
     buttons:
       download_page: Pagina download
@@ -233,23 +294,6 @@ shared:
     question: Vuoi aggiornare ora?
     success: Aggiornamento scaricato con successo!
     title: Aggiornamento disponibile!
+  help: Aiuto
   validation:
     required: "{field} è obbligatorio."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "La scadenza deve essere alla data pianificata o successivamente"
-    selected_date_must_be_at_or_after: La data selezionata deve essere il {date} o successiva
-    selected_date_must_be_at_or_before: La data selezionata deve essere il {date} o precedente
-    start_date_cannot_be_after_end_date: La data di inizio non può essere successiva alla data di fine
-    start_date_must_be_at_or_after: La data di inizio deve essere il {date} o successiva
-    end_date_must_be_at_or_before: La data di fine deve essere il {date} o precedente
-    cannot_select_date_before_min_date: Impossibile selezionare una data precedente al {date}
-    cannot_select_date_after_max_date: Impossibile selezionare una data successiva al {date}
-    start_date_cannot_be_before_min_date: La data di inizio non può essere precedente al {date}
-    end_date_cannot_be_after_max_date: La data di fine non può essere successiva al {date}
-    cannot_select_time_before_min_date: Impossibile selezionare un orario precedente alle {time}
-    cannot_select_time_after_max_date: Impossibile selezionare un orario successivo alle {time}
-    time_must_be_at_or_after: L'orario deve essere alle {time} o successivo
-    time_must_be_at_or_before: L'orario deve essere alle {time} o precedente
-    selected_date_time_must_be_after: La data e l'ora selezionate devono essere successive a {dateTime}
-    select_date_time_title: Seleziona data e ora
-    select_date_range_title: Seleziona intervallo date

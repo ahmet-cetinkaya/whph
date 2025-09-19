@@ -1,234 +1,233 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Cancelar
 
 settings:
   about:
-    title: About
+    title: Sobre
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Exportação falhou
+    import_failed: Importação falhou
+    setting_not_found: Configuração não encontrada
+    version_mismatch: Versão não encontrada
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
-    title: Export
-    canceled: Export canceled by user
+    csv_description: Você pode usar isso para visualizar no Excel e aplicativos semelhantes.
+    error: Exportação falhou
+    in_progress: Exportando dados, aguarde...
+    json_description: Exportar dados em formato JSON legível para fins de desenvolvimento e depuração.
+    select_directory: Selecione o diretório de exportação
+    select_path: Selecione o local de salvamento
+    select_type: Selecione o formato de exportação
+    success: "Exportação bem-sucedida. Localização do arquivo:"
+    title: Exportar
+    canceled: Exportação cancelada pelo usuário
   export_data:
-    title: Export Data
+    title: Exportar Dados
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Importação falhou
+    error.entity: Erro no tipo
+    in_progress: Importando dados, aguarde...
+    migration_failed: Importação falhou. Certifique-se de que a versão mais recente do app está instalada.
+    select_file: Selecione o arquivo
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
-    title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+      merge: Mesclar com Dados Existentes
+      replace: Deletar Dados Existentes e Adicionar Novos
+      title: Estratégia de Importação
+    success: Importação bem-sucedida
+    title: Importar
+    unsupported_version: Versão não suportada
+    version_mismatch: Versão não encontrada
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
-    title: Import/Export
+    description: Exporte seus dados em vários formatos ou importe dados de arquivos de backup
+    select_action: Selecione a ação de import/export
+    title: Importar/Exportar
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Escolha seu idioma
+    title: Idioma
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Falha ao desabilitar notificações
+    enable_error: Falha ao habilitar notificações
+    title: Notificações
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Este app precisa de permissão para acessar estatísticas de uso do app para rastrear padrões de uso do app com precisão.
+      instructions: "Instruções:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Pressione o botão "Abrir Configurações"
+        step2: Na tela de configurações de acesso de uso que se abre, encontre "{appName}" na lista
+        step3: Toque em "{appName}"
+        step4: Habilite "Permitir acesso de uso" ou alterne o interruptor para LIGADO
+      title: Permissão de Uso do App
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: Para notificações confiáveis, este app precisa ser excluído da otimização de bateria. Sem isso, lembretes podem ser atrasados ou não entregues.
+      importance: A localização desta configuração pode variar dependendo do fabricante do seu dispositivo.
+      instructions: "Instruções:"
+      not_disabled: A otimização de bateria ainda está habilitada. Forneça permissão para que a função relevante funcione corretamente.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Pressione o botão "Abrir Configurações"
+        step2: Na tela de configurações que se abre, encontre "{appName}"
+        step3: Toque em "{appName}"
+        step4: Certifique-se de que "Permitir Uso em Segundo Plano" está habilitado na página que se abre
+        step5: Toque em "Permitir Uso em Segundo Plano"
+        step6: Selecione "Ilimitado"
+      title: Otimização de Bateria
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ requer permissão para agendar alarmes exatos para que lembretes funcionem corretamente.
+      instructions: "Instruções:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Vá para Alarmas & lembretes e habilite a permissão
+          step3: Confirme a permissão de alarme exato
+        step1: Pressione o botão "Abrir Configurações"
+        step2: 'Na página Alarmas & lembretes do app {appName} aberto, habilite "Permitir definir alarmas e lembretes"'
+      title: Permissão de Alarme Exato
+    fix_it: Corrigir
+    granted: Permissão concedida
+    instructions: Instruções
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: A permissão de notificação é necessária para receber lembretes. Sem esta permissão, você não receberá notificações.
+      instructions: "Instruções:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Pressione o botão "Abrir Configurações"
+          step2: Permitir notificações quando solicitado
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Pressione o botão "Abrir Configurações"
+          step2: Permitir notificações quando solicitado
+      title: Permissão de Notificação
+    open_settings: Abrir Configurações
+    open_terminal: Abrir Terminal
     firewall:
       title: Permissão de Firewall
       description: Permitir que o WHPH se comunique através do firewall {platform} na porta 44040 para sincronização de dispositivos.
-      dialog_description: O WHPH precisa de permissão de firewall para permitir que outros dispositivos se conectem para sincronização. Siga os comandos abaixo para configurar o seu firewall {platform}. Também pode encontrar estes passos no menu de ajuda.
-      dialog_info_text: "Nota: Também pode encontrar estes passos no menu de ajuda."
+      dialog_description: O WHPH precisa de permissão de firewall para permitir que outros dispositivos se conectem para sincronização. Siga os comandos abaixo para configurar o firewall {platform}. Você também pode encontrar estes passos no menu de ajuda.
+      dialog_info_text: "Nota: Você também pode encontrar estes passos no menu de ajuda."
       linux_manual_confirmation_button: "Configurei"
       save_confirmation_error: Falha ao salvar a configuração de confirmação do firewall
       rule_added_success: Regra de firewall adicionada com sucesso
       rule_add_error: Falha ao adicionar regra de firewall. Tente os passos manuais.
       add_rule_button: "Adicionar Regra de Firewall"
-      windows_auto_description: "Clique em 'Adicionar Regra de Firewall' para adicionar automaticamente a regra de firewall com pedido de permissão UAC. Se preferir adicionar manualmente, siga os passos abaixo:"
+      windows_auto_description: "Clique em 'Adicionar Regra de Firewall' para adicionar automaticamente a regra de firewall com solicitação de permissão UAC. Se preferir adicionar manualmente, siga os passos abaixo:"
       instructions:
         linux:
           step1: "Abra um terminal"
-          step2: "Verifique o estado do firewall:"
-          step3: "Adicione uma regra de firewall (se o UFW estiver ativo):"
+          step2: "Verifique o status do firewall:"
+          step3: "Adicione uma regra de firewall (se UFW estiver ativo):"
           step4: "Verifique se a regra foi adicionada:"
         windows:
-          step1: "Abra o Firewall do Windows Defender a partir do Painel de Controlo"
-          step2: "Clique em Definições avançadas à esquerda"
+          step1: "Abra o Firewall do Windows Defender a partir do Painel de Controle"
+          step2: "Clique em Configurações Avançadas à esquerda"
           step3: "No painel esquerdo, clique em Regras de Entrada"
           step4: "No painel direito, clique em Nova Regra..."
-          step5: "Selecione Porta e clique em Seguinte"
-          step6: "Selecione TCP e introduza 44040 no campo de portas locais específicas"
-          step7: "Selecione Permitir a ligação e clique em Seguinte"
-          step8: "Marque todos os perfis (Domínio, Privado, Público) e clique em Seguinte"
-          step9: "Introduza um nome como WHPH Sync Port 44040 e clique em Concluir"
+          step5: "Selecione Porta e clique em Próximo"
+          step6: "Selecione TCP e insira 44040 no campo de portas locais específicas"
+          step7: "Selecione Permitir a conexão e clique em Próximo"
+          step8: "Marque todos os perfis (Domínio, Privado, Público) e clique em Próximo"
+          step9: "Insira um nome como WHPH Sync Port 44040 e clique em Concluir"
           alternative_command_prompt:
             title: "Alternativa: Use o Prompt de Comando"
             steps:
               cmd_step1: "Abra o Prompt de Comando como Administrador"
               cmd_step2: "Adicione uma regra de firewall:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: Para o app iniciar automaticamente com o seu dispositivo, é necessária a permissão de inicialização automática. Isso garante que lembretes e notificações funcionem corretamente mesmo após reinicializações do dispositivo.
+      importance: A localização da configuração de inicialização automática varia ou pode não estar presente dependendo do fabricante do dispositivo.
+      instructions: "Instruções:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Pressione o botão "Abrir Configurações"
+        step2: 'Na tela de configurações que se abre, encontre o app "{appName}"'
+        step3: 'Habilite "Inicialização automática", "Autorun", "Iniciar na inicialização" ou permissão semelhante'
+      title: Permissão de Inicialização Automática
+    title: Permissões
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Falha ao desabilitar configuração de inicialização
+    enable_error: Falha ao habilitar configuração de inicialização
+    subtitle: Toque para abrir as configurações do sistema e habilitar a permissão de inicialização automática para o app
+    title: Iniciar na Inicialização
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Sincronizar Dispositivos
+  title: Configurações
   backup:
     title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    description: Criar e restaurar backups comprimidos dos dados da sua aplicação usando o formato seguro .whph
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Criar Backup
+      description: Exportar todos os seus dados para um arquivo de backup .whph comprimido
+      in_progress: Criando backup, aguarde...
+      success: "Backup criado com sucesso. Localização do arquivo:"
+      error: Falha ao criar backup
+      select_path: Selecione o local de salvamento do backup
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Restaurar Backup
+      description: Importar dados de um arquivo de backup .whph criado anteriormente
+      in_progress: Restaurando backup, aguarde...
+      success: Backup restaurado com sucesso
+      error: Falha ao restaurar backup
+      select_file: Selecione o arquivo de backup
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Estratégia de Restauração
+        replace: Deletar Dados Existentes e Restaurar
+        merge: Mesclar com Dados Existentes
+    canceled: Operação de backup cancelada pelo usuário
+    export_failed: Exportação de backup falhou
+    import_failed: Importação de backup falhou
+    invalid_format: Formato de arquivo de backup inválido
+    invalid_format_error: Formato de arquivo de backup inválido
+    corrupted: Arquivo de backup está corrompido ou danificado
+    export_description: Criar um arquivo de backup comprimido contendo todos os seus dados
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Tema
+    description: Personalize a aparência do WHPH
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Modo de Tema
+      light: Claro
+      dark: Escuro
       auto:
-        title: Auto
-        description: Follow system theme settings
+        title: Automático
+        description: Seguir configurações de tema do sistema
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Cor de Acento Dinâmica
+      description: Se o seu sistema suportar, a cor primária se adaptará com base no esquema de cores dinâmico do sistema
+      feature: Dinâmico
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Cor de Acento Personalizada
+      description: Escolha uma cor de acento personalizada para personalizar a aparência do seu app
+      feature: Personalizado
+    error: Falha ao carregar configurações de tema
   ui_density:
     title: Densidade
-    description: Ajuste o tamanho do texto e dos elementos da interface para melhorar a legibilidade em ecrãs com DPI elevado
+    description: Ajuste o tamanho do texto e dos elementos da interface para melhorar a legibilidade em telas com DPI alto
     compact: Compacta
     normal: Normal
     large: Grande
     larger: Maior
-    error: Falha ao carregar as definições de densidade da interface
+    error: Falha ao carregar configurações de densidade da interface
   advanced:
-    title: Avançadas
+    title: Avançado
     description: Configurações avançadas e ferramentas de desenvolvedor
   debug_logs:
-    title: Logs de depuração
-    description: Ativar registro detalhado em arquivo para resolução de problemas e suporte
-    load_settings_error: Erro ao carregar configurações dos logs de depuração
-    update_settings_error: Erro ao atualizar configurações dos logs de depuração
+    title: Logs de Depuração
+    description: Habilitar registro detalhado em arquivo para solução de problemas e suporte
+    load_settings_error: Erro ao carregar configurações de logs de depuração
+    update_settings_error: Erro ao atualizar configurações de logs de depuração
     view:
-      title: Ver logs de depuração
-      description: Ver e exportar logs de depuração atuais
+      title: Visualizar Logs de Depuração
+      description: Visualizar e exportar logs de depuração atuais
     page:
-      title: Logs de depuração
-      description: Ver entradas atuais do log de depuração. Os logs são automaticamente limpos e rotacionados para evitar uso excessivo do disco.
-      content: Conteúdo do log
-      refresh: Atualizar logs
-      copy: Copiar para área de transferência
-      save_as: Salvar como arquivo
+      title: Logs de Depuração
+      description: Visualizar entradas atuais do log de depuração. Os logs são automaticamente limpos e rotacionados para evitar uso excessivo de disco.
+      content: Conteúdo do Log
+      refresh: Atualizar Logs
+      copy: Copiar para Área de Transferência
+      save_as: Salvar Como Arquivo
       copied: Logs de depuração copiados para área de transferência
       load_error: Erro ao carregar logs de depuração
-      not_enabled: O registro de depuração não está ativado. Ative-o nas Configurações avançadas para começar a coletar logs.
-      no_file: Nenhum arquivo de log de depuração encontrado. Os logs serão criados após ativar o registro de depuração e o aplicativo gerar entradas de log.
+      not_enabled: O registro de depuração não está habilitado. Habilite-o nas Configurações Avançadas para começar a coletar logs.
+      no_file: Nenhum arquivo de log de depuração encontrado. Os logs serão criados após habilitar o registro de depuração e o app gerar entradas de log.
       empty: O arquivo de log de depuração está vazio. Nenhuma entrada de log foi registrada ainda.
     export:
-      dialog_title: Exportar logs de depuração
+      dialog_title: Exportar Logs de Depuração
       error: Erro ao exportar logs
       success: Arquivo de log exportado com sucesso
       no_logs_available: Nenhum log disponível para exportação. Gere alguns logs primeiro.
-      file_not_exist: O arquivo de log não existe. Ative o log de depuração e gere alguns logs primeiro.
+      file_not_exist: O arquivo de log não existe. Habilite o registro de depuração e gere alguns logs primeiro.

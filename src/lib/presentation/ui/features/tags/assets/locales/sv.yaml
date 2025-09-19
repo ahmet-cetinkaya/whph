@@ -1,128 +1,128 @@
 tags:
   actions:
-    add: Add Tag
-    archive: Archive Tag
-    delete: Delete Tag
-    edit: Edit Tag
-    hide_archived: Hide archived tags
-    show_archived: Show archived tags
-    unarchive: Unarchive Tag
+    add: Lägg till tagg
+    archive: Arkivera tagg
+    delete: Ta bort tagg
+    edit: Redigera tagg
+    hide_archived: Dölj arkiverade taggar
+    show_archived: Visa arkiverade taggar
+    unarchive: Avarkivera tagg
   categories:
-    all: All
-    app_usage: App Usage
-    habits: Habits
-    tasks: Tasks
-
+    all: Alla
+    app_usage: App-användning
+    habits: Vanor
+    tasks: Uppgifter
+  default_name: Ny tagg
   details:
-    archived: Archived
-    color: Color
+    archived: Arkiverad
+    color: Färg
     help:
-      description: Details help description
-      title: Details Help Title
-    name: Name
-    related_tags: Related Tags
-    select_tag: Select tag
-    tasks_label: Tasks
+      description: Detaljhjälpbeskrivning
+      title: Detaljhjälptitel
+    name: Namn
+    related_tags: Relaterade taggar
+    select_tag: Välj tagg
+    tasks_label: Uppgifter
   errors:
-    creating: Failed to create tag
-    deleting: Failed to delete tag
-    get_tags: Error occurred while fetching tags
-    loading: Failed to load tags
-    loading_archive_status: Failed to load archive status
-    same_tag: Primary and secondary tags cannot be the same
-    saving: Failed to save tag
-    tag_not_found: Tag not found
-    tag_tag_already_exists: This tag relationship already exists
-    tag_tag_not_found: Tag relationship not found
-    toggling_archive: Failed to toggle archive status
+    creating: Misslyckades att skapa tagg
+    deleting: Misslyckades att ta bort tagg
+    get_tags: Fel uppstod vid hämtning av taggar
+    loading: Misslyckades att ladda taggar
+    loading_archive_status: Misslyckades att ladda arkivstatus
+    same_tag: Primär och sekundär tagg kan inte vara samma
+    saving: Misslyckades att spara tagg
+    tag_not_found: Tagg hittades inte
+    tag_tag_already_exists: Denna taggrelation finns redan
+    tag_tag_not_found: Taggrelation hittades inte
+    toggling_archive: Misslyckades att växla arkivstatus
   filter:
-    all_categories: All Categories
-    select_category: Select Category
-  filter_tooltip: Filter by tags
+    all_categories: Alla kategorier
+    select_category: Välj kategori
+  filter_tooltip: Filtrera efter taggar
   help:
-    content: Tag help content
+    content: Tagg hjälpinhåll
     overview:
       content: |
-        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+        Transformera din produktivitet med strategisk taggning som hjälper dig att organisera arbete, spåra tidsinvesteringar och bibehålla tydlig fokus på det som betyder mest.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Varför är det viktigt?
 
-        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+        Taggbaserad organisation är grundläggande för effektivt tidshantering och produktivitet. Genom att kategorisera dina aktiviteter med meningsfulla taggar får du tydliga insikter i hur du spenderar din tid och kan fatta välgrundade beslut för att optimera ditt fokus och din effektivitet.
 
-        ## 📊 Time Investment Analysis
+        ## 📊 Tidsinvestering Analys
 
-        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+        Förstå var din tid går och fatta datadrivna beslut om dina prioriteringar. Tidsspårning med taggar avslöjar mönster som hjälper dig att optimera ditt schema och arbetsvanor.
 
-        - ⏱️ Monitor time spent across different activity categories
-        - 📅 Track time investments over specific periods and trends
-        - ⚖️ Compare time allocation across projects and responsibilities
-        - 📈 Identify productivity patterns and peak performance times
-        - 🎯 Focus your energy on high-impact activities
+        - ⏱️ Övervaka tid spenderad över olika aktivitetskategorier
+        - 📅 Spåra tidsinvesteringar över specifika perioder och trender
+        - ⚖️ Jämför tidsallokering över projekt och ansvar
+        - 📈 Identifiera produktivitetsmönster och topprestationstider
+        - 🎯 Fokusera din energi på högimpactaktiviteter
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strategisk Organisation
 
-        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+        Skapa ett systematiskt tillvägagångssätt för att organisera ditt arbete som skalar med dina behov. Välstrukturerade taggar bildar grunden för ett effektivt produktivitetssystem.
 
-        - 🔍 Filter and find information quickly with multi-tag searches
-        - 🗄️ Archive completed projects to maintain clean organization
-        - 🧩 Build hierarchical structures that reflect your work patterns
-        - 👥 Group related activities for better project management
-        - ⏳ Enable comprehensive time tracking across all activities
+        - 🔍 Filtrera och hitta information snabbt med multi-taggsökningar
+        - 🗄️ Arkivera slutförda projekt för att behålla ren organisation
+        - 🧩 Bygg hierarkiska strukturer som speglar dina arbetsmönster
+        - 👥 Gruppera relaterade aktiviteter för bättre projektledning
+        - ⏳ Aktivera omfattande tidsspårning över alla aktiviteter
 
-        ## 💡 Optimization Strategies
+        ## 💡 Optimiseringsstrategier
 
-        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+        Utnyttja avancerade taggningstekniker för att maximera effektiviteten i ditt organisationssystem och upprätthålla långsiktig produktivitetsväxt.
 
-        - 🏷️ Use clear, descriptive names that remain meaningful over time
-        - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
-        - 📊 Review time analysis reports regularly to identify improvement opportunities
-        - 🗄️ Maintain system cleanliness by archiving completed work
-        - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
-      title: Tag-Based Organization & Time Management Guide
-    title: Tag Help
+        - 🏷️ Använd tydliga, beskrivande namn som förblir meningsfulla över tid
+        - 🔗 **Skapa hierarkiska strukturer:** Projekt → Avdelningar → Områden
+        - 📊 Granska tidsanalysrapporter regelbundet för att identifiera förbättringsmöjligheter
+        - 🗄️ Håll systemet rent genom att arkivera slutfört arbete
+        - 🎯 Applicera fokuserad filtrering för att eliminera distraktioner och förbättra koncentrationen
+      title: Taggbaserad Organisation & Tidsstyrningsguide
+    title: Tagg Hjälp
   labels:
-    color: Color
-    description: Description
-    name: Name
-    tags: Tags
+    color: Färg
+    description: Beskrivning
+    name: Namn
+    tags: Taggar
   list:
-    filter_tooltip: Filter by tags
-    no_tags: No tags
+    filter_tooltip: Filtrera efter taggar
+    no_tags: Inga taggar
   messages:
-    archive_confirm: Are you sure you want to archive this tag?
-    confirm_archive: Are you sure you want to archive this tag?
-    confirm_delete: Are you sure you want to delete this tag?
-    confirm_unarchive: Are you sure you want to unarchive this tag?
-    unarchive_confirm: Are you sure you want to unarchive this tag?
-  new_tag: New Tag
-  name_placeholder: Enter a descriptive tag name...
-  no_tags: No tags
-  none_option: None
+    archive_confirm: Är du säker på att du vill arkivera denna tagg?
+    confirm_archive: Är du säker på att du vill arkivera denna tagg?
+    confirm_delete: Är du säker på att du vill ta bort denna tagg?
+    confirm_unarchive: Är du säker på att du vill avarkivera denna tagg?
+    unarchive_confirm: Är du säker på att du vill avarkivera denna tagg?
+  new_tag: Ny tagg
+  name_placeholder: Ange ett beskrivande taggnamn...
+  no_tags: Inga taggar
+  none_option: Ingen
   search:
-    clear_all: Clear All
-    label: Search tags
+    clear_all: Rensa alla
+    label: Sök taggar
   sections:
-    list: Tags
+    list: Taggar
   selection:
-    done: Done
-  tag_details: Tag Details
+    done: Klar
+  tag_details: Taggdetaljer
   time_bar_chart:
-    by_element: By element
-    no_data: No data
-    title: Time Distribution
+    by_element: Efter element
+    no_data: Inga data
+    title: Tidsfördelning
   time_chart:
-    no_data: No data
-    other_category: Other
-  time_distribution: Time Distribution
-  time_records: Time Records
-  title: Tags
+    no_data: Inga data
+    other_category: Annan
+  time_distribution: Tidsfördelning
+  time_records: Tidsregistreringar
+  title: Taggar
   tooltips:
-    add_tag: Add tag
-    add_task: Add new task
-    archive_tag: Archive tag
-    color: Click to assign color to tag
-    delete_tag: Delete tag
-    edit_name: Edit name
-    remove_tag: Remove tag
-    select: Click to select tag
-    unarchive_tag: Unarchive tag
+    add_tag: Lägg till tagg
+    add_task: Lägg till ny uppgift
+    archive_tag: Arkivera tagg
+    color: Klicka för att tilldela färg till tagg
+    delete_tag: Ta bort tagg
+    edit_name: Redigera namn
+    remove_tag: Ta bort tagg
+    select: Klicka för att välja tagg
+    unarchive_tag: Avarkivera tagg

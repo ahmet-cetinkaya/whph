@@ -1,5 +1,4 @@
 shared:
-  untitled: "Uten tittel"
   buttons:
     add: Legg til
     back: Tilbake
@@ -65,6 +64,7 @@ shared:
     created_date_label: Opprettelsesdato
     modified_date_label: Endringsdato
     name_label: Navn
+  date: Dato
   date_filter:
     title: Velg datoområde
     tooltips:
@@ -72,6 +72,26 @@ shared:
       filter: Filtrer etter dato
   date_format:
     hint: DD/MM/ÅÅÅÅ
+  datepicker:
+    cannot_select_date_after_max_date: Kan ikke velge dato etter {date}
+    cannot_select_date_before_min_date: Kan ikke velge dato før {date}
+    cannot_select_time_after_max_date: Kan ikke velge tidspunkt etter {time}
+    cannot_select_time_before_min_date: Kan ikke velge tidspunkt før {time}
+    deadline_cannot_be_before_planned_date:
+      Fristen må være på eller etter den planlagte
+      datoen
+    end_date_cannot_be_after_max_date: Sluttdato kan ikke være etter {date}
+    end_date_must_be_at_or_before: Sluttdato må være på eller før {date}
+    select_date_range_title: Velg datoperiode
+    select_date_time_title: Velg dato og tid
+    selected_date_must_be_at_or_after: Valgt dato må være på eller etter {date}
+    selected_date_must_be_at_or_before: Valgt dato må være på eller før {date}
+    selected_date_time_must_be_after: Valgt dato og tid må være etter {dateTime}
+    start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
+    start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
+    start_date_must_be_at_or_after: Startdato må være på eller etter {date}
+    time_must_be_at_or_after: Tidspunktet må være på eller etter {time}
+    time_must_be_at_or_before: Tidspunktet må være på eller før {time}
   days:
     friday: Fredag
     friday_short: Fre
@@ -92,19 +112,19 @@ shared:
       hint: Du kan skrive ved hjelp av Markdown-format...
       tooltips:
         bold: Fet
-        italic: Kursiv
-        strikethrough: Gjennomstreket
-        code: Kode
-        link: Lenke
-        quote: Sitat
         bulleted_list: Punktliste
-        numbered_list: Nummerert liste
-        horizontal_rule: Horisontal linje
-        edit: Rediger
-        preview: Forhåndsvisning
-        image: Bilde
-        heading: Overskrift
         checkbox: Avkryssingsboks
+        code: Kode
+        edit: Rediger
+        heading: Overskrift
+        horizontal_rule: Horisontal linje
+        image: Bilde
+        italic: Kursiv
+        link: Lenke
+        numbered_list: Nummerert liste
+        preview: Forhåndsvisning
+        quote: Sitat
+        strikethrough: Gjennomstreket
   errors:
     deleting: Feil oppstod under sletting av data
     file_not_found: Fil ikke funnet
@@ -138,8 +158,6 @@ shared:
     unexpected: En uventet feil oppstod
   filters:
     search: Søk
-  help:
-    tooltip: Hjelp
   messages:
     confirm_delete: Er du sikker på at du vil slette dette elementet?
     no_items_found: Ingen elementer
@@ -150,19 +168,19 @@ shared:
       more: Mer
       notes: Notater
       settings: Innstillinger
-      tags: Tagger
+      tags: Etiketter
       tasks: Oppgaver
       today: I dag
-  none_option: "Ingen tagger"
+  none_option: Ingen etiketter
   regex_help:
     examples:
-      chat: 'Matcher enten "Slack" eller "Discord"'
-      chrome: 'Matcher enhver vindutittel som inneholder "Chrome"'
-      exact_chrome: 'Matcher nøyaktig "Chrome"'
+      chat: Matcher enten "Slack" eller "Discord"
+      chrome: Matcher enhver vindutittel som inneholder "Chrome"
+      exact_chrome: Matcher nøyaktig "Chrome"
       pdf: Matcher enhver PDF-fil
       vscode: Matcher ethvert VS Code-vindu
     tips:
-      any_chars: 'Bruk ".*" for å matche alle tegn'
+      any_chars: Bruk ".*" for å matche alle tegn
       dot: '"\." matcher et punktum'
       end: '"$" matcher slutten av tekst'
       or: '"|" betyr ELLER'
@@ -178,7 +196,7 @@ shared:
     habits: Vaner
     special_filters: Spesialfiltre
     statistics: Statistikk
-    tags: Tagger
+    tags: Etiketter
     tasks: Oppgaver
     time: Tid
   sort:
@@ -187,11 +205,11 @@ shared:
       description: Aktiver dra og slipp for å omorganisere elementer
       title: Tilpasset sortering
     descending: Synkende
+    disable_reordering_tooltip: Deaktiver omorganiseringsmodus
+    enable_reordering_tooltip: Aktiver omorganiseringsmodus
     remove_criteria: Fjern kriterium
     reset_to_default: Tilbakestill til standard
     sort: Sorter
-    enable_reordering_tooltip: Aktiver omorganiseringsmodus
-    disable_reordering_tooltip: Deaktiver omorganiseringsmodus
   statistics:
     daily_usage:
       description: Viser total brukstid per ukedag
@@ -200,7 +218,24 @@ shared:
       description: Viser total brukstid per time på dagen
       title: Timevis bruk
   time:
-    not_set: "Ikke satt"
+    not_set: Ikke satt
+  time_display:
+    elapsed: Forløpt
+    elapsed_time_tooltip: Tid brukt på denne oppgaven
+    estimated: Estimert
+    estimated_time_tooltip: Estimert tid for å fullføre denne oppgaven
+    no_time_logged_tooltip: Ingen tid logget ennå
+  time_logging:
+    add_time: Legg til tid
+    add_time_description: Legg til tid til eksisterende total
+    dialog_title: Logg tid
+    duration: Varighet
+    invalid_input: Vennligst skriv inn gyldig tid
+    log_time: Logg tid
+    mode: Modus
+    set_total: Sett total
+    set_total_description: Sett total brukt tid
+    total_time: Total tid
   time_periods:
     custom: Tilpasset
     last_month: Forrige måned
@@ -210,6 +245,11 @@ shared:
     this_three_months: Disse 3 månedene
     this_week: Denne uken
     today: I dag
+  timer:
+    label: Timer
+    normal: Normal
+    pomodoro: Pomodoro
+    stopwatch: Stoppeklokke
   tooltips:
     compare_with_previous: Sammenlign med forrige periode
     filter_by_tags: Filtrer etter tagger
@@ -222,6 +262,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sek
+  untitled: Uten tittel
   update_dialog:
     buttons:
       download_page: Nedlastingsside
@@ -235,21 +276,4 @@ shared:
     title: Oppdatering tilgjengelig!
   validation:
     required: "{field} er påkrevd."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Fristen må være på eller etter den planlagte datoen"
-    selected_date_must_be_at_or_after: Valgt dato må være på eller etter {date}
-    selected_date_must_be_at_or_before: Valgt dato må være på eller før {date}
-    start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
-    start_date_must_be_at_or_after: Startdato må være på eller etter {date}
-    end_date_must_be_at_or_before: Sluttdato må være på eller før {date}
-    cannot_select_date_before_min_date: Kan ikke velge dato før {date}
-    cannot_select_date_after_max_date: Kan ikke velge dato etter {date}
-    start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
-    end_date_cannot_be_after_max_date: Sluttdato kan ikke være etter {date}
-    cannot_select_time_before_min_date: Kan ikke velge tidspunkt før {time}
-    cannot_select_time_after_max_date: Kan ikke velge tidspunkt etter {time}
-    time_must_be_at_or_after: Tidspunktet må være på eller etter {time}
-    time_must_be_at_or_before: Tidspunktet må være på eller før {time}
-    selected_date_time_must_be_after: Valgt dato og tid må være etter {dateTime}
-    select_date_time_title: Velg dato og tid
-    select_date_range_title: Velg datoperiode
+  help: Hjelp

@@ -1,214 +1,232 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Arquivar
+    archive_confirm: Tem certeza de que deseja arquivar este hábito?
+    archive_tooltip: Arquivar este hábito
+    archived_date: Data Arquivada
+    hide_archived: Ocultar arquivados
+    show_archived: Mostrar arquivados
+    unarchive: Desarquivar
+    unarchive_confirm: Tem certeza de que deseja desarquivar este hábito?
+    unarchive_tooltip: Desarquivar este hábito
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Sex
+      mon: Seg
+      sat: Sáb
+      sun: Dom
+      thu: Qui
+      tue: Ter
+      wed: Qua
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Tem certeza de que deseja excluir este hábito?
+    confirm_title: Excluir Hábito
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
-    help:
-      content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
-
-        ## ⚡ Why Is It Important?
-
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
-
-        ## ⚙️ Strategic Habit Design
-
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
-
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
-
-        ## ⏱️ Performance Monitoring
-
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
-
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
-
-        ## 📅 Consistency & Momentum
-
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
-
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
-
-        ## 🚀 Optimization Strategies
-
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
-
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
-    records: Records
-    remove_record_tooltip: Remove today's completion
-    statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
-      records: Records
-      score_trends: Score Trends
-      to: To
-      top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
-    tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Meta diária"
+    archived_status: Arquivado
+    create_record_tooltip: Marcar como concluído hoje
+    daily_target: Meta Diária
     daily_target_hint: "Insira sua meta diária (ex.: 10 minutos ou 5 repetições)"
-  errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
-  goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
-    target_frequency: Target Frequency
-    times_unit: times
-  help:
-    description: Help description
-  list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
-  notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
-  overview:
-    filter_by_tags_tooltip: Filter by tags
+    description: Descrição
+    elapsed_time: Tempo Decorrido
+    estimated_time: Tempo Estimado
+    estimated_time_not_set: Não definido
     help:
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Construa rotinas diárias sustentáveis através do rastreamento sistemático de hábitos que transforma suas intenções em ações consistentes e progresso mensurável em direção aos seus objetivos.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Por Que É Importante?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        A formação de hábitos é a pedra angular do desenvolvimento pessoal e da conquista sustentável. Ações diárias consistentes se acumulam ao longo do tempo para criar resultados notáveis, enquanto o rastreamento sistemático garante que você mantenha o momentum e faça melhorias contínuas em suas rotinas.
 
-        ## 📅 Daily Execution & Tracking
+        ## ⚙️ Design Estratégico de Hábitos
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Crie hábitos que se integrem perfeitamente à sua vida e suportem seus objetivos de longo prazo. Hábitos bem projetados se tornam comportamentos automáticos que requerem pouca força de vontade para manter.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - 📝 Projete hábitos claros e específicos com descrições acionáveis
+        - 📅 Estabeleça horários consistentes que se alinhem aos seus ritmos naturais
+        - 🏷️ Organize hábitos semelhantes em grupos coerentes para rastreamento sistemático
+        - 🎯 Conecte cada hábito a resultados significativos e valores pessoais
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Monitoramento de Desempenho
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Rastreie a execução dos seus hábitos para entender padrões, medir progresso e otimizar sua abordagem para máxima efetividade e crescimento sustentável.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ Registre tempos de conclusão para entender a duração e eficiência do hábito
+        - 📊 Analise investimentos de tempo em categorias de hábitos para desenvolvimento equilibrado
+        - 📈 Monitore tendências de desempenho para identificar oportunidades de melhoria e timing ideal
+        - 🔄 Use insights de dados para refinar a dificuldade e agendamento do hábito para sucesso sustentado
 
-        ## 🗂️ Strategic Organization
+        ## 📅 Consistência & Momentum
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+        Construa e mantenha a consistência necessária para mudança comportamental duradoura através de rastreamento sistemático e revisão estratégica de seus padrões de progresso.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        - 📚 Revise o histórico de conclusão para avaliar progresso e identificar padrões de sucesso
+        - 🔗 Rastreie sequências diárias para construir e manter momentum para sucesso de longo prazo
+        - 📌 Monitore métricas de consistência para melhorar motivação e compromisso
+        - 🎯 Celebre marcos e conquistas para reforçar mudança comportamental positiva
 
-        ## 💡 Mastery Principles
+        ## 🚀 Estratégias de Otimização
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+        Aplique técnicas comprovadas de otimização de hábitos que aceleram o progresso e garantem que seus esforços se traduzam em melhorias significativas e duradouras em sua vida e produtividade.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        - 🐾 **Comece Pequeno:** Comece com hábitos gerenciáveis que garantam vitórias iniciais
+        - 🏷️ **Agrupamento Estratégico:** Organize hábitos por área da vida ou horário do dia
+        - 📊 **Ajustes Baseados em Dados:** Use insights de rastreamento para otimizar timing e abordagem
+        - 🌅 **Foco em Horário Principal:** Agende hábitos importantes durante seus períodos de pico de energia
+      description: Descrição de ajuda
+      title: Guia de Formação de Hábitos & Rastreamento de Desempenho
+    records: Registros
+    remove_record_tooltip: Remover conclusão de hoje
+    statistics:
+      archived_note: "Arquivado em:"
+      archived_on: Arquivado em
+      archived_warning: Estatísticas mostradas até a data de arquivamento. {startDate} - {archivedDate}
+      completions: conclusões
+      from: De
+      monthly: Mensal
+      no_streaks_yet: Nenhuma sequência ainda. Comece a construir consistência!
+      overall: Geral
+      records: Registros
+      score_trends: Tendências de Pontuação
+      to: Até
+      top_streaks: Principais Sequências
+      yearly: Anual
+    statistics_label: Estatísticas
+    tags: Tags
+    tags_hint: Selecione tags para associar
+  errors:
+    adding_tag: Falha ao adicionar tag
+    creating_record: Falha ao criar registro de hábito
+    deleting: Erro inesperado ao excluir hábito
+    deleting_record: Falha ao excluir registro de hábito
+    habit_not_found: Hábito não encontrado
+    habit_record_not_found: Registro de hábito não encontrado
+    habit_tag_not_found: Tag de hábito não encontrada
+    loading_archive_status: Falha ao carregar status de arquivamento
+    loading_details: Falha ao carregar detalhes do hábito
+    loading_habit: Falha ao carregar hábito
+    loading_habits: Falha ao carregar hábitos
+    loading_records: Falha ao carregar registros de hábito
+    loading_tags: Falha ao carregar tags de hábito
+    removing_tag: Falha ao remover tag
+    saving_details: Falha ao salvar hábito
+    saving_habit: Falha ao salvar hábito
+    tag_already_exists: Esta tag já foi adicionada
+    toggling_archive: Falha ao alternar status de arquivamento
+  goals:
+    current_goal: Meta
+    days_unit: dias
+    description: |
+      Você quer praticar o hábito com uma frequência específica em vez de
+      todo dia? Então defina uma meta personalizada.
+    enable: Ativar Metas Personalizadas
+    goal: Meta Personalizada
+    goal_format: "{count} vezes em {dayCount} dias"
+    period_days: Dias do Período
+    settings: Configurações de Meta Personalizada
+    target_frequency: Frequência do Período
+    times_unit: vezes por período
+  list:
+    all_habits_done: Todos os hábitos concluídos!
+    no_habits_found: Nenhum hábito
+  name_placeholder: Digite um nome de hábito significativo...
+  new_habit: Novo Hábito
+  notifications:
+    reminder_message: "Lembre-se de concluir seu hábito: {name}"
+    reminder_title: "Lembrete de Hábito: {name}"
+  overview:
+    filter_by_tags_tooltip: Filtrar por tags
+    help:
+      content: |
+        Domine suas rotinas diárias através do rastreamento sistemático de hábitos que constrói consistência, cria momentum positivo e impulsiona progresso significativo em direção aos seus objetivos de longo prazo.
 
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
+        ## ⚡ Por Que É Importante?
+
+        O gerenciamento de hábitos diários é a base da excelência pessoal e do crescimento sustentável. A execução consistente de hábitos bem planejados cria benefícios compostos ao longo do tempo, enquanto o rastreamento sistemático garante que você mantenha a responsabilidade e faça melhorias baseadas em dados em suas rotinas.
+
+        ## 📅 Execução Diária & Rastreamento
+
+        Desenvolva um sistema confiável para executar e monitorar seus hábitos que cria consistência e constrói momentum imparável em direção aos seus objetivos.
+
+        - ✅ **Conclusão Diária:** Marque hábitos como concluídos para construir cadeias de consistência
+        - 📆 **Visualização Multi-Dias:** Monitore padrões em dias e semanas para insights abrangentes
+        - 🔄 **Construção de Sequências:** Mantenha dias consecutivos de conclusão para maximizar o momentum motivacional
+        - 📊 **Visualização de Progresso:** Rastreie taxas e padrões de conclusão ao longo do tempo
+
+        ## ⏱️ Análise & Otimização de Tempo
+
+        Monitore investimentos de tempo em seus hábitos para otimizar sua agenda diária e garantir desenvolvimento equilibrado em todas as áreas importantes da vida.
+
+        - ⏳ **Rastreamento de Duração:** Registre tempo real gasto para entender requisitos do hábito
+        - 🏷️ **Análise de Categoria:** Agrupe hábitos por tags para ver alocação de tempo em áreas da vida
+        - ⏰ **Otimização de Agenda:** Equilibre timing de hábitos para execução diária sustentável
+        - 📈 **Melhoria de Eficiência:** Identifique oportunidades para simplificar a execução de hábitos
+
+        ## 🗂️ Organização Estratégica
+
+        Crie um sistema de organização que suporte execução consistente enquanto fornece flexibilidade para se adaptar à medida que seus objetivos e circunstâncias evoluem.
+
+        - 🏷️ **Categorização Significativa:** Agrupe hábitos por área da vida, tempo ou nível de prioridade
+        - ⚙️ **Agendamento Flexível:** Desenhe timing de hábitos que funcione com seu estilo de vida e padrões de energia
+        - 🎯 **Foco em Prioridade:** Garanta que seus hábitos mais importantes recebam atenção e energia apropriadas
+
+        ## 💡 Princípios de Maestria
+
+        Aplique estratégias comprovadas de maestria de hábitos que garantem que seus esforços se acumulem em mudança comportamental duradoura e melhorias mensuráveis na vida.
+
+        - 🐾 **Comece Pequeno:** Comece com hábitos que você pode executar consistentemente, então aumente gradualmente a dificuldade
+        - 🏷️ **Agrupamento Estratégico:** Organize hábitos para criar sequências lógicas e sistemas de suporte
+        - 📊 **Revisão de Desempenho:** Use dados de rastreamento de tempo para entender padrões e otimizar sua abordagem
+        - 🌅 **Execução em Horário Principal:** Agende seus hábitos mais importantes durante períodos de pico de energia
+
+        ### 📊 Usando a Visualização do Calendário
+        - 📅 Visualize múltiplos dias simultaneamente na visualização do calendário.
+        - ✅ Rastreie visualmente seus padrões de conclusão.
+        - ⚡ Economize tempo com marcação rápida de conclusão.
+        - 🎯 Aumente a motivação com rastreamento visual de sequências.
+        - 🔄 Explore hábitos passados e futuros com navegação flexível de datas.
+      title: Guia de Gerenciamento de Hábitos Diários & Otimização de Rotina
+    title: Hábitos
   reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
+    enableReminders: Ativar lembretes
+    everyDay: Todo dia
+    noReminder: Nenhum lembrete definido
+    reminderDays: Dias de lembrete
+    reminderSettings: Configurações de Lembrete
+    reminderTime: Hora do lembrete
+    selectDaysWarning: Por favor, selecione pelo menos um dia para lembretes
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
+    enable: Ativar lembretes
+    select_days_warning: Por favor, selecione pelo menos um dia para lembretes
   statistics:
-    archived_on: Archived on
-    from: From
-    to: To
+    archived_on: Arquivado em
+    from: De
+    to: Até
   tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    add_tooltip: Adicionar tag
+    select_tooltip: Selecionar tag
+  time_display:
+    actual_time_tooltip: Tempo real rastreado para este dia
+    estimated: estimado
+    estimated_time_tooltip: Tempo estimado baseado nas configurações do hábito
+    no_time_logged_tooltip: Nenhum tempo registrado para este dia
+  time_logging:
+    add_time: Adicionar Tempo
+    add_time_description: Adicionar o tempo especificado aos registros existentes
+    dialog_title: Registrar Tempo
+    duration: Duração a Adicionar
+    invalid_input: Por favor, insira horas e minutos válidos
+    log_time: Registrar Tempo
+    mode: Modo de Registro
+    set_total: Definir Total
+    set_total_description: Definir o tempo total para o dia selecionado
+    total_time: Tempo Total para o Dia
+  timer:
+    label: Temporizador
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Diminuir meta diária"
-    increase_daily_target: "Aumentar meta diária"
+    add_habit: Adicionar Hábito
+    decrease_daily_target: Diminuir meta diária
+    decrease_estimated_time: Diminuir tempo estimado
+    edit_name: Editar Nome
+    increase_daily_target: Aumentar meta diária
+    increase_estimated_time: Aumentar tempo estimado

@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: 予想時間
     is_completed: 完了
+    parent_task:
+      label: 親タスク
+      tooltip: クリックして親タスクに移動
     planned_date:
       label: 予定日
     priority:
       label: 優先度
     sub_tasks:
       label: サブタスク
-    parent_task:
-      label: 親タスク
-      tooltip: クリックして親タスクに移動
     tags:
       hint: 関連付けるタグを選択
       label: タグ
@@ -186,9 +186,9 @@ tasks:
   new_task: 新しいタスク
   no_tasks: タスクがありません
   notifications:
-    deadline_message: "タスクの期限は{time}です"
+    deadline_message: タスクの期限は{time}です
     deadline_title: "タスクの期限: {title}"
-    planned_message: "タスクは{time}に予定されています"
+    planned_message: タスクは{time}に予定されています
     reminder_title: "タスクリマインダー: {title}"
   page:
     completed_tasks_title: 完了したタスク
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: 自動開始オプション
       auto_start_work: 休憩後に自動で作業を開始
       break_duration: 休憩時間
+      keep_screen_awake: セッション中は画面をオンに保つ
+      keep_screen_awake_section: 画面をオンに保つ
       long_break_duration: 長い休憩時間
       sessions_before_long_break: 長い休憩前のセッション数
       ticking_sound: チクタク音を有効にする
       ticking_sound_section: チクタク音
       ticking_speed: 速度
       ticking_volume: 音量
-      keep_screen_awake_section: 画面をオンに保つ
-      keep_screen_awake: セッション中は画面をオンに保つ
       timer_label: セッション時間
       title: タイマー設定
       work_duration: 作業時間
@@ -288,17 +288,15 @@ tasks:
       endsAfter: 終了後
       endsOnDate: 終了日
       occurrences: 回
-      on: に
+      true: に
       everyDay: 毎日
       starts: 開始
+      "on": "に"
     weekDays: 曜日
     weekSuffix: 週
     weekly: 毎週
     yearSuffix: 年
     yearly: 毎年
-  validation:
-    deadline_time_invalid: 期限時間が無効です
-    deadline_cannot_be_before_planned: 期限は予定日より後でなければなりません
   reminder:
     atTime: 予定時刻に
     deadlineReminderLabel: 期限リマインダー
@@ -318,3 +316,6 @@ tasks:
     set_reminder: リマインダーを設定
     show_completed_tasks: 完了したタスクをフィルター
     show_subtasks: サブタスクを表示
+  validation:
+    deadline_cannot_be_before_planned: 期限は予定日より後でなければなりません
+    deadline_time_invalid: 期限時間が無効です

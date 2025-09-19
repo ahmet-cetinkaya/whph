@@ -9,7 +9,6 @@ habits:
     unarchive: Desarchivia
     unarchive_confirm: Sei sicuro di voler desarchiviare questa abitudine?
     unarchive_tooltip: Desarchivia questa abitudine
-
   calendar:
     week_days:
       fri: Ven
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: Archiviata
     create_record_tooltip: Segna come completata oggi
+    daily_target: Frequenza giornaliera
+    daily_target_hint: volte al giorno
     description: Descrizione
     estimated_time: Tempo stimato
     estimated_time_not_set: Non impostato
@@ -78,22 +79,22 @@ habits:
     statistics:
       archived_note: "Archiviata il:"
       archived_on: Archiviata il
-      archived_warning: "Le statistiche sono mostrate fino alla data di archiviazione. {startDate} - {archivedDate}"
+      archived_warning:
+        Le statistiche sono mostrate fino alla data di archiviazione.
+        {startDate} - {archivedDate}
+      completions: completamenti
       from: Da
       monthly: Mensile
+      no_streaks_yet: Nessuna serie ancora. Inizia a costruire coerenza!
       overall: Generale
       records: Record
       score_trends: Trend punteggi
       to: A
       top_streaks: Serie migliori
-      no_streaks_yet: Nessuna serie ancora. Inizia a costruire coerenza!
-      completions: completamenti
       yearly: Annuale
     statistics_label: Statistiche
     tags: Tag
     tags_hint: Seleziona tag da associare
-    daily_target: "Frequenza giornaliera"
-    daily_target_hint: "volte al giorno"
   errors:
     adding_tag: Impossibile aggiungere il tag
     creating_record: Impossibile creare record abitudine
@@ -116,21 +117,21 @@ habits:
   goals:
     current_goal: Obiettivo
     days_unit: giorni
-    description: Vuoi praticare l'abitudine con una frequenza specifica piuttosto che ogni giorno? Allora imposta un obiettivo personalizzato.
+    description:
+      Vuoi praticare l'abitudine con una frequenza specifica piuttosto
+      che ogni giorno? Allora imposta un obiettivo personalizzato.
     enable: Abilita obiettivi personalizzati
     goal: Obiettivo personalizzato
     goal_format: "{count} volte in {dayCount} giorni"
     period_days: Giorni periodo
     settings: Impostazioni obiettivo personalizzato
-    target_frequency: "Frequenza del periodo"
-    times_unit: "volte per periodo"
-  help:
-    description: Descrizione aiuto
+    target_frequency: Frequenza del periodo
+    times_unit: volte per periodo
   list:
     all_habits_done: Tutte le abitudini completate!
     no_habits_found: Nessuna abitudine
-  new_habit: Nuova abitudine
   name_placeholder: Inserisci un nome di abitudine significativo...
+  new_habit: Nuova abitudine
   notifications:
     reminder_message: "Ricordati di completare la tua abitudine: {name}"
     reminder_title: "Promemoria abitudine: {name}"
@@ -207,8 +208,8 @@ habits:
     select_tooltip: Seleziona tag
   tooltips:
     add_habit: Aggiungi abitudine
+    decrease_daily_target: Diminuisci obiettivo giornaliero
     decrease_estimated_time: Diminuisci tempo stimato
     edit_name: Modifica nome
+    increase_daily_target: Aumenta obiettivo giornaliero
     increase_estimated_time: Aumenta tempo stimato
-    decrease_daily_target: "Diminuisci obiettivo giornaliero"
-    increase_daily_target: "Aumenta obiettivo giornaliero"

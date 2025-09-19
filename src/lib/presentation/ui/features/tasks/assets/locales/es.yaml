@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Tiempo estimado
     is_completed: Completado
+    parent_task:
+      label: Tarea padre
+      tooltip: Hacer clic para navegar a la tarea padre
     planned_date:
       label: Fecha planificada
     priority:
       label: Prioridad
     sub_tasks:
       label: Subtareas
-    parent_task:
-      label: Tarea padre
-      tooltip: Hacer clic para navegar a la tarea padre
     tags:
       hint: Seleccionar etiquetas para asociar
       label: Etiquetas
@@ -186,9 +186,9 @@ tasks:
   new_task: Nueva tarea
   no_tasks: Sin tareas
   notifications:
-    deadline_message: "La fecha límite de tu tarea es a las {time}"
+    deadline_message: La fecha límite de tu tarea es a las {time}
     deadline_title: "Fecha límite de tarea: {title}"
-    planned_message: "Tu tarea está planificada para las {time}"
+    planned_message: Tu tarea está planificada para las {time}
     reminder_title: "Recordatorio de tarea: {title}"
   page:
     completed_tasks_title: Tareas completadas
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: Opciones de inicio automático
       auto_start_work: Iniciar trabajo automáticamente después del descanso
       break_duration: Duración del descanso
+      keep_screen_awake: Mantener pantalla despierta durante sesiones
+      keep_screen_awake_section: Mantener pantalla despierta
       long_break_duration: Duración del descanso largo
       sessions_before_long_break: Sesiones antes del descanso largo
       ticking_sound: Habilitar sonido de tic-tac
       ticking_sound_section: Sonido de tic-tac
       ticking_speed: Velocidad
       ticking_volume: Volumen
-      keep_screen_awake_section: Mantener pantalla despierta
-      keep_screen_awake: Mantener pantalla despierta durante sesiones
       timer_label: Duraciones de sesión
       title: Configuración del temporizador
       work_duration: Duración del trabajo
@@ -246,11 +246,16 @@ tasks:
       urgent_not_important: Urgente pero no importante
   quick_task:
     create_error: Error al crear la tarea
-    lock_description: Bloquea propiedades para retener sus valores al crear múltiples tareas similares. Las propiedades bloqueadas no se limpiarán cuando reinicies el formulario.
+    lock_description:
+      Bloquea propiedades para retener sus valores al crear múltiples
+      tareas similares. Las propiedades bloqueadas no se limpiarán cuando reinicies
+      el formulario.
     lock_settings: Configuración de bloqueo
     reset_all: Reiniciar todos los campos
     reset_confirm:
-      message: ¿Estás seguro de que quieres reiniciar todos los campos? Esta acción no se puede deshacer.
+      message:
+        ¿Estás seguro de que quieres reiniciar todos los campos? Esta acción
+        no se puede deshacer.
       title: Reiniciar todos los campos
     title: Tarea rápida
     title_hint: Título de la tarea
@@ -288,17 +293,15 @@ tasks:
       endsAfter: termina después de
       endsOnDate: termina el
       occurrences: ocurrencias
-      on: el
+      true: el
       everyDay: cada día
       starts: comienza
+      "on": "el"
     weekDays: Días de la semana
     weekSuffix: semana(s)
     weekly: Semanal
     yearSuffix: año(s)
     yearly: Anual
-  validation:
-    deadline_time_invalid: La hora límite no es válida
-    deadline_cannot_be_before_planned: La fecha límite debe ser posterior a la fecha planificada
   reminder:
     atTime: A la hora programada
     deadlineReminderLabel: Recordatorio de fecha límite
@@ -318,3 +321,8 @@ tasks:
     set_reminder: Establecer recordatorio
     show_completed_tasks: Filtrar tareas completadas
     show_subtasks: Mostrar subtareas
+  validation:
+    deadline_cannot_be_before_planned:
+      La fecha límite debe ser posterior a la fecha
+      planificada
+    deadline_time_invalid: La hora límite no es válida

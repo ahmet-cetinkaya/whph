@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
@@ -100,7 +99,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
   Future<void> _logTime() async {
     if (!_isValidInput()) {
       setState(() {
-        _errorMessage = _translationService.translate(SharedTranslationKeys.unexpectedError);
+        _errorMessage = _translationService.translate(SharedTranslationKeys.timeLoggingInvalidInput);
       });
       return;
     }
@@ -161,7 +160,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(_getTranslation(TaskTranslationKeys.timeLoggingDialogTitle)),
+      title: Text(_getTranslation(SharedTranslationKeys.timeLoggingDialogTitle)),
       content: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
@@ -170,7 +169,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
           children: [
             // Mode selection
             Text(
-              _getTranslation(TaskTranslationKeys.timeLoggingMode),
+              _getTranslation(SharedTranslationKeys.timeLoggingMode),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -185,7 +184,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                         size: 16,
                       ),
                       const SizedBox(width: AppTheme.sizeSmall),
-                      Text(_getTranslation(TaskTranslationKeys.timeLoggingAddTime)),
+                      Text(_getTranslation(SharedTranslationKeys.timeLoggingAddTime)),
                     ],
                   ),
                 ),
@@ -198,7 +197,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                         size: 16,
                       ),
                       const SizedBox(width: AppTheme.sizeSmall),
-                      Text(_getTranslation(TaskTranslationKeys.timeLoggingSetTotal)),
+                      Text(_getTranslation(SharedTranslationKeys.timeLoggingSetTotal)),
                     ],
                   ),
                 ),
@@ -215,8 +214,8 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             // Short description moved to top
             Text(
               _selectedMode == LoggingMode.addTime
-                  ? _getTranslation(TaskTranslationKeys.timeLoggingAddTimeDescription)
-                  : _getTranslation(TaskTranslationKeys.timeLoggingSetTotalDescription),
+                  ? _getTranslation(SharedTranslationKeys.timeLoggingAddTimeDescription)
+                  : _getTranslation(SharedTranslationKeys.timeLoggingSetTotalDescription),
               style: AppTheme.bodySmall.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -242,8 +241,8 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             // Time input
             Text(
               _selectedMode == LoggingMode.addTime
-                  ? _getTranslation(TaskTranslationKeys.timeLoggingDuration)
-                  : _getTranslation(TaskTranslationKeys.timeLoggingTotalTime),
+                  ? _getTranslation(SharedTranslationKeys.timeLoggingDuration)
+                  : _getTranslation(SharedTranslationKeys.timeLoggingTotalTime),
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
@@ -313,7 +312,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text(_getTranslation(SharedTranslationKeys.doneButton)),
+                        : Text(_getTranslation(SharedTranslationKeys.timeLoggingLogTime)),
                   ),
                 ),
               ],

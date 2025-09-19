@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Предполагаемое время
     is_completed: Завершено
+    parent_task:
+      label: Родительская задача
+      tooltip: Нажмите для перехода к родительской задаче
     planned_date:
       label: Запланированная дата
     priority:
       label: Приоритет
     sub_tasks:
       label: Подзадачи
-    parent_task:
-      label: Родительская задача
-      tooltip: Нажмите для перехода к родительской задаче
     tags:
       hint: Выбрать теги для связи
       label: Теги
@@ -187,9 +187,9 @@ tasks:
   new_task: Новая задача
   no_tasks: Нет задач
   notifications:
-    deadline_message: "Срок вашей задачи в {time}"
+    deadline_message: Срок вашей задачи в {time}
     deadline_title: "Срок задачи: {title}"
-    planned_message: "Ваша задача запланирована на {time}"
+    planned_message: Ваша задача запланирована на {time}
     reminder_title: "Напоминание о задаче: {title}"
   page:
     completed_tasks_title: Завершённые задачи
@@ -209,14 +209,14 @@ tasks:
       auto_start_section: Опции автозапуска
       auto_start_work: Автоматически начинать работу после перерыва
       break_duration: Длительность перерыва
+      keep_screen_awake: Держать экран включённым во время сессий
+      keep_screen_awake_section: Держать экран включённым
       long_break_duration: Длительность длинного перерыва
       sessions_before_long_break: Сессий до длинного перерыва
       ticking_sound: Включить звук тиканья
       ticking_sound_section: Звук тиканья
       ticking_speed: Скорость
       ticking_volume: Громкость
-      keep_screen_awake_section: Держать экран включённым
-      keep_screen_awake: Держать экран включённым во время сессий
       timer_label: Длительности сессий
       title: Настройки таймера
       work_duration: Длительность работы
@@ -247,14 +247,14 @@ tasks:
       urgent_not_important: Срочно, но не важно
   quick_task:
     create_error: Ошибка создания задачи
-    lock_description: Заблокируйте свойства, чтобы сохранить их значения при
-      создании нескольких похожих задач. Заблокированные свойства не будут
-      очищены при сбросе формы.
+    lock_description:
+      Заблокируйте свойства, чтобы сохранить их значения при создании
+      нескольких похожих задач. Заблокированные свойства не будут очищены при сбросе
+      формы.
     lock_settings: Настройки блокировки
     reset_all: Сбросить все поля
     reset_confirm:
-      message: Вы уверены, что хотите сбросить все поля? Это действие нельзя
-        отменить.
+      message: Вы уверены, что хотите сбросить все поля? Это действие нельзя отменить.
       title: Сбросить все поля
     title: Быстрая задача
     title_hint: Заголовок задачи
@@ -292,17 +292,15 @@ tasks:
       endsAfter: заканчивается после
       endsOnDate: заканчивается
       occurrences: повторения
-      on: в
+      true: в
       everyDay: каждый день
       starts: начинается
+      "on": "в"
     weekDays: Дни недели
     weekSuffix: неделя(и)
     weekly: Еженедельно
     yearSuffix: год(ы)
     yearly: Ежегодно
-  validation:
-    deadline_time_invalid: Неверное время крайнего срока
-    deadline_cannot_be_before_planned: Крайний срок должен быть после запланированной даты
   reminder:
     atTime: В запланированное время
     deadlineReminderLabel: Напоминание о дедлайне
@@ -322,3 +320,8 @@ tasks:
     set_reminder: Установить напоминание
     show_completed_tasks: Фильтровать завершённые задачи
     show_subtasks: Показать подзадачи
+  validation:
+    deadline_cannot_be_before_planned:
+      Крайний срок должен быть после запланированной
+      даты
+    deadline_time_invalid: Неверное время крайнего срока

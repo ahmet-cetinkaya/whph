@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Estimated Time
     is_completed: Completed
+    parent_task:
+      label: Parent Task
+      tooltip: Click to navigate to parent task
     planned_date:
       label: Planned Date
     priority:
       label: Priority
     sub_tasks:
       label: Sub-tasks
-    parent_task:
-      label: Parent Task
-      tooltip: Click to navigate to parent task
     tags:
       hint: Select tags to associate
       label: Tags
@@ -186,9 +186,9 @@ tasks:
   new_task: New Task
   no_tasks: No tasks
   notifications:
-    deadline_message: "Your task deadline is at {time}"
+    deadline_message: Your task deadline is at {time}
     deadline_title: "Task Deadline: {title}"
-    planned_message: "Your task is planned for {time}"
+    planned_message: Your task is planned for {time}
     reminder_title: "Task Reminder: {title}"
   page:
     completed_tasks_title: Completed tasks
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: Auto-Start Options
       auto_start_work: Auto-start work after break
       break_duration: Break Duration
+      keep_screen_awake: Keep screen awake during sessions
+      keep_screen_awake_section: Keep Screen Awake
       long_break_duration: Long Break Duration
       sessions_before_long_break: Sessions before Long Break
       ticking_sound: Enable ticking sound
       ticking_sound_section: Ticking Sound
       ticking_speed: Speed
       ticking_volume: Volume
-      keep_screen_awake_section: Keep Screen Awake
-      keep_screen_awake: Keep screen awake during sessions
       timer_label: Session durations
       title: Timer Settings
       work_duration: Work Duration
@@ -224,16 +224,6 @@ tasks:
       complete_title: Pomodoro Complete
       tap_to_open: Tap to open
       timer_running: Timer running
-  timer:
-    mode:
-      title: Timer Mode
-      description: Choose between Pomodoro technique, countdown timer, or stopwatch
-      normal: Normal Timer
-      pomodoro: Pomodoro
-      stopwatch: Stopwatch
-    settings:
-      duration_label: Timer Duration
-      duration_title: Duration
   priorities:
     not_urgent_important: Not Urgent but Important
     not_urgent_not_important: Not Urgent or Important
@@ -256,7 +246,9 @@ tasks:
       urgent_not_important: Urgent but Not Important
   quick_task:
     create_error: Error creating task
-    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
+    lock_description:
+      Lock properties to retain their values when creating multiple
+      similar tasks. Locked properties won't be cleared when you reset the form.
     lock_settings: Lock Settings
     reset_all: Reset all fields
     reset_confirm:
@@ -299,8 +291,9 @@ tasks:
       endsOnDate: ends on
       everyDay: every day
       occurrences: occurrences
-      on: on
+      true: true
       starts: starts
+      on:  "on"
     weekDays: Days of week
     weekSuffix: week(s)
     weekly: Weekly
@@ -317,20 +310,26 @@ tasks:
     plannedReminderLabel: Planned Date Reminder
   task_details: Task Details
   time_logging:
-    dialog_title: Log Time
-    mode: Logging Mode
     add_time: Add Time
-    set_total: Set Total
-    date: Date
-    duration: Duration to Add
-    total_time: Total Time for Day
-    hours: Hours
-    minutes: Minutes
     add_time_description: Add the specified time to existing records
-    set_total_description: Set the total time for the selected day
-    log_time: Log Time
+    dialog_title: Log Time
+    duration: Duration to Add
     invalid_input: Please enter valid hours and minutes
-    cancel: Cancel
+    log_time: Log Time
+    mode: Logging Mode
+    set_total: Set Total
+    set_total_description: Set the total time for the selected day
+    total_time: Total Time for Day
+  timer:
+    mode:
+      description: Choose between Pomodoro technique, countdown timer, or stopwatch
+      normal: Normal Timer
+      pomodoro: Pomodoro
+      stopwatch: Stopwatch
+      title: Timer Mode
+    settings:
+      duration_label: Timer Duration
+      duration_title: Duration
   title: Tasks
   tooltips:
     clear_date: Clear date
@@ -341,5 +340,7 @@ tasks:
     show_completed_tasks: Filter completed tasks
     show_subtasks: Show subtasks
   validation:
+    deadline_cannot_be_before_planned:
+      Deadline must be scheduled after the planned
+      date
     deadline_time_invalid: Please enter a valid deadline time
-    deadline_cannot_be_before_planned: Deadline must be scheduled after the planned date

@@ -1,102 +1,102 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Annuleren
 
 settings:
   about:
-    title: About
+    title: Over
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Export mislukt
+    import_failed: Import mislukt
+    setting_not_found: Instelling niet gevonden
+    version_mismatch: Versie niet gevonden
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
+    csv_description: U kunt dit gebruiken om te bekijken in Excel en vergelijkbare applicaties.
+    error: Export mislukt
+    in_progress: Data exporteren, even geduld...
+    json_description: Exporteer data in leesbaar JSON-formaat voor ontwikkelings- en debug-doeleinden.
+    select_directory: Selecteer exportmap
+    select_path: Selecteer opslaglocatie
+    select_type: Selecteer exportformaat
+    success: "Export succesvol. Bestandslocatie:"
     title: Export
-    canceled: Export canceled by user
+    canceled: Export geannuleerd door gebruiker
   export_data:
-    title: Export Data
+    title: Data exporteren
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Import mislukt
+    error.entity: Fout in type
+    in_progress: Data importeren, even geduld...
+    migration_failed: Import mislukt. Zorg ervoor dat u de nieuwste versie van de app hebt geïnstalleerd.
+    select_file: Selecteer bestand
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
+      merge: Samenvoegen met bestaande data
+      replace: Bestaande data verwijderen en nieuwe toevoegen
+      title: Importstrategie
+    success: Import succesvol
     title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+    unsupported_version: Niet-ondersteunde versie
+    version_mismatch: Versie niet gevonden
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
+    description: Exporteer uw data in verschillende formaten of importeer data uit back-upbestanden
+    select_action: Selecteer import/export-actie
     title: Import/Export
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Kies uw taal
+    title: Taal
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Notificaties uitschakelen mislukt
+    enable_error: Notificaties inschakelen mislukt
+    title: Notificaties
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Deze app heeft toestemming nodig om toegang te krijgen tot app-gebruiksstatistieken om uw app-gebruikspatronen nauwkeurig te volgen.
+      instructions: "Instructies:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Druk op de knop "Instellingen openen"
+        step2: Op het gebruikstoegangsconfiguratiescherm dat opent, vind "{appName}" in de lijst
+        step3: Tik op "{appName}"
+        step4: Schakel "Gebruikstoegang toestaan" in of zet de schakelaar op AAN
+      title: App-gebruikspermission
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: Voor betrouwbare notificaties moet deze app worden uitgesloten van batterijoptimalisatie. Zonder dit kunnen herinneringen vertraagd of niet bezorgd worden.
+      importance: De locatie van deze instelling kan variëren afhankelijk van de fabrikant van uw apparaat.
+      instructions: "Instructies:"
+      not_disabled: Batterijoptimalisatie is nog steeds ingeschakeld. Geef toestemming zodat de relevante functie correct werkt.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Druk op de knop "Instellingen openen"
+        step2: Op het instellingencherm dat opent, vind "{appName}"
+        step3: Tik op "{appName}"
+        step4: Zorg ervoor dat "Achtergrondgebruik toestaan" is ingeschakeld op de pagina die opent
+        step5: Tik op "Achtergrondgebruik toestaan"
+        step6: Selecteer "Onbeperkt"
+      title: Batterijoptimalisatie
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ vereist toestemming om exacte alarmen in te plannen zodat herinneringen correct werken.
+      instructions: "Instructies:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Ga naar Alarmen & herinneringen en schakel toestemming in
+          step3: Bevestig exacte alarmtoestemming
+        step1: Druk op de knop "Instellingen openen"
+        step2: 'Op de Alarmen & herinneringen-pagina van de geopende {appName}-app, schakel "Toestaan van alarmen en herinneringen instellen" in'
+      title: Exacte alarmtoestemming
+    fix_it: Herstel het
+    granted: Toestemming verleend
+    instructions: Instructies
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Notificatietoestemming is vereist om herinneringen te ontvangen. Zonder deze toestemming ontvangt u geen notificaties.
+      instructions: "Instructies:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Druk op de knop "Instellingen openen"
+          step2: Sta notificaties toe wanneer daarom wordt gevraagd
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Druk op de knop "Instellingen openen"
+          step2: Sta notificaties toe wanneer daarom wordt gevraagd
+      title: Notificatietoestemming
+    open_settings: Instellingen openen
+    open_terminal: Terminal openen
     firewall:
       title: Firewall-toestemming
       description: Sta WHPH toe om te communiceren via de {platform} firewall op poort 44040 voor apparaatsynchronisatie.
@@ -130,71 +130,70 @@ settings:
               cmd_step1: "Open opdrachtprompt als administrator"
               cmd_step2: "Voeg firewall-regel toe:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: Voor de app om automatisch te starten met uw apparaat is auto-start toestemming vereist. Dit zorgt ervoor dat herinneringen en notificaties correct werken zelfs na herstarts van het apparaat.
+      importance: De locatie van de auto-start instelling varieert of kan ontbreken afhankelijk van de fabrikant van het apparaat.
+      instructions: "Instructies:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Druk op de knop "Instellingen openen"
+        step2: 'Op het instellingencherm dat opent, vind "{appName}" app'
+        step3: 'Schakel "Auto-start", "Autorun", "Start bij opstarten" of vergelijkbare toestemming in'
+      title: Auto-start toestemming
+    title: Toestemmingen
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Startinstelling uitschakelen mislukt
+    enable_error: Startinstelling inschakelen mislukt
+    subtitle: Tik om systeeminstellingen te openen en auto-start toestemming voor de app in te schakelen
+    title: Start bij opstarten
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Apparaten synchroniseren
+  title: Instellingen
   backup:
-    title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    title: Back-up
+    description: Maak en herstel gecomprimeerde back-ups van uw applicatiedata met het veilige .whph-formaat
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Back-up maken
+      description: Exporteer al uw data naar een gecomprimeerd .whph back-upbestand
+      in_progress: Back-up maken, even geduld...
+      success: "Back-up succesvol gemaakt. Bestandslocatie:"
+      error: Back-up maken mislukt
+      select_path: Selecteer back-up opslaglocatie
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Back-up herstellen
+      description: Importeer data uit een eerder gemaakt .whph back-upbestand
+      in_progress: Back-up herstellen, even geduld...
+      success: Back-up succesvol hersteld
+      error: Back-up herstellen mislukt
+      select_file: Selecteer back-upbestand
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Herstelstrategie
+        replace: Bestaande data verwijderen en herstellen
+        merge: Samenvoegen met bestaande data
+    canceled: Back-upoperatie geannuleerd door gebruiker
+    export_failed: Back-upexport mislukt
+    import_failed: Back-upimport mislukt
+    invalid_format: Ongeldig back-upbestandsformaat
+    invalid_format_error: Ongeldig back-upbestandsformaat
+    corrupted: Back-upbestand is beschadigd of corrupt
+    export_description: Maak een gecomprimeerd back-upbestand dat al uw data bevat
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Thema
+    description: Pas het uiterlijk van WHPH aan
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Themamodus
+      light: Licht
+      dark: Donker
       auto:
         title: Auto
-        description: Follow system theme settings
+        description: Volg systeemaanpassingen
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Dynamische accentkleur
+      description: Als uw systeem het ondersteunt, past de primaire kleur zich aan op basis van het dynamische kleurenschema van het systeem
+      feature: Dynamisch
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Aangepaste accentkleur
+      description: Kies een aangepaste accentkleur om het uiterlijk van uw app te personaliseren
+      feature: Aangepast
+    error: Thema-instellingen laden mislukt
   ui_density:
     title: Dichtheid
     description: Pas de grootte van tekst en UI-elementen aan om de leesbaarheid op schermen met hoge DPI te verbeteren
@@ -202,7 +201,7 @@ settings:
     normal: Normaal
     large: Groot
     larger: Groter
-    error: Kan UI-dichtheidsinstellingen niet laden
+    error: UI-dichtheidsinstellingen laden mislukt
   advanced:
     title: Geavanceerd
     description: Geavanceerde instellingen en ontwikkelaarstools

@@ -1,102 +1,102 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Ακύρωση
 
 settings:
   about:
-    title: About
+    title: Σχετικά
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Η εξαγωγή απέτυχε
+    import_failed: Η εισαγωγή απέτυχε
+    setting_not_found: Ρύθμιση δεν βρέθηκε
+    version_mismatch: Έκδοση δεν βρέθηκε
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
-    title: Export
-    canceled: Export canceled by user
+    csv_description: Μπορείτε να χρησιμοποιήσετε αυτό για να δείτε σε Excel και παρόμοιες εφαρμογές.
+    error: Η εξαγωγή απέτυχε
+    in_progress: Εξαγωγή δεδομένων, παρακαλώ περιμένετε...
+    json_description: Εξαγωγή δεδομένων σε αναγνώσιμο μορφή JSON για σκοπούς ανάπτυξης και αποσφαλμάτωσης.
+    select_directory: Επιλέξτε κατάλογο εξαγωγής
+    select_path: Επιλέξτε τοποθεσία αποθήκευσης
+    select_type: Επιλέξτε μορφή εξαγωγής
+    success: "Εξαγωγή επιτυχής. Τοποθεσία αρχείου:"
+    title: Εξαγωγή
+    canceled: Εξαγωγή ακυρώθηκε από τον χρήστη
   export_data:
-    title: Export Data
+    title: Εξαγωγή Δεδομένων
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Η εισαγωγή απέτυχε
+    error.entity: Σφάλμα στον τύπο
+    in_progress: Εισαγωγή δεδομένων, παρακαλώ περιμένετε...
+    migration_failed: Η εισαγωγή απέτυχε. Βεβαιωθείτε ότι έχετε εγκατεστημένη την τελευταία έκδοση της εφαρμογής.
+    select_file: Επιλέξτε αρχείο
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
-    title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+      merge: Συγχώνευση με Υπάρχοντα Δεδομένα
+      replace: Διαγραφή Υπάρχοντων Δεδομένων και Προσθήκη Νέων
+      title: Στρατηγική Εισαγωγής
+    success: Εισαγωγή επιτυχής
+    title: Εισαγωγή
+    unsupported_version: Μη Υποστηριζόμενη Έκδοση
+    version_mismatch: Έκδοση δεν βρέθηκε
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
-    title: Import/Export
+    description: Εξαγωγή των δεδομένων σας σε διάφορες μορφές ή εισαγωγή δεδομένων από αρχεία αντιγράφων ασφαλείας
+    select_action: Επιλέξτε ενέργεια εισαγωγής/εξαγωγής
+    title: Εισαγωγή/Εξαγωγή
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Επιλέξτε τη γλώσσα σας
+    title: Γλώσσα
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Αποτυχία απενεργοποίησης ειδοποιήσεων
+    enable_error: Αποτυχία ενεργοποίησης ειδοποιήσεων
+    title: Ειδοποιήσεις
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Αυτή η εφαρμογή χρειάζεται άδεια για πρόσβαση σε στατιστικά χρήσης εφαρμογών για ακριβή παρακολούθηση των προτύπων χρήσης της εφαρμογής σας.
+      instructions: "Οδηγίες:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Πατήστε το κουμπί "Άνοιγμα Ρυθμίσεων"
+        step2: Στην οθόνη ρυθμίσεων πρόσβασης χρήσης που ανοίγει, βρείτε το "{appName}" στη λίστα
+        step3: Πατήστε στο "{appName}"
+        step4: Ενεργοποιήστε "Επιτρέψτε πρόσβαση χρήσης" ή αλλάξτε τον διακόπτη σε ΑΝ
+      title: Άδεια Χρήσης Εφαρμογής
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: Για αξιόπιστες ειδοποιήσεις, αυτή η εφαρμογή πρέπει να εξαιρεθεί από την βελτιστοποίηση μπαταρίας. Χωρίς αυτό, οι υπενθυμίσεις μπορεί να καθυστερήσουν ή να μην παραδοθούν καθόλου.
+      importance: Η τοποθεσία αυτής της ρύθμισης μπορεί να διαφέρει ανάλογα με τον κατασκευαστή της συσκευής σας.
+      instructions: "Οδηγίες:"
+      not_disabled: Η βελτιστοποίηση μπαταρίας είναι ακόμα ενεργοποιημένη. Παρέχετε άδεια για να λειτουργήσει σωστά η σχετική λειτουργία.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Πατήστε το κουμπί "Άνοιγμα Ρυθμίσεων"
+        step2: Στην οθόνη ρυθμίσεων που ανοίγει, βρείτε το "{appName}"
+        step3: Πατήστε στο "{appName}"
+        step4: Βεβαιωθείτε ότι η "Επιτρέψτε Χρήση στο Φόντο" είναι ενεργοποιημένη στη σελίδα που ανοίγει
+        step5: Πατήστε στην "Επιτρέψτε Χρήση στο Φόντο"
+        step6: Επιλέξτε "Απεριόριστο"
+      title: Βελτιστοποίηση Μπαταρίας
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Το Android 12+ απαιτεί άδεια για προγραμματισμό ακριβών συναγερμών ώστε οι υπενθυμίσεις να λειτουργούν σωστά.
+      instructions: "Οδηγίες:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Πηγαίνετε σε Συναγερμοί & Υπενθυμίσεις και ενεργοποιήστε την άδεια
+          step3: Επιβεβαιώστε την άδεια ακριβούς συναγερμού
+        step1: Πατήστε το κουμπί "Άνοιγμα Ρυθμίσεων"
+        step2: 'Στη σελίδα Συναγερμοί & Υπενθυμίσεις της ανοιγμένης εφαρμογής {appName}, ενεργοποιήστε "Επιτρέψτε ρύθμιση συναγερμών και υπενθυμίσεων"'
+      title: Άδεια Ακριβούς Συναγερμού
+    fix_it: Διορθώστε το
+    granted: Άδεια Δόθηκε
+    instructions: Οδηγίες
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Η άδεια ειδοποιήσεων απαιτείται για να λαμβάνετε υπενθυμίσεις. Χωρίς αυτή την άδεια, δεν θα λαμβάνετε ειδοποιήσεις.
+      instructions: "Οδηγίες:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Πατήστε το κουμπί "Άνοιγμα Ρυθμίσεων"
+          step2: Επιτρέψτε ειδοποιήσεις όταν σας ζητηθεί
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Πατήστε το κουμπί "Άνοιγμα Ρυθμίσεων"
+          step2: Επιτρέψτε ειδοποιήσεις όταν σας ζητηθεί
+      title: Άδεια Ειδοποιήσεων
+    open_settings: Άνοιγμα Ρυθμίσεων
+    open_terminal: Άνοιγμα Τερματικού
     firewall:
       title: Άδεια Τείχους Προστασίας
       description: Επιτρέψτε στο WHPH να επικοινωνεί μέσω του τείχους προστασίας {platform} στη θύρα 44040 για συγχρονισμό συσκευών.
@@ -130,71 +130,70 @@ settings:
               cmd_step1: "Ανοίξτε τη Γραμμή Εντολών ως Διαχειριστής"
               cmd_step2: "Προσθέστε κανόνα τείχους προστασίας:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: Για να ξεκινά η εφαρμογή αυτόματα με τη συσκευή σας, απαιτείται άδεια αυτόματης εκκίνησης. Αυτό εξασφαλίζει ότι οι υπενθυμίσεις και οι ειδοποιήσεις λειτουργούν σωστά ακόμα και μετά από επανεκκίνηση της συσκευής.
+      importance: Η τοποθεσία της ρύθμισης αυτόματης εκκίνησης διαφέρει ή μπορεί να μην υπάρχει ανάλογα με τον κατασκευαστή της συσκευής.
+      instructions: "Οδηγίες:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Πατήστε το κουμπί "Άνοιγμα Ρυθμίσεων"
+        step2: 'Στην οθόνη ρυθμίσεων που ανοίγει, βρείτε την εφαρμογή "{appName}"'
+        step3: 'Ενεργοποιήστε "Αυτόματη εκκίνηση", "Autorun", "Εκκίνηση κατά την εκκίνηση" ή παρόμοια άδεια'
+      title: Άδεια Αυτόματης Εκκίνησης
+    title: Άδειες
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Αποτυχία απενεργοποίησης ρύθμισης εκκίνησης
+    enable_error: Αποτυχία ενεργοποίησης ρύθμισης εκκίνησης
+    subtitle: Πατήστε για να ανοίξετε τις ρυθμίσεις συστήματος και να ενεργοποιήσετε την άδεια αυτόματης εκκίνησης για την εφαρμογή
+    title: Εκκίνηση κατά την Έναρξη
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Συγχρονισμός Συσκευών
+  title: Ρυθμίσεις
   backup:
-    title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    title: Αντίγραφο Ασφαλείας
+    description: Δημιουργία και αποκατάσταση συμπιεσμένων αντιγράφων ασφαλείας των δεδομένων της εφαρμογής σας χρησιμοποιώντας το ασφαλές μορφή .whph
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Δημιουργία Αντιγράφου Ασφαλείας
+      description: Εξαγωγή όλων των δεδομένων σας σε συμπιεσμένο αρχείο αντιγράφου ασφαλείας .whph
+      in_progress: Δημιουργία αντιγράφου ασφαλείας, παρακαλώ περιμένετε...
+      success: "Αντίγραφο ασφαλείας δημιουργήθηκε επιτυχώς. Τοποθεσία αρχείου:"
+      error: Αποτυχία δημιουργίας αντιγράφου ασφαλείας
+      select_path: Επιλέξτε τοποθεσία αποθήκευσης αντιγράφου ασφαλείας
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Αποκατάσταση Αντιγράφου Ασφαλείας
+      description: Εισαγωγή δεδομένων από προηγουμένως δημιουργημένο αρχείο αντιγράφου ασφαλείας .whph
+      in_progress: Αποκατάσταση αντιγράφου ασφαλείας, παρακαλώ περιμένετε...
+      success: Αντίγραφο ασφαλείας αποκαταστάθηκε επιτυχώς
+      error: Αποτυχία αποκατάστασης αντιγράφου ασφαλείας
+      select_file: Επιλέξτε αρχείο αντιγράφου ασφαλείας
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Στρατηγική Αποκατάστασης
+        replace: Διαγραφή Υπάρχοντων Δεδομένων και Αποκατάσταση
+        merge: Συγχώνευση με Υπάρχοντα Δεδομένα
+    canceled: Λειτουργία αντιγράφου ασφαλείας ακυρώθηκε από τον χρήστη
+    export_failed: Εξαγωγή αντιγράφου ασφαλείας απέτυχε
+    import_failed: Εισαγωγή αντιγράφου ασφαλείας απέτυχε
+    invalid_format: Άκυρη μορφή αρχείου αντιγράφου ασφαλείας
+    invalid_format_error: Άκυρη μορφή αρχείου αντιγράφου ασφαλείας
+    corrupted: Το αρχείο αντιγράφου ασφαλείας είναι κατεστραμμένο ή φθαρμένο
+    export_description: Δημιουργία συμπιεσμένου αρχείου αντιγράφου ασφαλείας που περιέχει όλα τα δεδομένα σας
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Θέμα
+    description: Προσαρμόστε την εμφάνιση του WHPH
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Λειτουργία Θέματος
+      light: Φωτεινό
+      dark: Σκοτεινό
       auto:
-        title: Auto
-        description: Follow system theme settings
+        title: Αυτόματο
+        description: Ακολουθήστε τις ρυθμίσεις θέματος συστήματος
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Δυναμικό Χρώμα Προσθήκης
+      description: Αν το σύστημά σας το υποστηρίζει, το κύριο χρώμα θα προσαρμοστεί βάσει του δυναμικού χρωματικού σχήματος του συστήματος
+      feature: Δυναμικό
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Προσαρμοσμένο Χρώμα Προσθήκης
+      description: Επιλέξτε προσαρμοσμένο χρώμα προσθήκης για να εξατομικεύσετε την εμφάνιση της εφαρμογής σας
+      feature: Προσαρμοσμένο
+    error: Αποτυχία φόρτωσης ρυθμίσεων θέματος
   ui_density:
     title: Πυκνότητα
     description: Ρυθμίστε το μέγεθος κειμένου και στοιχείων διεπαφής για βελτιωμένη αναγνωσιμότητα σε οθόνες υψηλής DPI
@@ -207,15 +206,15 @@ settings:
     title: Προηγμένες
     description: Προηγμένες ρυθμίσεις και εργαλεία προγραμματιστή
   debug_logs:
-    title: Αρχεία καταγραφής αποσφαλμάτωσης
+    title: Αρχεία Καταγραφής Αποσφαλμάτωσης
     description: Ενεργοποίηση λεπτομερούς καταγραφής σε αρχείο για αντιμετώπιση προβλημάτων και υποστήριξη
     load_settings_error: Σφάλμα φόρτωσης ρυθμίσεων αρχείων καταγραφής αποσφαλμάτωσης
     update_settings_error: Σφάλμα ενημέρωσης ρυθμίσεων αρχείων καταγραφής αποσφαλμάτωσης
     view:
-      title: Προβολή αρχείων καταγραφής αποσφαλμάτωσης
+      title: Προβολή Αρχείων Καταγραφής Αποσφαλμάτωσης
       description: Προβολή και εξαγωγή τρεχόντων αρχείων καταγραφής αποσφαλμάτωσης
     page:
-      title: Αρχεία καταγραφής αποσφαλμάτωσης
+      title: Αρχεία Καταγραφής Αποσφαλμάτωσης
       description: Προβολή τρεχόντων καταχωρήσεων αρχείου καταγραφής αποσφαλμάτωσης. Τα αρχεία καταγραφής καθαρίζονται και περιστρέφονται αυτόματα για αποφυγή υπερβολικής χρήσης δίσκου.
       content: Περιεχόμενο αρχείου καταγραφής
       refresh: Ανανέωση αρχείων καταγραφής
@@ -227,7 +226,7 @@ settings:
       no_file: Δεν βρέθηκε αρχείο καταγραφής αποσφαλμάτωσης. Τα αρχεία καταγραφής θα δημιουργηθούν μετά την ενεργοποίηση της καταγραφής αποσφαλμάτωσης και τη δημιουργία καταχωρήσεων από την εφαρμογή.
       empty: Το αρχείο καταγραφής αποσφαλμάτωσης είναι κενό. Δεν έχουν καταγραφεί ακόμη καταχωρήσεις.
     export:
-      dialog_title: Εξαγωγή αρχείων καταγραφής αποσφαλμάτωσης
+      dialog_title: Εξαγωγή Αρχείων Καταγραφής Αποσφαλμάτωσης
       error: Σφάλμα κατά την εξαγωγή αρχείων καταγραφής
       success: Το αρχείο καταγραφής εξήχθη με επιτυχία
       no_logs_available: Δεν υπάρχουν διαθέσιμα αρχεία καταγραφής για εξαγωγή. Δημιουργήστε πρώτα μερικά αρχεία καταγραφής.

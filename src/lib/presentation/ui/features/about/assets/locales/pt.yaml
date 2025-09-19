@@ -1,49 +1,48 @@
 about:
-  about_title: "About"
-  version: Version {version}
+  about_title: "Sobre"
+  version: Versão {version}
   description: >
-    {appName} is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    O {appName} é um aplicativo abrangente projetado para aprimorar sua produtividade pessoal; ele permite que você gerencie efetivamente suas tarefas, desenvolva novos hábitos e faça o melhor uso do seu tempo. Além disso, fortalece seu foco rastreando quanto tempo você gasta em diferentes aplicativos. Ao analisar seu progresso, você pode celebrar suas conquistas e obter a motivação necessária para uma vida mais produtiva.
   links:
-    website: Website
-    source_code: Source Code
+    website: Site
+    source_code: Código-fonte
     feedback: Feedback
-    contact: Contact
-    check_update: Check for Updates
+    contact: Contato
+    check_update: Verificar atualizações
   support_me:
-    title: Support {appName}
+    title: Apoie {appName}
     description: >
-      {appName} is a completely free and open-source software. Everyone is free to use, explore, improve, and share it. 
+      O {appName} é um software completamente gratuito e de código aberto. Todos são livres para usar, explorar, melhorar e compartilhar. 
 
-
-      While you continue to enjoy using it, I keep working to make it even better. If you'd like to support the continuation of this effort, you can buy me a coffee; your support will directly contribute to the development and sustainability of {appName}. 😊
-    button_text: Buy me a coffee
+      Enquanto você continua a desfrutar do uso, eu continuo trabalhando para torná-lo ainda melhor. Se você gostaria de apoiar a continuação desse esforço, pode me comprar um café; seu apoio contribuirá diretamente para o desenvolvimento e a sustentabilidade do {appName}. 😊
+    button_text: Me compre um café
   onboarding:
     step1:
-      title: "Welcome to {appName}"
-      description: "Your personal companion for building better habits, managing tasks, and tracking time effectively. Let's explore the key features together!"
+      title: "Bem-vindo ao {appName}"
+      description: "Seu companheiro pessoal para construir melhores hábitos, gerenciar tarefas e rastrear o tempo de forma eficaz. Vamos explorar as principais funcionalidades juntos!"
     step2:
-      title: "Task Management"
-      description: "Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks."
+      title: "Gerenciamento de Tarefas"
+      description: "Crie e organize tarefas com prioridades, prazos e lembretes. Use o temporizador Pomodoro para manter o foco e rastrear seu progresso em tarefas importantes."
     step3:
-      title: "Habit Building"
-      description: "Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics."
+      title: "Construção de Hábitos"
+      description: "Construa hábitos duradouros rastreando atividades diárias. Defina lembretes, monitore suas sequências e visualize seu progresso com estatísticas detalhadas."
     step4:
-      title: "Note Taking"
-      description: "Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access."
+      title: "Tomada de Notas"
+      description: "Mantenha informações importantes organizadas com um sistema poderoso de anotações. Etiquete suas notas para categorização fácil e acesso rápido."
     step5:
-      title: "App Usage & Time Insights"
-      description: "Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity."
+      title: "Uso de Apps & Insights de Tempo"
+      description: "Monitore padrões de uso de aplicativos e analise o tempo gasto em diferentes atividades. Obtenha insights sobre seus hábitos digitais e otimize sua produtividade."
     step6:
-      title: "Smart Tagging System"
-      description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
+      title: "Sistema de Etiquetagem Inteligente"
+      description: "Use etiquetas para organizar e agrupar suas tarefas, hábitos e aplicativos. Rastreie o tempo gasto em diferentes atividades por etiquetas para entender onde seu tempo vai e otimizar seu fluxo de trabalho."
     step7:
-      title: "App Permissions"
-      description: "{appName} needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."
-      review_permissions: "Review Permissions"
+      title: "Permissões do App"
+      description: "O {appName} precisa de certas permissões para funcionar corretamente. Você pode revisar as permissões que deseja conceder para recursos do sistema, como notificações e rastreamento de apps."
+      review_permissions: "Revisar Permissões"
     step8:
-      title: "Ready to Transform Your Life?"
-      description: "You have all the tools you need to build better habits, stay focused, and achieve your goals. Start your journey to a more productive and fulfilling life today!"
+      title: "Pronto para Transformar Sua Vida?"
+      description: "Você tem todas as ferramentas necessárias para construir melhores hábitos, manter o foco e alcançar seus objetivos. Comece sua jornada para uma vida mais produtiva e gratificante hoje!"
     buttons:
-      next: "Next"
-      back: "Back"
-      start: "Get Started"
+      next: "Próximo"
+      back: "Voltar"
+      start: "Começar"

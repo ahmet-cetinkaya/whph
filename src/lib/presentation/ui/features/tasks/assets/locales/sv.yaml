@@ -1,320 +1,344 @@
 tasks:
   add_button:
-    tooltip: Add new task
-  all_tasks_done: All tasks completed!
+    tooltip: Lägg till ny uppgift
+  all_tasks_done: Alla uppgifter klara!
   card:
     schedule:
-      today: Schedule for today
-      tomorrow: Schedule for tomorrow
+      today: Schemalägg för idag
+      tomorrow: Schemalägg för imorgon
     tooltips:
-      schedule: Schedule task
+      schedule: Schemalägg uppgift
   complete:
-    error: Unexpected error occurred while saving task completion.
-  validation:
-    deadline_time_invalid: Deadline tid är ogiltig
-    deadline_cannot_be_before_planned: Deadline datum måste vara efter planerat datum
+    error: Oväntat fel uppstod vid sparande av uppgiftens slutförande.
   date_selection:
-    deadline_date_title: Select deadline date
-    planned_date_title: Select planned date
+    deadline_date_title: Välj förfallodatum
+    planned_date_title: Välj planerat datum
   delete:
-    error: Unexpected error occurred while deleting task.
-    message: Are you sure you want to delete this task?
-    title: Delete Task
+    error: Oväntat fel uppstod vid borttagning av uppgift.
+    message: Är du säker på att du vill ta bort denna uppgift?
+    title: Ta Bort Uppgift
   details:
     deadline_date:
-      label: Deadline Date
+      label: Förfallodatum
     description:
-      hint: Add description...
-      label: Description
+      hint: Lägg till beskrivning...
+      label: Beskrivning
     elapsed_time:
-      label: Elapsed Time
+      label: Förfluten Tid
     estimated_time:
-      label: Estimated Time
-    is_completed: Completed
-    planned_date:
-      label: Planned Date
-    priority:
-      label: Priority
-    sub_tasks:
-      label: Sub-tasks
+      label: Uppskattad Tid
+    is_completed: Slutförd
     parent_task:
-      label: Parent Task
-      tooltip: Click to navigate to parent task
+      label: Överordnad Uppgift
+      tooltip: Klicka för att navigera till överordnad uppgift
+    planned_date:
+      label: Planerat Datum
+    priority:
+      label: Prioritet
+    sub_tasks:
+      label: Underuppgifter
     tags:
-      hint: Select tags to associate
-      label: Tags
-    tags_hint: Select tags for task
+      hint: Välj taggar att associera
+      label: Taggar
+    tags_hint: Välj taggar för uppgift
     title:
-      label: Title
-    total_elapsed_time: Total Elapsed Time
+      label: Titel
+    total_elapsed_time: Total Förfluten Tid
   errors:
-    add_tag: Unexpected error occurred while adding tag
-    adding_tag: Failed to add tag
-    get_tags: Error occurred while fetching tags
-    get_task: Unexpected error occurred while loading task
-    loading_tags: Failed to load task tags
-    loading_task: Failed to load task
-    loading_tasks: Failed to load tasks
-    remove_tag: Unexpected error occurred while removing tag
-    removing_tag: Failed to remove tag
-    same_tag: Cannot add the same tag twice
-    save_task: Unexpected error occurred while saving task
-    saving_task: Failed to save task
-    sort_field_not_supported: Sort field not supported
-    task_not_found: Task not found
-    task_tag_already_deleted: Task tag is already deleted
-    task_tag_already_exists: This task tag already exists
-    task_tag_not_found: Task tag not found
+    add_tag: Oväntat fel uppstod vid tillägg av tagg
+    adding_tag: Misslyckades att lägga till tagg
+    get_tags: Fel uppstod vid hämtning av taggar
+    get_task: Oväntat fel uppstod vid laddning av uppgift
+    loading_tags: Misslyckades att ladda uppgiftstaggar
+    loading_task: Misslyckades att ladda uppgift
+    loading_tasks: Misslyckades att ladda uppgifter
+    remove_tag: Oväntat fel uppstod vid borttagning av tagg
+    removing_tag: Misslyckades att ta bort tagg
+    same_tag: Kan inte lägga till samma tagg två gånger
+    save_task: Oväntat fel uppstod vid sparande av uppgift
+    saving_task: Misslyckades att spara uppgift
+    sort_field_not_supported: Sorteringsfält stöds inte
+    task_not_found: Uppgift hittades inte
+    task_tag_already_deleted: Uppgiftstagg är redan borttagen
+    task_tag_already_exists: Denna uppgiftstagg finns redan
+    task_tag_not_found: Uppgiftstagg hittades inte
   filters:
-    completion: By Completion Status
-    deadline_date: By Deadline Date
-    planned_date: By Planned Date
+    completion: Efter Slutförandestatus
+    deadline_date: Efter Förfallodatum
+    planned_date: Efter Planerat Datum
     search:
-      placeholder: Search tasks
-    tags: By Tags
+      placeholder: Sök uppgifter
+    tags: Efter Taggar
     tooltips:
-      filter_by_tags: Filter by tags
+      filter_by_tags: Filtrera efter taggar
   help:
     details:
       content: |
-        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
+        Bemästra din uppgiftshantering och maximera produktiviteten genom att organisera, prioritera och spåra ditt arbete effektivt.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Varför Är Det Viktigt?
 
-        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
+        Effektiv uppgiftshantering är grunden för produktivitet. Rätt strukturerade uppgifter med tydliga prioriteringar och deadlines hjälper dig fokusera på det som är viktigast och förhindrar att viktigt arbete faller mellan stolarna.
 
-        ## 📝 Task Organization
+        ## 📝 Uppgiftsorganisation
 
-        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
+        Strukturera dina uppgifter med omfattande detaljer för att behålla klarhet och fokus. Använd taggar, prioriteringar och tidsuppskattningar för att skapa en systematisk approach till din arbetsbelastning.
 
-        - 🏷️ Categorize tasks with meaningful tags
-        - ⚖️ Set priorities using proven frameworks
-        - ⏱️ Estimate time requirements accurately
-        - 📅 Plan realistic deadlines and schedules
+        - 🏷️ Kategorisera uppgifter med meningsfulla taggar
+        - ⚖️ Sätt prioriteringar med beprövade ramverk
+        - ⏱️ Uppskatta tidsbehov korrekt
+        - 📅 Planera realistiska deadlines och scheman
 
-        ## ⏰ Time Management
+        ## ⏰ Tidsstyrning
 
-        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
+        Spåra dina tidsinvesteringar för att förstå dina arbetsmönster och förbättra effektivitet. Rätt tidsstyrning förvandlar splittrade ansträngningar till fokuserad produktivitet.
 
-        - 📊 Monitor actual vs. estimated time
-        - 🎯 Focus on high-impact activities
-        - 📈 Analyze productivity patterns over time
-        - ⏳ Balance urgent and important tasks
+        - 📊 Övervaka faktisk vs uppskattad tid
+        - 🎯 Fokusera på högimpact-aktiviteter
+        - 📈 Analysera produktivitetsmönster över tid
+        - ⏳ Balansera brådskande och viktiga uppgifter
 
-        ## 📊 Priority Framework (Eisenhower Matrix)
+        ## 📊 Prioriteringsramverk (Eisenhower Matris)
 
-        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
+        Organisera dina uppgifter med denna beprövade prioriteringsmetod för att säkerställa att du alltid arbetar med rätt saker vid rätt tid.
 
-        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
-        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
-        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
-        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
-      title: Task Management & Productivity Guide
+        - 🔥 **Brådskande & Viktigt:** Hantera omedelbart - krishantering och deadlines
+        - 📈 **Viktigt, Inte Brådskande:** Schemalägg strategiskt - planering och färdighetsutveckling  
+        - ⚡ **Brådskande, Inte Viktigt:** Delegera när möjligt - avbrott och vissa möten
+        - 🗑️ **Varken Brådskande eller Viktigt:** Eliminera - tidstjuvar och låg-värde aktiviteter
+      title: Uppgiftshantering & Produktivitetsguide
     overview:
       content: |
-        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+        Transformera din produktivitet med systematisk uppgiftshantering som hjälper dig hålla dig organiserad, fokuserad och i kontroll över din arbetsbelastning.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Varför Är Det Viktigt?
 
-        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+        Effektiv uppgiftshantering är hörnstenen i personlig och professionell framgång. Genom att organisera ditt arbete systematiskt minskar du stress, håller deadlines och skapar utrymme för meningsfull framsteg på viktiga mål.
 
-        ## 📋 Task Organization
+        ## 📋 Uppgiftsorganisation
 
-        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+        Skapa en strukturerad approach till att hantera dina ansvar. Välorganiserade uppgifter leder till tydliga prioriteringar och effektiv utförande av ditt dagliga arbete.
 
-        - ✅ Create and categorize tasks systematically
-        - 🏷️ Group related work with meaningful tags
-        - ⚖️ Set clear priorities and deadlines
-        - 🔍 Use filters and search for quick access
+        - ✅ Skapa och kategorisera uppgifter systematiskt
+        - 🏷️ Gruppera relaterat arbete med meningsfulla taggar
+        - ⚖️ Sätt tydliga prioriteringar och deadlines
+        - 🔍 Använd filter och sökning för snabb åtkomst
 
-        ## ⏱️ Time Tracking & Focus
+        ## ⏱️ Tidsspårning & Fokus
 
-        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+        Övervaka dina tidsinvesteringar för att förstå produktivitetsmönster och optimera ditt arbetsflöde. Tidsmedvetenhet leder till bättre planering och förbättrad prestanda.
 
-        - ⏰ Track actual time spent per task
-        - 🎯 Use Marathon Mode for focused work sessions
-        - 📊 Analyze completion patterns and trends
-        - 🔄 Review and adjust time estimates regularly
+        - ⏰ Spåra faktisk tid per uppgift
+        - 🎯 Använd Marathon-läge för fokuserade arbetsessioner
+        - 📊 Analysera slutförandemönster och trender
+        - 🔄 Granska och justera tidsuppskattningar regelbundet
 
-        ## 📈 Progress Monitoring
+        ## 📈 Framstegspårning
 
-        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+        Håll koll på dina prestationer och lär av dina arbetsmönster. Regelbunden granskning och reflektion driver kontinuerlig förbättring i ditt produktivitetssystem.
 
-        - 📈 Monitor task completion rates
-        - 📅 Review daily and weekly progress
-        - 🎯 Identify bottlenecks and optimization opportunities
-        - 🏆 Celebrate achievements and milestone completions
-      title: Task Management & Workflow Guide
+        - 📈 Övervaka uppgiftsslutförandefrekvenser
+        - 📅 Granska daglig och veckovis framsteg
+        - 🎯 Identifiera flaskhalsar och optimiseringsmöjligheter
+        - 🏆 Fira prestationer och milstolpar
+      title: Uppgiftshantering & Arbetsflödesguide
   marathon:
     details:
-      title: Task Details
+      title: Uppgiftsdetaljer
     help:
       content: |
-        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
+        Maximera ditt fokus och produktivitet med strukturerade arbetsessioner som hjälper dig behålla djup koncentration medan du förhindrar utbrändhet.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Varför Är Det Viktigt?
 
-        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
+        Fokuserade arbetsessioner är essentiella för djupt arbete och högkvalitativ output. Genom att arbeta i strukturerade intervaller med regelbundna pauser upprätthåller du topp mental prestanda medan du undviker trötthet från förlängda, ofokuserade arbetsperioder.
 
-        ## ⏰ Time-Boxed Focus Sessions
+        ## ⏰ Tidsbegränsade Fokussessioner
 
-        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
+        Använd beprövade tidsstyrningstekniker för att strukturera ditt arbete för maximal effektivitet. Strukturerade sessioner hjälper dig behålla koncentration och slutföra uppgifter mer effektivt.
 
-        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
-        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
-        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
-        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
+        - 🎯 **Klassisk Fokus:** 25 minuter arbete / 5 minuter paus
+        - 📈 **Utökad Fokus:** 50 minuter arbete / 10 minuter paus  
+        - 🔄 **Lång Paus:** 15-30 minuter efter 4 sessioner
+        - ⚖️ **Anpassad Timing:** Justera intervaller för att matcha din naturliga rytm
 
-        ## 🧠 Cognitive Benefits
+        ## 🧠 Kognitiva Fördelar
 
-        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
+        Strukturerade arbetsessioner utnyttjar hjärnans naturliga uppmärksamhetscykler för att optimera prestanda och förhindra mental trötthet som minskar kvalitet och kreativitet.
 
-        - 🎯 Enhanced focus and deep concentration
-        - 🔋 Reduced mental fatigue and burnout
-        - 💪 Sustained motivation through regular accomplishments
-        - ⚡ Improved time awareness and planning accuracy
+        - 🎯 Förbättrad fokus och djup koncentration
+        - 🔋 Minskad mental trötthet och utbrändhet
+        - 💪 Hållbar motivation genom regelbundna prestationer
+        - ⚡ Förbättrad tidsmedvetenhet och planeringsnoggrannhet
 
-        ## 📊 Performance Optimization
+        ## 📊 Prestandaoptimering
 
-        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
+        Spåra dina fokuserade arbetsmönster för att förstå dina topp produktivitetstider och optimera ditt schema för maximal effektivitet.
 
-        - 🏷️ Categorize focus sessions with tags for analysis
-        - 📈 Monitor productivity patterns across different times
-        - 🚫 Eliminate distractions before starting sessions
-        - 🚶 Use breaks for physical movement and mental reset
-      title: Focused Work Sessions & Time Management Guide
-      tooltip: Marathon help tooltip
-    label: Marathon Mode
-    unpin_task_tooltip: Unpin current task
-  new_task: New Task
-  no_tasks: No tasks
+        - 🏷️ Kategorisera fokussessioner med taggar för analys
+        - 📈 Övervaka produktivitetsmönster över olika tider
+        - 🚫 Eliminera distraktioner innan sessioner startas
+        - 🚶 Använd pauser för fysisk rörelse och mental omstart
+      title: Fokuserade Arbetsessioner & Tidsstyrningsguide
+      tooltip: Marathon hjälp tooltip
+    label: Marathon Läge
+    unpin_task_tooltip: Ta bort pinnad nuvarande uppgift
+  new_task: Ny Uppgift
+  no_tasks: Inga uppgifter
   notifications:
-    deadline_message: "Your task deadline is at {time}"
-    deadline_title: "Task Deadline: {title}"
-    planned_message: "Your task is planned for {time}"
-    reminder_title: "Task Reminder: {title}"
+    deadline_message: Din uppgifts deadline är kl {time}
+    deadline_title: "Uppgifts Deadline: {title}"
+    planned_message: Din uppgift är planerad för {time}
+    reminder_title: "Uppgifts Påminnelse: {title}"
   page:
-    completed_tasks_title: Completed tasks
-    title: Tasks
+    completed_tasks_title: Slutförda uppgifter
+    title: Uppgifter
   pomodoro:
     actions:
-      stop_timer: Stop Timer
+      stop_timer: Stoppa Timer
     notifications:
-      break_completed: Break session completed!
-      long_break_completed: Long break completed!
-      time_remaining_prefix: "Time remaining:"
-      timer_completed: Timer completed!
+      break_completed: Pausesession slutförd!
+      long_break_completed: Lång paus slutförd!
+      time_remaining_prefix: "Återstående tid:"
+      timer_completed: Timer slutförd!
       title: Pomodoro Timer
-      work_completed: Work session completed!
+      work_completed: Arbetsession slutförd!
     settings:
-      auto_start_break: Auto-start break after work
-      auto_start_section: Auto-Start Options
-      auto_start_work: Auto-start work after break
-      break_duration: Break Duration
-      long_break_duration: Long Break Duration
-      sessions_before_long_break: Sessions before Long Break
-      ticking_sound: Enable ticking sound
-      ticking_sound_section: Ticking Sound
-      ticking_speed: Speed
-      ticking_volume: Volume
-      keep_screen_awake_section: Keep Screen Awake
-      keep_screen_awake: Keep screen awake during sessions
-      timer_label: Session durations
-      title: Timer Settings
-      work_duration: Work Duration
+      auto_start_break: Auto-start paus efter arbete
+      auto_start_section: Auto-Start Alternativ
+      auto_start_work: Auto-start arbete efter paus
+      break_duration: Pauslängd
+      keep_screen_awake: Håll skärmen vaken under sessioner
+      keep_screen_awake_section: Håll Skärmen Vaken
+      long_break_duration: Lång Pauslängd
+      sessions_before_long_break: Sessioner före Lång Paus
+      ticking_sound: Aktivera tickande ljud
+      ticking_sound_section: Tickande Ljud
+      ticking_speed: Hastighet
+      ticking_volume: Volym
+      timer_label: Sessionlängder
+      title: Timer Inställningar
+      work_duration: Arbeteslängd
     system_tray:
-      app_running: App Running
-      complete_title: Pomodoro Complete
-      tap_to_open: Tap to open
-      timer_running: Timer running
+      app_running: App Kör
+      complete_title: Pomodoro Slutförd
+      tap_to_open: Tryck för att öppna
+      timer_running: Timer kör
   priorities:
-    not_urgent_important: Not Urgent but Important
-    not_urgent_not_important: Not Urgent or Important
-    urgent_important: Urgent and Important
-    urgent_not_important: Urgent but Not Important
+    not_urgent_important: Inte Brådskande men Viktig
+    not_urgent_not_important: Varken Brådskande eller Viktig
+    urgent_important: Brådskande och Viktig
+    urgent_not_important: Brådskande men Inte Viktig
   priority:
     selection:
-      title: Select Priority
+      title: Välj Prioritet
     tooltips:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Ingen Prioritet
+      not_urgent_important: Inte Brådskande men Viktig
+      not_urgent_not_important: Inte Brådskande & Inte Viktig
+      urgent_important: Brådskande & Viktig
+      urgent_not_important: Brådskande men Inte Viktig
     types:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Ingen Prioritet
+      not_urgent_important: Inte Brådskande men Viktig
+      not_urgent_not_important: Inte Brådskande & Inte Viktig
+      urgent_important: Brådskande & Viktig
+      urgent_not_important: Brådskande men Inte Viktig
   quick_task:
-    create_error: Error creating task
-    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
-    lock_settings: Lock Settings
-    reset_all: Reset all fields
+    create_error: Fel vid skapande av uppgift
+    lock_description:
+      Lås egenskaper för att behålla deras värden vid skapande av flera
+      liknande uppgifter. Låsta egenskaper rensas inte när du återställer formuläret.
+    lock_settings: Lås Inställningar
+    reset_all: Återställ alla fält
     reset_confirm:
-      message: Are you sure you want to reset all fields? This action cannot be undone.
-      title: Reset All Fields
-    title: Quick Task
-    title_hint: Enter a descriptive task title...
-    title_placeholder: What needs to be done?
+      message: Är du säker på att du vill återställa alla fält? Denna åtgärd kan inte ångras.
+      title: Återställ Alla Fält
+    title: Snabb Uppgift
+    title_hint: Ange en beskrivande uppgiftstitel...
+    title_placeholder: Vad behöver göras?
     tooltips:
       deadline_date: "Deadline: {date}"
-      deadline_date_not_set: "Deadline: Not set"
-      estimated_time: "Estimated Time: {time}"
-      estimated_time_not_set: "Estimated Time: Not set"
-      planned_date: "Planned: {date}"
-      planned_date_not_set: "Planned: Not set"
+      deadline_date_not_set: "Deadline: Inte inställd"
+      estimated_time: "Uppskattad Tid: {time}"
+      estimated_time_not_set: "Uppskattad Tid: Inte inställd"
+      planned_date: "Planerad: {date}"
+      planned_date_not_set: "Planerad: Inte inställd"
   recurrence:
-    count: Number of occurrences
-    custom: Custom
-    daily: Daily
-    daySuffix: day(s)
-    endDate: End date
-    enterCountHint: Enter count
+    count: Antal förekomster
+    custom: Anpassad
+    daily: Dagligen
+    daySuffix: dag(ar)
+    endDate: Slutdatum
+    enterCountHint: Ange antal
     interval:
-      label: Repeat every
-      prefix: every
+      label: Upprepa var
+      prefix: var
       suffix:
-        days: day(s)
-        months: month(s)
-        weeks: week(s)
-        years: year(s)
-    label: Recurrence
-    monthSuffix: month(s)
-    monthly: Monthly
-    none: No recurrence
-    range: Range
-    selectDateHint: Select date
-    startDate: Start date
+        days: dag(ar)
+        months: månad(er)
+        weeks: vecka(or)
+        years: år
+    label: Upprepning
+    monthSuffix: månad(er)
+    monthly: Månadsvis
+    none: Ingen upprepning
+    range: Omfattning
+    selectDateHint: Välj datum
+    startDate: Startdatum
     summary:
-      endsAfter: ends after
-      endsOnDate: ends on
-      occurrences: occurrences
-      on: on
+      endsAfter: slutar efter
+      endsOnDate: slutar på
       everyDay: varje dag
-      starts: starts
-    weekDays: Days of week
-    weekSuffix: week(s)
-    weekly: Weekly
-    yearSuffix: year(s)
-    yearly: Yearly
+      occurrences: occurrences
+      true: true
+      starts: startar
+      on:  "på"
+    weekDays: Veckodagar
+    weekSuffix: vecka(or)
+    weekly: Veckovis
+    yearSuffix: år
+    yearly: Årligen
   reminder:
-    atTime: At the scheduled time
-    deadlineReminderLabel: Deadline Reminder
-    fifteenMinutesBefore: 15 minutes before
-    fiveMinutesBefore: 5 minutes before
-    none: No reminder
-    oneDayBefore: 1 day before
-    oneHourBefore: 1 hour before
-    plannedReminderLabel: Planned Date Reminder
-  task_details: Task Details
-  title: Tasks
+    atTime: Vid schemalagd tid
+    deadlineReminderLabel: Deadline Påminnelse
+    fifteenMinutesBefore: 15 minuter innan
+    fiveMinutesBefore: 5 minuter innan
+    none: Ingen påminnelse
+    oneDayBefore: 1 dag innan
+    oneHourBefore: 1 timme innan
+    plannedReminderLabel: Planerat Datum Påminnelse
+  task_details: Uppgiftsdetaljer
+  time_logging:
+    add_time: Lägg Till Tid
+    add_time_description: Lägg till specificerad tid till befintliga poster
+    dialog_title: Logga Tid
+    duration: Varaktighet att Lägga Till
+    invalid_input: Ange giltiga timmar och minuter
+    log_time: Logga Tid
+    mode: Loggningsläge
+    set_total: Sätt Total
+    set_total_description: Sätt total tid för vald dag
+    total_time: Total Tid för Dag
+  timer:
+    mode:
+      description: Välj mellan Pomodoro-teknik, nedräknare eller stopwatch
+      normal: Normal Timer
+      pomodoro: Pomodoro
+      stopwatch: Stopwatch
+      title: Timerläge
+    settings:
+      duration_label: Timer Varaktighet
+      duration_title: Varaktighet
+  title: Uppgifter
   tooltips:
-    clear_date: Clear date
-    decrease_estimated_time: Decrease estimated time
-    edit_title: Edit title
-    increase_estimated_time: Increase estimated time
-    set_reminder: Set reminder
-    show_completed_tasks: Filter completed tasks
+    clear_date: Rensa datum
+    decrease_estimated_time: Minska uppskattad tid
+    edit_title: Redigera titel
+    increase_estimated_time: Öka uppskattad tid
+    set_reminder: Sätt påminnelse
+    show_completed_tasks: Filtrera slutförda uppgifter
     show_subtasks: Visa underuppgifter
+  validation:
+    deadline_cannot_be_before_planned: Deadline datum måste vara efter planerat datum
+    deadline_time_invalid: Deadline tid är ogiltig

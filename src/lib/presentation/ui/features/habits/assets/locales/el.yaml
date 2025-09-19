@@ -1,214 +1,232 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Αρχειοθέτηση
+    archive_confirm: Είστε σίγουροι ότι θέλετε να αρχειοθετήσετε αυτήν τη συνήθεια;
+    archive_tooltip: Αρχειοθετήστε αυτήν τη συνήθεια
+    archived_date: Ημερομηνία Αρχειοθέτησης
+    hide_archived: Απόκρυψη αρχειοθετημένων
+    show_archived: Εμφάνιση αρχειοθετημένων
+    unarchive: Αναίρεση αρχειοθέτησης
+    unarchive_confirm: Είστε σίγουροι ότι θέλετε να αναίρεσετε την αρχειοθέτηση αυτής της συνήθειας;
+    unarchive_tooltip: Αναίρεση αρχειοθέτησης αυτής της συνήθειας
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Παρ
+      mon: Δευ
+      sat: Σάβ
+      sun: Κυρ
+      thu: Πέμ
+      tue: Τρί
+      wed: Τετ
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Είστε σίγουροι ότι θέλετε να διαγράψετε αυτήν τη συνήθεια;
+    confirm_title: Διαγραφή Συνήθειας
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
+    archived_status: Αρχειοθετημένη
+    create_record_tooltip: Σημειώστε ως ολοκληρωμένη σήμερα
+    daily_target: Ημερήσια Συχνότητα
+    daily_target_hint: φορές ανά ημέρα
+    description: Περιγραφή
+    elapsed_time: Χρόνος που Πέρασε
+    estimated_time: Εκτιμώμενος Χρόνος
+    estimated_time_not_set: Δεν ορίστηκε
     help:
       content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+        Δημιουργήστε βιώσιμες καθημερινές ρουτίνες μέσω συστηματικής παρακολούθησης συνηθειών που μετατρέπουν τις προθέσεις σας σε σταθερές ενέργειες και μετρήσιμη πρόοδο προς τους στόχους σας.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Γιατί Είναι Σημαντικό;
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+        Η δημιουργία συνηθειών είναι η βάση της προσωπικής ανάπτυξης και της διαρκούς επιτυχίας. Οι σταθερές καθημερινές ενέργειες συσσωρεύονται με τον χρόνο για να δημιουργήσουν αξιοσημείωτα αποτελέσματα, ενώ η συστηματική παρακολούθηση εξασφαλίζει ότι διατηρείτε τη δυναμική και κάνετε συνεχείς βελτιώσεις στις ρουτίνες σας.
 
-        ## ⚙️ Strategic Habit Design
+        ## ⚙️ Στρατηγικός Σχεδιασμός Συνηθειών
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+        Δημιουργήστε συνήθειες που ενσωματώνονται απρόσκοπτα στη ζωή σας και υποστηρίζουν τους μακροπρόθεσμους στόχους σας. Οι καλά σχεδιασμένες συνήθειες γίνονται αυτόματες συμπεριφορές που απαιτούν ελάχιστη βούληση για διατήρηση.
 
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
+        - 📝 Σχεδιάστε σαφείς, συγκεκριμένες συνήθειες με δράσιμες περιγραφές
+        - 📅 Καθιερώστε σταθερά προγράμματα που ταιριάζουν με τους φυσικούς σας ρυθμούς
+        - 🏷️ Οργανώστε παρόμοιες συνήθειες σε συνεκτικούς ομίλους για συστηματική παρακολούθηση
+        - 🎯 Συνδέστε κάθε συνήθεια με σημαντικά αποτελέσματα και προσωπικές αξίες
 
-        ## ⏱️ Performance Monitoring
+        ## ⏱️ Παρακολούθηση Απόδοσης
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+        Παρακολουθήστε την εκτέλεση των συνηθειών σας για να κατανοήσετε μοτίβα, να μετρήσετε πρόοδο και να βελτιστοποιήσετε την προσέγγισή σας για μέγιστη αποτελεσματικότητα και βιώσιμη ανάπτυξη.
 
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+        - ⏳ Καταγράψτε χρόνους ολοκλήρωσης για να κατανοήσετε τη διάρκεια και την αποδοτικότητα της συνήθειας
+        - 📊 Αναλύστε επενδύσεις χρόνου σε κατηγορίες συνηθειών για ισορροπημένη ανάπτυξη
+        - 📈 Παρακολουθήστε τάσεις απόδοσης για να εντοπίσετε ευκαιρίες βελτίωσης και βέλτιστο χρονισμό
+        - 🔄 Χρησιμοποιήστε δεδομένα για να βελτιώσετε τη δυσκολία και τον προγραμματισμό της συνήθειας για διαρκή επιτυχία
 
-        ## 📅 Consistency & Momentum
+        ## 📅 Σταθερότητα & Δυναμική
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+        Χτίστε και διατηρήστε τη σταθερότητα που απαιτείται για διαρκή αλλαγή συμπεριφοράς μέσω συστηματικής παρακολούθησης και στρατηγικής ανασκόπησης των προτύπων προόδου σας.
 
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+        - 📚 Επανεξετάστε το ιστορικό ολοκλήρωσης για να αξιολογήσετε πρόοδο και να εντοπίσετε μοτίβα επιτυχίας
+        - 🔗 Παρακολουθήστε καθημερινές αλυσίδες για να χτίσετε και να διατηρήσετε δυναμική για μακροπρόθεσμη επιτυχία
+        - 📌 Παρακολουθήστε μετρήσεις σταθερότητας για να ενισχύσετε κίνητρα και δέσμευση
+        - 🎯 Γιορτάστε ορόσημα και επιτεύγματα για να ενισχύσετε θετική αλλαγή συμπεριφοράς
 
-        ## 🚀 Optimization Strategies
+        ## 🚀 Στρατηγικές Βελτιστοποίησης
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+        Εφαρμόστε αποδεδειγμένες τεχνικές βελτιστοποίησης συνηθειών που επιταχύνουν την πρόοδο και εξασφαλίζουν ότι οι προσπάθειές σας μεταφράζονται σε σημαντικές, διαρκείς βελτιώσεις στη ζωή και την παραγωγικότητά σας.
 
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
-    records: Records
-    remove_record_tooltip: Remove today's completion
+        - 🐾 **Ξεκινήστε Μικρά:** Αρχίστε με διαχειρίσιμες συνήθειες που εγγυώνται πρώιμες νίκες
+        - 🏷️ **Στρατηγική Ομαδοποίηση:** Οργανώστε συνήθειες ανά περιοχή ζωής ή ώρα ημέρας
+        - 📊 **Προσαρμογές Βασισμένες σε Δεδομένα:** Χρησιμοποιήστε πληροφορίες παρακολούθησης για βελτιστοποίηση χρονισμού και προσέγγισης
+        - 🌅 **Εστίαση σε Κορυφαίες Ώρες:** Προγραμματίστε σημαντικές συνήθειες κατά τις περιόδους αιχμής ενέργειάς σας
+      description: Περιγραφή βοήθειας
+      title: Οδηγός Δημιουργίας & Παρακολούθησης Απόδοσης Συνηθειών
+    records: Καταγραφές
+    remove_record_tooltip: Αφαίρεση ολοκλήρωσης σήμερα
     statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
-      records: Records
-      score_trends: Score Trends
-      to: To
-      top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
-    tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Ημερήσια συχνότητα"
-    daily_target_hint: "φορές ανά ημέρα"
+      archived_note: "Αρχειοθετήθηκε στις:"
+      archived_on: Αρχειοθετήθηκε στις
+      archived_warning: Οι στατιστικές εμφανίζονται μέχρι την ημερομηνία αρχειοθέτησης. {startDate} - {archivedDate}
+      completions: ολοκληρώσεις
+      from: Από
+      monthly: Μηνιαία
+      no_streaks_yet: Καμία αλυσίδα ακόμα. Ξεκινήστε να χτίζετε σταθερότητα!
+      overall: Συνολικά
+      records: Καταγραφές
+      score_trends: Τάσεις Βαθμολογίας
+      to: Μέχρι
+      top_streaks: Κορυφαίες Αλυσίδες
+      yearly: Ετήσια
+    statistics_label: Στατιστικές
+    tags: Ετικέτες
+    tags_hint: Επιλέξτε ετικέτες για σύνδεση
   errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
+    adding_tag: Αποτυχία προσθήκης ετικέτας
+    creating_record: Αποτυχία δημιουργίας καταγραφής συνήθειας
+    deleting: Έγινε απροσδόκητο σφάλμα κατά τη διαγραφή της συνήθειας
+    deleting_record: Αποτυχία διαγραφής καταγραφής συνήθειας
+    habit_not_found: Συνήθεια δεν βρέθηκε
+    habit_record_not_found: Καταγραφή συνήθειας δεν βρέθηκε
+    habit_tag_not_found: Ετικέτα συνήθειας δεν βρέθηκε
+    loading_archive_status: Αποτυχία φόρτωσης κατάστασης αρχειοθέτησης
+    loading_details: Αποτυχία φόρτωσης λεπτομερειών συνήθειας
+    loading_habit: Αποτυχία φόρτωσης συνήθειας
+    loading_habits: Αποτυχία φόρτωσης συνηθειών
+    loading_records: Αποτυχία φόρτωσης καταγραφών συνήθειας
+    loading_tags: Αποτυχία φόρτωσης ετικετών συνήθειας
+    removing_tag: Αποτυχία αφαίρεσης ετικέτας
+    saving_details: Αποτυχία αποθήκευσης συνήθειας
+    saving_habit: Αποτυχία αποθήκευσης συνήθειας
+    tag_already_exists: Αυτή η ετικέτα έχει ήδη προστεθεί
+    toggling_archive: Αποτυχία εναλλαγής κατάστασης αρχειοθέτησης
   goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
-    target_frequency: "Συχνότητα περιόδου"
-    times_unit: "φορές ανά περίοδο"
-  help:
-    description: Help description
+    current_goal: Στόχος
+    days_unit: ημέρες
+    description: |
+      Θέλετε να εξασκήσετε τη συνήθεια με συγκεκριμένη συχνότητα αντί
+      για κάθε μέρα; Τότε ορίστε έναν προσαρμοσμένο στόχο.
+    enable: Ενεργοποίηση Προσαρμοσμένων Στόχων
+    goal: Προσαρμοσμένος Στόχος
+    goal_format: "{count} φορές σε {dayCount} ημέρες"
+    period_days: Ημέρες Περιόδου
+    settings: Ρυθμίσεις Προσαρμοσμένου Στόχου
+    target_frequency: Συχνότητα Περιόδου
+    times_unit: φορές ανά περίοδο
   list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
+    all_habits_done: Όλες οι συνήθειες ολοκληρώθηκαν!
+    no_habits_found: Καμία συνήθεια
+  name_placeholder: Εισαγάγετε ένα σημαντικό όνομα συνήθειας...
+  new_habit: Νέα Συνήθεια
   notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Θυμηθείτε να ολοκληρώσετε τη συνήθειά σας: {name}"
+    reminder_title: "Υπενθύμιση Συνήθειας: {name}"
   overview:
-    filter_by_tags_tooltip: Filter by tags
+    filter_by_tags_tooltip: Φιλτράρισμα ανά ετικέτες
     help:
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Κατακτήστε τις καθημερινές σας ρουτίνες μέσω συστηματικής παρακολούθησης συνηθειών που χτίζει σταθερότητα, δημιουργεί θετική δυναμική και οδηγεί σε σημαντική πρόοδο προς μακροπρόθεσμους στόχους.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Γιατί Είναι Σημαντικό;
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        Η διαχείριση καθημερινών συνηθειών είναι το θεμέλιο της προσωπικής αριστείας και της βιώσιμης ανάπτυξης. Η σταθερή εκτέλεση καλά προγραμματισμένων συνηθειών δημιουργεί σύνθετα οφέλη με τον χρόνο, ενώ η συστηματική παρακολούθηση εξασφαλίζει ότι διατηρείτε λογοδοσία και κάνετε βελτιώσεις βασισμένες σε δεδομένα στις ρουτίνες σας.
 
-        ## 📅 Daily Execution & Tracking
+        ## 📅 Καθημερινή Εκτέλεση & Παρακολούθηση
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Αναπτύξτε ένα αξιόπιστο σύστημα για εκτέλεση και παρακολούθηση συνηθειών που δημιουργεί σταθερότητα και χτίζει ασταμάτητη δυναμική προς τους στόχους σας.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - ✅ **Καθημερινή Ολοκλήρωση:** Σημειώστε συνήθειες ως ολοκληρωμένες για να χτίσετε αλυσίδες σταθερότητας
+        - 📆 **Προβολή Πολλαπλών Ημερών:** Παρακολουθήστε μοτίβα σε ημέρες και εβδομάδες για ολοκληρωμένες γνώσεις
+        - 🔄 **Χτίσιμο Αλυσίδων:** Διατηρήστε συνεχόμενες ημέρες ολοκλήρωσης για μέγιστη δυναμική κινήτρων
+        - 📊 **Οπτικοποίηση Προόδου:** Παρακολουθήστε ποσοστά και μοτίβα ολοκλήρωσης με τον χρόνο
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Ανάλυση & Βελτιστοποίηση Χρόνου
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Παρακολουθήστε επενδύσεις χρόνου στις συνήθειές σας για να βελτιστοποιήσετε το καθημερινό σας πρόγραμμα και να εξασφαλίσετε ισορροπημένη ανάπτυξη σε όλους τους σημαντικούς τομείς ζωής.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ **Παρακολούθηση Διάρκειας:** Καταγράψτε πραγματικό χρόνο δαπάνης για να κατανοήσετε απαιτήσεις συνήθειας
+        - 🏷️ **Ανάλυση Κατηγορίας:** Ομαδοποιήστε συνήθειες ανά ετικέτες για να δείτε κατανομή χρόνου σε τομείς ζωής
+        - ⏰ **Βελτιστοποίηση Προγράμματος:** Ισορροπήστε χρονισμό συνηθειών για βιώσιμη καθημερινή εκτέλεση
+        - 📈 **Βελτίωση Αποδοτικότητας:** Εντοπίστε ευκαιρίες για απλοποίηση εκτέλεσης συνηθειών
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Στρατηγική Οργάνωση
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+        Δημιουργήστε ένα σύστημα οργάνωσης που υποστηρίζει σταθερή εκτέλεση ενώ παρέχει ευελιξία προσαρμογής καθώς εξελίσσονται οι στόχοι και οι συνθήκες σας.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        - 🏷️ **Σημαντική Κατηγοριοποίηση:** Ομαδοποιήστε συνήθειες ανά τομέα ζωής, χρόνο ή επίπεδο προτεραιότητας
+        - ⚙️ **Ευέλικτος Προγραμματισμός:** Σχεδιάστε χρονισμό συνηθειών που λειτουργεί με τον τρόπο ζωής και τους ενεργειακούς σας ρυθμούς
+        - 🎯 **Εστίαση Προτεραιότητας:** Εξασφαλίστε ότι οι πιο σημαντικές συνήθειές σας λαμβάνουν κατάλληλη προσοχή και ενέργεια
 
-        ## 💡 Mastery Principles
+        ## 💡 Αρχές Αριστείας
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+        Εφαρμόστε αποδεδειγμένες στρατηγικές αριστείας συνηθειών που εξασφαλίζουν ότι οι προσπάθειές σας συσσωρεύονται σε διαρκή αλλαγή συμπεριφοράς και μετρήσιμες βελτιώσεις ζωής.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        - 🐾 **Ξεκινήστε Μικρά:** Αρχίστε με συνήθειες που μπορείτε να εκτελέσετε σταθερά, μετά αυξήστε σταδιακά τη δυσκολία
+        - 🏷️ **Στρατηγική Ομαδοποίηση:** Οργανώστε συνήθειες για να δημιουργήσετε λογικές ακολουθίες και συστήματα υποστήριξης
+        - 📊 **Επανεξέταση Απόδοσης:** Χρησιμοποιήστε δεδομένα παρακολούθησης χρόνου για να κατανοήσετε μοτίβα και να βελτιστοποιήσετε την προσέγγισή σας
+        - 🌅 **Εκτέλεση Κορυφαίων Ωρών:** Προγραμματίστε τις πιο σημαντικές συνήθειές σας κατά περιόδους αιχμής ενέργειας
 
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
+        ### 📊 Χρήση Προβολής Ημερολογίου
+        - 📅 Προβάλλετε πολλαπλές ημέρες ταυτόχρονα στην προβολή ημερολογίου.
+        - ✅ Παρακολουθήστε οπτικά τα μοτίβα ολοκλήρωσής σας.
+        - ⚡ Εξοικονομήστε χρόνο με γρήγορη σημείωση ολοκλήρωσης.
+        - 🎯 Αυξήστε κίνητρα με οπτική παρακολούθηση αλυσίδων.
+        - 🔄 Εξερευνήστε παρελθοντικές και μελλοντικές συνήθειες με ευέλικτη πλοήγηση ημερομηνιών.
+      title: Οδηγός Διαχείρισης Καθημερινών Συνηθειών & Βελτιστοποίησης Ρουτίνας
+    title: Συνήθειες
   reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
+    enableReminders: Ενεργοποίηση υπενθυμίσεων
+    everyDay: Κάθε μέρα
+    noReminder: Δεν ορίστηκε υπενθύμιση
+    reminderDays: Ημέρες υπενθύμισης
+    reminderSettings: Ρυθμίσεις Υπενθύμισης
+    reminderTime: Ώρα υπενθύμισης
+    selectDaysWarning: Παρακαλούμε επιλέξτε τουλάχιστον μία ημέρα για υπενθυμίσεις
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
+    enable: Ενεργοποίηση υπενθυμίσεων
+    select_days_warning: Παρακαλούμε επιλέξτε τουλάχιστον μία ημέρα για υπενθυμίσεις
   statistics:
-    archived_on: Archived on
-    from: From
-    to: To
+    archived_on: Αρχειοθετήθηκε στις
+    from: Από
+    to: Μέχρι
   tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    add_tooltip: Προσθήκη ετικέτας
+    select_tooltip: Επιλογή ετικέτας
+  time_display:
+    actual_time_tooltip: Πραγματικός χρόνος που παρακολουθήθηκε για αυτήν την ημέρα
+    estimated: εκτιμώμενος
+    estimated_time_tooltip: Εκτιμώμενος χρόνος βασισμένος στις ρυθμίσεις συνήθειας
+    no_time_logged_tooltip: Δεν καταγράφηκε χρόνος για αυτήν την ημέρα
+  time_logging:
+    add_time: Προσθήκη Χρόνου
+    add_time_description: Προσθήκη καθορισμένου χρόνου σε υπάρχουσες καταγραφές
+    dialog_title: Καταγραφή Χρόνου
+    duration: Διάρκεια προς Προσθήκη
+    invalid_input: Παρακαλούμε εισαγάγετε έγκυρες ώρες και λεπτά
+    log_time: Καταγραφή Χρόνου
+    mode: Λειτουργία Καταγραφής
+    set_total: Ορισμός Συνολικού
+    set_total_description: Ορισμός συνολικού χρόνου για την επιλεγμένη ημέρα
+    total_time: Συνολικός Χρόνος για την Ημέρα
+  timer:
+    label: Χρονόμετρο
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Μείωση ημερήσιου στόχου"
-    increase_daily_target: "Αύξηση ημερήσιου στόχου"
+    add_habit: Προσθήκη Συνήθειας
+    decrease_daily_target: Μείωση ημερήσιου στόχου
+    decrease_estimated_time: Μείωση εκτιμώμενου χρόνου
+    edit_name: Επεξεργασία Ονόματος
+    increase_daily_target: Αύξηση ημερήσιου στόχου
+    increase_estimated_time: Αύξηση εκτιμώμενου χρόνου

@@ -1,5 +1,4 @@
 shared:
-  untitled: "Χωρίς τίτλο"
   buttons:
     add: Προσθήκη
     back: Πίσω
@@ -65,6 +64,7 @@ shared:
     created_date_label: Ημερομηνία δημιουργίας
     modified_date_label: Ημερομηνία τροποποίησης
     name_label: Όνομα
+  date: Ημερομηνία
   date_filter:
     title: Επιλογή εύρους ημερομηνιών
     tooltips:
@@ -72,6 +72,46 @@ shared:
       filter: Φιλτράρισμα κατά ημερομηνία
   date_format:
     hint: ΗΗ/ΜΜ/ΕΕΕΕ
+  datepicker:
+    cannot_select_date_after_max_date:
+      Δεν μπορείτε να επιλέξετε ημερομηνία μετά την
+      {date}
+    cannot_select_date_before_min_date:
+      Δεν μπορείτε να επιλέξετε ημερομηνία πριν
+      την {date}
+    cannot_select_time_after_max_date: Δεν μπορείτε να επιλέξετε ώρα μετά τις {time}
+    cannot_select_time_before_min_date: Δεν μπορείτε να επιλέξετε ώρα πριν τις {time}
+    deadline_cannot_be_before_planned_date:
+      Η προθεσμία πρέπει να είναι την ή μετά
+      την προγραμματισμένη ημερομηνία
+    end_date_cannot_be_after_max_date:
+      Η ημερομηνία λήξης δεν μπορεί να είναι μετά
+      την {date}
+    end_date_must_be_at_or_before:
+      Η ημερομηνία λήξης πρέπει να είναι την ή πριν την
+      {date}
+    select_date_range_title: Επιλέξτε εύρος ημερομηνιών
+    select_date_time_title: Επιλέξτε ημερομηνία και ώρα
+    selected_date_must_be_at_or_after:
+      Η επιλεγμένη ημερομηνία πρέπει να είναι την
+      ή μετά την {date}
+    selected_date_must_be_at_or_before:
+      Η επιλεγμένη ημερομηνία πρέπει να είναι την
+      ή πριν την {date}
+    selected_date_time_must_be_after:
+      Η επιλεγμένη ημερομηνία και ώρα πρέπει να είναι
+      μετά τις {dateTime}
+    start_date_cannot_be_after_end_date:
+      Η ημερομηνία έναρξης δεν μπορεί να είναι
+      μετά την ημερομηνία λήξης
+    start_date_cannot_be_before_min_date:
+      Η ημερομηνία έναρξης δεν μπορεί να είναι
+      πριν την {date}
+    start_date_must_be_at_or_after:
+      Η ημερομηνία έναρξης πρέπει να είναι την ή μετά
+      την {date}
+    time_must_be_at_or_after: Η ώρα πρέπει να είναι τις ή μετά τις {time}
+    time_must_be_at_or_before: Η ώρα πρέπει να είναι τις ή πριν τις {time}
   days:
     friday: Παρασκευή
     friday_short: Παρ
@@ -92,19 +132,19 @@ shared:
       hint: Μπορείτε να γράψετε χρησιμοποιώντας μορφή Markdown...
       tooltips:
         bold: Έντονα
-        italic: Πλάγια
-        strikethrough: Διαγραμμένα
-        code: Κώδικας
-        link: Σύνδεσμος
-        quote: Παράθεση
         bulleted_list: Λίστα με κουκκίδες
-        numbered_list: Αριθμημένη λίστα
-        horizontal_rule: Οριζόντια γραμμή
-        edit: Επεξεργασία
-        preview: Προεπισκόπηση
-        image: Εικόνα
-        heading: Επικεφαλίδα
         checkbox: Πλαίσιο ελέγχου
+        code: Κώδικας
+        edit: Επεξεργασία
+        heading: Επικεφαλίδα
+        horizontal_rule: Οριζόντια γραμμή
+        image: Εικόνα
+        italic: Πλάγια
+        link: Σύνδεσμος
+        numbered_list: Αριθμημένη λίστα
+        preview: Προεπισκόπηση
+        quote: Παράθεση
+        strikethrough: Διαγραμμένα
   errors:
     deleting: Παρουσιάστηκε σφάλμα κατά τη διαγραφή δεδομένων
     file_not_found: Το αρχείο δεν βρέθηκε
@@ -138,8 +178,6 @@ shared:
     unexpected: Παρουσιάστηκε απροσδόκητο σφάλμα
   filters:
     search: Αναζήτηση
-  help:
-    tooltip: Βοήθεια
   messages:
     confirm_delete: Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το στοιχείο;
     no_items_found: Δεν βρέθηκαν στοιχεία
@@ -153,16 +191,16 @@ shared:
       tags: Ετικέτες
       tasks: Εργασίες
       today: Σήμερα
-  none_option: "Χωρίς ετικέτες"
+  none_option: Χωρίς ετικέτες
   regex_help:
     examples:
-      chat: 'Ταιριάζει είτε με "Slack" είτε με "Discord"'
-      chrome: 'Ταιριάζει με οποιονδήποτε τίτλο παραθύρου που περιέχει "Chrome"'
-      exact_chrome: 'Ταιριάζει ακριβώς με "Chrome"'
+      chat: Ταιριάζει είτε με "Slack" είτε με "Discord"
+      chrome: Ταιριάζει με οποιονδήποτε τίτλο παραθύρου που περιέχει "Chrome"
+      exact_chrome: Ταιριάζει ακριβώς με "Chrome"
       pdf: Ταιριάζει με οποιοδήποτε αρχείο PDF
       vscode: Ταιριάζει με οποιοδήποτε παράθυρο VS Code
     tips:
-      any_chars: 'Χρησιμοποιήστε ".*" για να ταιριάξετε οποιουσδήποτε χαρακτήρες'
+      any_chars: Χρησιμοποιήστε ".*" για να ταιριάξετε οποιουσδήποτε χαρακτήρες
       dot: '"\." ταιριάζει με μια τελεία'
       end: '"$" ταιριάζει με το τέλος του κειμένου'
       or: '"|" σημαίνει Ή'
@@ -187,11 +225,11 @@ shared:
       description: Ενεργοποίηση μεταφοράς και απόθεσης για αναδιάταξη στοιχείων
       title: Προσαρμοσμένη ταξινόμηση
     descending: Φθίνουσα
+    disable_reordering_tooltip: Απενεργοποίηση λειτουργίας αναδιάταξης
+    enable_reordering_tooltip: Ενεργοποίηση λειτουργίας αναδιάταξης
     remove_criteria: Αφαίρεση κριτηρίου
     reset_to_default: Επαναφορά στην προεπιλογή
     sort: Ταξινόμηση
-    enable_reordering_tooltip: Ενεργοποίηση λειτουργίας αναδιάταξης
-    disable_reordering_tooltip: Απενεργοποίηση λειτουργίας αναδιάταξης
   statistics:
     daily_usage:
       description: Εμφανίζει τον συνολικό χρόνο χρήσης ανά ημέρα της εβδομάδας
@@ -200,7 +238,24 @@ shared:
       description: Εμφανίζει τον συνολικό χρόνο χρήσης ανά ώρα της ημέρας
       title: Ωριαία χρήση
   time:
-    not_set: "Δεν έχει οριστεί"
+    not_set: Δεν έχει οριστεί
+  time_display:
+    elapsed: Παρελθών
+    elapsed_time_tooltip: Χρόνος που δαπανήθηκε για αυτήν την εργασία
+    estimated: Εκτιμώμενος
+    estimated_time_tooltip: Εκτιμώμενος χρόνος για την ολοκλήρωση αυτής της εργασίας
+    no_time_logged_tooltip: Δεν έχει καταγραφεί ακόμη χρόνος
+  time_logging:
+    add_time: Προσθήκη χρόνου
+    add_time_description: Προσθήκη χρόνου στο υπάρχον σύνολο
+    dialog_title: Καταγραφή χρόνου
+    duration: Διάρκεια
+    invalid_input: Παρακαλώ εισάγετε έγκυρο χρόνο
+    log_time: Καταγραφή χρόνου
+    mode: Λειτουργία
+    set_total: Ορισμός συνόλου
+    set_total_description: Ορισμός συνολικού χρόνου που δαπανήθηκε
+    total_time: Συνολικός χρόνος
   time_periods:
     custom: Προσαρμοσμένο
     last_month: Προηγούμενος μήνας
@@ -210,6 +265,11 @@ shared:
     this_three_months: Αυτοί οι 3 μήνες
     this_week: Αυτή η εβδομάδα
     today: Σήμερα
+  timer:
+    label: Χρονοδιακόπτης
+    normal: Κανονικό
+    pomodoro: Pomodoro
+    stopwatch: Χρονόμετρο
   tooltips:
     compare_with_previous: Σύγκριση με προηγούμενη περίοδο
     filter_by_tags: Φιλτράρισμα κατά ετικέτες
@@ -222,6 +282,7 @@ shared:
     minutes: λεπτά
     minutes_short: λ
     seconds: δευτερόλεπτα
+  untitled: Χωρίς τίτλο
   update_dialog:
     buttons:
       download_page: Σελίδα λήψης
@@ -234,22 +295,5 @@ shared:
     success: Η ενημέρωση λήφθηκε με επιτυχία!
     title: Διαθέσιμη ενημέρωση!
   validation:
-    required: "Το {field} είναι υποχρεωτικό"
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Η προθεσμία πρέπει να είναι την ή μετά την προγραμματισμένη ημερομηνία"
-    selected_date_must_be_at_or_after: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή μετά την {date}
-    selected_date_must_be_at_or_before: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή πριν την {date}
-    start_date_cannot_be_after_end_date: Η ημερομηνία έναρξης δεν μπορεί να είναι μετά την ημερομηνία λήξης
-    start_date_must_be_at_or_after: Η ημερομηνία έναρξης πρέπει να είναι την ή μετά την {date}
-    end_date_must_be_at_or_before: Η ημερομηνία λήξης πρέπει να είναι την ή πριν την {date}
-    cannot_select_date_before_min_date: Δεν μπορείτε να επιλέξετε ημερομηνία πριν την {date}
-    cannot_select_date_after_max_date: Δεν μπορείτε να επιλέξετε ημερομηνία μετά την {date}
-    start_date_cannot_be_before_min_date: Η ημερομηνία έναρξης δεν μπορεί να είναι πριν την {date}
-    end_date_cannot_be_after_max_date: Η ημερομηνία λήξης δεν μπορεί να είναι μετά την {date}
-    cannot_select_time_before_min_date: Δεν μπορείτε να επιλέξετε ώρα πριν τις {time}
-    cannot_select_time_after_max_date: Δεν μπορείτε να επιλέξετε ώρα μετά τις {time}
-    time_must_be_at_or_after: Η ώρα πρέπει να είναι τις ή μετά τις {time}
-    time_must_be_at_or_before: Η ώρα πρέπει να είναι τις ή πριν τις {time}
-    selected_date_time_must_be_after: Η επιλεγμένη ημερομηνία και ώρα πρέπει να είναι μετά τις {dateTime}
-    select_date_time_title: Επιλέξτε ημερομηνία και ώρα
-    select_date_range_title: Επιλέξτε εύρος ημερομηνιών
+    required: Το {field} είναι υποχρεωτικό
+  help: Βοήθεια

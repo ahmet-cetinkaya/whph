@@ -1,320 +1,344 @@
 tasks:
   add_button:
-    tooltip: Add new task
-  all_tasks_done: All tasks completed!
+    tooltip: Adicionar nova tarefa
+  all_tasks_done: Todas as tarefas concluídas!
   card:
     schedule:
-      today: Schedule for today
-      tomorrow: Schedule for tomorrow
+      today: Agendar para hoje
+      tomorrow: Agendar para amanhã
     tooltips:
-      schedule: Schedule task
+      schedule: Agendar tarefa
   complete:
-    error: Unexpected error occurred while saving task completion.
+    error: Erro inesperado ocorreu ao salvar conclusão da tarefa.
   date_selection:
-    deadline_date_title: Select deadline date
-    planned_date_title: Select planned date
+    deadline_date_title: Selecionar data limite
+    planned_date_title: Selecionar data planejada
   delete:
-    error: Unexpected error occurred while deleting task.
-    message: Are you sure you want to delete this task?
-    title: Delete Task
+    error: Erro inesperado ocorreu ao excluir tarefa.
+    message: Tem certeza de que deseja excluir esta tarefa?
+    title: Excluir Tarefa
   details:
     deadline_date:
-      label: Deadline Date
+      label: Data Limite
     description:
-      hint: Add description...
-      label: Description
+      hint: Adicionar descrição...
+      label: Descrição
     elapsed_time:
-      label: Elapsed Time
+      label: Tempo Decorrido
     estimated_time:
-      label: Estimated Time
-    is_completed: Completed
-    planned_date:
-      label: Planned Date
-    priority:
-      label: Priority
-    sub_tasks:
-      label: Sub-tasks
+      label: Tempo Estimado
+    is_completed: Concluída
     parent_task:
-      label: Parent Task
-      tooltip: Click to navigate to parent task
+      label: Tarefa Pai
+      tooltip: Clique para navegar para tarefa pai
+    planned_date:
+      label: Data Planejada
+    priority:
+      label: Prioridade
+    sub_tasks:
+      label: Sub-tarefas
     tags:
-      hint: Select tags to associate
+      hint: Selecionar tags para associar
       label: Tags
-    tags_hint: Select tags for task
+    tags_hint: Selecionar tags para tarefa
     title:
-      label: Title
-    total_elapsed_time: Total Elapsed Time
+      label: Título
+    total_elapsed_time: Tempo Total Decorrido
   errors:
-    add_tag: Unexpected error occurred while adding tag
-    adding_tag: Failed to add tag
-    get_tags: Error occurred while fetching tags
-    get_task: Unexpected error occurred while loading task
-    loading_tags: Failed to load task tags
-    loading_task: Failed to load task
-    loading_tasks: Failed to load tasks
-    remove_tag: Unexpected error occurred while removing tag
-    removing_tag: Failed to remove tag
-    same_tag: Cannot add the same tag twice
-    save_task: Unexpected error occurred while saving task
-    saving_task: Failed to save task
-    sort_field_not_supported: Sort field not supported
-    task_not_found: Task not found
-    task_tag_already_deleted: Task tag is already deleted
-    task_tag_already_exists: This task tag already exists
-    task_tag_not_found: Task tag not found
+    add_tag: Erro inesperado ocorreu ao adicionar tag
+    adding_tag: Falha ao adicionar tag
+    get_tags: Erro ocorreu ao buscar tags
+    get_task: Erro inesperado ocorreu ao carregar tarefa
+    loading_tags: Falha ao carregar tags da tarefa
+    loading_task: Falha ao carregar tarefa
+    loading_tasks: Falha ao carregar tarefas
+    remove_tag: Erro inesperado ocorreu ao remover tag
+    removing_tag: Falha ao remover tag
+    same_tag: Não pode adicionar a mesma tag duas vezes
+    save_task: Erro inesperado ocorreu ao salvar tarefa
+    saving_task: Falha ao salvar tarefa
+    sort_field_not_supported: Campo de ordenação não suportado
+    task_not_found: Tarefa não encontrada
+    task_tag_already_deleted: Tag da tarefa já foi excluída
+    task_tag_already_exists: Esta tag da tarefa já existe
+    task_tag_not_found: Tag da tarefa não encontrada
   filters:
-    completion: By Completion Status
-    deadline_date: By Deadline Date
-    planned_date: By Planned Date
+    completion: Por Status de Conclusão
+    deadline_date: Por Data Limite
+    planned_date: Por Data Planejada
     search:
-      placeholder: Search tasks
-    tags: By Tags
+      placeholder: Pesquisar tarefas
+    tags: Por Tags
     tooltips:
-      filter_by_tags: Filter by tags
+      filter_by_tags: Filtrar por tags
   help:
     details:
       content: |
-        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
+        Domine o gerenciamento de tarefas e maximize a produtividade organizando, priorizando e rastreando seu trabalho de forma eficaz.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Por Que É Importante?
 
-        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
+        O gerenciamento de tarefas eficaz é a base da produtividade. Tarefas estruturadas corretamente com prioridades e prazos claros ajudam você a focar no que mais importa e impedem que trabalho importante caia no esquecimento.
 
-        ## 📝 Task Organization
+        ## 📝 Organização de Tarefas
 
-        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
+        Estruture suas tarefas com detalhes abrangentes para manter clareza e foco. Use tags, prioridades e estimativas de tempo para criar uma abordagem sistemática à sua carga de trabalho.
 
-        - 🏷️ Categorize tasks with meaningful tags
-        - ⚖️ Set priorities using proven frameworks
-        - ⏱️ Estimate time requirements accurately
-        - 📅 Plan realistic deadlines and schedules
+        - 🏷️ Categorize tarefas com tags significativas
+        - ⚖️ Defina prioridades usando frameworks comprovados
+        - ⏱️ Estime requisitos de tempo com precisão
+        - 📅 Planeje prazos e cronogramas realistas
 
-        ## ⏰ Time Management
+        ## ⏰ Gerenciamento de Tempo
 
-        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
+        Rastreie seus investimentos de tempo para entender padrões de trabalho e melhorar a eficiência. O gerenciamento de tempo adequado transforma esforços dispersos em produtividade focada.
 
-        - 📊 Monitor actual vs. estimated time
-        - 🎯 Focus on high-impact activities
-        - 📈 Analyze productivity patterns over time
-        - ⏳ Balance urgent and important tasks
+        - 📊 Monitore tempo real vs estimado
+        - 🎯 Foque em atividades de alto impacto
+        - 📈 Analise padrões de produtividade ao longo do tempo
+        - ⏳ Equilibre tarefas urgentes e importantes
 
-        ## 📊 Priority Framework (Eisenhower Matrix)
+        ## 📊 Framework de Prioridade (Matriz de Eisenhower)
 
-        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
+        Organize suas tarefas usando este método de priorização comprovado para garantir que você sempre trabalhe nas coisas certas no momento certo.
 
-        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
-        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
-        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
-        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
-      title: Task Management & Productivity Guide
+        - 🔥 **Urgente & Importante:** Lide imediatamente - gerenciamento de crises e prazos
+        - 📈 **Importante, Não Urgente:** Agende estrategicamente - planejamento e desenvolvimento de habilidades  
+        - ⚡ **Urgente, Não Importante:** Delegue quando possível - interrupções e algumas reuniões
+        - 🗑️ **Nem Urgente nem Importante:** Elimine - desperdiçadores de tempo e atividades de baixo valor
+      title: Gerenciamento de Tarefas & Guia de Produtividade
     overview:
       content: |
-        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+        Transforme sua produtividade com gerenciamento de tarefas sistemático que ajuda a manter-se organizado, focado e no controle da sua carga de trabalho.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Por Que É Importante?
 
-        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+        O gerenciamento de tarefas eficaz é a pedra angular do sucesso pessoal e profissional. Ao organizar seu trabalho de forma sistemática, você reduz o estresse, cumpre prazos consistentemente e cria espaço para progresso significativo em metas importantes.
 
-        ## 📋 Task Organization
+        ## 📋 Organização de Tarefas
 
-        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+        Crie uma abordagem estruturada para gerenciar suas responsabilidades. Tarefas bem organizadas levam a prioridades claras e execução eficiente do trabalho diário.
 
-        - ✅ Create and categorize tasks systematically
-        - 🏷️ Group related work with meaningful tags
-        - ⚖️ Set clear priorities and deadlines
-        - 🔍 Use filters and search for quick access
+        - ✅ Crie e categorize tarefas sistematicamente
+        - 🏷️ Agrupe trabalho relacionado com tags significativas
+        - ⚖️ Defina prioridades e prazos claros
+        - 🔍 Use filtros e pesquisa para acesso rápido
 
-        ## ⏱️ Time Tracking & Focus
+        ## ⏱️ Rastreamento de Tempo & Foco
 
-        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+        Monitore seus investimentos de tempo para entender padrões de produtividade e otimizar seu fluxo de trabalho. A conscientização do tempo leva a um planejamento melhor e desempenho aprimorado.
 
-        - ⏰ Track actual time spent per task
-        - 🎯 Use Marathon Mode for focused work sessions
-        - 📊 Analyze completion patterns and trends
-        - 🔄 Review and adjust time estimates regularly
+        - ⏰ Rastreie tempo real gasto por tarefa
+        - 🎯 Use Modo Maratona para sessões de trabalho focadas
+        - 📊 Analise padrões de conclusão e tendências
+        - 🔄 Revise e ajuste estimativas de tempo regularmente
 
-        ## 📈 Progress Monitoring
+        ## 📈 Monitoramento de Progresso
 
-        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+        Mantenha o controle de suas conquistas e aprenda com seus padrões de trabalho. Revisão e reflexão regulares impulsionam melhoria contínua no seu sistema de produtividade.
 
-        - 📈 Monitor task completion rates
-        - 📅 Review daily and weekly progress
-        - 🎯 Identify bottlenecks and optimization opportunities
-        - 🏆 Celebrate achievements and milestone completions
-      title: Task Management & Workflow Guide
+        - 📈 Monitore taxas de conclusão de tarefas
+        - 📅 Revise progresso diário e semanal
+        - 🎯 Identifique gargalos e oportunidades de otimização
+        - 🏆 Celebre conquistas e conclusão de marcos
+      title: Gerenciamento de Tarefas & Guia de Fluxo de Trabalho
   marathon:
     details:
-      title: Task Details
+      title: Detalhes da Tarefa
     help:
       content: |
-        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
+        Maximize seu foco e produtividade com sessões de trabalho estruturadas que ajudam a manter concentração profunda enquanto previnem o burnout.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Por Que É Importante?
 
-        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
+        Sessões de trabalho focadas são essenciais para trabalho profundo e saída de alta qualidade. Ao trabalhar em intervalos estruturados com pausas regulares, você mantém o desempenho mental de pico enquanto evita a fadiga de períodos de trabalho prolongados e não focados.
 
-        ## ⏰ Time-Boxed Focus Sessions
+        ## ⏰ Sessões de Foco Limitadas no Tempo
 
-        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
+        Use técnicas comprovadas de gerenciamento de tempo para estruturar seu trabalho para máxima eficiência. Sessões estruturadas ajudam a manter a concentração e completar tarefas mais efetivamente.
 
-        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
-        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
-        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
-        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
+        - 🎯 **Foco Clássico:** 25 minutos de trabalho / 5 minutos de pausa
+        - 📈 **Foco Estendido:** 50 minutos de trabalho / 10 minutos de pausa  
+        - 🔄 **Pausa Longa:** 15-30 minutos após 4 sessões
+        - ⚖️ **Tempo Personalizado:** Ajuste intervalos para combinar com seu ritmo natural
 
-        ## 🧠 Cognitive Benefits
+        ## 🧠 Benefícios Cognitivos
 
-        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
+        Sessões de trabalho estruturadas aproveitam os ciclos naturais de atenção do seu cérebro para otimizar o desempenho e prevenir fadiga mental que reduz qualidade e criatividade.
 
-        - 🎯 Enhanced focus and deep concentration
-        - 🔋 Reduced mental fatigue and burnout
-        - 💪 Sustained motivation through regular accomplishments
-        - ⚡ Improved time awareness and planning accuracy
+        - 🎯 Foco aprimorado e concentração profunda
+        - 🔋 Fadiga mental reduzida e burnout
+        - 💪 Motivação sustentada através de conquistas regulares
+        - ⚡ Conscientização de tempo aprimorada e precisão de planejamento
 
-        ## 📊 Performance Optimization
+        ## 📊 Otimização de Desempenho
 
-        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
+        Rastreie seus padrões de trabalho focado para entender seus horários de pico de produtividade e otimize seu cronograma para máxima efetividade.
 
-        - 🏷️ Categorize focus sessions with tags for analysis
-        - 📈 Monitor productivity patterns across different times
-        - 🚫 Eliminate distractions before starting sessions
-        - 🚶 Use breaks for physical movement and mental reset
-      title: Focused Work Sessions & Time Management Guide
-      tooltip: Marathon help tooltip
-    label: Marathon Mode
-    unpin_task_tooltip: Unpin current task
-  new_task: New Task
-  no_tasks: No tasks
+        - 🏷️ Categorize sessões de foco com tags para análise
+        - 📈 Monitore padrões de produtividade em diferentes horários
+        - 🚫 Elimine distrações antes de iniciar sessões
+        - 🚶 Use pausas para movimento físico e reset mental
+      title: Sessões de Trabalho Focadas & Guia de Gerenciamento de Tempo
+      tooltip: Tooltip de ajuda do Maratona
+    label: Modo Maratona
+    unpin_task_tooltip: Desafixar tarefa atual
+  new_task: Nova Tarefa
+  no_tasks: Nenhuma tarefa
   notifications:
-    deadline_message: "Your task deadline is at {time}"
-    deadline_title: "Task Deadline: {title}"
-    planned_message: "Your task is planned for {time}"
-    reminder_title: "Task Reminder: {title}"
+    deadline_message: Sua data limite da tarefa é às {time}
+    deadline_title: "Data Limite da Tarefa: {title}"
+    planned_message: Sua tarefa está planejada para {time}
+    reminder_title: "Lembrete de Tarefa: {title}"
   page:
-    completed_tasks_title: Completed tasks
-    title: Tasks
+    completed_tasks_title: Tarefas concluídas
+    title: Tarefas
   pomodoro:
     actions:
-      stop_timer: Stop Timer
+      stop_timer: Parar Timer
     notifications:
-      break_completed: Break session completed!
-      long_break_completed: Long break completed!
-      time_remaining_prefix: "Time remaining:"
-      timer_completed: Timer completed!
-      title: Pomodoro Timer
-      work_completed: Work session completed!
+      break_completed: Sessão de pausa concluída!
+      long_break_completed: Pausa longa concluída!
+      time_remaining_prefix: "Tempo restante:"
+      timer_completed: Timer concluído!
+      title: Timer Pomodoro
+      work_completed: Sessão de trabalho concluída!
     settings:
-      auto_start_break: Auto-start break after work
-      auto_start_section: Auto-Start Options
-      auto_start_work: Auto-start work after break
-      break_duration: Break Duration
-      long_break_duration: Long Break Duration
-      sessions_before_long_break: Sessions before Long Break
-      ticking_sound: Enable ticking sound
-      ticking_sound_section: Ticking Sound
-      ticking_speed: Speed
+      auto_start_break: Iniciar pausa automaticamente após trabalho
+      auto_start_section: Opções de Início Automático
+      auto_start_work: Iniciar trabalho automaticamente após pausa
+      break_duration: Duração da Pausa
+      keep_screen_awake: Manter tela acordada durante sessões
+      keep_screen_awake_section: Manter Tela Acordada
+      long_break_duration: Duração da Pausa Longa
+      sessions_before_long_break: Sessões antes da Pausa Longa
+      ticking_sound: Ativar som de tique-taque
+      ticking_sound_section: Som de Tique-Taque
+      ticking_speed: Velocidade
       ticking_volume: Volume
-      keep_screen_awake_section: Keep Screen Awake
-      keep_screen_awake: Keep screen awake during sessions
-      timer_label: Session durations
-      title: Timer Settings
-      work_duration: Work Duration
+      timer_label: Durações de Sessão
+      title: Configurações do Timer
+      work_duration: Duração do Trabalho
     system_tray:
-      app_running: App Running
-      complete_title: Pomodoro Complete
-      tap_to_open: Tap to open
-      timer_running: Timer running
+      app_running: App em Execução
+      complete_title: Pomodoro Concluído
+      tap_to_open: Toque para abrir
+      timer_running: Timer em execução
   priorities:
-    not_urgent_important: Not Urgent but Important
-    not_urgent_not_important: Not Urgent or Important
-    urgent_important: Urgent and Important
-    urgent_not_important: Urgent but Not Important
+    not_urgent_important: Não Urgente mas Importante
+    not_urgent_not_important: Nem Urgente nem Importante
+    urgent_important: Urgente e Importante
+    urgent_not_important: Urgente mas Não Importante
   priority:
     selection:
-      title: Select Priority
+      title: Selecionar Prioridade
     tooltips:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Nenhuma Prioridade
+      not_urgent_important: Não Urgente mas Importante
+      not_urgent_not_important: Não Urgente & Não Importante
+      urgent_important: Urgente & Importante
+      urgent_not_important: Urgente mas Não Importante
     types:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Nenhuma Prioridade
+      not_urgent_important: Não Urgente mas Importante
+      not_urgent_not_important: Não Urgente & Não Importante
+      urgent_important: Urgente & Importante
+      urgent_not_important: Urgente mas Não Importante
   quick_task:
-    create_error: Error creating task
-    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
-    lock_settings: Lock Settings
-    reset_all: Reset all fields
+    create_error: Erro ao criar tarefa
+    lock_description:
+      Trave propriedades para reter seus valores ao criar múltiplas
+      tarefas semelhantes. Propriedades travadas não serão limpas ao resetar o formulário.
+    lock_settings: Configurações de Travamento
+    reset_all: Resetar todos os campos
     reset_confirm:
-      message: Are you sure you want to reset all fields? This action cannot be undone.
-      title: Reset All Fields
-    title: Quick Task
-    title_hint: Enter a descriptive task title...
-    title_placeholder: What needs to be done?
+      message: Tem certeza de que deseja resetar todos os campos? Esta ação não pode ser desfeita.
+      title: Resetar Todos os Campos
+    title: Tarefa Rápida
+    title_hint: Digite um título descritivo da tarefa...
+    title_placeholder: O que precisa ser feito?
     tooltips:
-      deadline_date: "Deadline: {date}"
-      deadline_date_not_set: "Deadline: Not set"
-      estimated_time: "Estimated Time: {time}"
-      estimated_time_not_set: "Estimated Time: Not set"
-      planned_date: "Planned: {date}"
-      planned_date_not_set: "Planned: Not set"
+      deadline_date: "Prazo: {date}"
+      deadline_date_not_set: "Prazo: Não definido"
+      estimated_time: "Tempo Estimado: {time}"
+      estimated_time_not_set: "Tempo Estimado: Não definido"
+      planned_date: "Planejado: {date}"
+      planned_date_not_set: "Planejado: Não definido"
   recurrence:
-    count: Number of occurrences
-    custom: Custom
-    daily: Daily
-    daySuffix: day(s)
-    endDate: End date
-    enterCountHint: Enter count
+    count: Número de ocorrências
+    custom: Personalizado
+    daily: Diário
+    daySuffix: dia(s)
+    endDate: Data de término
+    enterCountHint: Digite contagem
     interval:
-      label: Repeat every
-      prefix: every
+      label: Repetir a cada
+      prefix: a cada
       suffix:
-        days: day(s)
-        months: month(s)
-        weeks: week(s)
-        years: year(s)
-    label: Recurrence
-    monthSuffix: month(s)
-    monthly: Monthly
-    none: No recurrence
-    range: Range
-    selectDateHint: Select date
-    startDate: Start date
+        days: dia(s)
+        months: mês(es)
+        weeks: semana(s)
+        years: ano(s)
+    label: Recorrência
+    monthSuffix: mês(es)
+    monthly: Mensal
+    none: Sem recorrência
+    range: Intervalo
+    selectDateHint: Selecionar data
+    startDate: Data de início
     summary:
-      endsAfter: ends after
-      endsOnDate: ends on
-      occurrences: ocorrências
-      on: em
+      endsAfter: termina após
+      endsOnDate: termina em
       everyDay: todos os dias
+      occurrences: ocorrências
+      true: em
       starts: inicia
+      on:  "na"
     weekDays: Dias da semana
     weekSuffix: semana(s)
     weekly: Semanal
     yearSuffix: ano(s)
     yearly: Anual
-  validation:
-    deadline_time_invalid: Hora limite inválida
-    deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada
   reminder:
-    atTime: At the scheduled time
-    deadlineReminderLabel: Deadline Reminder
-    fifteenMinutesBefore: 15 minutes before
-    fiveMinutesBefore: 5 minutes before
-    none: No reminder
-    oneDayBefore: 1 day before
-    oneHourBefore: 1 hour before
-    plannedReminderLabel: Planned Date Reminder
-  task_details: Task Details
-  title: Tasks
+    atTime: No horário agendado
+    deadlineReminderLabel: Lembrete de Prazo
+    fifteenMinutesBefore: 15 minutos antes
+    fiveMinutesBefore: 5 minutos antes
+    none: Sem lembrete
+    oneDayBefore: 1 dia antes
+    oneHourBefore: 1 hora antes
+    plannedReminderLabel: Lembrete de Data Planejada
+  task_details: Detalhes da Tarefa
+  time_logging:
+    add_time: Adicionar Tempo
+    add_time_description: Adicionar o tempo especificado a registros existentes
+    dialog_title: Registrar Tempo
+    duration: Duração a Adicionar
+    invalid_input: Por favor, insira horas e minutos válidos
+    log_time: Registrar Tempo
+    mode: Modo de Registro
+    set_total: Definir Total
+    set_total_description: Definir o tempo total para o dia selecionado
+    total_time: Tempo Total para o Dia
+  timer:
+    mode:
+      description: Escolha entre técnica Pomodoro, temporizador de contagem regressiva ou cronômetro
+      normal: Timer Normal
+      pomodoro: Pomodoro
+      stopwatch: Cronômetro
+      title: Modo do Timer
+    settings:
+      duration_label: Duração do Timer
+      duration_title: Duração
+  title: Tarefas
   tooltips:
-    clear_date: Clear date
-    decrease_estimated_time: Decrease estimated time
-    edit_title: Edit title
-    increase_estimated_time: Increase estimated time
-    set_reminder: Set reminder
-    show_completed_tasks: Filter completed tasks
-    show_subtasks: Show subtasks
+    clear_date: Limpar data
+    decrease_estimated_time: Diminuir tempo estimado
+    edit_title: Editar título
+    increase_estimated_time: Aumentar tempo estimado
+    set_reminder: Definir lembrete
+    show_completed_tasks: Filtrar tarefas concluídas
+    show_subtasks: Mostrar subtarefas
+  validation:
+    deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada
+    deadline_time_invalid: Hora limite inválida

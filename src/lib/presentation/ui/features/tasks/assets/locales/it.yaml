@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Tempo stimato
     is_completed: Completato
+    parent_task:
+      label: Attività padre
+      tooltip: Clicca per navigare all'attività padre
     planned_date:
       label: Data pianificata
     priority:
       label: Priorità
     sub_tasks:
       label: Sotto-attività
-    parent_task:
-      label: Attività padre
-      tooltip: Clicca per navigare all'attività padre
     tags:
       hint: Seleziona tag da associare
       label: Tag
@@ -186,9 +186,9 @@ tasks:
   new_task: Nuova attività
   no_tasks: Nessuna attività
   notifications:
-    deadline_message: "La scadenza della tua attività è alle {time}"
+    deadline_message: La scadenza della tua attività è alle {time}
     deadline_title: "Scadenza attività: {title}"
-    planned_message: "La tua attività è pianificata per le {time}"
+    planned_message: La tua attività è pianificata per le {time}
     reminder_title: "Promemoria attività: {title}"
   page:
     completed_tasks_title: Attività completate
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: Opzioni avvio automatico
       auto_start_work: Avvia automaticamente lavoro dopo pausa
       break_duration: Durata pausa
+      keep_screen_awake: Mantieni schermo acceso durante le sessioni
+      keep_screen_awake_section: Mantieni schermo acceso
       long_break_duration: Durata pausa lunga
       sessions_before_long_break: Sessioni prima della pausa lunga
       ticking_sound: Abilita suono ticchettio
       ticking_sound_section: Suono ticchettio
       ticking_speed: Velocità
       ticking_volume: Volume
-      keep_screen_awake_section: Mantieni schermo acceso
-      keep_screen_awake: Mantieni schermo acceso durante le sessioni
       timer_label: Durate delle sessioni
       title: Impostazioni timer
       work_duration: Durata lavoro
@@ -246,11 +246,16 @@ tasks:
       urgent_not_important: Urgente ma non importante
   quick_task:
     create_error: Errore nella creazione dell'attività
-    lock_description: Blocca le proprietà per mantenere i loro valori quando crei più attività simili. Le proprietà bloccate non verranno cancellate quando resetti il modulo.
+    lock_description:
+      Blocca le proprietà per mantenere i loro valori quando crei
+      più attività simili. Le proprietà bloccate non verranno cancellate quando resetti
+      il modulo.
     lock_settings: Impostazioni blocco
     reset_all: Reimposta tutti i campi
     reset_confirm:
-      message: Sei sicuro di voler reimpostare tutti i campi? Questa azione non può essere annullata.
+      message:
+        Sei sicuro di voler reimpostare tutti i campi? Questa azione non può
+        essere annullata.
       title: Reimposta tutti i campi
     title: Attività rapida
     title_hint: Titolo attività
@@ -288,17 +293,15 @@ tasks:
       endsAfter: finisce dopo
       endsOnDate: finisce il
       occurrences: occorrenze
-      on: il
+      true: il
       everyDay: ogni giorno
       starts: inizia
+      "on": "il"
     weekDays: Giorni della settimana
     weekSuffix: settimana/e
     weekly: Settimanale
     yearSuffix: anno/i
     yearly: Annuale
-  validation:
-    deadline_time_invalid: L'orario della scadenza non è valido
-    deadline_cannot_be_before_planned: La data di scadenza deve essere successiva alla data pianificata
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza
@@ -316,5 +319,10 @@ tasks:
     edit_title: Modifica titolo
     increase_estimated_time: Aumenta tempo stimato
     set_reminder: Imposta promemoria
-    show_subtasks: Mostra sottoattività
     show_completed_tasks: Filtra attività completate
+    show_subtasks: Mostra sottoattività
+  validation:
+    deadline_cannot_be_before_planned:
+      La data di scadenza deve essere successiva
+      alla data pianificata
+    deadline_time_invalid: L'orario della scadenza non è valido

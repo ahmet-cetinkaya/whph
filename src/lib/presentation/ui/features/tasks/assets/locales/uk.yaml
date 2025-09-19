@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: Орієнтовний час
     is_completed: Виконано
+    parent_task:
+      label: Батьківське завдання
+      tooltip: Натисніть, щоб перейти до батьківського завдання
     planned_date:
       label: Заплановані дата
     priority:
       label: Пріоритет
     sub_tasks:
       label: Підзавдання
-    parent_task:
-      label: Батьківське завдання
-      tooltip: Натисніть, щоб перейти до батьківського завдання
     tags:
       hint: Виберіть теги для зв'язування
       label: Теги
@@ -186,9 +186,9 @@ tasks:
   new_task: Нове завдання
   no_tasks: Немає завдань
   notifications:
-    deadline_message: "Дедлайн вашого завдання о {time}"
+    deadline_message: Дедлайн вашого завдання о {time}
     deadline_title: "Дедлайн завдання: {title}"
-    planned_message: "Ваше завдання заплановано на {time}"
+    planned_message: Ваше завдання заплановано на {time}
     reminder_title: "Нагадування про завдання: {title}"
   page:
     completed_tasks_title: Виконані завдання
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: Опції автоматичного старту
       auto_start_work: Автоматично розпочати роботу після перерви
       break_duration: Тривалість перерви
+      keep_screen_awake: Тримати екран активним під час сесій
+      keep_screen_awake_section: Тримати екран активним
       long_break_duration: Тривалість довгої перерви
       sessions_before_long_break: Сесії перед довгою перервою
       ticking_sound: Увімкнути звук тикання
       ticking_sound_section: Звук тикання
       ticking_speed: Швидкість
       ticking_volume: Гучність
-      keep_screen_awake_section: Тримати екран активним
-      keep_screen_awake: Тримати екран активним під час сесій
       timer_label: Тривалість сесій
       title: Налаштування таймера
       work_duration: Тривалість роботи
@@ -246,7 +246,10 @@ tasks:
       urgent_not_important: Терміново, але не важливо
   quick_task:
     create_error: Помилка створення завдання
-    lock_description: Заблокуйте властивості, щоб зберегти їх значення при створенні кількох подібних завдань. Заблоковані властивості не будуть очищені при скиданні форми.
+    lock_description:
+      Заблокуйте властивості, щоб зберегти їх значення при створенні
+      кількох подібних завдань. Заблоковані властивості не будуть очищені при скиданні
+      форми.
     lock_settings: Налаштування блокування
     reset_all: Скинути всі поля
     reset_confirm:
@@ -288,17 +291,15 @@ tasks:
       endsAfter: закінчується після
       endsOnDate: закінчується в день
       occurrences: повторення
-      on: в
+      true: в
       everyDay: кожного дня
       starts: починається
+      "on": "у"
     weekDays: Дні тижня
     weekSuffix: тиждень/тижні
     weekly: Щотижня
     yearSuffix: рік(и)
     yearly: Щорічно
-  validation:
-    deadline_time_invalid: Неправильний час крайнього терміну
-    deadline_cannot_be_before_planned: Крайній термін має бути після запланованої дати
   reminder:
     atTime: О запланованому часі
     deadlineReminderLabel: Нагадування про дедлайн
@@ -318,3 +319,8 @@ tasks:
     set_reminder: Встановити нагадування
     show_completed_tasks: Фільтрувати виконані завдання
     show_subtasks: Показати підзавдання
+  validation:
+    deadline_cannot_be_before_planned:
+      Крайній термін має бути після запланованої
+      дати
+    deadline_time_invalid: Неправильний час крайнього терміну
