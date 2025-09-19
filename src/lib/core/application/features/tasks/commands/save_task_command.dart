@@ -129,9 +129,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.recurrenceStartDate = request.recurrenceStartDate;
         task.recurrenceEndDate = request.recurrenceEndDate;
         task.recurrenceCount = request.recurrenceCount;
-        if (request.recurrenceParentId != null) {
-          task.recurrenceParentId = request.recurrenceParentId;
-        }
+        task.recurrenceParentId = request.recurrenceParentId;
       } else {
         // Clear recurrence settings if type is none
         task.recurrenceInterval = null;
