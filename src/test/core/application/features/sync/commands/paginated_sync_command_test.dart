@@ -326,15 +326,18 @@ void main() {
   });
 }
 
-// IMPORTANT: This test currently duplicates the production conflict resolution logic
-// to avoid complex dependency setup. In the future, this should be refactored to:
-// 1. Extract conflict resolution logic into a separate, testable service class
-// 2. Use the actual production code via dependency injection
-// 3. Or create a minimal test harness with mocked dependencies
-// The current approach tests the logic but doesn't guarantee it matches production behavior.
+// KNOWN LIMITATION: This test duplicates production logic due to complex dependency injection requirements
+//
+// FUTURE IMPROVEMENT: To properly test production code, one of these approaches should be used:
+// 1. Extract conflict resolution into a separate service class with minimal dependencies
+// 2. Create comprehensive mocks for all PaginatedSyncCommandHandler dependencies
+// 3. Use a test harness pattern with dependency injection
+//
+// The current implementation tests the logic thoroughly but doesn't guarantee
+// it exactly matches the production behavior if changes are made only to production.
 
-// Helper method that implements the same logic as production code
-// This is a temporary solution until proper testing architecture is implemented
+// Helper method that matches the production conflict resolution logic
+// This should be kept in sync with PaginatedSyncCommandHandler.resolveConflictForTesting()
 ConflictResolutionResult<T> _testConflictResolution<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
   final DateTime localTimestamp = localEntity.modifiedDate ?? localEntity.createdDate;
   final DateTime remoteTimestamp = remoteEntity.modifiedDate ?? remoteEntity.createdDate;
@@ -425,7 +428,7 @@ ConflictResolutionResult<T> _testConflictResolution<T extends BaseEntity<String>
   }
 }
 
-// Test helper types that mirror the actual production implementation
+// Test helper types that mirror the production implementation
 enum ConflictAction {
   keepLocal,
   acceptRemote,
@@ -443,3 +446,4 @@ class ConflictResolutionResult<T> {
     required this.reason,
   });
 }
+

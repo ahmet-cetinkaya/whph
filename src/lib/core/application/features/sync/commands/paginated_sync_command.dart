@@ -1159,97 +1159,131 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     // Handle deletion conflicts specially
-    if (localIsDeleted != remoteIsDeleted) {
-      // One entity is deleted, the other is not
-      const Duration deletionGracePeriod = Duration(minutes: 5);
-
-      if (localIsDeleted && !remoteIsDeleted) {
-        // Local is deleted, remote is not
-        if (localTimestamp.difference(remoteTimestamp) > deletionGracePeriod) {
-          // Local deletion happened significantly later - accept the deletion
-          return ConflictResolutionResult(
-            action: ConflictAction.keepLocal,
-            winningEntity: localEntity,
-            reason:
-                'Local deletion ($localTimestamp) occurred significantly after remote modification ($remoteTimestamp)',
-          );
-        } else {
-          // Recent deletion - prefer the non-deleted version
-          final result = ConflictResolutionResult(
-            action: ConflictAction.acceptRemote,
-            winningEntity: remoteEntity,
-            reason:
-                'Preferring non-deleted remote entity over recent local deletion (deletion time: $localTimestamp, remote time: $remoteTimestamp)',
-          );
-          if (localEntity is HabitRecord) {
-            Logger.debug('   Resolution: Accept remote (non-deleted)');
-          }
-          return result;
-        }
-      } else if (remoteIsDeleted && !localIsDeleted) {
-        // Remote is deleted, local is not
-        if (remoteTimestamp.difference(localTimestamp) > deletionGracePeriod) {
-          // Remote deletion happened significantly later - accept the deletion
-          return ConflictResolutionResult(
-            action: ConflictAction.acceptRemote,
-            winningEntity: remoteEntity,
-            reason:
-                'Remote deletion ($remoteTimestamp) occurred significantly after local modification ($localTimestamp)',
-          );
-        } else {
-          // Recent deletion - prefer the non-deleted version
-          final result = ConflictResolutionResult(
-            action: ConflictAction.keepLocal,
-            winningEntity: localEntity,
-            reason:
-                'Preferring non-deleted local entity over recent remote deletion (deletion time: $remoteTimestamp, local time: $localTimestamp)',
-          );
-          if (localEntity is HabitRecord) {
-            Logger.debug('   Resolution: Keep local (non-deleted)');
-          }
-          return result;
-        }
-      }
+    final deletionConflict = _resolveDeletionConflict(localEntity, remoteEntity, localTimestamp, remoteTimestamp);
+    if (deletionConflict != null) {
+      return deletionConflict;
     }
 
     // Handle recurring task duplication conflicts
-    if (localEntity is Task && remoteEntity is Task) {
-      // Check if both tasks have recurrenceParentId (indicating they are recurring task instances)
-      if (localEntity.recurrenceParentId != null &&
-          remoteEntity.recurrenceParentId != null &&
-          localEntity.recurrenceParentId == remoteEntity.recurrenceParentId) {
-        // Both are instances of the same recurring task
-        // Prefer the instance that was created earlier (closer to the original planned date)
-        final DateTime? localPlannedDate = localEntity.plannedDate;
-        final DateTime? remotePlannedDate = remoteEntity.plannedDate;
+    final recurringTaskConflict = _resolveRecurringTaskConflict(localEntity, remoteEntity);
+    if (recurringTaskConflict != null) {
+      return recurringTaskConflict;
+    }
 
-        if (localPlannedDate != null && remotePlannedDate != null) {
-          // Prefer the instance with the earlier planned date (original occurrence)
-          if (localPlannedDate.isBefore(remotePlannedDate)) {
-            Logger.debug('🔄 Recurring task conflict: Keeping local instance with earlier planned date');
-            return ConflictResolutionResult(
-              action: ConflictAction.keepLocal,
-              winningEntity: localEntity,
-              reason:
-                  'Local recurring task instance has earlier planned date ($localPlannedDate vs $remotePlannedDate)',
-            );
-          } else if (remotePlannedDate.isBefore(localPlannedDate)) {
-            Logger.debug('🔄 Recurring task conflict: Accepting remote instance with earlier planned date');
-            return ConflictResolutionResult(
-              action: ConflictAction.acceptRemote,
-              winningEntity: remoteEntity,
-              reason:
-                  'Remote recurring task instance has earlier planned date ($remotePlannedDate vs $localPlannedDate)',
-            );
-          }
+    // Fall back to standard timestamp-based conflict resolution
+    return _resolveTimestampConflict(localEntity, remoteEntity, localTimestamp, remoteTimestamp);
+  }
+
+  /// Resolves conflicts where one entity is deleted and the other is not
+  ConflictResolutionResult<T>? _resolveDeletionConflict<T extends BaseEntity<String>>(
+      T localEntity, T remoteEntity, DateTime localTimestamp, DateTime remoteTimestamp) {
+    final bool localIsDeleted = localEntity.deletedDate != null;
+    final bool remoteIsDeleted = remoteEntity.deletedDate != null;
+
+    if (localIsDeleted == remoteIsDeleted) {
+      return null; // No deletion conflict
+    }
+
+    const Duration deletionGracePeriod = Duration(minutes: 5);
+
+    if (localIsDeleted && !remoteIsDeleted) {
+      // Local is deleted, remote is not
+      if (localTimestamp.difference(remoteTimestamp) > deletionGracePeriod) {
+        // Local deletion happened significantly later - accept the deletion
+        return ConflictResolutionResult(
+          action: ConflictAction.keepLocal,
+          winningEntity: localEntity,
+          reason:
+              'Local deletion ($localTimestamp) occurred significantly after remote modification ($remoteTimestamp)',
+        );
+      } else {
+        // Recent deletion - prefer the non-deleted version
+        final result = ConflictResolutionResult(
+          action: ConflictAction.acceptRemote,
+          winningEntity: remoteEntity,
+          reason:
+              'Preferring non-deleted remote entity over recent local deletion (deletion time: $localTimestamp, remote time: $remoteTimestamp)',
+        );
+        if (localEntity is HabitRecord) {
+          Logger.debug('   Resolution: Accept remote (non-deleted)');
         }
-
-        // If planned dates are the same or unavailable, fall back to creation timestamp
-        Logger.debug('🔄 Recurring task conflict: Using timestamp-based resolution as fallback');
+        return result;
+      }
+    } else if (remoteIsDeleted && !localIsDeleted) {
+      // Remote is deleted, local is not
+      if (remoteTimestamp.difference(localTimestamp) > deletionGracePeriod) {
+        // Remote deletion happened significantly later - accept the deletion
+        return ConflictResolutionResult(
+          action: ConflictAction.acceptRemote,
+          winningEntity: remoteEntity,
+          reason:
+              'Remote deletion ($remoteTimestamp) occurred significantly after local modification ($localTimestamp)',
+        );
+      } else {
+        // Recent deletion - prefer the non-deleted version
+        final result = ConflictResolutionResult(
+          action: ConflictAction.keepLocal,
+          winningEntity: localEntity,
+          reason:
+              'Preferring non-deleted local entity over recent remote deletion (deletion time: $remoteTimestamp, local time: $localTimestamp)',
+        );
+        if (localEntity is HabitRecord) {
+          Logger.debug('   Resolution: Keep local (non-deleted)');
+        }
+        return result;
       }
     }
 
-    // Standard timestamp-based conflict resolution for non-deletion conflicts
+    return null;
+  }
+
+  /// Resolves conflicts between recurring task instances with the same parent
+  ConflictResolutionResult<T>? _resolveRecurringTaskConflict<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
+    if (localEntity is! Task || remoteEntity is! Task) {
+      return null; // Not a task conflict
+    }
+
+    // Check if both tasks have recurrenceParentId (indicating they are recurring task instances)
+    if (localEntity.recurrenceParentId == null ||
+        remoteEntity.recurrenceParentId == null ||
+        localEntity.recurrenceParentId != remoteEntity.recurrenceParentId) {
+      return null; // Not a recurring task conflict
+    }
+
+    // Both are instances of the same recurring task
+    // Prefer the instance that was created earlier (closer to the original planned date)
+    final DateTime? localPlannedDate = localEntity.plannedDate;
+    final DateTime? remotePlannedDate = remoteEntity.plannedDate;
+
+    if (localPlannedDate != null && remotePlannedDate != null) {
+      // Prefer the instance with the earlier planned date (original occurrence)
+      if (localPlannedDate.isBefore(remotePlannedDate)) {
+        Logger.debug('🔄 Recurring task conflict: Keeping local instance with earlier planned date');
+        return ConflictResolutionResult(
+          action: ConflictAction.keepLocal,
+          winningEntity: localEntity,
+          reason:
+              'Local recurring task instance has earlier planned date ($localPlannedDate vs $remotePlannedDate)',
+        );
+      } else if (remotePlannedDate.isBefore(localPlannedDate)) {
+        Logger.debug('🔄 Recurring task conflict: Accepting remote instance with earlier planned date');
+        return ConflictResolutionResult(
+          action: ConflictAction.acceptRemote,
+          winningEntity: remoteEntity,
+          reason:
+              'Remote recurring task instance has earlier planned date ($remotePlannedDate vs $localPlannedDate)',
+        );
+      }
+    }
+
+    // If planned dates are the same or unavailable, fall back to creation timestamp
+    Logger.debug('🔄 Recurring task conflict: Using timestamp-based resolution as fallback');
+    return null;
+  }
+
+  /// Resolves conflicts based on entity timestamps
+  ConflictResolutionResult<T> _resolveTimestampConflict<T extends BaseEntity<String>>(
+      T localEntity, T remoteEntity, DateTime localTimestamp, DateTime remoteTimestamp) {
     if (localTimestamp.isAfter(remoteTimestamp)) {
       return ConflictResolutionResult(
         action: ConflictAction.keepLocal,
