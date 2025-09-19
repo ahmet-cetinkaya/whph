@@ -9,8 +9,10 @@ import 'package:acore/acore.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart'
     as _i4;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart' as _i3;
-import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart' as _i6;
+import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+    as _i3;
+import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart'
+    as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -26,8 +28,8 @@ import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart'
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakePaginatedSyncData_0<T extends _i1.BaseEntity<dynamic>> extends _i2.SmartFake
-    implements _i3.PaginatedSyncData<T> {
+class _FakePaginatedSyncData_0<T extends _i1.BaseEntity<dynamic>>
+    extends _i2.SmartFake implements _i3.PaginatedSyncData<T> {
   _FakePaginatedSyncData_0(
     Object parent,
     Invocation parentInvocation,
@@ -37,7 +39,8 @@ class _FakePaginatedSyncData_0<T extends _i1.BaseEntity<dynamic>> extends _i2.Sm
         );
 }
 
-class _FakePaginatedList_1<T> extends _i2.SmartFake implements _i1.PaginatedList<T> {
+class _FakePaginatedList_1<T> extends _i2.SmartFake
+    implements _i1.PaginatedList<T> {
   _FakePaginatedList_1(
     Object parent,
     Invocation parentInvocation,
@@ -50,45 +53,49 @@ class _FakePaginatedList_1<T> extends _i2.SmartFake implements _i1.PaginatedList
 /// A class which mocks [IAppUsageIgnoreRuleRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIAppUsageIgnoreRuleRepository extends _i2.Mock implements _i4.IAppUsageIgnoreRuleRepository {
+class MockIAppUsageIgnoreRuleRepository extends _i2.Mock
+    implements _i4.IAppUsageIgnoreRuleRepository {
   MockIAppUsageIgnoreRuleRepository() {
     _i2.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>> getPaginatedSyncData(
+  _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>>
+      getPaginatedSyncData(
     DateTime? lastSyncDate, {
     int? pageIndex = 0,
     int? pageSize = 200,
     String? entityType,
   }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getPaginatedSyncData,
-          [lastSyncDate],
-          {
-            #pageIndex: pageIndex,
-            #pageSize: pageSize,
-            #entityType: entityType,
-          },
-        ),
-        returnValue: _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>>.value(
-            _FakePaginatedSyncData_0<_i6.AppUsageIgnoreRule>(
-          this,
-          Invocation.method(
-            #getPaginatedSyncData,
-            [lastSyncDate],
-            {
-              #pageIndex: pageIndex,
-              #pageSize: pageSize,
-              #entityType: entityType,
-            },
-          ),
-        )),
-      ) as _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>>);
+          (super.noSuchMethod(
+            Invocation.method(
+              #getPaginatedSyncData,
+              [lastSyncDate],
+              {
+                #pageIndex: pageIndex,
+                #pageSize: pageSize,
+                #entityType: entityType,
+              },
+            ),
+            returnValue:
+                _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>>.value(
+                    _FakePaginatedSyncData_0<_i6.AppUsageIgnoreRule>(
+              this,
+              Invocation.method(
+                #getPaginatedSyncData,
+                [lastSyncDate],
+                {
+                  #pageIndex: pageIndex,
+                  #pageSize: pageSize,
+                  #entityType: entityType,
+                },
+              ),
+            )),
+          ) as _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>>);
 
   @override
-  _i5.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
+  _i5.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) =>
+      (super.noSuchMethod(
         Invocation.method(
           #hardDeleteSoftDeleted,
           [beforeDate],
@@ -129,7 +136,8 @@ class MockIAppUsageIgnoreRuleRepository extends _i2.Mock implements _i4.IAppUsag
           },
         ),
         returnValue:
-            _i5.Future<_i1.PaginatedList<_i6.AppUsageIgnoreRule>>.value(_FakePaginatedList_1<_i6.AppUsageIgnoreRule>(
+            _i5.Future<_i1.PaginatedList<_i6.AppUsageIgnoreRule>>.value(
+                _FakePaginatedList_1<_i6.AppUsageIgnoreRule>(
           this,
           Invocation.method(
             #getList,
@@ -162,7 +170,8 @@ class MockIAppUsageIgnoreRuleRepository extends _i2.Mock implements _i4.IAppUsag
             #customOrder: customOrder,
           },
         ),
-        returnValue: _i5.Future<List<_i6.AppUsageIgnoreRule>>.value(<_i6.AppUsageIgnoreRule>[]),
+        returnValue: _i5.Future<List<_i6.AppUsageIgnoreRule>>.value(
+            <_i6.AppUsageIgnoreRule>[]),
       ) as _i5.Future<List<_i6.AppUsageIgnoreRule>>);
 
   @override

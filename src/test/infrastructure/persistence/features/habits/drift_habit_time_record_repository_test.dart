@@ -67,10 +67,24 @@ void main() {
     });
 
     test('should allow basic CRUD operations on habit time records', () async {
-      // Insert a test record
-      await database.customStatement(
-        'INSERT INTO habit_time_record_table (id, created_date, habit_id, duration) VALUES (?, ?, ?, ?)',
-        ['test-id', DateTime.utc(2024, 1, 15, 14).millisecondsSinceEpoch, 'habit-123', 1800],
+      // First, create a habit record for the foreign key reference
+      await database.into(database.habitTable).insert(
+        HabitTableCompanion.insert(
+          id: 'habit-123',
+          createdDate: DateTime.utc(2024, 1, 1),
+          name: 'Test Habit',
+          description: 'Test Description',
+        ),
+      );
+
+      // Insert a test record using Drift methods
+      await database.into(database.habitTimeRecordTable).insert(
+        HabitTimeRecordTableCompanion.insert(
+          id: 'test-id',
+          createdDate: DateTime.utc(2024, 1, 15, 14),
+          habitId: 'habit-123',
+          duration: 1800,
+        ),
       );
 
       // Query the record
@@ -87,6 +101,12 @@ void main() {
 
     test('should support aggregation queries for total duration', () async {
       const habitId = 'habit-123';
+
+      // First, create a habit record for the foreign key reference
+      await database.customStatement(
+        'INSERT INTO habit_table (id, created_date, name, description) VALUES (?, ?, ?, ?)',
+        [habitId, DateTime.utc(2024, 1, 1).millisecondsSinceEpoch, 'Test Habit', 'Test Description'],
+      );
 
       // Insert multiple records
       await database.customStatement(
@@ -110,6 +130,12 @@ void main() {
 
     test('should support date range filtering', () async {
       const habitId = 'habit-123';
+
+      // First, create a habit record for the foreign key reference
+      await database.customStatement(
+        'INSERT INTO habit_table (id, created_date, name, description) VALUES (?, ?, ?, ?)',
+        [habitId, DateTime.utc(2024, 1, 1).millisecondsSinceEpoch, 'Test Habit', 'Test Description'],
+      );
 
       // Insert records across different dates (using timestamps for direct comparison)
       final date1 = DateTime.utc(2024, 1, 10, 14).millisecondsSinceEpoch; // Before range
@@ -148,6 +174,12 @@ void main() {
     });
 
     test('should handle NULL values correctly', () async {
+      // First, create a habit record for the foreign key reference
+      await database.customStatement(
+        'INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        ['habit-123', DateTime.utc(2024, 1, 1).millisecondsSinceEpoch, 'Test Habit', 'Test Description', 0, '', 0, 1, 7, 0.0],
+      );
+
       // Insert record with NULL optional fields
       await database.customStatement(
         'INSERT INTO habit_time_record_table (id, created_date, habit_id, duration, modified_date, deleted_date) VALUES (?, ?, ?, ?, ?, ?)',
