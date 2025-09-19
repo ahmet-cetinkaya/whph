@@ -1,5 +1,4 @@
 shared:
-  untitled: "Utan titel"
   buttons:
     add: Lägg till
     back: Tillbaka
@@ -65,6 +64,7 @@ shared:
     created_date_label: Skapandedatum
     modified_date_label: Ändringsdatum
     name_label: Namn
+  date: Datum
   date_filter:
     title: Välj datumintervall
     tooltips:
@@ -72,6 +72,26 @@ shared:
       filter: Filtrera efter datum
   date_format:
     hint: DD/MM/ÅÅÅÅ
+  datepicker:
+    cannot_select_date_after_max_date: Kan inte välja datum efter {date}
+    cannot_select_date_before_min_date: Kan inte välja datum före {date}
+    cannot_select_time_after_max_date: Kan inte välja tid efter {time}
+    cannot_select_time_before_min_date: Kan inte välja tid före {time}
+    deadline_cannot_be_before_planned_date:
+      Deadline måste vara på eller efter planerat
+      datum
+    end_date_cannot_be_after_max_date: Slutdatum kan inte vara efter {date}
+    end_date_must_be_at_or_before: Slutdatum måste vara på eller före {date}
+    select_date_range_title: Välj datumintervall
+    select_date_time_title: Välj datum och tid
+    selected_date_must_be_at_or_after: Valt datum måste vara på eller efter {date}
+    selected_date_must_be_at_or_before: Valt datum måste vara på eller före {date}
+    selected_date_time_must_be_after: Valt datum och tid måste vara efter {dateTime}
+    start_date_cannot_be_after_end_date: Startdatum kan inte vara efter slutdatum
+    start_date_cannot_be_before_min_date: Startdatum kan inte vara före {date}
+    start_date_must_be_at_or_after: Startdatum måste vara på eller efter {date}
+    time_must_be_at_or_after: Tiden måste vara på eller efter {time}
+    time_must_be_at_or_before: Tiden måste vara på eller före {time}
   days:
     friday: Fredag
     friday_short: Fre
@@ -92,19 +112,19 @@ shared:
       hint: Du kan skriva med Markdown-format...
       tooltips:
         bold: Fet
-        italic: Kursiv
-        strikethrough: Genomstruken
-        code: Kod
-        link: Länk
-        quote: Citat
         bulleted_list: Punktlista
-        numbered_list: Numrerad lista
-        horizontal_rule: Horisontell linje
-        edit: Redigera
-        preview: Förhandsgranska
-        image: Bild
-        heading: Rubrik
         checkbox: Kryssruta
+        code: Kod
+        edit: Redigera
+        heading: Rubrik
+        horizontal_rule: Horisontell linje
+        image: Bild
+        italic: Kursiv
+        link: Länk
+        numbered_list: Numrerad lista
+        preview: Förhandsgranska
+        quote: Citat
+        strikethrough: Genomstruken
   errors:
     deleting: Fel uppstod vid borttagning av data
     file_not_found: Fil hittades inte
@@ -138,8 +158,6 @@ shared:
     unexpected: Ett oväntat fel uppstod
   filters:
     search: Sök
-  help:
-    tooltip: Hjälp
   messages:
     confirm_delete: Är du säker på att du vill ta bort detta objekt?
     no_items_found: Inga objekt
@@ -153,16 +171,16 @@ shared:
       tags: Taggar
       tasks: Uppgifter
       today: Idag
-  none_option: "Inga taggar"
+  none_option: Inga taggar
   regex_help:
     examples:
-      chat: 'Matchar antingen "Slack" eller "Discord"'
-      chrome: 'Matchar vilken fönsteritel som helst som innehåller "Chrome"'
-      exact_chrome: 'Matchar exakt "Chrome"'
+      chat: Matchar antingen "Slack" eller "Discord"
+      chrome: Matchar vilken fönsteritel som helst som innehåller "Chrome"
+      exact_chrome: Matchar exakt "Chrome"
       pdf: Matchar vilken PDF-fil som helst
       vscode: Matchar vilket VS Code-fönster som helst
     tips:
-      any_chars: 'Använd ".*" för att matcha alla tecken'
+      any_chars: Använd ".*" för att matcha alla tecken
       dot: '"\." matchar en punkt'
       end: '"$" matchar slutet av text'
       or: '"|" betyder ELLER'
@@ -187,11 +205,11 @@ shared:
       description: Aktivera dra och släpp för att ordna om objekt
       title: Anpassad sortering
     descending: Fallande
+    disable_reordering_tooltip: Inaktivera omordningsläge
+    enable_reordering_tooltip: Aktivera omordningsläge
     remove_criteria: Ta bort kriterium
     reset_to_default: Återställ till standard
     sort: Sortera
-    enable_reordering_tooltip: Aktivera omordningsläge
-    disable_reordering_tooltip: Inaktivera omordningsläge
   statistics:
     daily_usage:
       description: Visar total användningstid per veckodag
@@ -200,7 +218,24 @@ shared:
       description: Visar total användningstid per timme på dagen
       title: Timvis användning
   time:
-    not_set: "Inte inställd"
+    not_set: Inte inställd
+  time_display:
+    elapsed: Förfluten
+    elapsed_time_tooltip: Tid spenderad på denna uppgift
+    estimated: Uppskattad
+    estimated_time_tooltip: Uppskattad tid för att slutföra denna uppgift
+    no_time_logged_tooltip: Ingen tid loggad ännu
+  time_logging:
+    add_time: Lägg till tid
+    add_time_description: Lägg till tid till befintlig total
+    dialog_title: Logga tid
+    duration: Varaktighet
+    invalid_input: Vänligen ange en giltig tid
+    log_time: Logga tid
+    mode: Läge
+    set_total: Ställ in total
+    set_total_description: Ställ in total spenderad tid
+    total_time: Total tid
   time_periods:
     custom: Anpassad
     last_month: Förra månaden
@@ -210,6 +245,11 @@ shared:
     this_three_months: Dessa 3 månader
     this_week: Denna vecka
     today: Idag
+  timer:
+    label: Timer
+    normal: Normal
+    pomodoro: Pomodoro
+    stopwatch: Stoppur
   tooltips:
     compare_with_previous: Jämför med föregående period
     filter_by_tags: Filtrera efter taggar
@@ -222,6 +262,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sek
+  untitled: Utan titel
   update_dialog:
     buttons:
       download_page: Nedladdningssida
@@ -235,21 +276,4 @@ shared:
     title: Uppdatering tillgänglig!
   validation:
     required: "{field} krävs."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Deadline måste vara på eller efter planerat datum"
-    selected_date_must_be_at_or_after: "Valt datum måste vara på eller efter {date}"
-    selected_date_must_be_at_or_before: "Valt datum måste vara på eller före {date}"
-    start_date_cannot_be_after_end_date: "Startdatum kan inte vara efter slutdatum"
-    start_date_must_be_at_or_after: "Startdatum måste vara på eller efter {date}"
-    end_date_must_be_at_or_before: "Slutdatum måste vara på eller före {date}"
-    cannot_select_date_before_min_date: "Kan inte välja datum före {date}"
-    cannot_select_date_after_max_date: "Kan inte välja datum efter {date}"
-    start_date_cannot_be_before_min_date: "Startdatum kan inte vara före {date}"
-    end_date_cannot_be_after_max_date: "Slutdatum kan inte vara efter {date}"
-    cannot_select_time_before_min_date: "Kan inte välja tid före {time}"
-    cannot_select_time_after_max_date: "Kan inte välja tid efter {time}"
-    time_must_be_at_or_after: "Tiden måste vara på eller efter {time}"
-    time_must_be_at_or_before: "Tiden måste vara på eller före {time}"
-    selected_date_time_must_be_after: "Valt datum och tid måste vara efter {dateTime}"
-    select_date_time_title: "Välj datum och tid"
-    select_date_range_title: "Välj datumintervall"
+  help: Hjälp

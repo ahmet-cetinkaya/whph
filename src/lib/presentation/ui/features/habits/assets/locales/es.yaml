@@ -9,7 +9,6 @@ habits:
     unarchive: Desarchivar
     unarchive_confirm: ¿Estás seguro de que quieres desarchivar este hábito?
     unarchive_tooltip: Desarchivar este hábito
-
   calendar:
     week_days:
       fri: Vie
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: Archivado
     create_record_tooltip: Marcar como completado hoy
+    daily_target: Frecuencia diaria
+    daily_target_hint: veces por día
     description: Descripción
     estimated_time: Tiempo estimado
     estimated_time_not_set: No establecido
@@ -78,22 +79,22 @@ habits:
     statistics:
       archived_note: "Archivado el:"
       archived_on: Archivado el
-      archived_warning: "Las estadísticas se muestran hasta la fecha de archivo. {startDate} - {archivedDate}"
+      archived_warning:
+        Las estadísticas se muestran hasta la fecha de archivo. {startDate}
+        - {archivedDate}
+      completions: finalizaciones
       from: Desde
       monthly: Mensual
+      no_streaks_yet: Aún no hay rachas. ¡Comienza a construir consistencia!
       overall: General
       records: Registros
       score_trends: Tendencias de puntuación
       to: Hasta
       top_streaks: Mejores rachas
-      no_streaks_yet: Aún no hay rachas. ¡Comienza a construir consistencia!
-      completions: finalizaciones
       yearly: Anual
     statistics_label: Estadísticas
     tags: Etiquetas
     tags_hint: Seleccionar etiquetas para asociar
-    daily_target: "Frecuencia diaria"
-    daily_target_hint: "veces por día"
   errors:
     adding_tag: No se pudo añadir la etiqueta
     creating_record: No se pudo crear el registro de hábito
@@ -116,21 +117,21 @@ habits:
   goals:
     current_goal: Objetivo
     days_unit: días
-    description: ¿Quieres practicar el hábito con una frecuencia específica en lugar de todos los días? Entonces establece un objetivo personalizado.
+    description:
+      ¿Quieres practicar el hábito con una frecuencia específica en lugar
+      de todos los días? Entonces establece un objetivo personalizado.
     enable: Habilitar objetivos personalizados
     goal: Objetivo personalizado
     goal_format: "{count} veces en {dayCount} días"
     period_days: Días del período
     settings: Configuración de objetivo personalizado
-    target_frequency: "Frecuencia de período"
-    times_unit: "veces por período"
-  help:
-    description: Descripción de ayuda
+    target_frequency: Frecuencia de período
+    times_unit: veces por período
   list:
     all_habits_done: ¡Todos los hábitos completados!
     no_habits_found: Sin hábitos
-  new_habit: Nuevo hábito
   name_placeholder: Ingrese un nombre de hábito significativo...
+  new_habit: Nuevo hábito
   notifications:
     reminder_message: "Recuerda completar tu hábito: {name}"
     reminder_title: "Recordatorio de hábito: {name}"
@@ -207,8 +208,8 @@ habits:
     select_tooltip: Seleccionar etiqueta
   tooltips:
     add_habit: Añadir hábito
+    decrease_daily_target: Disminuir objetivo diario
     decrease_estimated_time: Disminuir tiempo estimado
     edit_name: Editar nombre
+    increase_daily_target: Aumentar objetivo diario
     increase_estimated_time: Aumentar tiempo estimado
-    decrease_daily_target: "Disminuir objetivo diario"
-    increase_daily_target: "Aumentar objetivo diario"

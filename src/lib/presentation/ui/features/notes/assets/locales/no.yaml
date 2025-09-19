@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Bygg et omfattende kunnskapsstyringssystem som fanger ideene dine, organiserer informasjon effektivt og gjør viktige innsikter lett tilgjengelige når du trenger dem.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Hvorfor er det viktig?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Effektiv notatføring og kunnskapsstyring er essensielt for produktivitet og læring. Et velorganisert notatsystem forhindrer at verdifulle innsikter går tapt, akselererer beslutningstaking og skaper en pålitelig ekstern hukommelse som blir mer verdifull over tid.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Uanstrengt informasjonsfangst
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Opprett en sømløs arbeidsflyt for å fange og behandle informasjon som sikrer at ingenting viktig faller gjennom sprekker mens du opprettholder fokus på ditt nåværende arbeid.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Fang ideer raskt uten å forstyrre flyten din
+      - ✏️ Rediger og forbedre informasjon etter hvert som forståelsen utvikler seg
+      - 🗑️ Fjern utdatert eller irrelevant informasjon systematisk
+      - 📌 Hold kritiske opplysninger lett tilgjengelig og organisert
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Strategisk organisering
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Utvikle et organisasjonssystem som skalerer med kunnskapsbasen din og gjør informasjonsinnhenting rask og pålitelig, uavhengig av volum.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Bruk konsistente taggingsstrategier for rask kategorisering
+      - 🔍 Bruk kraftige søkefunksjoner for å finne informasjon øyeblikkelig
+      - 📚 Grupper relaterte notater for å skape omfattende kunnskapsområder
+      - 🎯 Oppretthold fokus gjennom organisert informasjonsarkitektur
 
-      ## 📄 Professional Content Creation
+      ## 📄 Profesjonell innholdsopprettelse
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Utnytt avanserte formateringsverktøy for å skape klar, velstrukturert innhold som kommuniserer effektivt og tåler tidens prøvelse.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Rik formatering:** Bruk Markdown for profesjonell dokumentstruktur
+      - 📋 **Klar struktur:** Organiser innhold med overskrifter, lister og vektlegging
+      - 🔗 **Koblet kunnskap:** Koble relaterte konsepter og informasjon
+      - 📖 **Lesbart utdata:** Formater innhold for enkel forståelse og deling
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Produktivitetsfordeler
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Transformér notatføringspraksisen din til en produktivitetsmultiplikator som forbedrer tenkningen din, akselererer læring og forbedrer beslutningstakingens kvalitet.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Forbedret tenkning:** Ekstern hukommelse frigjør mental kapasitet for kreativt arbeid
+      - ⚡ **Raskere tilgang:** Organisert informasjon reduserer tid brukt på søk
+      - 🌐 **Universell tilgjengelighet:** Tilgang til kunnskapsbasen din fra enhver enhet
+      - 📈 **Kontinuerlig forbedring:** Raffinert innhold blir mer verdifullt over tid
+    title: Veiledning i kunnskapsstyring og notatorganisering
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Legg til notat
+    delete: Slett notat
+    edit: Rediger notat
+    save: Lagre notat
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Legg til etikett
+      content_placeholder: Skriv notatinnhold her...
+      save_button: Lagre
+      saved_message: Notat lagret vellykket
+      title_placeholder: Notattittel
+      update_button: Oppdater
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Ingen notater funnet
+      loading: Laster notater...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Er du sikker på at du vil slette dette notatet?
+    confirm_title: Slett notat
   details:
-    content: Content
+    content: Innhold
     tags:
-      hint: Select tags for note
-      label: Tags
-    title: Title
+      hint: Velg etiketter for notatet
+      label: Etiketter
+    title: Tittel
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Feilet med å legge til etikett
+    deleting: Uventet feil oppstod under sletting av notat
+    getting_notes: Feil oppstod under henting av notater
+    loading_details: Feilet med å laste notatdetaljer
+    loading_tags: Feilet med å laste notatetiketter
+    note_not_found: Notat ikke funnet
+    note_tag_not_found: Notatetikett ikke funnet
+    removing_tag: Feilet med å fjerne etikett
+    saving_note: Feilet med å lagre notat
+    tag_already_exists: Denne etiketten er allerede lagt til
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Søk notater...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filtrer etter etiketter
+  new_note: Nytt notat
+  title_placeholder: Skriv inn en beskrivende notattittel...
+  no_notes: Ingen notater
+  note_details: Notatdetaljer
+  notes: Notater
+  title: Notater
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Legg til notat
+    delete_note: Slett notat
+    edit_name: Rediger tittel

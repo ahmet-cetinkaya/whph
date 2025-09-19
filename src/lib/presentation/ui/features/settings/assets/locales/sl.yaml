@@ -1,102 +1,102 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Prekliči
 
 settings:
   about:
-    title: About
+    title: O aplikaciji
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Izvoz je spodletel
+    import_failed: Uvoz je spodletel
+    setting_not_found: Nastavitev ni bila najdena
+    version_mismatch: Različica ni bila najdena
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
-    title: Export
-    canceled: Export canceled by user
+    csv_description: To lahko uporabite za ogled v Excelu in podobnih aplikacijah.
+    error: Izvoz je spodletel
+    in_progress: Izvažam podatke, počakajte...
+    json_description: Izvoz podatkov v berljivem JSON-formata za namene razvoja in odpravljanja napak.
+    select_directory: Izberite mapo za izvoz
+    select_path: Izberite lokacijo shranjevanja
+    select_type: Izberite format izvoza
+    success: "Izvoz uspešno. Lokacija datoteke:"
+    title: Izvoz
+    canceled: Izvoz preklican s strani uporabnika
   export_data:
-    title: Export Data
+    title: Izvoz podatkov
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Uvoz je spodletel
+    error.entity: Napaka v vrsti
+    in_progress: Uvažam podatke, počakajte...
+    migration_failed: Uvoz je spodletel. Prepričajte se, da imate nameščeno najnovejšo različico aplikacije.
+    select_file: Izberite datoteko
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
-    title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+      merge: Združi z obstoječimi podatki
+      replace: Izbriši obstoječe podatke in dodaj nove
+      title: Strategija uvoza
+    success: Uvoz uspešno
+    title: Uvoz
+    unsupported_version: Nepodprana različica
+    version_mismatch: Različica ni bila najdena
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
-    title: Import/Export
+    description: Izvozite svoje podatke v različnih formatih ali uvozite podatke iz datotek za varnostno kopijo
+    select_action: Izberite dejanje uvoza/izvoza
+    title: Uvoz/Izvoz
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Izberite jezik
+    title: Jezik
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Spodletelo je pri onemogočanju obvestil
+    enable_error: Spodletelo je pri omogočanju obvestil
+    title: Obvestila
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Ta aplikacija potrebuje dovoljenje za dostop do statistik uporabe aplikacije, da natančno spremlja vzorce uporabe aplikacije.
+      instructions: "Navodila:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Pritisnite gumb "Odpri nastavitve"
+        step2: Na zaslonu z nastavitvami dostopa do uporabe, ki se odpre, poiščite "{appName}" na seznamu
+        step3: Tapnite na "{appName}"
+        step4: Omogočite "Dovoli dostop do uporabe" ali preklopite stikalo na VKL
+      title: Dovoljenje za uporabo aplikacije
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: Za zanesljiva obvestila mora ta aplikacija biti izvzeta iz optimizacije baterije. Brez tega lahko opomnike dobite zamujene ali sploh ne.
+      importance: Lokacija te nastavitve se lahko razlikuje glede na proizvajalca naprave.
+      instructions: "Navodila:"
+      not_disabled: Optimizacija baterije je še vedno omogočena. Opravite dovoljenje, da bo prizadeta funkcija delovala pravilno.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Pritisnite gumb "Odpri nastavitve"
+        step2: Na zaslonu z nastavitvami, ki se odpre, poiščite "{appName}"
+        step3: Tapnite na "{appName}"
+        step4: Prepričajte se, da je "Dovoli uporabo v ozadju" omogočeno na strani, ki se odpre
+        step5: Tapnite na "Dovoli uporabo v ozadju"
+        step6: Izberite "Neomejeno"
+      title: Optimizacija baterije
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ zahteva dovoljenje za razporejanje natančnih alarmov, da opomnike delujejo pravilno.
+      instructions: "Navodila:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Pojdite na Alarmi & opomnike in omogočite dovoljenje
+          step3: Potrdite dovoljenje za natančen alarm
+        step1: Pritisnite gumb "Odpri nastavitve"
+        step2: 'Na strani Alarmi & opomnike odprte aplikacije {appName} omogočite "Dovoli nastavitev alarmov in opomnikov"'
+      title: Dovoljenje za natančen alarm
+    fix_it: Popravi
+    granted: Dovoljenje podeljeno
+    instructions: Navodila
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Dovoljenje za obvestila je potrebno za prejemanje opomnikov. Brez tega dovoljenja ne boste prejeli nobenih obvestil.
+      instructions: "Navodila:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Pritisnite gumb "Odpri nastavitve"
+          step2: Dovolite obvestila, ko boste pozvani
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Pritisnite gumb "Odpri nastavitve"
+          step2: Dovolite obvestila, ko boste pozvani
+      title: Dovoljenje za obvestila
+    open_settings: Odpri nastavitve
+    open_terminal: Odpri terminal
     firewall:
       title: Dovoljenje požarnega zidu
       description: Dovolite WHPH, da komunicira prek požarnega zidu {platform} na vratih 44040 za sinhronizacijo naprav.
@@ -107,7 +107,7 @@ settings:
       rule_added_success: Pravilo požarnega zidu je bilo uspešno dodano
       rule_add_error: Dodajanje pravila požarnega zidu ni uspelo. Poskusite ročne korake.
       add_rule_button: "Dodaj pravilo požarnega zidu"
-      windows_auto_description: "Kliknite 'Dodaj pravilo požarnega zidu' za samodejno dodajanje pravila požarnega zidu z zahtevo za dovoljenje UAC. Če želite dodati ročno, sledite spodnjim korakom:"
+      windows_auto_description: "Kliknite 'Dodaj pravilo požarnega zidu' za samodejno dodajanje pravila požarnega zidu z zahtevo za dovoljenje UAC. Če raje dodate ročno, sledite spodnjim korakom:"
       instructions:
         linux:
           step1: "Odprite terminal"
@@ -116,90 +116,89 @@ settings:
           step4: "Preverite, ali je bilo pravilo dodano:"
         windows:
           step1: "Odprite Windows Defender Firewall iz Nadzorne plošče"
-          step2: "Kliknite Napredne nastavitve na levi strani"
-          step3: "V levem podoknu kliknite Dohodna pravila"
+          step2: "Kliknite Napredne nastavitve vlevo"
+          step3: "V levem podoknu kliknite Vhodna pravila"
           step4: "V desnem podoknu kliknite Novo pravilo..."
           step5: "Izberite Vrata in kliknite Naprej"
           step6: "Izberite TCP in vnesite 44040 v polje za določena lokalna vrata"
           step7: "Izberite Dovoli povezavo in kliknite Naprej"
-          step8: "Označite vse profile (Domena, Zasebno, Javno) in kliknite Naprej"
-          step9: "Vnesite ime, kot je WHPH Sync Port 44040, in kliknite Dokončaj"
+          step8: "Označite vse profile (Domov, Zasebno, Javno) in kliknite Naprej"
+          step9: "Vnesite ime kot WHPH Sync Vrata 44040 in kliknite Dokončaj"
           alternative_command_prompt:
             title: "Alternativa: Uporabite ukazni poziv"
             steps:
               cmd_step1: "Odprite ukazni poziv kot skrbnik"
               cmd_step2: "Dodajte pravilo požarnega zidu:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: Za samodejni zagon aplikacije z vašo napravo je potrebno dovoljenje za samodejni zagon. To zagotavlja, da opomnike in obvestila delujejo pravilno tudi po ponovnem zagonu naprave.
+      importance: Lokacija nastavitve samodejnega zagona se razlikuje ali morda ni prisotna glede na proizvajalca naprave.
+      instructions: "Navodila:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Pritisnite gumb "Odpri nastavitve"
+        step2: 'Na zaslonu z nastavitvami, ki se odpre, poiščite aplikacijo "{appName}"'
+        step3: 'Omogočite "Samodejni zagon", "Autorun", "Zagon pri zagonu" ali podobno dovoljenje'
+      title: Dovoljenje za samodejni zagon
+    title: Dovoljenja
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Spodletelo je pri onemogočanju nastavitve zagona
+    enable_error: Spodletelo je pri omogočanju nastavitve zagona
+    subtitle: Tapnite za odpiranje sistemskih nastavitev in omogočanje dovoljenja za samodejni zagon aplikacije
+    title: Zagon pri zagonu
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Sinhroniziraj naprave
+  title: Nastavitve
   backup:
-    title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    title: Varnostna kopija
+    description: Ustvarite in obnovite stisnjene varnostne kopije podatkov vaše aplikacije z uporabo varnega formata .whph
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Ustvari varnostno kopijo
+      description: Izvozite vse vaše podatke v stisnjeno datoteko varnostne kopije .whph
+      in_progress: Ustvarjam varnostno kopijo, počakajte...
+      success: "Varnostna kopija ustvarjena uspešno. Lokacija datoteke:"
+      error: Ustvarjanje varnostne kopije je spodletelo
+      select_path: Izberite lokacijo za shranjevanje varnostne kopije
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Obnovi varnostno kopijo
+      description: Uvozite podatke iz prej ustvarjene datoteke varnostne kopije .whph
+      in_progress: Obnavljam varnostno kopijo, počakajte...
+      success: Varnostna kopija uspešno obnovljena
+      error: Obnova varnostne kopije je spodletela
+      select_file: Izberite datoteko varnostne kopije
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Strategija obnovitve
+        replace: Izbriši obstoječe podatke in obnovi
+        merge: Združi z obstoječimi podatki
+    canceled: Varnostna kopija je bila preklicana s strani uporabnika
+    export_failed: Izvoz varnostne kopije je spodletel
+    import_failed: Uvoz varnostne kopije je spodletel
+    invalid_format: Neveljaven format datoteke varnostne kopije
+    invalid_format_error: Neveljaven format datoteke varnostne kopije
+    corrupted: Datoteka varnostne kopije je okvarjena ali poškodovana
+    export_description: Ustvarite stisnjeno datoteko varnostne kopije, ki vsebuje vse vaše podatke
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Tema
+    description: Prilagajanje videza WHPH
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Način teme
+      light: Svetla
+      dark: Temna
       auto:
-        title: Auto
-        description: Follow system theme settings
+        title: Samodejno
+        description: Sledi sistemskim nastavitvam teme
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Dinamična barva naglasnega tona
+      description: Če vaš sistem to podpira, se primarna barva prilagodi na podlagi dinamične barvne sheme sistema
+      feature: Dinamično
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Lastna barva naglasnega tona
+      description: Izberite lastno barvo naglasnega tona za personalizacijo videza aplikacije
+      feature: Lastno
+    error: Nalaganje nastavitev teme je spodletelo
   ui_density:
     title: Gostota
-    description: Prilagodite velikost besedila in elementov vmesnika za izboljšano berljivost na zaslonih z visokim DPI
-    compact: Zgoščeno
-    normal: Običajno
+    description: Prilagodite velikost besedila in elementov vmesnika za boljšo čitljivost na zaslonih z visoko gostoto
+    compact: Kompaktno
+    normal: Normalno
     large: Veliko
     larger: Večje
     error: Nastavitev gostote vmesnika ni bilo mogoče naložiti
@@ -212,23 +211,23 @@ settings:
     load_settings_error: Napaka pri nalaganju nastavitev dnevnikov razhroščevanja
     update_settings_error: Napaka pri posodabljanju nastavitev dnevnikov razhroščevanja
     view:
-      title: Prikaži dnevnike razhroščevanja
-      description: Prikaži in izvozi trenutne dnevnike razhroščevanja
+      title: Poglej dnevnike razhroščevanja
+      description: Poglej in izvozi trenutne dnevnike razhroščevanja
     page:
       title: Dnevniki razhroščevanja
-      description: Prikaži trenutne vnose dnevnika razhroščevanja. Dnevniki se samodejno počistijo in obrnejo, da preprečijo prekomerno uporabo diska.
+      description: Poglej trenutne vnose dnevnika razhroščevanja. Dnevniki se samodejno počistijo in obrnejo, da preprečijo prekomerno uporabo diska.
       content: Vsebina dnevnika
       refresh: Osveži dnevnike
       copy: Kopiraj v odložišče
       save_as: Shrani kot datoteko
-      copied: Dnevniki razhroščevanja kopirani v odložišče
+      copied: Dnevniki razhroščevanja so kopirani v odložišče
       load_error: Napaka pri nalaganju dnevnikov razhroščevanja
-      not_enabled: Beleženje razhroščevanja ni omogočeno. Omogočite ga v naprednih nastavitvah za začetek zbiranja dnevnikov.
+      not_enabled: Beleženje razhroščevanja ni omogočeno. Omogočite ga v naprednih nastavitvah, da začnete zbirati dnevnike.
       no_file: Datoteka dnevnika razhroščevanja ni bila najdena. Dnevniki bodo ustvarjeni po omogočitvi beleženja razhroščevanja in ko aplikacija ustvari vnose dnevnika.
       empty: Datoteka dnevnika razhroščevanja je prazna. Še ni bilo zabeleženih vnosov dnevnika.
     export:
-      dialog_title: Izvozi dnevnike razhroščevanja
+      dialog_title: Izvoz dnevnikov razhroščevanja
       error: Napaka pri izvozu dnevnikov
-      success: Datoteka dnevnika uspešno izvožena
-      no_logs_available: Ni na voljo dnevnikov za izvoz
-      file_not_exist: Datoteka dnevnika ne obstaja
+      success: Datoteka dnevnika je bila uspešno izvožena
+      no_logs_available: Ni razpoložljivih dnevnikov za izvoz. Najprej ustvarite nekaj dnevnikov.
+      file_not_exist: Datoteka dnevnika ne obstaja. Omogočite beleženje razhroščevanja in najprej ustvarite nekaj dnevnikov.

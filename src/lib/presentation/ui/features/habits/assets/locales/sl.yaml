@@ -1,214 +1,232 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Arhiviraj
+    archive_confirm: Ste prepričani, da želite arhivirati to navado?
+    archive_tooltip: Arhiviraj to navado
+    archived_date: Datum arhiviranja
+    hide_archived: Skrij arhivirane
+    show_archived: Pokaži arhivirane
+    unarchive: Razarhiviraj
+    unarchive_confirm: Ste prepričani, da želite razarhivirati to navado?
+    unarchive_tooltip: Razarhiviraj to navado
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Pet
+      mon: Pon
+      sat: Sob
+      sun: Ned
+      thu: Čet
+      tue: Tor
+      wed: Sre
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Ste prepričani, da želite izbrisati to navado?
+    confirm_title: Izbriši Navado
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
+    archived_status: Arhivirano
+    create_record_tooltip: Oznaci kot dokončano danes
+    daily_target: Dnevna frekvenca
+    daily_target_hint: krat na dan
+    description: Opis
+    elapsed_time: Minulo Čas
+    estimated_time: Približan Čas
+    estimated_time_not_set: Ni nastavljeno
     help:
       content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+        Zgradite trajnostne dnevne rutine z sistematičnim sledenjem navadam, ki pretvorijo vaše namere v dosledne akcije in merljiv napredek proti vašim ciljem.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Zakaj Je Pomembno?
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+        Ustanavljanje navad je temelj osebne rasti in trajnih dosežkov. Dosledne dnevne akcije se nabirajo s časom, da ustvarijo opazne rezultate, medtem ko sistematično sledenje zagotavlja, da ohranite zagon in naredite kontinuirane izboljšave v vaših rutinah.
 
-        ## ⚙️ Strategic Habit Design
+        ## ⚙️ Strategično Načrtovanje Navad
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+        Ustvarite navade, ki se brezhibno integrirajo v vaše življenje in podpirajo vaše dolgoročne cilje. Dobro načrtovane navade postanejo avtomatske vedenjske, ki zahtevajo minimalno voljo za vzdrževanje.
 
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
+        - 📝 Načrtujte jasne, specifične navade z akcionimi opisi
+        - 📅 Ustanovite dosledne urnike, ki se ujemajo z vašimi naravnimi ritmi
+        - 🏷️ Organizirajte podobne navade v koherentne skupine za sistematično sledenje
+        - 🎯 Povežite vsako navado z smiselnimi izidi in osebnimi vrednotami
 
-        ## ⏱️ Performance Monitoring
+        ## ⏱️ Spremljanje Učinkovitosti
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+        Spremljajte izvajanje vaših navad, da razumete vzorce, merite napredek in optimizirate pristop za maksimalno učinkovitost in trajnostno rast.
 
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+        - ⏳ Zabeležite čase dokončanja, da razumete trajanje in učinkovitost navade
+        - 📊 Analizirajte časovne naložbe v kategorije navad za uravnotežen razvoj
+        - 📈 Spremljajte trende učinkovitosti za identifikacijo priložnosti za izboljšave in optimalen čas
+        - 🔄 Uporabite vpoglede iz podatkov za rafiniranje težavnosti navade in urnika za trajnostni uspeh
 
-        ## 📅 Consistency & Momentum
+        ## 📅 Doslednost & Zagon
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+        Zgradite in ohranite doslednost, potrebno za trajno vedenjsko spremembo z sistematičnim sledenjem in strateško pregledom vaših vzorcev napredka.
 
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+        - 📚 Preglejte zgodovino dokončanj za oceno napredka in identifikacijo vzorcev uspeha
+        - 🔗 Spremljajte dnevne serije za gradnjo in ohranjanje zagona za dolgoročni uspeh
+        - 📌 Spremljajte metrike doslednosti za izboljšanje motivacije in predanosti
+        - 🎯 Proslavite mejnike in dosežke za krepitev pozitivne vedenjske spremembe
 
-        ## 🚀 Optimization Strategies
+        ## 🚀 Strategije Optimizacije
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+        Uporabite preverjene tehnike za optimizacijo navad, ki pospešijo napredek in zagotovijo, da se vaši napori pretvorijo v smiselne, trajne izboljšave v vašem življenju in produktivnosti.
 
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
-    records: Records
-    remove_record_tooltip: Remove today's completion
+        - 🐾 **Začnite Majhno:** Začnite z upravljivimi navadami, ki zagotavljajo zgodnje zmage
+        - 🏷️ **Strategično Grupiranje:** Organizirajte navade po področju življenja ali času dneva
+        - 📊 **Prilagoditve na Podlagi Podatkov:** Uporabite vpoglede sledenja za optimizacijo časa in pristopa
+        - 🌅 **Fokus na Vrhunski Čas:** Načrtujte pomembne navade v vaših vrhunskih obdobjih energije
+      description: Opis pomoči
+      title: Vodnik za Ustanavljanje Navad & Spremljanje Učinkovitosti
+    records: Zabeležke
+    remove_record_tooltip: Odstrani današnjo dokončanje
     statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
-      records: Records
-      score_trends: Score Trends
-      to: To
-      top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
-    tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Dnevna frekvenca"
-    daily_target_hint: "krat na dan"
+      archived_note: "Arhivirano na:"
+      archived_on: Arhivirano na
+      archived_warning: Statistike so prikazane do datuma arhiviranja. {startDate} - {archivedDate}
+      completions: dokončanja
+      from: Od
+      monthly: Mesečno
+      no_streaks_yet: Še nobene serije. Začnite graditi doslednost!
+      overall: Splošno
+      records: Zabeležke
+      score_trends: Trendi Ocene
+      to: Do
+      top_streaks: Najboljše Serije
+      yearly: Letno
+    statistics_label: Statistike
+    tags: Oznake
+    tags_hint: Izberite oznake za povezavo
   errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
+    adding_tag: Napaka pri dodajanju oznake
+    creating_record: Napaka pri ustvarjanju zapisa navade
+    deleting: Nepričakovana napaka med brisanjem navade
+    deleting_record: Napaka pri brisanju zapisa navade
+    habit_not_found: Navada ni najdena
+    habit_record_not_found: Zapis navade ni najden
+    habit_tag_not_found: Oznaka navade ni najdena
+    loading_archive_status: Napaka pri nalaganju stanja arhiva
+    loading_details: Napaka pri nalaganju podrobnosti navade
+    loading_habit: Napaka pri nalaganju navade
+    loading_habits: Napaka pri nalaganju navad
+    loading_records: Napaka pri nalaganju zapisov navade
+    loading_tags: Napaka pri nalaganju oznak navade
+    removing_tag: Napaka pri odstranjevanju oznake
+    saving_details: Napaka pri shranjevanju navade
+    saving_habit: Napaka pri shranjevanju navade
+    tag_already_exists: Ta oznaka je že dodana
+    toggling_archive: Napaka pri preklopu stanja arhiva
   goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
-    target_frequency: "Frekvenca obdobja"
-    times_unit: "krat na obdobje"
-  help:
-    description: Help description
+    current_goal: Cilj
+    days_unit: dni
+    description: |
+      Želite vaditi navado z določeno frekvenco namesto
+      vsak dan? Nato nastavite prilagojen cilj.
+    enable: Omogoči Prilagojene Cilje
+    goal: Prilagojen Cilj
+    goal_format: "{count} krat v {dayCount} dneh"
+    period_days: Dnevi obdobja
+    settings: Nastavitve prilagojenega cilja
+    target_frequency: Frekvenca obdobja
+    times_unit: krat na obdobje
   list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
+    all_habits_done: Vse navade dokončane!
+    no_habits_found: Brez navad
+  name_placeholder: Vnesite smiselno ime navade...
+  new_habit: Nova Navada
   notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Ne pozabite dokončati svoje navade: {name}"
+    reminder_title: "Opomnik Navade: {name}"
   overview:
-    filter_by_tags_tooltip: Filter by tags
+    filter_by_tags_tooltip: Filtriraj po oznakah
     help:
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Opravite svoje dnevne rutine z sistematičnim sledenjem navadam, ki gradi doslednost, ustvarja pozitiven zagon in spodbuja smiseln napredek proti vašim dolgoročnim ciljem.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Zakaj Je Pomembno?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        Dnevno upravljanje navad je temelj osebne odličnosti in trajnostne rasti. Dosledna izvedba dobro načrtovanih navad ustvarja sestavljene koristi s časom, medtem ko sistematično sledenje zagotavlja, da ohranite odgovornost in naredite izboljšave na podlagi podatkov v vaših rutinah.
 
-        ## 📅 Daily Execution & Tracking
+        ## 📅 Dnevna Izvedba & Sledenje
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Razvijte zanesljiv sistem za izvajanje in spremljanje vaših navad, ki ustvarja doslednost in gradi neustavljiv zagon proti vašim ciljem.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - ✅ **Dnevno Dokončanje:** Oznaci navade kot dokončane za gradnjo verig doslednosti
+        - 📆 **Multi-Dnevni Pogled:** Spremljajte vzorce čez dneve in tedne za celovite vpoglede
+        - 🔄 **Gradnja Serij:** Ohranite zaporedne dneve dokončanja za maksimaliziranje motiva za zagon
+        - 📊 **Vizualizacija Napredka:** Spremljajte stopnje in vzorce dokončanja s časom
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Analiza Časa & Optimizacija
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Spremljajte naložbe časa v vaše navade za optimizacijo vašega dnevnega urnika in zagotavljanje uravnoteženega razvoja čez vse pomembne življenjske področja.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ **Sledenje Trajanja:** Zabeležite dejanski porabljen čas za razumevanje zahtev navade
+        - 🏷️ **Analiza Kategorije:** Grupirajte navade po oznakah za ogled razporeditve časa čez življenjska področja
+        - ⏰ **Optimizacija Urnika:** Uravnotežite čas navad za trajnostno dnevno izvedbo
+        - 📈 **Izboljšava Učinkovitosti:** Identificirajte priložnosti za poenostavitev izvedbe navad
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strategična Organizacija
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+        Ustvarite organizacijski sistem, ki podpira dosledno izvedbo, medtem ko zagotavlja fleksibilnost za prilagajanje, ko se vaši cilji in okoliščine razvijajo.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        - 🏷️ **Smiselna Kategorizacija:** Grupirajte navade po življenjskem področju, času ali ravni prioritete
+        - ⚙️ **Fleksibilno Načrtovanje:** Načrtujte čas navad, ki deluje z vašim življenjskim slogom in vzorci energije
+        - 🎯 **Fokus Prioritete:** Zagotovite, da vaše najpomembnejše navade dobijo ustrezno pozornost in energijo
 
-        ## 💡 Mastery Principles
+        ## 💡 Principi Mojstrstva
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+        Uporabite preverjene strategije za mojstrstvo navad, ki zagotavljajo, da se vaši napori nabirajo v trajno vedenjsko spremembo in merljivih izboljšavah življenja.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        - 🐾 **Začnite Majhno:** Začnite z navadami, ki jih lahko izvedete dosledno, nato postopoma povečajte težavnost
+        - 🏷️ **Strategično Grupiranje:** Organizirajte navade za ustvarjanje logičnih sekvenc in sistemov podpore
+        - 📊 **Pregled Učinkovitosti:** Uporabite podatke sledenja časa za razumevanje vzorcev in optimizacijo pristopa
+        - 🌅 **Izvedba Vrhunskega Časa:** Načrtujte vaše najpomembnejše navade v obdobjih vrhunec energije
 
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
+        ### 📊 Uporaba Pogleda Koledarja
+        - 📅 Poglejte več dni hkrati v pogledu koledarja.
+        - ✅ Vizualno spremljajte vaše vzorce dokončanja.
+        - ⚡ Prihranite čas z hitro označevanjem dokončanja.
+        - 🎯 Povečajte motivacijo z vizualnim sledenjem serij.
+        - 🔄 Raziskujte pretekle in prihodnje navade z fleksibilno navigacijo datuma.
+      title: Dnevno Upravljanje Navad & Vodnik Optimizacije Rutine
+    title: Navade
   reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
+    enableReminders: Omogoči opomnike
+    everyDay: Vsak dan
+    noReminder: Ni nastavljen opomnik
+    reminderDays: Dnevi opomnika
+    reminderSettings: Nastavitve opomnika
+    reminderTime: Čas opomnika
+    selectDaysWarning: Izberite vsaj en dan za opomnike
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
+    enable: Omogoči opomnike
+    select_days_warning: Izberite vsaj en dan za opomnike
   statistics:
-    archived_on: Archived on
-    from: From
-    to: To
+    archived_on: Arhivirano na
+    from: Od
+    to: Do
   tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    add_tooltip: Dodaj oznako
+    select_tooltip: Izberi oznako
+  time_display:
+    actual_time_tooltip: Dejanski sledeni čas za ta dan
+    estimated: približan
+    estimated_time_tooltip: Približan čas na podlagi nastavitev navade
+    no_time_logged_tooltip: Ni zabeleženega časa za ta dan
+  time_logging:
+    add_time: Dodaj Čas
+    add_time_description: Dodaj določen čas obstoječim zapisom
+    dialog_title: Zabeleži Čas
+    duration: Trajanje za Dodaj
+    invalid_input: Vnesite veljavne ure in minute
+    log_time: Zabeleži Čas
+    mode: Način Zapisovanja
+    set_total: Nastavi Skupaj
+    set_total_description: Nastavi skupni čas za izbrani dan
+    total_time: Skupni Čas za Dan
+  timer:
+    label: Timer
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Zmanjšaj dnevni cilj"
-    increase_daily_target: "Povečaj dnevni cilj"
+    add_habit: Dodaj Navado
+    decrease_daily_target: Zmanjšaj dnevni cilj
+    decrease_estimated_time: Zmanjšaj približan čas
+    edit_name: Uredi Ime
+    increase_daily_target: Povečaj dnevni cilj
+    increase_estimated_time: Povečaj približan čas

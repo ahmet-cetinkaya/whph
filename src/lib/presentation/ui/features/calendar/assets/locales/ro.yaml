@@ -3,49 +3,49 @@ calendar:
     today:
       help:
         content: |
-          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
+          Optimizați-vă productivitatea zilnică cu o vedere unificată care integrează sarcinile, obiceiurile și urmărirea timpului pentru a vă ajuta să mențineți concentrarea și să atingeți obiectivele în mod eficient.
 
-          ## ⚡ Why Is It Important?
+          ## ⚡ De ce este important?
 
-          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
+          Gestionarea zilnică a productivității este piatra de temelie a utilizării eficiente a timpului și a atingerii obiectivelor. Prin centralizarea activităților zilnice într-o singură vedere, eliminați schimbarea contextului, mențineți priorități clare și creați o abordare sistematică pentru îndeplinirea lucrărilor cele mai importante.
 
-          ## 🔄 Habit Consistency
+          ## 🔄 Consecvența obiceiurilor
 
-          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
+          Monitorizați și mențineți rutinele zilnice cu urmărirea simplificată a obiceiurilor care construiește momentum și întărește modele comportamentale pozitive pe parcursul zilei.
 
-          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
-          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
-          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
-          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
+          - ✅ **Evaluare rapidă:** Vizualizați toate obiceiurile zilnice cu o privire pentru evaluarea rapidă a progresului
+          - ✔️ **Finalizare instantanee:** Marcați obiceiurile ca finalizate cu interacțiuni simple care mențin fluxul
+          - 🔄 **Întărirea rutinei:** Întăriți modelele zilnice prin urmărire consistentă și recunoaștere
+          - 📈 **Construirea momentumului:** Indicatori vizuali de progres care motivează consistența continuă
 
-          ## 📋 Task Execution
+          ## 📋 Execuția sarcinilor
 
-          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+          Concentrați-vă gestionarea sarcinilor cu o vedere clară a priorităților de azi care vă ajută să executați eficient fără a pierde din vedere termenele limită și angajamentele.
 
-          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
-          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
-          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
-          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+          - 🗓️ **Claritate priorități:** Vizualizați sarcinile planificate și scadente organizate pentru execuție optimă
+          - ➕ **Captură rapidă:** Adăugați sarcini noi rapid fără a perturba fluxul de lucru curent
+          - ✔️ **Urmărirea progresului:** Monitorizați starea de finalizare pentru a menține responsabilitatea și momentumul
+          - 🎯 **Menținerea focusului:** Vedere zilnică clară previne suprasolicitarea de obligații viitoare
 
-          ## ⏰ Time Investment Analysis
+          ## ⏰ Analiza investiției de timp
 
-          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+          Înțelegeți cum petreceți timpul prin analiză categorizată care dezvăluie modele de productivitate și ajută la optimizarea programului zilnic pentru eficiență maximă.
 
-          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
-          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
-          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
-          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+          - 📊 **Perspective categorii:** Analizați distribuția timpului în diferite etichete de activități și proiecte
+          - 📈 **Recunoașterea modelelor:** Identificați tendințe de productivitate și perioade de performanță de vârf
+          - 🕒 **Monitorizarea activităților:** Urmăriți timpul petrecut în diverse activități și responsabilități zilnice
+          - 🎯 **Oportunități de optimizare:** Utilizați datele pentru a lua decizii informate despre alocarea timpului
 
-          ## ⚙️ Productivity Shortcuts
+          ## ⚙️ Scurtături de productivitate
 
-          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+          Profitați de acțiuni rapide și fluxuri de lucru eficiente care minimizează frecarea și maximizează capacitatea de a menține focusul pe activități de înaltă valoare pe parcursul zilei.
 
-          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
-          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
-          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
-          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
-        title: Daily Productivity Management Guide
-      title: Today
+          - ▶️ **Sesiuni de focus:** Inițiați perioade de lucru concentrate cu integrarea temporizatorului în modul Marathon
+          - 🔎 **Filtrare inteligentă:** Utilizați filtrarea bazată pe etichete pentru a vă concentra pe proiecte specifice sau domenii de viață
+          - ✅ **Finalizare eficientă:** Finalizați obiceiurile și sarcinile cu interacțiuni simplificate, fără distrageri
+          - 📊 **Perspective de performanță:** Accesați graficele de timp pentru feedback imediat asupra modelelor zilnice de productivitate
+        title: Ghid de management al productivității zilnice
+      title: Astăzi
   sections:
-    habits: Habits
-    tasks: Tasks
+    habits: Obiceiuri
+    tasks: Sarcini

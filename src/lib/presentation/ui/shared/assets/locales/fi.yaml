@@ -1,5 +1,4 @@
 shared:
-  untitled: "Nimetön"
   buttons:
     add: Lisää
     back: Takaisin
@@ -65,6 +64,7 @@ shared:
     created_date_label: Luontipäivä
     modified_date_label: Muokkauspäivä
     name_label: Nimi
+  date: Päivämäärä
   date_filter:
     title: Valitse päivämääräväli
     tooltips:
@@ -72,6 +72,32 @@ shared:
       filter: Suodata päivämäärän mukaan
   date_format:
     hint: PP/KK/VVVV
+  datepicker:
+    cannot_select_date_after_max_date: Ei voi valita päivämäärää {date} jälkeen
+    cannot_select_date_before_min_date: Ei voi valita päivämäärää ennen {date}
+    cannot_select_time_after_max_date: Ei voi valita aikaa {time} jälkeen
+    cannot_select_time_before_min_date: Ei voi valita aikaa ennen {time}
+    deadline_cannot_be_before_planned_date:
+      Määräajan on oltava suunniteltuna päivänä
+      tai sen jälkeen
+    end_date_cannot_be_after_max_date: Lopetuspäivä ei voi olla {date} jälkeen
+    end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
+    select_date_range_title: Valitse päivämääräväli
+    select_date_time_title: Valitse päivämäärä ja aika
+    selected_date_must_be_at_or_after:
+      Valitun päivämäärän täytyy olla {date} tai
+      sen jälkeen
+    selected_date_must_be_at_or_before:
+      Valitun päivämäärän täytyy olla {date} tai
+      sitä ennen
+    selected_date_time_must_be_after:
+      Valitun päivämäärän ja ajan täytyy olla {dateTime}
+      jälkeen
+    start_date_cannot_be_after_end_date: Aloituspäivä ei voi olla lopetuspäivän jälkeen
+    start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
+    start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
+    time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
+    time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
   days:
     friday: Perjantai
     friday_short: Pe
@@ -92,19 +118,19 @@ shared:
       hint: Voit kirjoittaa Markdown-muodossa...
       tooltips:
         bold: Lihavoitu
-        italic: Kursivoitu
-        strikethrough: Yliviivattu
-        code: Koodi
-        link: Linkki
-        quote: Lainaus
         bulleted_list: Luettelomerkit
-        numbered_list: Numeroitu lista
-        horizontal_rule: Vaakaviiva
-        edit: Muokkaa
-        preview: Esikatselu
-        image: Kuva
-        heading: Otsikko
         checkbox: Valintaruutu
+        code: Koodi
+        edit: Muokkaa
+        heading: Otsikko
+        horizontal_rule: Vaakaviiva
+        image: Kuva
+        italic: Kursivoitu
+        link: Linkki
+        numbered_list: Numeroitu lista
+        preview: Esikatselu
+        quote: Lainaus
+        strikethrough: Yliviivattu
   errors:
     deleting: Virhe tietojen poistamisessa
     file_not_found: Tiedostoa ei löytynyt
@@ -138,8 +164,6 @@ shared:
     unexpected: Odottamaton virhe tapahtui
   filters:
     search: Haku
-  help:
-    tooltip: Ohje
   messages:
     confirm_delete: Oletko varma, että haluat poistaa tämän kohteen?
     no_items_found: Ei kohteita
@@ -153,16 +177,16 @@ shared:
       tags: Tunnisteet
       tasks: Tehtävät
       today: Tänään
-  none_option: "Ei tunnisteita"
+  none_option: Ei tunnisteita
   regex_help:
     examples:
-      chat: 'Vastaa joko "Slack" tai "Discord"'
-      chrome: 'Vastaa mitä tahansa ikkunan otsikkoa, joka sisältää "Chrome"'
-      exact_chrome: 'Vastaa tarkalleen "Chrome"'
+      chat: Vastaa joko "Slack" tai "Discord"
+      chrome: Vastaa mitä tahansa ikkunan otsikkoa, joka sisältää "Chrome"
+      exact_chrome: Vastaa tarkalleen "Chrome"
       pdf: Vastaa mitä tahansa PDF-tiedostoa
       vscode: Vastaa mitä tahansa VS Code -ikkunaa
     tips:
-      any_chars: 'Käytä ".*" vastataksesi mihin tahansa merkkeihin'
+      any_chars: Käytä ".*" vastataksesi mihin tahansa merkkeihin
       dot: '"\." vastaa pistettä'
       end: '"$" vastaa tekstin loppua'
       or: '"|" tarkoittaa TAI'
@@ -187,11 +211,11 @@ shared:
       description: Ota käyttöön vedä ja pudota kohteiden uudelleenjärjestämiseksi
       title: Mukautettu järjestys
     descending: Laskeva
+    disable_reordering_tooltip: Poista uudelleenjärjestystila käytöstä
+    enable_reordering_tooltip: Ota uudelleenjärjestystila käyttöön
     remove_criteria: Poista kriteeri
     reset_to_default: Palauta oletukseen
     sort: Järjestä
-    enable_reordering_tooltip: Ota uudelleenjärjestystila käyttöön
-    disable_reordering_tooltip: Poista uudelleenjärjestystila käytöstä
   statistics:
     daily_usage:
       description: Näyttää kokonaiskäyttöajan viikonpäivittäin
@@ -200,7 +224,24 @@ shared:
       description: Näyttää kokonaiskäyttöajan tunnin mukaan
       title: Tuntikäyttö
   time:
-    not_set: "Ei asetettu"
+    not_set: Ei asetettu
+  time_display:
+    elapsed: Kulunut
+    elapsed_time_tooltip: Tähän tehtävään käytetty aika
+    estimated: Arvioitu
+    estimated_time_tooltip: Arvioitu aika tämän tehtävän suorittamiseen
+    no_time_logged_tooltip: Aikaa ei ole vielä kirjattu
+  time_logging:
+    add_time: Lisää aika
+    add_time_description: Lisää aika olemassa olevaan kokonaisaikaan
+    dialog_title: Kirjaa aika
+    duration: Kesto
+    invalid_input: Anna kelvollinen aika
+    log_time: Kirjaa aika
+    mode: Tila
+    set_total: Aseta yhteensä
+    set_total_description: Aseta käytetty kokonaisaika
+    total_time: Kokonaisaika
   time_periods:
     custom: Mukautettu
     last_month: Viime kuussa
@@ -210,6 +251,11 @@ shared:
     this_three_months: Nämä 3 kuukautta
     this_week: Tällä viikolla
     today: Tänään
+  timer:
+    label: Ajastin
+    normal: Normaali
+    pomodoro: Pomodoro
+    stopwatch: Sekuntikello
   tooltips:
     compare_with_previous: Vertaa edelliseen jaksoon
     filter_by_tags: Suodata tunnisteiden mukaan
@@ -222,6 +268,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: s
+  untitled: Nimetön
   update_dialog:
     buttons:
       download_page: Lataussivu
@@ -233,23 +280,6 @@ shared:
     question: Haluatko päivittää nyt?
     success: Päivitys ladattu onnistuneesti!
     title: Päivitys saatavilla!
+  help: Apua
   validation:
     required: "{field} on pakollinen."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Määräajan on oltava suunniteltuna päivänä tai sen jälkeen"
-    selected_date_must_be_at_or_after: Valitun päivämäärän täytyy olla {date} tai sen jälkeen
-    selected_date_must_be_at_or_before: Valitun päivämäärän täytyy olla {date} tai sitä ennen
-    start_date_cannot_be_after_end_date: Aloituspäivä ei voi olla lopetuspäivän jälkeen
-    start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
-    end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
-    cannot_select_date_before_min_date: Ei voi valita päivämäärää ennen {date}
-    cannot_select_date_after_max_date: Ei voi valita päivämäärää {date} jälkeen
-    start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
-    end_date_cannot_be_after_max_date: Lopetuspäivä ei voi olla {date} jälkeen
-    cannot_select_time_before_min_date: Ei voi valita aikaa ennen {time}
-    cannot_select_time_after_max_date: Ei voi valita aikaa {time} jälkeen
-    time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
-    time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
-    selected_date_time_must_be_after: Valitun päivämäärän ja ajan täytyy olla {dateTime} jälkeen
-    select_date_time_title: Valitse päivämäärä ja aika
-    select_date_range_title: Valitse päivämääräväli

@@ -1,128 +1,128 @@
 tags:
   actions:
-    add: Add Tag
-    archive: Archive Tag
-    delete: Delete Tag
-    edit: Edit Tag
-    hide_archived: Hide archived tags
-    show_archived: Show archived tags
-    unarchive: Unarchive Tag
+    add: Legg til merke
+    archive: Arkivér merke
+    delete: Slett merke
+    edit: Rediger merke
+    hide_archived: Skjul arkiverte merker
+    show_archived: Vis arkiverte merker
+    unarchive: Fjern arkivering av merke
   categories:
-    all: All
-    app_usage: App Usage
-    habits: Habits
-    tasks: Tasks
-
+    all: Alle
+    app_usage: App-bruk
+    habits: Vaner
+    tasks: Oppgaver
+  default_name: Uten navn
   details:
-    archived: Archived
-    color: Color
+    archived: Arkivert
+    color: Farge
     help:
-      description: Details help description
-      title: Details Help Title
-    name: Name
-    related_tags: Related Tags
-    select_tag: Select tag
-    tasks_label: Tasks
+      description: Detaljer hjelpebeskrivelse
+      title: Detaljer Hjelpe Titel
+    name: Navn
+    related_tags: Relaterte merker
+    select_tag: Velg merke
+    tasks_label: Oppgaver
   errors:
-    creating: Failed to create tag
-    deleting: Failed to delete tag
-    get_tags: Error occurred while fetching tags
-    loading: Failed to load tags
-    loading_archive_status: Failed to load archive status
-    same_tag: Primary and secondary tags cannot be the same
-    saving: Failed to save tag
-    tag_not_found: Tag not found
-    tag_tag_already_exists: This tag relationship already exists
-    tag_tag_not_found: Tag relationship not found
-    toggling_archive: Failed to toggle archive status
+    creating: Kunne ikke opprette merke
+    deleting: Kunne ikke slette merke
+    get_tags: Feil oppstod under henting av merker
+    loading: Kunne ikke laste merker
+    loading_archive_status: Kunne ikke laste arkivstatus
+    same_tag: Primære og sekundære merker kan ikke være de samme
+    saving: Kunne ikke lagre merke
+    tag_not_found: Merke ikke funnet
+    tag_tag_already_exists: Denne merkerelasjonen eksisterer allerede
+    tag_tag_not_found: Merkerelasjon ikke funnet
+    toggling_archive: Kunne ikke bytte arkivstatus
   filter:
-    all_categories: All Categories
-    select_category: Select Category
-  filter_tooltip: Filter by tags
+    all_categories: Alle kategorier
+    select_category: Velg kategori
+  filter_tooltip: Filtrer etter merker
   help:
-    content: Tag help content
+    content: Merke hjelpeinnhold
     overview:
       content: |
-        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+        Transformer din produktivitet med strategisk merking som hjelper deg med å organisere arbeid, spore tidsinvesteringer og opprettholde klar fokus på det viktigste.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Hvorfor er det viktig?
 
-        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+        Merkebasert organisering er grunnleggende for effektiv tidshåndtering og produktivitet. Ved å kategorisere aktivitetene dine med meningsfulle merker får du klare innsikter i hvordan du bruker tiden din og kan ta informerte beslutninger for å optimalisere fokus og effektivitet.
 
-        ## 📊 Time Investment Analysis
+        ## 📊 Tidsinvesteringsanalyse
 
-        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+        Forstå hvor tiden din går og ta datadrevne beslutninger om prioriteringene dine. Tidssporing med merker avdekker mønstre som hjelper deg med å optimalisere timeplanen og arbeidsvanene dine.
 
-        - ⏱️ Monitor time spent across different activity categories
-        - 📅 Track time investments over specific periods and trends
-        - ⚖️ Compare time allocation across projects and responsibilities
-        - 📈 Identify productivity patterns and peak performance times
-        - 🎯 Focus your energy on high-impact activities
+        - ⏱️ Overvåk tid brukt på tvers av forskjellige aktivitetskategorier
+        - 📅 Spor tidsinvesteringer over spesifikke perioder og trender
+        - ⚖️ Sammenlign tidsfordeling på tvers av prosjekter og ansvar
+        - 📈 Identifiser produktivitetsmønstre og peak-ytelsetider
+        - 🎯 Fokuser energien din på høypåvirkningsaktiviteter
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strategisk organisering
 
-        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+        Opprett en systematisk tilnærming til organisering av arbeidet ditt som skalerer med dine behov. Velstrukturerede merker danner grunnlaget for et effektivt produktivitetssystem.
 
-        - 🔍 Filter and find information quickly with multi-tag searches
-        - 🗄️ Archive completed projects to maintain clean organization
-        - 🧩 Build hierarchical structures that reflect your work patterns
-        - 👥 Group related activities for better project management
-        - ⏳ Enable comprehensive time tracking across all activities
+        - 🔍 Filtrer og finn informasjon raskt med multi-merke søk
+        - 🗄️ Arkiver fullførte prosjekter for å opprettholde ren organisering
+        - 🧩 Bygg hierarkiske strukturer som reflekterer arbeidsmønstrene dine
+        - 👥 Grupper relaterte aktiviteter for bedre prosjektstyring
+        - ⏳ Aktiver omfattende tidssporing på tvers av alle aktiviteter
 
-        ## 💡 Optimization Strategies
+        ## 💡 Optimaliseringsstrategier
 
-        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+        Utnytt avanserte merkningsteknikker for å maksimere effektiviteten til organisasjonssystemet ditt og opprettholde langsiktig vekst i produktivitet.
 
-        - 🏷️ Use clear, descriptive names that remain meaningful over time
-        - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
-        - 📊 Review time analysis reports regularly to identify improvement opportunities
-        - 🗄️ Maintain system cleanliness by archiving completed work
-        - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
-      title: Tag-Based Organization & Time Management Guide
-    title: Tag Help
+        - 🏷️ Bruk klare, beskrivende navn som forblir meningsfulle over tid
+        - 🔗 **Opprett hierarkiske strukturer:** Prosjekter → Avdelinger → Områder
+        - 📊 Gå gjennom tidsanalyserapporter regelmessig for å identifisere forbedringsmuligheter
+        - 🗄️ Oppretthold systemrenhet ved å arkivere fullført arbeid
+        - 🎯 Bruk fokusert filtrering for å eliminere distraksjoner og forbedre konsentrasjon
+      title: Merkebasert organisering og tidsstyringsveiledning
+    title: Merkehjelp
   labels:
-    color: Color
-    description: Description
-    name: Name
-    tags: Tags
+    color: Farge
+    description: Beskrivelse
+    name: Navn
+    tags: Merker
   list:
-    filter_tooltip: Filter by tags
-    no_tags: No tags
+    filter_tooltip: Filtrer etter merker
+    no_tags: Ingen merker
   messages:
-    archive_confirm: Are you sure you want to archive this tag?
-    confirm_archive: Are you sure you want to archive this tag?
-    confirm_delete: Are you sure you want to delete this tag?
-    confirm_unarchive: Are you sure you want to unarchive this tag?
-    unarchive_confirm: Are you sure you want to unarchive this tag?
-  new_tag: New Tag
-  name_placeholder: Enter a descriptive tag name...
-  no_tags: No tags
-  none_option: None
+    archive_confirm: Er du sikker på at du vil arkivere dette merket?
+    confirm_archive: Er du sikker på at du vil arkivere dette merket?
+    confirm_delete: Er du sikker på at du vil slette dette merket?
+    confirm_unarchive: Er du sikker på at du vil fjerne arkivering av dette merket?
+    unarchive_confirm: Er du sikker på at du vil fjerne arkivering av dette merket?
+  new_tag: Nytt merke
+  name_placeholder: Skriv inn et beskrivende merkenavn...
+  no_tags: Ingen merker
+  none_option: Ingen
   search:
-    clear_all: Clear All
-    label: Search tags
+    clear_all: Ryd alle
+    label: Søk merker
   sections:
-    list: Tags
+    list: Merker
   selection:
-    done: Done
-  tag_details: Tag Details
+    done: Ferdig
+  tag_details: Merkedetaljer
   time_bar_chart:
-    by_element: By element
-    no_data: No data
-    title: Time Distribution
+    by_element: Etter element
+    no_data: Ingen data
+    title: Tidsfordeling
   time_chart:
-    no_data: No data
-    other_category: Other
-  time_distribution: Time Distribution
-  time_records: Time Records
-  title: Tags
+    no_data: Ingen data
+    other_category: Andre
+  time_distribution: Tidsfordeling
+  time_records: Tidsposter
+  title: Merker
   tooltips:
-    add_tag: Add tag
-    add_task: Add new task
-    archive_tag: Archive tag
-    color: Click to assign color to tag
-    delete_tag: Delete tag
-    edit_name: Edit name
-    remove_tag: Remove tag
-    select: Click to select tag
-    unarchive_tag: Unarchive tag
+    add_tag: Legg til merke
+    add_task: Legg til ny oppgave
+    archive_tag: Arkivér merke
+    color: Klikk for å tildele farge til merke
+    delete_tag: Slett merke
+    edit_name: Rediger navn
+    remove_tag: Fjern merke
+    select: Klikk for å velge merke
+    unarchive_tag: Fjern arkivering av merke

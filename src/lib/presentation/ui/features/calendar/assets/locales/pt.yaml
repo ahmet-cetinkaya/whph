@@ -3,49 +3,49 @@ calendar:
     today:
       help:
         content: |
-          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
+          Otimize sua produtividade diária com uma visão unificada que integra tarefas, hábitos e rastreamento de tempo para ajudá-lo a manter o foco e alcançar seus objetivos de forma eficiente.
 
-          ## ⚡ Why Is It Important?
+          ## ⚡ Por que é importante?
 
-          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
+          O gerenciamento de produtividade diária é a pedra angular do uso eficaz do tempo e da realização de metas. Ao centralizar suas atividades diárias em uma visão única, você elimina a troca de contexto, mantém prioridades claras e cria uma abordagem sistemática para realizar seu trabalho mais importante.
 
-          ## 🔄 Habit Consistency
+          ## 🔄 Consistência de Hábitos
 
-          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
+          Monitore e mantenha suas rotinas diárias com rastreamento de hábitos simplificado que constrói momentum e reforça padrões comportamentais positivos ao longo do dia.
 
-          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
-          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
-          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
-          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
+          - ✅ **Avaliação Rápida:** Visualize todos os hábitos diários de uma vez para avaliação rápida do progresso
+          - ✔️ **Conclusão Instantânea:** Marque hábitos como concluídos com interações simples que mantêm o fluxo
+          - 🔄 **Reforço de Rotina:** Fortaleça padrões diários por meio de rastreamento consistente e reconhecimento
+          - 📈 **Construção de Momentum:** Indicadores visuais de progresso que motivam a consistência contínua
 
-          ## 📋 Task Execution
+          ## 📋 Execução de Tarefas
 
-          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+          Foque no gerenciamento de tarefas com uma visão clara das prioridades de hoje que ajuda você a executar de forma eficaz sem perder de vista prazos e compromissos.
 
-          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
-          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
-          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
-          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+          - 🗓️ **Clareza de Prioridades:** Veja tarefas planejadas e devidas organizadas para execução ótima
+          - ➕ **Captura Rápida:** Adicione novas tarefas rapidamente sem interromper o fluxo de trabalho atual
+          - ✔️ **Rastreamento de Progresso:** Monitore o status de conclusão para manter a responsabilidade e o momentum
+          - 🎯 **Manutenção de Foco:** Visão diária clara previne sobrecarga de obrigações futuras
 
-          ## ⏰ Time Investment Analysis
+          ## ⏰ Análise de Investimento de Tempo
 
-          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+          Entenda como você gasta seu tempo por meio de análise categorizada que revela padrões de produtividade e ajuda a otimizar sua agenda diária para máxima efetividade.
 
-          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
-          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
-          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
-          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+          - 📊 **Insights de Categorias:** Analise a distribuição de tempo em diferentes tags de atividades e projetos
+          - 📈 **Reconhecimento de Padrões:** Identifique tendências de produtividade e períodos de desempenho de pico
+          - 🕒 **Monitoramento de Atividades:** Rastreie o tempo gasto em várias atividades e responsabilidades diárias
+          - 🎯 **Oportunidades de Otimização:** Use dados para tomar decisões informadas sobre alocação de tempo
 
-          ## ⚙️ Productivity Shortcuts
+          ## ⚙️ Atalhos de Produtividade
 
-          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+          Aproveite ações rápidas e fluxos de trabalho eficientes que minimizam o atrito e maximizam sua capacidade de manter o foco em atividades de alto valor ao longo do dia.
 
-          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
-          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
-          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
-          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
-        title: Daily Productivity Management Guide
-      title: Today
+          - ▶️ **Sessões de Foco:** Inicie períodos de trabalho concentrado com integração do temporizador no modo Marathon
+          - 🔎 **Filtragem Inteligente:** Use filtragem baseada em tags para focar em projetos específicos ou áreas da vida
+          - ✅ **Conclusão Eficiente:** Conclua hábitos e tarefas com interações simplificadas e sem distrações
+          - 📊 **Insights de Desempenho:** Acesse gráficos de tempo para feedback imediato sobre padrões de produtividade diários
+        title: Guia de Gerenciamento de Produtividade Diária
+      title: Hoje
   sections:
-    habits: Habits
-    tasks: Tasks
+    habits: Hábitos
+    tasks: Tarefas

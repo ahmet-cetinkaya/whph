@@ -1,7 +1,4 @@
 shared:
-  untitled: "タイトルなし"
-  validation:
-    required: "{field}は必須です。"
   buttons:
     add: 追加
     back: 戻る
@@ -67,6 +64,7 @@ shared:
     created_date_label: 作成日
     modified_date_label: 更新日
     name_label: 名前
+  date: 日付
   date_filter:
     title: 日付範囲を選択
     tooltips:
@@ -74,6 +72,24 @@ shared:
       filter: 日付でフィルター
   date_format:
     hint: YYYY/MM/DD
+  datepicker:
+    cannot_select_date_after_max_date: "{date}より後の日付は選択できません"
+    cannot_select_date_before_min_date: "{date}より前の日付は選択できません"
+    cannot_select_time_after_max_date: "{time}より後の時間は選択できません"
+    cannot_select_time_before_min_date: "{time}より前の時間は選択できません"
+    deadline_cannot_be_before_planned_date: 締切日は予定日以降である必要があります
+    end_date_cannot_be_after_max_date: 終了日は{date}より後にできません
+    end_date_must_be_at_or_before: 終了日は{date}以前でなければなりません
+    select_date_range_title: 期間を選択
+    select_date_time_title: 日時を選択
+    selected_date_must_be_at_or_after: 選択された日付は{date}以降でなければなりません
+    selected_date_must_be_at_or_before: 選択された日付は{date}以前でなければなりません
+    selected_date_time_must_be_after: 選択された日時は{dateTime}より後でなければなりません
+    start_date_cannot_be_after_end_date: 開始日は終了日より後にできません
+    start_date_cannot_be_before_min_date: 開始日は{date}より前にできません
+    start_date_must_be_at_or_after: 開始日は{date}以降でなければなりません
+    time_must_be_at_or_after: 時間は{time}以降でなければなりません
+    time_must_be_at_or_before: 時間は{time}以前でなければなりません
   days:
     friday: 金曜日
     friday_short: 金
@@ -94,19 +110,19 @@ shared:
       hint: Markdown形式で記述できます...
       tooltips:
         bold: 太字
-        italic: 斜体
-        strikethrough: 取り消し線
-        code: コード
-        link: リンク
-        quote: 引用
         bulleted_list: 箇条書きリスト
-        numbered_list: 番号付きリスト
-        horizontal_rule: 水平線
-        edit: 編集
-        preview: プレビュー
-        image: 画像
-        heading: 見出し
         checkbox: チェックボックス
+        code: コード
+        edit: 編集
+        heading: 見出し
+        horizontal_rule: 水平線
+        image: 画像
+        italic: 斜体
+        link: リンク
+        numbered_list: 番号付きリスト
+        preview: プレビュー
+        quote: 引用
+        strikethrough: 取り消し線
   errors:
     deleting: データの削除中にエラーが発生しました
     file_not_found: ファイルが見つかりません
@@ -140,8 +156,6 @@ shared:
     unexpected: 予期しないエラーが発生しました
   filters:
     search: 検索
-  help:
-    tooltip: ヘルプ
   messages:
     confirm_delete: このアイテムを削除してもよろしいですか？
     no_items_found: アイテムがありません
@@ -155,12 +169,12 @@ shared:
       tags: タグ
       tasks: タスク
       today: 今日
-  none_option: "タグなし"
+  none_option: タグなし
   regex_help:
     examples:
       chat: '"Slack"または"Discord"にマッチ'
       chrome: '"Chrome"を含むウィンドウタイトルにマッチ'
-      exact_chrome: '正確に"Chrome"にマッチ'
+      exact_chrome: 正確に"Chrome"にマッチ
       pdf: 任意のPDFファイルにマッチ
       vscode: 任意のVS Codeウィンドウにマッチ
     tips:
@@ -189,11 +203,11 @@ shared:
       description: ドラッグ&ドロップでアイテムを並び替え
       title: カスタムソート
     descending: 降順
+    disable_reordering_tooltip: 並び替えモードを無効にする
+    enable_reordering_tooltip: 並び替えモードを有効にする
     remove_criteria: 条件を削除
     reset_to_default: デフォルトにリセット
     sort: ソート
-    enable_reordering_tooltip: 並び替えモードを有効にする
-    disable_reordering_tooltip: 並び替えモードを無効にする
   statistics:
     daily_usage:
       description: 曜日ごとの総使用時間を表示
@@ -202,7 +216,24 @@ shared:
       description: 時間帯ごとの総使用時間を表示
       title: 時間別使用状況
   time:
-    not_set: "未設定"
+    not_set: 未設定
+  time_display:
+    elapsed: 経過
+    elapsed_time_tooltip: このタスクに費やされた時間
+    estimated: 推定
+    estimated_time_tooltip: このタスクの完了に必要な推定時間
+    no_time_logged_tooltip: まだ時間記録がありません
+  time_logging:
+    add_time: 時間追加
+    add_time_description: 既存の合計に時間を追加
+    dialog_title: 時間記録
+    duration: 期間
+    invalid_input: 有効な時間を入力してください
+    log_time: 時間記録
+    mode: モード
+    set_total: 合計設定
+    set_total_description: 合計経過時間を設定
+    total_time: 合計時間
   time_periods:
     custom: カスタム
     last_month: 先月
@@ -212,6 +243,11 @@ shared:
     this_three_months: この3ヶ月
     this_week: 今週
     today: 今日
+  timer:
+    label: タイマー
+    normal: 通常
+    pomodoro: ポモドーロ
+    stopwatch: ストップウォッチ
   tooltips:
     compare_with_previous: 前の期間と比較
     filter_by_tags: タグでフィルター
@@ -224,6 +260,7 @@ shared:
     minutes: 分
     minutes_short: 分
     seconds: 秒
+  untitled: タイトルなし
   update_dialog:
     buttons:
       download_page: ダウンロードページ
@@ -231,25 +268,10 @@ shared:
       update_now: 今すぐ更新
     downloading: アップデートをダウンロード中...
     failed: 更新に失敗しました。
-    message: "新しいバージョン（{version}）が利用可能です。"
+    message: 新しいバージョン（{version}）が利用可能です。
     question: 今すぐ更新しますか？
     success: アップデートのダウンロードが完了しました！
     title: アップデート利用可能！
-  datepicker:
-    deadline_cannot_be_before_planned_date: "締切日は予定日以降である必要があります"
-    selected_date_must_be_at_or_after: "選択された日付は{date}以降でなければなりません"
-    selected_date_must_be_at_or_before: "選択された日付は{date}以前でなければなりません"
-    start_date_cannot_be_after_end_date: "開始日は終了日より後にできません"
-    start_date_must_be_at_or_after: "開始日は{date}以降でなければなりません"
-    end_date_must_be_at_or_before: "終了日は{date}以前でなければなりません"
-    cannot_select_date_before_min_date: "{date}より前の日付は選択できません"
-    cannot_select_date_after_max_date: "{date}より後の日付は選択できません"
-    start_date_cannot_be_before_min_date: "開始日は{date}より前にできません"
-    end_date_cannot_be_after_max_date: "終了日は{date}より後にできません"
-    cannot_select_time_before_min_date: "{time}より前の時間は選択できません"
-    cannot_select_time_after_max_date: "{time}より後の時間は選択できません"
-    time_must_be_at_or_after: "時間は{time}以降でなければなりません"
-    time_must_be_at_or_before: "時間は{time}以前でなければなりません"
-    selected_date_time_must_be_after: "選択された日時は{dateTime}より後でなければなりません"
-    select_date_time_title: "日時を選択"
-    select_date_range_title: "期間を選択"
+  validation:
+    required: "{field}は必須です。"
+  help: ヘルプ

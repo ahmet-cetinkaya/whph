@@ -1,178 +1,178 @@
 app_usages:
   delete:
-    confirm_title: Delete App Usage
-    error: An unexpected error occurred while deleting app usage
+    confirm_title: App-gebruik verwijderen
+    error: Er is een onverwachte fout opgetreden bij het verwijderen van het app-gebruik
   details:
     color:
-      hint: Click to change color
-      label: Color
+      hint: Klik om kleur te wijzigen
+      label: Kleur
     device:
-      label: Device
-      unknown: Unknown Device
+      label: Apparaat
+      unknown: Onbekend apparaat
     help:
       content: |
-        See exactly how much time you spend on apps and stay in control by organizing them with tags.
+        Bekijk precies hoeveel tijd u aan apps besteedt en behoud de controle door ze te organiseren met tags.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Waarom is dit belangrijk?
 
-        Time management is the key to your productivity. Tracking your app usage and tagging them with the right categories improves your focus and helps prevent unnecessary time loss.
+        Tijdbeheer is de sleutel tot uw productiviteit. Het bijhouden van uw app-gebruik en het taggen met de juiste categorieën verbetert uw focus en helpt onnodig tijdverlies te voorkomen.
 
-        ## ⏱️ Time Tracking
+        ## ⏱️ Tijdregistratie
 
-        Track your daily usage habits to accurately analyze your time. With in-app detailed usage durations and active window tracking, easily see how much focus you give to each app. This data guides you on where improvements are needed.
+        Volg uw dagelijkse gebruiksgewoonten om uw tijd nauwkeurig te analyseren. Met gedetailleerde gebruiksduur in de app en actieve venstertracking ziet u gemakkelijk hoeveel focus u aan elke app geeft. Deze gegevens leiden u naar waar verbeteringen nodig zijn.
 
-        - ⏳ Review daily usage durations  
-        - 🔍 Track active windows  
-        - 📊 Understand your time distribution with detailed reports
+        - ⏳ Bekijk dagelijkse gebruiksduur  
+        - 🔍 Volg actieve vensters  
+        - 📊 Begrijp uw tijdverdeling met gedetailleerde rapporten
 
-        ## 🏷️ Tag Management
+        ## 🏷️ Tagbeheer
 
-        Categorizing and organizing your apps boosts productivity. With the tagging system, you can group your apps and speed up your workflow using automation rules. This helps you maintain focus and use your time more efficiently.
+        Het categoriseren en organiseren van uw apps verhoogt de productiviteit. Met het tagsysteem kunt u apps groeperen en uw workflow versnellen met automatiseringregels. Dit helpt u gefocust te blijven en uw tijd efficiënter te gebruiken.
 
-        - 🏷️ Tag apps with meaningful categories  
-        - ⚙️ Create automatic tagging rules  
-        - 🔄 Save time by reducing manual tasks
+        - 🏷️ Tag apps met betekenisvolle categorieën  
+        - ⚙️ Maak automatische tagregels  
+        - 🔄 Bespaar tijd door handmatige taken te verminderen
 
-        ## 📈 Analysis & Productivity Tracking
+        ## 📈 Analyse & Productiviteitsregistratie
 
-        Visualize your own usage patterns to discover your strengths and weaknesses. Tracking your productive time is critical for enhancing focus. With in-app comparison and reporting tools, you can clearly see your progress.
+        Visualiseer uw eigen gebruikspatronen om uw sterke en zwakke punten te ontdekken. Het bijhouden van uw productieve tijd is cruciaal voor het verbeteren van focus. Met in-app vergelijkingen en rapportagetools ziet u uw voortgang duidelijk.
 
-        - 📊 Visualize your usage patterns  
-        - 🤝 Compare with similar apps  
-        - 🚀 Track productive vs. unproductive time
-      title: Time & Productivity Tracking Guide
+        - 📊 Visualiseer uw gebruikspatronen  
+        - 🤝 Vergelijk met vergelijkbare apps  
+        - 🚀 Volg productieve vs. niet-productieve tijd
+      title: Tijd- en Productiviteitsregistratie Gids
     tags:
-      hint: Select tags
+      hint: Selecteer tags
       label: Tags
   device_filter:
-    clear_all: Clear All
+    clear_all: Alles wissen
     search:
-      label: Search devices
+      label: Apparaten zoeken
   errors:
-    add_tag: An unexpected error occurred while adding tag
-    app_usage_ignore_rule_not_found: Ignore rule not found
-    app_usage_not_found: App usage not found
-    app_usage_tag_not_found: App usage tag not found
-    delete: An unexpected error occurred while deleting app usage
-    app_usage_tag_rule_not_found: Tag rule not found
-    get_tags: Error occurred while fetching app usage tags
-    get_usage: An unexpected error occurred while fetching app usage
-    remove_tag: An unexpected error occurred while removing tag
-    save_rule: An unexpected error occurred while saving ignore rules
-    save_usage: An unexpected error occurred while saving app usage
-    statistics: An unexpected error occurred while fetching statistics
-    tag_already_exists: This tag is already added
+    add_tag: Er is een onverwachte fout opgetreden bij het toevoegen van de tag
+    app_usage_ignore_rule_not_found: Negeerregel niet gevonden
+    app_usage_not_found: App-gebruik niet gevonden
+    app_usage_tag_not_found: App-gebruik tag niet gevonden
+    delete: Er is een onverwachte fout opgetreden bij het verwijderen van het app-gebruik
+    app_usage_tag_rule_not_found: Tagregel niet gevonden
+    get_tags: Er is een fout opgetreden bij het ophalen van app-gebruik tags
+    get_usage: Er is een onverwachte fout opgetreden bij het ophalen van app-gebruik
+    remove_tag: Er is een onverwachte fout opgetreden bij het verwijderen van de tag
+    save_rule: Er is een onverwachte fout opgetreden bij het opslaan van negeerregels
+    save_usage: Er is een onverwachte fout opgetreden bij het opslaan van app-gebruik
+    statistics: Er is een onverwachte fout opgetreden bij het ophalen van statistieken
+    tag_already_exists: Deze tag is al toegevoegd
   form:
     description:
-      hint: Enter a description for this rule
-      label: Description (Optional)
+      hint: Voer een beschrijving in voor deze regel
+      label: Beschrijving (Optioneel)
     pattern:
-      help_tooltip: Show regex help
-      hint: Enter regex pattern
-      label: Pattern
-      required: Pattern is required
-    save: Save
-    saved: Saved
+      help_tooltip: Toon regex-hulp
+      hint: Voer regex-patroon in
+      label: Patroon
+      required: Patroon is verplicht
+    save: Opslaan
+    saved: Opgeslagen
   ignore_rules:
-    delete_confirm: 'Are you sure you want to delete the ignore rule "{pattern}"?'
-    delete_title: Delete Rule
-    delete_tooltip: Delete rule
-    no_rules: No ignore rules
-    pattern_label: Pattern
-  no_usage: No app usage yet
+    delete_confirm: 'Weet u zeker dat u de negeerregel "{pattern}" wilt verwijderen?'
+    delete_title: Regel verwijderen
+    delete_tooltip: Regel verwijderen
+    no_rules: Geen negeerregels
+    pattern_label: Patroon
+  no_usage: Nog geen app-gebruik
   pages:
     view:
       buttons:
-        filter_tags: Filter Tags
-        filter_devices: Filter Devices
-        tag_rules: Tag Rules
+        filter_tags: Tags filteren
+        filter_devices: Apparaten filteren
+        tag_rules: Tagregels
       help:
         content: |
-          Analyze, organize, and take control of your app usage to work more efficiently. With tagging and analysis tools, see, manage, and improve how you spend your time.
+          Analyseer, organiseer en neem controle over uw app-gebruik om efficiënter te werken. Met tag- en analysegereedschappen ziet, beheert en verbetert u hoe u uw tijd besteedt.
 
-          ## ⏱️ Usage Tracking
+          ## ⏱️ Gebruikstracking
 
-          Discover your daily usage habits. Track active windows and durations to understand where your time goes. This helps you identify focus areas and reduce time waste.
+          Ontdek uw dagelijkse gebruiksgewoonten. Volg actieve vensters en duur om te begrijpen waar uw tijd naartoe gaat. Dit helpt u focusgebieden te identificeren en tijdverspilling te verminderen.
 
-          - ⌛ Review app usage durations  
-          - 📅 Analyze daily patterns  
-          - 🖥️ Track active window history  
+          - ⌛ Bekijk app-gebruiksduren  
+          - 📅 Analyseer dagelijkse patronen  
+          - 🖥️ Volg actieve vensterhistorie  
 
-          ## 🏷️ Tagging and Categorization
+          ## 🏷️ Tagging en Categorisatie
 
-          Create an organized structure by grouping apps. With the tagging system, make your data more meaningful and easily analyze how much time you spend per category.
+          Maak een georganiseerde structuur door apps te groeperen. Met het tagsysteem maakt u uw gegevens betekenisvoller en analyseert u gemakkelijk hoeveel tijd u per categorie besteedt.
 
-          - 🏷️ Assign meaningful tags to apps  
-          - ⚙️ Define automatic tagging rules  
-          - 📚 View usage time by category  
+          - 🏷️ Wijs betekenisvolle tags toe aan apps  
+          - ⚙️ Definieer automatische tagregels  
+          - 📚 Bekijk gebruikstijd per categorie  
 
-          ## 📊 Usage Analysis
+          ## 📊 Gebruiksanalyse
 
-          Analyze how efficiently you use your time. Through app comparisons and usage patterns, see which tools are actually beneficial for you.
+          Analyseer hoe efficiënt u uw tijd gebruikt. Door appvergelijkingen en gebruikspatronen ziet u welke tools daadwerkelijk nuttig voor u zijn.
 
-          - 📈 Analyze your own usage patterns  
-          - 🔄 Compare different apps  
-          - 🚀 Track your productive and unproductive time  
+          - 📈 Analyseer uw eigen gebruikspatronen  
+          - 🔄 Vergelijk verschillende apps  
+          - 🚀 Volg uw productieve en niet-productieve tijd  
 
-          ## ⚙️ Management Tools
+          ## ⚙️ Beheertools
 
-          Use rules and filtering options to better control app behaviors. Especially with automation, save valuable time.
+          Gebruik regels en filteropties om app-gedrag beter te beheersen. Vooral met automatisering bespaart u waardevolle tijd.
 
-          - 🛠️ Define new rules or edit existing ones  
-          - 🗑️ Remove unnecessary rules  
-          - 🔍 Filter by tag and date range
-        title: App Usage & Time Management Guide
+          - 🛠️ Definieer nieuwe regels of bewerk bestaande  
+          - 🗑️ Verwijder onnodige regels  
+          - 🔍 Filter op tag en datumbereik
+        title: App-gebruik & Tijdbeheer Gids
 
-      title: App Usage
+      title: App-gebruik
   rules:
-    add_new_rule: Add New Rule
-    delete_confirm_message: Are you sure you want to delete this rule?
-    delete_confirm_title: Delete Rule
+    add_new_rule: Nieuwe regel toevoegen
+    delete_confirm_message: Weet u zeker dat u deze regel wilt verwijderen?
+    delete_confirm_title: Regel verwijderen
     errors:
-      delete_rule: An unexpected error occurred while deleting rule
-      get_rules: An unexpected error occurred while fetching rules
-    existing_rules: Existing Rules
+      delete_rule: Er is een onverwachte fout opgetreden bij het verwijderen van de regel
+      get_rules: Er is een onverwachte fout opgetreden bij het ophalen van regels
+    existing_rules: Bestaande regels
     help:
       content: |
-        Use rules to manage app data in an organized, consistent, and efficient way. Customize app tracking with automatic tagging and exclusion options to strengthen your time management.
+        Gebruik regels om app-gegevens op een georganiseerde, consistente en efficiënte manier te beheren. Pas app-tracking aan met automatische tagging en uitsluitingsopties om uw tijdbeheer te versterken.
 
-        ## 🏷️ Automatic Tagging Rules
+        ## 🏷️ Automatische Tagregels
 
-        Create rules for your apps so the system can assign the correct tags on your behalf. This eliminates the need for manual tagging.
+        Maak regels voor uw apps zodat het systeem de juiste tags namens u toewijst. Dit elimineert de noodzaak voor handmatige tagging.
 
-        - 🧠 Automatically tag apps based on their names  
-        - 🗂️ Match multiple tags with a single rule  
-        - ⏱️ Automatically track time spent on tagged apps  
+        - 🧠 Tag apps automatisch op basis van hun namen  
+        - 🗂️ Koppel meerdere tags met één regel  
+        - ⏱️ Volg automatisch tijd besteed aan getagde apps  
 
-        ## ⚙️ Rule Management
+        ## ⚙️ Regelbeheer
 
-        Use the flexible rule management screen to build your own system. Delete unnecessary rules, add new ones, and update existing ones.
+        Gebruik het flexibele regelbeheerscherm om uw eigen systeem op te bouwen. Verwijder onnodige regels, voeg nieuwe toe en werk bestaande bij.
 
-        - ➕ Define new rules  
-        - ✏️ Edit existing rules  
-        - 🗑️ Remove rules you no longer use  
+        - ➕ Definieer nieuwe regels  
+        - ✏️ Bewerk bestaande regels  
+        - 🗑️ Verwijder regels die u niet meer gebruikt  
 
-        ## 🚫 Ignore Rules
+        ## 🚫 Negeerregels
 
-        Exclude system or background apps that might distort your productivity analysis. With these rules, you can focus only on what's truly important.
+        Sluit systeemaan of achtergrondapps uit die uw productiviteitsanalyse kunnen verstoren. Met deze regels kunt u zich alleen richten op wat echt belangrijk is.
 
-        - 🧹 Exclude specific apps from tracking  
-        - 🖥️ Omit system processes and helper tools  
-        - 🔕 Filter out background-running apps  
+        - 🧹 Sluit specifieke apps uit van tracking  
+        - 🖥️ Omissie systeemprecessen en hulpprogramma's  
+        - 🔕 Filter achtergrond-apps uit  
 
-        ## 🧩 Advanced Matching Options
+        ## 🧩 Geavanceerde Koppelingsopties
 
-        Enhance your rules with advanced pattern-matching options.
+        Verbeter uw regels met geavanceerde patroonmatchingsopties.
 
-        - ✳️ Create flexible rules using wildcards  
-        - 🧾 Match exact app names  
-        - 🔠 Choose case sensitivity settings
-      title: Tagging & Exclusion Rules Guide
-    ignore_rules: Ignore Rules
-    no_rules: No rules
-    tag_rules: Tag Rules
-    title: App Usage Rules
+        - ✳️ Maak flexibele regels met wildcards  
+        - 🧾 Koppel exacte app-namen  
+        - 🔠 Kies hoofdlettergevoeligheidsinstellingen
+      title: Tag- en Uitsluitingsregels Gids
+    ignore_rules: Negeerregels
+    no_rules: Geen regels
+    tag_rules: Tagregels
+    title: App-gebruik Regels
   tooltips:
-    edit_name: Edit Name
+    edit_name: Naam bewerken
   units:
     minutes: min

@@ -61,9 +61,7 @@ class _SearchFilterState extends State<SearchFilter> {
     super.didUpdateWidget(oldWidget);
 
     // Only update text controller when initialValue changes from parent AND the user isn't currently typing
-    if (widget.initialValue != oldWidget.initialValue &&
-        widget.initialValue != _controller.text &&
-        !_isExpanded) {
+    if (widget.initialValue != oldWidget.initialValue && widget.initialValue != _controller.text && !_isExpanded) {
       // Only update when search is collapsed to avoid interfering with user input
       _controller.text = widget.initialValue ?? '';
     }

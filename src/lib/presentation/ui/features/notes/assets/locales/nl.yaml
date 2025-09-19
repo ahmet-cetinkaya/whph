@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Bouw een uitgebreid kennismanagementsysteem dat je ideeën vastlegt, informatie efficiënt organiseert en belangrijke inzichten gemakkelijk toegankelijk maakt wanneer je ze nodig hebt.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Waarom is het belangrijk?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Effectief notities maken en kennismanagement zijn essentieel voor productiviteit en leren. Een goed georganiseerd notitiesysteem voorkomt dat waardevolle inzichten verloren gaan, versnelt besluitvorming en creëert een betrouwbaar extern geheugen dat in de loop van de tijd waardevoller wordt.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Moeiteloze informatievastlegging
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Creëer een naadloze workflow voor het vastleggen en verwerken van informatie die ervoor zorgt dat niets belangrijks door de mazen van het net glipt, terwijl je je concentreert op je huidige werk.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Leg ideeën snel vast zonder je flow te verstoren
+      - ✏️ Bewerk en verfijn informatie naarmate je begrip zich ontwikkelt
+      - 🗑️ Verwijder verouderde of irrelevante informatie systematisch
+      - 📌 Houd cruciale informatie gemakkelijk toegankelijk en georganiseerd
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Strategische organisatie
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Ontwikkel een organisatiesysteem dat meeschaalt met je kennisbank en informatieopslag snel en betrouwbaar maakt, ongeacht het volume.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Pas consistente tagstrategieën toe voor snelle categorisatie
+      - 🔍 Gebruik krachtige zoekmogelijkheden om informatie direct te vinden
+      - 📚 Groepeer gerelateerde notities om uitgebreide kennisgebieden te creëren
+      - 🎯 Behoud focus door georganiseerde informatiearchitectuur
 
-      ## 📄 Professional Content Creation
+      ## 📄 Professionele inhoudcreatie
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Gebruik geavanceerde opmaaktools om duidelijke, goed gestructureerde inhoud te creëren die effectief communiceert en de tand des tijds doorstaat.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Rijke opmaak:** Gebruik Markdown voor professionele documentstructuur
+      - 📋 **Duidelijke structuur:** Organiseer inhoud met koppen, lijsten en nadruk
+      - 🔗 **Verbonden kennis:** Link gerelateerde concepten en informatie
+      - 📖 **Leesbare output:** Formatteer inhoud voor gemakkelijk begrip en delen
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Productiviteitsvoordelen
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Transformeer je notitiepraktijk in een productiviteitsmultiplicator die je denken verbetert, leren versnelt en de kwaliteit van besluitvorming verbetert.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Verbeterd denken:** Extern geheugen bevrijdt mentale capaciteit voor creatief werk
+      - ⚡ **Snellere toegang:** Georganiseerde informatie vermindert tijd besteed aan zoeken
+      - 🌐 **Universele beschikbaarheid:** Toegang tot je kennisbank vanaf elk apparaat
+      - 📈 **Continue verbetering:** Geraffineerde inhoud wordt in de loop van de tijd waardevoller
+    title: Kennisbeheer & Notitieorganisatie Gids
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Notitie toevoegen
+    delete: Notitie verwijderen
+    edit: Notitie bewerken
+    save: Notitie opslaan
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Tag toevoegen
+      content_placeholder: Schrijf hier de inhoud van de notitie...
+      save_button: Opslaan
+      saved_message: Notitie succesvol opgeslagen
+      title_placeholder: Notitietitel
+      update_button: Bijwerken
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Geen notities gevonden
+      loading: Notities laden...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Weet je zeker dat je deze notitie wilt verwijderen?
+    confirm_title: Notitie verwijderen
   details:
-    content: Content
+    content: Inhoud
     tags:
-      hint: Select tags for note
+      hint: Selecteer tags voor de notitie
       label: Tags
-    title: Title
+    title: Titel
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Mislukt om tag toe te voegen
+    deleting: Onverwachte fout opgetreden bij het verwijderen van notitie
+    getting_notes: Fout opgetreden bij het ophalen van notities
+    loading_details: Mislukt om notitiedetails te laden
+    loading_tags: Mislukt om notitietags te laden
+    note_not_found: Notitie niet gevonden
+    note_tag_not_found: Notitietag niet gevonden
+    removing_tag: Mislukt om tag te verwijderen
+    saving_note: Mislukt om notitie op te slaan
+    tag_already_exists: Deze tag is al toegevoegd
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Zoek notities...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filteren op tags
+  new_note: Nieuwe notitie
+  title_placeholder: Voer een beschrijvende notitietitel in...
+  no_notes: Geen notities
+  note_details: Notitiedetails
+  notes: Notities
+  title: Notities
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Notitie toevoegen
+    delete_note: Notitie verwijderen
+    edit_name: Titel bewerken

@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Bygg ett omfattande kunskapsförvaltningssystem som fångar dina idéer, organiserar information effektivt och gör viktiga insikter lättillgängliga när du behöver dem.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Varför är det viktigt?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Effektiv nottagning och kunskapsförvaltning är essentiella för produktivitet och lärande. Ett välorganiserat notesystem förhindrar att värdefulla insikter går förlorade, påskyndar beslutsfattande och skapar ett pålitligt externt minne som blir mer värdefullt över tid.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Ansträngningslös informationsfångst
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Skapa en sömlös arbetsflöde för att fånga och bearbeta information som säkerställer att ingenting viktigt faller mellan stolarna medan du upprätthåller fokus på ditt nuvarande arbete.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Fånga idéer snabbt utan att störa ditt flöde
+      - ✏️ Redigera och förfina information efter hand som förståelsen utvecklas
+      - 🗑️ Ta bort föråldrad eller irrelevant information systematiskt
+      - 📌 Håll kritisk information lättillgänglig och organiserad
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Strategisk organisation
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Utveckla ett organisationssystem som skalar med din kunskapsbas och gör informationsåterhämtning snabb och pålitlig, oavsett volym.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Tillämpa konsekventa taggningsstrategier för snabb kategorisering
+      - 🔍 Använd kraftfulla sökfunktioner för att hitta information omedelbart
+      - 📚 Gruppera relaterade anteckningar för att skapa omfattande kunskapsområden
+      - 🎯 Upprätthåll fokus genom organiserad informationsarkitektur
 
-      ## 📄 Professional Content Creation
+      ## 📄 Professionell innehållsskapande
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Utnyttja avancerade formateringsverktyg för att skapa klart, välstrukturerat innehåll som kommunicerar effektivt och tål tidens prövning.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Rik formatering:** Använd Markdown för professionell dokumentstruktur
+      - 📋 **Klar struktur:** Organisera innehåll med rubriker, listor och betoning
+      - 🔗 **Ansluten kunskap:** Länka relaterade koncept och information
+      - 📖 **Läsbar utdata:** Formatera innehåll för enkel förståelse och delning
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Produktivitetsfördelar
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Förvandla din nottagningspraxis till en produktivitetsmultiplikator som förbättrar ditt tänkande, påskyndar lärande och förbättrar beslutsfattandekvalitet.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Förbättrat tänkande:** Extern minne frigör mental kapacitet för kreativt arbete
+      - ⚡ **Snabbare tillgång:** Organiserad information minskar tid spenderad på sökning
+      - 🌐 **Universell tillgänglighet:** Åtkomst till din kunskapsbas från vilken enhet som helst
+      - 📈 **Kontinuerlig förbättring:** Förfinat innehåll blir mer värdefullt över tid
+    title: Kunskapsförvaltning och anteckningsorganisation Guide
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Lägg till anteckning
+    delete: Radera anteckning
+    edit: Redigera anteckning
+    save: Spara anteckning
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Lägg till tagg
+      content_placeholder: Skriv anteckningsinnehåll här...
+      save_button: Spara
+      saved_message: Anteckning sparad framgångsrikt
+      title_placeholder: Anteckningstitel
+      update_button: Uppdatera
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Inga anteckningar hittades
+      loading: Laddar anteckningar...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Är du säker på att du vill radera denna anteckning?
+    confirm_title: Radera anteckning
   details:
-    content: Content
+    content: Innehåll
     tags:
-      hint: Select tags for note
-      label: Tags
-    title: Title
+      hint: Välj taggar för anteckningen
+      label: Taggar
+    title: Titel
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Misslyckades med att lägga till tagg
+    deleting: Oväntat fel uppstod vid radering av anteckning
+    getting_notes: Fel uppstod vid hämtning av anteckningar
+    loading_details: Misslyckades med att ladda anteckningsdetaljer
+    loading_tags: Misslyckades med att ladda anteckningstaggar
+    note_not_found: Anteckning hittades inte
+    note_tag_not_found: Anteckningstagg hittades inte
+    removing_tag: Misslyckades med att ta bort tagg
+    saving_note: Misslyckades med att spara anteckning
+    tag_already_exists: Denna tagg är redan tillagd
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Sök anteckningar...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filtrera efter taggar
+  new_note: Ny anteckning
+  title_placeholder: Ange en beskrivande anteckningstitel...
+  no_notes: Inga anteckningar
+  note_details: Anteckningsdetaljer
+  notes: Anteckningar
+  title: Anteckningar
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Lägg till anteckning
+    delete_note: Radera anteckning
+    edit_name: Redigera titel

@@ -29,15 +29,15 @@ tasks:
     estimated_time:
       label: Tahmini Süre
     is_completed: Tamamlandı
+    parent_task:
+      label: Üst Görev
+      tooltip: Üst görevi görüntülemek için tıklayın
     planned_date:
       label: Planlanan Tarih
     priority:
       label: Öncelik
     sub_tasks:
       label: Alt görevler
-    parent_task:
-      label: Üst Görev
-      tooltip: Üst görevi görüntülemek için tıklayın
     tags:
       hint: Etiket seç
       label: Etiketler
@@ -222,14 +222,14 @@ tasks:
       auto_start_section: Otomatik Başlatma Seçenekleri
       auto_start_work: Moladan sonra çalışmayı otomatik başlat
       break_duration: Mola Süresi
+      keep_screen_awake: Oturum sırasında ekranı uyanık tut
+      keep_screen_awake_section: Ekranı Uyanık Tut
       long_break_duration: Uzun Mola Süresi
       sessions_before_long_break: Uzun Mola Öncesi Oturum Sayısı
       ticking_sound: Tik tak sesini etkinleştir
       ticking_sound_section: Tik Tak Sesi
       ticking_speed: Hız
       ticking_volume: Ses Seviyesi
-      keep_screen_awake_section: Ekranı Uyanık Tut
-      keep_screen_awake: Oturum sırasında ekranı uyanık tut
       timer_label: Oturum süreleri
       title: Zamanlayıcı Ayarları
       work_duration: Çalışma Süresi
@@ -260,7 +260,9 @@ tasks:
       urgent_not_important: Acil ama Önemli Değil
   quick_task:
     create_error: Görev oluşturulurken hata oluştu
-    lock_description: Benzer görevler oluştururken değerlerini korumak için özellikleri kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
+    lock_description:
+      Benzer görevler oluştururken değerlerini korumak için özellikleri
+      kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
     lock_settings: Kilit Ayarları
     reset_all: Tüm alanları sıfırla
     reset_confirm:
@@ -302,17 +304,15 @@ tasks:
       endsAfter: sonra sona erer
       endsOnDate: bitiş
       occurrences: tekrarlama
-      on: günlerinde
+      true: günlerinde
       everyDay: her gün
       starts: başlangıç
+      "on": "de"
     weekDays: Haftanın günleri
     weekSuffix: hafta
     weekly: Haftalık
     yearSuffix: yıl
     yearly: Yıllık
-  validation:
-    deadline_time_invalid: Son tarih zamanı geçersiz
-    deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
   reminder:
     atTime: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı
@@ -332,3 +332,6 @@ tasks:
     set_reminder: Hatırlatıcı ayarla
     show_completed_tasks: Tamamlanan görevleri filtrele
     show_subtasks: Alt görevleri göster
+  validation:
+    deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
+    deadline_time_invalid: Son tarih zamanı geçersiz

@@ -1,214 +1,232 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Arkistoi
+    archive_confirm: Oletko varma, että haluat arkistoida tämän tavan?
+    archive_tooltip: Arkistoi tämä tapa
+    archived_date: Arkistointipäivä
+    hide_archived: Piilota arkistoidut
+    show_archived: Näytä arkistoidut
+    unarchive: Poista arkistosta
+    unarchive_confirm: Oletko varma, että haluat poistaa tämän tavan arkistosta?
+    unarchive_tooltip: Poista tämä tapa arkistosta
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Pe
+      mon: Ma
+      sat: La
+      sun: Su
+      thu: To
+      tue: Ti
+      wed: Ke
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Oletko varma, että haluat poistaa tämän tavan?
+    confirm_title: Poista Tapa
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
+    archived_status: Arkistoitu
+    create_record_tooltip: Merkitse suoritetuksi tänään
+    daily_target: Päivittäinen taajuus
+    daily_target_hint: kerta päivässä
+    description: Kuvaus
+    elapsed_time: Kulunut aika
+    estimated_time: Arvioitu aika
+    estimated_time_not_set: Ei asetettu
     help:
       content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+        Rakenna kestäviä päivittäisiä rutiineja systemaattisen tavanseurannan avulla, joka muuttaa aikomuksesi johdonmukaisiksi toimiksi ja mitattavaksi edistymiseksi kohti tavoitteitasi.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Miksi Se On Tärkeää?
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+        Tavojen muodostaminen on henkilökohtaisen kehityksen ja kestävän saavutuksen kulmakivi. Johdonmukaiset päivittäiset toimet kumuloituvat ajan myötä luoden huomattavia tuloksia, kun taas systemaattinen seuranta varmistaa, että ylläpidät vauhtia ja teet jatkuvia parannuksia rutiineihisi.
 
-        ## ⚙️ Strategic Habit Design
+        ## ⚙️ Strateginen Tavansuunnittelu
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+        Luo tapoja, jotka integroituvat saumattomasti elämääsi ja tukevat pitkän aikavälin tavoitteitasi. Hyvin suunnitellut tavat muuttuvat automaattisiksi käyttäytymisiksi, jotka vaativat minimaalista tahdonvoimaa ylläpitääkseen.
 
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
+        - 📝 Suunnittele selkeät, spesifiset tavat toiminnallisilla kuvauksilla
+        - 📅 Vahvista johdonmukaiset aikataulut, jotka sopivat luonnollisiin rytmeihisi
+        - 🏷️ Järjestä samankaltaisia tapoja koherentteihin ryhmiin systemaattista seurantaa varten
+        - 🎯 Yhdistä kukin tapa merkittäviin tuloksiin ja henkilökohtaisiin arvoihin
 
-        ## ⏱️ Performance Monitoring
+        ## ⏱️ Suorituskyvyn Seuranta
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+        Seuraa tavojesi toteutusta ymmärtääksesi kuvioita, mitataksesi edistymistä ja optimoidaksesi lähestymistapasi maksimaalisen tehokkuuden ja kestävän kasvun saavuttamiseksi.
 
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+        - ⏳ Kirjaa suoritusajat ymmärtääksesi tavan kestoa ja tehokkuutta
+        - 📊 Analysoi aikainvestointeja eri tapakategorioissa tasapainoisen kehityksen saavuttamiseksi
+        - 📈 Seuraa suorituskyvyn trendejä tunnistaaksesi parannusmahdollisuuksia ja optimaalista ajoitusta
+        - 🔄 Käytä data-analyysia tavan vaikeuden ja aikataulun hienosäätöön kestävän menestyksen saavuttamiseksi
 
-        ## 📅 Consistency & Momentum
+        ## 📅 Johdonmukaisuus & Vauhti
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+        Rakenna ja ylläpidä johdonmukaisuutta, joka tarvitaan pysyvään käyttäytymismuutokseen systemaattisen seurannan ja strategisen edistymiskuvioiden tarkastelun avulla.
 
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+        - 📚 Tarkastele suoritus historiaa arvioidaksesi edistymistä ja tunnistaaksesi menestyskuvioita
+        - 🔗 Seuraa päivittäisiä sarjoja rakentaaksesi ja ylläpitääksesi vauhtia pitkän aikavälin menestyksen saavuttamiseksi
+        - 📌 Seuraa johdonmukaisuuden mittareita motivoinnin ja sitoutumisen parantamiseksi
+        - 🎯 Juhli virstanpylväitä ja saavutuksia vahvistaaksesi positiivista käyttäytymismuutosta
 
-        ## 🚀 Optimization Strategies
+        ## 🚀 Optimointistrategiat
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+        Sovella todistettuja tekniikoita tavan optimointiin, jotka nopeuttavat edistymistä ja varmistavat, että ponnistelusi kääntyvät merkittäviksi, pysyviksi parannuksiksi elämässäsi ja tuottavuudessasi.
 
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
-    records: Records
-    remove_record_tooltip: Remove today's completion
+        - 🐾 **Aloita Pienestä:** Aloita hallittavilla tavoilla, jotka takaavat varhaiset voitot
+        - 🏷️ **Strateginen Ryhmittely:** Järjestä tavat elämänalueen tai ajan mukaan
+        - 📊 **Dataohjatut Säädöt:** Käytä seuranta-analyysia ajoituksen ja lähestymistavan optimointiin
+        - 🌅 **Huippuaikakeskeisyys:** Aikatauluta tärkeät tavat huipp ener giajaksoillesi
+      description: Ohjeen kuvaus
+      title: Tavojen Muodostus & Suorituskyvyn Seurantaopas
+    records: Tietueet
+    remove_record_tooltip: Poista tämän päivän suoritus
     statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
-      records: Records
-      score_trends: Score Trends
-      to: To
-      top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
-    tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Päivittäinen taajuus"
-    daily_target_hint: "kerta päivässä"
+      archived_note: "Arkistoitu:"
+      archived_on: Arkistoitu
+      archived_warning: Tilastot näytetään arkistointipäivään asti. {startDate} - {archivedDate}
+      completions: suoritukset
+      from: Alkaen
+      monthly: Kuukausittain
+      no_streaks_yet: Ei sarjoja vielä. Aloita johdonmukaisuuden rakentaminen!
+      overall: Kokonaisuudessaan
+      records: Tietueet
+      score_trends: Pisteiden trendit
+      to: Asti
+      top_streaks: Parhaat sarjat
+      yearly: Vuosittain
+    statistics_label: Tilastot
+    tags: Tunnisteet
+    tags_hint: Valitse liitettäviä tunnisteita
   errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
+    adding_tag: Tunnisteen lisäys epäonnistui
+    creating_record: Tavatietueen luonti epäonnistui
+    deleting: Odottamaton virhe tavan poistossa
+    deleting_record: Tavatietueen poisto epäonnistui
+    habit_not_found: Tapa ei löydy
+    habit_record_not_found: Tavatietuetta ei löydy
+    habit_tag_not_found: Tavatunnistetta ei löydy
+    loading_archive_status: Arkistointitilan lataus epäonnistui
+    loading_details: Tavan tietojen lataus epäonnistui
+    loading_habit: Tavan lataus epäonnistui
+    loading_habits: Tapojen lataus epäonnistui
+    loading_records: Tavatietueiden lataus epäonnistui
+    loading_tags: Tavatunnisteiden lataus epäonnistui
+    removing_tag: Tunnisteen poisto epäonnistui
+    saving_details: Tavan tallennus epäonnistui
+    saving_habit: Tavan tallennus epäonnistui
+    tag_already_exists: Tämä tunniste on jo lisätty
+    toggling_archive: Arkistointitilan vaihto epäonnistui
   goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
-    target_frequency: "Jakson taajuus"
-    times_unit: "kerta jaksossa"
-  help:
-    description: Help description
+    current_goal: Tavoite
+    days_unit: päivää
+    description: |
+      Haluatko harjoitella tapaasi tiettyllä taajuudella sen sijaan
+      että joka päivä? Aseta sitten mukautettu tavoite.
+    enable: Ota käyttöön mukautetut tavoitteet
+    goal: Mukautettu Tavoite
+    goal_format: "{count} kertaa {dayCount} päivässä"
+    period_days: Jakson päivät
+    settings: Mukautetun Tavoitteen Asetukset
+    target_frequency: Jakson taajuus
+    times_unit: kerta jaksossa
   list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
+    all_habits_done: Kaikki tavat suoritettu!
+    no_habits_found: Ei tapoja
+  name_placeholder: Anna merkityksellinen tavan nimi...
+  new_habit: Uusi Tapa
   notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Muista suorittaa tapasi: {name}"
+    reminder_title: "Tavan Muistutus: {name}"
   overview:
-    filter_by_tags_tooltip: Filter by tags
+    filter_by_tags_tooltip: Suodata tunnisteilla
     help:
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Hallitse päivittäisiä rutiinejasi systemaattisen tavanseurannan avulla, joka rakentaa johdonmukaisuutta, luo positiivista vauhtia ja ajaa merkittävää edistymistä kohti pitkän aikavälin tavoitteitasi.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Miksi Se On Tärkeää?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        Päivittäinen tavanhallinta on henkilökohtaisen erinomaisuuden ja kestävän kasvun perusta. Johdonmukainen hyvin suunniteltujen tapojen suorittaminen luo kumuloituvia etuja ajan myötä, kun taas systemaattinen seuranta varmistaa, että ylläpidät vastuullisuutta ja teet dataohjattuja parannuksia rutiineihisi.
 
-        ## 📅 Daily Execution & Tracking
+        ## 📅 Päivittäinen Suoritus & Seuranta
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Kehitä luotettava järjestelmä tapojen suorittamiseen ja seurantaan, joka luo johdonmukaisuutta ja rakentaa pysäyttämätöntä vauhtia kohti tavoitteitasi.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - ✅ **Päivittäinen Suoritus:** Merkitse tavat suoritetuiksi johdonmukaisuussarjojen rakentamiseksi
+        - 📆 **Monipäiväinen Näkymä:** Seuraa kuvioita päivien ja viikkojen yli kattavien oivallusten saavuttamiseksi
+        - 🔄 **Sarjojen Rakentaminen:** Pidä peräkkäiset suorituspäivät ylläpitääksesi motivaationopeinta
+        - 📊 **Edistymisen Visualisointi:** Seuraa suoritusprosentteja ja kuvioita ajan myötä
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Aika-analyysi & Optimointi
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Seuraa aikainvestointeja tavoissasi optimoidaksesi päivittäistä aikatauluasi ja varmistaaksesi tasapainoisen kehityksen kaikilla tärkeillä elämänalueilla.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ **Keston Seuranta:** Kirjaa todellinen kulutettu aika tavan vaatimusten ymmärtämiseksi
+        - 🏷️ **Kategoria-analyysi:** Ryhmittele tavat tunnisteilla nähdäksesi aikajakauman elämänalueilla
+        - ⏰ **Aikataulun Optimointi:** Tasapainota tapojen ajoitusta kestävän päivittäisen suorituksen saavuttamiseksi
+        - 📈 **Tehokkuuden Parantaminen:** Tunnista mahdollisuuksia suoritusvirtojen virtaviivaistamiseksi
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strateginen Järjestäminen
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+        Luo järjestelmä, joka tukee johdonmukaista suoritusta tarjoamalla joustavuutta sopeutumiseen, kun tavoitteesi ja olosuhteesi kehittyvät.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        - 🏷️ **Merkityksellinen Luokittelu:** Ryhmittele tavat elämänalueen, ajan tai prioriteettitason mukaan
+        - ⚙️ **Joustava Aikataulutus:** Suunnittele tapojen ajoitus sopien elämäntyyliisi ja energiarytmeihisi
+        - 🎯 **Prioriteettikeskeisyys:** Varmista, että tärkeimmät tavasi saavat asianmukaista huomiota ja energiaa
 
-        ## 💡 Mastery Principles
+        ## 💡 Hallinnan Periaatteet
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+        Sovella todistettuja strategioita tavanhallintaan, jotka varmistavat, että ponnistelusi kumuloituvat pysyvään käyttäytymismuutokseen ja mitattaviin elämänparannuksiin.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        - 🐾 **Aloita Pienestä:** Aloita tavoilla, jotka voit suorittaa johdonmukaisesti, sitten nosta vaikeutta vähitellen
+        - 🏷️ **Strateginen Ryhmittely:** Järjestä tavat luodaksesi loogisia sekvenssejä ja tukijärjestelmiä
+        - 📊 **Suorituskyvyn Tarkastelu:** Käytä aikaseurannan dataa kuvioiden ymmärtämiseen ja lähestymistavan optimointiin
+        - 🌅 **Huippuaikasuoritus:** Aikatauluta tärkeimmät tavasi huipp ener giajaksoillesi
 
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
+        ### 📊 Kalenterinäkymän Käyttö
+        - 📅 Näytä useita päiviä samanaikaisesti kalenterinäkymässä.
+        - ✅ Seuraa visuaalisesti suorituskuvioitasi.
+        - ⚡ Säästä aikaa nopealla suoritusmerkinnällä.
+        - 🎯 Lisää motivaatiota visuaalisella sarjaseurannalla.
+        - 🔄 Tutki menneitä ja tulevia tapoja joustavalla päivämääränavigoinnilla.
+      title: Päivittäinen Tavanhallinta & Rutiinioptimointiopas
+    title: Tavot
   reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
+    enableReminders: Ota muistutukset käyttöön
+    everyDay: Joka päivä
+    noReminder: Ei muistutusta asetettu
+    reminderDays: Muistutuspäivät
+    reminderSettings: Muistutuksen Asetukset
+    reminderTime: Muistutusajan
+    selectDaysWarning: Valitse ainakin yksi päivä muistutuksille
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
+    enable: Ota muistutukset käyttöön
+    select_days_warning: Valitse ainakin yksi päivä muistutuksille
   statistics:
-    archived_on: Archived on
-    from: From
-    to: To
+    archived_on: Arkistoitu
+    from: Alkaen
+    to: Asti
   tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    add_tooltip: Lisää tunniste
+    select_tooltip: Valitse tunniste
+  time_display:
+    actual_time_tooltip: Todellinen seurattu aika tälle päivälle
+    estimated: arvioitu
+    estimated_time_tooltip: Arvioitu aika perustuen tavan asetuksiin
+    no_time_logged_tooltip: Ei aikaa kirjattu tälle päivälle
+  time_logging:
+    add_time: Lisää Aika
+    add_time_description: Lisää määritetty aika olemassa oleviin tietueisiin
+    dialog_title: Kirjaa Aika
+    duration: Lisättävä Kesto
+    invalid_input: Anna kelvolliset tunnit ja minuutit
+    log_time: Kirjaa Aika
+    mode: Kirjaustila
+    set_total: Aseta Kokonaisaika
+    set_total_description: Aseta kokonaisaika valitulle päivälle
+    total_time: Kokonaisaika Päivälle
+  timer:
+    label: Ajastin
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Vähennä päivittäistä tavoitetta"
-    increase_daily_target: "Lisää päivittäistä tavoitetta"
+    add_habit: Lisää Tapa
+    decrease_daily_target: Vähennä päivittäistä tavoitetta
+    decrease_estimated_time: Vähennä arvioitua aikaa
+    edit_name: Muokkaa Nimeä
+    increase_daily_target: Lisää päivittäistä tavoitetta
+    increase_estimated_time: Lisää arvioitua aikaa

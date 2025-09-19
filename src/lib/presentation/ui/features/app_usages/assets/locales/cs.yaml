@@ -1,178 +1,178 @@
 app_usages:
   delete:
-    confirm_title: Delete App Usage
-    error: An unexpected error occurred while deleting app usage
+    confirm_title: Smazat použití aplikace
+    error: Došlo k neočekávané chybě při mazání použití aplikace
   details:
     color:
-      hint: Click to change color
-      label: Color
+      hint: Klikněte pro změnu barvy
+      label: Barva
     device:
-      label: Device
-      unknown: Unknown Device
+      label: Zařízení
+      unknown: Neznámé zařízení
     help:
       content: |
-        See exactly how much time you spend on apps and stay in control by organizing them with tags.
+        Podívejte se přesně na to, kolik času trávíte v aplikacích, a zůstaňte v kontroly organizací s etiketami.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Proč je to důležité?
 
-        Time management is the key to your productivity. Tracking your app usage and tagging them with the right categories improves your focus and helps prevent unnecessary time loss.
+        Řízení času je klíčem k vaší produktivitě. Sledování použití aplikací a označování je správnými kategoriemi zlepšuje vaši soustředěnost a pomáhá předcházet zbytečným ztrátám času.
 
-        ## ⏱️ Time Tracking
+        ## ⏱️ Sledování času
 
-        Track your daily usage habits to accurately analyze your time. With in-app detailed usage durations and active window tracking, easily see how much focus you give to each app. This data guides you on where improvements are needed.
+        Sledujte své denní návyky používání pro přesnou analýzu času. S podrobnými dobou použití v aplikaci a sledováním aktivních oken snadno uvidíte, kolik pozornosti věnujete každé aplikaci. Tato data vás vedou k tomu, kde jsou potřebné zlepšení.
 
-        - ⏳ Review daily usage durations  
-        - 🔍 Track active windows  
-        - 📊 Understand your time distribution with detailed reports
+        - ⏳ Zkontrolujte denní délky použití  
+        - 🔍 Sledujte aktivní okna  
+        - 📊 Pochopte distribuci svého času s podrobnými zprávami
 
-        ## 🏷️ Tag Management
+        ## 🏷️ Správa etiket
 
-        Categorizing and organizing your apps boosts productivity. With the tagging system, you can group your apps and speed up your workflow using automation rules. This helps you maintain focus and use your time more efficiently.
+        Kategorizace a organizace vašich aplikací zvyšuje produktivitu. S etiketovacím systémem můžete skupiny aplikací a zrychlit svůj pracovní tok pomocí pravidel automatizace. To vám pomůže udržet soustředění a efektivněji využít váš čas.
 
-        - 🏷️ Tag apps with meaningful categories  
-        - ⚙️ Create automatic tagging rules  
-        - 🔄 Save time by reducing manual tasks
+        - 🏷️ Označte aplikace smysluplnými kategoriemi  
+        - ⚙️ Vytvořte pravidla automatického označování  
+        - 🔄 Šetřete čas snížením manuálních úkolů
 
-        ## 📈 Analysis & Productivity Tracking
+        ## 📈 Analýza & Sledování produktivity
 
-        Visualize your own usage patterns to discover your strengths and weaknesses. Tracking your productive time is critical for enhancing focus. With in-app comparison and reporting tools, you can clearly see your progress.
+        Vizualizujte své vlastní vzorce použití pro objev svých silných a slabých stránek. Sledování vaší produktivní doby je klíčové pro zlepšení soustředění. S nástroji porovnání a reportingu v aplikaci můžete jasně vidět svůj pokrok.
 
-        - 📊 Visualize your usage patterns  
-        - 🤝 Compare with similar apps  
-        - 🚀 Track productive vs. unproductive time
-      title: Time & Productivity Tracking Guide
+        - 📊 Vizualizujte své vzorce použití  
+        - 🤝 Porovnejte s podobnými aplikacemi  
+        - 🚀 Sledujte produktivní vs. neproduktivní čas
+      title: Průvodce sledováním času & produktivity
     tags:
-      hint: Select tags
-      label: Tags
+      hint: Vybrat etikety
+      label: Etikety
   device_filter:
-    clear_all: Clear All
+    clear_all: Vymazat vše
     search:
-      label: Search devices
+      label: Hledat zařízení
   errors:
-    add_tag: An unexpected error occurred while adding tag
-    app_usage_ignore_rule_not_found: Ignore rule not found
-    app_usage_not_found: App usage not found
-    app_usage_tag_not_found: App usage tag not found
-    delete: An unexpected error occurred while deleting app usage
-    app_usage_tag_rule_not_found: Tag rule not found
-    get_tags: Error occurred while fetching app usage tags
-    get_usage: An unexpected error occurred while fetching app usage
-    remove_tag: An unexpected error occurred while removing tag
-    save_rule: An unexpected error occurred while saving ignore rules
-    save_usage: An unexpected error occurred while saving app usage
-    statistics: An unexpected error occurred while fetching statistics
-    tag_already_exists: This tag is already added
+    add_tag: Došlo k neočekávané chybě při přidávání etikety
+    app_usage_ignore_rule_not_found: Pravidlo ignorování nenalezeno
+    app_usage_not_found: Použití aplikace nenalezeno
+    app_usage_tag_not_found: Etiketa použití aplikace nenalezena
+    delete: Došlo k neočekávané chybě při mazání použití aplikace
+    app_usage_tag_rule_not_found: Pravidlo etikety nenalezeno
+    get_tags: Chyba při načítání etiket použití aplikace
+    get_usage: Došlo k neočekávané chybě při načítání použití aplikace
+    remove_tag: Došlo k neočekávané chybě při odebírání etikety
+    save_rule: Došlo k neočekávané chybě při ukládání pravidel ignorování
+    save_usage: Došlo k neočekávané chybě při ukládání použití aplikace
+    statistics: Došlo k neočekávané chybě při načítání statistik
+    tag_already_exists: Tato etiketa je již přidána
   form:
     description:
-      hint: Enter a description for this rule
-      label: Description (Optional)
+      hint: Zadejte popis pro toto pravidlo
+      label: Popis (Volitelné)
     pattern:
-      help_tooltip: Show regex help
-      hint: Enter regex pattern
-      label: Pattern
-      required: Pattern is required
-    save: Save
-    saved: Saved
+      help_tooltip: Zobrazit nápovědu regex
+      hint: Zadat regex vzor
+      label: Vzor
+      required: Vzor je povinný
+    save: Uložit
+    saved: Uloženo
   ignore_rules:
-    delete_confirm: 'Are you sure you want to delete the ignore rule "{pattern}"?'
-    delete_title: Delete Rule
-    delete_tooltip: Delete rule
-    no_rules: No ignore rules
-    pattern_label: Pattern
-  no_usage: No app usage yet
+    delete_confirm: 'Jste si jisti, že chcete odstranit pravidlo ignorování "{pattern}"?'
+    delete_title: Odstranit pravidlo
+    delete_tooltip: Odstranit pravidlo
+    no_rules: Žádná pravidla ignorování
+    pattern_label: Vzor
+  no_usage: Zatím žádné použití aplikace
   pages:
     view:
       buttons:
-        filter_tags: Filter Tags
-        filter_devices: Filter Devices
-        tag_rules: Tag Rules
+        filter_tags: Filtrovat etikety
+        filter_devices: Filtrovat zařízení
+        tag_rules: Pravidla etiket
       help:
         content: |
-          Analyze, organize, and take control of your app usage to work more efficiently. With tagging and analysis tools, see, manage, and improve how you spend your time.
+          Analyzujte, organizujte a ovládněte použití aplikací pro efektivnější práci. S nástroji pro označování a analýzu vidíte, spravujete a zlepšujete, jak trávíte svůj čas.
 
-          ## ⏱️ Usage Tracking
+          ## ⏱️ Sledování použití
 
-          Discover your daily usage habits. Track active windows and durations to understand where your time goes. This helps you identify focus areas and reduce time waste.
+          Objevte své denní návyky použití. Sledujte aktivní okna a délky pro pochopení, kam váš čas mizí. To vám pomůže identifikovat oblasti soustředění a snížit plýtvání času.
 
-          - ⌛ Review app usage durations  
-          - 📅 Analyze daily patterns  
-          - 🖥️ Track active window history  
+          - ⌛ Zkontrolujte délky použití aplikací  
+          - 📅 Analyzujte denní vzorce  
+          - 🖥️ Sledujte historii aktivních oken  
 
-          ## 🏷️ Tagging and Categorization
+          ## 🏷️ Označování a kategorizace
 
-          Create an organized structure by grouping apps. With the tagging system, make your data more meaningful and easily analyze how much time you spend per category.
+          Vytvořte organizovanou strukturu seskupováním aplikací. S etiketovacím systémem uděláte svá data významnější a snadno analyzujete, kolik času vynakládáte na kategorii.
 
-          - 🏷️ Assign meaningful tags to apps  
-          - ⚙️ Define automatic tagging rules  
-          - 📚 View usage time by category  
+          - 🏷️ Přiřaďte smysluplné etikety aplikacím  
+          - ⚙️ Definujte pravidla automatického označování  
+          - 📚 Zobrazte čas použití podle kategorie  
 
-          ## 📊 Usage Analysis
+          ## 📊 Analýza použití
 
-          Analyze how efficiently you use your time. Through app comparisons and usage patterns, see which tools are actually beneficial for you.
+          Analyzujte, jak efektivně využíváte svůj čas. Prostřednictvím porovnání aplikací a vzorců použití uvidíte, které nástroje vám skutečně prospívají.
 
-          - 📈 Analyze your own usage patterns  
-          - 🔄 Compare different apps  
-          - 🚀 Track your productive and unproductive time  
+          - 📈 Analyzujte své vlastní vzorce použití  
+          - 🔄 Porovnejte různé aplikace  
+          - 🚀 Sledujte produktivní vs. neproduktivní čas  
 
-          ## ⚙️ Management Tools
+          ## ⚙️ Nástroje správy
 
-          Use rules and filtering options to better control app behaviors. Especially with automation, save valuable time.
+          Používejte pravidla a možnosti filtrování pro lepší ovládání chování aplikací. Zvláště s automatizací ušetříte cenný čas.
 
-          - 🛠️ Define new rules or edit existing ones  
-          - 🗑️ Remove unnecessary rules  
-          - 🔍 Filter by tag and date range
-        title: App Usage & Time Management Guide
+          - 🛠️ Definujte nová pravidla nebo upravte stávající  
+          - 🗑️ Odstraňte nepotřebná pravidla  
+          - 🔍 Filtrovat podle etikety a rozsahu dat
+        title: Průvodce použitím aplikací & řízením času
 
-      title: App Usage
+      title: Použití aplikací
   rules:
-    add_new_rule: Add New Rule
-    delete_confirm_message: Are you sure you want to delete this rule?
-    delete_confirm_title: Delete Rule
+    add_new_rule: Přidat nové pravidlo
+    delete_confirm_message: Jste si jisti, že chcete tento pravidlo odstranit?
+    delete_confirm_title: Odstranit pravidlo
     errors:
-      delete_rule: An unexpected error occurred while deleting rule
-      get_rules: An unexpected error occurred while fetching rules
-    existing_rules: Existing Rules
+      delete_rule: Došlo k neočekávané chybě při odstraňování pravidla
+      get_rules: Došlo k neočekávané chybě při načítání pravidel
+    existing_rules: Stávající pravidla
     help:
       content: |
-        Use rules to manage app data in an organized, consistent, and efficient way. Customize app tracking with automatic tagging and exclusion options to strengthen your time management.
+        Používejte pravidla pro správu dat aplikací uspořádaným, konzistentním a efektivním způsobem. Přizpůsobte sledování aplikací automatickým označováním a možnostmi vyloučení pro posílení správy času.
 
-        ## 🏷️ Automatic Tagging Rules
+        ## 🏷️ Pravidla automatického označování
 
-        Create rules for your apps so the system can assign the correct tags on your behalf. This eliminates the need for manual tagging.
+        Vytvořte pravidla pro své aplikace, aby vám systém mohl přiřazovat správné etikety. To eliminuje potřebu manuálního označování.
 
-        - 🧠 Automatically tag apps based on their names  
-        - 🗂️ Match multiple tags with a single rule  
-        - ⏱️ Automatically track time spent on tagged apps  
+        - 🧠 Automaticky označte aplikace na základě jejich názvů  
+        - 🗂️ Spojte více etiket jedním pravidlem  
+        - ⏱️ Automaticky sledujte čas strávený označenými aplikacemi  
 
-        ## ⚙️ Rule Management
+        ## ⚙️ Správa pravidel
 
-        Use the flexible rule management screen to build your own system. Delete unnecessary rules, add new ones, and update existing ones.
+        Používejte flexibilní obrazovku správy pravidel pro vytvoření vlastního systému. Odstraňte nepotřebná pravidla, přidejte nová a aktualizujte stávající.
 
-        - ➕ Define new rules  
-        - ✏️ Edit existing rules  
-        - 🗑️ Remove rules you no longer use  
+        - ➕ Definujte nová pravidla  
+        - ✏️ Upravte stávající pravidla  
+        - 🗑️ Odstraňte pravidla, která již nepoužíváte  
 
-        ## 🚫 Ignore Rules
+        ## 🚫 Pravidla ignorování
 
-        Exclude system or background apps that might distort your productivity analysis. With these rules, you can focus only on what's truly important.
+        Vylučte systémové nebo pozadí aplikace, které mohou zkreslit analýzu produktivity. S těmito pravidly se můžete soustředit pouze na to, co je skutečně důležité.
 
-        - 🧹 Exclude specific apps from tracking  
-        - 🖥️ Omit system processes and helper tools  
-        - 🔕 Filter out background-running apps  
+        - 🧹 Vylučte konkrétní aplikace ze sledování  
+        - 🖥️ Vynechejte systémové procesy a pomocné nástroje  
+        - 🔕 Filtrovat aplikace běžící na pozadí  
 
-        ## 🧩 Advanced Matching Options
+        ## 🧩 Pokročilé možnosti shody
 
-        Enhance your rules with advanced pattern-matching options.
+        Zlepšete svá pravidla pokročilými možnostmi shody vzorů.
 
-        - ✳️ Create flexible rules using wildcards  
-        - 🧾 Match exact app names  
-        - 🔠 Choose case sensitivity settings
-      title: Tagging & Exclusion Rules Guide
-    ignore_rules: Ignore Rules
-    no_rules: No rules
-    tag_rules: Tag Rules
-    title: App Usage Rules
+        - ✳️ Vytvořte flexibilní pravidla pomocí zástupných znaků  
+        - 🧾 Shoda přesných názvů aplikací  
+        - 🔠 Vyberte nastavení citlivosti na velikost písmen
+      title: Průvodce pravidly označování & vyloučení
+    ignore_rules: Pravidla ignorování
+    no_rules: Žádná pravidla
+    tag_rules: Pravidla etiket
+    title: Pravidla použití aplikací
   tooltips:
-    edit_name: Edit Name
+    edit_name: Upravit název
   units:
     minutes: min

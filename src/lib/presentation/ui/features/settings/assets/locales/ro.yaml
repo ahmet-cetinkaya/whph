@@ -1,107 +1,107 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Anulare
 
 settings:
   about:
-    title: About
+    title: Despre
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Exportul a eșuat
+    import_failed: Importul a eșuat
+    setting_not_found: Setarea nu a fost găsită
+    version_mismatch: Versiunea nu a fost găsită
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
+    csv_description: Puteți folosi acest lucru pentru a vizualiza în Excel și aplicații similare.
+    error: Exportul a eșuat
+    in_progress: Se exportă datele, vă rugăm să așteptați...
+    json_description: Exportați datele în format JSON lizibil pentru scopuri de dezvoltare și depanare.
+    select_directory: Selectați directorul de export
+    select_path: Selectați locația de salvare
+    select_type: Selectați formatul de export
+    success: "Export reușit. Locația fișierului:"
     title: Export
-    canceled: Export canceled by user
+    canceled: Export anulată de utilizator
   export_data:
-    title: Export Data
+    title: Export Date
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Importul a eșuat
+    error.entity: Eroare în tip
+    in_progress: Se importă datele, vă rugăm să așteptați...
+    migration_failed: Importul a eșuat. Asigurați-vă că aveți instalată cea mai recentă versiune a aplicației.
+    select_file: Selectați fișierul
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
+      merge: Fuzionați cu Datele Existente
+      replace: Ștergeți Datele Existente și Adăugați Noile
+      title: Strategie de Import
+    success: Import reușit
     title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+    unsupported_version: Versiune nesuportată
+    version_mismatch: Versiunea nu a fost găsită
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
+    description: Exportați datele în diverse formate sau importați date din fișiere de backup
+    select_action: Selectați acțiunea de import/export
     title: Import/Export
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Alegeți limba
+    title: Limbă
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Eșec la dezactivarea notificărilor
+    enable_error: Eșec la activarea notificărilor
+    title: Notificări
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Această aplicație are nevoie de permisiune pentru a accesa statisticile de utilizare a aplicației pentru a urmări cu precizie modelele de utilizare a aplicației.
+      instructions: "Instrucțiuni:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Apăsați butonul "Deschideți Setările"
+        step2: În ecranul de setări de acces la utilizare care se deschide, găsiți "{appName}" în listă
+        step3: Apăsați pe "{appName}"
+        step4: Activați "Permiteți accesul la utilizare" sau comutați comutatorul la DA
+      title: Permisiunea de Utilizare a Aplicației
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: Pentru notificări de încredere, această aplicație trebuie exclusă din optimizarea bateriei. Fără aceasta, amintirile pot fi întârziate sau nu livrate deloc.
+      importance: Locația acestei setări poate varia în funcție de producătorul dispozitivului.
+      instructions: "Instrucțiuni:"
+      not_disabled: Optimizarea bateriei este încă activată. Furnizați permisiunea pentru ca funcția relevantă să funcționeze corect.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Apăsați butonul "Deschideți Setările"
+        step2: În ecranul de setări care se deschide, găsiți "{appName}"
+        step3: Apăsați pe "{appName}"
+        step4: Asigurați-vă că "Permiteți Utilizarea în Fundal" este activată pe pagina care se deschide
+        step5: Apăsați pe "Permiteți Utilizarea în Fundal"
+        step6: Selectați "Nelimitat"
+      title: Optimizarea Bateriei
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ necesită permisiune pentru a programa alarme exacte pentru ca amintirile să funcționeze corect.
+      instructions: "Instrucțiuni:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Mergeți la Alarme & amintiri și activați permisiunea
+          step3: Confirmați permisiunea de alarmă exactă
+        step1: Apăsați butonul "Deschideți Setările"
+        step2: 'Pe pagina Alarme & amintiri a aplicației {appName} deschisă, activați "Permiteți setarea alarmelor și amintirilor"'
+      title: Permisiunea de Alarmă Exactă
+    fix_it: Remediați
+    granted: Permisiune acordată
+    instructions: Instrucțiuni
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Permisiunea de notificare este necesară pentru a primi amintiri. Fără această permisiune, nu veți primi notificări.
+      instructions: "Instrucțiuni:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Apăsați butonul "Deschideți Setările"
+          step2: Permiteți notificările când vi se solicită
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Apăsați butonul "Deschideți Setările"
+          step2: Permiteți notificările când vi se solicită
+      title: Permisiunea de Notificare
+    open_settings: Deschideți Setările
+    open_terminal: Deschideți Terminalul
     firewall:
       title: Permisiunea Firewall-ului
       description: Permiteți WHPH să comunice prin firewall-ul {platform} pe portul 44040 pentru sincronizarea dispozitivelor.
-      dialog_description: WHPH are nevoie de permisiunea firewall-ului pentru a permite altor dispozitive să se conecteze pentru sincronizare. Urmați comenzile de mai jos pentru a configura firewall-ul {platform}. Puteți găsi, de asemenea, acești pași în meniul de ajutor.
-      dialog_info_text: "Notă: Puteți găsi, de asemenea, acești pași în meniul de ajutor."
+      dialog_description: WHPH are nevoie de permisiunea firewall-ului pentru a permite altor dispozitive să se conecteze pentru sincronizare. Urmați comenzile de mai jos pentru a configura firewall-ul {platform}. De asemenea, puteți găsi acești pași în meniul de ajutor.
+      dialog_info_text: "Notă: De asemenea, puteți găsi acești pași în meniul de ajutor."
       linux_manual_confirmation_button: "Am configurat"
       save_confirmation_error: Salvarea setării de confirmare a firewall-ului a eșuat
       rule_added_success: Regula de firewall a fost adăugată cu succes
@@ -115,107 +115,106 @@ settings:
           step3: "Adăugați o regulă de firewall (dacă UFW este activ):"
           step4: "Verificați dacă regula a fost adăugată:"
         windows:
-          step1: "Deschideți Windows Defender Firewall din Panoul de control"
-          step2: "Faceți clic pe Setări avansate în partea stângă"
+          step1: "Deschideți Firewall-ul Windows Defender din Panoul de Control"
+          step2: "Faceți clic pe Setări avansate în stânga"
           step3: "În panoul din stânga, faceți clic pe Reguli de intrare"
           step4: "În panoul din dreapta, faceți clic pe Regulă nouă..."
           step5: "Selectați Port și faceți clic pe Următorul"
-          step6: "Selectați TCP și introduceți 44040 în câmpul porturilor locale specifice"
+          step6: "Selectați TCP și introduceți 44040 în câmpul pentru porturile locale specifice"
           step7: "Selectați Permiteți conexiunea și faceți clic pe Următorul"
           step8: "Bifați toate profilele (Domeniu, Privat, Public) și faceți clic pe Următorul"
-          step9: "Introduceți un nume ca WHPH Sync Port 44040 și faceți clic pe Terminare"
+          step9: "Introduceți un nume precum WHPH Sync Port 44040 și faceți clic pe Finalizare"
           alternative_command_prompt:
             title: "Alternativă: Utilizați Promptul de comandă"
             steps:
               cmd_step1: "Deschideți Promptul de comandă ca Administrator"
               cmd_step2: "Adăugați o regulă de firewall:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: Pentru ca aplicația să pornească automat cu dispozitivul, este necesară permisiunea de pornire automată. Acest lucru asigură că amintirile și notificările funcționează corect chiar după reporniri.
+      importance: Locația setării de pornire automată variază sau poate să nu fie prezentă în funcție de fabricantul dispozitivului.
+      instructions: "Instrucțiuni:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Apăsați butonul "Deschideți Setările"
+        step2: 'În ecranul de setări care se deschide, găsiți aplicația "{appName}"'
+        step3: 'Activați "Pornire automată", "Autorun", "Pornire la boot" sau permisiune similară'
+      title: Permisiunea de Pornire Automată
+    title: Permisiuni
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
-    title: Start at Startup
+    disable_error: Eșec la dezactivarea setării de pornire
+    enable_error: Eșec la activarea setării de pornire
+    subtitle: Apăsați pentru a deschide setările sistemului și a activa permisiunea de pornire automată pentru aplicație
+    title: Pornire la Pornire
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Sincronizați Dispozitive
+  title: Setări
   backup:
     title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    description: Creați și restaurați backup-uri comprimate ale datelor aplicației folosind formatul securizat .whph
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Creați Backup
+      description: Exportați toate datele în fișier de backup .whph comprimat
+      in_progress: Se creează backup, vă rugăm să așteptați...
+      success: "Backup creat cu succes. Locația fișierului:"
+      error: Eșec la crearea backup-ului
+      select_path: Selectați locația de salvare a backup-ului
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Restabili Backup
+      description: Importați date dintr-un fișier de backup .whph creat anterior
+      in_progress: Se restaurează backup, vă rugăm să așteptați...
+      success: Backup restaurat cu succes
+      error: Eșec la restaurarea backup-ului
+      select_file: Selectați fișierul de backup
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Strategie de Restaurare
+        replace: Ștergeți Datele Existente și Restabili
+        merge: Fuzionați cu Datele Existente
+    canceled: Operația de backup a fost anulată de utilizator
+    export_failed: Exportul de backup a eșuat
+    import_failed: Importul de backup a eșuat
+    invalid_format: Format fișier backup invalid
+    invalid_format_error: Format fișier backup invalid
+    corrupted: Fișierul de backup este corupt sau deteriorat
+    export_description: Creați un fișier de backup comprimat care conține toate datele
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Temă
+    description: Personalizați aspectul WHPH
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Mod Temă
+      light: Deschis
+      dark: Întunecat
       auto:
-        title: Auto
-        description: Follow system theme settings
+        title: Automat
+        description: Urmați setările de temă ale sistemului
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Culoare Accent Dinamică
+      description: Dacă sistemul dvs. o suportă, culoarea primară se va adapta pe baza schemei de culori dinamice a sistemului
+      feature: Dinamic
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Culoare Accent Personalizată
+      description: Alegeți o culoare accent personalizată pentru a personaliza aspectul aplicației
+      feature: Personalizat
+    error: Eșec la încărcarea setărilor de temă
   ui_density:
     title: Densitate
-    description: Ajustați dimensiunea textului și a elementelor de interfață pentru a îmbunătăți lizibilitatea pe ecrane cu DPI mare
+    description: Ajustați dimensiunea textului și a elementelor de interfață pentru a îmbunătăți lizibilitatea pe ecrane cu DPI ridicat
     compact: Compactă
     normal: Normală
     large: Mare
     larger: Mai mare
     error: Nu s-au putut încărca setările de densitate a interfeței
   advanced:
-    title: Avansat
+    title: Avansate
     description: Setări avansate și instrumente pentru dezvoltatori
   debug_logs:
-    title: Jurnale de depanare
+    title: Jurnale de Depanare
     description: Activați înregistrarea detaliată în fișier pentru depanare și suport
     load_settings_error: Eroare la încărcarea setărilor jurnalelor de depanare
     update_settings_error: Eroare la actualizarea setărilor jurnalelor de depanare
     view:
-      title: Vizualizați jurnalele de depanare
+      title: Vizualizați Jurnalele de Depanare
       description: Vizualizați și exportați jurnalele de depanare curente
     page:
-      title: Jurnale de depanare
+      title: Jurnale de Depanare
       description: Vizualizați intrările curente din jurnalul de depanare. Jurnalele sunt golite și rotite automat pentru a preveni utilizarea excesivă a discului.
       content: Conținutul jurnalului
       refresh: Reîmprospătați jurnalele
@@ -223,12 +222,12 @@ settings:
       save_as: Salvați ca fișier
       copied: Jurnalele de depanare au fost copiate în clipboard
       load_error: Eroare la încărcarea jurnalelor de depanare
-      not_enabled: Înregistrarea depanării nu este activată. Activați-o în Setările avansate pentru a începe colectarea jurnalelor.
+      not_enabled: Înregistrarea de depanare nu este activată. Activați-o în Setările avansate pentru a începe colectarea jurnalelor.
       no_file: Nu s-a găsit niciun fișier jurnal de depanare. Jurnalele vor fi create după activarea înregistrării de depanare și generarea de intrări în jurnal de către aplicație.
       empty: Fișierul jurnal de depanare este gol. Nu au fost înregistrate încă intrări în jurnal.
     export:
-      dialog_title: Exportă jurnalele de depanare
+      dialog_title: Exportă Jurnalele de Depanare
       error: Eroare la exportul jurnalelor
       success: Fișierul jurnal a fost exportat cu succes
-      no_logs_available: Nu sunt disponibile jurnale pentru export
-      file_not_exist: Fișierul jurnal nu există
+      no_logs_available: Nu sunt disponibile jurnale pentru export. Generați mai întâi câteva jurnale.
+      file_not_exist: Fișierul jurnal nu există. Activați înregistrarea de depanare și generați mai întâi câteva jurnale.

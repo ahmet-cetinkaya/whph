@@ -1,5 +1,4 @@
 shared:
-  untitled: "Untitled"
   buttons:
     add: Add
     back: Back
@@ -65,6 +64,7 @@ shared:
     created_date_label: Created Date
     modified_date_label: Modified Date
     name_label: Name
+  date: Date
   date_filter:
     title: Select Date Range
     tooltips:
@@ -72,6 +72,26 @@ shared:
       filter: Filter by date
   date_format:
     hint: DD/MM/YYYY
+  datepicker:
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    deadline_cannot_be_before_planned_date:
+      Deadline date must be on or after the
+      planned date
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    end_date_must_be_at_or_before: End date must be at or before {date}
+    select_date_range_title: Select Date Range
+    select_date_time_title: Select Date and Time
+    selected_date_must_be_at_or_after: Selected date must be at or after {date}
+    selected_date_must_be_at_or_before: Selected date must be at or before {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    start_date_cannot_be_after_end_date: Start date cannot be after end date
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    start_date_must_be_at_or_after: Start date must be at or after {date}
+    time_must_be_at_or_after: Time must be at or after {time}
+    time_must_be_at_or_before: Time must be at or before {time}
   days:
     friday: Friday
     friday_short: Fri
@@ -92,19 +112,19 @@ shared:
       hint: You can write using Markdown format...
       tooltips:
         bold: Bold
-        italic: Italic
-        strikethrough: Strikethrough
-        code: Code
-        link: Link
-        quote: Quote
         bulleted_list: Bulleted List
-        numbered_list: Numbered List
-        horizontal_rule: Horizontal Rule
-        edit: Edit
-        preview: Preview
-        image: Image
-        heading: Heading
         checkbox: Checkbox
+        code: Code
+        edit: Edit
+        heading: Heading
+        horizontal_rule: Horizontal Rule
+        image: Image
+        italic: Italic
+        link: Link
+        numbered_list: Numbered List
+        preview: Preview
+        quote: Quote
+        strikethrough: Strikethrough
   errors:
     deleting: Error occurred while deleting data
     file_not_found: File not found
@@ -138,11 +158,6 @@ shared:
     unexpected: An unexpected error occurred
   filters:
     search: Search
-  help:
-    tooltip: Help
-  timer:
-    normal: Normal
-    pomodoro: Pomodoro
   messages:
     confirm_delete: Are you sure you want to delete this item?
     no_items_found: No items
@@ -156,7 +171,7 @@ shared:
       tags: Tags
       tasks: Tasks
       today: Today
-  none_option: "No tags"
+  none_option: No tags
   regex_help:
     examples:
       chat: Matches either \"Slack\" or \"Discord\"
@@ -190,11 +205,11 @@ shared:
       description: Enable drag and drop to reorder items
       title: Custom Sort
     descending: Descending
+    disable_reordering_tooltip: Disable reordering mode
+    enable_reordering_tooltip: Enable reordering mode
     remove_criteria: Remove Criteria
     reset_to_default: Reset to Default
     sort: Sort
-    enable_reordering_tooltip: Enable reordering mode
-    disable_reordering_tooltip: Disable reordering mode
   statistics:
     daily_usage:
       description: Shows the total usage time per day of the week
@@ -203,7 +218,24 @@ shared:
       description: Shows the total usage time per hour of the day
       title: Hourly Usage
   time:
-    not_set: "Not set"
+    not_set: Not set
+  time_display:
+    elapsed: Elapsed
+    elapsed_time_tooltip: Time spent on this task
+    estimated: Estimated
+    estimated_time_tooltip: Estimated time to complete this task
+    no_time_logged_tooltip: No time logged yet
+  time_logging:
+    add_time: Add Time
+    add_time_description: Add time to the existing total
+    dialog_title: Log Time
+    duration: Duration
+    invalid_input: Please enter a valid time
+    log_time: Log Time
+    mode: Mode
+    set_total: Set Total
+    set_total_description: Set the total time spent
+    total_time: Total Time
   time_periods:
     custom: Custom
     last_month: Last Month
@@ -213,6 +245,11 @@ shared:
     this_three_months: This 3 Months
     this_week: This Week
     today: Today
+  timer:
+    label: Timer
+    normal: Normal
+    pomodoro: Pomodoro
+    stopwatch: Stopwatch
   tooltips:
     compare_with_previous: Compare with previous period
     filter_by_tags: Filter by tags
@@ -225,6 +262,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sec
+  untitled: Untitled
   update_dialog:
     buttons:
       download_page: Download Page
@@ -238,21 +276,4 @@ shared:
     title: Update Available!
   validation:
     required: "{field} is required."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Deadline date must be on or after the planned date"
-    selected_date_must_be_at_or_after: Selected date must be at or after {date}
-    selected_date_must_be_at_or_before: Selected date must be at or before {date}
-    start_date_cannot_be_after_end_date: Start date cannot be after end date
-    start_date_must_be_at_or_after: Start date must be at or after {date}
-    end_date_must_be_at_or_before: End date must be at or before {date}
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be at or after {time}
-    time_must_be_at_or_before: Time must be at or before {time}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select Date and Time
-    select_date_range_title: Select Date Range
+  help: Help

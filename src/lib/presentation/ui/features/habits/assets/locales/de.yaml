@@ -7,9 +7,10 @@ habits:
     hide_archived: Archivierte ausblenden
     show_archived: Archivierte anzeigen
     unarchive: Aus Archiv entfernen
-    unarchive_confirm: Sind Sie sicher, dass Sie diese Gewohnheit aus dem Archiv entfernen möchten?
+    unarchive_confirm:
+      Sind Sie sicher, dass Sie diese Gewohnheit aus dem Archiv entfernen
+      möchten?
     unarchive_tooltip: Diese Gewohnheit aus dem Archiv entfernen
-
   calendar:
     week_days:
       fri: Fr
@@ -25,6 +26,8 @@ habits:
   details:
     archived_status: Archiviert
     create_record_tooltip: Als heute erledigt markieren
+    daily_target: Tägliche Frequenz
+    daily_target_hint: Mal pro Tag
     description: Beschreibung
     estimated_time: Geschätzte Zeit
     estimated_time_not_set: Nicht festgelegt
@@ -78,22 +81,22 @@ habits:
     statistics:
       archived_note: "Archiviert am:"
       archived_on: Archiviert am
-      archived_warning: "Statistiken werden bis zum Archivierungsdatum angezeigt. {startDate} - {archivedDate}"
+      archived_warning:
+        Statistiken werden bis zum Archivierungsdatum angezeigt. {startDate}
+        - {archivedDate}
+      completions: Erledigungen
       from: Von
       monthly: Monatlich
+      no_streaks_yet: Noch keine Serien. Beginnen Sie mit dem Aufbau von Konsistenz!
       overall: Gesamt
       records: Aufzeichnungen
       score_trends: Bewertungstrends
       to: Bis
       top_streaks: Top-Serien
-      no_streaks_yet: Noch keine Serien. Beginnen Sie mit dem Aufbau von Konsistenz!
-      completions: Erledigungen
       yearly: Jährlich
     statistics_label: Statistiken
     tags: Tags
     tags_hint: Tags zum Verknüpfen auswählen
-    daily_target: "Tägliche Frequenz"
-    daily_target_hint: "Mal pro Tag"
   errors:
     adding_tag: Tag konnte nicht hinzugefügt werden
     creating_record: Gewohnheitsaufzeichnung konnte nicht erstellt werden
@@ -116,21 +119,21 @@ habits:
   goals:
     current_goal: Ziel
     days_unit: Tage
-    description: Möchten Sie die Gewohnheit mit einer bestimmten Häufigkeit anstatt täglich praktizieren? Dann setzen Sie ein benutzerdefiniertes Ziel.
+    description:
+      Möchten Sie die Gewohnheit mit einer bestimmten Häufigkeit anstatt
+      täglich praktizieren? Dann setzen Sie ein benutzerdefiniertes Ziel.
     enable: Benutzerdefinierte Ziele aktivieren
     goal: Benutzerdefiniertes Ziel
     goal_format: "{count} mal in {dayCount} Tagen"
     period_days: Zeitraumtage
     settings: Benutzerdefinierte Zieleinstellungen
     target_frequency: Periodenfrequenz
-    times_unit: "Mal pro Periode"
-  help:
-    description: Hilfebeschreibung
+    times_unit: Mal pro Periode
   list:
     all_habits_done: Alle Gewohnheiten erledigt!
     no_habits_found: Keine Gewohnheiten
-  new_habit: Neue Gewohnheit
   name_placeholder: Geben Sie einen aussagekräftigen Gewohnheitsnamen ein...
+  new_habit: Neue Gewohnheit
   notifications:
     reminder_message: "Denken Sie daran, Ihre Gewohnheit zu erledigen: {name}"
     reminder_title: "Gewohnheitserinnerung: {name}"
@@ -207,8 +210,8 @@ habits:
     select_tooltip: Tag auswählen
   tooltips:
     add_habit: Gewohnheit hinzufügen
+    decrease_daily_target: Tägliches Ziel verringern
     decrease_estimated_time: Geschätzte Zeit verringern
     edit_name: Name bearbeiten
+    increase_daily_target: Tägliches Ziel erhöhen
     increase_estimated_time: Geschätzte Zeit erhöhen
-    decrease_daily_target: "Tägliches Ziel verringern"
-    increase_daily_target: "Tägliches Ziel erhöhen"

@@ -28,15 +28,15 @@ tasks:
     estimated_time:
       label: 예상 시간
     is_completed: 완료됨
+    parent_task:
+      label: 상위 작업
+      tooltip: 클릭하여 상위 작업으로 이동
     planned_date:
       label: 계획일
     priority:
       label: 우선순위
     sub_tasks:
       label: 하위 작업
-    parent_task:
-      label: 상위 작업
-      tooltip: 클릭하여 상위 작업으로 이동
     tags:
       hint: 연결할 태그 선택
       label: 태그
@@ -186,9 +186,9 @@ tasks:
   new_task: 새 작업
   no_tasks: 작업 없음
   notifications:
-    deadline_message: "작업 마감일은 {time}입니다"
+    deadline_message: 작업 마감일은 {time}입니다
     deadline_title: "작업 마감일: {title}"
-    planned_message: "작업이 {time}에 계획되어 있습니다"
+    planned_message: 작업이 {time}에 계획되어 있습니다
     reminder_title: "작업 알림: {title}"
   page:
     completed_tasks_title: 완료된 작업
@@ -208,14 +208,14 @@ tasks:
       auto_start_section: 자동 시작 옵션
       auto_start_work: 휴식 후 자동으로 작업 시작
       break_duration: 휴식 시간
+      keep_screen_awake: 세션 중 화면 켜짐 유지
+      keep_screen_awake_section: 화면 켜짐 유지
       long_break_duration: 긴 휴식 시간
       sessions_before_long_break: 긴 휴식 전 세션 수
       ticking_sound: 똑딱 소리 활성화
       ticking_sound_section: 똑딱 소리
       ticking_speed: 속도
       ticking_volume: 음량
-      keep_screen_awake_section: 화면 켜짐 유지
-      keep_screen_awake: 세션 중 화면 켜짐 유지
       timer_label: 세션 시간
       title: 타이머 설정
       work_duration: 작업 시간
@@ -246,7 +246,9 @@ tasks:
       urgent_not_important: 긴급하지만 중요하지 않음
   quick_task:
     create_error: 작업 생성 오류
-    lock_description: 여러 유사한 작업을 생성할 때 값을 유지하기 위해 속성을 잠그세요. 잠긴 속성은 양식을 재설정할 때 지워지지 않습니다.
+    lock_description:
+      여러 유사한 작업을 생성할 때 값을 유지하기 위해 속성을 잠그세요. 잠긴 속성은 양식을 재설정할 때 지워지지
+      않습니다.
     lock_settings: 잠금 설정
     reset_all: 모든 필드 재설정
     reset_confirm:
@@ -288,17 +290,15 @@ tasks:
       endsAfter: 종료 후
       endsOnDate: 종료일
       occurrences: 회
-      on: 에
+      true: 에
       starts: 시작
       everyDay: 매일
+      "on": "에"
     weekDays: 요일
     weekSuffix: 주
     weekly: 매주
     yearSuffix: 년
     yearly: 매년
-  validation:
-    deadline_time_invalid: 마감 시간이 잘못되었습니다
-    deadline_cannot_be_before_planned: 마감일이 계획일 이후여야 합니다
   reminder:
     atTime: 예정된 시간에
     deadlineReminderLabel: 마감일 알림
@@ -318,3 +318,6 @@ tasks:
     set_reminder: 알림 설정
     show_completed_tasks: 완료된 작업 필터링
     show_subtasks: 하위 작업 표시
+  validation:
+    deadline_cannot_be_before_planned: 마감일이 계획일 이후여야 합니다
+    deadline_time_invalid: 마감 시간이 잘못되었습니다

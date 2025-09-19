@@ -9,7 +9,6 @@ habits:
     unarchive: Разархивировать
     unarchive_confirm: Вы уверены, что хотите разархивировать эту привычку?
     unarchive_tooltip: Разархивировать эту привычку
-
   calendar:
     week_days:
       fri: Пт
@@ -25,6 +24,8 @@ habits:
   details:
     archived_status: Архивировано
     create_record_tooltip: Отметить как выполненное сегодня
+    daily_target: Ежедневная цель
+    daily_target_hint: Введите вашу ежедневную цель (например, 10 минут или 5 повторений)
     description: Описание
     estimated_time: Предполагаемое время
     estimated_time_not_set: Не установлено
@@ -79,24 +80,20 @@ habits:
     statistics:
       archived_note: "Архивировано:"
       archived_on: Архивировано
-      archived_warning:
-        "Статистика показана до даты архивирования. {startDate} -
-        {archivedDate}"
+      archived_warning: Статистика показана до даты архивирования. {startDate} - {archivedDate}
+      completions: завершений
       from: С
       monthly: Ежемесячно
+      no_streaks_yet: Пока нет серий. Начните строить последовательность!
       overall: Общая
       records: Записи
       score_trends: Тренды оценок
       to: До
       top_streaks: Лучшие серии
-      no_streaks_yet: Пока нет серий. Начните строить последовательность!
-      completions: завершений
       yearly: Ежегодно
     statistics_label: Статистика
     tags: Теги
     tags_hint: Выбрать теги для связи
-    daily_target: "Ежедневная цель"
-    daily_target_hint: "Введите вашу ежедневную цель (например, 10 минут или 5 повторений)"
   errors:
     adding_tag: Не удалось добавить тег
     creating_record: Не удалось создать запись привычки
@@ -119,8 +116,9 @@ habits:
   goals:
     current_goal: Цель
     days_unit: дни
-    description: Хотите практиковать привычку с определённой частотой, а не
-      каждый день? Тогда установите пользовательскую цель.
+    description:
+      Хотите практиковать привычку с определённой частотой, а не каждый
+      день? Тогда установите пользовательскую цель.
     enable: Включить пользовательские цели
     goal: Пользовательская цель
     goal_format: "{count} раз за {dayCount} дней"
@@ -128,13 +126,11 @@ habits:
     settings: Настройки пользовательской цели
     target_frequency: Целевая частота
     times_unit: раз
-  help:
-    description: Описание справки
   list:
     all_habits_done: Все привычки выполнены!
     no_habits_found: Нет привычек
-  new_habit: Новая привычка
   name_placeholder: Введите осмысленное название привычки...
+  new_habit: Новая привычка
   notifications:
     reminder_message: "Не забудьте выполнить свою привычку: {name}"
     reminder_title: "Напоминание о привычке: {name}"
@@ -212,8 +208,8 @@ habits:
     select_tooltip: Выбрать тег
   tooltips:
     add_habit: Добавить привычку
+    decrease_daily_target: Уменьшить ежедневную цель
     decrease_estimated_time: Уменьшить предполагаемое время
     edit_name: Редактировать название
+    increase_daily_target: Увеличить ежедневную цель
     increase_estimated_time: Увеличить предполагаемое время
-    decrease_daily_target: "Уменьшить ежедневную цель"
-    increase_daily_target: "Увеличить ежедневную цель"

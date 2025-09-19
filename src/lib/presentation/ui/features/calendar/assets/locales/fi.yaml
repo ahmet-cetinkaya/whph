@@ -3,49 +3,49 @@ calendar:
     today:
       help:
         content: |
-          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
+          Optimoi päivittäinen tuottavuutesi yhtenäisellä näkymällä, joka integroi tehtävät, tavat ja aikaseurannan auttaakseen sinua ylläpitämään keskittymistä ja saavuttamaan tavoitteesi tehokkaasti.
 
-          ## ⚡ Why Is It Important?
+          ## ⚡ Miksi se on tärkeää?
 
-          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
+          Päivittäinen tuottavuuden hallinta on tehokkaan ajan käytön ja tavoitteiden saavuttamisen kulmakivi. Centralisoimalla päivittäiset toimintasi yhteen näkymään poistat kontekstinvaihdot, ylläpidät selkeät prioriteetit ja luot systemaattisen lähestymistavan tärkeimpien tehtäviesi suorittamiseen.
 
-          ## 🔄 Habit Consistency
+          ## 🔄 Tavojen johdonmukaisuus
 
-          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
+          Seuraa ja ylläpidä päivittäisiä rutiinejasi virtaviivaistetulla tavanseurannalla, joka rakentaa vauhtia ja vahvistaa positiivisia käyttäytymismalleja päiväsi aikana.
 
-          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
-          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
-          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
-          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
+          - ✅ **Nopea arviointi:** Näytä kaikki päivittäiset tavat yhdellä silmäyksellä nopeaa edistymisen arviointia varten
+          - ✔️ **Välitön valmistuminen:** Merkitse tavat valmiiksi yksinkertaisilla vuorovaikutuksilla, jotka ylläpitävät virtausta
+          - 🔄 **Rutiinin vahvistaminen:** Vahvista päivittäisiä malleja johdonmukaisella seurannalla ja tunnustuksella
+          - 📈 **Vauhdin rakentaminen:** Visuaaliset edistymisen indikaattorit, jotka motivoivat jatkuvaan johdonmukaisuuteen
 
-          ## 📋 Task Execution
+          ## 📋 Tehtävien suoritus
 
-          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+          Keskity tehtävänhallintaasi selkeällä näkymällä päivän prioriteeteista, joka auttaa sinua suorittamaan tehokkaasti menettämättä deadlineja ja sitoumuksia näkyvistä.
 
-          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
-          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
-          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
-          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+          - 🗓️ **Prioriteettien selkeys:** Näytä suunnitellut ja erääntyvät tehtävät järjestettynä optimaalista suorittamista varten
+          - ➕ **Nopea tallennus:** Lisää uusia tehtäviä nopeasti häiritsemättä nykyistä työnkulkua
+          - ✔️ **Edistymisen seuranta:** Seuraa valmistumistilaa ylläpitääksesi vastuullisuutta ja vauhtia
+          - 🎯 **Keskittymisen ylläpitäminen:** Selkeä päivittäinen näkymä estää tulevien velvoitteiden ylikuormituksen
 
-          ## ⏰ Time Investment Analysis
+          ## ⏰ Ajan investoinnin analyysi
 
-          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+          Ymmärrä, miten käytät aikaasi kategorisoidun analyysin kautta, joka paljastaa tuottavuusmalleja ja auttaa optimoimaan päivittäisen aikataulusi maksimaalisen tehokkuuden saavuttamiseksi.
 
-          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
-          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
-          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
-          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+          - 📊 **Kategoria-analyysit:** Analysoi ajan jakautumista eri toimintojen tageissa ja projekteissa
+          - 📈 **Mallien tunnistus:** Tunnista tuottavuustrendit ja huippusuoritusajat
+          - 🕒 **Toiminnan seuranta:** Seuraa aikaa, joka kuluu erilaisiin päivittäisiin toimintoihin ja vastuisiin
+          - 🎯 **Optimointimahdollisuudet:** Käytä dataa informoituihin päätöksiin ajan allokoinnista
 
-          ## ⚙️ Productivity Shortcuts
+          ## ⚙️ Tuottavuuden oikotiet
 
-          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+          Hyödynnä nopeita toimintoja ja tehokkaita työnkulkua, jotka minimoivat kitkan ja maksimoivat kykysi ylläpitää keskittymistä korkean arvon toimintoihin päiväsi aikana.
 
-          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
-          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
-          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
-          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
-        title: Daily Productivity Management Guide
-      title: Today
+          - ▶️ **Keskittymissessiot:** Käynnistä keskittyneet työajat Marathon-tilan ajastimen integraatiolla
+          - 🔎 **Älykäs suodatus:** Käytä tagipohjaista suodatusta keskittyäksesi tiettyihin projekteihin tai elämänalueisiin
+          - ✅ **Tehokas valmistuminen:** Valmis tavut ja tehtävät virtaviivaistetuilla, häiriöttömillä vuorovaikutuksilla
+          - 📊 **Suorituskykyanalyysit:** Pääsy aikakaavioihin välittömälle palautteelle päivittäisistä tuottavuusmalleista
+        title: Päivittäisen tuottavuuden hallinnan opas
+      title: Tänään
   sections:
-    habits: Habits
-    tasks: Tasks
+    habits: Tavut
+    tasks: Tehtävät

@@ -1,5 +1,4 @@
 shared:
-  untitled: "Fără titlu"
   buttons:
     add: Adaugă
     back: Înapoi
@@ -65,6 +64,7 @@ shared:
     created_date_label: Data creării
     modified_date_label: Data modificării
     name_label: Nume
+  date: Data
   date_filter:
     title: Selectează intervalul de date
     tooltips:
@@ -72,6 +72,32 @@ shared:
       filter: Filtrează după dată
   date_format:
     hint: ZZ/LL/AAAA
+  datepicker:
+    cannot_select_date_after_max_date: Nu se poate selecta o dată după {date}
+    cannot_select_date_before_min_date: Nu se poate selecta o dată înainte de {date}
+    cannot_select_time_after_max_date: Nu se poate selecta o oră după {time}
+    cannot_select_time_before_min_date: Nu se poate selecta o oră înainte de {time}
+    deadline_cannot_be_before_planned_date:
+      Termenul limită trebuie să fie la data
+      planificată sau ulterior
+    end_date_cannot_be_after_max_date: Data de sfârșit nu poate fi după {date}
+    end_date_must_be_at_or_before:
+      Data de sfârșit trebuie să fie la sau înainte de
+      {date}
+    select_date_range_title: Selectați intervalul de date
+    select_date_time_title: Selectați data și ora
+    selected_date_must_be_at_or_after: Data selectată trebuie să fie la sau după {date}
+    selected_date_must_be_at_or_before:
+      Data selectată trebuie să fie la sau înainte
+      de {date}
+    selected_date_time_must_be_after: Data și ora selectate trebuie să fie după {dateTime}
+    start_date_cannot_be_after_end_date:
+      Data de început nu poate fi după data de
+      sfârșit
+    start_date_cannot_be_before_min_date: Data de început nu poate fi înainte de {date}
+    start_date_must_be_at_or_after: Data de început trebuie să fie la sau după {date}
+    time_must_be_at_or_after: Ora trebuie să fie la sau după {time}
+    time_must_be_at_or_before: Ora trebuie să fie la sau înainte de {time}
   days:
     friday: Vineri
     friday_short: Vin
@@ -92,19 +118,19 @@ shared:
       hint: Poți scrie folosind formatul Markdown...
       tooltips:
         bold: Îngroșat
-        italic: Cursiv
-        strikethrough: Tăiat
-        code: Cod
-        link: Link
-        quote: Citat
         bulleted_list: Listă cu puncte
-        numbered_list: Listă numerotată
-        horizontal_rule: Linie orizontală
-        edit: Editează
-        preview: Previzualizare
-        image: Imagine
-        heading: Titlu
         checkbox: Casetă de selectare
+        code: Cod
+        edit: Editează
+        heading: Titlu
+        horizontal_rule: Linie orizontală
+        image: Imagine
+        italic: Cursiv
+        link: Link
+        numbered_list: Listă numerotată
+        preview: Previzualizare
+        quote: Citat
+        strikethrough: Tăiat
   errors:
     deleting: Eroare la ștergerea datelor
     file_not_found: Fișierul nu a fost găsit
@@ -138,8 +164,6 @@ shared:
     unexpected: A apărut o eroare neașteptată
   filters:
     search: Caută
-  help:
-    tooltip: Ajutor
   messages:
     confirm_delete: Ești sigur că vrei să ștergi acest element?
     no_items_found: Niciun element
@@ -153,16 +177,16 @@ shared:
       tags: Etichete
       tasks: Sarcini
       today: Astăzi
-  none_option: "Fără etichete"
+  none_option: Fără etichete
   regex_help:
     examples:
-      chat: 'Se potrivește cu "Slack" sau "Discord"'
-      chrome: 'Se potrivește cu orice titlu de fereastră care conține "Chrome"'
-      exact_chrome: 'Se potrivește exact cu "Chrome"'
+      chat: Se potrivește cu "Slack" sau "Discord"
+      chrome: Se potrivește cu orice titlu de fereastră care conține "Chrome"
+      exact_chrome: Se potrivește exact cu "Chrome"
       pdf: Se potrivește cu orice fișier PDF
       vscode: Se potrivește cu orice fereastră VS Code
     tips:
-      any_chars: 'Folosește ".*" pentru a se potrivi cu orice caractere'
+      any_chars: Folosește ".*" pentru a se potrivi cu orice caractere
       dot: '"\." se potrivește cu un punct'
       end: '"$" se potrivește cu sfârșitul textului'
       or: '"|" înseamnă SAU'
@@ -187,11 +211,11 @@ shared:
       description: Activează drag and drop pentru a reordona elementele
       title: Sortare personalizată
     descending: Descrescător
+    disable_reordering_tooltip: Dezactivează modul de reordonare
+    enable_reordering_tooltip: Activează modul de reordonare
     remove_criteria: Elimină criteriul
     reset_to_default: Resetează la implicit
     sort: Sortează
-    enable_reordering_tooltip: Activează modul de reordonare
-    disable_reordering_tooltip: Dezactivează modul de reordonare
   statistics:
     daily_usage:
       description: Arată timpul total de utilizare pe zi a săptămânii
@@ -200,7 +224,24 @@ shared:
       description: Arată timpul total de utilizare pe oră din zi
       title: Utilizare pe ore
   time:
-    not_set: "Nu este setat"
+    not_set: Nu este setat
+  time_display:
+    elapsed: Scurs
+    elapsed_time_tooltip: Timp petrecut pe această sarcină
+    estimated: Estimat
+    estimated_time_tooltip: Timp estimat pentru a finaliza această sarcină
+    no_time_logged_tooltip: Niciun timp înregistrat încă
+  time_logging:
+    add_time: Adaugă timp
+    add_time_description: Adaugă timp la totalul existent
+    dialog_title: Înregistrează timpul
+    duration: Durată
+    invalid_input: Te rog introdu o oră validă
+    log_time: Înregistrează timpul
+    mode: Mod
+    set_total: Setează total
+    set_total_description: Setează timpul total petrecut
+    total_time: Timp total
   time_periods:
     custom: Personalizat
     last_month: Luna trecută
@@ -210,6 +251,11 @@ shared:
     this_three_months: Aceste 3 luni
     this_week: Săptămâna aceasta
     today: Astăzi
+  timer:
+    label: Temporizator
+    normal: Normal
+    pomodoro: Pomodoro
+    stopwatch: Cronometru
   tooltips:
     compare_with_previous: Compară cu perioada anterioară
     filter_by_tags: Filtrează după etichete
@@ -222,6 +268,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sec
+  untitled: Fără titlu
   update_dialog:
     buttons:
       download_page: Pagina de descărcare
@@ -235,21 +282,4 @@ shared:
     title: Actualizare disponibilă!
   validation:
     required: "{field} este obligatoriu."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Termenul limită trebuie să fie la data planificată sau ulterior"
-    selected_date_must_be_at_or_after: Data selectată trebuie să fie la sau după {date}
-    selected_date_must_be_at_or_before: Data selectată trebuie să fie la sau înainte de {date}
-    start_date_cannot_be_after_end_date: Data de început nu poate fi după data de sfârșit
-    start_date_must_be_at_or_after: Data de început trebuie să fie la sau după {date}
-    end_date_must_be_at_or_before: Data de sfârșit trebuie să fie la sau înainte de {date}
-    cannot_select_date_before_min_date: Nu se poate selecta o dată înainte de {date}
-    cannot_select_date_after_max_date: Nu se poate selecta o dată după {date}
-    start_date_cannot_be_before_min_date: Data de început nu poate fi înainte de {date}
-    end_date_cannot_be_after_max_date: Data de sfârșit nu poate fi după {date}
-    cannot_select_time_before_min_date: Nu se poate selecta o oră înainte de {time}
-    cannot_select_time_after_max_date: Nu se poate selecta o oră după {time}
-    time_must_be_at_or_after: Ora trebuie să fie la sau după {time}
-    time_must_be_at_or_before: Ora trebuie să fie la sau înainte de {time}
-    selected_date_time_must_be_after: Data și ora selectate trebuie să fie după {dateTime}
-    select_date_time_title: Selectați data și ora
-    select_date_range_title: Selectați intervalul de date
+  help: Ajutor

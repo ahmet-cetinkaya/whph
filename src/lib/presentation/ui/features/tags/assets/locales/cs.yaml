@@ -1,128 +1,128 @@
 tags:
   actions:
-    add: Add Tag
-    archive: Archive Tag
-    delete: Delete Tag
-    edit: Edit Tag
-    hide_archived: Hide archived tags
-    show_archived: Show archived tags
-    unarchive: Unarchive Tag
+    add: Přidat štítek
+    archive: Archivovat štítek
+    delete: Smazat štítek
+    edit: Upravit štítek
+    hide_archived: Skrýt archivované štítky
+    show_archived: Zobrazit archivované štítky
+    unarchive: Zrušit archivaci štítku
   categories:
-    all: All
-    app_usage: App Usage
-    habits: Habits
-    tasks: Tasks
-
+    all: Vše
+    app_usage: Použití aplikace
+    habits: Zvyky
+    tasks: Úkoly
+  default_name: Bez názvu
   details:
-    archived: Archived
-    color: Color
+    archived: Archivováno
+    color: Barva
     help:
-      description: Details help description
-      title: Details Help Title
-    name: Name
-    related_tags: Related Tags
-    select_tag: Select tag
-    tasks_label: Tasks
+      description: Popis nápovědy detailů
+      title: Nadpis nápovědy detailů
+    name: Název
+    related_tags: Související štítky
+    select_tag: Vybrat štítek
+    tasks_label: Úkoly
   errors:
-    creating: Failed to create tag
-    deleting: Failed to delete tag
-    get_tags: Error occurred while fetching tags
-    loading: Failed to load tags
-    loading_archive_status: Failed to load archive status
-    same_tag: Primary and secondary tags cannot be the same
-    saving: Failed to save tag
-    tag_not_found: Tag not found
-    tag_tag_already_exists: This tag relationship already exists
-    tag_tag_not_found: Tag relationship not found
-    toggling_archive: Failed to toggle archive status
+    creating: Selhání vytvoření štítku
+    deleting: Selhání smazání štítku
+    get_tags: Chyba při získávání štítků
+    loading: Selhání načtení štítků
+    loading_archive_status: Selhání načtení stavu archivu
+    same_tag: Primární a sekundární štítky nemohou být stejné
+    saving: Selhání uložení štítku
+    tag_not_found: Štítek nenalezen
+    tag_tag_already_exists: Tento vztah štítku již existuje
+    tag_tag_not_found: Vztah štítku nenalezen
+    toggling_archive: Selhání přepnutí stavu archivu
   filter:
-    all_categories: All Categories
-    select_category: Select Category
-  filter_tooltip: Filter by tags
+    all_categories: Všechny kategorie
+    select_category: Vybrat kategorii
+  filter_tooltip: Filtrovat podle štítků
   help:
-    content: Tag help content
+    content: Obsah nápovědy štítků
     overview:
       content: |
-        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+        Transformujte svou produktivitu strategickým označováním, které vám pomůže organizovat práci, sledovat investice času a udržovat jasné zaměření na to nejdůležitější.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Proč je to důležité?
 
-        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+        Organizace založená na štítcích je základní pro efektivní řízení času a produktivitu. Kategorizováním svých aktivit smysluplnými štítky získáte jasné postřehy o tom, jak trávíte čas, a můžete učinit informovaná rozhodnutí k optimalizaci zaměření a efektivity.
 
-        ## 📊 Time Investment Analysis
+        ## 📊 Analýza investic času
 
-        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+        Pochopte, kam váš čas jde, a učinte datově řízená rozhodnutí o svých prioritách. Sledování času s štítky odhaluje vzorce, které vám pomohou optimalizovat váš rozvrh a pracovní návyky.
 
-        - ⏱️ Monitor time spent across different activity categories
-        - 📅 Track time investments over specific periods and trends
-        - ⚖️ Compare time allocation across projects and responsibilities
-        - 📈 Identify productivity patterns and peak performance times
-        - 🎯 Focus your energy on high-impact activities
+        - ⏱️ Sledujte čas strávený v různých kategoriích aktivit
+        - 📅 Sledujte investice času v určitých obdobích a trendech
+        - ⚖️ Porovnávejte rozložení času v projektech a odpovědnostech
+        - 📈 Identifikujte vzorce produktivity a časy špičkového výkonu
+        - 🎯 Soustřeďte svou energii na aktivity s vysokým dopadem
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strategická organizace
 
-        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+        Vytvořte systematický přístup k organizaci práce, který se škáluje s vašimi potřebami. Dobře strukturované štítky tvoří základ efektivního systému produktivity.
 
-        - 🔍 Filter and find information quickly with multi-tag searches
-        - 🗄️ Archive completed projects to maintain clean organization
-        - 🧩 Build hierarchical structures that reflect your work patterns
-        - 👥 Group related activities for better project management
-        - ⏳ Enable comprehensive time tracking across all activities
+        - 🔍 Filtrování a nalezení informací rychle s multi-štítkovými vyhledáváními
+        - 🗄️ Archivujte dokončené projekty pro udržení čisté organizace
+        - 🧩 Vytvářejte hierarchické struktury, které odrážejí vaše pracovní vzorce
+        - 👥 Grupujte související aktivity pro lepší řízení projektů
+        - ⏳ Povolte komplexní sledování času napříč všemi aktivitami
 
-        ## 💡 Optimization Strategies
+        ## 💡 Strategie optimalizace
 
-        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+        Využívejte pokročilé techniky označování pro maximalizaci efektivity vašeho organizačního systému a udržení dlouhodobého růstu produktivity.
 
-        - 🏷️ Use clear, descriptive names that remain meaningful over time
-        - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
-        - 📊 Review time analysis reports regularly to identify improvement opportunities
-        - 🗄️ Maintain system cleanliness by archiving completed work
-        - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
-      title: Tag-Based Organization & Time Management Guide
-    title: Tag Help
+        - 🏷️ Používejte jasné, popisné názvy, které zůstávají smysluplné v čase
+        - 🔗 **Vytvořte hierarchické struktury:** Projekty → Oddělení → Oblasti
+        - 📊 Pravidelně kontrolujte zprávy o analýze času pro identifikaci příležitostí k zlepšení
+        - 🗄️ Udržujte čistotu systému archivací dokončené práce
+        - 🎯 Používejte zaměřené filtrování k eliminaci rušivých prvků a zlepšení koncentrace
+      title: Průvodce organizací založenou na štítcích a řízením času
+    title: Nápověda štítků
   labels:
-    color: Color
-    description: Description
-    name: Name
-    tags: Tags
+    color: Barva
+    description: Popis
+    name: Název
+    tags: Štítky
   list:
-    filter_tooltip: Filter by tags
-    no_tags: No tags
+    filter_tooltip: Filtrovat podle štítků
+    no_tags: Žádné štítky
   messages:
-    archive_confirm: Are you sure you want to archive this tag?
-    confirm_archive: Are you sure you want to archive this tag?
-    confirm_delete: Are you sure you want to delete this tag?
-    confirm_unarchive: Are you sure you want to unarchive this tag?
-    unarchive_confirm: Are you sure you want to unarchive this tag?
-  new_tag: New Tag
-  name_placeholder: Enter a descriptive tag name...
-  no_tags: No tags
-  none_option: None
+    archive_confirm: Jste si jisti, že chcete archivovat tento štítek?
+    confirm_archive: Jste si jisti, že chcete archivovat tento štítek?
+    confirm_delete: Jste si jisti, že chcete smazat tento štítek?
+    confirm_unarchive: Jste si jisti, že chcete zrušit archivaci tohoto štítku?
+    unarchive_confirm: Jste si jisti, že chcete zrušit archivaci tohoto štítku?
+  new_tag: Nový štítek
+  name_placeholder: Zadejte popisný název štítku...
+  no_tags: Žádné štítky
+  none_option: Žádný
   search:
-    clear_all: Clear All
-    label: Search tags
+    clear_all: Vymazat vše
+    label: Hledat štítky
   sections:
-    list: Tags
+    list: Štítky
   selection:
-    done: Done
-  tag_details: Tag Details
+    done: Hotovo
+  tag_details: Detaily štítku
   time_bar_chart:
-    by_element: By element
-    no_data: No data
-    title: Time Distribution
+    by_element: Podle prvku
+    no_data: Žádná data
+    title: Rozložení času
   time_chart:
-    no_data: No data
-    other_category: Other
-  time_distribution: Time Distribution
-  time_records: Time Records
-  title: Tags
+    no_data: Žádná data
+    other_category: Jiné
+  time_distribution: Rozložení času
+  time_records: Záznamy času
+  title: Štítky
   tooltips:
-    add_tag: Add tag
-    add_task: Add new task
-    archive_tag: Archive tag
-    color: Click to assign color to tag
-    delete_tag: Delete tag
-    edit_name: Edit name
-    remove_tag: Remove tag
-    select: Click to select tag
-    unarchive_tag: Unarchive tag
+    add_tag: Přidat štítek
+    add_task: Přidat nový úkol
+    archive_tag: Archivovat štítek
+    color: Klikněte pro přiřazení barvy štítku
+    delete_tag: Smazat štítek
+    edit_name: Upravit název
+    remove_tag: Odstranit štítek
+    select: Klikněte pro výběr štítku
+    unarchive_tag: Zrušit archivaci štítku

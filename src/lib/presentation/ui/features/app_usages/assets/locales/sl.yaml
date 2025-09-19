@@ -1,178 +1,178 @@
 app_usages:
   delete:
-    confirm_title: Delete App Usage
-    error: An unexpected error occurred while deleting app usage
+    confirm_title: Izbriši uporabo aplikacije
+    error: Prišlo je do nepričakovane napake pri brisanju uporabe aplikacije
   details:
     color:
-      hint: Click to change color
-      label: Color
+      hint: Kliknite za spremembo barve
+      label: Barva
     device:
-      label: Device
-      unknown: Unknown Device
+      label: Naprava
+      unknown: Neznana naprava
     help:
       content: |
-        See exactly how much time you spend on apps and stay in control by organizing them with tags.
+        Natančno poglejte, koliko časa preživite v aplikacijah, in ohranite nadzor z organiziranjem z oznakami.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Zakaj je to pomembno?
 
-        Time management is the key to your productivity. Tracking your app usage and tagging them with the right categories improves your focus and helps prevent unnecessary time loss.
+        Upravljanje časa je ključ do vaše produktivnosti. Spremljanje uporabe aplikacij in označevanje z ustreznimi kategorijami izboljša vaš fokus in pomaga preprečiti nepotrebno izgubo časa.
 
-        ## ⏱️ Time Tracking
+        ## ⏱️ Spremljanje časa
 
-        Track your daily usage habits to accurately analyze your time. With in-app detailed usage durations and active window tracking, easily see how much focus you give to each app. This data guides you on where improvements are needed.
+        Spremljajte svoje dnevne navade uporabe, da natančno analizirate svoj čas. Z podrobnimi trajanji uporabe v aplikaciji in sledenjem aktivnim oknom enostavno vidite, koliko pozornosti namenite vsaki aplikaciji. Ti podatki vas vodijo, kje so potrebne izboljšave.
 
-        - ⏳ Review daily usage durations  
-        - 🔍 Track active windows  
-        - 📊 Understand your time distribution with detailed reports
+        - ⏳ Preglejte dnevna trajanja uporabe  
+        - 🔍 Spremljajte aktivna okna  
+        - 📊 Razumite porazdelitev časa z podrobnimi poročili
 
-        ## 🏷️ Tag Management
+        ## 🏷️ Upravljanje oznak
 
-        Categorizing and organizing your apps boosts productivity. With the tagging system, you can group your apps and speed up your workflow using automation rules. This helps you maintain focus and use your time more efficiently.
+        Kategoriziranje in organiziranje aplikacij poveča produktivnost. Z sistemom oznak lahko združite aplikacije in pospešite delovni tok z avtomatizacijskimi pravili. To vam pomaga ohranjati fokus in učinkoviteje uporabljati čas.
 
-        - 🏷️ Tag apps with meaningful categories  
-        - ⚙️ Create automatic tagging rules  
-        - 🔄 Save time by reducing manual tasks
+        - 🏷️ Oznake aplikacij z smiselnih kategorij  
+        - ⚙️ Ustvarite avtomatska pravila označevanja  
+        - 🔄 Prihranite čas z zmanjšanjem ročnih nalog
 
-        ## 📈 Analysis & Productivity Tracking
+        ## 📈 Analiza in sledenje produktivnosti
 
-        Visualize your own usage patterns to discover your strengths and weaknesses. Tracking your productive time is critical for enhancing focus. With in-app comparison and reporting tools, you can clearly see your progress.
+        Vizualizirajte svoje vzorce uporabe, da odkrijete prednosti in slabosti. Sledenje vašemu produktivnemu času je ključno za izboljšanje fokusa. Z orodji za primerjavo in poročanje v aplikaciji jasno vidite napredek.
 
-        - 📊 Visualize your usage patterns  
-        - 🤝 Compare with similar apps  
-        - 🚀 Track productive vs. unproductive time
-      title: Time & Productivity Tracking Guide
+        - 📊 Vizualizirajte vzorce uporabe  
+        - 🤝 Primerjajte s podobnimi aplikacijami  
+        - 🚀 Spremljajte produktiven proti neproduktiven čas
+      title: Vodnik za sledenje časa in produktivnosti
     tags:
-      hint: Select tags
-      label: Tags
+      hint: Izberite oznake
+      label: Oznake
   device_filter:
-    clear_all: Clear All
+    clear_all: Počisti vse
     search:
-      label: Search devices
+      label: Išči naprave
   errors:
-    add_tag: An unexpected error occurred while adding tag
-    app_usage_ignore_rule_not_found: Ignore rule not found
-    app_usage_not_found: App usage not found
-    app_usage_tag_not_found: App usage tag not found
-    delete: An unexpected error occurred while deleting app usage
-    app_usage_tag_rule_not_found: Tag rule not found
-    get_tags: Error occurred while fetching app usage tags
-    get_usage: An unexpected error occurred while fetching app usage
-    remove_tag: An unexpected error occurred while removing tag
-    save_rule: An unexpected error occurred while saving ignore rules
-    save_usage: An unexpected error occurred while saving app usage
-    statistics: An unexpected error occurred while fetching statistics
-    tag_already_exists: This tag is already added
+    add_tag: Prišlo je do nepričakovane napake pri dodajanju oznake
+    app_usage_ignore_rule_not_found: Pravilo za zanemarjanje ni najdeno
+    app_usage_not_found: Uporaba aplikacije ni najdena
+    app_usage_tag_not_found: Oznaka uporabe aplikacije ni najdena
+    delete: Prišlo je do nepričakovane napake pri brisanju uporabe aplikacije
+    app_usage_tag_rule_not_found: Pravilo za oznako ni najdeno
+    get_tags: Napaka pri pridobivanju oznak uporabe aplikacije
+    get_usage: Prišlo je do nepričakovane napake pri pridobivanju uporabe aplikacije
+    remove_tag: Prišlo je do nepričakovane napake pri odstranjevanju oznake
+    save_rule: Prišlo je do nepričakovane napake pri shranjevanju pravil za zanemarjanje
+    save_usage: Prišlo je do nepričakovane napake pri shranjevanju uporabe aplikacije
+    statistics: Prišlo je do nepričakovane napake pri pridobivanju statistik
+    tag_already_exists: Ta oznaka je že dodana
   form:
     description:
-      hint: Enter a description for this rule
-      label: Description (Optional)
+      hint: Vnesite opis za to pravilo
+      label: Opis (Neobvezno)
     pattern:
-      help_tooltip: Show regex help
-      hint: Enter regex pattern
-      label: Pattern
-      required: Pattern is required
-    save: Save
-    saved: Saved
+      help_tooltip: Pokaži pomoč regex
+      hint: Vnesite vzorec regex
+      label: Vzorec
+      required: Vzorec je obvezen
+    save: Shrani
+    saved: Shranjeno
   ignore_rules:
-    delete_confirm: 'Are you sure you want to delete the ignore rule "{pattern}"?'
-    delete_title: Delete Rule
-    delete_tooltip: Delete rule
-    no_rules: No ignore rules
-    pattern_label: Pattern
-  no_usage: No app usage yet
+    delete_confirm: 'Ste prepričani, da želite izbrisati pravilo zanemarjanja "{pattern}"?'
+    delete_title: Izbriši pravilo
+    delete_tooltip: Izbriši pravilo
+    no_rules: Brez pravil zanemarjanja
+    pattern_label: Vzorec
+  no_usage: Še ni uporabe aplikacije
   pages:
     view:
       buttons:
-        filter_tags: Filter Tags
-        filter_devices: Filter Devices
-        tag_rules: Tag Rules
+        filter_tags: Filtriraj oznake
+        filter_devices: Filtriraj naprave
+        tag_rules: Pravila oznak
       help:
         content: |
-          Analyze, organize, and take control of your app usage to work more efficiently. With tagging and analysis tools, see, manage, and improve how you spend your time.
+          Analizirajte, organizirajte in prevzemite nadzor nad uporabo aplikacij za boljše delo. Z orodji za označevanje in analizo vidite, upravljate in izboljšate, kako preživite čas.
 
-          ## ⏱️ Usage Tracking
+          ## ⏱️ Spremljanje uporabe
 
-          Discover your daily usage habits. Track active windows and durations to understand where your time goes. This helps you identify focus areas and reduce time waste.
+          Odkrijte svoje dnevne navade uporabe. Spremljajte aktivna okna in trajanja, da razumete, kam gre vaš čas. To vam pomaga identificirati področja fokusa in zmanjšati izgubo časa.
 
-          - ⌛ Review app usage durations  
-          - 📅 Analyze daily patterns  
-          - 🖥️ Track active window history  
+          - ⌛ Preglejte trajanja uporabe aplikacij  
+          - 📅 Analizirajte dnevne vzorce  
+          - 🖥️ Spremljajte zgodovino aktivnih oken  
 
-          ## 🏷️ Tagging and Categorization
+          ## 🏷️ Označevanje in kategorizacija
 
-          Create an organized structure by grouping apps. With the tagging system, make your data more meaningful and easily analyze how much time you spend per category.
+          Ustvarite organizirano strukturo z združevanjem aplikacij. Z sistemom oznak naredite podatke bolj smiselne in enostavno analizirajte, koliko časa preživite na kategorijo.
 
-          - 🏷️ Assign meaningful tags to apps  
-          - ⚙️ Define automatic tagging rules  
-          - 📚 View usage time by category  
+          - 🏷️ Dodelite smiselne oznake aplikacijam  
+          - ⚙️ Določite avtomatska pravila označevanja  
+          - 📚 Poglejte čas uporabe po kategoriji  
 
-          ## 📊 Usage Analysis
+          ## 📊 Analiza uporabe
 
-          Analyze how efficiently you use your time. Through app comparisons and usage patterns, see which tools are actually beneficial for you.
+          Analizirajte, kako učinkovito uporabljate čas. Z primerjavami aplikacij in vzorci uporabe vidite, katera orodja so res koristna za vas.
 
-          - 📈 Analyze your own usage patterns  
-          - 🔄 Compare different apps  
-          - 🚀 Track your productive and unproductive time  
+          - 📈 Analizirajte svoje vzorce uporabe  
+          - 🔄 Primerjajte različne aplikacije  
+          - 🚀 Spremljajte produktiven in neproduktiven čas  
 
-          ## ⚙️ Management Tools
+          ## ⚙️ Orodja upravljanja
 
-          Use rules and filtering options to better control app behaviors. Especially with automation, save valuable time.
+          Uporabite pravila in možnosti filtriranja za boljši nadzor nad vedenjem aplikacij. Posebej z avtomatizacijo prihranite dragocen čas.
 
-          - 🛠️ Define new rules or edit existing ones  
-          - 🗑️ Remove unnecessary rules  
-          - 🔍 Filter by tag and date range
-        title: App Usage & Time Management Guide
+          - 🛠️ Določite nova pravila ali uredite obstoječa  
+          - 🗑️ Odstranite nepotrebna pravila  
+          - 🔍 Filtrirajte po oznaki in časovnem razponu
+        title: Vodnik za uporabo aplikacij in upravljanje časa
 
-      title: App Usage
+      title: Uporaba aplikacij
   rules:
-    add_new_rule: Add New Rule
-    delete_confirm_message: Are you sure you want to delete this rule?
-    delete_confirm_title: Delete Rule
+    add_new_rule: Dodaj novo pravilo
+    delete_confirm_message: Ste prepričani, da želite izbrisati to pravilo?
+    delete_confirm_title: Izbriši pravilo
     errors:
-      delete_rule: An unexpected error occurred while deleting rule
-      get_rules: An unexpected error occurred while fetching rules
-    existing_rules: Existing Rules
+      delete_rule: Prišlo je do nepričakovane napake pri brisanju pravila
+      get_rules: Prišlo je do nepričakovane napake pri pridobivanju pravil
+    existing_rules: Obstaleče pravila
     help:
       content: |
-        Use rules to manage app data in an organized, consistent, and efficient way. Customize app tracking with automatic tagging and exclusion options to strengthen your time management.
+        Uporabite pravila za organizirano, dosledno in učinkovito upravljanje podatkov aplikacij. Prilagodite sledenje aplikacij z avtomatskim označevanjem in možnostmi izključitve za krepitev upravljanja časa.
 
-        ## 🏷️ Automatic Tagging Rules
+        ## 🏷️ Avtomatska pravila označevanja
 
-        Create rules for your apps so the system can assign the correct tags on your behalf. This eliminates the need for manual tagging.
+        Ustvarite pravila za svoje aplikacije, da sistem samodejno dodeli ustrezne oznake. To odpravi potrebo po ročnem označevanju.
 
-        - 🧠 Automatically tag apps based on their names  
-        - 🗂️ Match multiple tags with a single rule  
-        - ⏱️ Automatically track time spent on tagged apps  
+        - 🧠 Avtomatsko označite aplikacije na podlagi njihovih imen  
+        - 🗂️ Ujemanje več oznak z enim pravilom  
+        - ⏱️ Avtomatsko spremljajte čas, porabljen na označenih aplikacijah  
 
-        ## ⚙️ Rule Management
+        ## ⚙️ Upravljanje pravil
 
-        Use the flexible rule management screen to build your own system. Delete unnecessary rules, add new ones, and update existing ones.
+        Uporabite fleksibilen zaslon za upravljanje pravil za gradnjo lastnega sistema. Izbrišite nepotrebna pravila, dodajte nova in posodobite obstoječa.
 
-        - ➕ Define new rules  
-        - ✏️ Edit existing rules  
-        - 🗑️ Remove rules you no longer use  
+        - ➕ Določite nova pravila  
+        - ✏️ Uredite obstoječa pravila  
+        - 🗑️ Odstranite pravila, ki jih ne uporabljate več  
 
-        ## 🚫 Ignore Rules
+        ## 🚫 Pravila zanemarjanja
 
-        Exclude system or background apps that might distort your productivity analysis. With these rules, you can focus only on what's truly important.
+        Izključite sistemske ali ozadjske aplikacije, ki bi lahko izkrivili analizo produktivnosti. S temi pravili se osredotočite samo na tisto, kar je res pomembno.
 
-        - 🧹 Exclude specific apps from tracking  
-        - 🖥️ Omit system processes and helper tools  
-        - 🔕 Filter out background-running apps  
+        - 🧹 Izključite specifične aplikacije iz sledenja  
+        - 🖥️ Izpustite sistemske procese in pomožna orodja  
+        - 🔕 Filtrirajte ozadjske aplikacije  
 
-        ## 🧩 Advanced Matching Options
+        ## 🧩 Napredne možnosti ujemanja
 
-        Enhance your rules with advanced pattern-matching options.
+        Izboljšajte pravila z naprednimi možnostmi ujemanja vzorcev.
 
-        - ✳️ Create flexible rules using wildcards  
-        - 🧾 Match exact app names  
-        - 🔠 Choose case sensitivity settings
-      title: Tagging & Exclusion Rules Guide
-    ignore_rules: Ignore Rules
-    no_rules: No rules
-    tag_rules: Tag Rules
-    title: App Usage Rules
+        - ✳️ Ustvarite fleksibilna pravila z wildcardi  
+        - 🧾 Ujemanje točnih imen aplikacij  
+        - 🔠 Izberite nastavitve občutljivosti na velike/male črke
+      title: Vodnik za pravila označevanja in izključitve
+    ignore_rules: Pravila zanemarjanja
+    no_rules: Brez pravil
+    tag_rules: Pravila oznak
+    title: Pravila uporabe aplikacij
   tooltips:
-    edit_name: Edit Name
+    edit_name: Uredi ime
   units:
     minutes: min

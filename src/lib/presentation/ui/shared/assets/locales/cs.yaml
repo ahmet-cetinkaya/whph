@@ -1,5 +1,4 @@
 shared:
-  untitled: "Bez názvu"
   buttons:
     add: Přidat
     back: Zpět
@@ -65,6 +64,7 @@ shared:
     created_date_label: Datum vytvoření
     modified_date_label: Datum úpravy
     name_label: Název
+  date: Datum
   date_filter:
     title: Vybrat rozsah dat
     tooltips:
@@ -72,6 +72,26 @@ shared:
       filter: Filtrovat podle data
   date_format:
     hint: DD/MM/RRRR
+  datepicker:
+    cannot_select_date_after_max_date: Nelze vybrat datum po {date}
+    cannot_select_date_before_min_date: Nelze vybrat datum před {date}
+    cannot_select_time_after_max_date: Nelze vybrat čas po {time}
+    cannot_select_time_before_min_date: Nelze vybrat čas před {time}
+    deadline_cannot_be_before_planned_date:
+      Termín musí být v den plánovaného data
+      nebo později
+    end_date_cannot_be_after_max_date: Koncové datum nemůže být po {date}
+    end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
+    select_date_range_title: Vybrat rozsah dat
+    select_date_time_title: Vybrat datum a čas
+    selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
+    selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
+    selected_date_time_must_be_after: Vybrané datum a čas musí být po {dateTime}
+    start_date_cannot_be_after_end_date: Počáteční datum nemůže být po koncovém datu
+    start_date_cannot_be_before_min_date: Počáteční datum nemůže být před {date}
+    start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
+    time_must_be_at_or_after: Čas musí být od {time} nebo později
+    time_must_be_at_or_before: Čas musí být do {time} nebo dříve
   days:
     friday: Pátek
     friday_short: Pá
@@ -92,19 +112,19 @@ shared:
       hint: Můžete psát pomocí formátu Markdown...
       tooltips:
         bold: Tučné
-        italic: Kurzíva
-        strikethrough: Přeškrtnuté
-        code: Kód
-        link: Odkaz
-        quote: Citace
         bulleted_list: Seznam s odrážkami
-        numbered_list: Číslovaný seznam
-        horizontal_rule: Vodorovná čára
-        edit: Upravit
-        preview: Náhled
-        image: Obrázek
-        heading: Nadpis
         checkbox: Zaškrtávací políčko
+        code: Kód
+        edit: Upravit
+        heading: Nadpis
+        horizontal_rule: Vodorovná čára
+        image: Obrázek
+        italic: Kurzíva
+        link: Odkaz
+        numbered_list: Číslovaný seznam
+        preview: Náhled
+        quote: Citace
+        strikethrough: Přeškrtnuté
   errors:
     deleting: Při mazání dat došlo k chybě
     file_not_found: Soubor nenalezen
@@ -138,8 +158,6 @@ shared:
     unexpected: Došlo k neočekávané chybě
   filters:
     search: Hledat
-  help:
-    tooltip: Nápověda
   messages:
     confirm_delete: Opravdu chcete smazat tuto položku?
     no_items_found: Žádné položky
@@ -153,16 +171,16 @@ shared:
       tags: Štítky
       tasks: Úkoly
       today: Dnes
-  none_option: "Žádné štítky"
+  none_option: Žádné štítky
   regex_help:
     examples:
-      chat: 'Odpovídá buď "Slack" nebo "Discord"'
-      chrome: 'Odpovídá jakémukoli názvu okna obsahujícímu "Chrome"'
-      exact_chrome: 'Odpovídá přesně "Chrome"'
+      chat: Odpovídá buď "Slack" nebo "Discord"
+      chrome: Odpovídá jakémukoli názvu okna obsahujícímu "Chrome"
+      exact_chrome: Odpovídá přesně "Chrome"
       pdf: Odpovídá jakémukoli PDF souboru
       vscode: Odpovídá jakémukoli oknu VS Code
     tips:
-      any_chars: 'Použijte ".*" pro odpovídání jakýmkoli znakům'
+      any_chars: Použijte ".*" pro odpovídání jakýmkoli znakům
       dot: '"\." odpovídá tečce'
       end: '"$" odpovídá konci textu'
       or: '"|" znamená NEBO'
@@ -187,11 +205,11 @@ shared:
       description: Povolit přetahování pro změnu pořadí položek
       title: Vlastní řazení
     descending: Sestupně
+    disable_reordering_tooltip: Zakázat režim přeřazení
+    enable_reordering_tooltip: Povolit režim přeřazení
     remove_criteria: Odstranit kritérium
     reset_to_default: Obnovit na výchozí
     sort: Řadit
-    enable_reordering_tooltip: Povolit režim přeřazení
-    disable_reordering_tooltip: Zakázat režim přeřazení
   statistics:
     daily_usage:
       description: Zobrazuje celkový čas využití za den v týdnu
@@ -200,7 +218,24 @@ shared:
       description: Zobrazuje celkový čas využití za hodinu dne
       title: Hodinové využití
   time:
-    not_set: "Nenastaveno"
+    not_set: Nenastaveno
+  time_display:
+    elapsed: Uplynulý
+    elapsed_time_tooltip: Čas strávený touto úlohou
+    estimated: Odhadovaný
+    estimated_time_tooltip: Odhadovaný čas na dokončení této úlohy
+    no_time_logged_tooltip: Zatím nebyl zaznamenán žádný čas
+  time_logging:
+    add_time: Přidat čas
+    add_time_description: Přidat čas k existujícímu součtu
+    dialog_title: Zaznamenat čas
+    duration: Doba trvání
+    invalid_input: Zadejte platný čas
+    log_time: Zaznamenat čas
+    mode: Režim
+    set_total: Nastavit celkem
+    set_total_description: Nastavit celkový strávený čas
+    total_time: Celkový čas
   time_periods:
     custom: Vlastní
     last_month: Minulý měsíc
@@ -210,6 +245,11 @@ shared:
     this_three_months: Tyto 3 měsíce
     this_week: Tento týden
     today: Dnes
+  timer:
+    label: Časovač
+    normal: Normální
+    pomodoro: Pomodoro
+    stopwatch: Stopky
   tooltips:
     compare_with_previous: Porovnat s předchozím obdobím
     filter_by_tags: Filtrovat podle štítků
@@ -222,6 +262,7 @@ shared:
     minutes: min
     minutes_short: m
     seconds: sek
+  untitled: Bez názvu
   update_dialog:
     buttons:
       download_page: Stránka stahování
@@ -233,23 +274,6 @@ shared:
     question: Chcete aktualizovat nyní?
     success: Aktualizace byla úspěšně stažena!
     title: Aktualizace k dispozici!
+  help: Nápověda
   validation:
     required: "{field} je povinné."
-  datepicker:
-    deadline_cannot_be_before_planned_date: "Termín musí být v den plánovaného data nebo později"
-    selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
-    selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
-    start_date_cannot_be_after_end_date: Počáteční datum nemůže být po koncovém datu
-    start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
-    end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
-    cannot_select_date_before_min_date: Nelze vybrat datum před {date}
-    cannot_select_date_after_max_date: Nelze vybrat datum po {date}
-    start_date_cannot_be_before_min_date: Počáteční datum nemůže být před {date}
-    end_date_cannot_be_after_max_date: Koncové datum nemůže být po {date}
-    cannot_select_time_before_min_date: Nelze vybrat čas před {time}
-    cannot_select_time_after_max_date: Nelze vybrat čas po {time}
-    time_must_be_at_or_after: Čas musí být od {time} nebo později
-    time_must_be_at_or_before: Čas musí být do {time} nebo dříve
-    selected_date_time_must_be_after: Vybrané datum a čas musí být po {dateTime}
-    select_date_time_title: Vybrat datum a čas
-    select_date_range_title: Vybrat rozsah dat

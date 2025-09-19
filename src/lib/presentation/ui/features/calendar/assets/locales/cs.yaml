@@ -3,49 +3,49 @@ calendar:
     today:
       help:
         content: |
-          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
+          Optimalizujte svou denní produktivitu jednotným pohledem, který integruje úkoly, návyky a sledování času, aby vám pomohl udržet soustředění a efektivně dosáhnout svých cílů.
 
-          ## ⚡ Why Is It Important?
+          ## ⚡ Proč je to důležité?
 
-          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
+          Denní správa produktivity je základem efektivního využívání času a dosažení cílů. Centralizací vašich denních aktivit v jednom pohledu eliminujete přepínání kontextu, udržíte jasné priority a vytvoříte systematický přístup k plnění nejdůležitějších úkolů.
 
-          ## 🔄 Habit Consistency
+          ## 🔄 Konzistence návyků
 
-          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
+          Sledujte a udržujte své denní rutiny s proudliným sledováním návyků, které buduje hybnost a posiluje pozitivní vzorce chování během dne.
 
-          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
-          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
-          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
-          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
+          - ✅ **Rychlé hodnocení:** Zobrazte všechny denní návyky na první pohled pro rychlé vyhodnocení pokroku
+          - ✔️ **Okamžité dokončení:** Označte návyky za dokončené jednoduchými interakcemi, které udržují tok
+          - 🔄 **Posílení rutiny:** Posilte denní vzorce konzistentním sledováním a uznáním
+          - 📈 **Budování hybnosti:** Vizualizujte indikátory pokroku, které motivují k pokračující konzistenci
 
-          ## 📋 Task Execution
+          ## 📋 Provádění úkolů
 
-          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+          Zaměřte svou správu úkolů jasným pohledem na dnešní priority, který vám pomůže efektivně provádět bez ztráty pohledu na lhůty a závazky.
 
-          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
-          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
-          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
-          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+          - 🗓️ **Jasnost priorit:** Zobrazte plánované a splatné úkoly organizované pro optimální provedení
+          - ➕ **Rychlé zachycení:** Přidejte nové úkoly rychle bez narušení aktuálního pracovního toku
+          - ✔️ **Sledování pokroku:** Monitorujte stav dokončení pro udržení odpovědnosti a hybnosti
+          - 🎯 **Udržení fokusu:** Jasný denní pohled zabraňuje přetížení budoucími závazky
 
-          ## ⏰ Time Investment Analysis
+          ## ⏰ Analýza investice času
 
-          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+          Pochopte, jak trávíte čas, prostřednictvím kategorizované analýzy, která odhaluje vzorce produktivity a pomáhá optimalizovat váš denní plán pro maximální efektivitu.
 
-          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
-          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
-          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
-          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+          - 📊 **Pohledy na kategorie:** Analyzujte distribuci času napříč různými značkami aktivit a projekty
+          - 📈 **Rozpoznávání vzorců:** Identifikujte trendy produktivity a období špičkového výkonu
+          - 🕒 **Monitorování aktivit:** Sledujte čas strávený různými denními aktivitami a odpovědnostmi
+          - 🎯 **Možnosti optimalizace:** Používejte data k informovaným rozhodnutím o alokaci času
 
-          ## ⚙️ Productivity Shortcuts
+          ## ⚙️ Zkratky produktivity
 
-          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+          Využívejte rychlé akce a efektivní pracovní postupy, které minimalizují tření a maximalizují vaši schopnost udržet fokus na vysoce hodnotných aktivitách během dne.
 
-          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
-          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
-          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
-          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
-        title: Daily Productivity Management Guide
-      title: Today
+          - ▶️ **Fokusové relace:** Spusťte koncentrované pracovní období s integrací časovače režimu Marathon
+          - 🔎 **Chytré filtrování:** Používejte filtrování na základě značek k soustředění na specifické projekty nebo oblasti života
+          - ✅ **Efektivní dokončení:** Dokončete návyky a úkoly s proudlinými interakcemi bez rušení
+          - 📊 **Pohledy na výkon:** Přistupujte k grafům času pro okamžitou zpětnou vazbu na denní vzorce produktivity
+        title: Průvodce denní správou produktivity
+      title: Dnes
   sections:
-    habits: Habits
-    tasks: Tasks
+    habits: Návyky
+    tasks: Úkoly

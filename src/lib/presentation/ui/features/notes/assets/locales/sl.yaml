@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Zgradite obsežen sistem upravljanja znanja, ki zajame vaše ideje, učinkovito organizira informacije in naredi pomembne vpoglede enostavno dostopne, ko jih potrebujete.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Zakaj je to pomembno?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Učinkovito beleženje beležk in upravljanje znanja sta ključna za produktivnost in učenje. Dobro organiziran sistem beležk prepreči izgubo dragocenih vpogledov, pospeši odločanje in ustvari zanesljiv zunanji spomin, ki postaja vse bolj dragocen s časom.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Enostavno zajemanje informacij
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Ustvarite brezhiben delovni tok za zajemanje in obdelavo informacij, ki zagotavlja, da nič pomembnega ne uide, hkrati pa ohranja fokus na trenutnem delu.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Hitro zajemite ideje brez motenj vašega toka
+      - ✏️ Uredite in izpopolnite informacije, ko se razumevanje razvija
+      - 🗑️ Sistematično odstranite zastarele ali nepomembne informacije
+      - 📌 Ohranjajte kritične informacije enostavno dostopne in organizirane
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Strateška organizacija
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Razvijte sistem organizacije, ki se skalira z vašo bazo znanja in naredi iskanje informacij hitro in zanesljivo, ne glede na količino.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Uporabite dosledne strategije označevanja za hitro kategorizacijo
+      - 🔍 Uporabite močne iskalne zmožnosti za takojšnje iskanje informacij
+      - 📚 Združite povezane beležke za ustvarjanje obsežnih področij znanja
+      - 🎯 Ohranjajte fokus z organizirano arhitekturo informacij
 
-      ## 📄 Professional Content Creation
+      ## 📄 Strokovno ustvarjanje vsebine
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Izkoristite napredna orodja za oblikovanje, da ustvarite jasno, dobro strukturirano vsebino, ki komunicira učinkovito in prenese preizkus časa.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Bogato oblikovanje:** Uporabite Markdown za strokovno strukturo dokumenta
+      - 📋 **Jasna struktura:** Organizirajte vsebino z naslovi, seznami in poudarki
+      - 🔗 **Povezano znanje:** Povežite povezane koncepte in informacije
+      - 📖 **Bralna izhodna:** Oblikujte vsebino za enostavno razumevanje in deljenje
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Prednosti produktivnosti
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Pretvorite svojo prakso beleženja beležk v multiplikator produktivnosti, ki izboljša vaše razmišljanje, pospeši učenje in izboljša kakovost odločanja.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Izboljšano razmišljanje:** Zunanji spomin sprosti mentalno kapaciteto za ustvarjalno delo
+      - ⚡ **Hitrejši dostop:** Organizirane informacije zmanjšajo čas, porabljen za iskanje
+      - 🌐 **Univerzalna dostopnost:** Dostopajte do svoje baze znanja z vsake naprave
+      - 📈 **Nenavaden napredek:** Izpopolnjena vsebina postaja vse bolj dragocena s časom
+    title: Vodnik po upravljanju znanja in organizaciji beležk
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Dodaj beležko
+    delete: Izbriši beležko
+    edit: Uredi beležko
+    save: Shrani beležko
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Dodaj oznako
+      content_placeholder: Napišite vsebino beležke tukaj...
+      save_button: Shrani
+      saved_message: Beležka uspešno shranjena
+      title_placeholder: Naslov beležke
+      update_button: Posodobi
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Ni najdenih beležk
+      loading: Nalagam beležke...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Ste prepričani, da želite izbrisati to beležko?
+    confirm_title: Izbriši beležko
   details:
-    content: Content
+    content: Vsebina
     tags:
-      hint: Select tags for note
-      label: Tags
-    title: Title
+      hint: Izberite oznake za beležko
+      label: Oznake
+    title: Naslov
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Napaka pri dodajanju oznake
+    deleting: Nepričakovana napaka pri brisanju beležke
+    getting_notes: Napaka pri pridobivanju beležk
+    loading_details: Napaka pri nalaganju podrobnosti beležke
+    loading_tags: Napaka pri nalaganju oznak beležke
+    note_not_found: Beležka ni najdena
+    note_tag_not_found: Oznaka beležke ni najdena
+    removing_tag: Napaka pri odstranjevanju oznake
+    saving_note: Napaka pri shranjevanju beležke
+    tag_already_exists: Ta oznaka je že dodana
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Išči beležke...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Filtriraj po oznakah
+  new_note: Nova beležka
+  title_placeholder: Vnesite opisni naslov beležke...
+  no_notes: Ni beležk
+  note_details: Podrobnosti beležke
+  notes: Beležke
+  title: Beležke
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Dodaj beležko
+    delete_note: Izbriši beležko
+    edit_name: Uredi naslov

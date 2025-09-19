@@ -1,214 +1,232 @@
 habits:
   archive:
-    archive: Archive
-    archive_confirm: Are you sure you want to archive this habit?
-    archive_tooltip: Archive this habit
-    archived_date: Archived Date
-    hide_archived: Hide archived
-    show_archived: Show archived
-    unarchive: Unarchive
-    unarchive_confirm: Are you sure you want to unarchive this habit?
-    unarchive_tooltip: Unarchive this habit
-
+    archive: Archiveren
+    archive_confirm: Weet je zeker dat je deze gewoonte wilt archiveren?
+    archive_tooltip: Deze gewoonte archiveren
+    archived_date: Gearchiveerde Datum
+    hide_archived: Gearchiveerd verbergen
+    show_archived: Gearchiveerd tonen
+    unarchive: Uit archief halen
+    unarchive_confirm: Weet je zeker dat je deze gewoonte uit het archief wilt halen?
+    unarchive_tooltip: Deze gewoonte uit het archief halen
   calendar:
     week_days:
-      fri: Fri
-      mon: Mon
-      sat: Sat
-      sun: Sun
-      thu: Thu
-      tue: Tue
-      wed: Wed
+      fri: Vr
+      mon: Ma
+      sat: Za
+      sun: Zo
+      thu: Do
+      tue: Di
+      wed: Wo
   delete:
-    confirm_message: Are you sure you want to delete this habit?
-    confirm_title: Delete Habit
+    confirm_message: Weet je zeker dat je deze gewoonte wilt verwijderen?
+    confirm_title: Gewoonte Verwijderen
   details:
-    archived_status: Archived
-    create_record_tooltip: Mark as completed today
-    description: Description
-    estimated_time: Estimated Time
-    estimated_time_not_set: Not set
+    archived_status: Gearchiveerd
+    create_record_tooltip: Markeer als voltooid vandaag
+    daily_target: Dagelijkse Frequentie
+    daily_target_hint: keer per dag
+    description: Beschrijving
+    elapsed_time: Verstreken Tijd
+    estimated_time: Geschatte Tijd
+    estimated_time_not_set: Niet ingesteld
     help:
       content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+        Bouw duurzame dagelijkse routines op door systematische gewoontetracking die je intenties omzet in consistente acties en meetbare vooruitgang naar je doelen.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Waarom Is Het Belangrijk?
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+        Gewoontevorming is de hoeksteen van persoonlijke ontwikkeling en duurzame prestaties. Consistente dagelijkse acties stapelen zich op in de tijd om opmerkelijke resultaten te creëren, terwijl systematische tracking ervoor zorgt dat je momentum behoudt en continue verbeteringen aanbrengt in je routines.
 
-        ## ⚙️ Strategic Habit Design
+        ## ⚙️ Strategisch Gewoonteontwerp
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+        Creëer gewoontes die naadloos integreren in je leven en je langetermijndoelen ondersteunen. Goed ontworpen gewoontes worden automatische gedragingen die minimale wilskracht vereisen om te behouden.
 
-        - 📝 Design clear, specific habits with actionable descriptions
-        - 📅 Establish consistent schedules that align with your natural rhythms
-        - 🏷️ Organize similar habits into coherent groups for systematic tracking
-        - 🎯 Connect each habit to meaningful outcomes and personal values
+        - 📝 Ontwerp duidelijke, specifieke gewoontes met actiegerichte beschrijvingen
+        - 📅 Vestig consistente schema's die aansluiten bij je natuurlijke ritmes
+        - 🏷️ Organiseer vergelijkbare gewoontes in coherente groepen voor systematische tracking
+        - 🎯 Verbind elke gewoonte met betekenisvolle uitkomsten en persoonlijke waarden
 
-        ## ⏱️ Performance Monitoring
+        ## ⏱️ Prestatietracking
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+        Volg de uitvoering van je gewoontes om patronen te begrijpen, vooruitgang te meten en je aanpak te optimaliseren voor maximale effectiviteit en duurzame groei.
 
-        - ⏳ Record completion times to understand habit duration and efficiency
-        - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+        - ⏳ Registreer voltooiingstijden om de duur en efficiëntie van de gewoonte te begrijpen
+        - 📊 Analyseer tijdsinvesteringen over gewoonte-categorieën voor gebalanceerde ontwikkeling
+        - 📈 Monitor prestatie-trends om verbeteringsmogelijkheden en optimale timing te identificeren
+        - 🔄 Gebruik data-inzichten om gewoonte-moeilijkheid en planning te verfijnen voor duurzame succes
 
-        ## 📅 Consistency & Momentum
+        ## 📅 Consistentie & Momentum
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+        Bouw en behoud de consistentie die nodig is voor blijvende gedragsverandering door systematische tracking en strategische beoordeling van je voortgangspatronen.
 
-        - 📚 Review completion history to assess progress and identify success patterns
-        - 🔗 Track daily streaks to build and maintain momentum for long-term success
-        - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+        - 📚 Bekijk voltooiingsgeschiedenis om vooruitgang te beoordelen en succespatronen te identificeren
+        - 🔗 Volg dagelijkse streaks om momentum op te bouwen en te behouden voor langetermijnsucces
+        - 📌 Monitor consistentiemetrics om motivatie en toewijding te versterken
+        - 🎯 Vier mijlpalen en prestaties om positieve gedragsverandering te versterken
 
-        ## 🚀 Optimization Strategies
+        ## 🚀 Optimalisatiestrategieën
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+        Pas bewezen technieken toe voor gewoonte-optimalisatie die vooruitgang versnellen en ervoor zorgen dat je inspanningen leiden tot betekenisvolle, blijvende verbeteringen in je leven en productiviteit.
 
-        - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
-        - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
-      description: Help description
-      title: Habit Formation & Performance Tracking Guide
+        - 🐾 **Begin Klein:** Begin met beheersbare gewoontes die vroege successen garanderen
+        - 🏷️ **Strategische Groepering:** Organiseer gewoontes per levensgebied of tijd van de dag
+        - 📊 **Data-Gedreven Aanpassingen:** Gebruik tracking-inzichten om timing en aanpak te optimaliseren
+        - 🌅 **Piek Tijd Focus:** Plan belangrijke gewoontes tijdens je piek energieperiodes
+      description: Help beschrijving
+      title: Gewoontevorming & Prestatie Tracking Gids
     records: Records
-    remove_record_tooltip: Remove today's completion
+    remove_record_tooltip: Verwijder voltooiing van vandaag
     statistics:
-      archived_note: "Archived on:"
-      archived_on: Archived on
-      archived_warning: "Statistics are shown up to archive date. {startDate} - {archivedDate}"
-      from: From
-      monthly: Monthly
-      overall: Overall
+      archived_note: "Gearchiveerd op:"
+      archived_on: Gearchiveerd op
+      archived_warning: Statistieken worden getoond tot archiefdatum. {startDate} - {archivedDate}
+      completions: voltooiingen
+      from: Van
+      monthly: Maandelijks
+      no_streaks_yet: Geen streaks nog. Begin met consistentie opbouwen!
+      overall: Algemeen
       records: Records
       score_trends: Score Trends
-      to: To
+      to: Tot
       top_streaks: Top Streaks
-      no_streaks_yet: No streaks yet. Start building consistency!
-      completions: completions
-      yearly: Yearly
-    statistics_label: Statistics
+      yearly: Jaarlijks
+    statistics_label: Statistieken
     tags: Tags
-    tags_hint: Select tags to associate
-    daily_target: "Dagelijkse frequentie"
-    daily_target_hint: "aantal keren per dag"
+    tags_hint: Selecteer tags om te associëren
   errors:
-    adding_tag: Failed to add tag
-    creating_record: Failed to create habit record
-    deleting: Unexpected error occurred while deleting habit
-    deleting_record: Failed to delete habit record
-    habit_not_found: Habit not found
-    habit_record_not_found: Habit record not found
-    habit_tag_not_found: Habit tag not found
-    loading_archive_status: Failed to load archive status
-    loading_details: Failed to load habit details
-    loading_habit: Failed to load habit
-    loading_habits: Failed to load habits
-    loading_records: Failed to load habit records
-    loading_tags: Failed to load habit tags
-    removing_tag: Failed to remove tag
-    saving_details: Failed to save habit
-    saving_habit: Failed to save habit
-    tag_already_exists: This tag is already added
-    toggling_archive: Failed to toggle archive status
+    adding_tag: Toevoegen tag mislukt
+    creating_record: Aanmaken gewoonte record mislukt
+    deleting: Onverwachte fout bij verwijderen gewoonte
+    deleting_record: Verwijderen gewoonte record mislukt
+    habit_not_found: Gewoonte niet gevonden
+    habit_record_not_found: Gewoonte record niet gevonden
+    habit_tag_not_found: Gewoonte tag niet gevonden
+    loading_archive_status: Laden archief status mislukt
+    loading_details: Laden gewoonte details mislukt
+    loading_habit: Laden gewoonte mislukt
+    loading_habits: Laden gewoontes mislukt
+    loading_records: Laden gewoonte records mislukt
+    loading_tags: Laden gewoonte tags mislukt
+    removing_tag: Verwijderen tag mislukt
+    saving_details: Opslaan gewoonte mislukt
+    saving_habit: Opslaan gewoonte mislukt
+    tag_already_exists: Deze tag is al toegevoegd
+    toggling_archive: Schakelen archief status mislukt
   goals:
-    current_goal: Goal
-    days_unit: days
-    description: Do you want to practice the habit with a specific frequency rather than every day? Then set a custom goal.
-    enable: Enable Custom Goals
-    goal: Custom Goal
-    goal_format: "{count} times in {dayCount} days"
-    period_days: Period Days
-    settings: Custom Goal Settings
-    target_frequency: "Frequentie periode"
-    times_unit: "keren per periode"
-  help:
-    description: Help description
+    current_goal: Doel
+    days_unit: dagen
+    description: |
+      Wil je de gewoonte oefenen met een specifieke frequentie in plaats van
+      elke dag? Stel dan een aangepast doel in.
+    enable: Inschakelen Aangepaste Doelen
+    goal: Aangepast Doel
+    goal_format: "{count} keer in {dayCount} dagen"
+    period_days: Periode Dagen
+    settings: Aangepast Doel Instellingen
+    target_frequency: Frequentie Periode
+    times_unit: keer per periode
   list:
-    all_habits_done: All habits completed!
-    no_habits_found: No habits
-  new_habit: New Habit
-  name_placeholder: Enter a meaningful habit name...
+    all_habits_done: Alle gewoontes voltooid!
+    no_habits_found: Geen gewoontes
+  name_placeholder: Voer een betekenisvolle gewoonte naam in...
+  new_habit: Nieuwe Gewoonte
   notifications:
-    reminder_message: "Remember to complete your habit: {name}"
-    reminder_title: "Habit Reminder: {name}"
+    reminder_message: "Onthoud om je gewoonte te voltooien: {name}"
+    reminder_title: "Gewoonte Herinnering: {name}"
   overview:
-    filter_by_tags_tooltip: Filter by tags
+    filter_by_tags_tooltip: Filteren op tags
     help:
       content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+        Beheers je dagelijkse routines door systematische gewoontetracking die consistentie opbouwt, positieve momentum creëert en betekenisvolle vooruitgang drijft naar je langetermijndoelen.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Waarom Is Het Belangrijk?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+        Dagelijkse gewoontebeheer is de basis van persoonlijke excellentie en duurzame groei. Consistente uitvoering van goed geplande gewoontes creëert samengestelde voordelen over tijd, terwijl systematische tracking ervoor zorgt dat je verantwoordelijkheid behoudt en data-gedreven verbeteringen aanbrengt in je routines.
 
-        ## 📅 Daily Execution & Tracking
+        ## 📅 Dagelijkse Uitvoering & Tracking
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+        Ontwikkel een betrouwbaar systeem voor het uitvoeren en monitoren van je gewoontes dat consistentie creëert en onstuitbare momentum opbouwt naar je doelstellingen.
 
-        - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
-        - 📊 **Progress Visualization:** Track completion rates and patterns over time
+        - ✅ **Dagelijkse Voltooiing:** Markeer gewoontes als voltooid om consistentie-ketens op te bouwen
+        - 📆 **Multi-Dag Weergave:** Monitor patronen over dagen en weken voor uitgebreide inzichten
+        - 🔄 **Streak Bouwen:** Behoud opeenvolgende voltooiingsdagen om motivationele momentum te maximaliseren
+        - 📊 **Vooruitgang Visualisatie:** Volg voltooiingspercentages en patronen over tijd
 
-        ## ⏱️ Time Analysis & Optimization
+        ## ⏱️ Tijd Analyse & Optimalisatie
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+        Monitor tijdsinvesteringen in je gewoontes om je dagelijkse schema te optimaliseren en gebalanceerde ontwikkeling te verzekeren over alle belangrijke levensgebieden.
 
-        - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+        - ⏳ **Duur Tracking:** Registreer werkelijke bestede tijd om gewoonte-eisen te begrijpen
+        - 🏷️ **Categorie Analyse:** Groepeer gewoontes op tags om tijdstoewijzing over levensgebieden te zien
+        - ⏰ **Schema Optimalisatie:** Balanceer gewoonte-timing voor duurzame dagelijkse uitvoering
+        - 📈 **Efficiëntie Verbetering:** Identificeer kansen om gewoonte-uitvoering te stroomlijnen
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strategische Organisatie
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
+        Creëer een organisatiesysteem dat consistente uitvoering ondersteunt terwijl het flexibiliteit biedt om aan te passen naarmate je doelen en omstandigheden evolueren.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        - 🏷️ **Betekenisvolle Categorie:** Groepeer gewoontes per levensgebied, tijd of prioriteitsniveau
+        - ⚙️ **Flexibele Planning:** Ontwerp gewoonte-timing die past bij je levensstijl en energiepatronen
+        - 🎯 **Prioriteit Focus:** Zorg ervoor dat je belangrijkste gewoontes passende aandacht en energie krijgen
 
-        ## 💡 Mastery Principles
+        ## 💡 Meester Principes
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
+        Pas bewezen strategieën toe voor gewoonte-meesterschap die ervoor zorgen dat je inspanningen cumulatief leiden tot blijvende gedragsverandering en meetbare levensverbeteringen.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        - 🐾 **Begin Klein:** Begin met gewoontes die je consistent kunt uitvoeren, verhoog dan geleidelijk moeilijkheid
+        - 🏷️ **Strategische Groepering:** Organiseer gewoontes om logische sequenties en ondersteunende systemen te creëren
+        - 📊 **Prestatie Beoordeling:** Gebruik tijd-tracking data om patronen te begrijpen en je aanpak te optimaliseren
+        - 🌅 **Piek Tijd Uitvoering:** Plan je belangrijkste gewoontes tijdens piek energieperiodes
 
-        ### 📊 Using the Calendar View
-        - 📅 View multiple days simultaneously in the calendar view.
-        - ✅ Visually track your completion patterns.
-        - ⚡ Save time with quick completion marking.
-        - 🎯 Increase motivation with visual streak tracking.
-        - 🔄 Explore past and future habits with flexible date navigation.
-      title: Daily Habit Management & Routine Optimization Guide
-    title: Habits
+        ### 📊 Kalenderweergave Gebruiken
+        - 📅 Bekijk meerdere dagen tegelijk in de kalenderweergave.
+        - ✅ Volg visueel je voltooiingspatronen.
+        - ⚡ Bespaar tijd met snelle voltooiingsmarkering.
+        - 🎯 Verhoog motivatie met visuele streak tracking.
+        - 🔄 Verken verleden en toekomstige gewoontes met flexibele datum navigatie.
+      title: Dagelijks Gewoontebeheer & Routine Optimalisatie Gids
+    title: Gewoontes
   reminder:
-    enableReminders: Enable reminders
-    everyDay: Every day
-    noReminder: No reminder set
-    reminderDays: Reminder days
-    reminderSettings: Reminder Settings
-    reminderTime: Reminder time
-    selectDaysWarning: Please select at least one day for reminders
+    enableReminders: Herinneringen inschakelen
+    everyDay: Elke dag
+    noReminder: Geen herinnering ingesteld
+    reminderDays: Herinneringsdagen
+    reminderSettings: Herinnering Instellingen
+    reminderTime: Herinneringstijd
+    selectDaysWarning: Selecteer ten minste één dag voor herinneringen
   reminders:
-    enable: Enable reminders
-    select_days_warning: Please select at least one day for reminders
+    enable: Herinneringen inschakelen
+    select_days_warning: Selecteer ten minste één dag voor herinneringen
   statistics:
-    archived_on: Archived on
-    from: From
-    to: To
+    archived_on: Gearchiveerd op
+    from: Van
+    to: Tot
   tags:
-    add_tooltip: Add tag
-    select_tooltip: Select tag
+    add_tooltip: Tag toevoegen
+    select_tooltip: Tag selecteren
+  time_display:
+    actual_time_tooltip: Werkelijke getrackte tijd voor deze dag
+    estimated: geschat
+    estimated_time_tooltip: Geschatte tijd gebaseerd op gewoonte-instellingen
+    no_time_logged_tooltip: Geen tijd gelogd voor deze dag
+  time_logging:
+    add_time: Tijd Toevoegen
+    add_time_description: Voeg de opgegeven tijd toe aan bestaande records
+    dialog_title: Tijd Loggen
+    duration: Duur Om Toe Te Voegen
+    invalid_input: Voer geldige uren en minuten in
+    log_time: Tijd Loggen
+    mode: Logging Modus
+    set_total: Totaal Instellen
+    set_total_description: Stel de totale tijd in voor de geselecteerde dag
+    total_time: Totale Tijd Voor Dag
+  timer:
+    label: Timer
   tooltips:
-    add_habit: Add Habit
-    decrease_estimated_time: Decrease estimated time
-    edit_name: Edit Name
-    increase_estimated_time: Increase estimated time
-    decrease_daily_target: "Dagelijks doel verlagen"
-    increase_daily_target: "Dagelijks doel verhogen"
+    add_habit: Gewoonte Toevoegen
+    decrease_daily_target: Dagelijks doel verlagen
+    decrease_estimated_time: Geschatte tijd verlagen
+    edit_name: Naam Bewerken
+    increase_daily_target: Dagelijks doel verhogen
+    increase_estimated_time: Geschatte tijd verhogen

@@ -1,49 +1,48 @@
 about:
-  about_title: "About"
-  version: Version {version}
+  about_title: "O aplikaciji"
+  version: "Različica {version}"
   description: >
-    {appName} is a comprehensive app designed to enhance your personal productivity; it allows you to effectively manage your tasks, develop new habits, and make the most of your time. Additionally, it strengthens your focus by tracking how much time you spend on different apps. By analyzing your progress, you can celebrate your achievements and gain the motivation needed for a more productive life.
+    {appName} je celovita aplikacija, zasnovana za izboljšanje vaše osebne produktivnosti; omogoča vam učinkovito upravljanje nalog, razvijanje novih navad in najboljšo izrabo vašega časa. Poleg tega krepi vašo osredotočenost z sledenjem, koliko časa preživite v različnih aplikacijah. Z analizo vašega napredka lahko proslavite svoje dosežke in pridobite motivacijo, potrebno za bolj produktivno življenje.
   links:
-    website: Website
-    source_code: Source Code
-    feedback: Feedback
-    contact: Contact
-    check_update: Check for Updates
+    website: "Spletna stran"
+    source_code: "Izvorna koda"
+    feedback: "Povratne informacije"
+    contact: "Kontakt"
+    check_update: "Preveri posodobitve"
   support_me:
-    title: Support {appName}
+    title: "Podpri {appName}"
     description: >
-      {appName} is a completely free and open-source software. Everyone is free to use, explore, improve, and share it. 
+      {appName} je popolnoma brezplačna in odprtokodna programska oprema. Vsakdo je svoboden, da jo uporablja, raziskuje, izboljšuje in deli. 
 
-
-      While you continue to enjoy using it, I keep working to make it even better. If you'd like to support the continuation of this effort, you can buy me a coffee; your support will directly contribute to the development and sustainability of {appName}. 😊
-    button_text: Buy me a coffee
+      Medtem ko vi še naprej uživate v njeni uporabi, jaz še naprej delam na tem, da jo naredim še boljše. Če želite podpreti nadaljevanje tega prizadevanja, mi lahko kupite kavo; vaša podpora bo neposredno prispevala k razvoju in trajnosti {appName}. 😊
+    button_text: "Kupi mi kavo"
   onboarding:
     step1:
-      title: "Welcome to {appName}"
-      description: "Your personal companion for building better habits, managing tasks, and tracking time effectively. Let's explore the key features together!"
+      title: "Dobrodošli v {appName}"
+      description: "Vaš osebni spremljevalec za gradnjo boljših navad, upravljanje nalog in učinkovito sledenje času. Raziskujmo ključne funkcije skupaj!"
     step2:
-      title: "Task Management"
-      description: "Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks."
+      title: "Upravljanje nalog"
+      description: "Ustvarite in organizirajte naloge s prioritami, roki in opomniki. Uporabite Pomodoro timer, da ostanete osredotočeni in sledite napredku pri pomembnih nalogah."
     step3:
-      title: "Habit Building"
-      description: "Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics."
+      title: "Gradnja navad"
+      description: "Gradite trajne navade s sledenjem dnevnih aktivnosti. Nastavite opomnike, spremljajte svoje serije in vizualizirajte napredek z podrobnimi statistikami."
     step4:
-      title: "Note Taking"
-      description: "Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access."
+      title: "Vedenje beležk"
+      description: "Hranite pomembne informacije organizirane z zmogljivim sistemom beležk. Oznake beležk za enostavno kategorizacijo in hiter dostop."
     step5:
-      title: "App Usage & Time Insights"
-      description: "Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity."
+      title: "Uporaba aplikacij & vpogledi v čas"
+      description: "Spremljajte vzorce uporabe aplikacij in analizirajte čas, porabljen za različne aktivnosti. Pridobite vpoglede v vaše digitalne navade in optimizirajte produktivnost."
     step6:
-      title: "Smart Tagging System"
-      description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
+      title: "Pametni sistem označevanja"
+      description: "Uporabite oznake za organizacijo in skupinjanje vaših nalog, navad in aplikacij. Sledite času, porabljenemu za različne aktivnosti po oznakah, da razumete, kam gre vaš čas, in optimizirate delovni tok."
     step7:
-      title: "App Permissions"
-      description: "{appName} needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."
-      review_permissions: "Review Permissions"
+      title: "Dovoljenja aplikacije"
+      description: "{appName} potrebuje določena dovoljenja za pravilno delovanje. Preglejte dovoljenja, ki jih želite podeliti za sistemske funkcije, kot so obvestila in sledenje aplikacijam."
+      review_permissions: "Preglej dovoljenja"
     step8:
-      title: "Ready to Transform Your Life?"
-      description: "You have all the tools you need to build better habits, stay focused, and achieve your goals. Start your journey to a more productive and fulfilling life today!"
+      title: "Pripravljeni spremeniti svoje življenje?"
+      description: "Imate vse orodja, ki jih potrebujete za gradnjo boljših navad, ohranjanje osredotočenosti in doseganje ciljev. Začnite svojo pot do bolj produktivnega in izpolnjujočega življenja danes!"
     buttons:
-      next: "Next"
-      back: "Back"
-      start: "Get Started"
+      next: "Naprej"
+      back: "Nazaj"
+      start: "Začni"

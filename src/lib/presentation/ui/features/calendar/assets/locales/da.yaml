@@ -3,49 +3,49 @@ calendar:
     today:
       help:
         content: |
-          Optimize your daily productivity with a unified view that integrates tasks, habits, and time tracking to help you maintain focus and achieve your objectives efficiently.
+          Optimer din daglige produktivitet med en samlet visning, der integrerer opgaver, vaner og tidssporing for at hjælpe dig med at opretholde fokus og opnå dine mål effektivt.
 
-          ## ⚡ Why Is It Important?
+          ## ⚡ Hvorfor er det vigtigt?
 
-          Daily productivity management is the cornerstone of effective time use and goal achievement. By centralizing your daily activities in one view, you eliminate context switching, maintain clear priorities, and create a systematic approach to accomplishing your most important work.
+          Daglig produktivitetsstyring er grundstenen i effektiv tidsbrug og målopnåelse. Ved at centralisere dine daglige aktiviteter i én visning eliminerer du kontekstskift, opretholder klare prioriteter og skaber en systematisk tilgang til at gennemføre dit vigtigste arbejde.
 
-          ## 🔄 Habit Consistency
+          ## 🔄 Vanekonsistens
 
-          Monitor and maintain your daily routines with streamlined habit tracking that builds momentum and reinforces positive behavioral patterns throughout your day.
+          Overvåg og oprethold dine daglige rutiner med strømlinet vane-sporing, der bygger momentum og forstærker positive adfærdsmønstre gennem din dag.
 
-          - ✅ **Quick Assessment:** View all daily habits at a glance for rapid progress evaluation
-          - ✔️ **Instant Completion:** Mark habits complete with simple interactions that maintain flow
-          - 🔄 **Routine Reinforcement:** Strengthen daily patterns through consistent tracking and acknowledgment
-          - 📈 **Momentum Building:** Visual progress indicators that motivate continued consistency
+          - ✅ **Hurtig vurdering:** Se alle daglige vaner på et øjeblik for hurtig fremskridtsvurdering
+          - ✔️ **Øjeblikkelig afslutning:** Marker vaner som færdige med enkle interaktioner, der opretholder flow
+          - 🔄 **Rutineforstærkning:** Styrk daglige mønstre gennem konsistent sporing og anerkendelse
+          - 📈 **Momentumopbygning:** Visuelle fremskridtsindikatorer, der motiverer til fortsat konsistens
 
-          ## 📋 Task Execution
+          ## 📋 Opgaveudførelse
 
-          Focus your task management with a clear view of today's priorities that helps you execute effectively without losing sight of deadlines and commitments.
+          Fokuser din opgavestyring med en klar visning af dagens prioriteter, der hjælper dig med at udføre effektivt uden at miste synet på deadlines og forpligtelser.
 
-          - 🗓️ **Priority Clarity:** See planned and due tasks organized for optimal execution
-          - ➕ **Rapid Capture:** Add new tasks quickly without disrupting current work flow
-          - ✔️ **Progress Tracking:** Monitor completion status to maintain accountability and momentum
-          - 🎯 **Focus Maintenance:** Clear daily view prevents overwhelm from future obligations
+          - 🗓️ **Prioritetsklarhed:** Se planlagte og forfalne opgaver organiseret for optimal udførelse
+          - ➕ **Hurtig indførsel:** Tilføj nye opgaver hurtigt uden at forstyrre det nuværende arbejdsgang
+          - ✔️ **Fremskridtssporing:** Overvåg afslutningsstatus for at opretholde ansvarlighed og momentum
+          - 🎯 **Fokusopretholdelse:** Klar daglig visning forhindrer overvældelse fra fremtidige forpligtelser
 
-          ## ⏰ Time Investment Analysis
+          ## ⏰ Tidsinvesteringsanalyse
 
-          Understand how you spend your time through categorized analysis that reveals productivity patterns and helps optimize your daily schedule for maximum effectiveness.
+          Forstå, hvordan du bruger din tid gennem kategoriseret analyse, der afslører produktivitetsmønstre og hjælper med at optimere din daglige tidsplan for maksimal effektivitet.
 
-          - 📊 **Category Insights:** Analyze time distribution across different activity tags and projects
-          - 📈 **Pattern Recognition:** Identify productivity trends and peak performance periods
-          - 🕒 **Activity Monitoring:** Track time spent on various daily activities and responsibilities
-          - 🎯 **Optimization Opportunities:** Use data to make informed decisions about time allocation
+          - 📊 **Kategoriindsigter:** Analyser tidsfordeling på tværs af forskellige aktivitets-tags og projekter
+          - 📈 **Mønsterigenkendelse:** Identificer produktivitetstrends og perioder med peak-ydelse
+          - 🕒 **Aktivitetsmonitorering:** Spor tid brugt på forskellige daglige aktiviteter og ansvarsområder
+          - 🎯 **Optimeringmuligheder:** Brug data til at træffe informerede beslutninger om tidsallokering
 
-          ## ⚙️ Productivity Shortcuts
+          ## ⚙️ Produktivitetsgenveje
 
-          Leverage quick actions and efficient workflows that minimize friction and maximize your ability to maintain focus on high-value activities throughout your day.
+          Udnyt hurtige handlinger og effektive arbejdsgange, der minimerer friktion og maksimerer din evne til at opretholde fokus på højværdiactiviteter gennem din dag.
 
-          - ▶️ **Focus Sessions:** Start concentrated work periods with Marathon mode timer integration
-          - 🔎 **Smart Filtering:** Use tag-based filtering to focus on specific projects or life areas
-          - ✅ **Efficient Completion:** Complete habits and tasks with streamlined, distraction-free interactions
-          - 📊 **Performance Insights:** Access time charts for immediate feedback on daily productivity patterns
-        title: Daily Productivity Management Guide
-      title: Today
+          - ▶️ **Fokus-sessioner:** Start koncentrerede arbejdsperioder med integration af Marathon-tilstandstimer
+          - 🔎 **Smart filtrering:** Brug tag-baseret filtrering til at fokusere på specifikke projekter eller livsområder
+          - ✅ **Effektiv afslutning:** Afslut vaner og opgaver med strømlinede, distraktionsfri interaktioner
+          - 📊 **Ydelsesindsigter:** Få adgang til tidstabeller for øjeblikkelig feedback på daglige produktivitetsmønstre
+        title: Guide til daglig produktivitetsstyring
+      title: I dag
   sections:
-    habits: Habits
-    tasks: Tasks
+    habits: Vaner
+    tasks: Opgaver

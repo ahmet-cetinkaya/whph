@@ -1,102 +1,102 @@
 common:
   buttons:
-    cancel: Cancel
+    cancel: Zrušit
 
 settings:
   about:
-    title: About
+    title: O aplikaci
   errors:
-    export_failed: Export failed
-    import_failed: Import failed
-    setting_not_found: Setting not found
-    version_mismatch: Version not found
+    export_failed: Export selhal
+    import_failed: Import selhal
+    setting_not_found: Nastavení nenalezeno
+    version_mismatch: Verze nenalezena
   export:
-    csv_description: You can use this to view in Excel and similar applications.
-    error: Export failed
-    in_progress: Exporting data, please wait...
-    json_description: Export data in readable JSON format for development and debugging purposes.
-    select_directory: Select export directory
-    select_path: Select save location
-    select_type: Select export format
-    success: "Export successful. File location:"
+    csv_description: Tento formát můžete použít pro zobrazení v Excelu a podobných aplikacích.
+    error: Export selhal
+    in_progress: Exportování dat, prosím čekejte...
+    json_description: Export dat ve čitelném formátu JSON pro účely vývoje a ladění.
+    select_directory: Vyberte složku pro export
+    select_path: Vyberte umístění pro uložení
+    select_type: Vyberte formát exportu
+    success: "Export úspěšný. Umístění souboru:"
     title: Export
-    canceled: Export canceled by user
+    canceled: Export zrušen uživatelem
   export_data:
-    title: Export Data
+    title: Export dat
   import:
-    error: Import failed
-    error.entity: Error in type
-    in_progress: Importing data, please wait...
-    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
-    select_file: Select file
+    error: Import selhal
+    error.entity: Chyba v typu
+    in_progress: Importování dat, prosím čekejte...
+    migration_failed: Import selhal. Ujistěte se, že máte nainstalovanou nejnovější verzi aplikace.
+    select_file: Vyberte soubor
     strategy:
-      merge: Merge with Existing Data
-      replace: Delete Existing Data and Add New
-      title: Import Strategy
-    success: Import successful
+      merge: Sloučit s existujícími daty
+      replace: Smazat existující data a přidat nová
+      title: Strategie importu
+    success: Import úspěšný
     title: Import
-    unsupported_version: Unsupported version
-    version_mismatch: Version not found
+    unsupported_version: Nepodporovaná verze
+    version_mismatch: Verze nenalezena
   import_export:
-    description: Export your data in various formats or import data from backup files
-    select_action: Select import/export action
+    description: Exportujte svá data v různých formátech nebo importujte data z záložních souborů
+    select_action: Vyberte akci import/export
     title: Import/Export
   language:
-    choose_title: Choose your language
-    title: Language
+    choose_title: Vyberte svůj jazyk
+    title: Jazyk
   notifications:
-    disable_error: Failed to disable notifications
-    enable_error: Failed to enable notifications
-    title: Notifications
+    disable_error: Selhání vypnutí notifikací
+    enable_error: Selhání zapnutí notifikací
+    title: Notifikace
   permissions:
     app_usage:
-      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
-      instructions: "Instructions:"
+      description: Tato aplikace potřebuje oprávnění k přístupu k statistikám používání aplikací pro přesné sledování vzorců používání aplikací.
+      instructions: "Instrukce:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the usage access settings screen that opens, find "{appName}" in the list
-        step3: Tap on "{appName}"
-        step4: Enable "Allow usage access" or toggle the switch to ON
-      title: App Usage Permission
+        step1: Stiskněte tlačítko "Otevřít nastavení"
+        step2: V obrazovce nastavení přístupu k použití najděte "{appName}" v seznamu
+        step3: Klepněte na "{appName}"
+        step4: Zapněte "Povolit přístup k použití" nebo přepněte přepínač na ZAPNUTO
+      title: Oprávnění k použití aplikace
     battery_optimization:
-      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
-      importance: The location of this setting may vary depending on your device manufacturer.
-      instructions: "Instructions:"
-      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
+      description: Pro spolehlivé notifikace musí být tato aplikace vyloučena z optimalizace baterie. Bez toho mohou být připomínky zpožděny nebo nedoručeny vůbec.
+      importance: Umístění tohoto nastavení se může lišit v závislosti na výrobci zařízení.
+      instructions: "Instrukce:"
+      not_disabled: Optimalizace baterie je stále zapnuta. Poskytněte oprávnění pro správné fungování příslušné funkce.
       steps:
-        step1: Press the "Open Setting" button
-        step2: In the settings screen that opens, find "{appName}"
-        step3: Tap on "{appName}"
-        step4: Ensure "Allow Background Usage" is enabled on the page that opens
-        step5: Tap on "Allow Background Usage"
-        step6: Select "Unrestricted"
-      title: Battery Optimization
+        step1: Stiskněte tlačítko "Otevřít nastavení"
+        step2: V otevřené obrazovce nastavení najděte "{appName}"
+        step3: Klepněte na "{appName}"
+        step4: Ujistěte se, že "Povolit pozadí použití" je zapnuto na otevřené stránce
+        step5: Klepněte na "Povolit pozadí použití"
+        step6: Vyberte "Neomezené"
+      title: Optimalizace baterie
     exact_alarm:
-      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
-      instructions: "Instructions:"
+      description: Android 12+ vyžaduje oprávnění k plánování přesných alarmů pro správné fungování připomínek.
+      instructions: "Instrukce:"
       steps:
         android12plus:
-          step2: Go to Alarms & reminders and enable permission
-          step3: Confirm exact alarm permission
-        step1: Press the "Open Setting" button
-        step2: 'In the opened {appName} app''s Alarms & reminders page, enable "Allow setting alarms and reminders"'
-      title: Exact Alarm Permission
-    fix_it: Fix It
-    granted: Permission granted
-    instructions: Instructions
+          step2: Přejděte na Alarmy a připomínky a zapněte oprávnění
+          step3: Potvrďte oprávnění přesného alarmu
+        step1: Stiskněte tlačítko "Otevřít nastavení"
+        step2: 'Na stránce Alarmy a připomínky otevřené aplikace {appName} zapněte "Povolit nastavení alarmů a připomínek"'
+      title: Oprávnění přesného alarmu
+    fix_it: Opravte to
+    granted: Oprávnění uděleno
+    instructions: Instrukce
     notification:
-      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
-      instructions: "Instructions:"
+      description: Oprávnění k notifikacím je vyžadováno pro přijímání připomínek. Bez tohoto oprávnění nebudete dostávat žádné notifikace.
+      instructions: "Instrukce:"
       steps:
         android:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
+          step1: Stiskněte tlačítko "Otevřít nastavení"
+          step2: Povolte notifikace, když budete vyzváni
         ios:
-          step1: Press the "Open Setting" button
-          step2: Allow notifications when prompted
-      title: Notification Permission
-    open_settings: Open Setting
-    open_terminal: Open Terminal
+          step1: Stiskněte tlačítko "Otevřít nastavení"
+          step2: Povolte notifikace, když budete vyzváni
+      title: Oprávnění k notifikacím
+    open_settings: Otevřít nastavení
+    open_terminal: Otevřít terminál
     firewall:
       title: Oprávnění firewallu
       description: Povolte aplikaci WHPH komunikovat přes firewall systému {platform} na portu 44040 pro synchronizaci zařízení.
@@ -130,71 +130,70 @@ settings:
               cmd_step1: "Otevřete příkazový řádek jako správce"
               cmd_step2: "Přidejte pravidlo firewallu:"
     startup:
-      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
-      importance: Auto-start setting location varies or may not be present by device manufacturer.
-      instructions: "Instructions:"
+      description: Pro automatické spuštění aplikace s vaším zařízením je vyžadováno oprávnění auto-start. To zajišťuje, že připomínky a notifikace fungují správně i po restartu zařízení.
+      importance: Umístění nastavení auto-start se liší nebo nemusí být přítomno podle výrobce zařízení.
+      instructions: "Instrukce:"
       steps:
-        step1: Press the "Open Setting" button
-        step2: 'In the settings screen that opens, find "{appName}" app'
-        step3: 'Enable "Auto-start", "Autorun", "Start at boot" or similar permission'
-      title: Auto-start Permission
-    title: Permissions
+        step1: Stiskněte tlačítko "Otevřít nastavení"
+        step2: 'V otevřené obrazovce nastavení najděte aplikaci "{appName}"'
+        step3: 'Zapněte "Auto-start", "Autorun", "Start at boot" nebo podobné oprávnění'
+      title: Oprávnění auto-start
+    title: Oprávnění
   startup:
-    disable_error: Failed to disable startup setting
-    enable_error: Failed to enable startup setting
-    subtitle: Tap to open system settings and enable auto-start permission for the app
+    disable_error: Selhání vypnutí nastavení startup
+    enable_error: Selhání zapnutí nastavení startup
+    subtitle: Klepněte pro otevření systémových nastavení a zapnutí oprávnění auto-start pro aplikaci
     title: Start at Startup
   sync_devices:
-    title: Sync Devices
-  title: Settings
+    title: Synchronizovat zařízení
+  title: Nastavení
   backup:
-    title: Backup
-    description: Create and restore compressed backups of your application data using the secure .whph format
+    title: Záloha
+    description: Vytvořte a obnovte komprimované zálohy dat vaší aplikace pomocí bezpečného formátu .whph
     export:
-      title: Create Backup
-      description: Export all your data to a compressed .whph backup file
-      in_progress: Creating backup, please wait...
-      success: "Backup created successfully. File location:"
-      error: Failed to create backup
-      select_path: Select backup save location
+      title: Vytvořit zálohu
+      description: Exportujte všechna vaše data do komprimovaného souboru zálohy .whph
+      in_progress: Vytváření zálohy, prosím čekejte...
+      success: "Záloha úspěšně vytvořena. Umístění souboru:"
+      error: Selhání vytvoření zálohy
+      select_path: Vyberte umístění pro uložení zálohy
     import:
-      title: Restore Backup
-      description: Import data from a previously created .whph backup file
-      in_progress: Restoring backup, please wait...
-      success: Backup restored successfully
-      error: Failed to restore backup
-      select_file: Select backup file
+      title: Obnovit zálohu
+      description: Importujte data z dříve vytvořeného souboru zálohy .whph
+      in_progress: Obnovení zálohy, prosím čekejte...
+      success: Záloha úspěšně obnovena
+      error: Selhání obnovení zálohy
+      select_file: Vyberte soubor zálohy
       strategy:
-        title: Restore Strategy
-        replace: Delete Existing Data and Restore
-        merge: Merge with Existing Data
-    canceled: Backup operation canceled by user
-    export_failed: Backup export failed
-    import_failed: Backup import failed
-    invalid_format: Invalid backup file format
-    invalid_format_error: Invalid backup file format
-    corrupted: Backup file is corrupted or damaged
-    export_description: Create a compressed backup file containing all your data
+        title: Strategie obnovení
+        replace: Smazat existující data a obnovit
+        merge: Sloučit s existujícími daty
+    canceled: Operace zálohy zrušena uživatelem
+    export_failed: Export zálohy selhal
+    import_failed: Import zálohy selhal
+    invalid_format: Neplatný formát souboru zálohy
+    invalid_format_error: Neplatný formát souboru zálohy
+    corrupted: Soubor zálohy je poškozený nebo zkažený
+    export_description: Vytvořte komprimovaný soubor zálohy obsahující všechna vaše data
   theme:
-    title: Theme
-    description: Customize the appearance of WHPH
+    title: Téma
+    description: Přizpůsobte vzhled WHPH
     mode:
-      title: Theme Mode
-      light: Light
-      dark: Dark
+      title: Režim tématu
+      light: Světlé
+      dark: Tmavé
       auto:
-        title: Auto
-        description: Follow system theme settings
+        title: Automatické
+        description: Sledujte systémová nastavení tématu
     dynamic_accent:
-      title: Dynamic Accent Color
-      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
-      feature: Dynamic
+      title: Dynamická barva akcentu
+      description: Pokud váš systém to podporuje, primární barva se přizpůsobí na základě dynamické barevné schématu systému
+      feature: Dynamické
     custom_accent:
-      title: Custom Accent Color
-      description: Choose a custom accent color to personalize your app's appearance
-      feature: Custom
-    error: Failed to load theme settings
-
+      title: Vlastní barva akcentu
+      description: Vyberte vlastní barvu akcentu pro personalizaci vzhledu vaší aplikace
+      feature: Vlastní
+    error: Selhání načtení nastavení tématu
   ui_density:
     title: Hustota
     description: Upravte velikost textu a prvků rozhraní pro lepší čitelnost na displejích s vysokým DPI

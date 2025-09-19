@@ -1,320 +1,344 @@
 tasks:
   add_button:
-    tooltip: Add new task
-  all_tasks_done: All tasks completed!
+    tooltip: Dodaj novo nalogo
+  all_tasks_done: Vse naloge končane!
   card:
     schedule:
-      today: Schedule for today
-      tomorrow: Schedule for tomorrow
+      today: Načrtuj za danes
+      tomorrow: Načrtuj za jutri
     tooltips:
-      schedule: Schedule task
+      schedule: Načrtuj nalogo
   complete:
-    error: Unexpected error occurred while saving task completion.
-  validation:
-    deadline_time_invalid: Čas roka je neveljaven
-    deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
+    error: Nepričakovana napaka pri shranjevanju zaključka naloge.
   date_selection:
-    deadline_date_title: Select deadline date
-    planned_date_title: Select planned date
+    deadline_date_title: Izberi rok
+    planned_date_title: Izberi načrtovan datum
   delete:
-    error: Unexpected error occurred while deleting task.
-    message: Are you sure you want to delete this task?
-    title: Delete Task
+    error: Nepričakovana napaka pri brisanju naloge.
+    message: Ste prepričani, da želite izbrisati to nalogo?
+    title: Izbriši Nalogo
   details:
     deadline_date:
-      label: Deadline Date
+      label: Rok
     description:
-      hint: Add description...
-      label: Description
+      hint: Dodaj opis...
+      label: Opis
     elapsed_time:
-      label: Elapsed Time
+      label: Minulo Čas
     estimated_time:
-      label: Estimated Time
-    is_completed: Completed
-    planned_date:
-      label: Planned Date
-    priority:
-      label: Priority
-    sub_tasks:
-      label: Sub-tasks
+      label: Predviden Čas
+    is_completed: Končana
     parent_task:
-      label: Parent Task
-      tooltip: Click to navigate to parent task
+      label: Nadrejena Naloga
+      tooltip: Kliknite za navigacijo do nadrejene naloge
+    planned_date:
+      label: Načrtovan Datum
+    priority:
+      label: Prioriteta
+    sub_tasks:
+      label: Podnaloge
     tags:
-      hint: Select tags to associate
-      label: Tags
-    tags_hint: Select tags for task
+      hint: Izberi oznake za povezavo
+      label: Oznake
+    tags_hint: Izberi oznake za nalogo
     title:
-      label: Title
-    total_elapsed_time: Total Elapsed Time
+      label: Naslov
+    total_elapsed_time: Skupni Minuli Čas
   errors:
-    add_tag: Unexpected error occurred while adding tag
-    adding_tag: Failed to add tag
-    get_tags: Error occurred while fetching tags
-    get_task: Unexpected error occurred while loading task
-    loading_tags: Failed to load task tags
-    loading_task: Failed to load task
-    loading_tasks: Failed to load tasks
-    remove_tag: Unexpected error occurred while removing tag
-    removing_tag: Failed to remove tag
-    same_tag: Cannot add the same tag twice
-    save_task: Unexpected error occurred while saving task
-    saving_task: Failed to save task
-    sort_field_not_supported: Sort field not supported
-    task_not_found: Task not found
-    task_tag_already_deleted: Task tag is already deleted
-    task_tag_already_exists: This task tag already exists
-    task_tag_not_found: Task tag not found
+    add_tag: Nepričakovana napaka pri dodajanju oznake
+    adding_tag: Napaka pri dodajanju oznake
+    get_tags: Napaka pri pridobivanju oznak
+    get_task: Nepričakovana napaka pri nalaganju naloge
+    loading_tags: Napaka pri nalaganju oznak naloge
+    loading_task: Napaka pri nalaganju naloge
+    loading_tasks: Napaka pri nalaganju nalog
+    remove_tag: Nepričakovana napaka pri odstranjevanju oznake
+    removing_tag: Napaka pri odstranjevanju oznake
+    same_tag: Ni mogoče dodati iste oznake dvakrat
+    save_task: Nepričakovana napaka pri shranjevanju naloge
+    saving_task: Napaka pri shranjevanju naloge
+    sort_field_not_supported: Polje razvrščanja ni podprto
+    task_not_found: Naloga ni najdena
+    task_tag_already_deleted: Oznaka naloge je že izbrisana
+    task_tag_already_exists: Ta oznaka naloge že obstaja
+    task_tag_not_found: Oznaka naloge ni najdena
   filters:
-    completion: By Completion Status
-    deadline_date: By Deadline Date
-    planned_date: By Planned Date
+    completion: Po Statusu Zaključka
+    deadline_date: Po Roku
+    planned_date: Po Načrtovanem Datumu
     search:
-      placeholder: Search tasks
-    tags: By Tags
+      placeholder: Išči naloge
+    tags: Po Oznakah
     tooltips:
-      filter_by_tags: Filter by tags
+      filter_by_tags: Filtriraj po oznakah
   help:
     details:
       content: |
-        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
+        Ovládajte upravljanje nalog in maksimizirajte produktivnost z učinkovitim organiziranjem, prioritetiziranjem in sledenjem vašemu delu.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Zakaj Je Pomembno?
 
-        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
+        Učinkovito upravljanje nalog je osnova produktivnosti. Pravilno strukturirane naloge z jasnimi prioritetami in roki vam pomagajo osredotočiti se na tisto, kar je najbolj pomembno, in preprečijo, da bi pomembno delo padlo skozi razpoke.
 
-        ## 📝 Task Organization
+        ## 📝 Organizacija Nalog
 
-        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
+        Strukturirajte svoje naloge z obsežnimi podrobnostmi za ohranjanje jasnosti in fokusa. Uporabite oznake, prioritet in ocene časa za ustvarjanje sistematičnega pristopa k vaši obremenitvi.
 
-        - 🏷️ Categorize tasks with meaningful tags
-        - ⚖️ Set priorities using proven frameworks
-        - ⏱️ Estimate time requirements accurately
-        - 📅 Plan realistic deadlines and schedules
+        - 🏷️ Kategorizirajte naloge z smiselnih oznak
+        - ⚖️ Nastavite prioritet z uporabo preverjenih okvirov
+        - ⏱️ Oceni zahteve po času natančno
+        - 📅 Načrtujte realistične roke in urnike
 
-        ## ⏰ Time Management
+        ## ⏰ Upravljanje Časa
 
-        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
+        Sledite svojim naložbam časa za razumevanje vaših vzorcev dela in izboljšanje učinkovitosti. Pravilno upravljanje časa pretvori razpršene napore v osredotočeno produktivnost.
 
-        - 📊 Monitor actual vs. estimated time
-        - 🎯 Focus on high-impact activities
-        - 📈 Analyze productivity patterns over time
-        - ⏳ Balance urgent and important tasks
+        - 📊 Spremljajte dejanski vs ocenjeni čas
+        - 🎯 Osredotočite se na dejavnosti z visokim vplivom
+        - 📈 Analizirajte vzorce produktivnosti sčasoma
+        - ⏳ Uravnotežite nujne in pomembne naloge
 
-        ## 📊 Priority Framework (Eisenhower Matrix)
+        ## 📊 Okvir Prioritete (Matrica Eisenhower)
 
-        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
+        Organizirajte svoje naloge z uporabo te preverjene metode prioritetiziranja za zagotovitev, da vedno delate na pravih stvareh ob pravem času.
 
-        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
-        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
-        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
-        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
-      title: Task Management & Productivity Guide
+        - 🔥 **Nujno & Pomembno:** Obravnavajte takoj - upravljanje kriz in roki
+        - 📈 **Pomembno, Ni Nujno:** Načrtujte strateško - načrtovanje in razvoj veščin  
+        - ⚡ **Nujno, Ni Pomembno:** Delegirajte kadar je mogoče - prekinite in nekatere sestanke
+        - 🗑️ **Niti Nujno niti Pomembno:** Odstranite - zapravljalci časa in dejavnosti nizke vrednosti
+      title: Upravljanje Nalog & Vodnik Produktivnosti
     overview:
       content: |
-        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+        Transformirajte svojo produktivnost s sistematičnim upravljanjem nalog, ki vam pomaga ostati organiziran, osredotočen in v nadzoru vaše obremenitve.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Zakaj Je Pomembno?
 
-        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+        Učinkovito upravljanje nalog je temelj osebnega in strokovnega uspeha. Z organiziranjem dela sistematično zmanjšate stres, spoštujete roke dosledno in ustvarite prostor za pomenljiv napredek pri pomembnih ciljih.
 
-        ## 📋 Task Organization
+        ## 📋 Organizacija Nalog
 
-        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+        Ustvarite strukturiran pristop k upravljanju odgovornosti. Dobro organizirane naloge vodijo do jasnih prioritet in učinkovite izvedbe dnevnega dela.
 
-        - ✅ Create and categorize tasks systematically
-        - 🏷️ Group related work with meaningful tags
-        - ⚖️ Set clear priorities and deadlines
-        - 🔍 Use filters and search for quick access
+        - ✅ Ustvarite in kategorizirajte naloge sistematično
+        - 🏷️ Združite povezano delo z smiselnih oznak
+        - ⚖️ Nastavite jasne prioritet in roke
+        - 🔍 Uporabite filtre in iskanje za hiter dostop
 
-        ## ⏱️ Time Tracking & Focus
+        ## ⏱️ Sledenje Času & Fokus
 
-        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+        Spremljajte naložbe časa za razumevanje vzorcev produktivnosti in optimizacijo delovnega toka. Zavedanje časa vodi do boljšega načrtovanja in izboljšanega izvajanja.
 
-        - ⏰ Track actual time spent per task
-        - 🎯 Use Marathon Mode for focused work sessions
-        - 📊 Analyze completion patterns and trends
-        - 🔄 Review and adjust time estimates regularly
+        - ⏰ Spremljajte dejanski čas porabljen na nalogo
+        - 🎯 Uporabite Način Maraton za osredotočene delovne seje
+        - 📊 Analizirajte vzorce zaključka in trende
+        - 🔄 Preglejte in prilagodite ocene časa redno
 
-        ## 📈 Progress Monitoring
+        ## 📈 Spremljanje Napredka
 
-        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+        Vodite evidenco dosežkov in se učite iz vzorcev dela. Redno pregledovanje in refleksija poganjajo kontinuirano izboljšanje vašega sistema produktivnosti.
 
-        - 📈 Monitor task completion rates
-        - 📅 Review daily and weekly progress
-        - 🎯 Identify bottlenecks and optimization opportunities
-        - 🏆 Celebrate achievements and milestone completions
-      title: Task Management & Workflow Guide
+        - 📈 Spremljajte stopnje zaključka nalog
+        - 📅 Preglejte dnevni in tedenski napredek
+        - 🎯 Prepoznajte ozke grli in priložnosti optimizacije
+        - 🏆 Proslavite dosežke in zaključke mejnikov
+      title: Upravljanje Nalog & Vodnik Delovnega Tok
   marathon:
     details:
-      title: Task Details
+      title: Podrobnosti Naloge
     help:
       content: |
-        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
+        Maksimizirajte fokus in produktivnost z strukturiranimi delovnimi sejami, ki vam pomagajo ohraniti globoko koncentracijo, medtem ko preprečujejo izgorelost.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Zakaj Je Pomembno?
 
-        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
+        Osredotočene delovne seje so bistvene za globoko delo in visokokakovostni izhod. Z delom v strukturiranih intervalih z rednimi odmori ohranjate vrhunsko mentalno zmogljivost, medtem ko izogibate utrujenosti od podaljšanih, neosredotočenih obdobij dela.
 
-        ## ⏰ Time-Boxed Focus Sessions
+        ## ⏰ Časovno Omejene Seje Fokus
 
-        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
+        Uporabite preverjene tehnike upravljanja časa za strukturiranje dela za maksimalno učinkovitost. Strukturirane seje vam pomagajo ohraniti koncentracijo in dokončati naloge učinkoviteje.
 
-        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
-        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
-        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
-        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
+        - 🎯 **Klasik Fokus:** 25 minut dela / 5 minut odmora
+        - 📈 **Razširjen Fokus:** 50 minut dela / 10 minut odmora  
+        - 🔄 **Dolg Odmor:** 15-30 minut po 4 sejah
+        - ⚖️ **Prilagojen Časovnik:** Prilagodite intervale vašemu naravnemu ritmu
 
-        ## 🧠 Cognitive Benefits
+        ## 🧠 Kognitivne Prednosti
 
-        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
+        Strukturirane delovne seje izkoriščajo naravne cikle pozornosti vašega možgan za optimizacijo zmogljivosti in preprečevanje mentalne utrujenosti, ki zmanjšuje kakovost in ustvarjalnost.
 
-        - 🎯 Enhanced focus and deep concentration
-        - 🔋 Reduced mental fatigue and burnout
-        - 💪 Sustained motivation through regular accomplishments
-        - ⚡ Improved time awareness and planning accuracy
+        - 🎯 Izboljšan fokus in globoka koncentracija
+        - 🔋 Zmanjšana mentalna utrujenost in izgorelost
+        - 💪 Trajna motivacija skozi redne dosežke
+        - ⚡ Izboljšano zavedanje časa in natančnost načrtovanja
 
-        ## 📊 Performance Optimization
+        ## 📊 Optimizacija Zmogljivosti
 
-        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
+        Sledite vzorcem osredotočenega dela za razumevanje vaših vrhunskih časov produktivnosti in optimizacijo urnika za maksimalno učinkovitost.
 
-        - 🏷️ Categorize focus sessions with tags for analysis
-        - 📈 Monitor productivity patterns across different times
-        - 🚫 Eliminate distractions before starting sessions
-        - 🚶 Use breaks for physical movement and mental reset
-      title: Focused Work Sessions & Time Management Guide
-      tooltip: Marathon help tooltip
-    label: Marathon Mode
-    unpin_task_tooltip: Unpin current task
-  new_task: New Task
-  no_tasks: No tasks
+        - 🏷️ Kategorizirajte seje fokus z oznakami za analizo
+        - 📈 Spremljajte vzorce produktivnosti čez različne čase
+        - 🚫 Odstranite motnje pred začetkom sej
+        - 🚶 Uporabite odmore za fizično gibanje in mentalni reset
+      title: Osredotočene Delovne Seje & Vodnik Upravljanja Časa
+      tooltip: Tooltip pomoči Maraton
+    label: Način Maraton
+    unpin_task_tooltip: Odpri najnižjo trenutno nalogo
+  new_task: Nova Naloga
+  no_tasks: Ni nalog
   notifications:
-    deadline_message: "Your task deadline is at {time}"
-    deadline_title: "Task Deadline: {title}"
-    planned_message: "Your task is planned for {time}"
-    reminder_title: "Task Reminder: {title}"
+    deadline_message: Rok tvoje naloge je ob {time}
+    deadline_title: "Rok Naloge: {title}"
+    planned_message: Tvoja naloga je načrtovana za {time}
+    reminder_title: "Opomnik Naloge: {title}"
   page:
-    completed_tasks_title: Completed tasks
-    title: Tasks
+    completed_tasks_title: Zaključene naloge
+    title: Naloge
   pomodoro:
     actions:
-      stop_timer: Stop Timer
+      stop_timer: Ustavi Timer
     notifications:
-      break_completed: Break session completed!
-      long_break_completed: Long break completed!
-      time_remaining_prefix: "Time remaining:"
-      timer_completed: Timer completed!
-      title: Pomodoro Timer
-      work_completed: Work session completed!
+      break_completed: Seja odmora končana!
+      long_break_completed: Dolg odmor končan!
+      time_remaining_prefix: "Preostali čas:"
+      timer_completed: Timer končan!
+      title: Timer Pomodoro
+      work_completed: Delovna seja končana!
     settings:
-      auto_start_break: Auto-start break after work
-      auto_start_section: Auto-Start Options
-      auto_start_work: Auto-start work after break
-      break_duration: Break Duration
-      long_break_duration: Long Break Duration
-      sessions_before_long_break: Sessions before Long Break
-      ticking_sound: Enable ticking sound
-      ticking_sound_section: Ticking Sound
-      ticking_speed: Speed
-      ticking_volume: Volume
-      keep_screen_awake_section: Keep Screen Awake
-      keep_screen_awake: Keep screen awake during sessions
-      timer_label: Session durations
-      title: Timer Settings
-      work_duration: Work Duration
+      auto_start_break: Samodejni začetek odmora po delu
+      auto_start_section: Možnosti Samodejnega Začetka
+      auto_start_work: Samodejni začetek dela po odmoru
+      break_duration: Trajanje Odmora
+      keep_screen_awake: Ohrani zaslon buden med sejami
+      keep_screen_awake_section: Ohrani Zaslon Buden
+      long_break_duration: Trajanje Dolgega Odmora
+      sessions_before_long_break: Seje pred Dolgim Odmorom
+      ticking_sound: Omogoči zvok tik-tak
+      ticking_sound_section: Zvok Tik-Tak
+      ticking_speed: Hitrost
+      ticking_volume: Glasnost
+      timer_label: Trajanja Sej
+      title: Nastavitve Timerja
+      work_duration: Trajanje Dela
     system_tray:
-      app_running: App Running
-      complete_title: Pomodoro Complete
-      tap_to_open: Tap to open
-      timer_running: Timer running
+      app_running: Aplikacija Teče
+      complete_title: Pomodoro Končan
+      tap_to_open: Dotaknite se za odprtje
+      timer_running: Timer teče
   priorities:
-    not_urgent_important: Not Urgent but Important
-    not_urgent_not_important: Not Urgent or Important
-    urgent_important: Urgent and Important
-    urgent_not_important: Urgent but Not Important
+    not_urgent_important: Ni Nujno a Pomembno
+    not_urgent_not_important: Niti Nujno niti Pomembno
+    urgent_important: Nujno in Pomembno
+    urgent_not_important: Nujno a Ni Pomembno
   priority:
     selection:
-      title: Select Priority
+      title: Izberi Prioriteto
     tooltips:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Brez Prioritete
+      not_urgent_important: Ni Nujno a Pomembno
+      not_urgent_not_important: Ni Nujno & Ni Pomembno
+      urgent_important: Nujno & Pomembno
+      urgent_not_important: Nujno a Ni Pomembno
     types:
-      none: No Priority
-      not_urgent_important: Not Urgent but Important
-      not_urgent_not_important: Not Urgent & Not Important
-      urgent_important: Urgent & Important
-      urgent_not_important: Urgent but Not Important
+      none: Brez Prioritete
+      not_urgent_important: Ni Nujno a Pomembno
+      not_urgent_not_important: Ni Nujno & Ni Pomembno
+      urgent_important: Nujno & Pomembno
+      urgent_not_important: Nujno a Ni Pomembno
   quick_task:
-    create_error: Error creating task
-    lock_description: Lock properties to retain their values when creating multiple similar tasks. Locked properties won't be cleared when you reset the form.
-    lock_settings: Lock Settings
-    reset_all: Reset all fields
+    create_error: Napaka pri ustvarjanju naloge
+    lock_description:
+      Zakleni lastnosti za ohranitev njihovih vrednosti pri ustvarjanju več
+      podobnih nalog. Zaklenjene lastnosti se ne bodo počistile ob ponastavitvi obrazca.
+    lock_settings: Nastavitve Zaklepanja
+    reset_all: Ponastavi vsa polja
     reset_confirm:
-      message: Are you sure you want to reset all fields? This action cannot be undone.
-      title: Reset All Fields
-    title: Quick Task
-    title_hint: Enter a descriptive task title...
-    title_placeholder: What needs to be done?
+      message: Ste prepričani, da želite ponastaviti vsa polja? Ta akcija ni mogoča za razveljaviti.
+      title: Ponastavi Vsa Polja
+    title: Hitra Naloga
+    title_hint: Vnesi opisni naslov naloge...
+    title_placeholder: Kaj je treba storiti?
     tooltips:
-      deadline_date: "Deadline: {date}"
-      deadline_date_not_set: "Deadline: Not set"
-      estimated_time: "Estimated Time: {time}"
-      estimated_time_not_set: "Estimated Time: Not set"
-      planned_date: "Planned: {date}"
-      planned_date_not_set: "Planned: Not set"
+      deadline_date: "Rok: {date}"
+      deadline_date_not_set: "Rok: Ni nastavljen"
+      estimated_time: "Predviden Čas: {time}"
+      estimated_time_not_set: "Predviden Čas: Ni nastavljen"
+      planned_date: "Načrtovano: {date}"
+      planned_date_not_set: "Načrtovano: Ni nastavljen"
   recurrence:
-    count: Number of occurrences
-    custom: Custom
-    daily: Daily
-    daySuffix: day(s)
-    endDate: End date
-    enterCountHint: Enter count
+    count: Število pojavitev
+    custom: Po meri
+    daily: Dnevno
+    daySuffix: dan(i)
+    endDate: Datum konca
+    enterCountHint: Vnesi število
     interval:
-      label: Repeat every
-      prefix: every
+      label: Ponovi vsak
+      prefix: vsak
       suffix:
-        days: day(s)
-        months: month(s)
-        weeks: week(s)
-        years: year(s)
-    label: Recurrence
-    monthSuffix: month(s)
-    monthly: Monthly
-    none: No recurrence
-    range: Range
-    selectDateHint: Select date
-    startDate: Start date
+        days: dan(i)
+        months: mesec(e)
+        weeks: teden(ek)
+        years: leto(a)
+    label: Ponavljanje
+    monthSuffix: mesec(e)
+    monthly: Mesečno
+    none: Brez ponavljanja
+    range: Obseg
+    selectDateHint: Izberi datum
+    startDate: Datum začetka
     summary:
-      endsAfter: ends after
-      endsOnDate: ends on
-      occurrences: occurrences
-      on: on
+      endsAfter: konča po
+      endsOnDate: konča na
       everyDay: vsak dan
-      starts: starts
-    weekDays: Days of week
-    weekSuffix: week(s)
-    weekly: Weekly
-    yearSuffix: year(s)
-    yearly: Yearly
+      occurrences: occurrences
+      true: true
+      starts: začne
+      on: v
+    weekDays: Dnevi v tednu
+    weekSuffix: teden(ek)
+    weekly: Tedensko
+    yearSuffix: leto(a)
+    yearly: Letno
   reminder:
-    atTime: At the scheduled time
-    deadlineReminderLabel: Deadline Reminder
-    fifteenMinutesBefore: 15 minutes before
-    fiveMinutesBefore: 5 minutes before
-    none: No reminder
-    oneDayBefore: 1 day before
-    oneHourBefore: 1 hour before
-    plannedReminderLabel: Planned Date Reminder
-  task_details: Task Details
-  title: Tasks
+    atTime: Ob načrtovanem času
+    deadlineReminderLabel: Opomnik Rok
+    fifteenMinutesBefore: 15 minut pred
+    fiveMinutesBefore: 5 minut pred
+    none: Brez opomnika
+    oneDayBefore: 1 dan pred
+    oneHourBefore: 1 uro pred
+    plannedReminderLabel: Opomnik Načrtovanega Datuma
+  task_details: Podrobnosti Naloge
+  time_logging:
+    add_time: Dodaj Čas
+    add_time_description: Dodaj določen čas obstoječim zapisom
+    dialog_title: Zapiši Čas
+    duration: Trajanje za Dodaj
+    invalid_input: Prosim vnesi veljavne ure in minute
+    log_time: Zapiši Čas
+    mode: Način Zapisovanja
+    set_total: Nastavi Skupno
+    set_total_description: Nastavi skupni čas za izbrani dan
+    total_time: Skupni Čas za Dan
+  timer:
+    mode:
+      description: Izberi med tehniko Pomodoro, obrnjenim časovnikom ali sekundomerom
+      normal: Navaden Timer
+      pomodoro: Pomodoro
+      stopwatch: Sekundomer
+      title: Način Timerja
+    settings:
+      duration_label: Trajanje Timerja
+      duration_title: Trajanje
+  title: Naloge
   tooltips:
-    clear_date: Clear date
-    decrease_estimated_time: Decrease estimated time
-    edit_title: Edit title
-    increase_estimated_time: Increase estimated time
-    set_reminder: Set reminder
-    show_completed_tasks: Filter completed tasks
-    show_subtasks: Prikaži podnaloge
+    clear_date: Počisti datum
+    decrease_estimated_time: Zmanjšaj predviden čas
+    edit_title: Uredi naslov
+    increase_estimated_time: Povečaj predviden čas
+    set_reminder: Nastavi opomnik
+    show_completed_tasks: Filtriraj končane naloge
+    show_subtasks: Pokaži podnaloge
+  validation:
+    deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
+    deadline_time_invalid: Čas roka je neveljaven

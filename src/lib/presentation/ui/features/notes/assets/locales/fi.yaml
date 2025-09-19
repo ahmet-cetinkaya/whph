@@ -1,96 +1,96 @@
 notes:
   help:
     content: |
-      Build a comprehensive knowledge management system that captures your ideas, organizes information efficiently, and makes important insights easily accessible when you need them.
+      Rakenna kattava tietohallintajärjestelmä, joka tallentaa ideasi, organisoi tiedot tehokkaasti ja tekee tärkeät oivallukset helposti saataville, kun tarvitset niitä.
 
-      ## ⚡ Why Is It Important?
+      ## ⚡ Miksi se on tärkeää?
 
-      Effective note-taking and knowledge management are essential for productivity and learning. A well-organized note system prevents valuable insights from being lost, accelerates decision-making, and creates a reliable external memory that grows more valuable over time.
+      Tehokas muistiinpanojen tekeminen ja tietohallinta ovat olennaisia tuottavuudelle ja oppimiselle. Hyvin järjestetty muistiinpanojärjestelmä estää arvokkaiden oivallusten katoamisen, nopeuttaa päätöksentekoa ja luo luotettavan ulkoisen muistin, joka kasvaa arvokkaammaksi ajan myötä.
 
-      ## ✍️ Effortless Information Capture
+      ## ✍️ Helppo tiedon tallennus
 
-      Create a seamless workflow for capturing and processing information that ensures nothing important falls through the cracks while maintaining focus on your current work.
+      Luo saumaton työnkulku tiedon tallentamiseen ja käsittelyyn, joka varmistaa, että mikään tärkeä ei jää huomaamatta säilyttäen samalla keskittymisen nykyiseen työhösi.
 
-      - 📝 Capture ideas quickly without disrupting your flow
-      - ✏️ Edit and refine information as understanding develops
-      - 🗑️ Remove outdated or irrelevant information systematically
-      - 📌 Keep critical information easily accessible and organized
+      - 📝 Tallenna ideat nopeasti ilman, että häiritset virtaasi
+      - ✏️ Muokkaa ja jalosta tietoja ymmärryksen kehittyessä
+      - 🗑️ Poista vanhentuneet tai irrelevantit tiedot systemaattisesti
+      - 📌 Pidä kriittiset tiedot helposti saatavilla ja järjestettynä
 
-      ## 🗂️ Strategic Organization
+      ## 🗂️ Strateginen organisointi
 
-      Develop an organizational system that scales with your knowledge base and makes information retrieval fast and reliable, regardless of volume.
+      Kehitä järjestelmä, joka skaalautuu tietopohjaasi ja tekee tiedon hakemisesta nopeaa ja luotettavaa riippumatta määrästä.
 
-      - 🏷️ Apply consistent tagging strategies for quick categorization
-      - 🔍 Use powerful search capabilities to find information instantly
-      - 📚 Group related notes to create comprehensive knowledge areas
-      - 🎯 Maintain focus through organized information architecture
+      - 🏷️ Käytä johdonmukaisia tunnistestrategioita nopeaa luokittelua varten
+      - 🔍 Käytä tehokkaita hakutoimintoja tiedon löytämiseksi välittömästi
+      - 📚 Ryhmittele liittyvät muistiinpanot kattavien tietoaalueiden luomiseksi
+      - 🎯 Pidä keskittyminen yllä järjestellyn tiedonarkkitehtuurin kautta
 
-      ## 📄 Professional Content Creation
+      ## 📄 Ammattimainen sisällöntuotanto
 
-      Leverage advanced formatting tools to create clear, well-structured content that communicates effectively and stands the test of time.
+      Hyödynnä edistyneitä muotoilutyökaluja luodaksesi selkeää, hyvin strukturoitua sisältöä, joka kommunikoi tehokkaasti ja kestää ajan testin.
 
-      - 🎨 **Rich Formatting:** Use Markdown for professional document structure
-      - 📋 **Clear Structure:** Organize content with headers, lists, and emphasis
-      - 🔗 **Connected Knowledge:** Link related concepts and information
-      - 📖 **Readable Output:** Format content for easy comprehension and sharing
+      - 🎨 **Rikas muotoilu:** Käytä Markdownia ammattimaiseen dokumenttirakenteeseen
+      - 📋 **Selkeä rakenne:** Järjestä sisältöä otsikoilla, listoilla ja korostuksilla
+      - 🔗 **Yhdistetyt tiedot:** Linkitä liittyvät käsitteet ja tiedot
+      - 📖 **Luettava ulostulo:** Muotoile sisältöä helposti ymmärrettäväksi ja jaettavaksi
 
-      ## 🚀 Productivity Benefits
+      ## 🚀 Tuottavuuden edut
 
-      Transform your note-taking practice into a productivity multiplier that enhances your thinking, accelerates learning, and improves decision-making quality.
+      Muuta muistiinpanojen tekemisen käytäntösi tuottavuuden moninkertaistajaksi, joka parantaa ajattelua, nopeuttaa oppimista ja parantaa päätöksenteon laatua.
 
-      - 🧠 **Enhanced Thinking:** External memory frees mental capacity for creative work
-      - ⚡ **Faster Access:** Organized information reduces time spent searching
-      - 🌐 **Universal Availability:** Access your knowledge base from any device
-      - 📈 **Continuous Improvement:** Refined content becomes more valuable over time
-    title: Knowledge Management & Note Organization Guide
+      - 🧠 **Parannettu ajattelu:** Ulkoinen muisti vapauttaa henkistä kapasiteettia luovaan työhön
+      - ⚡ **Nopeampi pääsy:** Järjestetyt tiedot vähentävät etsintäaikaan
+      - 🌐 **Yleinen saatavuus:** Pääsy tietopohjaasi mistä tahansa laitteesta
+      - 📈 **Jatkuva parantaminen:** Jalostettu sisältö kasvaa arvokkaammaksi ajan myötä
+    title: Tietohallinnan ja muistiinpanojen organisoinnin opas
   actions:
-    add: Add Note
-    delete: Delete Note
-    edit: Edit Note
-    save: Save Note
+    add: Lisää muistiinpano
+    delete: Poista muistiinpano
+    edit: Muokkaa muistiinpanoa
+    save: Tallenna muistiinpano
   components:
     note_details_content:
-      add_tag_button: Add tag
-      content_placeholder: Write note content here...
-      save_button: Save
-      saved_message: Note saved successfully
-      title_placeholder: Note title
-      update_button: Update
+      add_tag_button: Lisää tunniste
+      content_placeholder: Kirjoita muistiinpanon sisältö tänne...
+      save_button: Tallenna
+      saved_message: Muistiinpano tallennettu onnistuneesti
+      title_placeholder: Muistiinpanon otsikko
+      update_button: Päivitä
     notes_list:
-      empty_message: No notes found
-      loading: Loading notes...
+      empty_message: Muistiinpanoja ei löytynyt
+      loading: Ladataan muistiinpanoja...
   delete:
-    confirm_message: Are you sure you want to delete this note?
-    confirm_title: Delete Note
+    confirm_message: Oletko varma, että haluat poistaa tämän muistiinpanon?
+    confirm_title: Poista muistiinpano
   details:
-    content: Content
+    content: Sisältö
     tags:
-      hint: Select tags for note
-      label: Tags
-    title: Title
+      hint: Valitse tunnisteet muistiinpanolle
+      label: Tunnisteet
+    title: Otsikko
   errors:
-    adding_tag: Failed to add tag
-    deleting: Unexpected error occurred while deleting note
-    getting_notes: Error occurred while getting notes
-    loading_details: Failed to load note details
-    loading_tags: Failed to load note tags
-    note_not_found: Note not found
-    note_tag_not_found: Note tag not found
-    removing_tag: Failed to remove tag
-    saving_note: Failed to save note
-    tag_already_exists: This tag is already added
+    adding_tag: Tunnisteen lisäys epäonnistui
+    deleting: Odottamaton virhe muistiinpanon poistossa
+    getting_notes: Virhe muistiinpanojen haussa
+    loading_details: Muistiinpanon tietojen lataus epäonnistui
+    loading_tags: Muistiinpanon tunnisteiden lataus epäonnistui
+    note_not_found: Muistiinpanoa ei löytynyt
+    note_tag_not_found: Muistiinpanon tunnistetta ei löytynyt
+    removing_tag: Tunnisteen poisto epäonnistui
+    saving_note: Muistiinpanon tallennus epäonnistui
+    tag_already_exists: Tämä tunniste on jo lisätty
   filters:
     search:
-      placeholder: Search notes...
+      placeholder: Etsi muistiinpanoja...
     tooltips:
-      filter_by_tags: Filter by tags
-  new_note: New Note
-  title_placeholder: Enter a descriptive note title...
-  no_notes: No notes
-  note_details: Note Details
-  notes: Notes
-  title: Notes
+      filter_by_tags: Suodata tunnisteiden mukaan
+  new_note: Uusi muistiinpano
+  title_placeholder: Anna kuvaileva muistiinpanon otsikko...
+  no_notes: Ei muistiinpanoja
+  note_details: Muistiinpanon tiedot
+  notes: Muistiinpanot
+  title: Muistiinpanot
   tooltips:
-    add_note: Add note
-    delete_note: Delete note
-    edit_name: Edit title
+    add_note: Lisää muistiinpano
+    delete_note: Poista muistiinpano
+    edit_name: Muokkaa otsikkoa

@@ -1,128 +1,128 @@
 tags:
   actions:
-    add: Add Tag
-    archive: Archive Tag
-    delete: Delete Tag
-    edit: Edit Tag
-    hide_archived: Hide archived tags
-    show_archived: Show archived tags
-    unarchive: Unarchive Tag
+    add: Lisää tunniste
+    archive: Arkistoi tunniste
+    delete: Poista tunniste
+    edit: Muokkaa tunnistetta
+    hide_archived: Piilota arkistoidut tunnisteet
+    show_archived: Näytä arkistoidut tunnisteet
+    unarchive: Poista arkistointi tunnisteelta
   categories:
-    all: All
-    app_usage: App Usage
-    habits: Habits
-    tasks: Tasks
-
+    all: Kaikki
+    app_usage: Sovelluksen käyttö
+    habits: Tavat
+    tasks: Tehtävät
+  default_name: Nimetön
   details:
-    archived: Archived
-    color: Color
+    archived: Arkistoitu
+    color: Väri
     help:
-      description: Details help description
-      title: Details Help Title
-    name: Name
-    related_tags: Related Tags
-    select_tag: Select tag
-    tasks_label: Tasks
+      description: Yksityiskohtien apukuvaus
+      title: Yksityiskohtien aputeksti otsikko
+    name: Nimi
+    related_tags: Liittyvät tunnisteet
+    select_tag: Valitse tunniste
+    tasks_label: Tehtävät
   errors:
-    creating: Failed to create tag
-    deleting: Failed to delete tag
-    get_tags: Error occurred while fetching tags
-    loading: Failed to load tags
-    loading_archive_status: Failed to load archive status
-    same_tag: Primary and secondary tags cannot be the same
-    saving: Failed to save tag
-    tag_not_found: Tag not found
-    tag_tag_already_exists: This tag relationship already exists
-    tag_tag_not_found: Tag relationship not found
-    toggling_archive: Failed to toggle archive status
+    creating: Tunnisteen luonti epäonnistui
+    deleting: Tunnisteen poistaminen epäonnistui
+    get_tags: Virhe tunnisteiden haussa
+    loading: Tunnisteiden lataus epäonnistui
+    loading_archive_status: Arkistointitilan lataus epäonnistui
+    same_tag: Ensisijainen ja toissijainen tunniste ei voi olla sama
+    saving: Tunnisteen tallennus epäonnistui
+    tag_not_found: Tunnistetta ei löytynyt
+    tag_tag_already_exists: Tämä tunnistesuhde on jo olemassa
+    tag_tag_not_found: Tunnistesuhdetta ei löytynyt
+    toggling_archive: Arkistointitilan vaihtaminen epäonnistui
   filter:
-    all_categories: All Categories
-    select_category: Select Category
-  filter_tooltip: Filter by tags
+    all_categories: Kaikki kategoriat
+    select_category: Valitse kategoria
+  filter_tooltip: Suodata tunnisteiden mukaan
   help:
-    content: Tag help content
+    content: Tunnisteen apukuvaus
     overview:
       content: |
-        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+        Muuta tuottavuuttasi strategisella tunnisteella, joka auttaa sinua järjestämään työtä, seuraamaan aikainvestointeja ja ylläpitämään selkeää keskittymistä tärkeimpään.
 
-        ## ⚡ Why Is It Important?
+        ## ⚡ Miksi se on tärkeää?
 
-        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+        Tunnisteisiin perustuva organisointi on perustavanlaatuista tehokkaalle ajanhallinnalle ja tuottavuudelle. Luokittelemalla aktiviteettisi merkityksellisillä tunnisteilla saat selkeitä näkemyksiä siitä, miten käytät aikaasi, ja voit tehdä tietoon perustuvia päätöksiä keskittyäsi ja tehokkuutesi optimointiin.
 
-        ## 📊 Time Investment Analysis
+        ## 📊 Aikainvestointien analyysi
 
-        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+        Ymmärrä, mihin aikasi menee, ja tee dataan perustuvia päätöksiä prioriteeteistasi. Tunnisteiden aikaseuranta paljastaa kuvioita, jotka auttavat optimoimaan aikataulusi ja työtapojasi.
 
-        - ⏱️ Monitor time spent across different activity categories
-        - 📅 Track time investments over specific periods and trends
-        - ⚖️ Compare time allocation across projects and responsibilities
-        - 📈 Identify productivity patterns and peak performance times
-        - 🎯 Focus your energy on high-impact activities
+        - ⏱️ Seuraa aikaa eri aktiivisuus kategorioissa
+        - 📅 Seuraa aikainvestointeja tietyissä aikajaksoissa ja trendeissä
+        - ⚖️ Vertaile ajan allokointia eri projekteissa ja vastuissa
+        - 📈 Tunnista tuottavuuskuvioita ja huippusuorituskyvyn aikoja
+        - 🎯 Keskity korkean vaikutuksen aktiviteetteihin
 
-        ## 🗂️ Strategic Organization
+        ## 🗂️ Strateginen organisointi
 
-        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+        Luo systemaattinen lähestymistapa työn organisointiin, joka skaalautuu tarpeisiisi. Hyvin strukturoidut tunnisteet muodostavat tehokkaan tuottavuusjärjestelmän perustan.
 
-        - 🔍 Filter and find information quickly with multi-tag searches
-        - 🗄️ Archive completed projects to maintain clean organization
-        - 🧩 Build hierarchical structures that reflect your work patterns
-        - 👥 Group related activities for better project management
-        - ⏳ Enable comprehensive time tracking across all activities
+        - 🔍 Suodata ja löydä tietoa nopeasti monitunnisteisilla hauilla
+        - 🗄️ Arkistoi valmiit projektit pitääksesi organisoinnin siistinä
+        - 🧩 Rakenna hierarkkisia rakenteita, jotka heijastavat työkuvioitasi
+        - 👥 Ryhmittele liittyvät aktiviteetit parempaan projektinhallintaan
+        - ⏳ Ota käyttöön kattava aikaseuranta kaikissa aktiviteeteissa
 
-        ## 💡 Optimization Strategies
+        ## 💡 Optimointistrategiat
 
-        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+        Hyödynnä edistyneitä tunnistemerkintöjä maksimoidaksesi organisointi järjestelmäsi tehokkuuden ja ylläpitääksesi pitkän aikavälin tuottavuuden kasvua.
 
-        - 🏷️ Use clear, descriptive names that remain meaningful over time
-        - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
-        - 📊 Review time analysis reports regularly to identify improvement opportunities
-        - 🗄️ Maintain system cleanliness by archiving completed work
-        - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
-      title: Tag-Based Organization & Time Management Guide
-    title: Tag Help
+        - 🏷️ Käytä selkeitä, kuvailevia nimiä, jotka pysyvät merkityksellisinä ajan myötä
+        - 🔗 **Luo hierarkkisia rakenteita:** Projektit → Osastot → Alueet
+        - 📊 Tarkista säännöllisesti aikanalyysiraportteja tunnistaaksesi parannusmahdollisuuksia
+        - 🗄️ Pidä järjestelmä puhtaana arkistoimalla valmiit työt
+        - 🎯 Käytä keskittynyttä suodatusta häiriöiden poistamiseen ja keskittymisen parantamiseen
+      title: Tunnisteperustainen organisointi & ajanhallinnan opas
+    title: Tunnisteiden apu
   labels:
-    color: Color
-    description: Description
-    name: Name
-    tags: Tags
+    color: Väri
+    description: Kuvaus
+    name: Nimi
+    tags: Tunnisteet
   list:
-    filter_tooltip: Filter by tags
-    no_tags: No tags
+    filter_tooltip: Suodata tunnisteiden mukaan
+    no_tags: Ei tunnisteita
   messages:
-    archive_confirm: Are you sure you want to archive this tag?
-    confirm_archive: Are you sure you want to archive this tag?
-    confirm_delete: Are you sure you want to delete this tag?
-    confirm_unarchive: Are you sure you want to unarchive this tag?
-    unarchive_confirm: Are you sure you want to unarchive this tag?
-  new_tag: New Tag
-  name_placeholder: Enter a descriptive tag name...
-  no_tags: No tags
-  none_option: None
+    archive_confirm: Oletko varma, että haluat arkistoida tämän tunnisteen?
+    confirm_archive: Oletko varma, että haluat arkistoida tämän tunnisteen?
+    confirm_delete: Oletko varma, että haluat poistaa tämän tunnisteen?
+    confirm_unarchive: Oletko varma, että haluat poistaa arkistoinnin tältä tunnisteelta?
+    unarchive_confirm: Oletko varma, että haluat poistaa arkistoinnin tältä tunnisteelta?
+  new_tag: Uusi tunniste
+  name_placeholder: Anna kuvaileva tunnisteen nimi...
+  no_tags: Ei tunnisteita
+  none_option: Ei mitään
   search:
-    clear_all: Clear All
-    label: Search tags
+    clear_all: Tyhjennä kaikki
+    label: Hae tunnisteita
   sections:
-    list: Tags
+    list: Tunnisteet
   selection:
-    done: Done
-  tag_details: Tag Details
+    done: Valmis
+  tag_details: Tunnisteen tiedot
   time_bar_chart:
-    by_element: By element
-    no_data: No data
-    title: Time Distribution
+    by_element: Kohteittain
+    no_data: Ei tietoja
+    title: Ajan jakautuminen
   time_chart:
-    no_data: No data
-    other_category: Other
-  time_distribution: Time Distribution
-  time_records: Time Records
-  title: Tags
+    no_data: Ei tietoja
+    other_category: Muut
+  time_distribution: Ajan jakautuminen
+  time_records: Aika tallenteet
+  title: Tunnisteet
   tooltips:
-    add_tag: Add tag
-    add_task: Add new task
-    archive_tag: Archive tag
-    color: Click to assign color to tag
-    delete_tag: Delete tag
-    edit_name: Edit name
-    remove_tag: Remove tag
-    select: Click to select tag
-    unarchive_tag: Unarchive tag
+    add_tag: Lisää tunniste
+    add_task: Lisää uusi tehtävä
+    archive_tag: Arkistoi tunniste
+    color: Klikkaa värin määrittämiseksi tunnisteelle
+    delete_tag: Poista tunniste
+    edit_name: Muokkaa nimeä
+    remove_tag: Poista tunniste
+    select: Klikkaa tunnisteen valitsemiseksi
+    unarchive_tag: Poista arkistointi tunnisteelta
