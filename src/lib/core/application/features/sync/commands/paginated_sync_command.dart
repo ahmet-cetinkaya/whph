@@ -15,6 +15,10 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
+
+// Re-export for backward compatibility and mapper generation
+export 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart' show ConflictAction, ConflictResolutionResult;
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
@@ -152,6 +156,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
   final IRepository<Note, String> noteRepository;
   final IRepository<NoteTag, String> noteTagRepository;
+  final SyncConflictResolutionService _conflictResolutionService;
 
   late final List<PaginatedSyncConfig> _syncConfigs;
 
@@ -185,7 +190,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     required this.appUsageIgnoreRuleRepository,
     required this.noteRepository,
     required this.noteTagRepository,
-  }) {
+    SyncConflictResolutionService? conflictResolutionService,
+  }) : _conflictResolutionService = conflictResolutionService ?? SyncConflictResolutionService() {
     _syncConfigs = [
       PaginatedSyncConfig<AppUsage>(
         name: 'AppUsage',
@@ -1140,174 +1146,14 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   }
 
   ConflictResolutionResult<T> _resolveConflict<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
-    return resolveConflictForTesting(localEntity, remoteEntity);
+    return _conflictResolutionService.resolveConflict(localEntity, remoteEntity);
   }
 
   @visibleForTesting
   ConflictResolutionResult<T> resolveConflictForTesting<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
-    final DateTime localTimestamp = _getEffectiveTimestamp(localEntity);
-    final DateTime remoteTimestamp = _getEffectiveTimestamp(remoteEntity);
-
-    final bool localIsDeleted = localEntity.deletedDate != null;
-    final bool remoteIsDeleted = remoteEntity.deletedDate != null;
-
-    // Enhanced logging for habit records to help debug sync issues
-    if (localEntity is HabitRecord) {
-      Logger.debug('🔄 Resolving habit record conflict for ${localEntity.id}:');
-      Logger.debug('   Local: deleted=$localIsDeleted, timestamp=$localTimestamp');
-      Logger.debug('   Remote: deleted=$remoteIsDeleted, timestamp=$remoteTimestamp');
-    }
-
-    // Handle deletion conflicts specially
-    final deletionConflict = _resolveDeletionConflict(localEntity, remoteEntity, localTimestamp, remoteTimestamp);
-    if (deletionConflict != null) {
-      return deletionConflict;
-    }
-
-    // Handle recurring task duplication conflicts
-    final recurringTaskConflict = _resolveRecurringTaskConflict(localEntity, remoteEntity);
-    if (recurringTaskConflict != null) {
-      return recurringTaskConflict;
-    }
-
-    // Fall back to standard timestamp-based conflict resolution
-    return _resolveTimestampConflict(localEntity, remoteEntity, localTimestamp, remoteTimestamp);
+    return _conflictResolutionService.resolveConflict(localEntity, remoteEntity);
   }
 
-  /// Resolves conflicts where one entity is deleted and the other is not
-  ConflictResolutionResult<T>? _resolveDeletionConflict<T extends BaseEntity<String>>(
-      T localEntity, T remoteEntity, DateTime localTimestamp, DateTime remoteTimestamp) {
-    final bool localIsDeleted = localEntity.deletedDate != null;
-    final bool remoteIsDeleted = remoteEntity.deletedDate != null;
-
-    if (localIsDeleted == remoteIsDeleted) {
-      return null; // No deletion conflict
-    }
-
-    const Duration deletionGracePeriod = Duration(minutes: 5);
-
-    if (localIsDeleted && !remoteIsDeleted) {
-      // Local is deleted, remote is not
-      if (localTimestamp.difference(remoteTimestamp) > deletionGracePeriod) {
-        // Local deletion happened significantly later - accept the deletion
-        return ConflictResolutionResult(
-          action: ConflictAction.keepLocal,
-          winningEntity: localEntity,
-          reason:
-              'Local deletion ($localTimestamp) occurred significantly after remote modification ($remoteTimestamp)',
-        );
-      } else {
-        // Recent deletion - prefer the non-deleted version
-        final result = ConflictResolutionResult(
-          action: ConflictAction.acceptRemote,
-          winningEntity: remoteEntity,
-          reason:
-              'Preferring non-deleted remote entity over recent local deletion (deletion time: $localTimestamp, remote time: $remoteTimestamp)',
-        );
-        if (localEntity is HabitRecord) {
-          Logger.debug('   Resolution: Accept remote (non-deleted)');
-        }
-        return result;
-      }
-    } else if (remoteIsDeleted && !localIsDeleted) {
-      // Remote is deleted, local is not
-      if (remoteTimestamp.difference(localTimestamp) > deletionGracePeriod) {
-        // Remote deletion happened significantly later - accept the deletion
-        return ConflictResolutionResult(
-          action: ConflictAction.acceptRemote,
-          winningEntity: remoteEntity,
-          reason:
-              'Remote deletion ($remoteTimestamp) occurred significantly after local modification ($localTimestamp)',
-        );
-      } else {
-        // Recent deletion - prefer the non-deleted version
-        final result = ConflictResolutionResult(
-          action: ConflictAction.keepLocal,
-          winningEntity: localEntity,
-          reason:
-              'Preferring non-deleted local entity over recent remote deletion (deletion time: $remoteTimestamp, local time: $localTimestamp)',
-        );
-        if (localEntity is HabitRecord) {
-          Logger.debug('   Resolution: Keep local (non-deleted)');
-        }
-        return result;
-      }
-    }
-
-    return null;
-  }
-
-  /// Resolves conflicts between recurring task instances with the same parent
-  ConflictResolutionResult<T>? _resolveRecurringTaskConflict<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
-    if (localEntity is! Task || remoteEntity is! Task) {
-      return null; // Not a task conflict
-    }
-
-    // Check if both tasks have recurrenceParentId (indicating they are recurring task instances)
-    if (localEntity.recurrenceParentId == null ||
-        remoteEntity.recurrenceParentId == null ||
-        localEntity.recurrenceParentId != remoteEntity.recurrenceParentId) {
-      return null; // Not a recurring task conflict
-    }
-
-    // Both are instances of the same recurring task
-    // Prefer the instance that was created earlier (closer to the original planned date)
-    final DateTime? localPlannedDate = localEntity.plannedDate;
-    final DateTime? remotePlannedDate = remoteEntity.plannedDate;
-
-    if (localPlannedDate != null && remotePlannedDate != null) {
-      // Prefer the instance with the earlier planned date (original occurrence)
-      if (localPlannedDate.isBefore(remotePlannedDate)) {
-        Logger.debug('🔄 Recurring task conflict: Keeping local instance with earlier planned date');
-        return ConflictResolutionResult(
-          action: ConflictAction.keepLocal,
-          winningEntity: localEntity,
-          reason:
-              'Local recurring task instance has earlier planned date ($localPlannedDate vs $remotePlannedDate)',
-        );
-      } else if (remotePlannedDate.isBefore(localPlannedDate)) {
-        Logger.debug('🔄 Recurring task conflict: Accepting remote instance with earlier planned date');
-        return ConflictResolutionResult(
-          action: ConflictAction.acceptRemote,
-          winningEntity: remoteEntity,
-          reason:
-              'Remote recurring task instance has earlier planned date ($remotePlannedDate vs $localPlannedDate)',
-        );
-      }
-    }
-
-    // If planned dates are the same or unavailable, fall back to creation timestamp
-    Logger.debug('🔄 Recurring task conflict: Using timestamp-based resolution as fallback');
-    return null;
-  }
-
-  /// Resolves conflicts based on entity timestamps
-  ConflictResolutionResult<T> _resolveTimestampConflict<T extends BaseEntity<String>>(
-      T localEntity, T remoteEntity, DateTime localTimestamp, DateTime remoteTimestamp) {
-    if (localTimestamp.isAfter(remoteTimestamp)) {
-      return ConflictResolutionResult(
-        action: ConflictAction.keepLocal,
-        winningEntity: localEntity,
-        reason: 'Local timestamp ($localTimestamp) is newer than remote ($remoteTimestamp)',
-      );
-    } else if (remoteTimestamp.isAfter(localTimestamp)) {
-      return ConflictResolutionResult(
-        action: ConflictAction.acceptRemote,
-        winningEntity: remoteEntity,
-        reason: 'Remote timestamp ($remoteTimestamp) is newer than local ($localTimestamp)',
-      );
-    } else {
-      return ConflictResolutionResult(
-        action: ConflictAction.acceptRemoteForceUpdate,
-        winningEntity: remoteEntity,
-        reason: 'Timestamps are identical ($localTimestamp), preferring remote version for consistency',
-      );
-    }
-  }
-
-  DateTime _getEffectiveTimestamp<T extends BaseEntity<String>>(T entity) {
-    return entity.modifiedDate ?? entity.createdDate;
-  }
 
   Future<void> _saveSyncDevice(SyncDevice syncDevice) async {
     final DateTime now = DateTime.now().toUtc();
@@ -2282,41 +2128,6 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
   /// Copy remote task data to existing task while preserving the existing task's ID
   /// This is used when resolving duplicate recurring tasks where the remote version wins
-  T _copyRemoteDataToExistingTask<T extends BaseEntity<String>>(T existingTask, T remoteTask) {
-    // Only works for Task entities
-    if (existingTask is! Task || remoteTask is! Task) {
-      return existingTask; // Return unchanged if not tasks
-    }
-
-    // Create a copy of the remote task but with the existing task's ID
-    // This preserves database consistency while applying remote changes
-    final updatedTask = Task(
-      id: existingTask.id, // Keep existing ID
-      createdDate: remoteTask.createdDate,
-      modifiedDate: remoteTask.modifiedDate,
-      deletedDate: remoteTask.deletedDate,
-      title: remoteTask.title,
-      description: remoteTask.description,
-      priority: remoteTask.priority,
-      plannedDate: remoteTask.plannedDate,
-      deadlineDate: remoteTask.deadlineDate,
-      estimatedTime: remoteTask.estimatedTime,
-      isCompleted: remoteTask.isCompleted,
-      parentTaskId: remoteTask.parentTaskId,
-      order: remoteTask.order,
-      plannedDateReminderTime: remoteTask.plannedDateReminderTime,
-      deadlineDateReminderTime: remoteTask.deadlineDateReminderTime,
-      recurrenceType: remoteTask.recurrenceType,
-      recurrenceInterval: remoteTask.recurrenceInterval,
-      recurrenceDaysString: remoteTask.recurrenceDaysString,
-      recurrenceStartDate: remoteTask.recurrenceStartDate,
-      recurrenceEndDate: remoteTask.recurrenceEndDate,
-      recurrenceCount: remoteTask.recurrenceCount,
-      recurrenceParentId: remoteTask.recurrenceParentId,
-    );
-
-    return updatedTask as T; // Safe cast since we verified types
-  }
 
   /// Check for recurring task duplicates based on recurrenceParentId and plannedDate
   /// This prevents creating duplicate task instances when multiple devices independently
@@ -2343,8 +2154,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         0, // page
         10, // pageSize - should be enough, most cases will have 0-1 matches
         customWhereFilter: CustomWhereFilter(
-          'recurrence_parent_id = ? AND planned_date = ? AND deleted_date IS NULL',
-          [item.recurrenceParentId!, item.plannedDate!.toIso8601String()],
+          'recurrence_parent_id = ? AND planned_date = ? AND deleted_date IS NULL AND id != ?',
+          [item.recurrenceParentId!, item.plannedDate!.toIso8601String(), item.id],
         ),
       );
 
@@ -2445,7 +2256,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                 case ConflictAction.acceptRemote:
                 case ConflictAction.acceptRemoteForceUpdate:
                   // Remote (incoming) item wins - copy remote data to existing task and update it
-                  final updatedTask = _copyRemoteDataToExistingTask(duplicateTask, item);
+                  final updatedTask = _conflictResolutionService.copyRemoteDataToExistingTask(duplicateTask, item);
                   await repository.update(updatedTask);
                   Logger.debug('📝 Updated existing task ${duplicateTask.id} with remote data from ${item.id}');
                   break;
@@ -3340,11 +3151,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       }
 
       // If it's an object with toJson method, use it
-      if (message.runtimeType.toString().contains('PaginatedSyncDataDto') ||
-          message.runtimeType.toString().contains('PaginatedSyncData') ||
-          message.runtimeType.toString().contains('SyncData') ||
-          message.runtimeType.toString().contains('SyncProgress') ||
-          message.runtimeType.toString().contains('WebSocketMessage')) {
+      if (message is PaginatedSyncDataDto ||
+          message is PaginatedSyncData ||
+          message is SyncData ||
+          message is SyncProgress ||
+          message is WebSocketMessage) {
         try {
           // Try to call toJson() method if available
           final toJsonMethod = message.toJson;
@@ -3358,10 +3169,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       }
 
       // For other objects, try to extract properties manually
-      if (message.runtimeType.toString().contains('BaseEntity') ||
-          message.runtimeType.toString().contains('AppUsage') ||
-          message.runtimeType.toString().contains('Task') ||
-          message.runtimeType.toString().contains('Habit')) {
+      if (message is BaseEntity ||
+          message is AppUsage ||
+          message is Task ||
+          message is Habit) {
         try {
           // Try to call toJson() method for entity objects
           final toJsonMethod = message.toJson;
@@ -3905,27 +3716,3 @@ Map<String, dynamic>? _jsonDecode(String json) {
   }
 }
 
-/// Defines the action to take when resolving sync conflicts
-enum ConflictAction {
-  /// Keep the local version (local data is newer)
-  keepLocal,
-
-  /// Accept the remote version (remote data is newer)
-  acceptRemote,
-
-  /// Force accept remote version (when timestamps are identical or missing)
-  acceptRemoteForceUpdate,
-}
-
-/// Result of conflict resolution between local and remote entities
-class ConflictResolutionResult<T> {
-  final ConflictAction action;
-  final T winningEntity;
-  final String reason;
-
-  ConflictResolutionResult({
-    required this.action,
-    required this.winningEntity,
-    required this.reason,
-  });
-}
