@@ -15,6 +15,10 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
+
+// Re-export for backward compatibility and mapper generation
+export 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart' show ConflictAction, ConflictResolutionResult;
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
@@ -152,6 +156,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
   final IRepository<Note, String> noteRepository;
   final IRepository<NoteTag, String> noteTagRepository;
+  final SyncConflictResolutionService _conflictResolutionService;
 
   late final List<PaginatedSyncConfig> _syncConfigs;
 
@@ -185,7 +190,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     required this.appUsageIgnoreRuleRepository,
     required this.noteRepository,
     required this.noteTagRepository,
-  }) {
+    SyncConflictResolutionService? conflictResolutionService,
+  }) : _conflictResolutionService = conflictResolutionService ?? SyncConflictResolutionService() {
     _syncConfigs = [
       PaginatedSyncConfig<AppUsage>(
         name: 'AppUsage',
@@ -1140,33 +1146,14 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   }
 
   ConflictResolutionResult<T> _resolveConflict<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
-    final DateTime localTimestamp = _getEffectiveTimestamp(localEntity);
-    final DateTime remoteTimestamp = _getEffectiveTimestamp(remoteEntity);
-
-    if (localTimestamp.isAfter(remoteTimestamp)) {
-      return ConflictResolutionResult(
-        action: ConflictAction.keepLocal,
-        winningEntity: localEntity,
-        reason: 'Local timestamp ($localTimestamp) is newer than remote ($remoteTimestamp)',
-      );
-    } else if (remoteTimestamp.isAfter(localTimestamp)) {
-      return ConflictResolutionResult(
-        action: ConflictAction.acceptRemote,
-        winningEntity: remoteEntity,
-        reason: 'Remote timestamp ($remoteTimestamp) is newer than local ($localTimestamp)',
-      );
-    } else {
-      return ConflictResolutionResult(
-        action: ConflictAction.acceptRemoteForceUpdate,
-        winningEntity: remoteEntity,
-        reason: 'Timestamps are identical ($localTimestamp), preferring remote version for consistency',
-      );
-    }
+    return _conflictResolutionService.resolveConflict(localEntity, remoteEntity);
   }
 
-  DateTime _getEffectiveTimestamp<T extends BaseEntity<String>>(T entity) {
-    return entity.modifiedDate ?? entity.createdDate;
+  @visibleForTesting
+  ConflictResolutionResult<T> resolveConflictForTesting<T extends BaseEntity<String>>(T localEntity, T remoteEntity) {
+    return _conflictResolutionService.resolveConflict(localEntity, remoteEntity);
   }
+
 
   Future<void> _saveSyncDevice(SyncDevice syncDevice) async {
     final DateTime now = DateTime.now().toUtc();
@@ -2139,6 +2126,51 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         '📊 Progress: ${progress.progressPercentage.toStringAsFixed(1)}% - $operation $currentEntity (page ${currentPage + 1}/$totalPages)');
   }
 
+  /// Copy remote task data to existing task while preserving the existing task's ID
+  /// This is used when resolving duplicate recurring tasks where the remote version wins
+
+  /// Check for recurring task duplicates based on recurrenceParentId and plannedDate
+  /// This prevents creating duplicate task instances when multiple devices independently
+  /// create instances for the same recurring task
+  Future<T?> _checkForRecurringTaskDuplicate<T extends BaseEntity<String>>(
+    T item,
+    IRepository<T, String> repository,
+  ) async {
+    // Only check for Task entities with recurrence information
+    if (item is! Task || item.recurrenceParentId == null || item.plannedDate == null) {
+      return null;
+    }
+
+    // Only check tasks repository - cast is safe since we know repository handles Task type
+    if (repository is! ITaskRepository) {
+      return null;
+    }
+
+    final taskRepo = repository as ITaskRepository;
+
+    try {
+      // Query for existing tasks with same recurrenceParentId and plannedDate
+      final existingTasks = await taskRepo.getList(
+        0, // page
+        10, // pageSize - should be enough, most cases will have 0-1 matches
+        customWhereFilter: CustomWhereFilter(
+          'recurrence_parent_id = ? AND planned_date = ? AND deleted_date IS NULL AND id != ?',
+          [item.recurrenceParentId!, item.plannedDate!.toIso8601String(), item.id],
+        ),
+      );
+
+      if (existingTasks.items.isNotEmpty) {
+        // Return the first matching task as T (safe cast since we verified repository type)
+        return existingTasks.items.first as T;
+      }
+
+      return null;
+    } catch (e) {
+      Logger.error('Error checking for recurring task duplicates: $e');
+      return null; // Fall back to normal processing if check fails
+    }
+  }
+
   /// Maximum yielding processing that processes one item at a time with aggressive yielding
   /// specifically for database operations taking >15ms each
   Future<int> _processItemsWithMaximumYielding<T extends BaseEntity<String>>(
@@ -2210,7 +2242,33 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           await _yieldToUIThreadMaximum();
 
           if (existingItem == null) {
-            await repository.add(item);
+            // Check for recurring task deduplication before creating
+            T? duplicateTask = await _checkForRecurringTaskDuplicate(item, repository);
+
+            if (duplicateTask != null) {
+              // Found a duplicate recurring task - resolve conflict with existing task
+              final resolution = _resolveConflict(duplicateTask, item);
+              conflicts = 1;
+
+              Logger.debug('🔄 Found duplicate recurring task during create: ${item.id} vs ${duplicateTask.id}');
+
+              switch (resolution.action) {
+                case ConflictAction.acceptRemote:
+                case ConflictAction.acceptRemoteForceUpdate:
+                  // Remote (incoming) item wins - copy remote data to existing task and update it
+                  final updatedTask = _conflictResolutionService.copyRemoteDataToExistingTask(duplicateTask, item);
+                  await repository.update(updatedTask);
+                  Logger.debug('📝 Updated existing task ${duplicateTask.id} with remote data from ${item.id}');
+                  break;
+                case ConflictAction.keepLocal:
+                  // Local (existing) item wins - skip creating the remote item
+                  Logger.debug('🏠 Keeping local recurring task ${duplicateTask.id}, skipping remote ${item.id}');
+                  break;
+              }
+            } else {
+              // No duplicate found - proceed with normal creation
+              await repository.add(item);
+            }
           } else {
             await repository.update(item);
             conflicts = 1;
@@ -3093,11 +3151,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       }
 
       // If it's an object with toJson method, use it
-      if (message.runtimeType.toString().contains('PaginatedSyncDataDto') ||
-          message.runtimeType.toString().contains('PaginatedSyncData') ||
-          message.runtimeType.toString().contains('SyncData') ||
-          message.runtimeType.toString().contains('SyncProgress') ||
-          message.runtimeType.toString().contains('WebSocketMessage')) {
+      if (message is PaginatedSyncDataDto ||
+          message is PaginatedSyncData ||
+          message is SyncData ||
+          message is SyncProgress ||
+          message is WebSocketMessage) {
         try {
           // Try to call toJson() method if available
           final toJsonMethod = message.toJson;
@@ -3111,10 +3169,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       }
 
       // For other objects, try to extract properties manually
-      if (message.runtimeType.toString().contains('BaseEntity') ||
-          message.runtimeType.toString().contains('AppUsage') ||
-          message.runtimeType.toString().contains('Task') ||
-          message.runtimeType.toString().contains('Habit')) {
+      if (message is BaseEntity ||
+          message is AppUsage ||
+          message is Task ||
+          message is Habit) {
         try {
           // Try to call toJson() method for entity objects
           final toJsonMethod = message.toJson;
@@ -3658,27 +3716,3 @@ Map<String, dynamic>? _jsonDecode(String json) {
   }
 }
 
-/// Defines the action to take when resolving sync conflicts
-enum ConflictAction {
-  /// Keep the local version (local data is newer)
-  keepLocal,
-
-  /// Accept the remote version (remote data is newer)
-  acceptRemote,
-
-  /// Force accept remote version (when timestamps are identical or missing)
-  acceptRemoteForceUpdate,
-}
-
-/// Result of conflict resolution between local and remote entities
-class ConflictResolutionResult<T> {
-  final ConflictAction action;
-  final T winningEntity;
-  final String reason;
-
-  ConflictResolutionResult({
-    required this.action,
-    required this.winningEntity,
-    required this.reason,
-  });
-}

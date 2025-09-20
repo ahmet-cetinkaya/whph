@@ -267,6 +267,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       recurrenceStartDate: task.recurrenceStartDate,
       recurrenceEndDate: task.recurrenceEndDate,
       recurrenceCount: nextRecurrenceCount,
+      recurrenceParentId: task.recurrenceParentId ?? task.id, // Use parent ID if available, otherwise this task's ID
       tagIdsToAdd: tagIds,
     );
   }
