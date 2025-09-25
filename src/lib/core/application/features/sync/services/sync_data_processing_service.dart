@@ -243,8 +243,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
 
             if (duplicateTask != null) {
               // Found a duplicate recurring task - resolve conflict with existing task
-              final resolution = _conflictResolutionService.resolveConflict<BaseEntity<String>>(
-                  duplicateTask as BaseEntity<String>, item);
+              final resolution = _conflictResolutionService.resolveConflict<T>(duplicateTask, item);
               conflicts = 1;
 
               Logger.debug('🔄 Found duplicate recurring task during create: ${item.id} vs ${duplicateTask.id}');
@@ -256,11 +255,10 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
                 case ConflictAction.acceptRemote:
                 case ConflictAction.acceptRemoteForceUpdate:
                   Logger.debug('🔄 Replacing existing task ${duplicateTask.id} with remote ${item.id}');
-                  // Update existing task with remote data while preserving ID
-                  final updatedTask = _conflictResolutionService.copyRemoteDataToExistingTask(
-                      duplicateTask as BaseEntity<String>, item);
+                  // Update existing task with remote data while preserving the existing task's ID
+                  final updatedTask = _conflictResolutionService.copyRemoteDataToExistingTask(duplicateTask, item);
                   await yieldToUIThread();
-                  await repository.update(updatedTask as dynamic);
+                  await repository.update(updatedTask);
                   await yieldToUIThread();
                   break;
               }
@@ -277,8 +275,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
                   // Try to get the existing item and resolve conflict
                   T? existingItem = await repository.getById(item.id);
                   if (existingItem != null) {
-                    final resolution = _conflictResolutionService.resolveConflict<BaseEntity<String>>(
-                        existingItem as BaseEntity<String>, item);
+                    final resolution = _conflictResolutionService.resolveConflict<T>(existingItem, item);
                     conflicts = 1;
                     switch (resolution.action) {
                       case ConflictAction.keepLocal:
@@ -288,7 +285,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
                       case ConflictAction.acceptRemoteForceUpdate:
                         Logger.debug('🔄 Updating ${item.id} with remote version');
                         await yieldToUIThread();
-                        await repository.update(resolution.winningEntity as dynamic);
+                        await repository.update(resolution.winningEntity);
                         await yieldToUIThread();
                         break;
                     }
@@ -305,8 +302,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
           } else {
             // Item exists - this shouldn't happen for create, but handle gracefully
             Logger.warning('⚠️ Create operation for existing item ${item.id}, treating as update');
-            final resolution = _conflictResolutionService.resolveConflict<BaseEntity<String>>(
-                existingItem as BaseEntity<String>, item);
+            final resolution = _conflictResolutionService.resolveConflict<T>(existingItem, item);
             conflicts = 1;
 
             switch (resolution.action) {
@@ -317,7 +313,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
               case ConflictAction.acceptRemoteForceUpdate:
                 Logger.debug('🔄 Updating ${item.id} with remote version');
                 await yieldToUIThread();
-                await repository.update(resolution.winningEntity as dynamic);
+                await repository.update(resolution.winningEntity);
                 await yieldToUIThread();
                 break;
             }
@@ -334,8 +330,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
           await yieldToUIThread();
 
           if (existingItem != null) {
-            final resolution = _conflictResolutionService.resolveConflict<BaseEntity<String>>(
-                existingItem as BaseEntity<String>, item);
+            final resolution = _conflictResolutionService.resolveConflict<T>(existingItem, item);
             conflicts = 1;
 
             switch (resolution.action) {
@@ -346,7 +341,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
               case ConflictAction.acceptRemoteForceUpdate:
                 Logger.debug('🔄 Updating ${item.id} with remote version');
                 await yieldToUIThread();
-                await repository.update(resolution.winningEntity as dynamic);
+                await repository.update(resolution.winningEntity);
                 await yieldToUIThread();
                 break;
             }
@@ -424,7 +419,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
         0, // page
         10, // pageSize - should be enough, most cases will have 0-1 matches
         customWhereFilter: CustomWhereFilter(
-          'recurrence_parent_id = ? AND planned_date = ? AND deleted_date IS NULL AND id != ?',
+          'recurrence_parent_id = ? AND SUBSTR(planned_date, 1, 10) = SUBSTR(?, 1, 10) AND deleted_date IS NULL AND id != ?',
           [entity.recurrenceParentId!, entity.plannedDate!.toIso8601String(), entity.id],
         ),
       );
@@ -881,7 +876,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
         0, // page
         10, // pageSize - should be enough, most cases will have 0-1 matches
         customWhereFilter: CustomWhereFilter(
-          'recurrence_parent_id = ? AND planned_date = ? AND deleted_date IS NULL AND id != ?',
+          'recurrence_parent_id = ? AND SUBSTR(planned_date, 1, 10) = SUBSTR(?, 1, 10) AND deleted_date IS NULL AND id != ?',
           [entity.recurrenceParentId!, entity.plannedDate!.toIso8601String(), entity.id],
         ),
       );

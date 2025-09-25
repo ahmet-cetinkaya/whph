@@ -3,10 +3,15 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
+import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/corePackages/acore/lib/repository/models/base_entity.dart';
 
 /// Implementation of sync communication service for WebSocket-based sync operations
 class SyncCommunicationService implements ISyncCommunicationService {
@@ -707,20 +712,28 @@ class SyncCommunicationService implements ISyncCommunicationService {
     return result;
   }
 
-    // Helper method to serialize entities in isolate
+  // Helper method to serialize entities in isolate
   static dynamic _serializeEntity(dynamic entity) {
     if (entity == null) return null;
-    
+
+    // Handle PaginatedSyncData and SyncData by converting to map first
+    if (entity is PaginatedSyncData) {
+      return _serializeEntity(entity.toJson());
+    }
+    if (entity is SyncData) {
+      return _serializeEntity(entity.toJson());
+    }
+
     // Handle simple types directly
     if (entity is String || entity is num || entity is bool) {
       return entity;
     }
-    
+
     // Handle DateTime by converting to ISO string
     if (entity is DateTime) {
       return entity.toIso8601String();
     }
-    
+
     // Handle maps by recursively serializing their values
     if (entity is Map<String, dynamic>) {
       final result = <String, dynamic>{};
@@ -729,7 +742,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
       }
       return result;
     }
-    
+
     // Handle lists by serializing each element
     if (entity is List) {
       return entity.map(_serializeEntity).toList();
@@ -742,17 +755,17 @@ class SyncCommunicationService implements ISyncCommunicationService {
       // Convert BaseEntity to a basic Map structure
       final entityMap = <String, dynamic>{};
       entityMap['id'] = entity.id;
-      entityMap['createdDate'] = entity.createdDate?.toIso8601String();
+      entityMap['createdDate'] = entity.createdDate.toIso8601String();
       entityMap['modifiedDate'] = entity.modifiedDate?.toIso8601String();
       entityMap['deletedDate'] = entity.deletedDate?.toIso8601String();
-      
+
       // Use a more scalable approach with a mapping of entity serializers
       // This eliminates the need for long if/else chains and makes the system more extensible
       final serializer = _getEntitySerializer(entity.runtimeType);
       if (serializer != null) {
         return serializer(entityMap, entity);
       }
-      
+
       // If no specific serializer, return the base map with id and dates
       return entityMap;
     }
@@ -767,9 +780,9 @@ class SyncCommunicationService implements ISyncCommunicationService {
     // Map entity types to their specific serialization functions
     // This approach makes the system more scalable and maintainable
     switch (type) {
-      case Task:
+      case Task _:
         return _serializeTask;
-      case HabitRecord:
+      case HabitRecord _:
         return _serializeHabitRecord;
       default:
         // For other entity types, you can add cases as needed
@@ -780,7 +793,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
   // Specific serialization function for Task entities
   static Map<String, dynamic> _serializeTask(Map<String, dynamic> baseMap, dynamic task) {
     final entityMap = Map<String, dynamic>.from(baseMap);
-    
+
     // Add all Task-specific properties to avoid data loss
     entityMap['title'] = task.title;
     entityMap['description'] = task.description;
@@ -800,18 +813,18 @@ class SyncCommunicationService implements ISyncCommunicationService {
     entityMap['recurrenceEndDate'] = task.recurrenceEndDate?.toIso8601String();
     entityMap['recurrenceCount'] = task.recurrenceCount;
     entityMap['recurrenceParentId'] = task.recurrenceParentId;
-    
+
     return entityMap;
   }
 
   // Specific serialization function for HabitRecord entities
   static Map<String, dynamic> _serializeHabitRecord(Map<String, dynamic> baseMap, dynamic habitRecord) {
     final entityMap = Map<String, dynamic>.from(baseMap);
-    
+
     // Add all HabitRecord-specific properties to avoid data loss
     entityMap['habitId'] = habitRecord.habitId;
     entityMap['occurredAt'] = habitRecord.occurredAt?.toIso8601String();
-    
+
     return entityMap;
   }
 
@@ -878,33 +891,24 @@ class SyncCommunicationService implements ISyncCommunicationService {
       if (type == null) {
         throw ArgumentError('Message type is required and cannot be null');
       }
-      
+
       final data = messageData['data'];
-      
+
       // Create the WebSocketMessage instance
       final message = WebSocketMessage(
         type: type,
         data: data,
       );
-      
+
       // Validate that data can be serialized before attempting
       // This prevents data loss issues during serialization
       final serializedData = JsonMapper.serialize(message);
       return serializedData;
-    } catch (e, stack) {
+    } catch (e) {
       // More detailed error handling to prevent data loss
-      // Log the error with more details if possible
-      print('Error in _serializeMessageInIsolate: $e');
-      print('Stack: $stack');
-      
-      // Return a structured error message instead of potentially corrupt data
-      return JsonMapper.serialize(WebSocketMessage(
-        type: 'error',
-        data: {
-          'message': 'Serialization failed in isolate: $e',
-          'details': e.toString()
-        }
-      ));
+      // In an isolate, we can't directly use the main logger, so we return error message
+      // Log the error with more details if possible - this will be caught by the main thread
+      rethrow;
     }
   }
 }
