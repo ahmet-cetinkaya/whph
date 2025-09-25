@@ -4,12 +4,15 @@
 # is commented out by default.
 #.vscode/
 
-# AI Agents
+# AI Agent files
+.ai/
 .claude/
-.qodo/
-.zencoder/
-CLAUDE.md
-QWEN.md
+.gemini/
+.qwen/
+*QWEN.md
+*CLAUDE.md
+*GEMINI.md
+.specify/
 
 # FVM Version Cache
 .fvm/
