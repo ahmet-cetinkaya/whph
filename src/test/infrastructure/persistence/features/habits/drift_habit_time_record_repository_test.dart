@@ -69,23 +69,23 @@ void main() {
     test('should allow basic CRUD operations on habit time records', () async {
       // First, create a habit record for the foreign key reference
       await database.into(database.habitTable).insert(
-        HabitTableCompanion.insert(
-          id: 'habit-123',
-          createdDate: DateTime.utc(2024, 1, 1),
-          name: 'Test Habit',
-          description: 'Test Description',
-        ),
-      );
+            HabitTableCompanion.insert(
+              id: 'habit-123',
+              createdDate: DateTime.utc(2024, 1, 1),
+              name: 'Test Habit',
+              description: 'Test Description',
+            ),
+          );
 
       // Insert a test record using Drift methods
       await database.into(database.habitTimeRecordTable).insert(
-        HabitTimeRecordTableCompanion.insert(
-          id: 'test-id',
-          createdDate: DateTime.utc(2024, 1, 15, 14),
-          habitId: 'habit-123',
-          duration: 1800,
-        ),
-      );
+            HabitTimeRecordTableCompanion.insert(
+              id: 'test-id',
+              createdDate: DateTime.utc(2024, 1, 15, 14),
+              habitId: 'habit-123',
+              duration: 1800,
+            ),
+          );
 
       // Query the record
       final result = await database.customSelect(
@@ -177,7 +177,18 @@ void main() {
       // First, create a habit record for the foreign key reference
       await database.customStatement(
         'INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        ['habit-123', DateTime.utc(2024, 1, 1).millisecondsSinceEpoch, 'Test Habit', 'Test Description', 0, '', 0, 1, 7, 0.0],
+        [
+          'habit-123',
+          DateTime.utc(2024, 1, 1).millisecondsSinceEpoch,
+          'Test Habit',
+          'Test Description',
+          0,
+          '',
+          0,
+          1,
+          7,
+          0.0
+        ],
       );
 
       // Insert record with NULL optional fields

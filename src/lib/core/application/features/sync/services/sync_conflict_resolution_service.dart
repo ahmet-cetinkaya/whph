@@ -123,13 +123,15 @@ class SyncConflictResolutionService {
         return ConflictResolutionResult(
           action: ConflictAction.keepLocal,
           winningEntity: localEntity,
-          reason: 'Local deletion ($localTimestamp) occurred significantly after remote modification ($remoteTimestamp)',
+          reason:
+              'Local deletion ($localTimestamp) occurred significantly after remote modification ($remoteTimestamp)',
         );
       } else {
         return ConflictResolutionResult(
           action: ConflictAction.acceptRemote,
           winningEntity: remoteEntity,
-          reason: 'Preferring non-deleted remote entity over recent local deletion (deletion time: $localTimestamp, remote time: $remoteTimestamp)',
+          reason:
+              'Preferring non-deleted remote entity over recent local deletion (deletion time: $localTimestamp, remote time: $remoteTimestamp)',
         );
       }
     } else if (remoteIsDeleted && !localIsDeleted) {
@@ -137,13 +139,15 @@ class SyncConflictResolutionService {
         return ConflictResolutionResult(
           action: ConflictAction.acceptRemote,
           winningEntity: remoteEntity,
-          reason: 'Remote deletion ($remoteTimestamp) occurred significantly after local modification ($localTimestamp)',
+          reason:
+              'Remote deletion ($remoteTimestamp) occurred significantly after local modification ($localTimestamp)',
         );
       } else {
         return ConflictResolutionResult(
           action: ConflictAction.keepLocal,
           winningEntity: localEntity,
-          reason: 'Preferring non-deleted local entity over recent remote deletion (deletion time: $remoteTimestamp, local time: $localTimestamp)',
+          reason:
+              'Preferring non-deleted local entity over recent remote deletion (deletion time: $remoteTimestamp, local time: $localTimestamp)',
         );
       }
     }
@@ -238,8 +242,10 @@ class ConflictResolutionResult<T extends BaseEntity<String>> {
 enum ConflictAction {
   /// Keep the local entity unchanged
   keepLocal,
+
   /// Accept the remote entity
   acceptRemote,
+
   /// Accept the remote entity and force update even if timestamps are identical
   acceptRemoteForceUpdate,
 }

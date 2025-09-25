@@ -14,6 +14,16 @@ import 'package:whph/core/application/features/sync/services/network_interface_s
 import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
 import 'package:whph/core/application/features/sync/services/concurrent_connection_service.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_configuration_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_validation_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_communication_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_data_processing_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_pagination_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
@@ -68,6 +78,44 @@ void registerSyncFeature(
   // Register device handshake service
   container.registerSingleton<DeviceHandshakeService>((_) => DeviceHandshakeService());
 
+  // Register sync configuration service
+  container.registerSingleton<ISyncConfigurationService>((_) => SyncConfigurationService(
+        appUsageRepository: appUsageRepository,
+        appUsageTagRepository: appUsageTagRepository,
+        appUsageTimeRecordRepository: appUsageTimeRecordRepository,
+        appUsageTagRuleRepository: appUsageTagRuleRepository,
+        appUsageIgnoreRuleRepository: appUsageIgnoreRuleRepository,
+        habitRepository: habitRepository,
+        habitRecordRepository: habitRecordRepository,
+        habitTagRepository: habitTagRepository,
+        tagRepository: tagRepository,
+        tagTagRepository: tagTagRepository,
+        taskRepository: taskRepository,
+        taskTagRepository: taskTagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
+        settingRepository: settingRepository,
+        syncDeviceRepository: syncDeviceRepository,
+        noteRepository: noteRepository,
+        noteTagRepository: noteTagRepository,
+      ));
+
+  // Register sync validation service
+  container.registerSingleton<ISyncValidationService>((_) => SyncValidationService(
+        deviceIdService: deviceIdService,
+      ));
+
+  // Register sync communication service
+  container.registerSingleton<ISyncCommunicationService>((_) => SyncCommunicationService());
+
+  // Register sync data processing service
+  container.registerSingleton<ISyncDataProcessingService>((_) => SyncDataProcessingService());
+
+  // Register sync pagination service
+  container.registerSingleton<ISyncPaginationService>((_) => SyncPaginationService(
+        communicationService: container.resolve<ISyncCommunicationService>(),
+        configurationService: container.resolve<ISyncConfigurationService>(),
+      ));
+
   mediator
     ..registerHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse, SaveSyncDeviceCommandHandler>(
       () => SaveSyncDeviceCommandHandler(syncDeviceRepository: syncDeviceRepository),
@@ -83,24 +131,14 @@ void registerSyncFeature(
     )
     ..registerHandler<PaginatedSyncCommand, PaginatedSyncCommandResponse, PaginatedSyncCommandHandler>(
       () => PaginatedSyncCommandHandler(
-        appUsageIgnoreRuleRepository: appUsageIgnoreRuleRepository,
-        appUsageRepository: appUsageRepository,
-        appUsageTagRepository: appUsageTagRepository,
-        appUsageTagRuleRepository: appUsageTagRuleRepository,
-        appUsageTimeRecordRepository: appUsageTimeRecordRepository,
-        habitRecordRepository: habitRecordRepository,
-        habitRepository: habitRepository,
-        habitTagRepository: habitTagRepository,
-        settingRepository: settingRepository,
         syncDeviceRepository: syncDeviceRepository,
-        tagRepository: tagRepository,
-        tagTagRepository: tagTagRepository,
-        taskRepository: taskRepository,
-        taskTagRepository: taskTagRepository,
-        taskTimeRecordRepository: taskTimeRecordRepository,
-        noteRepository: noteRepository,
-        noteTagRepository: noteTagRepository,
+        configurationService: container.resolve<ISyncConfigurationService>(),
+        validationService: container.resolve<ISyncValidationService>(),
+        communicationService: container.resolve<ISyncCommunicationService>(),
+        dataProcessingService: container.resolve<ISyncDataProcessingService>(),
+        paginationService: container.resolve<ISyncPaginationService>(),
         deviceIdService: deviceIdService,
+        mediator: mediator,
       ),
     )
     ..registerHandler<StartSyncCommand, void, StartSyncCommandHandler>(

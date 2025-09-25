@@ -307,15 +307,31 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         final localDeviceId = await deviceIdService.getDeviceId();
         final localDeviceName = await DeviceInfoHelper.getDeviceName();
 
-        // Check if device already exists
+        // Check if device already exists (including soft-deleted ones)
         final existingDevice = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
             GetSyncDeviceQuery(fromDeviceId: device.deviceId, toDeviceId: localDeviceId));
 
-        if (existingDevice?.id.isNotEmpty == true && existingDevice?.deletedDate == null) {
-          throw BusinessException(
-            _translationService.translate(SyncTranslationKeys.deviceAlreadyPairedError),
-            SyncTranslationKeys.deviceAlreadyPaired,
-          );
+        if (existingDevice?.id.isNotEmpty == true) {
+          if (existingDevice?.deletedDate == null) {
+            // Device already exists and is active
+            throw BusinessException(
+              _translationService.translate(SyncTranslationKeys.deviceAlreadyPairedError),
+              SyncTranslationKeys.deviceAlreadyPaired,
+            );
+          } else {
+            // Device exists but is soft-deleted - reactivate it
+            Logger.info('🔄 Reactivating soft-deleted sync device ${existingDevice!.id}');
+            final reactivateCommand = SaveSyncDeviceCommand(
+              id: existingDevice.id,
+              fromIP: device.ipAddress,
+              toIP: localIp,
+              fromDeviceId: device.deviceId,
+              toDeviceId: localDeviceId,
+              name: "${device.name} ↔ $localDeviceName",
+            );
+            await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(reactivateCommand);
+            return;
+          }
         }
 
         // Create the sync device
