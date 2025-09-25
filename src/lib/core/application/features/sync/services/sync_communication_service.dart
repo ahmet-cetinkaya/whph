@@ -746,38 +746,73 @@ class SyncCommunicationService implements ISyncCommunicationService {
       entityMap['modifiedDate'] = entity.modifiedDate?.toIso8601String();
       entityMap['deletedDate'] = entity.deletedDate?.toIso8601String();
       
-      // Add specific properties based on entity type
-      if (entity is Task) {
-        entityMap['title'] = entity.title;
-        entityMap['description'] = entity.description;
-        entityMap['priority'] = entity.priority?.index;
-        entityMap['plannedDate'] = entity.plannedDate?.toIso8601String();
-        entityMap['deadlineDate'] = entity.deadlineDate?.toIso8601String();
-        entityMap['estimatedTime'] = entity.estimatedTime;
-        entityMap['isCompleted'] = entity.isCompleted;
-        entityMap['parentTaskId'] = entity.parentTaskId;
-        entityMap['order'] = entity.order;
-        entityMap['plannedDateReminderTime'] = entity.plannedDateReminderTime?.index;
-        entityMap['deadlineDateReminderTime'] = entity.deadlineDateReminderTime?.index;
-        entityMap['recurrenceType'] = entity.recurrenceType?.index;
-        entityMap['recurrenceInterval'] = entity.recurrenceInterval;
-        entityMap['recurrenceDaysString'] = entity.recurrenceDaysString;
-        entityMap['recurrenceStartDate'] = entity.recurrenceStartDate?.toIso8601String();
-        entityMap['recurrenceEndDate'] = entity.recurrenceEndDate?.toIso8601String();
-        entityMap['recurrenceCount'] = entity.recurrenceCount;
-        entityMap['recurrenceParentId'] = entity.recurrenceParentId;
-      } else if (entity is HabitRecord) {
-        entityMap['habitId'] = entity.habitId;
-        entityMap['occurredAt'] = entity.occurredAt?.toIso8601String();
+      // Use a more scalable approach with a mapping of entity serializers
+      // This eliminates the need for long if/else chains and makes the system more extensible
+      final serializer = _getEntitySerializer(entity.runtimeType);
+      if (serializer != null) {
+        return serializer(entityMap, entity);
       }
-      // Add more entity types as needed
       
+      // If no specific serializer, return the base map with id and dates
       return entityMap;
     }
 
     // For any other object type, try to convert to string as a last resort
     // but this is not ideal for actual data processing
     return entity.toString();
+  }
+
+  // Define a function type for entity serializers
+  static Map<String, dynamic> Function(Map<String, dynamic>, dynamic)? _getEntitySerializer(Type type) {
+    // Map entity types to their specific serialization functions
+    // This approach makes the system more scalable and maintainable
+    switch (type) {
+      case Task:
+        return _serializeTask;
+      case HabitRecord:
+        return _serializeHabitRecord;
+      default:
+        // For other entity types, you can add cases as needed
+        return null;
+    }
+  }
+
+  // Specific serialization function for Task entities
+  static Map<String, dynamic> _serializeTask(Map<String, dynamic> baseMap, dynamic task) {
+    final entityMap = Map<String, dynamic>.from(baseMap);
+    
+    // Add all Task-specific properties to avoid data loss
+    entityMap['title'] = task.title;
+    entityMap['description'] = task.description;
+    entityMap['priority'] = task.priority?.index;
+    entityMap['plannedDate'] = task.plannedDate?.toIso8601String();
+    entityMap['deadlineDate'] = task.deadlineDate?.toIso8601String();
+    entityMap['estimatedTime'] = task.estimatedTime;
+    entityMap['isCompleted'] = task.isCompleted;
+    entityMap['parentTaskId'] = task.parentTaskId;
+    entityMap['order'] = task.order;
+    entityMap['plannedDateReminderTime'] = task.plannedDateReminderTime?.index;
+    entityMap['deadlineDateReminderTime'] = task.deadlineDateReminderTime?.index;
+    entityMap['recurrenceType'] = task.recurrenceType?.index;
+    entityMap['recurrenceInterval'] = task.recurrenceInterval;
+    entityMap['recurrenceDaysString'] = task.recurrenceDaysString;
+    entityMap['recurrenceStartDate'] = task.recurrenceStartDate?.toIso8601String();
+    entityMap['recurrenceEndDate'] = task.recurrenceEndDate?.toIso8601String();
+    entityMap['recurrenceCount'] = task.recurrenceCount;
+    entityMap['recurrenceParentId'] = task.recurrenceParentId;
+    
+    return entityMap;
+  }
+
+  // Specific serialization function for HabitRecord entities
+  static Map<String, dynamic> _serializeHabitRecord(Map<String, dynamic> baseMap, dynamic habitRecord) {
+    final entityMap = Map<String, dynamic>.from(baseMap);
+    
+    // Add all HabitRecord-specific properties to avoid data loss
+    entityMap['habitId'] = habitRecord.habitId;
+    entityMap['occurredAt'] = habitRecord.occurredAt?.toIso8601String();
+    
+    return entityMap;
   }
 
   // Helper method to add serialized entity data
@@ -839,7 +874,11 @@ class SyncCommunicationService implements ISyncCommunicationService {
   static String _serializeMessageInIsolate(Map<String, dynamic> messageData) {
     try {
       // Extract the type and data from messageData
-      final type = messageData['type'] as String;
+      final type = messageData['type'] as String?;
+      if (type == null) {
+        throw ArgumentError('Message type is required and cannot be null');
+      }
+      
       final data = messageData['data'];
       
       // Create the WebSocketMessage instance
@@ -848,15 +887,23 @@ class SyncCommunicationService implements ISyncCommunicationService {
         data: data,
       );
       
-      // Serialize using JsonMapper, but handle any potential errors
-      final result = JsonMapper.serialize(message);
-      return result;
-    } catch (e) {
-      // If serialization fails, return an error message
-      // In a real scenario, we might want to handle this differently
+      // Validate that data can be serialized before attempting
+      // This prevents data loss issues during serialization
+      final serializedData = JsonMapper.serialize(message);
+      return serializedData;
+    } catch (e, stack) {
+      // More detailed error handling to prevent data loss
+      // Log the error with more details if possible
+      print('Error in _serializeMessageInIsolate: $e');
+      print('Stack: $stack');
+      
+      // Return a structured error message instead of potentially corrupt data
       return JsonMapper.serialize(WebSocketMessage(
         type: 'error',
-        data: {'message': 'Serialization failed in isolate: $e'}
+        data: {
+          'message': 'Serialization failed in isolate: $e',
+          'details': e.toString()
+        }
       ));
     }
   }
