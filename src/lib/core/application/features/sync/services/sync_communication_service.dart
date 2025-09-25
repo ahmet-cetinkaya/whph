@@ -707,15 +707,20 @@ class SyncCommunicationService implements ISyncCommunicationService {
     return result;
   }
 
-  // Helper method to serialize entities in isolate
+    // Helper method to serialize entities in isolate
   static dynamic _serializeEntity(dynamic entity) {
     if (entity == null) return null;
-
+    
     // Handle simple types directly
-    if (entity is String || entity is num || entity is bool || entity is DateTime) {
+    if (entity is String || entity is num || entity is bool) {
       return entity;
     }
-
+    
+    // Handle DateTime by converting to ISO string
+    if (entity is DateTime) {
+      return entity.toIso8601String();
+    }
+    
     // Handle maps by recursively serializing their values
     if (entity is Map<String, dynamic>) {
       final result = <String, dynamic>{};
@@ -724,16 +729,55 @@ class SyncCommunicationService implements ISyncCommunicationService {
       }
       return result;
     }
-
+    
     // Handle lists by serializing each element
     if (entity is List) {
       return entity.map(_serializeEntity).toList();
     }
 
-    // For complex objects, try to convert to map using JSON mapping if possible
-    // In a real isolate context, we'd need the actual serialization methods available
-    // This is a simplified version that preserves the data structure
-    return entity.toString(); // Fallback to string representation
+    // For complex objects, we need to make sure they are properly serializable in isolate context
+    // Convert known object types to basic types that can be transferred between isolates
+    // This is important because only specific data types can be transferred between isolates
+    if (entity is BaseEntity) {
+      // Convert BaseEntity to a basic Map structure
+      final entityMap = <String, dynamic>{};
+      entityMap['id'] = entity.id;
+      entityMap['createdDate'] = entity.createdDate?.toIso8601String();
+      entityMap['modifiedDate'] = entity.modifiedDate?.toIso8601String();
+      entityMap['deletedDate'] = entity.deletedDate?.toIso8601String();
+      
+      // Add specific properties based on entity type
+      if (entity is Task) {
+        entityMap['title'] = entity.title;
+        entityMap['description'] = entity.description;
+        entityMap['priority'] = entity.priority?.index;
+        entityMap['plannedDate'] = entity.plannedDate?.toIso8601String();
+        entityMap['deadlineDate'] = entity.deadlineDate?.toIso8601String();
+        entityMap['estimatedTime'] = entity.estimatedTime;
+        entityMap['isCompleted'] = entity.isCompleted;
+        entityMap['parentTaskId'] = entity.parentTaskId;
+        entityMap['order'] = entity.order;
+        entityMap['plannedDateReminderTime'] = entity.plannedDateReminderTime?.index;
+        entityMap['deadlineDateReminderTime'] = entity.deadlineDateReminderTime?.index;
+        entityMap['recurrenceType'] = entity.recurrenceType?.index;
+        entityMap['recurrenceInterval'] = entity.recurrenceInterval;
+        entityMap['recurrenceDaysString'] = entity.recurrenceDaysString;
+        entityMap['recurrenceStartDate'] = entity.recurrenceStartDate?.toIso8601String();
+        entityMap['recurrenceEndDate'] = entity.recurrenceEndDate?.toIso8601String();
+        entityMap['recurrenceCount'] = entity.recurrenceCount;
+        entityMap['recurrenceParentId'] = entity.recurrenceParentId;
+      } else if (entity is HabitRecord) {
+        entityMap['habitId'] = entity.habitId;
+        entityMap['occurredAt'] = entity.occurredAt?.toIso8601String();
+      }
+      // Add more entity types as needed
+      
+      return entityMap;
+    }
+
+    // For any other object type, try to convert to string as a last resort
+    // but this is not ideal for actual data processing
+    return entity.toString();
   }
 
   // Helper method to add serialized entity data
@@ -793,11 +837,27 @@ class SyncCommunicationService implements ISyncCommunicationService {
   }
 
   static String _serializeMessageInIsolate(Map<String, dynamic> messageData) {
-    final message = WebSocketMessage(
-      type: messageData['type'] as String,
-      data: messageData['data'],
-    );
-    final result = JsonMapper.serialize(message);
-    return result;
+    try {
+      // Extract the type and data from messageData
+      final type = messageData['type'] as String;
+      final data = messageData['data'];
+      
+      // Create the WebSocketMessage instance
+      final message = WebSocketMessage(
+        type: type,
+        data: data,
+      );
+      
+      // Serialize using JsonMapper, but handle any potential errors
+      final result = JsonMapper.serialize(message);
+      return result;
+    } catch (e) {
+      // If serialization fails, return an error message
+      // In a real scenario, we might want to handle this differently
+      return JsonMapper.serialize(WebSocketMessage(
+        type: 'error',
+        data: {'message': 'Serialization failed in isolate: $e'}
+      ));
+    }
   }
 }
