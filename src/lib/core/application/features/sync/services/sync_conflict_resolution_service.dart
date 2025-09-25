@@ -64,10 +64,8 @@ class SyncConflictResolutionService {
       return existingTask; // Return unchanged if not tasks
     }
 
-    // Create a copy of the remote task but with the existing task's ID
-    // This preserves database consistency while applying remote changes
-    final updatedTask = Task(
-      id: existingTask.id, // Keep existing ID
+    // Use the copyWith method to create an updated task while preserving the ID
+    final updatedTask = (existingTask as Task).copyWith(
       createdDate: remoteTask.createdDate,
       modifiedDate: remoteTask.modifiedDate,
       deletedDate: remoteTask.deletedDate,
@@ -84,14 +82,12 @@ class SyncConflictResolutionService {
       deadlineDateReminderTime: remoteTask.deadlineDateReminderTime,
       recurrenceType: remoteTask.recurrenceType,
       recurrenceInterval: remoteTask.recurrenceInterval,
+      recurrenceDaysString: remoteTask.recurrenceDaysString,
       recurrenceStartDate: remoteTask.recurrenceStartDate,
       recurrenceEndDate: remoteTask.recurrenceEndDate,
       recurrenceCount: remoteTask.recurrenceCount,
       recurrenceParentId: remoteTask.recurrenceParentId,
     );
-
-    // Copy recurrence days string
-    updatedTask.recurrenceDaysString = remoteTask.recurrenceDaysString;
 
     return updatedTask as T;
   }

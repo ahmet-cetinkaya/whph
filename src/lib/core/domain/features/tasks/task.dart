@@ -125,6 +125,58 @@ class Task extends BaseEntity<String> {
         'recurrenceParentId': recurrenceParentId,
       };
 
+  /// Creates a copy of this Task with specified fields replaced by the new values.
+  /// The id field is preserved by default unless explicitly changed.
+  Task copyWith({
+    String? id,
+    DateTime? createdDate,
+    DateTime? modifiedDate,
+    DateTime? deletedDate,
+    String? title,
+    String? description,
+    EisenhowerPriority? priority,
+    DateTime? plannedDate,
+    DateTime? deadlineDate,
+    int? estimatedTime,
+    bool? isCompleted,
+    String? parentTaskId,
+    double? order,
+    ReminderTime? plannedDateReminderTime,
+    ReminderTime? deadlineDateReminderTime,
+    RecurrenceType? recurrenceType,
+    int? recurrenceInterval,
+    String? recurrenceDaysString,
+    DateTime? recurrenceStartDate,
+    DateTime? recurrenceEndDate,
+    int? recurrenceCount,
+    String? recurrenceParentId,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      priority: priority ?? this.priority,
+      plannedDate: plannedDate ?? this.plannedDate,
+      deadlineDate: deadlineDate ?? this.deadlineDate,
+      estimatedTime: estimatedTime ?? this.estimatedTime,
+      isCompleted: isCompleted ?? this.isCompleted,
+      parentTaskId: parentTaskId ?? this.parentTaskId,
+      order: order ?? this.order,
+      plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
+      deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      recurrenceType: recurrenceType ?? this.recurrenceType,
+      recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
+      recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
+      recurrenceStartDate: recurrenceStartDate ?? this.recurrenceStartDate,
+      recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
+      recurrenceCount: recurrenceCount ?? this.recurrenceCount,
+      recurrenceParentId: recurrenceParentId ?? this.recurrenceParentId,
+    );
+  }
+
   factory Task.fromJson(Map<String, dynamic> json) {
     try {
       // CRITICAL FIX: Handle type conversion for numeric fields that might come as different types
