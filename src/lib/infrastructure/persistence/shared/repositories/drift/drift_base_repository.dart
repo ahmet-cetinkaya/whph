@@ -206,12 +206,20 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
       [Variable.withDateTime(effectiveLastSyncDate)],
     );
 
+    // Debug: Also get total record count to compare
+    final totalRecordsCount = await _getCountForQuery(
+      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NULL',
+      [],
+    );
+
     final totalItems = createCount + updateCount + deleteCount;
     final totalPages = totalItems > 0 ? ((totalItems / pageSize).ceil()) : 1;
     final isLastPage = pageIndex >= totalPages - 1;
 
-    Logger.debug(
+    Logger.info(
         '📊 Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems');
+    Logger.info(
+        '🔍 Total records in ${table.actualTableName}: $totalRecordsCount (active records), using sync filter date: $effectiveLastSyncDate');
 
     // Calculate which items to fetch for this page
     final offset = pageIndex * pageSize;

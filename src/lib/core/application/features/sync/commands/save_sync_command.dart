@@ -88,6 +88,10 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
     syncDevice.lastSyncDate = request.lastSyncDate != null ? DateTimeHelper.toUtcDateTime(request.lastSyncDate!) : null;
     syncDevice.fromDeviceId = request.fromDeviceId;
     syncDevice.toDeviceId = request.toDeviceId;
+
+    // Reactivate device by clearing deleted date when updating
+    syncDevice.deletedDate = null;
+
     await _syncDeviceRepository.update(syncDevice);
     return syncDevice;
   }

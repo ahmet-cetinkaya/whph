@@ -106,8 +106,8 @@ class SyncService implements ISyncService {
       final command = PaginatedSyncCommand();
       final response = await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
-      // Check if sync was actually successful
-      if (response.isComplete) {
+      // Check if sync was actually successful and had no errors
+      if (response.isComplete && !response.hasErrors) {
         // Reset the attempt count on successful sync
         _reconnectAttempts = 0;
 
@@ -124,13 +124,16 @@ class SyncService implements ISyncService {
         // Don't notify for background syncs that found no devices
         _notifySyncCompleteIfMeaningful(isManual, response);
       } else {
-        // Sync failed or was incomplete
-        Logger.error('❌ Paginated sync failed or was incomplete');
+        // Sync failed, was incomplete, or had errors
+        final errorReason =
+            response.hasErrors ? 'Sync errors: ${response.errorMessages.join('; ')}' : 'Sync was incomplete or failed';
+
+        Logger.error('❌ Paginated sync failed: $errorReason');
 
         // Update sync status to error
         updateSyncStatus(SyncStatus(
           state: SyncState.error,
-          errorMessage: 'Sync was incomplete or failed',
+          errorMessage: errorReason,
           isManual: isManual,
           lastSyncTime: DateTime.now(),
         ));
