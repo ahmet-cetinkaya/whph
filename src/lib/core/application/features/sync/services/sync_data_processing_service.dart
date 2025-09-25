@@ -594,10 +594,30 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
           }
 
         case 'delete':
-          // CRITICAL: Never delete SyncDevice records during sync - this breaks device pairing
-          Logger.warning('🚫 Ignoring delete operation for SyncDevice ${syncDevice.id} - preserving device pairing');
-          Logger.info('🔗 SyncDevice deletion skipped to maintain device relationships');
-          return 1; // Report as processed but don't actually delete
+          // Allow soft-deletion of SyncDevice to be synced.
+          // The standard conflict resolution will handle this correctly.
+          await yieldToUIThread();
+          SyncDevice? existingDevice = await repository.getById(syncDevice.id);
+          await yieldToUIThread();
+
+          if (existingDevice != null) {
+            final resolution = _conflictResolutionService.resolveConflict(existingDevice, syncDevice);
+            switch (resolution.action) {
+              case ConflictAction.keepLocal:
+                Logger.debug('✅ Keeping local version of SyncDevice ${syncDevice.id}, ignoring delete');
+                break;
+              case ConflictAction.acceptRemote:
+              case ConflictAction.acceptRemoteForceUpdate:
+                Logger.debug('🗑️ Soft-deleting SyncDevice ${syncDevice.id} as requested by remote');
+                await yieldToUIThread();
+                await repository.delete(syncDevice); // This performs a soft delete
+                await yieldToUIThread();
+                break;
+            }
+          } else {
+            Logger.debug('⏭️ Delete operation for non-existing SyncDevice ${syncDevice.id}, skipping');
+          }
+          return 1; // Processed
 
         default:
           Logger.error('❌ Unknown operation type for SyncDevice: $operationType');

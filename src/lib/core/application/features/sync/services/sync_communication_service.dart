@@ -683,33 +683,39 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
   // Static isolate functions
   static Map<String, dynamic> _convertDtoToJsonInIsolate(Map<String, dynamic> isolateData) {
-    // Convert DTO data in isolate context
-    // Reconstruct the PaginatedSyncDataDto from the isolateData map and convert to JSON
+    try {
+      // Convert DTO data in isolate context
+      // Reconstruct the PaginatedSyncDataDto from the isolateData map and convert to JSON
 
-    final result = <String, dynamic>{}; // Map to return as JSON
+      final result = <String, dynamic>{}; // Map to return as JSON
 
-    // Basic properties first
-    result['entityType'] = isolateData['entityType'];
-    result['pageIndex'] = isolateData['pageIndex'];
-    result['pageSize'] = isolateData['pageSize'];
-    result['totalPages'] = isolateData['totalPages'];
-    result['totalItems'] = isolateData['totalItems'];
-    result['isLastPage'] = isolateData['isLastPage'];
-    result['appVersion'] = isolateData['appVersion'];
-    result['isDebugMode'] = isolateData['isDebugMode'];
+      // Basic properties first
+      result['entityType'] = isolateData['entityType'];
+      result['pageIndex'] = isolateData['pageIndex'];
+      result['pageSize'] = isolateData['pageSize'];
+      result['totalPages'] = isolateData['totalPages'];
+      result['totalItems'] = isolateData['totalItems'];
+      result['isLastPage'] = isolateData['isLastPage'];
+      result['appVersion'] = isolateData['appVersion'];
+      result['isDebugMode'] = isolateData['isDebugMode'];
 
-    // Add sync device which is non-nullable
-    result['syncDevice'] = _serializeEntity(isolateData['syncDevice']);
+      // Add sync device which is non-nullable
+      result['syncDevice'] = _serializeEntity(isolateData['syncDevice']);
 
-    // Add progress if present
-    if (isolateData.containsKey('progress') && isolateData['progress'] != null) {
-      result['progress'] = _serializeEntity(isolateData['progress']);
+      // Add progress if present
+      if (isolateData.containsKey('progress') && isolateData['progress'] != null) {
+        result['progress'] = _serializeEntity(isolateData['progress']);
+      }
+
+      // Add entity-specific data with proper serialization
+      _addSerializedEntityData(result, isolateData);
+
+      return result;
+    } catch (e) {
+      // Log error details and rethrow for proper error handling
+      Logger.error('❌ Isolate DTO conversion failed: $e');
+      rethrow;
     }
-
-    // Add entity-specific data with proper serialization
-    _addSerializedEntityData(result, isolateData);
-
-    return result;
   }
 
   // Helper method to serialize entities in isolate
@@ -748,7 +754,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
       return entity.map(_serializeEntity).toList();
     }
 
-    // For complex objects, we need to make sure they are properly serializable in isolate context
+      // For complex objects, we need to make sure they are properly serializable in isolate context
     // Convert known object types to basic types that can be transferred between isolates
     // This is important because only specific data types can be transferred between isolates
     if (entity is BaseEntity) {
@@ -770,9 +776,15 @@ class SyncCommunicationService implements ISyncCommunicationService {
       return entityMap;
     }
 
-    // For any other object type, try to convert to string as a last resort
-    // but this is not ideal for actual data processing
-    return entity.toString();
+    // For any other object type, attempt to use JsonMapper if initialized
+    // This prevents data loss for objects that weren't handled above
+    try {
+      return JsonMapper.toMap(entity);
+    } catch (e) {
+      // If JsonMapper fails, return toString as last resort
+      // This is not ideal but prevents complete data loss
+      return entity.toString();
+    }
   }
 
   // Define a function type for entity serializers
@@ -894,20 +906,19 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
       final data = messageData['data'];
 
-      // Create the WebSocketMessage instance
-      final message = WebSocketMessage(
-        type: type,
-        data: data,
-      );
+      // Clean and serialize the data properly in isolate context
+      final serializedData = _serializeEntity(data);
 
-      // Validate that data can be serialized before attempting
-      // This prevents data loss issues during serialization
-      final serializedData = JsonMapper.serialize(message);
-      return serializedData;
+      // Create the final message structure
+      final message = {
+        'type': type,
+        'data': serializedData,
+      };
+
+      // Convert to JSON string
+      return json.encode(message);
     } catch (e) {
-      // More detailed error handling to prevent data loss
-      // In an isolate, we can't directly use the main logger, so we return error message
-      // Log the error with more details if possible - this will be caught by the main thread
+      // Rethrow to allow proper error handling in the main thread
       rethrow;
     }
   }
