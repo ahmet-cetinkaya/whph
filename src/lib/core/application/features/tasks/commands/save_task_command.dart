@@ -120,16 +120,10 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       // Only update these if recurrence type is not none
       if (task.recurrenceType != RecurrenceType.none) {
         task.recurrenceInterval = request.recurrenceInterval;
-
-        // Update recurrence days if provided
-        if (request.recurrenceDays != null) {
-          task.setRecurrenceDays(request.recurrenceDays);
-        }
-
+        task.setRecurrenceDays(request.recurrenceDays);
         task.recurrenceStartDate = request.recurrenceStartDate;
         task.recurrenceEndDate = request.recurrenceEndDate;
         task.recurrenceCount = request.recurrenceCount;
-        task.recurrenceParentId = request.recurrenceParentId;
       } else {
         // Clear recurrence settings if type is none
         task.recurrenceInterval = null;
@@ -137,8 +131,11 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.recurrenceStartDate = null;
         task.recurrenceEndDate = null;
         task.recurrenceCount = null;
-        task.recurrenceParentId = null;
       }
+
+      // Always update recurrenceParentId if provided in the request, regardless of recurrence type
+      // This allows users to clear a parent ID (set to null) while keeping other recurrence settings
+      task.recurrenceParentId = request.recurrenceParentId;
 
       await _taskRepository.update(task);
     } else {
