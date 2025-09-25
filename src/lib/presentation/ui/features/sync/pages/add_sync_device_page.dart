@@ -48,6 +48,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   final List<DiscoveredDevice> _discoveredDevices = [];
   Timer? _scanTimer;
   String? _errorMessage;
+  String? _scanProgress;
 
   @override
   void initState() {
@@ -65,6 +66,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
     setState(() {
       _isScanning = true;
       _errorMessage = null;
+      _scanProgress = null;
       _discoveredDevices.clear();
     });
 
@@ -81,11 +83,12 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
       // Scan network ranges with timeout
       await _scanNetworkRanges(interfaces).timeout(
-        const Duration(seconds: 15), // 15-second timeout for better UX
+        const Duration(seconds: 15), // Aggressive timeout for 10-second target
         onTimeout: () {
           if (mounted) {
             setState(() {
               _isScanning = false;
+              _scanProgress = null;
             });
           }
         },
@@ -96,6 +99,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
           _errorMessage = _translationService
               .translate(SyncTranslationKeys.deviceDiscoveryFailedError, namedArgs: {'error': e.toString()});
           _isScanning = false;
+          _scanProgress = null;
         });
       }
     }
@@ -103,7 +107,6 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
   Future<void> _scanNetworkRanges(List<NetworkInterfaceInfo> interfaces) async {
     final Set<String> scannedAddresses = {};
-    int totalBatches = 0;
     final startTime = DateTime.now();
 
     for (final interface in interfaces) {
@@ -112,48 +115,56 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       final networkBase = _getNetworkBase(interface.ipAddress);
       if (networkBase == null) continue;
 
-      // Scan common IP ranges in parallel (focus on common ranges first)
-      final futures = <Future<void>>[];
-
-      // Start with more common IP ranges (1-50, 100-150, 200-254)
+      // Speed-optimized scanning targeting only most likely device IPs for 10-second completion
       final commonRanges = [
-        for (int i = 1; i <= 50; i++) i, // Common router/device range
-        for (int i = 100; i <= 150; i++) i, // Common DHCP range
-        for (int i = 200; i <= 254; i++) i, // Higher end range
-        for (int i = 51; i <= 99; i++) i, // Fill remaining gap
-        for (int i = 151; i <= 199; i++) i, // Fill remaining gap
+        for (int i = 1; i <= 30; i++) i, // Very common router/device range
+        for (int i = 100; i <= 130; i++) i, // Most common DHCP range
+        for (int i = 31; i <= 60; i++) i, // Extended common range
+        for (int i = 131; i <= 160; i++) i, // Extended DHCP range
+        for (int i = 200; i <= 230; i++) i, // High-end common range
+        // Skip less common ranges for speed - only scan ~150 IPs instead of 254
       ];
 
+      // Process IPs in small batches with delays for better UI responsiveness
+      final ipAddresses = <String>[];
       for (final i in commonRanges) {
         final targetIP = '$networkBase.$i';
         if (targetIP != interface.ipAddress && !scannedAddresses.contains(targetIP)) {
           scannedAddresses.add(targetIP);
-          futures.add(_checkDeviceAt(targetIP));
+          ipAddresses.add(targetIP);
         }
       }
 
-      // Process in smaller batches for better responsiveness
-      for (int batchStart = 0; batchStart < futures.length; batchStart += 10) {
-        final batchEnd = (batchStart + 10).clamp(0, futures.length);
-        await Future.wait(futures.sublist(batchStart, batchEnd));
+      // Process in very large batches of 20 IPs at a time for maximum speed
+      for (int batchStart = 0; batchStart < ipAddresses.length; batchStart += 20) {
+        final batchEnd = (batchStart + 20).clamp(0, ipAddresses.length);
+        final batchIps = ipAddresses.sublist(batchStart, batchEnd);
 
-        totalBatches++;
+        // Update progress indicator
+        final progress = ((batchStart / ipAddresses.length) * 100).round();
+        if (mounted) {
+          setState(() {
+            _scanProgress = 'Scanning devices... $progress% (${batchStart + batchIps.length}/${ipAddresses.length})';
+          });
+        }
 
-        // Smaller delay for better responsiveness
-        await Future.delayed(const Duration(milliseconds: 50));
+        // Create futures for this small batch
+        final batchFutures = batchIps.map((ip) => _checkDeviceAt(ip)).toList();
+
+        // Wait for this small batch to complete
+        await Future.wait(batchFutures);
+
+        // Minimal delay for maximum speed - only yield to UI thread
+        await Future.delayed(Duration.zero);
 
         if (!mounted) return;
 
         // Early exit conditions for better UX
         final elapsedTime = DateTime.now().difference(startTime);
 
-        // Stop scanning if we found devices and have scanned enough
-        if (_discoveredDevices.isNotEmpty && totalBatches > 5) {
-          break;
-        }
-
-        // Stop scanning if no devices found after reasonable time
-        if (_discoveredDevices.isEmpty && elapsedTime.inSeconds > 10) {
+        // Stop if timeout is reached for speed target
+        if (elapsedTime.inSeconds > 12) {
+          // Match parent timeout with small buffer
           break;
         }
       }
@@ -163,6 +174,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
     if (mounted) {
       setState(() {
         _isScanning = false;
+        _scanProgress = null;
       });
     }
   }
@@ -175,8 +187,10 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
   Future<void> _checkDeviceAt(String ipAddress) async {
     try {
-      // Perform handshake to get device information
-      final deviceInfo = await _handshakeService.getDeviceInfo(ipAddress, 44040);
+      // Perform handshake to get device information with very aggressive timeout for speed
+      final deviceInfo = await _handshakeService
+          .getDeviceInfo(ipAddress, 44040)
+          .timeout(const Duration(milliseconds: 800)); // Very aggressive timeout per device
 
       if (deviceInfo != null && mounted) {
         // Check if device is already paired
@@ -209,6 +223,9 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
           // Sort by device name for consistent ordering
           _discoveredDevices.sort((a, b) => a.name.compareTo(b.name));
         });
+
+        // Yield to UI thread after setState to prevent blocking
+        await Future.delayed(Duration.zero);
 
         // Provide haptic feedback on device discovery
         HapticFeedback.lightImpact();
@@ -512,7 +529,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                   ),
                   const SizedBox(width: AppTheme.sizeMedium),
                   Text(
-                    _translationService.translate(SyncTranslationKeys.scanningForDevices),
+                    _scanProgress ?? _translationService.translate(SyncTranslationKeys.scanningForDevices),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],

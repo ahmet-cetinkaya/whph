@@ -8,12 +8,8 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
-import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
-import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
@@ -72,8 +68,6 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   final ISyncCommunicationService _communicationService;
   final ISyncDataProcessingService _dataProcessingService;
   final ISyncPaginationService _paginationService;
-  final IDeviceIdService _deviceIdService;
-  final Mediator _mediator;
 
   PaginatedSyncCommandHandler({
     required ISyncDeviceRepository syncDeviceRepository,
@@ -82,16 +76,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     required ISyncCommunicationService communicationService,
     required ISyncDataProcessingService dataProcessingService,
     required ISyncPaginationService paginationService,
-    required IDeviceIdService deviceIdService,
-    required Mediator mediator,
   })  : _syncDeviceRepository = syncDeviceRepository,
         _configurationService = configurationService,
         _validationService = validationService,
         _communicationService = communicationService,
         _dataProcessingService = dataProcessingService,
-        _paginationService = paginationService,
-        _deviceIdService = deviceIdService,
-        _mediator = mediator;
+        _paginationService = paginationService;
 
   /// Progress stream from pagination service
   Stream<SyncProgress> get progressStream => _paginationService.progressStream;
@@ -135,16 +125,31 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         Logger.info(
             '🔍 SyncDevice data: creates=${dto.syncDevicesSyncData!.data.createSync.length}, updates=${dto.syncDevicesSyncData!.data.updateSync.length}, deletes=${dto.syncDevicesSyncData!.data.deleteSync.length}');
         Logger.info('🔍 SyncDevice total count: ${dto.syncDevicesSyncData!.data.getTotalItemCount()}');
+      } else {
+        Logger.warning(
+            '⚠️ SyncDevice DTO is null but entity type is SyncDevice - this indicates a serialization issue');
       }
     }
+
+    // Additional debug for all entity types to understand what data is present
+    Logger.info('🔍 DTO contents summary:');
+    Logger.info(
+        '   - appUsagesSyncData: ${dto.appUsagesSyncData != null ? "${dto.appUsagesSyncData!.data.getTotalItemCount()} items" : "null"}');
+    Logger.info(
+        '   - appUsageTagsSyncData: ${dto.appUsageTagsSyncData != null ? "${dto.appUsageTagsSyncData!.data.getTotalItemCount()} items" : "null"}');
+    Logger.info(
+        '   - syncDevicesSyncData: ${dto.syncDevicesSyncData != null ? "${dto.syncDevicesSyncData!.data.getTotalItemCount()} items" : "null"}');
+    Logger.info(
+        '   - tasksSyncData: ${dto.tasksSyncData != null ? "${dto.tasksSyncData!.data.getTotalItemCount()} items" : "null"}');
+    Logger.info(
+        '   - habitsSyncData: ${dto.habitsSyncData != null ? "${dto.habitsSyncData!.data.getTotalItemCount()} items" : "null"}');
 
     // Validate incoming data
     await _validationService.validateVersion(dto.appVersion);
     await _validationService.validateDeviceId(dto.syncDevice);
     _validationService.validateEnvironmentMode(dto);
 
-    // Auto-create SyncDevice record if this is a new device pairing
-    await _ensureSyncDeviceExists(dto);
+    // Note: SyncDevice auto-pairing logic removed - now handled during data processing
 
     // Process the incoming DTO data
     int processedCount = 0;
@@ -274,9 +279,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       // Update last sync date only if all devices synced successfully
       if (allDevicesSynced) {
         Logger.info('📅 Updating last sync dates for ${successfulDevices.length} successful devices');
+        final updatedSyncDevices = <SyncDevice>[];
+
         for (final syncDevice in successfulDevices) {
           syncDevice.lastSyncDate = DateTime.now();
           await _syncDeviceRepository.update(syncDevice);
+          updatedSyncDevices.add(syncDevice);
+        }
+
+        // Sync the updated sync device records back to the server for consistency
+        if (updatedSyncDevices.isNotEmpty) {
+          Logger.info('🔄 Syncing updated sync device records back to server for consistency');
+          await _syncUpdatedSyncDevicesBackToServer(updatedSyncDevices);
         }
       } else {
         Logger.warning('⚠️ Not updating sync dates due to sync failures');
@@ -417,6 +431,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     final configs = _configurationService.getAllConfigurations();
     for (final config in configs) {
       final syncData = config.getPaginatedSyncDataFromDto(dto);
+      Logger.debug('🔍 Processing ${config.name}: syncData is null: ${syncData == null}');
+
       if (syncData != null) {
         final itemCount = syncData.data.getTotalItemCount();
         Logger.info('🔍 ${config.name} sync data: $itemCount total items');
@@ -519,6 +535,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         );
 
       case 'Task':
+        final itemCount = localData.data.getTotalItemCount();
+        Logger.debug('🔧 COMMAND Task DTO - ENTRY: itemCount=$itemCount, totalItems=${localData.totalItems}');
+        Logger.debug(
+            '🔧 COMMAND Task DTO - createSync: ${localData.data.createSync.length}, updateSync: ${localData.data.updateSync.length}');
+
+        final paginatedSyncData = localData as PaginatedSyncData<Task>;
+        final tasksData = itemCount > 0 ? paginatedSyncData : null;
+        Logger.debug('🔧 COMMAND Task DTO - tasksData null: ${tasksData == null}');
+
         return PaginatedSyncDataDto(
           appVersion: AppInfo.version,
           syncDevice: syncDevice,
@@ -529,7 +554,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           totalPages: localData.totalPages,
           totalItems: localData.totalItems,
           isLastPage: localData.isLastPage,
-          tasksSyncData: localData as PaginatedSyncData<Task>?,
+          tasksSyncData: tasksData,
         );
 
       case 'TaskTag':
@@ -561,6 +586,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         );
 
       case 'Habit':
+        final itemCount = localData.data.getTotalItemCount();
+        final paginatedSyncData = localData as PaginatedSyncData<Habit>;
+        final habitsData = itemCount > 0 ? paginatedSyncData : null;
+        Logger.debug('🔧 COMMAND Habit DTO - itemCount: $itemCount, habitsData null: ${habitsData == null}');
+
         return PaginatedSyncDataDto(
           appVersion: AppInfo.version,
           syncDevice: syncDevice,
@@ -571,7 +601,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           totalPages: localData.totalPages,
           totalItems: localData.totalItems,
           isLastPage: localData.isLastPage,
-          habitsSyncData: localData as PaginatedSyncData<Habit>?,
+          habitsSyncData: habitsData,
         );
 
       case 'HabitRecord':
@@ -702,53 +732,122 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
   }
 
-  /// Ensure a SyncDevice record exists for the connecting client device
-  Future<void> _ensureSyncDeviceExists(PaginatedSyncDataDto dto) async {
+  /// Syncs updated sync device records back to the server for consistency
+  /// This ensures that when the client updates lastSyncDate, the server is also updated
+  Future<void> _syncUpdatedSyncDevicesBackToServer(List<SyncDevice> updatedSyncDevices) async {
     try {
-      // Extract client device information from the DTO
-      final clientSyncDevice = dto.syncDevice;
-      final clientDeviceId = clientSyncDevice.fromDeviceId;
-      final serverDeviceId = await _deviceIdService.getDeviceId();
+      Logger.info('📡 Starting sync device consistency sync for ${updatedSyncDevices.length} devices');
 
-      // Check if we already have a SyncDevice record for this client
-      final existingDeviceQuery = GetSyncDeviceQuery(
-        fromDeviceId: serverDeviceId,
-        toDeviceId: clientDeviceId
-      );
+      for (final updatedSyncDevice in updatedSyncDevices) {
+        try {
+          Logger.info('🔄 Syncing updated sync device ${updatedSyncDevice.id} back to server');
 
-      final existingDevice = await _mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(existingDeviceQuery);
+          // Get the SyncDevice configuration
+          final syncDeviceConfig = _configurationService.getConfiguration('SyncDevice');
+          if (syncDeviceConfig == null) {
+            Logger.error('❌ SyncDevice configuration not found');
+            continue;
+          }
 
-      if (existingDevice?.id.isNotEmpty == true) {
-        Logger.debug('🔗 SyncDevice record already exists for client $clientDeviceId');
-        return;
+          // Create paginated sync data for this single updated sync device
+          final singleDeviceData = await syncDeviceConfig.getPaginatedSyncData(
+            DateTime(2000), // Use old date to ensure this device is included
+            0, // First page
+            1, // Only one item
+            'SyncDevice',
+          );
+
+          // Filter to only include our specific updated device
+          final filteredData = _filterSyncDataForSpecificDevice(singleDeviceData, updatedSyncDevice);
+
+          if (filteredData.data.getTotalItemCount() > 0) {
+            Logger.info('📤 Sending updated sync device ${updatedSyncDevice.id} to server');
+
+            // Create DTO for the updated sync device
+            final dto = await _createBidirectionalResponseDto(updatedSyncDevice, filteredData, 'SyncDevice');
+
+            // Send to the server via the same communication mechanism
+            final targetIp = await _getTargetIpForDevice(updatedSyncDevice);
+            if (targetIp.isNotEmpty) {
+              final response = await _communicationService.sendPaginatedDataToDevice(targetIp, dto);
+              if (response.success) {
+                Logger.info('✅ Successfully synced updated sync device ${updatedSyncDevice.id} back to server');
+              } else {
+                Logger.error('❌ Failed to sync updated sync device ${updatedSyncDevice.id}: ${response.error}');
+              }
+            } else {
+              Logger.error('❌ Could not determine target IP for sync device ${updatedSyncDevice.id}');
+            }
+          } else {
+            Logger.warning('⚠️ No sync data found for updated sync device ${updatedSyncDevice.id}');
+          }
+        } catch (e) {
+          Logger.error('❌ Error syncing updated sync device ${updatedSyncDevice.id}: $e');
+        }
       }
 
-      // Create SyncDevice record for bidirectional sync
-      final serverLocalIp = await NetworkUtils.getLocalIpAddress();
-      final clientRemoteIp = clientSyncDevice.fromIp; // Use client's IP from DTO
-      final serverDeviceName = await DeviceInfoHelper.getDeviceName();
-
-      if (serverLocalIp == null) {
-        Logger.warning('⚠️ Could not determine server local IP for SyncDevice creation');
-        return;
-      }
-
-      Logger.info('🔗 Creating SyncDevice record for new client: ${clientSyncDevice.name} ($clientDeviceId)');
-
-      final saveCommand = SaveSyncDeviceCommand(
-        fromIP: serverLocalIp, // Server IP (this device)
-        toIP: clientRemoteIp, // Client IP (connecting device)
-        fromDeviceId: serverDeviceId, // Server device ID
-        toDeviceId: clientDeviceId, // Client device ID
-        name: "$serverDeviceName ↔ ${clientSyncDevice.name}",
-      );
-
-      await _mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
-      Logger.info('✅ SyncDevice record created successfully for client $clientDeviceId');
-
-    } catch (e) {
-      Logger.error('❌ Failed to ensure SyncDevice exists: $e');
-      // Don't throw - sync should continue even if device pairing fails
+      Logger.info('✅ Sync device consistency sync completed');
+    } catch (e, stackTrace) {
+      Logger.error('❌ CRITICAL: Failed to sync updated sync devices back to server: $e');
+      Logger.error('🔍 Stack trace: $stackTrace');
     }
+  }
+
+  /// Filters sync data to include only the specific sync device
+  PaginatedSyncData<SyncDevice> _filterSyncDataForSpecificDevice(
+    PaginatedSyncData syncData,
+    SyncDevice targetDevice,
+  ) {
+    // Create filtered sync data containing only the target device
+    final filteredCreateSync = <SyncDevice>[];
+    final filteredUpdateSync = <SyncDevice>[];
+    final filteredDeleteSync = <SyncDevice>[];
+
+    // Check create sync items
+    if (syncData.data.createSync.isNotEmpty) {
+      for (final item in syncData.data.createSync) {
+        if (item is SyncDevice && item.id == targetDevice.id) {
+          filteredCreateSync.add(item);
+        }
+      }
+    }
+
+    // Check update sync items
+    if (syncData.data.updateSync.isNotEmpty) {
+      for (final item in syncData.data.updateSync) {
+        if (item is SyncDevice && item.id == targetDevice.id) {
+          filteredUpdateSync.add(item);
+        }
+      }
+    }
+
+    // Since we just updated the device, it should be in updateSync
+    // If not found in existing sync data, add it to updateSync
+    if (filteredCreateSync.isEmpty && filteredUpdateSync.isEmpty) {
+      filteredUpdateSync.add(targetDevice);
+    }
+
+    // Create new sync data with filtered items
+    final filteredSyncData = SyncData<SyncDevice>(
+      createSync: filteredCreateSync,
+      updateSync: filteredUpdateSync,
+      deleteSync: filteredDeleteSync,
+    );
+
+    return PaginatedSyncData<SyncDevice>(
+      data: filteredSyncData,
+      pageIndex: 0,
+      pageSize: 1,
+      totalPages: 1,
+      totalItems: filteredSyncData.getTotalItemCount(),
+      isLastPage: true,
+      entityType: 'SyncDevice',
+    );
+  }
+
+  /// Gets target IP address for a sync device
+  Future<String> _getTargetIpForDevice(SyncDevice syncDevice) async {
+    // Use the same logic as in _getTargetIp but for a specific device
+    return syncDevice.fromIp.isNotEmpty ? syncDevice.fromIp : syncDevice.toIp;
   }
 }
