@@ -14,6 +14,10 @@ class SyncCommunicationService implements ISyncCommunicationService {
   static const int _baseTimeoutSeconds = 15;
   static const int _websocketPort = 44040;
 
+  SyncCommunicationService() {
+    Logger.info('🚀 SyncCommunicationService initialized with ENHANCED Task serialization debugging');
+  }
+
   @override
   Future<SyncCommunicationResponse> sendPaginatedDataToDevice(String ipAddress, PaginatedSyncDataDto dto) async {
     final entityType = dto.entityType;
@@ -205,6 +209,17 @@ class SyncCommunicationService implements ISyncCommunicationService {
   @override
   Future<Map<String, dynamic>> convertDtoToJson(PaginatedSyncDataDto dto) async {
     try {
+      // Add specific debugging for Task entity
+      if (dto.entityType == 'Task' || dto.tasksSyncData != null) {
+        Logger.debug('🎯 TASK DTO CONVERSION: entityType=${dto.entityType}');
+        if (dto.tasksSyncData != null) {
+          final taskCount = dto.tasksSyncData!.data.getTotalItemCount();
+          Logger.debug('🎯 TASK DTO has $taskCount items to convert');
+        } else {
+          Logger.debug('🎯 TASK DTO tasksSyncData is null');
+        }
+      }
+
       // Estimate data size to determine processing strategy
       final totalItems = _estimateDataSize(dto);
 
@@ -243,8 +258,14 @@ class SyncCommunicationService implements ISyncCommunicationService {
         // Use main thread with yielding for smaller datasets
         return await _convertDtoToJsonWithChunking(dto);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       Logger.error('❌ DTO to JSON conversion failed: $e');
+      Logger.error('❌ Stack trace: $stackTrace');
+
+      if (dto.entityType == 'Task' || dto.tasksSyncData != null) {
+        Logger.error('🎯 CRITICAL: Task DTO conversion failed - this is the root cause!');
+      }
+
       rethrow;
     }
   }
@@ -336,8 +357,20 @@ class SyncCommunicationService implements ISyncCommunicationService {
     total += dto.appUsagesSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.habitsSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.tasksSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.appUsageTagsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.appUsageTimeRecordsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.appUsageTagRulesSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.appUsageIgnoreRulesSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.habitRecordsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.habitTagsSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.tagsSyncData?.data.getTotalItemCount() ?? 0;
-    // Add other entity types as needed
+    total += dto.tagTagsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.taskTagsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.taskTimeRecordsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.settingsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.syncDevicesSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.notesSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.noteTagsSyncData?.data.getTotalItemCount() ?? 0;
     return total;
   }
 
@@ -352,7 +385,48 @@ class SyncCommunicationService implements ISyncCommunicationService {
     if (dto.tasksSyncData != null) {
       isolateData['tasksSyncData'] = dto.tasksSyncData;
     }
-    // Add other entity types as needed
+    if (dto.appUsageTagsSyncData != null) {
+      isolateData['appUsageTagsSyncData'] = dto.appUsageTagsSyncData;
+    }
+    if (dto.appUsageTimeRecordsSyncData != null) {
+      isolateData['appUsageTimeRecordsSyncData'] = dto.appUsageTimeRecordsSyncData;
+    }
+    if (dto.appUsageTagRulesSyncData != null) {
+      isolateData['appUsageTagRulesSyncData'] = dto.appUsageTagRulesSyncData;
+    }
+    if (dto.appUsageIgnoreRulesSyncData != null) {
+      isolateData['appUsageIgnoreRulesSyncData'] = dto.appUsageIgnoreRulesSyncData;
+    }
+    if (dto.habitRecordsSyncData != null) {
+      isolateData['habitRecordsSyncData'] = dto.habitRecordsSyncData;
+    }
+    if (dto.habitTagsSyncData != null) {
+      isolateData['habitTagsSyncData'] = dto.habitTagsSyncData;
+    }
+    if (dto.tagsSyncData != null) {
+      isolateData['tagsSyncData'] = dto.tagsSyncData;
+    }
+    if (dto.tagTagsSyncData != null) {
+      isolateData['tagTagsSyncData'] = dto.tagTagsSyncData;
+    }
+    if (dto.taskTagsSyncData != null) {
+      isolateData['taskTagsSyncData'] = dto.taskTagsSyncData;
+    }
+    if (dto.taskTimeRecordsSyncData != null) {
+      isolateData['taskTimeRecordsSyncData'] = dto.taskTimeRecordsSyncData;
+    }
+    if (dto.settingsSyncData != null) {
+      isolateData['settingsSyncData'] = dto.settingsSyncData;
+    }
+    if (dto.syncDevicesSyncData != null) {
+      isolateData['syncDevicesSyncData'] = dto.syncDevicesSyncData;
+    }
+    if (dto.notesSyncData != null) {
+      isolateData['notesSyncData'] = dto.notesSyncData;
+    }
+    if (dto.noteTagsSyncData != null) {
+      isolateData['noteTagsSyncData'] = dto.noteTagsSyncData;
+    }
   }
 
   Future<Map<String, dynamic>> _convertDtoToJsonWithChunking(PaginatedSyncDataDto dto) async {
@@ -390,20 +464,152 @@ class SyncCommunicationService implements ISyncCommunicationService {
   Future<void> _addEntityDataWithYielding(Map<String, dynamic> result, PaginatedSyncDataDto dto) async {
     if (dto.appUsagesSyncData != null) {
       await _yieldToUIThread();
-      result['appUsagesSyncData'] = JsonMapper.serialize(dto.appUsagesSyncData);
+      result['appUsagesSyncData'] = JsonMapper.toMap(dto.appUsagesSyncData);
     }
 
     if (dto.habitsSyncData != null) {
       await _yieldToUIThread();
-      result['habitsSyncData'] = JsonMapper.serialize(dto.habitsSyncData);
+      final itemCount = dto.habitsSyncData!.data.getTotalItemCount();
+      Logger.debug('📤 Serializing Habit data with $itemCount items');
+      result['habitsSyncData'] = JsonMapper.toMap(dto.habitsSyncData);
+      Logger.debug('📤 Habit data serialized successfully');
+    } else {
+      Logger.debug('📤 No Habit data to serialize for entityType: ${dto.entityType}');
     }
 
     if (dto.tasksSyncData != null) {
       await _yieldToUIThread();
-      result['tasksSyncData'] = JsonMapper.serialize(dto.tasksSyncData);
+      final itemCount = dto.tasksSyncData!.data.getTotalItemCount();
+      Logger.debug('📤 Serializing Task data with $itemCount items');
+
+      try {
+        // Add detailed debugging for Task serialization
+        final syncData = dto.tasksSyncData!.data;
+        Logger.debug(
+            '📤 Task data details: creates=${syncData.createSync.length}, updates=${syncData.updateSync.length}, deletes=${syncData.deleteSync.length}');
+
+        // Test serialization of individual Task items first
+        if (syncData.createSync.isNotEmpty) {
+          Logger.debug('📤 Testing createSync[0] serialization...');
+          final firstTask = syncData.createSync.first;
+          Logger.debug('📤 First Task ID: ${firstTask.id}, Title: "${firstTask.title}"');
+          try {
+            final taskJson = JsonMapper.toMap(firstTask);
+            Logger.debug('📤 First Task serialized successfully: ${taskJson?.keys.join(', ') ?? 'null'}');
+          } catch (taskError) {
+            Logger.error('❌ Failed to serialize first Task: $taskError');
+            Logger.error(
+                '❌ Task details - Priority: ${firstTask.priority}, ReminderTime: ${firstTask.plannedDateReminderTime}, RecurrenceType: ${firstTask.recurrenceType}');
+          }
+        }
+
+        if (syncData.updateSync.isNotEmpty) {
+          Logger.debug('📤 Testing updateSync[0] serialization...');
+          final firstUpdateTask = syncData.updateSync.first;
+          Logger.debug('📤 First Update Task ID: ${firstUpdateTask.id}, Title: "${firstUpdateTask.title}"');
+          try {
+            final taskJson = JsonMapper.toMap(firstUpdateTask);
+            Logger.debug('📤 First Update Task serialized successfully: ${taskJson?.keys.join(', ') ?? 'null'}');
+          } catch (taskError) {
+            Logger.error('❌ Failed to serialize first Update Task: $taskError');
+            Logger.error(
+                '❌ Task details - Priority: ${firstUpdateTask.priority}, ReminderTime: ${firstUpdateTask.plannedDateReminderTime}, RecurrenceType: ${firstUpdateTask.recurrenceType}');
+          }
+        }
+
+        // Now attempt full tasksSyncData serialization
+        Logger.debug('📤 Attempting full tasksSyncData serialization...');
+        result['tasksSyncData'] = JsonMapper.toMap(dto.tasksSyncData);
+        Logger.debug('📤 ✅ Task data serialized successfully');
+      } catch (e, stackTrace) {
+        Logger.error('❌ CRITICAL ERROR: Task data serialization failed: $e');
+        Logger.error('❌ Stack trace: $stackTrace');
+
+        // Try to provide fallback data
+        result['tasksSyncData'] = {
+          'data': {'createSync': [], 'updateSync': [], 'deleteSync': []},
+          'pageIndex': dto.tasksSyncData!.pageIndex,
+          'pageSize': dto.tasksSyncData!.pageSize,
+          'totalPages': dto.tasksSyncData!.totalPages,
+          'totalItems': 0,
+          'isLastPage': dto.tasksSyncData!.isLastPage,
+          'entityType': dto.tasksSyncData!.entityType
+        };
+        Logger.warning('⚠️ Using fallback empty Task data due to serialization error');
+      }
+    } else {
+      Logger.debug('📤 No Task data to serialize for entityType: ${dto.entityType}');
     }
 
-    // Add other entity types as needed with yielding between each
+    if (dto.appUsageTagsSyncData != null) {
+      await _yieldToUIThread();
+      result['appUsageTagsSyncData'] = JsonMapper.toMap(dto.appUsageTagsSyncData);
+    }
+
+    if (dto.appUsageTimeRecordsSyncData != null) {
+      await _yieldToUIThread();
+      result['appUsageTimeRecordsSyncData'] = JsonMapper.toMap(dto.appUsageTimeRecordsSyncData);
+    }
+
+    if (dto.appUsageTagRulesSyncData != null) {
+      await _yieldToUIThread();
+      result['appUsageTagRulesSyncData'] = JsonMapper.toMap(dto.appUsageTagRulesSyncData);
+    }
+
+    if (dto.appUsageIgnoreRulesSyncData != null) {
+      await _yieldToUIThread();
+      result['appUsageIgnoreRulesSyncData'] = JsonMapper.toMap(dto.appUsageIgnoreRulesSyncData);
+    }
+
+    if (dto.habitRecordsSyncData != null) {
+      await _yieldToUIThread();
+      result['habitRecordsSyncData'] = JsonMapper.toMap(dto.habitRecordsSyncData);
+    }
+
+    if (dto.habitTagsSyncData != null) {
+      await _yieldToUIThread();
+      result['habitTagsSyncData'] = JsonMapper.toMap(dto.habitTagsSyncData);
+    }
+
+    if (dto.tagsSyncData != null) {
+      await _yieldToUIThread();
+      result['tagsSyncData'] = JsonMapper.toMap(dto.tagsSyncData);
+    }
+
+    if (dto.tagTagsSyncData != null) {
+      await _yieldToUIThread();
+      result['tagTagsSyncData'] = JsonMapper.toMap(dto.tagTagsSyncData);
+    }
+
+    if (dto.taskTagsSyncData != null) {
+      await _yieldToUIThread();
+      result['taskTagsSyncData'] = JsonMapper.toMap(dto.taskTagsSyncData);
+    }
+
+    if (dto.taskTimeRecordsSyncData != null) {
+      await _yieldToUIThread();
+      result['taskTimeRecordsSyncData'] = JsonMapper.toMap(dto.taskTimeRecordsSyncData);
+    }
+
+    if (dto.settingsSyncData != null) {
+      await _yieldToUIThread();
+      result['settingsSyncData'] = JsonMapper.toMap(dto.settingsSyncData);
+    }
+
+    if (dto.syncDevicesSyncData != null) {
+      await _yieldToUIThread();
+      result['syncDevicesSyncData'] = JsonMapper.toMap(dto.syncDevicesSyncData);
+    }
+
+    if (dto.notesSyncData != null) {
+      await _yieldToUIThread();
+      result['notesSyncData'] = JsonMapper.toMap(dto.notesSyncData);
+    }
+
+    if (dto.noteTagsSyncData != null) {
+      await _yieldToUIThread();
+      result['noteTagsSyncData'] = JsonMapper.toMap(dto.noteTagsSyncData);
+    }
   }
 
   int _estimateJsonDataSize(Map<String, dynamic> data) {

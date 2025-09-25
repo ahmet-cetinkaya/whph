@@ -137,8 +137,6 @@ void registerSyncFeature(
         communicationService: container.resolve<ISyncCommunicationService>(),
         dataProcessingService: container.resolve<ISyncDataProcessingService>(),
         paginationService: container.resolve<ISyncPaginationService>(),
-        deviceIdService: deviceIdService,
-        mediator: mediator,
       ),
     )
     ..registerHandler<StartSyncCommand, void, StartSyncCommandHandler>(

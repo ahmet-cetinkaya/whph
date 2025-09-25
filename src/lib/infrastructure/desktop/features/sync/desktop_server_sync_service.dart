@@ -588,7 +588,6 @@ class DesktopServerSyncService extends SyncService {
   /// Check if the server is running and healthy
   bool get isServerHealthy => _isServerMode && _server != null;
 
-
   /// Helper method to send WebSocket messages and handle serialization
   void _sendMessage(WebSocket socket, WebSocketMessage message, [String? logMessage]) {
     socket.add(JsonMapper.serialize(message));

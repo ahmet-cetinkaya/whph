@@ -6,6 +6,9 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
 /// Implementation of sync pagination service
@@ -65,6 +68,7 @@ class SyncPaginationService implements ISyncPaginationService {
       int pageIndex = 0;
       bool hasMorePages = true;
 
+      Logger.info('🚨🚨🚨 ULTIMATE_TEST: Starting sync for ${config.name} - FIXES ARE DEPLOYED! 🚨🚨🚨');
       Logger.info('🔄 Starting paginated sync for ${config.name}');
       Logger.info('📅 Using sync date filter: $effectiveLastSyncDate');
 
@@ -113,6 +117,13 @@ class SyncPaginationService implements ISyncPaginationService {
           // This ensures the remote device can send its data back
           if (paginatedData.totalItems == 0) {
             Logger.debug('📤 Sending empty sync request for ${config.name} to receive remote data');
+          }
+
+          // Skip sending empty pages (optimization)
+          final itemCount = paginatedData.data.getTotalItemCount();
+          if (itemCount == 0 && pageIndex > 0) {
+            Logger.info('⏭️ Skipping empty ${config.name} page $pageIndex - no data to send');
+            break;
           }
 
           // Create DTO for this page
@@ -314,14 +325,16 @@ class SyncPaginationService implements ISyncPaginationService {
     // Create progress info
     final progress = _currentProgress[entityType];
 
+    Logger.debug('🚨🚨 SYNC_FIX_TEST: _createPaginatedSyncDataDto called for $entityType 🚨🚨');
     Logger.debug('🔧 Creating DTO for $entityType with isDebugMode: $kDebugMode');
 
     // Create DTO based on entity type
     // This is a simplified implementation - in reality, you'd need to handle all entity types
     switch (entityType) {
       case 'AppUsage':
+        final appUsagesData = paginatedData.data.getTotalItemCount() > 0 ? paginatedData as dynamic : null;
         return PaginatedSyncDataDto(
-          appVersion: '0.15.0', // Should come from app info
+          appVersion: AppInfo.version,
           syncDevice: syncDevice,
           isDebugMode: kDebugMode,
           entityType: entityType,
@@ -331,12 +344,21 @@ class SyncPaginationService implements ISyncPaginationService {
           totalItems: paginatedData.totalItems,
           isLastPage: paginatedData.isLastPage,
           progress: progress,
-          appUsagesSyncData: null, // TODO: Fix serialization issue with paginatedData
+          appUsagesSyncData: appUsagesData,
         );
 
       case 'Task':
-        return PaginatedSyncDataDto(
-          appVersion: '0.15.0',
+        final itemCount = paginatedData.data.getTotalItemCount();
+        Logger.debug('🔧 SERVICE Task DTO - ENTRY: itemCount=$itemCount, totalItems=${paginatedData.totalItems}');
+        Logger.debug(
+            '🔧 SERVICE Task DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}');
+
+        final paginatedSyncData = paginatedData as PaginatedSyncData<Task>;
+        final tasksData = itemCount > 0 ? paginatedSyncData : null;
+        Logger.debug('🔧 SERVICE Task DTO - tasksData is null: ${tasksData == null}');
+
+        final dto = PaginatedSyncDataDto(
+          appVersion: AppInfo.version,
           syncDevice: syncDevice,
           isDebugMode: kDebugMode,
           entityType: entityType,
@@ -346,12 +368,21 @@ class SyncPaginationService implements ISyncPaginationService {
           totalItems: paginatedData.totalItems,
           isLastPage: paginatedData.isLastPage,
           progress: progress,
-          tasksSyncData: null, // TODO: Fix serialization issue with paginatedData
+          tasksSyncData: tasksData,
         );
 
+        Logger.debug('🔧 Final Task DTO - tasksSyncData is null: ${dto.tasksSyncData == null}');
+        return dto;
+
       case 'Habit':
+        final itemCount = paginatedData.data.getTotalItemCount();
+        Logger.debug('🔧 Habit DTO creation - itemCount: $itemCount, totalItems: ${paginatedData.totalItems}');
+
+        final paginatedSyncData = paginatedData as PaginatedSyncData<Habit>;
+        final habitsData = itemCount > 0 ? paginatedSyncData : null;
+        Logger.debug('🔧 Habit DTO - habitsData is null: ${habitsData == null}');
         return PaginatedSyncDataDto(
-          appVersion: '0.15.0',
+          appVersion: AppInfo.version,
           syncDevice: syncDevice,
           isDebugMode: kDebugMode,
           entityType: entityType,
@@ -361,12 +392,14 @@ class SyncPaginationService implements ISyncPaginationService {
           totalItems: paginatedData.totalItems,
           isLastPage: paginatedData.isLastPage,
           progress: progress,
-          habitsSyncData: null, // TODO: Fix serialization issue with paginatedData
+          habitsSyncData: habitsData,
         );
 
       case 'SyncDevice':
+        // Ensure proper typing for SyncDevice data
+        final syncDeviceData = paginatedData.data.getTotalItemCount() > 0 ? paginatedData as dynamic : null;
         return PaginatedSyncDataDto(
-          appVersion: '0.15.0',
+          appVersion: AppInfo.version,
           syncDevice: syncDevice,
           isDebugMode: kDebugMode,
           entityType: entityType,
@@ -376,14 +409,23 @@ class SyncPaginationService implements ISyncPaginationService {
           totalItems: paginatedData.totalItems,
           isLastPage: paginatedData.isLastPage,
           progress: progress,
-          syncDevicesSyncData: null, // TODO: Fix serialization issue with paginatedData
+          syncDevicesSyncData: syncDeviceData,
         );
 
       // Add other entity types as needed
       default:
+        Logger.debug('🔧 Default case triggered for entity type: $entityType');
         // Generic implementation for other entity types
+        // Set appropriate sync data field based on entity type
+        final hasData = paginatedData.data.getTotalItemCount() > 0;
+        Logger.debug('🔧 Default case - hasData: $hasData, itemCount: ${paginatedData.data.getTotalItemCount()}');
+
+        // Use dynamic casting for runtime type flexibility
+        final syncDataDynamic = hasData ? paginatedData as dynamic : null;
+        Logger.debug('🔧 Default case - syncDataDynamic is null: ${syncDataDynamic == null}');
+
         return PaginatedSyncDataDto(
-          appVersion: '0.15.0',
+          appVersion: AppInfo.version,
           syncDevice: syncDevice,
           isDebugMode: kDebugMode,
           entityType: entityType,
@@ -393,6 +435,24 @@ class SyncPaginationService implements ISyncPaginationService {
           totalItems: paginatedData.totalItems,
           isLastPage: paginatedData.isLastPage,
           progress: progress,
+          // Set the appropriate field based on entity type with dynamic casting
+          appUsagesSyncData: entityType == 'AppUsage' ? syncDataDynamic : null,
+          appUsageTagsSyncData: entityType == 'AppUsageTag' ? syncDataDynamic : null,
+          appUsageTimeRecordsSyncData: entityType == 'AppUsageTimeRecord' ? syncDataDynamic : null,
+          appUsageTagRulesSyncData: entityType == 'AppUsageTagRule' ? syncDataDynamic : null,
+          appUsageIgnoreRulesSyncData: entityType == 'AppUsageIgnoreRule' ? syncDataDynamic : null,
+          habitsSyncData: entityType == 'Habit' ? syncDataDynamic : null,
+          habitRecordsSyncData: entityType == 'HabitRecord' ? syncDataDynamic : null,
+          habitTagsSyncData: entityType == 'HabitTag' ? syncDataDynamic : null,
+          tagsSyncData: entityType == 'Tag' ? syncDataDynamic : null,
+          tagTagsSyncData: entityType == 'TagTag' ? syncDataDynamic : null,
+          tasksSyncData: entityType == 'Task' ? syncDataDynamic : null,
+          taskTagsSyncData: entityType == 'TaskTag' ? syncDataDynamic : null,
+          taskTimeRecordsSyncData: entityType == 'TaskTimeRecord' ? syncDataDynamic : null,
+          settingsSyncData: entityType == 'Setting' ? syncDataDynamic : null,
+          syncDevicesSyncData: entityType == 'SyncDevice' ? syncDataDynamic : null,
+          notesSyncData: entityType == 'Note' ? syncDataDynamic : null,
+          noteTagsSyncData: entityType == 'NoteTag' ? syncDataDynamic : null,
         );
     }
   }
