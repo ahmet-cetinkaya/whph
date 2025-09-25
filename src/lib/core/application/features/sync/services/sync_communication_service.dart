@@ -679,7 +679,117 @@ class SyncCommunicationService implements ISyncCommunicationService {
   // Static isolate functions
   static Map<String, dynamic> _convertDtoToJsonInIsolate(Map<String, dynamic> isolateData) {
     // Convert DTO data in isolate context
-    return isolateData; // Simplified implementation
+    // Reconstruct the PaginatedSyncDataDto from the isolateData map and convert to JSON
+
+    final result = <String, dynamic>{}; // Map to return as JSON
+
+    // Basic properties first
+    result['entityType'] = isolateData['entityType'];
+    result['pageIndex'] = isolateData['pageIndex'];
+    result['pageSize'] = isolateData['pageSize'];
+    result['totalPages'] = isolateData['totalPages'];
+    result['totalItems'] = isolateData['totalItems'];
+    result['isLastPage'] = isolateData['isLastPage'];
+    result['appVersion'] = isolateData['appVersion'];
+    result['isDebugMode'] = isolateData['isDebugMode'];
+
+    // Add sync device which is non-nullable
+    result['syncDevice'] = _serializeEntity(isolateData['syncDevice']);
+
+    // Add progress if present
+    if (isolateData.containsKey('progress') && isolateData['progress'] != null) {
+      result['progress'] = _serializeEntity(isolateData['progress']);
+    }
+
+    // Add entity-specific data with proper serialization
+    _addSerializedEntityData(result, isolateData);
+
+    return result;
+  }
+
+  // Helper method to serialize entities in isolate
+  static dynamic _serializeEntity(dynamic entity) {
+    if (entity == null) return null;
+
+    // Handle simple types directly
+    if (entity is String || entity is num || entity is bool || entity is DateTime) {
+      return entity;
+    }
+
+    // Handle maps by recursively serializing their values
+    if (entity is Map<String, dynamic>) {
+      final result = <String, dynamic>{};
+      for (final entry in entity.entries) {
+        result[entry.key] = _serializeEntity(entry.value);
+      }
+      return result;
+    }
+
+    // Handle lists by serializing each element
+    if (entity is List) {
+      return entity.map(_serializeEntity).toList();
+    }
+
+    // For complex objects, try to convert to map using JSON mapping if possible
+    // In a real isolate context, we'd need the actual serialization methods available
+    // This is a simplified version that preserves the data structure
+    return entity.toString(); // Fallback to string representation
+  }
+
+  // Helper method to add serialized entity data
+  static void _addSerializedEntityData(Map<String, dynamic> result, Map<String, dynamic> isolateData) {
+    // Add each entity-specific sync data if present
+    if (isolateData.containsKey('appUsagesSyncData') && isolateData['appUsagesSyncData'] != null) {
+      result['appUsagesSyncData'] = _serializeEntity(isolateData['appUsagesSyncData']);
+    }
+    if (isolateData.containsKey('habitsSyncData') && isolateData['habitsSyncData'] != null) {
+      result['habitsSyncData'] = _serializeEntity(isolateData['habitsSyncData']);
+    }
+    if (isolateData.containsKey('tasksSyncData') && isolateData['tasksSyncData'] != null) {
+      result['tasksSyncData'] = _serializeEntity(isolateData['tasksSyncData']);
+    }
+    if (isolateData.containsKey('appUsageTagsSyncData') && isolateData['appUsageTagsSyncData'] != null) {
+      result['appUsageTagsSyncData'] = _serializeEntity(isolateData['appUsageTagsSyncData']);
+    }
+    if (isolateData.containsKey('appUsageTimeRecordsSyncData') && isolateData['appUsageTimeRecordsSyncData'] != null) {
+      result['appUsageTimeRecordsSyncData'] = _serializeEntity(isolateData['appUsageTimeRecordsSyncData']);
+    }
+    if (isolateData.containsKey('appUsageTagRulesSyncData') && isolateData['appUsageTagRulesSyncData'] != null) {
+      result['appUsageTagRulesSyncData'] = _serializeEntity(isolateData['appUsageTagRulesSyncData']);
+    }
+    if (isolateData.containsKey('appUsageIgnoreRulesSyncData') && isolateData['appUsageIgnoreRulesSyncData'] != null) {
+      result['appUsageIgnoreRulesSyncData'] = _serializeEntity(isolateData['appUsageIgnoreRulesSyncData']);
+    }
+    if (isolateData.containsKey('habitRecordsSyncData') && isolateData['habitRecordsSyncData'] != null) {
+      result['habitRecordsSyncData'] = _serializeEntity(isolateData['habitRecordsSyncData']);
+    }
+    if (isolateData.containsKey('habitTagsSyncData') && isolateData['habitTagsSyncData'] != null) {
+      result['habitTagsSyncData'] = _serializeEntity(isolateData['habitTagsSyncData']);
+    }
+    if (isolateData.containsKey('tagsSyncData') && isolateData['tagsSyncData'] != null) {
+      result['tagsSyncData'] = _serializeEntity(isolateData['tagsSyncData']);
+    }
+    if (isolateData.containsKey('tagTagsSyncData') && isolateData['tagTagsSyncData'] != null) {
+      result['tagTagsSyncData'] = _serializeEntity(isolateData['tagTagsSyncData']);
+    }
+    if (isolateData.containsKey('taskTagsSyncData') && isolateData['taskTagsSyncData'] != null) {
+      result['taskTagsSyncData'] = _serializeEntity(isolateData['taskTagsSyncData']);
+    }
+    if (isolateData.containsKey('taskTimeRecordsSyncData') && isolateData['taskTimeRecordsSyncData'] != null) {
+      result['taskTimeRecordsSyncData'] = _serializeEntity(isolateData['taskTimeRecordsSyncData']);
+    }
+    if (isolateData.containsKey('settingsSyncData') && isolateData['settingsSyncData'] != null) {
+      result['settingsSyncData'] = _serializeEntity(isolateData['settingsSyncData']);
+    }
+    if (isolateData.containsKey('syncDevicesSyncData') && isolateData['syncDevicesSyncData'] != null) {
+      result['syncDevicesSyncData'] = _serializeEntity(isolateData['syncDevicesSyncData']);
+    }
+    if (isolateData.containsKey('notesSyncData') && isolateData['notesSyncData'] != null) {
+      result['notesSyncData'] = _serializeEntity(isolateData['notesSyncData']);
+    }
+    if (isolateData.containsKey('noteTagsSyncData') && isolateData['noteTagsSyncData'] != null) {
+      result['noteTagsSyncData'] = _serializeEntity(isolateData['noteTagsSyncData']);
+    }
   }
 
   static String _serializeMessageInIsolate(Map<String, dynamic> messageData) {

@@ -325,7 +325,6 @@ class SyncPaginationService implements ISyncPaginationService {
     // Create progress info
     final progress = _currentProgress[entityType];
 
-    Logger.debug('🚨🚨 SYNC_FIX_TEST: _createPaginatedSyncDataDto called for $entityType 🚨🚨');
     Logger.debug('🔧 Creating DTO for $entityType with isDebugMode: $kDebugMode');
 
     // Create DTO based on entity type
