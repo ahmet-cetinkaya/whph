@@ -2,16 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/shared/utils/logger.dart';
-import 'package:whph/corePackages/acore/lib/repository/models/base_entity.dart';
 
 /// Implementation of sync communication service for WebSocket-based sync operations
 class SyncCommunicationService implements ISyncCommunicationService {
@@ -214,17 +208,6 @@ class SyncCommunicationService implements ISyncCommunicationService {
   @override
   Future<Map<String, dynamic>> convertDtoToJson(PaginatedSyncDataDto dto) async {
     try {
-      // Add specific debugging for Task entity
-      if (dto.entityType == 'Task' || dto.tasksSyncData != null) {
-        Logger.debug('🎯 TASK DTO CONVERSION: entityType=${dto.entityType}');
-        if (dto.tasksSyncData != null) {
-          final taskCount = dto.tasksSyncData!.data.getTotalItemCount();
-          Logger.debug('🎯 TASK DTO has $taskCount items to convert');
-        } else {
-          Logger.debug('🎯 TASK DTO tasksSyncData is null');
-        }
-      }
-
       // Estimate data size to determine processing strategy
       final totalItems = _estimateDataSize(dto);
 
@@ -243,12 +226,12 @@ class SyncCommunicationService implements ISyncCommunicationService {
             'isDebugMode': dto.isDebugMode,
           };
 
-          // Add non-nullable sync device
-          isolateData['syncDevice'] = dto.syncDevice;
+          // Add non-nullable sync device (pre-serialized)
+          isolateData['syncDevice'] = dto.syncDevice.toJson();
 
-          // Add progress if not null
+          // Add progress if not null (pre-serialized)
           if (dto.progress != null) {
-            isolateData['progress'] = dto.progress;
+            isolateData['progress'] = dto.progress!.toJson();
           }
 
           // Add entity-specific data
@@ -302,9 +285,8 @@ class SyncCommunicationService implements ISyncCommunicationService {
       // Fallback to main thread with yielding
       await _yieldToUIThread();
 
-      // Clean message data to avoid serialization errors
-      final cleanedMessage = _cleanWebSocketMessageData(message);
-      final result = JsonMapper.serialize(cleanedMessage);
+      // Use standard JSON serialization
+      final result = json.encode(message.toJson());
 
       Logger.debug('✅ WebSocket message serialization completed');
       return result;
@@ -380,57 +362,57 @@ class SyncCommunicationService implements ISyncCommunicationService {
   }
 
   void _addEntityDataToIsolateData(Map<String, dynamic> isolateData, PaginatedSyncDataDto dto) {
-    // Add entity-specific sync data to isolate data
+    // Pre-serialize entity data to avoid complex serialization in isolate
     if (dto.appUsagesSyncData != null) {
-      isolateData['appUsagesSyncData'] = dto.appUsagesSyncData;
+      isolateData['appUsagesSyncData'] = dto.appUsagesSyncData!.toJson();
     }
     if (dto.habitsSyncData != null) {
-      isolateData['habitsSyncData'] = dto.habitsSyncData;
+      isolateData['habitsSyncData'] = dto.habitsSyncData!.toJson();
     }
     if (dto.tasksSyncData != null) {
-      isolateData['tasksSyncData'] = dto.tasksSyncData;
+      isolateData['tasksSyncData'] = dto.tasksSyncData!.toJson();
     }
     if (dto.appUsageTagsSyncData != null) {
-      isolateData['appUsageTagsSyncData'] = dto.appUsageTagsSyncData;
+      isolateData['appUsageTagsSyncData'] = dto.appUsageTagsSyncData!.toJson();
     }
     if (dto.appUsageTimeRecordsSyncData != null) {
-      isolateData['appUsageTimeRecordsSyncData'] = dto.appUsageTimeRecordsSyncData;
+      isolateData['appUsageTimeRecordsSyncData'] = dto.appUsageTimeRecordsSyncData!.toJson();
     }
     if (dto.appUsageTagRulesSyncData != null) {
-      isolateData['appUsageTagRulesSyncData'] = dto.appUsageTagRulesSyncData;
+      isolateData['appUsageTagRulesSyncData'] = dto.appUsageTagRulesSyncData!.toJson();
     }
     if (dto.appUsageIgnoreRulesSyncData != null) {
-      isolateData['appUsageIgnoreRulesSyncData'] = dto.appUsageIgnoreRulesSyncData;
+      isolateData['appUsageIgnoreRulesSyncData'] = dto.appUsageIgnoreRulesSyncData!.toJson();
     }
     if (dto.habitRecordsSyncData != null) {
-      isolateData['habitRecordsSyncData'] = dto.habitRecordsSyncData;
+      isolateData['habitRecordsSyncData'] = dto.habitRecordsSyncData!.toJson();
     }
     if (dto.habitTagsSyncData != null) {
-      isolateData['habitTagsSyncData'] = dto.habitTagsSyncData;
+      isolateData['habitTagsSyncData'] = dto.habitTagsSyncData!.toJson();
     }
     if (dto.tagsSyncData != null) {
-      isolateData['tagsSyncData'] = dto.tagsSyncData;
+      isolateData['tagsSyncData'] = dto.tagsSyncData!.toJson();
     }
     if (dto.tagTagsSyncData != null) {
-      isolateData['tagTagsSyncData'] = dto.tagTagsSyncData;
+      isolateData['tagTagsSyncData'] = dto.tagTagsSyncData!.toJson();
     }
     if (dto.taskTagsSyncData != null) {
-      isolateData['taskTagsSyncData'] = dto.taskTagsSyncData;
+      isolateData['taskTagsSyncData'] = dto.taskTagsSyncData!.toJson();
     }
     if (dto.taskTimeRecordsSyncData != null) {
-      isolateData['taskTimeRecordsSyncData'] = dto.taskTimeRecordsSyncData;
+      isolateData['taskTimeRecordsSyncData'] = dto.taskTimeRecordsSyncData!.toJson();
     }
     if (dto.settingsSyncData != null) {
-      isolateData['settingsSyncData'] = dto.settingsSyncData;
+      isolateData['settingsSyncData'] = dto.settingsSyncData!.toJson();
     }
     if (dto.syncDevicesSyncData != null) {
-      isolateData['syncDevicesSyncData'] = dto.syncDevicesSyncData;
+      isolateData['syncDevicesSyncData'] = dto.syncDevicesSyncData!.toJson();
     }
     if (dto.notesSyncData != null) {
-      isolateData['notesSyncData'] = dto.notesSyncData;
+      isolateData['notesSyncData'] = dto.notesSyncData!.toJson();
     }
     if (dto.noteTagsSyncData != null) {
-      isolateData['noteTagsSyncData'] = dto.noteTagsSyncData;
+      isolateData['noteTagsSyncData'] = dto.noteTagsSyncData!.toJson();
     }
   }
 
@@ -452,11 +434,11 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
     await _yieldToUIThread();
 
-    // Serialize complex objects
-    result['syncDevice'] = JsonMapper.toMap(dto.syncDevice);
+    // Serialize complex objects using standard toJson()
+    result['syncDevice'] = dto.syncDevice.toJson();
 
     if (dto.progress != null) {
-      result['progress'] = JsonMapper.toMap(dto.progress);
+      result['progress'] = dto.progress!.toJson();
     }
 
     // Add entity-specific data with yielding
@@ -469,14 +451,14 @@ class SyncCommunicationService implements ISyncCommunicationService {
   Future<void> _addEntityDataWithYielding(Map<String, dynamic> result, PaginatedSyncDataDto dto) async {
     if (dto.appUsagesSyncData != null) {
       await _yieldToUIThread();
-      result['appUsagesSyncData'] = JsonMapper.toMap(dto.appUsagesSyncData);
+      result['appUsagesSyncData'] = dto.appUsagesSyncData!.toJson();
     }
 
     if (dto.habitsSyncData != null) {
       await _yieldToUIThread();
       final itemCount = dto.habitsSyncData!.data.getTotalItemCount();
       Logger.debug('📤 Serializing Habit data with $itemCount items');
-      result['habitsSyncData'] = JsonMapper.toMap(dto.habitsSyncData);
+      result['habitsSyncData'] = dto.habitsSyncData!.toJson();
       Logger.debug('📤 Habit data serialized successfully');
     } else {
       Logger.debug('📤 No Habit data to serialize for entityType: ${dto.entityType}');
@@ -499,8 +481,8 @@ class SyncCommunicationService implements ISyncCommunicationService {
           final firstTask = syncData.createSync.first;
           Logger.debug('📤 First Task ID: ${firstTask.id}, Title: "${firstTask.title}"');
           try {
-            final taskJson = JsonMapper.toMap(firstTask);
-            Logger.debug('📤 First Task serialized successfully: ${taskJson?.keys.join(', ') ?? 'null'}');
+            final taskJson = firstTask.toJson();
+            Logger.debug('📤 First Task serialized successfully: ${taskJson.keys.join(', ')}');
           } catch (taskError) {
             Logger.error('❌ Failed to serialize first Task: $taskError');
             Logger.error(
@@ -513,8 +495,8 @@ class SyncCommunicationService implements ISyncCommunicationService {
           final firstUpdateTask = syncData.updateSync.first;
           Logger.debug('📤 First Update Task ID: ${firstUpdateTask.id}, Title: "${firstUpdateTask.title}"');
           try {
-            final taskJson = JsonMapper.toMap(firstUpdateTask);
-            Logger.debug('📤 First Update Task serialized successfully: ${taskJson?.keys.join(', ') ?? 'null'}');
+            final taskJson = firstUpdateTask.toJson();
+            Logger.debug('📤 First Update Task serialized successfully: ${taskJson.keys.join(', ')}');
           } catch (taskError) {
             Logger.error('❌ Failed to serialize first Update Task: $taskError');
             Logger.error(
@@ -524,7 +506,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
         // Now attempt full tasksSyncData serialization
         Logger.debug('📤 Attempting full tasksSyncData serialization...');
-        result['tasksSyncData'] = JsonMapper.toMap(dto.tasksSyncData);
+        result['tasksSyncData'] = dto.tasksSyncData!.toJson();
         Logger.debug('📤 ✅ Task data serialized successfully');
       } catch (e, stackTrace) {
         Logger.error('❌ CRITICAL ERROR: Task data serialization failed: $e');
@@ -548,72 +530,72 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
     if (dto.appUsageTagsSyncData != null) {
       await _yieldToUIThread();
-      result['appUsageTagsSyncData'] = JsonMapper.toMap(dto.appUsageTagsSyncData);
+      result['appUsageTagsSyncData'] = dto.appUsageTagsSyncData!.toJson();
     }
 
     if (dto.appUsageTimeRecordsSyncData != null) {
       await _yieldToUIThread();
-      result['appUsageTimeRecordsSyncData'] = JsonMapper.toMap(dto.appUsageTimeRecordsSyncData);
+      result['appUsageTimeRecordsSyncData'] = dto.appUsageTimeRecordsSyncData!.toJson();
     }
 
     if (dto.appUsageTagRulesSyncData != null) {
       await _yieldToUIThread();
-      result['appUsageTagRulesSyncData'] = JsonMapper.toMap(dto.appUsageTagRulesSyncData);
+      result['appUsageTagRulesSyncData'] = dto.appUsageTagRulesSyncData!.toJson();
     }
 
     if (dto.appUsageIgnoreRulesSyncData != null) {
       await _yieldToUIThread();
-      result['appUsageIgnoreRulesSyncData'] = JsonMapper.toMap(dto.appUsageIgnoreRulesSyncData);
+      result['appUsageIgnoreRulesSyncData'] = dto.appUsageIgnoreRulesSyncData!.toJson();
     }
 
     if (dto.habitRecordsSyncData != null) {
       await _yieldToUIThread();
-      result['habitRecordsSyncData'] = JsonMapper.toMap(dto.habitRecordsSyncData);
+      result['habitRecordsSyncData'] = dto.habitRecordsSyncData!.toJson();
     }
 
     if (dto.habitTagsSyncData != null) {
       await _yieldToUIThread();
-      result['habitTagsSyncData'] = JsonMapper.toMap(dto.habitTagsSyncData);
+      result['habitTagsSyncData'] = dto.habitTagsSyncData!.toJson();
     }
 
     if (dto.tagsSyncData != null) {
       await _yieldToUIThread();
-      result['tagsSyncData'] = JsonMapper.toMap(dto.tagsSyncData);
+      result['tagsSyncData'] = dto.tagsSyncData!.toJson();
     }
 
     if (dto.tagTagsSyncData != null) {
       await _yieldToUIThread();
-      result['tagTagsSyncData'] = JsonMapper.toMap(dto.tagTagsSyncData);
+      result['tagTagsSyncData'] = dto.tagTagsSyncData!.toJson();
     }
 
     if (dto.taskTagsSyncData != null) {
       await _yieldToUIThread();
-      result['taskTagsSyncData'] = JsonMapper.toMap(dto.taskTagsSyncData);
+      result['taskTagsSyncData'] = dto.taskTagsSyncData!.toJson();
     }
 
     if (dto.taskTimeRecordsSyncData != null) {
       await _yieldToUIThread();
-      result['taskTimeRecordsSyncData'] = JsonMapper.toMap(dto.taskTimeRecordsSyncData);
+      result['taskTimeRecordsSyncData'] = dto.taskTimeRecordsSyncData!.toJson();
     }
 
     if (dto.settingsSyncData != null) {
       await _yieldToUIThread();
-      result['settingsSyncData'] = JsonMapper.toMap(dto.settingsSyncData);
+      result['settingsSyncData'] = dto.settingsSyncData!.toJson();
     }
 
     if (dto.syncDevicesSyncData != null) {
       await _yieldToUIThread();
-      result['syncDevicesSyncData'] = JsonMapper.toMap(dto.syncDevicesSyncData);
+      result['syncDevicesSyncData'] = dto.syncDevicesSyncData!.toJson();
     }
 
     if (dto.notesSyncData != null) {
       await _yieldToUIThread();
-      result['notesSyncData'] = JsonMapper.toMap(dto.notesSyncData);
+      result['notesSyncData'] = dto.notesSyncData!.toJson();
     }
 
     if (dto.noteTagsSyncData != null) {
       await _yieldToUIThread();
-      result['noteTagsSyncData'] = JsonMapper.toMap(dto.noteTagsSyncData);
+      result['noteTagsSyncData'] = dto.noteTagsSyncData!.toJson();
     }
   }
 
@@ -628,25 +610,6 @@ class SyncCommunicationService implements ISyncCommunicationService {
       }
     }
     return size;
-  }
-
-  WebSocketMessage _cleanWebSocketMessageData(WebSocketMessage message) {
-    // Create a cleaned version of the message to avoid serialization issues
-    final cleanedData = _deepCleanMap(message.data);
-    return WebSocketMessage(type: message.type, data: cleanedData);
-  }
-
-  dynamic _deepCleanMap(dynamic data) {
-    if (data is Map) {
-      final cleaned = <String, dynamic>{};
-      for (final entry in data.entries) {
-        cleaned[entry.key.toString()] = _deepCleanMap(entry.value);
-      }
-      return cleaned;
-    } else if (data is List) {
-      return data.map(_deepCleanMap).toList();
-    }
-    return data;
   }
 
   bool _validateMessageIntegrity(Map<String, dynamic> data, String entityType) {
@@ -700,11 +663,11 @@ class SyncCommunicationService implements ISyncCommunicationService {
       result['isDebugMode'] = isolateData['isDebugMode'];
 
       // Add sync device which is non-nullable
-      result['syncDevice'] = _serializeEntity(isolateData['syncDevice']);
+      result['syncDevice'] = isolateData['syncDevice'];
 
       // Add progress if present
       if (isolateData.containsKey('progress') && isolateData['progress'] != null) {
-        result['progress'] = _serializeEntity(isolateData['progress']);
+        result['progress'] = isolateData['progress'];
       }
 
       // Add entity-specific data with proper serialization
@@ -718,181 +681,33 @@ class SyncCommunicationService implements ISyncCommunicationService {
     }
   }
 
-  // Helper method to serialize entities in isolate
-  static dynamic _serializeEntity(dynamic entity) {
-    if (entity == null) return null;
-
-    // Handle PaginatedSyncData and SyncData by converting to map first
-    if (entity is PaginatedSyncData) {
-      return _serializeEntity(entity.toJson());
-    }
-    if (entity is SyncData) {
-      return _serializeEntity(entity.toJson());
-    }
-
-    // Handle simple types directly
-    if (entity is String || entity is num || entity is bool) {
-      return entity;
-    }
-
-    // Handle DateTime by converting to ISO string
-    if (entity is DateTime) {
-      return entity.toIso8601String();
-    }
-
-    // Handle maps by recursively serializing their values
-    if (entity is Map<String, dynamic>) {
-      final result = <String, dynamic>{};
-      for (final entry in entity.entries) {
-        result[entry.key] = _serializeEntity(entry.value);
-      }
-      return result;
-    }
-
-    // Handle lists by serializing each element
-    if (entity is List) {
-      return entity.map(_serializeEntity).toList();
-    }
-
-      // For complex objects, we need to make sure they are properly serializable in isolate context
-    // Convert known object types to basic types that can be transferred between isolates
-    // This is important because only specific data types can be transferred between isolates
-    if (entity is BaseEntity) {
-      // Convert BaseEntity to a basic Map structure
-      final entityMap = <String, dynamic>{};
-      entityMap['id'] = entity.id;
-      entityMap['createdDate'] = entity.createdDate.toIso8601String();
-      entityMap['modifiedDate'] = entity.modifiedDate?.toIso8601String();
-      entityMap['deletedDate'] = entity.deletedDate?.toIso8601String();
-
-      // Use a more scalable approach with a mapping of entity serializers
-      // This eliminates the need for long if/else chains and makes the system more extensible
-      final serializer = _getEntitySerializer(entity.runtimeType);
-      if (serializer != null) {
-        return serializer(entityMap, entity);
-      }
-
-      // If no specific serializer, return the base map with id and dates
-      return entityMap;
-    }
-
-    // For any other object type, attempt to use JsonMapper if initialized
-    // This prevents data loss for objects that weren't handled above
-    try {
-      return JsonMapper.toMap(entity);
-    } catch (e) {
-      // If JsonMapper fails, return toString as last resort
-      // This is not ideal but prevents complete data loss
-      return entity.toString();
-    }
-  }
-
-  // Define a function type for entity serializers
-  static Map<String, dynamic> Function(Map<String, dynamic>, dynamic)? _getEntitySerializer(Type type) {
-    // Map entity types to their specific serialization functions
-    // This approach makes the system more scalable and maintainable
-    switch (type) {
-      case Task _:
-        return _serializeTask;
-      case HabitRecord _:
-        return _serializeHabitRecord;
-      default:
-        // For other entity types, you can add cases as needed
-        return null;
-    }
-  }
-
-  // Specific serialization function for Task entities
-  static Map<String, dynamic> _serializeTask(Map<String, dynamic> baseMap, dynamic task) {
-    final entityMap = Map<String, dynamic>.from(baseMap);
-
-    // Add all Task-specific properties to avoid data loss
-    entityMap['title'] = task.title;
-    entityMap['description'] = task.description;
-    entityMap['priority'] = task.priority?.index;
-    entityMap['plannedDate'] = task.plannedDate?.toIso8601String();
-    entityMap['deadlineDate'] = task.deadlineDate?.toIso8601String();
-    entityMap['estimatedTime'] = task.estimatedTime;
-    entityMap['isCompleted'] = task.isCompleted;
-    entityMap['parentTaskId'] = task.parentTaskId;
-    entityMap['order'] = task.order;
-    entityMap['plannedDateReminderTime'] = task.plannedDateReminderTime?.index;
-    entityMap['deadlineDateReminderTime'] = task.deadlineDateReminderTime?.index;
-    entityMap['recurrenceType'] = task.recurrenceType?.index;
-    entityMap['recurrenceInterval'] = task.recurrenceInterval;
-    entityMap['recurrenceDaysString'] = task.recurrenceDaysString;
-    entityMap['recurrenceStartDate'] = task.recurrenceStartDate?.toIso8601String();
-    entityMap['recurrenceEndDate'] = task.recurrenceEndDate?.toIso8601String();
-    entityMap['recurrenceCount'] = task.recurrenceCount;
-    entityMap['recurrenceParentId'] = task.recurrenceParentId;
-
-    return entityMap;
-  }
-
-  // Specific serialization function for HabitRecord entities
-  static Map<String, dynamic> _serializeHabitRecord(Map<String, dynamic> baseMap, dynamic habitRecord) {
-    final entityMap = Map<String, dynamic>.from(baseMap);
-
-    // Add all HabitRecord-specific properties to avoid data loss
-    entityMap['habitId'] = habitRecord.habitId;
-    entityMap['occurredAt'] = habitRecord.occurredAt?.toIso8601String();
-
-    return entityMap;
-  }
-
   // Helper method to add serialized entity data
   static void _addSerializedEntityData(Map<String, dynamic> result, Map<String, dynamic> isolateData) {
-    // Add each entity-specific sync data if present
-    if (isolateData.containsKey('appUsagesSyncData') && isolateData['appUsagesSyncData'] != null) {
-      result['appUsagesSyncData'] = _serializeEntity(isolateData['appUsagesSyncData']);
-    }
-    if (isolateData.containsKey('habitsSyncData') && isolateData['habitsSyncData'] != null) {
-      result['habitsSyncData'] = _serializeEntity(isolateData['habitsSyncData']);
-    }
-    if (isolateData.containsKey('tasksSyncData') && isolateData['tasksSyncData'] != null) {
-      result['tasksSyncData'] = _serializeEntity(isolateData['tasksSyncData']);
-    }
-    if (isolateData.containsKey('appUsageTagsSyncData') && isolateData['appUsageTagsSyncData'] != null) {
-      result['appUsageTagsSyncData'] = _serializeEntity(isolateData['appUsageTagsSyncData']);
-    }
-    if (isolateData.containsKey('appUsageTimeRecordsSyncData') && isolateData['appUsageTimeRecordsSyncData'] != null) {
-      result['appUsageTimeRecordsSyncData'] = _serializeEntity(isolateData['appUsageTimeRecordsSyncData']);
-    }
-    if (isolateData.containsKey('appUsageTagRulesSyncData') && isolateData['appUsageTagRulesSyncData'] != null) {
-      result['appUsageTagRulesSyncData'] = _serializeEntity(isolateData['appUsageTagRulesSyncData']);
-    }
-    if (isolateData.containsKey('appUsageIgnoreRulesSyncData') && isolateData['appUsageIgnoreRulesSyncData'] != null) {
-      result['appUsageIgnoreRulesSyncData'] = _serializeEntity(isolateData['appUsageIgnoreRulesSyncData']);
-    }
-    if (isolateData.containsKey('habitRecordsSyncData') && isolateData['habitRecordsSyncData'] != null) {
-      result['habitRecordsSyncData'] = _serializeEntity(isolateData['habitRecordsSyncData']);
-    }
-    if (isolateData.containsKey('habitTagsSyncData') && isolateData['habitTagsSyncData'] != null) {
-      result['habitTagsSyncData'] = _serializeEntity(isolateData['habitTagsSyncData']);
-    }
-    if (isolateData.containsKey('tagsSyncData') && isolateData['tagsSyncData'] != null) {
-      result['tagsSyncData'] = _serializeEntity(isolateData['tagsSyncData']);
-    }
-    if (isolateData.containsKey('tagTagsSyncData') && isolateData['tagTagsSyncData'] != null) {
-      result['tagTagsSyncData'] = _serializeEntity(isolateData['tagTagsSyncData']);
-    }
-    if (isolateData.containsKey('taskTagsSyncData') && isolateData['taskTagsSyncData'] != null) {
-      result['taskTagsSyncData'] = _serializeEntity(isolateData['taskTagsSyncData']);
-    }
-    if (isolateData.containsKey('taskTimeRecordsSyncData') && isolateData['taskTimeRecordsSyncData'] != null) {
-      result['taskTimeRecordsSyncData'] = _serializeEntity(isolateData['taskTimeRecordsSyncData']);
-    }
-    if (isolateData.containsKey('settingsSyncData') && isolateData['settingsSyncData'] != null) {
-      result['settingsSyncData'] = _serializeEntity(isolateData['settingsSyncData']);
-    }
-    if (isolateData.containsKey('syncDevicesSyncData') && isolateData['syncDevicesSyncData'] != null) {
-      result['syncDevicesSyncData'] = _serializeEntity(isolateData['syncDevicesSyncData']);
-    }
-    if (isolateData.containsKey('notesSyncData') && isolateData['notesSyncData'] != null) {
-      result['notesSyncData'] = _serializeEntity(isolateData['notesSyncData']);
-    }
-    if (isolateData.containsKey('noteTagsSyncData') && isolateData['noteTagsSyncData'] != null) {
-      result['noteTagsSyncData'] = _serializeEntity(isolateData['noteTagsSyncData']);
+    // Add each entity-specific sync data if present - now using pre-serialized data
+    const syncDataKeys = [
+      'appUsagesSyncData',
+      'habitsSyncData',
+      'tasksSyncData',
+      'appUsageTagsSyncData',
+      'appUsageTimeRecordsSyncData',
+      'appUsageTagRulesSyncData',
+      'appUsageIgnoreRulesSyncData',
+      'habitRecordsSyncData',
+      'habitTagsSyncData',
+      'tagsSyncData',
+      'tagTagsSyncData',
+      'taskTagsSyncData',
+      'taskTimeRecordsSyncData',
+      'settingsSyncData',
+      'syncDevicesSyncData',
+      'notesSyncData',
+      'noteTagsSyncData',
+    ];
+
+    for (final key in syncDataKeys) {
+      if (isolateData.containsKey(key) && isolateData[key] != null) {
+        result[key] = isolateData[key];
+      }
     }
   }
 
@@ -906,13 +721,10 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
       final data = messageData['data'];
 
-      // Clean and serialize the data properly in isolate context
-      final serializedData = _serializeEntity(data);
-
-      // Create the final message structure
+      // Create the final message structure - data is already serialized
       final message = {
         'type': type,
-        'data': serializedData,
+        'data': data,
       };
 
       // Convert to JSON string

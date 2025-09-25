@@ -68,7 +68,6 @@ class SyncPaginationService implements ISyncPaginationService {
       int pageIndex = 0;
       bool hasMorePages = true;
 
-      Logger.info('🚨🚨🚨 ULTIMATE_TEST: Starting sync for ${config.name} - FIXES ARE DEPLOYED! 🚨🚨🚨');
       Logger.info('🔄 Starting paginated sync for ${config.name}');
       Logger.info('📅 Using sync date filter: $effectiveLastSyncDate');
 
