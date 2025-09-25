@@ -232,8 +232,8 @@ class Task extends BaseEntity<String> {
       final deadlineDateReminderTime = _parseEnum(
           ReminderTime.values, json['deadlineDateReminderTime'], ReminderTime.none, 'deadlineDateReminderTime');
 
-      final recurrenceType = _parseEnum(
-          RecurrenceType.values, json['recurrenceType'], RecurrenceType.none, 'recurrenceType');
+      final recurrenceType =
+          _parseEnum(RecurrenceType.values, json['recurrenceType'], RecurrenceType.none, 'recurrenceType');
 
       return Task(
         id: json['id'] as String,
