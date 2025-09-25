@@ -177,6 +177,17 @@ class Task extends BaseEntity<String> {
     );
   }
 
+  // Helper method to parse enums with error handling
+  static T _parseEnum<T>(List<T> values, String? value, T defaultValue, String enumName) {
+    if (value == null) return defaultValue;
+    try {
+      return values.firstWhere((e) => e.toString() == value);
+    } catch (e) {
+      Logger.warning('⚠️ Task.fromJson: Invalid $enumName value "$value", defaulting to $defaultValue');
+      return defaultValue;
+    }
+  }
+
   factory Task.fromJson(Map<String, dynamic> json) {
     try {
       // CRITICAL FIX: Handle type conversion for numeric fields that might come as different types
@@ -211,51 +222,18 @@ class Task extends BaseEntity<String> {
       }
 
       // Handle enum parsing with better error handling
-      EisenhowerPriority? priority;
-      if (json['priority'] != null) {
-        try {
-          priority = EisenhowerPriority.values.firstWhere((e) => e.toString() == json['priority']);
-        } catch (e) {
-          // Handle case where enum value doesn't match
-          Logger.warning('⚠️ Task.fromJson: Invalid priority value "${json['priority']}", defaulting to null');
-          priority = null;
-        }
-      }
+      final priority = json['priority'] != null
+          ? _parseEnum<EisenhowerPriority?>(EisenhowerPriority.values, json['priority'], null, 'priority')
+          : null;
 
-      ReminderTime plannedDateReminderTime = ReminderTime.none;
-      if (json['plannedDateReminderTime'] != null) {
-        try {
-          plannedDateReminderTime =
-              ReminderTime.values.firstWhere((e) => e.toString() == json['plannedDateReminderTime']);
-        } catch (e) {
-          Logger.warning(
-              '⚠️ Task.fromJson: Invalid plannedDateReminderTime value "${json['plannedDateReminderTime']}", defaulting to none');
-          plannedDateReminderTime = ReminderTime.none;
-        }
-      }
+      final plannedDateReminderTime = _parseEnum(
+          ReminderTime.values, json['plannedDateReminderTime'], ReminderTime.none, 'plannedDateReminderTime');
 
-      ReminderTime deadlineDateReminderTime = ReminderTime.none;
-      if (json['deadlineDateReminderTime'] != null) {
-        try {
-          deadlineDateReminderTime =
-              ReminderTime.values.firstWhere((e) => e.toString() == json['deadlineDateReminderTime']);
-        } catch (e) {
-          Logger.warning(
-              '⚠️ Task.fromJson: Invalid deadlineDateReminderTime value "${json['deadlineDateReminderTime']}", defaulting to none');
-          deadlineDateReminderTime = ReminderTime.none;
-        }
-      }
+      final deadlineDateReminderTime = _parseEnum(
+          ReminderTime.values, json['deadlineDateReminderTime'], ReminderTime.none, 'deadlineDateReminderTime');
 
-      RecurrenceType recurrenceType = RecurrenceType.none;
-      if (json['recurrenceType'] != null) {
-        try {
-          recurrenceType = RecurrenceType.values.firstWhere((e) => e.toString() == json['recurrenceType']);
-        } catch (e) {
-          Logger.warning(
-              '⚠️ Task.fromJson: Invalid recurrenceType value "${json['recurrenceType']}", defaulting to none');
-          recurrenceType = RecurrenceType.none;
-        }
-      }
+      final recurrenceType = _parseEnum(
+          RecurrenceType.values, json['recurrenceType'], RecurrenceType.none, 'recurrenceType');
 
       return Task(
         id: json['id'] as String,
