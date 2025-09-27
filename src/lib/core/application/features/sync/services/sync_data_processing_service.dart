@@ -435,11 +435,12 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
 
     try {
       // Query for existing tasks with same recurrenceParentId and plannedDate
+      // Compare the full date instead of just the date part to ensure proper matching
       final existingTasks = await taskRepo.getList(
         0, // page
         10, // pageSize - should be enough, most cases will have 0-1 matches
         customWhereFilter: CustomWhereFilter(
-          'recurrence_parent_id = ? AND SUBSTR(planned_date, 1, 10) = SUBSTR(?, 1, 10) AND deleted_date IS NULL AND id != ?',
+          'recurrence_parent_id = ? AND DATE(planned_date) = DATE(?) AND deleted_date IS NULL AND id != ?',
           [entity.recurrenceParentId!, entity.plannedDate!.toIso8601String(), entity.id],
         ),
       );
@@ -1024,11 +1025,12 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
 
     try {
       // Query for existing tasks with same recurrenceParentId and plannedDate
+      // Compare the full date instead of just the date part to ensure proper matching
       final existingTasks = await taskRepo.getList(
         0, // page
         10, // pageSize - should be enough, most cases will have 0-1 matches
         customWhereFilter: CustomWhereFilter(
-          'recurrence_parent_id = ? AND SUBSTR(planned_date, 1, 10) = SUBSTR(?, 1, 10) AND deleted_date IS NULL AND id != ?',
+          'recurrence_parent_id = ? AND DATE(planned_date) = DATE(?) AND deleted_date IS NULL AND id != ?',
           [entity.recurrenceParentId!, entity.plannedDate!.toIso8601String(), entity.id],
         ),
       );
