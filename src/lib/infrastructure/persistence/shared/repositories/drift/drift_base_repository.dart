@@ -116,13 +116,19 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     ];
     String whereClause = whereClauses.join(' AND ');
 
-    final result = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
+    final results = await database.customSelect(
+      'SELECT * FROM ${table.actualTableName} WHERE $whereClause ORDER BY created_date DESC LIMIT 1',
       variables: [Variable.withString(id.toString())],
       readsFrom: {table},
-    ).getSingleOrNull();
+    ).get();
 
-    return result != null ? table.map(result.data) : null;
+    if (results.isEmpty) return null;
+
+    if (results.length > 1) {
+      Logger.warning('Multiple records found for ID $id in ${table.actualTableName}, returning most recent result');
+    }
+
+    return table.map(results.first.data);
   }
 
   @override

@@ -67,4 +67,10 @@ abstract class ISyncPaginationService {
 
   /// Clears all pending response data (should be called after processing)
   void clearPendingResponseData();
+
+  /// Gets the last sent server page for a specific device and entity type
+  int getLastSentServerPage(String deviceId, String entityType);
+
+  /// Sets the last sent server page for a specific device and entity type
+  void setLastSentServerPage(String deviceId, String entityType, int page);
 }

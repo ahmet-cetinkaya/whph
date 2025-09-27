@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/shared/utils/logger.dart';
@@ -183,8 +184,10 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
         continue;
       }
 
-      // Yield before every single item
-      await yieldToUIThread();
+      // Yield only every 10 items for better performance during bulk sync
+      if (i % 10 == 0) {
+        await yieldToUIThread();
+      }
 
       try {
         final itemConflicts = await processSingleItemWithMaximumYielding(item, repository, operationType);
@@ -194,12 +197,6 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
         Logger.error('❌ Error processing item ${item.id}: $e');
         // Continue with other items instead of failing entire batch
       }
-
-      // Yield after every single item
-      await yieldToUIThread();
-
-      // Add breathing room delay after each item
-      await Future.delayed(const Duration(milliseconds: 5));
 
       // Progress logging every 10 items to avoid log spam
       if (i % 10 == 9 || i == items.length - 1) {
@@ -229,15 +226,42 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
 
       switch (operationType) {
         case 'create':
-          // Yield before read
-          await yieldToUIThread();
-
           T? existingItem = await repository.getById(item.id);
 
-          // Yield after read
-          await yieldToUIThread();
-
           if (existingItem == null) {
+            // For habit records, check for same habitId and occurredAt even if different IDs
+            if (item is HabitRecord) {
+              final habitRecord = item as HabitRecord;
+              // Look for existing habit records with same habitId and occurredAt
+              final allHabitRecords = await repository.getAll();
+              final matchingRecord = allHabitRecords.cast<HabitRecord?>().firstWhere(
+                    (record) =>
+                        record != null &&
+                        record.habitId == habitRecord.habitId &&
+                        record.occurredAt == habitRecord.occurredAt,
+                    orElse: () => null,
+                  );
+
+              if (matchingRecord != null) {
+                Logger.debug(
+                    '🔄 Found matching habit record with same habitId and occurredAt: ${matchingRecord.id} vs ${item.id}');
+                final resolution = _conflictResolutionService.resolveConflict<T>(matchingRecord as T, item);
+                conflicts = 1;
+
+                switch (resolution.action) {
+                  case ConflictAction.keepLocal:
+                    Logger.debug('✅ Keeping existing habit record ${matchingRecord.id}, skipping remote ${item.id}');
+                    break;
+                  case ConflictAction.acceptRemote:
+                  case ConflictAction.acceptRemoteForceUpdate:
+                    Logger.debug('🔄 Replacing existing habit record ${matchingRecord.id} with remote ${item.id}');
+                    await repository.update(item);
+                    break;
+                }
+                break; // Exit the switch statement since we handled this case
+              }
+            }
+
             // Check for recurring task deduplication before creating
             T? duplicateTask = await checkForRecurringTaskDuplicate(item, repository);
 
@@ -257,17 +281,13 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
                   Logger.debug('🔄 Replacing existing task ${duplicateTask.id} with remote ${item.id}');
                   // Update existing task with remote data while preserving the existing task's ID
                   final updatedTask = _conflictResolutionService.copyRemoteDataToExistingTask(duplicateTask, item);
-                  await yieldToUIThread();
                   await repository.update(updatedTask);
-                  await yieldToUIThread();
                   break;
               }
             } else {
               // No duplicate found, proceed with normal create
-              await yieldToUIThread();
               try {
                 await repository.add(item);
-                await yieldToUIThread();
               } catch (e) {
                 // Handle UNIQUE constraint errors gracefully
                 if (e.toString().contains('UNIQUE constraint failed')) {
@@ -540,6 +560,24 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
             Logger.debug('🔄 Updating existing SyncDevice by ID: ${syncDevice.id}');
             await repository.update(syncDevice);
             await yieldToUIThread();
+
+            // Verify the update by re-reading the device from database
+            final verificationDevice = await repository.getById(syncDevice.id);
+            if (verificationDevice != null) {
+              Logger.debug(
+                  '🔧 Verification: SyncDevice ${syncDevice.id} re-read from DB with lastSyncDate=${verificationDevice.lastSyncDate}');
+              if (verificationDevice.lastSyncDate == null && syncDevice.lastSyncDate != null) {
+                Logger.warning(
+                    '⚠️ CRITICAL: Database update verification failed - lastSyncDate is still null after update!');
+                // Retry the update once more
+                await repository.update(syncDevice);
+              } else {
+                Logger.debug('✅ Database update verification passed - lastSyncDate properly persisted');
+              }
+            } else {
+              Logger.error('❌ CRITICAL: Could not re-read sync device ${syncDevice.id} from database for verification');
+            }
+
             Logger.info('✅ Updated SyncDevice: ${syncDevice.id}');
             return 1; // Successfully updated
           } else if (existingDevicePair != null) {
@@ -563,6 +601,26 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
 
             await repository.update(mergedDevice);
             await yieldToUIThread();
+
+            // Verify the merge update
+            final verificationDevice = await repository.getById(mergedDevice.id);
+            if (verificationDevice != null) {
+              Logger.debug(
+                  '🔧 Verification: Merged SyncDevice ${mergedDevice.id} re-read from DB with lastSyncDate=${verificationDevice.lastSyncDate}');
+              if (verificationDevice.lastSyncDate == null && mergedDevice.lastSyncDate != null) {
+                Logger.warning(
+                    '⚠️ CRITICAL: Database update verification failed for merged device - lastSyncDate is still null after update!');
+                // Retry the update once more
+                await repository.update(mergedDevice);
+              } else {
+                Logger.debug(
+                    '✅ Database update verification passed for merged device - lastSyncDate properly persisted');
+              }
+            } else {
+              Logger.error(
+                  '❌ CRITICAL: Could not re-read merged sync device ${mergedDevice.id} from database for verification');
+            }
+
             Logger.info('✅ Merged SyncDevice: ${existingDevicePair.id} updated with data from ${syncDevice.id}');
             return 1; // Successfully merged
           }
@@ -582,6 +640,24 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
             Logger.debug('🔄 Updating SyncDevice: ${syncDevice.id}');
             await repository.update(syncDevice);
             await yieldToUIThread();
+
+            // Verify the update by re-reading the device from database
+            final verificationDevice = await repository.getById(syncDevice.id);
+            if (verificationDevice != null) {
+              Logger.debug(
+                  '🔧 Verification: SyncDevice ${syncDevice.id} re-read from DB with lastSyncDate=${verificationDevice.lastSyncDate}');
+              if (verificationDevice.lastSyncDate == null && syncDevice.lastSyncDate != null) {
+                Logger.warning(
+                    '⚠️ CRITICAL: Database update verification failed - lastSyncDate is still null after update!');
+                // Retry the update once more
+                await repository.update(syncDevice);
+              } else {
+                Logger.debug('✅ Database update verification passed - lastSyncDate properly persisted');
+              }
+            } else {
+              Logger.error('❌ CRITICAL: Could not re-read sync device ${syncDevice.id} from database for verification');
+            }
+
             Logger.info('✅ Updated SyncDevice: ${syncDevice.id}');
             return 1; // Successfully updated
           } else {
@@ -589,6 +665,25 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
             Logger.debug('📱 Creating SyncDevice from update: ${syncDevice.id}');
             await repository.add(syncDevice);
             await yieldToUIThread();
+
+            // Verify the create operation
+            final verificationDevice = await repository.getById(syncDevice.id);
+            if (verificationDevice != null) {
+              Logger.debug(
+                  '🔧 Verification: Created SyncDevice ${syncDevice.id} re-read from DB with lastSyncDate=${verificationDevice.lastSyncDate}');
+              if (verificationDevice.lastSyncDate == null && syncDevice.lastSyncDate != null) {
+                Logger.warning(
+                    '⚠️ CRITICAL: Database create verification failed - lastSyncDate is still null after creation!');
+                // Retry the update to ensure lastSyncDate is set
+                await repository.update(syncDevice);
+              } else {
+                Logger.debug('✅ Database create verification passed - lastSyncDate properly set');
+              }
+            } else {
+              Logger.error(
+                  '❌ CRITICAL: Could not re-read created sync device ${syncDevice.id} from database for verification');
+            }
+
             Logger.info('✅ Created SyncDevice from update: ${syncDevice.id}');
             return 1; // Successfully created
           }
@@ -711,6 +806,43 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
           await yieldToUIThread();
 
           if (existingItem == null) {
+            // For habit records, check for same habitId and occurredAt even if different IDs
+            if (item is HabitRecord) {
+              final habitRecord = item;
+              // Look for existing habit records with same habitId and occurredAt
+              final allHabitRecords = await repository.getAll();
+              HabitRecord? matchingRecord;
+              for (final record in allHabitRecords.whereType<HabitRecord>()) {
+                if (record.habitId == habitRecord.habitId && record.occurredAt == habitRecord.occurredAt) {
+                  matchingRecord = record;
+                  break;
+                }
+              }
+
+              // Only process if a matching record was found
+              if (matchingRecord != null) {
+                Logger.debug(
+                    '🔄 Found matching habit record with same habitId and occurredAt: ${matchingRecord.id} vs ${item.id}');
+                final resolution = _conflictResolutionService.resolveConflict<BaseEntity<String>>(
+                    matchingRecord as BaseEntity<String>, item);
+                conflicts = 1;
+
+                switch (resolution.action) {
+                  case ConflictAction.keepLocal:
+                    Logger.debug('✅ Keeping existing habit record ${matchingRecord.id}, skipping remote ${item.id}');
+                    break;
+                  case ConflictAction.acceptRemote:
+                  case ConflictAction.acceptRemoteForceUpdate:
+                    Logger.debug('🔄 Replacing existing habit record ${matchingRecord.id} with remote ${item.id}');
+                    await yieldToUIThread();
+                    await repository.update(item as dynamic);
+                    await yieldToUIThread();
+                    break;
+                }
+                break; // Exit the switch statement since we handled this case
+              }
+            }
+
             // Check for recurring task deduplication before creating
             var duplicateTask = await _checkForRecurringTaskDuplicateDynamic(item, repository);
 
