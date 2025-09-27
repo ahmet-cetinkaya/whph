@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 
 enum TaskSortFields {
   createdDate,
@@ -230,13 +231,22 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
           await _taskTagRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("task_id = ?", [task.id]));
 
       final tagItems = await Future.wait(taskTags.items.map((tt) async {
-        final tag = await _tagRepository.getById(tt.tagId);
+        try {
+          final tag = await _tagRepository.getById(tt.tagId);
 
-        return TagListItem(
-          id: tt.tagId,
-          name: tag?.name ?? "",
-          color: tag?.color,
-        );
+          return TagListItem(
+            id: tt.tagId,
+            name: tag?.name ?? "Unknown Tag",
+            color: tag?.color,
+          );
+        } catch (e) {
+          Logger.error('Failed to fetch tag ${tt.tagId} for task ${task.id}: $e');
+          return TagListItem(
+            id: tt.tagId,
+            name: "Error Loading Tag",
+            color: null,
+          );
+        }
       }).toList());
 
       final subTasks = await _taskRepository.getAll(

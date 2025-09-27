@@ -116,13 +116,19 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     ];
     String whereClause = whereClauses.join(' AND ');
 
-    final result = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
+    final results = await database.customSelect(
+      'SELECT * FROM ${table.actualTableName} WHERE $whereClause ORDER BY created_date DESC LIMIT 1',
       variables: [Variable.withString(id.toString())],
       readsFrom: {table},
-    ).getSingleOrNull();
+    ).get();
 
-    return result != null ? table.map(result.data) : null;
+    if (results.isEmpty) return null;
+
+    if (results.length > 1) {
+      Logger.warning('Multiple records found for ID $id in ${table.actualTableName}, returning most recent result');
+    }
+
+    return table.map(results.first.data);
   }
 
   @override
@@ -190,28 +196,49 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     final effectiveLastSyncDate = lastSyncDate;
     Logger.debug('🕒 Using lastSyncDate: $effectiveLastSyncDate for ${table.actualTableName}');
 
+    // Check if this is an initial sync (lastSyncDate is very old, indicating first sync)
+    final isInitialSync = effectiveLastSyncDate.isBefore(DateTime(2010));
+    Logger.debug('🔄 Initial sync detected: $isInitialSync for ${table.actualTableName}');
+
     // Get counts for each operation type
-    final createCount = await _getCountForQuery(
-      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL',
-      [Variable.withDateTime(effectiveLastSyncDate)],
-    );
+    final createCount = isInitialSync
+        ? await _getCountForQuery(
+            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NULL',
+            [],
+          )
+        : await _getCountForQuery(
+            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL',
+            [Variable.withDateTime(effectiveLastSyncDate)],
+          );
 
-    final updateCount = await _getCountForQuery(
-      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL',
-      [Variable.withDateTime(effectiveLastSyncDate)],
-    );
+    final updateCount = isInitialSync
+        ? 0 // No updates for initial sync, everything is treated as create
+        : await _getCountForQuery(
+            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL',
+            [Variable.withDateTime(effectiveLastSyncDate)],
+          );
 
-    final deleteCount = await _getCountForQuery(
-      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?',
-      [Variable.withDateTime(effectiveLastSyncDate)],
+    final deleteCount = isInitialSync
+        ? 0 // No deletes for initial sync
+        : await _getCountForQuery(
+            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?',
+            [Variable.withDateTime(effectiveLastSyncDate)],
+          );
+
+    // Debug: Also get total record count to compare
+    final totalRecordsCount = await _getCountForQuery(
+      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NULL',
+      [],
     );
 
     final totalItems = createCount + updateCount + deleteCount;
     final totalPages = totalItems > 0 ? ((totalItems / pageSize).ceil()) : 1;
     final isLastPage = pageIndex >= totalPages - 1;
 
-    Logger.debug(
-        '📊 Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems');
+    Logger.info(
+        '📊 Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems (isInitialSync: $isInitialSync)');
+    Logger.info(
+        '🔍 Total records in ${table.actualTableName}: $totalRecordsCount (active records), using sync filter date: $effectiveLastSyncDate');
 
     // Calculate which items to fetch for this page
     final offset = pageIndex * pageSize;
@@ -226,10 +253,19 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
       final createOffset = offset;
       final createLimit = remainingItems > (createCount - createOffset) ? (createCount - createOffset) : remainingItems;
 
-      createSync = await _getPaginatedQueryResults(
-        'SELECT * FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
-        [Variable.withDateTime(effectiveLastSyncDate), Variable.withInt(createLimit), Variable.withInt(createOffset)],
-      );
+      createSync = isInitialSync
+          ? await _getPaginatedQueryResults(
+              'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
+              [Variable.withInt(createLimit), Variable.withInt(createOffset)],
+            )
+          : await _getPaginatedQueryResults(
+              'SELECT * FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
+              [
+                Variable.withDateTime(effectiveLastSyncDate),
+                Variable.withInt(createLimit),
+                Variable.withInt(createOffset)
+              ],
+            );
       remainingItems -= createSync.length;
     }
 

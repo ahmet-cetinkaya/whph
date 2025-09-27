@@ -30,12 +30,18 @@ class PaginatedSyncDataDto {
   /// The entity type being synchronized in this chunk
   final String entityType;
 
-  /// Pagination information
+  /// Client pagination information
   final int pageIndex;
   final int pageSize;
   final int totalPages;
   final int totalItems;
   final bool isLastPage;
+
+  /// Server-side pagination information for bidirectional sync
+  final int? requestedServerPage; // Page being requested from server
+  final int? currentServerPage; // Current server page being sent
+  final int? totalServerPages; // Total pages available on server
+  final bool? hasMoreServerPages; // Whether server has more pages
 
   /// Progress information
   final SyncProgress? progress;
@@ -69,6 +75,10 @@ class PaginatedSyncDataDto {
     required this.totalPages,
     required this.totalItems,
     required this.isLastPage,
+    this.requestedServerPage,
+    this.currentServerPage,
+    this.totalServerPages,
+    this.hasMoreServerPages,
     this.progress,
     this.appUsagesSyncData,
     this.appUsageTagsSyncData,
@@ -100,6 +110,10 @@ class PaginatedSyncDataDto {
       'totalPages': totalPages,
       'totalItems': totalItems,
       'isLastPage': isLastPage,
+      'requestedServerPage': requestedServerPage,
+      'currentServerPage': currentServerPage,
+      'totalServerPages': totalServerPages,
+      'hasMoreServerPages': hasMoreServerPages,
       'progress': progress?.toJson(),
       'appUsagesSyncData': appUsagesSyncData?.toJson(),
       'appUsageTagsSyncData': appUsageTagsSyncData?.toJson(),
@@ -136,6 +150,10 @@ class PaginatedSyncDataDto {
       totalPages: (json['totalPages'] as num).toInt(),
       totalItems: (json['totalItems'] as num).toInt(),
       isLastPage: json['isLastPage'] as bool,
+      requestedServerPage: json['requestedServerPage'] as int?,
+      currentServerPage: json['currentServerPage'] as int?,
+      totalServerPages: json['totalServerPages'] as int?,
+      hasMoreServerPages: json['hasMoreServerPages'] as bool?,
       progress: json['progress'] != null ? SyncProgress.fromJson(json['progress'] as Map<String, dynamic>) : null,
       appUsagesSyncData: json['appUsagesSyncData'] != null
           ? PaginatedSyncData<AppUsage>.fromJson(json['appUsagesSyncData'] as Map<String, dynamic>, AppUsage)

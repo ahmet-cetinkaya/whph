@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 import 'abstraction/i_sync_service.dart';
 
@@ -46,7 +48,9 @@ class SyncService implements ISyncService {
   @override
   void updateSyncStatus(SyncStatus status) {
     _currentSyncStatus = status;
-    _syncStatusController.add(status);
+    if (!_syncStatusController.isClosed) {
+      _syncStatusController.add(status);
+    }
     Logger.debug('Sync status updated: $status');
   }
 
@@ -102,16 +106,44 @@ class SyncService implements ISyncService {
 
       Logger.debug('Starting paginated sync process at ${DateTime.now()}... (manual: $isManual)');
 
+      // Validate database integrity before sync
+      final integrityService = DatabaseIntegrityService(AppDatabase.instance());
+      final preIntegrityReport = await integrityService.validateIntegrity();
+
+      if (preIntegrityReport.hasIssues) {
+        Logger.warning('Database integrity issues detected before sync:');
+        Logger.warning(preIntegrityReport.toString());
+
+        // Auto-fix issues if manual sync
+        if (isManual) {
+          Logger.info('Auto-fixing database integrity issues...');
+          await integrityService.fixIntegrityIssues();
+        }
+      }
+
       // Create paginated sync command handler and listen to progress
       final command = PaginatedSyncCommand();
       final response = await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
-      // Check if sync was actually successful
-      if (response.isComplete) {
+      // Check if sync was actually successful and had no errors
+      if (response.isComplete && !response.hasErrors) {
         // Reset the attempt count on successful sync
         _reconnectAttempts = 0;
 
         Logger.info('✅ Paginated sync completed successfully');
+
+        // Validate database integrity after sync
+        final postIntegrityReport = await integrityService.validateIntegrity();
+        if (postIntegrityReport.hasIssues) {
+          Logger.warning('Database integrity issues detected after sync:');
+          Logger.warning(postIntegrityReport.toString());
+
+          // Auto-fix issues after sync
+          await integrityService.fixIntegrityIssues();
+          Logger.info('✅ Post-sync integrity issues fixed');
+        } else {
+          Logger.debug('✅ Database integrity validated after sync');
+        }
 
         // Update sync status to completed
         updateSyncStatus(SyncStatus(
@@ -123,37 +155,29 @@ class SyncService implements ISyncService {
         // Only notify sync completion for meaningful syncs
         // Don't notify for background syncs that found no devices
         _notifySyncCompleteIfMeaningful(isManual, response);
+
+        // Schedule reset to idle after a short delay (for UI transitions)
+        _scheduleIdleReset();
       } else {
-        // Sync failed or was incomplete
-        Logger.error('❌ Paginated sync failed or was incomplete');
+        // Sync failed, was incomplete, or had errors
+        final errorReason =
+            response.hasErrors ? 'Sync errors: ${response.errorMessages.join('; ')}' : 'Sync was incomplete or failed';
+
+        Logger.error('❌ Paginated sync failed: $errorReason');
 
         // Update sync status to error
         updateSyncStatus(SyncStatus(
           state: SyncState.error,
-          errorMessage: 'Sync was incomplete or failed',
+          errorMessage: errorReason,
           isManual: isManual,
           lastSyncTime: DateTime.now(),
         ));
 
         _handleDisconnection();
 
-        // Reset to idle after error delay
-        Timer(const Duration(seconds: 5), () {
-          updateSyncStatus(SyncStatus(
-            state: SyncState.idle,
-            lastSyncTime: DateTime.now(),
-          ));
-        });
-        return; // Exit early to skip the success flow
+        // Schedule reset to idle after error delay
+        _scheduleErrorReset();
       }
-
-      // Reset to idle after a short delay
-      Timer(const Duration(seconds: 2), () {
-        updateSyncStatus(SyncStatus(
-          state: SyncState.idle,
-          lastSyncTime: DateTime.now(),
-        ));
-      });
     } catch (e) {
       Logger.error('Paginated sync failed: $e');
 
@@ -167,14 +191,29 @@ class SyncService implements ISyncService {
 
       _handleDisconnection();
 
-      // Reset to idle after error delay
-      Timer(const Duration(seconds: 5), () {
-        updateSyncStatus(SyncStatus(
-          state: SyncState.idle,
-          lastSyncTime: DateTime.now(),
-        ));
-      });
+      // Schedule reset to idle after error delay
+      _scheduleErrorReset();
     }
+  }
+
+  /// Schedules reset to idle state after successful sync
+  void _scheduleIdleReset() {
+    Timer(const Duration(milliseconds: 1500), () {
+      updateSyncStatus(SyncStatus(
+        state: SyncState.idle,
+        lastSyncTime: DateTime.now(),
+      ));
+    });
+  }
+
+  /// Schedules reset to idle state after error
+  void _scheduleErrorReset() {
+    Timer(const Duration(seconds: 5), () {
+      updateSyncStatus(SyncStatus(
+        state: SyncState.idle,
+        lastSyncTime: DateTime.now(),
+      ));
+    });
   }
 
   @override
@@ -208,7 +247,9 @@ class SyncService implements ISyncService {
 
   void notifySyncComplete() {
     Logger.debug('Notifying sync completion at ${DateTime.now()}');
-    _syncCompleteController.add(true);
+    if (!_syncCompleteController.isClosed) {
+      _syncCompleteController.add(true);
+    }
   }
 
   @override

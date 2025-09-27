@@ -293,7 +293,7 @@ tasks:
       occurrences: occurrences
       true: true
       starts: starter
-      on:  "på"
+      on: "på"
     weekDays: Ukedager
     weekSuffix: uke(r)
     weekly: Ukentlig

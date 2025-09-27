@@ -1,5 +1,6 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 
 enum EisenhowerPriority {
   notUrgentNotImportant,
@@ -124,70 +125,147 @@ class Task extends BaseEntity<String> {
         'recurrenceParentId': recurrenceParentId,
       };
 
-  factory Task.fromJson(Map<String, dynamic> json) {
-    // CRITICAL FIX: Handle type conversion for numeric fields that might come as different types
-    // This ensures robust deserialization regardless of JSON source (database, API, sync, etc.)
-
-    // Handle estimatedTime: might come as int, double, or null
-    int? estimatedTime;
-    final estimatedTimeValue = json['estimatedTime'];
-    if (estimatedTimeValue is num) {
-      estimatedTime = estimatedTimeValue.toInt();
-    }
-
-    // Handle order: might come as int, double, or null
-    double order = 0.0;
-    final orderValue = json['order'];
-    if (orderValue is num) {
-      order = orderValue.toDouble();
-    }
-
-    // Handle recurrenceInterval: ensure it's int
-    int? recurrenceInterval;
-    final intervalValue = json['recurrenceInterval'];
-    if (intervalValue is num) {
-      recurrenceInterval = intervalValue.toInt();
-    }
-
-    // Handle recurrenceCount: ensure it's int
-    int? recurrenceCount;
-    final countValue = json['recurrenceCount'];
-    if (countValue is num) {
-      recurrenceCount = countValue.toInt();
-    }
-
+  /// Creates a copy of this Task with specified fields replaced by the new values.
+  /// The id field is preserved by default unless explicitly changed.
+  Task copyWith({
+    String? id,
+    DateTime? createdDate,
+    DateTime? modifiedDate,
+    DateTime? deletedDate,
+    String? title,
+    String? description,
+    EisenhowerPriority? priority,
+    DateTime? plannedDate,
+    DateTime? deadlineDate,
+    int? estimatedTime,
+    bool? isCompleted,
+    String? parentTaskId,
+    double? order,
+    ReminderTime? plannedDateReminderTime,
+    ReminderTime? deadlineDateReminderTime,
+    RecurrenceType? recurrenceType,
+    int? recurrenceInterval,
+    String? recurrenceDaysString,
+    DateTime? recurrenceStartDate,
+    DateTime? recurrenceEndDate,
+    int? recurrenceCount,
+    String? recurrenceParentId,
+  }) {
     return Task(
-      id: json['id'] as String,
-      createdDate: DateTime.parse(json['createdDate'] as String),
-      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
-      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
-      title: json['title'] as String,
-      description: json['description'] as String?,
-      priority: json['priority'] != null
-          ? EisenhowerPriority.values.firstWhere((e) => e.toString() == json['priority'])
-          : null,
-      plannedDate: json['plannedDate'] != null ? DateTime.parse(json['plannedDate'] as String) : null,
-      deadlineDate: json['deadlineDate'] != null ? DateTime.parse(json['deadlineDate'] as String) : null,
-      estimatedTime: estimatedTime,
-      isCompleted: json['isCompleted'] as bool? ?? false,
-      parentTaskId: json['parentTaskId'] as String?,
-      order: order,
-      plannedDateReminderTime: json['plannedDateReminderTime'] != null
-          ? ReminderTime.values.firstWhere((e) => e.toString() == json['plannedDateReminderTime'])
-          : ReminderTime.none,
-      deadlineDateReminderTime: json['deadlineDateReminderTime'] != null
-          ? ReminderTime.values.firstWhere((e) => e.toString() == json['deadlineDateReminderTime'])
-          : ReminderTime.none,
-      recurrenceType: json['recurrenceType'] != null
-          ? RecurrenceType.values.firstWhere((e) => e.toString() == json['recurrenceType'])
-          : RecurrenceType.none,
-      recurrenceInterval: recurrenceInterval,
-      recurrenceDaysString: json['recurrenceDaysString'] as String?,
-      recurrenceStartDate:
-          json['recurrenceStartDate'] != null ? DateTime.parse(json['recurrenceStartDate'] as String) : null,
-      recurrenceEndDate: json['recurrenceEndDate'] != null ? DateTime.parse(json['recurrenceEndDate'] as String) : null,
-      recurrenceCount: recurrenceCount,
-      recurrenceParentId: json['recurrenceParentId'] as String?,
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      priority: priority ?? this.priority,
+      plannedDate: plannedDate ?? this.plannedDate,
+      deadlineDate: deadlineDate ?? this.deadlineDate,
+      estimatedTime: estimatedTime ?? this.estimatedTime,
+      isCompleted: isCompleted ?? this.isCompleted,
+      parentTaskId: parentTaskId ?? this.parentTaskId,
+      order: order ?? this.order,
+      plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
+      deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      recurrenceType: recurrenceType ?? this.recurrenceType,
+      recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
+      recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
+      recurrenceStartDate: recurrenceStartDate ?? this.recurrenceStartDate,
+      recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
+      recurrenceCount: recurrenceCount ?? this.recurrenceCount,
+      recurrenceParentId: recurrenceParentId ?? this.recurrenceParentId,
     );
+  }
+
+  // Helper method to parse enums with error handling
+  static T _parseEnum<T>(List<T> values, String? value, T defaultValue, String enumName) {
+    if (value == null) return defaultValue;
+    try {
+      return values.firstWhere((e) => e.toString() == value);
+    } catch (e) {
+      Logger.warning('⚠️ Task.fromJson: Invalid $enumName value "$value", defaulting to $defaultValue');
+      return defaultValue;
+    }
+  }
+
+  factory Task.fromJson(Map<String, dynamic> json) {
+    try {
+      // CRITICAL FIX: Handle type conversion for numeric fields that might come as different types
+      // This ensures robust deserialization regardless of JSON source (database, API, sync, etc.)
+
+      // Handle estimatedTime: might come as int, double, or null
+      int? estimatedTime;
+      final estimatedTimeValue = json['estimatedTime'];
+      if (estimatedTimeValue is num) {
+        estimatedTime = estimatedTimeValue.toInt();
+      }
+
+      // Handle order: might come as int, double, or null
+      double order = 0.0;
+      final orderValue = json['order'];
+      if (orderValue is num) {
+        order = orderValue.toDouble();
+      }
+
+      // Handle recurrenceInterval: ensure it's int
+      int? recurrenceInterval;
+      final intervalValue = json['recurrenceInterval'];
+      if (intervalValue is num) {
+        recurrenceInterval = intervalValue.toInt();
+      }
+
+      // Handle recurrenceCount: ensure it's int
+      int? recurrenceCount;
+      final countValue = json['recurrenceCount'];
+      if (countValue is num) {
+        recurrenceCount = countValue.toInt();
+      }
+
+      // Handle enum parsing with better error handling
+      final priority = json['priority'] != null
+          ? _parseEnum<EisenhowerPriority?>(EisenhowerPriority.values, json['priority'], null, 'priority')
+          : null;
+
+      final plannedDateReminderTime = _parseEnum(
+          ReminderTime.values, json['plannedDateReminderTime'], ReminderTime.none, 'plannedDateReminderTime');
+
+      final deadlineDateReminderTime = _parseEnum(
+          ReminderTime.values, json['deadlineDateReminderTime'], ReminderTime.none, 'deadlineDateReminderTime');
+
+      final recurrenceType =
+          _parseEnum(RecurrenceType.values, json['recurrenceType'], RecurrenceType.none, 'recurrenceType');
+
+      return Task(
+        id: json['id'] as String,
+        createdDate: DateTime.parse(json['createdDate'] as String),
+        modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
+        deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+        title: json['title'] as String,
+        description: json['description'] as String?,
+        priority: priority,
+        plannedDate: json['plannedDate'] != null ? DateTime.parse(json['plannedDate'] as String) : null,
+        deadlineDate: json['deadlineDate'] != null ? DateTime.parse(json['deadlineDate'] as String) : null,
+        estimatedTime: estimatedTime,
+        isCompleted: json['isCompleted'] as bool? ?? false,
+        parentTaskId: json['parentTaskId'] as String?,
+        order: order,
+        plannedDateReminderTime: plannedDateReminderTime,
+        deadlineDateReminderTime: deadlineDateReminderTime,
+        recurrenceType: recurrenceType,
+        recurrenceInterval: recurrenceInterval,
+        recurrenceDaysString: json['recurrenceDaysString'] as String?,
+        recurrenceStartDate:
+            json['recurrenceStartDate'] != null ? DateTime.parse(json['recurrenceStartDate'] as String) : null,
+        recurrenceEndDate:
+            json['recurrenceEndDate'] != null ? DateTime.parse(json['recurrenceEndDate'] as String) : null,
+        recurrenceCount: recurrenceCount,
+        recurrenceParentId: json['recurrenceParentId'] as String?,
+      );
+    } catch (e, stackTrace) {
+      Logger.error('❌ CRITICAL ERROR in Task.fromJson: $e');
+      Logger.error('❌ JSON data keys: ${json.keys.toList()}');
+      Logger.error('❌ Stack trace: $stackTrace');
+      rethrow;
+    }
   }
 }
