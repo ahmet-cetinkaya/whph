@@ -710,19 +710,15 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
     }
   }
 
-  
-
   /// Shared logic for processing items with yielding (typed version)
-  Future<int> _processItemsWithSharedLogic<T extends BaseEntity<String>>(
-    {
-      required List<T> items,
-      required IRepository<T, String> repository,
-      required String operationType,
-      required Future<int> Function(T, IRepository<T, String>, String) processItem,
-      int yieldFrequency = 10,
-      bool addBreathingRoom = false,
-    }
-  ) async {
+  Future<int> _processItemsWithSharedLogic<T extends BaseEntity<String>>({
+    required List<T> items,
+    required IRepository<T, String> repository,
+    required String operationType,
+    required Future<int> Function(T, IRepository<T, String>, String) processItem,
+    int yieldFrequency = 10,
+    bool addBreathingRoom = false,
+  }) async {
     int conflictsResolved = 0;
     final Set<String> processedItemIds = <String>{};
 
@@ -747,7 +743,7 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
         final itemConflicts = await processItem(item, repository, operationType);
         conflictsResolved += itemConflicts;
         processedItemIds.add(item.id);
-            } catch (e) {
+      } catch (e) {
         Logger.error('❌ Error processing item: $e');
         // Continue with other items instead of failing entire batch
       }
@@ -769,16 +765,14 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
   }
 
   /// Shared logic for processing items with yielding (dynamic version)
-  Future<int> _processItemsWithSharedLogicDynamic(
-    {
-      required List<dynamic> items,
-      required IRepository repository,
-      required String operationType,
-      required Future<int> Function(dynamic, IRepository, String) processItem,
-      int yieldFrequency = 10,
-      bool addBreathingRoom = false,
-    }
-  ) async {
+  Future<int> _processItemsWithSharedLogicDynamic({
+    required List<dynamic> items,
+    required IRepository repository,
+    required String operationType,
+    required Future<int> Function(dynamic, IRepository, String) processItem,
+    int yieldFrequency = 10,
+    bool addBreathingRoom = false,
+  }) async {
     int conflictsResolved = 0;
     final Set<String> processedItemIds = <String>{};
 

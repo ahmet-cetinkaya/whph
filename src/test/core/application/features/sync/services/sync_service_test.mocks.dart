@@ -5,16 +5,15 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:mediatr/mediatr.dart' as _i6;
-import 'package:mediatr/src/internals/i_domain_event.dart' as _i8;
-import 'package:mediatr/src/internals/i_event_handler.dart' as _i7;
-import 'package:mediatr/src/internals/i_request.dart' as _i9;
-import 'package:mediatr/src/internals/i_request_handler.dart' as _i11;
-import 'package:mediatr/src/internals/pipeline.dart' as _i4;
+import 'package:mediatr/mediatr.dart' as _i4;
+import 'package:mediatr/src/internals/i_domain_event.dart' as _i6;
+import 'package:mediatr/src/internals/i_event_handler.dart' as _i5;
+import 'package:mediatr/src/internals/i_request.dart' as _i7;
+import 'package:mediatr/src/internals/i_request_handler.dart' as _i9;
+import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart' as _i2;
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:mockito/src/dummies.dart' as _i8;
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -30,7 +29,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_devic
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakePipeline_0 extends _i1.SmartFake implements _i4.Pipeline {
+class _FakePipeline_0 extends _i1.SmartFake implements _i2.Pipeline {
   _FakePipeline_0(
     Object parent,
     Invocation parentInvocation,
@@ -50,73 +49,54 @@ class _FakeFuture_1<T1> extends _i1.SmartFake implements _i3.Future<T1> {
         );
 }
 
-/// A class which mocks [IDeviceIdService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockIDeviceIdService extends _i1.Mock implements _i2.IDeviceIdService {
-  MockIDeviceIdService() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  Future<String> getDeviceId() => (super.noSuchMethod(
-        Invocation.method(
-          #getDeviceId,
-          [],
-        ),
-        returnValue: _i3.Future<String>.value('test-device-id'),
-        returnValueForMissingStub: _i3.Future<String>.value('test-device-id'),
-      ) as Future<String>);
-}
-
 /// A class which mocks [Mediator].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMediator extends _i1.Mock implements _i6.Mediator {
+class MockMediator extends _i1.Mock implements _i4.Mediator {
   MockMediator() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Pipeline get pipeline => (super.noSuchMethod(
+  _i2.Pipeline get pipeline => (super.noSuchMethod(
         Invocation.getter(#pipeline),
         returnValue: _FakePipeline_0(
           this,
           Invocation.getter(#pipeline),
         ),
-      ) as _i4.Pipeline);
+      ) as _i2.Pipeline);
 
   @override
-  Map<Type, _i6.HandlerCreator<dynamic>> get handlers => (super.noSuchMethod(
+  Map<Type, _i4.HandlerCreator<dynamic>> get handlers => (super.noSuchMethod(
         Invocation.getter(#handlers),
-        returnValue: <Type, _i6.HandlerCreator<dynamic>>{},
-      ) as Map<Type, _i6.HandlerCreator<dynamic>>);
+        returnValue: <Type, _i4.HandlerCreator<dynamic>>{},
+      ) as Map<Type, _i4.HandlerCreator<dynamic>>);
 
   @override
-  Map<Type, List<_i7.IEventHandler<_i8.IDomainEvent>>> get eventHandlers => (super.noSuchMethod(
+  Map<Type, List<_i5.IEventHandler<_i6.IDomainEvent>>> get eventHandlers => (super.noSuchMethod(
         Invocation.getter(#eventHandlers),
-        returnValue: <Type, List<_i7.IEventHandler<_i8.IDomainEvent>>>{},
-      ) as Map<Type, List<_i7.IEventHandler<_i8.IDomainEvent>>>);
+        returnValue: <Type, List<_i5.IEventHandler<_i6.IDomainEvent>>>{},
+      ) as Map<Type, List<_i5.IEventHandler<_i6.IDomainEvent>>>);
 
   @override
-  Map<Type, List<_i6.FuncEventHandler<_i8.IDomainEvent>>> get eventFuncHandler => (super.noSuchMethod(
+  Map<Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>> get eventFuncHandler => (super.noSuchMethod(
         Invocation.getter(#eventFuncHandler),
-        returnValue: <Type, List<_i6.FuncEventHandler<_i8.IDomainEvent>>>{},
-      ) as Map<Type, List<_i6.FuncEventHandler<_i8.IDomainEvent>>>);
+        returnValue: <Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>>{},
+      ) as Map<Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>>);
 
   @override
-  _i6.UnsubscribeFunc subscribeWithFunc<E extends _i8.IDomainEvent>(
-          _i3.FutureOr<void> Function(_i8.IDomainEvent)? func) =>
+  _i4.UnsubscribeFunc subscribeWithFunc<E extends _i6.IDomainEvent>(
+          _i3.FutureOr<void> Function(_i6.IDomainEvent)? func) =>
       (super.noSuchMethod(
         Invocation.method(
           #subscribeWithFunc,
           [func],
         ),
         returnValue: () {},
-      ) as _i6.UnsubscribeFunc);
+      ) as _i4.UnsubscribeFunc);
 
   @override
-  void subscribe<E extends _i8.IDomainEvent>(_i7.IEventHandler<E>? handler) => super.noSuchMethod(
+  void subscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) => super.noSuchMethod(
         Invocation.method(
           #subscribe,
           [handler],
@@ -125,7 +105,7 @@ class MockMediator extends _i1.Mock implements _i6.Mediator {
       );
 
   @override
-  void unsubscribe<E extends _i8.IDomainEvent>(_i7.IEventHandler<E>? handler) => super.noSuchMethod(
+  void unsubscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) => super.noSuchMethod(
         Invocation.method(
           #unsubscribe,
           [handler],
@@ -134,7 +114,7 @@ class MockMediator extends _i1.Mock implements _i6.Mediator {
       );
 
   @override
-  _i3.Future<void> publish<E extends _i8.IDomainEvent>(E? event) => (super.noSuchMethod(
+  _i3.Future<void> publish<E extends _i6.IDomainEvent>(E? event) => (super.noSuchMethod(
         Invocation.method(
           #publish,
           [event],
@@ -144,13 +124,13 @@ class MockMediator extends _i1.Mock implements _i6.Mediator {
       ) as _i3.Future<void>);
 
   @override
-  _i3.Future<R> send<T extends _i9.IRequest<R>, R extends Object?>(T? request) => (super.noSuchMethod(
+  _i3.Future<R> send<T extends _i7.IRequest<R>, R extends Object?>(T? request) => (super.noSuchMethod(
         Invocation.method(
           #send,
           [request],
         ),
-        returnValue: _i10.ifNotNull(
-              _i10.dummyValueOrNull<R>(
+        returnValue: _i8.ifNotNull(
+              _i8.dummyValueOrNull<R>(
                 this,
                 Invocation.method(
                   #send,
@@ -169,8 +149,8 @@ class MockMediator extends _i1.Mock implements _i6.Mediator {
       ) as _i3.Future<R>);
 
   @override
-  void registerHandler<IR extends _i9.IRequest<R>, R, H extends _i11.IRequestHandler<IR, R>>(
-          _i6.HandlerCreator<H>? creator) =>
+  void registerHandler<IR extends _i7.IRequest<R>, R, H extends _i9.IRequestHandler<IR, R>>(
+          _i4.HandlerCreator<H>? creator) =>
       super.noSuchMethod(
         Invocation.method(
           #registerHandler,
@@ -178,4 +158,28 @@ class MockMediator extends _i1.Mock implements _i6.Mediator {
         ),
         returnValueForMissingStub: null,
       );
+}
+
+/// A class which mocks [IDeviceIdService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockIDeviceIdService extends _i1.Mock implements _i10.IDeviceIdService {
+  MockIDeviceIdService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<String> getDeviceId() => (super.noSuchMethod(
+        Invocation.method(
+          #getDeviceId,
+          [],
+        ),
+        returnValue: _i3.Future<String>.value(_i8.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getDeviceId,
+            [],
+          ),
+        )),
+      ) as _i3.Future<String>);
 }
