@@ -79,30 +79,36 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
       // Process creates first with single-item yielding
       if (deduplicatedCreateSync.isNotEmpty) {
         Logger.debug('📦 Processing ${deduplicatedCreateSync.length} deduplicated create items individually');
-        conflictsResolved += await processItemsWithMaximumYielding(
-          deduplicatedCreateSync,
-          repository,
-          'create',
+        conflictsResolved += await _processItemsWithSharedLogic<T>(
+          items: deduplicatedCreateSync,
+          repository: repository,
+          operationType: 'create',
+          processItem: (item, repo, opType) => processSingleItemWithMaximumYielding(item, repo, opType),
+          yieldFrequency: 10, // Yield every 10 items for better performance during bulk sync
         );
       }
 
       // Process updates with conflict resolution
       if (deduplicatedUpdateSync.isNotEmpty) {
         Logger.debug('📦 Processing ${deduplicatedUpdateSync.length} deduplicated update items individually');
-        conflictsResolved += await processItemsWithMaximumYielding(
-          deduplicatedUpdateSync,
-          repository,
-          'update',
+        conflictsResolved += await _processItemsWithSharedLogic<T>(
+          items: deduplicatedUpdateSync,
+          repository: repository,
+          operationType: 'update',
+          processItem: (item, repo, opType) => processSingleItemWithMaximumYielding(item, repo, opType),
+          yieldFrequency: 10, // Yield every 10 items for better performance during bulk sync
         );
       }
 
       // Process deletes
       if (deduplicatedDeleteSync.isNotEmpty) {
         Logger.debug('📦 Processing ${deduplicatedDeleteSync.length} deduplicated delete items individually');
-        await processItemsWithMaximumYielding(
-          deduplicatedDeleteSync,
-          repository,
-          'delete',
+        await _processItemsWithSharedLogic<T>(
+          items: deduplicatedDeleteSync,
+          repository: repository,
+          operationType: 'delete',
+          processItem: (item, repo, opType) => processSingleItemWithMaximumYielding(item, repo, opType),
+          yieldFrequency: 10, // Yield every 10 items for better performance during bulk sync
         );
       }
 
@@ -129,30 +135,39 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
       // Process creates first with single-item yielding
       if (syncData.createSync.isNotEmpty) {
         Logger.debug('📦 Processing ${syncData.createSync.length} create items individually');
-        conflictsResolved += await _processItemsWithMaximumYieldingDynamic(
-          syncData.createSync,
-          repository,
-          'create',
+        conflictsResolved += await _processItemsWithSharedLogicDynamic(
+          items: syncData.createSync,
+          repository: repository,
+          operationType: 'create',
+          processItem: (item, repo, opType) => _processSingleItemDynamic(item, repo, opType),
+          yieldFrequency: 1, // Yield every item for maximum responsiveness
+          addBreathingRoom: true, // Add delay after each item
         );
       }
 
       // Process updates with conflict resolution
       if (syncData.updateSync.isNotEmpty) {
         Logger.debug('📦 Processing ${syncData.updateSync.length} update items individually');
-        conflictsResolved += await _processItemsWithMaximumYieldingDynamic(
-          syncData.updateSync,
-          repository,
-          'update',
+        conflictsResolved += await _processItemsWithSharedLogicDynamic(
+          items: syncData.updateSync,
+          repository: repository,
+          operationType: 'update',
+          processItem: (item, repo, opType) => _processSingleItemDynamic(item, repo, opType),
+          yieldFrequency: 1, // Yield every item for maximum responsiveness
+          addBreathingRoom: true, // Add delay after each item
         );
       }
 
       // Process deletes
       if (syncData.deleteSync.isNotEmpty) {
         Logger.debug('📦 Processing ${syncData.deleteSync.length} delete items individually');
-        await _processItemsWithMaximumYieldingDynamic(
-          syncData.deleteSync,
-          repository,
-          'delete',
+        await _processItemsWithSharedLogicDynamic(
+          items: syncData.deleteSync,
+          repository: repository,
+          operationType: 'delete',
+          processItem: (item, repo, opType) => _processSingleItemDynamic(item, repo, opType),
+          yieldFrequency: 1, // Yield every item for maximum responsiveness
+          addBreathingRoom: true, // Add delay after each item
         );
       }
 
@@ -170,43 +185,13 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
     IRepository<T, String> repository,
     String operationType,
   ) async {
-    int conflictsResolved = 0;
-    final Set<String> processedItemIds = <String>{};
-
-    Logger.debug('🔥 Processing ${items.length} $operationType items with maximum yielding (one at a time)');
-
-    for (var i = 0; i < items.length; i++) {
-      final item = items[i];
-
-      // Skip if already processed
-      if (processedItemIds.contains(item.id)) {
-        Logger.debug('⏭️ Skipping duplicate item ${item.id}');
-        continue;
-      }
-
-      // Yield only every 10 items for better performance during bulk sync
-      if (i % 10 == 0) {
-        await yieldToUIThread();
-      }
-
-      try {
-        final itemConflicts = await processSingleItemWithMaximumYielding(item, repository, operationType);
-        conflictsResolved += itemConflicts;
-        processedItemIds.add(item.id);
-      } catch (e) {
-        Logger.error('❌ Error processing item ${item.id}: $e');
-        // Continue with other items instead of failing entire batch
-      }
-
-      // Progress logging every 10 items to avoid log spam
-      if (i % 10 == 9 || i == items.length - 1) {
-        Logger.debug('🔥 Completed ${i + 1}/${items.length} $operationType items');
-      }
-    }
-
-    Logger.debug(
-        '✅ Completed maximum yielding processing of ${items.length} $operationType items, $conflictsResolved conflicts');
-    return conflictsResolved;
+    return await _processItemsWithSharedLogic<T>(
+      items: items,
+      repository: repository,
+      operationType: operationType,
+      processItem: (item, repo, opType) => processSingleItemWithMaximumYielding(item, repo, opType),
+      yieldFrequency: 10, // Yield every 10 items for better performance during bulk sync
+    );
   }
 
   @override
@@ -725,17 +710,80 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
     }
   }
 
-  /// Dynamic processing method that handles items without strict typing
-  Future<int> _processItemsWithMaximumYieldingDynamic(
-    List<dynamic> items,
-    IRepository repository,
-    String operationType,
+  
+
+  /// Shared logic for processing items with yielding (typed version)
+  Future<int> _processItemsWithSharedLogic<T extends BaseEntity<String>>(
+    {
+      required List<T> items,
+      required IRepository<T, String> repository,
+      required String operationType,
+      required Future<int> Function(T, IRepository<T, String>, String) processItem,
+      int yieldFrequency = 10,
+      bool addBreathingRoom = false,
+    }
   ) async {
     int conflictsResolved = 0;
     final Set<String> processedItemIds = <String>{};
 
     Logger.debug(
-        '🔥 Processing ${items.length} $operationType items dynamically with maximum yielding (one at a time)');
+        '🔥 Processing ${items.length} $operationType items with shared logic (yield frequency: $yieldFrequency)');
+
+    for (var i = 0; i < items.length; i++) {
+      final item = items[i];
+
+      // Skip if already processed
+      if (processedItemIds.contains(item.id)) {
+        Logger.debug('⏭️ Skipping duplicate item ${item.id}');
+        continue;
+      }
+
+      // Yield based on frequency
+      if (i % yieldFrequency == 0) {
+        await yieldToUIThread();
+      }
+
+      try {
+        final itemConflicts = await processItem(item, repository, operationType);
+        conflictsResolved += itemConflicts;
+        processedItemIds.add(item.id);
+            } catch (e) {
+        Logger.error('❌ Error processing item: $e');
+        // Continue with other items instead of failing entire batch
+      }
+
+      // Add breathing room delay if requested
+      if (addBreathingRoom) {
+        await Future.delayed(const Duration(milliseconds: 5));
+      }
+
+      // Progress logging every 10 items to avoid log spam
+      if (i % 10 == 9 || i == items.length - 1) {
+        Logger.debug('🔥 Completed ${i + 1}/${items.length} $operationType items');
+      }
+    }
+
+    Logger.debug(
+        '✅ Completed shared logic processing of ${items.length} $operationType items, $conflictsResolved conflicts');
+    return conflictsResolved;
+  }
+
+  /// Shared logic for processing items with yielding (dynamic version)
+  Future<int> _processItemsWithSharedLogicDynamic(
+    {
+      required List<dynamic> items,
+      required IRepository repository,
+      required String operationType,
+      required Future<int> Function(dynamic, IRepository, String) processItem,
+      int yieldFrequency = 10,
+      bool addBreathingRoom = false,
+    }
+  ) async {
+    int conflictsResolved = 0;
+    final Set<String> processedItemIds = <String>{};
+
+    Logger.debug(
+        '🔥 Processing ${items.length} $operationType items with shared logic (yield frequency: $yieldFrequency)');
 
     for (var i = 0; i < items.length; i++) {
       final item = items[i];
@@ -746,34 +794,35 @@ class SyncDataProcessingService implements ISyncDataProcessingService {
         continue;
       }
 
-      // Yield before every single item
-      await yieldToUIThread();
+      // Yield based on frequency
+      if (i % yieldFrequency == 0) {
+        await yieldToUIThread();
+      }
 
       try {
-        final itemConflicts = await _processSingleItemDynamic(item, repository, operationType);
+        final itemConflicts = await processItem(item, repository, operationType);
         conflictsResolved += itemConflicts;
         if (item is BaseEntity<String>) {
           processedItemIds.add(item.id);
         }
       } catch (e) {
-        Logger.error('❌ Error processing dynamic item ${item?.toString()}: $e');
+        Logger.error('❌ Error processing item: $e');
         // Continue with other items instead of failing entire batch
       }
 
-      // Yield after every single item
-      await yieldToUIThread();
-
-      // Add breathing room delay after each item
-      await Future.delayed(const Duration(milliseconds: 5));
+      // Add breathing room delay if requested
+      if (addBreathingRoom) {
+        await Future.delayed(const Duration(milliseconds: 5));
+      }
 
       // Progress logging every 10 items to avoid log spam
       if (i % 10 == 9 || i == items.length - 1) {
-        Logger.debug('🔥 Completed ${i + 1}/${items.length} $operationType items dynamically');
+        Logger.debug('🔥 Completed ${i + 1}/${items.length} $operationType items');
       }
     }
 
     Logger.debug(
-        '✅ Completed dynamic processing of ${items.length} $operationType items, $conflictsResolved conflicts');
+        '✅ Completed shared logic processing of ${items.length} $operationType items, $conflictsResolved conflicts');
     return conflictsResolved;
   }
 
