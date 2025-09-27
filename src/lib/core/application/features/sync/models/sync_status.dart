@@ -58,11 +58,11 @@ class SyncStatus {
   }
 
   @override
-  int get hashCode {
-    return state.hashCode ^
-        currentDeviceId.hashCode ^
-        errorMessage.hashCode ^
-        lastSyncTime.hashCode ^
-        isManual.hashCode;
-  }
+  int get hashCode => Object.hash(
+        state,
+        currentDeviceId,
+        errorMessage,
+        lastSyncTime,
+        isManual,
+      );
 }
