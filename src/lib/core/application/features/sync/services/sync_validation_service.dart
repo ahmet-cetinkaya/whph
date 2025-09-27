@@ -126,6 +126,52 @@ class SyncValidationService implements ISyncValidationService {
         return false;
       }
 
+      // Habit-specific validation
+      if (dto.entityType == 'Habit' && dto.habitsSyncData != null) {
+        final habitData = dto.habitsSyncData!;
+        Logger.debug('🏠 Validating Habit sync data: ${habitData.data.getTotalItemCount()} items');
+
+        final totalHabits =
+            habitData.data.createSync.length + habitData.data.updateSync.length + habitData.data.deleteSync.length;
+
+        if (totalHabits != dto.totalItems && dto.totalItems > 0) {
+          Logger.warning('⚠️ Habit sync data count mismatch: expected ${dto.totalItems}, found $totalHabits');
+        }
+      }
+
+      if (dto.entityType == 'HabitRecord' && dto.habitRecordsSyncData != null) {
+        final habitRecordData = dto.habitRecordsSyncData!;
+        Logger.debug('📝 Validating HabitRecord sync data: ${habitRecordData.data.getTotalItemCount()} items');
+
+        final totalRecords = habitRecordData.data.createSync.length +
+            habitRecordData.data.updateSync.length +
+            habitRecordData.data.deleteSync.length;
+
+        if (totalRecords != dto.totalItems && dto.totalItems > 0) {
+          Logger.warning('⚠️ HabitRecord sync data count mismatch: expected ${dto.totalItems}, found $totalRecords');
+        }
+
+        // Validate habit record date consistency
+        for (final record in habitRecordData.data.createSync) {
+          if (record.habitId.isEmpty) {
+            Logger.warning('⚠️ HabitRecord ${record.id} has empty habitId - this may cause sync issues');
+          }
+        }
+      }
+
+      if (dto.entityType == 'HabitTag' && dto.habitTagsSyncData != null) {
+        final habitTagData = dto.habitTagsSyncData!;
+        Logger.debug('🏷️ Validating HabitTag sync data: ${habitTagData.data.getTotalItemCount()} items');
+
+        final totalTags = habitTagData.data.createSync.length +
+            habitTagData.data.updateSync.length +
+            habitTagData.data.deleteSync.length;
+
+        if (totalTags != dto.totalItems && dto.totalItems > 0) {
+          Logger.warning('⚠️ HabitTag sync data count mismatch: expected ${dto.totalItems}, found $totalTags');
+        }
+      }
+
       Logger.debug('✅ Sync data integrity validation passed');
       return true;
     } catch (e) {

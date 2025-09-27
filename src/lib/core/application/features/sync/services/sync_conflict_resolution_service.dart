@@ -16,11 +16,55 @@ class SyncConflictResolutionService {
     final bool localIsDeleted = localEntity.deletedDate != null;
     final bool remoteIsDeleted = remoteEntity.deletedDate != null;
 
-    // Enhanced logging for habit records to help debug sync issues
-    if (localEntity is HabitRecord) {
+    // Enhanced logging and special handling for habit records to help debug sync issues
+    if (localEntity is HabitRecord && remoteEntity is HabitRecord) {
+      final localRecord = localEntity as HabitRecord;
+      final remoteRecord = remoteEntity as HabitRecord;
       Logger.debug('🔄 Resolving habit record conflict for ${localEntity.id}:');
-      Logger.debug('   Local: deleted=$localIsDeleted, timestamp=$localTimestamp');
-      Logger.debug('   Remote: deleted=$remoteIsDeleted, timestamp=$remoteTimestamp');
+      Logger.debug(
+          '   Local: deleted=$localIsDeleted, timestamp=$localTimestamp, occurredAt=${localRecord.occurredAt}');
+      Logger.debug(
+          '   Remote: deleted=$remoteIsDeleted, timestamp=$remoteTimestamp, occurredAt=${remoteRecord.occurredAt}');
+      Logger.debug('   habitId: local=${localRecord.habitId}, remote=${remoteRecord.habitId}');
+
+      // Special handling for habit records with same occurredAt but different habitId (edge case)
+      if (localRecord.occurredAt == remoteRecord.occurredAt && localRecord.habitId != remoteRecord.habitId) {
+        Logger.warning('⚠️ Habit record with same occurredAt but different habitId - potential data corruption');
+      }
+
+      // For habit records with same habitId and occurredAt, treat as same record regardless of modification date
+      if (localRecord.habitId == remoteRecord.habitId && localRecord.occurredAt == remoteRecord.occurredAt) {
+        Logger.debug('   ✅ Same habit occurrence detected, using latest timestamp');
+
+        // If both have same deletion status, use timestamp-based resolution
+        if (localIsDeleted == remoteIsDeleted) {
+          // Special case: if timestamps are identical, use acceptRemoteForceUpdate for consistency
+          if (localTimestamp.isAtSameMomentAs(remoteTimestamp)) {
+            return ConflictResolutionResult(
+              action: ConflictAction.acceptRemoteForceUpdate,
+              winningEntity: remoteEntity,
+              reason:
+                  'Same habit occurrence, timestamps identical ($localTimestamp), using remote with force update for consistent behavior',
+            );
+          }
+
+          // In this case, use the latest modification timestamp as the deciding factor
+          return localTimestamp.isAfter(remoteTimestamp)
+              ? ConflictResolutionResult(
+                  action: ConflictAction.keepLocal,
+                  winningEntity: localEntity,
+                  reason:
+                      'Same habit occurrence, local timestamp ($localTimestamp) is newer than remote ($remoteTimestamp)',
+                )
+              : ConflictResolutionResult(
+                  action: ConflictAction.acceptRemote,
+                  winningEntity: remoteEntity,
+                  reason:
+                      'Same habit occurrence, remote timestamp ($remoteTimestamp) is newer than local ($localTimestamp)',
+                );
+        }
+        // If deletion status differs, let general deletion conflict resolution handle it below
+      }
     }
 
     // Handle deletion conflicts specially
@@ -112,10 +156,30 @@ class SyncConflictResolutionService {
       return null;
     }
 
-    const Duration deletionGracePeriod = Duration(minutes: 5);
+    // Determine appropriate grace periods based on entity type and which side is deleted
+    Duration determineLocalDeletionGracePeriod() {
+      if (localEntity is HabitRecord || remoteEntity is HabitRecord) {
+        return const Duration(minutes: 8); // Very conservative for habit records
+      } else {
+        return const Duration(minutes: 5); // Higher threshold for local deletions in general
+      }
+    }
+
+    Duration determineRemoteDeletionGracePeriod() {
+      if (localEntity is HabitRecord || remoteEntity is HabitRecord) {
+        return const Duration(minutes: 8); // Very conservative for habit records
+      } else {
+        return const Duration(minutes: 1, seconds: 30); // 1.5 minutes for remote deletions
+      }
+    }
+
+    final Duration localDeletionGracePeriod = determineLocalDeletionGracePeriod();
+    final Duration remoteDeletionGracePeriod = determineRemoteDeletionGracePeriod();
 
     if (localIsDeleted && !remoteIsDeleted) {
-      if (localTimestamp.difference(remoteTimestamp) > deletionGracePeriod) {
+      final timeDifference = localTimestamp.difference(remoteTimestamp);
+      if (timeDifference.abs() > localDeletionGracePeriod) {
+        // Local deletion occurred significantly later, so keep the local deletion
         return ConflictResolutionResult(
           action: ConflictAction.keepLocal,
           winningEntity: localEntity,
@@ -123,6 +187,7 @@ class SyncConflictResolutionService {
               'Local deletion ($localTimestamp) occurred significantly after remote modification ($remoteTimestamp)',
         );
       } else {
+        // Local deletion is recent relative to remote's modification, prefer the non-deleted remote entity
         return ConflictResolutionResult(
           action: ConflictAction.acceptRemote,
           winningEntity: remoteEntity,
@@ -131,7 +196,9 @@ class SyncConflictResolutionService {
         );
       }
     } else if (remoteIsDeleted && !localIsDeleted) {
-      if (remoteTimestamp.difference(localTimestamp) > deletionGracePeriod) {
+      final timeDifference = remoteTimestamp.difference(localTimestamp);
+      if (timeDifference.abs() > remoteDeletionGracePeriod) {
+        // Remote deletion occurred significantly later, so accept the remote deletion
         return ConflictResolutionResult(
           action: ConflictAction.acceptRemote,
           winningEntity: remoteEntity,
@@ -139,6 +206,7 @@ class SyncConflictResolutionService {
               'Remote deletion ($remoteTimestamp) occurred significantly after local modification ($localTimestamp)',
         );
       } else {
+        // Remote deletion is recent relative to local's modification, prefer the non-deleted local entity
         return ConflictResolutionResult(
           action: ConflictAction.keepLocal,
           winningEntity: localEntity,
@@ -212,10 +280,32 @@ class SyncConflictResolutionService {
         reason: 'Remote timestamp ($remoteTimestamp) is newer than local ($localTimestamp)',
       );
     } else {
+      // For identical timestamps, check if these are tasks with different recurrence parents
+      // In such cases, use force update to ensure proper handling
+      if (localEntity is Task && remoteEntity is Task) {
+        final localTask = localEntity as Task;
+        final remoteTask = remoteEntity as Task;
+
+        if (localTask.recurrenceParentId != null &&
+            remoteTask.recurrenceParentId != null &&
+            localTask.recurrenceParentId != remoteTask.recurrenceParentId) {
+          return ConflictResolutionResult(
+            action: ConflictAction.acceptRemoteForceUpdate,
+            winningEntity: remoteEntity,
+            reason:
+                'Timestamps are identical ($localTimestamp), different recurrence parents detected - force updating to remote',
+          );
+        }
+      }
+
+      // For other identical timestamp cases, use entity ID for deterministic resolution
+      // This prevents random behavior when syncing between devices
+      final useLocal = localEntity.id.compareTo(remoteEntity.id) > 0;
       return ConflictResolutionResult(
-        action: ConflictAction.acceptRemoteForceUpdate,
-        winningEntity: remoteEntity,
-        reason: 'Timestamps are identical ($localTimestamp), accepting remote',
+        action: useLocal ? ConflictAction.keepLocal : ConflictAction.acceptRemote,
+        winningEntity: useLocal ? localEntity : remoteEntity,
+        reason:
+            'Timestamps are identical ($localTimestamp), using deterministic ID-based resolution (chose ${useLocal ? "local" : "remote"})',
       );
     }
   }
