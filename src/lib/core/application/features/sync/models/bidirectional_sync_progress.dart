@@ -211,18 +211,19 @@ class BidirectionalSyncProgress {
           isComplete == other.isComplete;
 
   @override
-  int get hashCode =>
-      entityType.hashCode ^
-      deviceId.hashCode ^
-      direction.hashCode ^
-      phase.hashCode ^
-      currentPage.hashCode ^
-      totalPages.hashCode ^
-      itemsProcessed.hashCode ^
-      totalItems.hashCode ^
-      progressPercentage.hashCode ^
-      conflictsResolved.hashCode ^
-      isComplete.hashCode;
+  int get hashCode => Object.hash(
+        entityType,
+        deviceId,
+        direction,
+        phase,
+        currentPage,
+        totalPages,
+        itemsProcessed,
+        totalItems,
+        progressPercentage,
+        conflictsResolved,
+        isComplete,
+      );
 }
 
 /// Enum for sync direction
