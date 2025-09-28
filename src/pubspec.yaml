@@ -14,7 +14,7 @@ scripts:
   # For example, to run the `clean` command: `rps clean`
   clean: bash scripts/clean.sh
   format: dart format . -l 120 && prettier --write "**/*.{yaml,yml,json}" "!android/fdroid/**"
-  gen: ./scripts/generate_g_files.sh
+  gen: ./scripts/generate_gen_files.sh
   gen:icons: fvm flutter pub run icons_launcher:create
   gen:migrate: fvm flutter pub run drift_dev make-migrations && rps format
   gen:changelog: bash ../scripts/create_changelog.sh --auto

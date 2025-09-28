@@ -10,6 +10,6 @@ echo "🔧 Fixing relative imports to package imports for acore..."
 find . -name "*.g.dart" -exec sed -i "s|import 'corePackages/acore/lib/|import 'package:acore/|g" {} \;
 
 echo "📝 Formatting generated files..."
-dart format ./**/*.g.dart -l 120
+dart format ./**/*.g.dart ./**/*.mock.dart -l 120
 
 echo "✅ Code generation completed successfully!"
