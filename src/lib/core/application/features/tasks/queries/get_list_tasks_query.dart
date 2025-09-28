@@ -349,8 +349,11 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
     // Completed filter
     if (request.filterByCompleted != null) {
-      conditions.add('is_completed = ?');
-      variables.add(request.filterByCompleted! ? 1 : 0);
+      if (request.filterByCompleted!) {
+        conditions.add('completed_at IS NOT NULL');
+      } else {
+        conditions.add('completed_at IS NULL');
+      }
     }
 
     // Parent task filter

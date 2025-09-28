@@ -119,7 +119,7 @@ class SyncConflictResolutionService {
       plannedDate: remoteTask.plannedDate,
       deadlineDate: remoteTask.deadlineDate,
       estimatedTime: remoteTask.estimatedTime,
-      isCompleted: remoteTask.isCompleted,
+      completedAt: remoteTask.completedAt,
       parentTaskId: remoteTask.parentTaskId,
       order: remoteTask.order,
       plannedDateReminderTime: remoteTask.plannedDateReminderTime,

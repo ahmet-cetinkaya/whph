@@ -100,7 +100,12 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.plannedDate = request.plannedDate;
       task.deadlineDate = request.deadlineDate;
       task.estimatedTime = request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null;
-      task.isCompleted = request.isCompleted;
+      // Handle completion status using new completedAt field
+      if (request.isCompleted && !task.isCompleted) {
+        task.markCompleted();
+      } else if (!request.isCompleted && task.isCompleted) {
+        task.markNotCompleted();
+      }
       task.order = request.order ?? task.order;
 
       // Always update reminder settings
@@ -165,7 +170,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
               ? request.estimatedTime
               : TaskConstants.defaultEstimatedTime,
-          isCompleted: request.isCompleted,
+          completedAt: request.isCompleted ? DateTime.now().toUtc() : null,
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: request.plannedDateReminderTime ?? ReminderTime.none,

@@ -109,19 +109,18 @@ void main() {
         // Arrange
         const taskId = 'existing-task-123';
         const title = 'Completed Task';
-        const isCompleted = true;
 
         // Act
         final command = SaveTaskCommand(
           id: taskId,
           title: title,
-          isCompleted: isCompleted,
+          isCompleted: true,
         );
 
         // Assert
         expect(command.id, taskId);
         expect(command.title, title);
-        expect(command.isCompleted, isCompleted);
+        expect(command.isCompleted, true);
       });
 
       test('should create command with priority and estimated time', () {

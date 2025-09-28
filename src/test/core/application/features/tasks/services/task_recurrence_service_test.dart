@@ -18,7 +18,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.daily,
         );
 
@@ -32,7 +32,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'One-time Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.none,
         );
 
@@ -48,7 +48,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Ending Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: DateTime(2024, 1, 15),
           recurrenceType: RecurrenceType.daily,
           recurrenceEndDate: DateTime(2024, 1, 10), // Already passed
@@ -64,7 +64,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Limited Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: DateTime(2024, 1, 15),
           recurrenceType: RecurrenceType.daily,
           recurrenceCount: 0, // No more occurrences
@@ -80,7 +80,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Unlimited Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: DateTime(2024, 1, 15),
           recurrenceType: RecurrenceType.daily,
           // No end date or count limit
@@ -98,7 +98,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Weekly Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.weekly,
           recurrenceDaysString: 'monday,wednesday,friday',
         );
@@ -120,7 +120,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Daily Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.daily,
           recurrenceDaysString: '',
         );
@@ -138,7 +138,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Daily Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.daily,
           recurrenceDaysString: null,
         );
@@ -158,7 +158,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Daily Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.daily,
           recurrenceInterval: 2, // Every 2 days
         );
@@ -181,7 +181,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Weekly Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.weekly,
           recurrenceInterval: 1,
         );
@@ -204,7 +204,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Weekly Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.weekly,
           recurrenceDaysString: 'monday,wednesday,friday',
         );
@@ -227,7 +227,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Monthly Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.monthly,
           recurrenceInterval: 1,
         );
@@ -249,7 +249,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Monthly Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.monthly,
           recurrenceInterval: 1,
         );
@@ -271,7 +271,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Yearly Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.yearly,
           recurrenceInterval: 1,
         );
@@ -293,7 +293,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Biennial Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.yearly,
           recurrenceInterval: 2, // Every 2 years
         );
@@ -315,7 +315,7 @@ void main() {
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Non-recurring Task',
-          isCompleted: false,
+          completedAt: null,
           recurrenceType: RecurrenceType.none,
         );
 
