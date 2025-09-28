@@ -13,7 +13,8 @@ import 'package:mediatr/src/internals/i_request_handler.dart' as _i9;
 import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart' as _i10;
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart'
+    as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -73,16 +74,18 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
       ) as Map<Type, _i4.HandlerCreator<dynamic>>);
 
   @override
-  Map<Type, List<_i5.IEventHandler<_i6.IDomainEvent>>> get eventHandlers => (super.noSuchMethod(
+  Map<Type, List<_i5.IEventHandler<_i6.IDomainEvent>>> get eventHandlers =>
+      (super.noSuchMethod(
         Invocation.getter(#eventHandlers),
         returnValue: <Type, List<_i5.IEventHandler<_i6.IDomainEvent>>>{},
       ) as Map<Type, List<_i5.IEventHandler<_i6.IDomainEvent>>>);
 
   @override
-  Map<Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>> get eventFuncHandler => (super.noSuchMethod(
-        Invocation.getter(#eventFuncHandler),
-        returnValue: <Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>>{},
-      ) as Map<Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>>);
+  Map<Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>>
+      get eventFuncHandler => (super.noSuchMethod(
+            Invocation.getter(#eventFuncHandler),
+            returnValue: <Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>>{},
+          ) as Map<Type, List<_i4.FuncEventHandler<_i6.IDomainEvent>>>);
 
   @override
   _i4.UnsubscribeFunc subscribeWithFunc<E extends _i6.IDomainEvent>(
@@ -96,7 +99,8 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
       ) as _i4.UnsubscribeFunc);
 
   @override
-  void subscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) => super.noSuchMethod(
+  void subscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) =>
+      super.noSuchMethod(
         Invocation.method(
           #subscribe,
           [handler],
@@ -105,7 +109,8 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
       );
 
   @override
-  void unsubscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) => super.noSuchMethod(
+  void unsubscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) =>
+      super.noSuchMethod(
         Invocation.method(
           #unsubscribe,
           [handler],
@@ -114,7 +119,8 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
       );
 
   @override
-  _i3.Future<void> publish<E extends _i6.IDomainEvent>(E? event) => (super.noSuchMethod(
+  _i3.Future<void> publish<E extends _i6.IDomainEvent>(E? event) =>
+      (super.noSuchMethod(
         Invocation.method(
           #publish,
           [event],
@@ -124,7 +130,9 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
       ) as _i3.Future<void>);
 
   @override
-  _i3.Future<R> send<T extends _i7.IRequest<R>, R extends Object?>(T? request) => (super.noSuchMethod(
+  _i3.Future<R> send<T extends _i7.IRequest<R>, R extends Object?>(
+          T? request) =>
+      (super.noSuchMethod(
         Invocation.method(
           #send,
           [request],
@@ -149,7 +157,8 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
       ) as _i3.Future<R>);
 
   @override
-  void registerHandler<IR extends _i7.IRequest<R>, R, H extends _i9.IRequestHandler<IR, R>>(
+  void registerHandler<IR extends _i7.IRequest<R>, R,
+              H extends _i9.IRequestHandler<IR, R>>(
           _i4.HandlerCreator<H>? creator) =>
       super.noSuchMethod(
         Invocation.method(
