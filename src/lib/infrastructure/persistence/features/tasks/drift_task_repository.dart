@@ -20,7 +20,7 @@ class TaskTable extends Table {
   DateTimeColumn get plannedDate => dateTime().nullable()();
   DateTimeColumn get deadlineDate => dateTime().nullable()();
   IntColumn get estimatedTime => integer().nullable()();
-  BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get completedAt => dateTime().nullable()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
@@ -182,15 +182,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       return null;
     }
 
-    // Helper function to convert to bool
-    bool convertToBool(dynamic value) {
-      if (value == null) return false;
-      if (value is bool) return value;
-      if (value is int) return value != 0;
-      if (value is String) return value.toLowerCase() == 'true';
-      return false;
-    }
-
     // Convert dates
     final plannedDate = convertToDateTime(data['planned_date']);
     final deadlineDate = convertToDateTime(data['deadline_date']);
@@ -207,7 +198,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       deadlineDate: deadlineDate,
       priority: data['priority'] != null ? EisenhowerPriority.values[data['priority'] as int] : null,
       estimatedTime: data['estimated_time'] as int?,
-      isCompleted: convertToBool(data['is_completed']),
+      completedAt: convertToDateTime(data['completed_at']),
       parentTaskId: data['parent_task_id'] as String?,
       order: (data['order'] is num) ? (data['order'] as num).toDouble() : 0.0,
     );
@@ -281,7 +272,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         task_table.planned_date,
         task_table.deadline_date,
         task_table.estimated_time,
-        task_table.is_completed,
+        task_table.completed_at,
         task_table.created_date,
         task_table.modified_date,
         task_table.deleted_date,
@@ -300,7 +291,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
         AND task_time_record_table.deleted_date IS NULL
       ${whereClause ?? ''}
-      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.is_completed, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.deadline_date_reminder_time, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
+      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.deadline_date_reminder_time, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
       ${orderByClause ?? ''}
       LIMIT ? OFFSET ?
     ''';
@@ -342,7 +333,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         priority: task.priority,
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
-        isCompleted: task.isCompleted,
+        completedAt: task.completedAt,
         estimatedTime: task.estimatedTime,
         parentTaskId: task.parentTaskId,
         order: task.order,
@@ -401,7 +392,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       plannedDate: Value(plannedDate),
       deadlineDate: Value(deadlineDate),
       estimatedTime: Value(entity.estimatedTime),
-      isCompleted: Value(entity.isCompleted),
+      completedAt: Value(entity.completedAt),
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),

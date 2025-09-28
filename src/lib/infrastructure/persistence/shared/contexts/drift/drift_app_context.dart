@@ -100,7 +100,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 27;
+  int get schemaVersion => 28;
 
   @override
   MigrationStrategy get migration {
@@ -610,6 +610,21 @@ class AppDatabase extends _$AppDatabase {
           from26To27: (m, schema) async {
             // Add isEstimated column to habit_time_record_table
             await m.addColumn(habitTimeRecordTable, habitTimeRecordTable.isEstimated);
+          },
+          from27To28: (m, schema) async {
+            // Migrate from isCompleted boolean to completedAt datetime
+            // Add completedAt column
+            await m.addColumn(taskTable, taskTable.completedAt);
+
+            // Migrate existing data: set completedAt to modified_date for completed tasks
+            await customStatement('''
+              UPDATE task_table
+              SET completed_at = COALESCE(modified_date, created_date)
+              WHERE is_completed = 1;
+            ''');
+
+            // Drop the old isCompleted column
+            await m.dropColumn(taskTable, 'is_completed');
           },
         )(m, from, to);
       },

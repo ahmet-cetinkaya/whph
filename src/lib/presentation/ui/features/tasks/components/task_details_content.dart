@@ -924,7 +924,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   taskId: widget.taskId,
                   isCompleted: _task!.isCompleted,
                   onToggleCompleted: () {
-                    _task!.isCompleted = !_task!.isCompleted;
+                    if (_task!.isCompleted) {
+                      _task!.markNotCompleted();
+                    } else {
+                      _task!.markCompleted();
+                    }
                     widget.onCompletedChanged?.call(_task!.isCompleted);
                   },
                   color: _task!.priority != null ? TaskUiConstants.getPriorityColor(_task!.priority) : null,

@@ -149,7 +149,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Complete Project Proposal',
         description: 'Prepare and submit the quarterly project proposal for review',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.urgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 2)),
         deadlineDate: DateTime.now().add(const Duration(days: 5)),
@@ -159,7 +159,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Review Team Performance',
         description: 'Conduct quarterly performance reviews for team members',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 7)),
         deadlineDate: DateTime.now().add(const Duration(days: 14)),
@@ -169,7 +169,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Update Resume',
         description: 'Add recent projects and achievements to resume',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.notUrgentNotImportant,
         plannedDate: DateTime.now().add(const Duration(days: 10)),
         createdDate: DateTime.now().subtract(const Duration(days: 3)),
@@ -178,7 +178,7 @@ class DemoData {
         id: buyGroceriesTaskId,
         title: 'Buy Groceries',
         description: 'Weekly grocery shopping for the household',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(), // Changed to today
         createdDate: DateTime.now(),
@@ -188,7 +188,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Buy Fresh Vegetables',
         description: 'Tomatoes, lettuce, carrots, onions, peppers',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(), // Changed to today
         parentTaskId: buyGroceriesTaskId,
@@ -198,7 +198,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Buy Dairy Products',
         description: 'Milk, cheese, yogurt, butter',
-        isCompleted: true,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(), // Changed to today
         parentTaskId: buyGroceriesTaskId,
@@ -208,7 +208,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Buy Meat & Protein',
         description: 'Chicken breast, ground beef, eggs, salmon',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(), // Changed to today
         parentTaskId: buyGroceriesTaskId,
@@ -218,7 +218,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Buy Pantry Staples',
         description: 'Rice, pasta, bread, olive oil, spices',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(), // Changed to today
         parentTaskId: buyGroceriesTaskId,
@@ -228,7 +228,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Buy Household Items',
         description: 'Toilet paper, cleaning supplies, laundry detergent',
-        isCompleted: true,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(), // Changed to today
         parentTaskId: buyGroceriesTaskId,
@@ -239,7 +239,7 @@ class DemoData {
         title: 'Learn Microservices Architecture Patterns',
         description:
             'Study distributed system design patterns including circuit breaker, saga, and event sourcing for scalable applications',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 7)), // Moved to next week
         createdDate: DateTime.now().subtract(const Duration(hours: 2)),
@@ -248,7 +248,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Call Mom',
         description: 'Weekly check-in call with family',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now(),
         createdDate: DateTime.now().subtract(const Duration(days: 1)),
@@ -257,7 +257,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Review Code Changes',
         description: 'Review and approve pending pull requests',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.urgentImportant,
         deadlineDate: DateTime.now().add(const Duration(hours: 5)),
         createdDate: DateTime.now().subtract(const Duration(hours: 4)),
@@ -266,7 +266,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Backup Computer Files',
         description: 'Weekly backup of important documents and projects',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.notUrgentNotImportant,
         plannedDate: DateTime.now().add(const Duration(days: 1)),
         createdDate: DateTime.now().subtract(const Duration(days: 2)),
@@ -275,7 +275,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Learn Flutter State Management',
         description: 'Complete online course on advanced Flutter state management patterns',
-        isCompleted: false,
+        completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 3)),
         deadlineDate: DateTime.now().add(const Duration(days: 21)),
@@ -285,7 +285,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Study Design Patterns',
         description: 'Review and practice implementing key design patterns: Observer, Factory, and Strategy patterns',
-        isCompleted: true, // Completed learning task for today
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)), // Completed learning task for today
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now(), // Today
         createdDate: DateTime.now().subtract(const Duration(days: 1)),
@@ -294,7 +294,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Learn API Documentation',
         description: 'Study REST API best practices and OpenAPI specification',
-        isCompleted: true, // Another completed learning task for today
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)), // Another completed learning task for today
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now(), // Today
         createdDate: DateTime.now().subtract(const Duration(hours: 8)),
@@ -303,7 +303,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Schedule Annual Health Checkup',
         description: 'Book appointment with primary care physician for annual checkup',
-        isCompleted: true,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().subtract(const Duration(days: 2)),
         createdDate: DateTime.now().subtract(const Duration(days: 5)),
@@ -312,7 +312,7 @@ class DemoData {
         id: KeyHelper.generateStringId(),
         title: 'Review Morning Emails',
         description: 'Check and respond to priority emails from overnight',
-        isCompleted: true,
+        completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.urgentImportant,
         plannedDate: DateTime.now(),
         createdDate: DateTime.now().subtract(const Duration(hours: 6)),
