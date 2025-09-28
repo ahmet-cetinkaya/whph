@@ -8,14 +8,10 @@ import 'dart:async' as _i3;
 import 'package:acore/acore.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart'
-    as _i4;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart'
-    as _i2;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart'
-    as _i7;
-import 'package:whph/core/application/shared/models/websocket_request.dart'
-    as _i5;
+import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart' as _i4;
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart' as _i2;
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart' as _i7;
+import 'package:whph/core/application/shared/models/websocket_request.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -31,8 +27,7 @@ import 'package:whph/core/application/shared/models/websocket_request.dart'
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeSyncCommunicationResponse_0 extends _i1.SmartFake
-    implements _i2.SyncCommunicationResponse {
+class _FakeSyncCommunicationResponse_0 extends _i1.SmartFake implements _i2.SyncCommunicationResponse {
   _FakeSyncCommunicationResponse_0(
     Object parent,
     Invocation parentInvocation,
@@ -45,8 +40,7 @@ class _FakeSyncCommunicationResponse_0 extends _i1.SmartFake
 /// A class which mocks [ISyncCommunicationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockISyncCommunicationService extends _i1.Mock
-    implements _i2.ISyncCommunicationService {
+class MockISyncCommunicationService extends _i1.Mock implements _i2.ISyncCommunicationService {
   MockISyncCommunicationService() {
     _i1.throwOnMissingStub(this);
   }
@@ -64,8 +58,7 @@ class MockISyncCommunicationService extends _i1.Mock
             dto,
           ],
         ),
-        returnValue: _i3.Future<_i2.SyncCommunicationResponse>.value(
-            _FakeSyncCommunicationResponse_0(
+        returnValue: _i3.Future<_i2.SyncCommunicationResponse>.value(_FakeSyncCommunicationResponse_0(
           this,
           Invocation.method(
             #sendPaginatedDataToDevice,
@@ -78,20 +71,16 @@ class MockISyncCommunicationService extends _i1.Mock
       ) as _i3.Future<_i2.SyncCommunicationResponse>);
 
   @override
-  _i3.Future<Map<String, dynamic>> convertDtoToJson(
-          _i4.PaginatedSyncDataDto? dto) =>
-      (super.noSuchMethod(
+  _i3.Future<Map<String, dynamic>> convertDtoToJson(_i4.PaginatedSyncDataDto? dto) => (super.noSuchMethod(
         Invocation.method(
           #convertDtoToJson,
           [dto],
         ),
-        returnValue:
-            _i3.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i3.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
       ) as _i3.Future<Map<String, dynamic>>);
 
   @override
-  _i3.Future<String> serializeMessage(_i5.WebSocketMessage? message) =>
-      (super.noSuchMethod(
+  _i3.Future<String> serializeMessage(_i5.WebSocketMessage? message) => (super.noSuchMethod(
         Invocation.method(
           #serializeMessage,
           [message],
@@ -149,42 +138,36 @@ class MockISyncCommunicationService extends _i1.Mock
 /// A class which mocks [ISyncConfigurationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockISyncConfigurationService extends _i1.Mock
-    implements _i7.ISyncConfigurationService {
+class MockISyncConfigurationService extends _i1.Mock implements _i7.ISyncConfigurationService {
   MockISyncConfigurationService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>
-      getAllConfigurations() => (super.noSuchMethod(
-            Invocation.method(
-              #getAllConfigurations,
-              [],
-            ),
-            returnValue: <_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>[],
-          ) as List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>);
+  List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>> getAllConfigurations() => (super.noSuchMethod(
+        Invocation.method(
+          #getAllConfigurations,
+          [],
+        ),
+        returnValue: <_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>[],
+      ) as List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>);
 
   @override
-  _i7.PaginatedSyncConfig<_i8.BaseEntity<String>>? getConfiguration(
-          String? entityType) =>
+  _i7.PaginatedSyncConfig<_i8.BaseEntity<String>>? getConfiguration(String? entityType) =>
       (super.noSuchMethod(Invocation.method(
         #getConfiguration,
         [entityType],
       )) as _i7.PaginatedSyncConfig<_i8.BaseEntity<String>>?);
 
   @override
-  _i7.PaginatedSyncConfig<T>?
-      getTypedConfiguration<T extends _i8.BaseEntity<String>>(
-              String? entityType) =>
-          (super.noSuchMethod(Invocation.method(
-            #getTypedConfiguration,
-            [entityType],
-          )) as _i7.PaginatedSyncConfig<T>?);
+  _i7.PaginatedSyncConfig<T>? getTypedConfiguration<T extends _i8.BaseEntity<String>>(String? entityType) =>
+      (super.noSuchMethod(Invocation.method(
+        #getTypedConfiguration,
+        [entityType],
+      )) as _i7.PaginatedSyncConfig<T>?);
 
   @override
-  void registerConfiguration<T extends _i8.BaseEntity<String>>(
-          _i7.PaginatedSyncConfig<T>? config) =>
+  void registerConfiguration<T extends _i8.BaseEntity<String>>(_i7.PaginatedSyncConfig<T>? config) =>
       super.noSuchMethod(
         Invocation.method(
           #registerConfiguration,
