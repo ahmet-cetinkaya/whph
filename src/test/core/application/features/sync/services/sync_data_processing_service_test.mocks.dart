@@ -8,16 +8,11 @@ import 'dart:async' as _i6;
 import 'package:acore/acore.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
-    as _i3;
-import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart'
-    as _i4;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart'
-    as _i7;
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
-    as _i5;
-import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart'
-    as _i8;
+import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart' as _i3;
+import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart' as _i4;
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart' as _i7;
+import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as _i5;
+import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart' as _i8;
 import 'package:whph/core/domain/features/tasks/task.dart' as _i9;
 
 // ignore_for_file: type=lint
@@ -34,8 +29,8 @@ import 'package:whph/core/domain/features/tasks/task.dart' as _i9;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakePaginatedSyncData_0<T1 extends _i1.BaseEntity<dynamic>>
-    extends _i2.SmartFake implements _i3.PaginatedSyncData<T1> {
+class _FakePaginatedSyncData_0<T1 extends _i1.BaseEntity<dynamic>> extends _i2.SmartFake
+    implements _i3.PaginatedSyncData<T1> {
   _FakePaginatedSyncData_0(
     Object parent,
     Invocation parentInvocation,
@@ -45,8 +40,7 @@ class _FakePaginatedSyncData_0<T1 extends _i1.BaseEntity<dynamic>>
         );
 }
 
-class _FakePaginatedList_1<T1> extends _i2.SmartFake
-    implements _i1.PaginatedList<T1> {
+class _FakePaginatedList_1<T1> extends _i2.SmartFake implements _i1.PaginatedList<T1> {
   _FakePaginatedList_1(
     Object parent,
     Invocation parentInvocation,
@@ -56,8 +50,8 @@ class _FakePaginatedList_1<T1> extends _i2.SmartFake
         );
 }
 
-class _FakeConflictResolutionResult_2<T1 extends _i1.BaseEntity<String>>
-    extends _i2.SmartFake implements _i4.ConflictResolutionResult<T1> {
+class _FakeConflictResolutionResult_2<T1 extends _i1.BaseEntity<String>> extends _i2.SmartFake
+    implements _i4.ConflictResolutionResult<T1> {
   _FakeConflictResolutionResult_2(
     Object parent,
     Invocation parentInvocation,
@@ -70,8 +64,7 @@ class _FakeConflictResolutionResult_2<T1 extends _i1.BaseEntity<String>>
 /// A class which mocks [IRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
-    implements _i5.IRepository<T, TId> {
+class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock implements _i5.IRepository<T, TId> {
   MockIRepository() {
     _i2.throwOnMissingStub(this);
   }
@@ -93,8 +86,7 @@ class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
             #entityType: entityType,
           },
         ),
-        returnValue: _i6.Future<_i3.PaginatedSyncData<T>>.value(
-            _FakePaginatedSyncData_0<T>(
+        returnValue: _i6.Future<_i3.PaginatedSyncData<T>>.value(_FakePaginatedSyncData_0<T>(
           this,
           Invocation.method(
             #getPaginatedSyncData,
@@ -109,8 +101,7 @@ class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
       ) as _i6.Future<_i3.PaginatedSyncData<T>>);
 
   @override
-  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) =>
-      (super.noSuchMethod(
+  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
         Invocation.method(
           #hardDeleteSoftDeleted,
           [beforeDate],
@@ -150,8 +141,7 @@ class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
             #customOrder: customOrder,
           },
         ),
-        returnValue:
-            _i6.Future<_i1.PaginatedList<T>>.value(_FakePaginatedList_1<T>(
+        returnValue: _i6.Future<_i1.PaginatedList<T>>.value(_FakePaginatedList_1<T>(
           this,
           Invocation.method(
             #getList,
@@ -255,49 +245,46 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
   }
 
   @override
-  _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>
-      getListWithTotalDuration(
+  _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>> getListWithTotalDuration(
     int? pageIndex,
     int? pageSize, {
     bool? includeDeleted = false,
     _i1.CustomWhereFilter? customWhereFilter,
     List<_i1.CustomOrder>? customOrder,
   }) =>
-          (super.noSuchMethod(
-            Invocation.method(
-              #getListWithTotalDuration,
-              [
-                pageIndex,
-                pageSize,
-              ],
-              {
-                #includeDeleted: includeDeleted,
-                #customWhereFilter: customWhereFilter,
-                #customOrder: customOrder,
-              },
-            ),
-            returnValue:
-                _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
-                    _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
-              this,
-              Invocation.method(
-                #getListWithTotalDuration,
-                [
-                  pageIndex,
-                  pageSize,
-                ],
-                {
-                  #includeDeleted: includeDeleted,
-                  #customWhereFilter: customWhereFilter,
-                  #customOrder: customOrder,
-                },
-              ),
-            )),
-          ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
+      (super.noSuchMethod(
+        Invocation.method(
+          #getListWithTotalDuration,
+          [
+            pageIndex,
+            pageSize,
+          ],
+          {
+            #includeDeleted: includeDeleted,
+            #customWhereFilter: customWhereFilter,
+            #customOrder: customOrder,
+          },
+        ),
+        returnValue: _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
+            _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
+          this,
+          Invocation.method(
+            #getListWithTotalDuration,
+            [
+              pageIndex,
+              pageSize,
+            ],
+            {
+              #includeDeleted: includeDeleted,
+              #customWhereFilter: customWhereFilter,
+              #customOrder: customOrder,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
 
   @override
-  _i6.Future<List<_i9.Task>> getByParentTaskId(String? parentTaskId) =>
-      (super.noSuchMethod(
+  _i6.Future<List<_i9.Task>> getByParentTaskId(String? parentTaskId) => (super.noSuchMethod(
         Invocation.method(
           #getByParentTaskId,
           [parentTaskId],
@@ -306,9 +293,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
       ) as _i6.Future<List<_i9.Task>>);
 
   @override
-  _i6.Future<List<_i9.Task>> getByRecurrenceParentId(
-          String? recurrenceParentId) =>
-      (super.noSuchMethod(
+  _i6.Future<List<_i9.Task>> getByRecurrenceParentId(String? recurrenceParentId) => (super.noSuchMethod(
         Invocation.method(
           #getByRecurrenceParentId,
           [recurrenceParentId],
@@ -333,8 +318,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             #entityType: entityType,
           },
         ),
-        returnValue: _i6.Future<_i3.PaginatedSyncData<_i9.Task>>.value(
-            _FakePaginatedSyncData_0<_i9.Task>(
+        returnValue: _i6.Future<_i3.PaginatedSyncData<_i9.Task>>.value(_FakePaginatedSyncData_0<_i9.Task>(
           this,
           Invocation.method(
             #getPaginatedSyncData,
@@ -349,8 +333,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
       ) as _i6.Future<_i3.PaginatedSyncData<_i9.Task>>);
 
   @override
-  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) =>
-      (super.noSuchMethod(
+  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
         Invocation.method(
           #hardDeleteSoftDeleted,
           [beforeDate],
@@ -390,8 +373,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             #customOrder: customOrder,
           },
         ),
-        returnValue: _i6.Future<_i1.PaginatedList<_i9.Task>>.value(
-            _FakePaginatedList_1<_i9.Task>(
+        returnValue: _i6.Future<_i1.PaginatedList<_i9.Task>>.value(_FakePaginatedList_1<_i9.Task>(
           this,
           Invocation.method(
             #getList,
@@ -489,37 +471,35 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
 /// A class which mocks [SyncConflictResolutionService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSyncConflictResolutionService extends _i2.Mock
-    implements _i4.SyncConflictResolutionService {
+class MockSyncConflictResolutionService extends _i2.Mock implements _i4.SyncConflictResolutionService {
   MockSyncConflictResolutionService() {
     _i2.throwOnMissingStub(this);
   }
 
   @override
-  _i4.ConflictResolutionResult<T>
-      resolveConflict<T extends _i1.BaseEntity<String>>(
+  _i4.ConflictResolutionResult<T> resolveConflict<T extends _i1.BaseEntity<String>>(
     T? localEntity,
     T? remoteEntity,
   ) =>
-          (super.noSuchMethod(
-            Invocation.method(
-              #resolveConflict,
-              [
-                localEntity,
-                remoteEntity,
-              ],
-            ),
-            returnValue: _FakeConflictResolutionResult_2<T>(
-              this,
-              Invocation.method(
-                #resolveConflict,
-                [
-                  localEntity,
-                  remoteEntity,
-                ],
-              ),
-            ),
-          ) as _i4.ConflictResolutionResult<T>);
+      (super.noSuchMethod(
+        Invocation.method(
+          #resolveConflict,
+          [
+            localEntity,
+            remoteEntity,
+          ],
+        ),
+        returnValue: _FakeConflictResolutionResult_2<T>(
+          this,
+          Invocation.method(
+            #resolveConflict,
+            [
+              localEntity,
+              remoteEntity,
+            ],
+          ),
+        ),
+      ) as _i4.ConflictResolutionResult<T>);
 
   @override
   T copyRemoteDataToExistingTask<T extends _i1.BaseEntity<String>>(
