@@ -232,7 +232,11 @@ void main() {
         final tasks = [
           Task(id: 'task-get-tasks-1', createdDate: DateTime.utc(2024, 1, 1), title: 'Task 1'),
           Task(id: 'task-get-tasks-2', createdDate: DateTime.utc(2024, 1, 2), title: 'Task 2'),
-          Task(id: 'task-get-tasks-3', createdDate: DateTime.utc(2024, 1, 3), title: 'Task 3', deletedDate: DateTime.utc(2024, 1, 4)),
+          Task(
+              id: 'task-get-tasks-3',
+              createdDate: DateTime.utc(2024, 1, 3),
+              title: 'Task 3',
+              deletedDate: DateTime.utc(2024, 1, 4)),
         ];
 
         for (final task in tasks) {
@@ -261,9 +265,8 @@ void main() {
         }
 
         // Act - Get tasks ordered by order field descending
-        final result = await repository.getAll(
-          customOrder: [CustomOrder(field: 'order', direction: SortDirection.desc)]
-        );
+        final result =
+            await repository.getAll(customOrder: [CustomOrder(field: 'order', direction: SortDirection.desc)]);
 
         // Assert - Should be in descending order by 'order' field: A (3.0), C (2.0), B (1.0)
         expect(result.length, greaterThanOrEqualTo(3));
@@ -275,8 +278,16 @@ void main() {
       test('should apply custom where filters', () async {
         // Arrange
         final tasks = [
-          Task(id: 'task-high', createdDate: DateTime.utc(2024, 1, 1), title: 'High Priority', priority: EisenhowerPriority.urgentImportant),
-          Task(id: 'task-low', createdDate: DateTime.utc(2024, 1, 2), title: 'Low Priority', priority: EisenhowerPriority.notUrgentNotImportant),
+          Task(
+              id: 'task-high',
+              createdDate: DateTime.utc(2024, 1, 1),
+              title: 'High Priority',
+              priority: EisenhowerPriority.urgentImportant),
+          Task(
+              id: 'task-low',
+              createdDate: DateTime.utc(2024, 1, 2),
+              title: 'Low Priority',
+              priority: EisenhowerPriority.notUrgentNotImportant),
           Task(id: 'task-none', createdDate: DateTime.utc(2024, 1, 3), title: 'No Priority'),
         ];
 
@@ -286,11 +297,10 @@ void main() {
 
         // Act
         final result = await repository.getAll(
-          customWhereFilter: CustomWhereFilter(
-            'priority = ?',
-            [EisenhowerPriority.urgentImportant.index],
-          )
-        );
+            customWhereFilter: CustomWhereFilter(
+          'priority = ?',
+          [EisenhowerPriority.urgentImportant.index],
+        ));
 
         // Assert
         expect(result.length, equals(1));
@@ -377,7 +387,7 @@ void main() {
           createdDate: task.createdDate,
           title: task.title,
           description: null, // Setting to null
-          priority: null,    // Setting to null
+          priority: null, // Setting to null
           plannedDate: null, // Setting to null
         );
 
@@ -494,8 +504,16 @@ void main() {
       test('should retrieve recurring task instances', () async {
         // Arrange
         final recurringTasks = [
-          Task(id: 'instance-1', createdDate: DateTime.utc(2024, 1, 1), title: 'Instance 1', recurrenceParentId: 'recurring-task'),
-          Task(id: 'instance-2', createdDate: DateTime.utc(2024, 1, 8), title: 'Instance 2', recurrenceParentId: 'recurring-task'),
+          Task(
+              id: 'instance-1',
+              createdDate: DateTime.utc(2024, 1, 1),
+              title: 'Instance 1',
+              recurrenceParentId: 'recurring-task'),
+          Task(
+              id: 'instance-2',
+              createdDate: DateTime.utc(2024, 1, 8),
+              title: 'Instance 2',
+              recurrenceParentId: 'recurring-task'),
           Task(id: 'other-task', createdDate: DateTime.utc(2024, 1, 15), title: 'Other Task'),
         ];
 
@@ -544,11 +562,13 @@ void main() {
 
       test('should handle pagination correctly', () async {
         // Arrange
-        final tasks = List.generate(15, (index) => Task(
-          id: 'task-${index + 1}',
-          createdDate: DateTime.utc(2024, 1, index + 1),
-          title: 'Task ${index + 1}',
-        ));
+        final tasks = List.generate(
+            15,
+            (index) => Task(
+                  id: 'task-${index + 1}',
+                  createdDate: DateTime.utc(2024, 1, index + 1),
+                  title: 'Task ${index + 1}',
+                ));
 
         for (final task in tasks) {
           await repository.add(task);
@@ -567,8 +587,16 @@ void main() {
       test('should apply custom where filter', () async {
         // Arrange
         final tasks = [
-          Task(id: 'task-high', createdDate: DateTime.utc(2024, 1, 1), title: 'High Priority', priority: EisenhowerPriority.urgentImportant),
-          Task(id: 'task-low', createdDate: DateTime.utc(2024, 1, 2), title: 'Low Priority', priority: EisenhowerPriority.notUrgentNotImportant),
+          Task(
+              id: 'task-high',
+              createdDate: DateTime.utc(2024, 1, 1),
+              title: 'High Priority',
+              priority: EisenhowerPriority.urgentImportant),
+          Task(
+              id: 'task-low',
+              createdDate: DateTime.utc(2024, 1, 2),
+              title: 'Low Priority',
+              priority: EisenhowerPriority.notUrgentNotImportant),
         ];
 
         for (final task in tasks) {
@@ -577,7 +605,8 @@ void main() {
 
         // Act
         final result = await repository.getListWithTotalDuration(
-          0, 10,
+          0,
+          10,
           customWhereFilter: CustomWhereFilter(
             'task_table.priority = ?',
             [EisenhowerPriority.urgentImportant.index],
@@ -595,7 +624,11 @@ void main() {
       test('should filter by completion status', () async {
         // Arrange
         final tasks = [
-          Task(id: 'completed-task', createdDate: DateTime.utc(2024, 1, 1), title: 'Completed', completedAt: DateTime.utc(2024, 1, 2)),
+          Task(
+              id: 'completed-task',
+              createdDate: DateTime.utc(2024, 1, 1),
+              title: 'Completed',
+              completedAt: DateTime.utc(2024, 1, 2)),
           Task(id: 'incomplete-task', createdDate: DateTime.utc(2024, 1, 3), title: 'Incomplete'),
         ];
 
@@ -652,9 +685,21 @@ void main() {
       test('should filter by date ranges', () async {
         // Arrange
         final tasks = [
-          Task(id: 'task-date-1', createdDate: DateTime.utc(2024, 1, 1), title: 'Early Task', plannedDate: DateTime.utc(2024, 1, 5)),
-          Task(id: 'task-date-2', createdDate: DateTime.utc(2024, 1, 2), title: 'Mid Task', plannedDate: DateTime.utc(2024, 1, 15)),
-          Task(id: 'task-date-3', createdDate: DateTime.utc(2024, 1, 3), title: 'Late Task', plannedDate: DateTime.utc(2024, 1, 25)),
+          Task(
+              id: 'task-date-1',
+              createdDate: DateTime.utc(2024, 1, 1),
+              title: 'Early Task',
+              plannedDate: DateTime.utc(2024, 1, 5)),
+          Task(
+              id: 'task-date-2',
+              createdDate: DateTime.utc(2024, 1, 2),
+              title: 'Mid Task',
+              plannedDate: DateTime.utc(2024, 1, 15)),
+          Task(
+              id: 'task-date-3',
+              createdDate: DateTime.utc(2024, 1, 3),
+              title: 'Late Task',
+              plannedDate: DateTime.utc(2024, 1, 25)),
         ];
 
         for (final task in tasks) {
@@ -676,11 +721,13 @@ void main() {
 
       test('should handle large datasets efficiently', () async {
         // Arrange - Create 1000 tasks
-        final largeBatch = List.generate(1000, (index) => Task(
-          id: 'large-task-dataset-${index + 1}',
-          createdDate: DateTime.utc(2024, 1, 1).add(Duration(minutes: index)),
-          title: 'Large Dataset Task ${index + 1}',
-        ));
+        final largeBatch = List.generate(
+            1000,
+            (index) => Task(
+                  id: 'large-task-dataset-${index + 1}',
+                  createdDate: DateTime.utc(2024, 1, 1).add(Duration(minutes: index)),
+                  title: 'Large Dataset Task ${index + 1}',
+                ));
 
         // Insert in batches to avoid overwhelming the database
         for (int i = 0; i < largeBatch.length; i += 100) {
@@ -717,7 +764,7 @@ void main() {
             plannedDate: DateTime.utc(2024, 1, 1),
           ),
           Task(
-            id: 'multi-filter-2', 
+            id: 'multi-filter-2',
             createdDate: DateTime.utc(2024, 1, 2),
             title: 'Unimportant Task',
             priority: EisenhowerPriority.notUrgentNotImportant,
@@ -742,12 +789,12 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByCompleted: false,  // Only incomplete tasks
-          filterBySearch: 'Crucial',  // Only "Crucial Task" contains this
+          filterByCompleted: false, // Only incomplete tasks
+          filterBySearch: 'Crucial', // Only "Crucial Task" contains this
         );
 
         // Assert
-        expect(result.items.length, equals(1));  // Only multi-filter-3 matches both criteria
+        expect(result.items.length, equals(1)); // Only multi-filter-3 matches both criteria
         expect(result.items[0].id, equals('multi-filter-3'));
         expect(result.items[0].isCompleted, isFalse);
         expect(result.items[0].priority, equals(EisenhowerPriority.urgentImportant));
@@ -772,7 +819,7 @@ void main() {
           Task(
             id: 'subtask-filter-2',
             createdDate: DateTime.utc(2024, 1, 3),
-            title: 'Subtask 2', 
+            title: 'Subtask 2',
             parentTaskId: 'parent-task-filter',
           ),
           Task(
@@ -839,13 +886,13 @@ void main() {
             createdDate: DateTime.utc(2024, 1, 1),
             title: 'Planned Task',
             plannedDate: DateTime.utc(2024, 1, 5),
-            deadlineDate: null,  // No deadline
+            deadlineDate: null, // No deadline
           ),
           Task(
             id: 'or-filter-2',
             createdDate: DateTime.utc(2024, 1, 2),
-            title: 'Deadline Task', 
-            plannedDate: null,  // No planned date
+            title: 'Deadline Task',
+            plannedDate: null, // No planned date
             deadlineDate: DateTime.utc(2024, 1, 15),
           ),
           Task(
@@ -876,7 +923,7 @@ void main() {
           filterByPlannedEndDate: DateTime.utc(2024, 1, 10),
           filterByDeadlineStartDate: DateTime.utc(2024, 1, 10),
           filterByDeadlineEndDate: DateTime.utc(2024, 1, 20),
-          filterDateOr: true,  // Use OR logic for date filters
+          filterDateOr: true, // Use OR logic for date filters
         );
 
         // Assert - Should include tasks that match either planned date range OR deadline date range
@@ -949,7 +996,7 @@ void main() {
         // Verify that at least our target parent task is included if it has subtasks
         final targetParentExists = resultWithSubTasks.items.any((t) => t.id == 'parent-task-sub');
         final targetSubtaskExists = resultWithSubTasks.items.any((t) => t.id == 'subtask-sub-1');
-        
+
         // At least one of the expected items should be in the results
         expect(targetParentExists || targetSubtaskExists, isTrue);
       });
@@ -971,7 +1018,7 @@ void main() {
             parentTaskId: 'search-parent',
           ),
           Task(
-            id: 'search-subtask-2', 
+            id: 'search-subtask-2',
             createdDate: DateTime.utc(2024, 1, 3),
             title: 'Regular Subtask',
             parentTaskId: 'search-parent',
@@ -1000,15 +1047,15 @@ void main() {
         // Assert - Should find parent task, subtasks that match, and other tasks that match
         expect(result.items, isNotEmpty);
         final resultIds = result.items.map((t) => t.id).toList();
-        
+
         // Should contain the parent task that has 'Special' in its title
         expect(resultIds, contains('search-parent'));
-        
+
         // Might also contain the subtask with 'Special' in its title
         if (resultIds.contains('search-subtask-1')) {
           expect(resultIds, contains('search-subtask-1'));
         }
-        
+
         // Should also contain the other task with 'Special' in its title
         expect(resultIds, contains('other-task'));
       });
@@ -1066,7 +1113,8 @@ void main() {
         final incompleteIds = incompleteResult.items.map((t) => t.id).toSet();
 
         // The sets should be different (though both could include parent if it's being handled differently)
-        expect(completedIds.difference(incompleteIds).length + incompleteIds.difference(completedIds).length, greaterThan(0));
+        expect(completedIds.difference(incompleteIds).length + incompleteIds.difference(completedIds).length,
+            greaterThan(0));
       });
 
       test('should combine date range filter with subtasks inclusion', () async {

@@ -10,32 +10,31 @@ import 'package:whph/core/application/features/sync/models/sync_data.dart';
 // Mock repository implementation for testing
 class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   final List<TaskTimeRecord> _records = [];
-  
+
   @override
   Future<TaskTimeRecord?> getFirst(CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
     // The actual call in the service is:
     // final filter = CustomWhereFilter('task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHour, endOfHour]);
     // So we extract values from the filter to find the record
-    if (customWhereFilter.query.contains('task_id = ?') && 
-        customWhereFilter.variables.length >= 3) {
+    if (customWhereFilter.query.contains('task_id = ?') && customWhereFilter.variables.length >= 3) {
       final taskId = customWhereFilter.variables[0] as String;
       final startOfHour = customWhereFilter.variables[1] as DateTime;
-      
-      final result = _records.where(
-        (record) => 
-          record.taskId == taskId && 
-          record.createdDate.isAtSameMomentAs(startOfHour),
-      ).toList();
+
+      final result = _records
+          .where(
+            (record) => record.taskId == taskId && record.createdDate.isAtSameMomentAs(startOfHour),
+          )
+          .toList();
       return result.isEmpty ? null : result.first;
     }
     return null;
   }
-  
+
   @override
   Future<void> add(TaskTimeRecord entity) async {
     _records.add(entity);
   }
-  
+
   @override
   Future<void> update(TaskTimeRecord entity) async {
     final index = _records.indexWhere((record) => record.id == entity.id);
@@ -46,7 +45,8 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
 
   // Implementation of acore.IRepository methods
   @override
-  Future<List<TaskTimeRecord>> getAll({bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+  Future<List<TaskTimeRecord>> getAll(
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     return _records;
   }
 
@@ -129,7 +129,7 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   void clear() {
     _records.clear();
   }
-  
+
   List<TaskTimeRecord> getAllRecords() => _records.toList();
 }
 
@@ -137,12 +137,12 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
 class _ErrorThrowingTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   final String methodToThrow;
   final String errorMessage;
-  
+
   _ErrorThrowingTaskTimeRecordRepository({
     required this.methodToThrow,
     required this.errorMessage,
   });
-  
+
   @override
   Future<TaskTimeRecord?> getFirst(CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
     if (methodToThrow == 'getFirst') {
@@ -150,14 +150,14 @@ class _ErrorThrowingTaskTimeRecordRepository implements ITaskTimeRecordRepositor
     }
     return null;
   }
-  
+
   @override
   Future<void> add(TaskTimeRecord entity) async {
     if (methodToThrow == 'add') {
       throw Exception(errorMessage);
     }
   }
-  
+
   @override
   Future<void> update(TaskTimeRecord entity) async {
     if (methodToThrow == 'update') {
@@ -167,7 +167,8 @@ class _ErrorThrowingTaskTimeRecordRepository implements ITaskTimeRecordRepositor
 
   // Implementation of acore.IRepository methods
   @override
-  Future<List<TaskTimeRecord>> getAll({bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+  Future<List<TaskTimeRecord>> getAll(
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     if (methodToThrow == 'getAll') {
       throw Exception(errorMessage);
     }
@@ -268,7 +269,7 @@ class _ErrorThrowingTaskTimeRecordRepository implements ITaskTimeRecordRepositor
 
 void main() {
   late MockTaskTimeRecordRepository mockRepository;
-  
+
   setUp(() {
     mockRepository = MockTaskTimeRecordRepository();
   });
@@ -278,10 +279,10 @@ void main() {
       test('should create correct hour boundaries for a given date', () {
         // Arrange
         final date = DateTime.utc(2024, 1, 15, 14, 30, 45); // 2:30 PM with 45 seconds
-        
+
         // Act
         final (startOfHour, endOfHour) = TaskTimeRecordService.createHourBoundaries(date);
-        
+
         // Assert
         expect(startOfHour.year, 2024);
         expect(startOfHour.month, 1);
@@ -291,7 +292,7 @@ void main() {
         expect(startOfHour.second, 0);
         expect(startOfHour.millisecond, 0);
         expect(startOfHour.microsecond, 0);
-        
+
         expect(endOfHour.year, 2024);
         expect(endOfHour.month, 1);
         expect(endOfHour.day, 15);
@@ -305,10 +306,10 @@ void main() {
       test('should handle midnight correctly', () {
         // Arrange
         final date = DateTime.utc(2024, 1, 15, 0, 15, 30); // 12:15 AM
-        
+
         // Act
         final (startOfHour, endOfHour) = TaskTimeRecordService.createHourBoundaries(date);
-        
+
         // Assert
         expect(startOfHour.year, 2024);
         expect(startOfHour.month, 1);
@@ -316,7 +317,7 @@ void main() {
         expect(startOfHour.hour, 0); // 12 AM
         expect(startOfHour.minute, 0);
         expect(startOfHour.second, 0);
-        
+
         expect(endOfHour.year, 2024);
         expect(endOfHour.month, 1);
         expect(endOfHour.day, 15);
@@ -328,10 +329,10 @@ void main() {
       test('should handle end of day correctly', () {
         // Arrange
         final date = DateTime.utc(2024, 1, 15, 23, 45, 30); // 11:45 PM
-        
+
         // Act
         final (startOfHour, endOfHour) = TaskTimeRecordService.createHourBoundaries(date);
-        
+
         // Assert
         expect(startOfHour.year, 2024);
         expect(startOfHour.month, 1);
@@ -339,7 +340,7 @@ void main() {
         expect(startOfHour.hour, 23); // 11 PM
         expect(startOfHour.minute, 0);
         expect(startOfHour.second, 0);
-        
+
         expect(endOfHour.year, 2024);
         expect(endOfHour.month, 1);
         expect(endOfHour.day, 16); // Next day
@@ -480,8 +481,8 @@ void main() {
         expect(result.duration, 120 + 60); // Original 120 + added 60
         // Verify the record was updated in the repository
         final (startOfHourCheck, endOfHourCheck) = TaskTimeRecordService.createHourBoundaries(targetDate);
-        final filter = CustomWhereFilter('task_id = ? AND created_date >= ? AND created_date < ?', 
-            [taskId, startOfHourCheck, endOfHourCheck]);
+        final filter = CustomWhereFilter(
+            'task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHourCheck, endOfHourCheck]);
         final updatedRecord = await mockRepository.getFirst(filter);
         expect(updatedRecord!.duration, 180);
       });
@@ -572,8 +573,8 @@ void main() {
         expect(result.duration, newTotalDuration);
         // Verify the record was updated in the repository
         final (startOfHourCheck, endOfHourCheck) = TaskTimeRecordService.createHourBoundaries(targetDate);
-        final filter = CustomWhereFilter('task_id = ? AND created_date >= ? AND created_date < ?', 
-            [taskId, startOfHourCheck, endOfHourCheck]);
+        final filter = CustomWhereFilter(
+            'task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHourCheck, endOfHourCheck]);
         final updatedRecord = await mockRepository.getFirst(filter);
         expect(updatedRecord!.duration, newTotalDuration);
       });
@@ -629,7 +630,7 @@ void main() {
       test('should handle different minute values in same hour bucket', () async {
         // Arrange
         final taskId = 'task-edge-1';
-        final date1 = DateTime.utc(2024, 1, 15, 14, 5, 0);  // 2:05 PM
+        final date1 = DateTime.utc(2024, 1, 15, 14, 5, 0); // 2:05 PM
         final date2 = DateTime.utc(2024, 1, 15, 14, 55, 0); // 2:55 PM (same bucket)
 
         // Act
@@ -652,7 +653,7 @@ void main() {
       test('should handle different second values in same hour bucket', () async {
         // Arrange
         final taskId = 'task-edge-2';
-        final date1 = DateTime.utc(2024, 1, 15, 14, 30, 5);  // 2:30:05 PM
+        final date1 = DateTime.utc(2024, 1, 15, 14, 30, 5); // 2:30:05 PM
         final date2 = DateTime.utc(2024, 1, 15, 14, 30, 55); // 2:30:55 PM (same bucket)
 
         // Act
@@ -727,7 +728,7 @@ void main() {
         // Arrange
         final taskId = 'perf-test-1';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        
+
         // Act - Perform multiple operations
         final startTime = DateTime.now();
         for (int i = 0; i < 100; i++) {
@@ -744,8 +745,8 @@ void main() {
         // Assert - Operations should complete quickly
         expect(duration.inMilliseconds, lessThan(2000)); // Less than 2 seconds
         final (startOfHourCheck, endOfHourCheck) = TaskTimeRecordService.createHourBoundaries(targetDate);
-        final filter = CustomWhereFilter('task_id = ? AND created_date >= ? AND created_date < ?', 
-            [taskId, startOfHourCheck, endOfHourCheck]);
+        final filter = CustomWhereFilter(
+            'task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHourCheck, endOfHourCheck]);
         final finalRecord = await mockRepository.getFirst(filter);
         expect(finalRecord!.duration, 1000); // 100 iterations * 10 duration each
       });
@@ -816,7 +817,7 @@ void main() {
 
         final taskId = 'task-error-2';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        
+
         // Add a record first using a working repository to set up state
         final setupRepository = MockTaskTimeRecordRepository();
         await TaskTimeRecordService.findOrCreateTaskTimeRecord(
@@ -846,7 +847,7 @@ void main() {
 
         final taskId = 'task-error-3';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        
+
         // Add a record first using a working repository to set up state
         final setupRepository = MockTaskTimeRecordRepository();
         await TaskTimeRecordService.findOrCreateTaskTimeRecord(

@@ -62,7 +62,7 @@ class TaskTimeRecordService {
       taskId: record.taskId,
       duration: record.duration + durationToAdd,
     );
-    
+
     await repository.update(updatedRecord);
     return updatedRecord;
   }
@@ -88,7 +88,7 @@ class TaskTimeRecordService {
       taskId: record.taskId,
       duration: totalDuration,
     );
-    
+
     await repository.update(updatedRecord);
     return updatedRecord;
   }

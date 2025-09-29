@@ -159,7 +159,7 @@ void main() {
           recurrenceType: RecurrenceType.daily,
           parentTaskId: null,
         );
-        
+
         mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
           (query) => GetTaskQueryResponse(
             id: task.id,
@@ -173,7 +173,7 @@ void main() {
             subTasks: [],
           ),
         );
-        
+
         mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => throw Exception('Database connection failed'),
         );
@@ -196,7 +196,7 @@ void main() {
           recurrenceType: RecurrenceType.daily,
           parentTaskId: null,
         );
-        
+
         mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
           (query) => GetTaskQueryResponse(
             id: task.id,
@@ -210,7 +210,7 @@ void main() {
             subTasks: [],
           ),
         );
-        
+
         mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => GetListTaskTagsQueryResponse(
             items: [],
@@ -219,7 +219,7 @@ void main() {
             pageSize: 10,
           ),
         );
-        
+
         // Mock the SaveTaskCommand handler to throw an exception
         mockMediator.addHandler<SaveTaskCommand, SaveTaskCommandResponse>(
           (command) => throw Exception('Save task failed'),
@@ -259,7 +259,7 @@ void main() {
           recurrenceType: RecurrenceType.daily,
           parentTaskId: null,
         );
-        
+
         mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
           (query) => GetTaskQueryResponse(
             id: task.id,
@@ -273,7 +273,7 @@ void main() {
             subTasks: [],
           ),
         );
-        
+
         mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => GetListTaskTagsQueryResponse(
             items: [],
@@ -282,7 +282,7 @@ void main() {
             pageSize: 10,
           ),
         );
-        
+
         // Mock the SaveTaskCommand handler to throw validation error
         mockMediator.addHandler<SaveTaskCommand, SaveTaskCommandResponse>(
           (command) => throw Exception('Task validation failed'),
@@ -308,7 +308,7 @@ void main() {
           recurrenceEndDate: now.subtract(const Duration(days: 1)), // End date already passed
           parentTaskId: null,
         );
-        
+
         mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
           (query) => GetTaskQueryResponse(
             id: task.id,
@@ -344,7 +344,7 @@ void main() {
           recurrenceCount: 1, // Only one occurrence allowed, and this is the last one
           parentTaskId: null,
         );
-        
+
         mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
           (query) => GetTaskQueryResponse(
             id: task.id,
@@ -359,7 +359,7 @@ void main() {
             subTasks: [],
           ),
         );
-        
+
         mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => GetListTaskTagsQueryResponse(
             items: [],
@@ -368,7 +368,7 @@ void main() {
             pageSize: 10,
           ),
         );
-        
+
         // When the task is created, the recurrence count will be decremented to 0
         // So the next time it won't create another instance
         mockMediator.addHandler<SaveTaskCommand, SaveTaskCommandResponse>(
@@ -432,8 +432,7 @@ class MockMediator implements Mediator {
   }
 
   @override
-  Future<R> send<T extends IRequest<R>, R extends Object?>(
-      T request) async {
+  Future<R> send<T extends IRequest<R>, R extends Object?>(T request) async {
     final handler = _handlers[T];
     if (handler != null) {
       try {
