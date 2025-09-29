@@ -296,6 +296,86 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
           ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
 
   @override
+  _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>> getListWithOptions({
+    required int? pageIndex,
+    required int? pageSize,
+    List<String>? filterByTags,
+    bool? filterNoTags = false,
+    DateTime? filterByPlannedStartDate,
+    DateTime? filterByPlannedEndDate,
+    DateTime? filterByDeadlineStartDate,
+    DateTime? filterByDeadlineEndDate,
+    bool? filterDateOr = false,
+    bool? filterByCompleted,
+    DateTime? filterByCompletedStartDate,
+    DateTime? filterByCompletedEndDate,
+    String? filterBySearch,
+    String? filterByParentTaskId,
+    bool? areParentAndSubTasksIncluded = false,
+    List<_i1.CustomOrder>? sortBy,
+    bool? sortByCustomSort = false,
+    bool? ignoreArchivedTagVisibility = false,
+    bool? includeDeleted = false,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getListWithOptions,
+          [],
+          {
+            #pageIndex: pageIndex,
+            #pageSize: pageSize,
+            #filterByTags: filterByTags,
+            #filterNoTags: filterNoTags,
+            #filterByPlannedStartDate: filterByPlannedStartDate,
+            #filterByPlannedEndDate: filterByPlannedEndDate,
+            #filterByDeadlineStartDate: filterByDeadlineStartDate,
+            #filterByDeadlineEndDate: filterByDeadlineEndDate,
+            #filterDateOr: filterDateOr,
+            #filterByCompleted: filterByCompleted,
+            #filterByCompletedStartDate: filterByCompletedStartDate,
+            #filterByCompletedEndDate: filterByCompletedEndDate,
+            #filterBySearch: filterBySearch,
+            #filterByParentTaskId: filterByParentTaskId,
+            #areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
+            #sortBy: sortBy,
+            #sortByCustomSort: sortByCustomSort,
+            #ignoreArchivedTagVisibility: ignoreArchivedTagVisibility,
+            #includeDeleted: includeDeleted,
+          },
+        ),
+        returnValue:
+            _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
+                _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
+          this,
+          Invocation.method(
+            #getListWithOptions,
+            [],
+            {
+              #pageIndex: pageIndex,
+              #pageSize: pageSize,
+              #filterByTags: filterByTags,
+              #filterNoTags: filterNoTags,
+              #filterByPlannedStartDate: filterByPlannedStartDate,
+              #filterByPlannedEndDate: filterByPlannedEndDate,
+              #filterByDeadlineStartDate: filterByDeadlineStartDate,
+              #filterByDeadlineEndDate: filterByDeadlineEndDate,
+              #filterDateOr: filterDateOr,
+              #filterByCompleted: filterByCompleted,
+              #filterByCompletedStartDate: filterByCompletedStartDate,
+              #filterByCompletedEndDate: filterByCompletedEndDate,
+              #filterBySearch: filterBySearch,
+              #filterByParentTaskId: filterByParentTaskId,
+              #areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
+              #sortBy: sortBy,
+              #sortByCustomSort: sortByCustomSort,
+              #ignoreArchivedTagVisibility: ignoreArchivedTagVisibility,
+              #includeDeleted: includeDeleted,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
+
+  @override
   _i6.Future<List<_i9.Task>> getByParentTaskId(String? parentTaskId) =>
       (super.noSuchMethod(
         Invocation.method(
