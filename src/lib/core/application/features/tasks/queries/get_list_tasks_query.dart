@@ -397,6 +397,18 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       } else {
         conditions.add('parent_task_id IS NULL');
       }
+    } else {
+      // When showing subtasks, exclude completed parent tasks AND their subtasks
+      // Show only: 1) uncompleted parent tasks, 2) subtasks whose parent is not completed
+      conditions.add('''
+        (parent_task_id IS NULL AND completed_at IS NULL)
+        OR
+        (parent_task_id IS NOT NULL AND
+         EXISTS (SELECT 1 FROM task_table parent
+                 WHERE parent.id = task_table.parent_task_id
+                 AND parent.completed_at IS NULL
+                 AND parent.deleted_date IS NULL))
+      ''');
     }
 
     if (conditions.isEmpty) return null;
