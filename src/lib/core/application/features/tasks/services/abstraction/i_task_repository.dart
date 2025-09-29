@@ -12,6 +12,29 @@ abstract class ITaskRepository extends app.IRepository<Task, String> {
     List<CustomOrder>? customOrder,
   });
 
+  // New method to handle complex filtering with all options
+  Future<PaginatedList<TaskWithTotalDuration>> getListWithOptions({
+    required int pageIndex,
+    required int pageSize,
+    List<String>? filterByTags,
+    bool filterNoTags = false,
+    DateTime? filterByPlannedStartDate,
+    DateTime? filterByPlannedEndDate,
+    DateTime? filterByDeadlineStartDate,
+    DateTime? filterByDeadlineEndDate,
+    bool filterDateOr = false,
+    bool? filterByCompleted,
+    DateTime? filterByCompletedStartDate,
+    DateTime? filterByCompletedEndDate,
+    String? filterBySearch,
+    String? filterByParentTaskId,
+    bool areParentAndSubTasksIncluded = false,
+    List<CustomOrder>? sortBy,
+    bool sortByCustomSort = false,
+    bool ignoreArchivedTagVisibility = false,
+    bool includeDeleted = false,
+  });
+
   Future<List<Task>> getByParentTaskId(String parentTaskId);
 
   Future<List<Task>> getByRecurrenceParentId(String recurrenceParentId);

@@ -213,11 +213,25 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    final tasks = await _taskRepository.getListWithTotalDuration(
-      request.pageIndex,
-      request.pageSize,
-      customWhereFilter: _getFilters(request),
-      customOrder: _getCustomOrders(request),
+    final tasks = await _taskRepository.getListWithOptions(
+      pageIndex: request.pageIndex,
+      pageSize: request.pageSize,
+      filterByTags: request.filterByTags,
+      filterNoTags: request.filterNoTags,
+      filterByPlannedStartDate: request.filterByPlannedStartDate,
+      filterByPlannedEndDate: request.filterByPlannedEndDate,
+      filterByDeadlineStartDate: request.filterByDeadlineStartDate,
+      filterByDeadlineEndDate: request.filterByDeadlineEndDate,
+      filterDateOr: request.filterDateOr,
+      filterByCompleted: request.filterByCompleted,
+      filterByCompletedStartDate: request.filterByCompletedStartDate,
+      filterByCompletedEndDate: request.filterByCompletedEndDate,
+      filterBySearch: request.filterBySearch,
+      filterByParentTaskId: request.filterByParentTaskId,
+      areParentAndSubTasksIncluded: request.areParentAndSubTasksIncluded,
+      sortBy: _getCustomOrders(request),
+      sortByCustomSort: request.sortByCustomSort,
+      ignoreArchivedTagVisibility: request.ignoreArchivedTagVisibility,
     );
 
     // Fixing task orders with order value 0
@@ -298,122 +312,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     );
   }
 
-  CustomWhereFilter? _getFilters(GetListTasksQuery request) {
-    final conditions = <String>[];
-    final variables = <Object>[];
 
-    // Search
-    if (request.filterBySearch?.isNotEmpty ?? false) {
-      conditions.add('title LIKE ?');
-      variables.add('%${request.filterBySearch}%');
-    }
-
-    // Date filters
-    final plannedFilters = <String>[];
-    if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
-      plannedFilters.add('planned_date >= ? AND planned_date <= ?');
-      variables.add(request.filterByPlannedStartDate ?? DateTime(0));
-      variables.add(request.filterByPlannedEndDate ?? DateTime(9999));
-    }
-    final deadlineFilters = <String>[];
-    if (request.filterByDeadlineStartDate != null || request.filterByDeadlineEndDate != null) {
-      deadlineFilters.add('deadline_date >= ? AND deadline_date <= ?');
-      variables.add(request.filterByDeadlineStartDate ?? DateTime(0));
-      variables.add(request.filterByDeadlineEndDate ?? DateTime(9999));
-    }
-    if (plannedFilters.isNotEmpty || deadlineFilters.isNotEmpty) {
-      final joiner = request.filterDateOr ? ' OR ' : ' AND ';
-      final dateBlock = <String>[...plannedFilters, ...deadlineFilters];
-      conditions.add('(${dateBlock.join(joiner)})');
-    }
-
-    // Tag filter
-    if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      final placeholders = List.filled(request.filterByTags!.length, '?').join(',');
-      conditions.add(
-          '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($placeholders) AND deleted_date IS NULL) > 0');
-      variables.addAll(request.filterByTags!);
-    }
-
-    // No tags filter
-    if (request.filterNoTags) {
-      conditions
-          .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
-    }
-
-    // Exclude tasks only if ALL their tags are archived (show if at least one tag is not archived)
-    if (!request.ignoreArchivedTagVisibility) {
-      conditions.add('''
-        task_table.id NOT IN (
-          SELECT DISTINCT tt1.task_id 
-          FROM task_tag_table tt1
-          WHERE tt1.deleted_date IS NULL
-          AND NOT EXISTS (
-            SELECT 1 
-            FROM task_tag_table tt2
-            INNER JOIN tag_table t ON tt2.tag_id = t.id
-            WHERE tt2.task_id = tt1.task_id 
-            AND tt2.deleted_date IS NULL
-            AND (t.is_archived = 0 OR t.is_archived IS NULL)
-          )
-        )
-      ''');
-    }
-
-    // Completed filter
-    if (request.filterByCompleted != null) {
-      if (request.filterByCompleted!) {
-        conditions.add('completed_at IS NOT NULL');
-      } else {
-        conditions.add('completed_at IS NULL');
-      }
-    }
-
-    // Completed date range filter
-    if (request.filterByCompletedStartDate != null || request.filterByCompletedEndDate != null) {
-      if (request.filterByCompletedStartDate != null && request.filterByCompletedEndDate != null) {
-        // Convert DateTime to Unix timestamp (seconds) to match database storage format
-        conditions.add('completed_at >= ? AND completed_at < ?');
-        variables.add(request.filterByCompletedStartDate!.millisecondsSinceEpoch ~/ 1000);
-        // Add one day to end date to include the entire end day
-        final nextDay = request.filterByCompletedEndDate!.add(const Duration(days: 1));
-        variables.add(nextDay.millisecondsSinceEpoch ~/ 1000);
-      } else if (request.filterByCompletedStartDate != null) {
-        conditions.add('completed_at >= ?');
-        variables.add(request.filterByCompletedStartDate!.millisecondsSinceEpoch ~/ 1000);
-      } else if (request.filterByCompletedEndDate != null) {
-        // Include the entire end day by adding one day and using < instead of <=
-        conditions.add('completed_at < ?');
-        final nextDay = request.filterByCompletedEndDate!.add(const Duration(days: 1));
-        variables.add(nextDay.millisecondsSinceEpoch ~/ 1000);
-      }
-    }
-
-    // Parent task filter
-    if (!request.areParentAndSubTasksIncluded) {
-      if (request.filterByParentTaskId != null) {
-        conditions.add('parent_task_id = ?');
-        variables.add(request.filterByParentTaskId!);
-      } else {
-        conditions.add('parent_task_id IS NULL');
-      }
-    } else {
-      // When showing subtasks, exclude completed parent tasks AND their subtasks
-      // Show only: 1) uncompleted parent tasks, 2) subtasks whose parent is not completed
-      conditions.add('''
-        (parent_task_id IS NULL AND completed_at IS NULL)
-        OR
-        (parent_task_id IS NOT NULL AND
-         EXISTS (SELECT 1 FROM task_table parent
-                 WHERE parent.id = task_table.parent_task_id
-                 AND parent.completed_at IS NULL
-                 AND parent.deleted_date IS NULL))
-      ''');
-    }
-
-    if (conditions.isEmpty) return null;
-    return CustomWhereFilter(conditions.join(' AND '), variables);
-  }
 
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
     if (request.sortByCustomSort) {

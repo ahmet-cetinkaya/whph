@@ -365,6 +365,382 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   @override
+  Future<PaginatedList<TaskWithTotalDuration>> getListWithOptions({
+    required int pageIndex,
+    required int pageSize,
+    List<String>? filterByTags,
+    bool filterNoTags = false,
+    DateTime? filterByPlannedStartDate,
+    DateTime? filterByPlannedEndDate,
+    DateTime? filterByDeadlineStartDate,
+    DateTime? filterByDeadlineEndDate,
+    bool filterDateOr = false,
+    bool? filterByCompleted,
+    DateTime? filterByCompletedStartDate,
+    DateTime? filterByCompletedEndDate,
+    String? filterBySearch,
+    String? filterByParentTaskId,
+    bool areParentAndSubTasksIncluded = false,
+    List<CustomOrder>? sortBy,
+    bool sortByCustomSort = false,
+    bool ignoreArchivedTagVisibility = false,
+    bool includeDeleted = false,
+  }) async {
+    // Build conditions for the query
+    final conditions = <String>[];
+    final variables = <Variable>[];
+
+    // Search filter
+    if (filterBySearch?.isNotEmpty ?? false) {
+      if (!areParentAndSubTasksIncluded) {
+        // For regular queries, just search in title
+        conditions.add('task_table.title LIKE ?');
+        variables.add(Variable.withString('%$filterBySearch%'));
+      } else {
+        // For subtasks queries, search should match either the task itself or its subtasks/parent
+        String searchCondition = '''(task_table.title LIKE ? OR 
+            EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.title LIKE ?) OR 
+            EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.title LIKE ?))''';
+        conditions.add(searchCondition);
+        variables.add(Variable.withString('%$filterBySearch%'));
+        variables.add(Variable.withString('%$filterBySearch%'));
+        variables.add(Variable.withString('%$filterBySearch%'));
+      }
+    }
+
+    // Search and date filters - only apply globally when NOT including parent and sub tasks together
+    // When including parent and sub tasks, these filters are handled in the parent task filter section below
+    if (!areParentAndSubTasksIncluded) {
+      // Search filter for non-subtasks case
+      if (filterBySearch?.isNotEmpty ?? false) {
+        conditions.add('task_table.title LIKE ?');
+        variables.add(Variable.withString('%$filterBySearch%'));
+      }
+
+      final plannedFilters = <String>[];
+      if (filterByPlannedStartDate != null || filterByPlannedEndDate != null) {
+        plannedFilters.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
+        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+      }
+      final deadlineFilters = <String>[];
+      if (filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
+        deadlineFilters.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
+        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+      }
+      if (plannedFilters.isNotEmpty || deadlineFilters.isNotEmpty) {
+        final joiner = filterDateOr ? ' OR ' : ' AND ';
+        final dateBlock = <String>[...plannedFilters, ...deadlineFilters];
+        conditions.add('(${dateBlock.join(joiner)})');
+      }
+    }
+
+    // Tag filter
+    if (filterByTags != null && filterByTags.isNotEmpty) {
+      final placeholders = List.filled(filterByTags.length, '?').join(',');
+      conditions.add(
+          '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($placeholders) AND deleted_date IS NULL) > 0');
+      variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
+    }
+
+    // No tags filter
+    if (filterNoTags) {
+      conditions
+          .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
+    }
+
+    // Exclude tasks only if ALL their tags are archived (show if at least one tag is not archived)
+    if (!ignoreArchivedTagVisibility) {
+      conditions.add('''
+        task_table.id NOT IN (
+          SELECT DISTINCT tt1.task_id 
+          FROM task_tag_table tt1
+          WHERE tt1.deleted_date IS NULL
+          AND NOT EXISTS (
+            SELECT 1 
+            FROM task_tag_table tt2
+            INNER JOIN tag_table t ON tt2.tag_id = t.id
+            WHERE tt2.task_id = tt1.task_id 
+            AND tt2.deleted_date IS NULL
+            AND (t.is_archived = 0 OR t.is_archived IS NULL)
+          )
+        )
+      ''');
+    }
+
+
+
+    // Completed date range filter
+    if (filterByCompletedStartDate != null || filterByCompletedEndDate != null) {
+      if (filterByCompletedStartDate != null && filterByCompletedEndDate != null) {
+        // Convert DateTime to Unix timestamp (seconds) to match database storage format
+        conditions.add('task_table.completed_at >= ? AND task_table.completed_at < ?');
+        variables.add(Variable.withInt(filterByCompletedStartDate!.millisecondsSinceEpoch ~/ 1000));
+        // Add one day to end date to include the entire end day
+        final nextDay = filterByCompletedEndDate!.add(const Duration(days: 1));
+        variables.add(Variable.withInt(nextDay.millisecondsSinceEpoch ~/ 1000));
+      } else if (filterByCompletedStartDate != null) {
+        conditions.add('task_table.completed_at >= ?');
+        variables.add(Variable.withInt(filterByCompletedStartDate!.millisecondsSinceEpoch ~/ 1000));
+      } else if (filterByCompletedEndDate != null) {
+        // Include the entire end day by adding one day and using < instead of <=
+        conditions.add('task_table.completed_at < ?');
+        final nextDay = filterByCompletedEndDate!.add(const Duration(days: 1));
+        variables.add(Variable.withInt(nextDay.millisecondsSinceEpoch ~/ 1000));
+      }
+    }
+
+    // Completed filter - apply when NOT including parent and sub tasks together
+    if (filterByCompleted != null && !areParentAndSubTasksIncluded) {
+      if (filterByCompleted) {
+        conditions.add('task_table.completed_at IS NOT NULL');
+      } else {
+        conditions.add('task_table.completed_at IS NULL');
+      }
+    }
+
+    // Parent task filter
+    if (!areParentAndSubTasksIncluded) {
+      if (filterByParentTaskId != null) {
+        conditions.add('task_table.parent_task_id = ?');
+        variables.add(Variable.withString(filterByParentTaskId));
+      } else {
+        conditions.add('task_table.parent_task_id IS NULL');
+      }
+    } else {
+      // When showing subtasks, we need to build a more complex query that handles dates and search properly
+      String dateCondition = '1=1'; // Default to always true if no date filters
+      List<Variable> dateVariables = []; // Store date variables to be added multiple times
+      if (filterByPlannedStartDate != null || filterByPlannedEndDate != null || filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
+        List<String> dateParts = [];
+        
+        if (filterByPlannedStartDate != null || filterByPlannedEndDate != null) {
+          String plannedPart = 'task_table.planned_date >= ? AND task_table.planned_date <= ?';
+          dateParts.add(plannedPart);
+          dateVariables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
+          dateVariables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+        }
+        
+        if (filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
+          String deadlinePart = 'task_table.deadline_date >= ? AND task_table.deadline_date <= ?';
+          dateParts.add(deadlinePart);
+          dateVariables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
+          dateVariables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+        }
+        
+        dateCondition = dateParts.isEmpty ? '1=1' : (dateParts.length == 1 ? dateParts[0] : '(${dateParts.join(filterDateOr ? ' OR ' : ' AND ')})');
+      }
+      
+      // Search condition for subtasks case - matches either the task itself or its parent
+      String searchCondition = '1=1'; // Default to always true if no search
+      List<Variable> searchVariables = []; // Store search variables to be added multiple times
+      if (filterBySearch?.isNotEmpty ?? false) {
+        searchCondition = '''(task_table.title LIKE ? OR 
+            EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.title LIKE ?) OR 
+            EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.title LIKE ?))''';
+        searchVariables.add(Variable.withString('%$filterBySearch%'));
+        searchVariables.add(Variable.withString('%$filterBySearch%'));
+        searchVariables.add(Variable.withString('%$filterBySearch%'));
+      }
+      
+      if (filterByTags != null && filterByTags.isNotEmpty) {
+        // When showing subtasks with tag filtering, handle completed and date filters as well
+        final tagPlaceholders = List.filled(filterByTags.length, '?').join(',');
+        String completedCondition = '';
+        
+        // Set conditions based on whether to show completed or uncompleted tasks
+        if (filterByCompleted != null) {
+          if (filterByCompleted) {
+            // Looking for completed tasks
+            completedCondition = 'task_table.completed_at IS NOT NULL';
+          } else {
+            // Looking for uncompleted tasks  
+            completedCondition = 'task_table.completed_at IS NULL';
+          }
+        } else {
+          // Show all tasks (completed and uncompleted)
+          completedCondition = '1=1'; // Always true condition
+        }
+        
+        conditions.add('''
+          ($searchCondition AND $dateCondition AND $completedCondition
+           AND task_table.parent_task_id IS NULL 
+           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
+          OR
+          ($searchCondition AND $dateCondition AND $completedCondition  -- This ensures the subtask itself matches the completion filter
+           AND task_table.parent_task_id IS NOT NULL 
+           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)  -- This ensures the subtask has the tag
+        ''');
+        
+        // Add date variables for each OR branch (2 branches total)
+        // First branch
+        variables.addAll(dateVariables);
+        // Second branch
+        variables.addAll(dateVariables);
+        
+        // Add tag variables for each tag subquery (always needed regardless of search)
+        // Add tag variables for parent task check
+        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
+        // Add tag variables for subtask check
+        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
+        // Add tag variables for parent check in subtask condition
+        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
+        
+        // Add search and date variables for each OR branch (2 branches total)
+        // First branch
+        variables.addAll(searchVariables);
+        variables.addAll(dateVariables);
+        // Second branch
+        variables.addAll(searchVariables);
+        variables.addAll(dateVariables);
+      } else {
+        // When showing subtasks without tag filtering but with potential completed and date filters
+        String completedCondition = '';
+        
+        if (filterByCompleted != null) {
+          if (filterByCompleted) {
+            // Looking for completed tasks
+            completedCondition = 'task_table.completed_at IS NOT NULL';
+          } else {
+            // Looking for uncompleted tasks  
+            completedCondition = 'task_table.completed_at IS NULL';
+          }
+        } else {
+          // Show all tasks (completed and uncompleted)
+          completedCondition = '1=1'; // Always true condition
+        }
+        
+        // When showing subtasks without tag filtering, handle completed and date tasks
+        // Show: 1) matching parent tasks (completed or uncompleted as per filter) 2) subtasks that match the criteria
+        conditions.add('''
+          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NULL AND $completedCondition)
+          OR
+          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NOT NULL AND $completedCondition)  -- Show subtasks that match completion criteria
+        ''');
+        
+        // Add search and date variables for each OR branch (2 branches total)
+        // First branch
+        variables.addAll(searchVariables);
+        variables.addAll(dateVariables);
+        // Second branch
+        variables.addAll(searchVariables);
+        variables.addAll(dateVariables);
+      }
+    }
+
+    if (!includeDeleted) {
+      conditions.add('task_table.deleted_date IS NULL');
+    }
+
+    String? whereClause = conditions.isNotEmpty ? " WHERE ${conditions.join(' AND ')} " : null;
+
+    // Build order by clause
+    String? orderByClause;
+    if (sortByCustomSort) {
+      orderByClause = ' ORDER BY task_table.`order` IS NULL, task_table.`order` ASC ';
+    } else if (sortBy != null && sortBy.isNotEmpty) {
+      orderByClause = ' ORDER BY ${sortBy.map((order) {
+        // Handle total_duration which is an alias, not a table column
+        if (order.field == 'total_duration') {
+          return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+        }
+        return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+      }).join(', ')} ';
+    }
+
+    final baseQuery = '''
+      SELECT 
+        task_table.id,
+        task_table.parent_task_id,
+        task_table.title,
+        task_table.description,
+        task_table.priority,
+        task_table.planned_date,
+        task_table.deadline_date,
+        task_table.estimated_time,
+        task_table.completed_at,
+        task_table.created_date,
+        task_table.modified_date,
+        task_table.deleted_date,
+        task_table."order",
+        task_table.planned_date_reminder_time,
+        task_table.deadline_date_reminder_time,
+        task_table.recurrence_type,
+        task_table.recurrence_interval,
+        task_table.recurrence_days_string,
+        task_table.recurrence_start_date,
+        task_table.recurrence_end_date,
+        task_table.recurrence_count,
+        task_table.recurrence_parent_id,
+        COALESCE(SUM(task_time_record_table.duration), 0) as total_duration
+      FROM ${table.actualTableName} task_table
+      LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
+        AND task_time_record_table.deleted_date IS NULL
+      ${whereClause ?? ''}
+      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.deadline_date_reminder_time, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
+      ${orderByClause ?? ''}
+      LIMIT ? OFFSET ?
+    ''';
+
+    final query = database.customSelect(
+      baseQuery,
+      variables: [
+        ...variables,
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
+      readsFrom: {table, database.taskTimeRecordTable},
+    );
+
+    final result = await query.get();
+
+    // Count total records (without pagination)
+    final countQuery = ''' 
+      SELECT COUNT(*) as count 
+      FROM ${table.actualTableName} task_table
+      ${whereClause ?? ''}
+    ''';
+    final count = await database.customSelect(
+      countQuery,
+      variables: variables,
+    ).getSingleOrNull();
+    final totalCount = count?.data['count'] as int? ?? 0;
+
+    final items = result.map((row) {
+      final taskData = Map<String, dynamic>.from(row.data);
+      final totalDuration = taskData['total_duration'] as int? ?? 0;
+      taskData.remove('total_duration');
+
+      final task = _mapTaskFromRow(taskData);
+      return TaskWithTotalDuration(
+        id: task.id,
+        title: task.title,
+        totalDuration: totalDuration,
+        priority: task.priority,
+        plannedDate: task.plannedDate,
+        deadlineDate: task.deadlineDate,
+        completedAt: task.completedAt,
+        estimatedTime: task.estimatedTime,
+        parentTaskId: task.parentTaskId,
+        order: task.order,
+        plannedDateReminderTime: task.plannedDateReminderTime,
+        deadlineDateReminderTime: task.deadlineDateReminderTime,
+        createdDate: task.createdDate,
+        modifiedDate: task.modifiedDate,
+        deletedDate: task.deletedDate,
+      );
+    }).toList();
+
+    return PaginatedList(
+      items: items,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalItemCount: totalCount,
+    );
+  }
+
+  @override
   Future<List<Task>> getByRecurrenceParentId(String recurrenceParentId) async {
     final result = await database.customSelect(
       'SELECT * FROM ${table.actualTableName} WHERE recurrence_parent_id = ? AND deleted_date IS NULL',
