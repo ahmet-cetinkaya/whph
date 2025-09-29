@@ -29,6 +29,9 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
 
+  final DateTime? filterByCompletedStartDate;
+  final DateTime? filterByCompletedEndDate;
+
   final List<String>? filterByTags;
   final bool filterNoTags;
 
@@ -51,6 +54,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     DateTime? filterByDeadlineStartDate,
     DateTime? filterByDeadlineEndDate,
     this.filterDateOr = false,
+    DateTime? filterByCompletedStartDate,
+    DateTime? filterByCompletedEndDate,
     this.filterByTags,
     this.filterNoTags = false,
     this.filterByCompleted,
@@ -67,7 +72,11 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
         filterByDeadlineStartDate =
             filterByDeadlineStartDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineStartDate) : null,
         filterByDeadlineEndDate =
-            filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null;
+            filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null,
+        filterByCompletedStartDate =
+            filterByCompletedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByCompletedStartDate) : null,
+        filterByCompletedEndDate =
+            filterByCompletedEndDate != null ? DateTimeHelper.toUtcDateTime(filterByCompletedEndDate) : null;
 
   /// Factory constructor for search queries that includes subtasks
   factory GetListTasksQuery.forSearch({
@@ -78,6 +87,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     DateTime? filterByDeadlineStartDate,
     DateTime? filterByDeadlineEndDate,
     bool filterDateOr = false,
+    DateTime? filterByCompletedStartDate,
+    DateTime? filterByCompletedEndDate,
     List<String>? filterByTags,
     bool filterNoTags = false,
     bool? filterByCompleted,
@@ -94,6 +105,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       filterByDeadlineStartDate: filterByDeadlineStartDate,
       filterByDeadlineEndDate: filterByDeadlineEndDate,
       filterDateOr: filterDateOr,
+      filterByCompletedStartDate: filterByCompletedStartDate,
+      filterByCompletedEndDate: filterByCompletedEndDate,
       filterByTags: filterByTags,
       filterNoTags: filterNoTags,
       filterByCompleted: filterByCompleted,
@@ -353,6 +366,26 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         conditions.add('completed_at IS NOT NULL');
       } else {
         conditions.add('completed_at IS NULL');
+      }
+    }
+
+    // Completed date range filter
+    if (request.filterByCompletedStartDate != null || request.filterByCompletedEndDate != null) {
+      if (request.filterByCompletedStartDate != null && request.filterByCompletedEndDate != null) {
+        // Convert DateTime to Unix timestamp (seconds) to match database storage format
+        conditions.add('completed_at >= ? AND completed_at < ?');
+        variables.add(request.filterByCompletedStartDate!.millisecondsSinceEpoch ~/ 1000);
+        // Add one day to end date to include the entire end day
+        final nextDay = request.filterByCompletedEndDate!.add(const Duration(days: 1));
+        variables.add(nextDay.millisecondsSinceEpoch ~/ 1000);
+      } else if (request.filterByCompletedStartDate != null) {
+        conditions.add('completed_at >= ?');
+        variables.add(request.filterByCompletedStartDate!.millisecondsSinceEpoch ~/ 1000);
+      } else if (request.filterByCompletedEndDate != null) {
+        // Include the entire end day by adding one day and using < instead of <=
+        conditions.add('completed_at < ?');
+        final nextDay = request.filterByCompletedEndDate!.add(const Duration(days: 1));
+        variables.add(nextDay.millisecondsSinceEpoch ~/ 1000);
       }
     }
 

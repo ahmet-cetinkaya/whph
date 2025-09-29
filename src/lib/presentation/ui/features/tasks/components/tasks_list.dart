@@ -30,6 +30,8 @@ class TaskList extends StatefulWidget {
   final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
   final bool? filterByCompleted;
+  final DateTime? filterByCompletedStartDate;
+  final DateTime? filterByCompletedEndDate;
   final String? search;
   final String? parentTaskId;
   final bool includeSubTasks;
@@ -65,6 +67,8 @@ class TaskList extends StatefulWidget {
     this.filterByDeadlineEndDate,
     this.filterDateOr = false,
     this.filterByCompleted,
+    this.filterByCompletedStartDate,
+    this.filterByCompletedEndDate,
     this.search,
     this.parentTaskId,
     this.includeSubTasks = false,
@@ -178,6 +182,8 @@ class TaskListState extends State<TaskList> {
     // Then check other filters
     final oldFilters = {
       'completed': oldWidget.filterByCompleted,
+      'completedStartDate': oldWidget.filterByCompletedStartDate?.toIso8601String(),
+      'completedEndDate': oldWidget.filterByCompletedEndDate?.toIso8601String(),
       'tags': oldWidget.filterByTags?.join(','),
       'noTags': oldWidget.filterNoTags,
       'search': oldWidget.search,
@@ -192,6 +198,8 @@ class TaskListState extends State<TaskList> {
 
     final newFilters = {
       'completed': widget.filterByCompleted,
+      'completedStartDate': widget.filterByCompletedStartDate?.toIso8601String(),
+      'completedEndDate': widget.filterByCompletedEndDate?.toIso8601String(),
       'tags': widget.filterByTags?.join(','),
       'noTags': widget.filterNoTags,
       'search': widget.search,
@@ -230,6 +238,12 @@ class TaskListState extends State<TaskList> {
               ? DateTimeHelper.toUtcDateTime(widget.filterByDeadlineEndDate!)
               : null,
           filterDateOr: widget.filterDateOr,
+          filterByCompletedStartDate: widget.filterByCompletedStartDate != null
+              ? DateTimeHelper.toUtcDateTime(widget.filterByCompletedStartDate!)
+              : null,
+          filterByCompletedEndDate: widget.filterByCompletedEndDate != null
+              ? DateTimeHelper.toUtcDateTime(widget.filterByCompletedEndDate!)
+              : null,
           filterByTags: widget.filterByTags,
           filterNoTags: widget.filterNoTags,
           filterByCompleted: widget.filterByCompleted,
