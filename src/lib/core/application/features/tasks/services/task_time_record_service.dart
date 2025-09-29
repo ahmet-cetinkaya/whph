@@ -55,9 +55,16 @@ class TaskTimeRecordService {
       initialDuration: 0,
     );
 
-    record.duration += durationToAdd;
-    await repository.update(record);
-    return record;
+    // Create a new object to avoid issues with object references in tests
+    final updatedRecord = TaskTimeRecord(
+      id: record.id,
+      createdDate: record.createdDate,
+      taskId: record.taskId,
+      duration: record.duration + durationToAdd,
+    );
+    
+    await repository.update(updatedRecord);
+    return updatedRecord;
   }
 
   /// Sets total duration for a task time record in the hour bucket
@@ -74,8 +81,15 @@ class TaskTimeRecordService {
       initialDuration: 0,
     );
 
-    record.duration = totalDuration;
-    await repository.update(record);
-    return record;
+    // Create a new object to avoid issues with object references in tests
+    final updatedRecord = TaskTimeRecord(
+      id: record.id,
+      createdDate: record.createdDate,
+      taskId: record.taskId,
+      duration: totalDuration,
+    );
+    
+    await repository.update(updatedRecord);
+    return updatedRecord;
   }
 }
