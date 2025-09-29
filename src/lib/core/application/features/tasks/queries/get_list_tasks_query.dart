@@ -286,6 +286,23 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
       }
 
+      // Convert subtasks to TaskListItem
+      final subTaskListItems = subTasks
+          .map((subTask) => TaskListItem(
+                id: subTask.id,
+                title: subTask.title,
+                isCompleted: subTask.isCompleted,
+                priority: subTask.priority,
+                plannedDate: subTask.plannedDate,
+                deadlineDate: subTask.deadlineDate,
+                estimatedTime: subTask.estimatedTime,
+                parentTaskId: subTask.parentTaskId,
+                order: subTask.order,
+                plannedDateReminderTime: subTask.plannedDateReminderTime,
+                deadlineDateReminderTime: subTask.deadlineDateReminderTime,
+              ))
+          .toList();
+
       taskListItems.add(TaskListItem(
         id: task.id,
         title: task.title,
@@ -299,6 +316,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         parentTaskId: task.parentTaskId,
         order: task.order,
         subTasksCompletionPercentage: subTasksCompletionPercentage,
+        subTasks: subTaskListItems,
         plannedDateReminderTime: task.plannedDateReminderTime,
         deadlineDateReminderTime: task.deadlineDateReminderTime,
       ));
@@ -311,8 +329,6 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       pageSize: request.pageSize,
     );
   }
-
-
 
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
     if (request.sortByCustomSort) {
