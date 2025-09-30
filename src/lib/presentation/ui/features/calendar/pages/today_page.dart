@@ -460,6 +460,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
               ),
             ),
 
+            const SizedBox(height: AppTheme.size2Small),
             // Times Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
