@@ -43,7 +43,7 @@ class DetailTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.size4XSmall),
           child: Container(
             decoration: BoxDecoration(
               color: theme.cardTheme.color ?? theme.colorScheme.surface,
@@ -73,14 +73,14 @@ class DetailTable extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: AppTheme.sizeMedium, left: AppTheme.sizeMedium),
+            padding: const EdgeInsets.only(top: AppTheme.sizeSmall, left: AppTheme.sizeSmall),
             child: _buildLabel(context, data, theme),
           ),
           if (data.hintText != null)
             Padding(
               padding: const EdgeInsets.only(
-                left: AppTheme.sizeMedium + AppTheme.sizeLarge + AppTheme.size2XSmall,
-                right: AppTheme.sizeMedium,
+                left: AppTheme.sizeSmall + AppTheme.sizeLarge + AppTheme.size2XSmall,
+                right: AppTheme.sizeSmall,
                 top: AppTheme.size2XSmall,
               ),
               child: Text(
@@ -94,8 +94,8 @@ class DetailTable extends StatelessWidget {
             padding: data.removePadding
                 ? const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall)
                 : const EdgeInsets.only(
-                    left: AppTheme.sizeMedium + AppTheme.sizeLarge + AppTheme.size2XSmall,
-                    right: AppTheme.sizeMedium,
+                    left: AppTheme.sizeSmall + AppTheme.sizeLarge + AppTheme.size2XSmall,
+                    right: AppTheme.sizeSmall,
                   ),
             child: _buildContent(context, data, theme),
           ),
@@ -182,9 +182,8 @@ class DetailTable extends StatelessWidget {
 
   EdgeInsets _getContainerPadding(DetailTableRowData data) {
     if (data.removePadding) {
-      // Sadece vertical padding, horizontal padding'i içeride hallederiz
-      return const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall);
+      return const EdgeInsets.symmetric(vertical: AppTheme.size2XSmall);
     }
-    return const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.size3XSmall);
+    return const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.size2XSmall);
   }
 }

@@ -1019,36 +1019,22 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   DetailTableRowData _buildElapsedTimeSection() => DetailTableRowData(
         label: _translationService.translate(SharedTranslationKeys.timeDisplayElapsed),
         icon: HabitUiConstants.estimatedTimeIcon,
-        widget: Padding(
-          padding: const EdgeInsets.only(
-            top: AppTheme.sizeSmall,
-            bottom: AppTheme.sizeSmall,
-            left: AppTheme.sizeSmall,
-          ),
-          child: TimeDisplay(
-            totalSeconds: _totalDuration,
-            onTap: _showHabitTimeLoggingDialog,
-          ),
+        widget: TimeDisplay(
+          totalSeconds: _totalDuration,
+          onTap: _showHabitTimeLoggingDialog,
         ),
       );
 
   DetailTableRowData _buildTimerSection() => DetailTableRowData(
         label: _translationService.translate(SharedTranslationKeys.timerLabel),
         icon: Icons.timer,
-        widget: Padding(
-          padding: const EdgeInsets.only(
-            top: AppTheme.sizeSmall,
-            bottom: AppTheme.sizeSmall,
-            left: AppTheme.sizeSmall,
+        widget: Container(
+          constraints: BoxConstraints(
+            maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
           ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
-            ),
-            child: AppTimer(
-              onTimerStop: _onHabitTimerStop,
-              isMiniLayout: true,
-            ),
+          child: AppTimer(
+            onTimerStop: _onHabitTimerStop,
+            isMiniLayout: true,
           ),
         ),
       );
