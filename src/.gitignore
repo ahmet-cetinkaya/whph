@@ -40,6 +40,10 @@ android/app/.cxx
 .history
 .svn/
 migrate_working_dir/
-*.keystore
 *.base64
 .secrets
+
+# Android signing
+key.properties
+*.jks
+*.keystore
