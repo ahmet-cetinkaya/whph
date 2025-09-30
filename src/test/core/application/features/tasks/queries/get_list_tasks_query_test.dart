@@ -14,26 +14,32 @@ import 'package:acore/acore.dart';
 
 import 'get_list_tasks_query_test.mocks.dart';
 
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+
 @GenerateMocks([
   ITaskRepository,
   ITaskTagRepository,
   ITagRepository,
+  ITaskTimeRecordRepository,
 ])
 void main() {
   group('GetListTasksQuery Tests', () {
     late MockITaskRepository taskRepository;
     late MockITaskTagRepository taskTagRepository;
     late MockITagRepository tagRepository;
+    late MockITaskTimeRecordRepository taskTimeRecordRepository;
     late GetListTasksQueryHandler handler;
 
     setUp(() {
       taskRepository = MockITaskRepository();
       taskTagRepository = MockITaskTagRepository();
       tagRepository = MockITagRepository();
+      taskTimeRecordRepository = MockITaskTimeRecordRepository();
       handler = GetListTasksQueryHandler(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         tagRepository: tagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
       );
     });
 
@@ -378,6 +384,12 @@ void main() {
           }
           return [];
         });
+
+        when(taskTimeRecordRepository.getTotalDurationsByTaskIds(
+          any,
+          startDate: anyNamed('startDate'),
+          endDate: anyNamed('endDate'),
+        )).thenAnswer((_) async => <String, int>{});
 
         // Act
         final result = await handler(GetListTasksQuery(pageIndex: 0, pageSize: 10));
