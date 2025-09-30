@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
+import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/drift_task_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
@@ -640,14 +641,14 @@ void main() {
         final completedResult = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByCompleted: true,
+          filter: TaskQueryFilter(completed: true),
         );
 
         // Act - Filter for incomplete tasks
         final incompleteResult = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByCompleted: false,
+          filter: TaskQueryFilter(completed: false),
         );
 
         // Assert
@@ -674,7 +675,7 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterBySearch: 'Important',
+          filter: TaskQueryFilter(search: 'Important'),
         );
 
         // Assert
@@ -710,8 +711,10 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByPlannedStartDate: DateTime.utc(2024, 1, 10),
-          filterByPlannedEndDate: DateTime.utc(2024, 1, 20),
+          filter: TaskQueryFilter(
+            plannedStartDate: DateTime.utc(2024, 1, 10),
+            plannedEndDate: DateTime.utc(2024, 1, 20),
+          ),
         );
 
         // Assert
@@ -789,8 +792,10 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByCompleted: false, // Only incomplete tasks
-          filterBySearch: 'Crucial', // Only "Crucial Task" contains this
+          filter: TaskQueryFilter(
+            completed: false, // Only incomplete tasks
+            search: 'Crucial', // Only "Crucial Task" contains this
+          ),
         );
 
         // Assert
@@ -838,7 +843,7 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByParentTaskId: 'parent-task-filter',
+          filter: TaskQueryFilter(parentTaskId: 'parent-task-filter'),
         );
 
         // Assert
@@ -871,7 +876,7 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByTags: null, // No tags specified, should return all
+          filter: TaskQueryFilter(tags: null), // No tags specified, should return all
         );
 
         // Assert
@@ -919,11 +924,13 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByPlannedStartDate: DateTime.utc(2024, 1, 1),
-          filterByPlannedEndDate: DateTime.utc(2024, 1, 10),
-          filterByDeadlineStartDate: DateTime.utc(2024, 1, 10),
-          filterByDeadlineEndDate: DateTime.utc(2024, 1, 20),
-          filterDateOr: true, // Use OR logic for date filters
+          filter: TaskQueryFilter(
+            plannedStartDate: DateTime.utc(2024, 1, 1),
+            plannedEndDate: DateTime.utc(2024, 1, 10),
+            deadlineStartDate: DateTime.utc(2024, 1, 10),
+            deadlineEndDate: DateTime.utc(2024, 1, 20),
+            dateOr: true, // Use OR logic for date filters
+          ),
         );
 
         // Assert - Should include tasks that match either planned date range OR deadline date range
@@ -979,14 +986,16 @@ void main() {
         await repository.add(anotherSubtask);
 
         // Test the special behavior when including parent and sub tasks
-        // When areParentAndSubTasksIncluded is true, the filterByParentTaskId behavior may be different
+        // When includeParentAndSubTasks is true, the parentTaskId filter behavior may be different
         // Based on the implementation, it seems to return parent tasks that match the filter
         // plus all their subtasks, or vice versa
         final resultWithSubTasks = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByParentTaskId: 'parent-task-sub',
-          areParentAndSubTasksIncluded: true,
+          filter: TaskQueryFilter(
+            parentTaskId: 'parent-task-sub',
+            includeParentAndSubTasks: true,
+          ),
         );
 
         // The behavior when areParentAndSubTasksIncluded is true is complex and implementation-specific
@@ -1040,8 +1049,10 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterBySearch: 'Special',
-          areParentAndSubTasksIncluded: true,
+          filter: TaskQueryFilter(
+            search: 'Special',
+            includeParentAndSubTasks: true,
+          ),
         );
 
         // Assert - Should find parent task, subtasks that match, and other tasks that match
@@ -1092,16 +1103,20 @@ void main() {
         final completedResult = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByCompleted: true,
-          areParentAndSubTasksIncluded: true,
+          filter: TaskQueryFilter(
+            completed: true,
+            includeParentAndSubTasks: true,
+          ),
         );
 
         // Act - Get only incomplete tasks including parent and sub tasks
         final incompleteResult = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByCompleted: false,
-          areParentAndSubTasksIncluded: true,
+          filter: TaskQueryFilter(
+            completed: false,
+            includeParentAndSubTasks: true,
+          ),
         );
 
         // Assert - Results should be different
@@ -1157,9 +1172,11 @@ void main() {
         final result = await repository.getListWithOptions(
           pageIndex: 0,
           pageSize: 10,
-          filterByPlannedStartDate: DateTime.utc(2024, 1, 1),
-          filterByPlannedEndDate: DateTime.utc(2024, 1, 10),
-          areParentAndSubTasksIncluded: true,
+          filter: TaskQueryFilter(
+            plannedStartDate: DateTime.utc(2024, 1, 1),
+            plannedEndDate: DateTime.utc(2024, 1, 10),
+            includeParentAndSubTasks: true,
+          ),
         );
 
         // Assert - Should return items that match the date range

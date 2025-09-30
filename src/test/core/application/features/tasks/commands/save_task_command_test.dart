@@ -43,7 +43,7 @@ void main() {
         description: 'Test Description',
         priority: EisenhowerPriority.urgentImportant,
         estimatedTime: 30,
-        isCompleted: false,
+        completedAt: null,
       );
 
       when(mockTaskRepository.getList(
@@ -66,7 +66,7 @@ void main() {
             task.description == 'Test Description' &&
             task.priority == EisenhowerPriority.urgentImportant &&
             task.estimatedTime == 30 &&
-            task.isCompleted == false),
+            task.completedAt == null),
       ))).called(1);
     });
 
@@ -77,7 +77,7 @@ void main() {
         description: 'Test Description',
         priority: EisenhowerPriority.urgentImportant,
         estimatedTime: 30,
-        isCompleted: false,
+        completedAt: null,
       );
 
       // Mock an existing task with order 1000
@@ -114,7 +114,7 @@ void main() {
         description: 'Test Description',
         priority: EisenhowerPriority.urgentImportant,
         estimatedTime: 30,
-        isCompleted: false,
+        completedAt: null,
         order: 500.0,
       );
 
@@ -144,7 +144,7 @@ void main() {
         description: 'Test Description',
         priority: EisenhowerPriority.urgentImportant,
         estimatedTime: 30, // 30 minutes -> 1800 seconds
-        isCompleted: true,
+        completedAt: DateTime.now().toUtc(),
       );
 
       when(mockTaskRepository.getList(
@@ -173,7 +173,7 @@ void main() {
       expect(result.id, isNotNull);
       verify(mockTaskRepository.add(argThat(
         predicate<Task>(
-            (task) => task.title == 'Test Task' && task.description == 'Test Description' && task.isCompleted == true),
+            (task) => task.title == 'Test Task' && task.description == 'Test Description' && task.completedAt != null),
       ))).called(1);
 
       // Verify that repository methods were called to add and update time records
@@ -207,7 +207,7 @@ void main() {
         description: 'New Description',
         priority: EisenhowerPriority.notUrgentImportant,
         estimatedTime: 45,
-        isCompleted: false,
+        completedAt: null,
       );
 
       when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
@@ -227,11 +227,11 @@ void main() {
             task.description == 'New Description' &&
             task.priority == EisenhowerPriority.notUrgentImportant &&
             task.estimatedTime == 45 &&
-            task.isCompleted == false),
+            task.completedAt == null),
       ))).called(1);
     });
 
-    test('should complete task when isCompleted is true', () async {
+    test('should complete task when completedAt is provided', () async {
       // Arrange
       const taskId = 'task-1';
       final existingTask = Task(
@@ -244,7 +244,7 @@ void main() {
       final command = SaveTaskCommand(
         id: taskId,
         title: 'Test Task',
-        isCompleted: true,
+        completedAt: DateTime.now().toUtc(),
       );
 
       when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
@@ -258,11 +258,11 @@ void main() {
       expect(result.id, taskId);
       verify(mockTaskRepository.getById(taskId)).called(1);
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.id == taskId && task.isCompleted == true && task.completedAt != null),
+        predicate<Task>((task) => task.id == taskId && task.completedAt != null),
       ))).called(1);
     });
 
-    test('should uncomplete task when isCompleted is false', () async {
+    test('should mark task as incomplete when completedAt is null', () async {
       // Arrange
       const taskId = 'task-1';
       final existingTask = Task(
@@ -275,7 +275,7 @@ void main() {
       final command = SaveTaskCommand(
         id: taskId,
         title: 'Test Task',
-        isCompleted: false,
+        completedAt: null,
       );
 
       when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
@@ -289,7 +289,7 @@ void main() {
       expect(result.id, taskId);
       verify(mockTaskRepository.getById(taskId)).called(1);
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.id == taskId && task.isCompleted == false && task.completedAt == null),
+        predicate<Task>((task) => task.id == taskId && task.completedAt == null),
       ))).called(1);
     });
 
@@ -327,7 +327,7 @@ void main() {
       final command = SaveTaskCommand(
         id: taskId,
         title: 'Test Task',
-        isCompleted: false,
+        completedAt: null,
         tagIdsToAdd: ['tag-1', 'tag-2'],
       );
 
@@ -381,7 +381,7 @@ void main() {
         description: null,
         priority: null,
         estimatedTime: null,
-        isCompleted: false,
+        completedAt: null,
       );
 
       when(mockTaskRepository.getList(
@@ -426,7 +426,7 @@ void main() {
       final command = SaveTaskCommand(
         id: taskId,
         title: 'Test Task',
-        isCompleted: false,
+        completedAt: null,
         recurrenceType: RecurrenceType.weekly,
         recurrenceInterval: 2,
         recurrenceDays: [WeekDays.monday, WeekDays.friday],
@@ -471,7 +471,7 @@ void main() {
       final command = SaveTaskCommand(
         id: taskId,
         title: 'Test Task',
-        isCompleted: false,
+        completedAt: null,
         recurrenceType: RecurrenceType.none,
       );
 

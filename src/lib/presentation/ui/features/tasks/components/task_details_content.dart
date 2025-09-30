@@ -555,7 +555,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       deadlineDate: finalDeadlineDate,
       priority: _task!.priority,
       estimatedTime: _task!.estimatedTime,
-      isCompleted: _task!.isCompleted,
+      completedAt: _task!.completedAt,
       // Pass reminder settings
       plannedDateReminderTime: _task!.plannedDateReminderTime,
       deadlineDateReminderTime: _task!.deadlineDateReminderTime,
