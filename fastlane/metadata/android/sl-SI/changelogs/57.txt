@@ -1,0 +1,6 @@
+• Dodana možnost prikazovanja/skrijanja podnalog v podrobnostih dneva za boljšo organizacijo
+• Predstavljeno filtriranje razpona datumov za čase zaključka za analizo vašega napredka
+• Dodano filtriranje za sistemske proti uporabniškim aplikacijam v sledenju uporabe
+• Razlikovanje med ocenjenim in ročno zabeleženim časom za navade
+• Izboljšano beleženje časa in integracija časovnika za navade in naloge
+• Dodane privzete vrednosti za ocenjene čase za lažje načrtovanje nalog

@@ -1,0 +1,6 @@
+• Lisätty vaihtoehto näyttää/piilottaa alatehtävät päivän yksityiskohdissa paremman organisoinnin vuoksi
+• Esitelty päivämääräalueen suodatus valmistumisaikoille edistymisesi analysoimiseksi
+• Lisätty suodatus järjestelmä- vs. käyttäjäsovelluksille käyttöseurannassa
+• Erottelu arvioidun ja manuaalisesti kirjattujen aikojen välillä tavoille
+• Parannettu ajan kirjaaminen ja ajastimen integrointi tavoille ja tehtäville
+• Lisätty oletusarvot arvioiduille ajoille helpomman tehtävien suunnittelun vuoksi

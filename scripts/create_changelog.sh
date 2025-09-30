@@ -14,7 +14,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-CHANGELOG_DIR="$PROJECT_ROOT/fastlane/metadata/android/en-US/changelogs"
+CHANGELOG_DIR="$PROJECT_ROOT/fastlane/metadata/android/en-GB/changelogs"
 MAIN_CHANGELOG="$PROJECT_ROOT/CHANGELOG.md"
 
 # Parse arguments
