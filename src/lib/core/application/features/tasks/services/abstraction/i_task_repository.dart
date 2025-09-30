@@ -2,6 +2,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_repository.d
 import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
+import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 
 abstract class ITaskRepository extends app.IRepository<Task, String> {
   Future<PaginatedList<TaskWithTotalDuration>> getListWithTotalDuration(
@@ -12,28 +13,29 @@ abstract class ITaskRepository extends app.IRepository<Task, String> {
     List<CustomOrder>? customOrder,
   });
 
-  // New method to handle complex filtering with all options
+  /// Retrieves a paginated list of tasks using a filter object.
   Future<PaginatedList<TaskWithTotalDuration>> getListWithOptions({
     required int pageIndex,
     required int pageSize,
-    List<String>? filterByTags,
-    bool filterNoTags = false,
-    DateTime? filterByPlannedStartDate,
-    DateTime? filterByPlannedEndDate,
-    DateTime? filterByDeadlineStartDate,
-    DateTime? filterByDeadlineEndDate,
-    bool filterDateOr = false,
-    bool? filterByCompleted,
-    DateTime? filterByCompletedStartDate,
-    DateTime? filterByCompletedEndDate,
-    String? filterBySearch,
-    String? filterByParentTaskId,
-    bool areParentAndSubTasksIncluded = false,
-    List<CustomOrder>? sortBy,
-    bool sortByCustomSort = false,
-    bool ignoreArchivedTagVisibility = false,
+    TaskQueryFilter? filter,
     bool includeDeleted = false,
   });
+
+  /// Retrieves a paginated list of tasks using a filter object.
+  /// This method is an alias for [getListWithOptions].
+  Future<PaginatedList<TaskWithTotalDuration>> getListWithFilter({
+    required int pageIndex,
+    required int pageSize,
+    TaskQueryFilter? filter,
+    bool includeDeleted = false,
+  }) {
+    return getListWithOptions(
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      filter: filter,
+      includeDeleted: includeDeleted,
+    );
+  }
 
   Future<List<Task>> getByParentTaskId(String parentTaskId);
 

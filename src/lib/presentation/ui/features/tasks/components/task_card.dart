@@ -60,7 +60,7 @@ class TaskCard extends StatelessWidget {
       plannedDate: DateTimeHelper.toUtcDateTime(date),
       deadlineDate: task.deadlineDate,
       estimatedTime: task.estimatedTime,
-      isCompleted: task.isCompleted,
+      completedAt: task.completedAt,
       description: task.description,
     );
 

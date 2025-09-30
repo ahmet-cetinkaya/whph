@@ -41,6 +41,19 @@ void main() {
         tagRepository: tagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
       );
+
+      // Default stubs for common calls
+      when(taskRepository.getAll(
+              includeDeleted: anyNamed('includeDeleted'),
+              customWhereFilter: anyNamed('customWhereFilter'),
+              customOrder: anyNamed('customOrder')))
+          .thenAnswer((_) async => []);
+
+      when(taskTagRepository.getList(any, any,
+              includeDeleted: anyNamed('includeDeleted'),
+              customWhereFilter: anyNamed('customWhereFilter'),
+              customOrder: anyNamed('customOrder')))
+          .thenAnswer((_) async => PaginatedList(items: [], pageIndex: 0, pageSize: 5, totalItemCount: 0));
     });
 
     group('Query Creation - Nominal Behavior', () {
@@ -159,24 +172,10 @@ void main() {
         ];
 
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: mockTasks,
               totalItemCount: 1,
@@ -249,24 +248,10 @@ void main() {
         );
 
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: [mockTask],
               totalItemCount: 1,
@@ -337,24 +322,10 @@ void main() {
         ];
 
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: [mockTask],
               totalItemCount: 1,
@@ -421,24 +392,10 @@ void main() {
         ];
 
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: mockTasks,
               totalItemCount: 2,
@@ -487,24 +444,10 @@ void main() {
       test('should return empty list when no tasks exist', () async {
         // Arrange
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: [],
               totalItemCount: 0,
@@ -530,24 +473,10 @@ void main() {
         );
 
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: [mockTask],
               totalItemCount: 1,
@@ -593,24 +522,10 @@ void main() {
         );
 
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: [mockTask],
               totalItemCount: 1,
@@ -662,24 +577,10 @@ void main() {
             id: 'tasktag-error', taskId: 'task-tag-error', tagId: 'tag-error', createdDate: DateTime.utc(2024, 1, 1));
 
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenAnswer((_) async => PaginatedList<TaskWithTotalDuration>(
               items: [mockTask],
               totalItemCount: 1,
@@ -737,24 +638,10 @@ void main() {
       test('should propagate repository errors', () async {
         // Arrange
         when(taskRepository.getListWithOptions(
-          pageIndex: 0,
-          pageSize: 10,
-          filterByTags: null,
-          filterNoTags: false,
-          filterByPlannedStartDate: null,
-          filterByPlannedEndDate: null,
-          filterByDeadlineStartDate: null,
-          filterByDeadlineEndDate: null,
-          filterDateOr: false,
-          filterByCompleted: null,
-          filterByCompletedStartDate: null,
-          filterByCompletedEndDate: null,
-          filterBySearch: null,
-          filterByParentTaskId: null,
-          areParentAndSubTasksIncluded: false,
-          sortBy: [],
-          sortByCustomSort: false,
-          ignoreArchivedTagVisibility: false,
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
         )).thenThrow(Exception('Database error'));
 
         // Act & Assert
@@ -762,6 +649,167 @@ void main() {
           () => handler(GetListTasksQuery(pageIndex: 0, pageSize: 10)),
           throwsA(isA<Exception>()),
         );
+      });
+    });
+
+    group('Completion Date Filtering - Nominal Behavior', () {
+      test('should filter tasks by completion date range', () async {
+        // Arrange
+        final startDate = DateTime.utc(2024, 1, 1);
+        final endDate = DateTime.utc(2024, 1, 31);
+        final completedTask = TaskWithTotalDuration(
+          id: 'completed-task',
+          createdDate: DateTime.utc(2024, 1, 15),
+          title: 'Completed Task',
+          totalDuration: 0,
+          completedAt: DateTime.utc(2024, 1, 15),
+        );
+
+        when(taskRepository.getListWithOptions(
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
+        )).thenAnswer((_) async => PaginatedList(
+              items: [completedTask],
+              pageIndex: 0,
+              pageSize: 10,
+              totalItemCount: 1,
+            ));
+
+        when(taskTimeRecordRepository.getTotalDurationsByTaskIds(['completed-task'])).thenAnswer((_) async => {});
+
+        // Act
+        final query = GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          filterByCompletedStartDate: startDate,
+          filterByCompletedEndDate: endDate,
+        );
+        final result = await handler(query);
+
+        // Assert
+        expect(result.items, hasLength(1));
+        expect(result.items.first.id, 'completed-task');
+        verify(taskRepository.getListWithOptions(
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
+        )).called(1);
+      });
+
+      test('should convert completion date filter parameters to UTC', () {
+        // Arrange
+        final localStartDate = DateTime(2024, 1, 1, 10, 30);
+        final localEndDate = DateTime(2024, 1, 31, 15, 45);
+
+        // Act
+        final query = GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          filterByCompletedStartDate: localStartDate,
+          filterByCompletedEndDate: localEndDate,
+        );
+
+        // Assert
+        expect(query.filterByCompletedStartDate?.isUtc, isTrue);
+        expect(query.filterByCompletedEndDate?.isUtc, isTrue);
+      });
+
+      test('should support completion date range in forSearch factory', () {
+        // Arrange
+        final startDate = DateTime.utc(2024, 1, 1);
+        final endDate = DateTime.utc(2024, 1, 31);
+
+        // Act
+        final query = GetListTasksQuery.forSearch(
+          pageIndex: 0,
+          pageSize: 10,
+          filterByCompletedStartDate: startDate,
+          filterByCompletedEndDate: endDate,
+        );
+
+        // Assert
+        expect(query.filterByCompletedStartDate, startDate);
+        expect(query.filterByCompletedEndDate, endDate);
+        expect(query.areParentAndSubTasksIncluded, true);
+      });
+
+      test('should filter with only start date', () async {
+        // Arrange
+        final startDate = DateTime.utc(2024, 1, 1);
+        final completedTask = TaskWithTotalDuration(
+          id: 'task-1',
+          createdDate: DateTime.utc(2024, 1, 15),
+          title: 'Task 1',
+          totalDuration: 0,
+          completedAt: DateTime.utc(2024, 1, 15),
+        );
+
+        when(taskRepository.getListWithOptions(
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
+        )).thenAnswer((_) async => PaginatedList(
+              items: [completedTask],
+              pageIndex: 0,
+              pageSize: 10,
+              totalItemCount: 1,
+            ));
+
+        when(taskTimeRecordRepository.getTotalDurationsByTaskIds(['task-1'])).thenAnswer((_) async => {});
+
+        // Act
+        final query = GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          filterByCompletedStartDate: startDate,
+        );
+        final result = await handler(query);
+
+        // Assert
+        expect(result.items, hasLength(1));
+        expect(result.items.first.id, 'task-1');
+      });
+
+      test('should filter with only end date', () async {
+        // Arrange
+        final endDate = DateTime.utc(2024, 1, 31);
+        final completedTask = TaskWithTotalDuration(
+          id: 'task-2',
+          createdDate: DateTime.utc(2024, 1, 15),
+          title: 'Task 2',
+          totalDuration: 0,
+          completedAt: DateTime.utc(2024, 1, 15),
+        );
+
+        when(taskRepository.getListWithOptions(
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
+        )).thenAnswer((_) async => PaginatedList(
+              items: [completedTask],
+              pageIndex: 0,
+              pageSize: 10,
+              totalItemCount: 1,
+            ));
+
+        when(taskTimeRecordRepository.getTotalDurationsByTaskIds(['task-2'])).thenAnswer((_) async => {});
+
+        // Act
+        final query = GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          filterByCompletedEndDate: endDate,
+        );
+        final result = await handler(query);
+
+        // Assert
+        expect(result.items, hasLength(1));
+        expect(result.items.first.id, 'task-2');
       });
     });
   });

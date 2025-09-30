@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
@@ -220,22 +221,24 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
     final tasks = await _taskRepository.getListWithOptions(
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
-      filterByTags: request.filterByTags,
-      filterNoTags: request.filterNoTags,
-      filterByPlannedStartDate: request.filterByPlannedStartDate,
-      filterByPlannedEndDate: request.filterByPlannedEndDate,
-      filterByDeadlineStartDate: request.filterByDeadlineStartDate,
-      filterByDeadlineEndDate: request.filterByDeadlineEndDate,
-      filterDateOr: request.filterDateOr,
-      filterByCompleted: request.filterByCompleted,
-      filterByCompletedStartDate: request.filterByCompletedStartDate,
-      filterByCompletedEndDate: request.filterByCompletedEndDate,
-      filterBySearch: request.filterBySearch,
-      filterByParentTaskId: request.filterByParentTaskId,
-      areParentAndSubTasksIncluded: request.areParentAndSubTasksIncluded,
-      sortBy: _getCustomOrders(request),
-      sortByCustomSort: request.sortByCustomSort,
-      ignoreArchivedTagVisibility: request.ignoreArchivedTagVisibility,
+      filter: TaskQueryFilter(
+        tags: request.filterByTags,
+        noTags: request.filterNoTags,
+        plannedStartDate: request.filterByPlannedStartDate,
+        plannedEndDate: request.filterByPlannedEndDate,
+        deadlineStartDate: request.filterByDeadlineStartDate,
+        deadlineEndDate: request.filterByDeadlineEndDate,
+        dateOr: request.filterDateOr,
+        completed: request.filterByCompleted,
+        completedStartDate: request.filterByCompletedStartDate,
+        completedEndDate: request.filterByCompletedEndDate,
+        search: request.filterBySearch,
+        parentTaskId: request.filterByParentTaskId,
+        includeParentAndSubTasks: request.areParentAndSubTasksIncluded,
+        sortBy: _getCustomOrders(request),
+        sortByCustomSort: request.sortByCustomSort,
+        ignoreArchivedTagVisibility: request.ignoreArchivedTagVisibility,
+      ),
     );
 
     // Fixing task orders with order value 0

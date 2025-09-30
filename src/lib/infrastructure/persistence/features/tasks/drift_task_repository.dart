@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
@@ -370,24 +371,26 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   Future<PaginatedList<TaskWithTotalDuration>> getListWithOptions({
     required int pageIndex,
     required int pageSize,
-    List<String>? filterByTags,
-    bool filterNoTags = false,
-    DateTime? filterByPlannedStartDate,
-    DateTime? filterByPlannedEndDate,
-    DateTime? filterByDeadlineStartDate,
-    DateTime? filterByDeadlineEndDate,
-    bool filterDateOr = false,
-    bool? filterByCompleted,
-    DateTime? filterByCompletedStartDate,
-    DateTime? filterByCompletedEndDate,
-    String? filterBySearch,
-    String? filterByParentTaskId,
-    bool areParentAndSubTasksIncluded = false,
-    List<CustomOrder>? sortBy,
-    bool sortByCustomSort = false,
-    bool ignoreArchivedTagVisibility = false,
+    TaskQueryFilter? filter,
     bool includeDeleted = false,
   }) async {
+    final f = filter ?? const TaskQueryFilter();
+    final filterByTags = f.tags;
+    final filterNoTags = f.noTags;
+    final filterByPlannedStartDate = f.plannedStartDate;
+    final filterByPlannedEndDate = f.plannedEndDate;
+    final filterByDeadlineStartDate = f.deadlineStartDate;
+    final filterByDeadlineEndDate = f.deadlineEndDate;
+    final filterDateOr = f.dateOr;
+    final filterByCompleted = f.completed;
+    final filterByCompletedStartDate = f.completedStartDate;
+    final filterByCompletedEndDate = f.completedEndDate;
+    final filterBySearch = f.search;
+    final filterByParentTaskId = f.parentTaskId;
+    final areParentAndSubTasksIncluded = f.includeParentAndSubTasks;
+    final sortBy = f.sortBy;
+    final sortByCustomSort = f.sortByCustomSort;
+    final ignoreArchivedTagVisibility = f.ignoreArchivedTagVisibility;
     // Build conditions for the query
     final conditions = <String>[];
     final variables = <Variable>[];
@@ -457,7 +460,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       );
 
       final searchResult = _buildSearchCondition(filterBySearch: filterBySearch);
-      final completionResult = _buildCompletionCondition(filterByCompleted: filterByCompleted, areParentAndSubTasksIncluded: areParentAndSubTasksIncluded);
+      final completionResult = _buildCompletionCondition(
+          filterByCompleted: filterByCompleted, areParentAndSubTasksIncluded: areParentAndSubTasksIncluded);
 
       final parentSubtaskResult = _buildParentAndSubtaskFilterCondition(
         searchCondition: searchResult.condition,
@@ -620,6 +624,21 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   @override
+  Future<PaginatedList<TaskWithTotalDuration>> getListWithFilter({
+    required int pageIndex,
+    required int pageSize,
+    TaskQueryFilter? filter,
+    bool includeDeleted = false,
+  }) {
+    return getListWithOptions(
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      filter: filter,
+      includeDeleted: includeDeleted,
+    );
+  }
+
+  @override
   Future<List<Task>> getByRecurrenceParentId(String recurrenceParentId) async {
     final result = await database.customSelect(
       'SELECT * FROM ${table.actualTableName} WHERE recurrence_parent_id = ? AND deleted_date IS NULL',
@@ -665,7 +684,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   /// Builds date filter conditions (planned and deadline dates).
-  /// Returns tuple of (dateConditionString, List<Variable>).
+  /// Returns tuple of (dateConditionString, List&lt;Variable&gt;).
   ({String condition, List<Variable> variables}) _buildDateCondition({
     DateTime? filterByPlannedStartDate,
     DateTime? filterByPlannedEndDate,
@@ -733,7 +752,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   /// Builds search filter condition.
-  /// Returns tuple of (searchConditionString, List<Variable>).
+  /// Returns tuple of (searchConditionString, List&lt;Variable&gt;).
   ({String condition, List<Variable> variables}) _buildSearchCondition({
     String? filterBySearch,
   }) {
@@ -750,12 +769,13 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   /// Builds completion status filter condition.
-  /// Returns tuple of (conditionString, List<Variable>).
-  ({String condition, List<Variable> variables}) _buildCompletionCondition({bool? filterByCompleted, required bool areParentAndSubTasksIncluded}) {
+  /// Returns tuple of (conditionString, List&lt;Variable&gt;).
+  ({String condition, List<Variable> variables}) _buildCompletionCondition(
+      {bool? filterByCompleted, required bool areParentAndSubTasksIncluded}) {
     final variables = <Variable>[];
-    
+
     if (filterByCompleted == null) return (condition: '1=1', variables: variables);
-    
+
     if (areParentAndSubTasksIncluded) {
       // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent is completed
       final condition = filterByCompleted
@@ -769,7 +789,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
             AND NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NOT NULL)
             AND NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
           )''';
-      
+
       return (condition: condition, variables: variables);
     } else {
       final condition = filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
@@ -789,10 +809,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     required List<String>? filterByTags,
   }) {
     final conditions = [searchCondition, dateCondition, completedCondition];
-    final variables = <Variable>[]
-      ..addAll(searchVariables)
-      ..addAll(dateVariables)
-      ..addAll(completedVariables);
+    final variables = <Variable>[...searchVariables, ...dateVariables, ...completedVariables];
 
     if (filterByTags != null && filterByTags.isNotEmpty) {
       final tagPlaceholders = List.filled(filterByTags.length, '?').join(',');

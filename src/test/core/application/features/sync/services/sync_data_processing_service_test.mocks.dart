@@ -7,18 +7,14 @@ import 'dart:async' as _i6;
 
 import 'package:acore/acore.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
-import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
-    as _i3;
-import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart'
-    as _i4;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart'
-    as _i7;
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
-    as _i5;
-import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart'
-    as _i8;
-import 'package:whph/core/domain/features/tasks/task.dart' as _i9;
+import 'package:mockito/src/dummies.dart' as _i11;
+import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart' as _i3;
+import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart' as _i4;
+import 'package:whph/core/application/features/tasks/models/task_query_filter.dart' as _i9;
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart' as _i7;
+import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as _i5;
+import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart' as _i8;
+import 'package:whph/core/domain/features/tasks/task.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -34,8 +30,8 @@ import 'package:whph/core/domain/features/tasks/task.dart' as _i9;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakePaginatedSyncData_0<T1 extends _i1.BaseEntity<dynamic>>
-    extends _i2.SmartFake implements _i3.PaginatedSyncData<T1> {
+class _FakePaginatedSyncData_0<T1 extends _i1.BaseEntity<dynamic>> extends _i2.SmartFake
+    implements _i3.PaginatedSyncData<T1> {
   _FakePaginatedSyncData_0(
     Object parent,
     Invocation parentInvocation,
@@ -45,8 +41,7 @@ class _FakePaginatedSyncData_0<T1 extends _i1.BaseEntity<dynamic>>
         );
 }
 
-class _FakePaginatedList_1<T1> extends _i2.SmartFake
-    implements _i1.PaginatedList<T1> {
+class _FakePaginatedList_1<T1> extends _i2.SmartFake implements _i1.PaginatedList<T1> {
   _FakePaginatedList_1(
     Object parent,
     Invocation parentInvocation,
@@ -56,8 +51,8 @@ class _FakePaginatedList_1<T1> extends _i2.SmartFake
         );
 }
 
-class _FakeConflictResolutionResult_2<T1 extends _i1.BaseEntity<String>>
-    extends _i2.SmartFake implements _i4.ConflictResolutionResult<T1> {
+class _FakeConflictResolutionResult_2<T1 extends _i1.BaseEntity<String>> extends _i2.SmartFake
+    implements _i4.ConflictResolutionResult<T1> {
   _FakeConflictResolutionResult_2(
     Object parent,
     Invocation parentInvocation,
@@ -70,8 +65,7 @@ class _FakeConflictResolutionResult_2<T1 extends _i1.BaseEntity<String>>
 /// A class which mocks [IRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
-    implements _i5.IRepository<T, TId> {
+class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock implements _i5.IRepository<T, TId> {
   MockIRepository() {
     _i2.throwOnMissingStub(this);
   }
@@ -93,8 +87,7 @@ class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
             #entityType: entityType,
           },
         ),
-        returnValue: _i6.Future<_i3.PaginatedSyncData<T>>.value(
-            _FakePaginatedSyncData_0<T>(
+        returnValue: _i6.Future<_i3.PaginatedSyncData<T>>.value(_FakePaginatedSyncData_0<T>(
           this,
           Invocation.method(
             #getPaginatedSyncData,
@@ -109,8 +102,7 @@ class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
       ) as _i6.Future<_i3.PaginatedSyncData<T>>);
 
   @override
-  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) =>
-      (super.noSuchMethod(
+  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
         Invocation.method(
           #hardDeleteSoftDeleted,
           [beforeDate],
@@ -150,8 +142,7 @@ class MockIRepository<T extends _i1.BaseEntity<TId>, TId> extends _i2.Mock
             #customOrder: customOrder,
           },
         ),
-        returnValue:
-            _i6.Future<_i1.PaginatedList<T>>.value(_FakePaginatedList_1<T>(
+        returnValue: _i6.Future<_i1.PaginatedList<T>>.value(_FakePaginatedList_1<T>(
           this,
           Invocation.method(
             #getList,
@@ -255,66 +246,49 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
   }
 
   @override
-  _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>
-      getListWithTotalDuration(
+  _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>> getListWithTotalDuration(
     int? pageIndex,
     int? pageSize, {
     bool? includeDeleted = false,
     _i1.CustomWhereFilter? customWhereFilter,
     List<_i1.CustomOrder>? customOrder,
   }) =>
-          (super.noSuchMethod(
-            Invocation.method(
-              #getListWithTotalDuration,
-              [
-                pageIndex,
-                pageSize,
-              ],
-              {
-                #includeDeleted: includeDeleted,
-                #customWhereFilter: customWhereFilter,
-                #customOrder: customOrder,
-              },
-            ),
-            returnValue:
-                _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
-                    _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
-              this,
-              Invocation.method(
-                #getListWithTotalDuration,
-                [
-                  pageIndex,
-                  pageSize,
-                ],
-                {
-                  #includeDeleted: includeDeleted,
-                  #customWhereFilter: customWhereFilter,
-                  #customOrder: customOrder,
-                },
-              ),
-            )),
-          ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
+      (super.noSuchMethod(
+        Invocation.method(
+          #getListWithTotalDuration,
+          [
+            pageIndex,
+            pageSize,
+          ],
+          {
+            #includeDeleted: includeDeleted,
+            #customWhereFilter: customWhereFilter,
+            #customOrder: customOrder,
+          },
+        ),
+        returnValue: _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
+            _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
+          this,
+          Invocation.method(
+            #getListWithTotalDuration,
+            [
+              pageIndex,
+              pageSize,
+            ],
+            {
+              #includeDeleted: includeDeleted,
+              #customWhereFilter: customWhereFilter,
+              #customOrder: customOrder,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
 
   @override
   _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>> getListWithOptions({
     required int? pageIndex,
     required int? pageSize,
-    List<String>? filterByTags,
-    bool? filterNoTags = false,
-    DateTime? filterByPlannedStartDate,
-    DateTime? filterByPlannedEndDate,
-    DateTime? filterByDeadlineStartDate,
-    DateTime? filterByDeadlineEndDate,
-    bool? filterDateOr = false,
-    bool? filterByCompleted,
-    DateTime? filterByCompletedStartDate,
-    DateTime? filterByCompletedEndDate,
-    String? filterBySearch,
-    String? filterByParentTaskId,
-    bool? areParentAndSubTasksIncluded = false,
-    List<_i1.CustomOrder>? sortBy,
-    bool? sortByCustomSort = false,
-    bool? ignoreArchivedTagVisibility = false,
+    _i9.TaskQueryFilter? filter,
     bool? includeDeleted = false,
   }) =>
       (super.noSuchMethod(
@@ -324,28 +298,12 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
           {
             #pageIndex: pageIndex,
             #pageSize: pageSize,
-            #filterByTags: filterByTags,
-            #filterNoTags: filterNoTags,
-            #filterByPlannedStartDate: filterByPlannedStartDate,
-            #filterByPlannedEndDate: filterByPlannedEndDate,
-            #filterByDeadlineStartDate: filterByDeadlineStartDate,
-            #filterByDeadlineEndDate: filterByDeadlineEndDate,
-            #filterDateOr: filterDateOr,
-            #filterByCompleted: filterByCompleted,
-            #filterByCompletedStartDate: filterByCompletedStartDate,
-            #filterByCompletedEndDate: filterByCompletedEndDate,
-            #filterBySearch: filterBySearch,
-            #filterByParentTaskId: filterByParentTaskId,
-            #areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
-            #sortBy: sortBy,
-            #sortByCustomSort: sortByCustomSort,
-            #ignoreArchivedTagVisibility: ignoreArchivedTagVisibility,
+            #filter: filter,
             #includeDeleted: includeDeleted,
           },
         ),
-        returnValue:
-            _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
-                _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
+        returnValue: _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
+            _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
           this,
           Invocation.method(
             #getListWithOptions,
@@ -353,22 +311,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             {
               #pageIndex: pageIndex,
               #pageSize: pageSize,
-              #filterByTags: filterByTags,
-              #filterNoTags: filterNoTags,
-              #filterByPlannedStartDate: filterByPlannedStartDate,
-              #filterByPlannedEndDate: filterByPlannedEndDate,
-              #filterByDeadlineStartDate: filterByDeadlineStartDate,
-              #filterByDeadlineEndDate: filterByDeadlineEndDate,
-              #filterDateOr: filterDateOr,
-              #filterByCompleted: filterByCompleted,
-              #filterByCompletedStartDate: filterByCompletedStartDate,
-              #filterByCompletedEndDate: filterByCompletedEndDate,
-              #filterBySearch: filterBySearch,
-              #filterByParentTaskId: filterByParentTaskId,
-              #areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
-              #sortBy: sortBy,
-              #sortByCustomSort: sortByCustomSort,
-              #ignoreArchivedTagVisibility: ignoreArchivedTagVisibility,
+              #filter: filter,
               #includeDeleted: includeDeleted,
             },
           ),
@@ -376,28 +319,59 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
       ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
 
   @override
-  _i6.Future<List<_i9.Task>> getByParentTaskId(String? parentTaskId) =>
+  _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>> getListWithFilter({
+    required int? pageIndex,
+    required int? pageSize,
+    _i9.TaskQueryFilter? filter,
+    bool? includeDeleted = false,
+  }) =>
       (super.noSuchMethod(
+        Invocation.method(
+          #getListWithFilter,
+          [],
+          {
+            #pageIndex: pageIndex,
+            #pageSize: pageSize,
+            #filter: filter,
+            #includeDeleted: includeDeleted,
+          },
+        ),
+        returnValue: _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>.value(
+            _FakePaginatedList_1<_i8.TaskWithTotalDuration>(
+          this,
+          Invocation.method(
+            #getListWithFilter,
+            [],
+            {
+              #pageIndex: pageIndex,
+              #pageSize: pageSize,
+              #filter: filter,
+              #includeDeleted: includeDeleted,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i1.PaginatedList<_i8.TaskWithTotalDuration>>);
+
+  @override
+  _i6.Future<List<_i10.Task>> getByParentTaskId(String? parentTaskId) => (super.noSuchMethod(
         Invocation.method(
           #getByParentTaskId,
           [parentTaskId],
         ),
-        returnValue: _i6.Future<List<_i9.Task>>.value(<_i9.Task>[]),
-      ) as _i6.Future<List<_i9.Task>>);
+        returnValue: _i6.Future<List<_i10.Task>>.value(<_i10.Task>[]),
+      ) as _i6.Future<List<_i10.Task>>);
 
   @override
-  _i6.Future<List<_i9.Task>> getByRecurrenceParentId(
-          String? recurrenceParentId) =>
-      (super.noSuchMethod(
+  _i6.Future<List<_i10.Task>> getByRecurrenceParentId(String? recurrenceParentId) => (super.noSuchMethod(
         Invocation.method(
           #getByRecurrenceParentId,
           [recurrenceParentId],
         ),
-        returnValue: _i6.Future<List<_i9.Task>>.value(<_i9.Task>[]),
-      ) as _i6.Future<List<_i9.Task>>);
+        returnValue: _i6.Future<List<_i10.Task>>.value(<_i10.Task>[]),
+      ) as _i6.Future<List<_i10.Task>>);
 
   @override
-  _i6.Future<_i3.PaginatedSyncData<_i9.Task>> getPaginatedSyncData(
+  _i6.Future<_i3.PaginatedSyncData<_i10.Task>> getPaginatedSyncData(
     DateTime? lastSyncDate, {
     int? pageIndex = 0,
     int? pageSize = 200,
@@ -413,8 +387,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             #entityType: entityType,
           },
         ),
-        returnValue: _i6.Future<_i3.PaginatedSyncData<_i9.Task>>.value(
-            _FakePaginatedSyncData_0<_i9.Task>(
+        returnValue: _i6.Future<_i3.PaginatedSyncData<_i10.Task>>.value(_FakePaginatedSyncData_0<_i10.Task>(
           this,
           Invocation.method(
             #getPaginatedSyncData,
@@ -426,11 +399,10 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             },
           ),
         )),
-      ) as _i6.Future<_i3.PaginatedSyncData<_i9.Task>>);
+      ) as _i6.Future<_i3.PaginatedSyncData<_i10.Task>>);
 
   @override
-  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) =>
-      (super.noSuchMethod(
+  _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
         Invocation.method(
           #hardDeleteSoftDeleted,
           [beforeDate],
@@ -450,7 +422,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
       ) as _i6.Future<void>);
 
   @override
-  _i6.Future<_i1.PaginatedList<_i9.Task>> getList(
+  _i6.Future<_i1.PaginatedList<_i10.Task>> getList(
     int? pageIndex,
     int? pageSize, {
     bool? includeDeleted = false,
@@ -470,8 +442,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             #customOrder: customOrder,
           },
         ),
-        returnValue: _i6.Future<_i1.PaginatedList<_i9.Task>>.value(
-            _FakePaginatedList_1<_i9.Task>(
+        returnValue: _i6.Future<_i1.PaginatedList<_i10.Task>>.value(_FakePaginatedList_1<_i10.Task>(
           this,
           Invocation.method(
             #getList,
@@ -486,10 +457,10 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             },
           ),
         )),
-      ) as _i6.Future<_i1.PaginatedList<_i9.Task>>);
+      ) as _i6.Future<_i1.PaginatedList<_i10.Task>>);
 
   @override
-  _i6.Future<List<_i9.Task>> getAll({
+  _i6.Future<List<_i10.Task>> getAll({
     bool? includeDeleted = false,
     _i1.CustomWhereFilter? customWhereFilter,
     List<_i1.CustomOrder>? customOrder,
@@ -504,11 +475,11 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
             #customOrder: customOrder,
           },
         ),
-        returnValue: _i6.Future<List<_i9.Task>>.value(<_i9.Task>[]),
-      ) as _i6.Future<List<_i9.Task>>);
+        returnValue: _i6.Future<List<_i10.Task>>.value(<_i10.Task>[]),
+      ) as _i6.Future<List<_i10.Task>>);
 
   @override
-  _i6.Future<_i9.Task?> getById(
+  _i6.Future<_i10.Task?> getById(
     String? id, {
     bool? includeDeleted = false,
   }) =>
@@ -518,11 +489,11 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
           [id],
           {#includeDeleted: includeDeleted},
         ),
-        returnValue: _i6.Future<_i9.Task?>.value(),
-      ) as _i6.Future<_i9.Task?>);
+        returnValue: _i6.Future<_i10.Task?>.value(),
+      ) as _i6.Future<_i10.Task?>);
 
   @override
-  _i6.Future<_i9.Task?> getFirst(
+  _i6.Future<_i10.Task?> getFirst(
     _i1.CustomWhereFilter? customWhereFilter, {
     bool? includeDeleted = false,
   }) =>
@@ -532,11 +503,11 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
           [customWhereFilter],
           {#includeDeleted: includeDeleted},
         ),
-        returnValue: _i6.Future<_i9.Task?>.value(),
-      ) as _i6.Future<_i9.Task?>);
+        returnValue: _i6.Future<_i10.Task?>.value(),
+      ) as _i6.Future<_i10.Task?>);
 
   @override
-  _i6.Future<void> add(_i9.Task? item) => (super.noSuchMethod(
+  _i6.Future<void> add(_i10.Task? item) => (super.noSuchMethod(
         Invocation.method(
           #add,
           [item],
@@ -546,7 +517,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
       ) as _i6.Future<void>);
 
   @override
-  _i6.Future<void> update(_i9.Task? item) => (super.noSuchMethod(
+  _i6.Future<void> update(_i10.Task? item) => (super.noSuchMethod(
         Invocation.method(
           #update,
           [item],
@@ -556,7 +527,7 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
       ) as _i6.Future<void>);
 
   @override
-  _i6.Future<void> delete(_i9.Task? id) => (super.noSuchMethod(
+  _i6.Future<void> delete(_i10.Task? id) => (super.noSuchMethod(
         Invocation.method(
           #delete,
           [id],
@@ -569,37 +540,35 @@ class MockITaskRepository extends _i2.Mock implements _i7.ITaskRepository {
 /// A class which mocks [SyncConflictResolutionService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSyncConflictResolutionService extends _i2.Mock
-    implements _i4.SyncConflictResolutionService {
+class MockSyncConflictResolutionService extends _i2.Mock implements _i4.SyncConflictResolutionService {
   MockSyncConflictResolutionService() {
     _i2.throwOnMissingStub(this);
   }
 
   @override
-  _i4.ConflictResolutionResult<T>
-      resolveConflict<T extends _i1.BaseEntity<String>>(
+  _i4.ConflictResolutionResult<T> resolveConflict<T extends _i1.BaseEntity<String>>(
     T? localEntity,
     T? remoteEntity,
   ) =>
-          (super.noSuchMethod(
-            Invocation.method(
-              #resolveConflict,
-              [
-                localEntity,
-                remoteEntity,
-              ],
-            ),
-            returnValue: _FakeConflictResolutionResult_2<T>(
-              this,
-              Invocation.method(
-                #resolveConflict,
-                [
-                  localEntity,
-                  remoteEntity,
-                ],
-              ),
-            ),
-          ) as _i4.ConflictResolutionResult<T>);
+      (super.noSuchMethod(
+        Invocation.method(
+          #resolveConflict,
+          [
+            localEntity,
+            remoteEntity,
+          ],
+        ),
+        returnValue: _FakeConflictResolutionResult_2<T>(
+          this,
+          Invocation.method(
+            #resolveConflict,
+            [
+              localEntity,
+              remoteEntity,
+            ],
+          ),
+        ),
+      ) as _i4.ConflictResolutionResult<T>);
 
   @override
   T copyRemoteDataToExistingTask<T extends _i1.BaseEntity<String>>(
@@ -614,7 +583,7 @@ class MockSyncConflictResolutionService extends _i2.Mock
             remoteTask,
           ],
         ),
-        returnValue: _i10.dummyValue<T>(
+        returnValue: _i11.dummyValue<T>(
           this,
           Invocation.method(
             #copyRemoteDataToExistingTask,

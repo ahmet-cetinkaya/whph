@@ -18,7 +18,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final DateTime? plannedDate;
   final DateTime? deadlineDate;
   final int? estimatedTime;
-  final bool isCompleted;
+  final DateTime? completedAt;
   final List<String>? tagIdsToAdd;
   final String? parentTaskId;
   final double? order;
@@ -40,7 +40,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     DateTime? plannedDate,
     DateTime? deadlineDate,
     this.estimatedTime,
-    this.isCompleted = false,
+    DateTime? completedAt,
     this.tagIdsToAdd,
     this.parentTaskId,
     this.order,
@@ -55,6 +55,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     this.recurrenceParentId,
   })  : plannedDate = plannedDate != null ? DateTimeHelper.toUtcDateTime(plannedDate) : null,
         deadlineDate = deadlineDate != null ? DateTimeHelper.toUtcDateTime(deadlineDate) : null,
+        completedAt = completedAt != null ? DateTimeHelper.toUtcDateTime(completedAt) : null,
         recurrenceStartDate = recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(recurrenceStartDate) : null,
         recurrenceEndDate = recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(recurrenceEndDate) : null;
 }
@@ -100,12 +101,10 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.plannedDate = request.plannedDate;
       task.deadlineDate = request.deadlineDate;
       task.estimatedTime = request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null;
-      // Handle completion status using new completedAt field
-      if (request.isCompleted && !task.isCompleted) {
-        task.markCompleted();
-      } else if (!request.isCompleted && task.isCompleted) {
-        task.markNotCompleted();
-      }
+
+      // Handle completion status
+      task.completedAt = request.completedAt;
+
       task.order = request.order ?? task.order;
 
       // Always update reminder settings
@@ -170,7 +169,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
               ? request.estimatedTime
               : TaskConstants.defaultEstimatedTime,
-          completedAt: request.isCompleted ? DateTime.now().toUtc() : null,
+          completedAt: request.completedAt,
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: request.plannedDateReminderTime ?? ReminderTime.none,
@@ -190,7 +189,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     }
 
     // Auto-add time record when task is completed and has estimated time but no existing time records
-    if (request.isCompleted && task.estimatedTime != null && task.estimatedTime! > 0) {
+    final bool isTaskCompleted = request.completedAt != null;
+    if (isTaskCompleted && task.estimatedTime != null && task.estimatedTime! > 0) {
       // Check if there are already time records for this task
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
         0, 1, // Only need to check if any exist
