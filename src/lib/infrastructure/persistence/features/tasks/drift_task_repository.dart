@@ -739,43 +739,18 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     required List<String>? filterByTags,
     required List<Variable> variables,
   }) {
+    final conditions = [searchCondition, dateCondition, completedCondition];
+    variables
+      ..addAll(searchVariables)
+      ..addAll(dateVariables);
+
     if (filterByTags != null && filterByTags.isNotEmpty) {
       final tagPlaceholders = List.filled(filterByTags.length, '?').join(',');
-      final condition = '''
-          ($searchCondition AND $dateCondition AND $completedCondition
-           AND task_table.parent_task_id IS NULL
-           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
-          OR
-          ($searchCondition AND $dateCondition AND $completedCondition
-           AND task_table.parent_task_id IS NOT NULL
-           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
-        ''';
-
-      // Add variables in exact order: searchCondition -> dateCondition -> tagPlaceholders (for both branches)
-      variables
-        ..addAll(searchVariables)
-        ..addAll(dateVariables)
-        ..addAll(filterByTags.map((tagId) => Variable.withString(tagId)))
-        ..addAll(searchVariables)
-        ..addAll(dateVariables)
-        ..addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
-
-      return condition;
-    } else {
-      final condition = '''
-          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NULL AND $completedCondition)
-          OR
-          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NOT NULL AND $completedCondition)
-        ''';
-
-      // Add variables in exact order: searchCondition -> dateCondition (for both branches)
-      variables
-        ..addAll(searchVariables)
-        ..addAll(dateVariables)
-        ..addAll(searchVariables)
-        ..addAll(dateVariables);
-
-      return condition;
+      conditions.add(
+          '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0');
+      variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
     }
+
+    return '(${conditions.join(' AND ')})';
   }
 }
