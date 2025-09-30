@@ -42,6 +42,7 @@ void main() {
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         tagRepository: tagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
       );
     });
 
