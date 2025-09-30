@@ -491,117 +491,29 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         conditions.add('task_table.parent_task_id IS NULL');
       }
     } else {
-      // When showing subtasks, we need to build a more complex query that handles dates and search properly
-      String dateCondition = '1=1'; // Default to always true if no date filters
-      List<Variable> dateVariables = []; // Store date variables to be added multiple times
-      if (filterByPlannedStartDate != null ||
-          filterByPlannedEndDate != null ||
-          filterByDeadlineStartDate != null ||
-          filterByDeadlineEndDate != null) {
-        List<String> dateParts = [];
+      // Complex case: include both parent tasks and subtasks with filters applied to both
+      final dateResult = _buildDateCondition(
+        filterByPlannedStartDate: filterByPlannedStartDate,
+        filterByPlannedEndDate: filterByPlannedEndDate,
+        filterByDeadlineStartDate: filterByDeadlineStartDate,
+        filterByDeadlineEndDate: filterByDeadlineEndDate,
+        filterDateOr: filterDateOr,
+      );
 
-        if (filterByPlannedStartDate != null || filterByPlannedEndDate != null) {
-          String plannedPart = 'task_table.planned_date >= ? AND task_table.planned_date <= ?';
-          dateParts.add(plannedPart);
-          dateVariables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
-          dateVariables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
-        }
+      final searchResult = _buildSearchCondition(filterBySearch: filterBySearch);
+      final completedCondition = _buildCompletionCondition(filterByCompleted: filterByCompleted);
 
-        if (filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
-          String deadlinePart = 'task_table.deadline_date >= ? AND task_table.deadline_date <= ?';
-          dateParts.add(deadlinePart);
-          dateVariables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
-          dateVariables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
-        }
+      final parentSubtaskCondition = _buildParentAndSubtaskFilterCondition(
+        searchCondition: searchResult.condition,
+        dateCondition: dateResult.condition,
+        completedCondition: completedCondition,
+        searchVariables: searchResult.variables,
+        dateVariables: dateResult.variables,
+        filterByTags: filterByTags,
+        variables: variables,
+      );
 
-        dateCondition = dateParts.isEmpty
-            ? '1=1'
-            : (dateParts.length == 1 ? dateParts[0] : '(${dateParts.join(filterDateOr ? ' OR ' : ' AND ')})');
-      }
-
-      // Search condition for subtasks case - matches either the task itself or its parent
-      String searchCondition = '1=1'; // Default to always true if no search
-      List<Variable> searchVariables = []; // Store search variables to be added multiple times
-      if (filterBySearch?.isNotEmpty ?? false) {
-        searchCondition = '''(task_table.title LIKE ? OR 
-            EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.title LIKE ?) OR 
-            EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.title LIKE ?))''';
-        searchVariables.add(Variable.withString('%$filterBySearch%'));
-        searchVariables.add(Variable.withString('%$filterBySearch%'));
-        searchVariables.add(Variable.withString('%$filterBySearch%'));
-      }
-
-      if (filterByTags != null && filterByTags.isNotEmpty) {
-        // When showing subtasks with tag filtering, handle completed and date filters as well
-        final tagPlaceholders = List.filled(filterByTags.length, '?').join(',');
-        String completedCondition = '';
-
-        // Set conditions based on whether to show completed or uncompleted tasks
-        if (filterByCompleted != null) {
-          if (filterByCompleted) {
-            // Looking for completed tasks
-            completedCondition = 'task_table.completed_at IS NOT NULL';
-          } else {
-            // Looking for uncompleted tasks
-            completedCondition = 'task_table.completed_at IS NULL';
-          }
-        } else {
-          // Show all tasks (completed and uncompleted)
-          completedCondition = '1=1'; // Always true condition
-        }
-
-        conditions.add('''
-          ($searchCondition AND $dateCondition AND $completedCondition
-           AND task_table.parent_task_id IS NULL
-           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
-          OR
-          ($searchCondition AND $dateCondition AND $completedCondition
-           AND task_table.parent_task_id IS NOT NULL
-           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
-        ''');
-
-        // Add variables in the exact order they appear in the SQL string above
-        // First OR branch: searchCondition -> dateCondition -> tagPlaceholders
-        variables.addAll(searchVariables);
-        variables.addAll(dateVariables);
-        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
-        // Second OR branch: searchCondition -> dateCondition -> tagPlaceholders
-        variables.addAll(searchVariables);
-        variables.addAll(dateVariables);
-        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
-      } else {
-        // When showing subtasks without tag filtering but with potential completed and date filters
-        String completedCondition = '';
-
-        if (filterByCompleted != null) {
-          if (filterByCompleted) {
-            // Looking for completed tasks
-            completedCondition = 'task_table.completed_at IS NOT NULL';
-          } else {
-            // Looking for uncompleted tasks
-            completedCondition = 'task_table.completed_at IS NULL';
-          }
-        } else {
-          // Show all tasks (completed and uncompleted)
-          completedCondition = '1=1'; // Always true condition
-        }
-
-        // When showing subtasks without tag filtering, handle completed and date tasks
-        // Show: 1) matching parent tasks (completed or uncompleted as per filter) 2) subtasks that match the criteria
-        conditions.add('''
-          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NULL AND $completedCondition)
-          OR
-          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NOT NULL AND $completedCondition)
-        ''');
-
-        // Add variables in the exact order they appear in the SQL string above
-        // First OR branch: searchCondition -> dateCondition
-        variables.addAll(searchVariables);
-        variables.addAll(dateVariables);
-        // Second OR branch: searchCondition -> dateCondition
-        variables.addAll(searchVariables);
-        variables.addAll(dateVariables);
-      }
+      conditions.add(parentSubtaskCondition);
     }
 
     if (!includeDeleted) {
@@ -756,5 +668,114 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       recurrenceCount: Value(entity.recurrenceCount),
       recurrenceParentId: Value(entity.recurrenceParentId),
     );
+  }
+
+  /// Builds date filter conditions (planned and deadline dates).
+  /// Returns tuple of (dateConditionString, List<Variable>).
+  ({String condition, List<Variable> variables}) _buildDateCondition({
+    DateTime? filterByPlannedStartDate,
+    DateTime? filterByPlannedEndDate,
+    DateTime? filterByDeadlineStartDate,
+    DateTime? filterByDeadlineEndDate,
+    required bool filterDateOr,
+  }) {
+    final dateParts = <String>[];
+    final variables = <Variable>[];
+
+    if (filterByPlannedStartDate != null || filterByPlannedEndDate != null) {
+      dateParts.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
+      variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
+      variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+    }
+
+    if (filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
+      dateParts.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
+      variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
+      variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+    }
+
+    final condition = dateParts.isEmpty
+        ? '1=1'
+        : (dateParts.length == 1 ? dateParts[0] : '(${dateParts.join(filterDateOr ? ' OR ' : ' AND ')})');
+
+    return (condition: condition, variables: variables);
+  }
+
+  /// Builds search filter condition.
+  /// Returns tuple of (searchConditionString, List<Variable>).
+  ({String condition, List<Variable> variables}) _buildSearchCondition({
+    String? filterBySearch,
+  }) {
+    if (filterBySearch?.isNotEmpty ?? false) {
+      return (
+        condition: '''(task_table.title LIKE ? OR
+            EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.title LIKE ?) OR
+            EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.title LIKE ?))''',
+        variables: [
+          Variable.withString('%$filterBySearch%'),
+          Variable.withString('%$filterBySearch%'),
+          Variable.withString('%$filterBySearch%'),
+        ],
+      );
+    }
+    return (condition: '1=1', variables: <Variable>[]);
+  }
+
+  /// Builds completion status filter condition.
+  /// Returns string condition (no variables needed).
+  String _buildCompletionCondition({bool? filterByCompleted}) {
+    if (filterByCompleted == null) return '1=1';
+    return filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
+  }
+
+  /// Builds combined filter condition for parent and subtask queries.
+  /// This method consolidates the complex logic for when areParentAndSubTasksIncluded is true.
+  String _buildParentAndSubtaskFilterCondition({
+    required String searchCondition,
+    required String dateCondition,
+    required String completedCondition,
+    required List<Variable> searchVariables,
+    required List<Variable> dateVariables,
+    required List<String>? filterByTags,
+    required List<Variable> variables,
+  }) {
+    if (filterByTags != null && filterByTags.isNotEmpty) {
+      final tagPlaceholders = List.filled(filterByTags.length, '?').join(',');
+      final condition = '''
+          ($searchCondition AND $dateCondition AND $completedCondition
+           AND task_table.parent_task_id IS NULL
+           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
+          OR
+          ($searchCondition AND $dateCondition AND $completedCondition
+           AND task_table.parent_task_id IS NOT NULL
+           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
+        ''';
+
+      // Add variables in exact order: searchCondition -> dateCondition -> tagPlaceholders (for both branches)
+      variables
+        ..addAll(searchVariables)
+        ..addAll(dateVariables)
+        ..addAll(filterByTags.map((tagId) => Variable.withString(tagId)))
+        ..addAll(searchVariables)
+        ..addAll(dateVariables)
+        ..addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
+
+      return condition;
+    } else {
+      final condition = '''
+          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NULL AND $completedCondition)
+          OR
+          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NOT NULL AND $completedCondition)
+        ''';
+
+      // Add variables in exact order: searchCondition -> dateCondition (for both branches)
+      variables
+        ..addAll(searchVariables)
+        ..addAll(dateVariables)
+        ..addAll(searchVariables)
+        ..addAll(dateVariables);
+
+      return condition;
+    }
   }
 }
