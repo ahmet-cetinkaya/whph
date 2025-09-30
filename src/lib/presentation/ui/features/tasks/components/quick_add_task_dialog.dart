@@ -291,7 +291,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           estimatedTime: _estimatedTime,
           plannedDate: _plannedDate,
           deadlineDate: _deadlineDate,
-          isCompleted: widget.initialCompleted ?? false,
+          completedAt: (widget.initialCompleted ?? false) ? DateTime.now().toUtc() : null,
           parentTaskId: widget.initialParentTaskId,
         );
         return await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);

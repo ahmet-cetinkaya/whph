@@ -1,8 +1,10 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
@@ -29,6 +31,9 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
 
+  final DateTime? filterByCompletedStartDate;
+  final DateTime? filterByCompletedEndDate;
+
   final List<String>? filterByTags;
   final bool filterNoTags;
 
@@ -51,6 +56,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     DateTime? filterByDeadlineStartDate,
     DateTime? filterByDeadlineEndDate,
     this.filterDateOr = false,
+    DateTime? filterByCompletedStartDate,
+    DateTime? filterByCompletedEndDate,
     this.filterByTags,
     this.filterNoTags = false,
     this.filterByCompleted,
@@ -67,7 +74,11 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
         filterByDeadlineStartDate =
             filterByDeadlineStartDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineStartDate) : null,
         filterByDeadlineEndDate =
-            filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null;
+            filterByDeadlineEndDate != null ? DateTimeHelper.toUtcDateTime(filterByDeadlineEndDate) : null,
+        filterByCompletedStartDate =
+            filterByCompletedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByCompletedStartDate) : null,
+        filterByCompletedEndDate =
+            filterByCompletedEndDate != null ? DateTimeHelper.toUtcDateTime(filterByCompletedEndDate) : null;
 
   /// Factory constructor for search queries that includes subtasks
   factory GetListTasksQuery.forSearch({
@@ -78,6 +89,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     DateTime? filterByDeadlineStartDate,
     DateTime? filterByDeadlineEndDate,
     bool filterDateOr = false,
+    DateTime? filterByCompletedStartDate,
+    DateTime? filterByCompletedEndDate,
     List<String>? filterByTags,
     bool filterNoTags = false,
     bool? filterByCompleted,
@@ -94,6 +107,8 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       filterByDeadlineStartDate: filterByDeadlineStartDate,
       filterByDeadlineEndDate: filterByDeadlineEndDate,
       filterDateOr: filterDateOr,
+      filterByCompletedStartDate: filterByCompletedStartDate,
+      filterByCompletedEndDate: filterByCompletedEndDate,
       filterByTags: filterByTags,
       filterNoTags: filterNoTags,
       filterByCompleted: filterByCompleted,
@@ -189,22 +204,41 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   late final ITaskRepository _taskRepository;
   late final ITaskTagRepository _taskTagRepository;
   late final ITagRepository _tagRepository;
+  late final ITaskTimeRecordRepository _taskTimeRecordRepository;
 
   GetListTasksQueryHandler(
       {required ITaskRepository taskRepository,
       required ITaskTagRepository taskTagRepository,
-      required ITagRepository tagRepository})
+      required ITagRepository tagRepository,
+      required ITaskTimeRecordRepository taskTimeRecordRepository})
       : _taskRepository = taskRepository,
         _taskTagRepository = taskTagRepository,
-        _tagRepository = tagRepository;
+        _tagRepository = tagRepository,
+        _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    final tasks = await _taskRepository.getListWithTotalDuration(
-      request.pageIndex,
-      request.pageSize,
-      customWhereFilter: _getFilters(request),
-      customOrder: _getCustomOrders(request),
+    final tasks = await _taskRepository.getListWithOptions(
+      pageIndex: request.pageIndex,
+      pageSize: request.pageSize,
+      filter: TaskQueryFilter(
+        tags: request.filterByTags,
+        noTags: request.filterNoTags,
+        plannedStartDate: request.filterByPlannedStartDate,
+        plannedEndDate: request.filterByPlannedEndDate,
+        deadlineStartDate: request.filterByDeadlineStartDate,
+        deadlineEndDate: request.filterByDeadlineEndDate,
+        dateOr: request.filterDateOr,
+        completed: request.filterByCompleted,
+        completedStartDate: request.filterByCompletedStartDate,
+        completedEndDate: request.filterByCompletedEndDate,
+        search: request.filterBySearch,
+        parentTaskId: request.filterByParentTaskId,
+        includeParentAndSubTasks: request.areParentAndSubTasksIncluded,
+        sortBy: _getCustomOrders(request),
+        sortByCustomSort: request.sortByCustomSort,
+        ignoreArchivedTagVisibility: request.ignoreArchivedTagVisibility,
+      ),
     );
 
     // Fixing task orders with order value 0
@@ -259,6 +293,30 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
       }
 
+      // Fetch durations for all subtasks in a batch
+      final subTaskIds = subTasks.map((st) => st.id).toList();
+      final subTaskDurations = subTaskIds.isNotEmpty
+          ? await _taskTimeRecordRepository.getTotalDurationsByTaskIds(subTaskIds)
+          : <String, int>{};
+
+      // Convert subtasks to TaskListItem
+      final subTaskListItems = subTasks
+          .map((subTask) => TaskListItem(
+                id: subTask.id,
+                title: subTask.title,
+                isCompleted: subTask.isCompleted,
+                priority: subTask.priority,
+                plannedDate: subTask.plannedDate,
+                deadlineDate: subTask.deadlineDate,
+                estimatedTime: subTask.estimatedTime,
+                parentTaskId: subTask.parentTaskId,
+                order: subTask.order,
+                totalElapsedTime: subTaskDurations[subTask.id] ?? 0,
+                plannedDateReminderTime: subTask.plannedDateReminderTime,
+                deadlineDateReminderTime: subTask.deadlineDateReminderTime,
+              ))
+          .toList();
+
       taskListItems.add(TaskListItem(
         id: task.id,
         title: task.title,
@@ -272,6 +330,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         parentTaskId: task.parentTaskId,
         order: task.order,
         subTasksCompletionPercentage: subTasksCompletionPercentage,
+        subTasks: subTaskListItems,
         plannedDateReminderTime: task.plannedDateReminderTime,
         deadlineDateReminderTime: task.deadlineDateReminderTime,
       ));
@@ -283,88 +342,6 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
     );
-  }
-
-  CustomWhereFilter? _getFilters(GetListTasksQuery request) {
-    final conditions = <String>[];
-    final variables = <Object>[];
-
-    // Search
-    if (request.filterBySearch?.isNotEmpty ?? false) {
-      conditions.add('title LIKE ?');
-      variables.add('%${request.filterBySearch}%');
-    }
-
-    // Date filters
-    final plannedFilters = <String>[];
-    if (request.filterByPlannedStartDate != null || request.filterByPlannedEndDate != null) {
-      plannedFilters.add('planned_date >= ? AND planned_date <= ?');
-      variables.add(request.filterByPlannedStartDate ?? DateTime(0));
-      variables.add(request.filterByPlannedEndDate ?? DateTime(9999));
-    }
-    final deadlineFilters = <String>[];
-    if (request.filterByDeadlineStartDate != null || request.filterByDeadlineEndDate != null) {
-      deadlineFilters.add('deadline_date >= ? AND deadline_date <= ?');
-      variables.add(request.filterByDeadlineStartDate ?? DateTime(0));
-      variables.add(request.filterByDeadlineEndDate ?? DateTime(9999));
-    }
-    if (plannedFilters.isNotEmpty || deadlineFilters.isNotEmpty) {
-      final joiner = request.filterDateOr ? ' OR ' : ' AND ';
-      final dateBlock = <String>[...plannedFilters, ...deadlineFilters];
-      conditions.add('(${dateBlock.join(joiner)})');
-    }
-
-    // Tag filter
-    if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
-      final placeholders = List.filled(request.filterByTags!.length, '?').join(',');
-      conditions.add(
-          '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($placeholders) AND deleted_date IS NULL) > 0');
-      variables.addAll(request.filterByTags!);
-    }
-
-    // No tags filter
-    if (request.filterNoTags) {
-      conditions
-          .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
-    }
-
-    // Exclude tasks only if ALL their tags are archived (show if at least one tag is not archived)
-    if (!request.ignoreArchivedTagVisibility) {
-      conditions.add('''
-        task_table.id NOT IN (
-          SELECT DISTINCT tt1.task_id 
-          FROM task_tag_table tt1
-          WHERE tt1.deleted_date IS NULL
-          AND NOT EXISTS (
-            SELECT 1 
-            FROM task_tag_table tt2
-            INNER JOIN tag_table t ON tt2.tag_id = t.id
-            WHERE tt2.task_id = tt1.task_id 
-            AND tt2.deleted_date IS NULL
-            AND (t.is_archived = 0 OR t.is_archived IS NULL)
-          )
-        )
-      ''');
-    }
-
-    // Completed filter
-    if (request.filterByCompleted != null) {
-      conditions.add('is_completed = ?');
-      variables.add(request.filterByCompleted! ? 1 : 0);
-    }
-
-    // Parent task filter
-    if (!request.areParentAndSubTasksIncluded) {
-      if (request.filterByParentTaskId != null) {
-        conditions.add('parent_task_id = ?');
-        variables.add(request.filterByParentTaskId!);
-      } else {
-        conditions.add('parent_task_id IS NULL');
-      }
-    }
-
-    if (conditions.isEmpty) return null;
-    return CustomWhereFilter(conditions.join(' AND '), variables);
   }
 
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {

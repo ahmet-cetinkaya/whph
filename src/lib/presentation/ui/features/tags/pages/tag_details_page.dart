@@ -51,6 +51,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
   // Task list options state
   String? _taskSearchQuery;
   bool _showCompletedTasks = false;
+  bool _showSubTasks = false;
   SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
 
   final _barChartKey = GlobalKey<TagTimeBarChartState>();
@@ -253,8 +254,15 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                             _showCompletedTasks = showCompleted;
                                           });
                                         },
+                                        showSubTasks: _showSubTasks,
+                                        onSubTasksToggle: (showSubTasks) {
+                                          setState(() {
+                                            _showSubTasks = showSubTasks;
+                                          });
+                                        },
                                         showDateFilter: false,
                                         showTagFilter: false,
+                                        showSubTasksToggle: true,
                                         hasItems: true,
                                         sortConfig: _taskSortConfig,
                                         onSortChange: (newConfig) {
@@ -281,7 +289,7 @@ class _TagDetailsPageState extends State<TagDetailsPage> with AutomaticKeepAlive
                                     filterByTags: [widget.tagId],
                                     filterByCompleted: _showCompletedTasks,
                                     search: _taskSearchQuery,
-                                    includeSubTasks: true, // Always include subtasks when filtering by tags
+                                    includeSubTasks: _showSubTasks,
                                     sortConfig: _taskSortConfig,
                                     enableReordering: !_showCompletedTasks && _taskSortConfig.useCustomOrder,
                                     ignoreArchivedTagVisibility: true,

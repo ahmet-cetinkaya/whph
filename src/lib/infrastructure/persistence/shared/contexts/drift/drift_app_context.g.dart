@@ -3518,13 +3518,10 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
   @override
   late final GeneratedColumn<int> estimatedTime =
       GeneratedColumn<int>('estimated_time', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _isCompletedMeta = const VerificationMeta('isCompleted');
+  static const VerificationMeta _completedAtMeta = const VerificationMeta('completedAt');
   @override
-  late final GeneratedColumn<bool> isCompleted = GeneratedColumn<bool>('is_completed', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_completed" IN (0, 1))'),
-      defaultValue: const Constant(false));
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>('completed_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _createdDateMeta = const VerificationMeta('createdDate');
   @override
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
@@ -3594,7 +3591,7 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
         plannedDate,
         deadlineDate,
         estimatedTime,
-        isCompleted,
+        completedAt,
         createdDate,
         modifiedDate,
         deletedDate,
@@ -3644,8 +3641,8 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       context.handle(
           _estimatedTimeMeta, estimatedTime.isAcceptableOrUnknown(data['estimated_time']!, _estimatedTimeMeta));
     }
-    if (data.containsKey('is_completed')) {
-      context.handle(_isCompletedMeta, isCompleted.isAcceptableOrUnknown(data['is_completed']!, _isCompletedMeta));
+    if (data.containsKey('completed_at')) {
+      context.handle(_completedAtMeta, completedAt.isAcceptableOrUnknown(data['completed_at']!, _completedAtMeta));
     }
     if (data.containsKey('created_date')) {
       context.handle(_createdDateMeta, createdDate.isAcceptableOrUnknown(data['created_date']!, _createdDateMeta));
@@ -3705,7 +3702,7 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       priority: $TaskTableTable.$converterpriorityn
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}priority'])),
       estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
-      isCompleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
+      completedAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}completed_at']),
       parentTaskId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}parent_task_id']),
       order: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}order'])!,
       plannedDateReminderTime: $TaskTableTable.$converterplannedDateReminderTime.fromSql(
@@ -3754,7 +3751,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<DateTime?> plannedDate;
   final Value<DateTime?> deadlineDate;
   final Value<int?> estimatedTime;
-  final Value<bool> isCompleted;
+  final Value<DateTime?> completedAt;
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
@@ -3778,7 +3775,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.plannedDate = const Value.absent(),
     this.deadlineDate = const Value.absent(),
     this.estimatedTime = const Value.absent(),
-    this.isCompleted = const Value.absent(),
+    this.completedAt = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
@@ -3803,7 +3800,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.plannedDate = const Value.absent(),
     this.deadlineDate = const Value.absent(),
     this.estimatedTime = const Value.absent(),
-    this.isCompleted = const Value.absent(),
+    this.completedAt = const Value.absent(),
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
@@ -3830,7 +3827,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     Expression<DateTime>? plannedDate,
     Expression<DateTime>? deadlineDate,
     Expression<int>? estimatedTime,
-    Expression<bool>? isCompleted,
+    Expression<DateTime>? completedAt,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
@@ -3855,7 +3852,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       if (plannedDate != null) 'planned_date': plannedDate,
       if (deadlineDate != null) 'deadline_date': deadlineDate,
       if (estimatedTime != null) 'estimated_time': estimatedTime,
-      if (isCompleted != null) 'is_completed': isCompleted,
+      if (completedAt != null) 'completed_at': completedAt,
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
@@ -3882,7 +3879,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       Value<DateTime?>? plannedDate,
       Value<DateTime?>? deadlineDate,
       Value<int?>? estimatedTime,
-      Value<bool>? isCompleted,
+      Value<DateTime?>? completedAt,
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
@@ -3906,7 +3903,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       plannedDate: plannedDate ?? this.plannedDate,
       deadlineDate: deadlineDate ?? this.deadlineDate,
       estimatedTime: estimatedTime ?? this.estimatedTime,
-      isCompleted: isCompleted ?? this.isCompleted,
+      completedAt: completedAt ?? this.completedAt,
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
@@ -3951,8 +3948,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     if (estimatedTime.present) {
       map['estimated_time'] = Variable<int>(estimatedTime.value);
     }
-    if (isCompleted.present) {
-      map['is_completed'] = Variable<bool>(isCompleted.value);
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
@@ -4012,7 +4009,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           ..write('plannedDate: $plannedDate, ')
           ..write('deadlineDate: $deadlineDate, ')
           ..write('estimatedTime: $estimatedTime, ')
-          ..write('isCompleted: $isCompleted, ')
+          ..write('completedAt: $completedAt, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
@@ -7490,7 +7487,7 @@ typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   Value<DateTime?> plannedDate,
   Value<DateTime?> deadlineDate,
   Value<int?> estimatedTime,
-  Value<bool> isCompleted,
+  Value<DateTime?> completedAt,
   required DateTime createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
@@ -7515,7 +7512,7 @@ typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<DateTime?> plannedDate,
   Value<DateTime?> deadlineDate,
   Value<int?> estimatedTime,
-  Value<bool> isCompleted,
+  Value<DateTime?> completedAt,
   Value<DateTime> createdDate,
   Value<DateTime?> modifiedDate,
   Value<DateTime?> deletedDate,
@@ -7563,8 +7560,8 @@ class $$TaskTableTableFilterComposer extends Composer<_$AppDatabase, $TaskTableT
   ColumnFilters<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get isCompleted =>
-      $composableBuilder(column: $table.isCompleted, builder: (column) => ColumnFilters(column));
+  ColumnFilters<DateTime> get completedAt =>
+      $composableBuilder(column: $table.completedAt, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdDate =>
       $composableBuilder(column: $table.createdDate, builder: (column) => ColumnFilters(column));
@@ -7637,8 +7634,8 @@ class $$TaskTableTableOrderingComposer extends Composer<_$AppDatabase, $TaskTabl
   ColumnOrderings<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get isCompleted =>
-      $composableBuilder(column: $table.isCompleted, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<DateTime> get completedAt =>
+      $composableBuilder(column: $table.completedAt, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get createdDate =>
       $composableBuilder(column: $table.createdDate, builder: (column) => ColumnOrderings(column));
@@ -7710,7 +7707,8 @@ class $$TaskTableTableAnnotationComposer extends Composer<_$AppDatabase, $TaskTa
   GeneratedColumn<int> get estimatedTime =>
       $composableBuilder(column: $table.estimatedTime, builder: (column) => column);
 
-  GeneratedColumn<bool> get isCompleted => $composableBuilder(column: $table.isCompleted, builder: (column) => column);
+  GeneratedColumn<DateTime> get completedAt =>
+      $composableBuilder(column: $table.completedAt, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdDate =>
       $composableBuilder(column: $table.createdDate, builder: (column) => column);
@@ -7779,7 +7777,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<DateTime?> plannedDate = const Value.absent(),
             Value<DateTime?> deadlineDate = const Value.absent(),
             Value<int?> estimatedTime = const Value.absent(),
-            Value<bool> isCompleted = const Value.absent(),
+            Value<DateTime?> completedAt = const Value.absent(),
             Value<DateTime> createdDate = const Value.absent(),
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
@@ -7804,7 +7802,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             plannedDate: plannedDate,
             deadlineDate: deadlineDate,
             estimatedTime: estimatedTime,
-            isCompleted: isCompleted,
+            completedAt: completedAt,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,
@@ -7829,7 +7827,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<DateTime?> plannedDate = const Value.absent(),
             Value<DateTime?> deadlineDate = const Value.absent(),
             Value<int?> estimatedTime = const Value.absent(),
-            Value<bool> isCompleted = const Value.absent(),
+            Value<DateTime?> completedAt = const Value.absent(),
             required DateTime createdDate,
             Value<DateTime?> modifiedDate = const Value.absent(),
             Value<DateTime?> deletedDate = const Value.absent(),
@@ -7854,7 +7852,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             plannedDate: plannedDate,
             deadlineDate: deadlineDate,
             estimatedTime: estimatedTime,
-            isCompleted: isCompleted,
+            completedAt: completedAt,
             createdDate: createdDate,
             modifiedDate: modifiedDate,
             deletedDate: deletedDate,

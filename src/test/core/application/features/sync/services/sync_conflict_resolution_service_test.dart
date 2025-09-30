@@ -115,7 +115,7 @@ void main() {
           modifiedDate: baseTime.subtract(const Duration(minutes: 2)),
           deletedDate: baseTime, // Recent deletion
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
@@ -190,7 +190,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent1',
           plannedDate: baseTime.add(const Duration(days: 2)),
@@ -199,7 +199,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent1',
           plannedDate: baseTime.add(const Duration(days: 1)), // Earlier
@@ -221,7 +221,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent1',
           plannedDate: baseTime.add(const Duration(days: 1)), // Earlier
@@ -230,7 +230,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent1',
           plannedDate: baseTime.add(const Duration(days: 2)),
@@ -254,7 +254,7 @@ void main() {
           createdDate: baseTime,
           modifiedDate: baseTime.subtract(const Duration(minutes: 5)),
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent1',
           plannedDate: plannedDate,
@@ -264,7 +264,7 @@ void main() {
           createdDate: baseTime,
           modifiedDate: baseTime, // Newer
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent1',
           plannedDate: plannedDate, // Same planned date
@@ -288,14 +288,14 @@ void main() {
           id: 'task1',
           createdDate: DateTime.now().subtract(const Duration(minutes: 5)),
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
         final remoteTask = Task(
           id: 'task1',
           createdDate: DateTime.now(),
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
@@ -314,7 +314,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime.subtract(const Duration(minutes: 5)),
           title: 'Normal Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           // No recurrence information
         );
@@ -322,7 +322,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime,
           title: 'Normal Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
@@ -342,7 +342,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime.subtract(const Duration(minutes: 5)),
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent1',
         );
@@ -350,7 +350,7 @@ void main() {
           id: 'task1',
           createdDate: baseTime,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           recurrenceParentId: 'parent2', // Different parent
         );
@@ -372,7 +372,7 @@ void main() {
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           title: 'Old Title',
           description: 'Old Description',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
         final remoteTask = Task(
@@ -381,7 +381,7 @@ void main() {
           modifiedDate: DateTime.now(),
           title: 'New Title',
           description: 'New Description',
-          isCompleted: true,
+          completedAt: DateTime.now().subtract(const Duration(hours: 1)),
           priority: EisenhowerPriority.urgentImportant,
           estimatedTime: 7200000, // 2 hours in milliseconds
         );
@@ -434,7 +434,7 @@ void main() {
           createdDate: createdTime,
           modifiedDate: modifiedTime.subtract(const Duration(minutes: 5)),
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
         final remoteTask = Task(
@@ -442,7 +442,7 @@ void main() {
           createdDate: createdTime,
           modifiedDate: modifiedTime,
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
@@ -460,14 +460,14 @@ void main() {
           id: 'task1',
           createdDate: DateTime.now().subtract(const Duration(minutes: 5)),
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
         final remoteTask = Task(
           id: 'task1',
           createdDate: DateTime.now(),
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
@@ -490,7 +490,7 @@ Task createMockTask(String id, DateTime timestamp, {bool isDeleted = false}) {
     modifiedDate: timestamp,
     deletedDate: isDeleted ? timestamp : null,
     title: 'Test Task $id',
-    isCompleted: false,
+    completedAt: null,
     priority: EisenhowerPriority.notUrgentNotImportant,
   );
 }

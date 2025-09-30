@@ -116,7 +116,7 @@ Future<void> _backgroundToggleTask(Mediator mediator, IContainer container, Stri
       GetTaskQuery(id: taskId),
     );
 
-    final newCompletionStatus = !taskResult.isCompleted;
+    final newCompletedAt = taskResult.completedAt == null ? DateTime.now().toUtc() : null;
     await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
       SaveTaskCommand(
         id: taskResult.id,
@@ -126,7 +126,7 @@ Future<void> _backgroundToggleTask(Mediator mediator, IContainer container, Stri
         plannedDate: taskResult.plannedDate,
         deadlineDate: taskResult.deadlineDate,
         estimatedTime: taskResult.estimatedTime,
-        isCompleted: newCompletionStatus,
+        completedAt: newCompletedAt,
         parentTaskId: taskResult.parentTaskId,
         order: taskResult.order,
         plannedDateReminderTime: taskResult.plannedDateReminderTime,
@@ -140,7 +140,7 @@ Future<void> _backgroundToggleTask(Mediator mediator, IContainer container, Stri
     );
 
     // Play completion sound if task was completed
-    if (newCompletionStatus) {
+    if (newCompletedAt != null) {
       try {
         final soundPlayer = container.resolve<ISoundPlayer>();
         soundPlayer.play(SharedSounds.done, volume: 1.0);
@@ -568,7 +568,7 @@ class WidgetService {
         GetTaskQuery(id: taskId),
       );
 
-      final newCompletionStatus = !taskResult.isCompleted;
+      final newCompletedAt = taskResult.completedAt == null ? DateTime.now().toUtc() : null;
 
       await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
         SaveTaskCommand(
@@ -579,7 +579,7 @@ class WidgetService {
           plannedDate: taskResult.plannedDate,
           deadlineDate: taskResult.deadlineDate,
           estimatedTime: taskResult.estimatedTime,
-          isCompleted: newCompletionStatus,
+          completedAt: newCompletedAt,
           parentTaskId: taskResult.parentTaskId,
           order: taskResult.order,
           plannedDateReminderTime: taskResult.plannedDateReminderTime,

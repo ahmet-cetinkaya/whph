@@ -119,7 +119,7 @@ void main() {
           id: 'task-instance-1', // Same ID
           createdDate: now,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: tomorrow,
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-1',
@@ -129,7 +129,7 @@ void main() {
           id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: dayAfterTomorrow,
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-1', // Same parent
@@ -154,7 +154,7 @@ void main() {
           id: 'task-instance-1', // Same ID
           createdDate: now,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: dayAfterTomorrow,
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-1',
@@ -164,7 +164,7 @@ void main() {
           id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: tomorrow,
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-1', // Same parent
@@ -189,7 +189,7 @@ void main() {
           id: 'task-instance-1', // Same ID
           createdDate: oneMinuteAgo,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: tomorrow,
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-1',
@@ -199,7 +199,7 @@ void main() {
           id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: tomorrow, // Same planned date
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-1',
@@ -222,7 +222,7 @@ void main() {
           id: 'task-instance-1', // Same ID
           createdDate: now,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: tomorrow,
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-1',
@@ -232,7 +232,7 @@ void main() {
           id: 'task-instance-1', // Same ID - conflict scenario
           createdDate: now,
           title: 'Recurring Task',
-          isCompleted: false,
+          completedAt: null,
           plannedDate: tomorrow,
           recurrenceType: RecurrenceType.daily,
           recurrenceParentId: 'parent-task-2', // Different parent

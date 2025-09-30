@@ -234,7 +234,7 @@ void main() {
           id: '', // Invalid: empty ID
           createdDate: DateTime.now(),
           title: 'Test Task',
-          isCompleted: false,
+          completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
@@ -533,7 +533,7 @@ Task createMockTask(String id, {bool isModified = false, bool isDeleted = false}
     modifiedDate: isModified ? now.add(const Duration(minutes: 1)) : null,
     deletedDate: isDeleted ? now : null,
     title: 'Test Task $id',
-    isCompleted: false,
+    completedAt: null,
     priority: EisenhowerPriority.notUrgentNotImportant,
   );
 }

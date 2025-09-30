@@ -498,11 +498,19 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                           child: TaskList(
                             filterByCompleted: _showCompletedTasks,
                             filterByTags: _selectedTaskTagIds,
-                            filterByPlannedStartDate: DateTime(0),
-                            filterByPlannedEndDate: DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
-                            filterByDeadlineStartDate: DateTime(0),
-                            filterByDeadlineEndDate: DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                            // Only apply date filters for incomplete tasks
+                            filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                            filterByPlannedEndDate:
+                                _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                            filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                            filterByDeadlineEndDate:
+                                _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
                             filterDateOr: true,
+                            // Filter completed tasks to only show those completed today
+                            filterByCompletedStartDate:
+                                _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
+                            filterByCompletedEndDate:
+                                _showCompletedTasks ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999) : null,
                             search: _taskSearchQuery,
                             includeSubTasks: _showSubTasks,
                             onTaskCompleted: _onTasksChanged,

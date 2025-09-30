@@ -555,7 +555,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       deadlineDate: finalDeadlineDate,
       priority: _task!.priority,
       estimatedTime: _task!.estimatedTime,
-      isCompleted: _task!.isCompleted,
+      completedAt: _task!.completedAt,
       // Pass reminder settings
       plannedDateReminderTime: _task!.plannedDateReminderTime,
       deadlineDateReminderTime: _task!.deadlineDateReminderTime,
@@ -924,7 +924,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   taskId: widget.taskId,
                   isCompleted: _task!.isCompleted,
                   onToggleCompleted: () {
-                    _task!.isCompleted = !_task!.isCompleted;
+                    if (_task!.isCompleted) {
+                      _task!.markNotCompleted();
+                    } else {
+                      _task!.markCompleted();
+                    }
                     widget.onCompletedChanged?.call(_task!.isCompleted);
                   },
                   color: _task!.priority != null ? TaskUiConstants.getPriorityColor(_task!.priority) : null,

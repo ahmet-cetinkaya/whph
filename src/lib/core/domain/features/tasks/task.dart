@@ -36,7 +36,7 @@ class Task extends BaseEntity<String> {
   DateTime? plannedDate;
   DateTime? deadlineDate;
   int? estimatedTime;
-  bool isCompleted = false;
+  DateTime? completedAt;
   String? parentTaskId;
   double order = 0;
 
@@ -68,6 +68,19 @@ class Task extends BaseEntity<String> {
   // ID of the parent recurring task if this is an instance of a recurring task
   String? recurrenceParentId;
 
+  // Computed getter for backward compatibility
+  bool get isCompleted => completedAt != null;
+
+  // Convenience method to mark task as completed
+  void markCompleted() {
+    completedAt = DateTime.now().toUtc();
+  }
+
+  // Convenience method to mark task as not completed
+  void markNotCompleted() {
+    completedAt = null;
+  }
+
   Task({
     required super.id,
     required super.createdDate,
@@ -79,7 +92,7 @@ class Task extends BaseEntity<String> {
     this.deadlineDate,
     this.priority,
     this.estimatedTime,
-    required this.isCompleted,
+    this.completedAt,
     this.parentTaskId,
     this.order = 0.0,
     this.plannedDateReminderTime = ReminderTime.none,
@@ -111,7 +124,8 @@ class Task extends BaseEntity<String> {
         'plannedDate': plannedDate?.toIso8601String(),
         'deadlineDate': deadlineDate?.toIso8601String(),
         'estimatedTime': estimatedTime,
-        'isCompleted': isCompleted,
+        'completedAt': completedAt?.toIso8601String(),
+        'isCompleted': isCompleted, // Backward compatibility
         'parentTaskId': parentTaskId,
         'order': order,
         'plannedDateReminderTime': plannedDateReminderTime.toString(),
@@ -138,7 +152,7 @@ class Task extends BaseEntity<String> {
     DateTime? plannedDate,
     DateTime? deadlineDate,
     int? estimatedTime,
-    bool? isCompleted,
+    DateTime? completedAt,
     String? parentTaskId,
     double? order,
     ReminderTime? plannedDateReminderTime,
@@ -162,7 +176,7 @@ class Task extends BaseEntity<String> {
       plannedDate: plannedDate ?? this.plannedDate,
       deadlineDate: deadlineDate ?? this.deadlineDate,
       estimatedTime: estimatedTime ?? this.estimatedTime,
-      isCompleted: isCompleted ?? this.isCompleted,
+      completedAt: completedAt ?? this.completedAt,
       parentTaskId: parentTaskId ?? this.parentTaskId,
       order: order ?? this.order,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
@@ -235,6 +249,19 @@ class Task extends BaseEntity<String> {
       final recurrenceType =
           _parseEnum(RecurrenceType.values, json['recurrenceType'], RecurrenceType.none, 'recurrenceType');
 
+      // Handle backward compatibility for isCompleted -> completedAt migration
+      DateTime? completedAt;
+      if (json['completedAt'] != null) {
+        completedAt = DateTime.parse(json['completedAt'] as String);
+      } else if (json['isCompleted'] == true) {
+        // Migrate old isCompleted=true to a default completed timestamp
+        completedAt = json['modifiedDate'] != null
+            ? DateTime.parse(json['modifiedDate'] as String)
+            : json['createdDate'] != null
+                ? DateTime.parse(json['createdDate'] as String)
+                : DateTime.now();
+      }
+
       return Task(
         id: json['id'] as String,
         createdDate: DateTime.parse(json['createdDate'] as String),
@@ -246,7 +273,7 @@ class Task extends BaseEntity<String> {
         plannedDate: json['plannedDate'] != null ? DateTime.parse(json['plannedDate'] as String) : null,
         deadlineDate: json['deadlineDate'] != null ? DateTime.parse(json['deadlineDate'] as String) : null,
         estimatedTime: estimatedTime,
-        isCompleted: json['isCompleted'] as bool? ?? false,
+        completedAt: completedAt,
         parentTaskId: json['parentTaskId'] as String?,
         order: order,
         plannedDateReminderTime: plannedDateReminderTime,
