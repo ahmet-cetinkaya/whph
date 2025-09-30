@@ -498,17 +498,19 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         filterByDeadlineStartDate: filterByDeadlineStartDate,
         filterByDeadlineEndDate: filterByDeadlineEndDate,
         filterDateOr: filterDateOr,
+        areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
       );
 
       final searchResult = _buildSearchCondition(filterBySearch: filterBySearch);
-      final completedCondition = _buildCompletionCondition(filterByCompleted: filterByCompleted);
+      final completionResult = _buildCompletionCondition(filterByCompleted: filterByCompleted, areParentAndSubTasksIncluded: areParentAndSubTasksIncluded);
 
       final parentSubtaskCondition = _buildParentAndSubtaskFilterCondition(
         searchCondition: searchResult.condition,
         dateCondition: dateResult.condition,
-        completedCondition: completedCondition,
+        completedCondition: completionResult.condition,
         searchVariables: searchResult.variables,
         dateVariables: dateResult.variables,
+        completedVariables: completionResult.variables,
         filterByTags: filterByTags,
         variables: variables,
       );
@@ -678,20 +680,59 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     DateTime? filterByDeadlineStartDate,
     DateTime? filterByDeadlineEndDate,
     required bool filterDateOr,
+    required bool areParentAndSubTasksIncluded,
   }) {
     final dateParts = <String>[];
     final variables = <Variable>[];
 
     if (filterByPlannedStartDate != null || filterByPlannedEndDate != null) {
-      dateParts.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
-      variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
-      variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+      if (areParentAndSubTasksIncluded) {
+        // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
+        final plannedCondition = '''(
+          (task_table.planned_date >= ? AND task_table.planned_date <= ?)
+          OR
+          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (subtask.planned_date >= ? AND subtask.planned_date <= ?))
+          OR
+          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (parent.planned_date >= ? AND parent.planned_date <= ?))
+        )''';
+        dateParts.add(plannedCondition);
+        // Add variables for: task_table, subtask, parent
+        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+      } else {
+        dateParts.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
+        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+      }
     }
 
     if (filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
-      dateParts.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
-      variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
-      variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+      if (areParentAndSubTasksIncluded) {
+        // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
+        final deadlineCondition = '''(
+          (task_table.deadline_date >= ? AND task_table.deadline_date <= ?)
+          OR
+          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (subtask.deadline_date >= ? AND subtask.deadline_date <= ?))
+          OR
+          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (parent.deadline_date >= ? AND parent.deadline_date <= ?))
+        )''';
+        dateParts.add(deadlineCondition);
+        // Add variables for: task_table, subtask, parent
+        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+      } else {
+        dateParts.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
+        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
+        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+      }
     }
 
     final condition = dateParts.isEmpty
@@ -722,10 +763,31 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }
 
   /// Builds completion status filter condition.
-  /// Returns string condition (no variables needed).
-  String _buildCompletionCondition({bool? filterByCompleted}) {
-    if (filterByCompleted == null) return '1=1';
-    return filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
+  /// Returns tuple of (conditionString, List<Variable>).
+  ({String condition, List<Variable> variables}) _buildCompletionCondition({bool? filterByCompleted, required bool areParentAndSubTasksIncluded}) {
+    final variables = <Variable>[];
+    
+    if (filterByCompleted == null) return (condition: '1=1', variables: variables);
+    
+    if (areParentAndSubTasksIncluded) {
+      // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent is completed
+      final condition = filterByCompleted
+          ? '''(
+            task_table.completed_at IS NOT NULL
+            OR EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NOT NULL)
+            OR EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
+          )'''
+          : '''(
+            task_table.completed_at IS NULL
+            AND NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NOT NULL)
+            AND NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
+          )''';
+      
+      return (condition: condition, variables: variables);
+    } else {
+      final condition = filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
+      return (condition: condition, variables: variables);
+    }
   }
 
   /// Builds combined filter condition for parent and subtask queries.
@@ -736,13 +798,15 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     required String completedCondition,
     required List<Variable> searchVariables,
     required List<Variable> dateVariables,
+    required List<Variable> completedVariables,
     required List<String>? filterByTags,
     required List<Variable> variables,
   }) {
     final conditions = [searchCondition, dateCondition, completedCondition];
     variables
       ..addAll(searchVariables)
-      ..addAll(dateVariables);
+      ..addAll(dateVariables)
+      ..addAll(completedVariables);
 
     if (filterByTags != null && filterByTags.isNotEmpty) {
       final tagPlaceholders = List.filled(filterByTags.length, '?').join(',');
