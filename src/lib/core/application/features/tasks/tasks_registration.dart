@@ -51,6 +51,7 @@ void registerTasksFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         tagRepository: tagRepository,
+        taskTimeRecordRepository: taskTimeRecordRepository,
       ),
     )
     ..registerHandler<GetTaskQuery, GetTaskQueryResponse, GetTaskQueryHandler>(

@@ -11,6 +11,7 @@ import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -45,9 +46,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   bool _showCompletedTasks = false;
   double? _subTasksCompletionPercentage;
   Timer? _completedTasksHideTimer;
-  Key _listRebuildKey = UniqueKey();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
+  final _tasksService = container.resolve<TasksService>();
 
   // Task filter options
   String? _searchQuery;
@@ -69,30 +70,16 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
     _debounceTimer?.cancel();
 
     // Start a new debounced refresh
-    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+    _debounceTimer = Timer(const Duration(milliseconds: 150), () {
       if (!mounted) return;
 
       _isRefreshInProgress = true;
 
-      // Update the rebuild key to force TaskList to rebuild
-      setState(() {
-        _listRebuildKey = UniqueKey();
-      });
-
-      // Refresh task list
-      _refreshTasksList();
-
-      // Load task details including completion percentage
+      // Load task details including completion percentage (no list refresh needed)
       _loadTaskDetails().then((_) {
         // Mark refresh as complete
         _isRefreshInProgress = false;
       });
-    });
-  }
-
-  void _refreshTasksList() {
-    setState(() {
-      _listRebuildKey = UniqueKey(); // Force rebuild with new key
     });
   }
 
@@ -147,14 +134,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   void _onCompletedTasksToggle(bool showCompleted) {
     setState(() {
       _showCompletedTasks = showCompleted;
-      _listRebuildKey = UniqueKey();
-    });
-    Future.delayed(const Duration(milliseconds: 50), () {
-      if (mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _refreshTasksList();
-        });
-      }
     });
   }
 
@@ -162,14 +141,12 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
     setState(() {
       _searchQuery = query;
     });
-    _refreshTasksList();
   }
 
   void _onSortChange(SortConfig<TaskSortFields> newConfig) {
     setState(() {
       _taskSortConfig = newConfig;
     });
-    _refreshTasksList();
   }
 
   void _onFilterTags(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
@@ -177,11 +154,12 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
       _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
       _showNoTagsFilter = isNoneSelected;
     });
-    _refreshTasksList();
   }
 
   void _onTaskCreated(String taskId, dynamic taskData) {
-    _refreshEverything();
+    // TasksList will automatically refresh via its event listeners
+    // Only refresh task details for completion percentage update
+    _loadTaskDetails();
   }
 
   Future<void> _onClickSubTask(TaskListItem task) async {
@@ -195,21 +173,25 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
       ),
       size: DialogSize.large,
     );
-    _refreshEverything();
+    // TasksList will auto-refresh, just update completion percentage
+    _loadTaskDetails();
   }
 
   void _onSubTaskDeleted() {
-    _refreshEverything();
+    // TasksList will auto-refresh, just update completion percentage
+    _loadTaskDetails();
     Navigator.of(context).pop();
   }
 
   void _onSubTaskCompleted() {
     _hideCompletedTasks();
-    _refreshEverything();
+    // TasksList will auto-refresh, just update completion percentage
+    _loadTaskDetails();
   }
 
   void _onScheduleTask(TaskListItem task, DateTime date) {
-    _refreshEverything();
+    // TasksList will auto-refresh, just update completion percentage
+    _loadTaskDetails();
   }
 
   @override
@@ -224,15 +206,51 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   void initState() {
     super.initState();
     _loadTaskDetails();
+    _setupEventListeners();
+  }
 
-    // Add post-frame callback to ensure widget is mounted before refreshing
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _refreshTasksList();
-    });
+  void _setupEventListeners() {
+    // Listen to task events that affect this task's subtasks
+    _tasksService.onTaskCreated.addListener(_handleTaskCreated);
+    _tasksService.onTaskUpdated.addListener(_handleTaskUpdated);
+    _tasksService.onTaskDeleted.addListener(_handleTaskDeleted);
+    _tasksService.onTaskCompleted.addListener(_handleTaskCompleted);
+  }
+
+  void _removeEventListeners() {
+    _tasksService.onTaskCreated.removeListener(_handleTaskCreated);
+    _tasksService.onTaskUpdated.removeListener(_handleTaskUpdated);
+    _tasksService.onTaskDeleted.removeListener(_handleTaskDeleted);
+    _tasksService.onTaskCompleted.removeListener(_handleTaskCompleted);
+  }
+
+  void _handleTaskCreated() {
+    if (mounted) {
+      _loadTaskDetails(); // Update completion percentage
+    }
+  }
+
+  void _handleTaskUpdated() {
+    if (mounted) {
+      _loadTaskDetails(); // Update completion percentage
+    }
+  }
+
+  void _handleTaskDeleted() {
+    if (mounted) {
+      _loadTaskDetails(); // Update completion percentage
+    }
+  }
+
+  void _handleTaskCompleted() {
+    if (mounted) {
+      _loadTaskDetails(); // Update completion percentage
+    }
   }
 
   @override
   void dispose() {
+    _removeEventListeners();
     _completedTasksHideTimer?.cancel();
     _debounceTimer?.cancel();
     super.dispose();
@@ -336,7 +354,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
 
               // Sub Tasks List Section
               TaskList(
-                key: _listRebuildKey,
                 onClickTask: _onClickSubTask,
                 parentTaskId: widget.taskId,
                 filterByCompleted: _showCompletedTasks,

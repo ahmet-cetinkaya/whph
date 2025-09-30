@@ -100,7 +100,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
           deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
           estimatedTime: task.estimatedTime,
-          isCompleted: !originalCompletedState,
+          completedAt: !originalCompletedState ? DateTime.now().toUtc() : null,
           plannedDateReminderTime: task.plannedDateReminderTime,
           deadlineDateReminderTime: task.deadlineDateReminderTime,
           // CRITICAL FIX: Preserve all recurrence settings when completing the task
@@ -112,7 +112,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           recurrenceCount: task.recurrenceCount,
         );
 
-        _logger.debug('TaskCompleteButton: Saving task with isCompleted: ${command.isCompleted}');
+        _logger.debug('TaskCompleteButton: Saving task with completedAt: ${command.completedAt}');
         _logger.debug(
             'TaskCompleteButton: Task planned date before save: ${task.plannedDate} -> after UTC conversion: ${command.plannedDate}');
 
@@ -121,7 +121,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
 
         _logger.debug('TaskCompleteButton: Task save completed successfully');
 
-        if (command.isCompleted) {
+        if (command.completedAt != null) {
           _soundPlayer.play(SharedSounds.done, volume: 1.0);
         }
       },
