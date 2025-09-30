@@ -1,0 +1,6 @@
+• Aggiunta opzione per mostrare/nascondere sottotask nei dettagli del giorno per una migliore organizzazione
+• Introdotto filtraggio per intervallo di date per i tempi di completamento per analizzare i tuoi progressi
+• Aggiunto filtraggio per app di sistema vs. app utente nel tracciamento dell'uso
+• Distinzione tra tempo stimato e tempo registrato manualmente per le abitudini
+• Migliorata la registrazione del tempo e l'integrazione del timer per abitudini e task
+• Aggiunti valori predefiniti per i tempi stimati per una pianificazione delle task più facile

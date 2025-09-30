@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2025-09-30
+
+### Added
+- Add toggle for showing subtasks in tag details
+- Add completion date range filtering
+- Introduce system and user app filtering service
+- Distinguish estimated vs manually logged habit time
+- Enhance time logging and timer integration for habits/tasks
+- Set default estimated time values for habits and tasks
+- Implement habit time tracking with timer integration and display
+- Add automatic estimated time logging for habits and tasks
+- Add manual time logging with total duration display
+- Add time logging dialog and total duration query
+- Add unified timer component with pomodoro, normal, and stopwatch modes
+- Add time tracking support with new repository and schema updates
+
+### Changed
+- Add debounce to search filter input
+- Optimize queries and fix timer logging behavior
+- Optimize duration queries with batch fetching and fix timer logging
+
+### Fixed
+- Add task time record repository to registration
+- Calculate totalElapsedTime for subtasks
+- Correct filtering logic for parent and subtasks inclusion
+- Add spacing before times section in today page
+- Correct SQL variable binding order in task filtering
+- Exclude completed parent tasks when showing subtasks
+- Use DATE() for accurate planned date matching in recurrence queries
+- Resolve data loss in isolate serialization and enhance conflict resolution
+- Enhance serialization robustness and conflict resolution
+- Enhance serialization, conflict resolution, and recurrence queries
+- Address critical data loss and scalability issues in isolate serialization
+- Improve isolate serialization robustness
+- Enhance isolate DTO conversion and task recurrence parent ID handling
+- Resolve serialization, deduplication, and device pairing issues
+- Preserve existing task ID when updating with remote data
+- Prevent duplicate recurring tasks in multi-device sync
+- Enhance conflict resolution for deletions and recurring tasks
+- Prevent input conflicts during data refresh in detail views
+- Add primary keys and constraints to habit tables
+- Correct elapsed time translation key and update task recurrence locales
+- Complete translations and refactor shared keys
+- Add primary keys and constraints to habit tables
+- Prevent paste conflicts in empty text fields
+- Correct date range for calendar habit records query
+- Ensure all tagged tasks are included in time totals
+- Implement proper time unit handling for habit tracking
+- Register add habit time record command handler
+- Add time tracking support with new repository and schema updates
+
 ## [0.15.0] - 2025-09-14
 
 ### Added

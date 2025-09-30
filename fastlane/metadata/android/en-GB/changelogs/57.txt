@@ -1,0 +1,6 @@
+• Added option to show/hide subtasks in day details for better organization
+• Introduced date range filtering for completion times to analyze your progress
+• Added filtering for system vs. user apps in usage tracking
+• Distinction between estimated and manually logged time for habits
+• Improved time logging and timer integration for habits and tasks
+• Added default values for estimated times for easier task planning

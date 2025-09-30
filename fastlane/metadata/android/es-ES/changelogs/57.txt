@@ -1,0 +1,6 @@
+• Añadida opción para mostrar/ocultar subtareas en los detalles del día para una mejor organización
+• Introducido filtrado por rango de fechas para tiempos de finalización para analizar tu progreso
+• Añadido filtrado para apps del sistema vs. apps de usuario en el seguimiento de uso
+• Distinción entre tiempo estimado y tiempo registrado manualmente para hábitos
+• Mejorada la registración de tiempo e integración del temporizador para hábitos y tareas
+• Añadidos valores predeterminados para tiempos estimados para una planificación de tareas más fácil
