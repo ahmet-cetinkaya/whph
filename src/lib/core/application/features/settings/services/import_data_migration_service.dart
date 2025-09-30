@@ -26,13 +26,21 @@ class ImportDataMigrationService implements IImportDataMigrationService {
       migrationFunction: _migrate0_6_9to0_6_10,
     );
 
-    // Example migration for future version 1.1.0
-    // _migrationRegistry.registerMigration(
-    //   fromVersion: '1.0.0',
-    //   toVersion: '1.1.0',
-    //   description: 'Add new task fields and update priority system',
-    //   migrationFunction: _migrateFrom100To110,
-    // );
+    // Migration from 0.14.1 to 0.15.0: Migrate HabitRecord date to occurredAt
+    _migrationRegistry.registerMigration(
+      fromVersion: '0.14.1',
+      toVersion: '0.15.0',
+      description: 'Migrate HabitRecord date field to occurredAt',
+      migrationFunction: _migrate0_14_1to0_15_0,
+    );
+
+    // Migration from 0.15.0 to 0.16.0: Migrate task isCompleted to completedAt and add habit time tracking fields
+    _migrationRegistry.registerMigration(
+      fromVersion: '0.15.0',
+      toVersion: '0.16.0',
+      description: 'Migrate task isCompleted to completedAt and add habit time tracking fields',
+      migrationFunction: _migrate0_15_0to0_16_0,
+    );
   }
 
   @override
@@ -128,8 +136,10 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     return sortedVersions;
   }
 
-  // Migration method for adding usageDate field to AppUsageTimeRecord entities
-  // This handles all versions that don't have the usageDate field
+  /// Migration from 0.6.9 to 0.6.10
+  ///
+  /// This migration adds the usageDate field to AppUsageTimeRecord entities.
+  /// Schema version: 20 → 21
   Future<Map<String, dynamic>> _migrate0_6_9to0_6_10(Map<String, dynamic> data) async {
     Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
 
@@ -150,39 +160,120 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     return migratedData;
   }
 
-  // Example migration method for future use
-  // Future<Map<String, dynamic>> _migrateFrom100To110(Map<String, dynamic> data) async {
-  //   Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
-  //
-  //   // Example: Add new task fields
-  //   if (migratedData['tasks'] != null) {
-  //     final tasks = migratedData['tasks'] as List;
-  //     for (var task in tasks) {
-  //       if (task is Map<String, dynamic>) {
-  //         // Add new field with default value
-  //         task['estimatedDuration'] = task['estimatedDuration'] ?? 0;
-  //         task['actualDuration'] = task['actualDuration'] ?? 0;
-  //
-  //         // Transform priority system if needed
-  //         if (task['priority'] != null) {
-  //           task['priority'] = _transformPriorityValue(task['priority']);
-  //         }
-  //       }
-  //     }
-  //   }
-  //
-  //   return migratedData;
-  // }
+  /// Migration from 0.14.1 to 0.15.0
+  ///
+  /// This migration handles the HabitRecord schema change from `date` to `occurredAt`.
+  /// Schema version: 23 → 24
+  ///
+  /// Database migration (from23To24):
+  /// - Renamed HabitRecord.date to HabitRecord.occurredAt (non-nullable)
+  /// - Created HabitTimeRecord table for tracking habit time
+  Future<Map<String, dynamic>> _migrate0_14_1to0_15_0(Map<String, dynamic> data) async {
+    Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
+
+    // Migrate HabitRecord entities: date → occurredAt
+    if (migratedData['habitRecords'] != null) {
+      final habitRecords = migratedData['habitRecords'] as List;
+      for (var record in habitRecords) {
+        if (record is Map<String, dynamic>) {
+          // If occurredAt doesn't exist but date does, perform migration
+          if (!record.containsKey('occurredAt') && record.containsKey('date')) {
+            record['occurredAt'] = record['date'];
+            // Remove the deprecated date field
+            record.remove('date');
+          }
+          // Ensure occurredAt exists (fallback to createdDate if both fields are missing)
+          else if (!record.containsKey('occurredAt') && record.containsKey('createdDate')) {
+            record['occurredAt'] = record['createdDate'];
+          }
+        }
+      }
+    }
+
+    return migratedData;
+  }
+
+  /// Migration from 0.15.0 to 0.16.0
+  ///
+  /// This migration handles multiple schema changes across versions 24-28:
+  ///
+  /// Schema 25 (v0.15.0+):
+  /// - HabitTimeRecord: Added occurredAt field (nullable)
+  ///
+  /// Schema 27 (v0.16.0):
+  /// - HabitTimeRecord: Added isEstimated field to distinguish manual vs estimated time
+  ///
+  /// Schema 28 (v0.16.0):
+  /// - Task: Replaced isCompleted boolean with completedAt timestamp
+  ///
+  /// This migration ensures data compatibility when importing from v0.15.0 to v0.16.0.
+  Future<Map<String, dynamic>> _migrate0_15_0to0_16_0(Map<String, dynamic> data) async {
+    Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
+
+    // 1. Migrate Task entities: isCompleted → completedAt (Schema 28)
+    // This is a breaking change that provides better completion tracking
+    if (migratedData['tasks'] != null) {
+      final tasks = migratedData['tasks'] as List;
+      for (var task in tasks) {
+        if (task is Map<String, dynamic>) {
+          // If completedAt doesn't exist but isCompleted does, perform migration
+          if (!task.containsKey('completedAt') && task.containsKey('isCompleted')) {
+            if (task['isCompleted'] == true) {
+              // Use modifiedDate if available, otherwise createdDate, otherwise current time
+              // This provides the best estimate of when the task was completed
+              task['completedAt'] =
+                  task['modifiedDate'] ?? task['createdDate'] ?? DateTime.now().toUtc().toIso8601String();
+            } else {
+              task['completedAt'] = null;
+            }
+          }
+          // Remove the deprecated isCompleted field to clean up legacy data
+          task.remove('isCompleted');
+        }
+      }
+    }
+
+    // 2. Migrate HabitTimeRecord entities: Add new tracking fields (Schema 25, 27)
+    if (migratedData['habitTimeRecords'] != null) {
+      final habitTimeRecords = migratedData['habitTimeRecords'] as List;
+      for (var record in habitTimeRecords) {
+        if (record is Map<String, dynamic>) {
+          // Add occurredAt field if it doesn't exist (Schema 25)
+          // This field tracks when the time was actually spent
+          if (!record.containsKey('occurredAt') && record.containsKey('createdDate')) {
+            record['occurredAt'] = record['createdDate'];
+          }
+
+          // Add isEstimated field with default value false (Schema 27)
+          // Existing records are assumed to be manually logged (not estimated)
+          if (!record.containsKey('isEstimated')) {
+            record['isEstimated'] = false;
+          }
+        }
+      }
+    }
+
+    // 3. Validate HabitRecord entities: Ensure occurredAt exists
+    // This handles any edge cases where the field might be missing
+    if (migratedData['habitRecords'] != null) {
+      final habitRecords = migratedData['habitRecords'] as List;
+      for (var record in habitRecords) {
+        if (record is Map<String, dynamic>) {
+          // Ensure occurredAt field exists (fallback to createdDate if missing)
+          if (!record.containsKey('occurredAt') && record.containsKey('createdDate')) {
+            record['occurredAt'] = record['createdDate'];
+          }
+        }
+      }
+    }
+
+    return migratedData;
+  }
 
   // Helper methods for common transformations
 
   /// Transforms priority enum values between versions if needed.
   /// This is useful when enum order changes between versions.
-  ///
-  /// Example usage in migration methods:
-  /// ```dart
-  /// task['priority'] = _transformPriorityValue(task['priority']);
-  /// ```
   // ignore: unused_element
   int? _transformPriorityValue(dynamic priority) {
     if (priority == null) return null;
@@ -196,11 +287,6 @@ class ImportDataMigrationService implements IImportDataMigrationService {
 
   /// Transforms date/time values between versions if needed.
   /// This is useful when date format changes between versions.
-  ///
-  /// Example usage in migration methods:
-  /// ```dart
-  /// entity['updatedAt'] = _transformDateTimeValue(entity['updatedAt']);
-  /// ```
   // ignore: unused_element
   String? _transformDateTimeValue(dynamic dateTime) {
     if (dateTime == null) return null;
@@ -211,11 +297,6 @@ class ImportDataMigrationService implements IImportDataMigrationService {
 
   /// Adds missing fields with default values for a specific entity type.
   /// This is useful when new required fields are added in newer versions.
-  ///
-  /// Example usage in migration methods:
-  /// ```dart
-  /// entity = _addMissingFieldsWithDefaults(entity, {'newField': 'defaultValue'});
-  /// ```
   // ignore: unused_element
   Map<String, dynamic> _addMissingFieldsWithDefaults(
     Map<String, dynamic> entity,
@@ -233,11 +314,6 @@ class ImportDataMigrationService implements IImportDataMigrationService {
   }
 
   /// Removes deprecated fields that are no longer used in newer versions.
-  ///
-  /// Example usage in migration methods:
-  /// ```dart
-  /// entity = _removeDeprecatedFields(entity, ['oldField1', 'oldField2']);
-  /// ```
   // ignore: unused_element
   Map<String, dynamic> _removeDeprecatedFields(
     Map<String, dynamic> entity,
