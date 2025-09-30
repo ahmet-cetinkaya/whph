@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/tags/queries/get_list_tags_query.
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
@@ -202,14 +203,17 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   late final ITaskRepository _taskRepository;
   late final ITaskTagRepository _taskTagRepository;
   late final ITagRepository _tagRepository;
+  late final ITaskTimeRecordRepository _taskTimeRecordRepository;
 
   GetListTasksQueryHandler(
       {required ITaskRepository taskRepository,
       required ITaskTagRepository taskTagRepository,
-      required ITagRepository tagRepository})
+      required ITagRepository tagRepository,
+      required ITaskTimeRecordRepository taskTimeRecordRepository})
       : _taskRepository = taskRepository,
         _taskTagRepository = taskTagRepository,
-        _tagRepository = tagRepository;
+        _tagRepository = tagRepository,
+        _taskTimeRecordRepository = taskTimeRecordRepository;
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
@@ -286,6 +290,12 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
       }
 
+      // Fetch durations for all subtasks in a batch
+      final subTaskIds = subTasks.map((st) => st.id).toList();
+      final subTaskDurations = subTaskIds.isNotEmpty
+          ? await _taskTimeRecordRepository.getTotalDurationsByTaskIds(subTaskIds)
+          : <String, int>{};
+
       // Convert subtasks to TaskListItem
       final subTaskListItems = subTasks
           .map((subTask) => TaskListItem(
@@ -298,6 +308,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
                 estimatedTime: subTask.estimatedTime,
                 parentTaskId: subTask.parentTaskId,
                 order: subTask.order,
+                totalElapsedTime: subTaskDurations[subTask.id] ?? 0,
                 plannedDateReminderTime: subTask.plannedDateReminderTime,
                 deadlineDateReminderTime: subTask.deadlineDateReminderTime,
               ))
