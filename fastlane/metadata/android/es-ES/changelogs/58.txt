@@ -1,0 +1,1 @@
+• Solucionados problemas de importación de datos para hábitos y tareas para evitar pérdida de datos y garantizar actualizaciones fluidas
