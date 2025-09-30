@@ -392,35 +392,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     final conditions = <String>[];
     final variables = <Variable>[];
 
-    // Search and date filters - only apply globally when NOT including parent and sub tasks together
-    // When including parent and sub tasks, these filters are handled in the parent task filter section below
-    if (!areParentAndSubTasksIncluded) {
-      // Search filter for non-subtasks case
-      if (filterBySearch?.isNotEmpty ?? false) {
-        conditions.add('task_table.title LIKE ?');
-        variables.add(Variable.withString('%$filterBySearch%'));
-      }
-
-      final plannedFilters = <String>[];
-      if (filterByPlannedStartDate != null || filterByPlannedEndDate != null) {
-        plannedFilters.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
-        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
-      }
-      final deadlineFilters = <String>[];
-      if (filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
-        deadlineFilters.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
-        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
-      }
-      if (plannedFilters.isNotEmpty || deadlineFilters.isNotEmpty) {
-        final joiner = filterDateOr ? ' OR ' : ' AND ';
-        final dateBlock = <String>[...plannedFilters, ...deadlineFilters];
-        conditions.add('(${dateBlock.join(joiner)})');
-      }
-    }
-
-    // Tag filter
+    // Build basic filters that apply to both cases
     if (filterByTags != null && filterByTags.isNotEmpty) {
       final placeholders = List.filled(filterByTags.length, '?').join(',');
       conditions.add(
@@ -473,24 +445,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       }
     }
 
-    // Completed filter - apply when NOT including parent and sub tasks together
-    if (filterByCompleted != null && !areParentAndSubTasksIncluded) {
-      if (filterByCompleted) {
-        conditions.add('task_table.completed_at IS NOT NULL');
-      } else {
-        conditions.add('task_table.completed_at IS NULL');
-      }
-    }
-
-    // Parent task filter
-    if (!areParentAndSubTasksIncluded) {
-      if (filterByParentTaskId != null) {
-        conditions.add('task_table.parent_task_id = ?');
-        variables.add(Variable.withString(filterByParentTaskId));
-      } else {
-        conditions.add('task_table.parent_task_id IS NULL');
-      }
-    } else {
+    if (areParentAndSubTasksIncluded) {
       // Complex case: include both parent tasks and subtasks with filters applied to both
       final dateResult = _buildDateCondition(
         filterByPlannedStartDate: filterByPlannedStartDate,
@@ -504,7 +459,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       final searchResult = _buildSearchCondition(filterBySearch: filterBySearch);
       final completionResult = _buildCompletionCondition(filterByCompleted: filterByCompleted, areParentAndSubTasksIncluded: areParentAndSubTasksIncluded);
 
-      final parentSubtaskCondition = _buildParentAndSubtaskFilterCondition(
+      final parentSubtaskResult = _buildParentAndSubtaskFilterCondition(
         searchCondition: searchResult.condition,
         dateCondition: dateResult.condition,
         completedCondition: completionResult.condition,
@@ -512,10 +467,47 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         dateVariables: dateResult.variables,
         completedVariables: completionResult.variables,
         filterByTags: filterByTags,
-        variables: variables,
       );
 
-      conditions.add(parentSubtaskCondition);
+      conditions.add(parentSubtaskResult.condition);
+      variables.addAll(parentSubtaskResult.variables);
+    } else {
+      // Simple case: only parent tasks or only subtasks with filters applied to the main task
+      final dateResult = _buildDateCondition(
+        filterByPlannedStartDate: filterByPlannedStartDate,
+        filterByPlannedEndDate: filterByPlannedEndDate,
+        filterByDeadlineStartDate: filterByDeadlineStartDate,
+        filterByDeadlineEndDate: filterByDeadlineEndDate,
+        filterDateOr: filterDateOr,
+        areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
+      );
+
+      if (dateResult.condition != '1=1') {
+        conditions.add(dateResult.condition);
+        variables.addAll(dateResult.variables);
+      }
+
+      if (filterBySearch?.isNotEmpty ?? false) {
+        conditions.add('task_table.title LIKE ?');
+        variables.add(Variable.withString('%$filterBySearch%'));
+      }
+
+      // Completed filter - apply when NOT including parent and sub tasks together
+      if (filterByCompleted != null) {
+        if (filterByCompleted) {
+          conditions.add('task_table.completed_at IS NOT NULL');
+        } else {
+          conditions.add('task_table.completed_at IS NULL');
+        }
+      }
+
+      // Parent task filter
+      if (filterByParentTaskId != null) {
+        conditions.add('task_table.parent_task_id = ?');
+        variables.add(Variable.withString(filterByParentTaskId));
+      } else {
+        conditions.add('task_table.parent_task_id IS NULL');
+      }
     }
 
     if (!includeDeleted) {
@@ -697,16 +689,15 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         )''';
         dateParts.add(plannedCondition);
         // Add variables for: task_table, subtask, parent
-        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
-        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
-        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+        final startVar = Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0));
+        final endVar = Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999));
+        variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
         dateParts.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
-        variables.add(Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999)));
+        variables.addAll([
+          Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)),
+          Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999))
+        ]);
       }
     }
 
@@ -722,16 +713,15 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         )''';
         dateParts.add(deadlineCondition);
         // Add variables for: task_table, subtask, parent
-        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
-        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
-        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+        final startVar = Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0));
+        final endVar = Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999));
+        variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
         dateParts.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
-        variables.add(Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)));
-        variables.add(Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999)));
+        variables.addAll([
+          Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)),
+          Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999))
+        ]);
       }
     }
 
@@ -748,15 +738,12 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     String? filterBySearch,
   }) {
     if (filterBySearch?.isNotEmpty ?? false) {
+      final searchVar = Variable.withString('%$filterBySearch%');
       return (
         condition: '''(task_table.title LIKE ? OR
             EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.title LIKE ?) OR
             EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.title LIKE ?))''',
-        variables: [
-          Variable.withString('%$filterBySearch%'),
-          Variable.withString('%$filterBySearch%'),
-          Variable.withString('%$filterBySearch%'),
-        ],
+        variables: [searchVar, searchVar, searchVar],
       );
     }
     return (condition: '1=1', variables: <Variable>[]);
@@ -792,7 +779,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
   /// Builds combined filter condition for parent and subtask queries.
   /// This method consolidates the complex logic for when areParentAndSubTasksIncluded is true.
-  String _buildParentAndSubtaskFilterCondition({
+  ({String condition, List<Variable> variables}) _buildParentAndSubtaskFilterCondition({
     required String searchCondition,
     required String dateCondition,
     required String completedCondition,
@@ -800,10 +787,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     required List<Variable> dateVariables,
     required List<Variable> completedVariables,
     required List<String>? filterByTags,
-    required List<Variable> variables,
   }) {
     final conditions = [searchCondition, dateCondition, completedCondition];
-    variables
+    final variables = <Variable>[]
       ..addAll(searchVariables)
       ..addAll(dateVariables)
       ..addAll(completedVariables);
@@ -815,6 +801,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
     }
 
-    return '(${conditions.join(' AND ')})';
+    return (condition: '(${conditions.join(' AND ')})', variables: variables);
   }
 }
