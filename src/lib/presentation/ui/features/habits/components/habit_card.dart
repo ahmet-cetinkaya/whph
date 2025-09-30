@@ -266,7 +266,12 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build the subtitle widget (tags and metadata)
   Widget? _buildSubtitle() {
-    if (widget.isMiniLayout || (widget.habit.tags.isEmpty && widget.habit.estimatedTime == null)) {
+    if (widget.isMiniLayout) {
+      return null;
+    }
+
+    final timeToDisplay = widget.habit.actualTime ?? widget.habit.estimatedTime;
+    if (widget.habit.tags.isEmpty && timeToDisplay == null) {
       return null;
     }
 
@@ -277,8 +282,8 @@ class _HabitCardState extends State<HabitCard> {
         runSpacing: AppTheme.sizeSmall / 2,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          _buildTagsWidget(),
-          _buildEstimatedTimeWidget(),
+          if (widget.habit.tags.isNotEmpty) _buildTagsWidget(),
+          if (timeToDisplay != null) _buildEstimatedTimeWidget(),
         ],
       ),
     );
