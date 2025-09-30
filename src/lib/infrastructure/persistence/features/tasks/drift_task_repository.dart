@@ -392,24 +392,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     final conditions = <String>[];
     final variables = <Variable>[];
 
-    // Search filter
-    if (filterBySearch?.isNotEmpty ?? false) {
-      if (!areParentAndSubTasksIncluded) {
-        // For regular queries, just search in title
-        conditions.add('task_table.title LIKE ?');
-        variables.add(Variable.withString('%$filterBySearch%'));
-      } else {
-        // For subtasks queries, search should match either the task itself or its subtasks/parent
-        String searchCondition = '''(task_table.title LIKE ? OR 
-            EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.title LIKE ?) OR 
-            EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.title LIKE ?))''';
-        conditions.add(searchCondition);
-        variables.add(Variable.withString('%$filterBySearch%'));
-        variables.add(Variable.withString('%$filterBySearch%'));
-        variables.add(Variable.withString('%$filterBySearch%'));
-      }
-    }
-
     // Search and date filters - only apply globally when NOT including parent and sub tasks together
     // When including parent and sub tasks, these filters are handled in the parent task filter section below
     if (!areParentAndSubTasksIncluded) {
@@ -570,35 +552,23 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
         conditions.add('''
           ($searchCondition AND $dateCondition AND $completedCondition
-           AND task_table.parent_task_id IS NULL 
+           AND task_table.parent_task_id IS NULL
            AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
           OR
-          ($searchCondition AND $dateCondition AND $completedCondition  -- This ensures the subtask itself matches the completion filter
-           AND task_table.parent_task_id IS NOT NULL 
-           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)  -- This ensures the subtask has the tag
+          ($searchCondition AND $dateCondition AND $completedCondition
+           AND task_table.parent_task_id IS NOT NULL
+           AND (SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($tagPlaceholders) AND deleted_date IS NULL) > 0)
         ''');
 
-        // Add date variables for each OR branch (2 branches total)
-        // First branch
-        variables.addAll(dateVariables);
-        // Second branch
-        variables.addAll(dateVariables);
-
-        // Add tag variables for each tag subquery (always needed regardless of search)
-        // Add tag variables for parent task check
-        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
-        // Add tag variables for subtask check
-        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
-        // Add tag variables for parent check in subtask condition
-        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
-
-        // Add search and date variables for each OR branch (2 branches total)
-        // First branch
+        // Add variables in the exact order they appear in the SQL string above
+        // First OR branch: searchCondition -> dateCondition -> tagPlaceholders
         variables.addAll(searchVariables);
         variables.addAll(dateVariables);
-        // Second branch
+        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
+        // Second OR branch: searchCondition -> dateCondition -> tagPlaceholders
         variables.addAll(searchVariables);
         variables.addAll(dateVariables);
+        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
       } else {
         // When showing subtasks without tag filtering but with potential completed and date filters
         String completedCondition = '';
@@ -621,14 +591,14 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         conditions.add('''
           ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NULL AND $completedCondition)
           OR
-          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NOT NULL AND $completedCondition)  -- Show subtasks that match completion criteria
+          ($searchCondition AND $dateCondition AND task_table.parent_task_id IS NOT NULL AND $completedCondition)
         ''');
 
-        // Add search and date variables for each OR branch (2 branches total)
-        // First branch
+        // Add variables in the exact order they appear in the SQL string above
+        // First OR branch: searchCondition -> dateCondition
         variables.addAll(searchVariables);
         variables.addAll(dateVariables);
-        // Second branch
+        // Second OR branch: searchCondition -> dateCondition
         variables.addAll(searchVariables);
         variables.addAll(dateVariables);
       }
