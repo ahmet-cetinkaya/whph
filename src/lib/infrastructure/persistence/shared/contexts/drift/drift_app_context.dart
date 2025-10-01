@@ -531,15 +531,32 @@ class AppDatabase extends _$AppDatabase {
                 'CREATE INDEX idx_habit_time_record_habit_date ON habit_time_record_table (habit_id, created_date)');
           },
           from24To25: (m, schema) async {
-            // Add occurredAt column to habit_time_record_table as nullable
-            await m.addColumn(habitTimeRecordTable, habitTimeRecordTable.occurredAt);
+            // Check if habit_time_record_table exists before attempting to alter it
+            final tableExists = await customSelect('''
+              SELECT name FROM sqlite_master
+              WHERE type='table' AND name='habit_time_record_table'
+            ''').getSingleOrNull();
 
-            // Set occurred_at to created_date for existing records
-            await customStatement('''
-              UPDATE habit_time_record_table
-              SET occurred_at = created_date
-              WHERE occurred_at IS NULL
-            ''');
+            if (tableExists != null) {
+              // Check if occurred_at column already exists
+              final columnInfo = await customSelect('''
+                PRAGMA table_info(habit_time_record_table)
+              ''').get();
+
+              final occurredAtExists = columnInfo.any((row) => row.data['name'] == 'occurred_at');
+
+              if (!occurredAtExists) {
+                // Add occurredAt column to habit_time_record_table as nullable
+                await m.addColumn(habitTimeRecordTable, habitTimeRecordTable.occurredAt);
+
+                // Set occurred_at to created_date for existing records
+                await customStatement('''
+                  UPDATE habit_time_record_table
+                  SET occurred_at = created_date
+                  WHERE occurred_at IS NULL
+                ''');
+              }
+            }
           },
           from25To26: (m, schema) async {
             await transaction(() async {
@@ -574,33 +591,55 @@ class AppDatabase extends _$AppDatabase {
               await customStatement('INSERT INTO habit_table SELECT * FROM habit_table_backup;');
               await customStatement('DROP TABLE habit_table_backup;');
 
-              // Backup habit_time_record_table
-              await customStatement(
-                  'CREATE TEMPORARY TABLE habit_time_record_table_backup AS SELECT * FROM habit_time_record_table;');
+              // Check if habit_time_record_table exists before backing it up
+              final tableExists = await customSelect('''
+                SELECT name FROM sqlite_master
+                WHERE type='table' AND name='habit_time_record_table'
+              ''').getSingleOrNull();
 
-              // Drop and recreate habit_time_record_table with FK to habit_table.id
-              await customStatement('DROP TABLE IF EXISTS habit_time_record_table;');
-              await customStatement('''
-                CREATE TABLE habit_time_record_table (
-                  id TEXT NOT NULL,
-                  created_date INTEGER NOT NULL,
-                  modified_date INTEGER NULL,
-                  deleted_date INTEGER NULL,
-                  habit_id TEXT NOT NULL REFERENCES habit_table(id) ON DELETE CASCADE,
-                  duration INTEGER NOT NULL,
-                  occurred_at INTEGER NULL,
-                  PRIMARY KEY (id)
-                );
-              ''');
+              if (tableExists != null) {
+                // Backup habit_time_record_table
+                await customStatement(
+                    'CREATE TEMPORARY TABLE habit_time_record_table_backup AS SELECT * FROM habit_time_record_table;');
 
-              // Restore data to habit_time_record_table, skipping orphans
-              await customStatement('''
-                INSERT INTO habit_time_record_table
-                SELECT * FROM habit_time_record_table_backup
-                WHERE habit_id IN (SELECT id FROM habit_table);
-              ''');
+                // Drop and recreate habit_time_record_table with FK to habit_table.id
+                await customStatement('DROP TABLE IF EXISTS habit_time_record_table;');
+                await customStatement('''
+                  CREATE TABLE habit_time_record_table (
+                    id TEXT NOT NULL,
+                    created_date INTEGER NOT NULL,
+                    modified_date INTEGER NULL,
+                    deleted_date INTEGER NULL,
+                    habit_id TEXT NOT NULL REFERENCES habit_table(id) ON DELETE CASCADE,
+                    duration INTEGER NOT NULL,
+                    occurred_at INTEGER NULL,
+                    PRIMARY KEY (id)
+                  );
+                ''');
 
-              await customStatement('DROP TABLE habit_time_record_table_backup;');
+                // Restore data to habit_time_record_table, skipping orphans
+                await customStatement('''
+                  INSERT INTO habit_time_record_table
+                  SELECT * FROM habit_time_record_table_backup
+                  WHERE habit_id IN (SELECT id FROM habit_table);
+                ''');
+
+                await customStatement('DROP TABLE habit_time_record_table_backup;');
+              } else {
+                // Table doesn't exist, create it from scratch
+                await customStatement('''
+                  CREATE TABLE habit_time_record_table (
+                    id TEXT NOT NULL,
+                    created_date INTEGER NOT NULL,
+                    modified_date INTEGER NULL,
+                    deleted_date INTEGER NULL,
+                    habit_id TEXT NOT NULL REFERENCES habit_table(id) ON DELETE CASCADE,
+                    duration INTEGER NOT NULL,
+                    occurred_at INTEGER NULL,
+                    PRIMARY KEY (id)
+                  );
+                ''');
+              }
 
               // Recreate index
               await customStatement(
