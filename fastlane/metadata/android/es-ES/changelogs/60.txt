@@ -1,0 +1,2 @@
+• Mejorada la fiabilidad del inicio de la app con una mejor gestión de errores
+• Solucionados problemas de seguimiento de hábitos tras actualizaciones de la app

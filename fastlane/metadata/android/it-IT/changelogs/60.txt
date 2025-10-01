@@ -1,0 +1,2 @@
+• Migliorata l'affidabilità dell'avvio dell'app con una gestione migliorata degli errori
+• Corretto i problemi di tracciamento delle abitudini dopo gli aggiornamenti dell'app

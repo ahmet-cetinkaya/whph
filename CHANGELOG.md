@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.3] - 2025-10-01
+
+### Added
+- Add error handling for app initialization failures
+
+### Fixed
+- Remove incorrect multiline buffer assignment
+- Handle missing habit_time_record_table in migrations
+
 ## [0.16.2] - 2025-10-01
 
 ### Fixed

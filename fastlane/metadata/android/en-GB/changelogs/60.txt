@@ -1,0 +1,2 @@
+• Improved app startup reliability with enhanced error handling
+• Fixed habit tracking issues after app updates
