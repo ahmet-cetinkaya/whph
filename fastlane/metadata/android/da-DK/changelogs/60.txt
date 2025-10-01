@@ -1,0 +1,2 @@
+• Forbedret app-start pålidelighed med forbedret fejlhåndtering
+• Rettet problemer med vane-sporing efter app-opdateringer
