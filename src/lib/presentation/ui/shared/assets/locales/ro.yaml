@@ -162,6 +162,13 @@ shared:
     storage_permission: Este necesară permisiunea de stocare
     storage_permission_denied: Permisiunea de stocare a fost refuzată
     unexpected: A apărut o eroare neașteptată
+  startup_error:
+    copied_to_clipboard: Detaliile erorii au fost copiate în clipboard
+    copy_button: Copiază detaliile erorii
+    description: Ceva a mers prost în timpul pornirii aplicației. Acest lucru poate fi cauzat de o problemă de sistem sau o configurație incompatibilă.
+    details_title: Detalii Eroare
+    report_button: Raportează Problemă
+    title: Eroare la Pornirea Aplicației
   filters:
     search: Caută
   messages:

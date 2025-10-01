@@ -156,6 +156,13 @@ shared:
     storage_permission: Potrebno je dovoljenje za shranjevanje
     storage_permission_denied: Dovoljenje za shranjevanje zavrnjeno
     unexpected: Zgodila se je nepričakovana napaka
+  startup_error:
+    copied_to_clipboard: Podrobnosti napake kopirane v odložišče
+    copy_button: Kopiraj podrobnosti napake
+    description: Nekaj je šlo narobe med zagonom aplikacije. To je lahko posledica sistemske težave ali nekompatibilne konfiguracije.
+    details_title: Podrobnosti Napake
+    report_button: Prijavi Težavo
+    title: Napaka Zagona Aplikacije
   filters:
     search: Išči
   messages:

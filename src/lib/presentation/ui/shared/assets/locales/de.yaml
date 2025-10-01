@@ -162,6 +162,13 @@ shared:
     storage_permission: Speicherberechtigung erforderlich
     storage_permission_denied: Speicherberechtigung verweigert
     unexpected: Ein unerwarteter Fehler ist aufgetreten
+  startup_error:
+    copied_to_clipboard: Fehlerdetails in die Zwischenablage kopiert
+    copy_button: Fehlerdetails kopieren
+    description: Etwas ist während des App-Starts schiefgelaufen. Dies könnte auf ein Systemproblem oder eine inkompatible Konfiguration zurückzuführen sein.
+    details_title: Fehlerdetails
+    report_button: Problem melden
+    title: App-Startfehler
   filters:
     search: Suchen
   messages:

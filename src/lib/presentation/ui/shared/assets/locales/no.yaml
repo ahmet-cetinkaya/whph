@@ -156,6 +156,13 @@ shared:
     storage_permission: Lagringstillatelse kreves
     storage_permission_denied: Lagringstillatelse nektet
     unexpected: En uventet feil oppstod
+  startup_error:
+    copied_to_clipboard: Feildetaljer kopiert til utklippstavle
+    copy_button: Kopier feildetaljer
+    description: Noe gikk galt under app-start. Dette kan skyldes et systemproblem eller inkompatibel konfigurasjon.
+    details_title: Feildetaljer
+    report_button: Rapporter problem
+    title: App-startfeil
   filters:
     search: Søk
   messages:

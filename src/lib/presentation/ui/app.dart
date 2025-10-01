@@ -11,16 +11,21 @@ import 'package:whph/presentation/ui/features/about/services/abstraction/i_suppo
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
+import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
+import 'package:whph/presentation/ui/shared/widgets/startup_error_screen.dart';
+import 'package:whph/presentation/ui/shared/services/startup_error_reporter_service.dart';
 
 class App extends StatefulWidget {
   const App({
     super.key,
     required this.navigatorKey,
     required this.container,
+    this.startupErrorState,
   });
 
   final GlobalKey<NavigatorState> navigatorKey;
   final IContainer container;
+  final AppStartupErrorState? startupErrorState;
 
   @override
   State<App> createState() => _AppState();
@@ -78,6 +83,19 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    // Check for startup errors
+    final startupErrorState = widget.startupErrorState ?? AppStartupErrorState();
+    if (startupErrorState.hasStartupError) {
+      final backgroundTranslationService = BackgroundTranslationService();
+      final errorReporter = StartupErrorReporterService(startupErrorState, backgroundTranslationService);
+
+      return StartupErrorScreen(
+        errorState: startupErrorState,
+        translationService: backgroundTranslationService,
+        onReportError: errorReporter.reportError,
+      );
+    }
+
     return StreamBuilder<void>(
       stream: _themeService.themeChanges,
       builder: (context, snapshot) {

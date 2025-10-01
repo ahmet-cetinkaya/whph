@@ -152,8 +152,40 @@ class BackgroundTranslationService {
       final pathParts = indentStack.map((entry) => entry.value).toList();
       final currentPath = pathParts.join('.');
 
-      // Store value if it's not empty and doesn't look like multiline content
-      if (value.isNotEmpty && !value.startsWith('|') && !value.startsWith('>')) {
+      // Handle multiline strings (|)
+      if (value == '|' || value == '>') {
+        final multilineBuffer = StringBuffer();
+
+        // Collect all following lines that are part of this multiline string
+        int j = i + 1;
+        while (j < lines.length) {
+          final nextLine = lines[j];
+          final nextTrimmed = nextLine.trim();
+
+          // Stop if we hit an empty line or a line with same/less indentation (new key)
+          if (nextTrimmed.isEmpty) {
+            j++;
+            continue;
+          }
+
+          final nextIndent = nextLine.length - nextLine.trimLeft().length;
+          if (nextIndent <= indentLevel) {
+            break; // New key at same or higher level
+          }
+
+          // Add line to multiline content
+          if (multilineBuffer.isNotEmpty) {
+            multilineBuffer.write('\n');
+          }
+          multilineBuffer.write(nextTrimmed);
+          j++;
+        }
+
+        i = j - 1; // Update loop counter to skip processed lines
+        result[currentPath] = multilineBuffer.toString();
+      }
+      // Store value if it's not empty
+      else if (value.isNotEmpty) {
         final cleanValue = value.replaceAll('"', '').replaceAll("'", '');
         result[currentPath] = cleanValue;
       }

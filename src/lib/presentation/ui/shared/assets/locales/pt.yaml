@@ -170,6 +170,13 @@ shared:
     storage_permission: Permissão de armazenamento necessária
     storage_permission_denied: Permissão de armazenamento negada
     unexpected: Ocorreu um erro inesperado
+  startup_error:
+    copied_to_clipboard: Detalhes do erro copiados para a área de transferência
+    copy_button: Copiar detalhes do erro
+    description: Algo deu errado durante a inicialização do aplicativo. Isso pode ser devido a um problema do sistema ou configuração incompatível.
+    details_title: Detalhes do Erro
+    report_button: Relatar Problema
+    title: Erro de Inicialização do Aplicativo
   filters:
     search: Pesquisar
   messages:

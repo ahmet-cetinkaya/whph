@@ -158,6 +158,13 @@ shared:
     storage_permission: Wymagane uprawnienie do pamięci
     storage_permission_denied: Odmówiono dostępu do pamięci
     unexpected: Wystąpił nieoczekiwany błąd
+  startup_error:
+    copied_to_clipboard: Szczegóły błędu skopiowane do schowka
+    copy_button: Kopiuj szczegóły błędu
+    description: Coś poszło nie tak podczas uruchamiania aplikacji. Może to być spowodowane problemem systemowym lub niezgodną konfiguracją.
+    details_title: Szczegóły Błędu
+    report_button: Zgłoś Problem
+    title: Błąd Uruchamiania Aplikacji
   filters:
     search: Szukaj
   messages:

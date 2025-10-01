@@ -156,6 +156,13 @@ shared:
     storage_permission: Storage permission required
     storage_permission_denied: Storage permission denied
     unexpected: An unexpected error occurred
+  startup_error:
+    copied_to_clipboard: Error details copied to clipboard
+    copy_button: Copy error details
+    description: Something went wrong during app startup. This could be due to a system issue or incompatible configuration.
+    details_title: Error Details
+    report_button: Report Issue
+    title: App Startup Error
   filters:
     search: Search
   messages:

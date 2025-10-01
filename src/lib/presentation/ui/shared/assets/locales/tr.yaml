@@ -158,6 +158,13 @@ shared:
     storage_permission: Depolama izni gerekli
     storage_permission_denied: Depolama izni reddedildi
     unexpected: Beklenmedik bir hata oluştu
+  startup_error:
+    copied_to_clipboard: Hata detayları panoya kopyalandı
+    copy_button: Hata detaylarını kopyala
+    description: Uygulama başlangıcında bir şeyler ters gitti. Bu, bir sistem sorunu veya uyumsuz yapılandırma nedeniyle olabilir.
+    details_title: Hata Detayları
+    report_button: Sorunu Bildir
+    title: Uygulama Başlatma Hatası
   filters:
     search: Ara
   messages:

@@ -154,6 +154,13 @@ shared:
     storage_permission: 需要存储权限
     storage_permission_denied: 存储权限被拒绝
     unexpected: 发生意外错误
+  startup_error:
+    copied_to_clipboard: 错误详情已复制到剪贴板
+    copy_button: 复制错误详情
+    description: 应用启动过程中出现问题。这可能是由于系统问题或不兼容的配置。
+    details_title: 错误详情
+    report_button: 报告问题
+    title: 应用启动错误
   filters:
     search: 搜索
   messages:

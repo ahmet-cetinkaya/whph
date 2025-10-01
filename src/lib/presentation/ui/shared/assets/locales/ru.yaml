@@ -156,6 +156,13 @@ shared:
     storage_permission: Требуется разрешение на хранение
     storage_permission_denied: Разрешение на хранение отклонено
     unexpected: Произошла неожиданная ошибка
+  startup_error:
+    copied_to_clipboard: Детали ошибки скопированы в буфер обмена
+    copy_button: Копировать детали ошибки
+    description: Что-то пошло не так при запуске приложения. Это может быть вызвано проблемой системы или несовместимой конфигурацией.
+    details_title: Детали Ошибки
+    report_button: Сообщить о Проблеме
+    title: Ошибка Запуска Приложения
   filters:
     search: Поиск
   messages:

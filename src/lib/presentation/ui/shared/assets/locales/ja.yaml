@@ -154,6 +154,13 @@ shared:
     storage_permission: ストレージ権限が必要です
     storage_permission_denied: ストレージ権限が拒否されました
     unexpected: 予期しないエラーが発生しました
+  startup_error:
+    copied_to_clipboard: エラー詳細をクリップボードにコピーしました
+    copy_button: エラー詳細をコピー
+    description: アプリの起動中に問題が発生しました。これはシステムの問題または互換性のない構成による可能性があります。
+    details_title: エラー詳細
+    report_button: 問題を報告
+    title: アプリ起動エラー
   filters:
     search: 検索
   messages:
