@@ -162,6 +162,13 @@ shared:
     storage_permission: Opslagtoestemming vereist
     storage_permission_denied: Opslagtoestemming geweigerd
     unexpected: Er is een onverwachte fout opgetreden
+  startup_error:
+    copied_to_clipboard: Foutdetails gekopieerd naar klembord
+    copy_button: Kopieer foutdetails
+    description: Er is iets misgegaan tijdens de app-start. Dit kan te wijten zijn aan een systeemplatform of incompatibele configuratie.
+    details_title: Foutdetails
+    report_button: Probleem melden
+    title: App Startfout
   filters:
     search: Zoeken
   messages:

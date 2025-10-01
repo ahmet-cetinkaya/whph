@@ -156,6 +156,13 @@ shared:
     storage_permission: Lagerrettighed påkrævet
     storage_permission_denied: Lagerrettighed nægtet
     unexpected: Der opstod en uventet fejl
+  startup_error:
+    copied_to_clipboard: Fejldetaljer kopieret til udklipsholder
+    copy_button: Kopiér fejldetaljer
+    description: Noget gik galt under appens opstart. Dette kan skyldes et systemproblem eller inkompatibel konfiguration.
+    details_title: Fejldetaljer
+    report_button: Rapporter problem
+    title: App-opstartfejl
   filters:
     search: Søg
   messages:

@@ -208,6 +208,14 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String errorReportTemplate = 'shared.errors.report_template';
   static const String errorReportSubject = 'shared.errors.report_subject';
 
+  // Startup Error Translation Keys
+  static const String startupErrorTitle = 'shared.startup_error.title';
+  static const String startupErrorDescription = 'shared.startup_error.description';
+  static const String startupErrorDetailsTitle = 'shared.startup_error.details_title';
+  static const String copyErrorButton = 'shared.startup_error.copy_button';
+  static const String copiedToClipboard = 'shared.startup_error.copied_to_clipboard';
+  static const String reportIssueButton = 'shared.startup_error.report_button';
+
   static const String change = 'shared.change';
 
   // Date Picker Translations

@@ -39,7 +39,7 @@ class ErrorHelper {
       message: errorMessage,
       duration: const Duration(seconds: 8),
       actionWidget: FilledButton.icon(
-        onPressed: () => _sendErrorReport(error, stackTrace),
+        onPressed: () => sendErrorReport(error, stackTrace),
         icon: Icon(Icons.send, size: AppTheme.iconSizeSmall),
         label: Text(reportText),
         style: FilledButton.styleFrom(
@@ -49,7 +49,8 @@ class ErrorHelper {
     );
   }
 
-  static void _sendErrorReport(Object error, StackTrace stackTrace) {
+  /// Sends an error report via email
+  static void sendErrorReport(Object error, StackTrace stackTrace) {
     final errorBody = _translationService.translate(
       SharedTranslationKeys.errorReportTemplate,
       namedArgs: {

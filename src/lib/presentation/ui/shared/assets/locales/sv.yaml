@@ -156,6 +156,13 @@ shared:
     storage_permission: Lagringstillstånd krävs
     storage_permission_denied: Lagringstillstånd nekat
     unexpected: Ett oväntat fel uppstod
+  startup_error:
+    copied_to_clipboard: Feltdetaljer kopierade till urklipp
+    copy_button: Kopiera feltdetaljer
+    description: Något gick fel under appstarten. Detta kan bero på ett systemproblem eller inkompatibel konfiguration.
+    details_title: Feltdetaljer
+    report_button: Rapportera Problem
+    title: Appstartfel
   filters:
     search: Sök
   messages:

@@ -156,6 +156,13 @@ shared:
     storage_permission: Vyžaduje se oprávnění k úložišti
     storage_permission_denied: Oprávnění k úložišti bylo zamítnuto
     unexpected: Došlo k neočekávané chybě
+  startup_error:
+    copied_to_clipboard: Podrobnosti chyby zkopírovány do schránky
+    copy_button: Kopírovat podrobnosti chyby
+    description: Během spuštění aplikace došlo k chybě. Může to být způsobeno systémovým problémem nebo nekompatibilní konfigurací.
+    details_title: Podrobnosti chyby
+    report_button: Nahlásit problém
+    title: Chyba při spuštění aplikace
   filters:
     search: Hledat
   messages:

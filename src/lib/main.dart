@@ -10,6 +10,7 @@ import 'package:whph/presentation/ui/shared/services/app_bootstrap_service.dart'
 import 'package:whph/presentation/ui/shared/services/global_error_handler_service.dart';
 import 'package:whph/presentation/ui/shared/services/notification_payload_service.dart';
 import 'package:whph/presentation/ui/shared/services/platform_initialization_service.dart';
+import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
 import 'package:whph/core/application/features/widget/services/widget_service.dart';
 import 'package:whph/core/application/features/widget/services/widget_update_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
@@ -35,8 +36,19 @@ void main(List<String> args) async {
     // Set up global error handling
     GlobalErrorHandlerService.setupErrorHandling(navigatorKey);
 
-    // Initialize the application container first
-    container = await AppBootstrapService.initializeApp();
+    // Create startup error state tracker
+    final startupErrorState = AppStartupErrorState();
+
+    // Initialize the application container with migration error handling
+    IContainer? tempContainer;
+    try {
+      container = await AppBootstrapService.initializeApp();
+      tempContainer = container;
+    } catch (e) {
+      debugPrint('Critical error during container initialization: $e');
+      debugPrint('Cannot proceed with app initialization. Exiting...');
+      rethrow; // Cannot recover from container initialization failure
+    }
 
     // Check for single instance (desktop only)
     if (PlatformUtils.isDesktop) {
@@ -63,25 +75,44 @@ void main(List<String> args) async {
     }
 
     // Initialize core services after container is globally available
-    await AppBootstrapService.initializeCoreServices(container);
+    try {
+      await AppBootstrapService.initializeCoreServices(tempContainer);
 
-    // Initialize platform-specific features
-    await PlatformInitializationService.initializeDesktop(container);
-    await PlatformInitializationService.initializeMobile(container);
+      // Initialize platform-specific features
+      await PlatformInitializationService.initializeDesktop(tempContainer);
+      await PlatformInitializationService.initializeMobile(tempContainer);
+    } catch (e, stackTrace) {
+      debugPrint('Startup error during service initialization: $e');
+      startupErrorState.setStartupError(e, stackTrace);
+
+      // Launch app with error screen showing the startup error
+      final translationService = tempContainer.resolve<ITranslationService>();
+      runApp(
+        translationService.wrapWithTranslations(
+          App(
+            navigatorKey: navigatorKey,
+            container: tempContainer,
+            startupErrorState: startupErrorState,
+          ),
+        ),
+      );
+      return;
+    }
 
     // Set up notification handling
-    final payloadHandler = container.resolve<INotificationPayloadHandler>();
+    final payloadHandler = tempContainer.resolve<INotificationPayloadHandler>();
     NotificationPayloadService.setupNotificationListener(payloadHandler);
 
     // Get translation service for app wrapper
-    final translationService = container.resolve<ITranslationService>();
+    final translationService = tempContainer.resolve<ITranslationService>();
 
     // Launch the application
     runApp(
       translationService.wrapWithTranslations(
         App(
           navigatorKey: navigatorKey,
-          container: container,
+          container: tempContainer,
+          startupErrorState: startupErrorState,
         ),
       ),
     );
@@ -91,8 +122,8 @@ void main(List<String> args) async {
 
     // Initialize widget service
     if (Platform.isAndroid || Platform.isIOS) {
-      final widgetService = container.resolve<WidgetService>();
-      final widgetUpdateService = container.resolve<WidgetUpdateService>();
+      final widgetService = tempContainer.resolve<WidgetService>();
+      final widgetUpdateService = tempContainer.resolve<WidgetUpdateService>();
 
       await widgetService.initialize();
       await widgetService.updateWidget();

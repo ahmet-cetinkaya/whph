@@ -176,6 +176,13 @@ shared:
     storage_permission: Permesso di archiviazione richiesto
     storage_permission_denied: Permesso di archiviazione negato
     unexpected: Si è verificato un errore imprevisto
+  startup_error:
+    copied_to_clipboard: Dettagli errore copiati negli appunti
+    copy_button: Copia dettagli errore
+    description: Qualcosa è andato storto durante l'avvio dell'app. Potrebbe essere dovuto a un problema di sistema o a una configurazione incompatibile.
+    details_title: Dettagli Errore
+    report_button: Segnala Problema
+    title: Errore Avvio App
   filters:
     search: Cerca
   messages:

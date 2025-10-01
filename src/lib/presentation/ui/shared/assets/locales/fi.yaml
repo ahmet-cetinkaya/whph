@@ -162,6 +162,13 @@ shared:
     storage_permission: Tallennuslupa vaaditaan
     storage_permission_denied: Tallennuslupa evätty
     unexpected: Odottamaton virhe tapahtui
+  startup_error:
+    copied_to_clipboard: Virheen tiedot kopioitu leikepöydälle
+    copy_button: Kopioi virheen tiedot
+    description: Jokin meni pieleen sovelluksen käynnistyksessä. Tämä voi johtua järjestelmäongelmasta tai yhteensopimattomasta kokoonpanosta.
+    details_title: Virheen Tiedot
+    report_button: Ilmoita Ongelmasta
+    title: Sovelluksen Käynnistysvirhe
   filters:
     search: Haku
   messages:
