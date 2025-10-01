@@ -1,0 +1,1 @@
+• Opravena chyba, která mohla způsobit ztrátu dat úkolů při aktualizaci aplikace.
