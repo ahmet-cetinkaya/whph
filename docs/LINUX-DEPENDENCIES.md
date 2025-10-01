@@ -25,7 +25,7 @@ sudo pacman -Syu
 sudo pacman -S gtk3 gstreamer gst-plugins-base gst-plugins-good
 
 # Install system integration
-sudo pacman -S libayatana-appindicator libnotify
+sudo pacman -S libayatana-appindicator libnotify zenity
 
 # Install window management tools (for app usage tracking)
 sudo pacman -S xorg-xprop wmctrl xdotool  # For X11 systems
@@ -44,7 +44,7 @@ sudo apt update
 # Install essential build and runtime libraries
 sudo apt install -y build-essential cmake pkg-config libasound2-dev libgtk-3-dev \
                     libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
-                    libayatana-appindicator3-dev libnotify-dev
+                    libayatana-appindicator3-dev libnotify-dev zenity
 
 # Install window management tools (for app usage tracking)
 sudo apt install -y x11-utils wmctrl xdotool  # For X11 systems
@@ -64,7 +64,7 @@ sudo dnf update
 sudo dnf install -y gtk3 gstreamer1 gstreamer1-plugins-base gstreamer1-plugins-good
 
 # Install system integration
-sudo dnf install -y libayatana-appindicator-gtk3 libnotify
+sudo dnf install -y libayatana-appindicator-gtk3 libnotify zenity
 
 # Install window management tools (for app usage tracking)
 sudo dnf install -y xorg-x11-utils wmctrl xdotool  # For X11 systems
@@ -84,7 +84,7 @@ sudo zypper refresh && sudo zypper update
 sudo zypper install -y gtk3 gstreamer gstreamer-plugins-base gstreamer-plugins-good
 
 # Install system integration
-sudo zypper install -y libayatana-appindicator3-1 libnotify4
+sudo zypper install -y libayatana-appindicator3-1 libnotify4 zenity
 
 # Install window management tools (for app usage tracking)
 sudo zypper install -y xprop wmctrl xdotool  # For X11 systems
@@ -108,6 +108,9 @@ gst-inspect-1.0 --version
 # Check if window management tools are available
 which xprop wmctrl xdotool  # For X11 systems
 which jq                    # For Wayland compositors
+
+# Check zenity for file picker dialogs
+which zenity
 ```
 
 ### 2. Test Audio System
@@ -171,6 +174,7 @@ chmod +x whph
 
 - **libayatana-appindicator**: Enables system tray functionality
 - **libnotify**: Enables desktop notifications
+- **zenity**: Provides GTK+ dialogs for file picker functionality in import/export features
 
 ### Window Management (Optional but Recommended)
 
