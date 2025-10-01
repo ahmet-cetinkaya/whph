@@ -1,0 +1,1 @@
+• Correction d'un bug qui pouvait entraîner la perte de données de tâches lors de la mise à jour de l'application.

@@ -1,0 +1,1 @@
+• Åtgärdad en bugg som kunde orsaka förlust av uppgiftsdata vid appuppdatering.

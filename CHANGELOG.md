@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.2] - 2025-10-01
+
+### Fixed
+- Enhance task table migration by recreating schema (fixes #96 reported by @ujo4eva)
+
 ## [0.16.1] - 2025-09-30
 
 ### Fixed
