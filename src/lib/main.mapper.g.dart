@@ -41,14 +41,15 @@ import 'core/domain/features/tasks/task_tag.dart' as x14 show TaskTag;
 import 'core/domain/features/tasks/task_time_record.dart' as x15 show TaskTimeRecord;
 import 'core/domain/shared/constants/app_assets.dart' as x28 show TrayIconType;
 import 'core/domain/shared/constants/app_theme.dart' as x45 show UiDensity;
-import 'package:acore/components/date_time_picker/date_picker_dialog.dart' as x30 show DateSelectionMode;
-import 'package:acore/components/date_time_picker/date_time_picker_translation_keys.dart' as x31
+import 'package:whph/corePackages/acore/lib/components/date_time_picker/date_picker_dialog.dart' as x30
+    show DateSelectionMode;
+import 'package:whph/corePackages/acore/lib/components/date_time_picker/date_time_picker_translation_keys.dart' as x31
     show DateTimePickerTranslationKey;
-import 'package:acore/logging/log_level.dart' as x32 show LogLevel;
-import 'package:acore/repository/models/base_entity.dart' as x0 show BaseEntity;
-import 'package:acore/repository/models/sort_direction.dart' as x33 show SortDirection;
-import 'package:acore/time/date_format_service.dart' as x29 show DateFormatType;
-import 'package:acore/time/week_days.dart' as x34 show WeekDays;
+import 'package:whph/corePackages/acore/lib/logging/log_level.dart' as x32 show LogLevel;
+import 'package:whph/corePackages/acore/lib/repository/models/base_entity.dart' as x0 show BaseEntity;
+import 'package:whph/corePackages/acore/lib/repository/models/sort_direction.dart' as x33 show SortDirection;
+import 'package:whph/corePackages/acore/lib/time/date_format_service.dart' as x29 show DateFormatType;
+import 'package:whph/corePackages/acore/lib/time/week_days.dart' as x34 show WeekDays;
 import 'package:dart_json_mapper/dart_json_mapper.dart'
     show JsonMapper, JsonMapperAdapter, SerializationOptions, DeserializationOptions, typeOf;
 import 'presentation/ui/features/sync/models/sync_qr_code_message.dart' as x27 show SyncQrCodeMessage;
