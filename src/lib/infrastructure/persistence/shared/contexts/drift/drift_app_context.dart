@@ -560,6 +560,14 @@ class AppDatabase extends _$AppDatabase {
           },
           from25To26: (m, schema) async {
             await transaction(() async {
+              // Check if order column exists in habit_table before backup
+              final orderColumnExists = await customSelect('''
+                SELECT COUNT(*) as count FROM pragma_table_info('habit_table')
+                WHERE name = 'order'
+              ''').getSingleOrNull();
+
+              final hasOrderColumn = (orderColumnExists?.data['count'] as int? ?? 0) > 0;
+
               // Backup habit_table
               await customStatement('CREATE TEMPORARY TABLE habit_table_backup AS SELECT * FROM habit_table;');
 
@@ -587,8 +595,38 @@ class AppDatabase extends _$AppDatabase {
                 );
               ''');
 
-              // Restore data to habit_table
-              await customStatement('INSERT INTO habit_table SELECT * FROM habit_table_backup;');
+              // Restore data to habit_table with explicit column mapping
+              if (hasOrderColumn) {
+                // Backup has order column, copy all columns
+                await customStatement('''
+                  INSERT INTO habit_table (
+                    id, created_date, modified_date, deleted_date, name, description,
+                    estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
+                    has_goal, target_frequency, period_days, daily_target, `order`
+                  )
+                  SELECT 
+                    id, created_date, modified_date, deleted_date, name, description,
+                    estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
+                    has_goal, target_frequency, period_days, daily_target, `order`
+                  FROM habit_table_backup;
+                ''');
+              } else {
+                // Backup missing order column, use default value and assign order based on created_date
+                await customStatement('''
+                  INSERT INTO habit_table (
+                    id, created_date, modified_date, deleted_date, name, description,
+                    estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
+                    has_goal, target_frequency, period_days, daily_target, `order`
+                  )
+                  SELECT 
+                    id, created_date, modified_date, deleted_date, name, description,
+                    estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
+                    has_goal, target_frequency, period_days, daily_target,
+                    ROW_NUMBER() OVER (ORDER BY created_date ASC) * 1000.0 as `order`
+                  FROM habit_table_backup;
+                ''');
+              }
+
               await customStatement('DROP TABLE habit_table_backup;');
 
               // Check if habit_time_record_table exists before backing it up
