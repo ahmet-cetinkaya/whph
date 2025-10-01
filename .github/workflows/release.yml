@@ -234,6 +234,8 @@ jobs:
           body: |
             **📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes**
 
+            **🐧 Linux users: See [LINUX-DEPENDENCIES.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/LINUX-DEPENDENCIES.md) for system requirements and installation instructions**
+
             ### Downloads:
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk` - Android APK
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable
