@@ -25,24 +25,6 @@ class DesktopFileService implements IFileService {
   }
 
   @override
-  Future<String?> getSavePath({
-    required String fileName,
-    required List<String> allowedExtensions,
-    String? dialogTitle,
-  }) async {
-    try {
-      return await FilePicker.platform.saveFile(
-        fileName: fileName,
-        allowedExtensions: allowedExtensions,
-        type: FileType.custom,
-        dialogTitle: dialogTitle,
-      );
-    } catch (e) {
-      throw BusinessException('Failed to get save path: $e', SharedTranslationKeys.fileSaveError);
-    }
-  }
-
-  @override
   Future<String> readFile(String filePath) async {
     try {
       final file = File(filePath);
@@ -115,6 +97,41 @@ class DesktopFileService implements IFileService {
       }
     } catch (e) {
       throw BusinessException('Failed to write binary file: $e', SharedTranslationKeys.fileWriteError);
+    }
+  }
+
+  @override
+  Future<String?> saveFile({
+    required String fileName,
+    required Uint8List data,
+    required String fileExtension,
+    bool isTextFile = false,
+  }) async {
+    try {
+      // Use traditional file picker on desktop
+      final savePath = await FilePicker.platform.saveFile(
+        fileName: fileName,
+        allowedExtensions: [fileExtension],
+        type: FileType.custom,
+      );
+
+      if (savePath == null) {
+        return null; // User cancelled
+      }
+
+      // Write the file
+      final file = File(savePath);
+      final dir = path.dirname(savePath);
+
+      if (!await Directory(dir).exists()) {
+        await Directory(dir).create(recursive: true);
+      }
+
+      await file.writeAsBytes(data);
+
+      return savePath;
+    } catch (e) {
+      throw BusinessException('Failed to save file: $e', SharedTranslationKeys.fileSaveError);
     }
   }
 }

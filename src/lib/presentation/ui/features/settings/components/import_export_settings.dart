@@ -428,15 +428,33 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           ExportDataCommand(option),
         );
 
-        // Get save path using the filename from response
-        String? savePath = await _fileService.getSavePath(
+        // Prepare data as bytes
+        Uint8List dataBytes;
+        bool isTextFile = false;
+
+        if (option == ExportDataFileOptions.backup) {
+          if (response.fileContent is! Uint8List) {
+            throw Exception('Invalid content type for backup file. Expected Uint8List.');
+          }
+          dataBytes = response.fileContent as Uint8List;
+        } else {
+          if (response.fileContent is! String) {
+            throw Exception('Invalid content type for export file. Expected String.');
+          }
+          dataBytes = Uint8List.fromList((response.fileContent as String).codeUnits);
+          isTextFile = true;
+        }
+
+        // Use the unified saveFile method which handles SAF on Android and file picker on desktop
+        final savedPath = await _fileService.saveFile(
           fileName: response.fileName,
-          allowedExtensions: [response.fileExtension],
-          dialogTitle: _translationService.translate(SettingsTranslationKeys.exportSelectPath),
+          data: dataBytes,
+          fileExtension: response.fileExtension,
+          isTextFile: isTextFile,
         );
 
         // Check if user canceled the save dialog
-        if (savePath == null) {
+        if (savedPath == null) {
           OverlayNotificationHelper.hideNotification();
           if (context.mounted) {
             OverlayNotificationHelper.showInfo(
@@ -447,33 +465,12 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           return;
         }
 
-        // Write file based on content type
-        if (option == ExportDataFileOptions.backup) {
-          if (response.fileContent is! Uint8List) {
-            throw Exception('Invalid content type for backup file. Expected Uint8List.');
-          }
-          // Write binary data for backup files
-          await _fileService.writeBinaryFile(
-            filePath: savePath,
-            data: response.fileContent as Uint8List,
-          );
-        } else {
-          if (response.fileContent is! String) {
-            throw Exception('Invalid content type for export file. Expected String.');
-          }
-          // Write string data for JSON/CSV files
-          await _fileService.writeFile(
-            filePath: savePath,
-            content: response.fileContent as String,
-          );
-        }
-
         if (context.mounted) {
           // Hide loading overlay and show success overlay notification with file path
           OverlayNotificationHelper.hideNotification();
           OverlayNotificationHelper.showSuccess(
             context: context,
-            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n📁 $savePath',
+            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n📁 $savedPath',
             duration: const Duration(seconds: 6),
           );
 
