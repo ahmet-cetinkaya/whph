@@ -182,7 +182,7 @@ class BackgroundTranslationService {
         }
 
         i = j - 1; // Update loop counter to skip processed lines
-        result[currentPath] = multilineBuffer.toString();
+
       }
       // Store value if it's not empty
       else if (value.isNotEmpty) {
