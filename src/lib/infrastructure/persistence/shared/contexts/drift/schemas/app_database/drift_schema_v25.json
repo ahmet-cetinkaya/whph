@@ -3,7 +3,9 @@
     "description": "This file contains a serialized version of schema entities for drift.",
     "version": "1.2.0"
   },
-  "options": { "store_date_time_values_as_text": false },
+  "options": {
+    "store_date_time_values_as_text": false
+  },
   "entities": [
     {
       "id": 0,
@@ -752,7 +754,7 @@
     },
     {
       "id": 8,
-      "references": [6],
+      "references": [],
       "type": "table",
       "data": {
         "name": "habit_time_record_table",
@@ -804,13 +806,9 @@
             "moor_type": "string",
             "nullable": false,
             "customConstraints": null,
-            "defaultConstraints": "REFERENCES habit_table (id) ON DELETE CASCADE",
-            "dialectAwareDefaultConstraints": {
-              "sqlite": "REFERENCES habit_table (id) ON DELETE CASCADE"
-            },
             "default_dart": null,
             "default_client_dart": null,
-            "dsl_features": ["unknown"]
+            "dsl_features": []
           },
           {
             "name": "duration",

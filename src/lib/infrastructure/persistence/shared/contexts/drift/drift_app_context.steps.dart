@@ -8038,9 +8038,9 @@ final class Schema25 extends i0.VersionedSchema {
           _column_1,
           _column_2,
           _column_3,
-          _column_60,
+          _column_11,
           _column_7,
-          _column_61,
+          _column_60,
         ],
         attachedDatabase: database,
       ),
@@ -8240,10 +8240,7 @@ class Shape35 extends i0.VersionedTable {
   i1.GeneratedColumn<DateTime> get occurredAt => columnsByName['occurred_at']! as i1.GeneratedColumn<DateTime>;
 }
 
-i1.GeneratedColumn<String> _column_60(String aliasedName) => i1.GeneratedColumn<String>('habit_id', aliasedName, false,
-    type: i1.DriftSqlType.string,
-    defaultConstraints: i1.GeneratedColumn.constraintIsAlways('REFERENCES habit_table (id) ON DELETE CASCADE'));
-i1.GeneratedColumn<DateTime> _column_61(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_60(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('occurred_at', aliasedName, true, type: i1.DriftSqlType.dateTime);
 
 final class Schema26 extends i0.VersionedSchema {
@@ -8390,7 +8387,9 @@ final class Schema26 extends i0.VersionedSchema {
         entityName: 'habit_table',
         withoutRowId: false,
         isStrict: false,
-        tableConstraints: [],
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
         columns: [
           _column_0,
           _column_1,
@@ -8442,9 +8441,9 @@ final class Schema26 extends i0.VersionedSchema {
           _column_1,
           _column_2,
           _column_3,
-          _column_60,
-          _column_7,
           _column_61,
+          _column_7,
+          _column_60,
         ],
         attachedDatabase: database,
       ),
@@ -8633,6 +8632,10 @@ final class Schema26 extends i0.VersionedSchema {
       alias: null);
 }
 
+i1.GeneratedColumn<String> _column_61(String aliasedName) => i1.GeneratedColumn<String>('habit_id', aliasedName, false,
+    type: i1.DriftSqlType.string,
+    defaultConstraints: i1.GeneratedColumn.constraintIsAlways('REFERENCES habit_table (id) ON DELETE CASCADE'));
+
 final class Schema27 extends i0.VersionedSchema {
   Schema27({required super.database}) : super(version: 27);
   @override
@@ -8777,7 +8780,9 @@ final class Schema27 extends i0.VersionedSchema {
         entityName: 'habit_table',
         withoutRowId: false,
         isStrict: false,
-        tableConstraints: [],
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
         columns: [
           _column_0,
           _column_1,
@@ -8829,9 +8834,9 @@ final class Schema27 extends i0.VersionedSchema {
           _column_1,
           _column_2,
           _column_3,
-          _column_60,
-          _column_7,
           _column_61,
+          _column_7,
+          _column_60,
           _column_62,
         ],
         attachedDatabase: database,
@@ -9236,9 +9241,9 @@ final class Schema28 extends i0.VersionedSchema {
           _column_1,
           _column_2,
           _column_3,
-          _column_60,
-          _column_7,
           _column_61,
+          _column_7,
+          _column_60,
           _column_62,
         ],
         attachedDatabase: database,
