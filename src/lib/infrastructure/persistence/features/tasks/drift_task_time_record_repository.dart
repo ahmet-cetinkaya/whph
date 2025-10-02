@@ -12,6 +12,9 @@ class TaskTimeRecordTable extends Table {
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, String, TaskTimeRecordTable>
