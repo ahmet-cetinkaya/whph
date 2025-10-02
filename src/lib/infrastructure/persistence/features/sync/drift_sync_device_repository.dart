@@ -16,6 +16,9 @@ class SyncDeviceTable extends Table {
   TextColumn get toDeviceId => text()();
   TextColumn get name => text().nullable()();
   DateTimeColumn get lastSyncDate => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftSyncDeviceRepository extends DriftBaseRepository<SyncDevice, String, SyncDeviceTable>

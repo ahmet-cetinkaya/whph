@@ -14,10 +14,16 @@ class TagTable extends Table {
   TextColumn get name => text()();
   TextColumn get color => text().nullable()();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> implements ITagRepository {
   DriftTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().tagTable);
+
+  // Constructor for testing with custom database
+  DriftTagRepository.withDatabase(AppDatabase db) : super(db, db.tagTable);
 
   @override
   Expression<String> getPrimaryKey(TagTable t) {

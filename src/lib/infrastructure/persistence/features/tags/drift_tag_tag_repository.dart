@@ -13,6 +13,9 @@ class TagTagTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get primaryTagId => text()();
   TextColumn get secondaryTagId => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftTagTagRepository extends DriftBaseRepository<TagTag, String, TagTagTable> implements ITagTagRepository {

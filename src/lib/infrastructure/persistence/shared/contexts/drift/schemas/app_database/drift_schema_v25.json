@@ -333,7 +333,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -675,7 +676,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -749,7 +751,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1082,7 +1085,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1196,7 +1200,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1284,7 +1289,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1358,7 +1364,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1687,7 +1694,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1761,7 +1769,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     }
   ]

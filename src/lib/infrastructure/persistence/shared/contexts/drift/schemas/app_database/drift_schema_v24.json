@@ -3,7 +3,9 @@
     "description": "This file contains a serialized version of schema entities for drift.",
     "version": "1.2.0"
   },
-  "options": { "store_date_time_values_as_text": false },
+  "options": {
+    "store_date_time_values_as_text": false
+  },
   "entities": [
     {
       "id": 0,
@@ -331,7 +333,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -673,7 +676,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -747,7 +751,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1070,7 +1075,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1184,7 +1190,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1272,7 +1279,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1346,7 +1354,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1675,7 +1684,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     },
     {
@@ -1749,7 +1759,8 @@
         ],
         "is_virtual": false,
         "without_rowid": false,
-        "constraints": []
+        "constraints": [],
+        "explicit_pk": ["id"]
       }
     }
   ]

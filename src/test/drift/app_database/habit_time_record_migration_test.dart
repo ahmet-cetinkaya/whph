@@ -300,7 +300,7 @@ void main() {
               target_frequency INTEGER NOT NULL DEFAULT 1,
               period_days INTEGER NOT NULL DEFAULT 7,
               daily_target INTEGER NULL,
-              \`order\` REAL NOT NULL DEFAULT 0.0,
+              `order` REAL NOT NULL DEFAULT 0.0,
               PRIMARY KEY (id)
             )
           ''');
@@ -312,12 +312,12 @@ void main() {
               INSERT INTO habit_table (
                 id, created_date, modified_date, deleted_date, name, description,
                 estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
-                has_goal, target_frequency, period_days, daily_target, \`order\`
+                has_goal, target_frequency, period_days, daily_target, `order`
               )
               SELECT 
                 id, created_date, modified_date, deleted_date, name, description,
                 estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
-                has_goal, target_frequency, period_days, daily_target, \`order\`
+                has_goal, target_frequency, period_days, daily_target, `order`
               FROM habit_table_backup
             ''');
           } else {
@@ -326,13 +326,13 @@ void main() {
               INSERT INTO habit_table (
                 id, created_date, modified_date, deleted_date, name, description,
                 estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
-                has_goal, target_frequency, period_days, daily_target, \`order\`
+                has_goal, target_frequency, period_days, daily_target, `order`
               )
               SELECT 
                 id, created_date, modified_date, deleted_date, name, description,
                 estimated_time, archived_date, has_reminder, reminder_time, reminder_days,
                 has_goal, target_frequency, period_days, daily_target,
-                ROW_NUMBER() OVER (ORDER BY created_date ASC) * 1000.0 as \`order\`
+                ROW_NUMBER() OVER (ORDER BY created_date ASC) * 1000.0 as `order`
               FROM habit_table_backup
             ''');
           }
@@ -346,12 +346,12 @@ void main() {
         expect(hasOrderAfter, true, reason: 'order column should exist after fix');
 
         // Verify data integrity
-        final habits = await db.customSelect('SELECT id, name, \`order\` FROM habit_table ORDER BY \`order\`').get();
+        final habits = await db.customSelect('SELECT id, name, `order` FROM habit_table ORDER BY `order`').get();
         expect(habits.length, 3, reason: 'All habits preserved');
 
         // Verify no NULL values
         final nullCount =
-            await db.customSelect('SELECT COUNT(*) as count FROM habit_table WHERE \`order\` IS NULL').getSingle();
+            await db.customSelect('SELECT COUNT(*) as count FROM habit_table WHERE `order` IS NULL').getSingle();
         expect(nullCount.data['count'], 0, reason: 'No NULL order values');
 
         // Verify chronological ordering
@@ -386,7 +386,7 @@ void main() {
 
       // Verify we can insert new habits with order column
       await db.customStatement('''
-        INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+        INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
         VALUES ('new_habit', ${DateTime.now().millisecondsSinceEpoch}, 'New Habit', '', 0, '', 0, 1, 7, 1000.0)
       ''');
 
