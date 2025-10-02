@@ -246,6 +246,34 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
+  /// Creates a manual database backup (for use before risky operations like import)
+  /// Returns the backup file or null if operation fails
+  Future<File?> createDatabaseBackup() async {
+    if (isTestMode) return null;
+
+    try {
+      final dbFolder = await _getApplicationDirectory();
+      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+
+      if (await dbFile.exists()) {
+        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
+        final backupFile = File(p.join(
+          dbFolder.path,
+          'import_backup_$timestamp.db',
+        ));
+
+        await dbFile.copy(backupFile.path);
+        debugPrint('Manual database backup created: ${backupFile.path}');
+        return backupFile;
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint('Failed to create manual database backup: $e');
+      return null;
+    }
+  }
+
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
