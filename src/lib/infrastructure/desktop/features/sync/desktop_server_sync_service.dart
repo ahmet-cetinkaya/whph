@@ -887,8 +887,13 @@ class DesktopServerSyncService extends SyncService {
 
       Logger.debug('🔒 Closing socket gracefully: $reason (code: $code)');
 
-      // Brief delay to ensure any pending messages are transmitted
-      // This prevents premature closure before response reaches client
+      // WORKAROUND: Add brief delay to prevent race condition where close() is called
+      // before the add() operation completes sending data over the wire.
+      // The dart:io WebSocket implementation does not expose a flush() method or
+      // a way to await send completion. This delay ensures pending messages in the
+      // send buffer are transmitted before the socket is closed.
+      // Under high load or slow networks, this may not always be sufficient, but
+      // it significantly reduces the likelihood of premature closure.
       await Future.delayed(const Duration(milliseconds: 100));
 
       // Attempt to close with proper WebSocket close code
