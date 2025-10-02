@@ -15,6 +15,9 @@ class AppUsageTagTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get appUsageId => text()();
   TextColumn get tagId => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String, AppUsageTagTable>

@@ -15,6 +15,9 @@ class HabitTagTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get habitId => text()();
   TextColumn get tagId => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, HabitTagTable>

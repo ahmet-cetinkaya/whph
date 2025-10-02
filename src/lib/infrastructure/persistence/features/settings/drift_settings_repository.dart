@@ -13,6 +13,9 @@ class SettingTable extends Table {
   TextColumn get key => text()();
   TextColumn get value => text()();
   IntColumn get valueType => intEnum<SettingValueType>()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftSettingRepository extends DriftBaseRepository<Setting, String, SettingTable> implements ISettingRepository {
