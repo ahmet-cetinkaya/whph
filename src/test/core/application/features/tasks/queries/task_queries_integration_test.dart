@@ -28,9 +28,9 @@ void main() {
     setUp(() async {
       database = AppDatabase.forTesting();
       taskRepository = DriftTaskRepository.withDatabase(database);
-      taskTimeRecordRepository = DriftTaskTimeRecordRepository();
-      taskTagRepository = DriftTaskTagRepository();
-      tagRepository = DriftTagRepository();
+      taskTimeRecordRepository = DriftTaskTimeRecordRepository.withDatabase(database);
+      taskTagRepository = DriftTaskTagRepository.withDatabase(database);
+      tagRepository = DriftTagRepository.withDatabase(database);
 
       // Initialize the query handlers with the repositories
       getTaskHandler = GetTaskQueryHandler(

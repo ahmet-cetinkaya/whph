@@ -14,10 +14,16 @@ class TaskTagTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get taskId => text()();
   TextColumn get tagId => text()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }
 
 class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTagTable> implements ITaskTagRepository {
   DriftTaskTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTagTable);
+
+  // Constructor for testing with custom database
+  DriftTaskTagRepository.withDatabase(AppDatabase db) : super(db, db.taskTagTable);
 
   @override
   Expression<String> getPrimaryKey(TaskTagTable t) {

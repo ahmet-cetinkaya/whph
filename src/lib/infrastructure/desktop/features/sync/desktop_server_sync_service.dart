@@ -15,8 +15,10 @@ import 'package:flutter/foundation.dart';
 const int webSocketPort = 44040;
 const int defaultSyncInterval = 1800; // 30 minutes in seconds
 const int maxConcurrentConnections = 10; // Maximum number of concurrent connections for security
+const int maxConnectionsPerIP = 5; // Max connections per IP - increased for paginated sync (was 3)
 const int connectionTimeoutSeconds = 300; // 5 minutes timeout for idle connections
 const int maxMessageSizeBytes = 1024 * 1024; // 1MB max message size
+const int connectionRecycleIdleSeconds = 5; // Recycle connections idle for this duration
 
 /// Desktop server sync service that acts as WebSocket server for WHPH clients
 class DesktopServerSyncService extends SyncService {
@@ -26,6 +28,7 @@ class DesktopServerSyncService extends SyncService {
   final List<WebSocket> _activeConnections = [];
   final Map<WebSocket, String> _connectionIPs = {}; // Track client IPs for each WebSocket
   final Map<WebSocket, DateTime> _connectionTimes = {}; // Track connection start times
+  final Map<WebSocket, DateTime> _connectionLastActivity = {}; // Track last activity per connection
   final Map<String, int> _ipConnectionCounts = {}; // Track connections per IP for rate limiting
 
   final IDeviceIdService _deviceIdService;
@@ -69,7 +72,17 @@ class DesktopServerSyncService extends SyncService {
 
           // Check connection limits before accepting
           if (!_canAcceptNewConnection(clientIP)) {
-            Logger.warning('🚫 Connection rejected: limits exceeded from $clientIP');
+            // Enhanced logging for connection rejections to aid diagnostics
+            Logger.warning('🚫 Connection rejected: limits exceeded from $clientIP\n'
+                '   📊 Current active connections: ${_activeConnections.length}/$maxConcurrentConnections\n'
+                '   📊 Connections from $clientIP: ${_ipConnectionCounts[clientIP] ?? 0}/$maxConnectionsPerIP');
+
+            // Log current connection distribution for debugging
+            if (_ipConnectionCounts.isNotEmpty) {
+              final ipSummary = _ipConnectionCounts.entries.map((e) => '${e.key}:${e.value}').join(', ');
+              Logger.debug('   📊 Active connection IPs: $ipSummary');
+            }
+
             req.response
               ..statusCode = HttpStatus.serviceUnavailable
               ..headers.add('Retry-After', '60')
@@ -92,8 +105,10 @@ class DesktopServerSyncService extends SyncService {
           _activeConnections.add(ws);
 
           // Store the client IP and connection time for this WebSocket connection
+          final now = DateTime.now();
           _connectionIPs[ws] = clientIP;
-          _connectionTimes[ws] = DateTime.now();
+          _connectionTimes[ws] = now;
+          _connectionLastActivity[ws] = now; // Track last activity for idle detection
           _ipConnectionCounts[clientIP] = (_ipConnectionCounts[clientIP] ?? 0) + 1;
 
           Logger.info(
@@ -133,6 +148,9 @@ class DesktopServerSyncService extends SyncService {
 
   Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
     try {
+      // Update last activity time for idle detection
+      _connectionLastActivity[socket] = DateTime.now();
+
       // Validate message size
       if (message.length > maxMessageSizeBytes) {
         Logger.warning('🚫 Message rejected: size ${message.length} exceeds limit $maxMessageSizeBytes');
@@ -247,7 +265,10 @@ class DesktopServerSyncService extends SyncService {
             });
             _sendMessage(socket, responseMessage, '📤 Desktop server paginated sync response sent to client');
 
-            // Keep connection alive for potential additional sync requests
+            // Close connection immediately after successful response for paginated sync
+            // This frees up connection slots for subsequent entity sync requests
+            // Paginated sync protocol uses one connection per entity type
+            await _closeSocketGracefully(socket, 1000, 'Paginated sync completed successfully');
           } catch (e, stackTrace) {
             Logger.error('Desktop server paginated sync processing failed: $e');
             Logger.error('Stack trace: $stackTrace');
@@ -266,7 +287,9 @@ class DesktopServerSyncService extends SyncService {
 
             WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
             _sendMessage(socket, errorMessage);
-            // Keep connection alive even after errors
+
+            // Close connection even after errors to prevent connection leaks
+            await _closeSocketGracefully(socket, 1011, 'Paginated sync failed');
           }
           break;
 
@@ -520,6 +543,9 @@ class DesktopServerSyncService extends SyncService {
       if (_server != null && _isServerMode) {
         Logger.debug('🖥️ Desktop server heartbeat - Active connections: ${_activeConnections.length}');
 
+        // Proactively recycle idle connections to free slots
+        _recycleIdleConnections();
+
         // Clean up closed connections and expired connections
         final closedConnections =
             _activeConnections.where((ws) => ws.readyState == WebSocket.closed || _isConnectionExpired(ws)).toList();
@@ -565,6 +591,7 @@ class DesktopServerSyncService extends SyncService {
       _activeConnections.clear();
       _connectionIPs.clear(); // Clean up IP mappings
       _connectionTimes.clear(); // Clean up connection times
+      _connectionLastActivity.clear(); // Clean up last activity tracking
       _ipConnectionCounts.clear(); // Clean up IP connection counts
 
       // Close the server
@@ -631,15 +658,30 @@ class DesktopServerSyncService extends SyncService {
   }
 
   /// Check if a new connection can be accepted based on limits
+  ///
+  /// Implements defensive rate limiting with two constraints:
+  /// 1. Total concurrent connections (prevents server overload)
+  /// 2. Per-IP connections (prevents single client from exhausting pool)
+  ///
+  /// Returns false if either limit is exceeded, true otherwise
   bool _canAcceptNewConnection(String clientIP) {
-    // Check total connection limit
-    if (_activeConnections.length >= maxConcurrentConnections) {
+    // Validate input
+    if (clientIP.isEmpty) {
+      Logger.warning('⚠️ Invalid empty client IP in connection check');
       return false;
     }
 
-    // Check per-IP connection limit (max 3 connections per IP)
+    // Check total connection limit
+    if (_activeConnections.length >= maxConcurrentConnections) {
+      Logger.debug('🚫 Connection pool at capacity: ${_activeConnections.length}/$maxConcurrentConnections');
+      return false;
+    }
+
+    // Check per-IP connection limit
+    // Increased from 3 to 5 to accommodate paginated sync sequential requests
     final ipConnections = _ipConnectionCounts[clientIP] ?? 0;
-    if (ipConnections >= 3) {
+    if (ipConnections >= maxConnectionsPerIP) {
+      Logger.debug('🚫 IP $clientIP at connection limit: $ipConnections/$maxConnectionsPerIP');
       return false;
     }
 
@@ -690,6 +732,81 @@ class DesktopServerSyncService extends SyncService {
     return elapsed.inSeconds > connectionTimeoutSeconds;
   }
 
+  /// Proactively recycle idle connections to prevent pool exhaustion
+  ///
+  /// This method addresses the core issue where paginated sync creates many
+  /// short-lived connections that linger after completing their work.
+  /// By aggressively closing idle connections, we free up slots for new requests.
+  ///
+  /// Defensive programming notes:
+  /// - Uses snapshot of connections to avoid modification during iteration
+  /// - Validates connection state before closing
+  /// - Handles errors gracefully without disrupting other connections
+  /// - Always cleans up tracking data even if close fails
+  void _recycleIdleConnections() {
+    if (_activeConnections.isEmpty) {
+      return; // Early exit if no connections to recycle
+    }
+
+    final now = DateTime.now();
+    final connectionsToRecycle = <WebSocket>[];
+
+    try {
+      // Create snapshot to avoid concurrent modification
+      final connectionSnapshot = List<WebSocket>.from(_activeConnections);
+
+      for (final socket in connectionSnapshot) {
+        try {
+          // Skip if socket is already closed or closing
+          if (socket.readyState == WebSocket.closed || socket.readyState == WebSocket.closing) {
+            continue;
+          }
+
+          // Check idle time since last activity (more accurate than connection time)
+          final lastActivity = _connectionLastActivity[socket];
+          if (lastActivity == null) {
+            // Missing activity timestamp is suspicious - mark for cleanup
+            Logger.debug('🧹 Connection missing activity timestamp, marking for recycling');
+            connectionsToRecycle.add(socket);
+            continue;
+          }
+
+          final idleTime = now.difference(lastActivity);
+
+          // Recycle connections idle for more than configured threshold
+          // This is safe for paginated sync which completes quickly (<2s per entity)
+          if (idleTime.inSeconds > connectionRecycleIdleSeconds) {
+            Logger.debug(
+                '🧹 Recycling idle connection (idle: ${idleTime.inSeconds}s, threshold: ${connectionRecycleIdleSeconds}s)');
+            connectionsToRecycle.add(socket);
+          }
+        } catch (e) {
+          // Defensive: Don't let error in one connection affect others
+          Logger.debug('⚠️ Error checking connection for recycling: $e');
+        }
+      }
+
+      // Close and cleanup identified connections
+      if (connectionsToRecycle.isNotEmpty) {
+        Logger.debug('🧹 Recycling ${connectionsToRecycle.length} idle connection(s)');
+
+        for (final socket in connectionsToRecycle) {
+          try {
+            socket.close(1000, 'Connection recycled due to inactivity');
+            _cleanupConnection(socket);
+          } catch (e) {
+            // Defensive: Ensure cleanup even if close fails
+            Logger.debug('⚠️ Error closing connection during recycling: $e');
+            _cleanupConnection(socket); // Still cleanup tracking data
+          }
+        }
+      }
+    } catch (e) {
+      // Outer defensive catch: Don't let recycling errors crash the server
+      Logger.warning('⚠️ Error during connection recycling: $e');
+    }
+  }
+
   /// Validate WebSocket message structure
   bool _isValidWebSocketMessage(WebSocketMessage message) {
     // Check required fields
@@ -716,21 +833,94 @@ class DesktopServerSyncService extends SyncService {
   }
 
   /// Clean up connection tracking data
+  ///
+  /// Defensive cleanup that ensures all connection tracking data is removed
+  /// even if some operations fail. Uses defensive programming to prevent leaks.
   void _cleanupConnection(WebSocket socket) {
-    final clientIP = _connectionIPs[socket];
+    try {
+      final clientIP = _connectionIPs[socket];
 
-    _activeConnections.remove(socket);
-    _connectionIPs.remove(socket);
-    _connectionTimes.remove(socket);
+      // Remove from all tracking structures
+      // Each operation is independent to ensure partial cleanup on errors
+      _activeConnections.remove(socket);
+      _connectionIPs.remove(socket);
+      _connectionTimes.remove(socket);
+      _connectionLastActivity.remove(socket);
 
-    // Decrement IP connection count
-    if (clientIP != null) {
-      final currentCount = _ipConnectionCounts[clientIP] ?? 0;
-      if (currentCount > 1) {
-        _ipConnectionCounts[clientIP] = currentCount - 1;
-      } else {
-        _ipConnectionCounts.remove(clientIP);
+      // Decrement IP connection count with validation
+      if (clientIP != null && clientIP.isNotEmpty) {
+        final currentCount = _ipConnectionCounts[clientIP] ?? 0;
+
+        // Defensive: Validate count is positive before decrementing
+        if (currentCount > 1) {
+          _ipConnectionCounts[clientIP] = currentCount - 1;
+        } else if (currentCount == 1) {
+          _ipConnectionCounts.remove(clientIP);
+        } else {
+          // Defensive: Log if count is already 0 or negative (shouldn't happen)
+          Logger.warning('⚠️ Attempted to decrement IP count for $clientIP but count was $currentCount');
+        }
       }
+    } catch (e) {
+      // Defensive: Log error but don't throw - cleanup must always succeed
+      Logger.warning('⚠️ Error during connection cleanup: $e');
+    }
+  }
+
+  /// Gracefully close a WebSocket connection with proper cleanup and error handling
+  ///
+  /// This method ensures connection resources are freed immediately to prevent pool exhaustion.
+  /// Uses defensive programming to handle edge cases and prevent connection leaks.
+  ///
+  /// Parameters:
+  /// - socket: The WebSocket to close
+  /// - code: WebSocket close code (1000 = normal, 1011 = server error)
+  /// - reason: Human-readable reason for closure
+  Future<void> _closeSocketGracefully(WebSocket socket, int code, String reason) async {
+    try {
+      // Validate socket state before attempting to close
+      if (socket.readyState == WebSocket.closed || socket.readyState == WebSocket.closing) {
+        Logger.debug('🔒 Socket already closed or closing, skipping graceful close');
+        _cleanupConnection(socket);
+        return;
+      }
+
+      Logger.debug('🔒 Closing socket gracefully: $reason (code: $code)');
+
+      // WORKAROUND: Add brief delay to prevent race condition where close() is called
+      // before the add() operation completes sending data over the wire.
+      // The dart:io WebSocket implementation does not expose a flush() method or
+      // a way to await send completion. This delay ensures pending messages in the
+      // send buffer are transmitted before the socket is closed.
+      // Under high load or slow networks, this may not always be sufficient, but
+      // it significantly reduces the likelihood of premature closure.
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      // Attempt to close with proper WebSocket close code
+      await socket.close(code, reason).timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {
+          Logger.warning('⚠️ Socket close timed out, forcing closure');
+          // Force close if graceful close hangs
+          return socket.close();
+        },
+      );
+
+      Logger.debug('✅ Socket closed successfully');
+    } catch (e) {
+      // Defensive: Log but don't throw - connection cleanup must always succeed
+      Logger.warning('⚠️ Error during graceful socket close: $e');
+
+      // Attempt force close as fallback
+      try {
+        await socket.close();
+      } catch (forceCloseError) {
+        Logger.debug('Could not force close socket: $forceCloseError');
+      }
+    } finally {
+      // Always cleanup tracking data, even if close fails
+      // This prevents connection leaks in error scenarios
+      _cleanupConnection(socket);
     }
   }
 }

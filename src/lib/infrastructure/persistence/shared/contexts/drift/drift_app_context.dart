@@ -111,7 +111,20 @@ class AppDatabase extends _$AppDatabase {
       throw StateError('Migration to version cannot be negative: $to');
     }
     if (from > to) {
-      throw StateError('Migration from version ($from) cannot be greater than to version ($to)');
+      // Database version is newer than schema version
+      // This can happen if:
+      // 1. Code was rolled back but database wasn't
+      // 2. Test database from newer version is being reused
+      if (isTestMode) {
+        // In test mode, throw a clear error suggesting recreation
+        throw StateError('Test database version ($from) is newer than schema version ($to). '
+            'This indicates a stale test database. The test framework should recreate the database.');
+      } else {
+        // In production, this is a critical error
+        throw StateError('Database version ($from) cannot be greater than schema version ($to). '
+            'This may indicate a database from a newer app version. '
+            'Please update the app or restore from backup.');
+      }
     }
     if (to > schemaVersion) {
       throw StateError('Migration to version ($to) cannot exceed schema version ($schemaVersion)');
@@ -852,8 +865,34 @@ class AppDatabase extends _$AppDatabase {
                   final totalHabits = (habitCount?.data['count'] as int?) ?? 0;
                   debugPrint('Migrating $totalHabits habit records');
 
-                  // Backup habit_table
-                  await customStatement('CREATE TEMPORARY TABLE habit_table_backup AS SELECT * FROM habit_table;');
+                  // Check for duplicate IDs before migration
+                  final duplicatesResult = await customSelect('''
+                SELECT id, COUNT(*) as count FROM habit_table
+                GROUP BY id HAVING COUNT(*) > 1
+              ''').get();
+
+                  if (duplicatesResult.isNotEmpty) {
+                    debugPrint('WARNING: Found ${duplicatesResult.length} duplicate IDs in habit_table');
+                    // Log duplicate IDs for debugging
+                    for (final dup in duplicatesResult) {
+                      debugPrint('Duplicate ID: ${dup.data['id']} (count: ${dup.data['count']})');
+                    }
+                  }
+
+                  // Backup habit_table with deduplication: keep the most recently modified record per ID
+                  await customStatement('''
+                CREATE TEMPORARY TABLE habit_table_backup AS
+                SELECT * FROM habit_table
+                WHERE rowid IN (
+                  SELECT rowid FROM (
+                    SELECT
+                      rowid,
+                      ROW_NUMBER() OVER(PARTITION BY id ORDER BY COALESCE(modified_date, created_date) DESC) as rn
+                    FROM habit_table
+                  )
+                  WHERE rn = 1
+                )
+              ''');
 
                   // Drop and recreate habit_table with PRIMARY KEY on id
                   await customStatement('DROP TABLE IF EXISTS habit_table;');
@@ -915,8 +954,20 @@ class AppDatabase extends _$AppDatabase {
                   final restoredCount =
                       await customSelect('SELECT COUNT(*) as count FROM habit_table').getSingleOrNull();
                   final restoredHabits = (restoredCount?.data['count'] as int?) ?? 0;
-                  if (restoredHabits != totalHabits) {
-                    throw StateError('Data loss detected: expected $totalHabits habits, got $restoredHabits');
+
+                  // Count unique IDs in backup to verify deduplication worked correctly
+                  final backupUniqueCount =
+                      await customSelect('SELECT COUNT(*) as count FROM habit_table_backup').getSingleOrNull();
+                  final uniqueHabits = (backupUniqueCount?.data['count'] as int?) ?? 0;
+
+                  if (restoredHabits != uniqueHabits) {
+                    throw StateError(
+                        'Data restoration mismatch: expected $uniqueHabits unique habits, got $restoredHabits');
+                  }
+
+                  if (restoredHabits < totalHabits) {
+                    final removedDuplicates = totalHabits - restoredHabits;
+                    debugPrint('Successfully removed $removedDuplicates duplicate habit records during migration');
                   }
 
                   await customStatement('DROP TABLE habit_table_backup;');
