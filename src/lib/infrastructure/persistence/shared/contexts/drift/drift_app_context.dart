@@ -852,8 +852,30 @@ class AppDatabase extends _$AppDatabase {
                   final totalHabits = (habitCount?.data['count'] as int?) ?? 0;
                   debugPrint('Migrating $totalHabits habit records');
 
-                  // Backup habit_table
-                  await customStatement('CREATE TEMPORARY TABLE habit_table_backup AS SELECT * FROM habit_table;');
+                  // Check for duplicate IDs before migration
+                  final duplicatesResult = await customSelect('''
+                SELECT id, COUNT(*) as count FROM habit_table
+                GROUP BY id HAVING COUNT(*) > 1
+              ''').get();
+
+                  if (duplicatesResult.isNotEmpty) {
+                    debugPrint('WARNING: Found ${duplicatesResult.length} duplicate IDs in habit_table');
+                    // Log duplicate IDs for debugging
+                    for (final dup in duplicatesResult) {
+                      debugPrint('Duplicate ID: ${dup.data['id']} (count: ${dup.data['count']})');
+                    }
+                  }
+
+                  // Backup habit_table with deduplication: keep only the most recently modified record per ID
+                  await customStatement('''
+                CREATE TEMPORARY TABLE habit_table_backup AS
+                SELECT * FROM habit_table
+                WHERE rowid IN (
+                  SELECT MAX(rowid)
+                  FROM habit_table
+                  GROUP BY id
+                )
+              ''');
 
                   // Drop and recreate habit_table with PRIMARY KEY on id
                   await customStatement('DROP TABLE IF EXISTS habit_table;');
@@ -915,8 +937,20 @@ class AppDatabase extends _$AppDatabase {
                   final restoredCount =
                       await customSelect('SELECT COUNT(*) as count FROM habit_table').getSingleOrNull();
                   final restoredHabits = (restoredCount?.data['count'] as int?) ?? 0;
-                  if (restoredHabits != totalHabits) {
-                    throw StateError('Data loss detected: expected $totalHabits habits, got $restoredHabits');
+
+                  // Count unique IDs in backup to verify deduplication worked correctly
+                  final backupUniqueCount =
+                      await customSelect('SELECT COUNT(*) as count FROM habit_table_backup').getSingleOrNull();
+                  final uniqueHabits = (backupUniqueCount?.data['count'] as int?) ?? 0;
+
+                  if (restoredHabits != uniqueHabits) {
+                    throw StateError(
+                        'Data restoration mismatch: expected $uniqueHabits unique habits, got $restoredHabits');
+                  }
+
+                  if (restoredHabits < totalHabits) {
+                    final removedDuplicates = totalHabits - restoredHabits;
+                    debugPrint('Successfully removed $removedDuplicates duplicate habit records during migration');
                   }
 
                   await customStatement('DROP TABLE habit_table_backup;');

@@ -458,6 +458,33 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         return;
       }
 
+      // Validate for duplicate IDs within the import batch
+      final seenIds = <String>{};
+      final duplicateIds = <String>{};
+      for (var item in items) {
+        final id = item['id']?.toString();
+        if (id != null && id.isNotEmpty) {
+          if (!seenIds.add(id)) {
+            duplicateIds.add(id);
+          }
+        }
+      }
+
+      if (duplicateIds.isNotEmpty) {
+        if (kDebugMode) {
+          print('WARNING: Found ${duplicateIds.length} duplicate IDs in import data for ${config.name}');
+          print('Duplicate IDs: ${duplicateIds.take(5).join(', ')}${duplicateIds.length > 5 ? '...' : ''}');
+        }
+        throw BusinessException(
+          'Import data contains ${duplicateIds.length} duplicate IDs for ${config.name}',
+          SettingTranslationKeys.importFailedError,
+          args: {
+            'entity': config.name,
+            'error': 'Duplicate IDs found: ${duplicateIds.take(3).join(', ')}${duplicateIds.length > 3 ? '...' : ''}',
+          },
+        );
+      }
+
       int successCount = 0;
       for (var item in items) {
         try {
