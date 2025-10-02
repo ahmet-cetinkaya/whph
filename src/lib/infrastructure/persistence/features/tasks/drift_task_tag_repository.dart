@@ -19,6 +19,9 @@ class TaskTagTable extends Table {
 class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTagTable> implements ITaskTagRepository {
   DriftTaskTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTagTable);
 
+  // Constructor for testing with custom database
+  DriftTaskTagRepository.withDatabase(AppDatabase db) : super(db, db.taskTagTable);
+
   @override
   Expression<String> getPrimaryKey(TaskTagTable t) {
     return t.id;

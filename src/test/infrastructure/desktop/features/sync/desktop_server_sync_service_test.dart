@@ -602,8 +602,7 @@ void main() {
     group('Regression Tests', () {
       test('should fix connection pool exhaustion (Issue #99)', () {
         // Verify the fix: increased per-IP limit
-        expect(maxConnectionsPerIP, equals(5),
-            reason: 'Per-IP limit should be increased from 3 to 5');
+        expect(maxConnectionsPerIP, equals(5), reason: 'Per-IP limit should be increased from 3 to 5');
 
         // Verify the fix: connection recycling enabled
         expect(connectionRecycleIdleSeconds, equals(5),

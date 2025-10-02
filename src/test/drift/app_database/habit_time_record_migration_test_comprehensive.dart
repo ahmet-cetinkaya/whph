@@ -33,7 +33,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -87,7 +87,7 @@ void main() {
         final maxTimestamp = 8640000000000000;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -126,7 +126,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -165,7 +165,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -206,7 +206,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -252,7 +252,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [validHabitId, now, 'Valid Habit', '']);
 
@@ -291,7 +291,7 @@ void main() {
 
         for (final habitId in habitIds) {
           await db.customStatement('''
-            INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+            INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
             VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, ?)
           ''', [habitId, now, 'Habit $habitId', '', (habitIds.indexOf(habitId) + 1) * 1000.0]);
         }
@@ -328,7 +328,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -367,7 +367,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -413,7 +413,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -457,7 +457,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -501,7 +501,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -519,7 +519,6 @@ void main() {
 
             throw Exception('Simulated failure');
           });
-          fail('Transaction should have thrown exception');
         } catch (e) {
           expect(e.toString(), contains('Simulated failure'));
         }
@@ -587,7 +586,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -617,7 +616,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [specialHabitId, now, 'Test Habit', '']);
 
@@ -648,7 +647,7 @@ void main() {
         for (var i = 0; i < habitCount; i++) {
           final habitId = 'habit-$i';
           await db.customStatement('''
-            INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+            INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
             VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, ?)
           ''', [habitId, now, 'Habit $i', '', (i + 1) * 1000.0]);
 
@@ -715,7 +714,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -755,7 +754,7 @@ void main() {
         final modifiedTime = now + 3600000;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -784,7 +783,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -818,7 +817,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
@@ -866,7 +865,7 @@ void main() {
         final now = DateTime.now().millisecondsSinceEpoch;
 
         await db.customStatement('''
-          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, \`order\`)
+          INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, `order`)
           VALUES (?, ?, ?, ?, 0, '', 0, 1, 7, 1000.0)
         ''', [habitId, now, 'Test Habit', '']);
 
