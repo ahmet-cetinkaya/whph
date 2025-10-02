@@ -879,14 +879,18 @@ class AppDatabase extends _$AppDatabase {
                     }
                   }
 
-                  // Backup habit_table with deduplication: keep only the most recently modified record per ID
+                  // Backup habit_table with deduplication: keep the most recently modified record per ID
                   await customStatement('''
                 CREATE TEMPORARY TABLE habit_table_backup AS
                 SELECT * FROM habit_table
                 WHERE rowid IN (
-                  SELECT MAX(rowid)
-                  FROM habit_table
-                  GROUP BY id
+                  SELECT rowid FROM (
+                    SELECT
+                      rowid,
+                      ROW_NUMBER() OVER(PARTITION BY id ORDER BY COALESCE(modified_date, created_date) DESC) as rn
+                    FROM habit_table
+                  )
+                  WHERE rn = 1
                 )
               ''');
 
