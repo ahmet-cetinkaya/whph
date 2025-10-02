@@ -111,7 +111,20 @@ class AppDatabase extends _$AppDatabase {
       throw StateError('Migration to version cannot be negative: $to');
     }
     if (from > to) {
-      throw StateError('Migration from version ($from) cannot be greater than to version ($to)');
+      // Database version is newer than schema version
+      // This can happen if:
+      // 1. Code was rolled back but database wasn't
+      // 2. Test database from newer version is being reused
+      if (isTestMode) {
+        // In test mode, throw a clear error suggesting recreation
+        throw StateError('Test database version ($from) is newer than schema version ($to). '
+            'This indicates a stale test database. The test framework should recreate the database.');
+      } else {
+        // In production, this is a critical error
+        throw StateError('Database version ($from) cannot be greater than schema version ($to). '
+            'This may indicate a database from a newer app version. '
+            'Please update the app or restore from backup.');
+      }
     }
     if (to > schemaVersion) {
       throw StateError('Migration to version ($to) cannot exceed schema version ($schemaVersion)');

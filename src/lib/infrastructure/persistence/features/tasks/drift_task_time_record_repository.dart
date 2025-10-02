@@ -18,6 +18,9 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     implements ITaskTimeRecordRepository {
   DriftTaskTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTimeRecordTable);
 
+  // Constructor for testing with custom database
+  DriftTaskTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.taskTimeRecordTable);
+
   @override
   Expression<String> getPrimaryKey(TaskTimeRecordTable t) {
     return t.id;

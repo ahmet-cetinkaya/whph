@@ -19,6 +19,9 @@ class TagTable extends Table {
 class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> implements ITagRepository {
   DriftTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().tagTable);
 
+  // Constructor for testing with custom database
+  DriftTagRepository.withDatabase(AppDatabase db) : super(db, db.tagTable);
+
   @override
   Expression<String> getPrimaryKey(TagTable t) {
     return t.id;
