@@ -73,9 +73,8 @@ class DesktopServerSyncService extends SyncService {
           // Check connection limits before accepting
           if (!_canAcceptNewConnection(clientIP)) {
             // Enhanced logging for connection rejections to aid diagnostics
-            Logger.warning('🚫 Connection rejected: limits exceeded from $clientIP');
-            Logger.warning('   📊 Current active connections: ${_activeConnections.length}/$maxConcurrentConnections');
-            Logger.warning(
+            Logger.warning('🚫 Connection rejected: limits exceeded from $clientIP\n'
+                '   📊 Current active connections: ${_activeConnections.length}/$maxConcurrentConnections\n'
                 '   📊 Connections from $clientIP: ${_ipConnectionCounts[clientIP] ?? 0}/$maxConnectionsPerIP');
 
             // Log current connection distribution for debugging
