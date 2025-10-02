@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.4] - 2025-10-02
+
+### Added
+- Enhance data import with backup, validation, and error handling
+- Enhance database migration with validation, backup, and error handling
+
+### Fixed
+- Handle missing order column in habit_table migration with explicit column mapping
+
 ## [0.16.3] - 2025-10-01
 
 ### Added

@@ -1,0 +1,3 @@
+• Improved data import for safer backups and error recovery
+• Enhanced app updates with reliable data migration and safeguards
+• Fixed habit ordering during updates for better organization
