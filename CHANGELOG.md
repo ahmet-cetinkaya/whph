@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.5] - 2025-10-02
+
+### Added
+- Add duplicate ID validation to data import and migration
+
+### Fixed
+- Use modified_date for deduplication to prevent data loss
+- Improve migration error handling and add testing constructors
+- Improve connection management to prevent pool exhaustion
+
 ## [0.16.4] - 2025-10-02
 
 ### Added
