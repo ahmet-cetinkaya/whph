@@ -41,6 +41,8 @@ import 'package:whph/core/application/features/settings/constants/setting_transl
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'dart:io';
 
 enum ImportStrategy { replace, merge }
 
@@ -198,34 +200,46 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     ];
   }
 
-  @override
-  Future<ImportDataCommandResponse> call(ImportDataCommand request) async {
-    // Validate header
-    if (!compressionService.validateHeader(request.backupData)) {
+  /// Creates a backup of current database before import
+  Future<File?> _createPreImportBackup() async {
+    try {
+      final dbInstance = AppDatabase.instance();
+      final backupFile = await dbInstance.createDatabaseBackup();
+      if (kDebugMode) {
+        print('Pre-import backup created: ${backupFile?.path}');
+      }
+      return backupFile;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Warning: Failed to create pre-import backup: $e');
+      }
+      // Non-fatal: continue import even if backup fails
+      return null;
+    }
+  }
+
+  /// Validates the structure of imported data
+  void _validateImportData(Map<String, dynamic> data) {
+    // Validate that data is not empty
+    if (data.isEmpty) {
       throw BusinessException(
-        'Invalid backup file format',
+        'Import data is empty',
         SettingTranslationKeys.backupInvalidFormatError,
       );
     }
 
-    // Validate checksum
-    final isValidChecksum = await compressionService.validateChecksum(request.backupData);
-    if (!isValidChecksum) {
+    // Validate appInfo exists
+    if (data['appInfo'] == null) {
       throw BusinessException(
-        'Backup file is corrupted',
-        SettingTranslationKeys.backupCorruptedError,
+        'No app information found in import data',
+        SettingTranslationKeys.backupInvalidFormatError,
       );
     }
 
-    // Extract and decompress data
-    final jsonString = await compressionService.extractFromWhphFile(request.backupData);
-    Map<String, dynamic> data = json.decode(jsonString);
-
-    // Get the imported version
-    final importedVersion = data['appInfo']?['version'] as String?;
-    if (importedVersion == null) {
+    // Validate version exists
+    if (data['appInfo']['version'] == null) {
       throw BusinessException(
-        'No version information found in imported data',
+        'No version information found in import data',
         SettingTranslationKeys.versionMismatchError,
         args: {
           'importedVersion': 'unknown',
@@ -234,46 +248,181 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       );
     }
 
-    // Check if migration is needed and apply it
-    if (migrationService.isMigrationNeeded(importedVersion)) {
+    if (kDebugMode) {
+      print('Import data structure validated successfully');
+    }
+  }
+
+  /// Validates data integrity after import
+  Future<void> _validatePostImportIntegrity() async {
+    try {
+      final dbInstance = AppDatabase.instance();
+
+      // Check foreign key integrity
+      final violations = await dbInstance.customSelect('PRAGMA foreign_key_check').get();
+      if (violations.isNotEmpty) {
+        throw BusinessException(
+          'Foreign key integrity violations detected after import: ${violations.length} violations',
+          SettingTranslationKeys.importFailedError,
+          args: {'error': 'Data integrity check failed'},
+        );
+      }
+
+      if (kDebugMode) {
+        print('Post-import data integrity validation passed');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Post-import integrity check failed: $e');
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<ImportDataCommandResponse> call(ImportDataCommand request) async {
+    File? preImportBackup;
+
+    try {
+      if (kDebugMode) {
+        print('Starting import process with strategy: ${request.strategy}');
+      }
+
+      // Create backup before import
+      preImportBackup = await _createPreImportBackup();
+
+      // Validate header
+      if (!compressionService.validateHeader(request.backupData)) {
+        throw BusinessException(
+          'Invalid backup file format',
+          SettingTranslationKeys.backupInvalidFormatError,
+        );
+      }
+
+      // Validate checksum
+      final isValidChecksum = await compressionService.validateChecksum(request.backupData);
+      if (!isValidChecksum) {
+        throw BusinessException(
+          'Backup file is corrupted',
+          SettingTranslationKeys.backupCorruptedError,
+        );
+      }
+
+      // Extract and decompress data
+      final jsonString = await compressionService.extractFromWhphFile(request.backupData);
+
+      // Validate JSON can be decoded
+      Map<String, dynamic> data;
       try {
-        data = await migrationService.migrateData(data, importedVersion);
+        data = json.decode(jsonString);
       } catch (e) {
         throw BusinessException(
-          'Failed to migrate data from version $importedVersion',
-          SettingTranslationKeys.migrationFailedError,
+          'Failed to parse backup file: Invalid JSON format',
+          SettingTranslationKeys.backupInvalidFormatError,
+        );
+      }
+
+      // Validate data structure
+      _validateImportData(data);
+
+      // Get the imported version
+      final importedVersion = data['appInfo']?['version'] as String?;
+      if (importedVersion == null) {
+        throw BusinessException(
+          'No version information found in imported data',
+          SettingTranslationKeys.versionMismatchError,
           args: {
-            'importedVersion': importedVersion,
+            'importedVersion': 'unknown',
             'currentVersion': AppInfo.version,
-            'error': e.toString(),
           },
         );
       }
-    } else if (importedVersion != AppInfo.version) {
-      // Version is not supported for migration
-      throw BusinessException(
-        'Unsupported version in imported data',
-        SettingTranslationKeys.versionMismatchError,
-        args: {
-          'importedVersion': importedVersion,
-          'currentVersion': AppInfo.version,
-        },
-      );
-    }
 
-    if (request.strategy == ImportStrategy.replace) {
-      await _clearAllData();
-    }
-
-    // Import data sequentially using configs
-    for (final config in _importConfigs) {
-      if (data[config.name] != null) {
-        final items = (data[config.name] as List).cast<Map<String, dynamic>>();
-        await _importDataWithConfig(items, config, request.strategy);
+      if (kDebugMode) {
+        print('Importing data from version: $importedVersion');
       }
-    }
 
-    return ImportDataCommandResponse();
+      // Check if migration is needed and apply it
+      if (migrationService.isMigrationNeeded(importedVersion)) {
+        try {
+          if (kDebugMode) {
+            print('Migrating data from version $importedVersion to ${AppInfo.version}');
+          }
+          data = await migrationService.migrateData(data, importedVersion);
+        } catch (e) {
+          throw BusinessException(
+            'Failed to migrate data from version $importedVersion',
+            SettingTranslationKeys.migrationFailedError,
+            args: {
+              'importedVersion': importedVersion,
+              'currentVersion': AppInfo.version,
+              'error': e.toString(),
+            },
+          );
+        }
+      } else if (importedVersion != AppInfo.version) {
+        // Version is not supported for migration
+        throw BusinessException(
+          'Unsupported version in imported data',
+          SettingTranslationKeys.versionMismatchError,
+          args: {
+            'importedVersion': importedVersion,
+            'currentVersion': AppInfo.version,
+          },
+        );
+      }
+
+      // Execute import operations in a transaction
+      final dbInstance = AppDatabase.instance();
+      await dbInstance.transaction(() async {
+        if (request.strategy == ImportStrategy.replace) {
+          if (kDebugMode) {
+            print('Clearing all existing data (replace strategy)');
+          }
+          await _clearAllData();
+        }
+
+        // Import data sequentially using configs
+        int totalImported = 0;
+        for (final config in _importConfigs) {
+          if (data[config.name] != null) {
+            final items = (data[config.name] as List).cast<Map<String, dynamic>>();
+            if (kDebugMode) {
+              print('Importing ${items.length} items for ${config.name}');
+            }
+            await _importDataWithConfig(items, config, request.strategy);
+            totalImported += items.length;
+          }
+        }
+
+        if (kDebugMode) {
+          print('Import completed successfully: $totalImported total items imported');
+        }
+
+        // Validate data integrity after import
+        await _validatePostImportIntegrity();
+      });
+
+      // Clean up backup on success (optional)
+      if (preImportBackup != null && preImportBackup.existsSync()) {
+        if (kDebugMode) {
+          print('Import successful, backup available at: ${preImportBackup.path}');
+        }
+      }
+
+      return ImportDataCommandResponse();
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('CRITICAL: Import failed: $e');
+        print('Stack trace: $stackTrace');
+        if (preImportBackup != null && preImportBackup.existsSync()) {
+          print('Pre-import backup available for recovery: ${preImportBackup.path}');
+        }
+      }
+
+      // Transaction will automatically rollback
+      rethrow;
+    }
   }
 
   Future<void> _clearAllData() async {
@@ -301,14 +450,39 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   Future<void> _importDataWithConfig(
       List<Map<String, dynamic>> items, ImportConfig config, ImportStrategy strategy) async {
     try {
+      // Validate items list is not null and convert safely
+      if (items.isEmpty) {
+        if (kDebugMode) {
+          print('No items to import for ${config.name}');
+        }
+        return;
+      }
+
+      int successCount = 0;
       for (var item in items) {
         try {
-          // Convert CSV data to correct types
+          // Null safety: validate item is not null
+          if (item.isEmpty) {
+            if (kDebugMode) {
+              print('Skipping empty item in ${config.name}');
+            }
+            continue;
+          }
+
+          // Validate required ID field exists
+          if (item['id'] == null || (item['id'] is String && (item['id'] as String).isEmpty)) {
+            if (kDebugMode) {
+              print('Skipping item with missing or empty ID in ${config.name}');
+            }
+            continue;
+          }
+
+          // Convert CSV data to correct types with null safety
           if (config.name == 'tasks') {
             if (item['priority'] != null) {
               // Handle both string and int priority values
               if (item['priority'] is String) {
-                final priorityStr = item['priority'] as String;
+                final priorityStr = (item['priority'] as String).trim();
                 switch (priorityStr.toLowerCase()) {
                   case 'urgentimportant':
                     item['priority'] = 0;
@@ -325,29 +499,29 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
                   default:
                     item['priority'] = 3; // Default to neither if unknown
                 }
-              } else if (item['priority'] is int) {
-                // Already an int, keep as is
-                continue;
-              } else {
-                item['priority'] = EisenhowerPriority.values[item['priority'] as int];
+              } else if (item['priority'] is! int) {
+                item['priority'] = 3; // Default to neither if type is unexpected
               }
             }
-            if (item['isCompleted'] is String) {
-              item['isCompleted'] = item['isCompleted'].toString().toLowerCase() == 'true';
+            if (item['isCompleted'] != null && item['isCompleted'] is String) {
+              item['isCompleted'] = (item['isCompleted'] as String).toLowerCase() == 'true';
             }
           }
 
+          // Deserialize entity
           final entity = config.fromJson(item);
 
           if (strategy == ImportStrategy.merge) {
             final existing = await config.repository.getById(entity.id);
             if (existing != null) {
               await config.repository.update(entity);
+              successCount++;
               continue;
             }
           }
 
           await config.repository.add(entity);
+          successCount++;
         } catch (itemError, itemStack) {
           if (kDebugMode) {
             print('Failed to import item in ${config.name}:');
@@ -357,6 +531,10 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
           }
           rethrow;
         }
+      }
+
+      if (kDebugMode) {
+        print('Successfully imported $successCount/${items.length} items for ${config.name}');
       }
     } catch (e, stackTrace) {
       if (kDebugMode) {
