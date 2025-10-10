@@ -160,19 +160,7 @@ class TaskCard extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         // Tags section
-        if (taskItem.tags.isNotEmpty)
-          Label.multipleColored(
-            icon: TagUiConstants.tagIcon,
-            color: Colors.grey,
-            values: taskItem.tags
-                .map((tag) =>
-                    tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
-                .toList(),
-            colors: taskItem.tags
-                .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-                .toList(),
-            mini: isDense,
-          ),
+        if (taskItem.tags.isNotEmpty) _buildTaskTagsWidget(),
 
         // Date/Time elements
         if (_hasDateTimeOrMetadata) ..._buildDateTimeElements(context),
@@ -308,6 +296,44 @@ class TaskCard extends StatelessWidget {
     }
 
     return reminderTexts.join('\n');
+  }
+
+  Widget _buildTaskTagsWidget() {
+    if (taskItem.tags.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
+    final List<String> tagNames = taskItem.tags.length > 5 
+        ? taskItem.tags.take(5).map((tag) => tag.name.isNotEmpty 
+            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
+            : _translationService.translate(SharedTranslationKeys.untitled)).toList()
+        : taskItem.tags.map((tag) => tag.name.isNotEmpty 
+            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
+            : _translationService.translate(SharedTranslationKeys.untitled)).toList();
+
+    // Add a "+X more" indicator if there are more than 5 tags
+    if (taskItem.tags.length > 5) {
+      final int extraCount = taskItem.tags.length - 5;
+      tagNames.add('+$extraCount more');
+    }
+
+    return Flexible(
+      child: Label.multipleColored(
+        icon: TagUiConstants.tagIcon,
+        color: Colors.grey,
+        values: tagNames,
+        colors: taskItem.tags.length > 5 
+            ? [
+                ...taskItem.tags.take(5).map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
+                Colors.grey // color for "+X more" text
+              ]
+            : taskItem.tags
+                .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+                .toList(),
+        mini: isDense,
+      ),
+    );
   }
 
   Color _getPriorityColor(EisenhowerPriority? priority) {

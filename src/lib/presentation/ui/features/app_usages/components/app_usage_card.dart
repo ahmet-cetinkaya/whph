@@ -42,12 +42,44 @@ class AppUsageCard extends StatelessWidget {
     );
   }
 
+  Widget _buildAppUsageTagsWidget() {
+    if (appUsage.tags.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
+    final List<String> tagNames = appUsage.tags.length > 5 
+        ? appUsage.tags.take(5).map((tag) => tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName).toList()
+        : appUsage.tags.map((tag) => tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName).toList();
+
+    // Add a "+X more" indicator if there are more than 5 tags
+    if (appUsage.tags.length > 5) {
+      final int extraCount = appUsage.tags.length - 5;
+      tagNames.add('+$extraCount more');
+    }
+
+    final List<Color> tagColors = appUsage.tags.length > 5 
+        ? [
+            ...appUsage.tags.take(5).map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey),
+            Colors.grey // color for "+X more" text
+          ]
+        : appUsage.tags
+            .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
+            .toList();
+
+    return Flexible(
+      child: Label.multipleColored(
+        icon: TagUiConstants.tagIcon,
+        color: Colors.grey, // Default color for icon and commas
+        values: tagNames,
+        colors: tagColors,
+        mini: true,
+      ),
+    );
+  }
+
   Widget? _buildAdditionalWidget() {
     if (appUsage.tags.isEmpty) return null;
-
-    final List<Color> tagColors = appUsage.tags
-        .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-        .toList();
 
     return Wrap(
       spacing: AppTheme.size2XSmall,
@@ -58,13 +90,7 @@ class AppUsageCard extends StatelessWidget {
           "•",
           style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
         ),
-        Label.multipleColored(
-          icon: TagUiConstants.tagIcon,
-          color: Colors.grey, // Default color for icon and commas
-          values: appUsage.tags.map((tag) => tag.tagName).toList(),
-          colors: tagColors,
-          mini: true,
-        ),
+        _buildAppUsageTagsWidget(),
       ],
     );
   }
