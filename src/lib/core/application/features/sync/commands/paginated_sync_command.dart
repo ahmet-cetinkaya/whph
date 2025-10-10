@@ -185,16 +185,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       Logger.error('❌ CRITICAL: Paginated sync operation failed: $e');
       Logger.error('🔍 Stack trace: $stackTrace');
 
-      String errorKey;
-      Map<String, String>? errorParams;
+      final String errorKey;
+      final Map<String, String>? errorParams;
 
       if (e is SyncValidationException) {
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
         errorParams = e.params;
-        Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}');
-        Logger.info('🔍 DEBUG: Using error key: $errorKey with params: $errorParams');
+        if (kDebugMode) {
+          Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: $errorParams');
+        }
       } else {
         errorKey = SyncTranslationKeys.criticalSyncOperationFailedError;
+        errorParams = null;
       }
 
       return PaginatedSyncCommandResponse(
@@ -277,6 +279,9 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
         if (processingErrors.isEmpty) {
           errorParams = e.params;
+          if (kDebugMode) {
+            Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: $errorParams');
+          }
         }
       } else {
         errorKey = SyncTranslationKeys.processingIncomingDataError;
@@ -372,9 +377,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     } catch (e) {
       Logger.error('❌ Error checking local data: $e');
 
-      String errorKey;
+      final String errorKey;
       if (e is SyncValidationException) {
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+        if (kDebugMode) {
+          Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: ${e.params}');
+        }
       } else {
         errorKey = SyncTranslationKeys.checkingLocalDataError;
       }
@@ -563,13 +571,17 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     } catch (e, stackTrace) {
       Logger.error('❌ CRITICAL: Failed to initiate outgoing sync: $e');
       Logger.error('🔍 Stack trace: $stackTrace');
-      String errorKey;
-      Map<String, String>? errorParams;
+      final String errorKey;
+      final Map<String, String>? errorParams;
       if (e is SyncValidationException) {
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
         errorParams = e.params;
+        if (kDebugMode) {
+          Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: $errorParams');
+        }
       } else {
         errorKey = SyncTranslationKeys.initiateOutgoingSyncFailedError;
+        errorParams = null;
       }
 
       return PaginatedSyncCommandResponse(
@@ -680,9 +692,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           Logger.error('❌ CRITICAL: Exception during ${config.name} sync with device ${syncDevice.id}: $e');
           Logger.error('🔍 Stack trace: $stackTrace');
 
-          String errorKey;
+          final String errorKey;
           if (e is SyncValidationException) {
             errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+            if (kDebugMode) {
+              Logger.info('🔍 DEBUG: SyncValidationException caught during device sync! Code: ${e.code}, params: ${e.params}');
+            }
           } else {
             errorKey = SyncTranslationKeys.syncWithDeviceExceptionError;
           }
@@ -792,9 +807,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             } catch (e) {
               Logger.error('❌ Failed to process accumulated response data for $entityType: $e');
 
-              String errorKey;
+              final String errorKey;
               if (e is SyncValidationException) {
                 errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+                if (kDebugMode) {
+                  Logger.info('🔍 DEBUG: SyncValidationException in accumulated response processing! Code: ${e.code}, params: ${e.params}');
+                }
               } else {
                 errorKey = SyncTranslationKeys.processAccumulatedResponseDataError;
               }
@@ -857,9 +875,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               } catch (e) {
                 Logger.error('❌ Failed to process response data for $entityType: $e');
 
-                String errorKey;
+                final String errorKey;
                 if (e is SyncValidationException) {
                   errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+                  if (kDebugMode) {
+                    Logger.info('🔍 DEBUG: SyncValidationException in response data processing! Code: ${e.code}, params: ${e.params}');
+                  }
                 } else {
                   errorKey = SyncTranslationKeys.processResponseDataError;
                 }
