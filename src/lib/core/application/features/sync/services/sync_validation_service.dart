@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
+import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/shared/utils/logger.dart';
@@ -21,7 +22,11 @@ class SyncValidationService implements ISyncValidationService {
       Logger.error('🚫 Version mismatch detected: local=${AppInfo.version}, remote=$remoteVersion');
       throw SyncValidationException(
         'Version mismatch detected: local=${AppInfo.version}, remote=$remoteVersion',
-        code: 'VERSION_MISMATCH',
+        code: SyncTranslationKeys.versionMismatchError,
+        params: {
+          'currentVersion': AppInfo.version,
+          'remoteVersion': remoteVersion,
+        },
       );
     }
     Logger.debug('✅ Version validation passed: $remoteVersion');
@@ -51,7 +56,7 @@ class SyncValidationService implements ISyncValidationService {
 
     throw SyncValidationException(
       'Device ID mismatch: This device is not part of the sync relationship',
-      code: 'DEVICE_MISMATCH',
+      code: SyncTranslationKeys.deviceMismatchError,
     );
   }
 
@@ -84,7 +89,7 @@ class SyncValidationService implements ISyncValidationService {
       throw SyncValidationException(
         'Environment mode mismatch: local=$localMode, remote=$remoteMode. '
         'Sync between debug and production modes is not allowed for security reasons.',
-        code: 'ENVIRONMENT_MODE_MISMATCH',
+        code: SyncTranslationKeys.environmentMismatchError,
       );
     }
 
@@ -188,7 +193,7 @@ class SyncValidationService implements ISyncValidationService {
       if (deviceId.isEmpty) {
         throw SyncValidationException(
           'Device ID is not available',
-          code: 'DEVICE_ID_UNAVAILABLE',
+          code: SyncTranslationKeys.deviceIdUnavailableError,
         );
       }
 
@@ -197,7 +202,7 @@ class SyncValidationService implements ISyncValidationService {
       if (localIp?.isEmpty ?? true) {
         throw SyncValidationException(
           'Local IP address is not available',
-          code: 'LOCAL_IP_UNAVAILABLE',
+          code: SyncTranslationKeys.localIpUnavailableError,
         );
       }
 
@@ -209,7 +214,7 @@ class SyncValidationService implements ISyncValidationService {
       }
       throw SyncValidationException(
         'Sync prerequisites validation failed: $e',
-        code: 'PREREQUISITES_FAILED',
+        code: SyncTranslationKeys.prerequisitesFailedError,
       );
     }
   }

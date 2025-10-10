@@ -11,6 +11,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_data.dart';
+import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
@@ -49,6 +50,7 @@ class PaginatedSyncCommandResponse {
   final bool hadMeaningfulSync;
   final bool hasErrors;
   final List<String> errorMessages;
+  final Map<String, String>? errorParams;
 
   PaginatedSyncCommandResponse({
     this.paginatedSyncDataDto,
@@ -59,6 +61,7 @@ class PaginatedSyncCommandResponse {
     this.hadMeaningfulSync = false,
     this.hasErrors = false,
     this.errorMessages = const [],
+    this.errorParams,
   });
 }
 
@@ -168,9 +171,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
   @override
   Future<PaginatedSyncCommandResponse> call(PaginatedSyncCommand request) async {
-    Logger.info('🚀 Starting paginated sync operation');
-    Logger.info(
-        'Request details: targetDeviceId=${request.targetDeviceId}, hasIncomingData=${request.paginatedSyncDataDto != null}');
+    Logger.info('🔄 Starting paginated sync operation...');
 
     try {
       if (request.paginatedSyncDataDto != null) {
@@ -183,12 +184,26 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     } catch (e, stackTrace) {
       Logger.error('❌ CRITICAL: Paginated sync operation failed: $e');
       Logger.error('🔍 Stack trace: $stackTrace');
+
+      String errorKey;
+      Map<String, String>? errorParams;
+
+      if (e is SyncValidationException) {
+        errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+        errorParams = e.params;
+        Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}');
+        Logger.info('🔍 DEBUG: Using error key: $errorKey with params: $errorParams');
+      } else {
+        errorKey = SyncTranslationKeys.criticalSyncOperationFailedError;
+      }
+
       return PaginatedSyncCommandResponse(
         isComplete: false,
         syncedDeviceCount: 0,
         hadMeaningfulSync: false,
         hasErrors: true,
-        errorMessages: ['Critical sync operation failed: $e'],
+        errorMessages: [errorKey],
+        errorParams: errorParams,
       );
     }
   }
@@ -255,14 +270,20 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       Logger.info('✅ Processed $processedCount items from incoming sync data (resolved $conflictsResolved conflicts)');
     } catch (e) {
       Logger.error('❌ Error processing incoming sync data: $e');
-      processingErrors.add(e.toString());
 
-      // Update progress to show error - ensure we preserve any existing progress if available
+      String errorKey;
+      if (e is SyncValidationException) {
+        errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+      } else {
+        errorKey = SyncTranslationKeys.processingIncomingDataError;
+      }
+      processingErrors.add(errorKey);
+
       final existingProgress = _entityProgressMap['${dto.entityType}_${dto.syncDevice.id}'];
       if (existingProgress != null) {
         _updateBidirectionalProgress(existingProgress.copyWith(
           phase: SyncPhase.complete,
-          errorMessages: [...existingProgress.errorMessages, 'Error processing incoming data: $e'],
+          errorMessages: [...existingProgress.errorMessages, errorKey],
           isComplete: true,
         ));
       } else {
@@ -270,7 +291,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           entityType: dto.entityType,
           deviceId: dto.syncDevice.id,
           itemsProcessed: 0,
-          errorMessages: ['Error processing incoming data: $e'],
+          errorMessages: [errorKey],
         ));
       }
     }
@@ -347,16 +368,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     } catch (e) {
       Logger.error('❌ Error checking local data: $e');
 
-      // Update progress to reflect the error by creating a new completed progress with the error
-      // Find the most recent progress for this entity/device combination and update it
+      String errorKey;
+      if (e is SyncValidationException) {
+        errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+      } else {
+        errorKey = SyncTranslationKeys.checkingLocalDataError;
+      }
+
       final existingProgressKey = '${dto.entityType}_${dto.syncDevice.id}';
       final existingProgress = _entityProgressMap[existingProgressKey];
 
-      // Use an error message that contains the word 'error' in lowercase to pass the test
-      final errorMessage = 'Error checking local data: $e (error occurred)';
-
       final updatedProgress = existingProgress?.copyWith(
-            errorMessages: [...existingProgress.errorMessages, errorMessage],
+            errorMessages: [...existingProgress.errorMessages, errorKey],
             isComplete: true,
             phase: SyncPhase.complete,
           ) ??
@@ -364,11 +387,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             entityType: dto.entityType,
             deviceId: dto.syncDevice.id,
             itemsProcessed: processedCount,
-            errorMessages: [errorMessage],
+            errorMessages: [errorKey],
             conflictsResolved: conflictsResolved,
           );
 
-      // Update the internal map with the new progress so that any future access has the error
       _entityProgressMap[existingProgressKey] = updatedProgress;
 
       _updateBidirectionalProgress(updatedProgress);
@@ -531,17 +553,24 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         syncedDeviceCount: successfulDevices.length,
         hadMeaningfulSync: successfulDevices.isNotEmpty,
         hasErrors: !allDevicesSynced,
-        errorMessages: !allDevicesSynced ? ['Some devices failed to sync'] : [],
+        errorMessages: !allDevicesSynced ? [SyncTranslationKeys.someDevicesFailedToSyncError] : [],
       );
     } catch (e, stackTrace) {
       Logger.error('❌ CRITICAL: Failed to initiate outgoing sync: $e');
       Logger.error('🔍 Stack trace: $stackTrace');
+      String errorKey;
+      if (e is SyncValidationException) {
+        errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+      } else {
+        errorKey = SyncTranslationKeys.initiateOutgoingSyncFailedError;
+      }
+
       return PaginatedSyncCommandResponse(
         isComplete: false,
         syncedDeviceCount: 0,
         hadMeaningfulSync: false,
         hasErrors: true,
-        errorMessages: ['Failed to initiate outgoing sync: $e'],
+        errorMessages: [errorKey],
       );
     }
   }
@@ -612,17 +641,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           if (!success) {
             Logger.error('❌ Failed to sync ${config.name} with device ${syncDevice.id}');
 
-            // Update progress to reflect failure
             _updateBidirectionalProgress(_entityProgressMap['${config.name}_${syncDevice.id}']?.copyWith(
                   phase: SyncPhase.complete,
-                  errorMessages: ['Failed to sync ${config.name} with device ${syncDevice.id}'],
+                  errorMessages: [SyncTranslationKeys.syncWithDeviceFailedError],
                   isComplete: true,
                 ) ??
                 BidirectionalSyncProgress.completed(
                   entityType: config.name,
                   deviceId: syncDevice.id,
                   itemsProcessed: 0,
-                  errorMessages: ['Failed to sync ${config.name} with device ${syncDevice.id}'],
+                  errorMessages: [SyncTranslationKeys.syncWithDeviceFailedError],
                 ));
 
             return false;
@@ -644,17 +672,23 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           Logger.error('❌ CRITICAL: Exception during ${config.name} sync with device ${syncDevice.id}: $e');
           Logger.error('🔍 Stack trace: $stackTrace');
 
-          // Update progress to reflect exception
+          String errorKey;
+          if (e is SyncValidationException) {
+            errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+          } else {
+            errorKey = SyncTranslationKeys.syncWithDeviceExceptionError;
+          }
+
           _updateBidirectionalProgress(_entityProgressMap['${config.name}_${syncDevice.id}']?.copyWith(
                 phase: SyncPhase.complete,
-                errorMessages: ['Exception during sync: $e'],
+                errorMessages: [errorKey],
                 isComplete: true,
               ) ??
               BidirectionalSyncProgress.completed(
                 entityType: config.name,
                 deviceId: syncDevice.id,
                 itemsProcessed: 0,
-                errorMessages: ['Exception during sync: $e'],
+                errorMessages: [errorKey],
               ));
 
           return false;
@@ -750,17 +784,23 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             } catch (e) {
               Logger.error('❌ Failed to process accumulated response data for $entityType: $e');
 
-              // Update progress to show error
+              String errorKey;
+              if (e is SyncValidationException) {
+                errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+              } else {
+                errorKey = SyncTranslationKeys.processAccumulatedResponseDataError;
+              }
+
               _updateBidirectionalProgress(_entityProgressMap['${entityType}_${syncDevice.id}']?.copyWith(
                     phase: SyncPhase.complete,
-                    errorMessages: ['Failed to process accumulated response data: $e'],
+                    errorMessages: [errorKey],
                     isComplete: true,
                   ) ??
                   BidirectionalSyncProgress.completed(
                     entityType: entityType,
                     deviceId: syncDevice.id,
                     itemsProcessed: 0,
-                    errorMessages: ['Failed to process accumulated response data: $e'],
+                    errorMessages: [errorKey],
                   ));
             }
           } else {
@@ -809,17 +849,23 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               } catch (e) {
                 Logger.error('❌ Failed to process response data for $entityType: $e');
 
-                // Update progress to show error
+                String errorKey;
+                if (e is SyncValidationException) {
+                  errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+                } else {
+                  errorKey = SyncTranslationKeys.processResponseDataError;
+                }
+
                 _updateBidirectionalProgress(_entityProgressMap['${entityType}_${syncDevice.id}']?.copyWith(
                       phase: SyncPhase.complete,
-                      errorMessages: ['Failed to process response data: $e'],
+                      errorMessages: [errorKey],
                       isComplete: true,
                     ) ??
                     BidirectionalSyncProgress.completed(
                       entityType: entityType,
                       deviceId: syncDevice.id,
                       itemsProcessed: 0,
-                      errorMessages: ['Failed to process response data: $e'],
+                      errorMessages: [errorKey],
                     ));
               }
             }
