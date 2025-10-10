@@ -220,22 +220,25 @@ class _HabitCardState extends State<HabitCard> {
     final isCompactView = widget.isMiniLayout ||
         (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall));
 
-    return ListTile(
-      visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
-      tileColor: AppTheme.surface1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 60), // Ensure minimum height to prevent shrinking
+      child: ListTile(
+        visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
+        tileColor: AppTheme.surface1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+        ),
+        contentPadding: EdgeInsets.only(
+          left: isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium,
+          right: isCompactView ? AppTheme.sizeSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
+        ),
+        onTap: widget.onOpenDetails,
+        dense: widget.isDense,
+        leading: _buildLeading(isCompactView),
+        title: _buildTitle(),
+        subtitle: _buildSubtitle(),
+        trailing: _buildTrailing(isCompactView),
       ),
-      contentPadding: EdgeInsets.only(
-        left: isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium,
-        right: isCompactView ? AppTheme.sizeSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
-      ),
-      onTap: widget.onOpenDetails,
-      dense: widget.isDense,
-      leading: _buildLeading(isCompactView),
-      title: _buildTitle(),
-      subtitle: _buildSubtitle(),
-      trailing: _buildTrailing(isCompactView),
     );
   }
 
@@ -277,14 +280,17 @@ class _HabitCardState extends State<HabitCard> {
 
     return Padding(
       padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
-      child: Wrap(
-        spacing: AppTheme.sizeSmall,
-        runSpacing: AppTheme.sizeSmall / 2,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          if (widget.habit.tags.isNotEmpty) _buildTagsWidget(),
-          if (timeToDisplay != null) _buildEstimatedTimeWidget(),
-        ],
+      child: LimitedBox(
+        maxHeight: 48.0, // Limit the height of the tags container
+        child: Wrap(
+          spacing: AppTheme.sizeSmall,
+          runSpacing: AppTheme.sizeSmall / 2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (widget.habit.tags.isNotEmpty) _buildTagsWidget(),
+            if (timeToDisplay != null) _buildEstimatedTimeWidget(),
+          ],
+        ),
       ),
     );
   }
@@ -479,16 +485,36 @@ class _HabitCardState extends State<HabitCard> {
       return const SizedBox.shrink();
     }
 
-    return Label.multipleColored(
-      icon: TagUiConstants.tagIcon,
-      color: Colors.grey, // Default color for icon and commas
-      values: widget.habit.tags
-          .map((tag) => tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
-          .toList(),
-      colors: widget.habit.tags
-          .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-          .toList(),
-      mini: true,
+    // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
+    final List<String> tagNames = widget.habit.tags.length > 5 
+        ? widget.habit.tags.take(5).map((tag) => tag.name.isNotEmpty 
+            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
+            : _translationService.translate(SharedTranslationKeys.untitled)).toList()
+        : widget.habit.tags.map((tag) => tag.name.isNotEmpty 
+            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
+            : _translationService.translate(SharedTranslationKeys.untitled)).toList();
+
+    // Add a "+X more" indicator if there are more than 5 tags
+    if (widget.habit.tags.length > 5) {
+      final int extraCount = widget.habit.tags.length - 5;
+      tagNames.add('+$extraCount more');
+    }
+
+    return Flexible(
+      child: Label.multipleColored(
+        icon: TagUiConstants.tagIcon,
+        color: Colors.grey, // Default color for icon and commas
+        values: tagNames,
+        colors: widget.habit.tags.length > 5 
+            ? [
+                ...widget.habit.tags.take(5).map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
+                Colors.grey // color for "+X more" text
+              ]
+            : widget.habit.tags
+                .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+                .toList(),
+        mini: true,
+      ),
     );
   }
 
