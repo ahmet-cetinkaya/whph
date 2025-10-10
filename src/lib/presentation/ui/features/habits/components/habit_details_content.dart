@@ -194,10 +194,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       },
       onSuccess: (result) {
         if (mounted) {
-          // Store current selections before updating
-          final nameSelection = _nameController.selection;
-          final descriptionSelection = _descriptionController.selection;
-
           setState(() {
             if (_habit == null) {
               _habit = result;
@@ -219,20 +215,11 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             if (_nameController.text != _habit!.name) {
               _nameController.text = _habit!.name;
               widget.onNameUpdated?.call(_habit!.name);
-              // Don't restore selection for name if it changed
-            } else if (nameSelection.isValid && !_isNameFieldActive) {
-              // Restore selection if name didn't change and field is not actively being edited
-              _nameController.selection = nameSelection;
             }
 
             // Only update description if it's different
             if (_descriptionController.text != _habit!.description) {
               _descriptionController.text = _habit!.description;
-              // Don't restore selection if text changed
-            } else if (descriptionSelection.isValid && _descriptionController.text.isNotEmpty) {
-              // Only restore selection if text didn't change and field has content
-              // Skip selection restoration for empty fields to avoid paste conflicts
-              _descriptionController.selection = descriptionSelection;
             }
 
             // Ensure habit has valid reminder settings if reminder is enabled
@@ -268,10 +255,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       },
       onSuccess: (result) {
         if (mounted) {
-          // Store current selections before updating
-          final nameSelection = _nameController.selection;
-          final descriptionSelection = _descriptionController.selection;
-
           setState(() {
             if (_habit == null) {
               _habit = result;
@@ -293,10 +276,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             if (_nameController.text != _habit!.name) {
               _nameController.text = _habit!.name;
               widget.onNameUpdated?.call(_habit!.name);
-              // Don't restore selection for name if it changed
-            } else if (nameSelection.isValid && !_isNameFieldActive) {
-              // Restore selection if name didn't change and field is not actively being edited
-              _nameController.selection = nameSelection;
             }
 
             // Auto-focus if name is empty (newly created habit)
@@ -312,11 +291,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             // Only update description if it's different
             if (_descriptionController.text != _habit!.description) {
               _descriptionController.text = _habit!.description;
-              // Don't restore selection if text changed
-            } else if (descriptionSelection.isValid && _descriptionController.text.isNotEmpty) {
-              // Only restore selection if text didn't change and field has content
-              // Skip selection restoration for empty fields to avoid paste conflicts
-              _descriptionController.selection = descriptionSelection;
             }
 
             // Ensure habit has valid reminder settings if reminder is enabled

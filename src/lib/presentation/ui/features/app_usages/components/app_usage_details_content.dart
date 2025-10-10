@@ -117,9 +117,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       onSuccess: (response) {
         if (!mounted) return;
 
-        // Store current selection before updating
-        final nameSelection = _nameController.selection;
-
         setState(() {
           _appUsage = response;
 
@@ -127,10 +124,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
           if (_nameController.text != (response.displayName ?? response.name)) {
             _nameController.text = response.displayName ?? response.name;
             widget.onNameUpdated?.call(response.displayName ?? response.name);
-            // Don't restore selection for name if it changed
-          } else if (nameSelection.isValid && !_isNameFieldActive) {
-            // Restore selection if name didn't change and field is not actively being edited
-            _nameController.selection = nameSelection;
           }
         });
       },
