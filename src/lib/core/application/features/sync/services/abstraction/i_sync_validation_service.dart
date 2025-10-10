@@ -33,9 +33,10 @@ abstract class ISyncValidationService {
 class SyncValidationException implements Exception {
   final String message;
   final String? code;
+  final Map<String, String>? params;
 
-  SyncValidationException(this.message, {this.code});
+  SyncValidationException(this.message, {this.code, this.params});
 
   @override
-  String toString() => 'SyncValidationException: $message${code != null ? ' (Code: $code)' : ''}';
+  String toString() => 'SyncValidationException: $message${code != null ? ' (Code: $code)' : ''}${params != null ? ' (Params: $params)' : ''}';
 }

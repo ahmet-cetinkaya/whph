@@ -28,6 +28,7 @@ import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/components/manual_connection_dialog.dart';
+import 'package:whph/presentation/ui/features/sync/utils/sync_error_handler.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -362,21 +363,25 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           Logger.debug('✅ Client sync button animation stopped (${status.state}, manual: ${status.isManual})');
         }
 
-        // Handle notifications ONLY for manual syncs
         if (status.isManual) {
           OverlayNotificationHelper.hideNotification();
 
           if (status.state == SyncState.completed) {
-            OverlayNotificationHelper.showSuccess(
+            SyncErrorHandler.showSyncSuccess(
               context: context,
-              message: _translationService.translate(SyncTranslationKeys.syncCompleted),
+              translationService: _translationService,
+              messageKey: SyncTranslationKeys.syncCompleted,
               duration: const Duration(seconds: 3),
             );
           } else if (status.state == SyncState.error) {
-            OverlayNotificationHelper.showError(
+            final errorKey = status.errorMessage ?? SyncTranslationKeys.syncDevicesError;
+
+            SyncErrorHandler.showSyncError(
               context: context,
-              message: _translationService.translate(SyncTranslationKeys.syncDevicesError),
-              duration: const Duration(seconds: 3),
+              translationService: _translationService,
+              errorKey: errorKey,
+              errorParams: status.errorParams,
+              duration: const Duration(seconds: 5),
             );
           }
         }
