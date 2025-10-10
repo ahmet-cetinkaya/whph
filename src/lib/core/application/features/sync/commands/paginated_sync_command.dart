@@ -233,6 +233,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     // Process the incoming DTO data with progress tracking
     int processedCount = 0;
     List<String> processingErrors = [];
+    Map<String, String>? errorParams;
     int conflictsResolved = 0;
 
     // Initialize progress tracking for incoming sync
@@ -274,6 +275,9 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       String errorKey;
       if (e is SyncValidationException) {
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+        if (processingErrors.isEmpty) {
+          errorParams = e.params;
+        }
       } else {
         errorKey = SyncTranslationKeys.processingIncomingDataError;
       }
@@ -412,6 +416,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       hadMeaningfulSync: true,
       hasErrors: processingErrors.isNotEmpty,
       errorMessages: processingErrors,
+      errorParams: errorParams,
     );
   }
 
@@ -559,8 +564,10 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       Logger.error('❌ CRITICAL: Failed to initiate outgoing sync: $e');
       Logger.error('🔍 Stack trace: $stackTrace');
       String errorKey;
+      Map<String, String>? errorParams;
       if (e is SyncValidationException) {
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
+        errorParams = e.params;
       } else {
         errorKey = SyncTranslationKeys.initiateOutgoingSyncFailedError;
       }
@@ -571,6 +578,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         hadMeaningfulSync: false,
         hasErrors: true,
         errorMessages: [errorKey],
+        errorParams: errorParams,
       );
     }
   }
