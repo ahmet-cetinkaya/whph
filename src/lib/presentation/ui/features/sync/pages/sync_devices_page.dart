@@ -369,6 +369,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           if (status.state == SyncState.completed) {
             SyncErrorHandler.showSyncSuccess(
               context: context,
+              translationService: _translationService,
               messageKey: SyncTranslationKeys.syncCompleted,
               duration: const Duration(seconds: 3),
             );
@@ -377,6 +378,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
             SyncErrorHandler.showSyncError(
               context: context,
+              translationService: _translationService,
               errorKey: errorKey,
               errorParams: status.errorParams,
               duration: const Duration(seconds: 5),
