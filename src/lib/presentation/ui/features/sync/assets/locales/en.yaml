@@ -142,6 +142,18 @@ sync:
     no_active_interfaces: No active network interfaces found
     device_discovery_failed: "Failed to start device discovery: {error}"
     no_server_configured: No server configured. Please add a sync device first or use manual connection to set up a server connection.
+    device_id_unavailable: Device ID is not available. Cannot proceed with sync.
+    local_ip_unavailable: Local IP address is not available. Check network connection.
+    prerequisites_failed: Sync prerequisites validation failed. Please check your network settings.
+    critical_sync_operation_failed: Critical sync operation failed. Please try again.
+    initiate_outgoing_sync_failed: Failed to initiate sync with devices.
+    processing_incoming_data: Error processing incoming sync data.
+    checking_local_data: Error checking local data for synchronization.
+    sync_with_device_failed: Failed to sync with device.
+    sync_with_device_exception: Exception occurred during device synchronization.
+    process_accumulated_response_data: Failed to process accumulated sync response data.
+    process_response_data: Failed to process sync response data.
+    some_devices_failed_to_sync: Some devices failed to sync. Please try again.
   messages:
     device_already_paired: This device is already paired
     sync_completed: Sync completed successfully

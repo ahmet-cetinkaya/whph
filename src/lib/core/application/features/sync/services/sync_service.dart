@@ -160,15 +160,21 @@ class SyncService implements ISyncService {
         _scheduleIdleReset();
       } else {
         // Sync failed, was incomplete, or had errors
-        final errorReason =
-            response.hasErrors ? 'Sync errors: ${response.errorMessages.join('; ')}' : 'Sync was incomplete or failed';
+        // Use first error's translation key for user display
+        final errorKey = response.hasErrors && response.errorMessages.isNotEmpty
+            ? response.errorMessages.first
+            : 'sync.errors.sync_failed';
 
-        Logger.error('❌ Paginated sync failed: $errorReason');
+        Logger.error('❌ Paginated sync failed: $errorKey (${response.errorMessages.length} total errors)');
+        if (response.errorMessages.length > 1) {
+          Logger.error('   Additional errors: ${response.errorMessages.skip(1).join(", ")}');
+        }
 
-        // Update sync status to error
+        // Update sync status to error with translation key and params
         updateSyncStatus(SyncStatus(
           state: SyncState.error,
-          errorMessage: errorReason,
+          errorMessage: errorKey,
+          errorParams: response.errorParams,
           isManual: isManual,
           lastSyncTime: DateTime.now(),
         ));
@@ -181,10 +187,10 @@ class SyncService implements ISyncService {
     } catch (e) {
       Logger.error('Paginated sync failed: $e');
 
-      // Update sync status to error
+      // Update sync status to error with generic translation key
       updateSyncStatus(SyncStatus(
         state: SyncState.error,
-        errorMessage: e.toString(),
+        errorMessage: 'sync.errors.sync_failed',
         isManual: isManual,
         lastSyncTime: DateTime.now(),
       ));

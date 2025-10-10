@@ -9,6 +9,7 @@ class SyncStatus {
   final SyncState state;
   final String? currentDeviceId;
   final String? errorMessage;
+  final Map<String, String>? errorParams;
   final DateTime? lastSyncTime;
   final bool isManual;
 
@@ -16,6 +17,7 @@ class SyncStatus {
     required this.state,
     this.currentDeviceId,
     this.errorMessage,
+    this.errorParams,
     this.lastSyncTime,
     this.isManual = false,
   });
@@ -24,6 +26,7 @@ class SyncStatus {
     SyncState? state,
     String? currentDeviceId,
     String? errorMessage,
+    Map<String, String>? errorParams,
     DateTime? lastSyncTime,
     bool? isManual,
   }) {
@@ -31,6 +34,7 @@ class SyncStatus {
       state: state ?? this.state,
       currentDeviceId: currentDeviceId ?? this.currentDeviceId,
       errorMessage: errorMessage ?? this.errorMessage,
+      errorParams: errorParams ?? this.errorParams,
       lastSyncTime: lastSyncTime ?? this.lastSyncTime,
       isManual: isManual ?? this.isManual,
     );
@@ -43,7 +47,7 @@ class SyncStatus {
 
   @override
   String toString() {
-    return 'SyncStatus(state: $state, currentDeviceId: $currentDeviceId, errorMessage: $errorMessage, lastSyncTime: $lastSyncTime, isManual: $isManual)';
+    return 'SyncStatus(state: $state, currentDeviceId: $currentDeviceId, errorMessage: $errorMessage, errorParams: $errorParams, lastSyncTime: $lastSyncTime, isManual: $isManual)';
   }
 
   @override
