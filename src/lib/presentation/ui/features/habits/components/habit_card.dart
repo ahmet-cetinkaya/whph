@@ -6,9 +6,8 @@ import 'package:whph/core/application/features/habits/queries/get_list_habits_qu
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
@@ -481,44 +480,14 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build tags widget
   Widget _buildTagsWidget() {
-    if (widget.habit.tags.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    const int maxTagsToShow = 5;
-    const int maxTagNameLength = 20;
-    const int truncatedTagNameLength = 17;
-
-    final bool hasMoreTags = widget.habit.tags.length > maxTagsToShow;
-    final tagsToProcess = hasMoreTags ? widget.habit.tags.take(maxTagsToShow) : widget.habit.tags;
-
-    final List<String> tagNames = tagsToProcess
-        .map((tag) => tag.name.isNotEmpty
-            ? (tag.name.length > maxTagNameLength ? '${tag.name.substring(0, truncatedTagNameLength)}...' : tag.name)
-            : _translationService.translate(SharedTranslationKeys.untitled))
+    final items = widget.habit.tags
+        .map((tag) => TagDisplayItem(
+              name: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled),
+              color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : null,
+            ))
         .toList();
 
-    // Add a "+X more" indicator if there are more than 5 tags
-    if (hasMoreTags) {
-      final int extraCount = widget.habit.tags.length - maxTagsToShow;
-      tagNames.add('+$extraCount more');
-    }
-
-    final List<Color> tagColors = tagsToProcess
-        .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-        .toList();
-
-    if (hasMoreTags) {
-      tagColors.add(Colors.grey); // color for "+X more" text
-    }
-
-    return Label.multipleColored(
-      icon: TagUiConstants.tagIcon,
-      color: Colors.grey, // Default color for icon and commas
-      values: tagNames,
-      colors: tagColors,
-      mini: true,
-    );
+    return TagListWidget(items: items);
   }
 
   String _getReminderTooltip() {

@@ -12,8 +12,8 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/presentation/ui/features/tasks/components/schedule_button.dart';
@@ -299,44 +299,14 @@ class TaskCard extends StatelessWidget {
   }
 
   Widget _buildTaskTagsWidget() {
-    if (taskItem.tags.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    const int maxTagsToShow = 5;
-    const int maxTagNameLength = 20;
-    const int truncatedTagNameLength = 17;
-
-    final bool hasMoreTags = taskItem.tags.length > maxTagsToShow;
-    final tagsToProcess = hasMoreTags ? taskItem.tags.take(maxTagsToShow) : taskItem.tags;
-
-    final List<String> tagNames = tagsToProcess
-        .map((tag) => tag.name.isNotEmpty
-            ? (tag.name.length > maxTagNameLength ? '${tag.name.substring(0, truncatedTagNameLength)}...' : tag.name)
-            : _translationService.translate(SharedTranslationKeys.untitled))
+    final items = taskItem.tags
+        .map((tag) => TagDisplayItem(
+              name: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled),
+              color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : null,
+            ))
         .toList();
 
-    // Add a "+X more" indicator if there are more than 5 tags
-    if (hasMoreTags) {
-      final int extraCount = taskItem.tags.length - maxTagsToShow;
-      tagNames.add('+$extraCount more');
-    }
-
-    final List<Color> tagColors = tagsToProcess
-        .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-        .toList();
-
-    if (hasMoreTags) {
-      tagColors.add(Colors.grey); // color for "+X more" text
-    }
-
-    return Label.multipleColored(
-      icon: TagUiConstants.tagIcon,
-      color: Colors.grey,
-      values: tagNames,
-      colors: tagColors,
-      mini: isDense,
-    );
+    return TagListWidget(items: items, mini: isDense);
   }
 
   Color _getPriorityColor(EisenhowerPriority? priority) {
