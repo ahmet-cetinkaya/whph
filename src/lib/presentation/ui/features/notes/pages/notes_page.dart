@@ -7,6 +7,7 @@ import 'package:whph/presentation/ui/features/notes/components/notes_list.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
@@ -28,6 +29,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   final _themeService = container.resolve<IThemeService>();
 
   bool _isListVisible = false;
+  bool _isDataLoaded = false;
   List<String>? _selectedTagIds;
   bool _showNoTagsFilter = false;
   String? _searchQuery;
@@ -68,6 +70,18 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
     });
   }
 
+  void _onDataListed(int count) {
+    if (mounted) {
+      setState(() {
+        _isDataLoaded = true;
+      });
+    }
+  }
+
+  bool get _isPageFullyLoaded {
+    return _isListVisible && _isDataLoaded;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -94,51 +108,55 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
           ],
         ),
       ],
-      builder: (context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Filters section with consistent padding
-          NoteListOptions(
-            selectedTagIds: _selectedTagIds,
-            showNoTagsFilter: _showNoTagsFilter,
-            search: _searchQuery,
-            sortConfig: _sortConfig,
-            onTagFilterChange: (tags, isNoneSelected) {
-              setState(() {
-                _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                _showNoTagsFilter = isNoneSelected;
-              });
-            },
-            onSearchChange: (query) {
-              setState(() {
-                _searchQuery = query;
-              });
-            },
-            onSortChange: (sortConfig) {
-              setState(() {
-                _sortConfig = sortConfig;
-              });
-            },
-            onSettingsLoaded: _handleSettingsLoaded,
-            onSaveSettings: () {
-              // Force refresh the list when settings are saved
-              setState(() {});
-            },
-            settingKeyVariantSuffix: noteListSettingKeySuffix,
-          ),
-
-          // Notes list
-          if (_isListVisible)
-            Expanded(
-              child: NotesList(
-                filterByTags: _selectedTagIds,
-                filterNoTags: _showNoTagsFilter,
-                search: _searchQuery,
-                sortConfig: _sortConfig,
-                onClickNote: _openDetails,
-              ),
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Filters section with consistent padding
+            NoteListOptions(
+              selectedTagIds: _selectedTagIds,
+              showNoTagsFilter: _showNoTagsFilter,
+              search: _searchQuery,
+              sortConfig: _sortConfig,
+              onTagFilterChange: (tags, isNoneSelected) {
+                setState(() {
+                  _selectedTagIds = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                  _showNoTagsFilter = isNoneSelected;
+                });
+              },
+              onSearchChange: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+              onSortChange: (sortConfig) {
+                setState(() {
+                  _sortConfig = sortConfig;
+                });
+              },
+              onSettingsLoaded: _handleSettingsLoaded,
+              onSaveSettings: () {
+                // Force refresh the list when settings are saved
+                setState(() {});
+              },
+              settingKeyVariantSuffix: noteListSettingKeySuffix,
             ),
-        ],
+
+            // Notes list
+            if (_isListVisible)
+              Expanded(
+                child: NotesList(
+                  filterByTags: _selectedTagIds,
+                  filterNoTags: _showNoTagsFilter,
+                  search: _searchQuery,
+                  sortConfig: _sortConfig,
+                  onClickNote: _openDetails,
+                  onList: _onDataListed,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

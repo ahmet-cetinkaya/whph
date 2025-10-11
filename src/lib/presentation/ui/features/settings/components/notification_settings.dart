@@ -9,9 +9,12 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 
 class NotificationSettings extends StatefulWidget {
-  const NotificationSettings({super.key});
+  final VoidCallback? onLoaded;
+
+  const NotificationSettings({super.key, this.onLoaded});
 
   @override
   State<NotificationSettings> createState() => _NotificationSettingsState();
@@ -56,6 +59,13 @@ class _NotificationSettingsState extends State<NotificationSettings> {
           _isEnabled = setting.value == 'true';
         }
         return true;
+      },
+      onSuccess: (_) {
+        widget.onLoaded?.call();
+      },
+      onError: (e) {
+        Logger.error('Error loading notification settings: $e');
+        widget.onLoaded?.call();
       },
     );
   }

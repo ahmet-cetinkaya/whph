@@ -5,6 +5,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_defaults.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_add_button.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_list_options.dart';
@@ -52,6 +53,8 @@ class _TagsPageState extends State<TagsPage> {
   static const String _listSettingKeyVariantSuffix = 'LIST';
   String? _searchFilterQuery;
   SortConfig<TagSortFields> _sortConfig = TagDefaults.sorting;
+
+  bool _isDataLoaded = false;
 
   Future<void> _openDetails(String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -163,6 +166,18 @@ class _TagsPageState extends State<TagsPage> {
     });
   }
 
+  void _onDataListed(int count) {
+    if (mounted) {
+      setState(() {
+        _isDataLoaded = true;
+      });
+    }
+  }
+
+  bool get _isPageFullyLoaded {
+    return _mainListOptionLoaded && _listOptionLoaded && _tagTimeChartOptionsLoaded && _isDataLoaded;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
@@ -182,107 +197,111 @@ class _TagsPageState extends State<TagsPage> {
           helpMarkdownContentKey: TagTranslationKeys.overviewHelpContent,
         ),
       ],
-      builder: (context) => Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Main List Options
-              TagListOptions(
-                settingKeyVariantSuffix: _mainSettingKeyVariantSuffix,
-                onSettingsLoaded: _onMainSettingsLoaded,
-                selectedTagIds: _selectedTagIds,
-                showNoTagsFilter: _showNoTagsFilter,
-                showArchived: _showArchived,
-                onTagFilterChange: _onTagFilterChange,
-                onArchivedToggle: _onArchivedToggle,
-                showSearchFilter: false,
-                showSortButton: false,
-              ),
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Main List Options
+                TagListOptions(
+                  settingKeyVariantSuffix: _mainSettingKeyVariantSuffix,
+                  onSettingsLoaded: _onMainSettingsLoaded,
+                  selectedTagIds: _selectedTagIds,
+                  showNoTagsFilter: _showNoTagsFilter,
+                  showArchived: _showArchived,
+                  onTagFilterChange: _onTagFilterChange,
+                  onArchivedToggle: _onArchivedToggle,
+                  showSearchFilter: false,
+                  showSortButton: false,
+                ),
 
-              // Tag Time Title
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                // Tag Time Title
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text(
+                          _translationService.translate(TagTranslationKeys.timeDistribution),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        const SizedBox(width: AppTheme.sizeSmall),
+                        TagTimeChartOptions(
+                          dateFilterSetting: _dateFilterSetting,
+                          selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                          selectedEndDate: _dateFilterSetting != null ? _endDate : null,
+                          onDateFilterChange: _onDateFilterChange,
+                          onDateFilterSettingChange: _onDateFilterSettingChange,
+                          selectedCategories: _selectedCategories,
+                          onCategoriesChanged: _onTimeChartCategoryChanged,
+                          settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
+                          onSettingsLoaded: _onTagTimeChartOptionsLoaded,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Tag Time Chart
+                if (_mainListOptionLoaded && _tagTimeChartOptionsLoaded)
+                  Padding(
+                    padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                    child: Center(
+                      child: TagTimeChart(
+                        filterByTags: _selectedTagIds,
+                        startDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
+                        endDate: _endDate ?? DateTime.now(),
+                        filterByIsArchived: _showArchived,
+                        selectedCategories: _selectedCategories,
+                      ),
+                    ),
+                  ),
+
+                // List Options
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.sizeSmall),
                   child: Row(
                     children: [
                       Text(
-                        _translationService.translate(TagTranslationKeys.timeDistribution),
+                        _translationService.translate(TagTranslationKeys.listSectionTitle),
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       const SizedBox(width: AppTheme.sizeSmall),
-                      TagTimeChartOptions(
-                        dateFilterSetting: _dateFilterSetting,
-                        selectedStartDate: _dateFilterSetting != null ? _startDate : null,
-                        selectedEndDate: _dateFilterSetting != null ? _endDate : null,
-                        onDateFilterChange: _onDateFilterChange,
-                        onDateFilterSettingChange: _onDateFilterSettingChange,
-                        selectedCategories: _selectedCategories,
-                        onCategoriesChanged: _onTimeChartCategoryChanged,
-                        settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
-                        onSettingsLoaded: _onTagTimeChartOptionsLoaded,
+                      Expanded(
+                        child: TagListOptions(
+                          onSettingsLoaded: _onListOptionLoaded,
+                          showSearchFilter: true,
+                          search: _searchFilterQuery,
+                          onSearchChange: _onListSearchChange,
+                          showSortButton: true,
+                          sortConfig: _sortConfig,
+                          onSortChange: _onListSortConfigChange,
+                          showTagFilter: false,
+                          showArchivedToggle: false,
+                          settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
 
-              // Tag Time Chart
-              if (_mainListOptionLoaded && _tagTimeChartOptionsLoaded)
-                Padding(
-                  padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                  child: Center(
-                    child: TagTimeChart(
-                      filterByTags: _selectedTagIds,
-                      startDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
-                      endDate: _endDate ?? DateTime.now(),
-                      filterByIsArchived: _showArchived,
-                      selectedCategories: _selectedCategories,
-                    ),
+                // List
+                if (_mainListOptionLoaded && _listOptionLoaded)
+                  TagsList(
+                    onClickTag: (tag) => _openDetails(tag.id),
+                    onList: _onDataListed,
+                    filterByTags: _selectedTagIds,
+                    search: _searchFilterQuery,
+                    showArchived: _showArchived,
+                    sortConfig: _sortConfig,
                   ),
-                ),
-
-              // List Options
-              Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                child: Row(
-                  children: [
-                    Text(
-                      _translationService.translate(TagTranslationKeys.listSectionTitle),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(width: AppTheme.sizeSmall),
-                    Expanded(
-                      child: TagListOptions(
-                        onSettingsLoaded: _onListOptionLoaded,
-                        showSearchFilter: true,
-                        search: _searchFilterQuery,
-                        onSearchChange: _onListSearchChange,
-                        showSortButton: true,
-                        sortConfig: _sortConfig,
-                        onSortChange: _onListSortConfigChange,
-                        showTagFilter: false,
-                        showArchivedToggle: false,
-                        settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // List
-              if (_mainListOptionLoaded && _listOptionLoaded)
-                TagsList(
-                  onClickTag: (tag) => _openDetails(tag.id),
-                  filterByTags: _selectedTagIds,
-                  search: _searchFilterQuery,
-                  showArchived: _showArchived,
-                  sortConfig: _sortConfig,
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
