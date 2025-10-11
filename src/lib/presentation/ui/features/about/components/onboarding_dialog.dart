@@ -36,6 +36,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
 
   List<_OnboardingStep> get _steps {
     final baseSteps = [
+      // Welcome
       _OnboardingStep(
         icon: Icons.waving_hand,
         titleKey: AboutTranslationKeys.onboardingTitle1,
@@ -46,26 +47,36 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
           showPlaceholder: true,
         ),
       ),
+
+      // Tasks Intro
       _OnboardingStep(
         icon: Icons.check_circle_outline,
         titleKey: AboutTranslationKeys.onboardingTitle2,
         descriptionKey: AboutTranslationKeys.onboardingDescription2,
       ),
+
+      // Habits Intro
       _OnboardingStep(
         icon: Icons.refresh,
         titleKey: AboutTranslationKeys.onboardingTitle3,
         descriptionKey: AboutTranslationKeys.onboardingDescription3,
       ),
+
+      // Notes Intro
       _OnboardingStep(
         icon: Icons.note_alt_outlined,
         titleKey: AboutTranslationKeys.onboardingTitle4,
         descriptionKey: AboutTranslationKeys.onboardingDescription4,
       ),
+
+      // Time tracking intro
       _OnboardingStep(
         icon: Icons.bar_chart,
         titleKey: AboutTranslationKeys.onboardingTitle5,
         descriptionKey: AboutTranslationKeys.onboardingDescription5,
       ),
+
+      // Tags Intro
       _OnboardingStep(
         icon: TagUiConstants.tagIcon,
         titleKey: AboutTranslationKeys.onboardingTitle6,
@@ -73,7 +84,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
       ),
     ];
 
-    // Add permissions step only on Android
+    // Permissions intro (only on Android)
     if (PlatformUtils.isMobile) {
       baseSteps.add(
         _OnboardingStep(
@@ -89,7 +100,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
       );
     }
 
-    // Add final motivation step
+    // Final motivation intro
     baseSteps.add(
       _OnboardingStep(
         imageAsset: AppAssets.logo,
