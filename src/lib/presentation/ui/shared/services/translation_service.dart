@@ -82,6 +82,22 @@ class TranslationService implements ITranslationService {
   }
 
   @override
+  Future<void> changeLanguageWithoutNavigation(BuildContext context, String languageCode) async {
+    await context.setLocale(Locale(languageCode));
+
+    // Save locale for background translation service
+    await BackgroundTranslationService().saveCurrentLocale(languageCode);
+
+    // Refresh all reminders with new language
+    try {
+      final reminderService = container.resolve<ReminderService>();
+      await reminderService.refreshAllRemindersForLanguageChange();
+    } catch (e) {
+      Logger.error('🔔 TranslationService: Failed to refresh reminders for language change: $e');
+    }
+  }
+
+  @override
   String getCurrentLanguage(BuildContext context) => context.locale.languageCode;
 
   @override

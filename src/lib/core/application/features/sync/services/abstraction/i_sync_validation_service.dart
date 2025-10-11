@@ -38,5 +38,6 @@ class SyncValidationException implements Exception {
   SyncValidationException(this.message, {this.code, this.params});
 
   @override
-  String toString() => 'SyncValidationException: $message${code != null ? ' (Code: $code)' : ''}${params != null ? ' (Params: $params)' : ''}';
+  String toString() =>
+      'SyncValidationException: $message${code != null ? ' (Code: $code)' : ''}${params != null ? ' (Params: $params)' : ''}';
 }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/bar_chart.dart';
-import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
-import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/main.dart';
 
 class AppUsageCard extends StatelessWidget {
@@ -42,12 +41,19 @@ class AppUsageCard extends StatelessWidget {
     );
   }
 
+  Widget _buildAppUsageTagsWidget() {
+    final items = appUsage.tags
+        .map((tag) => TagDisplayItem(
+              name: tag.tagName,
+              color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
+            ))
+        .toList();
+
+    return TagListWidget(items: items);
+  }
+
   Widget? _buildAdditionalWidget() {
     if (appUsage.tags.isEmpty) return null;
-
-    final List<Color> tagColors = appUsage.tags
-        .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-        .toList();
 
     return Wrap(
       spacing: AppTheme.size2XSmall,
@@ -58,13 +64,7 @@ class AppUsageCard extends StatelessWidget {
           "•",
           style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
         ),
-        Label.multipleColored(
-          icon: TagUiConstants.tagIcon,
-          color: Colors.grey, // Default color for icon and commas
-          values: appUsage.tags.map((tag) => tag.tagName).toList(),
-          colors: tagColors,
-          mini: true,
-        ),
+        _buildAppUsageTagsWidget(),
       ],
     );
   }

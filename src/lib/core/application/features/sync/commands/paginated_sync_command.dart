@@ -696,7 +696,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           if (e is SyncValidationException) {
             errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
             if (kDebugMode) {
-              Logger.info('🔍 DEBUG: SyncValidationException caught during device sync! Code: ${e.code}, params: ${e.params}');
+              Logger.info(
+                  '🔍 DEBUG: SyncValidationException caught during device sync! Code: ${e.code}, params: ${e.params}');
             }
           } else {
             errorKey = SyncTranslationKeys.syncWithDeviceExceptionError;
@@ -811,7 +812,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               if (e is SyncValidationException) {
                 errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
                 if (kDebugMode) {
-                  Logger.info('🔍 DEBUG: SyncValidationException in accumulated response processing! Code: ${e.code}, params: ${e.params}');
+                  Logger.info(
+                      '🔍 DEBUG: SyncValidationException in accumulated response processing! Code: ${e.code}, params: ${e.params}');
                 }
               } else {
                 errorKey = SyncTranslationKeys.processAccumulatedResponseDataError;
@@ -879,7 +881,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                 if (e is SyncValidationException) {
                   errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
                   if (kDebugMode) {
-                    Logger.info('🔍 DEBUG: SyncValidationException in response data processing! Code: ${e.code}, params: ${e.params}');
+                    Logger.info(
+                        '🔍 DEBUG: SyncValidationException in response data processing! Code: ${e.code}, params: ${e.params}');
                   }
                 } else {
                   errorKey = SyncTranslationKeys.processResponseDataError;

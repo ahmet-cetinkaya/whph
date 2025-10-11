@@ -10,7 +10,9 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
 class StartupSettings extends StatefulWidget {
-  const StartupSettings({super.key});
+  final VoidCallback? onLoaded;
+
+  const StartupSettings({super.key, this.onLoaded});
 
   @override
   State<StartupSettings> createState() => _StartupSettingsState();
@@ -46,8 +48,12 @@ class _StartupSettingsState extends State<StartupSettings> {
         });
         return true;
       },
+      onSuccess: (_) {
+        widget.onLoaded?.call();
+      },
       onError: (e) {
         Logger.error('Error loading startup setting: $e');
+        widget.onLoaded?.call();
       },
     );
   }

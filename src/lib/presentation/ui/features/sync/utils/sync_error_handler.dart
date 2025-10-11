@@ -30,9 +30,7 @@ class SyncErrorHandler {
     if (errorKeys.isEmpty) return;
 
     final firstErrorMessage = translationService.translate(errorKeys.first);
-    final message = errorKeys.length > 1
-        ? '$firstErrorMessage (+${errorKeys.length - 1} more)'
-        : firstErrorMessage;
+    final message = errorKeys.length > 1 ? '$firstErrorMessage (+${errorKeys.length - 1} more)' : firstErrorMessage;
 
     OverlayNotificationHelper.showError(
       context: context,

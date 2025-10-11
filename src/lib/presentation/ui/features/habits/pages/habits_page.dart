@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
@@ -47,6 +48,7 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _forceOriginalLayout = false;
   String? _handledHabitId;
   bool _isHabitListVisible = false;
+  bool _isHabitDataLoaded = false;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -104,6 +106,19 @@ class _HabitsPageState extends State<HabitsPage> {
     setState(() {
       _isHabitListVisible = true;
     });
+  }
+
+  void _onHabitsListed(int count) {
+    if (mounted) {
+      setState(() {
+        _isHabitDataLoaded = true;
+      });
+    }
+  }
+
+  /// Check if all page data has finished loading
+  bool get _isPageFullyLoaded {
+    return _isHabitListVisible && _isHabitDataLoaded;
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
@@ -230,78 +245,82 @@ class _HabitsPageState extends State<HabitsPage> {
           helpMarkdownContentKey: HabitTranslationKeys.overviewHelpContent,
         ),
       ],
-      builder: (context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Filters and Calendar row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Filters and sorting
-              Expanded(
-                child: HabitListOptions(
-                  selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
-                  showNoTagsFilter: _showNoTagsFilter,
-                  filterByArchived: _filterByArchived,
-                  sortConfig: _sortConfig,
-                  forceOriginalLayout: _forceOriginalLayout,
-                  onTagFilterChange: _onFilterTagsSelect,
-                  onArchiveFilterChange: _onToggleArchived,
-                  onSearchChange: _onSearchChange,
-                  onSortChange: _onSortConfigChange,
-                  onLayoutToggleChange: _onLayoutToggleChange,
-                  showSearchFilter: true,
-                  showSortButton: true,
-                  showSaveButton: true,
-                  settingKeyVariantSuffix: habitListOptionsSettingKeySuffix,
-                  onSettingsLoaded: _onSettingsLoaded,
-                ),
-              ),
-
-              // Calendar
-              if (_isHabitListVisible &&
-                  AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
-                  !_filterByArchived)
-                SizedBox(
-                  width: _calculateCalendarHeaderWidth(daysToShow),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ...lastDays.map((date) => _buildCalendarDay(date, today)),
-                      // Add spacing to match calendar right padding and drag handle width
-                      SizedBox(
-                        width: _calculateCalendarSpacingWidth(),
-                      ),
-                    ],
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Filters and Calendar row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Filters and sorting
+                Expanded(
+                  child: HabitListOptions(
+                    selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
+                    showNoTagsFilter: _showNoTagsFilter,
+                    filterByArchived: _filterByArchived,
+                    sortConfig: _sortConfig,
+                    forceOriginalLayout: _forceOriginalLayout,
+                    onTagFilterChange: _onFilterTagsSelect,
+                    onArchiveFilterChange: _onToggleArchived,
+                    onSearchChange: _onSearchChange,
+                    onSortChange: _onSortConfigChange,
+                    onLayoutToggleChange: _onLayoutToggleChange,
+                    showSearchFilter: true,
+                    showSortButton: true,
+                    showSaveButton: true,
+                    settingKeyVariantSuffix: habitListOptionsSettingKeySuffix,
+                    onSettingsLoaded: _onSettingsLoaded,
                   ),
                 ),
-            ],
-          ),
 
-          // List
-          if (_isHabitListVisible)
-            Expanded(
-              child: HabitsList(
-                dateRange: daysToShow,
-                filterByTags: _selectedFilterTags,
-                filterNoTags: _showNoTagsFilter,
-                filterByArchived: _filterByArchived,
-                search: _searchQuery,
-                sortConfig: _sortConfig,
-                enableReordering: _sortConfig.useCustomOrder,
-                forceOriginalLayout: _forceOriginalLayout,
-                useParentScroll: false,
-                onClickHabit: (item) {
-                  _openDetails(item.id, context);
-                },
-                onReorderComplete: () {
-                  // Refresh the habits list to ensure correct order
-                  setState(() {});
-                },
-              ),
+                // Calendar
+                if (_isHabitListVisible &&
+                    AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
+                    !_filterByArchived)
+                  SizedBox(
+                    width: _calculateCalendarHeaderWidth(daysToShow),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ...lastDays.map((date) => _buildCalendarDay(date, today)),
+                        // Add spacing to match calendar right padding and drag handle width
+                        SizedBox(
+                          width: _calculateCalendarSpacingWidth(),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
-        ],
+
+            // List
+            if (_isHabitListVisible)
+              Expanded(
+                child: HabitsList(
+                  dateRange: daysToShow,
+                  filterByTags: _selectedFilterTags,
+                  filterNoTags: _showNoTagsFilter,
+                  filterByArchived: _filterByArchived,
+                  search: _searchQuery,
+                  sortConfig: _sortConfig,
+                  enableReordering: _sortConfig.useCustomOrder,
+                  forceOriginalLayout: _forceOriginalLayout,
+                  useParentScroll: false,
+                  onClickHabit: (item) {
+                    _openDetails(item.id, context);
+                  },
+                  onListing: _onHabitsListed,
+                  onReorderComplete: () {
+                    // Refresh the habits list to ensure correct order
+                    setState(() {});
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
