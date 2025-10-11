@@ -119,22 +119,21 @@ class _NoteCardState extends State<NoteCard> {
       tagNames.add('+$extraCount more');
     }
 
-    return Flexible(
-      child: Label.multipleColored(
-        icon: TagUiConstants.tagIcon,
-        color: Colors.grey,
-        values: tagNames,
-        colors: widget.note.tags.length > 5
-            ? [
-                ...widget.note.tags.take(5).map(
-                    (tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey),
-                Colors.grey // color for "+X more" text
-              ]
-            : widget.note.tags
-                .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-                .toList(),
-        mini: true,
-      ),
+    return Label.multipleColored(
+      icon: TagUiConstants.tagIcon,
+      color: Colors.grey,
+      values: tagNames,
+      colors: widget.note.tags.length > 5
+          ? [
+              ...widget.note.tags
+                  .take(5)
+                  .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey),
+              Colors.grey // color for "+X more" text
+            ]
+          : widget.note.tags
+              .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
+              .toList(),
+      mini: true,
     );
   }
 
