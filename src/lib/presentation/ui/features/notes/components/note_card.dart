@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/main.dart';
 import 'package:acore/acore.dart';
 
@@ -95,44 +94,15 @@ class _NoteCardState extends State<NoteCard> {
   }
 
   Widget _buildNoteTagsWidget() {
-    if (widget.note.tags.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    const int maxTagsToShow = 5;
-    const int maxTagNameLength = 20;
-    const int truncatedTagNameLength = 17;
-
-    final bool hasMoreTags = widget.note.tags.length > maxTagsToShow;
-    final tagsToProcess = hasMoreTags ? widget.note.tags.take(maxTagsToShow) : widget.note.tags;
-
-    final List<String> tagNames = tagsToProcess
-        .map((tag) => tag.tagName.isNotEmpty
-            ? (tag.tagName.length > maxTagNameLength ? '${tag.tagName.substring(0, truncatedTagNameLength)}...' : tag.tagName)
-            : _translationService.translate(SharedTranslationKeys.untitled))
+    final items = widget.note.tags
+        .map((tag) => TagDisplayItem(
+              name:
+                  tag.tagName.isNotEmpty ? tag.tagName : _translationService.translate(SharedTranslationKeys.untitled),
+              color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
+            ))
         .toList();
 
-    // Add a "+X more" indicator if there are more than 5 tags
-    if (hasMoreTags) {
-      final int extraCount = widget.note.tags.length - maxTagsToShow;
-      tagNames.add('+$extraCount more');
-    }
-
-    final List<Color> tagColors = tagsToProcess
-        .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-        .toList();
-
-    if (hasMoreTags) {
-      tagColors.add(Colors.grey); // color for "+X more" text
-    }
-
-    return Label.multipleColored(
-      icon: TagUiConstants.tagIcon,
-      color: Colors.grey,
-      values: tagNames,
-      colors: tagColors,
-      mini: true,
-    );
+    return TagListWidget(items: items);
   }
 
   String _formatDateTime(DateTime dateTime, BuildContext context) {
