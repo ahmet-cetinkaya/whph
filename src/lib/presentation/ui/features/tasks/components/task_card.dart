@@ -304,13 +304,18 @@ class TaskCard extends StatelessWidget {
     }
 
     // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
-    final List<String> tagNames = taskItem.tags.length > 5 
-        ? taskItem.tags.take(5).map((tag) => tag.name.isNotEmpty 
-            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
-            : _translationService.translate(SharedTranslationKeys.untitled)).toList()
-        : taskItem.tags.map((tag) => tag.name.isNotEmpty 
-            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
-            : _translationService.translate(SharedTranslationKeys.untitled)).toList();
+    final List<String> tagNames = taskItem.tags.length > 5
+        ? taskItem.tags
+            .take(5)
+            .map((tag) => tag.name.isNotEmpty
+                ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name)
+                : _translationService.translate(SharedTranslationKeys.untitled))
+            .toList()
+        : taskItem.tags
+            .map((tag) => tag.name.isNotEmpty
+                ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name)
+                : _translationService.translate(SharedTranslationKeys.untitled))
+            .toList();
 
     // Add a "+X more" indicator if there are more than 5 tags
     if (taskItem.tags.length > 5) {
@@ -323,9 +328,11 @@ class TaskCard extends StatelessWidget {
         icon: TagUiConstants.tagIcon,
         color: Colors.grey,
         values: tagNames,
-        colors: taskItem.tags.length > 5 
+        colors: taskItem.tags.length > 5
             ? [
-                ...taskItem.tags.take(5).map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
+                ...taskItem.tags
+                    .take(5)
+                    .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
                 Colors.grey // color for "+X more" text
               ]
             : taskItem.tags

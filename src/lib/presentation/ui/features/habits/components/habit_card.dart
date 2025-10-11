@@ -486,13 +486,18 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
-    final List<String> tagNames = widget.habit.tags.length > 5 
-        ? widget.habit.tags.take(5).map((tag) => tag.name.isNotEmpty 
-            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
-            : _translationService.translate(SharedTranslationKeys.untitled)).toList()
-        : widget.habit.tags.map((tag) => tag.name.isNotEmpty 
-            ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name) 
-            : _translationService.translate(SharedTranslationKeys.untitled)).toList();
+    final List<String> tagNames = widget.habit.tags.length > 5
+        ? widget.habit.tags
+            .take(5)
+            .map((tag) => tag.name.isNotEmpty
+                ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name)
+                : _translationService.translate(SharedTranslationKeys.untitled))
+            .toList()
+        : widget.habit.tags
+            .map((tag) => tag.name.isNotEmpty
+                ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name)
+                : _translationService.translate(SharedTranslationKeys.untitled))
+            .toList();
 
     // Add a "+X more" indicator if there are more than 5 tags
     if (widget.habit.tags.length > 5) {
@@ -505,9 +510,11 @@ class _HabitCardState extends State<HabitCard> {
         icon: TagUiConstants.tagIcon,
         color: Colors.grey, // Default color for icon and commas
         values: tagNames,
-        colors: widget.habit.tags.length > 5 
+        colors: widget.habit.tags.length > 5
             ? [
-                ...widget.habit.tags.take(5).map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
+                ...widget.habit.tags
+                    .take(5)
+                    .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
                 Colors.grey // color for "+X more" text
               ]
             : widget.habit.tags

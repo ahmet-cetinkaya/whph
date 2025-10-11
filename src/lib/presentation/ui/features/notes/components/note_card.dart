@@ -100,13 +100,18 @@ class _NoteCardState extends State<NoteCard> {
     }
 
     // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
-    final List<String> tagNames = widget.note.tags.length > 5 
-        ? widget.note.tags.take(5).map((tag) => tag.tagName.isNotEmpty 
-            ? (tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName) 
-            : _translationService.translate(SharedTranslationKeys.untitled)).toList()
-        : widget.note.tags.map((tag) => tag.tagName.isNotEmpty 
-            ? (tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName) 
-            : _translationService.translate(SharedTranslationKeys.untitled)).toList();
+    final List<String> tagNames = widget.note.tags.length > 5
+        ? widget.note.tags
+            .take(5)
+            .map((tag) => tag.tagName.isNotEmpty
+                ? (tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName)
+                : _translationService.translate(SharedTranslationKeys.untitled))
+            .toList()
+        : widget.note.tags
+            .map((tag) => tag.tagName.isNotEmpty
+                ? (tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName)
+                : _translationService.translate(SharedTranslationKeys.untitled))
+            .toList();
 
     // Add a "+X more" indicator if there are more than 5 tags
     if (widget.note.tags.length > 5) {
@@ -119,9 +124,10 @@ class _NoteCardState extends State<NoteCard> {
         icon: TagUiConstants.tagIcon,
         color: Colors.grey,
         values: tagNames,
-        colors: widget.note.tags.length > 5 
+        colors: widget.note.tags.length > 5
             ? [
-                ...widget.note.tags.take(5).map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey),
+                ...widget.note.tags.take(5).map(
+                    (tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey),
                 Colors.grey // color for "+X more" text
               ]
             : widget.note.tags
