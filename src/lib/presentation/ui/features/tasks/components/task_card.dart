@@ -303,40 +303,38 @@ class TaskCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
-    final List<String> tagNames = taskItem.tags.length > 5
-        ? taskItem.tags
-            .take(5)
-            .map((tag) => tag.name.isNotEmpty
-                ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name)
-                : _translationService.translate(SharedTranslationKeys.untitled))
-            .toList()
-        : taskItem.tags
-            .map((tag) => tag.name.isNotEmpty
-                ? (tag.name.length > 20 ? '${tag.name.substring(0, 17)}...' : tag.name)
-                : _translationService.translate(SharedTranslationKeys.untitled))
-            .toList();
+    const int maxTagsToShow = 5;
+    const int maxTagNameLength = 20;
+    const int truncatedTagNameLength = 17;
+
+    final bool hasMoreTags = taskItem.tags.length > maxTagsToShow;
+    final tagsToProcess = hasMoreTags ? taskItem.tags.take(maxTagsToShow) : taskItem.tags;
+
+    final List<String> tagNames = tagsToProcess
+        .map((tag) => tag.name.isNotEmpty
+            ? (tag.name.length > maxTagNameLength ? '${tag.name.substring(0, truncatedTagNameLength)}...' : tag.name)
+            : _translationService.translate(SharedTranslationKeys.untitled))
+        .toList();
 
     // Add a "+X more" indicator if there are more than 5 tags
-    if (taskItem.tags.length > 5) {
-      final int extraCount = taskItem.tags.length - 5;
+    if (hasMoreTags) {
+      final int extraCount = taskItem.tags.length - maxTagsToShow;
       tagNames.add('+$extraCount more');
+    }
+
+    final List<Color> tagColors = tagsToProcess
+        .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+        .toList();
+
+    if (hasMoreTags) {
+      tagColors.add(Colors.grey); // color for "+X more" text
     }
 
     return Label.multipleColored(
       icon: TagUiConstants.tagIcon,
       color: Colors.grey,
       values: tagNames,
-      colors: taskItem.tags.length > 5
-          ? [
-              ...taskItem.tags
-                  .take(5)
-                  .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
-              Colors.grey // color for "+X more" text
-            ]
-          : taskItem.tags
-              .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-              .toList(),
+      colors: tagColors,
       mini: isDense,
     );
   }
