@@ -505,23 +505,21 @@ class _HabitCardState extends State<HabitCard> {
       tagNames.add('+$extraCount more');
     }
 
-    return Flexible(
-      child: Label.multipleColored(
-        icon: TagUiConstants.tagIcon,
-        color: Colors.grey, // Default color for icon and commas
-        values: tagNames,
-        colors: widget.habit.tags.length > 5
-            ? [
-                ...widget.habit.tags
-                    .take(5)
-                    .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
-                Colors.grey // color for "+X more" text
-              ]
-            : widget.habit.tags
-                .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-                .toList(),
-        mini: true,
-      ),
+    return Label.multipleColored(
+      icon: TagUiConstants.tagIcon,
+      color: Colors.grey, // Default color for icon and commas
+      values: tagNames,
+      colors: widget.habit.tags.length > 5
+          ? [
+              ...widget.habit.tags
+                  .take(5)
+                  .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
+              Colors.grey // color for "+X more" text
+            ]
+          : widget.habit.tags
+              .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+              .toList(),
+      mini: true,
     );
   }
 

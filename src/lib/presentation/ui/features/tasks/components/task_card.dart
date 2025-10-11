@@ -323,23 +323,21 @@ class TaskCard extends StatelessWidget {
       tagNames.add('+$extraCount more');
     }
 
-    return Flexible(
-      child: Label.multipleColored(
-        icon: TagUiConstants.tagIcon,
-        color: Colors.grey,
-        values: tagNames,
-        colors: taskItem.tags.length > 5
-            ? [
-                ...taskItem.tags
-                    .take(5)
-                    .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
-                Colors.grey // color for "+X more" text
-              ]
-            : taskItem.tags
-                .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-                .toList(),
-        mini: isDense,
-      ),
+    return Label.multipleColored(
+      icon: TagUiConstants.tagIcon,
+      color: Colors.grey,
+      values: tagNames,
+      colors: taskItem.tags.length > 5
+          ? [
+              ...taskItem.tags
+                  .take(5)
+                  .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey),
+              Colors.grey // color for "+X more" text
+            ]
+          : taskItem.tags
+              .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
+              .toList(),
+      mini: isDense,
     );
   }
 

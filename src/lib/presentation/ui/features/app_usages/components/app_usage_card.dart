@@ -74,14 +74,12 @@ class AppUsageCard extends StatelessWidget {
             .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
             .toList();
 
-    return Flexible(
-      child: Label.multipleColored(
-        icon: TagUiConstants.tagIcon,
-        color: Colors.grey, // Default color for icon and commas
-        values: tagNames,
-        colors: tagColors,
-        mini: true,
-      ),
+    return Label.multipleColored(
+      icon: TagUiConstants.tagIcon,
+      color: Colors.grey, // Default color for icon and commas
+      values: tagNames,
+      colors: tagColors,
+      mini: true,
     );
   }
 
