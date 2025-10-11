@@ -20,6 +20,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
@@ -228,13 +229,21 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   }
 
   void _onHabitsListed(int incompleteHabitCount) {
-    _remainingHabits = incompleteHabitCount;
-    _habitsLoaded = true;
+    if (mounted) {
+      setState(() {
+        _remainingHabits = incompleteHabitCount;
+        _habitsLoaded = true;
+      });
+    }
   }
 
   void _onTasksListed(int incompleteTaskCount) {
-    _remainingTasks = incompleteTaskCount;
-    _tasksLoaded = true;
+    if (mounted) {
+      setState(() {
+        _remainingTasks = incompleteTaskCount;
+        _tasksLoaded = true;
+      });
+    }
   }
 
   void _checkIfLastItemCompleted() {
@@ -248,6 +257,16 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         _confettiAnimationService.showConfettiFromBottomOfScreen(context);
       }
     });
+  }
+
+  /// Check if all page data has finished loading
+  bool get _isPageFullyLoaded {
+    return _mainListOptionSettingsLoaded &&
+        _habitListOptionSettingsLoaded &&
+        _taskListOptionSettingsLoaded &&
+        _timeChartOptionsLoaded &&
+        _habitsLoaded &&
+        _tasksLoaded;
   }
 
   @override
@@ -282,231 +301,234 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         initialTitle: _taskSearchQuery,
         initialCompleted: _showCompletedTasks,
       ),
-      builder: (context) => ListView(
-        children: [
-          // Page list options
-          TodayPageListOptions(
-            onSettingsLoaded: _onMainListOptionSettingsLoaded,
-            selectedTagIds: _selectedTagFilter,
-            showNoTagsFilter: _showNoTagsFilter,
-            onFilterChange: _onMainListOptionChange,
-          ),
-
-          if (_mainListOptionSettingsLoaded) ...[
-            // Habits Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Habits title and options
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Habits title
-                      Text(
-                        _translationService.translate(CalendarTranslationKeys.habitsTitle),
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      // Habit filters
-                      Expanded(
-                        child: HabitListOptions(
-                          settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
-                          onSettingsLoaded: _onHabitListOptionSettingsLoaded,
-                          selectedTagIds: _selectedTagFilter,
-                          showNoTagsFilter: _showNoTagsFilter,
-                          sortConfig: _habitSortConfig,
-                          forceOriginalLayout: _habitForceOriginalLayout,
-                          onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
-                            setState(() {
-                              _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                              _showNoTagsFilter = isNoneSelected;
-                            });
-                          },
-                          onSortChange: _onHabitSortConfigChange,
-                          onLayoutToggleChange: _onHabitLayoutToggleChange,
-                          showTagFilter: false,
-                          showArchiveFilter: false,
-                          showSortButton: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppTheme.sizeSmall),
-
-                  // Habits list
-                  if (_habitListOptionSettingsLoaded)
-                    HabitsList(
-                      pageSize: 5,
-                      mini: true,
-                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                      filterNoTags: _showNoTagsFilter,
-                      // Only show habits not completed today
-                      excludeCompletedForDate: _todayStart,
-                      sortConfig: _habitSortConfig,
-                      enableReordering: _habitSortConfig.useCustomOrder,
-                      forceOriginalLayout: _habitForceOriginalLayout,
-                      onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                      onHabitCompleted: _onHabitCompleted,
-                      onListing: _onHabitsListed,
-                      onReorderComplete: () {
-                        // Refresh the habits list to ensure correct order
-                        setState(() {});
-                      },
-                      showDoneOverlayWhenEmpty: true,
-                    ),
-                ],
-              ),
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: ListView(
+          children: [
+            // Page list options
+            TodayPageListOptions(
+              onSettingsLoaded: _onMainListOptionSettingsLoaded,
+              selectedTagIds: _selectedTagFilter,
+              showNoTagsFilter: _showNoTagsFilter,
+              onFilterChange: _onMainListOptionChange,
             ),
-            const SizedBox(height: AppTheme.sizeMedium),
 
-            // Tasks Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Tasks title and options
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Task title
-                      Text(
-                        _translationService.translate(CalendarTranslationKeys.tasksTitle),
-                        style: Theme.of(context).textTheme.titleSmall,
+            if (_mainListOptionSettingsLoaded) ...[
+              // Habits Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Habits title and options
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Habits title
+                        Text(
+                          _translationService.translate(CalendarTranslationKeys.habitsTitle),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        // Habit filters
+                        Expanded(
+                          child: HabitListOptions(
+                            settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
+                            onSettingsLoaded: _onHabitListOptionSettingsLoaded,
+                            selectedTagIds: _selectedTagFilter,
+                            showNoTagsFilter: _showNoTagsFilter,
+                            sortConfig: _habitSortConfig,
+                            forceOriginalLayout: _habitForceOriginalLayout,
+                            onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
+                              setState(() {
+                                _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                                _showNoTagsFilter = isNoneSelected;
+                              });
+                            },
+                            onSortChange: _onHabitSortConfigChange,
+                            onLayoutToggleChange: _onHabitLayoutToggleChange,
+                            showTagFilter: false,
+                            showArchiveFilter: false,
+                            showSortButton: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppTheme.sizeSmall),
+
+                    // Habits list
+                    if (_habitListOptionSettingsLoaded)
+                      HabitsList(
+                        pageSize: 5,
+                        mini: true,
+                        filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                        filterNoTags: _showNoTagsFilter,
+                        // Only show habits not completed today
+                        excludeCompletedForDate: _todayStart,
+                        sortConfig: _habitSortConfig,
+                        enableReordering: _habitSortConfig.useCustomOrder,
+                        forceOriginalLayout: _habitForceOriginalLayout,
+                        onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                        onHabitCompleted: _onHabitCompleted,
+                        onListing: _onHabitsListed,
+                        onReorderComplete: () {
+                          // Refresh the habits list to ensure correct order
+                          setState(() {});
+                        },
+                        showDoneOverlayWhenEmpty: true,
                       ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppTheme.sizeMedium),
 
-                      // Task filters and add button
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            // Task filters
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
-                                child: TaskListOptions(
-                                  settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
-                                  onSettingsLoaded: _onTaskListOptionSettingsLoaded,
-                                  onSearchChange: (query) {
-                                    setState(() {
-                                      _taskSearchQuery = query;
-                                    });
-                                  },
-                                  showCompletedTasks: _showCompletedTasks,
-                                  onCompletedTasksToggle: (showCompleted) {
-                                    setState(() {
-                                      _showCompletedTasks = showCompleted;
-                                    });
-                                  },
-                                  showSubTasks: _showSubTasks,
-                                  onSubTasksToggle: (showSubTasks) {
-                                    setState(() {
-                                      _showSubTasks = showSubTasks;
-                                    });
-                                  },
-                                  sortConfig: _taskSortConfig,
-                                  forceOriginalLayout: _taskForceOriginalLayout,
-                                  onSortChange: _onSortConfigChange,
-                                  onLayoutToggleChange: _onTaskLayoutToggleChange,
-                                  hasItems: true,
-                                  showDateFilter: false,
-                                  showTagFilter: false,
-                                  showSubTasksToggle: true,
+              // Tasks Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Tasks title and options
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Task title
+                        Text(
+                          _translationService.translate(CalendarTranslationKeys.tasksTitle),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+
+                        // Task filters and add button
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              // Task filters
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+                                  child: TaskListOptions(
+                                    settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                                    onSettingsLoaded: _onTaskListOptionSettingsLoaded,
+                                    onSearchChange: (query) {
+                                      setState(() {
+                                        _taskSearchQuery = query;
+                                      });
+                                    },
+                                    showCompletedTasks: _showCompletedTasks,
+                                    onCompletedTasksToggle: (showCompleted) {
+                                      setState(() {
+                                        _showCompletedTasks = showCompleted;
+                                      });
+                                    },
+                                    showSubTasks: _showSubTasks,
+                                    onSubTasksToggle: (showSubTasks) {
+                                      setState(() {
+                                        _showSubTasks = showSubTasks;
+                                      });
+                                    },
+                                    sortConfig: _taskSortConfig,
+                                    forceOriginalLayout: _taskForceOriginalLayout,
+                                    onSortChange: _onSortConfigChange,
+                                    onLayoutToggleChange: _onTaskLayoutToggleChange,
+                                    hasItems: true,
+                                    showDateFilter: false,
+                                    showTagFilter: false,
+                                    showSubTasksToggle: true,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            // Add button
-                            TaskAddButton(
-                              initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
-                              initialPlannedDate: DateTime.now(),
-                              initialTitle: _taskSearchQuery,
-                              initialCompleted: _showCompletedTasks,
-                            ),
-                          ],
+                              // Add button
+                              TaskAddButton(
+                                initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
+                                initialPlannedDate: DateTime.now(),
+                                initialTitle: _taskSearchQuery,
+                                initialCompleted: _showCompletedTasks,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // Tasks list
+                    if (_taskListOptionSettingsLoaded)
+                      TaskList(
+                        filterByCompleted: _showCompletedTasks,
+                        filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                        filterNoTags: _showNoTagsFilter,
+                        // Only apply date filters for incomplete tasks
+                        filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                        filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
+                        filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                        filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
+                        filterDateOr: true,
+                        // Filter completed tasks to only show those completed today
+                        filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
+                        filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
+                        search: _taskSearchQuery,
+                        includeSubTasks: _showSubTasks,
+                        pageSize: 5,
+                        onClickTask: (task) => _openTaskDetails(context, task.id),
+                        onTaskCompleted: _onTaskCompleted,
+                        onList: _onTasksListed,
+                        enableReordering: _taskSortConfig.useCustomOrder,
+                        forceOriginalLayout: _taskForceOriginalLayout,
+                        showDoneOverlayWhenEmpty: true,
+                        sortConfig: _taskSortConfig,
+                      ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: AppTheme.size2Small),
+              // Times Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Times title and options
+                    Row(
+                      children: [
+                        // Times title
+                        Text(
+                          _translationService.translate(TagTranslationKeys.timeDistribution),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        const SizedBox(width: AppTheme.sizeSmall),
+
+                        // Time chart filters
+                        TagTimeChartOptions(
+                          settingKeyVariantSuffix: _timeChartOptionsSettingKeySuffix,
+                          onSettingsLoaded: _onTimeChartOptionsLoaded,
+                          selectedCategories: _selectedCategories,
+                          onCategoriesChanged: (categories) {
+                            setState(() {
+                              _selectedCategories = categories;
+                            });
+                          },
+                          showDateFilter: false,
+                        ),
+                      ],
+                    ),
+
+                    // Time chart
+                    if (_timeChartOptionsLoaded)
+                      Center(
+                        child: TagTimeChart(
+                          filterByTags: _selectedTagFilter,
+                          startDate: _todayStart,
+                          endDate: _tomorrowStart,
+                          selectedCategories: _selectedCategories,
                         ),
                       ),
-                    ],
-                  ),
-
-                  // Tasks list
-                  if (_taskListOptionSettingsLoaded)
-                    TaskList(
-                      filterByCompleted: _showCompletedTasks,
-                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                      filterNoTags: _showNoTagsFilter,
-                      // Only apply date filters for incomplete tasks
-                      filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
-                      filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
-                      filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
-                      filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
-                      filterDateOr: true,
-                      // Filter completed tasks to only show those completed today
-                      filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
-                      filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
-                      search: _taskSearchQuery,
-                      includeSubTasks: _showSubTasks,
-                      pageSize: 5,
-                      onClickTask: (task) => _openTaskDetails(context, task.id),
-                      onTaskCompleted: _onTaskCompleted,
-                      onList: _onTasksListed,
-                      enableReordering: _taskSortConfig.useCustomOrder,
-                      forceOriginalLayout: _taskForceOriginalLayout,
-                      showDoneOverlayWhenEmpty: true,
-                      sortConfig: _taskSortConfig,
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
-
-            const SizedBox(height: AppTheme.size2Small),
-            // Times Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Times title and options
-                  Row(
-                    children: [
-                      // Times title
-                      Text(
-                        _translationService.translate(TagTranslationKeys.timeDistribution),
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(width: AppTheme.sizeSmall),
-
-                      // Time chart filters
-                      TagTimeChartOptions(
-                        settingKeyVariantSuffix: _timeChartOptionsSettingKeySuffix,
-                        onSettingsLoaded: _onTimeChartOptionsLoaded,
-                        selectedCategories: _selectedCategories,
-                        onCategoriesChanged: (categories) {
-                          setState(() {
-                            _selectedCategories = categories;
-                          });
-                        },
-                        showDateFilter: false,
-                      ),
-                    ],
-                  ),
-
-                  // Time chart
-                  if (_timeChartOptionsLoaded)
-                    Center(
-                      child: TagTimeChart(
-                        filterByTags: _selectedTagFilter,
-                        startDate: _todayStart,
-                        endDate: _tomorrowStart,
-                        selectedCategories: _selectedCategories,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

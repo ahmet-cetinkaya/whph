@@ -10,6 +10,7 @@ import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_details
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_rules_page.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/android_app_usage_debug_page.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
@@ -39,6 +40,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   bool _hasPermission = false;
   bool _isListVisible = false;
   bool _isCheckingPermission = true;
+  bool _isDataLoaded = false;
 
   @override
   void initState() {
@@ -54,6 +56,18 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     setState(() {
       _isListVisible = true;
     });
+  }
+
+  void _onDataListed(int count) {
+    if (mounted) {
+      setState(() {
+        _isDataLoaded = true;
+      });
+    }
+  }
+
+  bool get _isPageFullyLoaded {
+    return _isListVisible && _isDataLoaded;
   }
 
   Future<void> _checkPermission() async {
@@ -165,46 +179,50 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
           helpMarkdownContentKey: AppUsageTranslationKeys.viewHelpContent,
         ),
       ],
-      builder: (context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Show loading indicator while checking permission
-          if (_isCheckingPermission)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Show loading indicator while checking permission
+            if (_isCheckingPermission)
+              const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            // Show permission card only if permission check is complete and permission is not granted
+            else if (!_hasPermission)
+              AppUsagePermission(
+                onPermissionGranted: _onPermissionGranted,
+              )
+            // Show filters and list if permission is granted
+            else ...[
+              AppUsageListOptions(
+                initialState: _filterState,
+                onFiltersChanged: _handleFiltersChanged,
+                onSettingsLoaded: _onSettingsLoaded,
+                onSaveSettings: () {
+                  // Force refresh the list when settings are saved
+                  setState(() {});
+                },
               ),
-            )
-          // Show permission card only if permission check is complete and permission is not granted
-          else if (!_hasPermission)
-            AppUsagePermission(
-              onPermissionGranted: _onPermissionGranted,
-            )
-          // Show filters and list if permission is granted
-          else ...[
-            AppUsageListOptions(
-              initialState: _filterState,
-              onFiltersChanged: _handleFiltersChanged,
-              onSettingsLoaded: _onSettingsLoaded,
-              onSaveSettings: () {
-                // Force refresh the list when settings are saved
-                setState(() {});
-              },
-            ),
 
-            // List
-            if (_isListVisible)
-              Expanded(
-                child: AppUsageList(
-                    onOpenDetails: _openDetails,
-                    filterByTags: _filterState.tags,
-                    showNoTagsFilter: _filterState.showNoTagsFilter,
-                    filterStartDate: _getEffectiveStartDate(),
-                    filterEndDate: _getEffectiveEndDate(),
-                    filterByDevices: _filterState.devices),
-              ),
+              // List
+              if (_isListVisible)
+                Expanded(
+                  child: AppUsageList(
+                      onOpenDetails: _openDetails,
+                      onList: _onDataListed,
+                      filterByTags: _filterState.tags,
+                      showNoTagsFilter: _filterState.showNoTagsFilter,
+                      filterStartDate: _getEffectiveStartDate(),
+                      filterEndDate: _getEffectiveEndDate(),
+                      filterByDevices: _filterState.devices),
+                ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

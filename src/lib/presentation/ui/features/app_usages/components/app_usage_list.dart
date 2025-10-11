@@ -40,6 +40,7 @@ class AppUsageList extends StatefulWidget {
   final List<String>? filterByTags;
   final bool showNoTagsFilter;
   final Function(String id)? onOpenDetails;
+  final void Function(int count)? onList;
   final DateTime? filterStartDate;
   final DateTime? filterEndDate;
   final List<String>? filterByDevices;
@@ -50,6 +51,7 @@ class AppUsageList extends StatefulWidget {
     this.filterByTags,
     this.showNoTagsFilter = false,
     this.onOpenDetails,
+    this.onList,
     this.filterStartDate,
     this.filterEndDate,
     this.filterByDevices,
@@ -193,6 +195,9 @@ class AppUsageListState extends State<AppUsageList> {
             // Mark initial loading as complete
             _isInitialLoading = false;
           });
+
+          // Notify about list count
+          widget.onList?.call(_appUsageList?.items.length ?? 0);
         }
       },
     );
