@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/presentation/ui/features/about/components/onboarding_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
-import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/core/shared/utils/logger.dart';
@@ -32,10 +32,23 @@ class AppInitializationService {
     }
   }
 
-  /// Check and show onboarding dialog if not completed
+  /// Check and show onboarding dialog if not completed (or always in debug mode)
   Future<void> _checkAndShowOnboarding(GlobalKey<NavigatorState> navigatorKey) async {
+    Logger.info("Checking onboarding dialog. Debug mode: $kDebugMode");
+
     if (kDebugMode) {
-      Logger.info("Skipping onboarding dialog in debug mode.");
+      Logger.info("Showing onboarding dialog in debug mode.");
+      final context = navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        ResponsiveDialogHelper.showResponsiveDialog(
+          context: context,
+          child: const OnboardingDialog(),
+          isDismissible: false,
+          size: DialogSize.min,
+        );
+      } else {
+        Logger.warning("Context not available for onboarding dialog in debug mode");
+      }
       return;
     }
 
@@ -45,6 +58,8 @@ class AppInitializationService {
       );
 
       final hasCompletedOnboarding = setting.value == 'true';
+      Logger.info("Onboarding completed setting: $hasCompletedOnboarding");
+
       if (!hasCompletedOnboarding) {
         final context = navigatorKey.currentContext;
         if (context != null && context.mounted) {
@@ -54,11 +69,13 @@ class AppInitializationService {
             isDismissible: false,
             size: DialogSize.min,
           );
+        } else {
+          Logger.warning("Context not available for onboarding dialog");
         }
       }
     } catch (e) {
       // If setting doesn't exist (first time), show onboarding
-      Logger.info('Onboarding setting not found, showing onboarding dialog');
+      Logger.info('Onboarding setting not found, showing onboarding dialog. Error: $e');
       final context = navigatorKey.currentContext;
       if (context != null && context.mounted) {
         ResponsiveDialogHelper.showResponsiveDialog(
@@ -67,6 +84,8 @@ class AppInitializationService {
           isDismissible: false,
           size: DialogSize.min,
         );
+      } else {
+        Logger.warning("Context not available for onboarding dialog (first time)");
       }
     }
   }

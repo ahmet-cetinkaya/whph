@@ -65,10 +65,13 @@ class _AppState extends State<App> {
 
   /// Initialize app-level services and dialogs
   Future<void> _initializeApp() async {
-    await _initializationService.initializeApp(widget.navigatorKey);
+    // Wait for the first frame to ensure context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initializationService.initializeApp(widget.navigatorKey);
 
-    // Save current locale for background notifications
-    await _saveCurrentLocaleForNotifications();
+      // Save current locale for background notifications
+      await _saveCurrentLocaleForNotifications();
+    });
   }
 
   /// Save the current locale to ensure notifications work in background
