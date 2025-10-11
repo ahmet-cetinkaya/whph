@@ -17,6 +17,7 @@ import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/language_dropdown.dart';
 
 class OnboardingDialog extends StatefulWidget {
   const OnboardingDialog({super.key});
@@ -31,6 +32,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   final _mediator = container.resolve<Mediator>();
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  String? _selectedLanguageCode;
 
   List<_OnboardingStep> get _steps {
     final baseSteps = [
@@ -38,6 +40,11 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
         icon: Icons.waving_hand,
         titleKey: AboutTranslationKeys.onboardingTitle1,
         descriptionKey: AboutTranslationKeys.onboardingDescription1,
+        extraWidget: (context) => LanguageDropdown(
+          initialLanguageCode: _selectedLanguageCode,
+          onLanguageChanged: _onLanguageChanged,
+          showPlaceholder: true,
+        ),
       ),
       _OnboardingStep(
         icon: Icons.check_circle_outline,
@@ -73,13 +80,10 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
           icon: Icons.security,
           titleKey: AboutTranslationKeys.onboardingTitle7,
           descriptionKey: AboutTranslationKeys.onboardingDescription7,
-          extraWidget: (context) => Padding(
-            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-            child: OutlinedButton.icon(
-              onPressed: () => _showPermissionsPage(context),
-              icon: const Icon(Icons.lock_open),
-              label: Text(_translationService.translate(AboutTranslationKeys.onboardingPermissionsButton)),
-            ),
+          extraWidget: (context) => OutlinedButton.icon(
+            onPressed: () => _showPermissionsPage(context),
+            icon: const Icon(Icons.lock_open),
+            label: Text(_translationService.translate(AboutTranslationKeys.onboardingPermissionsButton)),
           ),
         ),
       );
@@ -130,6 +134,20 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
       child: const PermissionsPage(),
       size: DialogSize.large,
     );
+  }
+
+  Future<void> _onLanguageChanged(String languageCode) async {
+    setState(() {
+      _selectedLanguageCode = languageCode;
+    });
+
+    // Change language dynamically without page reload
+    await _translationService.changeLanguageWithoutNavigation(context, languageCode);
+
+    // Force rebuild of the dialog content
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -187,7 +205,11 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                         style: AppTheme.bodyMedium,
                         textAlign: TextAlign.center,
                       ),
-                      if (step.extraWidget != null) step.extraWidget!(context),
+                      if (step.extraWidget != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
+                          child: step.extraWidget!(context),
+                        ),
                     ],
                   );
                 },
