@@ -47,32 +47,32 @@ class AppUsageCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // Limit the length of tag names to prevent overflow and limit to 5 tags to prevent too many
-    final List<String> tagNames = appUsage.tags.length > 5
-        ? appUsage.tags
-            .take(5)
-            .map((tag) => tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName)
-            .toList()
-        : appUsage.tags
-            .map((tag) => tag.tagName.length > 20 ? '${tag.tagName.substring(0, 17)}...' : tag.tagName)
-            .toList();
+    const int maxTagsToShow = 5;
+    const int maxTagNameLength = 20;
+    const int truncatedTagNameLength = 17;
+
+    final bool hasMoreTags = appUsage.tags.length > maxTagsToShow;
+    final tagsToProcess = hasMoreTags ? appUsage.tags.take(maxTagsToShow) : appUsage.tags;
+
+    final List<String> tagNames = tagsToProcess
+        .map((tag) => tag.tagName.length > maxTagNameLength
+            ? '${tag.tagName.substring(0, truncatedTagNameLength)}...'
+            : tag.tagName)
+        .toList();
 
     // Add a "+X more" indicator if there are more than 5 tags
-    if (appUsage.tags.length > 5) {
-      final int extraCount = appUsage.tags.length - 5;
+    if (hasMoreTags) {
+      final int extraCount = appUsage.tags.length - maxTagsToShow;
       tagNames.add('+$extraCount more');
     }
 
-    final List<Color> tagColors = appUsage.tags.length > 5
-        ? [
-            ...appUsage.tags
-                .take(5)
-                .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey),
-            Colors.grey // color for "+X more" text
-          ]
-        : appUsage.tags
-            .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-            .toList();
+    final List<Color> tagColors = tagsToProcess
+        .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
+        .toList();
+
+    if (hasMoreTags) {
+      tagColors.add(Colors.grey); // color for "+X more" text
+    }
 
     return Label.multipleColored(
       icon: TagUiConstants.tagIcon,
