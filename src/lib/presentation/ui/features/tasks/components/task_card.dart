@@ -299,13 +299,7 @@ class TaskCard extends StatelessWidget {
   }
 
   Widget _buildTaskTagsWidget() {
-    final items = taskItem.tags
-        .map((tag) => TagDisplayItem(
-              name: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled),
-              color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : null,
-            ))
-        .toList();
-
+    final items = TagDisplayUtils.objectsToDisplayItems(taskItem.tags, _translationService);
     return TagListWidget(items: items, mini: isDense);
   }
 

@@ -94,14 +94,7 @@ class _NoteCardState extends State<NoteCard> {
   }
 
   Widget _buildNoteTagsWidget() {
-    final items = widget.note.tags
-        .map((tag) => TagDisplayItem(
-              name:
-                  tag.tagName.isNotEmpty ? tag.tagName : _translationService.translate(SharedTranslationKeys.untitled),
-              color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
-            ))
-        .toList();
-
+    final items = TagDisplayUtils.tagDataToDisplayItems(widget.note.tags, _translationService);
     return TagListWidget(items: items);
   }
 

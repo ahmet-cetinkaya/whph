@@ -480,13 +480,7 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build tags widget
   Widget _buildTagsWidget() {
-    final items = widget.habit.tags
-        .map((tag) => TagDisplayItem(
-              name: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled),
-              color: tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : null,
-            ))
-        .toList();
-
+    final items = TagDisplayUtils.objectsToDisplayItems(widget.habit.tags, _translationService);
     return TagListWidget(items: items);
   }
 
