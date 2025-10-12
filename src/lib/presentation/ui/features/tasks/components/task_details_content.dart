@@ -309,8 +309,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               : '';
 
           if (_plannedDateController.text != plannedDateText && !_isDatePickerInteractionActive()) {
-            // Prevent clearing user input if a background refresh happens while typing.
-            if (!(plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty)) {
+            final bool isClearingUserInput = plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty;
+            if (!isClearingUserInput) {
               _plannedDateController.text = plannedDateText;
             }
           }
@@ -321,8 +321,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               : '';
 
           if (_deadlineDateController.text != deadlineDateText && !_isDatePickerInteractionActive()) {
-            // Prevent clearing user input if a background refresh happens while typing.
-            if (!(deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty)) {
+            final bool isClearingUserInput = deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty;
+            if (!isClearingUserInput) {
               _deadlineDateController.text = deadlineDateText;
             }
           }
