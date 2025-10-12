@@ -580,19 +580,17 @@ class DesktopServerSyncService extends SyncService {
       _serverKeepAlive?.cancel();
       _serverKeepAlive = null;
 
-      // Close all active connections
-      for (final ws in _activeConnections) {
+      // Close all active connections with proper cleanup
+      for (final ws in List<WebSocket>.from(_activeConnections)) {
         try {
-          await ws.close();
+          await ws.close(1001, 'Server shutting down');
         } catch (e) {
           Logger.debug('Error closing WebSocket connection: $e');
         }
+        // Ensure cleanup happens for each connection
+        _cleanupConnection(ws);
       }
-      _activeConnections.clear();
-      _connectionIPs.clear(); // Clean up IP mappings
-      _connectionTimes.clear(); // Clean up connection times
-      _connectionLastActivity.clear(); // Clean up last activity tracking
-      _ipConnectionCounts.clear(); // Clean up IP connection counts
+      // All connections have been cleaned up via _cleanupConnection
 
       // Close the server
       await _server?.close();

@@ -198,6 +198,8 @@ class DesktopSyncService extends SyncService {
 
   @override
   void stopSync() {
+    // Run the async cleanup in a background task
+    // Note: This means the caller can't wait for cleanup to complete
     _stopCurrentMode();
   }
 
