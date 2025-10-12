@@ -73,6 +73,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _descriptionController = TextEditingController();
   final _titleController = TextEditingController();
   final FocusNode _titleFocusNode = FocusNode();
+  final FocusNode _plannedDateFocusNode = FocusNode();
+  final FocusNode _deadlineDateFocusNode = FocusNode();
   Timer? _debounce;
 
   // Track date picker interaction state to prevent controller conflicts
@@ -81,6 +83,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Track active input fields to prevent text selection conflicts
   bool _isTitleFieldActive = false;
+  bool _isPlannedDateFieldActive = false;
+  bool _isDeadlineDateFieldActive = false;
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
@@ -114,12 +118,16 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     // Track focus state to prevent text selection conflicts
     _titleFocusNode.addListener(_handleTitleFocusChange);
+    _plannedDateFocusNode.addListener(_handlePlannedDateFocusChange);
+    _deadlineDateFocusNode.addListener(_handleDeadlineDateFocusChange);
   }
 
   void _removeEventListeners() {
     _tasksService.onTaskUpdated.removeListener(_getTask);
     _tagsService.onTagUpdated.removeListener(_handleTagUpdated);
     _titleFocusNode.removeListener(_handleTitleFocusChange);
+    _plannedDateFocusNode.removeListener(_handlePlannedDateFocusChange);
+    _deadlineDateFocusNode.removeListener(_handleDeadlineDateFocusChange);
   }
 
   void _handleTagUpdated() {
@@ -133,6 +141,28 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     setState(() {
       _isTitleFieldActive = _titleFocusNode.hasFocus;
     });
+  }
+
+  void _handlePlannedDateFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isPlannedDateFieldActive = _plannedDateFocusNode.hasFocus;
+    });
+  }
+
+  void _handleDeadlineDateFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isDeadlineDateFieldActive = _deadlineDateFocusNode.hasFocus;
+    });
+  }
+
+  bool _isPlannedDateFieldFocused() {
+    return _isPlannedDateFieldActive;
+  }
+
+  bool _isDeadlineDateFieldFocused() {
+    return _isDeadlineDateFieldActive;
   }
 
   @override
@@ -246,7 +276,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _titleController.dispose();
     _titleFocusNode.dispose();
     _plannedDateController.dispose();
+    _plannedDateFocusNode.dispose();
     _deadlineDateController.dispose();
+    _deadlineDateFocusNode.dispose();
     _descriptionController.dispose();
     _removeEventListeners();
     super.dispose();
@@ -310,7 +342,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
           if (_plannedDateController.text != plannedDateText && !_isDatePickerInteractionActive()) {
             final bool isClearingUserInput = plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty;
-            if (!isClearingUserInput) {
+            final bool isUserActivelyEditing = _isPlannedDateFieldFocused();
+            if (!isClearingUserInput && !isUserActivelyEditing) {
               _plannedDateController.text = plannedDateText;
             }
           }
@@ -322,7 +355,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
           if (_deadlineDateController.text != deadlineDateText && !_isDatePickerInteractionActive()) {
             final bool isClearingUserInput = deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty;
-            if (!isClearingUserInput) {
+            final bool isUserActivelyEditing = _isDeadlineDateFieldFocused();
+            if (!isClearingUserInput && !isUserActivelyEditing) {
               _deadlineDateController.text = deadlineDateText;
             }
           }
@@ -1040,6 +1074,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           child: TaskDateField(
             key: ValueKey('planned_date_${_task!.id}'),
             controller: _plannedDateController,
+            focusNode: _plannedDateFocusNode,
             hintText: '',
             minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
             onDateChanged: _onPlannedDateChanged,
@@ -1060,6 +1095,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           child: TaskDateField(
             key: ValueKey('deadline_date_${_task!.id}'),
             controller: _deadlineDateController,
+            focusNode: _deadlineDateFocusNode,
             hintText: '',
             minDateTime: _getMinimumDeadlineDate(),
             plannedDateTime: _task!.plannedDate,

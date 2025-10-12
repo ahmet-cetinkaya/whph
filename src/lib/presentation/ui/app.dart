@@ -71,15 +71,25 @@ class _AppState extends State<App> {
   }
 
   /// Wait for navigator context to be available before initializing
-  void _waitForNavigatorContext() async {
-    while (widget.navigatorKey.currentContext == null) {
-      if (!mounted) return;
-      await Future.delayed(const Duration(milliseconds: 50));
+  void _waitForNavigatorContext() {
+    if (widget.navigatorKey.currentContext != null) {
+      _runInitialization();
+      return;
     }
 
-    if (mounted) {
-      _runInitialization();
-    }
+    // Use addPostFrameCallback to wait for the next frame when context should be available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.navigatorKey.currentContext != null) {
+        _runInitialization();
+      } else {
+        // If still not available, try again after a short delay (fallback for edge cases)
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted && widget.navigatorKey.currentContext != null) {
+            _runInitialization();
+          }
+        });
+      }
+    });
   }
 
   /// Run initialization once context is available

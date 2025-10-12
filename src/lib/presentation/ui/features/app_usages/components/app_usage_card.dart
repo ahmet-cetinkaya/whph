@@ -20,9 +20,10 @@ class AppUsageCard extends StatelessWidget {
     this.onTap,
   });
 
+  static final _translationService = container.resolve<ITranslationService>();
+
   @override
   Widget build(BuildContext context) {
-    final translationService = container.resolve<ITranslationService>();
     final primaryColor = Theme.of(context).primaryColor;
     final barColor = appUsage.color != null ? AppUsageUiConstants.getTagColor(appUsage.color) : primaryColor;
 
@@ -34,7 +35,7 @@ class AppUsageCard extends StatelessWidget {
       title: appUsage.displayName ?? appUsage.name,
       value: duration,
       maxValue: maxDuration,
-      formatValue: (value) => SharedUiConstants.formatDurationHuman(value.toInt(), translationService),
+      formatValue: (value) => SharedUiConstants.formatDurationHuman(value.toInt(), _translationService),
       barColor: barColor,
       onTap: onTap,
       additionalWidget: _buildAdditionalWidget(),
@@ -42,13 +43,7 @@ class AppUsageCard extends StatelessWidget {
   }
 
   Widget _buildAppUsageTagsWidget() {
-    final items = appUsage.tags
-        .map((tag) => TagDisplayItem(
-              name: tag.tagName,
-              color: tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : null,
-            ))
-        .toList();
-
+    final items = TagDisplayUtils.tagDataToDisplayItems(appUsage.tags, _translationService);
     return TagListWidget(items: items);
   }
 

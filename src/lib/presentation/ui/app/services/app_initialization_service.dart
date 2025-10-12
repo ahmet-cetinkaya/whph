@@ -34,9 +34,17 @@ class AppInitializationService {
 
   /// Check and show onboarding dialog if not completed (or always in debug mode)
   Future<void> _checkAndShowOnboarding(GlobalKey<NavigatorState> navigatorKey) async {
+    final shouldShowOnboarding = await _shouldShowOnboardingDialog();
+    if (shouldShowOnboarding) {
+      _showOnboardingDialog(navigatorKey);
+    }
+  }
+
+  /// Determine if onboarding dialog should be shown
+  Future<bool> _shouldShowOnboardingDialog() async {
     if (kDebugMode) {
-      _showOnboardingForDebug(navigatorKey);
-      return;
+      Logger.info("Showing onboarding dialog in debug mode.");
+      return true;
     }
 
     try {
@@ -46,19 +54,11 @@ class AppInitializationService {
 
       final hasCompletedOnboarding = setting.value == 'true';
       Logger.info("Onboarding completed setting: $hasCompletedOnboarding");
-
-      if (!hasCompletedOnboarding) {
-        _showOnboardingDialog(navigatorKey);
-      }
+      return !hasCompletedOnboarding;
     } catch (e) {
       Logger.info('Onboarding setting not found, showing onboarding dialog. Error: $e');
-      _showOnboardingDialog(navigatorKey);
+      return true;
     }
-  }
-
-  void _showOnboardingForDebug(GlobalKey<NavigatorState> navigatorKey) {
-    Logger.info("Showing onboarding dialog in debug mode.");
-    _showOnboardingDialog(navigatorKey);
   }
 
   void _showOnboardingDialog(GlobalKey<NavigatorState> navigatorKey) {
