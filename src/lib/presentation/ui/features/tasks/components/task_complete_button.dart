@@ -168,7 +168,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       behavior: HitTestBehavior.opaque,
       onTap: () => _toggleCompleteTask(context),
       child: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        padding: const EdgeInsets.all(AppTheme.sizeSmall),
         child: SizedBox(
           width: widget.size,
           height: widget.size,
