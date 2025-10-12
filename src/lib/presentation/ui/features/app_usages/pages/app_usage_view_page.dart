@@ -63,13 +63,14 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
   void _checkAndStartTour() {
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 4) {
-      // Delay to ensure the page is fully built and laid out
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 200), () {
-          if (mounted) {
-            _startTour(isMultiPageTour: true);
-          }
-        });
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        while (!_isPageFullyLoaded && mounted) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+
+        if (mounted) {
+          _startTour(isMultiPageTour: true);
+        }
       });
     }
   }
