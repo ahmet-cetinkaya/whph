@@ -290,3 +290,5 @@ shared:
   validation:
     required: "{field} is verplicht."
   help: Help
+  start_tour: Start rondleiding
+  skip_tour: Sla rondleiding over

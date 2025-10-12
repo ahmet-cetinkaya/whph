@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Alışkanlıklar
     tasks: Görevler
+  tour:
+    today:
+      welcome:
+        title: Bugün Sayfasına Hoş Geldiniz
+        description: Verimlilik için günlük komuta merkeziniz. Bugünkü alışkanlıkları, görevleri ve zaman takibini tek bir yerde görün ve yönetin. Bugün en çok önemli olan şeylere odaklanın.
+      tag_filter:
+        title: Etiket Filtresi
+        description: Günlük alışkanlıklarınızı ve görevlerinizi etiketlere göre filtreleyin. Belirli kategorilere odaklanın veya günlük iş akışınızı düzenlemek için etiketsiz öğeleri gösterin.
+      habits:
+        title: Günlük Alışkanlıklar
+        description: Günlük alışkanlıklarınızı takip edin ve tutarlılık oluşturun. Serilerinizi korumak ve ilerlemenizi görselleştirmek için gün boyunca alışkanlıkları tamamlandı olarak işaretleyin.
+      tasks:
+        title: Bugün'ün Görevleri
+        description: Bugün için planlanan görevleri yönetin. Yeni görevler ekleyin, tamamlandı olarak işaretleyin, detayları görün ve günlük öncelikleriniz ile son tarihlerden haberdar olun.
+      time_distribution:
+        title: Zaman Dağılımı
+        description: Bugün zamanınızı nasıl geçirdiğinizi görselleştirin. Farklı aktivitelere ayrılan zamanı görün ve daha iyi verimlilik için günlük programınızı optimize edin.
+      marathon_mode:
+        title: Maraton Modu
+        description: Pomodoro zamanlayıcı ile odaklı çalışma moduna girin. Dikkat dağıtıcı olmayan bir arayüzle görevlerde zaman takibi yapın ve derin çalışma oturumları için odaklanmanızı artırın.

@@ -94,3 +94,16 @@ notes:
     add_note: Přidat poznámku
     delete_note: Smazat poznámku
     edit_name: Upravit nadpis
+  tour:
+    note_taking:
+      title: Poznámky
+      description: Udržujte důležité informace organizované pomocí výkonného systému správy poznámek. Označte své poznámky štítky pro snadnou kategorizaci a rychlý přístup.
+    your_notes:
+      title: Vaše poznámky
+      description: Prohlížejte všechny své poznámky zde. Klikněte na libovolnou poznámku pro zobrazení, úpravu nebo organizaci jejího obsahu. Pro formátování textu použijte syntaxi markdown - **tučné**, *kurzíva*, seznamy, odkazy a další.
+    filter_search:
+      title: Filtrování a vyhledávání
+      description: Najděte konkrétní poznámky pomocí štítků, vyhledejte obsah nebo je seřaďte podle různých kritérií. Zůstaňte organizovaní s výkonnými možnostmi filtrování.
+    create_notes:
+      title: Vytváření nových poznámek
+      description: Začněte psaním kliknutím na toto tlačítko. Vytvářejte formátované textové poznámky pomocí markdown syntaxe. Přidejte štítky pro snadnou kategorizaci a organizaci.

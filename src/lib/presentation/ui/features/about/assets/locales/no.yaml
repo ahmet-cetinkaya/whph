@@ -21,20 +21,8 @@ about:
       title: "Velkommen til {appName}"
       description: "Din personlige følgesvenn for å bygge bedre vaner, administrere oppgaver og spore tid effektivt. La oss utforske de viktigste funksjonene sammen!"
     step2:
-      title: "Oppgaveadministrasjon"
-      description: "Opprett og organiser oppgaver med prioriteringer, frister og påminnelser. Bruk Pomodoro-timern for å holde fokus og spore fremgangen din på viktige oppgaver."
-    step3:
-      title: "Vanebygging"
-      description: "Bygg varige vaner ved å spore daglige aktiviteter. Sett påminnelser, overvåk seriene dine og visualiser fremgangen din med detaljerte statistikker."
-    step4:
-      title: "Notatstaking"
-      description: "Hold viktig informasjon organisert med et kraftig notatstakingssystem. Merk notatene dine for enkel kategorisering og rask tilgang."
-    step5:
-      title: "App-bruk & tidsinnsikt"
-      description: "Overvåk app-bruksmønstre og analyser tid brukt på ulike aktiviteter. Få innsikt i dine digitale vaner og optimaliser produktiviteten din."
-    step6:
-      title: "Smart merkesystem"
-      description: "Bruk merker for å organisere og gruppere oppgavene, vanene og appene dine. Spor tid brukt på forskjellige aktiviteter etter merker for å forstå hvor tiden din går og optimalisere arbeidsflyten din."
+      title: 'Hva betyr "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" er et motto som oppmuntrer enkeltpersoner til å balansere høyt ansvar med høy livstilfredshet. Så ta arbeidet ditt seriøst, men hvil deg også virkelig, ha det gøy og lev i fritiden din. Arbeid handler ikke bare om å tjene penger, men om å vokse og finne oppfyllelse; å ha det gøy er ikke latskap, men den naturlige belønningen for innsats. Som WHPH verdsetter vi også både produktivt arbeid og bevisst feiring av suksesser.'
     step7:
       title: "App-tillatelser"
       description: "{appName} trenger visse tillatelser for å fungere riktig. Du kan gjennomgå tillatelsene du vil gi for systemfunksjoner som varsler og app-sporing."

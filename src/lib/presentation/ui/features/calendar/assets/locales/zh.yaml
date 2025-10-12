@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: 习惯
     tasks: 任务
+  tour:
+    today:
+      welcome:
+        title: 欢迎来到今日页面
+        description: 您的日常生产力指挥中心。在一个地方查看和管理今天的习惯、任务和时间跟踪。专注于今天最重要的事情。
+      tag_filter:
+        title: 标签筛选
+        description: 按标签筛选您的日常习惯和任务。专注于特定类别或显示无标签的项目来组织您的日常工作效率。
+      habits:
+        title: 日常习惯
+        description: 跟踪您的日常习惯并建立一致性。在一天中将习惯标记为完成，以保持您的连续记录并可视化您的进度。
+      tasks:
+        title: 今日任务
+        description: 管理今天计划的任务。添加新任务，将其标记为完成，查看详细信息，并关注您的日常优先事项和截止日期。
+      time_distribution:
+        title: 时间分布
+        description: 可视化您今天的时间花费情况。查看分配给不同活动的时间并优化您的日常时间表以提高生产力。
+      marathon_mode:
+        title: 马拉松模式
+        description: 使用番茄钟计时器进入专注工作模式。通过无干扰的界面跟踪任务时间，并增加您在深度工作会话中的专注度。

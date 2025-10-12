@@ -126,3 +126,25 @@ tags:
     remove_tag: Remove tag
     select: Click to select tag
     unarchive_tag: Unarchive tag
+  tour:
+    smart_tagging:
+      title: Smart Tagging System
+      description: Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow.
+    your_tags:
+      title: Your Tags
+      description: Browse all your tags and see their usage statistics. Click any tag to view details, edit properties, or see which tasks and habits use it. Organize your workflow efficiently.
+    tag_archive_filters:
+      title: Tag & Archive Filters
+      description: Filter tags by selecting specific tags to focus on, or toggle archived tags visibility. Control which tags appear in your list for better organization.
+    search_sort:
+      title: Search & Sort
+      description: Search for specific tags by name, sort by different criteria like name or usage count. Organize your tags list to find what you need quickly.
+    time_distribution_chart:
+      title: Time Distribution Chart
+      description: Visualize how you spend your time across different tags and categories. See time allocation patterns and identify where your focus goes throughout the day.
+    chart_customization:
+      title: Chart Customization
+      description: Customize the time chart by selecting date range, choosing categories (tasks, habits, apps), and filtering by specific tags to analyze your time distribution in detail.
+    create_tags:
+      title: Create New Tags
+      description: Add new tags to categorize your content. Tags help you organize tasks, habits, and apps across all features for better productivity tracking and time management.

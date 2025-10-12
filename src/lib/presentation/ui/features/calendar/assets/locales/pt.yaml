@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Hábitos
     tasks: Tarefas
+  tour:
+    today:
+      welcome:
+        title: Bem-vindo à página Hoje
+        description: Seu centro de comando diário para produtividade. Visualize e gerencie os hábitos, tarefas e rastreamento de tempo de hoje em um só lugar. Mantenha-se focado no que mais importa hoje.
+      tag_filter:
+        title: Filtro de Tags
+        description: Filtrar seus hábitos e tarefas diárias por tags. Concentre-se em categorias específicas ou mostre itens sem tags para organizar seu fluxo de trabalho diário.
+      habits:
+        title: Hábitos Diários
+        description: Acompanhe seus hábitos diários e construa consistência. Marque os hábitos como concluídos ao longo do dia para manter suas sequências e visualizar seu progresso.
+      tasks:
+        title: Tarefas de Hoje
+        description: Gerencie tarefas programadas para hoje. Adicione novas tarefas, marque-as como concluídas, veja detalhes e acompanhe suas prioridades e prazos diários.
+      time_distribution:
+        title: Distribuição de Tempo
+        description: Visualize como você passou seu tempo hoje. Veja o tempo alocado para diferentes atividades e otimize sua agenda diária para melhor produtividade.
+      marathon_mode:
+        title: Modo Maratona
+        description: Entre no modo de trabalho focado com o temporizador Pomodoro. Acompanhe o tempo nas tarefas com uma interface sem distrações e aumente sua concentração para sessões de trabalho aprofundadas.

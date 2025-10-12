@@ -22,20 +22,8 @@ about:
       title: "Welcome to {appName}"
       description: "Your personal companion for building better habits, managing tasks, and tracking time effectively. Let's explore the key features together!"
     step2:
-      title: "Task Management"
-      description: "Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks."
-    step3:
-      title: "Habit Building"
-      description: "Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics."
-    step4:
-      title: "Note Taking"
-      description: "Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access."
-    step5:
-      title: "App Usage & Time Insights"
-      description: "Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity."
-    step6:
-      title: "Smart Tagging System"
-      description: "Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow."
+      title: 'What does "Work Hard Play Hard" mean?'
+      description: '"Work Hard Play Hard" is a motto that encourages individuals to balance high responsibility with high life satisfaction. So take your work seriously, but also truly rest, have fun, and live during your free time. Work isn''t just about making money, but about growing and finding fulfillment; having fun isn''t laziness, but the natural reward of effort. As WHPH, we also value both productive work and consciously celebrating successes.'
     step7:
       title: "App Permissions"
       description: "{appName} needs certain permissions to function properly. You can review the permissions you'd like to grant for system features like notifications and app tracking."

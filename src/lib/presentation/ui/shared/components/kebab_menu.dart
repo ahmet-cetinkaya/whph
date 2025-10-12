@@ -17,6 +17,9 @@ class KebabMenu extends StatelessWidget {
   /// Whether to show the help menu item (defaults to true if help keys are provided)
   final bool? showHelp;
 
+  /// Callback for starting a tour from the help dialog
+  final VoidCallback? onStartTour;
+
   /// Additional menu items to display above the help option
   final List<PopupMenuEntry<String>>? additionalMenuItems;
 
@@ -32,6 +35,7 @@ class KebabMenu extends StatelessWidget {
       this.helpTitleKey,
       this.helpMarkdownContentKey,
       this.showHelp,
+      this.onStartTour,
       this.additionalMenuItems,
       this.onMenuItemSelected,
       this.iconColor})
@@ -61,12 +65,17 @@ class KebabMenu extends StatelessWidget {
           case 'show_help':
             // Handle help display
             if (_shouldShowHelp) {
-              ResponsiveDialogHelper.showResponsiveDialog(
+              ResponsiveDialogHelper.showResponsiveDialog<String>(
                   context: context,
                   child: HelpDialog(
                     titleKey: helpTitleKey!,
                     markdownContentKey: helpMarkdownContentKey!,
-                  ));
+                    onStartTour: onStartTour,
+                  )).then((result) {
+                if (result == 'start_tour' && onStartTour != null) {
+                  onStartTour!();
+                }
+              });
             }
             break;
           default:

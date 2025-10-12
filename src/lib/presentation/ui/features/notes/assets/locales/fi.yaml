@@ -94,3 +94,16 @@ notes:
     add_note: Lisää muistiinpano
     delete_note: Poista muistiinpano
     edit_name: Muokkaa otsikkoa
+  tour:
+    note_taking:
+      title: Muistiinpanojen tekeminen
+      description: Pidä tärkeät tiedot järjestettynä tehokkaalla muistiinpanojärjestelmällä. Merkitse muistiinpanosi tageilla helpompaa luokitusta ja nopeaa pääsyä varten.
+    your_notes:
+      title: Omat muistiinpanot
+      description: Selaa kaikkia muistiinpanojasi täällä. Klikkaa mitä tahansa muistiinpanoa tarkastellaksesi, muokataksesi tai järjestääksesi sen sisältöä. Käytä markdown-syntaksia rikastetun sisällön luomiseen - **lihavointi**, *kursivointi*, listat, linkit ja muuta.
+    filter_search:
+      title: Suodatus ja haku
+      description: Etsi tiettyjä muistiinpanoja tageilla, sisällöllä tai järjestä eri kriteerien mukaan. Pysy järjestettynä tehokkaiden suodatusvaihtoehtojen avulla.
+    create_notes:
+      title: Luo uusia muistiinpanoja
+      description: Aloita kirjoittaminen klikkaamalla tätä painiketta. Luo muotoiltuja tekstimuistiinpanoja markdown-muotoilulla. Lisää tageja helpompaa luokitusta ja järjestämistä varten.

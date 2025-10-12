@@ -196,3 +196,19 @@ habits:
     edit_name: İsmi düzenle
     increase_daily_target: Günlük hedefi artır
     increase_estimated_time: Tahmini süreyi artır
+  tour:
+    habit_building:
+      title: Alışkanlık Oluşturma
+      description: Günlük etkinlikleri takip ederek kalıcı alışkanlıklar oluşturun. Hatırlatıcılar ayarlayın, serilerinizi izleyin ve detaylı istatistiklerle ilerlemenizi görselleştirin.
+    create_habits:
+      title: Yeni Alışkanlıklar Oluştur
+      description: Bu butona tıklayarak yeni alışkanlıklar oluşturarak başlayın. Hedefler, sıklıklar, hatırlatıcılar belirleyin ve esnek alışkanlık takibi için günde birden fazla tamamlama kaydedin.
+    your_habits:
+      title: Alışkanlıklarınız
+      description: Burada tüm alışkanlıklarınızı görüntüleyin ve yönetin. Ayrıntıları, istatistikleri ve tamamlanma geçmişini görmek için herhangi bir alışkanlıkya tıklayın. Seri oluşturmak ve ilerleme kaydınızı takip etmek için alışkanlıkları günlük olarak tamamlandı olarak işaretleyin.
+    calendar_view:
+      title: Takvim Görünümü
+      description: Alışkanlık tamamlanma geçmişinizi birkaç gün boyunca görselleştirin. Yeşil, tamamlanan alışkanlıkları gösterir. Tutarlılığınızı takip edin ve zaman içindeki ilerleme modellerinizi görün.
+    filter_search:
+      title: Filtreleme ve Arama
+      description: Etiketleri, arama terimlerini kullanarak veya arşivlenmiş duruma göre belirli alışkanlıkları bulun. Alışkanlıklarınızı etkili bir şekilde organize edin ve yönetin, önemli olan şeye odaklanmaya devam edin.

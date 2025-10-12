@@ -215,3 +215,19 @@ habits:
     edit_name: Modifier le nom
     increase_daily_target: Augmenter l'objectif quotidien
     increase_estimated_time: Augmenter le temps estimé
+  tour:
+    habit_building:
+      title: Construction d'habitudes
+      description: Développez des habitudes durables en suivant vos activités quotidiennes. Réglez des rappels, surveillez vos séries et visualisez vos progrès avec des statistiques détaillées.
+    create_habits:
+      title: Créer de nouvelles habitudes
+      description: Commencez à créer de nouvelles habitudes en cliquant sur ce bouton. Définissez des objectifs, des fréquences, des rappels et suivez plusieurs réalisations par jour pour un suivi d'habitudes flexible.
+    your_habits:
+      title: Vos habitudes
+      description: Visualisez et gérez toutes vos habitudes ici. Cliquez sur n'importe quelle habitude pour voir les détails, les statistiques et l'historique des réalisations. Marquez les habitudes comme terminées quotidiennement pour construire des séries et suivre vos progrès.
+    calendar_view:
+      title: Vue calendrier
+      description: Visualisez votre historique d'accomplissement des habitudes sur plusieurs jours. Le vert indique les habitudes accomplies. Suivez votre constance et observez vos tendances de progrès au fil du temps.
+    filter_search:
+      title: Filtrer et rechercher
+      description: Trouvez des habitudes spécifiques en utilisant des tags, des termes de recherche ou filtrez par statut archivé. Organisez et gérez efficacement vos habitudes pour rester concentré sur ce qui compte.

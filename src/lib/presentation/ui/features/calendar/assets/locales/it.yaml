@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Abitudini
     tasks: Attività
+  tour:
+    today:
+      welcome:
+        title: Benvenuto nella pagina Oggi
+        description: Il tuo centro di comando quotidiano per la produttività. Visualizza e gestisci le abitudini, le attività e il tracciamento del tempo di oggi in un unico posto. Rimani concentrato su ciò che conta di più oggi.
+      tag_filter:
+        title: Filtro Tag
+        description: Filtra le tue abitudini e attività quotidiane per tag. Concentrati su categorie specifiche o mostra elementi senza tag per organizzare il tuo flusso di lavoro quotidiano.
+      habits:
+        title: Abitudini Giornaliere
+        description: Traccia le tue abitudini quotidiane e costruisci coerenza. Segna le abitudini come completate durante la giornata per mantenere le tue serie e visualizzare i tuoi progressi.
+      tasks:
+        title: Attività di Oggi
+        description: Gestisci le attività pianificate per oggi. Aggiungi nuove attività, segna come completate, visualizza i dettagli e rimani aggiornato sulle tue priorità e scadenze quotidiane.
+      time_distribution:
+        title: Distribuzione del Tempo
+        description: Visualizza come hai trascorso il tuo tempo oggi. Vedi il tempo allocato alle diverse attività e ottimizza il tuo programma quotidiano per una migliore produttività.
+      marathon_mode:
+        title: Modalità Maratona
+        description: Entra in modalità lavoro concentrato con il timer Pomodoro. Traccia il tempo sulle attività con un'interfaccia senza distrazioni e aumenta la tua concentrazione per sessioni di lavoro approfondito.

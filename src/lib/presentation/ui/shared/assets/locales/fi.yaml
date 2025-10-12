@@ -288,5 +288,7 @@ shared:
     success: Päivitys ladattu onnistuneesti!
     title: Päivitys saatavilla!
   help: Apua
+  start_tour: Aloita kierros
+  skip_tour: Ohita kierros
   validation:
     required: "{field} on pakollinen."

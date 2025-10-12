@@ -174,5 +174,16 @@ app_usages:
     title: Sovelluskäytön säännöt
   tooltips:
     edit_name: Muokkaa nimeä
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: Sovelluksen käyttö & Aikatiedot
+      description: Tarkkaile sovelluksen käyttöön liittyviä malleja ja analysoi eri toimintoihin käytettyä aikaa. Hanki tietoa digitaalisista tavoistasi ja optimoi tuottavuuttasi.
+    usage_statistics:
+      title: Käyttötilastot
+      description: Katso yksityiskohtaisia sovelluksen käyttötietoja ja ajan jakautumista. Analysoi tuottavuusmallejasi, seuraa eri sovelluksiin käytettyä aikaa ja tunnista parannuskohteita.
+    filter_sort:
+      title: Suodatus & Lajittelu
+      description: Suodata sovelluksen käyttötietoja päivämäärävälillä, etiketeillä tai tietyillä laitteilla. Lajittele ja järjestä käyttötilastoja saadaksesi paremman käsityksen ajanhallinnastasi.
+    tracking_settings:
+      title: Seuranta-asetukset
+      description: Määritä sovelluksen seurantasäännöt, aseta automaattinen etiketöinti ja hallitse mitä sovelluksia seurataan. Mukauta seurantaa tuottavuustarpeidesi mukaan.

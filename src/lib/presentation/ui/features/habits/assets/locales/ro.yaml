@@ -181,6 +181,22 @@ habits:
     decrease_daily_target: Scade ținta zilnică
     increase_daily_target: Crește ținta zilnică
     add_habit: Adaugă Obicei
+  tour:
+    habit_building:
+      title: Construirea Obiceiurilor
+      description: Construiește obiceiuri durabile prin urmărirea activităților zilnice. Setează mementouri, monitorizează-ți seriile și vizualizează-ți progresul cu statistici detaliate.
+    create_habits:
+      title: Crearea de Noi Obiceiuri
+      description: Începe să construiești noi obiceiuri făcând click pe acest buton. Setează ținte, frecvențe, mementouri și urmărește mai multe finalizări pe zi pentru o urmărire flexibilă a obiceiurilor.
+    your_habits:
+      title: Obiceiurile Tale
+      description: Vezi și gestionează toate obiceiurile tale aici. Fă click pe orice obicei pentru a vedea detalii, statistici și istoricul finalizărilor. Marchează obiceiurile ca finalizate zilnic pentru a construi serii și a urmări progresul.
+    calendar_view:
+      title: Vizualizarea Calendarului
+      description: Vizualizează-ți istoricul finalizărilor de obiceiuri pe mai multe zile. Verde indică obiceiuri finalizate. Urmărește-ți consistența și vezi-ți modelele de progres în timp.
+    filter_search:
+      title: Filtrare & Căutare
+      description: Găsește obiceiuri specifice folosind etichete, termeni de căutare sau filtrează după starea de arhivare. Organizează și gestionează-ți obiceiurile eficient pentru a rămâne concentrat pe ceea ce contează.
 
   tags:
     add_tooltip: Adaugă etichetă

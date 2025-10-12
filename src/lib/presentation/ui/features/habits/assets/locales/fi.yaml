@@ -230,3 +230,19 @@ habits:
     edit_name: Muokkaa Nimeä
     increase_daily_target: Lisää päivittäistä tavoitetta
     increase_estimated_time: Lisää arvioitua aikaa
+  tour:
+    habit_building:
+      title: Tavojen Rakentaminen
+      description: Rakenna kestäviä tapoja seuraamalla päivittäisiä toimia. Aseta muistutuksia, seuraa sarjojasi ja visualisoi edistymistäsi yksityiskohtaisilla tilastoilla.
+    create_habits:
+      title: Luo Uusia Tavoja
+      description: Aloita uusien tapojen rakentaminen klikkaamalla tätä painiketta. Aseta tavoitteita, taajuuksia, muistutuksia ja seuraa useita suorituksia päivässä joustavamman tavanseurannan vuoksi.
+    your_habits:
+      title: Sinun Tavasi
+      description: Näytä ja hallitse kaikkia tapojasi täällä. Klikkaa mitä tahansa tapaa nähdäksesi tiedot, tilastot ja suoritushistorian. Merkitse tavat suoritetuiksi päivittäin rakentaaksesi sarjoja ja seurataksesi edistymistäsi.
+    calendar_view:
+      title: Kalenterinäkymä
+      description: Visualisoi tavojesi suoritushistoria useiden päivien ajan. Vihreä ilmaisee suoritetut tavat. Seuraa johdonmukaisuuttasi ja tarkkaile edistymiskuvioitasi ajan myötä.
+    filter_search:
+      title: Suodatin & Haku
+      description: Etsi tiettyjä tapoja tunnisteiden, hakusanojen tai arkistointitilan perusteella. Järjestä ja hallitse tapojasi tehokkaasti pysyäksesi keskittyneenä olennaiseen.

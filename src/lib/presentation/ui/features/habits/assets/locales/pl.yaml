@@ -213,3 +213,19 @@ habits:
     edit_name: Edytuj nazwę
     increase_daily_target: Zwiększ codzienny cel
     increase_estimated_time: Zwiększ szacowany czas
+  tour:
+    habit_building:
+      title: Tworzenie nawyków
+      description: Buduj trwałe nawyki, śledząc codzienne aktywności. Ustawiaj przypomnienia, monitoruj swoje serie i wizualizuj postęp za pomocą szczegółowych statystyk.
+    create_habits:
+      title: Tworzenie nowych nawyków
+      description: Zacznij budować nowe nawyki klikając ten przycisk. Ustaw cele, częstotliwości, przypomnienia i śledź wiele ukończeń dziennie dla elastycznego śledzenia nawyków.
+    your_habits:
+      title: Twoje nawyki
+      description: Przeglądaj i zarządzaj wszystkimi swoimi nawykami tutaj. Kliknij dowolny nawyk, aby zobaczyć szczegóły, statystyki i historię ukończenia. Oznaczaj nawyki jako ukończone codziennie, aby budować serie i śledzić postęp.
+    calendar_view:
+      title: Widok kalendarza
+      description: Wizualizuj historię ukończeń nawyków na przestrzeni kilku dni. Zielony oznacza ukończone nawyki. Śledź swoją konsekwencję i obserwuj wzorce postępu w czasie.
+    filter_search:
+      title: Filtr i wyszukiwanie
+      description: Znajdź konkretne nawyki przy użyciu tagów, fraz wyszukiwania lub filtrowania według statusu archiwum. Organizuj i zarządzaj swoimi nawykami efektywnie, aby pozostać skoncentrowanym na tym, co się liczy.

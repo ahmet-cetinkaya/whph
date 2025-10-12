@@ -21,20 +21,8 @@ about:
       title: "Dobrodošli v {appName}"
       description: "Vaš osebni spremljevalec za gradnjo boljših navad, upravljanje nalog in učinkovito sledenje času. Raziskujmo ključne funkcije skupaj!"
     step2:
-      title: "Upravljanje nalog"
-      description: "Ustvarite in organizirajte naloge s prioritami, roki in opomniki. Uporabite Pomodoro timer, da ostanete osredotočeni in sledite napredku pri pomembnih nalogah."
-    step3:
-      title: "Gradnja navad"
-      description: "Gradite trajne navade s sledenjem dnevnih aktivnosti. Nastavite opomnike, spremljajte svoje serije in vizualizirajte napredek z podrobnimi statistikami."
-    step4:
-      title: "Vedenje beležk"
-      description: "Hranite pomembne informacije organizirane z zmogljivim sistemom beležk. Oznake beležk za enostavno kategorizacijo in hiter dostop."
-    step5:
-      title: "Uporaba aplikacij & vpogledi v čas"
-      description: "Spremljajte vzorce uporabe aplikacij in analizirajte čas, porabljen za različne aktivnosti. Pridobite vpoglede v vaše digitalne navade in optimizirajte produktivnost."
-    step6:
-      title: "Pametni sistem označevanja"
-      description: "Uporabite oznake za organizacijo in skupinjanje vaših nalog, navad in aplikacij. Sledite času, porabljenemu za različne aktivnosti po oznakah, da razumete, kam gre vaš čas, in optimizirate delovni tok."
+      title: 'Kaj pomeni "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" je moto, ki spodbuja posameznike, da uravnotežijo visoko odgovornost z visoko življenjsko zadovoljstvom. Torej vzemite svoje delo resno, a tudi resnično počivajte, se zabavajte in živite v prostem času. Delo ni samo zaslužiti denarja, ampak rasti in najti izpolnitev; zabava ni lenoba, ampak naravna nagrada za trud. Kot WHPH cenimo tudi tako produktivno delo kot zavestno praznovanje uspehov.'
     step7:
       title: "Dovoljenja aplikacije"
       description: "{appName} potrebuje določena dovoljenja za pravilno delovanje. Preglejte dovoljenja, ki jih želite podeliti za sistemske funkcije, kot so obvestila in sledenje aplikacijam."

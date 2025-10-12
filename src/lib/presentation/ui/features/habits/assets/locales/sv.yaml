@@ -158,3 +158,19 @@ habits:
     decrease_daily_target: Minska dagligt mål
     increase_daily_target: Öka dagligt mål
     add_habit: Lägg till vana
+  tour:
+    habit_building:
+      title: Vaneföring
+      description: Bygg hållbara vanor genom att spåra dagliga aktiviteter. Ställ in påminnelser, övervaka dina streaks och visualisera ditt framsteg med detaljerad statistik.
+    create_habits:
+      title: Skapa Nya Vanor
+      description: Börja bygga nya vanor genom att klicka på denna knapp. Ställ in mål, frekvenser, påminnelser och spåra flera slutföranden per dag för flexibel vanespårning.
+    your_habits:
+      title: Dina Vanor
+      description: Se och hantera alla dina vanor här. Klicka på valfri vana för att se detaljer, statistik och slutförandehistorik. Markera vanor som slutförda dagligen för att bygga streaks och spåra ditt framsteg.
+    calendar_view:
+      title: Kalendervy
+      description: Visualisera din vane-slutförandehistorik över flera dagar. Grönt indikerar slutförda vanor. Spåra din konsekvens och se dina framstegsmönster över tid.
+    filter_search:
+      title: Filter & Sök
+      description: Hitta specifika vanor med taggar, söktermer eller filtrera efter arkiverad status. Organisera och hantera dina vanor effektivt för att förbli fokuserad på det som är viktigt.

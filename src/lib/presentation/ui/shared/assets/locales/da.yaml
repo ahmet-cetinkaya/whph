@@ -285,3 +285,5 @@ shared:
     deadline_cannot_be_before_planned: Deadline kan ikke være før den planlagte dato.
     required: "{field} er påkrævet."
   help: Hjælp
+  start_tour: Start tur
+  skip_tour: Spring tur over

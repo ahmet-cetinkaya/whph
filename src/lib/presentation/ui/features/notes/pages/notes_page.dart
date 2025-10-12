@@ -14,6 +14,8 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class NotesPage extends StatefulWidget {
   static const String route = '/notes';
@@ -28,6 +30,12 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
 
+  // Tour keys
+  final GlobalKey _addNoteButtonKey = GlobalKey();
+  final GlobalKey _noteFiltersKey = GlobalKey();
+  final GlobalKey _notesListKey = GlobalKey();
+  final GlobalKey _mainContentKey = GlobalKey();
+
   bool _isListVisible = false;
   bool _isDataLoaded = false;
   List<String>? _selectedTagIds;
@@ -37,6 +45,26 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
 
   @override
   bool get wantKeepAlive => true; // Keep the state alive when navigating away
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-start tour if multi-page tour is active
+    _checkAndStartTour();
+  }
+
+  void _checkAndStartTour() {
+    if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 5) {
+      // Delay to ensure the page is fully built and laid out
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) {
+            _startTour(isMultiPageTour: true);
+          }
+        });
+      });
+    }
+  }
 
   Future<void> _openDetails(String noteId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -95,6 +123,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
           mainAxisSize: MainAxisSize.min,
           children: [
             NoteAddButton(
+              key: _addNoteButtonKey,
               mini: true,
               onNoteCreated: _handleNoteCreated,
               buttonColor: _themeService.primaryColor,
@@ -104,6 +133,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
             KebabMenu(
               helpTitleKey: NoteTranslationKeys.helpTitle,
               helpMarkdownContentKey: NoteTranslationKeys.helpContent,
+              onStartTour: _startIndividualTour,
             ),
           ],
         ),
@@ -111,10 +141,12 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
       builder: (context) => LoadingOverlay(
         isLoading: !_isPageFullyLoaded,
         child: Column(
+          key: _mainContentKey,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filters section with consistent padding
             NoteListOptions(
+              key: _noteFiltersKey,
               selectedTagIds: _selectedTagIds,
               showNoTagsFilter: _showNoTagsFilter,
               search: _searchQuery,
@@ -147,6 +179,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
             if (_isListVisible)
               Expanded(
                 child: NotesList(
+                  key: _notesListKey,
                   filterByTags: _selectedTagIds,
                   filterNoTags: _showNoTagsFilter,
                   search: _searchQuery,
@@ -159,5 +192,66 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
         ),
       ),
     );
+  }
+
+  void _startTour({bool isMultiPageTour = false}) {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(NoteTranslationKeys.tourNoteTakingTitle),
+        description: _translationService.translate(NoteTranslationKeys.tourNoteTakingDescription),
+        icon: Icons.note_alt_outlined,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. Note list introduce
+      TourStep(
+        title: _translationService.translate(NoteTranslationKeys.tourYourNotesTitle),
+        description: _translationService.translate(NoteTranslationKeys.tourYourNotesDescription),
+        targetKey: _notesListKey,
+        position: TourPosition.top,
+      ),
+      // 3. List options introduce
+      TourStep(
+        title: _translationService.translate(NoteTranslationKeys.tourFilterSearchTitle),
+        description: _translationService.translate(NoteTranslationKeys.tourFilterSearchDescription),
+        targetKey: _noteFiltersKey,
+        position: TourPosition.bottom,
+      ),
+      // 4. Add button introduce
+      TourStep(
+        title: _translationService.translate(NoteTranslationKeys.tourCreateNotesTitle),
+        description: _translationService.translate(NoteTranslationKeys.tourCreateNotesDescription),
+        targetKey: _addNoteButtonKey,
+        position: TourPosition.bottom,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+          if (isMultiPageTour) {
+            TourNavigationService.onPageTourCompleted(context);
+          }
+        },
+        onSkip: () {
+          Navigator.of(context).pop();
+        },
+        onBack: isMultiPageTour && TourNavigationService.canNavigateBack
+            ? () => TourNavigationService.navigateBackInTour(context)
+            : null,
+        showBackButton: isMultiPageTour,
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+      ),
+    );
+  }
+
+  void _startIndividualTour() {
+    _startTour(isMultiPageTour: false);
   }
 }

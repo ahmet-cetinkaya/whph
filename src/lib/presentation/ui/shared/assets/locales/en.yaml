@@ -284,3 +284,5 @@ shared:
   validation:
     required: "{field} is required."
   help: Help
+  start_tour: Start Tour
+  skip_tour: Skip Tour

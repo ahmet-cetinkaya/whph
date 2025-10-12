@@ -126,3 +126,25 @@ tags:
     remove_tag: Tag verwijderen
     select: Klik om tag te selecteren
     unarchive_tag: Tag de-archiveren
+  tour:
+    smart_tagging:
+      title: Slimme Tagging Systeem
+      description: Gebruik tags om je taken, gewoontes en apps te organiseren en groeperen. Volg de tijd die je besteedt aan verschillende activiteiten via tags om te begrijpen waar je tijd naartoe gaat en je workflow te optimaliseren.
+    your_tags:
+      title: Jouw Tags
+      description: Blader door al je tags en bekijk hun gebruiksstatistieken. Klik op een tag om details te bekijken, eigenschappen te bewerken of te zien welke taken en gewoontes deze gebruiken. Organiseer je workflow efficiënt.
+    tag_archive_filters:
+      title: Tag & Archief Filters
+      description: Filter tags door specifieke tags te selecteren om je op te focussen, of schakel de zichtbaarheid van gearchiveerde tags aan/uit. Bepaal welke tags in je lijst verschijnen voor betere organisatie.
+    search_sort:
+      title: Zoeken & Sorteren
+      description: Zoek naar specifieke tags op naam, sorteer op verschillende criteria zoals naam of gebruiksaantal. Organiseer je taglijst om snel te vinden wat je nodig hebt.
+    time_distribution_chart:
+      title: Tijdverdelingsgrafiek
+      description: Visualiseer hoe je je tijd verdeelt over verschillende tags en categorieën. Bekijk patronen in tijdsallocatie en identificeer waar je aandacht gedurende de dag naartoe gaat.
+    chart_customization:
+      title: Grafiek Aanpassing
+      description: Pas de tijdgrafiek aan door datumbereik te selecteren, categorieën te kiezen (taken, gewoontes, apps) en te filteren op specifieke tags om je tijdsverdeling in detail te analyseren.
+    create_tags:
+      title: Nieuwe Tags Maken
+      description: Voeg nieuwe tags toe om je inhoud te categoriseren. Tags helpen je bij het organiseren van taken, gewoontes en apps in alle functies voor beter productiviteitstracking en tijdsbeheer.

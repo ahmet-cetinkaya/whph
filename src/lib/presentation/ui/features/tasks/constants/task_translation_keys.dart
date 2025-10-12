@@ -221,4 +221,24 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
         return reminderNone; // Fallback to none as default
     }
   }
+
+  // Tour translation keys
+  static const String tourTaskManagementTitle = 'tasks.tour.task_management.title';
+  static const String tourTaskManagementDescription = 'tasks.tour.task_management.description';
+  static const String tourAddTasksTitle = 'tasks.tour.add_tasks.title';
+  static const String tourAddTasksDescription = 'tasks.tour.add_tasks.description';
+  static const String tourYourTasksTitle = 'tasks.tour.your_tasks.title';
+  static const String tourYourTasksDescription = 'tasks.tour.your_tasks.description';
+  static const String tourFilterSearchTitle = 'tasks.tour.filter_search.title';
+  static const String tourFilterSearchDescription = 'tasks.tour.filter_search.description';
+
+  // Marathon tour translation keys
+  static const String tourMarathonAppUsageTitle = 'tasks.tour.marathon.app_usage.title';
+  static const String tourMarathonAppUsageDescription = 'tasks.tour.marathon.app_usage.description';
+  static const String tourMarathonUsageStatisticsTitle = 'tasks.tour.marathon.usage_statistics.title';
+  static const String tourMarathonUsageStatisticsDescription = 'tasks.tour.marathon.usage_statistics.description';
+  static const String tourMarathonFilterSortTitle = 'tasks.tour.marathon.filter_sort.title';
+  static const String tourMarathonFilterSortDescription = 'tasks.tour.marathon.filter_sort.description';
+  static const String tourMarathonTrackingSettingsTitle = 'tasks.tour.marathon.tracking_settings.title';
+  static const String tourMarathonTrackingSettingsDescription = 'tasks.tour.marathon.tracking_settings.description';
 }

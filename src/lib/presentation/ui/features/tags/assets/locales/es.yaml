@@ -139,3 +139,25 @@ tags:
     remove_tag: Eliminar etiqueta
     select: Hacer clic para seleccionar etiqueta
     unarchive_tag: Desarchivar etiqueta
+  tour:
+    smart_tagging:
+      title: Sistema Inteligente de Etiquetado
+      description: Usa etiquetas para organizar y agrupar tus tareas, hábitos y aplicaciones. Realiza un seguimiento del tiempo dedicado a diferentes actividades mediante etiquetas para entender a dónde va tu tiempo y optimizar tu flujo de trabajo.
+    your_tags:
+      title: Tus Etiquetas
+      description: Explora todas tus etiquetas y consulta sus estadísticas de uso. Haz clic en cualquier etiqueta para ver detalles, editar propiedades o ver qué tareas y hábitos la utilizan. Organiza tu flujo de trabajo de manera eficiente.
+    tag_archive_filters:
+      title: Filtros de Etiquetas y Archivo
+      description: Filtra etiquetas seleccionando etiquetas específicas en las que enfocarte, o alterna la visibilidad de etiquetas archivadas. Controla qué etiquetas aparecen en tu lista para una mejor organización.
+    search_sort:
+      title: Buscar y Ordenar
+      description: Busca etiquetas específicas por nombre, ordena por diferentes criterios como nombre o recuento de uso. Organiza tu lista de etiquetas para encontrar rápidamente lo que necesitas.
+    time_distribution_chart:
+      title: Gráfico de Distribución de Tiempo
+      description: Visualiza cómo distribuyes tu tiempo entre diferentes etiquetas y categorías. Observa los patrones de asignación de tiempo e identifica hacia dónde se dirige tu atención a lo largo del día.
+    chart_customization:
+      title: Personalización del Gráfico
+      description: Personaliza el gráfico de tiempo seleccionando el rango de fechas, eligiendo categorías (tareas, hábitos, aplicaciones) y filtrando por etiquetas específicas para analizar en detalle tu distribución de tiempo.
+    create_tags:
+      title: Crear Nuevas Etiquetas
+      description: Añade nuevas etiquetas para categorizar tu contenido. Las etiquetas te ayudan a organizar tareas, hábitos y aplicaciones en todas las funciones para un mejor seguimiento de productividad y gestión del tiempo.

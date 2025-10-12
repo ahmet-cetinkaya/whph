@@ -174,5 +174,16 @@ app_usages:
     title: App-Nutzungsregeln
   tooltips:
     edit_name: Name bearbeiten
-  units:
-    minutes: Min
+  tour:
+    app_usage_insights:
+      title: App-Nutzung & Zeit-Einblicke
+      description: Überwachen Sie App-Nutzungsmuster und analysieren Sie die Zeit, die Sie für verschiedene Aktivitäten aufwenden. Erhalten Sie Einblicke in Ihre digitalen Gewohnheiten und optimieren Sie Ihre Produktivität.
+    usage_statistics:
+      title: Nutzungsstatistiken
+      description: Sehen Sie detaillierte App-Nutzungsdaten und Zeitverteilung. Analysieren Sie Ihre Produktivitätsmuster, verfolgen Sie die Zeit, die Sie mit verschiedenen Anwendungen verbringen, und identifizieren Sie Verbesserungsbereiche.
+    filter_sort:
+      title: Filtern & Sortieren
+      description: Filtern Sie App-Nutzungsdaten nach Datumsbereich, Tags oder bestimmten Geräten. Sortieren und organisieren Sie Ihre Nutzungsstatistiken, um bessere Einblicke in Ihr Zeitmanagement zu erhalten.
+    tracking_settings:
+      title: Tracking-Einstellungen
+      description: Konfigurieren Sie App-Tracking-Regeln, richten Sie automatisches Tagging ein und verwalten Sie, welche Anwendungen überwacht werden sollen. Passen Sie das Tracking an Ihre Produktivitätsbedürfnisse an.

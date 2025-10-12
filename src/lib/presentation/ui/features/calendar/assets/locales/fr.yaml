@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Habitudes
     tasks: Tâches
+  tour:
+    today:
+      welcome:
+        title: Bienvenue sur la page Aujourd'hui
+        description: Votre centre de commandement quotidien pour la productivité. Visualisez et gérez les habitudes, tâches et suivi du temps d'aujourd'hui en un seul endroit. Restez concentré sur ce qui est le plus important aujourd'hui.
+      tag_filter:
+        title: Filtre de tags
+        description: Filtrez vos habitudes et tâches quotidiennes par tags. Concentrez-vous sur des catégories spécifiques ou affichez les éléments sans tags pour organiser votre flux de travail quotidien.
+      habits:
+        title: Habitudes quotidiennes
+        description: Suivez vos habitudes quotidiennes et développez la cohérence. Marquez les habitudes comme terminées au cours de la journée pour maintenir vos séries et visualiser vos progrès.
+      tasks:
+        title: Tâches d'aujourd'hui
+        description: Gérez les tâches planifiées pour aujourd'hui. Ajoutez de nouvelles tâches, marquez-les comme terminées, consultez les détails et restez au courant de vos priorités et échéances quotidiennes.
+      time_distribution:
+        title: Distribution du temps
+        description: Visualisez comment vous avez passé votre temps aujourd'hui. Voyez le temps alloué aux différentes activités et optimisez votre emploi du temps quotidien pour une meilleure productivité.
+      marathon_mode:
+        title: Mode Marathon
+        description: Entrez dans le mode de travail concentré avec le minuteur Pomodoro. Suivez le temps passé sur les tâches avec une interface sans distraction et augmentez votre concentration pour des sessions de travail approfondies.

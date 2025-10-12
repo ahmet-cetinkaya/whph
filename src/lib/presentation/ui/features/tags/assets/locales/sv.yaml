@@ -126,3 +126,25 @@ tags:
     remove_tag: Ta bort tagg
     select: Klicka för att välja tagg
     unarchive_tag: Avarkivera tagg
+  tour:
+    smart_tagging:
+      title: Smart taggningssystem
+      description: Använd taggar för att organisera och gruppera dina uppgifter, vanor och appar. Spåra tid som spenderas på olika aktiviteter efter taggar för att förstå vart din tid går och optimera ditt arbetsflöde.
+    your_tags:
+      title: Dina taggar
+      description: Bläddra bland alla dina taggar och se deras användningsstatistik. Klicka på valfri tagg för att visa detaljer, redigera egenskaper eller se vilka uppgifter och vanor som använder den. Organisera ditt arbetsflöde effektivt.
+    tag_archive_filters:
+      title: Tagg- och arkivfilter
+      description: Filtrera taggar genom att välja specifika taggar att fokusera på, eller växla synligheten för arkiverade taggar. Kontrollera vilka taggar som visas i din lista för bättre organisation.
+    search_sort:
+      title: Sök och sortera
+      description: Sök efter specifika taggar efter namn, sortera efter olika kriterier som namn eller antal användningar. Organisera din tagglista för att snabbt hitta det du behöver.
+    time_distribution_chart:
+      title: Tidsfördelningstabell
+      description: Visualisera hur du spenderar din tid över olika taggar och kategorier. Se mönster för tidsfördelning och identifiera var ditt fokus går under dagen.
+    chart_customization:
+      title: Diagramanpassning
+      description: Anpassa tidsdiagrammet genom att välja datumintervall, välja kategorier (uppgifter, vanor, appar) och filtrera efter specifika taggar för att analysera din tidsfördelning i detalj.
+    create_tags:
+      title: Skapa nya taggar
+      description: Lägg till nya taggar för att kategorisera ditt innehåll. Taggar hjälper dig att organisera uppgifter, vanor och appar över alla funktioner för bättre produktivitetsspårning och tidsmanagement.

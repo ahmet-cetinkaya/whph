@@ -174,5 +174,16 @@ app_usages:
     title: Regras de Uso de App
   tooltips:
     edit_name: Editar Nome
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: Insights de Uso de App & Tempo
+      description: Monitore padrões de uso de apps e analise tempo gasto em diferentes atividades. Obtenha insights sobre seus hábitos digitais e otimize sua produtividade.
+    usage_statistics:
+      title: Estatísticas de Uso
+      description: Veja dados detalhados de uso de apps e distribuição de tempo. Analise seus padrões de produtividade, acompanhe o tempo gasto em diferentes aplicativos e identifique áreas de melhoria.
+    filter_sort:
+      title: Filtrar & Ordenar
+      description: Filtre dados de uso de apps por intervalo de datas, tags ou dispositivos específicos. Ordene e organize suas estatísticas de uso para obter melhores insights sobre seu gerenciamento de tempo.
+    tracking_settings:
+      title: Configurações de Rastreamento
+      description: Configure regras de rastreamento de apps, defina marcação automática e gerencie quais aplicativos monitorar. Personalize o rastreamento de acordo com suas necessidades de produtividade.

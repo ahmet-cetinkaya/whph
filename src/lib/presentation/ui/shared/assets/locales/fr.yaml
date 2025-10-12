@@ -302,3 +302,5 @@ shared:
   validation:
     required: "{field} est requis."
   help: Aide
+  start_tour: Commencer la visite
+  skip_tour: Passer la visite

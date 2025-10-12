@@ -326,3 +326,29 @@ tasks:
       La fecha límite debe ser posterior a la fecha
       planificada
     deadline_time_invalid: La hora límite no es válida
+  tour:
+    task_management:
+      title: Gestión de tareas
+      description: Crea y organiza tareas con prioridades, fechas límite y recordatorios. Usa el temporizador Pomodoro para mantenerte enfocado y rastrear tu progreso en tareas importantes.
+    add_tasks:
+      title: Añadir nuevas tareas
+      description: Crea nuevas tareas rápidamente con este botón. Establece títulos, prioridades, fechas límite, etiquetas y más. Añade subtareas y recordatorios para mantenerte al día con tu trabajo.
+    your_tasks:
+      title: Tus tareas
+      description: Visualiza y gestiona todas tus tareas en un solo lugar. Haz clic en cualquier tarea para ver detalles, marcar como completada, editar información o eliminar. Mantente organizado y rastrea tu progreso.
+    filter_search:
+      title: Filtrar y buscar
+      description: Potentes opciones de filtrado para encontrar exactamente lo que necesitas. Filtra por etiquetas, fechas, estado de finalización o usa la búsqueda. Ordena tareas y alterna subtareas para una mejor organización.
+    marathon:
+      app_usage:
+        title: Uso de aplicaciones e información de tiempo
+        description: Monitorea patrones de uso de aplicaciones y analiza el tiempo que dedicas a diferentes actividades. Obtén información sobre tus hábitos digitales y optimiza tu productividad.
+      usage_statistics:
+        title: Estadísticas de uso
+        description: Visualiza datos detallados de uso de aplicaciones y distribución del tiempo. Analiza tus patrones de productividad, rastrea el tiempo dedicado a diferentes aplicaciones e identifica áreas de mejora.
+      filter_sort:
+        title: Filtrar y ordenar
+        description: Filtra datos de uso de aplicaciones por rango de fechas, etiquetas o dispositivos específicos. Ordena y organiza tus estadísticas de uso para obtener mejores perspectivas sobre tu gestión del tiempo.
+      tracking_settings:
+        title: Configuración de seguimiento
+        description: Configura reglas de seguimiento de aplicaciones, establece etiquetado automático y gestiona qué aplicaciones monitorear. Personaliza el seguimiento para adaptarse a tus necesidades de productividad.

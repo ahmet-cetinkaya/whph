@@ -82,4 +82,14 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
 
   // Tooltips
   static const String editNameTooltip = 'app_usages.tooltips.edit_name';
+
+  // Tour translation keys
+  static const String tourAppUsageInsightsTitle = 'app_usages.tour.app_usage_insights.title';
+  static const String tourAppUsageInsightsDescription = 'app_usages.tour.app_usage_insights.description';
+  static const String tourUsageStatisticsTitle = 'app_usages.tour.usage_statistics.title';
+  static const String tourUsageStatisticsDescription = 'app_usages.tour.usage_statistics.description';
+  static const String tourFilterSortTitle = 'app_usages.tour.filter_sort.title';
+  static const String tourFilterSortDescription = 'app_usages.tour.filter_sort.description';
+  static const String tourTrackingSettingsTitle = 'app_usages.tour.tracking_settings.title';
+  static const String tourTrackingSettingsDescription = 'app_usages.tour.tracking_settings.description';
 }

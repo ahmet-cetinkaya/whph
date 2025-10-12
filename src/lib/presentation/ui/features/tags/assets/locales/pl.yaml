@@ -126,3 +126,25 @@ tags:
     remove_tag: Usuń tag
     select: Kliknij, aby wybrać tag
     unarchive_tag: Przywróć tag z archiwum
+  tour:
+    smart_tagging:
+      title: Inteligentny System Tagowania
+      description: Używaj tagów do organizowania i grupowania zadań, nawyków i aplikacji. Śledź czas spędzany na różnych aktywnościach według tagów, aby zrozumieć, gdzie mija Twój czas i zoptymalizować przepływ pracy.
+    your_tags:
+      title: Twoje Tagi
+      description: Przeglądaj wszystkie swoje tagi i sprawdź ich statystyki użytkowania. Kliknij dowolny tag, aby wyświetlić szczegóły, edytować właściwości lub zobaczyć, które zadania i nawyki go używają. Skutecznie organizuj swój przepływ pracy.
+    tag_archive_filters:
+      title: Filtry Tagów i Archiwum
+      description: Filtruj tagi, wybierając konkretne tagi, na których chcesz się skupić, lub przełącz widoczność zarchiwizowanych tagów. Kontroluj, które tagi pojawiają się na Twojej liście dla lepszej organizacji.
+    search_sort:
+      title: Wyszukiwanie i Sortowanie
+      description: Wyszukuj konkretne tagi według nazwy, sortuj według różnych kryteriów, takich jak nazwa lub liczba użyć. Organizuj swoją listę tagów, aby szybko znaleźć to, czego potrzebujesz.
+    time_distribution_chart:
+      title: Wykres Rozkładu Czasu
+      description: Wizualizuj, jak spędzasz czas na różnych tagach i kategoriach. Zobacz wzorce alokacji czasu i zidentyfikuj, gdzie skupione jest Twoje внимание przez cały dzień.
+    chart_customization:
+      title: Dostosowanie Wykresu
+      description: Dostosuj wykres czasu, wybierając zakres dat, wybierając kategorie (zadania, nawyki, aplikacje) i filtrując według konkretnych tagów, aby szczegółowo przeanalizować swój rozkład czasu.
+    create_tags:
+      title: Utwórz Nowe Tagi
+      description: Dodaj nowe tagi, aby kategoryzować swoją zawartość. Tagi pomagają Ci organizować zadania, nawyki i aplikacje we wszystkich funkcjach dla lepszego śledzenia produktywności i zarządzania czasem.

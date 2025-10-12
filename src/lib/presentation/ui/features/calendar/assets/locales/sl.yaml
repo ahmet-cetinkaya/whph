@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Navade
     tasks: Naloge
+  tour:
+    today:
+      welcome:
+        title: Dobrodošli na strani Danes
+        description: Vaše dnevno komandno središče za produktivnost. Preglejte in upravljajte današnje navade, naloge in sledenje času na enem mestu. Ostanite osredotočeni na to, kar je danes najpomembnejše.
+      tag_filter:
+        title: Filter oznak
+        description: Filtrirajte svoje dnevne navade in naloge po oznakah. Osredotočite se na določene kategorije ali prikažite elemente brez oznak, da organizirate svoj dnevni delovni tok.
+      habits:
+        title: Dnevne navade
+        description: Spremljajte svoje dnevne navade in gradite doslednost. Oznake navad kot dokončane med dnevom, da ohranite svoje nize in vizualizirate napredek.
+      tasks:
+        title: Naloge za danes
+        description: Upravljajte naloge, načrtovane za danes. Dodajte nove naloge, jih označite kot dokončane, si oglejte podrobnosti in spremljajte svoje dnevne prioritete in roke.
+      time_distribution:
+        title: Porazdelitev časa
+        description: Vizualizirajte, kako ste danes porabili čas. Oglejte si čas, dodeljen različnim aktivnostim, in optimizirajte svoj dnevni urnik za boljšo produktivnost.
+      marathon_mode:
+        title: Način Maraton
+        description: Vstopite v način fokusiranega dela s časovnikom Pomodoro. Spremljajte čas na nalogah z vmesnikom brez motenj in povečajte svojo koncentracijo za globoke delovne seje.

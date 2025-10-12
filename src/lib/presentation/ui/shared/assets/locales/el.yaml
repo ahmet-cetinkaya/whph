@@ -304,3 +304,5 @@ shared:
   validation:
     required: Το {field} είναι υποχρεωτικό
   help: Βοήθεια
+  start_tour: Έναρξη περιήγησης
+  skip_tour: Παράλειψη περιήγησης

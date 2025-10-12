@@ -289,3 +289,5 @@ shared:
   validation:
     required: "{field} zorunludur."
   help: Yardım
+  start_tour: Turu Başlat
+  skip_tour: Turu Atla

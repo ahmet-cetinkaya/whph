@@ -142,6 +142,18 @@ sync:
     no_active_interfaces: Nie znaleziono aktywnych interfejsów sieciowych
     device_discovery_failed: "Nie udało się uruchomić odkrywania urządzeń: {error}"
     no_server_configured: Brak skonfigurowanego serwera. Najpierw dodaj urządzenie synchronizacji lub użyj ręcznego połączenia, aby skonfigurować połączenie z serwerem.
+    device_id_unavailable: Identyfikator urządzenia jest niedostępny. Nie można kontynuować synchronizacji.
+    local_ip_unavailable: Lokalny adres IP jest niedostępny. Sprawdź połączenie sieciowe.
+    prerequisites_failed: Weryfikacja wymagań wstępnych synchronizacji nie powiodła się. Sprawdź ustawienia sieciowe.
+    critical_sync_operation_failed: Krytyczna operacja synchronizacji nie powiodła się. Spróbuj ponownie.
+    initiate_outgoing_sync_failed: Nie udało się zainicjować synchronizacji z urządzeniami.
+    processing_incoming_data: Błąd podczas przetwarzania przychodzących danych synchronizacji.
+    checking_local_data: Błąd podczas sprawdzania lokalnych danych do synchronizacji.
+    sync_with_device_failed: Nie udało się zsynchronizować z urządzeniem.
+    sync_with_device_exception: Wystąpił wyjątek podczas synchronizacji urządzenia.
+    process_accumulated_response_data: Nie udało się przetworzyć zgromadzonych danych odpowiedzi synchronizacji.
+    process_response_data: Nie udało się przetworzyć danych odpowiedzi synchronizacji.
+    some_devices_failed_to_sync: Niektóre urządzenia nie mogły zostać zsynchronizowane. Spróbuj ponownie.
   messages:
     device_already_paired: To urządzenie jest już sparowane
     sync_completed: Synchronizacja zakończona pomyślnie

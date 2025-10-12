@@ -174,5 +174,16 @@ app_usages:
     title: 应用使用情况规则
   tooltips:
     edit_name: 编辑名称
-  units:
-    minutes: 分钟
+  tour:
+    app_usage_insights:
+      title: 应用使用情况和时间洞察
+      description: 监控应用使用模式并分析花在不同活动上的时间。深入了解您的数字习惯并优化您的生产力。
+    usage_statistics:
+      title: 使用统计
+      description: 查看详细的应用使用数据和时间分布。分析您的生产力模式，跟踪花在不同应用程序上的时间，并确定需要改进的领域。
+    filter_sort:
+      title: 筛选和排序
+      description: 按日期范围、标签或特定设备筛选应用使用数据。对使用统计数据进行排序和组织，以更好地了解时间管理情况。
+    tracking_settings:
+      title: 跟踪设置
+      description: 配置应用跟踪规则，设置自动标签，并管理要监控的应用程序。根据您的生产力需求自定义跟踪。
