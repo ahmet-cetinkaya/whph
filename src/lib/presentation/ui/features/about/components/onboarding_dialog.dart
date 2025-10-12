@@ -143,10 +143,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   }
 
   Future<void> _onLanguageChanged(String languageCode) async {
-    setState(() {
-      _selectedLanguageCode = languageCode;
-    });
-
+    _selectedLanguageCode = languageCode;
     await _translationService.changeLanguageWithoutNavigation(context, languageCode);
   }
 
