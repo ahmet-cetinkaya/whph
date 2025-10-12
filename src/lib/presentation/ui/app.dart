@@ -82,8 +82,8 @@ class _AppState extends State<App> {
       if (mounted && widget.navigatorKey.currentContext != null) {
         _runInitialization();
       } else {
-        // If still not available, try again after a short delay (fallback for edge cases)
-        Future.delayed(const Duration(milliseconds: 100), () {
+        // Schedule another check in the next frame if still not available
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted && widget.navigatorKey.currentContext != null) {
             _runInitialization();
           }
