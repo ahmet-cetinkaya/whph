@@ -22,7 +22,7 @@ class _StartupSettingsState extends State<StartupSettings> {
   final _startupService = container.resolve<IStartupSettingsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
-  get _isSystemSettingNeeded => PlatformUtils.isMobile;
+  bool get _isSystemSettingNeeded => PlatformUtils.isMobile;
 
   bool _isEnabled = false;
   bool _isLoading = true;

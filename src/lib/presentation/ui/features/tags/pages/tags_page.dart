@@ -189,13 +189,13 @@ class _TagsPageState extends State<TagsPage> {
     }
   }
 
-  void _onTimeChartCategoryChanged(categories) {
+  void _onTimeChartCategoryChanged(Set<TagTimeCategory> categories) {
     setState(() {
       _selectedCategories = categories;
     });
   }
 
-  void _onArchivedToggle(show) {
+  void _onArchivedToggle(bool show) {
     setState(() {
       _showArchived = show;
     });
