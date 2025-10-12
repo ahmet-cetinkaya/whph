@@ -638,7 +638,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           if (isMultiPageTour) {
             await TourNavigationService.skipMultiPageTour();
           }
-          Navigator.of(context).pop();
+          if (context.mounted) Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack
             ? () => TourNavigationService.navigateBackInTour(context)
