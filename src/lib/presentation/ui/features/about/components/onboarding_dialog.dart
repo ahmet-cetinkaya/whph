@@ -138,13 +138,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
       _selectedLanguageCode = languageCode;
     });
 
-    // Change language dynamically without page reload
     await _translationService.changeLanguageWithoutNavigation(context, languageCode);
-
-    // Force rebuild of the dialog content
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   @override
