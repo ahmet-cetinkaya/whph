@@ -309,7 +309,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               : '';
 
           if (_plannedDateController.text != plannedDateText && !_isDatePickerInteractionActive()) {
-            _plannedDateController.text = plannedDateText;
+            // Prevent clearing user input if a background refresh happens while typing.
+            if (!(plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty)) {
+              _plannedDateController.text = plannedDateText;
+            }
           }
 
           // Only update deadline date if it's different
@@ -318,7 +321,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               : '';
 
           if (_deadlineDateController.text != deadlineDateText && !_isDatePickerInteractionActive()) {
-            _deadlineDateController.text = deadlineDateText;
+            // Prevent clearing user input if a background refresh happens while typing.
+            if (!(deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty)) {
+              _deadlineDateController.text = deadlineDateText;
+            }
           }
 
           // Only update description if it's different
