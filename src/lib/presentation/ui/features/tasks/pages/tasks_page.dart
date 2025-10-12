@@ -460,7 +460,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           if (isMultiPageTour) {
             await TourNavigationService.skipMultiPageTour();
           }
-          Navigator.of(context).pop();
+          if (context.mounted) Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack
             ? () => TourNavigationService.navigateBackInTour(context)

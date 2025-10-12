@@ -420,7 +420,7 @@ class _HabitsPageState extends State<HabitsPage> {
           if (isMultiPageTour) {
             await TourNavigationService.skipMultiPageTour();
           }
-          Navigator.of(context).pop();
+          if (context.mounted) Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack
             ? () => TourNavigationService.navigateBackInTour(context)
