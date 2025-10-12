@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
@@ -47,6 +49,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   final _translationService = container.resolve<ITranslationService>();
   final _confettiAnimationService = container.resolve<IConfettiAnimationService>();
   final _themeService = container.resolve<IThemeService>();
+
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 6;
 
   // Tour keys
   final GlobalKey _mainListOptionsKey = GlobalKey();
@@ -118,14 +124,18 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 2) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        while (!_isPageFullyLoaded && mounted) {
-          await Future.delayed(const Duration(milliseconds: 100));
-        }
-
+        await _pageReadyCompleter.future;
         if (mounted) {
           _startTour(isMultiPageTour: true);
         }
       });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
     }
   }
 
@@ -153,6 +163,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       setState(() {
         _mainListOptionSettingsLoaded = true;
       });
+      _componentLoaded();
     }
   }
 
@@ -161,6 +172,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       setState(() {
         _habitListOptionSettingsLoaded = true;
       });
+      _componentLoaded();
     }
   }
 
@@ -169,6 +181,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       setState(() {
         _taskListOptionSettingsLoaded = true;
       });
+      _componentLoaded();
     }
   }
 
@@ -177,6 +190,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       setState(() {
         _timeChartOptionsLoaded = true;
       });
+      _componentLoaded();
     }
   }
 
@@ -266,6 +280,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         _remainingHabits = incompleteHabitCount;
         _habitsLoaded = true;
       });
+      _componentLoaded();
     }
   }
 
@@ -275,6 +290,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         _remainingTasks = incompleteTaskCount;
         _tasksLoaded = true;
       });
+      _componentLoaded();
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
@@ -42,6 +44,10 @@ class _HabitsPageState extends State<HabitsPage> {
   final _habitsService = container.resolve<HabitsService>();
   final _themeService = container.resolve<IThemeService>();
 
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 2;
+
   @override
   void initState() {
     super.initState();
@@ -55,14 +61,18 @@ class _HabitsPageState extends State<HabitsPage> {
 
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 1) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        while (!_isPageFullyLoaded && mounted) {
-          await Future.delayed(const Duration(milliseconds: 100));
-        }
-
+        await _pageReadyCompleter.future;
         if (mounted) {
           _startTour(isMultiPageTour: true);
         }
       });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
     }
   }
 
@@ -139,6 +149,7 @@ class _HabitsPageState extends State<HabitsPage> {
     setState(() {
       _isHabitListVisible = true;
     });
+    _componentLoaded();
   }
 
   void _onHabitsListed(int count) {
@@ -146,6 +157,7 @@ class _HabitsPageState extends State<HabitsPage> {
       setState(() {
         _isHabitDataLoaded = true;
       });
+      _componentLoaded();
     }
   }
 

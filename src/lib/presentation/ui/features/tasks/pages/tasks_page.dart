@@ -43,6 +43,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   final GlobalKey _floatingAddButtonKey = GlobalKey();
   final GlobalKey _mainContentKey = GlobalKey();
 
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 2;
+
   bool _isTaskListVisible = false;
   bool _isDataLoaded = false;
 
@@ -79,14 +83,18 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        while (!_isPageFullyLoaded && mounted) {
-          await Future.delayed(const Duration(milliseconds: 100));
-        }
-
+        await _pageReadyCompleter.future;
         if (mounted) {
           _startTour(isMultiPageTour: true);
         }
       });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
     }
   }
 
@@ -224,6 +232,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       _isTaskListVisible = true;
       _isLoadingSettings = false;
     });
+    _componentLoaded();
     _setupAutoRefreshUI();
   }
 
@@ -232,6 +241,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       setState(() {
         _isDataLoaded = true;
       });
+      _componentLoaded();
     }
   }
 
