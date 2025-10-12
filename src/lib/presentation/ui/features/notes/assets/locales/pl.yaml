@@ -94,3 +94,16 @@ notes:
     add_note: Dodaj notatkę
     delete_note: Usuń notatkę
     edit_name: Edytuj tytuł
+  tour:
+    note_taking:
+      title: Tworzenie notatek
+      description: Przechowuj ważne informacje w sposób uporządkowany dzięki zaawansowanemu systemowi notatek. Oznaczaj swoje notatki tagami, aby ułatwić kategoryzację i szybki dostęp.
+    your_notes:
+      title: Twoje notatki
+      description: Przeglądaj wszystkie swoje notatki tutaj. Kliknij dowolną notatkę, aby wyświetlić, edytować lub zorganizować jej zawartość. Użyj składni markdown do bogatego formatowania - **pogrubienie**, *kursywa*, listy, linki i więcej.
+    filter_search:
+      title: Filtrowanie i wyszukiwanie
+      description: Znajdź konkretne notatki przy użyciu tagów, wyszukaj zawartość lub sortuj je według różnych kryteriów. Bądź zorganizowany dzięki zaawansowanym opcjom filtrowania.
+    create_notes:
+      title: Tworzenie nowych notatek
+      description: Zacznij pisać, klikając ten przycisk. twórz sformatowane tekstowe notatki z użyciem formatowania markdown. Dodaj tagi, aby ułatwić kategoryzację i organizację.

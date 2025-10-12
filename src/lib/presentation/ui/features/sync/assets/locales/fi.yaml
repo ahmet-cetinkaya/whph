@@ -128,6 +128,18 @@ sync:
     no_active_interfaces: Ei aktiivisia verkkoliittymiä
     device_discovery_failed: Laitteen löytäminen epäonnistui
     no_server_configured: Ei serveriä konfiguroitu. Lisää ensin synkronointilaite tai käytä manuaalista yhteyttä server-yhteyden asettamiseksi.
+    device_id_unavailable: Laitteen tunnus ei ole käytettävissä. Synkronointia ei voida jatkaa.
+    local_ip_unavailable: Paikallinen IP-osoite ei ole käytettävissä. Tarkista verkkoyhteys.
+    prerequisites_failed: Synkronoinnin edellytysten validointi epäonnistui. Tarkista verkkoasetukset.
+    critical_sync_operation_failed: Kriittinen synkronointitoiminto epäonnistui. Yritä uudelleen.
+    initiate_outgoing_sync_failed: Laitteiden kanssa synkronoinnin aloitus epäonnistui.
+    processing_incoming_data: Virhe käsiteltäessä saapuvia synkronointitietoja.
+    checking_local_data: Virhe tarkistettaessa paikallisia tietoja synkronointia varten.
+    sync_with_device_failed: Laitteen kanssa synkronointi epäonnistui.
+    sync_with_device_exception: Poikkeus tapahtui laitteen synkronoinnin aikana.
+    process_accumulated_response_data: Kerättyjen synkronointivastauksien käsittely epäonnistui.
+    process_response_data: Synkronointivastaustietojen käsittely epäonnistui.
+    some_devices_failed_to_sync: Joidenkin laitteiden synkronointi epäonnistui. Yritä uudelleen.
   messages:
     device_already_paired: Tämä laite on jo paritettu
     sync_completed: Synkronointi valmistui onnistuneesti

@@ -21,20 +21,8 @@ about:
       title: "Witaj w {appName}"
       description: "Twój osobisty towarzysz w budowaniu lepszych nawyków, zarządzaniu zadaniami i efektywnym śledzeniu czasu. Odkryjmy razem kluczowe funkcje!"
     step2:
-      title: "Zarządzanie zadaniami"
-      description: "Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami. Używaj timera Pomodoro, aby pozostać skupionym i śledzić postępy w ważnych zadaniach."
-    step3:
-      title: "Budowanie nawyków"
-      description: "Buduj trwałe nawyki poprzez śledzenie codziennych aktywności. Ustaw przypomnienia, monitoruj serie i wizualizuj postępy dzięki szczegółowym statystykom."
-    step4:
-      title: "Tworzenie notatek"
-      description: "Utrzymuj ważne informacje w porządku za pomocą potężnego systemu notatek. Oznaczaj notatki, aby ułatwić kategoryzację i szybki dostęp."
-    step5:
-      title: "Użycie aplikacji i wgląd w czas"
-      description: "Monitoruj wzorce użycia aplikacji i analizuj czas spędzony na różnych aktywnościach. Zdobądź wgląd w cyfrowe nawyki i zoptymalizuj produktywność."
-    step6:
-      title: "Inteligentny system tagów"
-      description: "Używaj tagów do organizacji i grupowania zadań, nawyków i aplikacji. Śledź czas spędzony na aktywnościach według tagów, aby zrozumieć, gdzie marnujesz czas i zoptymalizować przepływ pracy."
+      title: 'Co oznacza "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" to motto, które zachęca ludzi do równoważenia wysokiej odpowiedzialności z wysokim zadowoleniem z życia. Więc traktuj swoją pracę poważnie, ale też naprawdę odpoczywaj, baw się i żyj w czasie wolnym. Praca to nie tylko zarabianie pieniędzy, ale rozwój i znajdowanie spełnienia; zabawa to nie lenistwo, ale naturalna nagroda za wysiłek. Jako WHPH cenimy również zarówno produktywną pracę, jak i świadome świętowanie sukcesów.'
     step7:
       title: "Uprawnienia aplikacji"
       description: "{appName} wymaga pewnych uprawnień do prawidłowego działania. Możesz przejrzeć uprawnienia, które chcesz przyznać dla funkcji systemowych, takich jak powiadomienia i śledzenie aplikacji."

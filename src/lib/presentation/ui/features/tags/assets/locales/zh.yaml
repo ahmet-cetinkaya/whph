@@ -126,3 +126,25 @@ tags:
     remove_tag: 移除标签
     select: 点击选择标签
     unarchive_tag: 取消归档标签
+  tour:
+    smart_tagging:
+      title: 智能标签系统
+      description: 使用标签来组织和分组您的任务、习惯和应用程序。通过标签跟踪不同活动所花费的时间，以了解时间去向并优化工作流程。
+    your_tags:
+      title: 您的标签
+      description: 浏览所有标签并查看其使用统计信息。点击任何标签查看详细信息、编辑属性或查看哪些任务和习惯使用它。高效地组织您的工作流程。
+    tag_archive_filters:
+      title: 标签和存档过滤器
+      description: 通过选择特定标签来关注，或切换已存档标签的可见性来过滤标签。控制列表中显示哪些标签以获得更好的组织。
+    search_sort:
+      title: 搜索和排序
+      description: 按名称搜索特定标签，按不同标准（如名称或使用次数）进行排序。组织标签列表以快速找到所需内容。
+    time_distribution_chart:
+      title: 时间分布图
+      description: 可视化您在不同标签和类别上花费时间的方式。查看时间分配模式并确定您全天的关注点在哪里。
+    chart_customization:
+      title: 图表自定义
+      description: 通过选择日期范围、选择类别（任务、习惯、应用程序）和按特定标签过滤来自定义时间图表，以详细分析您的时间分布。
+    create_tags:
+      title: 创建新标签
+      description: 添加新标签来分类您的内容。标签帮助您在所有功能中组织任务、习惯和应用程序，以实现更好的生产力跟踪和时间管理。

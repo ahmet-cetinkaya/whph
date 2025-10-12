@@ -126,3 +126,25 @@ tags:
     remove_tag: Odstrani oznako
     select: Kliknite za izbiro oznake
     unarchive_tag: Razarhiviraj oznako
+  tour:
+    smart_tagging:
+      title: Pametni sistem označevanja
+      description: Uporabite oznake za organizacijo in združevanje svojih opravil, navad in aplikacij. Sledite času, porabljenem za različne dejavnosti po oznakah, da razumete, kam gre vaš čas, in optimizirate svoj delovni tok.
+    your_tags:
+      title: Vaše oznake
+      description: Brskajte po vseh svojih oznakah in si oglejte njihovo statistiko uporabe. Kliknite katero koli oznako za ogled podrobnosti, urejanje lastnosti ali ogled, katera opravila in navade jo uporabljajo. Učinkovito organizirajte svoj delovni tok.
+    tag_archive_filters:
+      title: Filtri oznak in arhiva
+      description: Filtrirajte oznake tako, da izberete določene oznake za osredotočanje, ali preklopite vidnost arhiviranih oznak. Nadzorujte, katere oznake se prikažejo na vašem seznamu za boljšo organizacijo.
+    search_sort:
+      title: Iskanje in razvrščanje
+      description: Poiščite določene oznake po imenu, razvrstite po različnih merilih, kot sta ime ali število uporab. Organizirajte svoj seznam oznak, da hitro najdete, kar potrebujete.
+    time_distribution_chart:
+      title: Grafikon porazdelitve časa
+      description: Vizualizirajte, kako porabite svoj čas med različnimi oznakami in kategorijami. Oglejte si vzorce dodeljevanja časa in prepoznajte, kam gre vaša pozornost skozi dan.
+    chart_customization:
+      title: Prilagoditev grafikona
+      description: Prilagodite časovni grafikon tako, da izberete časovno obdobje, izberete kategorije (opravila, navade, aplikacije) in filtrirate po določenih oznakah za podrobno analizo porazdelitve vašega časa.
+    create_tags:
+      title: Ustvari nove oznake
+      description: Dodajte nove oznake za kategorizacijo vaše vsebine. Oznake vam pomagajo organizirati opravila, navade in aplikacije v vseh funkcijah za boljše sledenje produktivnosti in upravljanje časa.

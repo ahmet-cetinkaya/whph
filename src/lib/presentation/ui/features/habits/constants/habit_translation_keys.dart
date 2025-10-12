@@ -123,4 +123,16 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String unarchiveHabitTooltip = 'habits.archive.unarchive_tooltip';
   static const String errorLoadingArchiveStatus = 'habits.errors.loading_archive_status';
   static const String errorTogglingArchive = 'habits.errors.toggling_archive';
+
+  // Tour translation keys
+  static const String tourHabitBuildingTitle = 'habits.tour.habit_building.title';
+  static const String tourHabitBuildingDescription = 'habits.tour.habit_building.description';
+  static const String tourCreateHabitsTitle = 'habits.tour.create_habits.title';
+  static const String tourCreateHabitsDescription = 'habits.tour.create_habits.description';
+  static const String tourYourHabitsTitle = 'habits.tour.your_habits.title';
+  static const String tourYourHabitsDescription = 'habits.tour.your_habits.description';
+  static const String tourCalendarViewTitle = 'habits.tour.calendar_view.title';
+  static const String tourCalendarViewDescription = 'habits.tour.calendar_view.description';
+  static const String tourFilterSearchTitle = 'habits.tour.filter_search.title';
+  static const String tourFilterSearchDescription = 'habits.tour.filter_search.description';
 }

@@ -94,3 +94,16 @@ notes:
     add_note: Dodaj beležko
     delete_note: Izbriši beležko
     edit_name: Uredi naslov
+  tour:
+    note_taking:
+      title: Ustvarjanje zapisov
+      description: Ohranite pomembne informacije organizirane z zmogljivim sistemom zapiskov. Označite svoje zapiske za enostavno kategorizacijo in hiter dostop.
+    your_notes:
+      title: Vaši zapiske
+      description: Prebrskajte vse svoje zapiske tukaj. Kliknite katerikoli zapiske, da si ga ogledate, uredite ali organizirate njegovo vsebino. Uporabite skladnjo markdown za obogateno oblikovanje - **krepko**, *ležeče*, seznami, povezave in več.
+    filter_search:
+      title: Filtriranje in iskanje
+      description: Poiščite določene zapiske s pomočjo oznak, iščite vsebino ali jih razvrstite po različnih kriterijih. Ostanite organizirani z zmogljivimi možnostmi filtriranja.
+    create_notes:
+      title: Ustvarjanje novih zapisov
+      description: Začnite z vnašanjem, ko kliknete ta gumb. Ustvarite oblikovane besedilne zapiske z markdown oblikovanjem. Dodajte oznake za enostavno kategorizacijo in organizacijo.

@@ -228,3 +228,19 @@ habits:
     edit_name: Rediger navn
     increase_daily_target: Øg dagligt mål
     increase_estimated_time: Øg estimeret tid
+  tour:
+    habit_building:
+      title: Vanebygning
+      description: Byg holdbare vaner ved at spore daglige aktiviteter. Indstil påmindelser, overvåg dine streaks og visualiser dit fremskridt med detaljerede statistikker.
+    create_habits:
+      title: Opret nye vaner
+      description: Start med at bygge nye vaner ved at klikke på denne knap. Sæt mål, frekvenser, påmindelser og spor flere afslutninger om dagen for fleksibel vanesporing.
+    your_habits:
+      title: Dine vaner
+      description: Se og administrer alle dine vaner her. Klik på en vilkårlig vane for at se detaljer, statistikker og afslutningshistorik. Markér vaner som fuldført dagligt for at bygge streaks og spore dit fremskridt.
+    calendar_view:
+      title: Kalendervisning
+      description: Visualisér din vaneafslutningshistorik over flere dage. Grøn betyder afsluttede vaner. Spor din konsekvens og se dine fremskridtsmønstre over tid.
+    filter_search:
+      title: Filter & søg
+      description: Find specifikke vaner ved hjælp af tags, søgeord eller filtrér efter arkiveringsstatus. Organisér og håndtér dine vaner effektivt for at forblive fokuseret på det, der betyder noget.

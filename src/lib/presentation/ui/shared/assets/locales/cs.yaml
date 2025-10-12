@@ -282,5 +282,7 @@ shared:
     success: Aktualizace byla úspěšně stažena!
     title: Aktualizace k dispozici!
   help: Nápověda
+  start_tour: Spustit prohlídku
+  skip_tour: Přeskočit prohlídku
   validation:
     required: "{field} je povinné."

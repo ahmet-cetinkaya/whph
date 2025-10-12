@@ -1,6 +1,8 @@
 class SettingKeys {
   // Onboarding State
   static const String onboardingCompleted = 'ONBOARDING_COMPLETED';
+  static const String tourCompleted = 'TOUR_COMPLETED';
+  static const String tourSkipped = 'TOUR_SKIPPED';
 
   // Notification settings
   static const String notifications = 'NOTIFICATIONS_ENABLED';

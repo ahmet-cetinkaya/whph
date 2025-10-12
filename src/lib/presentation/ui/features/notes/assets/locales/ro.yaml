@@ -94,3 +94,16 @@ notes:
     add_note: Adaugă notă
     delete_note: Șterge notă
     edit_name: Editează titlu
+  tour:
+    note_taking:
+      title: Notițe
+      description: Păstrează informațiile importante organizate cu un sistem puternic de notițe. Etichetează-ți notițele pentru o categorizare ușoară și acces rapid.
+    your_notes:
+      title: Notițele tale
+      description: Răsfoiește toate notițele tale aici. Dă click pe orice notiță pentru a vizualiza, edita sau organiza conținutul acesteia. Folosește sintaxa markdown pentru formatare - **bold**, *italic*, liste, linkuri și altele.
+    filter_search:
+      title: Filtru și căutare
+      description: Găsește notițe specifice folosind etichete, caută conținut sau sortează-le după diferite criterii. Rămâi organizat cu opțiuni puternice de filtrare.
+    create_notes:
+      title: Creează notițe noi
+      description: Începe să scrii apăsând pe acest buton. Creează notițe text formatate cu formatarea markdown. Adaugă etichete pentru o categorizare și organizare ușoară.

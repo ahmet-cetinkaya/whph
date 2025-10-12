@@ -174,5 +174,16 @@ app_usages:
     title: Uygulama Kullanım Kuralları
   tooltips:
     edit_name: İsmi düzenle
-  units:
-    minutes: dk
+  tour:
+    app_usage_insights:
+      title: Uygulama Kullanımı ve Zaman İçgörüler
+      description: Uygulama kullanım desenlerini izleyin ve farklı etkinliklere harcanan zamanı analiz edin. Dijital alışkanlıklarınız hakkında içgörüler edinin ve verimliliğinizi optimize edin.
+    usage_statistics:
+      title: Kullanım İstatistikleri
+      description: Ayrıntılı uygulama kullanım verilerini ve zaman dağılımını görün. Verimlilik desenlerinizi analiz edin, farklı uygulamalara harcanan zamanı takip edin ve iyileştirme alanlarını belirleyin.
+    filter_sort:
+      title: Filtrele ve Sırala
+      description: Uygulama kullanım verilerini tarih aralığı, etiketler veya belirli cihazlara göre filtreleyin. Zaman yönetimi hakkında daha iyi içgörüler elde etmek için kullanım istatistiklerinizi sıralayın ve düzenleyin.
+    tracking_settings:
+      title: Takip Ayarları
+      description: Uygulama takip kurallarını yapılandırın, otomatik etiketlemeyi ayarlayın ve hangi uygulamaların izleneceğini yönetin. Takibi verimlilik ihtiyaçlarınıza göre özelleştirin.

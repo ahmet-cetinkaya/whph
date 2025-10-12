@@ -320,3 +320,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Datum splatnosti musí být po plánovaném datu
     deadline_time_invalid: Prosím zadejte platný čas splatnosti
+  tour:
+    task_management:
+      title: Management úkolů
+      description: Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami. Používejte Pomodoro časovač pro zůstání soustředění a sledování pokroku na důležitých úkolech.
+    add_tasks:
+      title: Přidání nových úkolů
+      description: Rychle vytvářejte nové úkoly pomocí tohoto tlačítka. Nastavujte titulky, priority, termíny, štítky a další. Přidávejte podúkoly a připomínky pro zůstání na chodu.
+    your_tasks:
+      title: Vaše úkoly
+      description: Zobrazujte a spravujte všechny své úkoly na jednom místě. Klikněte na libovolný úkol pro zobrazení detailů, označení jako dokončený, úpravu informací nebo smazání. Zůstaňte organizovaní a sledujte svůj pokrok.
+    filter_search:
+      title: Filtr a vyhledávání
+      description: Výkonné možnosti filtrování pro nalezení přesně toho, co potřebujete. Filtrujte podle štítků, dat, stavu dokončení nebo použijte vyhledávání. Řaďte úkoly a přepínejte podúkoly pro lepší organizaci.
+    marathon:
+      app_usage:
+        title: Využití aplikace a časové poznatky
+        description: Monitorujte vzorce využití aplikace a analyzujte čas strávený různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte svou produktivitu.
+      usage_statistics:
+        title: Statistiky využití
+        description: Zobrazujte detailní data o využití aplikace a distribuci času. Analyzujte své produktivní vzorce, sledujte čas strávený různými aplikacemi a identifikujte oblasti pro zlepšení.
+      filter_sort:
+        title: Filtr a řazení
+        description: Filtrování dat o využití aplikace podle časového rozsahu, štítků nebo konkrétních zařízení. Řaďte a organizujte statistiky využití pro získání lepších poznatků o správě času.
+      tracking_settings:
+        title: Nastavení sledování
+        description: Nakonfigurujte pravidla sledování aplikací, nastavte automatické štítkování a spravujte, které aplikace sledovat. Přizpůsobte sledování potřebám vaší produktivity.

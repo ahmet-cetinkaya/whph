@@ -342,3 +342,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Deadline moet na de geplande datum zijn
     deadline_time_invalid: Deadline tijd is ongeldig
+  tour:
+    task_management:
+      title: Taakbeheer
+      description: Creëer en organiseer taken met prioriteiten, deadlines en herinneringen. Gebruik de Pomodoro-timer om gefocust te blijven en je voortgang bij te houden op belangrijke taken.
+    add_tasks:
+      title: Nieuwe taken toevoegen
+      description: Creëer snel nieuwe taken met deze knop. Stel titels, prioriteiten, deadlines, tags en meer in. Voeg subtaken en herinneringen toe om up-to-date te blijven met je werk.
+    your_tasks:
+      title: Jouw taken
+      description: Bekijk en beheer al je taken op één plek. Klik op elke taak om details te bekijken, als voltooid te markeren, informatie te bewerken of te verwijderen. Blijf georganiseerd en volg je voortgang.
+    filter_search:
+      title: Filteren & Zoeken
+      description: Krachtige filteropties om precies te vinden wat je nodig hebt. Filter op tags, datums, voltooiingsstatus of gebruik de zoekfunctie. Sorteer taken en schakel subtaken voor betere organisatie.
+    marathon:
+      app_usage:
+        title: App-gebruik & Tijdanalyse
+        description: Monitor app-gebruikspatronen en analyseer de tijd die je besteedt aan verschillende activiteiten. Verkrijg inzicht in je digitale gewoonten en optimaliseer je productiviteit.
+      usage_statistics:
+        title: Gebruiksstatistieken
+        description: Bekijk gedetailleerde app-gebruiksgegevens en tijdsverdeling. Analyseer je productiviteitspatronen, volg de tijd die je besteedt aan verschillende applicaties en identificeer verbeterpunten.
+      filter_sort:
+        title: Filteren & Sorteren
+        description: Filter app-gebruiksgegevens op datumbereik, tags of specifieke apparaten. Sorteer en organiseer je gebruiksstatistieken voor betere inzichten in tijdsbeheer.
+      tracking_settings:
+        title: Tracking-instellingen
+        description: Configureer app-trackingregels, stel automatische tagging in en beheer welke applicaties je wilt volgen. Pas tracking aan op je productiviteitsbehoeften.

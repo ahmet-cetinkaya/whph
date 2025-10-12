@@ -22,20 +22,8 @@ about:
       title: "Benvenuto in {appName}"
       description: "Il tuo compagno personale per costruire abitudini migliori, gestire attività e tracciare il tempo efficacemente. Esploriamo insieme le funzionalità principali!"
     step2:
-      title: "Gestione attività"
-      description: "Crea e organizza attività con priorità, scadenze e promemoria. Usa il timer Pomodoro per rimanere concentrato e tracciare i tuoi progressi su attività importanti."
-    step3:
-      title: "Costruzione abitudini"
-      description: "Costruisci abitudini durature tracciando le attività quotidiane. Imposta promemoria, monitora le tue serie e visualizza i tuoi progressi con statistiche dettagliate."
-    step4:
-      title: "Prendere appunti"
-      description: "Mantieni le informazioni importanti organizzate con un potente sistema di presa di appunti. Etichetta le tue note per una facile categorizzazione e accesso rapido."
-    step5:
-      title: "Utilizzo app e insight temporali"
-      description: "Monitora i pattern di utilizzo delle app e analizza il tempo trascorso su diverse attività. Ottieni insight sulle tue abitudini digitali e ottimizza la tua produttività."
-    step6:
-      title: "Sistema di etichettatura intelligente"
-      description: "Usa i tag per organizzare e raggruppare le tue attività, abitudini e app. Traccia il tempo trascorso su diverse attività per tag per capire dove va il tuo tempo e ottimizzare il tuo flusso di lavoro."
+      title: 'Cosa significa "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" è un motto che incoraggia le persone a bilanciare alte responsabilità con alta soddisfazione di vita. Quindi prendi sul serio il tuo lavoro, ma anche riposati veramente, divertiti e vivi durante il tuo tempo libero. Il lavoro non è solo fare soldi, ma crescere e trovare realizzazione; divertirsi non è pigrizia, ma la ricompensa naturale dello sforzo. Come WHPH, valutiamo anche sia il lavoro produttivo che la celebrazione consapevole dei successi.'
     step7:
       title: "Permessi app"
       description: "{appName} ha bisogno di certi permessi per funzionare correttamente. Puoi rivedere i permessi che vorresti concedere per funzionalità di sistema come notifiche e tracciamento app."

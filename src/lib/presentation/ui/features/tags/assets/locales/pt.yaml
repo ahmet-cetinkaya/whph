@@ -126,3 +126,25 @@ tags:
     remove_tag: Remover tag
     select: Clique para selecionar tag
     unarchive_tag: Desarquivar tag
+  tour:
+    smart_tagging:
+      title: Sistema de Marcação Inteligente
+      description: Use marcadores para organizar e agrupar suas tarefas, hábitos e aplicativos. Acompanhe o tempo gasto em diferentes atividades por marcadores para entender para onde vai o seu tempo e otimizar seu fluxo de trabalho.
+    your_tags:
+      title: Seus Marcadores
+      description: Navegue por todos os seus marcadores e veja suas estatísticas de uso. Clique em qualquer marcador para ver detalhes, editar propriedades ou ver quais tarefas e hábitos o utilizam. Organize seu fluxo de trabalho de forma eficiente.
+    tag_archive_filters:
+      title: Filtros de Marcadores e Arquivo
+      description: Filtre marcadores selecionando marcadores específicos para focar, ou alterne a visibilidade dos marcadores arquivados. Controle quais marcadores aparecem na sua lista para melhor organização.
+    search_sort:
+      title: Buscar e Ordenar
+      description: Procure marcadores específicos pelo nome, ordene por diferentes critérios como nome ou contagem de uso. Organize sua lista de marcadores para encontrar rapidamente o que precisa.
+    time_distribution_chart:
+      title: Gráfico de Distribuição de Tempo
+      description: Visualize como você gasta seu tempo em diferentes marcadores e categorias. Veja padrões de alocação de tempo e identifique para onde vai o seu foco durante o dia.
+    chart_customization:
+      title: Personalização do Gráfico
+      description: Personalize o gráfico de tempo selecionando o intervalo de datas, escolhendo categorias (tarefas, hábitos, aplicativos) e filtrando por marcadores específicos para analisar sua distribuição de tempo em detalhes.
+    create_tags:
+      title: Criar Novos Marcadores
+      description: Adicione novos marcadores para categorizar seu conteúdo. Os marcadores ajudam você a organizar tarefas, hábitos e aplicativos em todos os recursos para melhor acompanhamento de produtividade e gestão do tempo.

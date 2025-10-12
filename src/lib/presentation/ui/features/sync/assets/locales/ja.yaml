@@ -128,6 +128,18 @@ sync:
     no_active_interfaces: アクティブなネットワークインターフェースがありません
     device_discovery_failed: デバイス検出に失敗しました
     no_server_configured: サーバーが構成されていません。まず同期デバイスを追加するか、手動接続を使用してサーバー接続を設定してください。
+    device_id_unavailable: デバイスIDが利用できません。同期を続行できません。
+    local_ip_unavailable: ローカルIPアドレスが利用できません。ネットワーク接続を確認してください。
+    prerequisites_failed: 同期の前提条件検証に失敗しました。ネットワーク設定を確認してください。
+    critical_sync_operation_failed: 重要な同期操作に失敗しました。もう一度お試しください。
+    initiate_outgoing_sync_failed: デバイスとの同期開始に失敗しました。
+    processing_incoming_data: 受信同期データの処理中にエラーが発生しました。
+    checking_local_data: 同期のためのローカルデータ確認中にエラーが発生しました。
+    sync_with_device_failed: デバイスとの同期に失敗しました。
+    sync_with_device_exception: デバイス同期中に例外が発生しました。
+    process_accumulated_response_data: 蓄積された同期応答データの処理に失敗しました。
+    process_response_data: 同期応答データの処理に失敗しました。
+    some_devices_failed_to_sync: 一部のデバイスの同期に失敗しました。もう一度お試しください。
   messages:
     device_already_paired: このデバイスは既にペアリングされています
     sync_completed: 同期が正常に完了しました

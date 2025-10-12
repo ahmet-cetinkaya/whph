@@ -21,20 +21,8 @@ about:
       title: "Bine ați venit la {appName}"
       description: "Companionul dumneavoastră personal pentru construirea unor obiceiuri mai bune, gestionarea sarcinilor și urmărirea timpului eficient. Să explorăm împreună funcționalitățile cheie!"
     step2:
-      title: "Gestionarea sarcinilor"
-      description: "Creați și organizați sarcini cu priorități, termene limită și remindere. Utilizați cronometrul Pomodoro pentru a rămâne concentrat și a urmări progresul în sarcinile importante."
-    step3:
-      title: "Construirea obiceiurilor"
-      description: "Construiți obiceiuri durabile urmărind activitățile zilnice. Setați remindere, monitorizați șirurile și vizualizați progresul cu statistici detaliate."
-    step4:
-      title: "Luarea de notițe"
-      description: "Păstrați informațiile importante organizate cu un sistem puternic de notițe. Etichetați notițele pentru categorizare ușoară și acces rapid."
-    step5:
-      title: "Utilizarea aplicațiilor & Insight-uri de timp"
-      description: "Monitorizați modelele de utilizare a aplicațiilor și analizați timpul petrecut în diferite activități. Obțineți insight-uri în obiceiurile digitale și optimizați productivitatea."
-    step6:
-      title: "Sistem inteligent de etichetare"
-      description: "Utilizați etichete pentru a organiza și grupa sarcinile, obiceiurile și aplicațiile. Urmăriți timpul petrecut în diferite activități pe etichete pentru a înțelege unde merge timpul și a optimiza fluxul de lucru."
+      title: 'Ce înseamnă "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" este un motto care încurajează persoanele să echilibreze responsabilitatea înaltă cu satisfacția înaltă de viață. Deci luați-vă munca în serios, dar și odihniți-vă cu adevărat, distrați-vă și trăiți în timpul liber. Munca nu înseamnă doar să faci bani, ci să crești și să găsești împlinire; distracția nu este lene, ci recompensa naturală a efortului. Ca WHPH, prețuim de asemenea atât munca productivă, cât și celebrarea conștientă a succeselor.'
     step7:
       title: "Permisiuni aplicație"
       description: "{appName} are nevoie de anumite permisiuni pentru a funcționa corect. Puteți revizui permisiunile pe care doriți să le acordați pentru funcții de sistem precum notificările și urmărirea aplicațiilor."

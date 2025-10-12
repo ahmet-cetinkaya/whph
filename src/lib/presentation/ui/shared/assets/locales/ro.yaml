@@ -290,3 +290,5 @@ shared:
   validation:
     required: "{field} este obligatoriu."
   help: Ajutor
+  start_tour: Pornește turul
+  skip_tour: Sari peste tur

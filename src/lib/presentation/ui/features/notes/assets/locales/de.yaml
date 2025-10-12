@@ -94,3 +94,16 @@ notes:
     add_note: Notiz hinzufügen
     delete_note: Notiz löschen
     edit_name: Titel bearbeiten
+  tour:
+    note_taking:
+      title: Notizen erstellen
+      description: Halten Sie wichtige Informationen mit einem leistungsstarken Notizsystem organisiert. Taggen Sie Ihre Notizen für eine einfache Kategorisierung und schnellen Zugriff.
+    your_notes:
+      title: Ihre Notizen
+      description: Durchsuchen Sie hier alle Ihre Notizen. Klicken Sie auf eine beliebige Notiz, um ihren Inhalt anzuzeigen, zu bearbeiten oder zu organisieren. Verwenden Sie Markdown-Syntax für eine ansprechende Formatierung - **fett**, *kursiv*, Listen, Links und mehr.
+    filter_search:
+      title: Filtern & Suchen
+      description: Finden Sie spezifische Notizen mithilfe von Tags, suchen Sie nach Inhalten oder sortieren Sie diese nach verschiedenen Kriterien. Bleiben Sie mit leistungsstarken Filteroptionen organisiert.
+    create_notes:
+      title: Neue Notizen erstellen
+      description: Beginnen Sie mit dem Schreiben, indem Sie auf diese Schaltfläche klicken. Erstellen Sie formatierte Textnotizen mit Markdown-Formatierung. Fügen Sie Tags für eine einfache Kategorisierung und Organisation hinzu.

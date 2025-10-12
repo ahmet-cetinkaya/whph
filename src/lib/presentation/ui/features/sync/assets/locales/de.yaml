@@ -128,6 +128,18 @@ sync:
     no_active_interfaces: Keine aktiven Netzwerkschnittstellen
     device_discovery_failed: Geräteerkennung fehlgeschlagen
     no_server_configured: Kein Server konfiguriert. Fügen Sie zuerst ein Synchronisierungsgerät hinzu oder verwenden Sie eine manuelle Verbindung, um eine Serververbindung einzurichten.
+    device_id_unavailable: Geräte-ID ist nicht verfügbar. Synchronisierung kann nicht fortgesetzt werden.
+    local_ip_unavailable: Lokale IP-Adresse ist nicht verfügbar. Netzwerkverbindung prüfen.
+    prerequisites_failed: Validierung der Synchronisierungs-Voraussetzungen fehlgeschlagen. Bitte überprüfen Sie Ihre Netzwerkeinstellungen.
+    critical_sync_operation_failed: Kritischer Synchronisationsvorgang fehlgeschlagen. Bitte versuchen Sie es erneut.
+    initiate_outgoing_sync_failed: Initiierung der Synchronisierung mit Geräten fehlgeschlagen.
+    processing_incoming_data: Fehler bei der Verarbeitung eingehender Synchronisationsdaten.
+    checking_local_data: Fehler beim Prüfen lokaler Daten für die Synchronisierung.
+    sync_with_device_failed: Synchronisierung mit Gerät fehlgeschlagen.
+    sync_with_device_exception: Ausnahme trat während der Gerätesynchronisierung auf.
+    process_accumulated_response_data: Verarbeitung der akkumulierten Synchronisationsantwortdaten fehlgeschlagen.
+    process_response_data: Verarbeitung der Synchronisationsantwortdaten fehlgeschlagen.
+    some_devices_failed_to_sync: Einige Geräte konnten nicht synchronisiert werden. Bitte versuchen Sie es erneut.
   messages:
     device_already_paired: Dieses Gerät ist bereits gepaart
     sync_completed: Synchronisation erfolgreich abgeschlossen

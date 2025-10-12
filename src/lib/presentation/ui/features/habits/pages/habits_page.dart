@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
@@ -15,11 +17,14 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class HabitsPage extends StatefulWidget {
   static const String route = '/habits';
@@ -39,6 +44,45 @@ class _HabitsPageState extends State<HabitsPage> {
   final _habitsService = container.resolve<HabitsService>();
   final _themeService = container.resolve<IThemeService>();
 
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-start tour if multi-page tour is active
+    _checkAndStartTour();
+  }
+
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
+    if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _pageReadyCompleter.future;
+        if (mounted) {
+          _startTour(isMultiPageTour: true);
+        }
+      });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
+    }
+  }
+
+  // Tour keys
+  final GlobalKey _addHabitButtonKey = GlobalKey();
+  final GlobalKey _habitFiltersKey = GlobalKey();
+  final GlobalKey _calendarKey = GlobalKey();
+  final GlobalKey _habitsListKey = GlobalKey();
+  final GlobalKey _mainContentKey = GlobalKey();
+
   List<String> _selectedFilterTags = [];
   bool _showNoTagsFilter = false;
   bool _filterByArchived = false;
@@ -47,6 +91,7 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _forceOriginalLayout = false;
   String? _handledHabitId;
   bool _isHabitListVisible = false;
+  bool _isHabitDataLoaded = false;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -104,6 +149,21 @@ class _HabitsPageState extends State<HabitsPage> {
     setState(() {
       _isHabitListVisible = true;
     });
+    _componentLoaded();
+  }
+
+  void _onHabitsListed(int count) {
+    if (mounted) {
+      setState(() {
+        _isHabitDataLoaded = true;
+      });
+      _componentLoaded();
+    }
+  }
+
+  /// Check if all page data has finished loading
+  bool get _isPageFullyLoaded {
+    return _isHabitListVisible && _isHabitDataLoaded;
   }
 
   Widget _buildCalendarDay(DateTime date, DateTime today) {
@@ -208,6 +268,7 @@ class _HabitsPageState extends State<HabitsPage> {
       title: _translationService.translate(HabitTranslationKeys.pageTitle),
       appBarActions: [
         HabitAddButton(
+          key: _addHabitButtonKey,
           onHabitCreated: (String habitId) {
             if (!mounted) return;
 
@@ -228,81 +289,161 @@ class _HabitsPageState extends State<HabitsPage> {
         KebabMenu(
           helpTitleKey: HabitTranslationKeys.overviewHelpTitle,
           helpMarkdownContentKey: HabitTranslationKeys.overviewHelpContent,
+          onStartTour: _startIndividualTour,
         ),
       ],
-      builder: (context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Filters and Calendar row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Filters and sorting
-              Expanded(
-                child: HabitListOptions(
-                  selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
-                  showNoTagsFilter: _showNoTagsFilter,
-                  filterByArchived: _filterByArchived,
-                  sortConfig: _sortConfig,
-                  forceOriginalLayout: _forceOriginalLayout,
-                  onTagFilterChange: _onFilterTagsSelect,
-                  onArchiveFilterChange: _onToggleArchived,
-                  onSearchChange: _onSearchChange,
-                  onSortChange: _onSortConfigChange,
-                  onLayoutToggleChange: _onLayoutToggleChange,
-                  showSearchFilter: true,
-                  showSortButton: true,
-                  showSaveButton: true,
-                  settingKeyVariantSuffix: habitListOptionsSettingKeySuffix,
-                  onSettingsLoaded: _onSettingsLoaded,
-                ),
-              ),
-
-              // Calendar
-              if (_isHabitListVisible &&
-                  AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
-                  !_filterByArchived)
-                SizedBox(
-                  width: _calculateCalendarHeaderWidth(daysToShow),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ...lastDays.map((date) => _buildCalendarDay(date, today)),
-                      // Add spacing to match calendar right padding and drag handle width
-                      SizedBox(
-                        width: _calculateCalendarSpacingWidth(),
-                      ),
-                    ],
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Column(
+          key: _mainContentKey,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Filters and Calendar row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Filters and sorting
+                Expanded(
+                  child: HabitListOptions(
+                    key: _habitFiltersKey,
+                    selectedTagIds: _selectedFilterTags.isEmpty ? null : _selectedFilterTags,
+                    showNoTagsFilter: _showNoTagsFilter,
+                    filterByArchived: _filterByArchived,
+                    sortConfig: _sortConfig,
+                    forceOriginalLayout: _forceOriginalLayout,
+                    onTagFilterChange: _onFilterTagsSelect,
+                    onArchiveFilterChange: _onToggleArchived,
+                    onSearchChange: _onSearchChange,
+                    onSortChange: _onSortConfigChange,
+                    onLayoutToggleChange: _onLayoutToggleChange,
+                    showSearchFilter: true,
+                    showSortButton: true,
+                    showSaveButton: true,
+                    settingKeyVariantSuffix: habitListOptionsSettingKeySuffix,
+                    onSettingsLoaded: _onSettingsLoaded,
                   ),
                 ),
-            ],
-          ),
 
-          // List
-          if (_isHabitListVisible)
-            Expanded(
-              child: HabitsList(
-                dateRange: daysToShow,
-                filterByTags: _selectedFilterTags,
-                filterNoTags: _showNoTagsFilter,
-                filterByArchived: _filterByArchived,
-                search: _searchQuery,
-                sortConfig: _sortConfig,
-                enableReordering: _sortConfig.useCustomOrder,
-                forceOriginalLayout: _forceOriginalLayout,
-                useParentScroll: false,
-                onClickHabit: (item) {
-                  _openDetails(item.id, context);
-                },
-                onReorderComplete: () {
-                  // Refresh the habits list to ensure correct order
-                  setState(() {});
-                },
-              ),
+                // Calendar
+                if (_isHabitListVisible &&
+                    AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
+                    !_filterByArchived)
+                  SizedBox(
+                    key: _calendarKey,
+                    width: _calculateCalendarHeaderWidth(daysToShow),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ...lastDays.map((date) => _buildCalendarDay(date, today)),
+                        // Add spacing to match calendar right padding and drag handle width
+                        SizedBox(
+                          width: _calculateCalendarSpacingWidth(),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
-        ],
+
+            // List
+            if (_isHabitListVisible)
+              Expanded(
+                child: HabitsList(
+                  key: _habitsListKey,
+                  dateRange: daysToShow,
+                  filterByTags: _selectedFilterTags,
+                  filterNoTags: _showNoTagsFilter,
+                  filterByArchived: _filterByArchived,
+                  search: _searchQuery,
+                  sortConfig: _sortConfig,
+                  enableReordering: _sortConfig.useCustomOrder,
+                  forceOriginalLayout: _forceOriginalLayout,
+                  useParentScroll: false,
+                  onClickHabit: (item) {
+                    _openDetails(item.id, context);
+                  },
+                  onListing: _onHabitsListed,
+                  onReorderComplete: () {
+                    // Refresh the habits list to ensure correct order
+                    setState(() {});
+                  },
+                ),
+              ),
+          ],
+        ),
       ),
     );
+  }
+
+  void _startTour({bool isMultiPageTour = false}) {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(HabitTranslationKeys.tourHabitBuildingTitle),
+        description: _translationService.translate(HabitTranslationKeys.tourHabitBuildingDescription),
+        icon: Icons.refresh,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. Add Habit button introduce
+      TourStep(
+        title: _translationService.translate(HabitTranslationKeys.tourCreateHabitsTitle),
+        description: _translationService.translate(HabitTranslationKeys.tourCreateHabitsDescription),
+        targetKey: _addHabitButtonKey,
+        position: TourPosition.bottom,
+      ),
+      // 3. Habit list introduce
+      TourStep(
+        title: _translationService.translate(HabitTranslationKeys.tourYourHabitsTitle),
+        description: _translationService.translate(HabitTranslationKeys.tourYourHabitsDescription),
+        targetKey: _habitsListKey,
+        position: TourPosition.top,
+      ),
+      // 4. Calendar introduce
+      TourStep(
+        title: _translationService.translate(HabitTranslationKeys.tourCalendarViewTitle),
+        description: _translationService.translate(HabitTranslationKeys.tourCalendarViewDescription),
+        targetKey: _calendarKey,
+        position: TourPosition.bottom,
+      ),
+      // 5. List options introduce
+      TourStep(
+        title: _translationService.translate(HabitTranslationKeys.tourFilterSearchTitle),
+        description: _translationService.translate(HabitTranslationKeys.tourFilterSearchDescription),
+        targetKey: _habitFiltersKey,
+        position: TourPosition.bottom,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+          if (isMultiPageTour) {
+            TourNavigationService.onPageTourCompleted(context);
+          }
+        },
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
+          if (context.mounted) Navigator.of(context).pop();
+        },
+        onBack: isMultiPageTour && TourNavigationService.canNavigateBack
+            ? () => TourNavigationService.navigateBackInTour(context)
+            : null,
+        showBackButton: isMultiPageTour,
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+      ),
+    );
+  }
+
+  void _startIndividualTour() {
+    _startTour(isMultiPageTour: false);
   }
 }

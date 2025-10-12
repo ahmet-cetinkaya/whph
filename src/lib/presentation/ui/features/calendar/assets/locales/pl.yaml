@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Nawyki
     tasks: Zadania
+  tour:
+    today:
+      welcome:
+        title: Witamy na stronie Dzisiaj
+        description: Twoje codzienne centrum dowodzenia produktywnością. Przeglądaj i zarządzaj dzisiejszymi nawykami, zadaniami i śledzeniem czasu w jednym miejscu. Skup się na tym, co dziś jest najważniejsze.
+      tag_filter:
+        title: Filtr tagów
+        description: Filtruj swoje codzienne nawyki i zadania według tagów. Skup się na konkretnych kategoriach lub pokaż elementy bez tagów, aby zorganizować swój codzienny przepływ pracy.
+      habits:
+        title: Codzienne nawyki
+        description: Śledź swoje codzienne nawyki i buduj konsekwencję. Oznaczaj nawyki jako ukończone w ciągu dnia, aby utrzymać swoje passy i wizualizować postępy.
+      tasks:
+        title: Zadania na dziś
+        description: Zarządzaj zadaniami zaplanowanymi na dziś. Dodawaj nowe zadania, oznaczaj je jako ukończone, przeglądaj szczegóły i śledź swoje codzienne priorytety i terminy.
+      time_distribution:
+        title: Rozkład czasu
+        description: Wizualizuj, jak spędziłeś swój czas dzisiaj. Zobacz czas przydzielony różnym aktywnościom i zoptymalizuj swój codzienny harmonogram dla lepszej produktywności.
+      marathon_mode:
+        title: Tryb maratonowy
+        description: Wejdź w tryb skupionej pracy z timerej Pomodoro. Śledź czas na zadaniach z interfejsem wolnym od rozpraszania i zwiększ swoją koncentrację dla sesji intensywnej pracy.

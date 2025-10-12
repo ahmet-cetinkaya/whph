@@ -322,7 +322,31 @@ tasks:
     show_completed_tasks: Filtra attività completate
     show_subtasks: Mostra sottoattività
   validation:
-    deadline_cannot_be_before_planned:
-      La data di scadenza deve essere successiva
-      alla data pianificata
+    deadline_cannot_be_before_planned: La data di scadenza deve essere successiva alla data pianificata
     deadline_time_invalid: L'orario della scadenza non è valido
+  tour:
+    task_management:
+      title: Gestione attività
+      description: Crea e organizza attività con priorità, scadenze e promemoria. Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi sulle attività importanti.
+    add_tasks:
+      title: Aggiungi nuove attività
+      description: Crea rapidamente nuove attività con questo pulsante. Imposta titoli, priorità, scadenze, tag e altro. Aggiungi sotto-attività e promemoria per rimanere aggiornato sul tuo lavoro.
+    your_tasks:
+      title: Le tue attività
+      description: Visualizza e gestisci tutte le tue attività in un unico posto. Clicca su qualsiasi attività per vedere i dettagli, contrassegnarla come completata, modificare le informazioni o eliminarla. Rimani organizzato e traccia i tuoi progressi.
+    filter_search:
+      title: Filtra & Cerca
+      description: Potenti opzioni di filtro per trovare esattamente ciò di cui hai bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina le attività e alterna le sotto-attività per una migliore organizzazione.
+    marathon:
+      app_usage:
+        title: Utilizzo app e analisi temporale
+        description: Monitora i pattern di utilizzo delle app e analizza il tempo dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini digitali e ottimizza la tua produttività.
+      usage_statistics:
+        title: Statistiche di utilizzo
+        description: Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato a diverse applicazioni e identifica aree di miglioramento.
+      filter_sort:
+        title: Filtra & Ordina
+        description: Filtra i dati sull'utilizzo delle app per intervallo di date, tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo per ottenere migliori prospettive sulla gestione del tempo.
+      tracking_settings:
+        title: Impostazioni di tracciamento
+        description: Configura le regole di tracciamento delle app, imposta l'etichettatura automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento in base alle tue esigenze di produttività.

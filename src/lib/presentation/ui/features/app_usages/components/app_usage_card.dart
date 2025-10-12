@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/bar_chart.dart';
-import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
-import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/main.dart';
 
 class AppUsageCard extends StatelessWidget {
@@ -21,9 +20,10 @@ class AppUsageCard extends StatelessWidget {
     this.onTap,
   });
 
+  static final _translationService = container.resolve<ITranslationService>();
+
   @override
   Widget build(BuildContext context) {
-    final translationService = container.resolve<ITranslationService>();
     final primaryColor = Theme.of(context).primaryColor;
     final barColor = appUsage.color != null ? AppUsageUiConstants.getTagColor(appUsage.color) : primaryColor;
 
@@ -35,19 +35,20 @@ class AppUsageCard extends StatelessWidget {
       title: appUsage.displayName ?? appUsage.name,
       value: duration,
       maxValue: maxDuration,
-      formatValue: (value) => SharedUiConstants.formatDurationHuman(value.toInt(), translationService),
+      formatValue: (value) => SharedUiConstants.formatDurationHuman(value.toInt(), _translationService),
       barColor: barColor,
       onTap: onTap,
       additionalWidget: _buildAdditionalWidget(),
     );
   }
 
+  Widget _buildAppUsageTagsWidget() {
+    final items = TagDisplayUtils.tagDataToDisplayItems(appUsage.tags, _translationService);
+    return TagListWidget(items: items);
+  }
+
   Widget? _buildAdditionalWidget() {
     if (appUsage.tags.isEmpty) return null;
-
-    final List<Color> tagColors = appUsage.tags
-        .map((tag) => tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-        .toList();
 
     return Wrap(
       spacing: AppTheme.size2XSmall,
@@ -58,13 +59,7 @@ class AppUsageCard extends StatelessWidget {
           "•",
           style: AppTheme.bodySmall.copyWith(color: AppTheme.disabledColor),
         ),
-        Label.multipleColored(
-          icon: TagUiConstants.tagIcon,
-          color: Colors.grey, // Default color for icon and commas
-          values: appUsage.tags.map((tag) => tag.tagName).toList(),
-          colors: tagColors,
-          mini: true,
-        ),
+        _buildAppUsageTagsWidget(),
       ],
     );
   }

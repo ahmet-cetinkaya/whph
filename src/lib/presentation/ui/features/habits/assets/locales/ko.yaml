@@ -209,3 +209,19 @@ habits:
     edit_name: 이름 편집
     increase_daily_target: 일일 목표 증가
     increase_estimated_time: 예상 시간 늘리기
+  tour:
+    habit_building:
+      title: 습관 구축
+      description: 일일 활동을 추적하여 지속적인 습관을 구축하세요. 알림을 설정하고 연속 기록을 모니터링하며, 자세한 통계로 진행 상황을 시각화하세요.
+    create_habits:
+      title: 새로운 습관 만들기
+      description: 이 버튼을 클릭하여 새로운 습관 구축을 시작하세요. 목표, 빈도, 알림을 설정하고 유연한 습관 추적을 위해 하루에 여러 번 완료를 기록할 수 있습니다.
+    your_habits:
+      title: 내 습관
+      description: 여기에서 모든 습관을 확인하고 관리하세요. 습관을 클릭하면 세부 정보, 통계 및 완료 기록을 볼 수 있습니다. 매일 습관을 완료로 표시하여 연속 기록을 만들고 진행 상황을 추적하세요.
+    calendar_view:
+      title: 달력 보기
+      description: 여러 날에 걸쳐 습관 완료 기록을 시각화하세요. 초록색은 완료된 습관을 나타냅니다. 일관성을 추적하고 시간이 지남에 따라 진행 패턴을 확인하세요.
+    filter_search:
+      title: 필터 및 검색
+      description: 태그, 검색어 또는 보관 상태로 특정 습관을 찾으세요. 습관을 효율적으로 정리하고 관리하여 중요한 것에 집중하세요.

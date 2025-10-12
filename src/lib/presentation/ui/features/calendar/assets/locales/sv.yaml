@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Vanor
     tasks: Uppgifter
+  tour:
+    today:
+      welcome:
+        title: Välkommen till Idag-sidan
+        description: Ditt dagliga kommandocenter för produktivitet. Se och hantera dagens vanor, uppgifter och tidsspårning på ett ställe. Håll fokus på det som är mest viktigt idag.
+      tag_filter:
+        title: Taggfilter
+        description: Filtrera dina dagliga vanor och uppgifter efter taggar. Fokusera på specifika kategorier eller visa objekt utan taggar för att organisera ditt dagliga arbetsflöde.
+      habits:
+        title: Dagliga vanor
+        description: Följ dina dagliga vanor och bygg konsistens. Markera vanor som slutförda under dagen för att upprätthålla dina streaks och visualisera dina framsteg.
+      tasks:
+        title: Dagens uppgifter
+        description: Hantera uppgifter som är planerade för idag. Lägg till nya uppgifter, markera dem som slutförda, se detaljer och håll koll på dina dagliga prioriteringar och deadlines.
+      time_distribution:
+        title: Tidsprioritering
+        description: Visualisera hur du har spenderat din tid idag. Se tid som allokerats till olika aktiviteter och optimera ditt dagliga schema för bättre produktivitet.
+      marathon_mode:
+        title: Marathon-läge
+        description: Gå in i fokusarbetesläge med Pomodoro-timern. Spåra tid på uppgifter med ett distraktionsfritt gränssnitt och öka din koncentration för djupa arbetspass.

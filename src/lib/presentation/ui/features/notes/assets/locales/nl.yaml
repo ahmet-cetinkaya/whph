@@ -94,3 +94,16 @@ notes:
     add_note: Notitie toevoegen
     delete_note: Notitie verwijderen
     edit_name: Titel bewerken
+  tour:
+    note_taking:
+      title: Notities maken
+      description: Houd belangrijke informatie georganiseerd met een krachtig notitiesysteem. Label uw notities voor eenvoudige categorisering en snelle toegang.
+    your_notes:
+      title: Uw notities
+      description: Blader hier door al uw notities. Klik op een willekeurige notitie om de inhoud te bekijken, bewerken of organiseren. Gebruik markdown-syntaxis voor rijke opmaak - **vetgedrukt**, *cursief*, lijsten, links en meer.
+    filter_search:
+      title: Filteren & Zoeken
+      description: Vind specifieke notities met tags, zoek naar inhoud of sorteer ze op verschillende criteria. Blijf georganiseerd met krachtige filteropties.
+    create_notes:
+      title: Nieuwe notities maken
+      description: Begin met schrijven door op deze knop te klikken. Maak tekstnotities met markdown-opmaak. Voeg tags toe voor eenvoudige categorisering en organisatie.

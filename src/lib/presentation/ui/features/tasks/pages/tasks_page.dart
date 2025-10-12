@@ -9,6 +9,7 @@ import 'package:whph/presentation/ui/features/tasks/components/task_add_button.d
 import 'package:whph/presentation/ui/features/tasks/components/task_add_floating_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -19,6 +20,8 @@ import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -33,7 +36,19 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
 
+  // Tour keys
+  final GlobalKey _addTaskButtonKey = GlobalKey();
+  final GlobalKey _taskFiltersKey = GlobalKey();
+  final GlobalKey _taskListKey = GlobalKey();
+  final GlobalKey _floatingAddButtonKey = GlobalKey();
+  final GlobalKey _mainContentKey = GlobalKey();
+
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 2;
+
   bool _isTaskListVisible = false;
+  bool _isDataLoaded = false;
 
   // Filter state
   List<String>? _selectedTagIds;
@@ -58,6 +73,29 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   void initState() {
     super.initState();
     _isLoadingSettings = true; // Start with loading flag true
+    // Auto-start tour if multi-page tour is active
+    _checkAndStartTour();
+  }
+
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
+    if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _pageReadyCompleter.future;
+        if (mounted) {
+          _startTour(isMultiPageTour: true);
+        }
+      });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
+    }
   }
 
   // Cache for auto-refresh dates to prevent constant recalculation
@@ -97,15 +135,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
       // Don't call setState - let TaskList handle its own refresh
     }
-  }
-
-  String _getAutoRefreshKey() {
-    if (_dateFilterSetting?.isQuickSelection == true && _dateFilterSetting?.isAutoRefreshEnabled == true) {
-      final now = DateTime.now();
-      // Create a key that changes every minute for auto-refresh
-      return '${now.year}_${now.month}_${now.day}_${now.hour}_${now.minute}';
-    }
-    return 'static';
   }
 
   Future<void> _openDetails(String taskId) async {
@@ -203,7 +232,21 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       _isTaskListVisible = true;
       _isLoadingSettings = false;
     });
+    _componentLoaded();
     _setupAutoRefreshUI();
+  }
+
+  void _onDataListed(int count) {
+    if (mounted) {
+      setState(() {
+        _isDataLoaded = true;
+      });
+      _componentLoaded();
+    }
+  }
+
+  bool get _isPageFullyLoaded {
+    return _isTaskListVisible && _isDataLoaded;
   }
 
   void _setupAutoRefreshUI() {
@@ -285,6 +328,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           mainAxisSize: MainAxisSize.min,
           children: [
             TaskAddButton(
+              key: _addTaskButtonKey,
               onTaskCreated: (taskId, taskData) {
                 // The task will be added through the event system
               },
@@ -298,75 +342,146 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             KebabMenu(
               helpTitleKey: TaskTranslationKeys.tasksHelpTitle,
               helpMarkdownContentKey: TaskTranslationKeys.tasksHelpContent,
+              onStartTour: _startIndividualTour,
             ),
           ],
         ),
       ],
       // Add floating action button for mobile devices
       floatingActionButton: TaskAddFloatingButton(
+        key: _floatingAddButtonKey,
         initialTagIds: _showNoTagsFilter ? [] : _selectedTagIds,
         initialTitle: _searchQuery,
         initialPlannedDate: _filterStartDate,
         initialDeadlineDate: _filterEndDate,
         initialCompleted: _showCompletedTasks,
       ),
-      builder: (context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Filters with Completed Tasks Toggle
-          TaskListOptions(
-            selectedTagIds: _selectedTagIds,
-            showNoTagsFilter: _showNoTagsFilter,
-            selectedStartDate: _filterStartDate,
-            selectedEndDate: _filterEndDate,
-            dateFilterSetting: _dateFilterSetting,
-            onTagFilterChange: _onFilterTags,
-            onDateFilterChange: _onDateFilterChange,
-            onDateFilterSettingChange: _onDateFilterSettingChange,
-            onSearchChange: _onSearchChange,
-            showCompletedTasks: _showCompletedTasks,
-            onCompletedTasksToggle: _onCompletedTasksToggle,
-            showSubTasks: _showSubTasks,
-            onSubTasksToggle: _onSubTasksToggle,
-            showTagFilter: true,
-            showDateFilter: true,
-            showSearchFilter: true,
-            showCompletedTasksToggle: true,
-            showSubTasksToggle: true,
-            hasItems: true,
-            sortConfig: _sortConfig,
-            forceOriginalLayout: _forceOriginalLayout,
-            onSortChange: _onSortConfigChange,
-            onLayoutToggleChange: _onLayoutToggleChange,
-            settingKeyVariantSuffix: tasksListOptionsSettingsKeySuffix,
-            onSettingsLoaded: _onSettingsLoaded,
-          ),
-
-          // Task List
-          if (_isTaskListVisible)
-            Expanded(
-              child: TaskList(
-                key: ValueKey(
-                    '${_getAutoRefreshKey()}_${_effectiveFilterStartDate?.millisecondsSinceEpoch}_${_effectiveFilterEndDate?.millisecondsSinceEpoch}'),
-                filterByCompleted: _showCompletedTasks,
-                filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
-                filterNoTags: _showNoTagsFilter,
-                filterByPlannedStartDate: _effectiveFilterStartDate,
-                filterByPlannedEndDate: _effectiveFilterEndDate,
-                filterByDeadlineStartDate: _effectiveFilterStartDate,
-                filterByDeadlineEndDate: _effectiveFilterEndDate,
-                filterDateOr: true,
-                search: _searchQuery,
-                includeSubTasks: _showSubTasks,
-                onClickTask: (task) => _openDetails(task.id),
-                enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
-                forceOriginalLayout: _forceOriginalLayout,
-                sortConfig: _sortConfig,
-                useParentScroll: false,
-              ),
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Column(
+          key: _mainContentKey,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Filters with Completed Tasks Toggle
+            TaskListOptions(
+              key: _taskFiltersKey,
+              selectedTagIds: _selectedTagIds,
+              showNoTagsFilter: _showNoTagsFilter,
+              selectedStartDate: _filterStartDate,
+              selectedEndDate: _filterEndDate,
+              dateFilterSetting: _dateFilterSetting,
+              onTagFilterChange: _onFilterTags,
+              onDateFilterChange: _onDateFilterChange,
+              onDateFilterSettingChange: _onDateFilterSettingChange,
+              onSearchChange: _onSearchChange,
+              showCompletedTasks: _showCompletedTasks,
+              onCompletedTasksToggle: _onCompletedTasksToggle,
+              showSubTasks: _showSubTasks,
+              onSubTasksToggle: _onSubTasksToggle,
+              showTagFilter: true,
+              showDateFilter: true,
+              showSearchFilter: true,
+              showCompletedTasksToggle: true,
+              showSubTasksToggle: true,
+              hasItems: true,
+              sortConfig: _sortConfig,
+              forceOriginalLayout: _forceOriginalLayout,
+              onSortChange: _onSortConfigChange,
+              onLayoutToggleChange: _onLayoutToggleChange,
+              settingKeyVariantSuffix: tasksListOptionsSettingsKeySuffix,
+              onSettingsLoaded: _onSettingsLoaded,
             ),
-        ],
+
+            // Task List
+            if (_isTaskListVisible)
+              Expanded(
+                child: TaskList(
+                  key: _taskListKey,
+                  filterByCompleted: _showCompletedTasks,
+                  filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
+                  filterNoTags: _showNoTagsFilter,
+                  filterByPlannedStartDate: _effectiveFilterStartDate,
+                  filterByPlannedEndDate: _effectiveFilterEndDate,
+                  filterByDeadlineStartDate: _effectiveFilterStartDate,
+                  filterByDeadlineEndDate: _effectiveFilterEndDate,
+                  filterDateOr: true,
+                  search: _searchQuery,
+                  includeSubTasks: _showSubTasks,
+                  onClickTask: (task) => _openDetails(task.id),
+                  onList: _onDataListed,
+                  enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
+                  forceOriginalLayout: _forceOriginalLayout,
+                  sortConfig: _sortConfig,
+                  useParentScroll: false,
+                ),
+              ),
+          ],
+        ),
       ),
     );
+  }
+
+  void _startTour({bool isMultiPageTour = false}) {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourTaskManagementTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourTaskManagementDescription),
+        icon: Icons.check_circle_outline,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. Add task button introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourAddTasksTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourAddTasksDescription),
+        targetKey: _addTaskButtonKey,
+        position: TourPosition.bottom,
+      ),
+      // 3. Tasks list introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourYourTasksTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourYourTasksDescription),
+        targetKey: _taskListKey,
+        position: TourPosition.top,
+      ),
+      // 4. List options introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourFilterSearchTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourFilterSearchDescription),
+        targetKey: _taskFiltersKey,
+        position: TourPosition.bottom,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+          if (isMultiPageTour) {
+            TourNavigationService.onPageTourCompleted(context);
+          }
+        },
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
+          if (context.mounted) Navigator.of(context).pop();
+        },
+        onBack: isMultiPageTour && TourNavigationService.canNavigateBack
+            ? () => TourNavigationService.navigateBackInTour(context)
+            : null,
+        showBackButton: isMultiPageTour,
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+      ),
+    );
+  }
+
+  void _startIndividualTour() {
+    _startTour(isMultiPageTour: false);
   }
 }

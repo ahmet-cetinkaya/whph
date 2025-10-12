@@ -228,3 +228,19 @@ habits:
     edit_name: Upravit název
     increase_daily_target: Zvýšit denní cíl
     increase_estimated_time: Zvýšit odhadovaný čas
+  tour:
+    habit_building:
+      title: Budování návyků
+      description: Vytvářejte trvalé návyky sledováním každodenních aktivit. Nastavte si připomínky, sledujte své série a vizualizujte svůj pokrok s podrobnými statistikami.
+    create_habits:
+      title: Vytvořit nové návyky
+      description: Začněte budovat nové návyky kliknutím na toto tlačítko. Nastavte si cíle, frekvence, připomínky a sledujte více splnění za den pro flexibilní sledování návyků.
+    your_habits:
+      title: Vaše návyky
+      description: Zde si prohlédněte a spravujte všechny své návyky. Kliknutím na libovolný návyk zobrazíte podrobnosti, statistiky a historii splnění. Denně označujte návyky jako splněné, abyste budovali série a sledovali svůj pokrok.
+    calendar_view:
+      title: Zobrazení kalendáře
+      description: Vizualizujte svou historii splnění návyků v průběhu několika dní. Zelená označuje splněné návyky. Sledujte konzistenci a sledujte své vzory postupu v průběhu času.
+    filter_search:
+      title: Filtr a vyhledávání
+      description: Najděte specifické návyky pomocí štítků, hledacích výrazů nebo filtrujte podle archivovaného stavu. Efektivně organizujte a spravujte své návyky, abyste zůstali zaměřeni na to, co je důležité.

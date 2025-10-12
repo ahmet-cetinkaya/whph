@@ -128,6 +128,18 @@ sync:
     no_active_interfaces: Žádné aktivní síťové rozhraní
     device_discovery_failed: Objevování zařízení selhalo
     no_server_configured: Žádný server není nakonfigurován. Nejprve přidejte synchronizační zařízení nebo použijte manuální připojení k nastavení serverového připojení.
+    device_id_unavailable: ID zařízení není k dispozici. Nelze pokračovat se synchronizací.
+    local_ip_unavailable: Místní IP adresa není k dispozici. Zkontrolujte připojení k síti.
+    prerequisites_failed: Ověření předpokladů pro synchronizaci selhalo. Zkontrolujte nastavení sítě.
+    critical_sync_operation_failed: Kritická operace synchronizace selhala. Zkuste to prosím znovu.
+    initiate_outgoing_sync_failed: Nepodařilo se zahájit synchronizaci se zařízeními.
+    processing_incoming_data: Chyba při zpracování příchozích synchronizačních dat.
+    checking_local_data: Chyba při kontrole místních dat pro synchronizaci.
+    sync_with_device_failed: Synchronizace se zařízením se nezdařila.
+    sync_with_device_exception: Během synchronizace zařízení došlo k výjimce.
+    process_accumulated_response_data: Nepodařilo se zpracovat hromadná synchronizační odpovědní data.
+    process_response_data: Nepodařilo se zpracovat synchronizační odpovědní data.
+    some_devices_failed_to_sync: Některá zařízení se nepodařilo synchronizovat. Zkuste to prosím znovu.
   messages:
     device_already_paired: Toto zařízení je již spárováno
     sync_completed: Synchronizace dokončena úspěšně

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/main.dart';
 import 'package:acore/acore.dart';
 
@@ -66,21 +65,7 @@ class _NoteCardState extends State<NoteCard> {
                 runSpacing: AppTheme.size2XSmall,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  if (widget.note.tags.isNotEmpty)
-                    Label.multipleColored(
-                      icon: TagUiConstants.tagIcon,
-                      color: Colors.grey,
-                      values: widget.note.tags
-                          .map((tag) => tag.tagName.isNotEmpty
-                              ? tag.tagName
-                              : _translationService.translate(SharedTranslationKeys.untitled))
-                          .toList(),
-                      colors: widget.note.tags
-                          .map((tag) =>
-                              tag.tagColor != null ? Color(int.parse('FF${tag.tagColor}', radix: 16)) : Colors.grey)
-                          .toList(),
-                      mini: true,
-                    ),
+                  if (widget.note.tags.isNotEmpty) _buildNoteTagsWidget(),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -106,6 +91,11 @@ class _NoteCardState extends State<NoteCard> {
         ],
       ),
     );
+  }
+
+  Widget _buildNoteTagsWidget() {
+    final items = TagDisplayUtils.tagDataToDisplayItems(widget.note.tags, _translationService);
+    return TagListWidget(items: items);
   }
 
   String _formatDateTime(DateTime dateTime, BuildContext context) {

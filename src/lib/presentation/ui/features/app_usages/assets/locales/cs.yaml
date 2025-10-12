@@ -174,5 +174,16 @@ app_usages:
     title: Pravidla použití aplikací
   tooltips:
     edit_name: Upravit název
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: Využití aplikací & časové poznatky
+      description: Sledujte vzory používání aplikací analyzujte čas strávený různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte svou produktivitu.
+    usage_statistics:
+      title: Statistiky použití
+      description: Zobrazte podrobná data o využití aplikací a distribuci času. Analyzujte své vzory produktivity, sledujte čas strávený různými aplikacemi a identifikujte oblasti pro zlepšení.
+    filter_sort:
+      title: Filtr a řazení
+      description: Filtrovat data o využití aplikací podle časového rozsahu, štítků nebo konkrétních zařízení. Seřaďte a organizujte své statistiky využití pro lepší pochopení správy času.
+    tracking_settings:
+      title: Nastavení sledování
+      description: Nakonfigurujte pravidla sledování aplikací, nastavte automatické označování a spravujte, které aplikace sledovat. Přizpůsobte sledování vašim potřebám produktivity.

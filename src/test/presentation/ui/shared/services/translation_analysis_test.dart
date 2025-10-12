@@ -11,28 +11,27 @@ void main() {
       final analyzer = TranslationKeysAnalyzer();
       final result = await analyzer.analyze();
 
-      print('-' * 50);
-
-      if (result.missingTranslations.isNotEmpty) {
-        print('\n# 🚨 MISSING TRANSLATIONS:');
-        for (final entry in result.missingTranslations.entries) {
-          print('\n- 📁 ${entry.key}:');
-          for (final missing in entry.value) {
-            print('  - ❌ ${missing.key} (language: ${missing.language})');
-          }
-        }
-      } else {
-        print('\n✅ All translation keys have corresponding translations in all supported languages!');
-      }
-
-      // Report test results
       final totalMissingTranslations =
           result.missingTranslations.values.fold<int>(0, (sum, missing) => sum + missing.length);
 
-      print('\n# 📊 SUMMARY:');
-      print('- Missing translations count: $totalMissingTranslations');
+      if (totalMissingTranslations > 0) {
+        print('Missing translations: $totalMissingTranslations');
+        for (final entry in result.missingTranslations.entries) {
+          final featureName = TranslationKeysAnalyzer()._extractFeatureNameFromPath(entry.key);
 
-      print('\n${'-' * 50}');
+          final groupedByKey = <String, List<String>>{};
+          for (final missing in entry.value) {
+            groupedByKey.putIfAbsent(missing.key, () => []).add(missing.language);
+          }
+
+          print('  $featureName:');
+          for (final keyEntry in groupedByKey.entries) {
+            print('    ${keyEntry.key}: ${keyEntry.value.join(', ')}');
+          }
+        }
+      } else {
+        print('✅ All translations complete');
+      }
 
       // Assert that there are no missing translations
       expect(totalMissingTranslations, equals(0),
@@ -43,52 +42,27 @@ void main() {
       final analyzer = TranslationKeysAnalyzer();
       final result = await analyzer.analyzeUntranslatedStrings();
 
-      print('-' * 50);
+      final totalUntranslatedStrings =
+          result.untranslatedStrings.values.fold<int>(0, (sum, untranslated) => sum + untranslated.length);
 
-      if (result.untranslatedStrings.isNotEmpty) {
-        print('\n# ⚠️ UNTRANSLATED STRINGS (Remaining in English):');
+      if (totalUntranslatedStrings > 0) {
+        print('Untranslated strings: $totalUntranslatedStrings');
         for (final entry in result.untranslatedStrings.entries) {
-          print('\n- 📁 ${entry.key}:');
+          final featureName = analyzer._extractFeatureNameFromPath(entry.key);
 
-          // Group by translation key
           final groupedByKey = <String, List<String>>{};
           for (final untranslated in entry.value) {
             groupedByKey.putIfAbsent(untranslated.key, () => []).add(untranslated.language);
           }
 
+          print('  $featureName:');
           for (final keyEntry in groupedByKey.entries) {
-            final languages = keyEntry.value.join(', ');
-            print('  - 🔤 ${keyEntry.key} (languages: $languages)');
+            print('    ${keyEntry.key}: ${keyEntry.value.join(', ')}');
           }
         }
       } else {
-        print('\n✅ All translations have been properly localized!');
+        print('✅ All translations localized');
       }
-
-      // Report test results
-      final totalUntranslatedStrings =
-          result.untranslatedStrings.values.fold<int>(0, (sum, untranslated) => sum + untranslated.length);
-
-      // List all affected locale files
-      if (result.untranslatedStrings.isNotEmpty) {
-        final affectedFiles = <String>{};
-        for (final entry in result.untranslatedStrings.entries) {
-          final featureName = analyzer._extractFeatureNameFromPath(entry.key);
-          for (final untranslated in entry.value) {
-            affectedFiles.add(analyzer._getYamlPathForFeature(featureName, untranslated.language));
-          }
-        }
-
-        print('\n# 📄 AFFECTED LOCALE FILES:');
-        for (final file in affectedFiles.toList()..sort()) {
-          print('- $file');
-        }
-      }
-
-      print('\n# 📊 SUMMARY:');
-      print('- Untranslated strings count: $totalUntranslatedStrings');
-
-      print('\n${'-' * 50}');
 
       // Assert that there are no untranslated strings
       expect(totalUntranslatedStrings, equals(0),

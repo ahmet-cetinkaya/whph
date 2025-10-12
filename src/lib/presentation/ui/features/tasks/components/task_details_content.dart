@@ -73,6 +73,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final TextEditingController _descriptionController = TextEditingController();
   final _titleController = TextEditingController();
   final FocusNode _titleFocusNode = FocusNode();
+  final FocusNode _plannedDateFocusNode = FocusNode();
+  final FocusNode _deadlineDateFocusNode = FocusNode();
   Timer? _debounce;
 
   // Track date picker interaction state to prevent controller conflicts
@@ -81,6 +83,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Track active input fields to prevent text selection conflicts
   bool _isTitleFieldActive = false;
+  bool _isPlannedDateFieldActive = false;
+  bool _isDeadlineDateFieldActive = false;
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
@@ -114,12 +118,16 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     // Track focus state to prevent text selection conflicts
     _titleFocusNode.addListener(_handleTitleFocusChange);
+    _plannedDateFocusNode.addListener(_handlePlannedDateFocusChange);
+    _deadlineDateFocusNode.addListener(_handleDeadlineDateFocusChange);
   }
 
   void _removeEventListeners() {
     _tasksService.onTaskUpdated.removeListener(_getTask);
     _tagsService.onTagUpdated.removeListener(_handleTagUpdated);
     _titleFocusNode.removeListener(_handleTitleFocusChange);
+    _plannedDateFocusNode.removeListener(_handlePlannedDateFocusChange);
+    _deadlineDateFocusNode.removeListener(_handleDeadlineDateFocusChange);
   }
 
   void _handleTagUpdated() {
@@ -133,6 +141,28 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     setState(() {
       _isTitleFieldActive = _titleFocusNode.hasFocus;
     });
+  }
+
+  void _handlePlannedDateFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isPlannedDateFieldActive = _plannedDateFocusNode.hasFocus;
+    });
+  }
+
+  void _handleDeadlineDateFocusChange() {
+    if (!mounted) return;
+    setState(() {
+      _isDeadlineDateFieldActive = _deadlineDateFocusNode.hasFocus;
+    });
+  }
+
+  bool _isPlannedDateFieldFocused() {
+    return _isPlannedDateFieldActive;
+  }
+
+  bool _isDeadlineDateFieldFocused() {
+    return _isDeadlineDateFieldActive;
   }
 
   @override
@@ -246,7 +276,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _titleController.dispose();
     _titleFocusNode.dispose();
     _plannedDateController.dispose();
+    _plannedDateFocusNode.dispose();
     _deadlineDateController.dispose();
+    _deadlineDateFocusNode.dispose();
     _descriptionController.dispose();
     _removeEventListeners();
     super.dispose();
@@ -277,12 +309,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       onSuccess: (response) {
         if (!mounted) return;
 
-        // Store current selections before updating
-        final titleSelection = _titleController.selection;
-        final descriptionSelection = _descriptionController.selection;
-        final plannedDateSelection = _plannedDateController.selection;
-        final deadlineDateSelection = _deadlineDateController.selection;
-
         setState(() {
           _task = response;
 
@@ -290,10 +316,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           if (_titleController.text != response.title) {
             _titleController.text = response.title;
             widget.onTitleUpdated?.call(response.title);
-            // Don't restore selection for title if it changed
-          } else if (titleSelection.isValid && !_isTitleFieldActive) {
-            // Restore selection if title didn't change and field is not actively being edited
-            _titleController.selection = titleSelection;
           }
 
           widget.onCompletedChanged?.call(response.isCompleted);
@@ -313,66 +335,36 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 value: EisenhowerPriority.notUrgentNotImportant),
           ];
 
-          // Only update planned date if it's different - handle conversion in presentation layer
+          // Only update planned date if it's different
           final plannedDateText = _task!.plannedDate != null
               ? DateFormatService.formatForInput(_task!.plannedDate, context, type: DateFormatType.dateTime)
               : '';
 
-          // Update planned date formatting
-
-          // Only update if different and preserve user input during active editing
-          if (_plannedDateController.text != plannedDateText) {
-            // Check if we're in the middle of a date picker interaction
-            final isDatePickerActive = _isDatePickerInteractionActive();
-
-            // Check if we're clearing a user-entered date due to server issue
-            if (plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty && !isDatePickerActive) {
-              // Don't clear the field if user had entered a date but server returned null
-              // This could happen if save failed or there was a parsing issue
-            } else if (!isDatePickerActive) {
-              // Only update controller if we're not in the middle of date picker interaction
+          if (_plannedDateController.text != plannedDateText && !_isDatePickerInteractionActive()) {
+            final bool isClearingUserInput = plannedDateText.isEmpty && _plannedDateController.text.isNotEmpty;
+            final bool isUserActivelyEditing = _isPlannedDateFieldFocused();
+            if (!isClearingUserInput && !isUserActivelyEditing) {
               _plannedDateController.text = plannedDateText;
             }
-            // Don't restore selection if text changed
-          } else if (plannedDateSelection.isValid && !_isDatePickerInteractionActive()) {
-            // Restore selection if text didn't change and not in date picker interaction
-            _plannedDateController.selection = plannedDateSelection;
           }
 
-          // Only update deadline date if it's different - handle conversion in presentation layer
+          // Only update deadline date if it's different
           final deadlineDateText = _task!.deadlineDate != null
               ? DateFormatService.formatForInput(_task!.deadlineDate, context, type: DateFormatType.dateTime)
               : '';
 
-          // Update deadline date formatting
-
-          // Only update if different and preserve user input during active editing
-          if (_deadlineDateController.text != deadlineDateText) {
-            // Check if we're in the middle of a date picker interaction
-            final isDatePickerActive = _isDatePickerInteractionActive();
-
-            // Check if we're clearing a user-entered date due to server issue
-            if (deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty && !isDatePickerActive) {
-              // Don't clear the field if user had entered a date but server returned null
-            } else if (!isDatePickerActive) {
-              // Only update controller if we're not in the middle of date picker interaction
+          if (_deadlineDateController.text != deadlineDateText && !_isDatePickerInteractionActive()) {
+            final bool isClearingUserInput = deadlineDateText.isEmpty && _deadlineDateController.text.isNotEmpty;
+            final bool isUserActivelyEditing = _isDeadlineDateFieldFocused();
+            if (!isClearingUserInput && !isUserActivelyEditing) {
               _deadlineDateController.text = deadlineDateText;
             }
-            // Don't restore selection if text changed
-          } else if (deadlineDateSelection.isValid && !_isDatePickerInteractionActive()) {
-            // Restore selection if text didn't change and not in date picker interaction
-            _deadlineDateController.selection = deadlineDateSelection;
           }
 
           // Only update description if it's different
           final descriptionText = _task!.description ?? '';
           if (_descriptionController.text != descriptionText) {
             _descriptionController.text = descriptionText;
-            // Don't restore selection if text changed
-          } else if (descriptionSelection.isValid && _descriptionController.text.isNotEmpty) {
-            // Only restore selection if text didn't change and field has content
-            // Skip selection restoration for empty fields to avoid paste conflicts
-            _descriptionController.selection = descriptionSelection;
           }
         });
         _processFieldVisibility();
@@ -1082,6 +1074,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           child: TaskDateField(
             key: ValueKey('planned_date_${_task!.id}'),
             controller: _plannedDateController,
+            focusNode: _plannedDateFocusNode,
             hintText: '',
             minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
             onDateChanged: _onPlannedDateChanged,
@@ -1102,6 +1095,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           child: TaskDateField(
             key: ValueKey('deadline_date_${_task!.id}'),
             controller: _deadlineDateController,
+            focusNode: _deadlineDateFocusNode,
             hintText: '',
             minDateTime: _getMinimumDeadlineDate(),
             plannedDateTime: _task!.plannedDate,

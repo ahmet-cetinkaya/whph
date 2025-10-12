@@ -22,20 +22,8 @@ about:
       title: "Vítejte v {appName}"
       description: "Váš osobní společník pro budování lepších návyků, správu úkolů a efektivní sledování času. Pojďme společně prozkoumat klíčové funkce!"
     step2:
-      title: "Správa úkolů"
-      description: "Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami. Použijte Pomodoro časovač pro udržení soustředění a sledování pokroku na důležitých úkolech."
-    step3:
-      title: "Budování návyků"
-      description: "Budujte trvalé návyky sledováním denních aktivit. Nastavte připomínky, sledujte své série a vizualizujte pokrok s podrobnými statistikami."
-    step4:
-      title: "Psaní poznámek"
-      description: "Udržujte důležité informace organizované pomocí výkonného systému poznámek. Označte své poznámky pro snadnou kategorizaci a rychlý přístup."
-    step5:
-      title: "Využití aplikací a časové poznatky"
-      description: "Sledujte vzorce používání aplikací a analyzujte čas strávený různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte produktivitu."
-    step6:
-      title: "Inteligentní systém štítků"
-      description: "Použijte štítky k organizaci a seskupování úkolů, návyků a aplikací. Sledujte čas strávený různými aktivitami podle štítků pro pochopení, kam váš čas směřuje, a optimalizujte pracovní tok."
+      title: 'Co znamená "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" je motto, které povzbuzuje jednotlivce k vyvážení vysoké odpovědnosti s vysokou životní spokojeností. Takže berte svou práci vážně, ale ve volném čase si také opravdu odpočiňte, bavte se a žijte. Práce není jen o vydělávání peněz, ale o růstu a naplnění; zábava není lenost, ale přirozená odměna za úsilí. Jako WHPH si také ceníme jak produktivní práce, tak vědomého slavení úspěchů.'
     step7:
       title: "Oprávnění aplikace"
       description: "{appName} potřebuje určitá oprávnění pro správné fungování. Můžete zkontrolovat oprávnění, která chcete udělit pro systémové funkce jako oznámení a sledování aplikací."

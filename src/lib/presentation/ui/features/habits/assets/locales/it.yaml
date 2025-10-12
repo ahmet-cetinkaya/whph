@@ -213,3 +213,19 @@ habits:
     edit_name: Modifica nome
     increase_daily_target: Aumenta obiettivo giornaliero
     increase_estimated_time: Aumenta tempo stimato
+  tour:
+    habit_building:
+      title: Costruzione di abitudini
+      description: Sviluppa abitudini durature tracciando le attività quotidiane. Imposta promemoria, monitora le tue serie e visualizza i tuoi progressi con statistiche dettagliate.
+    create_habits:
+      title: Crea nuove abitudini
+      description: Inizia a costruire nuove abitudini cliccando su questo pulsante. Imposta obiettivi, frequenze, promemoria e traccia più completamenti al giorno per un monitoraggio flessibile delle abitudini.
+    your_habits:
+      title: Le tue abitudini
+      description: Visualizza e gestisci tutte le tue abitudini qui. Clicca su qualsiasi abitudine per vedere dettagli, statistiche e cronologia di completamento. Contrassegna le abitudini come completate quotidianamente per costruire serie e tracciare i tuoi progressi.
+    calendar_view:
+      title: Vista calendario
+      description: Visualizza la cronologia di completamento delle tue abitudini su più giorni. Il verde indica le abitudini completate. Traccia la tua coerenza e osserva i tuoi modelli di progresso nel tempo.
+    filter_search:
+      title: Filtra e cerca
+      description: Trova abitudini specifiche utilizzando tag, termini di ricerca o filtra per stato archiviato. Organizza e gestisci le tue abitudini in modo efficiente per rimanere concentrato su ciò che conta.

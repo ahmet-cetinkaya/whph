@@ -8,11 +8,13 @@
 .ai/
 .claude/
 .gemini/
+.opencode/
 .qwen/
-*QWEN.md
+.specify/
+*AGENTS.md
 *CLAUDE.md
 *GEMINI.md
-.specify/
+*QWEN.md
 
 # FVM Version Cache
 .fvm/

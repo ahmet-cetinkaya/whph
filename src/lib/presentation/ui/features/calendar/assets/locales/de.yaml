@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Gewohnheiten
     tasks: Aufgaben
+  tour:
+    today:
+      welcome:
+        title: Willkommen auf der Heute-Seite
+        description: Ihr täglicher Kommandozentrale für Produktivität. Sehen und verwalten Sie die heutigen Gewohnheiten, Aufgaben und Zeitverfolgung an einem Ort. Bleiben Sie fokussiert auf das, was heute am wichtigsten ist.
+      tag_filter:
+        title: Tag-Filter
+        description: Filtern Sie Ihre täglichen Gewohnheiten und Aufgaben nach Tags. Konzentrieren Sie sich auf bestimmte Kategorien oder zeigen Sie Elemente ohne Tags an, um Ihren täglichen Arbeitsablauf zu organisieren.
+      habits:
+        title: Tägliche Gewohnheiten
+        description: Verfolgen Sie Ihre täglichen Gewohnheiten und bauen Sie Konsistenz auf. Markieren Sie Gewohnheiten im Laufe des Tages als erledigt, um Ihre Serien zu erhalten und Ihren Fortschritt zu visualisieren.
+      tasks:
+        title: Heutige Aufgaben
+        description: Verwalten Sie Aufgaben, die für heute geplant sind. Fügen Sie neue Aufgaben hinzu, markieren Sie sie als erledigt, sehen Sie Details ein und behalten Sie Ihre täglichen Prioritäten und Fristen im Auge.
+      time_distribution:
+        title: Zeitverteilung
+        description: Visualisieren Sie, wie Sie Ihren Tag verbracht haben. Sehen Sie die auf verschiedene Aktivitäten entfallende Zeit und optimieren Sie Ihren täglichen Stundenplan für bessere Produktivität.
+      marathon_mode:
+        title: Marathon-Modus
+        description: Betreten Sie den Fokus-Arbeitsmodus mit dem Pomodoro-Timer. Verfolgen Sie die Zeit für Aufgaben mit einer ablenkungsfreien Oberfläche und steigern Sie Ihre Konzentration für intensive Arbeitssitzungen.

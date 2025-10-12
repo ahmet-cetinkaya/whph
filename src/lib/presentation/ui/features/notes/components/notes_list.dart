@@ -25,6 +25,7 @@ class NotesList extends StatefulWidget {
   final bool filterNoTags;
   final bool ignoreArchivedTagVisibility;
   final Function(String)? onClickNote;
+  final void Function(int count)? onList;
   final SortConfig<NoteSortFields>? sortConfig;
   final int pageSize;
 
@@ -35,6 +36,7 @@ class NotesList extends StatefulWidget {
     this.filterNoTags = false,
     this.ignoreArchivedTagVisibility = false,
     this.onClickNote,
+    this.onList,
     this.sortConfig,
     this.pageSize = 10,
   });
@@ -201,6 +203,9 @@ class NotesListState extends State<NotesList> {
             );
           }
         });
+
+        // Notify about list count
+        widget.onList?.call(_noteList?.items.length ?? 0);
       },
     );
   }

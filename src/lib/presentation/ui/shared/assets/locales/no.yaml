@@ -284,3 +284,5 @@ shared:
   validation:
     required: "{field} er påkrevd."
   help: Hjelp
+  start_tour: Start omvisning
+  skip_tour: Hopp over omvisning

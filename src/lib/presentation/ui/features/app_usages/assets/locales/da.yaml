@@ -174,5 +174,16 @@ app_usages:
     title: App-brugsregler
   tooltips:
     edit_name: Rediger navn
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: App-brug & Tidsindsigt
+      description: Overvåg app-brugsmønstre og analyser tid brugt på tværs af forskellige aktiviteter. Få indsigt i dine digitale vaner og optimer din produktivitet.
+    usage_statistics:
+      title: Brugsstatistik
+      description: Se detaljerede app-brugsdata og tidsfordeling. Analyser dine produktivitetsmønstre, spore tid brugt på forskellige applikationer og identificer områder til forbedring.
+    filter_sort:
+      title: Filter & Sortering
+      description: Filtrer app-brugsdata efter datointerval, tags eller specifikke enheder. Sorter og organisér dine brugsstatistikker for at få bedre indsigt i din tidsstyring.
+    tracking_settings:
+      title: Sporingindstillinger
+      description: Konfigurer app-sporingsregler, sæt automatiske tags og håndter hvilke applikationer der skal overvåges. Tilpas sporingen efter dine produktivitetsbehov.

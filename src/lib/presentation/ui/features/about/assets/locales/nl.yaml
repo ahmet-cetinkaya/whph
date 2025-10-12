@@ -21,20 +21,8 @@ about:
       title: "Welkom bij {appName}"
       description: "Uw persoonlijke metgezel voor het opbouwen van betere gewoonten, het beheren van taken en het effectief bijhouden van tijd. Laten we de belangrijkste functies samen verkennen!"
     step2:
-      title: "Taakbeheer"
-      description: "Maak en organiseer taken met prioriteiten, deadlines en herinneringen. Gebruik de Pomodoro-timer om gefocust te blijven en uw voortgang bij belangrijke taken bij te houden."
-    step3:
-      title: "Gewoontevorming"
-      description: "Bouw duurzame gewoonten op door dagelijkse activiteiten bij te houden. Stel herinneringen in, volg uw streaks en visualiseer uw voortgang met gedetailleerde statistieken."
-    step4:
-      title: "Notities maken"
-      description: "Houd belangrijke informatie georganiseerd met een krachtig notitiesysteem. Tag uw notities voor eenvoudige categorisatie en snelle toegang."
-    step5:
-      title: "App-gebruik & tijdinzichten"
-      description: "Monitor app-gebruikspatronen en analyseer tijd besteed aan verschillende activiteiten. Krijg inzichten in uw digitale gewoonten en optimaliseer uw productiviteit."
-    step6:
-      title: "Slimme tag-systeem"
-      description: "Gebruik tags om uw taken, gewoonten en apps te organiseren en te groeperen. Volg tijd besteed aan verschillende activiteiten per tag om te begrijpen waar uw tijd naartoe gaat en uw workflow te optimaliseren."
+      title: 'Wat betekent "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" is een motto dat individuen aanmoedigt om hoge verantwoordelijkheid te balanceren met hoge levenstevredenheid. Neem dus uw werk serieus, maar rust ook echt uit, heb plezier en leef tijdens uw vrije tijd. Werk gaat niet alleen over geld verdienen, maar over groeien en vervulling vinden; plezier hebben is geen luiheid, maar de natuurlijke beloning van inspanning. Als WHPH waarderen wij ook zowel productief werk als bewust successen vieren.'
     step7:
       title: "App-machtigingen"
       description: "{appName} heeft bepaalde machtigingen nodig om correct te functioneren. U kunt de machtigingen die u wilt verlenen voor systeemeigenschappen zoals meldingen en app-tracking bekijken."

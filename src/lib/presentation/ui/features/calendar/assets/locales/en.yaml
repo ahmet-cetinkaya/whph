@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Habits
     tasks: Tasks
+  tour:
+    today:
+      welcome:
+        title: Welcome to Today Page
+        description: Your daily command center for productivity. View and manage today's habits, tasks, and time tracking all in one place. Stay focused on what matters most today.
+      tag_filter:
+        title: Tag Filter
+        description: Filter your daily habits and tasks by tags. Focus on specific categories or show items with no tags to organize your daily workflow.
+      habits:
+        title: Daily Habits
+        description: Track your daily habits and build consistency. Mark habits as complete throughout the day to maintain your streaks and visualize your progress.
+      tasks:
+        title: Today's Tasks
+        description: Manage tasks scheduled for today. Add new tasks, mark them complete, view details, and stay on top of your daily priorities and deadlines.
+      time_distribution:
+        title: Time Distribution
+        description: Visualize how you've spent your time today. See time allocated across different activities and optimize your daily schedule for better productivity.
+      marathon_mode:
+        title: Marathon Mode
+        description: Enter focused work mode with the Pomodoro timer. Track time on tasks with distraction-free interface and boost your concentration for deep work sessions.

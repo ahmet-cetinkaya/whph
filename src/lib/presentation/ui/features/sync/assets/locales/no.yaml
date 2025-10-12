@@ -142,6 +142,18 @@ sync:
     no_active_interfaces: Ingen aktive nettverksgrensesnitt funnet
     device_discovery_failed: "Mislyktes å starte enhetsoppdagelse: {error}"
     no_server_configured: Ingen server konfigurert. Legg til en synkroniseringsenhet først eller bruk manuell tilkobling for å sette opp en serverforbindelse.
+    device_id_unavailable: Enhets-ID er ikke tilgjengelig. Kan ikke fortsette med synkronisering.
+    local_ip_unavailable: Lokal IP-adresse er ikke tilgjengelig. Sjekk nettverksforbindelsen.
+    prerequisites_failed: Validering av synkroniseringsforutsetninger mislyktes. Sjekk nettverksinnstillingene dine.
+    critical_sync_operation_failed: Kritisk synkroniseringsoperasjon mislyktes. Prøv igjen.
+    initiate_outgoing_sync_failed: Mislyktes å initiere synkronisering med enheter.
+    processing_incoming_data: Feil ved behandling av innkommende synkroniseringsdata.
+    checking_local_data: Feil ved sjekk av lokale data for synkronisering.
+    sync_with_device_failed: Mislyktes å synkronisere med enhet.
+    sync_with_device_exception: Unntak oppstod under enhetssynkronisering.
+    process_accumulated_response_data: Mislyktes å behandle oppsamlede synkroniseringsresponsdata.
+    process_response_data: Mislyktes å behandle synkroniseringsresponsdata.
+    some_devices_failed_to_sync: Noen enheter klarte ikke å synkronisere. Prøv igjen.
   messages:
     device_already_paired: Denne enheten er allerede paret
     sync_completed: Synkronisering fullført vellykket

@@ -230,3 +230,19 @@ habits:
     edit_name: Edit Name
     increase_daily_target: Increase daily target
     increase_estimated_time: Increase estimated time
+  tour:
+    habit_building:
+      title: Habit Building
+      description: Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics.
+    create_habits:
+      title: Create New Habits
+      description: Start building new habits by clicking this button. Set goals, frequencies, reminders, and track multiple completions per day for flexible habit tracking.
+    your_habits:
+      title: Your Habits
+      description: View and manage all your habits here. Click any habit to see details, statistics, and completion history. Mark habits complete daily to build streaks and track your progress.
+    calendar_view:
+      title: Calendar View
+      description: Visualize your habit completion history across multiple days. Green indicates completed habits. Track your consistency and see your progress patterns over time.
+    filter_search:
+      title: Filter & Search
+      description: Find specific habits using tags, search terms, or filter by archived status. Organize and manage your habits efficiently to stay focused on what matters.

@@ -94,3 +94,16 @@ notes:
     add_note: Lägg till anteckning
     delete_note: Radera anteckning
     edit_name: Redigera titel
+  tour:
+    note_taking:
+      title: Anteckningsfunktion
+      description: Håll viktiga uppgifter organiserade med ett kraftfullt anteckningssystem. Märk dina anteckningar för enkel kategorisering och snabb åtkomst.
+    your_notes:
+      title: Dina anteckningar
+      description: Bläddra igenom alla dina anteckningar här. Klicka på en anteckning för att visa, redigera eller organisera dess innehåll. Använd markdown-syntax för formatering - **fetstil**, *kursiv*, listor, länkar och mer.
+    filter_search:
+      title: Filter och sökning
+      description: Hitta specifika anteckningar med taggar, sök efter innehåll eller sortera dem efter olika kriterier. Håll dig organiserad med kraftfulla filtreringsalternativ.
+    create_notes:
+      title: Skapa nya anteckningar
+      description: Börja skriva genom att klicka på denna knapp. Skapa formaterade textanteckningar med markdown-formatering. Lägg till taggar för enkel kategorisering och organisation.

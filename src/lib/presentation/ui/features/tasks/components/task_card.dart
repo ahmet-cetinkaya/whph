@@ -12,8 +12,8 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/presentation/ui/features/tasks/components/schedule_button.dart';
@@ -160,19 +160,7 @@ class TaskCard extends StatelessWidget {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         // Tags section
-        if (taskItem.tags.isNotEmpty)
-          Label.multipleColored(
-            icon: TagUiConstants.tagIcon,
-            color: Colors.grey,
-            values: taskItem.tags
-                .map((tag) =>
-                    tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
-                .toList(),
-            colors: taskItem.tags
-                .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-                .toList(),
-            mini: isDense,
-          ),
+        if (taskItem.tags.isNotEmpty) _buildTaskTagsWidget(),
 
         // Date/Time elements
         if (_hasDateTimeOrMetadata) ..._buildDateTimeElements(context),
@@ -308,6 +296,11 @@ class TaskCard extends StatelessWidget {
     }
 
     return reminderTexts.join('\n');
+  }
+
+  Widget _buildTaskTagsWidget() {
+    final items = TagDisplayUtils.objectsToDisplayItems(taskItem.tags, _translationService);
+    return TagListWidget(items: items, mini: isDense);
   }
 
   Color _getPriorityColor(EisenhowerPriority? priority) {

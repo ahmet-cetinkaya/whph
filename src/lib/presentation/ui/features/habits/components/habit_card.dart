@@ -6,9 +6,8 @@ import 'package:whph/core/application/features/habits/queries/get_list_habits_qu
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
@@ -220,22 +219,25 @@ class _HabitCardState extends State<HabitCard> {
     final isCompactView = widget.isMiniLayout ||
         (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall));
 
-    return ListTile(
-      visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
-      tileColor: AppTheme.surface1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 60), // Ensure minimum height to prevent shrinking
+      child: ListTile(
+        visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
+        tileColor: AppTheme.surface1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+        ),
+        contentPadding: EdgeInsets.only(
+          left: isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium,
+          right: isCompactView ? AppTheme.sizeSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
+        ),
+        onTap: widget.onOpenDetails,
+        dense: widget.isDense,
+        leading: _buildLeading(isCompactView),
+        title: _buildTitle(),
+        subtitle: _buildSubtitle(),
+        trailing: _buildTrailing(isCompactView),
       ),
-      contentPadding: EdgeInsets.only(
-        left: isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium,
-        right: isCompactView ? AppTheme.sizeSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
-      ),
-      onTap: widget.onOpenDetails,
-      dense: widget.isDense,
-      leading: _buildLeading(isCompactView),
-      title: _buildTitle(),
-      subtitle: _buildSubtitle(),
-      trailing: _buildTrailing(isCompactView),
     );
   }
 
@@ -277,14 +279,17 @@ class _HabitCardState extends State<HabitCard> {
 
     return Padding(
       padding: EdgeInsets.only(top: widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall),
-      child: Wrap(
-        spacing: AppTheme.sizeSmall,
-        runSpacing: AppTheme.sizeSmall / 2,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          if (widget.habit.tags.isNotEmpty) _buildTagsWidget(),
-          if (timeToDisplay != null) _buildEstimatedTimeWidget(),
-        ],
+      child: LimitedBox(
+        maxHeight: 48.0, // Limit the height of the tags container
+        child: Wrap(
+          spacing: AppTheme.sizeSmall,
+          runSpacing: AppTheme.sizeSmall / 2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (widget.habit.tags.isNotEmpty) _buildTagsWidget(),
+            if (timeToDisplay != null) _buildEstimatedTimeWidget(),
+          ],
+        ),
       ),
     );
   }
@@ -475,21 +480,8 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build tags widget
   Widget _buildTagsWidget() {
-    if (widget.habit.tags.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Label.multipleColored(
-      icon: TagUiConstants.tagIcon,
-      color: Colors.grey, // Default color for icon and commas
-      values: widget.habit.tags
-          .map((tag) => tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled))
-          .toList(),
-      colors: widget.habit.tags
-          .map((tag) => tag.color != null ? Color(int.parse('FF${tag.color}', radix: 16)) : Colors.grey)
-          .toList(),
-      mini: true,
-    );
+    final items = TagDisplayUtils.objectsToDisplayItems(widget.habit.tags, _translationService);
+    return TagListWidget(items: items);
   }
 
   String _getReminderTooltip() {

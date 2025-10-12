@@ -4,6 +4,7 @@ import 'package:whph/presentation/ui/features/settings/components/about_tile.dar
 import 'package:whph/presentation/ui/features/settings/components/language_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/sync_devices_tile.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/features/settings/components/startup_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/notification_settings.dart';
@@ -15,10 +16,49 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/features/settings/components/import_export_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/advanced_settings_tile.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   static const String route = '/settings';
 
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  // Track loading state for each settings tile
+  bool _startupLoaded = false;
+  bool _notificationLoaded = false;
+  bool _themeLoaded = false;
+
+  /// Check if all settings tiles have finished loading
+  bool get _isPageFullyLoaded {
+    return _startupLoaded && _notificationLoaded && _themeLoaded;
+  }
+
+  void _onStartupLoaded() {
+    if (mounted) {
+      setState(() {
+        _startupLoaded = true;
+      });
+    }
+  }
+
+  void _onNotificationLoaded() {
+    if (mounted) {
+      setState(() {
+        _notificationLoaded = true;
+      });
+    }
+  }
+
+  void _onThemeLoaded() {
+    if (mounted) {
+      setState(() {
+        _themeLoaded = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,42 +66,51 @@ class SettingsPage extends StatelessWidget {
 
     return ResponsiveScaffoldLayout(
       title: translationService.translate(SettingsTranslationKeys.settingsTitle),
-      builder: (context) => Align(
-        alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(top: AppTheme.sizeSmall),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 8.0,
-              children: [
-                // Startup
-                const StartupSettings(),
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: AppTheme.sizeSmall),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8.0,
+                children: [
+                  // Startup
+                  StartupSettings(
+                    onLoaded: _onStartupLoaded,
+                  ),
 
-                // Notification
-                const NotificationSettings(),
+                  // Notification
+                  NotificationSettings(
+                    onLoaded: _onNotificationLoaded,
+                  ),
 
-                // Theme Settings
-                const ThemeSettings(),
+                  // Theme Settings
+                  ThemeSettings(
+                    onLoaded: _onThemeLoaded,
+                  ),
 
-                // Permissions
-                if (PlatformUtils.isMobile) PermissionSettings(),
+                  // Permissions
+                  if (PlatformUtils.isMobile) PermissionSettings(),
 
-                // Language
-                LanguageSettings(),
+                  // Language
+                  LanguageSettings(),
 
-                // Sync Devices
-                SyncDevicesTile(),
+                  // Sync Devices
+                  SyncDevicesTile(),
 
-                // Import/Export Settings
-                const ImportExportSettings(),
+                  // Import/Export Settings
+                  const ImportExportSettings(),
 
-                // Advanced Settings
-                const AdvancedSettingsTile(),
+                  // Advanced Settings
+                  const AdvancedSettingsTile(),
 
-                // About
-                AboutTile(),
-              ],
+                  // About
+                  AboutTile(),
+                ],
+              ),
             ),
           ),
         ),

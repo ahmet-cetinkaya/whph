@@ -230,3 +230,19 @@ habits:
     edit_name: Uredi Ime
     increase_daily_target: Povečaj dnevni cilj
     increase_estimated_time: Povečaj približan čas
+  tour:
+    habit_building:
+      title: Gradnja Navad
+      description: Gradite trajne navade z sledenjem dnevnih dejavnosti. Nastavite opomnike, spremljajte svoje serije in vizualizirajte napredek s podrobnimi statistikami.
+    create_habits:
+      title: Ustvarjanje Novih Navad
+      description: Začnite graditi nove navade s klikom na to gumb. Nastavite cilje, frekvence, opomnike in sledite več dokončanjem na dan za fleksibilno sledenje navad.
+    your_habits:
+      title: Vaše Navade
+      description: Tukaj si oglejte in upravljajte vse svoje navade. Kliknite katerokoli navado, da vidite podrobnosti, statistike in zgodovino dokončanja. Dnevno označujte navade kot dokončane za gradnjo serij in sledenje svojemu napredku.
+    calendar_view:
+      title: Pogled Koledarja
+      description: Vizualizirajte zgodovino dokončanja svojih navad čez več dni. Zelena pomeni dokončane navade. Spremljajte svojo doslednost in si oglejte svoje vzorce napredka s časom.
+    filter_search:
+      title: Filter in Iskanje
+      description: Poiščite določene navade z uporabo oznak, iskalnih izrazov ali filtrirajte po arhivskem statusu. Učinkovito organizirajte in upravljajte svoje navade, da ostanete usmerjeni na pomembno.

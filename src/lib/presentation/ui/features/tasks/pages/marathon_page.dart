@@ -23,6 +23,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 
@@ -41,6 +42,13 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   TaskListItem? _selectedTask;
   List<TaskListItem> _availableTasks = [];
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
+
+  // Tour keys
+  final GlobalKey _timerKey = GlobalKey();
+  final GlobalKey _selectedTaskKey = GlobalKey();
+  final GlobalKey _filtersKey = GlobalKey();
+  final GlobalKey _taskListKey = GlobalKey();
+  final GlobalKey _mainContentKey = GlobalKey();
 
   // Dimming overlay state
   bool _isTimerRunning = false;
@@ -385,6 +393,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: SingleChildScrollView(
                     child: Column(
+                      key: _mainContentKey,
                       children: [
                         // Pomodoro Timer Section (always visible)
                         Row(
@@ -394,15 +403,21 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             AnimatedOpacity(
                               opacity: _isDimmed ? _dimmingOpacity : 1.0,
                               duration: const Duration(milliseconds: 500),
-                              child: IconButton(
-                                icon: const Icon(Icons.close),
-                                onPressed: _closeDialog,
-                                tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.close),
+                                    onPressed: _closeDialog,
+                                    tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
+                                  ),
+                                ],
                               ),
                             ),
                             // Removed Expanded widget here
                             Center(
                               child: AppTimer(
+                                key: _timerKey,
                                 onTick: null, // No UI updates needed
                                 onTimerStart: _onTimerStart,
                                 onTimerStop: _handleTimerStop,
@@ -414,6 +429,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                               child: KebabMenu(
                                 helpTitleKey: TaskTranslationKeys.marathonHelpTitle,
                                 helpMarkdownContentKey: TaskTranslationKeys.marathonHelpContent,
+                                onStartTour: _startTour,
                                 iconColor: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
@@ -423,17 +439,20 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                         // Selected Task Section (always visible when task is selected)
                         if (_selectedTask != null) ...[
                           const SizedBox(height: AppTheme.sizeSmall),
-                          TaskCard(
-                            key: ValueKey(_selectedTask!.id),
-                            taskItem: _selectedTask!,
-                            onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                            onCompleted: () {
-                              Future.delayed(const Duration(milliseconds: 500), () {
-                                _selectNextTask();
-                                _onTasksChanged();
-                              });
-                            },
-                            showScheduleButton: false,
+                          Container(
+                            key: _selectedTaskKey,
+                            child: TaskCard(
+                              key: ValueKey(_selectedTask!.id),
+                              taskItem: _selectedTask!,
+                              onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
+                              onCompleted: () {
+                                Future.delayed(const Duration(milliseconds: 500), () {
+                                  _selectNextTask();
+                                  _onTasksChanged();
+                                });
+                              },
+                              showScheduleButton: false,
+                            ),
                           ),
                         ],
 
@@ -442,6 +461,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                           opacity: _isDimmed ? _dimmingOpacity : 1.0,
                           duration: const Duration(milliseconds: 500),
                           child: Padding(
+                            key: _filtersKey,
                             padding: const EdgeInsets.only(top: 8),
                             child: Row(
                               children: [
@@ -496,6 +516,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                           opacity: _isDimmed ? _dimmingOpacity : 1.0,
                           duration: const Duration(milliseconds: 500),
                           child: TaskList(
+                            key: _taskListKey,
                             filterByCompleted: _showCompletedTasks,
                             filterByTags: _selectedTaskTagIds,
                             // Only apply date filters for incomplete tasks
@@ -533,6 +554,55 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _startTour() {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonAppUsageTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonAppUsageDescription),
+        icon: Icons.bar_chart,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. App usage graph list introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonUsageStatisticsTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonUsageStatisticsDescription),
+        targetKey: _timerKey,
+        position: TourPosition.bottom,
+      ),
+      // 3. List options introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonFilterSortTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonFilterSortDescription),
+        targetKey: _filtersKey,
+        position: TourPosition.bottom,
+      ),
+      // 4. App tracking settings button introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonTrackingSettingsTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonTrackingSettingsDescription),
+        targetKey: _taskListKey,
+        position: TourPosition.top,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+        },
+        onSkip: () async {
+          Navigator.of(context).pop();
+        },
       ),
     );
   }
