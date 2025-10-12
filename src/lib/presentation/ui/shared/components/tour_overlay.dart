@@ -129,8 +129,6 @@ class _TourOverlayState extends State<TourOverlay> {
   }
 
   void _showTourStep() {
-    _overlayEntry?.remove();
-
     final step = widget.steps[_currentStepIndex];
     final renderBox = step.targetKey?.currentContext?.findRenderObject() as RenderBox?;
     final position = renderBox?.localToGlobal(Offset.zero);
@@ -147,30 +145,29 @@ class _TourOverlayState extends State<TourOverlay> {
       return;
     }
 
-    _overlayEntry = OverlayEntry(
-      builder: (context) => TourStepOverlay(
-        step: step,
-        targetPosition: position ?? step.targetPosition ?? Offset.zero,
-        targetSize: size ?? step.targetSize ?? Size.zero,
-        onNext: _nextStep,
-        onPrevious: _previousStep,
-        onSkip: _skipTour,
-        onBack: widget.onBack,
-        showBackButton: widget.showBackButton,
-        isFirstStep: _currentStepIndex == 0,
-        isLastStep: _currentStepIndex == widget.steps.length - 1,
-        isFinalPageOfTour: widget.isFinalPageOfTour,
-        stepNumber: _currentStepIndex + 1,
-        totalSteps: widget.steps.length,
-      ),
-    );
+    if (_overlayEntry == null) {
+      _overlayEntry = OverlayEntry(
+        builder: (context) => _TourOverlayContent(
+          currentStepIndex: _currentStepIndex,
+          steps: widget.steps,
+          onNext: _nextStep,
+          onPrevious: _previousStep,
+          onSkip: _skipTour,
+          onBack: widget.onBack,
+          showBackButton: widget.showBackButton,
+          isFinalPageOfTour: widget.isFinalPageOfTour,
+        ),
+      );
 
-    // Defer overlay insertion to after build is complete
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _overlayEntry != null) {
-        Overlay.of(context).insert(_overlayEntry!);
-      }
-    });
+      // Defer overlay insertion to after build is complete
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _overlayEntry != null) {
+          Overlay.of(context).insert(_overlayEntry!);
+        }
+      });
+    } else {
+      _overlayEntry!.markNeedsBuild();
+    }
   }
 
   void _nextStep() {
@@ -180,12 +177,7 @@ class _TourOverlayState extends State<TourOverlay> {
       setState(() {
         _currentStepIndex++;
       });
-      // Defer showing the next step to avoid setState during build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _showTourStep();
-        }
-      });
+      _showTourStep();
     } else {
       _completeTour();
     }
@@ -198,12 +190,7 @@ class _TourOverlayState extends State<TourOverlay> {
       setState(() {
         _currentStepIndex--;
       });
-      // Defer showing the previous step to avoid setState during build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _showTourStep();
-        }
-      });
+      _showTourStep();
     }
   }
 
@@ -222,6 +209,62 @@ class _TourOverlayState extends State<TourOverlay> {
   @override
   Widget build(BuildContext context) {
     return const SizedBox.shrink();
+  }
+}
+
+class _TourOverlayContent extends StatelessWidget {
+  final int currentStepIndex;
+  final List<TourStep> steps;
+  final VoidCallback onNext;
+  final VoidCallback onPrevious;
+  final VoidCallback onSkip;
+  final VoidCallback? onBack;
+  final bool showBackButton;
+  final bool isFinalPageOfTour;
+
+  const _TourOverlayContent({
+    required this.currentStepIndex,
+    required this.steps,
+    required this.onNext,
+    required this.onPrevious,
+    required this.onSkip,
+    this.onBack,
+    required this.showBackButton,
+    required this.isFinalPageOfTour,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final step = steps[currentStepIndex];
+    final renderBox = step.targetKey?.currentContext?.findRenderObject() as RenderBox?;
+    final position = renderBox?.localToGlobal(Offset.zero);
+    final size = renderBox?.size;
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (child, animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      child: TourStepOverlay(
+        key: ValueKey(currentStepIndex),
+        step: step,
+        targetPosition: position ?? step.targetPosition ?? Offset.zero,
+        targetSize: size ?? step.targetSize ?? Size.zero,
+        onNext: onNext,
+        onPrevious: onPrevious,
+        onSkip: onSkip,
+        onBack: onBack,
+        showBackButton: showBackButton,
+        isFirstStep: currentStepIndex == 0,
+        isLastStep: currentStepIndex == steps.length - 1,
+        isFinalPageOfTour: isFinalPageOfTour,
+        stepNumber: currentStepIndex + 1,
+        totalSteps: steps.length,
+      ),
+    );
   }
 }
 
