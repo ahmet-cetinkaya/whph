@@ -226,7 +226,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     }
   }
 
-  void _onMainListOptionChange(tags, isNoneSelected) {
+  void _onMainListOptionChange(List<String>? tags, bool isNoneSelected) {
     setState(() {
       _selectedTagFilter = tags;
       _showNoTagsFilter = isNoneSelected;
