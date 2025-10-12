@@ -127,8 +127,10 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
     });
   }
 
-  void _skipTour() {
-    // Just complete onboarding without starting tour
+  Future<void> _skipTour() async {
+    // Mark tour as skipped
+    await TourNavigationService.skipMultiPageTour();
+    // Complete onboarding without starting tour
     _completeOnboarding();
   }
 

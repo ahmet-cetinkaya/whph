@@ -600,7 +600,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         onComplete: () {
           Navigator.of(context).pop();
         },
-        onSkip: () {
+        onSkip: () async {
           Navigator.of(context).pop();
         },
       ),

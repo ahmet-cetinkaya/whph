@@ -112,7 +112,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     _checkAndStartTour();
   }
 
-  void _checkAndStartTour() {
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 2) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         while (!_isPageFullyLoaded && mounted) {
@@ -631,7 +634,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
             TourNavigationService.onPageTourCompleted(context);
           }
         },
-        onSkip: () {
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
           Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack

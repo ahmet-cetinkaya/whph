@@ -88,7 +88,7 @@ class _DimOverlayPainter extends CustomPainter {
 class TourOverlay extends StatefulWidget {
   final List<TourStep> steps;
   final VoidCallback? onComplete;
-  final VoidCallback? onSkip;
+  final Future<void> Function()? onSkip;
   final VoidCallback? onBack;
   final bool showBackButton;
   final bool isFinalPageOfTour;
@@ -194,8 +194,10 @@ class _TourOverlayState extends State<TourOverlay> {
     }
   }
 
-  void _skipTour() {
-    widget.onSkip?.call();
+  Future<void> _skipTour() async {
+    if (widget.onSkip != null) {
+      await widget.onSkip!();
+    }
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
@@ -217,7 +219,7 @@ class _TourOverlayContent extends StatelessWidget {
   final List<TourStep> steps;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
-  final VoidCallback onSkip;
+  final Future<void> Function() onSkip;
   final VoidCallback? onBack;
   final bool showBackButton;
   final bool isFinalPageOfTour;
@@ -274,7 +276,7 @@ class TourStepOverlay extends StatelessWidget {
   final Size targetSize;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
-  final VoidCallback onSkip;
+  final Future<void> Function() onSkip;
   final VoidCallback? onBack;
   final bool showBackButton;
   final bool isFirstStep;
@@ -474,7 +476,7 @@ class TourStepOverlay extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: OutlinedButton.icon(
-                      onPressed: onSkip,
+                      onPressed: () async => await onSkip(),
                       icon: const Icon(Icons.close, size: 18),
                       label: const Text('Skip Tour'),
                       style: OutlinedButton.styleFrom(

@@ -49,7 +49,10 @@ class _HabitsPageState extends State<HabitsPage> {
     _checkAndStartTour();
   }
 
-  void _checkAndStartTour() {
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 1) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         while (!_isPageFullyLoaded && mounted) {
@@ -413,7 +416,10 @@ class _HabitsPageState extends State<HabitsPage> {
             TourNavigationService.onPageTourCompleted(context);
           }
         },
-        onSkip: () {
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
           Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack

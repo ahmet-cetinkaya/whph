@@ -73,7 +73,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     _checkAndStartTour();
   }
 
-  void _checkAndStartTour() {
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         while (!_isPageFullyLoaded && mounted) {
@@ -453,7 +456,10 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             TourNavigationService.onPageTourCompleted(context);
           }
         },
-        onSkip: () {
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
           Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack

@@ -61,7 +61,10 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     _checkAndStartTour();
   }
 
-  void _checkAndStartTour() {
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 4) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         while (!_isPageFullyLoaded && mounted) {
@@ -219,7 +222,10 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             TourNavigationService.onPageTourCompleted(context);
           }
         },
-        onSkip: () {
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
           Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack
