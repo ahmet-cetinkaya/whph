@@ -55,13 +55,14 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
 
   void _checkAndStartTour() {
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 5) {
-      // Delay to ensure the page is fully built and laid out
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 200), () {
-          if (mounted) {
-            _startTour(isMultiPageTour: true);
-          }
-        });
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        while (!_isPageFullyLoaded && mounted) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+
+        if (mounted) {
+          _startTour(isMultiPageTour: true);
+        }
       });
     }
   }
