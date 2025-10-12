@@ -1,0 +1,6 @@
+• Forbedret app Tour -navigation, der husker dine fremskridt
+• Tilføjet omfattende multi-siders turné med nyttige overlays
+• Tilføjet sprogvalgsmulighed under onboarding
+• Forbedrede belastningsstater og glattere ydelse i hele appen
+• Bedre visning og håndtering af synkroniseringsfejl
+• Forbedrede fejlmeddelelser til synkroniseringsproblemer
