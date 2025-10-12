@@ -34,8 +34,7 @@ class AppInitializationService {
 
   /// Check and show onboarding dialog if not completed (or always in debug mode)
   Future<void> _checkAndShowOnboarding(GlobalKey<NavigatorState> navigatorKey) async {
-    // TODO: remove
-    Logger.info("Checking onboarding dialog. Debug mode: $kDebugMode");
+
     if (kDebugMode) {
       Logger.info("Showing onboarding dialog in debug mode.");
       final context = navigatorKey.currentContext;
