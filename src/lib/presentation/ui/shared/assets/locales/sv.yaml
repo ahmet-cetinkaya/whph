@@ -284,3 +284,5 @@ shared:
   validation:
     required: "{field} krävs."
   help: Hjälp
+  start_tour: Starta rundtur
+  skip_tour: Hoppa över rundtur

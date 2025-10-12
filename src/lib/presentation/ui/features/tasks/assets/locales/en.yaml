@@ -340,7 +340,31 @@ tasks:
     show_completed_tasks: Filter completed tasks
     show_subtasks: Show subtasks
   validation:
-    deadline_cannot_be_before_planned:
-      Deadline must be scheduled after the planned
-      date
+    deadline_cannot_be_before_planned: Deadline must be scheduled after the planned date
     deadline_time_invalid: Please enter a valid deadline time
+  tour:
+    task_management:
+      title: Task Management
+      description: Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks.
+    add_tasks:
+      title: Add New Tasks
+      description: Create new tasks quickly with this button. Set titles, priorities, deadlines, tags, and more. Add subtasks and reminders to stay on top of your work.
+    your_tasks:
+      title: Your Tasks
+      description: View and manage all your tasks in one place. Click any task to see details, mark as complete, edit information, or delete. Stay organized and track your progress.
+    filter_search:
+      title: Filter & Search
+      description: Powerful filtering options to find exactly what you need. Filter by tags, dates, completion status, or use search. Sort tasks and toggle subtasks for better organization.
+    marathon:
+      app_usage:
+        title: App Usage & Time Insights
+        description: Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity.
+      usage_statistics:
+        title: Usage Statistics
+        description: View detailed app usage data and time distribution. Analyze your productivity patterns, track time spent on different applications, and identify areas for improvement.
+      filter_sort:
+        title: Filter & Sort
+        description: Filter app usage data by date range, tags, or specific devices. Sort and organize your usage statistics to gain better insights into your time management.
+      tracking_settings:
+        title: Tracking Settings
+        description: Configure app tracking rules, set up automatic tagging, and manage which applications to monitor. Customize tracking to match your productivity needs.

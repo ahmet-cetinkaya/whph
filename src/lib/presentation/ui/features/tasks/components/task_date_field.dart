@@ -18,6 +18,7 @@ class TaskDateField extends StatefulWidget {
   final ITranslationService translationService;
   final String reminderLabelPrefix;
   final IconData dateIcon;
+  final FocusNode? focusNode;
 
   const TaskDateField({
     super.key,
@@ -31,6 +32,7 @@ class TaskDateField extends StatefulWidget {
     this.minDateTime,
     this.plannedDateTime,
     this.dateIcon = Icons.calendar_today,
+    this.focusNode,
   });
 
   @override
@@ -203,6 +205,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
         Expanded(
           child: TextFormField(
             controller: widget.controller,
+            focusNode: widget.focusNode,
             readOnly: true,
             decoration: InputDecoration(
               hintText: widget.hintText,

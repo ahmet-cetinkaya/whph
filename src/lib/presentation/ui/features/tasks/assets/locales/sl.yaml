@@ -342,3 +342,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
     deadline_time_invalid: Čas roka je neveljaven
+  tour:
+    task_management:
+      title: Upravljanje Nalog
+      description: Ustvarite in organizirajte naloge s prednostmi, roki in opomniki. Uporabite časovnik Pomodoro, da ostanete osredotočeni in spremljate napredek pri pomembnih nalogah.
+    add_tasks:
+      title: Dodaj Nove Naloge
+      description: Hitro ustvarite nove naloge s tem gumbom. Nastavite naslove, prednosti, roke, oznake in več. Dodajte podnaloge in opomnike, da ostanete na tekočem s svojim delom.
+    your_tasks:
+      title: Vaše Naloge
+      description: Ogledujte in upravljajte vse svoje naloge na enem mestu. Kliknite katerokoli nalogo za ogled podrobnosti, označite kot končano, uredite informacije ali izbrišite. Ostanite organizirani in spremljajte svoj napredek.
+    filter_search:
+      title: Filtriraj & Išči
+      description: Zmogljive možnosti filtriranja za iskanje ravno tistega, kar potrebujete. Filtrirajte po oznakah, datumih, statusu zaključka ali uporabite iskanje. Razvrstite naloge in preklopite podnaloge za boljšo organizacijo.
+    marathon:
+      app_usage:
+        title: Uporaba Aplikacij & Časovna Analiza
+        description: Spremljajte vzorce uporabe aplikacij in analizirajte čas, porabljen za različne dejavnosti. Pridobite vpogled v svoje digitalne navade in optimizirajte svojo produktivnost.
+      usage_statistics:
+        title: Statistika Uporabe
+        description: Ogled podrobnih podatkov o uporabi aplikacij in porazdelitvi časa. Analizirajte svoje vzorce produktivnosti, spremljajte čas, porabljen za različne aplikacije, in prepoznajte področja za izboljšave.
+      filter_sort:
+        title: Filtriraj & Razvrsti
+        description: Filtrirajte podatke o uporabi aplikacij po časovnem obdobju, oznakah ali določenih napravah. Razvrstite in organizirajte svojo statistiko uporabe za boljše vpoglede v upravljanje časa.
+      tracking_settings:
+        title: Nastavitve Sledenja
+        description: Konfigurirajte pravila sledenja aplikacij, nastavite samodejno označevanje in upravljajte, katere aplikacije naj se spremljajo. Prilagodite sledenje glede na svoje potrebe po produktivnosti.

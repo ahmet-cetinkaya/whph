@@ -10,9 +10,12 @@ import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart'
 import 'package:whph/presentation/ui/shared/components/color_picker.dart';
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 
 class ThemeSettings extends StatefulWidget {
-  const ThemeSettings({super.key});
+  final VoidCallback? onLoaded;
+
+  const ThemeSettings({super.key, this.onLoaded});
 
   @override
   State<ThemeSettings> createState() => _ThemeSettingsState();
@@ -67,6 +70,13 @@ class _ThemeSettingsState extends State<ThemeSettings> {
         _customAccentColorValue = _themeService.customAccentColor;
         _uiDensity = _themeService.currentUiDensity;
         return true;
+      },
+      onSuccess: (_) {
+        widget.onLoaded?.call();
+      },
+      onError: (e) {
+        Logger.error('Error loading theme settings: $e');
+        widget.onLoaded?.call();
       },
     );
   }

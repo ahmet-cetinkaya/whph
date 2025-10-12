@@ -126,3 +126,25 @@ tags:
     remove_tag: Rimuovi tag
     select: Clicca per selezionare tag
     unarchive_tag: Desarchivia tag
+  tour:
+    smart_tagging:
+      title: Sistema di Etichettatura Intelligente
+      description: Usa le etichette per organizzare e raggruppare le tue attività, abitudini e app. Traccia il tempo trascorso su diverse attività attraverso le etichette per capire dove va il tuo tempo e ottimizzare il flusso di lavoro.
+    your_tags:
+      title: Le Tue Etichette
+      description: Sfoglia tutte le tue etichette e consulta le loro statistiche d'uso. Clicca su qualsiasi etichetta per visualizzare i dettagli, modificare le proprietà o vedere quali attività e abitudini la utilizzano. Organizza il tuo flusso di lavoro in modo efficiente.
+    tag_archive_filters:
+      title: Filtri di Etichette e Archivio
+      description: Filtra le etichette selezionando etichette specifiche su cui concentrarti, o attiva/disattiva la visibilità delle etichette archiviate. Controlla quali etichette appaiono nella tua lista per una migliore organizzazione.
+    search_sort:
+      title: Ricerca e Ordinamento
+      description: Cerca etichette specifiche per nome, ordina secondo diversi criteri come nome o numero di utilizzi. Organizza la tua lista di etichette per trovare rapidamente ciò di cui hai bisogno.
+    time_distribution_chart:
+      title: Grafico di Distribuzione del Tempo
+      description: Visualizza come distribuisci il tuo tempo tra diverse etichette e categorie. Osserva i modelli di allocazione del tempo e identifica dove si concentra la tua attenzione durante la giornata.
+    chart_customization:
+      title: Personalizzazione del Grafico
+      description: Personalizza il grafico temporale selezionando l'intervallo di date, scegliendo le categorie (attività, abitudini, app) e filtrando per etichette specifiche per analizzare in dettaglio la tua distribuzione del tempo.
+    create_tags:
+      title: Crea Nuove Etichette
+      description: Aggiungi nuove etichette per categorizzare i tuoi contenuti. Le etichette ti aiutano a organizzare attività, abitudini e app in tutte le funzionalità per un migliore monitoraggio della produttività e gestione del tempo.

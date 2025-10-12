@@ -326,3 +326,29 @@ tasks:
       La date d'échéance doit être postérieure à
       la date planifiée
     deadline_time_invalid: L'heure d'échéance n'est pas valide
+  tour:
+    task_management:
+      title: Gestion des tâches
+      description: Créez et organisez des tâches avec des priorités, des échéances et des rappels. Utilisez le minuteur Pomodoro pour rester concentré et suivre vos progrès sur les tâches importantes.
+    add_tasks:
+      title: Ajouter de nouvelles tâches
+      description: Créez rapidement de nouvelles tâches avec ce bouton. Définissez les titres, priorités, échéances, tags et plus encore. Ajoutez des sous-tâches et des rappels pour rester à jour dans votre travail.
+    your_tasks:
+      title: Vos tâches
+      description: Visualisez et gérez toutes vos tâches en un seul endroit. Cliquez sur n'importe quelle tâche pour voir les détails, la marquer comme terminée, modifier les informations ou la supprimer. Restez organisé et suivez vos progrès.
+    filter_search:
+      title: Filtrer & Rechercher
+      description: Puissantes options de filtrage pour trouver exactement ce dont vous avez besoin. Filtrez par tags, dates, statut d'achèvement ou utilisez la recherche. Triez les tâches et basculez les sous-tâches pour une meilleure organisation.
+    marathon:
+      app_usage:
+        title: Utilisation des applications et analyses temporelles
+        description: Surveillez les modèles d'utilisation des applications et analysez le temps consacré à différentes activités. Obtenez des aperçus sur vos habitudes numériques et optimisez votre productivité.
+      usage_statistics:
+        title: Statistiques d'utilisation
+        description: Affichez des données détaillées sur l'utilisation des applications et la répartition du temps. Analysez vos modèles de productivité, suivez le temps passé sur différentes applications et identifiez les domaines d'amélioration.
+      filter_sort:
+        title: Filtrer & Trier
+        description: Filtrez les données d'utilisation des applications par période, tags ou appareils spécifiques. Triez et organisez vos statistiques d'utilisation pour obtenir de meilleures perspectives sur votre gestion du temps.
+      tracking_settings:
+        title: Paramètres de suivi
+        description: Configurez les règles de suivi des applications, mettez en place un étiquetage automatique et gérez les applications à surveiller. Personnalisez le suivi en fonction de vos besoins de productivité.

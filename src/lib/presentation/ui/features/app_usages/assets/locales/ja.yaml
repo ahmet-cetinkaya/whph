@@ -174,5 +174,16 @@ app_usages:
     title: アプリ使用状況ルール
   tooltips:
     edit_name: 名前を編集
-  units:
-    minutes: 分
+  tour:
+    app_usage_insights:
+      title: アプリ使用状況と時間の洞察
+      description: アプリ使用パターンを監視し、さまざまなアクティビティに費やされた時間を分析します。デジタル習慣に関する洞察を得て、生産性を最適化しましょう。
+    usage_statistics:
+      title: 使用統計
+      description: 詳細なアプリ使用データと時間分布を表示します。生産性パターンを分析し、さまざまなアプリケーションに費やされた時間を追跡し、改善点を特定します。
+    filter_sort:
+      title: フィルターと並べ替え
+      description: 日付範囲、タグ、特定のデバイスでアプリ使用データをフィルターします。使用統計を並べ替え、整理して時間管理に関するより良い洞察を得ましょう。
+    tracking_settings:
+      title: 追跡設定
+      description: アプリ追跡ルールを構成し、自動タグ付けを設定し、監視するアプリケーションを管理します。生産性ニーズに合わせて追跡をカスタマイズします。

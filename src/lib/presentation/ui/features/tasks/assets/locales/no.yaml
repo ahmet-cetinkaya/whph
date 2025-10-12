@@ -342,3 +342,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen
     deadline_time_invalid: Frist tidspunkt er ugyldig
+  tour:
+    task_management:
+      title: Oppgavehåndtering
+      description: Opprett og organiser oppgaver med prioriteter, frister og påminnelser. Bruk Pomodoro-timeren for å holde fokus og spore fremgangen din på viktige oppgaver.
+    add_tasks:
+      title: Legg til nye oppgaver
+      description: Opprett raskt nye oppgaver med denne knappen. Sett titler, prioriteter, frister, tagger og mer. Legg til underoppgaver og påminnelser for å holde deg oppdatert på arbeidet ditt.
+    your_tasks:
+      title: Dine oppgaver
+      description: Se og administrer alle oppgavene dine på ett sted. Klikk på hvilken som helst oppgave for å se detaljer, merke som fullført, redigere informasjon eller slette. Hold deg organisert og spor fremgangen din.
+    filter_search:
+      title: Filtrer & Søk
+      description: Kraftige filteralternativer for å finne akkurat det du trenger. Filtrer etter tagger, datoer, fullføringsstatus eller bruk søk. Sorter oppgaver og veksle underoppgaver for bedre organisering.
+    marathon:
+      app_usage:
+        title: App-bruk & Tidsanalyse
+        description: Overvåk app-brukmønstre og analyser tiden du bruker på ulike aktiviteter. Få innsikt i dine digitale vaner og optimaliser produktiviteten din.
+      usage_statistics:
+        title: Bruksstatistikk
+        description: Vis detaljert app-brukdata og tidsfordeling. Analyser produktivitetsmønstre, spor tiden du bruker på ulike applikasjoner og identifiser forbedringsområder.
+      filter_sort:
+        title: Filtrer & Sorter
+        description: Filtrer app-brukdata etter datoområde, tagger eller spesifikke enheter. Sorter og organiser bruksstatistikken din for bedre innsikt i tidsstyring.
+      tracking_settings:
+        title: Sporingsinnstillinger
+        description: Konfigurer app-sporingsregler, sett opp automatisk tagging og administrer hvilke applikasjoner som skal spores. Tilpass sporingen etter dine produktivitetsbehov.

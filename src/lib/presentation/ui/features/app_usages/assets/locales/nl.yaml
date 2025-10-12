@@ -174,5 +174,16 @@ app_usages:
     title: App-gebruik Regels
   tooltips:
     edit_name: Naam bewerken
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: App-gebruik & Tijd Inzichten
+      description: Houd app-gebruikspatronen bij en analyseer de tijd die wordt besteed aan verschillende activiteiten. Krijg inzichten in uw digitale gewoonten en optimaliseer uw productiviteit.
+    usage_statistics:
+      title: Gebruiksstatistieken
+      description: Bekijk gedetailleerde app-gebruiksgegevens en tijdverdeling. Analyseer uw productiviteitspatronen, volg de tijd die aan verschillende applicaties wordt besteed en identificeer verbeterpunten.
+    filter_sort:
+      title: Filteren & Sorteren
+      description: Filter app-gebruiksgegevens op datumbereik, tags of specifieke apparaten. Sorteer en organiseer uw gebruiksstatistieken voor beter inzicht in uw tijdbesteding.
+    tracking_settings:
+      title: Tracking-instellingen
+      description: Configureer app-trackingregels, stel automatische tagging in en beheer welke applicaties worden gevolgd. Pas tracking aan uw productiviteitsbehoeften aan.

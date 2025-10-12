@@ -302,3 +302,5 @@ shared:
   validation:
     required: "{field} es requerido."
   help: Ayuda
+  start_tour: Iniciar recorrido
+  skip_tour: Saltar recorrido

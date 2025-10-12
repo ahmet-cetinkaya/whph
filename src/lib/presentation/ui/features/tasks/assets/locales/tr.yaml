@@ -335,3 +335,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
     deadline_time_invalid: Son tarih zamanı geçersiz
+  tour:
+    task_management:
+      title: Görev Yönetimi
+      description: Öncelikler, son tarihler ve hatırlatıcılarla görevler oluşturun ve düzenleyin. Pomodoro zamanlayıcısını kullanarak odaklanmanızı koruyun ve önemli görevlerde ilerlemenizi takip edin.
+    add_tasks:
+      title: Yeni Görevler Ekle
+      description: Bu düğmeyle hızlıca yeni görevler oluşturun. Başlıklar, öncelikler, son tarihler, etiketler ve daha fazlasını ayarlayın. İşlerinizde güncel kalmak için alt görevler ve hatırlatıcılar ekleyin.
+    your_tasks:
+      title: Görevleriniz
+      description: Tüm görevlerinizi tek bir yerde görüntüleyin ve yönetin. Ayrıntıları görmek, tamamlandı olarak işaretlemek, bilgileri düzenlemek veya silmek için herhangi bir göreve tıklayın. Organize kalın ve ilerlemenizi takip edin.
+    filter_search:
+      title: Filtrele & Ara
+      description: Tam olarak ihtiyacınız olan şeyi bulmak için güçlü filtre seçenekleri. Etiketlere, tarihlere, tamamlanma durumuna göre filtreleyin veya arama kullanın. Daha iyi organizasyon için görevleri sıralayın ve alt görevleri değiştirin.
+    marathon:
+      app_usage:
+        title: Uygulama Kullanımı & Zaman Analizi
+        description: Uygulama kullanım modellerini izleyin ve farklı etkinliklere harcadığınız zamanı analiz edin. Dijital alışkanlıklarınız hakkında içgörüler elde edin ve verimliliğinizi optimize edin.
+      usage_statistics:
+        title: Kullanım İstatistikleri
+        description: Detaylı uygulama kullanım verilerini ve zaman dağılımını görüntüleyin. Verimlilik modellerinizi analiz edin, farklı uygulamalara harcadığınız zamanı takip edin ve iyileştirme alanlarını belirleyin.
+      filter_sort:
+        title: Filtrele & Sırala
+        description: Uygulama kullanım verilerini tarih aralığına, etiketlere veya belirli cihazlara göre filtreleyin. Zaman yönetimiyle ilgili daha iyi içgörüler için kullanım istatistiklerinizi sıralayın ve düzenleyin.
+      tracking_settings:
+        title: Takip Ayarları
+        description: Uygulama takip kurallarını yapılandırın, otomatik etiketlemeyi ayarlayın ve hangi uygulamaların takip edileceğini yönetin. Verimlilik ihtiyaçlarınıza göre takibi özelleştirin.

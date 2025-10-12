@@ -97,4 +97,20 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   static const String listSectionTitle = 'tags.sections.list';
 
   static const String timeRecords = 'tags.time_records';
+
+  // Tour translation keys
+  static const String tourSmartTaggingTitle = 'tags.tour.smart_tagging.title';
+  static const String tourSmartTaggingDescription = 'tags.tour.smart_tagging.description';
+  static const String tourYourTagsTitle = 'tags.tour.your_tags.title';
+  static const String tourYourTagsDescription = 'tags.tour.your_tags.description';
+  static const String tourTagArchiveFiltersTitle = 'tags.tour.tag_archive_filters.title';
+  static const String tourTagArchiveFiltersDescription = 'tags.tour.tag_archive_filters.description';
+  static const String tourSearchSortTitle = 'tags.tour.search_sort.title';
+  static const String tourSearchSortDescription = 'tags.tour.search_sort.description';
+  static const String tourTimeDistributionChartTitle = 'tags.tour.time_distribution_chart.title';
+  static const String tourTimeDistributionChartDescription = 'tags.tour.time_distribution_chart.description';
+  static const String tourChartCustomizationTitle = 'tags.tour.chart_customization.title';
+  static const String tourChartCustomizationDescription = 'tags.tour.chart_customization.description';
+  static const String tourCreateTagsTitle = 'tags.tour.create_tags.title';
+  static const String tourCreateTagsDescription = 'tags.tour.create_tags.description';
 }

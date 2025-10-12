@@ -282,3 +282,5 @@ shared:
   validation:
     required: "{field}は必須です。"
   help: ヘルプ
+  start_tour: ツアーを開始
+  skip_tour: ツアーをスキップ

@@ -128,6 +128,18 @@ sync:
     no_active_interfaces: Geen actieve netwerkinterfaces
     device_discovery_failed: Apparaatontdekking mislukt
     no_server_configured: Geen server geconfigureerd. Voeg eerst een sync-apparaat toe of gebruik handmatige verbinding om een serververbinding in te stellen.
+    device_id_unavailable: Apparaat-ID is niet beschikbaar. Kan synchronisatie niet voortzetten.
+    local_ip_unavailable: Lokaal IP-adres is niet beschikbaar. Controleer netwerkverbinding.
+    prerequisites_failed: Validatie van synchronisatie-vereisten mislukt. Controleer uw netwerkinstellingen.
+    critical_sync_operation_failed: Kritieke synchronisatiebewerking mislukt. Probeer het opnieuw.
+    initiate_outgoing_sync_failed: Starten van synchronisatie met apparaten mislukt.
+    processing_incoming_data: Fout bij verwerken van inkomende synchronisatiegegevens.
+    checking_local_data: Fout bij controleren van lokale gegevens voor synchronisatie.
+    sync_with_device_failed: Synchronisatie met apparaat mislukt.
+    sync_with_device_exception: Uitzondering opgetreden tijdens apparaatsynchronisatie.
+    process_accumulated_response_data: Verwerken van opgeklaarde synchronisatie-antwoordgegevens mislukt.
+    process_response_data: Verwerken van synchronisatie-antwoordgegevens mislukt.
+    some_devices_failed_to_sync: Synchronisatie van sommige apparaten is mislukt. Probeer het opnieuw.
   messages:
     device_already_paired: Dit apparaat is al gepaart
     sync_completed: Synchronisatie succesvol voltooid

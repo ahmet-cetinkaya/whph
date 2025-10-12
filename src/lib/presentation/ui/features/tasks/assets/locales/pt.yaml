@@ -342,3 +342,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada
     deadline_time_invalid: Hora limite inválida
+  tour:
+    task_management:
+      title: Gerenciamento de Tarefas
+      description: Crie e organize tarefas com prioridades, prazos e lembretes. Use o timer Pomodoro para manter o foco e acompanhar seu progresso em tarefas importantes.
+    add_tasks:
+      title: Adicionar Novas Tarefas
+      description: Crie rapidamente novas tarefas com este botão. Defina títulos, prioridades, prazos, tags e mais. Adicione subtarefas e lembretes para manter-se atualizado com seu trabalho.
+    your_tasks:
+      title: Suas Tarefas
+      description: Veja e gerencie todas as suas tarefas em um só lugar. Clique em qualquer tarefa para ver detalhes, marcar como concluída, editar informações ou excluir. Mantenha-se organizado e acompanhe seu progresso.
+    filter_search:
+      title: Filtrar & Pesquisar
+      description: Opções poderosas de filtragem para encontrar exatamente o que você precisa. Filtre por tags, datas, status de conclusão ou use a pesquisa. Ordene tarefas e alterne subtarefas para melhor organização.
+    marathon:
+      app_usage:
+        title: Uso de Aplicativos & Análise de Tempo
+        description: Monitore padrões de uso de aplicativos e analise o tempo gasto em diferentes atividades. Obtenha insights sobre seus hábitos digitais e otimize sua produtividade.
+      usage_statistics:
+        title: Estatísticas de Uso
+        description: Veja dados detalhados de uso de aplicativos e distribuição de tempo. Analise seus padrões de produtividade, acompanhe o tempo gasto em diferentes aplicativos e identifique áreas de melhoria.
+      filter_sort:
+        title: Filtrar & Ordenar
+        description: Filtre dados de uso de aplicativos por intervalo de datas, tags ou dispositivos específicos. Ordene e organize suas estatísticas de uso para obter melhores insights sobre gestão de tempo.
+      tracking_settings:
+        title: Configurações de Rastreamento
+        description: Configure regras de rastreamento de aplicativos, defina marcação automática e gerencie quais aplicativos monitorar. Personalize o rastreamento de acordo com suas necessidades de produtividade.

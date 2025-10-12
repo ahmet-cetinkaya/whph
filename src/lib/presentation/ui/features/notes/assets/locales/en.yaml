@@ -94,3 +94,16 @@ notes:
     add_note: Add note
     delete_note: Delete note
     edit_name: Edit title
+  tour:
+    note_taking:
+      title: Note Taking
+      description: Keep important information organized with a powerful note-taking system. Tag your notes for easy categorization and quick access.
+    your_notes:
+      title: Your Notes
+      description: Browse all your notes here. Click any note to view, edit, or organize its content. Use markdown syntax for rich formatting - **bold**, *italic*, lists, links, and more.
+    filter_search:
+      title: Filter & Search
+      description: Find specific notes using tags, search for content, or sort them by different criteria. Stay organized with powerful filtering options.
+    create_notes:
+      title: Create New Notes
+      description: Start writing by clicking this button. Create rich text notes with markdown formatting. Add tags for easy categorization and organization.

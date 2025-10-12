@@ -230,3 +230,19 @@ habits:
     edit_name: Naam Bewerken
     increase_daily_target: Dagelijks doel verhogen
     increase_estimated_time: Geschatte tijd verhogen
+  tour:
+    habit_building:
+      title: Gewoontevorming
+      description: Bouw duurzame gewoontes door dagelijkse activiteiten te volgen. Stel herinneringen in, houd je streaks bij en visualiseer je vooruitgang met gedetailleerde statistieken.
+    create_habits:
+      title: Nieuwe Gewoontes Maken
+      description: Begin met het bouwen van nieuwe gewoontes door op deze knop te klikken. Stel doelen, frequenties, herinneringen in en volg meerdere voltooiingen per dag voor flexibele gewoontetracking.
+    your_habits:
+      title: Jouw Gewoontes
+      description: Bekijk en beheer al je gewoontes hier. Klik op een gewoonte om details, statistieken en voltooiingsgeschiedenis te zien. Markeer gewoontes dagelijks als voltooid om streaks te bouwen en je vooruitgang bij te houden.
+    calendar_view:
+      title: Kalenderweergave
+      description: Visualiseer je gewoontevoltooiingsgeschiedenis over meerdere dagen. Groen geeft voltooide gewoontes aan. Volg je consistentie en zie je vooruitgangspatronen in de tijd.
+    filter_search:
+      title: Filteren & Zoeken
+      description: Vind specifieke gewoontes met tags, zoektermen of filter op gearchiveerde status. Organiseer en beheer je gewoontes efficiënt om gefocust te blijven op wat er toe doet.

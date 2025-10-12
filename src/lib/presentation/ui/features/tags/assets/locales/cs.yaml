@@ -126,3 +126,25 @@ tags:
     remove_tag: Odstranit štítek
     select: Klikněte pro výběr štítku
     unarchive_tag: Zrušit archivaci štítku
+  tour:
+    smart_tagging:
+      title: Systém inteligentního označování
+      description: Používejte štítky k organizaci a seskupování úkolů, návyků a aplikací. Sledujte čas strávený různými aktivitami pomocí štítků, abyste pochopili, kam váš čas putuje, a optimalizovali svůj pracovní postup.
+    your_tags:
+      title: Vaše štítky
+      description: Procházejte všechny své štítky a prohlédněte si jejich statistiky používání. Kliknutím na libovolný štítek zobrazíte podrobnosti, upravíte vlastnosti nebo zjistíte, které úkoly a návyky jej používají. Efektivně organizujte svůj pracovní postup.
+    tag_archive_filters:
+      title: Filtry štítků a archivu
+      description: Filtrujte štítky výběrem konkrétních štítků, na které se chcete zaměřit, nebo přepínáním viditelnosti archivovaných štítků. Ovládejte, které štítky se zobrazují ve vašem seznamu pro lepší organizaci.
+    search_sort:
+      title: Hledání a řazení
+      description: Vyhledávejte konkrétní štítky podle názvu, řaďte je podle různých kritérií jako název nebo počet použití. Organizujte seznam štítků pro rychlé nalezení toho, co potřebujete.
+    time_distribution_chart:
+      title: Graf rozdělení času
+      description: Vizualizujte, jak trávíte čas v různých štítcích a kategoriích. Podívejte se na vzory přidělení času a identifikujte, kam se zaměřujete během dne.
+    chart_customization:
+      title: Přizpůsobení grafu
+      description: Přizpůsobte si časový graf výběrem časového období, výběrem kategorií (úkoly, návyky, aplikace) a filtrováním podle konkrétních štítků pro detailní analýzu rozdělení času.
+    create_tags:
+      title: Vytvoření nových štítků
+      description: Přidejte nové štítky pro kategorizaci vašeho obsahu. Štítky vám pomáhají organizovat úkoly, návyky a aplikace napříč všemi funkcemi pro lepší sledování produktivity a řízení času.

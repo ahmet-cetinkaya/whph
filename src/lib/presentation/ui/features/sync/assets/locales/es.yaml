@@ -128,6 +128,18 @@ sync:
     no_active_interfaces: No hay interfaces de red activas
     device_discovery_failed: Descubrimiento de dispositivos fallido
     no_server_configured: No hay servidor configurado. Agregue primero un dispositivo de sincronización o use conexión manual para configurar una conexión de servidor.
+    device_id_unavailable: El ID del dispositivo no está disponible. No se puede continuar con la sincronización.
+    local_ip_unavailable: La dirección IP local no está disponible. Compruebe la conexión de red.
+    prerequisites_failed: La validación de los prerequisitos de sincronización falló. Por favor verifique la configuración de red.
+    critical_sync_operation_failed: Operación crítica de sincronización fallida. Por favor inténtelo de nuevo.
+    initiate_outgoing_sync_failed: Error al iniciar la sincronización con dispositivos.
+    processing_incoming_data: Error al procesar datos de sincronización entrantes.
+    checking_local_data: Error al verificar los datos locales para la sincronización.
+    sync_with_device_failed: Error al sincronizar con el dispositivo.
+    sync_with_device_exception: Ocurrió una excepción durante la sincronización del dispositivo.
+    process_accumulated_response_data: Error al procesar los datos acumulados de respuesta de sincronización.
+    process_response_data: Error al procesar los datos de respuesta de sincronización.
+    some_devices_failed_to_sync: Algunos dispositivos no se pudieron sincronizar. Por favor inténtelo de nuevo.
   messages:
     device_already_paired: Este dispositivo ya está emparejado
     sync_completed: Sincronización completada exitosamente

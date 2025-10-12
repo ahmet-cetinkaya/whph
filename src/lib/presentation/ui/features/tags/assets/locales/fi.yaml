@@ -126,3 +126,25 @@ tags:
     remove_tag: Poista tunniste
     select: Klikkaa tunnisteen valitsemiseksi
     unarchive_tag: Poista arkistointi tunnisteelta
+  tour:
+    smart_tagging:
+      title: Älykäs Tunnistejärjestelmä
+      description: Käytä tunnisteita tehtävien, tapojen ja sovellusten järjestämiseen ja ryhmittelyyn. Seuraa eri toimintoihin käyttämääsi aikaa tunnisteiden avulla ymmärtääksesi, mihin aika kuluu, ja optimoidaksesi työnkulun.
+    your_tags:
+      title: Omat Tunnisteet
+      description: Selaa kaikkia tunnisteitasi ja katso niiden käyttötilastoja. Napsauta mitä tahansa tunnistetta nähdäksesi tiedot, muokataksesi ominaisuuksia tai nähdäksesi, mitkä tehtävät ja tavat käyttävät sitä. Järjestä työnkulku tehokkaasti.
+    tag_archive_filters:
+      title: Tunniste- ja Arkistosuodattimet
+      description: Suodata tunnisteita valitsemalla tietyt tunnisteet, joihin haluat keskittyä, tai vaihda arkistoitujen tunnisteiden näkyvyyttä. Hallitse, mitkä tunnisteet näkyvät listassasi parempaa järjestystä varten.
+    search_sort:
+      title: Haku ja Lajittelu
+      description: Etsi tiettyjä tunnisteita nimen perusteella, lajittele eri kriteerien mukaan, kuten nimen tai käyttömäärän perusteella. Järjestä tunnistelistasi löytääksesi tarvitsemasi nopeasti.
+    time_distribution_chart:
+      title: Aikajakaumakaavio
+      description: Visualisoi, miten käytät aikaasi eri tunnisteisiin ja luokkiin. Katso ajanjakautumismalleja ja tunnista, mihin huomiosi kohdistuu päivän aikana.
+    chart_customization:
+      title: Kaavion Mukauttaminen
+      description: Mukauta aikakaaviota valitsemalla ajanjakso, valitsemalla luokat (tehtävät, tavat, sovellukset) ja suodattamalla tietyillä tunnisteilla analysoidaksesi aikajakaumaa yksityiskohtaisesti.
+    create_tags:
+      title: Luo Uusia Tunnisteita
+      description: Lisää uusia tunnisteita sisältösi luokittelemiseksi. Tunnisteet auttavat sinua järjestämään tehtäviä, tapoja ja sovelluksia kaikissa ominaisuuksissa parempaa tuottavuuden seurantaa ja ajanhallintaa varten.

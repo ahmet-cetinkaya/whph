@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Tavut
     tasks: Tehtävät
+  tour:
+    today:
+      welcome:
+        title: Tervetuloa Tänään-sivulle
+        description: Päivittäinen komentokeskusesi tuottavuudelle. Katso ja hallitse päivän tavoja, tehtäviä ja ajanseurantaa yhdessä paikassa. Pysy keskittynyt siihen, mikä on tärkeintä tänään.
+      tag_filter:
+        title: Tagisuodatin
+        description: Suodata päivittäiset tavat ja tehtävät tageittain. Keskity tiettyihin kategorioihin tai näytä kohteet ilman tageja järjestääksesi päivittäisen työnkulkusi.
+      habits:
+        title: Päivittäiset tavat
+        description: Seuraa päivittäisiä tavojasi ja rakenna johdonmukaisuutta. Merkitse tavat valmiiksi päivän aikana ylläpitääksesi putkiasi ja visualisoidaksesi edistymistäsi.
+      tasks:
+        title: Tämä päivän tehtävät
+        description: Hallitse tälle päivälle suunniteltuja tehtäviä. Lisää uusia tehtäviä, merkitse ne valmiiksi, katso tietoja ja pysy ajan tasalla päivittäisistä prioriteeteistasi ja määräajoistasi.
+      time_distribution:
+        title: Ajan jakautuminen
+        description: Visualisoi, miten olet käyttänyt aikasi tänään. Katso eri toimintoihin sijoitettu aika ja optimoi päivittäinen aikataulusi paremman tuottavuuden saavuttamiseksi.
+      marathon_mode:
+        title: Maratoni-tila
+        description: Siirry keskittyneeseen työtilaan Pomodoro-ajastimella. Seuraa tehtävien aikaa häiriöttömällä käyttöliittymällä ja lisää keskittymistä syvien työistuntojesi aikana.

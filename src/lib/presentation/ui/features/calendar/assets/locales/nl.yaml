@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Gewoonten
     tasks: Taken
+  tour:
+    today:
+      welcome:
+        title: Welkom op de Vandaag-pagina
+        description: Uw dagelijkse commandocentrum voor productiviteit. Bekijk en beheer de gewoonten, taken en tijdstracking van vandaag op één plek. Blijf gefocust op wat er vandaag het belangrijkste is.
+      tag_filter:
+        title: Tagfilter
+        description: Filter uw dagelijkse gewoonten en taken op tags. Focus op specifieke categorieën of toon items zonder tags om uw dagelijkse workflow te organiseren.
+      habits:
+        title: Dagelijkse gewoonten
+        description: Volg uw dagelijkse gewoonten en bouw consistentie op. Markeer gewoonten als voltooid gedurende de dag om uw streaks te behouden en uw voortgang te visualiseren.
+      tasks:
+        title: Taken van vandaag
+        description: Beheer taken die gepland staan voor vandaag. Voeg nieuwe taken toe, markeer ze als voltooid, bekijk details en houd uw dagelijkse prioriteiten en deadlines in de gaten.
+      time_distribution:
+        title: Tijdsverdeling
+        description: Visualiseer hoe u uw tijd vandaag hebt doorgebracht. Bekijk de tijd die aan verschillende activiteiten is besteed en optimaliseer uw dagelijkse schema voor betere productiviteit.
+      marathon_mode:
+        title: Marathon-modus
+        description: Ga in de gefocuste werkmodus met de Pomodoro-timer. Houd de tijd bij op taken met een afleidingsvrije interface en verhoog uw concentratie voor diepe werksessies.

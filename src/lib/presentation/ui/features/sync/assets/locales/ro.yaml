@@ -142,6 +142,18 @@ sync:
     no_active_interfaces: Nu s-au găsit interfețe de rețea active
     device_discovery_failed: "Eșec la pornirea descoperirii dispozitivelor: {error}"
     no_server_configured: Niciun server configurat. Adăugați mai întâi un dispozitiv de sincronizare sau utilizați conexiune manuală pentru a configura o conexiune server.
+    device_id_unavailable: ID-ul dispozitivului nu este disponibil. Nu se poate continua sincronizarea.
+    local_ip_unavailable: Adresa IP locală nu este disponibilă. Verificați conexiunea la rețea.
+    prerequisites_failed: Validarea prerechizitelor de sincronizare a eșuat. Verificați setările de rețea.
+    critical_sync_operation_failed: Operațiunea critică de sincronizare a eșuat. Vă rugăm să încercați din nou.
+    initiate_outgoing_sync_failed: Inițierea sincronizării cu dispozitivele a eșuat.
+    processing_incoming_data: Eroare la procesarea datelor de sincronizare primite.
+    checking_local_data: Eroare la verificarea datelor locale pentru sincronizare.
+    sync_with_device_failed: Sincronizarea cu dispozitivul a eșuat.
+    sync_with_device_exception: A apărut o excepție în timpul sincronizării dispozitivului.
+    process_accumulated_response_data: Procesarea datelor acumulate de răspuns a sincronizării a eșuat.
+    process_response_data: Procesarea datelor de răspuns a sincronizării a eșuat.
+    some_devices_failed_to_sync: Unele dispozitive nu au reușit să se sincronizeze. Vă rugăm să încercați din nou.
   messages:
     device_already_paired: Acest dispozitiv este deja împerecheat
     sync_completed: Sincronizare completată cu succes

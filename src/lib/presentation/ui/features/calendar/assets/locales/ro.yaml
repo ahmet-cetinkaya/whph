@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Obiceiuri
     tasks: Sarcini
+  tour:
+    today:
+      welcome:
+        title: Bine ați venit pe pagina de Astăzi
+        description: Centrul dumneavoastră de comandă zilnic pentru productivitate. Vizualizați și gestionați obiceiurile, sarcinile și urmărirea timpului de azi într-un singur loc. Rămâneți concentrat pe ceea ce este cel mai important astăzi.
+      tag_filter:
+        title: Filtru etichete
+        description: Filtrați obiceiurile și sarcinile zilnice după etichete. Concentrați-vă pe categorii specifice sau afișați elemente fără etichete pentru a vă organiza fluxul de lucru zilnic.
+      habits:
+        title: Obiceiuri zilnice
+        description: Urmăriți-vă obiceiurile zilnice și construiți consecvență. Marcați obiceiurile ca finalizate pe parcursul zilei pentru a vă menține șirurile și a vizualiza progresul.
+      tasks:
+        title: Sarcinile de azi
+        description: Gestionați sarcinile programate pentru astăzi. Adăugați sarcini noi, marcați-le ca finalizate, vizualizați detalii și țineți pasul cu prioritățile și termenele limită zilnice.
+      time_distribution:
+        title: Distribuția timpului
+        description: Vizualizați cum ați petrecut timpul astăzi. Vedeți timpul alocat diferitelor activități și optimizați-vă programul zilnic pentru o productivitate mai bună.
+      marathon_mode:
+        title: Modul Maraton
+        description: intrați în modul de lucru concentrat cu temporizatorul Pomodoro. Urmăriți timpul petrecut pe sarcini cu o interfață fără distragere și măriți-vă concentrația pentru sesiuni de lucru profund.

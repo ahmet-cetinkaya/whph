@@ -302,5 +302,7 @@ shared:
     success: Aggiornamento scaricato con successo!
     title: Aggiornamento disponibile!
   help: Aiuto
+  start_tour: Inizia tour
+  skip_tour: Salta tour
   validation:
     required: "{field} è obbligatorio."

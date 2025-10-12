@@ -174,5 +174,16 @@ app_usages:
     title: App Usage Rules
   tooltips:
     edit_name: Edit Name
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: App Usage & Time Insights
+      description: Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity.
+    usage_statistics:
+      title: Usage Statistics
+      description: View detailed app usage data and time distribution. Analyze your productivity patterns, track time spent on different applications, and identify areas for improvement.
+    filter_sort:
+      title: Filter & Sort
+      description: Filter app usage data by date range, tags, or specific devices. Sort and organize your usage statistics to gain better insights into your time management.
+    tracking_settings:
+      title: Tracking Settings
+      description: Configure app tracking rules, set up automatic tagging, and manage which applications to monitor. Customize tracking to match your productivity needs.

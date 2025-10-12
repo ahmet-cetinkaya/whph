@@ -22,20 +22,8 @@ about:
       title: "{appName}'ye Hoş Geldiniz"
       description: "Alışkanlıklar oluşturma, görevleri yönetme ve zamanı etkili bir şekilde takip etme konusunda kişisel yardımcınız. Temel özellikleri birlikte keşfedelim!"
     step2:
-      title: "Görev Yönetimi"
-      description: "Öncelikler, son tarihler ve hatırlatıcılarla görevler oluşturun ve organize edin. Pomodoro zamanlayıcısını kullanarak odaklanın ve önemli görevlerdeki ilerlemenizi takip edin."
-    step3:
-      title: "Alışkanlık Oluşturma"
-      description: "Günlük aktiviteleri takip ederek kalıcı alışkanlıklar oluşturun. Hatırlatıcılar ayarlayın, serilerinizi izleyin ve detaylı istatistiklerle ilerlemenizi görselleştirin."
-    step4:
-      title: "Not Alma"
-      description: "Güçlü bir not alma sistemiyle önemli bilgileri düzenli tutun. Kolay kategorizasyon ve hızlı erişim için notlarınızı etiketleyin."
-    step5:
-      title: "Uygulama Kullanımı ve Zaman Analizi"
-      description: "Uygulama kullanım desenlerini izleyin ve farklı aktivitelere harcanan zamanı analiz edin. Dijital alışkanlıklarınız hakkında içgörüler edinin ve verimliliğinizi optimize edin."
-    step6:
-      title: "Akıllı Etiketleme Sistemi"
-      description: "Görevlerinizi, alışkanlıklarınızı ve uygulamalarınızı etiketlerle düzenleyin ve gruplandırın. Etiketlere göre farklı aktivitelere harcadığınız zamanı takip ederek zamanınızı nerede harcadığınızı anlayın ve iş akışınızı optimize edin."
+      title: '"Work Hard Play Hard" ne anlama gelir?'
+      description: '"Work Hard Play Hard", bireyleri yüksek sorumluluk ile yüksek yaşam memnuniyetini dengelemeye teşvik eden bir slogandır. Yani işinizi ciddiye alın, ama boş zamanınızda da gerçekten dinlenin, eğlenin ve yaşayın. İş sadece para kazanmak değil, aynı zamanda büyümek ve tatmin olmak hakkındadır; eğlenmek tembellik değil, çabanın doğal ödülüdür. WHPH olarak biz de hem üretken çalışmayı hem de başarıları bilinçli bir şekilde kutlamayı önemsiyoruz.'
     step7:
       title: "Uygulama İzinleri"
       description: "{appName}'nin düzgün çalışması için bazı izinlere ihtiyaç vardır. Bildirim, uygulama takibi gibi sistemsel özellikler için vermek istediğiniz izinleri inceleyebilirsiniz."

@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Návyky
     tasks: Úkoly
+  tour:
+    today:
+      welcome:
+        title: Vítejte na stránce Dnes
+        description: Váš denní centrální panel pro produktivitu. Zobrazujte a spravujte dnešní návyky, úkoly a sledování času v jednom místě. Soustřeďte se na to, co je dnes nejdůležitější.
+      tag_filter:
+        title: Filtr značek
+        description: Filtrovat vaše denní návyky a úkoly podle značek. Zaměřte se na konkrétní kategorie nebo zobrazte položky bez značek a uspořádejte tak svůj denní pracovní postup.
+      habits:
+        title: Denní návyky
+        description: Sledujte své denní návyky a budujte konzistenci. Během dne označujte návyky jako dokončené a udržujte tak své štafety a vizualizujte svůj pokrok.
+      tasks:
+        title: Dnešní úkoly
+        description: Spravujte úkoly naplánované na dnešek. Přidávejte nové úkoly, označujte je jako dokončené, zobrazujte podrobnosti a udržujte přehled o svých denních prioritách a termínech.
+      time_distribution:
+        title: Distribuce času
+        description: Vizualizujte, jak jste dnes strávil čas. Zobrazte čas přidělený různým aktivitám a optimalizujte svůj denní rozvrh pro lepší produktivitu.
+      marathon_mode:
+        title: Režim Marathon
+        description: Vstupte do režimu soustředěné práce s časovačem Pomodoro. Sledujte čas strávený úkoly s rozhraním bez rozptylování a zvyšte své soustředění pro relace intenzivní práce.

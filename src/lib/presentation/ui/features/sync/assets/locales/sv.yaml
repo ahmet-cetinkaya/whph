@@ -142,6 +142,18 @@ sync:
     no_active_interfaces: Inga aktiva nätverksgränssnitt hittades
     device_discovery_failed: "Misslyckades att starta enhetsupptäckt: {error}"
     no_server_configured: Ingen server konfigurerad. Lägg till en synkroniseringsenhet först eller använd manuell anslutning för att ställa in en serveranslutning.
+    device_id_unavailable: Enhets-ID är inte tillgängligt. Kan inte fortsätta med synkronisering.
+    local_ip_unavailable: Lokal IP-adress är inte tillgänglig. Kontrollera nätverksanslutningen.
+    prerequisites_failed: Validering av synkroniseringskrav misslyckades. Kontrollera dina nätverksinställningar.
+    critical_sync_operation_failed: Kritisk synkroniseringsåtgärd misslyckades. Försök igen.
+    initiate_outgoing_sync_failed: Det gick inte att initiera synkronisering med enheter.
+    processing_incoming_data: Fel vid bearbetning av inkommande synkroniseringsdata.
+    checking_local_data: Fel vid kontroll av lokal data för synkronisering.
+    sync_with_device_failed: Synkronisering med enhet misslyckades.
+    sync_with_device_exception: Ett undantag inträffade under enhetssynkronisering.
+    process_accumulated_response_data: Det gick inte att bearbeta ackumulerad svarsdata för synkronisering.
+    process_response_data: Det gick inte att bearbeta svarsdata för synkronisering.
+    some_devices_failed_to_sync: Vissa enheter kunde inte synkroniseras. Försök igen.
   messages:
     device_already_paired: Denna enhet är redan parad
     sync_completed: Synkronisering slutförd framgångsrikt

@@ -21,20 +21,8 @@ about:
       title: "Välkommen till {appName}"
       description: "Din personliga följeslagare för att bygga bättre vanor, hantera uppgifter och spåra tid effektivt. Låt oss utforska de viktigaste funktionerna tillsammans!"
     step2:
-      title: "Uppgifts hantering"
-      description: "Skapa och organisera uppgifter med prioriteringar, deadlines och påminnelser. Använd Pomodoro-timern för att hålla dig fokuserad och spåra ditt framsteg på viktiga uppgifter."
-    step3:
-      title: "Vanbildning"
-      description: "Bygg varaktiga vanor genom att spåra dagliga aktiviteter. Ställ in påminnelser, övervaka dina serier och visualisera ditt framsteg med detaljerad statistik."
-    step4:
-      title: "Antecknings tagning"
-      description: "Håll viktig information organiserad med ett kraftfullt anteckningssystem. Märk dina anteckningar för enkel kategorisering och snabb åtkomst."
-    step5:
-      title: "App-användning & tidsinsikter"
-      description: "Övervaka app-användningsmönster och analysera tid spenderad på olika aktiviteter. Få insikter i dina digitala vanor och optimera din produktivitet."
-    step6:
-      title: "Smart märkningssystem"
-      description: "Använd taggar för att organisera och gruppera dina uppgifter, vanor och appar. Spåra tid spenderad på olika aktiviteter via taggar för att förstå var din tid går och optimera ditt arbetsflöde."
+      title: 'Vad betyder "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" är ett motto som uppmuntrar individer att balansera högt ansvar med hög livstillfredsställelse. Så ta ditt arbete på allvar, men vila också verkligen, ha kul och lev under din fritid. Arbete handlar inte bara om att tjäna pengar, utan om att växa och hitta uppfyllelse; att ha kul är inte lathet, utan den naturliga belöningen av ansträngning. Som WHPH värdesätter vi också både produktivt arbete och medvetet firande av framgångar.'
     step7:
       title: "App-behörigheter"
       description: "{appName} behöver vissa behörigheter för att fungera korrekt. Du kan granska behörigheterna du vill bevilja för systemfunktioner som notiser och app-spårning."

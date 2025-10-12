@@ -49,3 +49,23 @@ calendar:
   sections:
     habits: Vaner
     tasks: Opgaver
+  tour:
+    today:
+      welcome:
+        title: Velkommen til I dag-siden
+        description: Din daglige kommandocenter for produktivitet. Se og administrer dagens vaner, opgaver og tidssporing samlet ét sted. Hold fokus på det, der betyder mest i dag.
+      tag_filter:
+        title: Tag-filter
+        description: Filtrer dine daglige vaner og opgaver efter tags. Fokuser på specifikke kategorier eller vis elementer uden tags for at organisere din daglige arbejdsgang.
+      habits:
+        title: Daglige vaner
+        description: Spor dine daglige vaner og byg konsistens. Marker vaner som fuldførte gennem dagen for at opretholde dine streaks og visualisere dit fremskridt.
+      tasks:
+        title: Dagens opgaver
+        description: Administrer opgaver planlagt til i dag. Tilføj nye opgaver, marker dem som færdige, se detaljer og hold styr på dine daglige prioriteter og deadlines.
+      time_distribution:
+        title: Tidsfordeling
+        description: Visualiser, hvordan du har brugt din tid i dag. Se tid allokeret til forskellige aktiviteter og optimer din daglige tidsplan for bedre produktivitet.
+      marathon_mode:
+        title: Marathon-tilstand
+        description: Gå ind i fokuseret arbejdstilstand med Pomodoro-timeren. Spor tid på opgaver med et distraktionsfrit interface og øg din koncentration for intensive arbejdssessioner.

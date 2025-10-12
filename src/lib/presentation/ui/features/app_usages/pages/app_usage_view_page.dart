@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,7 @@ import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_details
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_rules_page.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/android_app_usage_debug_page.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
@@ -19,6 +21,8 @@ import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/app_usage_permission.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -35,10 +39,20 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   final _appUsagesService = container.resolve<AppUsagesService>();
   final _themeService = container.resolve<IThemeService>();
 
+  final GlobalKey _mainContentKey = GlobalKey();
+  final GlobalKey _appUsageListKey = GlobalKey();
+  final GlobalKey _listOptionsKey = GlobalKey();
+  final GlobalKey _settingsButtonKey = GlobalKey();
+
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 2;
+
   late AppUsageFilterState _filterState;
   bool _hasPermission = false;
   bool _isListVisible = false;
   bool _isCheckingPermission = true;
+  bool _isDataLoaded = false;
 
   @override
   void initState() {
@@ -47,6 +61,30 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     // Start with no date filter - user will set dates when needed
     _filterState = const AppUsageFilterState();
     _checkPermission();
+
+    // Auto-start tour if multi-page tour is active
+    _checkAndStartTour();
+  }
+
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
+    if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 4) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _pageReadyCompleter.future;
+        if (mounted) {
+          _startTour(isMultiPageTour: true);
+        }
+      });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
+    }
   }
 
   void _onSettingsLoaded() {
@@ -54,6 +92,20 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     setState(() {
       _isListVisible = true;
     });
+    _componentLoaded();
+  }
+
+  void _onDataListed(int count) {
+    if (mounted) {
+      setState(() {
+        _isDataLoaded = true;
+      });
+      _componentLoaded();
+    }
+  }
+
+  bool get _isPageFullyLoaded {
+    return _isListVisible && _isDataLoaded;
   }
 
   Future<void> _checkPermission() async {
@@ -136,6 +188,70 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     );
   }
 
+  void _startTour({bool isMultiPageTour = false}) {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(AppUsageTranslationKeys.tourAppUsageInsightsTitle),
+        description: _translationService.translate(AppUsageTranslationKeys.tourAppUsageInsightsDescription),
+        icon: Icons.bar_chart,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. App usage graph list introduce
+      TourStep(
+        title: _translationService.translate(AppUsageTranslationKeys.tourUsageStatisticsTitle),
+        description: _translationService.translate(AppUsageTranslationKeys.tourUsageStatisticsDescription),
+        targetKey: _appUsageListKey,
+        position: TourPosition.top,
+      ),
+      // 3. List options introduce
+      TourStep(
+        title: _translationService.translate(AppUsageTranslationKeys.tourFilterSortTitle),
+        description: _translationService.translate(AppUsageTranslationKeys.tourFilterSortDescription),
+        targetKey: _listOptionsKey,
+        position: TourPosition.bottom,
+      ),
+      // 4. App tracking settings button introduce
+      TourStep(
+        title: _translationService.translate(AppUsageTranslationKeys.tourTrackingSettingsTitle),
+        description: _translationService.translate(AppUsageTranslationKeys.tourTrackingSettingsDescription),
+        targetKey: _settingsButtonKey,
+        position: TourPosition.bottom,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+          if (isMultiPageTour) {
+            TourNavigationService.onPageTourCompleted(context);
+          }
+        },
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
+          if (context.mounted) Navigator.of(context).pop();
+        },
+        onBack: isMultiPageTour && TourNavigationService.canNavigateBack
+            ? () => TourNavigationService.navigateBackInTour(context)
+            : null,
+        showBackButton: isMultiPageTour,
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+      ),
+    );
+  }
+
+  void _startIndividualTour() {
+    _startTour(isMultiPageTour: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffoldLayout(
@@ -149,6 +265,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             tooltip: 'Debug Usage Statistics',
           ),
         IconButton(
+          key: _settingsButtonKey,
           icon: const Icon(Icons.settings),
           onPressed: _showTagRulesSettings,
           color: _themeService.primaryColor,
@@ -163,48 +280,56 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         KebabMenu(
           helpTitleKey: AppUsageTranslationKeys.viewHelpTitle,
           helpMarkdownContentKey: AppUsageTranslationKeys.viewHelpContent,
+          onStartTour: _startIndividualTour,
         ),
       ],
-      builder: (context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Show loading indicator while checking permission
-          if (_isCheckingPermission)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
+      builder: (context) => LoadingOverlay(
+        isLoading: !_isPageFullyLoaded,
+        child: Column(
+          key: _mainContentKey,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Show loading indicator while checking permission
+            if (_isCheckingPermission)
+              const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            // Show permission card only if permission check is complete and permission is not granted
+            else if (!_hasPermission)
+              AppUsagePermission(
+                onPermissionGranted: _onPermissionGranted,
+              )
+            // Show filters and list if permission is granted
+            else ...[
+              AppUsageListOptions(
+                key: _listOptionsKey,
+                initialState: _filterState,
+                onFiltersChanged: _handleFiltersChanged,
+                onSettingsLoaded: _onSettingsLoaded,
+                onSaveSettings: () {
+                  // Force refresh the list when settings are saved
+                  setState(() {});
+                },
               ),
-            )
-          // Show permission card only if permission check is complete and permission is not granted
-          else if (!_hasPermission)
-            AppUsagePermission(
-              onPermissionGranted: _onPermissionGranted,
-            )
-          // Show filters and list if permission is granted
-          else ...[
-            AppUsageListOptions(
-              initialState: _filterState,
-              onFiltersChanged: _handleFiltersChanged,
-              onSettingsLoaded: _onSettingsLoaded,
-              onSaveSettings: () {
-                // Force refresh the list when settings are saved
-                setState(() {});
-              },
-            ),
 
-            // List
-            if (_isListVisible)
-              Expanded(
-                child: AppUsageList(
-                    onOpenDetails: _openDetails,
-                    filterByTags: _filterState.tags,
-                    showNoTagsFilter: _filterState.showNoTagsFilter,
-                    filterStartDate: _getEffectiveStartDate(),
-                    filterEndDate: _getEffectiveEndDate(),
-                    filterByDevices: _filterState.devices),
-              ),
+              // List
+              if (_isListVisible)
+                Expanded(
+                  child: AppUsageList(
+                      key: _appUsageListKey,
+                      onOpenDetails: _openDetails,
+                      onList: _onDataListed,
+                      filterByTags: _filterState.tags,
+                      showNoTagsFilter: _filterState.showNoTagsFilter,
+                      filterStartDate: _getEffectiveStartDate(),
+                      filterEndDate: _getEffectiveEndDate(),
+                      filterByDevices: _filterState.devices),
+                ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

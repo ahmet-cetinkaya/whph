@@ -283,3 +283,5 @@ shared:
     deadline_cannot_be_before_planned: 마감일은 계획된 날짜보다 이르게 설정할 수 없습니다.
     required: "{field}이(가) 필요합니다."
   help: 도움말
+  start_tour: 투어 시작
+  skip_tour: 투어 건너뛰기

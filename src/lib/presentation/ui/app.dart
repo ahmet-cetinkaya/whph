@@ -64,10 +64,37 @@ class _AppState extends State<App> {
   }
 
   /// Initialize app-level services and dialogs
-  Future<void> _initializeApp() async {
-    await _initializationService.initializeApp(widget.navigatorKey);
+  void _initializeApp() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _waitForNavigatorContext();
+    });
+  }
 
-    // Save current locale for background notifications
+  /// Wait for navigator context to be available before initializing
+  void _waitForNavigatorContext() {
+    if (widget.navigatorKey.currentContext != null) {
+      _runInitialization();
+      return;
+    }
+
+    // Use addPostFrameCallback to wait for the next frame when context should be available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.navigatorKey.currentContext != null) {
+        _runInitialization();
+      } else {
+        // Schedule another check in the next frame if still not available
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && widget.navigatorKey.currentContext != null) {
+            _runInitialization();
+          }
+        });
+      }
+    });
+  }
+
+  /// Run initialization once context is available
+  Future<void> _runInitialization() async {
+    await _initializationService.initializeApp(widget.navigatorKey);
     await _saveCurrentLocaleForNotifications();
   }
 

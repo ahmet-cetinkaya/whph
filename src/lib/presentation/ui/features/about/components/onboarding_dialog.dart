@@ -11,12 +11,14 @@ import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/pages/permissions_page.dart';
-import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/language_dropdown.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class OnboardingDialog extends StatefulWidget {
   const OnboardingDialog({super.key});
@@ -31,61 +33,53 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   final _mediator = container.resolve<Mediator>();
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  String? _selectedLanguageCode;
+  late List<_OnboardingStep> _steps;
 
-  List<_OnboardingStep> get _steps {
+  @override
+  void initState() {
+    super.initState();
+    _steps = _buildSteps();
+  }
+
+  List<_OnboardingStep> _buildSteps() {
     final baseSteps = [
+      // Welcome
       _OnboardingStep(
         icon: Icons.waving_hand,
         titleKey: AboutTranslationKeys.onboardingTitle1,
         descriptionKey: AboutTranslationKeys.onboardingDescription1,
+        extraWidget: (context) => LanguageDropdown(
+          initialLanguageCode: _selectedLanguageCode,
+          onLanguageChanged: _onLanguageChanged,
+          showPlaceholder: true,
+        ),
       ),
+      // Work Hard Play Hard Motto
       _OnboardingStep(
-        icon: Icons.check_circle_outline,
+        icon: Icons.balance,
         titleKey: AboutTranslationKeys.onboardingTitle2,
         descriptionKey: AboutTranslationKeys.onboardingDescription2,
       ),
-      _OnboardingStep(
-        icon: Icons.refresh,
-        titleKey: AboutTranslationKeys.onboardingTitle3,
-        descriptionKey: AboutTranslationKeys.onboardingDescription3,
-      ),
-      _OnboardingStep(
-        icon: Icons.note_alt_outlined,
-        titleKey: AboutTranslationKeys.onboardingTitle4,
-        descriptionKey: AboutTranslationKeys.onboardingDescription4,
-      ),
-      _OnboardingStep(
-        icon: Icons.bar_chart,
-        titleKey: AboutTranslationKeys.onboardingTitle5,
-        descriptionKey: AboutTranslationKeys.onboardingDescription5,
-      ),
-      _OnboardingStep(
-        icon: TagUiConstants.tagIcon,
-        titleKey: AboutTranslationKeys.onboardingTitle6,
-        descriptionKey: AboutTranslationKeys.onboardingDescription6,
-      ),
     ];
 
-    // Add permissions step only on Android
+    // Permissions intro (only on Android)
     if (PlatformUtils.isMobile) {
       baseSteps.add(
         _OnboardingStep(
           icon: Icons.security,
           titleKey: AboutTranslationKeys.onboardingTitle7,
           descriptionKey: AboutTranslationKeys.onboardingDescription7,
-          extraWidget: (context) => Padding(
-            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-            child: OutlinedButton.icon(
-              onPressed: () => _showPermissionsPage(context),
-              icon: const Icon(Icons.lock_open),
-              label: Text(_translationService.translate(AboutTranslationKeys.onboardingPermissionsButton)),
-            ),
+          extraWidget: (context) => OutlinedButton.icon(
+            onPressed: () => _showPermissionsPage(context),
+            icon: const Icon(Icons.lock_open),
+            label: Text(_translationService.translate(AboutTranslationKeys.onboardingPermissionsButton)),
           ),
         ),
       );
     }
 
-    // Add final motivation step
+    // Final motivation intro
     baseSteps.add(
       _OnboardingStep(
         imageAsset: AppAssets.logo,
@@ -124,12 +118,33 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
     if (mounted) Navigator.of(context).pop();
   }
 
+  Future<void> _startTour() async {
+    // Complete onboarding first
+    await _completeOnboarding();
+    // Start the multi-page tour after dialog is fully closed
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      TourNavigationService.startMultiPageTour(context);
+    });
+  }
+
+  Future<void> _skipTour() async {
+    // Mark tour as skipped
+    await TourNavigationService.skipMultiPageTour();
+    // Complete onboarding without starting tour
+    _completeOnboarding();
+  }
+
   void _showPermissionsPage(BuildContext context) {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const PermissionsPage(),
       size: DialogSize.large,
     );
+  }
+
+  Future<void> _onLanguageChanged(String languageCode) async {
+    _selectedLanguageCode = languageCode;
+    await _translationService.changeLanguageWithoutNavigation(context, languageCode);
   }
 
   @override
@@ -151,44 +166,54 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                 onPageChanged: (page) => setState(() => _currentPage = page),
                 itemBuilder: (context, index) {
                   final step = _steps[index];
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (step.imageAsset != null)
-                        Image.asset(
-                          step.imageAsset!,
-                          width: 64,
-                          height: 64,
-                        )
-                      else
-                        Icon(
-                          step.icon,
-                          size: 64,
-                          color: _themeService.primaryColor,
-                        ),
-                      const SizedBox(height: 24),
-                      Text(
-                        _translationService.translate(
-                          step.titleKey,
-                          namedArgs:
-                              step.titleKey == AboutTranslationKeys.onboardingTitle1 ? {'appName': AppInfo.name} : null,
-                        ),
-                        style: AppTheme.headlineMedium,
-                        textAlign: TextAlign.center,
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (step.imageAsset != null)
+                            Image.asset(
+                              step.imageAsset!,
+                              width: 64,
+                              height: 64,
+                            )
+                          else
+                            Icon(
+                              step.icon,
+                              size: 64,
+                              color: _themeService.primaryColor,
+                            ),
+                          const SizedBox(height: 24),
+                          Text(
+                            _translationService.translate(
+                              step.titleKey,
+                              namedArgs: step.titleKey == AboutTranslationKeys.onboardingTitle1
+                                  ? {'appName': AppInfo.name}
+                                  : null,
+                            ),
+                            style: AppTheme.headlineMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            _translationService.translate(
+                              step.descriptionKey,
+                              namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
+                                  ? {'appName': AppInfo.name}
+                                  : null,
+                            ),
+                            style: AppTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          if (step.extraWidget != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
+                              child: step.extraWidget!(context),
+                            ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        _translationService.translate(
-                          step.descriptionKey,
-                          namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
-                              ? {'appName': AppInfo.name}
-                              : null,
-                        ),
-                        style: AppTheme.bodyMedium,
-                        textAlign: TextAlign.center,
-                      ),
-                      if (step.extraWidget != null) step.extraWidget!(context),
-                    ],
+                    ),
                   );
                 },
               ),
@@ -213,31 +238,43 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
               ),
             ),
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Back button
-                if (_currentPage > 0)
-                  TextButton(
-                    onPressed: _previousPage,
-                    child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonBack)),
-                  )
-                else
-                  const SizedBox.shrink(),
-
-                // Next/Start button
-                FilledButton(
-                  onPressed: _nextPage,
-                  child: Text(
-                    _translationService.translate(
-                      _currentPage == _steps.length - 1
-                          ? AboutTranslationKeys.onboardingButtonStart
-                          : AboutTranslationKeys.onboardingButtonNext,
-                    ),
+            // Different button layout for the last step
+            if (_currentPage == _steps.length - 1)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Skip Tour button
+                  OutlinedButton(
+                    onPressed: _skipTour,
+                    child: Text(_translationService.translate(SharedTranslationKeys.skipTour)),
                   ),
-                ),
-              ],
-            ),
+                  // Start Tour button
+                  FilledButton(
+                    onPressed: _startTour,
+                    child: Text(_translationService.translate(SharedTranslationKeys.startTour)),
+                  ),
+                ],
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Back button
+                  if (_currentPage > 0)
+                    TextButton(
+                      onPressed: _previousPage,
+                      child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonBack)),
+                    )
+                  else
+                    const SizedBox.shrink(),
+
+                  // Next button
+                  FilledButton(
+                    onPressed: _nextPage,
+                    child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonNext)),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

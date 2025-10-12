@@ -139,3 +139,25 @@ tags:
     remove_tag: Tag entfernen
     select: Klicken, um Tag auszuwählen
     unarchive_tag: Tag aus Archiv entfernen
+  tour:
+    smart_tagging:
+      title: Intelligentes Tagging-System
+      description: Verwenden Sie Tags, um Ihre Aufgaben, Gewohnheiten und Apps zu organisieren und zu gruppieren. Verfolgen Sie die Zeit, die Sie für verschiedene Aktivitäten aufwenden, mithilfe von Tags, um zu verstehen, wo Ihre Zeit bleibt, und Ihren Arbeitsablauf zu optimieren.
+    your_tags:
+      title: Ihre Tags
+      description: Durchsuchen Sie alle Ihre Tags und sehen Sie deren Nutzungsstatistiken. Klicken Sie auf ein beliebiges Tag, um Details anzuzeigen, Eigenschaften zu bearbeiten oder zu sehen, welche Aufgaben und Gewohnheiten es verwenden. Organisieren Sie Ihren Arbeitsablauf effizient.
+    tag_archive_filters:
+      title: Tag- und Archivfilter
+      description: Filtern Sie Tags, indem Sie bestimmte Tags zum Fokus auswählen oder die Sichtbarkeit archivierter Tags umschalten. Kontrollieren Sie, welche Tags in Ihrer Liste angezeigt werden, für eine bessere Organisation.
+    search_sort:
+      title: Suchen und Sortieren
+      description: Suchen Sie nach bestimmten Tags nach Namen, sortieren Sie nach verschiedenen Kriterien wie Name oder Nutzungshäufigkeit. Organisieren Sie Ihre Tag-Liste, um schnell zu finden, was Sie brauchen.
+    time_distribution_chart:
+      title: Zeitverteilungsdiagramm
+      description: Visualisieren Sie, wie Sie Ihre Zeit auf verschiedene Tags und Kategorien verteilen. Sehen Sie Zeitverteilungsmuster und identifizieren Sie, wo sich Ihr Fokus über den Tag verteilt.
+    chart_customization:
+      title: Diagrammanpassung
+      description: Passen Sie das Zeitdiagramm an, indem Sie den Datumsbereich auswählen, Kategorien wählen (Aufgaben, Gewohnheiten, Apps) und nach bestimmten Tags filtern, um Ihre Zeitverteilung detailliert zu analysieren.
+    create_tags:
+      title: Neue Tags erstellen
+      description: Fügen Sie neue Tags hinzu, um Ihre Inhalte zu kategorisieren. Tags helfen Ihnen dabei, Aufgaben, Gewohnheiten und Apps in allen Funktionen für ein besseres Produktivitäts-Tracking und Zeitmanagement zu organisieren.

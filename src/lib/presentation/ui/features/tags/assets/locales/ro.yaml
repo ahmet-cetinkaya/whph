@@ -126,3 +126,25 @@ tags:
     remove_tag: Eliminare etichetă
     select: Click pentru a selecta eticheta
     unarchive_tag: De-arhivare etichetă
+  tour:
+    smart_tagging:
+      title: Sistem Inteligent de Etichetare
+      description: Folosiți etichete pentru a vă organiza și grupa sarcinile, obiceiurile și aplicațiile. Urmăriți timpul petrecut în diferite activități după etichete pentru a înțelege unde vă merge timpul și a vă optimiza fluxul de lucru.
+    your_tags:
+      title: Etichetele Tale
+      description: Răsfoiește toate etichetele tale și vezi statisticile lor de utilizare. Apasă pe orice etichetă pentru a vizualiza detalii, edita proprietăți sau a vedea ce sarcini și obiceiuri o folosesc. Organizează-ți eficient fluxul de lucru.
+    tag_archive_filters:
+      title: Filtre pentru Etichete și Arhivă
+      description: Filtrează etichetele selectând etichete specifice pentru a te concentra pe ele, sau comută vizibilitatea etichetelor arhivate. Controlează ce etichete apar în lista ta pentru o mai bună organizare.
+    search_sort:
+      title: Căutare și Sortare
+      description: Caută etichete specifice după nume, sortează după diferite criterii precum numele sau numărul de utilizări. Organizează-ți lista de etichete pentru a găsi rapid ceea ce ai nevoie.
+    time_distribution_chart:
+      title: Graficul Distribuției Timpului
+      description: Vizualizează cum îți petreci timpul în diferite etichete și categorii. Vezi modelele de alocare a timpului și identifică unde îți merge atenția pe parcursul zilei.
+    chart_customization:
+      title: Personalizarea Graficului
+      description: Personalizează graficul temporal selectând intervalul de date, alegând categorii (sarcini, obiceiuri, aplicații) și filtrând după etichete specifice pentru a analiza în detaliu distribuția timpului tău.
+    create_tags:
+      title: Creează Etichete Noi
+      description: Adaugă etichete noi pentru a-ți categorisi conținutul. Etichetele te ajută să organizezi sarcini, obiceiuri și aplicații în toate funcțiile pentru un mai bun urmărire a productivității și gestionare a timpului.

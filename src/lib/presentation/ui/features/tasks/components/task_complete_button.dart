@@ -103,7 +103,6 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           completedAt: !originalCompletedState ? DateTime.now().toUtc() : null,
           plannedDateReminderTime: task.plannedDateReminderTime,
           deadlineDateReminderTime: task.deadlineDateReminderTime,
-          // CRITICAL FIX: Preserve all recurrence settings when completing the task
           recurrenceType: task.recurrenceType,
           recurrenceInterval: task.recurrenceInterval,
           recurrenceDays: _recurrenceService.getRecurrenceDays(task),
@@ -166,9 +165,10 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
     final borderColor = widget.color ?? AppTheme.borderColor;
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => _toggleCompleteTask(context),
       child: Padding(
-        padding: const EdgeInsets.all(2),
+        padding: const EdgeInsets.all(AppTheme.sizeSmall),
         child: SizedBox(
           width: widget.size,
           height: widget.size,
