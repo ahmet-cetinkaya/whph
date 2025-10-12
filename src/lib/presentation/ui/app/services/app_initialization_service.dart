@@ -48,37 +48,20 @@ class AppInitializationService {
       Logger.info("Onboarding completed setting: $hasCompletedOnboarding");
 
       if (!hasCompletedOnboarding) {
-        final context = navigatorKey.currentContext;
-        if (context != null && context.mounted) {
-          ResponsiveDialogHelper.showResponsiveDialog(
-            context: context,
-            child: const OnboardingDialog(),
-            isDismissible: false,
-            size: DialogSize.min,
-          );
-        } else {
-          Logger.warning("Context not available for onboarding dialog");
-        }
+        _showOnboardingDialog(navigatorKey);
       }
     } catch (e) {
-      // If setting doesn't exist (first time), show onboarding
       Logger.info('Onboarding setting not found, showing onboarding dialog. Error: $e');
-      final context = navigatorKey.currentContext;
-      if (context != null && context.mounted) {
-        ResponsiveDialogHelper.showResponsiveDialog(
-          context: context,
-          child: const OnboardingDialog(),
-          isDismissible: false,
-          size: DialogSize.min,
-        );
-      } else {
-        Logger.warning("Context not available for onboarding dialog (first time)");
-      }
+      _showOnboardingDialog(navigatorKey);
     }
   }
 
   void _showOnboardingForDebug(GlobalKey<NavigatorState> navigatorKey) {
     Logger.info("Showing onboarding dialog in debug mode.");
+    _showOnboardingDialog(navigatorKey);
+  }
+
+  void _showOnboardingDialog(GlobalKey<NavigatorState> navigatorKey) {
     final context = navigatorKey.currentContext;
     if (context != null && context.mounted) {
       ResponsiveDialogHelper.showResponsiveDialog(
@@ -88,7 +71,7 @@ class AppInitializationService {
         size: DialogSize.min,
       );
     } else {
-      Logger.warning("Context not available for onboarding dialog in debug mode");
+      Logger.warning("Context not available for onboarding dialog");
     }
   }
 
