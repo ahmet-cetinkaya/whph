@@ -34,20 +34,8 @@ class AppInitializationService {
 
   /// Check and show onboarding dialog if not completed (or always in debug mode)
   Future<void> _checkAndShowOnboarding(GlobalKey<NavigatorState> navigatorKey) async {
-
     if (kDebugMode) {
-      Logger.info("Showing onboarding dialog in debug mode.");
-      final context = navigatorKey.currentContext;
-      if (context != null && context.mounted) {
-        ResponsiveDialogHelper.showResponsiveDialog(
-          context: context,
-          child: const OnboardingDialog(),
-          isDismissible: false,
-          size: DialogSize.min,
-        );
-      } else {
-        Logger.warning("Context not available for onboarding dialog in debug mode");
-      }
+      _showOnboardingForDebug(navigatorKey);
       return;
     }
 
@@ -86,6 +74,21 @@ class AppInitializationService {
       } else {
         Logger.warning("Context not available for onboarding dialog (first time)");
       }
+    }
+  }
+
+  void _showOnboardingForDebug(GlobalKey<NavigatorState> navigatorKey) {
+    Logger.info("Showing onboarding dialog in debug mode.");
+    final context = navigatorKey.currentContext;
+    if (context != null && context.mounted) {
+      ResponsiveDialogHelper.showResponsiveDialog(
+        context: context,
+        child: const OnboardingDialog(),
+        isDismissible: false,
+        size: DialogSize.min,
+      );
+    } else {
+      Logger.warning("Context not available for onboarding dialog in debug mode");
     }
   }
 
