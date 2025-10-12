@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2025-10-12
+
+### Added
+- Enhance tour navigation with async operations and state persistence
+- Add multi-page tour functionality with overlay component
+- Add language selection dropdown to onboarding dialog
+- Add loading overlay to pages with state management improvements
+- Improve user experience for multiple sync errors display
+- Implement translation keys with parameters for sync error handling
+
+### Changed
+- Initialize onboarding steps once in initState
+
+### Fixed
+- Add mounted check before navigation after async gap
+- Update help dialog title and content formatting
+- Enhance task completion button touch area and recurrence handling
+- Improve app initialization timing with context availability check
+- Prevent background dim flicker during step transitions
+- Wait for page loaded before starting tour
+- Wait for page loaded before starting tour
+- Wait for page loaded before starting tour
+- Wait for page loaded before starting tour
+- Wait for page loaded before starting tour
+- Prevent data loss in task details date fields during background refresh
+- Refactor tag display logic in task_card.dart
+- Refactor tag display logic in note_card.dart
+- Refactor tag display logic in habit_card.dart
+- Refactor tag display logic in app_usage_card.dart
+- Remove cursor selection restoration logic from detail components
+- Improve tag display in card components with overflow handling
+- Capture errorParams in _handleIncomingSync method
+
 ## [0.16.5] - 2025-10-02
 
 ### Added
