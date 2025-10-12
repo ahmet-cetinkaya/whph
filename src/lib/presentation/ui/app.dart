@@ -64,20 +64,21 @@ class _AppState extends State<App> {
   }
 
   /// Initialize app-level services and dialogs
-  Future<void> _initializeApp() async {
+  void _initializeApp() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _waitForNavigatorContext();
     });
   }
 
   /// Wait for navigator context to be available before initializing
-  void _waitForNavigatorContext() {
-    if (widget.navigatorKey.currentContext != null) {
+  void _waitForNavigatorContext() async {
+    while (widget.navigatorKey.currentContext == null) {
+      if (!mounted) return;
+      await Future.delayed(const Duration(milliseconds: 50));
+    }
+
+    if (mounted) {
       _runInitialization();
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _waitForNavigatorContext();
-      });
     }
   }
 
