@@ -213,3 +213,19 @@ habits:
     edit_name: Editar nombre
     increase_daily_target: Aumentar objetivo diario
     increase_estimated_time: Aumentar tiempo estimado
+  tour:
+    habit_building:
+      title: Formación de hábitos
+      description: Construye hábitos duraderos rastreando actividades diarias. Establece recordatorios, monitorea tus rachas y visualiza tu progreso con estadísticas detalladas.
+    create_habits:
+      title: Crear nuevos hábitos
+      description: Comienza a construir nuevos hábitos haciendo clic en este botón. Establece objetivos, frecuencias, recordatorios y rastrea múltiples finalizaciones por día para un seguimiento de hábitos flexible.
+    your_habits:
+      title: Tus hábitos
+      description: Visualiza y gestiona todos tus hábitos aquí. Haz clic en cualquier hábito para ver detalles, estadísticas e historial de finalización. Marca hábitos como completados diariamente para construir rachas y rastrear tu progreso.
+    calendar_view:
+      title: Vista de calendario
+      description: Visualiza tu historial de finalización de hábitos a lo largo de varios días. El verde indica hábitos completados. Realiza un seguimiento de tu consistencia y observa tus patrones de progreso a lo largo del tiempo.
+    filter_search:
+      title: Filtrar y buscar
+      description: Encuentra hábitos específicos usando etiquetas, términos de búsqueda o filtra por estado archivado. Organiza y gestiona tus hábitos de manera eficiente para mantenerte enfocado en lo que importa.

@@ -21,20 +21,8 @@ about:
       title: "Velkommen til {appName}"
       description: "Din personlige ledsager til at bygge bedre vaner, administrere opgaver og spore tid effektivt. Lad os udforske de vigtigste funktioner sammen!"
     step2:
-      title: "Opgavestyring"
-      description: "Opret og organiser opgaver med prioriteter, deadlines og påmindelser. Brug Pomodoro-timeren til at forblive fokuseret og spore din fremgang på vigtige opgaver."
-    step3:
-      title: "Vaneopbygning"
-      description: "Byg varige vaner ved at spore daglige aktiviteter. Sæt påmindelser, overvåg dine serier og visualisér din fremgang med detaljerede statistikker."
-    step4:
-      title: "Notatopsamling"
-      description: "Hold vigtige oplysninger organiseret med et kraftfuldt notatopsamlingssystem. Tag dine noter for nem kategorisering og hurtig adgang."
-    step5:
-      title: "App-brug & tidsindsigter"
-      description: "Overvåg app-brugsmønstre og analyser tid brugt på tværs af forskellige aktiviteter. Få indsigt i dine digitale vaner og optimer din produktivitet."
-    step6:
-      title: "Smart mærkningssystem"
-      description: "Brug tags til at organisere og gruppere dine opgaver, vaner og apps. Spor tid brugt på forskellige aktiviteter efter tags for at forstå, hvor din tid går hen, og optimér din arbejdsgang."
+      title: 'Hvad betyder "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" er et motto, der opfordrer enkeltpersoner til at balancere højt ansvar med høj livstilfredshed. Så tag dit arbejde alvorligt, men hvil også virkelig, hav det sjovt og lev i din fritid. Arbejde handler ikke kun om at tjene penge, men om at vokse og finde opfyldelse; at have det sjovt er ikke dovenskab, men den naturlige belønning for indsats. Som WHPH værdsætter vi også både produktivt arbejde og bevidst fejring af succeser.'
     step7:
       title: "App-tilladelser"
       description: "{appName} har brug for visse tilladelser for at fungere korrekt. Du kan gennemgå tilladelserne, du vil give til systemfunktioner som notifikationer og app-sporing."

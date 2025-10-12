@@ -298,3 +298,5 @@ shared:
   validation:
     required: "{field} é obrigatório"
   help: Ajuda
+  start_tour: Iniciar tour
+  skip_tour: Pular tour

@@ -282,3 +282,5 @@ shared:
   validation:
     required: "{field}是必需的。"
   help: 帮助
+  start_tour: 开始导览
+  skip_tour: 跳过导览

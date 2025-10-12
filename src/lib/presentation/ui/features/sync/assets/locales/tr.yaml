@@ -128,6 +128,18 @@ sync:
     no_active_interfaces: Aktif ağ arabirimi yok
     device_discovery_failed: Cihaz keşfi başarısız
     no_server_configured: Yapılandırılmış sunucu yok. Lütfen önce bir senkronizasyon cihazı ekleyin veya manuel bağlantıyı kullanarak sunucu bağlantısını kurun.
+    device_id_unavailable: Cihaz kimliği kullanılamıyor. Senkronizasyon işlemine devam edilemiyor.
+    local_ip_unavailable: Yerel IP adresi kullanılamıyor. Ağ bağlantısını kontrol edin.
+    prerequisites_failed: Senkronizasyon önkoşulları doğrulaması başarısız oldu. Lütfen ağ ayarlarınızı kontrol edin.
+    critical_sync_operation_failed: Kritik senkronizasyon işlemi başarısız oldu. Lütfen tekrar deneyin.
+    initiate_outgoing_sync_failed: Cihazlarla senkronizasyon başlatılamadı.
+    processing_incoming_data: Gelen senkronizasyon verileri işlenirken hata oluştu.
+    checking_local_data: Senkronizasyon için yerel verilerin kontrol edilmesi sırasında hata oluştu.
+    sync_with_device_failed: Cihazla senkronizasyon başarısız oldu.
+    sync_with_device_exception: Cihaz senkronizasyonu sırasında bir istisna oluştu.
+    process_accumulated_response_data: Birikmiş senkronizasyon yanıt verileri işlenemedi.
+    process_response_data: Senkronizasyon yanıt verileri işlenemedi.
+    some_devices_failed_to_sync: Bazı cihazlar senkronize edilemedi. Lütfen tekrar deneyin.
   messages:
     device_already_paired: Bu cihaz zaten eşleştirilmiş
     sync_completed: Senkronizasyon başarıyla tamamlandı

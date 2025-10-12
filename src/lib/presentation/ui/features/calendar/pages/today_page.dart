@@ -30,6 +30,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_confetti_anim
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/features/calendar/constants/calendar_translation_keys.dart';
 
 class TodayPage extends StatefulWidget {
@@ -45,6 +47,17 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   final _translationService = container.resolve<ITranslationService>();
   final _confettiAnimationService = container.resolve<IConfettiAnimationService>();
   final _themeService = container.resolve<IThemeService>();
+
+  // Tour keys
+  final GlobalKey _mainListOptionsKey = GlobalKey();
+  final GlobalKey _habitsSectionKey = GlobalKey();
+  final GlobalKey _habitsListKey = GlobalKey();
+  final GlobalKey _tasksSectionKey = GlobalKey();
+  final GlobalKey _tasksListKey = GlobalKey();
+  final GlobalKey _mainContentKey = GlobalKey();
+  final GlobalKey _timeChartSectionKey = GlobalKey();
+  final GlobalKey _marathonButtonKey = GlobalKey();
+  final GlobalKey _addTaskButtonKey = GlobalKey();
 
   // Main list options state
   List<String>? _selectedTagFilter;
@@ -95,6 +108,21 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     _resetConfettiIfNewDay();
     // Initialize cached date calculations
     _updateDateCalculations();
+    // Auto-start tour if multi-page tour is active
+    _checkAndStartTour();
+  }
+
+  void _checkAndStartTour() {
+    if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 2) {
+      // Delay to ensure the page is fully built and laid out
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) {
+            _startTour(isMultiPageTour: true);
+          }
+        });
+      });
+    }
   }
 
   void _resetConfettiIfNewDay() {
@@ -284,6 +312,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       title: _translationService.translate(CalendarTranslationKeys.todayTitle),
       appBarActions: [
         IconButton(
+          key: _marathonButtonKey,
           icon: const Icon(Icons.timer),
           onPressed: () => _openMarathonPage(context),
           color: _themeService.primaryColor,
@@ -292,10 +321,12 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         KebabMenu(
           helpTitleKey: CalendarTranslationKeys.todayHelpTitle,
           helpMarkdownContentKey: CalendarTranslationKeys.todayHelpContent,
+          onStartTour: _startIndividualTour,
         ),
       ],
       // Add floating action button for mobile devices
       floatingActionButton: TaskAddFloatingButton(
+        key: _addTaskButtonKey,
         initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
         initialPlannedDate: DateTime.now(),
         initialTitle: _taskSearchQuery,
@@ -304,9 +335,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       builder: (context) => LoadingOverlay(
         isLoading: !_isPageFullyLoaded,
         child: ListView(
+          key: _mainContentKey,
           children: [
             // Page list options
             TodayPageListOptions(
+              key: _mainListOptionsKey,
               onSettingsLoaded: _onMainListOptionSettingsLoaded,
               selectedTagIds: _selectedTagFilter,
               showNoTagsFilter: _showNoTagsFilter,
@@ -316,6 +349,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
             if (_mainListOptionSettingsLoaded) ...[
               // Habits Section
               Padding(
+                key: _habitsSectionKey,
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,6 +392,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     // Habits list
                     if (_habitListOptionSettingsLoaded)
                       HabitsList(
+                        key: _habitsListKey,
                         pageSize: 5,
                         mini: true,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
@@ -383,6 +418,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
               // Tasks Section
               Padding(
+                key: _tasksSectionKey,
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -454,6 +490,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     // Tasks list
                     if (_taskListOptionSettingsLoaded)
                       TaskList(
+                        key: _tasksListKey,
                         filterByCompleted: _showCompletedTasks,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                         filterNoTags: _showNoTagsFilter,
@@ -484,6 +521,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
               const SizedBox(height: AppTheme.size2Small),
               // Times Section
               Padding(
+                key: _timeChartSectionKey,
                 padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,5 +569,80 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         ),
       ),
     );
+  }
+
+  void _startTour({bool isMultiPageTour = false}) {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(CalendarTranslationKeys.tourWelcomeTitle),
+        description: _translationService.translate(CalendarTranslationKeys.tourWelcomeDescription),
+        icon: Icons.today,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. General list options (tag filter)
+      TourStep(
+        title: _translationService.translate(CalendarTranslationKeys.tourTagFilterTitle),
+        description: _translationService.translate(CalendarTranslationKeys.tourTagFilterDescription),
+        targetKey: _mainListOptionsKey,
+        position: TourPosition.bottom,
+      ),
+      // 3. Habits section introduce
+      TourStep(
+        title: _translationService.translate(CalendarTranslationKeys.tourHabitsTitle),
+        description: _translationService.translate(CalendarTranslationKeys.tourHabitsDescription),
+        targetKey: _habitsSectionKey,
+        position: TourPosition.bottom,
+      ),
+      // 4. Tasks section introduce
+      TourStep(
+        title: _translationService.translate(CalendarTranslationKeys.tourTasksTitle),
+        description: _translationService.translate(CalendarTranslationKeys.tourTasksDescription),
+        targetKey: _tasksSectionKey,
+        position: TourPosition.bottom,
+      ),
+      // 5. Time distribution introduce
+      TourStep(
+        title: _translationService.translate(CalendarTranslationKeys.tourTimeDistributionTitle),
+        description: _translationService.translate(CalendarTranslationKeys.tourTimeDistributionDescription),
+        targetKey: _timeChartSectionKey,
+        position: TourPosition.top,
+      ),
+      // 6. Marathon page button introduce
+      TourStep(
+        title: _translationService.translate(CalendarTranslationKeys.tourMarathonModeTitle),
+        description: _translationService.translate(CalendarTranslationKeys.tourMarathonModeDescription),
+        targetKey: _marathonButtonKey,
+        position: TourPosition.bottom,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+          if (isMultiPageTour) {
+            TourNavigationService.onPageTourCompleted(context);
+          }
+        },
+        onSkip: () {
+          Navigator.of(context).pop();
+        },
+        onBack: isMultiPageTour && TourNavigationService.canNavigateBack
+            ? () => TourNavigationService.navigateBackInTour(context)
+            : null,
+        showBackButton: isMultiPageTour,
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+      ),
+    );
+  }
+
+  void _startIndividualTour() {
+    _startTour(isMultiPageTour: false);
   }
 }

@@ -21,6 +21,8 @@ import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 
 class TagsPage extends StatefulWidget {
@@ -36,6 +38,15 @@ class _TagsPageState extends State<TagsPage> {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
 
+  // Tour keys
+  final GlobalKey _addTagButtonKey = GlobalKey();
+  final GlobalKey _mainFiltersKey = GlobalKey();
+  final GlobalKey _timeChartSectionKey = GlobalKey();
+  final GlobalKey _timeChartKey = GlobalKey();
+  final GlobalKey _listOptionsKey = GlobalKey();
+  final GlobalKey _tagsListKey = GlobalKey();
+  final GlobalKey _mainContentKey = GlobalKey();
+
   // Main List Options
   static const String _mainSettingKeyVariantSuffix = 'MAIN';
   List<String>? _selectedTagIds;
@@ -44,6 +55,27 @@ class _TagsPageState extends State<TagsPage> {
 
   // Tag Time Chart Options
   static const String _timeChartSettingKeyVariantSuffix = 'TIME_CHART';
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-start tour if multi-page tour is active
+    _checkAndStartTour();
+  }
+
+  void _checkAndStartTour() {
+    if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 3) {
+      // Delay to ensure the page is fully built and laid out
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) {
+            _startTour(isMultiPageTour: true);
+          }
+        });
+      });
+    }
+  }
+
   DateFilterSetting? _dateFilterSetting;
   DateTime? _startDate;
   DateTime? _endDate;
@@ -184,6 +216,7 @@ class _TagsPageState extends State<TagsPage> {
       title: _translationService.translate(TagTranslationKeys.title),
       appBarActions: [
         TagAddButton(
+          key: _addTagButtonKey,
           onTagCreated: (tagId) {
             _openDetails(tagId);
           },
@@ -195,6 +228,7 @@ class _TagsPageState extends State<TagsPage> {
         KebabMenu(
           helpTitleKey: TagTranslationKeys.overviewHelpTitle,
           helpMarkdownContentKey: TagTranslationKeys.overviewHelpContent,
+          onStartTour: _startIndividualTour,
         ),
       ],
       builder: (context) => LoadingOverlay(
@@ -203,11 +237,13 @@ class _TagsPageState extends State<TagsPage> {
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             child: Column(
+              key: _mainContentKey,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Main List Options
                 TagListOptions(
+                  key: _mainFiltersKey,
                   settingKeyVariantSuffix: _mainSettingKeyVariantSuffix,
                   onSettingsLoaded: _onMainSettingsLoaded,
                   selectedTagIds: _selectedTagIds,
@@ -221,6 +257,7 @@ class _TagsPageState extends State<TagsPage> {
 
                 // Tag Time Title
                 Padding(
+                  key: _timeChartSectionKey,
                   padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -250,6 +287,7 @@ class _TagsPageState extends State<TagsPage> {
                 // Tag Time Chart
                 if (_mainListOptionLoaded && _tagTimeChartOptionsLoaded)
                   Padding(
+                    key: _timeChartKey,
                     padding: const EdgeInsets.all(AppTheme.sizeSmall),
                     child: Center(
                       child: TagTimeChart(
@@ -264,6 +302,7 @@ class _TagsPageState extends State<TagsPage> {
 
                 // List Options
                 Padding(
+                  key: _listOptionsKey,
                   padding: const EdgeInsets.all(AppTheme.sizeSmall),
                   child: Row(
                     children: [
@@ -293,6 +332,7 @@ class _TagsPageState extends State<TagsPage> {
                 // List
                 if (_mainListOptionLoaded && _listOptionLoaded)
                   TagsList(
+                    key: _tagsListKey,
                     onClickTag: (tag) => _openDetails(tag.id),
                     onList: _onDataListed,
                     filterByTags: _selectedTagIds,
@@ -306,5 +346,87 @@ class _TagsPageState extends State<TagsPage> {
         ),
       ),
     );
+  }
+
+  void _startTour({bool isMultiPageTour = false}) {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(TagTranslationKeys.tourSmartTaggingTitle),
+        description: _translationService.translate(TagTranslationKeys.tourSmartTaggingDescription),
+        icon: Icons.label_outline,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. Tag list introduce
+      TourStep(
+        title: _translationService.translate(TagTranslationKeys.tourYourTagsTitle),
+        description: _translationService.translate(TagTranslationKeys.tourYourTagsDescription),
+        targetKey: _tagsListKey,
+        position: TourPosition.top,
+      ),
+      // 3. General list options (tag and archived filter)
+      TourStep(
+        title: _translationService.translate(TagTranslationKeys.tourTagArchiveFiltersTitle),
+        description: _translationService.translate(TagTranslationKeys.tourTagArchiveFiltersDescription),
+        targetKey: _mainFiltersKey,
+        position: TourPosition.bottom,
+      ),
+      // 4. List options introduce
+      TourStep(
+        title: _translationService.translate(TagTranslationKeys.tourSearchSortTitle),
+        description: _translationService.translate(TagTranslationKeys.tourSearchSortDescription),
+        targetKey: _listOptionsKey,
+        position: TourPosition.bottom,
+      ),
+      // 5. Time distribution introduce
+      TourStep(
+        title: _translationService.translate(TagTranslationKeys.tourTimeDistributionChartTitle),
+        description: _translationService.translate(TagTranslationKeys.tourTimeDistributionChartDescription),
+        targetKey: _timeChartSectionKey,
+        position: TourPosition.bottom,
+      ),
+      // 6. Chart filter options introduce
+      TourStep(
+        title: _translationService.translate(TagTranslationKeys.tourChartCustomizationTitle),
+        description: _translationService.translate(TagTranslationKeys.tourChartCustomizationDescription),
+        targetKey: _timeChartKey,
+        position: TourPosition.top,
+      ),
+      // 7. Add tag button introduce
+      TourStep(
+        title: _translationService.translate(TagTranslationKeys.tourCreateTagsTitle),
+        description: _translationService.translate(TagTranslationKeys.tourCreateTagsDescription),
+        targetKey: _addTagButtonKey,
+        position: TourPosition.bottom,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+          if (isMultiPageTour) {
+            TourNavigationService.onPageTourCompleted(context);
+          }
+        },
+        onSkip: () {
+          Navigator.of(context).pop();
+        },
+        onBack: isMultiPageTour && TourNavigationService.canNavigateBack
+            ? () => TourNavigationService.navigateBackInTour(context)
+            : null,
+        showBackButton: isMultiPageTour,
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+      ),
+    );
+  }
+
+  void _startIndividualTour() {
+    _startTour(isMultiPageTour: false);
   }
 }

@@ -94,3 +94,16 @@ notes:
     add_note: Adicionar nota
     delete_note: Excluir nota
     edit_name: Editar título
+  tour:
+    note_taking:
+      title: Tomada de notas
+      description: Mantenha as informações importantes organizadas com um poderoso sistema de notas. Marque suas notas para categorização fácil e acesso rápido.
+    your_notes:
+      title: Suas notas
+      description: Navegue por todas as suas notas aqui. Clique em qualquer nota para visualizar, editar ou organizar seu conteúdo. Use a sintaxe markdown para formatação rica - **negrito**, *itálico*, listas, links e mais.
+    filter_search:
+      title: Filtro e busca
+      description: Encontre notas específicas usando tags, pesquise por conteúdo ou ordene-as por diferentes critérios. Mantenha-se organizado com opções poderosas de filtragem.
+    create_notes:
+      title: Criar novas notas
+      description: Comece a escrever clicando neste botão. Crie notas de texto formatadas com a formatação markdown. Adicione tags para facilitar a categorização e organização.

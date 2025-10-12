@@ -142,6 +142,18 @@ sync:
     no_active_interfaces: Ni najdenih aktivnih omrežnih vmesnikov
     device_discovery_failed: "Napaka pri zagonu odkrivanja naprav: {error}"
     no_server_configured: Ni konfiguriranega strežnika. Najprej dodajte napravo za sinhronizacijo ali uporabite ročno povezavo za nastavitev povezave strežnika.
+    device_id_unavailable: ID naprave ni na voljo. Ne morem nadaljevati s sinhronizacijo.
+    local_ip_unavailable: Lokalni IP naslov ni na voljo. Preverite omrežno povezavo.
+    prerequisites_failed: Preverjanje predpogojev za sinhronizacijo ni uspelo. Preverite nastavitve omrežja.
+    critical_sync_operation_failed: Kritična operacija sinhronizacije ni uspela. Prosimo, poskusite znova.
+    initiate_outgoing_sync_failed: Ni bilo mogoče sprožiti sinhronizacije z napravami.
+    processing_incoming_data: Napaka pri obdelavi dohodnih podatkov sinhronizacije.
+    checking_local_data: Napaka pri preverjanju lokalnih podatkov za sinhronizacijo.
+    sync_with_device_failed: Ni uspelo sinhronizirati z napravo.
+    sync_with_device_exception: Prišlo je do izjeme med sinhronizacijo naprave.
+    process_accumulated_response_data: Ni uspelo obdelati zbranih podatkov odgovorov sinhronizacije.
+    process_response_data: Ni uspelo obdelati podatkov odgovorov sinhronizacije.
+    some_devices_failed_to_sync: Nekatere naprave niso mogle sinhronizirati. Prosimo, poskusite znova.
   messages:
     device_already_paired: Ta naprava je že sparjena
     sync_completed: Sinhronizacija uspešno dokončana

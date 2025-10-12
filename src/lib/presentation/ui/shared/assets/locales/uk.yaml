@@ -287,3 +287,5 @@ shared:
   validation:
     required: "{field} є обов'язковим."
   help: Допомога
+  start_tour: Почати тур
+  skip_tour: Пропустити тур

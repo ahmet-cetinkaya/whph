@@ -94,3 +94,16 @@ notes:
     add_note: 添加笔记
     delete_note: 删除笔记
     edit_name: 编辑标题
+  tour:
+    note_taking:
+      title: 记笔记
+      description: 使用强大的笔记系统来整理重要信息。为您的笔记添加标签，以便轻松分类和快速访问。
+    your_notes:
+      title: 您的笔记
+      description: 在这里浏览您的所有笔记。点击任何笔记以查看、编辑或整理其内容。使用markdown语法进行富格式化 - **粗体**、*斜体*、列表、链接等。
+    filter_search:
+      title: 过滤和搜索
+      description: 使用标签查找特定笔记，搜索内容或按不同标准排序。使用强大的过滤选项来保持井井有条。
+    create_notes:
+      title: 创建新笔记
+      description: 点击此按钮开始写作。使用markdown格式创建格式化的文本笔记。添加标签以便轻松分类和组织。

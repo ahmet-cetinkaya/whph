@@ -42,4 +42,14 @@ class NoteTranslationKeys extends application.NoteTranslationKeys {
 
   // Filters
   static const String searchPlaceholder = 'notes.filters.search.placeholder';
+
+  // Tour translation keys
+  static const String tourNoteTakingTitle = 'notes.tour.note_taking.title';
+  static const String tourNoteTakingDescription = 'notes.tour.note_taking.description';
+  static const String tourYourNotesTitle = 'notes.tour.your_notes.title';
+  static const String tourYourNotesDescription = 'notes.tour.your_notes.description';
+  static const String tourFilterSearchTitle = 'notes.tour.filter_search.title';
+  static const String tourFilterSearchDescription = 'notes.tour.filter_search.description';
+  static const String tourCreateNotesTitle = 'notes.tour.create_notes.title';
+  static const String tourCreateNotesDescription = 'notes.tour.create_notes.description';
 }

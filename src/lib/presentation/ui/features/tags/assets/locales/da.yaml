@@ -126,3 +126,25 @@ tags:
     remove_tag: Fjern mærke
     select: Klik for at vælge mærke
     unarchive_tag: Fjern arkivering af mærke
+  tour:
+    smart_tagging:
+      title: Smart Tagging System
+      description: Brug tags til at organisere og gruppere dine opgaver, vaner og apps. Spor tid brugt på forskellige aktiviteter ved hjælp af tags for at forstå, hvor din tid går, og optimere dit workflow.
+    your_tags:
+      title: Dine Tags
+      description: Gennemse alle dine tags og se deres brugsstatistikker. Klik på et tag for at se detaljer, redigere egenskaber eller se, hvilke opgaver og vaner der bruger det. Organiser dit workflow effektivt.
+    tag_archive_filters:
+      title: Tag- og arkivfiltre
+      description: Filtrer tags ved at vælge specifikke tags at fokusere på, eller skift synlighed af arkiverede tags. Kontroller, hvilke tags der vises på din liste for bedre organisation.
+    search_sort:
+      title: Søg og sortér
+      description: Søg efter specifikke tags efter navn, sorter efter forskellige kriterier som navn eller brugstal. Organiser din tagliste for hurtigt at finde det, du har brug for.
+    time_distribution_chart:
+      title: Tidsfordelingsdiagram
+      description: Visualiser, hvordan du bruger din tid på tværs af forskellige tags og kategorier. Se mønstre i tidsfordelingen og identificer, hvor dit fokus går hen gennem dagen.
+    chart_customization:
+      title: Diagramtilpasning
+      description: Tilpas tidsdiagrammet ved at vælge datointerval, vælge kategorier (opgaver, vaner, apps) og filtrere efter specifikke tags for at analysere din tidsfordeling i detaljer.
+    create_tags:
+      title: Opret nye tags
+      description: Tilføj nye tags for at kategorisere dit indhold. Tags hjælper dig med at organisere opgaver, vaner og apps på tværs af alle funktioner for bedre produktivitetssporing og tidsstyring.

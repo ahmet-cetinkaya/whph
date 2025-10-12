@@ -173,5 +173,16 @@ app_usages:
     title: Regole utilizzo app
   tooltips:
     edit_name: Modifica nome
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: Approfondimenti sull'utilizzo delle app e sul tempo
+      description: Monitora i pattern di utilizzo delle app e analizza il tempo trascorso su diverse attività. Ottieni approfondimenti sulle tue abitudini digitali e ottimizza la tua produttività.
+    usage_statistics:
+      title: Statistiche di utilizzo
+      description: Visualizza dati dettagliati sull'utilizzo delle app e la distribuzione del tempo. Analizza i tuoi pattern di produttività, traccia il tempo trascorso su diverse applicazioni e identifica aree di miglioramento.
+    filter_sort:
+      title: Filtra e ordina
+      description: Filtra i dati di utilizzo delle app per intervallo di date, tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo per ottenere migliori approfondimenti sulla gestione del tempo.
+    tracking_settings:
+      title: Impostazioni di tracciamento
+      description: Configura le regole di tracciamento delle app, imposta l'etichettatura automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento in base alle tue esigenze di produttività.

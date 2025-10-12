@@ -285,3 +285,5 @@ shared:
     deadline_cannot_be_before_planned: Rok ne more biti pred načrtovanim datumom.
     required: "{field} je obvezno"
   help: Pomoč
+  start_tour: Začni predstavitev
+  skip_tour: Preskoči predstavitev

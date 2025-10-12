@@ -21,20 +21,8 @@ about:
       title: "Bem-vindo ao {appName}"
       description: "Seu companheiro pessoal para construir melhores hábitos, gerenciar tarefas e rastrear o tempo de forma eficaz. Vamos explorar as principais funcionalidades juntos!"
     step2:
-      title: "Gerenciamento de Tarefas"
-      description: "Crie e organize tarefas com prioridades, prazos e lembretes. Use o temporizador Pomodoro para manter o foco e rastrear seu progresso em tarefas importantes."
-    step3:
-      title: "Construção de Hábitos"
-      description: "Construa hábitos duradouros rastreando atividades diárias. Defina lembretes, monitore suas sequências e visualize seu progresso com estatísticas detalhadas."
-    step4:
-      title: "Tomada de Notas"
-      description: "Mantenha informações importantes organizadas com um sistema poderoso de anotações. Etiquete suas notas para categorização fácil e acesso rápido."
-    step5:
-      title: "Uso de Apps & Insights de Tempo"
-      description: "Monitore padrões de uso de aplicativos e analise o tempo gasto em diferentes atividades. Obtenha insights sobre seus hábitos digitais e otimize sua produtividade."
-    step6:
-      title: "Sistema de Etiquetagem Inteligente"
-      description: "Use etiquetas para organizar e agrupar suas tarefas, hábitos e aplicativos. Rastreie o tempo gasto em diferentes atividades por etiquetas para entender onde seu tempo vai e otimizar seu fluxo de trabalho."
+      title: 'O que significa "Work Hard Play Hard"?'
+      description: '"Work Hard Play Hard" é um lema que incentiva os indivíduos a equilibrar alta responsabilidade com alta satisfação de vida. Portanto, leve seu trabalho a sério, mas também descanse verdadeiramente, divirta-se e viva durante seu tempo livre. O trabalho não é apenas ganhar dinheiro, mas crescer e encontrar realização; se divertir não é preguiça, mas a recompensa natural do esforço. Como WHPH, também valorizamos tanto o trabalho produtivo quanto a celebração consciente dos sucessos.'
     step7:
       title: "Permissões do App"
       description: "O {appName} precisa de certas permissões para funcionar corretamente. Você pode revisar as permissões que deseja conceder para recursos do sistema, como notificações e rastreamento de apps."

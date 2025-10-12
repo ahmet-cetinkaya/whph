@@ -174,5 +174,16 @@ app_usages:
     title: Regulile utilizării aplicațiilor
   tooltips:
     edit_name: Editați numele
-  units:
-    minutes: min
+  tour:
+    app_usage_insights:
+      title: Informații despre utilizarea aplicațiilor și timpul alocat
+      description: Monitorizați modelele de utilizare a aplicațiilor și analizați timpul petrecut în diferite activități. Obțineți informații despre obiceiurile dumneavoastră digitale și optimizați-vă productivitatea.
+    usage_statistics:
+      title: Statistici de utilizare
+      description: Vedeți datele detaliate de utilizare a aplicațiilor și distribuția timpului. Analizați-vă modelele de productivitate, urmăriți timpul petrecut în diferite aplicații și identificați zonele de îmbunătățit.
+    filter_sort:
+      title: Filtrare și sortare
+      description: Filtrați datele de utilizare a aplicațiilor după intervalul de date, etichete sau dispozitive specifice. Sortați și organizați statisticile de utilizare pentru a obține informații mai bune despre gestionarea timpului.
+    tracking_settings:
+      title: Setări de urmărire
+      description: Configurați regulile de urmărire a aplicațiilor, setați etichetarea automată și gestionați ce aplicații să fie monitorizate. Personalizați urmărirea în funcție de nevoile dumneavoastră de productivitate.

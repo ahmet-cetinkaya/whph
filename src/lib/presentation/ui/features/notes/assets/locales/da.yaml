@@ -94,3 +94,16 @@ notes:
     add_note: Tilføj note
     delete_note: Slet note
     edit_name: Redigér titel
+  tour:
+    note_taking:
+      title: Notetagning
+      description: Hold vigtige oplysninger organiserede med et kraftfuldt notesystem. Mærk dine noter for nem kategorisering og hurtig adgang.
+    your_notes:
+      title: Dine noter
+      description: Gennemse alle dine noter her. Klik på en vilkårlig note for at se, redigere eller organisere dens indhold. Brug markdown-syntaks til rige formatering - **fed**, *kursiv*, lister, links og mere.
+    filter_search:
+      title: Filter og søgning
+      description: Find specifikke noter ved hjælp af tags, søg efter indhold eller sorter dem efter forskellige kriterier. Hold styr på med kraftige filtreringsmuligheder.
+    create_notes:
+      title: Opret nye noter
+      description: Start med at skrive ved at klikke på denne knap. Opret formaterede tekstnoter med markdown-formatering. Tilføj tags for nem kategorisering og organisation.

@@ -324,3 +324,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana
     deadline_time_invalid: Nieprawidłowy czas terminu
+  tour:
+    task_management:
+      title: Zarządzanie zadaniami
+      description: Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami. Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych zadaniach.
+    add_tasks:
+      title: Dodaj nowe zadania
+      description: Szybko twórz nowe zadania za pomocą tego przycisku. Ustaw tytuły, priorytety, terminy, tagi i więcej. Dodaj podzadania i przypomnienia, aby być na bieżąco z pracą.
+    your_tasks:
+      title: Twoje zadania
+      description: Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu. Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone, edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
+    filter_search:
+      title: Filtruj i szukaj
+      description: Zaawansowane opcje filtrowania, aby znaleźć dokładnie to, czego potrzebujesz. Filtruj według tagów, dat, statusu ukończenia lub użyj wyszukiwania. Sortuj zadania i przełączaj podzadania dla lepszej organizacji.
+    marathon:
+      app_usage:
+        title: Użycie aplikacji i analiza czasu
+        description: Monitoruj wzorce użycia aplikacji i analizuj czas poświęcany różnym aktywnościom. Zdobądź wgląd w swoje cyfrowe nawyki i zoptymalizuj produktywność.
+      usage_statistics:
+        title: Statystyki użycia
+        description: Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i identyfikuj obszary do poprawy.
+      filter_sort:
+        title: Filtruj i sortuj
+        description: Filtruj dane użycia aplikacji według zakresu dat, tagów lub konkretnych urządzeń. Sortuj i organizuj swoje statystyki użycia, aby uzyskać lepszy wgląd w zarządzanie czasem.
+      tracking_settings:
+        title: Ustawienia śledzenia
+        description: Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie i zarządzaj, które aplikacje mają być monitorowane. Dostosuj śledzenie do swoich potrzeb produktywnościowych.

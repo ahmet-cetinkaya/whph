@@ -21,20 +21,8 @@ about:
       title: "Tervetuloa {appName}:een"
       description: "Henkilökohtainen kumppanisi parempien tapojen rakentamiseen, tehtävien hallintaan ja tehokkaaseen ajan seurantaan. Tutustutaan yhdessä keskeisiin ominaisuuksiin!"
     step2:
-      title: "Tehtävien hallinta"
-      description: "Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla. Käytä Pomodoro-ajastinta keskittyäksesi ja seurataaksesi edistymistäsi tärkeissä tehtävissä."
-    step3:
-      title: "Tapojen rakentaminen"
-      description: "Rakenna kestäviä tapoja seuraamalla päivittäisiä toimintoja. Aseta muistutuksia, seuraa sarjojasi ja visualisoi edistymistäsi yksityiskohtaisilla tilastoilla."
-    step4:
-      title: "Muistiinpanojen tekeminen"
-      description: "Pidä tärkeät tiedot järjestettynä tehokkaalla muistiinpanojen järjestelmällä. Merkitse muistiinpanosi helpottamaan luokittelua ja nopeaa pääsyä."
-    step5:
-      title: "Sovellusten käyttö & ajan oivallukset"
-      description: "Seuraa sovellusten käyttökuvioita ja analysoi eri toiminnoille kulutettua aikaa. Saat oivalluksia digitaalisista tavoistasi ja optimoi tuottavuutesi."
-    step6:
-      title: "Älykäs tunnistejärjestelmä"
-      description: "Käytä tunnisteita tehtäviesi, tapojesi ja sovellustesi järjestämiseen ja ryhmittelyyn. Seuraa eri toiminnoille kulutettua aikaa tunnisteiden mukaan ymmärtääksesi, mihin aikasi menee, ja optimoidaksesi työvirtaasi."
+      title: 'Mitä "Work Hard Play Hard" tarkoittaa?'
+      description: '"Work Hard Play Hard" on motto, joka kannustaa ihmisiä tasapainottamaan korkeaa vastuuta ja korkeaa elämäntyytyväisyyttä. Ota siis työsi vakavasti, mutta myös todella lepää, pidä hauskaa ja elä vapaa-ajallasi. Työ ei ole vain rahan ansaitsemista, vaan kasvamista ja täyttymyksen löytämistä; hauskanpito ei ole laiskuutta, vaan ponnistelujen luonnollinen palkinto. WHPH:na arvostamme myös sekä tuottavaa työtä että tietoista onnistumisten juhlimista.'
     step7:
       title: "Sovelluksen käyttöoikeudet"
       description: "{appName} tarvitsee tiettyjä käyttöoikeuksia toimiakseen oikein. Voit tarkistaa käyttöoikeudet, jotka haluat myöntää järjestelmäominaisuuksille, kuten ilmoituksille ja sovellusseurannalle."

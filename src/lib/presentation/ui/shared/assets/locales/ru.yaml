@@ -284,3 +284,5 @@ shared:
   validation:
     required: "{field} обязательно."
   help: Помощь
+  start_tour: Начать тур
+  skip_tour: Пропустить тур

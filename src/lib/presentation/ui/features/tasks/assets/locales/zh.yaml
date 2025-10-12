@@ -319,3 +319,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: 截止日期必须在计划日期之后
     deadline_time_invalid: 截止时间无效
+  tour:
+    task_management:
+      title: 任务管理
+      description: 创建和组织具有优先级、截止日期和提醒的任务。使用番茄钟定时器保持专注并跟踪重要任务的进度。
+    add_tasks:
+      title: 添加新任务
+      description: 使用此按钮快速创建新任务。设置标题、优先级、截止日期、标签等。添加子任务和提醒以跟上您的工作进度。
+    your_tasks:
+      title: 您的任务
+      description: 在一个地方查看和管理所有任务。点击任何任务查看详细信息、标记为完成、编辑信息或删除。保持井井有条并跟踪您的进度。
+    filter_search:
+      title: 筛选和搜索
+      description: 强大的筛选选项来精确找到您需要的内容。按标签、日期、完成状态筛选或使用搜索功能。对任务进行排序并切换子任务以实现更好的组织。
+    marathon:
+      app_usage:
+        title: 应用使用和时间分析
+        description: 监控应用使用模式并分析花费在不同活动上的时间。深入了解您的数字习惯并优化您的生产力。
+      usage_statistics:
+        title: 使用统计
+        description: 查看详细的应用使用数据和时间分布。分析您的生产力模式，跟踪花费在不同应用程序上的时间，并识别改进领域。
+      filter_sort:
+        title: 筛选和排序
+        description: 按日期范围、标签或特定设备筛选应用使用数据。对使用统计数据进行排序和组织，以获得更好的时间管理见解。
+      tracking_settings:
+        title: 跟踪设置
+        description: 配置应用跟踪规则，设置自动标记并管理要跟踪的应用程序。根据您的生产力需求自定义跟踪。

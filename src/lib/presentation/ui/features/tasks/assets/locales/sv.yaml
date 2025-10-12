@@ -342,3 +342,29 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Deadline datum måste vara efter planerat datum
     deadline_time_invalid: Deadline tid är ogiltig
+  tour:
+    task_management:
+      title: Uppgiftshantering
+      description: Skapa och organisera uppgifter med prioriteringar, deadlines och påminnelser. Använd Pomodoro-timern för att behålla fokus och spåra dina framsteg på viktiga uppgifter.
+    add_tasks:
+      title: Lägg Till Nya Uppgifter
+      description: Skapa snabbt nya uppgifter med denna knapp. Ställ in titlar, prioriteringar, deadlines, taggar och mer. Lägg till underuppgifter och påminnelser för att hålla dig uppdaterad om ditt arbete.
+    your_tasks:
+      title: Dina Uppgifter
+      description: Visa och hantera alla dina uppgifter på ett ställe. Klicka på vilken uppgift som helst för att se detaljer, markera som slutförd, redigera information eller ta bort. Håll dig organiserad och spåra dina framsteg.
+    filter_search:
+      title: Filtrera & Sök
+      description: Kraftfulla filteralternativ för att hitta exakt det du behöver. Filtrera efter taggar, datum, slutförandestatus eller använd sökningen. Sortera uppgifter och växla underuppgifter för bättre organisation.
+    marathon:
+      app_usage:
+        title: Appanvändning & Tidsanalys
+        description: Övervaka appanvändningsmönster och analysera tiden du spenderar på olika aktiviteter. Få insikter om dina digitala vanor och optimera din produktivitet.
+      usage_statistics:
+        title: Användningsstatistik
+        description: Visa detaljerad appanvändningsdata och tidsfördelning. Analysera dina produktivitetsmönster, spåra tiden du spenderar på olika applikationer och identifiera förbättringsområden.
+      filter_sort:
+        title: Filtrera & Sortera
+        description: Filtrera appanvändningsdata efter datumintervall, taggar eller specifika enheter. Sortera och organisera din användningsstatistik för bättre insikter i tidsstyrning.
+      tracking_settings:
+        title: Spårningsinställningar
+        description: Konfigurera appspårningsregler, ställ in automatisk taggning och hantera vilka applikationer som ska spåras. Anpassa spårningen efter dina produktivitetsbehov.

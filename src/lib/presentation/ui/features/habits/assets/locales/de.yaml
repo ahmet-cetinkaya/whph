@@ -215,3 +215,19 @@ habits:
     edit_name: Name bearbeiten
     increase_daily_target: Tägliches Ziel erhöhen
     increase_estimated_time: Geschätzte Zeit erhöhen
+  tour:
+    habit_building:
+      title: Gewohnheitsbildung
+      description: Entwickeln Sie dauerhafte Gewohnheiten, indem Sie tägliche Aktivitäten verfolgen. Setzen Sie Erinnerungen, überwachen Sie Ihre Serien und visualisieren Sie Ihren Fortschritt mit detaillierten Statistiken.
+    create_habits:
+      title: Neue Gewohnheiten erstellen
+      description: Beginnen Sie mit dem Aufbau neuer Gewohnheiten, indem Sie auf diese Schaltfläche klicken. Setzen Sie Ziele, Frequenzen, Erinnerungen und verfolgen Sie mehrere Abschlüsse pro Tag für eine flexible Gewohnheitsverfolgung.
+    your_habits:
+      title: Ihre Gewohnheiten
+      description: Sehen Sie sich alle Ihre Gewohnheiten an und verwalten Sie diese hier. Klicken Sie auf eine beliebige Gewohnheit, um Details, Statistiken und Verlaufsdaten anzuzeigen. Markieren Sie Gewohnheiten täglich als erledigt, um Serien aufzubauen und Ihren Fortschritt zu verfolgen.
+    calendar_view:
+      title: Kalenderansicht
+      description: Visualisieren Sie Ihre Gewohnheitsabschluss-Historie über mehrere Tage hinweg. Grün zeigt abgeschlossene Gewohnheiten an. Verfolgen Sie Ihre Konsistenz und sehen Sie Ihre Fortschritt-Muster im Laufe der Zeit.
+    filter_search:
+      title: Filtern & Suchen
+      description: Finden Sie spezifische Gewohnheiten mithilfe von Tags, Suchbegriffen oder Filtern nach Archivierungsstatus. Organisieren und verwalten Sie Ihre Gewohnheiten effizient, um sich auf das zu konzentrieren, was wichtig ist.

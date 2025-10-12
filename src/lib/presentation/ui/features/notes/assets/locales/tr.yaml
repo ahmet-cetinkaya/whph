@@ -93,3 +93,16 @@ notes:
     add_note: Not ekle
     delete_note: Notu sil
     edit_name: Başlığı düzenle
+  tour:
+    note_taking:
+      title: Not Alma
+      description: Güçlü bir not alma sistemi ile önemli bilgileri düzenli tutun. Kolay kategorilendirme ve hızlı erişim için notlarınızı etiketleyin.
+    your_notes:
+      title: Notlarınız
+      description: Burada tüm notlarınıza göz atın. Herhangi bir notaya tıklayarak içeriğini görüntüleyin, düzenleyin veya organize edin. Zengin biçimlendirme için markdown sözdizimini kullanın - **kalın**, *italik*, listeler, bağlantılar ve daha fazlası.
+    filter_search:
+      title: Filtreleme ve Arama
+      description: Belirli notaları etiketlerle bulun, içerik için arama yapın veya farklı kriterlere göre sıralayın. Güçlü filtreleme seçenekleriyle düzenli kalın.
+    create_notes:
+      title: Yeni Notlar Oluştur
+      description: Bu butona tıklayarak yazmaya başlayın. Markdown biçimlendirmesiyle zengin metin notları oluşturun. Kolay kategorilendirme ve organizasyon için etiket ekleyin.

@@ -286,3 +286,5 @@ shared:
   validation:
     required: "{field} jest wymagane."
   help: Pomoc
+  start_tour: Rozpocznij wycieczkę
+  skip_tour: Pomiń wycieczkę

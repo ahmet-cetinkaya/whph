@@ -20,6 +20,8 @@ import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -33,6 +35,13 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
+
+  // Tour keys
+  final GlobalKey _addTaskButtonKey = GlobalKey();
+  final GlobalKey _taskFiltersKey = GlobalKey();
+  final GlobalKey _taskListKey = GlobalKey();
+  final GlobalKey _floatingAddButtonKey = GlobalKey();
+  final GlobalKey _mainContentKey = GlobalKey();
 
   bool _isTaskListVisible = false;
   bool _isDataLoaded = false;
@@ -60,6 +69,21 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   void initState() {
     super.initState();
     _isLoadingSettings = true; // Start with loading flag true
+    // Auto-start tour if multi-page tour is active
+    _checkAndStartTour();
+  }
+
+  void _checkAndStartTour() {
+    if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 0) {
+      // Delay to ensure the page is fully built and laid out
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) {
+            _startTour(isMultiPageTour: true);
+          }
+        });
+      });
+    }
   }
 
   // Cache for auto-refresh dates to prevent constant recalculation
@@ -99,15 +123,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
       // Don't call setState - let TaskList handle its own refresh
     }
-  }
-
-  String _getAutoRefreshKey() {
-    if (_dateFilterSetting?.isQuickSelection == true && _dateFilterSetting?.isAutoRefreshEnabled == true) {
-      final now = DateTime.now();
-      // Create a key that changes every minute for auto-refresh
-      return '${now.year}_${now.month}_${now.day}_${now.hour}_${now.minute}';
-    }
-    return 'static';
   }
 
   Future<void> _openDetails(String taskId) async {
@@ -299,6 +314,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           mainAxisSize: MainAxisSize.min,
           children: [
             TaskAddButton(
+              key: _addTaskButtonKey,
               onTaskCreated: (taskId, taskData) {
                 // The task will be added through the event system
               },
@@ -312,12 +328,14 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             KebabMenu(
               helpTitleKey: TaskTranslationKeys.tasksHelpTitle,
               helpMarkdownContentKey: TaskTranslationKeys.tasksHelpContent,
+              onStartTour: _startIndividualTour,
             ),
           ],
         ),
       ],
       // Add floating action button for mobile devices
       floatingActionButton: TaskAddFloatingButton(
+        key: _floatingAddButtonKey,
         initialTagIds: _showNoTagsFilter ? [] : _selectedTagIds,
         initialTitle: _searchQuery,
         initialPlannedDate: _filterStartDate,
@@ -327,10 +345,12 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       builder: (context) => LoadingOverlay(
         isLoading: !_isPageFullyLoaded,
         child: Column(
+          key: _mainContentKey,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filters with Completed Tasks Toggle
             TaskListOptions(
+              key: _taskFiltersKey,
               selectedTagIds: _selectedTagIds,
               showNoTagsFilter: _showNoTagsFilter,
               selectedStartDate: _filterStartDate,
@@ -362,8 +382,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
             if (_isTaskListVisible)
               Expanded(
                 child: TaskList(
-                  key: ValueKey(
-                      '${_getAutoRefreshKey()}_${_effectiveFilterStartDate?.millisecondsSinceEpoch}_${_effectiveFilterEndDate?.millisecondsSinceEpoch}'),
+                  key: _taskListKey,
                   filterByCompleted: _showCompletedTasks,
                   filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
                   filterNoTags: _showNoTagsFilter,
@@ -386,5 +405,66 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         ),
       ),
     );
+  }
+
+  void _startTour({bool isMultiPageTour = false}) {
+    final tourSteps = [
+      // 1. Page introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourTaskManagementTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourTaskManagementDescription),
+        icon: Icons.check_circle_outline,
+        targetKey: _mainContentKey,
+        position: TourPosition.bottom,
+      ),
+      // 2. Add task button introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourAddTasksTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourAddTasksDescription),
+        targetKey: _addTaskButtonKey,
+        position: TourPosition.bottom,
+      ),
+      // 3. Tasks list introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourYourTasksTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourYourTasksDescription),
+        targetKey: _taskListKey,
+        position: TourPosition.top,
+      ),
+      // 4. List options introduce
+      TourStep(
+        title: _translationService.translate(TaskTranslationKeys.tourFilterSearchTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourFilterSearchDescription),
+        targetKey: _taskFiltersKey,
+        position: TourPosition.bottom,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => TourOverlay(
+        steps: tourSteps,
+        onComplete: () {
+          Navigator.of(context).pop();
+          if (isMultiPageTour) {
+            TourNavigationService.onPageTourCompleted(context);
+          }
+        },
+        onSkip: () {
+          Navigator.of(context).pop();
+        },
+        onBack: isMultiPageTour && TourNavigationService.canNavigateBack
+            ? () => TourNavigationService.navigateBackInTour(context)
+            : null,
+        showBackButton: isMultiPageTour,
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+      ),
+    );
+  }
+
+  void _startIndividualTour() {
+    _startTour(isMultiPageTour: false);
   }
 }

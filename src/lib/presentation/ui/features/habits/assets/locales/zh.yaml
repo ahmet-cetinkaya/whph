@@ -209,3 +209,19 @@ habits:
     edit_name: 编辑名称
     increase_daily_target: 增加每日目标
     increase_estimated_time: 增加预计时间
+  tour:
+    habit_building:
+      title: 习惯养成
+      description: 通过跟踪日常活动来建立持久的习惯。设置提醒，监控您的连续记录，并使用详细统计数据可视化您的进展。
+    create_habits:
+      title: 创建新习惯
+      description: 点击此按钮开始建立新习惯。设置目标、频率、提醒，并跟踪每天的多次完成情况以实现灵活的习惯跟踪。
+    your_habits:
+      title: 您的习惯
+      description: 在此处查看和管理您的所有习惯。点击任意习惯以查看详细信息、统计数据和完成历史。每天将习惯标记为完成以建立连续记录并跟踪您的进展。
+    calendar_view:
+      title: 日历视图
+      description: 可视化您几天内的习惯完成历史。绿色表示已完成的习惯。跟踪您的一致性，并查看您随时间的进展模式。
+    filter_search:
+      title: 筛选和搜索
+      description: 使用标签、搜索词或按归档状态筛选来查找特定习惯。有效地组织和管理您的习惯，以保持对重要事项的关注。

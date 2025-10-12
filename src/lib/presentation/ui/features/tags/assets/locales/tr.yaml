@@ -139,3 +139,25 @@ tags:
     remove_tag: Etiketi kaldır
     select: Etiket seç
     unarchive_tag: Etiketi arşivden çıkar
+  tour:
+    smart_tagging:
+      title: Akıllı Etiketleme Sistemi
+      description: Görevlerinizi, alışkanlıklarınızı ve uygulamalarınızı düzenlemek ve gruplamak için etiketleri kullanın. Zamanınızın nereye gittiğini anlamak ve iş akışınızı optimize etmek için farklı etkinliklere harcadığınız zamanı etiketlere göre takip edin.
+    your_tags:
+      title: Etiketleriniz
+      description: Tüm etiketlerinize göz atın ve kullanım istatistiklerini görün. Ayrıntıları görüntülemek, özellikleri düzenlemek veya hangi görev ve alışkanlıkların kullandığını görmek için herhangi bir etiketi tıklayın. İş akışınızı verimli bir şekilde düzenleyin.
+    tag_archive_filters:
+      title: Etiket ve Arşiv Filtreleri
+      description: Odaklanmak için belirli etiketleri seçerek etiketleri filtreleyin veya arşivlenmiş etiketlerin görünürlüğünü açıp kapatın. Daha iyi organizasyon için listenizde hangi etiketlerin görüneceğini kontrol edin.
+    search_sort:
+      title: Ara ve Sırala
+      description: Belirli etiketleri ada göre arayın, ada veya kullanım sayısına göre farklı ölçütlere göre sıralayın. İhtiyacınız olanı hızlı bir şekilde bulmak için etiket listenizi düzenleyin.
+    time_distribution_chart:
+      title: Zaman Dağılımı Grafiği
+      description: Zamanınızı farklı etiketler ve kategoriler arasında nasıl harcadığınızı görselleştirin. Zaman tahsisatı kalıplarını görün ve gündüz boyu odaklandığınız yerleri belirleyin.
+    chart_customization:
+      title: Grafik Özelleştirme
+      description: Tarih aralığını seçerek, kategorileri (görevler, alışkanlıklar, uygulamalar) seçerek ve belirli etiketlere göre filtreleyerek zaman grafiğini özelleştirin ve zaman dağılımınızı ayrıntılı analiz edin.
+    create_tags:
+      title: Yeni Etiketler Oluştur
+      description: İçeriğinizi kategorilere ayırmak için yeni etiketler ekleyin. Etiketler, daha iyi üretkenlik takibi ve zaman yönetimi için tüm özelliklerde görevleri, alışkanlıkları ve uygulamaları organize etmenize yardımcı olur.

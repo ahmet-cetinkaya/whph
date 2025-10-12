@@ -259,6 +259,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String timeDisplayNoTimeLoggedTooltip = 'shared.time_display.no_time_logged_tooltip';
 
   static const String help = "shared.help";
+  static const String startTour = "shared.start_tour";
+  static const String skipTour = "shared.skip_tour";
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {

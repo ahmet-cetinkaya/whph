@@ -139,3 +139,25 @@ tags:
     remove_tag: Supprimer le tag
     select: Cliquer pour sélectionner le tag
     unarchive_tag: Désarchiver le tag
+  tour:
+    smart_tagging:
+      title: Système d'Étiquetage Intelligent
+      description: Utilisez des étiquettes pour organiser et regrouper vos tâches, habitudes et applications. Suivez le temps passé sur différentes activités par étiquettes pour comprendre où va votre temps et optimiser votre flux de travail.
+    your_tags:
+      title: Vos Étiquettes
+      description: Parcourez toutes vos étiquettes et consultez leurs statistiques d'utilisation. Cliquez sur n'importe quelle étiquette pour voir les détails, modifier les propriétés ou voir quelles tâches et habitudes l'utilisent. Organisez efficacement votre flux de travail.
+    tag_archive_filters:
+      title: Filtres d'Étiquettes et d'Archivage
+      description: Filtrez les étiquettes en sélectionnant des étiquettes spécifiques sur lesquelles vous concentrer, ou basculez la visibilité des étiquettes archivées. Contrôlez quelles étiquettes apparaissent dans votre liste pour une meilleure organisation.
+    search_sort:
+      title: Recherche et Tri
+      description: Recherchez des étiquettes spécifiques par nom, triez selon différents critères comme le nom ou le nombre d'utilisations. Organisez votre liste d'étiquettes pour trouver rapidement ce dont vous avez besoin.
+    time_distribution_chart:
+      title: Graphique de Répartition du Temps
+      description: Visualisez comment vous passez votre temps sur différentes étiquettes et catégories. Voyez les modèles d'allocation de temps et identifiez où se porte votre attention tout au long de la journée.
+    chart_customization:
+      title: Personnalisation du Graphique
+      description: Personnalisez le graphique temporel en sélectionnant une plage de dates, en choisissant des catégories (tâches, habitudes, applications) et en filtrant par des étiquettes spécifiques pour analyser en détail votre répartition du temps.
+    create_tags:
+      title: Créer de Nouvelles Étiquettes
+      description: Ajoutez de nouvelles étiquettes pour catégoriser votre contenu. Les étiquettes vous aident à organiser les tâches, les habitudes et les applications dans toutes les fonctionnalités pour un meilleur suivi de productivité et une gestion du temps améliorée.
