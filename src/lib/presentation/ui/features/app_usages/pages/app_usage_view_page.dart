@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -43,6 +44,10 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   final GlobalKey _listOptionsKey = GlobalKey();
   final GlobalKey _settingsButtonKey = GlobalKey();
 
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 2;
+
   late AppUsageFilterState _filterState;
   bool _hasPermission = false;
   bool _isListVisible = false;
@@ -67,14 +72,18 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
 
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 4) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        while (!_isPageFullyLoaded && mounted) {
-          await Future.delayed(const Duration(milliseconds: 100));
-        }
-
+        await _pageReadyCompleter.future;
         if (mounted) {
           _startTour(isMultiPageTour: true);
         }
       });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
     }
   }
 
@@ -83,6 +92,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     setState(() {
       _isListVisible = true;
     });
+    _componentLoaded();
   }
 
   void _onDataListed(int count) {
@@ -90,6 +100,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       setState(() {
         _isDataLoaded = true;
       });
+      _componentLoaded();
     }
   }
 

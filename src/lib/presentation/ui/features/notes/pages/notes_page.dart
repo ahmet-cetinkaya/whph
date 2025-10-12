@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/main.dart';
@@ -36,6 +38,10 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   final GlobalKey _notesListKey = GlobalKey();
   final GlobalKey _mainContentKey = GlobalKey();
 
+  final Completer<void> _pageReadyCompleter = Completer<void>();
+  int _loadedComponents = 0;
+  static const int _totalComponentsToLoad = 2;
+
   bool _isListVisible = false;
   bool _isDataLoaded = false;
   List<String>? _selectedTagIds;
@@ -59,14 +65,18 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
 
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 5) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        while (!_isPageFullyLoaded && mounted) {
-          await Future.delayed(const Duration(milliseconds: 100));
-        }
-
+        await _pageReadyCompleter.future;
         if (mounted) {
           _startTour(isMultiPageTour: true);
         }
       });
+    }
+  }
+
+  void _componentLoaded() {
+    _loadedComponents++;
+    if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
+      _pageReadyCompleter.complete();
     }
   }
 
@@ -100,6 +110,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
     setState(() {
       _isListVisible = true;
     });
+    _componentLoaded();
   }
 
   void _onDataListed(int count) {
@@ -107,6 +118,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
       setState(() {
         _isDataLoaded = true;
       });
+      _componentLoaded();
     }
   }
 
