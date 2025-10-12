@@ -63,7 +63,10 @@ class _TagsPageState extends State<TagsPage> {
     _checkAndStartTour();
   }
 
-  void _checkAndStartTour() {
+  void _checkAndStartTour() async {
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
+
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 3) {
       // Delay to ensure the page is fully built and laid out
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -414,7 +417,10 @@ class _TagsPageState extends State<TagsPage> {
             TourNavigationService.onPageTourCompleted(context);
           }
         },
-        onSkip: () {
+        onSkip: () async {
+          if (isMultiPageTour) {
+            await TourNavigationService.skipMultiPageTour();
+          }
           Navigator.of(context).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack

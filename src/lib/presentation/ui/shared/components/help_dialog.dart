@@ -29,10 +29,10 @@ class HelpDialog extends StatelessWidget {
         title: Text(_translationService.translate(titleKey)),
         actions: [
           if (onStartTour != null)
-            IconButton(
-              icon: const Icon(Icons.help_outline),
+            TextButton.icon(
+              icon: const Icon(Icons.tour),
+              label: Text(_translationService.translate(SharedTranslationKeys.startTour)),
               onPressed: () => Navigator.of(context).pop('start_tour'),
-              tooltip: _translationService.translate(SharedTranslationKeys.startTour),
             ),
           if (appBarActions != null) ...appBarActions!,
         ],
