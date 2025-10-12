@@ -34,8 +34,15 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   String? _selectedLanguageCode;
+  late List<_OnboardingStep> _steps;
 
-  List<_OnboardingStep> get _steps {
+  @override
+  void initState() {
+    super.initState();
+    _steps = _buildSteps();
+  }
+
+  List<_OnboardingStep> _buildSteps() {
     final baseSteps = [
       // Welcome
       _OnboardingStep(
