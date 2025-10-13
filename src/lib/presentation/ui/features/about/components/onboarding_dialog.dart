@@ -209,7 +209,10 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
                           if (step.extraWidget != null)
                             Padding(
                               padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
-                              child: step.extraWidget!(context),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: step.extraWidget!(context),
+                              ),
                             ),
                         ],
                       ),
@@ -241,37 +244,46 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             // Different button layout for the last step
             if (_currentPage == _steps.length - 1)
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Skip Tour button
-                  OutlinedButton(
-                    onPressed: _skipTour,
-                    child: Text(_translationService.translate(SharedTranslationKeys.skipTour)),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _skipTour,
+                      child: Text(_translationService.translate(SharedTranslationKeys.skipTour)),
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   // Start Tour button
-                  FilledButton(
-                    onPressed: _startTour,
-                    child: Text(_translationService.translate(SharedTranslationKeys.startTour)),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: _startTour,
+                      child: Text(_translationService.translate(SharedTranslationKeys.startTour)),
+                    ),
                   ),
                 ],
               )
             else
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Back button
                   if (_currentPage > 0)
-                    TextButton(
-                      onPressed: _previousPage,
-                      child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonBack)),
+                    Expanded(
+                      child: TextButton(
+                        onPressed: _previousPage,
+                        child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonBack)),
+                      ),
                     )
                   else
-                    const SizedBox.shrink(),
+                    const Spacer(),
+
+                  const SizedBox(width: 8),
 
                   // Next button
-                  FilledButton(
-                    onPressed: _nextPage,
-                    child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonNext)),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: _nextPage,
+                      child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonNext)),
+                    ),
                   ),
                 ],
               ),

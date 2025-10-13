@@ -9,6 +9,7 @@ shared:
     delete: Eliminar
     done: Hecho
     load_more: Cargar más
+    previous: Anterior
     save: Guardar
     saved: Guardado
   calendar:

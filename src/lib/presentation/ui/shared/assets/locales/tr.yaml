@@ -9,6 +9,7 @@ shared:
     delete: Sil
     done: Tamam
     load_more: Daha Fazla
+    previous: Önceki
     save: Kaydet
     saved: Kaydedildi
   calendar:

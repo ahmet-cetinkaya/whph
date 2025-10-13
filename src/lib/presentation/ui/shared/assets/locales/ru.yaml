@@ -9,6 +9,7 @@ shared:
     delete: Удалить
     done: Готово
     load_more: Загрузить ещё
+    previous: Предыдущий
     save: Сохранить
     saved: Сохранено
   calendar:

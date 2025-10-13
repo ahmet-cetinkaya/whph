@@ -9,6 +9,7 @@ shared:
     delete: Izbriši
     done: Končano
     load_more: Naloži več
+    previous: Prejšnji
     save: Shrani
     saved: Shranjeno
   calendar:

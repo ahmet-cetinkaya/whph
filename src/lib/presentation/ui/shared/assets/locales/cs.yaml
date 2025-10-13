@@ -9,6 +9,7 @@ shared:
     delete: Smazat
     done: Hotovo
     load_more: Načíst více
+    previous: Předchozí
     save: Uložit
     saved: Uloženo
   calendar:
