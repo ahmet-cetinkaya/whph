@@ -439,6 +439,7 @@ class _HabitsPageState extends State<HabitsPage> {
             : null,
         showBackButton: isMultiPageTour,
         isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+        translationService: _translationService,
       ),
     );
   }

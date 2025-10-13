@@ -661,6 +661,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
             : null,
         showBackButton: isMultiPageTour,
         isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+        translationService: _translationService,
       ),
     );
   }

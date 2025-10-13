@@ -9,6 +9,7 @@ shared:
     delete: Excluir
     done: Concluído
     load_more: Carregar mais
+    previous: Anterior
     save: Salvar
     saved: Salvo
   calendar:

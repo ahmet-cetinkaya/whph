@@ -9,6 +9,7 @@ shared:
     delete: Poista
     done: Valmis
     load_more: Lataa lisää
+    previous: Edellinen
     save: Tallenna
     saved: Tallennettu
   calendar:

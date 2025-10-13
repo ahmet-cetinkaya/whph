@@ -9,6 +9,7 @@ shared:
     delete: Slett
     done: Ferdig
     load_more: Mer belastning
+    previous: Forrige
     save: Lagre
     saved: Lagret
   calendar:

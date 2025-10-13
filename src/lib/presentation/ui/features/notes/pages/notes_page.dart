@@ -266,6 +266,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
             : null,
         showBackButton: isMultiPageTour,
         isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+        translationService: _translationService,
       ),
     );
   }

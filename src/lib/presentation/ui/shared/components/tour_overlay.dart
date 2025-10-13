@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/corePackages/acore/lib/utils/color_contrast_helper.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
 class TourStep {
   final String title;
@@ -93,6 +95,7 @@ class TourOverlay extends StatefulWidget {
   final bool showBackButton;
   final bool isFinalPageOfTour;
   final int initialStep;
+  final ITranslationService translationService;
 
   const TourOverlay({
     super.key,
@@ -103,6 +106,7 @@ class TourOverlay extends StatefulWidget {
     this.showBackButton = false,
     this.isFinalPageOfTour = false,
     this.initialStep = 0,
+    required this.translationService,
   });
 
   @override
@@ -156,6 +160,9 @@ class _TourOverlayState extends State<TourOverlay> {
           onBack: widget.onBack,
           showBackButton: widget.showBackButton,
           isFinalPageOfTour: widget.isFinalPageOfTour,
+          isFirstStep: _currentStepIndex == 0,
+          isLastStep: _currentStepIndex == widget.steps.length - 1,
+          translationService: widget.translationService,
         ),
       );
 
@@ -223,6 +230,9 @@ class _TourOverlayContent extends StatelessWidget {
   final VoidCallback? onBack;
   final bool showBackButton;
   final bool isFinalPageOfTour;
+  final bool isFirstStep;
+  final bool isLastStep;
+  final ITranslationService translationService;
 
   const _TourOverlayContent({
     required this.currentStepIndex,
@@ -233,6 +243,9 @@ class _TourOverlayContent extends StatelessWidget {
     this.onBack,
     required this.showBackButton,
     required this.isFinalPageOfTour,
+    required this.isFirstStep,
+    required this.isLastStep,
+    required this.translationService,
   });
 
   @override
@@ -265,6 +278,7 @@ class _TourOverlayContent extends StatelessWidget {
         isFinalPageOfTour: isFinalPageOfTour,
         stepNumber: currentStepIndex + 1,
         totalSteps: steps.length,
+        translationService: translationService,
       ),
     );
   }
@@ -284,6 +298,7 @@ class TourStepOverlay extends StatelessWidget {
   final bool isFinalPageOfTour;
   final int stepNumber;
   final int totalSteps;
+  final ITranslationService translationService;
 
   const TourStepOverlay({
     super.key,
@@ -300,6 +315,7 @@ class TourStepOverlay extends StatelessWidget {
     this.isFinalPageOfTour = false,
     required this.stepNumber,
     required this.totalSteps,
+    required this.translationService,
   });
 
   @override
@@ -499,7 +515,7 @@ class TourStepOverlay extends StatelessWidget {
                       // Previous button (always shown, disabled on first step)
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: isFirstStep ? null : (showBackButton && onBack != null ? onBack : onPrevious),
+                          onPressed: _getPreviousButtonAction(isFirstStep, showBackButton, onBack, onPrevious),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                               vertical: AppTheme.sizeMedium,
@@ -508,7 +524,7 @@ class TourStepOverlay extends StatelessWidget {
                             backgroundColor: AppTheme.surface1,
                             foregroundColor: AppTheme.primaryColor,
                             side: BorderSide(
-                              color: isFirstStep
+                              color: isFirstStep && !(showBackButton && onBack != null)
                                   ? AppTheme.primaryColor.withValues(alpha: 0.1)
                                   : AppTheme.primaryColor.withValues(alpha: 0.3),
                             ),
@@ -520,15 +536,19 @@ class TourStepOverlay extends StatelessWidget {
                               Icon(
                                 Icons.arrow_back,
                                 size: 18,
-                                color: isFirstStep ? AppTheme.primaryColor.withValues(alpha: 0.3) : null,
+                                color: isFirstStep && !(showBackButton && onBack != null)
+                                    ? AppTheme.primaryColor.withValues(alpha: 0.3)
+                                    : null,
                               ),
                               const SizedBox(height: AppTheme.size4XSmall),
                               Text(
-                                showBackButton && onBack != null ? 'Back' : 'Previous',
+                                _getPreviousButtonText(isFirstStep, showBackButton, onBack),
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: isFirstStep ? AppTheme.primaryColor.withValues(alpha: 0.3) : null,
+                                  color: isFirstStep && !(showBackButton && onBack != null)
+                                      ? AppTheme.primaryColor.withValues(alpha: 0.3)
+                                      : null,
                                 ),
                               ),
                             ],
@@ -589,11 +609,15 @@ class TourStepOverlay extends StatelessWidget {
     final overlayWidth = screenSize.width * 0.9; // Matches the constraint
     final overlayHeight = 200.0; // Approximate height
 
+    // Get bottom safe area inset for dynamic offset calculation
+    const actionButtonHeight = 100;
+    final bottomSafeArea = MediaQuery.of(context).padding.bottom + actionButtonHeight;
+
     // Calculate safe clamping bounds
     final minX = horizontalMargin;
     final maxX = (screenSize.width - overlayWidth - horizontalMargin).clamp(minX, screenSize.width - overlayWidth);
     final minY = verticalMargin;
-    final maxY = (screenSize.height - overlayHeight - verticalMargin).clamp(minY, screenSize.height - overlayHeight);
+    final maxY = (screenSize.height - overlayHeight - bottomSafeArea).clamp(minY, screenSize.height - overlayHeight);
 
     switch (step.position) {
       case TourPosition.top:
@@ -603,8 +627,10 @@ class TourStepOverlay extends StatelessWidget {
 
       case TourPosition.bottom:
         final x = (targetCenter.dx - overlayWidth / 2).clamp(minX, maxX);
-        final y = (currentTargetPosition.dy + currentTargetSize.height + verticalMargin).clamp(minY, maxY);
-        return Offset(x, y);
+        // For bottom position, ensure the card doesn't go below the safe area or overlap with buttons
+        final adjustedY = (currentTargetPosition.dy + currentTargetSize.height + verticalMargin)
+            .clamp(minY, screenSize.height - overlayHeight - bottomSafeArea);
+        return Offset(x, adjustedY);
 
       case TourPosition.left:
         final x = (currentTargetPosition.dx - overlayWidth - horizontalMargin).clamp(minX, maxX);
@@ -622,5 +648,43 @@ class TourStepOverlay extends StatelessWidget {
           (screenSize.height - overlayHeight) / 2,
         );
     }
+  }
+
+  /// Determines the action for the previous button based on tour context
+  VoidCallback? _getPreviousButtonAction(
+    bool isFirstStep,
+    bool showBackButton,
+    VoidCallback? onBack,
+    VoidCallback onPrevious,
+  ) {
+    // If it's the first step and we're showing the back button with a back action,
+    // use the back action (navigate to previous page)
+    if (isFirstStep && showBackButton && onBack != null) {
+      return onBack;
+    }
+
+    // Otherwise, if it's not the first step, use the previous step action
+    if (!isFirstStep) {
+      return onPrevious;
+    }
+
+    // If it's the first step but we don't have a back action, return null (disabled)
+    return null;
+  }
+
+  /// Determines the text for the previous button based on tour context
+  String _getPreviousButtonText(
+    bool isFirstStep,
+    bool showBackButton,
+    VoidCallback? onBack,
+  ) {
+    // If it's the first step and we're showing the back button with a back action,
+    // show "Back" text (navigate to previous page)
+    if (isFirstStep && showBackButton && onBack != null) {
+      return translationService.translate(SharedTranslationKeys.backButton);
+    }
+
+    // Otherwise, show "Previous" text
+    return translationService.translate(SharedTranslationKeys.previousButton);
   }
 }

@@ -12,6 +12,7 @@ shared:
     delete: Видалити
     done: Готово
     load_more: Завантажити більше
+    previous: Попередній
     save: Зберегти
     saved: Збережено
   calendar:

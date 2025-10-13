@@ -9,6 +9,7 @@ shared:
     delete: Șterge
     done: Gata
     load_more: Încarcă mai mult
+    previous: Anterior
     save: Salvează
     saved: Salvat
   calendar:

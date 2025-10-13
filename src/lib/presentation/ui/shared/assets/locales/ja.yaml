@@ -9,6 +9,7 @@ shared:
     delete: 削除
     done: 完了
     load_more: さらに読み込む
+    previous: 前へ
     save: 保存
     saved: 保存済み
   calendar:

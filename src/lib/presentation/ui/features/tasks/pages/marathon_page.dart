@@ -603,6 +603,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         onSkip: () async {
           Navigator.of(context).pop();
         },
+        translationService: _translationService,
       ),
     );
   }

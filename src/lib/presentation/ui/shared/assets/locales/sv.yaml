@@ -9,6 +9,7 @@ shared:
     delete: Ta bort
     done: Klar
     load_more: Ladda mer
+    previous: Föregående
     save: Spara
     saved: Sparad
   calendar:

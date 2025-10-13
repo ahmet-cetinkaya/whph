@@ -244,6 +244,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
             : null,
         showBackButton: isMultiPageTour,
         isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+        translationService: _translationService,
       ),
     );
   }
