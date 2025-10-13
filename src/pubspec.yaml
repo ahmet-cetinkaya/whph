@@ -84,7 +84,7 @@ dependencies:
   easy_localization: ^3.0.8
   easy_localization_multi: ^0.2.0
   easy_localization_yaml: ^0.1.2
-  fl_chart: ^1.0.0
+  fl_chart: ^1.1.1
   flutter_colorpicker: ^1.1.0
   flutter_confetti: ^0.5.1
   flutter_markdown: ^0.7.2
@@ -126,3 +126,6 @@ flutter:
     - lib/presentation/ui/features/tasks/assets/locales/
     - lib/presentation/ui/features/tasks/assets/sounds/
     - lib/presentation/ui/features/notes/assets/locales/
+
+dependency_overrides:
+  vector_math: ^2.2.0
