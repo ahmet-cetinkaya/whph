@@ -67,9 +67,9 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     // Get migration path from source to current version
     final migrationSteps = _migrationRegistry.getMigrationPath(sourceSemanticVersion, currentVersion);
 
-    // If no specific migrations are defined, return data as-is
-    // This covers the case where imported data is 0.6.4 and current app is 1.0.0
-    // with no specific migrations defined between these versions
+    // If no specific migrations are defined, return data with updated version info
+    // This covers the case where imported data is from a version that doesn't have specific migrations
+    // but is still compatible (e.g., patch versions or versions between defined migration points)
     if (migrationSteps.isEmpty) {
       // Update the app version in the data to reflect current version
       final migratedData = Map<String, dynamic>.from(data);
@@ -104,13 +104,22 @@ class ImportDataMigrationService implements IImportDataMigrationService {
       final sourceSemanticVersion = SemanticVersion.parse(sourceVersion);
 
       // Migration is needed if source version is older than current version
-      // and there are specific migration steps defined
       if (sourceSemanticVersion >= currentVersion) {
         return false;
       }
 
+      // Check if there are specific migration steps defined for the version range
       final migrationSteps = _migrationRegistry.getMigrationPath(sourceSemanticVersion, currentVersion);
-      return migrationSteps.isNotEmpty;
+
+      // If there are specific migrations defined, then migration is needed
+      if (migrationSteps.isNotEmpty) {
+        return true;
+      }
+
+      // If no specific migrations are defined but source version is older than current,
+      // we still consider migration as needed to update the version in the data
+      // This handles cases where intermediate patch versions don't require specific migrations
+      return true;
     } catch (e) {
       // Invalid version format
       return false;
