@@ -260,23 +260,67 @@ Start-Process -FilePath "$command" -ArgumentList @($argsString) -Verb RunAs -Win
     try {
       Logger.debug('Checking Windows firewall rule: $ruleName');
 
+      // Use PowerShell to get firewall rule information in a language-independent way
       final result = await Process.run(
-        'netsh',
-        ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
+        'powershell',
+        [
+          '-Command',
+          'Get-NetFirewallRule',
+          '-Name',
+          '"$ruleName"',
+          '-ErrorAction',
+          'SilentlyContinue',
+          '|',
+          'Select-Object',
+          '-Property',
+          'Name,DisplayName,Enabled,Direction,Action,Protocol,LocalPort',
+          '|',
+          'ConvertTo-Json'
+        ],
         runInShell: true,
       );
 
-      Logger.debug('Netsh check result - exitCode: ${result.exitCode}, stdout: ${result.stdout}');
+      Logger.debug(
+          'PowerShell check result - exitCode: ${result.exitCode}, stdout: ${result.stdout}, stderr: ${result.stderr}');
 
-      // If the rule exists, netsh will return information about it including "Rule Name:"
-      // This approach is more robust than checking for "No rules match" which varies by Windows language
-      final ruleExists = result.stdout.toString().contains('Rule Name:');
+      // If the rule exists, PowerShell will return JSON data containing the rule information
+      // If it doesn't exist, the result will be empty or null
+      final output = result.stdout.toString().trim();
+      final ruleExists = output.isNotEmpty && output != 'null' && result.exitCode == 0;
       Logger.debug('Firewall rule "$ruleName" exists: $ruleExists');
 
       return ruleExists;
     } catch (e) {
-      Logger.error('Error checking firewall rule: $e');
-      return false;
+      Logger.error('Error checking firewall rule with PowerShell: $e');
+
+      // Fallback: try netsh with a more language-agnostic approach
+      try {
+        final result = await Process.run(
+          'netsh',
+          ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
+          runInShell: true,
+        );
+
+        Logger.debug('Netsh fallback result - exitCode: ${result.exitCode}, stdout: ${result.stdout}');
+
+        // Check for the rule name in the output - this should work regardless of language
+        // Also check if exit code is 0 (success) or if specific error indicating rule doesn't exist occurs
+        final output = result.stdout.toString();
+        final errorOutput = result.stderr.toString();
+
+        // On non-English systems, the rule info will still contain the rule name
+        // If rule doesn't exist, netsh typically returns an error or specific message
+        final ruleExists = output.contains(ruleName) &&
+            result.exitCode == 0 &&
+            !output.toLowerCase().contains('no rules match') &&
+            !errorOutput.toLowerCase().contains('not found');
+
+        Logger.debug('Firewall rule "$ruleName" exists (fallback): $ruleExists');
+        return ruleExists;
+      } catch (fallbackError) {
+        Logger.error('Fallback firewall rule check also failed: $fallbackError');
+        return false;
+      }
     }
   }
 
