@@ -255,44 +255,45 @@ Start-Process -FilePath "$command" -ArgumentList @($argsString) -Verb RunAs -Win
   }
 
   // Firewall rule management for Windows
-  @override
+ @override
   Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
     try {
       Logger.debug('Checking Windows firewall rule: $ruleName');
 
       // Use PowerShell to get firewall rule information in a language-independent way
+      // Using a more readable multi-line PowerShell command
+      final psCommand = '''
+        try {
+          \$rule = Get-NetFirewallRule -Name "$ruleName" -ErrorAction Stop
+          # If the rule exists, output the name to confirm
+          Write-Output \$rule.Name
+        } catch [System.Management.Automation.ItemNotFoundException] {
+          # Rule not found - output nothing
+          Write-Output ""
+        } catch {
+          # Other error occurred
+          Write-Output ""
+        }
+      ''';
+
       final result = await Process.run(
         'powershell',
-        [
-          '-Command',
-          'Get-NetFirewallRule',
-          '-Name',
-          '"$ruleName"',
-          '-ErrorAction',
-          'SilentlyContinue',
-          '|',
-          'Select-Object',
-          '-Property',
-          'Name,DisplayName,Enabled,Direction,Action,Protocol,LocalPort',
-          '|',
-          'ConvertTo-Json'
-        ],
+        ['-Command', psCommand],
         runInShell: true,
       );
 
       Logger.debug(
           'PowerShell check result - exitCode: ${result.exitCode}, stdout: ${result.stdout}, stderr: ${result.stderr}');
 
-      // If the rule exists, PowerShell will return JSON data containing the rule information
-      // If it doesn't exist, the result will be empty or null
+      // If the rule exists, PowerShell will output the rule name
       final output = result.stdout.toString().trim();
-      final ruleExists = output.isNotEmpty && output != 'null' && result.exitCode == 0;
+      final ruleExists = output.isNotEmpty && result.exitCode == 0;
       Logger.debug('Firewall rule "$ruleName" exists: $ruleExists');
 
       return ruleExists;
     } catch (e) {
       Logger.error('Error checking firewall rule with PowerShell: $e');
-
+      
       // Fallback: try netsh with a more language-agnostic approach
       try {
         final result = await Process.run(
@@ -300,21 +301,19 @@ Start-Process -FilePath "$command" -ArgumentList @($argsString) -Verb RunAs -Win
           ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
           runInShell: true,
         );
-
+        
         Logger.debug('Netsh fallback result - exitCode: ${result.exitCode}, stdout: ${result.stdout}');
-
-        // Check for the rule name in the output - this should work regardless of language
-        // Also check if exit code is 0 (success) or if specific error indicating rule doesn't exist occurs
+        
+        // Instead of checking for English-specific text, check for the presence of the rule name in the output
+        // and that the exit code indicates success. Different languages may have different error messages,
+        // so we focus on whether the rule name appears in successful output.
         final output = result.stdout.toString();
         final errorOutput = result.stderr.toString();
-
-        // On non-English systems, the rule info will still contain the rule name
-        // If rule doesn't exist, netsh typically returns an error or specific message
-        final ruleExists = output.contains(ruleName) &&
-            result.exitCode == 0 &&
-            !output.toLowerCase().contains('no rules match') &&
-            !errorOutput.toLowerCase().contains('not found');
-
+        
+        // A successful rule query should contain the rule name in the output
+        // If the rule doesn't exist, netsh typically returns an error message or different output
+        final ruleExists = output.contains(ruleName) && result.exitCode == 0 && errorOutput.isEmpty;
+            
         Logger.debug('Firewall rule "$ruleName" exists (fallback): $ruleExists');
         return ruleExists;
       } catch (fallbackError) {
