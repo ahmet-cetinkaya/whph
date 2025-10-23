@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/infrastructure/shared/features/setup/services/firewall_setup_service.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/presentation/api/api.dart';
 import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
@@ -36,9 +35,6 @@ class PlatformInitializationService {
     // Configure desktop environment
     final setupService = container.resolve<ISetupService>();
     await setupService.setupEnvironment();
-
-    // Set up firewall rules for sync feature
-    await FirewallSetupService.setupSyncFirewallRules(container);
 
     // Initialize window manager and configure basic window properties
     await _initializeWindowManager(container);

@@ -114,6 +114,7 @@ settings:
           step2: "Tjek firewall-status:"
           step3: "Tilføj firewall-regel (hvis UFW er aktiv):"
           step4: "Bekræft at reglen blev tilføjet:"
+          method_terminal_title: "Metode 1: Terminalkommando"
         windows:
           step1: "Åbn Windows Defender Firewall fra Kontrolpanel"
           step2: "Klik på Avancerede indstillinger til venstre"
@@ -124,11 +125,22 @@ settings:
           step7: "Vælg Tillad forbindelsen og klik på Næste"
           step8: "Marker alle profiler (Domæne, Privat, Offentlig) og klik på Næste"
           step9: "Indtast et navn som WHPH Sync Port 44040 og klik på Afslut"
+          method_gui_title: "Metode 1: Windows Firewall GUI"
+          method_command_title: "Metode 2: Kommandoprompt"
+          step_open_defender: "Åbn Windows Defender Firewall → Avancerede indstillinger"
+          step_create_inbound_rule: 'Opret indgående regel: Indgående regler → Ny regel → Port → TCP → 44040 → Tillad → Alle profiler → Navn: "WHPH Sync (Indgående)"'
+          step_create_outbound_rule: 'Opret udgående regel: Udgående regler → Ny regel → Port → TCP → 44040 → Tillad → Alle profiler → Navn: "WHPH Sync (Udgående)"'
           alternative_command_prompt:
             title: "Alternativ: Brug kommandoprompt"
             steps:
               cmd_step1: "Åbn kommandoprompt som administrator"
               cmd_step2: "Tilføj firewall-regel:"
+        step_open_command_prompt: "1. Åbn kommandoprompt som administrator"
+        step_run_commands: "2. Kør disse kommandoer:"
+        step_open_terminal: "1. Åbn en terminal"
+        step_run_command: "2. Kør denne kommando (kræver sudo-rettigheder):"
+        step_click_confirmation: "3. Efter kørsel af kommandoen, klik på bekræftelsesknappen nedenfor"
+      manual_configure_instruction: "Konfigurer firewall-regler manuelt til synkronisering (kræver administratorrettigheder):"
     startup:
       description: For at appen starter automatisk med din enhed kræves auto-start tilladelse. Dette sikrer at påmindelser og notifikationer fungerer korrekt selv efter enhedsgenstart.
       importance: Placeringen af auto-start indstilling varierer eller kan mangle afhængigt af enhedsproducent.

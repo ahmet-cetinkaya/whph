@@ -113,6 +113,7 @@ settings:
           step2: "Güvenlik duvarı durumunu kontrol edin:"
           step3: "Güvenlik duvarı kuralı ekleyin (UFW aktifse):"
           step4: "Kuralın eklendiğini doğrulayın:"
+          method_terminal_title: "Yöntem 1: Terminal komutu"
         windows:
           step1: "Kontrol Panelinden Windows Defender Güvenlik Duvarını açın"
           step2: "Solda Gelişmiş ayarlara tıklayın"
@@ -123,11 +124,22 @@ settings:
           step7: "Bağlantıya izin ver'i seçin ve İleri'ye tıklayın"
           step8: "Tüm profilleri (Etki Alanı, Özel, Genel) işaretleyin ve İleri'ye tıklayın"
           step9: "WHPH Sync Port 44040 gibi bir ad girin ve Son'a tıklayın"
+          method_gui_title: "Yöntem 1: Windows Güvenlik Duvarı GUI"
+          method_command_title: "Yöntem 2: Komut İstemi"
+          step_open_defender: "Windows Defender Güvenlik Duvarını → Gelişmiş ayarlar açın"
+          step_create_inbound_rule: 'Gelen kuralı oluşturun: Gelen Kurallar → Yeni Kural → Port → TCP → 44040 → İzin Ver → Tüm profiller → Ad: "WHPH Sync (Gelen)"'
+          step_create_outbound_rule: 'Giden kuralı oluşturun: Giden Kurallar → Yeni Kural → Port → TCP → 44040 → İzin Ver → Tüm profiller → Ad: "WHPH Sync (Giden)"'
           alternative_command_prompt:
             title: "Alternatif: Komut İstemi Kullan"
             steps:
               cmd_step1: "Komut İstemi'ni Yönetici olarak açın"
               cmd_step2: "Güvenlik duvarı kuralı ekleyin:"
+        step_open_command_prompt: "1. Komut İstemi'ni Yönetici olarak açın"
+        step_run_commands: "2. Bu komutları çalıştırın:"
+        step_open_terminal: "1. Bir terminal açın"
+        step_run_command: "2. Bu komutu çalıştırın (sudo hakları gerektirir):"
+        step_click_confirmation: "3. Komutu çalıştırdıktan sonra, aşağıdaki onay butonuna tıklayın"
+      manual_configure_instruction: "Senkronizasyon için güvenlik duvarı kurallarını manuel olarak yapılandırın (yönetici hakları gerektirir):"
     startup:
       description: Uygulamanın cihazınızla birlikte otomatik olarak başlaması için otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
       importance: Otomatik başlatma ayarının konumu cihaz üreticisine göre değişiklik gösterebilir veya olmayabilir.

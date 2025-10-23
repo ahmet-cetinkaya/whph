@@ -114,6 +114,7 @@ settings:
           step2: "Preverite stanje požarnega zidu:"
           step3: "Dodajte pravilo požarnega zidu (če je UFW aktiven):"
           step4: "Preverite, ali je bilo pravilo dodano:"
+          method_terminal_title: "Metoda 1: Ukaz terminala"
         windows:
           step1: "Odprite Windows Defender Firewall iz Nadzorne plošče"
           step2: "Kliknite Napredne nastavitve vlevo"
@@ -124,11 +125,22 @@ settings:
           step7: "Izberite Dovoli povezavo in kliknite Naprej"
           step8: "Označite vse profile (Domov, Zasebno, Javno) in kliknite Naprej"
           step9: "Vnesite ime kot WHPH Sync Vrata 44040 in kliknite Dokončaj"
+          method_gui_title: "Metoda 1: Grafični vmesnik Windows Firewalla"
+          method_command_title: "Metoda 2: Ukazni poziv"
+          step_open_defender: "Odprite Windows Defender Firewall → Napredne nastavitve"
+          step_create_inbound_rule: 'Ustvarite vhodno pravilo: Vhodna pravila → Novo pravilo → Vrata → TCP → 44040 → Dovoli → Vsi profili → Ime: "WHPH Sync (Vhodno)"'
+          step_create_outbound_rule: 'Ustvarite izhodno pravilo: Izhodna pravila → Novo pravilo → Vrata → TCP → 44040 → Dovoli → Vsi profili → Ime: "WHPH Sync (Izhodno)"'
           alternative_command_prompt:
             title: "Alternativa: Uporabite ukazni poziv"
             steps:
               cmd_step1: "Odprite ukazni poziv kot skrbnik"
               cmd_step2: "Dodajte pravilo požarnega zidu:"
+        step_open_command_prompt: "1. Odprite ukazni poziv kot skrbnik"
+        step_run_commands: "2. Izvedite te ukaze:"
+        step_open_terminal: "1. Odprite terminal"
+        step_run_command: "2. Izvedite ta ukaz (zahtevajo sudo dovoljenja):"
+        step_click_confirmation: "3. Po izvedbi ukaza kliknite gumb za potrditev spodaj"
+      manual_configure_instruction: "Ročno konfigurirajte pravila požarnega zidu za sinhronizacijo (zahtevajo skrbniška dovoljenja):"
     startup:
       description: Za samodejni zagon aplikacije z vašo napravo je potrebno dovoljenje za samodejni zagon. To zagotavlja, da opomnike in obvestila delujejo pravilno tudi po ponovnem zagonu naprave.
       importance: Lokacija nastavitve samodejnega zagona se razlikuje ali morda ni prisotna glede na proizvajalca naprave.

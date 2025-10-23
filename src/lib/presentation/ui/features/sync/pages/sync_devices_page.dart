@@ -824,7 +824,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       body: Column(
         children: [
           // Firewall permission card (desktop only)
-          const FirewallPermissionCard(),
+          FirewallPermissionCard(
+            onPermissionChanged: _onFirewallPermissionChanged,
+          ),
 
           // Device list content
           Expanded(
@@ -854,6 +856,13 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         ],
       ),
     );
+  }
+
+  /// Handle firewall permission status changes from the card
+  void _onFirewallPermissionChanged() {
+    // The card will hide itself when rules exist, but we track it here for any parent-level logic
+    Logger.debug('🔒 Firewall permission status changed');
+    // You can add additional logic here if needed (e.g., refresh other UI elements)
   }
 
   /// Toggle desktop sync mode between server (default) and client mode - like mobile toggle

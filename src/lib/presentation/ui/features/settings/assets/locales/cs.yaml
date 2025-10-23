@@ -114,6 +114,7 @@ settings:
           step2: "Zkontrolujte stav firewallu:"
           step3: "Přidejte pravidlo firewallu (pokud je aktivní UFW):"
           step4: "Ověřte, že bylo pravidlo přidáno:"
+          method_terminal_title: "Metoda 1: Terminálový příkaz"
         windows:
           step1: "Otevřete bránu Windows Defender Firewall z Ovládacích panelů"
           step2: "Klikněte na Pokročilé nastavení vlevo"
@@ -124,11 +125,22 @@ settings:
           step7: "Vyberte Povolit připojení a klikněte na Další"
           step8: "Zaškrtněte všechny profily (Doména, Soukromý, Veřejný) a klikněte na Další"
           step9: "Zadejte název jako WHPH Sync Port 44040 a klikněte na Dokončit"
+          method_gui_title: "Metoda 1: Grafické rozhraní Windows Firewallu"
+          method_command_title: "Metoda 2: Příkazový řádek"
+          step_open_defender: "Otevřete bránu Windows Defender Firewall → Pokročilé nastavení"
+          step_create_inbound_rule: 'Vytvořte příchozí pravidlo: Příchozí pravidla → Nové pravidlo → Port → TCP → 44040 → Povolit → Všechny profily → Název: "WHPH Sync (Příchozí)"'
+          step_create_outbound_rule: 'Vytvořte odchozí pravidlo: Odchozí pravidla → Nové pravidlo → Port → TCP → 44040 → Povolit → Všechny profily → Název: "WHPH Sync (Odchozí)"'
           alternative_command_prompt:
             title: "Alternativa: Použijte příkazový řádek"
             steps:
               cmd_step1: "Otevřete příkazový řádek jako správce"
               cmd_step2: "Přidejte pravidlo firewallu:"
+        step_open_command_prompt: "1. Otevřete příkazový řádek jako správce"
+        step_run_commands: "2. Spusťte tyto příkazy:"
+        step_open_terminal: "1. Otevřete terminál"
+        step_run_command: "2. Spusťte tento příkaz (vyžaduje oprávnění sudo):"
+        step_click_confirmation: "3. Po spuštění příkazu klikněte na tlačítko potvrzení níže"
+      manual_configure_instruction: "Ručně nakonfigurujte pravidla firewallu pro synchronizaci (vyžaduje oprávnění správce):"
     startup:
       description: Pro automatické spuštění aplikace s vaším zařízením je vyžadováno oprávnění auto-start. To zajišťuje, že připomínky a notifikace fungují správně i po restartu zařízení.
       importance: Umístění nastavení auto-start se liší nebo nemusí být přítomno podle výrobce zařízení.

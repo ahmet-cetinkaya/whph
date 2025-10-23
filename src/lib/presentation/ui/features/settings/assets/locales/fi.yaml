@@ -114,6 +114,7 @@ settings:
           step2: "Tarkista palomuurin tila:"
           step3: "Lisää palomuurisääntö (jos UFW on aktiivinen):"
           step4: "Vahvista, että sääntö lisättiin:"
+          method_terminal_title: "Menetelmä 1: Päätteen komento"
         windows:
           step1: "Avaa Windows Defender -palomuuri Ohjauspaneelista"
           step2: "Napsauta Vasemmassa reunassa Lisäasetukset"
@@ -124,11 +125,22 @@ settings:
           step7: "Valitse Salli yhteys ja napsauta Seuraava"
           step8: "Valitse kaikki profiilit (Toimialue, Yksityinen, Julkinen) ja napsauta Seuraava"
           step9: "Anna nimeksi esimerkiksi WHPH Sync Port 44040 ja napsauta Valmis"
+          method_gui_title: "Menetelmä 1: Windowsin palomuurin graafinen käyttöliittymä"
+          method_command_title: "Menetelmä 2: Komentokehote"
+          step_open_defender: "Avaa Windows Defender -palomuuri → Lisäasetukset"
+          step_create_inbound_rule: 'Luo saapuva sääntö: Saapuvat säännöt → Uusi sääntö → Portti → TCP → 44040 → Salli → Kaikki profiilit → Nimi: "WHPH Sync (Saapuva)"'
+          step_create_outbound_rule: 'Luo lähtevä sääntö: Lähtevät säännöt → Uusi sääntö → Portti → TCP → 44040 → Salli → Kaikki profiilit → Nimi: "WHPH Sync (Lähtevä)"'
           alternative_command_prompt:
             title: "Vaihtoehtoinen: Käytä komentokehotetta"
             steps:
               cmd_step1: "Avaa komentokehote järjestelmänvalvojana"
               cmd_step2: "Lisää palomuurisääntö:"
+        step_open_command_prompt: "1. Avaa komentokehote järjestelmänvalvojana"
+        step_run_commands: "2. Suorita nämä komennot:"
+        step_open_terminal: "1. Avaa pääte"
+        step_run_command: "2. Suorita tämä komento (vaatii sudo-oikeudet):"
+        step_click_confirmation: "3. Komennon suorittamisen jälkeen napsauta alla olevaa vahvistuspainiketta"
+      manual_configure_instruction: "Määritä palomuurisäännöt manuaalisesti synkronointia varten (vaatii järjestelmänvalvojan oikeudet):"
     startup:
       description: Sovelluksen automaattinen käynnistyminen laitteen kanssa vaatii auto-käynnistysluvan. Tämä varmistaa, että muistutukset ja ilmoitukset toimivat oikein jopa laitteen uudelleenkäynnistyksen jälkeen.
       importance: Auto-käynnistysasetuksen sijainti vaihtelee tai voi puuttua riippuen laitteen valmistajasta.

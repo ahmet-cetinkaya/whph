@@ -113,6 +113,7 @@ settings:
           step2: "Vérifiez l'état du pare-feu :"
           step3: "Ajoutez une règle de pare-feu (si UFW est actif) :"
           step4: "Vérifiez que la règle a été ajoutée :"
+          method_terminal_title: "Méthode 1 : Commande terminal"
         windows:
           step1: "Ouvrez le Pare-feu Windows Defender depuis le Panneau de configuration"
           step2: "Cliquez sur Paramètres avancés à gauche"
@@ -123,11 +124,22 @@ settings:
           step7: "Sélectionnez Autoriser la connexion et cliquez sur Suivant"
           step8: "Cochez tous les profils (Domaine, Privé, Public) et cliquez sur Suivant"
           step9: "Entrez un nom comme WHPH Sync Port 44040 et cliquez sur Terminer"
+          method_gui_title: "Méthode 1 : Interface graphique du pare-feu Windows"
+          method_command_title: "Méthode 2 : Invite de commandes"
+          step_open_defender: "Ouvrez le Pare-feu Windows Defender → Paramètres avancés"
+          step_create_inbound_rule: 'Créer une règle entrante : Règles de trafic entrant → Nouvelle règle → Port → TCP → 44040 → Autoriser → Tous les profils → Nom : "WHPH Sync (Entrant)"'
+          step_create_outbound_rule: 'Créer une règle sortante : Règles de trafic sortant → Nouvelle règle → Port → TCP → 44040 → Autoriser → Tous les profils → Nom : "WHPH Sync (Sortant)"'
           alternative_command_prompt:
             title: "Alternative : Utiliser l'Invite de commandes"
             steps:
               cmd_step1: "Ouvrez l'Invite de commandes en tant qu'administrateur"
               cmd_step2: "Ajoutez une règle de pare-feu :"
+        step_open_command_prompt: "1. Ouvrez l'Invite de commandes en tant qu'administrateur"
+        step_run_commands: "2. Exécutez ces commandes :"
+        step_open_terminal: "1. Ouvrez un terminal"
+        step_run_command: "2. Exécutez cette commande (nécessite des privilèges sudo) :"
+        step_click_confirmation: "3. Après avoir exécuté la commande, cliquez sur le bouton de confirmation ci-dessous"
+      manual_configure_instruction: "Configurez manuellement les règles de pare-feu pour la synchronisation (nécessite des privilèges administrateur) :"
     startup:
       description: Pour que l'application démarre automatiquement avec votre appareil, la permission de démarrage automatique est requise. Cela garantit que les rappels et notifications fonctionnent correctement même après les redémarrages de l'appareil.
       importance: L'emplacement du paramètre de démarrage automatique varie ou peut ne pas être présent selon le fabricant de l'appareil.
