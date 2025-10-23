@@ -128,7 +128,7 @@ settings:
           method_command_title: "Метод 2: Командний рядок"
           step_open_defender: "Відкрийте Windows Defender Firewall → Розширені налаштування"
           step_create_inbound_rule: 'Створіть вхідне правило: Вхідні правила → Створити правило → Порт → TCP → 44040 → Дозволити → Всі профілі → Назва: "WHPH Sync (Вхідне)"'
-          step_create_outbound_rule: 'Створіть вихідне правило: Вихідні правила → Створити правило → Порт → TCP → 44040 → Дозволити → Всі профілі → Назва: "WHPH Sync (Вхідне)"'
+          step_create_outbound_rule: 'Створіть вихідне правило: Вихідні правила → Створити правило → Порт → TCP → 44040 → Дозволити → Всі профілі → Назва: "WHPH Sync (Вихідне)"'
           alternative_command_prompt:
             title: "Альтернатива: Використовуйте командний рядок"
             steps:
