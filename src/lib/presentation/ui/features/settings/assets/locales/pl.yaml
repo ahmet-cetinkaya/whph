@@ -114,6 +114,7 @@ settings:
           step2: "Sprawdź stan zapory sieciowej:"
           step3: "Dodaj regułę zapory sieciowej (jeśli UFW jest aktywny):"
           step4: "Sprawdź, czy reguła została dodana:"
+          method_terminal_title: "Metoda 1: Polecenie terminala"
         windows:
           step1: "Otwórz Zaporę systemu Windows Defender z Panelu sterowania"
           step2: "Kliknij Ustawienia zaawansowane po lewej stronie"
@@ -124,11 +125,22 @@ settings:
           step7: "Wybierz Zezwól na połączenie i kliknij Dalej"
           step8: "Zaznacz wszystkie profile (Domena, Prywatny, Publiczny) i kliknij Dalej"
           step9: "Wprowadź nazwę, np. WHPH Sync Port 44040 i kliknij Zakończ"
+          method_gui_title: "Metoda 1: Interfejs graficzny Zapory systemu Windows"
+          method_command_title: "Metoda 2: Wiersz poleceń"
+          step_open_defender: "Otwórz Zaporę systemu Windows Defender → Ustawienia zaawansowane"
+          step_create_inbound_rule: 'Utwórz regułę ruchu przychodzącego: Reguły ruchu przychodzącego → Nowa reguła → Port → TCP → 44040 → Zezwól → Wszystkie profile → Nazwa: "WHPH Sync (Przychodzący)"'
+          step_create_outbound_rule: 'Utwórz regułę ruchu wychodzącego: Reguły ruchu wychodzącego → Nowa reguła → Port → TCP → 44040 → Zezwól → Wszystkie profile → Nazwa: "WHPH Sync (Wychodzący)"'
           alternative_command_prompt:
             title: "Alternatywa: Użyj wiersza poleceń"
             steps:
               cmd_step1: "Otwórz wiersz poleceń jako administrator"
               cmd_step2: "Dodaj regułę zapory sieciowej:"
+        step_open_command_prompt: "1. Otwórz wiersz poleceń jako administrator"
+        step_run_commands: "2. Uruchom te polecenia:"
+        step_open_terminal: "1. Otwórz terminal"
+        step_run_command: "2. Uruchom to polecenie (wymaga uprawnień sudo):"
+        step_click_confirmation: "3. Po uruchomieniu polecenia kliknij przycisk potwierdzenia poniżej"
+      manual_configure_instruction: "Ręcznie skonfiguruj reguły zapory sieciowej do synchronizacji (wymaga uprawnień administratora):"
     startup:
       description: Aby aplikacja uruchamiała się automatycznie z urządzeniem, wymagane jest uprawnienie automatycznego uruchamiania. To zapewnia, że przypomnienia i powiadomienia działają prawidłowo nawet po ponownym uruchomieniu urządzenia.
       importance: Lokalizacja ustawienia automatycznego uruchamiania różni się lub może nie być obecna w zależności od producenta urządzenia.

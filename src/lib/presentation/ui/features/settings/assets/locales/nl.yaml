@@ -114,6 +114,7 @@ settings:
           step2: "Controleer firewall-status:"
           step3: "Voeg firewall-regel toe (als UFW actief is):"
           step4: "Controleer of regel is toegevoegd:"
+          method_terminal_title: "Methode 1: Terminalopdracht"
         windows:
           step1: "Open Windows Defender Firewall vanuit Configuratiescherm"
           step2: "Klik op Geavanceerde instellingen aan de linkerkant"
@@ -124,11 +125,22 @@ settings:
           step7: "Selecteer Verbinding toestaan en klik op Volgende"
           step8: "Vink alle profielen aan (Domein, Privé, Openbaar) en klik op Volgende"
           step9: "Voer een naam in zoals WHPH Sync Poort 44040 en klik op Voltooien"
+          method_gui_title: "Methode 1: Windows Firewall GUI"
+          method_command_title: "Methode 2: Opdrachtprompt"
+          step_open_defender: "Open Windows Defender Firewall → Geavanceerde instellingen"
+          step_create_inbound_rule: 'Maak inkomende regel: Inkomende regels → Nieuwe regel → Poort → TCP → 44040 → Toestaan → Alle profielen → Naam: "WHPH Sync (Inkomend)"'
+          step_create_outbound_rule: 'Maak uitgaande regel: Uitgaande regels → Nieuwe regel → Poort → TCP → 44040 → Toestaan → Alle profielen → Naam: "WHPH Sync (Uitgaand)"'
           alternative_command_prompt:
             title: "Alternatief: Gebruik opdrachtprompt"
             steps:
               cmd_step1: "Open opdrachtprompt als administrator"
               cmd_step2: "Voeg firewall-regel toe:"
+        step_open_command_prompt: "1. Open opdrachtprompt als administrator"
+        step_run_commands: "2. Voer deze opdrachten uit:"
+        step_open_terminal: "1. Open een terminal"
+        step_run_command: "2. Voer deze opdracht uit (vereist sudo-rechten):"
+        step_click_confirmation: "3. Na het uitvoeren van de opdracht, klik op de bevestigingsknop hieronder"
+      manual_configure_instruction: "Configureer firewall-regels handmatig voor synchronisatie (vereist administratorrechten):"
     startup:
       description: Voor de app om automatisch te starten met uw apparaat is auto-start toestemming vereist. Dit zorgt ervoor dat herinneringen en notificaties correct werken zelfs na herstarts van het apparaat.
       importance: De locatie van de auto-start instelling varieert of kan ontbreken afhankelijk van de fabrikant van het apparaat.

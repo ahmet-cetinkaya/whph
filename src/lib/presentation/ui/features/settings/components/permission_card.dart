@@ -9,6 +9,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
+import 'automatic_action_button.dart';
 
 /// A data class representing an instruction section
 class PermissionInstructionSection {
@@ -76,7 +77,7 @@ class PermissionCard extends StatelessWidget {
   final String? actionButtonText;
 
   /// Optional - Automatic action callback (e.g., for Windows firewall rule addition)
-  final VoidCallback? onAutomaticAction;
+  final Future<void> Function()? onAutomaticAction;
 
   /// Optional - Text for the automatic action button
   final String? automaticActionButtonText;
@@ -90,6 +91,13 @@ class PermissionCard extends StatelessWidget {
 
   /// Optional - Text for the secondary action button
   final String? secondaryActionButtonText;
+
+  /// Optional - Additional content to display in the dialog
+  final Widget? additionalDialogContent;
+
+  /// Optional - Whether to show the warning/info instructions box in the dialog
+  /// Defaults to true. Set to false when using additionalDialogContent with custom instructions.
+  final bool showInstructionsAlertBox;
 
   PermissionCard({
     super.key,
@@ -111,6 +119,8 @@ class PermissionCard extends StatelessWidget {
     this.autoCloseAfterAutomaticAction = true, // Default to true for backward compatibility
     this.onSecondaryAction,
     this.secondaryActionButtonText,
+    this.additionalDialogContent,
+    this.showInstructionsAlertBox = true, // Default to true for backward compatibility
   });
 
   @override
@@ -196,63 +206,94 @@ class PermissionCard extends StatelessWidget {
             children: [
               Text(learnMoreDialogDescription),
               const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(AppTheme.sizeLarge),
-                decoration: BoxDecoration(
-                  color: AppTheme.warningColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: AppTheme.warningColor.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline_rounded,
-                          size: AppTheme.fontSizeXLarge,
-                        ),
-                        const SizedBox(width: AppTheme.sizeSmall),
-                        Expanded(
-                          child: Text(_translationService.translate(SettingsTranslationKeys.instructions),
-                              style: theme.textTheme.titleMedium),
-                        ),
-                      ],
+              if (showInstructionsAlertBox) ...[
+                Container(
+                  padding: const EdgeInsets.all(AppTheme.sizeLarge),
+                  decoration: BoxDecoration(
+                    color: AppTheme.warningColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppTheme.warningColor.withValues(alpha: 0.3),
                     ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: AppTheme.fontSizeXLarge,
+                          ),
+                          const SizedBox(width: AppTheme.sizeSmall),
+                          Expanded(
+                            child: Text(_translationService.translate(SettingsTranslationKeys.instructions),
+                                style: theme.textTheme.titleMedium),
+                          ),
+                        ],
+                      ),
 
-                    // Instructions section(s)
-                    const SizedBox(height: AppTheme.sizeMedium),
-                    // Use multiple sections if provided, otherwise use the single section approach
-                    if (learnMoreDialogSections != null && learnMoreDialogSections!.isNotEmpty) ...[
-                      ...learnMoreDialogSections!.asMap().entries.expand((sectionEntry) {
-                        final sectionIndex = sectionEntry.key;
-                        final section = sectionEntry.value;
+                      // Instructions section(s)
+                      const SizedBox(height: AppTheme.sizeMedium),
+                      // Use multiple sections if provided, otherwise use the single section approach
+                      if (learnMoreDialogSections != null && learnMoreDialogSections!.isNotEmpty) ...[
+                        ...learnMoreDialogSections!.asMap().entries.expand((sectionEntry) {
+                          final sectionIndex = sectionEntry.key;
+                          final section = sectionEntry.value;
 
-                        final sectionWidgets = <Widget>[];
+                          final sectionWidgets = <Widget>[];
 
-                        // Add section title (except for the first section to maintain backward compatibility)
-                        if (sectionIndex > 0 && section.title.isNotEmpty) {
-                          sectionWidgets.addAll([
-                            const SizedBox(height: AppTheme.sizeMedium),
-                            Text(
-                              section.title,
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
+                          // Add section title (except for the first section to maintain backward compatibility)
+                          if (sectionIndex > 0 && section.title.isNotEmpty) {
+                            sectionWidgets.addAll([
+                              const SizedBox(height: AppTheme.sizeMedium),
+                              Text(
+                                section.title,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: AppTheme.sizeSmall),
-                          ]);
-                        }
+                              const SizedBox(height: AppTheme.sizeSmall),
+                            ]);
+                          }
 
-                        // Add section steps
-                        sectionWidgets.addAll(section.steps.asMap().entries.map((stepEntry) {
-                          final stepIndex = stepEntry.key;
-                          final step = stepEntry.value;
-                          final isCommand = section.copyableCommands != null &&
-                              stepIndex < section.copyableCommands!.length &&
-                              section.copyableCommands![stepIndex].isNotEmpty;
+                          // Add section steps
+                          sectionWidgets.addAll(section.steps.asMap().entries.map((stepEntry) {
+                            final stepIndex = stepEntry.key;
+                            final step = stepEntry.value;
+                            final isCommand = section.copyableCommands != null &&
+                                stepIndex < section.copyableCommands!.length &&
+                                section.copyableCommands![stepIndex].isNotEmpty;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('• '),
+                                  Expanded(
+                                    child: isCommand
+                                        ? _buildCommandStep(context, step, section.copyableCommands![stepIndex])
+                                        : Text(
+                                            step,
+                                            style: TextStyle(color: theme.colorScheme.onSurface),
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }));
+
+                          return sectionWidgets;
+                        }),
+                      ] else if (learnMoreDialogSteps != null && learnMoreDialogSteps!.isNotEmpty) ...[
+                        // Fallback to single section approach for backward compatibility
+                        ...learnMoreDialogSteps!.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final step = entry.value;
+                          final isCommand = copyableCommands != null &&
+                              index < copyableCommands!.length &&
+                              copyableCommands![index].isNotEmpty;
 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
@@ -262,7 +303,7 @@ class PermissionCard extends StatelessWidget {
                                 Text('• '),
                                 Expanded(
                                   child: isCommand
-                                      ? _buildCommandStep(context, step, section.copyableCommands![stepIndex])
+                                      ? _buildCommandStep(context, step, copyableCommands![index])
                                       : Text(
                                           step,
                                           style: TextStyle(color: theme.colorScheme.onSurface),
@@ -271,52 +312,29 @@ class PermissionCard extends StatelessWidget {
                               ],
                             ),
                           );
-                        }));
-
-                        return sectionWidgets;
-                      }),
-                    ] else if (learnMoreDialogSteps != null && learnMoreDialogSteps!.isNotEmpty) ...[
-                      // Fallback to single section approach for backward compatibility
-                      ...learnMoreDialogSteps!.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final step = entry.value;
-                        final isCommand = copyableCommands != null &&
-                            index < copyableCommands!.length &&
-                            copyableCommands![index].isNotEmpty;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('• '),
-                              Expanded(
-                                child: isCommand
-                                    ? _buildCommandStep(context, step, copyableCommands![index])
-                                    : Text(
-                                        step,
-                                        style: TextStyle(color: theme.colorScheme.onSurface),
-                                      ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ] else ...[
-                      // No instructions provided
-                      const SizedBox.shrink(),
+                        }),
+                      ] else ...[
+                        // No instructions provided
+                        const SizedBox.shrink(),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
 
-              // Optional info text
-              if (learnMoreDialogInfoText != null) ...[
+                // Optional info text
+                if (learnMoreDialogInfoText != null) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    learnMoreDialogInfoText!,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ],
+
+              // Additional dialog content if provided
+              if (additionalDialogContent != null) ...[
                 const SizedBox(height: 16),
-                Text(
-                  learnMoreDialogInfoText!,
-                  style: theme.textTheme.bodySmall,
-                ),
+                additionalDialogContent!,
               ],
             ],
           ),
@@ -345,15 +363,9 @@ class PermissionCard extends StatelessWidget {
               ],
               // Automatic action button (e.g., Windows firewall rule addition)
               if (onAutomaticAction != null && automaticActionButtonText != null) ...[
-                FilledButton.icon(
+                AutomaticActionButton(
+                  label: automaticActionButtonText!,
                   onPressed: () => _performAutomaticActionAndClose(context),
-                  icon: const Icon(Icons.play_arrow),
-                  style: FilledButton.styleFrom(
-                    alignment: Alignment.centerLeft,
-                    minimumSize: const Size(0, 36),
-                    backgroundColor: Colors.green,
-                  ),
-                  label: Text(automaticActionButtonText!),
                 ),
                 const SizedBox(width: 8),
               ],
@@ -382,11 +394,13 @@ class PermissionCard extends StatelessWidget {
     onRequestPermission();
   }
 
-  void _performAutomaticActionAndClose(BuildContext context) {
+  Future<void> _performAutomaticActionAndClose(BuildContext context) async {
+    await onAutomaticAction?.call();
     if (autoCloseAfterAutomaticAction) {
-      Navigator.of(context).pop();
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
     }
-    onAutomaticAction?.call();
     // If autoCloseAfterAutomaticAction is false, the action is responsible for closing the dialog
   }
 

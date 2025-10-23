@@ -218,6 +218,32 @@ abstract class BaseSetupService implements ISetupService {
   }
 
   @override
+  Future<void> addFirewallRules({
+    required String ruleNamePrefix,
+    required String appPath,
+    required String port,
+    String protocol = 'TCP',
+  }) async {
+    // Default implementation - call addFirewallRule twice
+    // Platforms can override this for more efficient batch operations
+    await addFirewallRule(
+      ruleName: '$ruleNamePrefix (Inbound)',
+      appPath: appPath,
+      port: port,
+      protocol: protocol,
+      direction: 'in',
+    );
+
+    await addFirewallRule(
+      ruleName: '$ruleNamePrefix (Outbound)',
+      appPath: appPath,
+      port: port,
+      protocol: protocol,
+      direction: 'out',
+    );
+  }
+
+  @override
   Future<void> removeFirewallRule({required String ruleName}) async {
     // Default implementation - platforms should override this
     Logger.debug('removeFirewallRule not implemented for this platform');

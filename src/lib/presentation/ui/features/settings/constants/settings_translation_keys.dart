@@ -67,6 +67,16 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String firewallPermissionDialogInfoText = 'settings.permissions.firewall.dialog_info_text';
   static const String firewallLinuxManualConfirmationButton =
       'settings.permissions.firewall.linux_manual_confirmation_button';
+  static const String firewallManualConfigureInstruction = 'settings.permissions.firewall.manual_configure_instruction';
+  static const String firewallInstructionStepOpenTerminal =
+      'settings.permissions.firewall.instructions.step_open_terminal';
+  static const String firewallInstructionStepRunCommand = 'settings.permissions.firewall.instructions.step_run_command';
+  static const String firewallInstructionStepOpenCommandPrompt =
+      'settings.permissions.firewall.instructions.step_open_command_prompt';
+  static const String firewallInstructionStepRunCommands =
+      'settings.permissions.firewall.instructions.step_run_commands';
+  static const String firewallInstructionStepClickConfirmation =
+      'settings.permissions.firewall.instructions.step_click_confirmation';
   static const String firewallSaveConfirmationError = 'settings.permissions.firewall.save_confirmation_error';
   static const String firewallRuleAddedSuccess = 'settings.permissions.firewall.rule_added_success';
   static const String firewallRuleAddError = 'settings.permissions.firewall.rule_add_error';
@@ -81,18 +91,24 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String firewallInstructionWindowsStep1 = 'settings.permissions.firewall.instructions.windows.step1';
   static const String firewallInstructionWindowsStep2 = 'settings.permissions.firewall.instructions.windows.step2';
   static const String firewallInstructionWindowsStep3 = 'settings.permissions.firewall.instructions.windows.step3';
-  static const String firewallInstructionWindowsStep4 = 'settings.permissions.firewall.instructions.windows.step4';
-  static const String firewallInstructionWindowsStep5 = 'settings.permissions.firewall.instructions.windows.step5';
-  static const String firewallInstructionWindowsStep6 = 'settings.permissions.firewall.instructions.windows.step6';
-  static const String firewallInstructionWindowsStep7 = 'settings.permissions.firewall.instructions.windows.step7';
-  static const String firewallInstructionWindowsStep8 = 'settings.permissions.firewall.instructions.windows.step8';
-  static const String firewallInstructionWindowsStep9 = 'settings.permissions.firewall.instructions.windows.step9';
+  static const String firewallInstructionWindowsMethodGuiTitle =
+      'settings.permissions.firewall.instructions.windows.method_gui_title';
+  static const String firewallInstructionWindowsMethodCommandTitle =
+      'settings.permissions.firewall.instructions.windows.method_command_title';
+  static const String firewallInstructionLinuxMethodTerminalTitle =
+      'settings.permissions.firewall.instructions.linux.method_terminal_title';
   static const String firewallInstructionWindowsAlternativeCommandPromptTitle =
       'settings.permissions.firewall.instructions.windows.alternative_command_prompt.title';
   static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep1 =
       'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step1';
   static const String firewallInstructionWindowsAlternativeCommandPromptCmdStep2 =
       'settings.permissions.firewall.instructions.windows.alternative_command_prompt.steps.cmd_step2';
+  static const String firewallInstructionWindowsStepOpenDefender =
+      'settings.permissions.firewall.instructions.windows.step_open_defender';
+  static const String firewallInstructionWindowsStepCreateInboundRule =
+      'settings.permissions.firewall.instructions.windows.step_create_inbound_rule';
+  static const String firewallInstructionWindowsStepCreateOutboundRule =
+      'settings.permissions.firewall.instructions.windows.step_create_outbound_rule';
 
   // Firewall Automatic Actions - Windows
   static const String firewallAddRuleButtonText = 'settings.permissions.firewall.add_rule_button';
