@@ -370,8 +370,8 @@ exit /b %exitCode%
       final psScriptContent = '''
 try {
   Start-Process -FilePath "cmd" -ArgumentList @("/c", "${tempBatchFile.path}") -Verb RunAs -Wait -WindowStyle Hidden
+  # Wait briefly to ensure process completion
   Start-Sleep -Milliseconds 500
-} catch {
   Write-Output "Error: \$_.Exception.Message"
  exit 1
 }
@@ -409,7 +409,7 @@ try {
       if (await resultFile.exists()) {
         final resultContent = await resultFile.readAsString();
         // Extract exit code from the result file
-        final exitCodeMatch = RegExp(r'ExitCode:(\d+)').firstMatch(resultContent);
+        final exitCodeMatch = RegExp(r'ExitCode:(\\d+)').firstMatch(resultContent);
         if (exitCodeMatch != null) {
           exitCode = int.parse(exitCodeMatch.group(1)!);
         }
@@ -448,10 +448,10 @@ try {
       if (await errorFile.exists()) {
         await errorFile.delete();
       }
-      final tempPsFile =
+      final tempPsFileToCleanup =
           File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
-      if (await tempPsFile.exists()) {
-        await tempPsFile.delete();
+      if (await tempPsFileToCleanup.exists()) {
+        await tempPsFileToCleanup.delete();
       }
 
       rethrow;
@@ -531,7 +531,7 @@ try {
       if (await resultFile.exists()) {
         final resultContent = await resultFile.readAsString();
         // Extract exit code from the result file
-        final exitCodeMatch = RegExp(r'ExitCode:(\d+)').firstMatch(resultContent);
+        final exitCodeMatch = RegExp(r'ExitCode:(\\d+)').firstMatch(resultContent);
         if (exitCodeMatch != null) {
           exitCode = int.parse(exitCodeMatch.group(1)!);
         }
@@ -570,10 +570,10 @@ try {
       if (await errorFile.exists()) {
         await errorFile.delete();
       }
-      final tempPsFile =
+      final tempPsFileToCleanup =
           File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
-      if (await tempPsFile.exists()) {
-        await tempPsFile.delete();
+      if (await tempPsFileToCleanup.exists()) {
+        await tempPsFileToCleanup.delete();
       }
 
       rethrow;
