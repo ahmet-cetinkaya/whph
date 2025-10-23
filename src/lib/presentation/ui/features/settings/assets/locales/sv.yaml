@@ -114,6 +114,7 @@ settings:
           step2: "Kontrollera brandväggsstatus:"
           step3: "Lägg till brandväggsregel (om UFW är aktiv):"
           step4: "Verifiera att regeln lades till:"
+          method_terminal_title: "Metod 1: Terminalkommando"
         windows:
           step1: "Öppna Windows Defender Brandvägg från Kontrollpanelen"
           step2: "Klicka på Avancerade inställningar till vänster"
@@ -124,11 +125,22 @@ settings:
           step7: "Välj Tillåt anslutningen och klicka på Nästa"
           step8: "Markera alla profiler (Domän, Privat, Offentlig) och klicka på Nästa"
           step9: "Ange ett namn som WHPH Sync Port 44040 och klicka på Slutför"
+          method_gui_title: "Metod 1: Windows Brandvägg GUI"
+          method_command_title: "Metod 2: Kommandotolk"
+          step_open_defender: "Öppna Windows Defender Brandvägg → Avancerade inställningar"
+          step_create_inbound_rule: 'Skapa inkommande regel: Inkommande regler → Ny regel → Port → TCP → 44040 → Tillåt → Alla profiler → Namn: "WHPH Sync (Inkommande)"'
+          step_create_outbound_rule: 'Skapa utgående regel: Utgående regler → Ny regel → Port → TCP → 44040 → Tillåt → Alla profiler → Namn: "WHPH Sync (Utgående)"'
           alternative_command_prompt:
             title: "Alternativ: Använd Kommandotolk"
             steps:
               cmd_step1: "Öppna Kommandotolk som administratör"
               cmd_step2: "Lägg till brandväggsregel:"
+        step_open_command_prompt: "1. Öppna Kommandotolk som administratör"
+        step_run_commands: "2. Kör dessa kommandon:"
+        step_open_terminal: "1. Öppna en terminal"
+        step_run_command: "2. Kör detta kommando (kräver sudo-rättigheter):"
+        step_click_confirmation: "3. Efter att ha kört kommandot, klicka på bekräftelseknappen nedan"
+      manual_configure_instruction: "Konfigurera brandväggsregler manuellt för synkronisering (kräver administratörsrättigheter):"
     startup:
       description: För att appen ska starta automatiskt med din enhet krävs auto-start-behörighet. Detta säkerställer att påminnelser och notiser fungerar korrekt även efter enhetsåterstarter.
       importance: Platsen för auto-start-inställningen varierar eller kan saknas beroende på tillverkaren av din enhet.

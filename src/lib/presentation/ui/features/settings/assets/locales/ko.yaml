@@ -114,6 +114,7 @@ settings:
           step2: "방화벽 상태 확인:"
           step3: "방화벽 규칙 추가 (UFW가 활성인 경우):"
           step4: "규칙이 추가되었는지 확인:"
+          method_terminal_title: "방법 1: 터미널 명령"
         windows:
           step1: "제어판에서 Windows Defender 방화벽 열기"
           step2: "왼쪽의 고급 설정 클릭"
@@ -124,11 +125,22 @@ settings:
           step7: "연결 허용 선택 후 다음 클릭"
           step8: "모든 프로파일(도메인, 개인, 공용) 체크 후 다음 클릭"
           step9: "WHPH Sync Port 44040과 같은 이름 입력 후 마침 클릭"
+          method_gui_title: "방법 1: Windows 방화벽 GUI"
+          method_command_title: "방법 2: 명령 프롬프트"
+          step_open_defender: "Windows Defender 방화벽 → 고급 설정 열기"
+          step_create_inbound_rule: '인바운드 규칙 생성: 인바운드 규칙 → 새 규칙 → 포트 → TCP → 44040 → 허용 → 모든 프로파일 → 이름: "WHPH Sync (인바운드)"'
+          step_create_outbound_rule: '아웃바운드 규칙 생성: 아웃바운드 규칙 → 새 규칙 → 포트 → TCP → 44040 → 허용 → 모든 프로파일 → 이름: "WHPH Sync (아웃바운드)"'
           alternative_command_prompt:
             title: "대안: 명령 프롬프트 사용"
             steps:
               cmd_step1: "관리자로 명령 프롬프트 열기"
               cmd_step2: "방화벽 규칙 추가:"
+        step_open_command_prompt: "1. 관리자로 명령 프롬프트 열기"
+        step_run_commands: "2. 다음 명령어 실행:"
+        step_open_terminal: "1. 터미널 열기"
+        step_run_command: "2. 다음 명령어 실행 (sudo 권한 필요):"
+        step_click_confirmation: "3. 명령어 실행 후 아래 확인 버튼 클릭"
+      manual_configure_instruction: "동기화를 위해 방화벽 규칙을 수동으로 구성 (관리자 권한 필요):"
     startup:
       description: 앱이 기기와 함께 자동으로 시작되려면 자동 시작 권한이 필요합니다. 이렇게 하면 기기 재시작 후에도 알림과 알림이 제대로 작동합니다.
       importance: 자동 시작 설정 위치는 기기 제조업체에 따라 다르거나 존재하지 않을 수 있습니다.

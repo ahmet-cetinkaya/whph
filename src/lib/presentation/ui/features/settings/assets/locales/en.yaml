@@ -110,21 +110,27 @@ settings:
           step2: "Check firewall status:"
           step3: "Add firewall rule (if UFW is active):"
           step4: "Verify rule was added:"
+          method_terminal_title: "Method 1: Terminal Command"
+        step_open_command_prompt: "1. Open Command Prompt as Administrator"
+        step_run_commands: "2. Run these commands:"
+        step_open_terminal: "1. Open a terminal"
+        step_run_command: "2. Run this command (requires sudo privileges):"
+        step_click_confirmation: "3. After running the command, click the confirmation button below"
         windows:
-          step1: "Open Windows Defender Firewall from Control Panel"
-          step2: "Click Advanced settings on the left"
-          step3: "In the left pane, click Inbound Rules"
-          step4: "In the right pane, click New Rule..."
-          step5: "Select Port and click Next"
-          step6: "Select TCP and enter 44040 in the specific local ports field"
-          step7: "Select Allow the connection and click Next"
-          step8: "Check all profiles (Domain, Private, Public) and click Next"
-          step9: "Enter a name like WHPH Sync Port 44040 and click Finish"
+          step1: "Open Windows Defender Firewall → Advanced settings"
+          step2: 'Create Inbound Rule: Inbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Inbound)"'
+          step3: 'Create Outbound Rule: Outbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Outbound)"'
+          method_gui_title: "Method 1: Windows Firewall GUI"
+          method_command_title: "Method 2: Command Prompt"
+          step_open_defender: "Open Windows Defender Firewall → Advanced settings"
+          step_create_inbound_rule: 'Create Inbound Rule: Inbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Inbound)"'
+          step_create_outbound_rule: 'Create Outbound Rule: Outbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Outbound)"'
           alternative_command_prompt:
             title: "Alternative: Use Command Prompt"
             steps:
               cmd_step1: "Open Command Prompt as Administrator"
               cmd_step2: "Add firewall rule:"
+      manual_configure_instruction: "Manually configure firewall rules for sync (requires administrator privileges):"
     startup:
       description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
       importance: Auto-start setting location varies or may not be present by device manufacturer.

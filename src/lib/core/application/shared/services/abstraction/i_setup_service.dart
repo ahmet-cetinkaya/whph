@@ -19,4 +19,13 @@ abstract class ISetupService {
 
   /// Removes the firewall rule with the specified name.
   Future<void> removeFirewallRule({required String ruleName});
+
+  /// Adds both inbound and outbound firewall rules for the specified application path
+  /// with the given port and protocol in a single operation.
+  Future<void> addFirewallRules({
+    required String ruleNamePrefix,
+    required String appPath,
+    required String port,
+    String protocol = 'TCP',
+  });
 }

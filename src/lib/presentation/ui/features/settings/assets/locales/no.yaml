@@ -114,6 +114,7 @@ settings:
           step2: "Sjekk brannmur-status:"
           step3: "Legg til brannmur-regel (hvis UFW er aktiv):"
           step4: "Bekreft at regelen ble lagt til:"
+          method_terminal_title: "Metode 1: Terminalkommando"
         windows:
           step1: "Åpne Windows Defender Brannmur fra Kontrollpanel"
           step2: "Klikk på Avanserte innstillinger til venstre"
@@ -124,11 +125,22 @@ settings:
           step7: "Velg Tillat tilkoblingen og klikk på Neste"
           step8: "Merk alle profiler (Domene, Privat, Offentlig) og klikk på Neste"
           step9: "Skriv inn et navn som WHPH Sync Port 44040 og klikk på Fullfør"
+          method_gui_title: "Metode 1: Windows Brannmur GUI"
+          method_command_title: "Metode 2: Kommandoprompt"
+          step_open_defender: "Åpne Windows Defender Brannmur → Avanserte innstillinger"
+          step_create_inbound_rule: 'Opprett innkommende regel: Innkommende regler → Ny regel → Port → TCP → 44040 → Tillat → Alle profiler → Navn: "WHPH Sync (Innkommende)"'
+          step_create_outbound_rule: 'Opprett utgående regel: Utgående regler → Ny regel → Port → TCP → 44040 → Tillat → Alle profiler → Navn: "WHPH Sync (Utgående)"'
           alternative_command_prompt:
             title: "Alternativ: Bruk kommandoprompt"
             steps:
               cmd_step1: "Åpne kommandoprompt som administrator"
               cmd_step2: "Legg til brannmur-regel:"
+        step_open_command_prompt: "1. Åpne kommandoprompt som administrator"
+        step_run_commands: "2. Kjør disse kommandoene:"
+        step_open_terminal: "1. Åpne en terminal"
+        step_run_command: "2. Kjør denne kommandoen (krever sudo-rettigheter):"
+        step_click_confirmation: "3. Etter kjøring av kommandoen, klikk på bekreftelsesknappen nedenfor"
+      manual_configure_instruction: "Konfigurer brannmurregler manuelt for synkronisering (krever administratorrettigheter):"
     startup:
       description: For at appen skal starte automatisk med enheten din kreves auto-start-tillatelse. Dette sikrer at påminnelser og varsler fungerer riktig selv etter enhetsgenstarter.
       importance: Plasseringen av auto-start-innstillingen varierer eller kan mangle avhengig av enhetsprodusent.

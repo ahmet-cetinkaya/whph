@@ -113,6 +113,7 @@ settings:
           step2: "Verifique el estado del firewall:"
           step3: "Añada una regla de firewall (si UFW está activo):"
           step4: "Verifique que la regla fue añadida:"
+          method_terminal_title: "Método 1: Comando de terminal"
         windows:
           step1: "Abra Windows Defender Firewall desde el Panel de Control"
           step2: "Haga clic en Configuración avanzada a la izquierda"
@@ -123,11 +124,22 @@ settings:
           step7: "Seleccione Permitir la conexión y haga clic en Siguiente"
           step8: "Marque todos los perfiles (Dominio, Privado, Público) y haga clic en Siguiente"
           step9: "Introduzca un nombre como WHPH Sync Port 44040 y haga clic en Finalizar"
+          method_gui_title: "Método 1: GUI de Firewall de Windows"
+          method_command_title: "Método 2: Símbolo del sistema"
+          step_open_defender: "Abra Windows Defender Firewall → Configuración avanzada"
+          step_create_inbound_rule: 'Crear regla entrante: Reglas de entrada → Nueva regla → Puerto → TCP → 44040 → Permitir → Todos los perfiles → Nombre: "WHPH Sync (Entrante)"'
+          step_create_outbound_rule: 'Crear regla saliente: Reglas de salida → Nueva regla → Puerto → TCP → 44040 → Permitir → Todos los perfiles → Nombre: "WHPH Sync (Saliente)"'
           alternative_command_prompt:
             title: "Alternativa: Usar Símbolo del sistema"
             steps:
               cmd_step1: "Abra el Símbolo del sistema como administrador"
               cmd_step2: "Añada una regla de firewall:"
+        step_open_command_prompt: "1. Abra el Símbolo del sistema como administrador"
+        step_run_commands: "2. Ejecute estos comandos:"
+        step_open_terminal: "1. Abra una terminal"
+        step_run_command: "2. Ejecute este comando (requiere privilegios de sudo):"
+        step_click_confirmation: "3. Después de ejecutar el comando, haga clic en el botón de confirmación a continuación"
+      manual_configure_instruction: "Configure manualmente las reglas del firewall para la sincronización (requiere privilegios de administrador):"
     startup:
       description: Para que la aplicación inicie automáticamente con tu dispositivo, se requiere permiso de inicio automático. Esto asegura que los recordatorios y notificaciones funcionen correctamente incluso después de reinicios del dispositivo.
       importance: La ubicación de la configuración de inicio automático varía o puede no estar presente según el fabricante del dispositivo.

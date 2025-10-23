@@ -114,6 +114,7 @@ settings:
           step2: "Verificați starea firewall-ului:"
           step3: "Adăugați o regulă de firewall (dacă UFW este activ):"
           step4: "Verificați dacă regula a fost adăugată:"
+          method_terminal_title: "Metoda 1: Comandă terminal"
         windows:
           step1: "Deschideți Firewall-ul Windows Defender din Panoul de Control"
           step2: "Faceți clic pe Setări avansate în stânga"
@@ -124,11 +125,22 @@ settings:
           step7: "Selectați Permiteți conexiunea și faceți clic pe Următorul"
           step8: "Bifați toate profilele (Domeniu, Privat, Public) și faceți clic pe Următorul"
           step9: "Introduceți un nume precum WHPH Sync Port 44040 și faceți clic pe Finalizare"
+          method_gui_title: "Metoda 1: Interfață grafică Windows Firewall"
+          method_command_title: "Metoda 2: Prompt de comandă"
+          step_open_defender: "Deschideți Firewall-ul Windows Defender → Setări avansate"
+          step_create_inbound_rule: 'Creați regulă de intrare: Reguli de intrare → Regulă nouă → Port → TCP → 44040 → Permiteți → Toate profilele → Nume: "WHPH Sync (Intrare)"'
+          step_create_outbound_rule: 'Creați regulă de ieșire: Reguli de ieșire → Regulă nouă → Port → TCP → 44040 → Permiteți → Toate profilele → Nume: "WHPH Sync (Ieșire)"'
           alternative_command_prompt:
             title: "Alternativă: Utilizați Promptul de comandă"
             steps:
               cmd_step1: "Deschideți Promptul de comandă ca Administrator"
               cmd_step2: "Adăugați o regulă de firewall:"
+        step_open_command_prompt: "1. Deschideți Promptul de comandă ca Administrator"
+        step_run_commands: "2. Rulați aceste comenzi:"
+        step_open_terminal: "1. Deschideți un terminal"
+        step_run_command: "2. Rulați această comandă (necesită privilegii sudo):"
+        step_click_confirmation: "3. După rularea comenzii, faceți clic pe butonul de confirmare de mai jos"
+      manual_configure_instruction: "Configurați manual regulile de firewall pentru sincronizare (necesită privilegii de administrator):"
     startup:
       description: Pentru ca aplicația să pornească automat cu dispozitivul, este necesară permisiunea de pornire automată. Acest lucru asigură că amintirile și notificările funcționează corect chiar după reporniri.
       importance: Locația setării de pornire automată variază sau poate să nu fie prezentă în funcție de fabricantul dispozitivului.

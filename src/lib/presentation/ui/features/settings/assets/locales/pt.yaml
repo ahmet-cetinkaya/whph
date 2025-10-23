@@ -114,6 +114,7 @@ settings:
           step2: "Verifique o status do firewall:"
           step3: "Adicione uma regra de firewall (se UFW estiver ativo):"
           step4: "Verifique se a regra foi adicionada:"
+          method_terminal_title: "Método 1: Comando do Terminal"
         windows:
           step1: "Abra o Firewall do Windows Defender a partir do Painel de Controle"
           step2: "Clique em Configurações Avançadas à esquerda"
@@ -124,11 +125,22 @@ settings:
           step7: "Selecione Permitir a conexão e clique em Próximo"
           step8: "Marque todos os perfis (Domínio, Privado, Público) e clique em Próximo"
           step9: "Insira um nome como WHPH Sync Port 44040 e clique em Concluir"
+          method_gui_title: "Método 1: Interface Gráfica do Firewall do Windows"
+          method_command_title: "Método 2: Prompt de Comando"
+          step_open_defender: "Abra o Firewall do Windows Defender → Configurações Avançadas"
+          step_create_inbound_rule: 'Criar regra de entrada: Regras de Entrada → Nova Regra → Porta → TCP → 44040 → Permitir → Todos os perfis → Nome: "WHPH Sync (Entrada)"'
+          step_create_outbound_rule: 'Criar regra de saída: Regras de Saída → Nova Regra → Porta → TCP → 44040 → Permitir → Todos os perfis → Nome: "WHPH Sync (Saída)"'
           alternative_command_prompt:
             title: "Alternativa: Use o Prompt de Comando"
             steps:
               cmd_step1: "Abra o Prompt de Comando como Administrador"
               cmd_step2: "Adicione uma regra de firewall:"
+        step_open_command_prompt: "1. Abra o Prompt de Comando como Administrador"
+        step_run_commands: "2. Execute estes comandos:"
+        step_open_terminal: "1. Abra um terminal"
+        step_run_command: "2. Execute este comando (requer privilégios sudo):"
+        step_click_confirmation: "3. Após executar o comando, clique no botão de confirmação abaixo"
+      manual_configure_instruction: "Configure manualmente as regras do firewall para sincronização (requer privilégios de administrador):"
     startup:
       description: Para o app iniciar automaticamente com o seu dispositivo, é necessária a permissão de inicialização automática. Isso garante que lembretes e notificações funcionem corretamente mesmo após reinicializações do dispositivo.
       importance: A localização da configuração de inicialização automática varia ou pode não estar presente dependendo do fabricante do dispositivo.
