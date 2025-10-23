@@ -281,10 +281,9 @@ exit
         Logger.info(
             '🔧 [FIREWALL] Executing netsh commands directly with admin privileges (${commands.length} commands)');
         for (final command in commands) {
-          final cmdParts = command.split(' ');
-          final cmdArgs = cmdParts.skip(1).toList();
-          Logger.debug('🔧 [FIREWALL] Executing command with ${cmdArgs.length} arguments');
-          final cmdResult = await Process.run('netsh', cmdArgs, runInShell: true);
+          // Using `/c` with `cmd.exe` allows the shell to handle parsing the command string correctly.
+          Logger.debug('🔧 [FIREWALL] Executing command with cmd /c');
+          final cmdResult = await Process.run('cmd', ['/c', command], runInShell: true);
           Logger.debug('🔧 [FIREWALL] Command result exitCode: ${cmdResult.exitCode}');
           if (cmdResult.exitCode != 0) {
             Logger.error('❌ [FIREWALL] Command failed - stderr: ${cmdResult.stderr}');
@@ -345,6 +344,9 @@ exit
     final tempBatchFile =
         File('${Directory.systemTemp.path}\\whph_firewall_${DateTime.now().millisecondsSinceEpoch}.bat');
 
+    // Define tempPsFile outside try block to ensure it's accessible in catch for cleanup
+    File? tempPsFile;
+
     // Build the batch content with multiple netsh commands
     final batchCommands = commands.join(' && ');
     final batchContent = '''
@@ -363,7 +365,7 @@ exit /b %exitCode%
       await tempBatchFile.writeAsString(batchContent);
 
       // Write the PowerShell script to a temporary file to avoid parsing issues
-      final tempPsFile =
+      tempPsFile =
           File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
       final psScriptContent = '''
 try {
@@ -389,15 +391,21 @@ try {
         await tempPsFile.delete();
       }
 
-      // Wait a bit for the batch file to complete and write results
-      await Future.delayed(const Duration(milliseconds: 1500));
+      // Wait for the result file to be written with a timeout of 10 seconds
+      // This is more reliable than a fixed delay
+      final resultFile = File('${tempBatchFile.path}.result');
+      int maxAttempts = 100; // 100 attempts * 100ms = 10 seconds
+      int attempts = 0;
+      while (!await resultFile.exists() && attempts < maxAttempts) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        attempts++;
+      }
 
       // Read the result and error files if they exist
       String stdout = result.stdout.toString();
       String stderr = result.stderr.toString();
       int exitCode = result.exitCode;
 
-      final resultFile = File('${tempBatchFile.path}.result');
       if (await resultFile.exists()) {
         final resultContent = await resultFile.readAsString();
         // Extract exit code from the result file
@@ -457,6 +465,9 @@ try {
     final tempBatchFile =
         File('${Directory.systemTemp.path}\\whph_firewall_${DateTime.now().millisecondsSinceEpoch}.bat');
 
+    // Define tempPsFile outside try block to ensure it's accessible in catch for cleanup
+    File? tempPsFile;
+
     // Build the netsh command
     final netshCommand = '$command ${arguments.join(' ')}';
 
@@ -476,7 +487,7 @@ exit /b %exitCode%
       await tempBatchFile.writeAsString(batchContent);
 
       // Write the PowerShell script to a temporary file to avoid parsing issues
-      final tempPsFile =
+      tempPsFile =
           File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
       final psScriptContent = '''
 try {
@@ -502,15 +513,21 @@ try {
         await tempPsFile.delete();
       }
 
-      // Wait a bit for the batch file to complete and write results
-      await Future.delayed(const Duration(milliseconds: 1000));
+      // Wait for the result file to be written with a timeout of 10 seconds
+      // This is more reliable than a fixed delay
+      final resultFile = File('${tempBatchFile.path}.result');
+      int maxAttempts = 100; // 100 attempts * 100ms = 10 seconds
+      int attempts = 0;
+      while (!await resultFile.exists() && attempts < maxAttempts) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        attempts++;
+      }
 
       // Read the result and error files if they exist
       String stdout = result.stdout.toString();
       String stderr = result.stderr.toString();
       int exitCode = result.exitCode;
 
-      final resultFile = File('${tempBatchFile.path}.result');
       if (await resultFile.exists()) {
         final resultContent = await resultFile.readAsString();
         // Extract exit code from the result file
