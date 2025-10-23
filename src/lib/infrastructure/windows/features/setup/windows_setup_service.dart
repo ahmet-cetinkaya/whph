@@ -370,10 +370,10 @@ exit /b %exitCode%
       final psScriptContent = '''
 try {
   Start-Process -FilePath "cmd" -ArgumentList @("/c", "${tempBatchFile.path}") -Verb RunAs -Wait -WindowStyle Hidden
-  # Wait briefly to ensure process completion
   Start-Sleep -Milliseconds 500
+} catch {
   Write-Output "Error: \$_.Exception.Message"
- exit 1
+  exit 1
 }
 ''';
 
@@ -495,13 +495,13 @@ try {
   Start-Sleep -Milliseconds 500
 } catch {
   Write-Output "Error: \$_.Exception.Message"
- exit 1
+  exit 1
 }
 ''';
 
-      await tempPsFile.writeAsString(psScriptContent);
+       await tempPsFile.writeAsString(psScriptContent);
 
-      Logger.debug('Running elevated command: $netshCommand');
+       Logger.debug('Running elevated command: $netshCommand');
       final result = await Process.run(
         'powershell',
         ['-ExecutionPolicy', 'Bypass', '-File', tempPsFile.path],
