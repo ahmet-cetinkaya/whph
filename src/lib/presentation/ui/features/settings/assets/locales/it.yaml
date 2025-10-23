@@ -114,6 +114,7 @@ settings:
           step2: "Controlla lo stato del firewall:"
           step3: "Aggiungi una regola del firewall (se UFW è attivo):"
           step4: "Verifica che la regola sia stata aggiunta:"
+          method_terminal_title: "Metodo 1: Comando terminale"
         windows:
           step1: "Apri Windows Defender Firewall dal Pannello di controllo"
           step2: "Fai clic su Impostazioni avanzate a sinistra"
@@ -124,11 +125,22 @@ settings:
           step7: "Seleziona Consenti la connessione e fai clic su Avanti"
           step8: "Seleziona tutti i profili (Dominio, Privato, Pubblico) e fai clic su Avanti"
           step9: "Inserisci un nome come WHPH Sync Port 44040 e fai clic su Fine"
+          method_gui_title: "Metodo 1: Interfaccia grafica di Windows Firewall"
+          method_command_title: "Metodo 2: Prompt dei comandi"
+          step_open_defender: "Apri Windows Defender Firewall → Impostazioni avanzate"
+          step_create_inbound_rule: 'Crea regola in entrata: Regole in entrata → Nuova regola → Porta → TCP → 44040 → Consenti → Tutti i profili → Nome: "WHPH Sync (In entrata)"'
+          step_create_outbound_rule: 'Crea regola in uscita: Regole in uscita → Nuova regola → Porta → TCP → 44040 → Consenti → Tutti i profili → Nome: "WHPH Sync (In uscita)"'
           alternative_command_prompt:
             title: "Alternativa: Usa Prompt dei comandi"
             steps:
               cmd_step1: "Apri Prompt dei comandi come amministratore"
               cmd_step2: "Aggiungi una regola del firewall:"
+        step_open_command_prompt: "1. Apri Prompt dei comandi come amministratore"
+        step_run_commands: "2. Esegui questi comandi:"
+        step_open_terminal: "1. Apri un terminale"
+        step_run_command: "2. Esegui questo comando (richiede privilegi sudo):"
+        step_click_confirmation: "3. Dopo aver eseguito il comando, fai clic sul pulsante di conferma qui sotto"
+      manual_configure_instruction: "Configura manualmente le regole del firewall per la sincronizzazione (richiede privilegi di amministratore):"
     startup:
       description: Perché l'app si avvii automaticamente con il tuo dispositivo, è richiesto il permesso di avvio automatico. Questo assicura che promemoria e notifiche funzionino correttamente anche dopo i riavvii del dispositivo.
       importance: La posizione dell'impostazione avvio automatico varia o potrebbe non essere presente per produttore del dispositivo.

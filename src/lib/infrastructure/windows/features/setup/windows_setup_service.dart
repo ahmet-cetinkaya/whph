@@ -212,25 +212,353 @@ exit
     }
   }
 
-  /// Run a PowerShell command with elevated privileges (admin request)
-  Future<ProcessResult> _runWithElevatedPrivileges(String command, List<String> arguments) async {
-    // Properly escape arguments for PowerShell and construct an array
-    final argsString = arguments.map((arg) => "'${arg.replaceAll("'", "''")}'").join(', ');
+  /// Add both inbound and outbound firewall rules in a single elevated operation
+  @override
+  Future<void> addFirewallRules({
+    required String ruleNamePrefix,
+    required String appPath,
+    required String port,
+    String protocol = 'TCP',
+  }) async {
+    try {
+      Logger.info('🔧 [FIREWALL] Starting batch Windows firewall rule addition for port $port/$protocol');
+      Logger.debug('🔧 [FIREWALL] Rule prefix: $ruleNamePrefix');
+      Logger.debug('🔧 [FIREWALL] App path: $appPath');
 
-    // Create a PowerShell script that requests elevation
-    final elevatedScript = '''
-Start-Process -FilePath "$command" -ArgumentList @($argsString) -Verb RunAs -WindowStyle Hidden -Wait
+      // Check if rules already exist
+      final inboundRuleName = '$ruleNamePrefix (Inbound)';
+      final outboundRuleName = '$ruleNamePrefix (Outbound)';
+
+      Logger.debug('🔍 [FIREWALL] Checking if inbound rule exists: $inboundRuleName');
+      final inboundExists = await checkFirewallRule(ruleName: inboundRuleName);
+      Logger.info('🔍 [FIREWALL] Inbound rule exists: $inboundExists');
+
+      Logger.debug('🔍 [FIREWALL] Checking if outbound rule exists: $outboundRuleName');
+      final outboundExists = await checkFirewallRule(ruleName: outboundRuleName);
+      Logger.info('🔍 [FIREWALL] Outbound rule exists: $outboundExists');
+
+      if (inboundExists && outboundExists) {
+        Logger.info('✅ [FIREWALL] Both inbound and outbound firewall rules already exist - skipping addition');
+        return;
+      }
+
+      // Check if running as admin
+      Logger.debug('🔐 [FIREWALL] Checking if running as administrator...');
+      final isAdmin = await _isRunningAsAdmin();
+      Logger.info('🔐 [FIREWALL] Running as administrator: $isAdmin');
+
+      // Build netsh commands for both rules
+      final commands = <String>[];
+
+      if (!inboundExists) {
+        final inboundCmd =
+            'netsh advfirewall firewall add rule name="$inboundRuleName" dir=in action=allow program="$appPath" protocol=$protocol localport=$port';
+        commands.add(inboundCmd);
+        Logger.debug('🔧 [FIREWALL] Will add inbound rule: $inboundRuleName');
+      }
+
+      if (!outboundExists) {
+        final outboundCmd =
+            'netsh advfirewall firewall add rule name="$outboundRuleName" dir=out action=allow program="$appPath" protocol=$protocol localport=$port';
+        commands.add(outboundCmd);
+        Logger.debug('🔧 [FIREWALL] Will add outbound rule: $outboundRuleName');
+      }
+
+      if (commands.isEmpty) {
+        Logger.info('✅ [FIREWALL] No new firewall rules needed');
+        return;
+      }
+
+      Logger.info('🔧 [FIREWALL] Total rules to add: ${commands.length}');
+      commands.asMap().forEach((index, cmd) {
+        Logger.debug('🔧 [FIREWALL] Command ${index + 1}: $cmd');
+      });
+
+      ProcessResult result;
+
+      if (isAdmin) {
+        // If already running as admin, execute commands directly
+        Logger.info(
+            '🔧 [FIREWALL] Executing netsh commands directly with admin privileges (${commands.length} commands)');
+        for (final command in commands) {
+          final cmdParts = command.split(' ');
+          final cmdArgs = cmdParts.skip(1).toList();
+          Logger.debug('🔧 [FIREWALL] Executing command with ${cmdArgs.length} arguments');
+          final cmdResult = await Process.run('netsh', cmdArgs, runInShell: true);
+          Logger.debug('🔧 [FIREWALL] Command result exitCode: ${cmdResult.exitCode}');
+          if (cmdResult.exitCode != 0) {
+            Logger.error('❌ [FIREWALL] Command failed - stderr: ${cmdResult.stderr}');
+            throw Exception('Failed to execute: $command, stderr: ${cmdResult.stderr}');
+          }
+          Logger.info('✅ [FIREWALL] Command executed successfully');
+        }
+        result = ProcessResult(0, 0, '', ''); // Success
+      } else {
+        // Request elevation using a single PowerShell session for all commands to avoid multiple UAC prompts
+        Logger.info('🔧 [FIREWALL] Requesting single elevation to run ${commands.length} netsh commands');
+        result = await _runMultipleCommandsWithElevatedPrivileges(commands);
+      }
+
+      Logger.debug('🔧 [FIREWALL] Batch netsh commands result - exitCode: ${result.exitCode}');
+      Logger.debug('🔧 [FIREWALL] Netsh stdout: "${result.stdout}"');
+      Logger.debug('🔧 [FIREWALL] Netsh stderr: "${result.stderr}"');
+
+      if (result.exitCode != 0) {
+        final stderr = result.stderr.toString().trim();
+        final stdout = result.stdout.toString().trim();
+
+        final error =
+            'WindowsFirewallRuleError: Failed to add Windows Firewall rules for port $port/$protocol. Netsh error: $stderr';
+
+        Logger.error('❌ [FIREWALL] $error');
+        Logger.error('❌ [FIREWALL] Netsh stdout: $stdout');
+
+        throw WindowsFirewallRuleException(
+          error,
+          invalidValue: '$port/$protocol',
+          netshExitCode: result.exitCode,
+          netshStderr: stderr,
+          netshStdout: stdout,
+        );
+      }
+
+      Logger.info(
+          '✅ [FIREWALL] Successfully added Windows firewall rules for port $port/$protocol (${commands.length} rules added)');
+    } catch (e) {
+      if (e is WindowsFirewallRuleException) {
+        Logger.error('❌ [FIREWALL] Windows firewall rules creation failed: ${e.message}');
+        rethrow;
+      } else {
+        final error = 'WindowsFirewallRuleError: Unexpected error while adding firewall rules: $e';
+        Logger.error('❌ [FIREWALL] $error');
+        throw WindowsFirewallRuleException(error, invalidValue: port);
+      }
+    }
+  }
+
+  /// Run multiple PowerShell commands with elevated privileges (single UAC prompt)
+  /// This method batches multiple netsh commands into a single elevated PowerShell session
+  /// to avoid multiple UAC prompts when adding multiple firewall rules.
+  Future<ProcessResult> _runMultipleCommandsWithElevatedPrivileges(List<String> commands) async {
+    // Create a PowerShell script that requests elevation and runs multiple commands
+    // Use a temporary batch file to execute the commands and capture output
+    final tempBatchFile =
+        File('${Directory.systemTemp.path}\\whph_firewall_${DateTime.now().millisecondsSinceEpoch}.bat');
+
+    // Build the batch content with multiple netsh commands
+    final batchCommands = commands.join(' && ');
+    final batchContent = '''
+@echo off
+$batchCommands
+set exitCode=%ERRORLEVEL%
+echo ExitCode:%exitCode% > "${tempBatchFile.path}.result"
+if %exitCode% neq 0 (
+  echo %ERROR% > "${tempBatchFile.path}.error"
+)
+exit /b %exitCode%
 ''';
 
     try {
-      Logger.debug('Running elevated command: $command ${arguments.join(' ')}');
-      return await Process.run(
+      // Write the batch file
+      await tempBatchFile.writeAsString(batchContent);
+
+      // Write the PowerShell script to a temporary file to avoid parsing issues
+      final tempPsFile =
+          File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
+      final psScriptContent = '''
+try {
+  Start-Process -FilePath "cmd" -ArgumentList @("/c", "${tempBatchFile.path}") -Verb RunAs -Wait -WindowStyle Hidden
+  Start-Sleep -Milliseconds 500
+} catch {
+  Write-Output "Error: \$_.Exception.Message"
+ exit 1
+}
+''';
+
+      await tempPsFile.writeAsString(psScriptContent);
+
+      Logger.debug('Running elevated commands: $batchCommands');
+      final result = await Process.run(
         'powershell',
-        ['-ExecutionPolicy', 'Bypass', '-Command', elevatedScript],
+        ['-ExecutionPolicy', 'Bypass', '-File', tempPsFile.path],
         runInShell: true,
       );
+
+      // Clean up the temporary PowerShell script file
+      if (await tempPsFile.exists()) {
+        await tempPsFile.delete();
+      }
+
+      // Wait a bit for the batch file to complete and write results
+      await Future.delayed(const Duration(milliseconds: 1500));
+
+      // Read the result and error files if they exist
+      String stdout = result.stdout.toString();
+      String stderr = result.stderr.toString();
+      int exitCode = result.exitCode;
+
+      final resultFile = File('${tempBatchFile.path}.result');
+      if (await resultFile.exists()) {
+        final resultContent = await resultFile.readAsString();
+        // Extract exit code from the result file
+        final exitCodeMatch = RegExp(r'ExitCode:(\d+)').firstMatch(resultContent);
+        if (exitCodeMatch != null) {
+          exitCode = int.parse(exitCodeMatch.group(1)!);
+        }
+        stdout += resultContent;
+      }
+
+      final errorFile = File('${tempBatchFile.path}.error');
+      if (await errorFile.exists()) {
+        stderr = await errorFile.readAsString();
+      }
+
+      // Clean up temporary files
+      if (await tempBatchFile.exists()) {
+        await tempBatchFile.delete();
+      }
+      if (await resultFile.exists()) {
+        await resultFile.delete();
+      }
+      if (await errorFile.exists()) {
+        await errorFile.delete();
+      }
+
+      return ProcessResult(0, exitCode, stdout, stderr);
+    } catch (e) {
+      Logger.error('Failed to run elevated commands: $e');
+
+      // Clean up temporary files in case of error
+      if (await tempBatchFile.exists()) {
+        await tempBatchFile.delete();
+      }
+      final resultFile = File('${tempBatchFile.path}.result');
+      if (await resultFile.exists()) {
+        await resultFile.delete();
+      }
+      final errorFile = File('${tempBatchFile.path}.error');
+      if (await errorFile.exists()) {
+        await errorFile.delete();
+      }
+      final tempPsFile =
+          File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
+      if (await tempPsFile.exists()) {
+        await tempPsFile.delete();
+      }
+
+      rethrow;
+    }
+  }
+
+  /// Run a PowerShell command with elevated privileges (admin request) - for single commands
+  Future<ProcessResult> _runWithElevatedPrivileges(String command, List<String> arguments) async {
+    // Create a PowerShell script that requests elevation
+    // Use a temporary batch file to execute the command and capture output
+    final tempBatchFile =
+        File('${Directory.systemTemp.path}\\whph_firewall_${DateTime.now().millisecondsSinceEpoch}.bat');
+
+    // Build the netsh command
+    final netshCommand = '$command ${arguments.join(' ')}';
+
+    final batchContent = '''
+@echo off
+$netshCommand
+set exitCode=%ERRORLEVEL%
+echo ExitCode:%exitCode% > "${tempBatchFile.path}.result"
+if %exitCode% neq 0 (
+  echo %ERROR% > "${tempBatchFile.path}.error"
+)
+exit /b %exitCode%
+''';
+
+    try {
+      // Write the batch file
+      await tempBatchFile.writeAsString(batchContent);
+
+      // Write the PowerShell script to a temporary file to avoid parsing issues
+      final tempPsFile =
+          File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
+      final psScriptContent = '''
+try {
+  Start-Process -FilePath "cmd" -ArgumentList @("/c", "${tempBatchFile.path}") -Verb RunAs -Wait -WindowStyle Hidden
+  Start-Sleep -Milliseconds 500
+} catch {
+  Write-Output "Error: \$_.Exception.Message"
+ exit 1
+}
+''';
+
+      await tempPsFile.writeAsString(psScriptContent);
+
+      Logger.debug('Running elevated command: $netshCommand');
+      final result = await Process.run(
+        'powershell',
+        ['-ExecutionPolicy', 'Bypass', '-File', tempPsFile.path],
+        runInShell: true,
+      );
+
+      // Clean up the temporary PowerShell script file
+      if (await tempPsFile.exists()) {
+        await tempPsFile.delete();
+      }
+
+      // Wait a bit for the batch file to complete and write results
+      await Future.delayed(const Duration(milliseconds: 1000));
+
+      // Read the result and error files if they exist
+      String stdout = result.stdout.toString();
+      String stderr = result.stderr.toString();
+      int exitCode = result.exitCode;
+
+      final resultFile = File('${tempBatchFile.path}.result');
+      if (await resultFile.exists()) {
+        final resultContent = await resultFile.readAsString();
+        // Extract exit code from the result file
+        final exitCodeMatch = RegExp(r'ExitCode:(\d+)').firstMatch(resultContent);
+        if (exitCodeMatch != null) {
+          exitCode = int.parse(exitCodeMatch.group(1)!);
+        }
+        stdout += resultContent;
+      }
+
+      final errorFile = File('${tempBatchFile.path}.error');
+      if (await errorFile.exists()) {
+        stderr = await errorFile.readAsString();
+      }
+
+      // Clean up temporary files
+      if (await tempBatchFile.exists()) {
+        await tempBatchFile.delete();
+      }
+      if (await resultFile.exists()) {
+        await resultFile.delete();
+      }
+      if (await errorFile.exists()) {
+        await errorFile.delete();
+      }
+
+      return ProcessResult(0, exitCode, stdout, stderr);
     } catch (e) {
       Logger.error('Failed to run elevated command: $e');
+
+      // Clean up temporary files in case of error
+      if (await tempBatchFile.exists()) {
+        await tempBatchFile.delete();
+      }
+      final resultFile = File('${tempBatchFile.path}.result');
+      if (await resultFile.exists()) {
+        await resultFile.delete();
+      }
+      final errorFile = File('${tempBatchFile.path}.error');
+      if (await errorFile.exists()) {
+        await errorFile.delete();
+      }
+      final tempPsFile =
+          File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
+      if (await tempPsFile.exists()) {
+        await tempPsFile.delete();
+      }
+
       rethrow;
     }
   }
@@ -255,71 +583,69 @@ Start-Process -FilePath "$command" -ArgumentList @($argsString) -Verb RunAs -Win
   }
 
   // Firewall rule management for Windows
- @override
+  @override
   Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
     try {
-      Logger.debug('Checking Windows firewall rule: $ruleName');
+      Logger.debug('🔍 [FIREWALL] Checking Windows firewall rule: $ruleName (protocol: $protocol)');
 
-      // Use PowerShell to get firewall rule information in a language-independent way
-      // Using a more readable multi-line PowerShell command
-      final psCommand = '''
-        try {
-          \$rule = Get-NetFirewallRule -Name "$ruleName" -ErrorAction Stop
-          # If the rule exists, output the name to confirm
-          Write-Output \$rule.Name
-        } catch [System.Management.Automation.ItemNotFoundException] {
-          # Rule not found - output nothing
-          Write-Output ""
-        } catch {
-          # Other error occurred
-          Write-Output ""
-        }
-      ''';
-
+      // First, try using netsh as primary method (more reliable for exact name matching)
+      Logger.debug('🔍 [FIREWALL] Attempting netsh check for rule: $ruleName');
       final result = await Process.run(
-        'powershell',
-        ['-Command', psCommand],
+        'netsh',
+        ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
         runInShell: true,
       );
 
-      Logger.debug(
-          'PowerShell check result - exitCode: ${result.exitCode}, stdout: ${result.stdout}, stderr: ${result.stderr}');
+      Logger.debug('🔍 [FIREWALL] Netsh result - exitCode: ${result.exitCode}');
+      Logger.debug('🔍 [FIREWALL] Netsh stdout: "${result.stdout}"');
+      Logger.debug('🔍 [FIREWALL] Netsh stderr: "${result.stderr}"');
 
-      // If the rule exists, PowerShell will output the rule name
-      final output = result.stdout.toString().trim();
-      final ruleExists = output.isNotEmpty && result.exitCode == 0;
-      Logger.debug('Firewall rule "$ruleName" exists: $ruleExists');
+      final output = result.stdout.toString();
+      final errorOutput = result.stderr.toString().trim();
+      final exitCode = result.exitCode;
 
-      return ruleExists;
-    } catch (e) {
-      Logger.error('Error checking firewall rule with PowerShell: $e');
-      
-      // Fallback: try netsh with a more language-agnostic approach
+      // For netsh, if the rule exists, the output should contain the rule name and exit code is 0
+      // If it doesn't exist, it shows an error or no output
+      final ruleExists = output.contains(ruleName) && exitCode == 0;
+
+      Logger.info(
+          '✅ [FIREWALL] Firewall rule "$ruleName" exists: $ruleExists (exitCode: $exitCode, contains ruleName: ${output.contains(ruleName)})');
+
+      if (ruleExists) {
+        return true;
+      }
+
+      // If netsh didn't find it, try PowerShell as fallback
+      Logger.debug('🔍 [FIREWALL] Netsh did not find rule, attempting PowerShell fallback');
       try {
-        final result = await Process.run(
-          'netsh',
-          ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
+        final psCommand =
+            'try { \$rule = Get-NetFirewallRule -Name "$ruleName" -ErrorAction Stop; Write-Output \$rule.Name } catch { Write-Output "" }';
+
+        Logger.debug('🔍 [FIREWALL] Executing PowerShell: Get-NetFirewallRule -Name "$ruleName"');
+        final psResult = await Process.run(
+          'powershell',
+          ['-Command', psCommand],
           runInShell: true,
         );
-        
-        Logger.debug('Netsh fallback result - exitCode: ${result.exitCode}, stdout: ${result.stdout}');
-        
-        // Instead of checking for English-specific text, check for the presence of the rule name in the output
-        // and that the exit code indicates success. Different languages may have different error messages,
-        // so we focus on whether the rule name appears in successful output.
-        final output = result.stdout.toString();
-        final errorOutput = result.stderr.toString();
-        
-        // A successful rule query should contain the rule name in the output
-        // If the rule doesn't exist, netsh typically returns an error message or different output
-        final ruleExists = output.contains(ruleName) && result.exitCode == 0 && errorOutput.isEmpty;
-            
-        Logger.debug('Firewall rule "$ruleName" exists (fallback): $ruleExists');
-        return ruleExists;
-      } catch (fallbackError) {
-        Logger.error('Fallback firewall rule check also failed: $fallbackError');
+
+        Logger.debug('🔍 [FIREWALL] PowerShell result - exitCode: ${psResult.exitCode}');
+        Logger.debug('🔍 [FIREWALL] PowerShell stdout: "${psResult.stdout}"');
+        Logger.debug('🔍 [FIREWALL] PowerShell stderr: "${psResult.stderr}"');
+
+        final psOutput = psResult.stdout.toString().trim();
+        final psRuleExists = psOutput == ruleName;
+
+        Logger.info(
+            '✅ [FIREWALL] Firewall rule "$ruleName" exists (PowerShell fallback): $psRuleExists (output: "$psOutput")');
+
+        return psRuleExists;
+      } catch (psError) {
+        Logger.warning('⚠️ [FIREWALL] PowerShell fallback also failed: $psError');
         return false;
       }
+    } catch (e) {
+      Logger.error('❌ [FIREWALL] Failed to check firewall rule: $e');
+      return false;
     }
   }
 

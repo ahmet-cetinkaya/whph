@@ -114,6 +114,7 @@ settings:
           step2: "检查防火墙状态："
           step3: "添加防火墙规则（如果UFW处于活动状态）："
           step4: "验证规则已添加："
+          method_terminal_title: "方法1：终端命令"
         windows:
           step1: "从控制面板打开Windows Defender防火墙"
           step2: "点击左侧的高级设置"
@@ -124,11 +125,22 @@ settings:
           step7: "选择允许连接并点击下一步"
           step8: "勾选所有配置文件（域、专用、公用）并点击下一步"
           step9: "输入名称如WHPH同步端口44040并点击完成"
+          method_gui_title: "方法1：Windows防火墙图形界面"
+          method_command_title: "方法2：命令提示符"
+          step_open_defender: "打开Windows Defender防火墙→高级设置"
+          step_create_inbound_rule: '创建入站规则：入站规则→新建规则→端口→TCP→44040→允许→所有配置文件→名称："WHPH同步（入站）"'
+          step_create_outbound_rule: '创建出站规则：出站规则→新建规则→端口→TCP→44040→允许→所有配置文件→名称："WHPH同步（出站）"'
           alternative_command_prompt:
             title: "替代方案：使用命令提示符"
             steps:
               cmd_step1: "以管理员身份打开命令提示符"
               cmd_step2: "添加防火墙规则："
+        step_open_command_prompt: "1. 以管理员身份打开命令提示符"
+        step_run_commands: "2. 运行这些命令："
+        step_open_terminal: "1. 打开终端"
+        step_run_command: "2. 运行此命令（需要sudo权限）："
+        step_click_confirmation: "3. 运行命令后，点击下面的确认按钮"
+      manual_configure_instruction: "手动配置防火墙规则以进行同步（需要管理员权限）："
     startup:
       description: 要让应用与设备一起自动启动，需要自动启动权限。这确保即使在设备重启后提醒和通知也能正常工作。
       importance: 自动启动设置位置因设备制造商而异或可能不存在。
