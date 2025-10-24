@@ -242,4 +242,17 @@ settings:
       error: 导出日志时出错
       success: 日志文件导出成功
       no_logs_available: 没有可导出的日志
-      file_not_exist: 日志文件不存在
+      file_not_exist: 日志文件不存在。启用调试日志并生成日志。
+  task:
+    title: 任务设置
+    preferences:
+      title: 任务首选项
+      description: 自定义任务行为和默认设置
+    default_estimated_time:
+      title: 默认预计时间
+      description: 为新任务设置默认预计时间。您可以禁用此功能以避免自动时间估计。
+      disabled: 禁用
+      minutes: "{minutes}分钟"
+      load_error: 加载默认预计时间时出错
+      save_error: 保存默认预计时间时出错
+      key_not_found: 未找到默认预计时间键

@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Προθεσμία: {date}"
       deadline_date_not_set: "Προθεσμία: Δεν ορίστηκε"
       estimated_time: "Εκτιμώμενος Χρόνος: {time}"
+      estimated_time_default: "(προεπιλογή)"
       estimated_time_not_set: "Εκτιμώμενος Χρόνος: Δεν ορίστηκε"
       planned_date: "Προγραμματισμένο: {date}"
       planned_date_not_set: "Προγραμματισμένο: Δεν ορίστηκε"

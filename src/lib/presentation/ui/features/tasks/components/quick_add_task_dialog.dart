@@ -3,13 +3,17 @@ import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/border_fade_overlay.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
@@ -17,12 +21,14 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType;
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:acore/acore.dart' show NumericInput;
 
 class QuickAddTaskDialog extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -142,12 +148,18 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   DateTime? _deadlineDate;
   List<DropdownOption<String>> _selectedTags = [];
 
+  // Track if estimated time was explicitly set by user (not from default)
+  bool _isEstimatedTimeExplicitlySet = false;
+
   // Lock state variables
   bool _lockTags = false;
   bool _lockPriority = false;
   bool _lockEstimatedTime = false;
   bool _lockPlannedDate = false;
   bool _lockDeadlineDate = false;
+
+  // UI state variables
+  bool _showEstimatedTimeSection = false;
 
   @override
   void initState() {
@@ -157,12 +169,50 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     _selectedPriority = widget.initialPriority;
     _estimatedTime = widget.initialEstimatedTime;
 
+    // Track if estimated time was explicitly provided
+    _isEstimatedTimeExplicitlySet = widget.initialEstimatedTime != null;
+
     if (widget.initialTitle != null) {
       _titleController.text = widget.initialTitle!;
     }
 
     // Load initial tags with names
     _loadInitialTags();
+
+    // Load default estimated time if not provided (but don't mark as explicitly set)
+    if (_estimatedTime == null) {
+      _loadDefaultEstimatedTime();
+    }
+  }
+
+  /// Loads default estimated time from settings if no initial value is provided
+  Future<void> _loadDefaultEstimatedTime() async {
+    try {
+      final setting = await _mediator.send<GetSettingQuery, Setting?>(
+        GetSettingQuery(key: SettingKeys.taskDefaultEstimatedTime),
+      );
+
+      if (setting != null) {
+        final value = setting.getValue<int?>();
+        if (value != null && value > 0) {
+          if (mounted) {
+            setState(() {
+              _estimatedTime = value;
+              // Don't mark as explicitly set since this is just a default
+            });
+          }
+        }
+      }
+    } catch (e) {
+      // Log error and use default of TaskConstants.defaultEstimatedTime minutes if setting can't be loaded
+      Logger.error('Error loading default estimated time in QuickAddTaskDialog: $e');
+      if (mounted) {
+        setState(() {
+          _estimatedTime = TaskConstants.defaultEstimatedTime;
+          // Don't mark as explicitly set since this is just a default
+        });
+      }
+    }
   }
 
   /// Loads initial tags and gets their names for display
@@ -241,6 +291,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       }
       if (!_lockEstimatedTime) {
         _estimatedTime = widget.initialEstimatedTime;
+        if (_estimatedTime == null) {
+          _loadDefaultEstimatedTime();
+        }
+        _isEstimatedTimeExplicitlySet = widget.initialEstimatedTime != null && widget.initialEstimatedTime! > 0;
+        _showEstimatedTimeSection = widget.initialEstimatedTime != null && widget.initialEstimatedTime! > 0;
       }
       if (!_lockPlannedDate) {
         _plannedDate = widget.initialPlannedDate;
@@ -445,12 +500,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   void _toggleEstimatedTime() {
     setState(() {
-      final currentIndex = TaskUiConstants.defaultEstimatedTimeOptions.indexOf(_estimatedTime ?? 0);
-      if (currentIndex == -1 || currentIndex == TaskUiConstants.defaultEstimatedTimeOptions.length - 1) {
-        _estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions.first;
-      } else {
-        _estimatedTime = TaskUiConstants.defaultEstimatedTimeOptions[currentIndex + 1];
-      }
+      _showEstimatedTimeSection = !_showEstimatedTimeSection;
     });
   }
 
@@ -613,13 +663,24 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   }
 
   String _getEstimatedTimeTooltip() {
-    if (_estimatedTime == null) {
+    if (_estimatedTime == null || _estimatedTime == 0) {
       return _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet);
     }
-    return _translationService.translate(
-      TaskTranslationKeys.quickTaskEstimatedTime,
-      namedArgs: {'time': SharedUiConstants.formatMinutes(_estimatedTime)},
-    );
+
+    if (_isEstimatedTimeExplicitlySet) {
+      return _translationService.translate(
+        TaskTranslationKeys.quickTaskEstimatedTime,
+        namedArgs: {'time': SharedUiConstants.formatMinutes(_estimatedTime)},
+      );
+    } else {
+      // For default values, indicate it's a default
+      final formattedTime = SharedUiConstants.formatMinutes(_estimatedTime);
+      final defaultText = _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeDefault);
+      return _translationService.translate(
+        TaskTranslationKeys.quickTaskEstimatedTime,
+        namedArgs: {'time': '$formattedTime $defaultText'},
+      );
+    }
   }
 
   String _getDateTooltip(bool isDeadline) {
@@ -649,6 +710,37 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     }
 
     return tagNames.join(', ');
+  }
+
+  Widget _buildEstimatedTimeIcon() {
+    final theme = Theme.of(context);
+
+    if (_estimatedTime != null && _estimatedTime! > 0) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color: _isEstimatedTimeExplicitlySet
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurface.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          _estimatedTime.toString(),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: _isEstimatedTimeExplicitlySet
+                ? theme.colorScheme.onPrimary
+                : theme.colorScheme.onSurface.withValues(alpha: 0.8),
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+      );
+    } else {
+      return Icon(
+        TaskUiConstants.estimatedTimeIcon,
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+      );
+    }
   }
 
   Future<void> _onClearAllFields() async {
@@ -785,6 +877,83 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 ),
               ),
             ),
+
+            // Collapsible estimated time section
+            if (_showEstimatedTimeSection) ...[
+              SizedBox(height: AppTheme.sizeSmall),
+              Container(
+                padding: EdgeInsets.all(AppTheme.sizeMedium),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          TaskUiConstants.estimatedTimeIcon,
+                          size: 16,
+                          color: theme.colorScheme.primary,
+                        ),
+                        SizedBox(width: AppTheme.sizeSmall),
+                        Text(
+                          _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Spacer(),
+
+                        // Estimated Numeric Input with clear button
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            NumericInput(
+                              initialValue: _estimatedTime ?? 0,
+                              minValue: 0,
+                              maxValue: 480, // Increased from 60 to 480 minutes (8 hours) for better usability
+                              incrementValue: 5,
+                              decrementValue: 5,
+                              onValueChanged: (value) {
+                                setState(() {
+                                  _estimatedTime = value;
+                                  _isEstimatedTimeExplicitlySet = true;
+                                });
+                              },
+                              valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+                              iconSize: 20,
+                            ),
+                            SizedBox(width: AppTheme.sizeSmall),
+                            IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                size: 20,
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _estimatedTime = 0;
+                                  _isEstimatedTimeExplicitlySet = false;
+                                });
+                              },
+                              tooltip: _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet),
+                              padding: EdgeInsets.all(8),
+                              constraints: BoxConstraints(minWidth: 36, minHeight: 36),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -845,20 +1014,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         // Estimated time button with lock indicator
         _buildActionButtonWithLock(
           child: IconButton(
-            icon: _estimatedTime == null
-                ? Icon(
-                    TaskUiConstants.estimatedTimeOutlinedIcon,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                  )
-                : Text(
-                    SharedUiConstants.formatMinutes(_estimatedTime!),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: TaskUiConstants.estimatedTimeColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+            icon: _buildEstimatedTimeIcon(),
             onPressed: _toggleEstimatedTime,
-            tooltip: _getEstimatedTimeTooltip(),
+            tooltip: _estimatedTime != null
+                ? _getEstimatedTimeTooltip()
+                : _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet),
             iconSize: iconSize,
           ),
           isLocked: _lockEstimatedTime,

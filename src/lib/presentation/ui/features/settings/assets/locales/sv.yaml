@@ -242,4 +242,17 @@ settings:
       error: Fel vid export av loggar
       success: Loggfil exporterad framgångsrikt
       no_logs_available: Inga loggar tillgängliga för export. Generera några loggar först.
-      file_not_exist: Loggfilen finns inte. Aktivera felsökningsloggning och generera några loggar först.
+      file_not_exist: Loggfilen existerar inte. Aktivera debug logging och generera loggar.
+  task:
+    title: Uppgiftsinställningar
+    preferences:
+      title: Uppgiftsinställningar
+      description: Anpassa uppgiftsbeteende och standardinställningar
+    default_estimated_time:
+      title: Standard uppskattad tid
+      description: Ställ in standard uppskattad tid för nya uppgifter. Du kan inaktivera detta för att undvika automatiska tidsestimat.
+      disabled: Inaktiverad
+      minutes: "{minutes} minuter"
+      load_error: Fel vid inläsning av standard uppskattad tid
+      save_error: Fel vid sparande av standard uppskattad tid
+      key_not_found: Standard uppskattad tid nyckel hittades inte

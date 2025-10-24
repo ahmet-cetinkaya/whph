@@ -241,4 +241,17 @@ settings:
       error: Fehler beim Exportieren der Protokolle
       success: Protokolldatei erfolgreich exportiert
       no_logs_available: Keine Protokolle zum Exportieren verfügbar. Generieren Sie zuerst einige Protokolle.
-      file_not_exist: Protokolldatei existiert nicht. Aktivieren Sie die Debug-Protokollierung und generieren Sie zuerst einige Protokolle.
+      file_not_exist: Protokolldatei existiert nicht. Aktivieren Sie die Debug-Protokollierung und generieren Sie einige Protokolle.
+  task:
+    title: Aufgabeneinstellungen
+    preferences:
+      title: Aufgabeneinstellungen
+      description: Aufgabeverhalten und Standardeinstellungen anpassen
+    default_estimated_time:
+      title: Standardmäßige geschätzte Zeit
+      description: Standardmäßige geschätzte Zeit für neue Aufgaben festlegen. Sie können dies deaktivieren, um automatische Zeitschätzungen zu vermeiden.
+      disabled: Deaktiviert
+      minutes: "{minutes} Minuten"
+      load_error: Fehler beim Laden der Standard-Zeitschätzung
+      save_error: Fehler beim Speichern der Standard-Zeitschätzung
+      key_not_found: Standard-Zeitschätzung-Schlüssel nicht gefunden

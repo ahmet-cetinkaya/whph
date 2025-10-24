@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Deadline: {date}"
       deadline_date_not_set: "Deadline: Niet ingesteld"
       estimated_time: "Geschatte Tijd: {time}"
+      estimated_time_default: "(standaard)"
       estimated_time_not_set: "Geschatte Tijd: Niet ingesteld"
       planned_date: "Gepland: {date}"
       planned_date_not_set: "Gepland: Niet ingesteld"

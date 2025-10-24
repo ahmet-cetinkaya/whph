@@ -1,14 +1,17 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
+import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -76,14 +79,41 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
   final ITaskRepository _taskRepository;
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
+  final ISettingRepository _settingRepository;
 
   SaveTaskCommandHandler({
     required ITaskRepository taskService,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
+    required ISettingRepository settingRepository,
   })  : _taskRepository = taskService,
         _taskTagRepository = taskTagRepository,
-        _taskTimeRecordRepository = taskTimeRecordRepository;
+        _taskTimeRecordRepository = taskTimeRecordRepository,
+        _settingRepository = settingRepository;
+
+  /// Gets the default estimated time from user settings
+  /// Returns null if user has disabled default estimated time
+  Future<int?> _getDefaultEstimatedTime() async {
+    try {
+      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime);
+      if (setting == null) {
+        // Setting not found, use current default behavior (15 minutes)
+        return TaskConstants.defaultEstimatedTime;
+      }
+
+      final value = setting.getValue<int?>();
+      // Return null if user set to 0 (disabled), otherwise return the value
+      return value == 0 ? null : value;
+    } on FormatException catch (e, s) {
+      // Handle parsing errors specifically
+      Logger.warning('Failed to parse default estimated time setting. Error: $e\n$s');
+      return TaskConstants.defaultEstimatedTime;
+    } catch (e) {
+      // Handle any other unexpected errors
+      Logger.error('Unexpected error getting default estimated time: $e');
+      return TaskConstants.defaultEstimatedTime;
+    }
+  }
 
   @override
   Future<SaveTaskCommandResponse> call(SaveTaskCommand request) async {
@@ -100,7 +130,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.priority = request.priority;
       task.plannedDate = request.plannedDate;
       task.deadlineDate = request.deadlineDate;
-      task.estimatedTime = request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null;
+      task.estimatedTime = request.estimatedTime != null && request.estimatedTime! > 0 ? request.estimatedTime : null;
 
       // Handle completion status
       task.completedAt = request.completedAt;
@@ -166,9 +196,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           priority: request.priority,
           plannedDate: request.plannedDate,
           deadlineDate: request.deadlineDate,
-          estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
-              ? request.estimatedTime
-              : TaskConstants.defaultEstimatedTime,
+          estimatedTime: request.estimatedTime == null
+              ? await _getDefaultEstimatedTime()
+              : (request.estimatedTime! > 0 ? request.estimatedTime : null),
           completedAt: request.completedAt,
           parentTaskId: request.parentTaskId,
           order: newOrder,

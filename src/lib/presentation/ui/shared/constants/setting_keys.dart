@@ -50,4 +50,7 @@ class SettingKeys {
 
   // Debug Settings
   static const String debugLogsEnabled = 'DEBUG_LOGS_ENABLED';
+
+  // Task Settings
+  static const String taskDefaultEstimatedTime = "TASK_DEFAULT_ESTIMATED_TIME";
 }
