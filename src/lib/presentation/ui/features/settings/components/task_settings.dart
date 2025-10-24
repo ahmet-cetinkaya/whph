@@ -33,6 +33,7 @@ class _TaskSettingsState extends State<TaskSettings> {
   bool _isLoading = true;
   int? _defaultEstimatedTime;
   bool _isSettingEnabled = true;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -86,28 +87,39 @@ class _TaskSettingsState extends State<TaskSettings> {
   }
 
   Future<void> _saveDefaultEstimatedTime(int? value) async {
-    await AsyncErrorHandler.executeWithLoading(
-      context: context,
-      setLoading: (isLoading) {
-        // Show loading indicator if needed
-      },
-      errorMessage: _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeSaveError),
-      operation: () async {
-        await _mediator.send(
-          SaveSettingCommand(
-            key: SettingKeys.taskDefaultEstimatedTime,
-            value: value?.toString() ?? '0',
-            valueType: SettingValueType.int,
+    if (_isSaving) return; // Prevent concurrent saves
+    
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      await _mediator.send(
+        SaveSettingCommand(
+          key: SettingKeys.taskDefaultEstimatedTime,
+          value: value?.toString() ?? '0',
+          valueType: SettingValueType.int,
+        ),
+      );
+    } catch (error) {
+      // Show error message without reverting all settings
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeSaveError)),
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
-        return true;
-      },
-      onError: (error) {
-        // Don't show overlay notification for setting key errors - just revert change
-        // Revert change on error
+        // Revert only the changed value to previous state
         _loadSettings();
-      },
-    );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
   }
 
   void _onToggleChanged(bool enabled) {
@@ -135,7 +147,12 @@ class _TaskSettingsState extends State<TaskSettings> {
         // Enable setting if value is greater than 0
         _isSettingEnabled = value > 0;
       });
-      _saveDefaultEstimatedTime(value);
+      // Debounce save operation to avoid excessive saves while user is adjusting
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted && !_isSaving && value == _defaultEstimatedTime) {
+          _saveDefaultEstimatedTime(value);
+        }
+      });
     }
   }
 
