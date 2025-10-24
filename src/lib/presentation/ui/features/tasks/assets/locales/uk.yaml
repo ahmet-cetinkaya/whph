@@ -262,6 +262,7 @@ tasks:
       deadline_date: "Дедлайн: {date}"
       deadline_date_not_set: "Дедлайн: Не встановлено"
       estimated_time: "Орієнтовний час: {time}"
+      estimated_time_default: "(за замовчуванням)"
       estimated_time_not_set: "Орієнтовний час: Не встановлено"
       planned_date: "Заплановано: {date}"
       planned_date_not_set: "Заплановано: Не встановлено"

@@ -56,6 +56,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
 
   // Quick Task Tooltips
   static const String quickTaskEstimatedTime = 'tasks.quick_task.tooltips.estimated_time';
+  static const String quickTaskEstimatedTimeDefault = 'tasks.quick_task.tooltips.estimated_time_default';
   static const String quickTaskEstimatedTimeNotSet = 'tasks.quick_task.tooltips.estimated_time_not_set';
   static const String quickTaskPlannedDate = 'tasks.quick_task.tooltips.planned_date';
   static const String quickTaskPlannedDateNotSet = 'tasks.quick_task.tooltips.planned_date_not_set';

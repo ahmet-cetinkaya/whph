@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
@@ -59,20 +60,20 @@ class _TaskSettingsState extends State<TaskSettings> {
               _isSettingEnabled = value != null && value > 0;
             });
           } else {
-            // Default to 15 minutes if setting doesn't exist
+            // Default to TaskConstants.defaultEstimatedTime minutes if setting doesn't exist
             setState(() {
-              _defaultEstimatedTime = 15;
+              _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
               _isSettingEnabled = true;
             });
             // Create the setting with default value
-            await _saveDefaultEstimatedTime(15);
+            await _saveDefaultEstimatedTime(TaskConstants.defaultEstimatedTime);
           }
           return true;
         } catch (e) {
           // Don't show overlay notification for missing setting key - just use default
           // Set default values anyway
           setState(() {
-            _defaultEstimatedTime = 15;
+            _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
             _isSettingEnabled = true;
           });
           return true;
@@ -117,13 +118,13 @@ class _TaskSettingsState extends State<TaskSettings> {
         _defaultEstimatedTime = 0;
       });
       _saveDefaultEstimatedTime(0);
-    } else {
-      // Enable with a default of 15 minutes
+     } else {
+      // Enable with a default of TaskConstants.defaultEstimatedTime minutes
       setState(() {
         _isSettingEnabled = true;
-        _defaultEstimatedTime = 15;
+        _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
       });
-      _saveDefaultEstimatedTime(15);
+      _saveDefaultEstimatedTime(TaskConstants.defaultEstimatedTime);
     }
   }
 
@@ -214,7 +215,7 @@ class _TaskSettingsState extends State<TaskSettings> {
                     children: [
                       Expanded(
                         child: NumericInput(
-                          initialValue: _defaultEstimatedTime ?? 15,
+                          initialValue: _defaultEstimatedTime ?? TaskConstants.defaultEstimatedTime,
                           minValue: 5,
                           maxValue: 60,
                           incrementValue: 5,

@@ -261,6 +261,7 @@ tasks:
       deadline_date: "마감일: {date}"
       deadline_date_not_set: "마감일: 설정되지 않음"
       estimated_time: "예상 시간: {time}"
+      estimated_time_default: "(기본값)"
       estimated_time_not_set: "예상 시간: 설정되지 않음"
       planned_date: "계획일: {date}"
       planned_date_not_set: "계획일: 설정되지 않음"

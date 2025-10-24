@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Deadline: {date}"
       deadline_date_not_set: "Deadline: Not set"
       estimated_time: "Estimated Time: {time}"
+      estimated_time_default: "(default)"
       estimated_time_not_set: "Estimated Time: Not set"
       planned_date: "Planned: {date}"
       planned_date_not_set: "Planned: Not set"

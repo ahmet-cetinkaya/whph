@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
@@ -108,6 +109,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       return TaskConstants.defaultEstimatedTime;
     } catch (e) {
       // Handle any other unexpected errors
+      Logger.error('Unexpected error getting default estimated time: $e');
       return TaskConstants.defaultEstimatedTime;
     }
   }
