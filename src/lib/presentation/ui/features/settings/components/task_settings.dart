@@ -48,7 +48,8 @@ class _TaskSettingsState extends State<TaskSettings> {
       setLoading: (isLoading) => setState(() {
         _isLoading = isLoading;
       }),
-      errorMessage: _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeLoadError),
+      errorMessage: _translationService
+          .translate(SettingsTranslationKeys.taskDefaultEstimatedTimeLoadError),
       operation: () async {
         try {
           final setting = await _mediator.send<GetSettingQuery, Setting?>(
@@ -90,7 +91,7 @@ class _TaskSettingsState extends State<TaskSettings> {
 
   Future<void> _saveDefaultEstimatedTime(int? value) async {
     if (_isSaving) return; // Prevent concurrent saves
-    
+
     setState(() {
       _isSaving = true;
     });
@@ -106,10 +107,12 @@ class _TaskSettingsState extends State<TaskSettings> {
     } catch (error, stackTrace) {
       // Show error message without reverting all settings
       if (mounted) {
-        Logger.error('Failed to save default estimated time setting: $error\n$stackTrace');
+        Logger.error(
+            'Failed to save default estimated time setting: $error\n$stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeSaveError)),
+            content: Text(_translationService.translate(
+                SettingsTranslationKeys.taskDefaultEstimatedTimeSaveError)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -133,7 +136,7 @@ class _TaskSettingsState extends State<TaskSettings> {
         _defaultEstimatedTime = 0;
       });
       _saveDefaultEstimatedTime(0);
-     } else {
+    } else {
       // Enable with a default of TaskConstants.defaultEstimatedTime minutes
       setState(() {
         _isSettingEnabled = true;
@@ -165,7 +168,8 @@ class _TaskSettingsState extends State<TaskSettings> {
 
     if (_isLoading) {
       return const Card(
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
+        margin: EdgeInsets.symmetric(
+            horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
         child: Padding(
           padding: EdgeInsets.all(AppTheme.sizeLarge),
           child: Center(child: CircularProgressIndicator()),
@@ -174,7 +178,8 @@ class _TaskSettingsState extends State<TaskSettings> {
     }
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
+      margin: const EdgeInsets.symmetric(
+          horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
@@ -190,7 +195,8 @@ class _TaskSettingsState extends State<TaskSettings> {
                 ),
                 const SizedBox(width: AppTheme.sizeSmall),
                 Text(
-                  _translationService.translate(SettingsTranslationKeys.taskSettingsTitle),
+                  _translationService
+                      .translate(SettingsTranslationKeys.taskSettingsTitle),
                   style: theme.textTheme.titleMedium,
                 ),
               ],
@@ -209,14 +215,19 @@ class _TaskSettingsState extends State<TaskSettings> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeTitle),
+                            _translationService.translate(
+                                SettingsTranslationKeys
+                                    .taskDefaultEstimatedTimeTitle),
                             style: theme.textTheme.titleSmall,
                           ),
                           const SizedBox(height: AppTheme.sizeSmall),
                           Text(
-                            _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeDescription),
+                            _translationService.translate(
+                                SettingsTranslationKeys
+                                    .taskDefaultEstimatedTimeDescription),
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                              color: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.7),
                             ),
                           ),
                         ],
@@ -237,13 +248,16 @@ class _TaskSettingsState extends State<TaskSettings> {
                     children: [
                       Expanded(
                         child: NumericInput(
-                          initialValue: _defaultEstimatedTime ?? TaskConstants.defaultEstimatedTime,
+                          initialValue: _defaultEstimatedTime ??
+                              TaskConstants.defaultEstimatedTime,
                           minValue: 5,
-                          maxValue: 480, // Increased from 60 to 480 minutes (8 hours) for better usability
+                          maxValue:
+                              480, // Increased from 60 to 480 minutes (8 hours) for better usability
                           incrementValue: 5,
                           decrementValue: 5,
                           onValueChanged: _onEstimatedTimeChanged,
-                          valueSuffix: _translationService.translate(SharedTranslationKeys.minutes),
+                          valueSuffix: _translationService
+                              .translate(SharedTranslationKeys.minutes),
                           iconSize: 20,
                           iconColor: theme.colorScheme.primary,
                         ),
