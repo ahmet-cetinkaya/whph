@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: Privzeti Ocenjen Čas
       description: Nastavite privzeti ocenjen čas za nove opravke. To lahko onemogočite, da izognete samodejnim ocenam časa.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Onemogočeno
+      minutes: "{minutes} minut"
+      load_error: Napaka pri nalaganju privzetega ocenjenega časa
+      save_error: Napaka pri shranjevanju privzetega ocenjenega časa
+      key_not_found: Ključ privzetega ocenjenega časa ni bil najden

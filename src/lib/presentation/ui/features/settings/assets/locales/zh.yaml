@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: 默认预计时间
       description: 为新任务设置默认预计时间。您可以禁用此功能以避免自动时间估计。
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: 禁用
+      minutes: "{minutes}分钟"
+      load_error: 加载默认预计时间时出错
+      save_error: 保存默认预计时间时出错
+      key_not_found: 未找到默认预计时间键

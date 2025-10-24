@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: Προεπιλεγμένος εκτιμώμενος χρόνος
       description: Ορίστε τον προεπιλεγμένο εκτιμώμενο χρόνο για νέες εργασίες. Μπορείτε να το απενεργοποιήσετε για να αποφύγετε αυτόματες εκτιμήσεις χρόνου.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Απενεργοποιημένο
+      minutes: "{minutes} λεπτά"
+      load_error: Σφάλμα φόρτωσης προεπιλεγμένου εκτιμώμενου χρόνου
+      save_error: Σφάλμα αποθήκευσης προεπιλεγμένου εκτιμώμενου χρόνου
+      key_not_found: Το κλειδί προεπιλεγμένου εκτιμώμενου χρόνου δεν βρέθηκε

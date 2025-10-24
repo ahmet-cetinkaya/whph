@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: Standard uppskattad tid
       description: Ställ in standard uppskattad tid för nya uppgifter. Du kan inaktivera detta för att undvika automatiska tidsestimat.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Inaktiverad
+      minutes: "{minutes} minuter"
+      load_error: Fel vid inläsning av standard uppskattad tid
+      save_error: Fel vid sparande av standard uppskattad tid
+      key_not_found: Standard uppskattad tid nyckel hittades inte

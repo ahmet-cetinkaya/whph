@@ -272,8 +272,8 @@ settings:
     default_estimated_time:
       title: Время по умолчанию
       description: Установить время по умолчанию для новых задач. Вы можете отключить это, чтобы избежать автоматической оценки времени.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Отключено
+      minutes: "{minutes} минут"
+      load_error: Ошибка загрузки времени по умолчанию
+      save_error: Ошибка сохранения времени по умолчанию
+      key_not_found: Ключ времени по умолчанию не найден

@@ -252,8 +252,8 @@ settings:
     default_estimated_time:
       title: Tempo stimato predefinito
       description: Imposta il tempo stimato predefinito per nuove attività. Puoi disabilitare questo per evitare stime di tempo automatiche.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Disabilitato
+      minutes: "{minutes} minuti"
+      load_error: Errore nel caricamento del tempo stimato predefinito
+      save_error: Errore nel salvataggio del tempo stimato predefinito
+      key_not_found: Chiave tempo stimato predefinito non trovata

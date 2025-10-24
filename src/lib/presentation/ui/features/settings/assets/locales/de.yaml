@@ -250,8 +250,8 @@ settings:
     default_estimated_time:
       title: Standardmäßige geschätzte Zeit
       description: Standardmäßige geschätzte Zeit für neue Aufgaben festlegen. Sie können dies deaktivieren, um automatische Zeitschätzungen zu vermeiden.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
+      disabled: Deaktiviert
+      minutes: "{minutes} Minuten"
       load_error: Fehler beim Laden der Standard-Zeitschätzung
       save_error: Fehler beim Speichern der Standard-Zeitschätzung
-      key_not_found: Default estimated time key not found
+      key_not_found: Standard-Zeitschätzung-Schlüssel nicht gefunden

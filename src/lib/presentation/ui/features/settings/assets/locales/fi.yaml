@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: Oletusarvioitu aika
       description: Aseta oletusarvioitu aika uusille tehtäville. Voit poistaa tämän käytöstä välttääksesi automaattisia aikaarvioita.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Poissa käytöstä
+      minutes: "{minutes} minuuttia"
+      load_error: Virhe oletusarvioidun ajan lataamisessa
+      save_error: Virhe oletusarvioidun ajan tallentamisessa
+      key_not_found: Oletusarvioidun ajan avainta ei löytynyt

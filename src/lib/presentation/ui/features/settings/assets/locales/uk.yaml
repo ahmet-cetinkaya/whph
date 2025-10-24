@@ -246,8 +246,8 @@ settings:
     default_estimated_time:
       title: Час за замовчуванням
       description: Встановіть час за замовчуванням для нових завдань. Ви можете вимкнути це, щоб уникнути автоматичної оцінки часу.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Вимкнено
+      minutes: "{minutes} хвилин"
+      load_error: Помилка завантаження часу за замовчуванням
+      save_error: Помилка збереження часу за замовчуванням
+      key_not_found: Ключ часу за замовчуванням не знайдено

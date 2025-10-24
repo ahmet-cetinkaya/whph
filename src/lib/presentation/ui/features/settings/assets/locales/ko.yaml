@@ -252,8 +252,8 @@ settings:
     default_estimated_time:
       title: 기본 예상 시간
       description: 새 작업의 기본 예상 시간을 설정합니다. 자동 시간 예상을 방지하려면 이 기능을 비활성화할 수 있습니다.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: 비활성화됨
+      minutes: "{minutes}분"
+      load_error: 기본 예상 시간 로드 오류
+      save_error: 기본 예상 시간 저장 오류
+      key_not_found: 기본 예상 시간 키를 찾을 수 없음

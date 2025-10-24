@@ -103,8 +103,11 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       final value = setting.getValue<int?>();
       // Return null if user set to 0 (disabled), otherwise return the value
       return value == 0 ? null : value;
+    } on FormatException {
+      // Handle parsing errors specifically
+      return TaskConstants.defaultEstimatedTime;
     } catch (e) {
-      // If there's an error reading the setting, fall back to current default
+      // Handle any other unexpected errors
       return TaskConstants.defaultEstimatedTime;
     }
   }

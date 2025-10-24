@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: Standard estimert tid
       description: Sett standard estimert tid for nye oppgaver. Du kan deaktivere dette for å unngå automatiske tidsestimater.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Deaktivert
+      minutes: "{minutes} minutter"
+      load_error: Feil ved lasting av standard estimert tid
+      save_error: Feil ved lagring av standard estimert tid
+      key_not_found: Standard estimert tid nøkkel ikke funnet
