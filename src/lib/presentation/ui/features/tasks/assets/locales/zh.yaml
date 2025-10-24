@@ -259,6 +259,7 @@ tasks:
       deadline_date: 截止日期：{date}
       deadline_date_not_set: 截止日期：未设置
       estimated_time: 预计时间：{time}
+      estimated_time_default: （默认）
       estimated_time_not_set: 预计时间：未设置
       planned_date: 计划日期：{date}
       planned_date_not_set: 计划日期：未设置

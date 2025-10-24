@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Frist: {date}"
       deadline_date_not_set: "Frist: Ikke sat"
       estimated_time: "Estimeret tid: {time}"
+      estimated_time_default: "(standard)"
       estimated_time_not_set: "Estimeret tid: Ikke sat"
       planned_date: "Planlagt: {date}"
       planned_date_not_set: "Planlagt: Ikke sat"

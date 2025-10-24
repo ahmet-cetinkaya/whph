@@ -264,6 +264,7 @@ tasks:
       deadline_date: "Termin: {date}"
       deadline_date_not_set: "Termin: Nie ustawiono"
       estimated_time: "Szacowany czas: {time}"
+      estimated_time_default: "(domyślny)"
       estimated_time_not_set: "Szacowany czas: Nie ustawiono"
       planned_date: "Planowane: {date}"
       planned_date_not_set: "Planowane: Nie ustawiono"

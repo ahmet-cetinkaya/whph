@@ -260,6 +260,7 @@ tasks:
       deadline_date: "Termín: {date}"
       deadline_date_not_set: "Termín: Není nastaveno"
       estimated_time: "Odhadovaný čas: {time}"
+      estimated_time_default: "(výchozí)"
       estimated_time_not_set: "Odhadovaný čas: Není nastaveno"
       planned_date: "Plánováno: {date}"
       planned_date_not_set: "Plánováno: Není nastaveno"

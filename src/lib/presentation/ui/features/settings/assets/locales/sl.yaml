@@ -242,4 +242,17 @@ settings:
       error: Napaka pri izvozu dnevnikov
       success: Datoteka dnevnika je bila uspešno izvožena
       no_logs_available: Ni razpoložljivih dnevnikov za izvoz. Najprej ustvarite nekaj dnevnikov.
-      file_not_exist: Datoteka dnevnika ne obstaja. Omogočite beleženje razhroščevanja in najprej ustvarite nekaj dnevnikov.
+      file_not_exist: Datoteka dnevnika ne obstaja. Omogočite debug logging in ustvarite dnevike.
+  task:
+    title: Nastavitve Opravil
+    preferences:
+      title: Nastavitve Opravil
+      description: Prilagodite obnašanje opravil in privzete nastavitve
+    default_estimated_time:
+      title: Privzeti Ocenjen Čas
+      description: Nastavite privzeti ocenjen čas za nove opravke. To lahko onemogočite, da izognete samodejnim ocenam časa.
+      disabled: Onemogočeno
+      minutes: "{minutes} minut"
+      load_error: Napaka pri nalaganju privzetega ocenjenega časa
+      save_error: Napaka pri shranjevanju privzetega ocenjenega časa
+      key_not_found: Ključ privzetega ocenjenega časa ni bil najden

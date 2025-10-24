@@ -264,6 +264,7 @@ tasks:
       deadline_date: "Échéance : {date}"
       deadline_date_not_set: "Échéance : Non définie"
       estimated_time: "Temps estimé : {time}"
+      estimated_time_default: "(par défaut)"
       estimated_time_not_set: "Temps estimé : Non défini"
       planned_date: "Prévu : {date}"
       planned_date_not_set: "Prévu : Non défini"

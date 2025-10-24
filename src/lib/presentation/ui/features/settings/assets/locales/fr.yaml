@@ -241,4 +241,17 @@ settings:
       error: Erreur lors de l'exportation des journaux
       success: Fichier de journal exporté avec succès
       no_logs_available: Aucun journal disponible à exporter. Générez d'abord quelques journaux.
-      file_not_exist: Le fichier journal n'existe pas. Activez la journalisation de débogage et générez d'abord quelques journaux.
+      file_not_exist: Le fichier journal n'existe pas. Activez la journalisation de débogage et générez des journaux.
+  task:
+    title: Paramètres des tâches
+    preferences:
+      title: Préférences des tâches
+      description: Personnaliser le comportement des tâches et les paramètres par défaut
+    default_estimated_time:
+      title: Temps estimé par défaut
+      description: Définir le temps estimé par défaut pour les nouvelles tâches. Vous pouvez désactiver ceci pour éviter les estimations de temps automatiques.
+      disabled: Désactivé
+      minutes: "{minutes} minutes"
+      load_error: Erreur lors du chargement du temps estimé par défaut
+      save_error: Erreur lors de l'enregistrement du temps estimé par défaut
+      key_not_found: Clé de temps estimé par défaut non trouvée
