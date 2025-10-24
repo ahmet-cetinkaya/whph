@@ -116,10 +116,9 @@ class ImportDataMigrationService implements IImportDataMigrationService {
         return true;
       }
 
-      // If no specific migrations are defined but source version is older than current,
-      // we still consider migration as needed to update the version in the data
-      // This handles cases where intermediate patch versions don't require specific migrations
-      return true;
+      // If no specific migrations are defined, no migration is needed
+      // The version will be updated during import without requiring migration steps
+      return false;
     } catch (e) {
       // Invalid version format
       return false;
