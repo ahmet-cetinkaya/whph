@@ -124,7 +124,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.priority = request.priority;
       task.plannedDate = request.plannedDate;
       task.deadlineDate = request.deadlineDate;
-      task.estimatedTime = request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null;
+      task.estimatedTime = request.estimatedTime != null && request.estimatedTime! > 0 ? request.estimatedTime : null;
 
       // Handle completion status
       task.completedAt = request.completedAt;
@@ -190,7 +190,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           priority: request.priority,
           plannedDate: request.plannedDate,
           deadlineDate: request.deadlineDate,
-          estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
+          estimatedTime: request.estimatedTime != null && request.estimatedTime! > 0
               ? request.estimatedTime
               : await _getDefaultEstimatedTime(),
           completedAt: request.completedAt,
