@@ -28,23 +28,11 @@ import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart'
 
 class _FakePaginatedSyncData_0<T extends _i1.BaseEntity<dynamic>> extends _i2.SmartFake
     implements _i3.PaginatedSyncData<T> {
-  _FakePaginatedSyncData_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePaginatedSyncData_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakePaginatedList_1<T> extends _i2.SmartFake implements _i1.PaginatedList<T> {
-  _FakePaginatedList_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePaginatedList_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [IAppUsageIgnoreRuleRepository].
@@ -73,36 +61,31 @@ class MockIAppUsageIgnoreRuleRepository extends _i2.Mock implements _i4.IAppUsag
           },
         ),
         returnValue: _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>>.value(
-            _FakePaginatedSyncData_0<_i6.AppUsageIgnoreRule>(
-          this,
-          Invocation.method(
-            #getPaginatedSyncData,
-            [lastSyncDate],
-            {
-              #pageIndex: pageIndex,
-              #pageSize: pageSize,
-              #entityType: entityType,
-            },
+          _FakePaginatedSyncData_0<_i6.AppUsageIgnoreRule>(
+            this,
+            Invocation.method(
+              #getPaginatedSyncData,
+              [lastSyncDate],
+              {
+                #pageIndex: pageIndex,
+                #pageSize: pageSize,
+                #entityType: entityType,
+              },
+            ),
           ),
-        )),
+        ),
       ) as _i5.Future<_i3.PaginatedSyncData<_i6.AppUsageIgnoreRule>>);
 
   @override
   _i5.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
-        Invocation.method(
-          #hardDeleteSoftDeleted,
-          [beforeDate],
-        ),
+        Invocation.method(#hardDeleteSoftDeleted, [beforeDate]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> truncate() => (super.noSuchMethod(
-        Invocation.method(
-          #truncate,
-          [],
-        ),
+        Invocation.method(#truncate, []),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
@@ -118,32 +101,27 @@ class MockIAppUsageIgnoreRuleRepository extends _i2.Mock implements _i4.IAppUsag
       (super.noSuchMethod(
         Invocation.method(
           #getList,
-          [
-            pageIndex,
-            pageSize,
-          ],
+          [pageIndex, pageSize],
           {
             #includeDeleted: includeDeleted,
             #customWhereFilter: customWhereFilter,
             #customOrder: customOrder,
           },
         ),
-        returnValue:
-            _i5.Future<_i1.PaginatedList<_i6.AppUsageIgnoreRule>>.value(_FakePaginatedList_1<_i6.AppUsageIgnoreRule>(
-          this,
-          Invocation.method(
-            #getList,
-            [
-              pageIndex,
-              pageSize,
-            ],
-            {
-              #includeDeleted: includeDeleted,
-              #customWhereFilter: customWhereFilter,
-              #customOrder: customOrder,
-            },
+        returnValue: _i5.Future<_i1.PaginatedList<_i6.AppUsageIgnoreRule>>.value(
+          _FakePaginatedList_1<_i6.AppUsageIgnoreRule>(
+            this,
+            Invocation.method(
+              #getList,
+              [pageIndex, pageSize],
+              {
+                #includeDeleted: includeDeleted,
+                #customWhereFilter: customWhereFilter,
+                #customOrder: customOrder,
+              },
+            ),
           ),
-        )),
+        ),
       ) as _i5.Future<_i1.PaginatedList<_i6.AppUsageIgnoreRule>>);
 
   @override
@@ -153,16 +131,14 @@ class MockIAppUsageIgnoreRuleRepository extends _i2.Mock implements _i4.IAppUsag
     List<_i1.CustomOrder>? customOrder,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getAll,
-          [],
-          {
-            #includeDeleted: includeDeleted,
-            #customWhereFilter: customWhereFilter,
-            #customOrder: customOrder,
-          },
+        Invocation.method(#getAll, [], {
+          #includeDeleted: includeDeleted,
+          #customWhereFilter: customWhereFilter,
+          #customOrder: customOrder,
+        }),
+        returnValue: _i5.Future<List<_i6.AppUsageIgnoreRule>>.value(
+          <_i6.AppUsageIgnoreRule>[],
         ),
-        returnValue: _i5.Future<List<_i6.AppUsageIgnoreRule>>.value(<_i6.AppUsageIgnoreRule>[]),
       ) as _i5.Future<List<_i6.AppUsageIgnoreRule>>);
 
   @override
@@ -195,30 +171,21 @@ class MockIAppUsageIgnoreRuleRepository extends _i2.Mock implements _i4.IAppUsag
 
   @override
   _i5.Future<void> add(_i6.AppUsageIgnoreRule? item) => (super.noSuchMethod(
-        Invocation.method(
-          #add,
-          [item],
-        ),
+        Invocation.method(#add, [item]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> update(_i6.AppUsageIgnoreRule? item) => (super.noSuchMethod(
-        Invocation.method(
-          #update,
-          [item],
-        ),
+        Invocation.method(#update, [item]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> delete(_i6.AppUsageIgnoreRule? id) => (super.noSuchMethod(
-        Invocation.method(
-          #delete,
-          [id],
-        ),
+        Invocation.method(#delete, [id]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);

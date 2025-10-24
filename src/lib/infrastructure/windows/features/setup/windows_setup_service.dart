@@ -365,8 +365,7 @@ exit /b %exitCode%
       await tempBatchFile.writeAsString(batchContent);
 
       // Write the PowerShell script to a temporary file to avoid parsing issues
-      tempPsFile =
-          File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
+      tempPsFile = File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
       final psScriptContent = '''
 try {
   Start-Process -FilePath "cmd" -ArgumentList @("/c", "${tempBatchFile.path}") -Verb RunAs -Wait -WindowStyle Hidden
@@ -487,8 +486,7 @@ exit /b %exitCode%
       await tempBatchFile.writeAsString(batchContent);
 
       // Write the PowerShell script to a temporary file to avoid parsing issues
-      tempPsFile =
-          File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
+      tempPsFile = File('${Directory.systemTemp.path}\\whph_elevate_${DateTime.now().millisecondsSinceEpoch}.ps1');
       final psScriptContent = '''
 try {
   Start-Process -FilePath "cmd" -ArgumentList @("/c", "${tempBatchFile.path}") -Verb RunAs -Wait -WindowStyle Hidden
@@ -499,9 +497,9 @@ try {
 }
 ''';
 
-       await tempPsFile.writeAsString(psScriptContent);
+      await tempPsFile.writeAsString(psScriptContent);
 
-       Logger.debug('Running elevated command: $netshCommand');
+      Logger.debug('Running elevated command: $netshCommand');
       final result = await Process.run(
         'powershell',
         ['-ExecutionPolicy', 'Bypass', '-File', tempPsFile.path],
@@ -618,6 +616,7 @@ try {
       Logger.debug('🔍 [FIREWALL] Netsh stderr: "${result.stderr}"');
 
       final output = result.stdout.toString();
+      // ignore: unused_local_variable
       final errorOutput = result.stderr.toString().trim();
       final exitCode = result.exitCode;
 

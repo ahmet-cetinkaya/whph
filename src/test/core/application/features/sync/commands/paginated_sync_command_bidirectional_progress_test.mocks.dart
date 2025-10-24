@@ -37,33 +37,15 @@ import 'package:whph/core/domain/features/sync/sync_device.dart' as _i7;
 
 class _FakePaginatedSyncData_0<T extends _i1.BaseEntity<dynamic>> extends _i2.SmartFake
     implements _i3.PaginatedSyncData<T> {
-  _FakePaginatedSyncData_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePaginatedSyncData_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakePaginatedList_1<T> extends _i2.SmartFake implements _i1.PaginatedList<T> {
-  _FakePaginatedList_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePaginatedList_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSyncCommunicationResponse_2 extends _i2.SmartFake implements _i4.SyncCommunicationResponse {
-  _FakeSyncCommunicationResponse_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeSyncCommunicationResponse_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [ISyncDeviceRepository].
@@ -71,18 +53,8 @@ class _FakeSyncCommunicationResponse_2 extends _i2.SmartFake implements _i4.Sync
 /// See the documentation for Mockito's code generation for more information.
 class MockISyncDeviceRepository extends _i2.Mock implements _i5.ISyncDeviceRepository {
   @override
-  _i6.Future<_i7.SyncDevice?> getByFromToIp(
-    String? fromIp,
-    String? toIp,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getByFromToIp,
-          [
-            fromIp,
-            toIp,
-          ],
-        ),
+  _i6.Future<_i7.SyncDevice?> getByFromToIp(String? fromIp, String? toIp) => (super.noSuchMethod(
+        Invocation.method(#getByFromToIp, [fromIp, toIp]),
         returnValue: _i6.Future<_i7.SyncDevice?>.value(),
         returnValueForMissingStub: _i6.Future<_i7.SyncDevice?>.value(),
       ) as _i6.Future<_i7.SyncDevice?>);
@@ -104,49 +76,46 @@ class MockISyncDeviceRepository extends _i2.Mock implements _i5.ISyncDeviceRepos
             #entityType: entityType,
           },
         ),
-        returnValue: _i6.Future<_i3.PaginatedSyncData<_i7.SyncDevice>>.value(_FakePaginatedSyncData_0<_i7.SyncDevice>(
-          this,
-          Invocation.method(
-            #getPaginatedSyncData,
-            [lastSyncDate],
-            {
-              #pageIndex: pageIndex,
-              #pageSize: pageSize,
-              #entityType: entityType,
-            },
+        returnValue: _i6.Future<_i3.PaginatedSyncData<_i7.SyncDevice>>.value(
+          _FakePaginatedSyncData_0<_i7.SyncDevice>(
+            this,
+            Invocation.method(
+              #getPaginatedSyncData,
+              [lastSyncDate],
+              {
+                #pageIndex: pageIndex,
+                #pageSize: pageSize,
+                #entityType: entityType,
+              },
+            ),
           ),
-        )),
-        returnValueForMissingStub:
-            _i6.Future<_i3.PaginatedSyncData<_i7.SyncDevice>>.value(_FakePaginatedSyncData_0<_i7.SyncDevice>(
-          this,
-          Invocation.method(
-            #getPaginatedSyncData,
-            [lastSyncDate],
-            {
-              #pageIndex: pageIndex,
-              #pageSize: pageSize,
-              #entityType: entityType,
-            },
+        ),
+        returnValueForMissingStub: _i6.Future<_i3.PaginatedSyncData<_i7.SyncDevice>>.value(
+          _FakePaginatedSyncData_0<_i7.SyncDevice>(
+            this,
+            Invocation.method(
+              #getPaginatedSyncData,
+              [lastSyncDate],
+              {
+                #pageIndex: pageIndex,
+                #pageSize: pageSize,
+                #entityType: entityType,
+              },
+            ),
           ),
-        )),
+        ),
       ) as _i6.Future<_i3.PaginatedSyncData<_i7.SyncDevice>>);
 
   @override
   _i6.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
-        Invocation.method(
-          #hardDeleteSoftDeleted,
-          [beforeDate],
-        ),
+        Invocation.method(#hardDeleteSoftDeleted, [beforeDate]),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
 
   @override
   _i6.Future<void> truncate() => (super.noSuchMethod(
-        Invocation.method(
-          #truncate,
-          [],
-        ),
+        Invocation.method(#truncate, []),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
@@ -162,47 +131,41 @@ class MockISyncDeviceRepository extends _i2.Mock implements _i5.ISyncDeviceRepos
       (super.noSuchMethod(
         Invocation.method(
           #getList,
-          [
-            pageIndex,
-            pageSize,
-          ],
+          [pageIndex, pageSize],
           {
             #includeDeleted: includeDeleted,
             #customWhereFilter: customWhereFilter,
             #customOrder: customOrder,
           },
         ),
-        returnValue: _i6.Future<_i1.PaginatedList<_i7.SyncDevice>>.value(_FakePaginatedList_1<_i7.SyncDevice>(
-          this,
-          Invocation.method(
-            #getList,
-            [
-              pageIndex,
-              pageSize,
-            ],
-            {
-              #includeDeleted: includeDeleted,
-              #customWhereFilter: customWhereFilter,
-              #customOrder: customOrder,
-            },
+        returnValue: _i6.Future<_i1.PaginatedList<_i7.SyncDevice>>.value(
+          _FakePaginatedList_1<_i7.SyncDevice>(
+            this,
+            Invocation.method(
+              #getList,
+              [pageIndex, pageSize],
+              {
+                #includeDeleted: includeDeleted,
+                #customWhereFilter: customWhereFilter,
+                #customOrder: customOrder,
+              },
+            ),
           ),
-        )),
-        returnValueForMissingStub:
-            _i6.Future<_i1.PaginatedList<_i7.SyncDevice>>.value(_FakePaginatedList_1<_i7.SyncDevice>(
-          this,
-          Invocation.method(
-            #getList,
-            [
-              pageIndex,
-              pageSize,
-            ],
-            {
-              #includeDeleted: includeDeleted,
-              #customWhereFilter: customWhereFilter,
-              #customOrder: customOrder,
-            },
+        ),
+        returnValueForMissingStub: _i6.Future<_i1.PaginatedList<_i7.SyncDevice>>.value(
+          _FakePaginatedList_1<_i7.SyncDevice>(
+            this,
+            Invocation.method(
+              #getList,
+              [pageIndex, pageSize],
+              {
+                #includeDeleted: includeDeleted,
+                #customWhereFilter: customWhereFilter,
+                #customOrder: customOrder,
+              },
+            ),
           ),
-        )),
+        ),
       ) as _i6.Future<_i1.PaginatedList<_i7.SyncDevice>>);
 
   @override
@@ -212,17 +175,17 @@ class MockISyncDeviceRepository extends _i2.Mock implements _i5.ISyncDeviceRepos
     List<_i1.CustomOrder>? customOrder,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getAll,
-          [],
-          {
-            #includeDeleted: includeDeleted,
-            #customWhereFilter: customWhereFilter,
-            #customOrder: customOrder,
-          },
+        Invocation.method(#getAll, [], {
+          #includeDeleted: includeDeleted,
+          #customWhereFilter: customWhereFilter,
+          #customOrder: customOrder,
+        }),
+        returnValue: _i6.Future<List<_i7.SyncDevice>>.value(
+          <_i7.SyncDevice>[],
         ),
-        returnValue: _i6.Future<List<_i7.SyncDevice>>.value(<_i7.SyncDevice>[]),
-        returnValueForMissingStub: _i6.Future<List<_i7.SyncDevice>>.value(<_i7.SyncDevice>[]),
+        returnValueForMissingStub: _i6.Future<List<_i7.SyncDevice>>.value(
+          <_i7.SyncDevice>[],
+        ),
       ) as _i6.Future<List<_i7.SyncDevice>>);
 
   @override
@@ -257,30 +220,21 @@ class MockISyncDeviceRepository extends _i2.Mock implements _i5.ISyncDeviceRepos
 
   @override
   _i6.Future<void> add(_i7.SyncDevice? item) => (super.noSuchMethod(
-        Invocation.method(
-          #add,
-          [item],
-        ),
+        Invocation.method(#add, [item]),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
 
   @override
   _i6.Future<void> update(_i7.SyncDevice? item) => (super.noSuchMethod(
-        Invocation.method(
-          #update,
-          [item],
-        ),
+        Invocation.method(#update, [item]),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
 
   @override
   _i6.Future<void> delete(_i7.SyncDevice? id) => (super.noSuchMethod(
-        Invocation.method(
-          #delete,
-          [id],
-        ),
+        Invocation.method(#delete, [id]),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
@@ -292,59 +246,46 @@ class MockISyncDeviceRepository extends _i2.Mock implements _i5.ISyncDeviceRepos
 class MockISyncConfigurationService extends _i2.Mock implements _i8.ISyncConfigurationService {
   @override
   List<_i8.PaginatedSyncConfig<_i1.BaseEntity<String>>> getAllConfigurations() => (super.noSuchMethod(
-        Invocation.method(
-          #getAllConfigurations,
-          [],
-        ),
+        Invocation.method(#getAllConfigurations, []),
         returnValue: <_i8.PaginatedSyncConfig<_i1.BaseEntity<String>>>[],
         returnValueForMissingStub: <_i8.PaginatedSyncConfig<_i1.BaseEntity<String>>>[],
       ) as List<_i8.PaginatedSyncConfig<_i1.BaseEntity<String>>>);
 
   @override
-  _i8.PaginatedSyncConfig<_i1.BaseEntity<String>>? getConfiguration(String? entityType) => (super.noSuchMethod(
-        Invocation.method(
-          #getConfiguration,
-          [entityType],
-        ),
+  _i8.PaginatedSyncConfig<_i1.BaseEntity<String>>? getConfiguration(
+    String? entityType,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(#getConfiguration, [entityType]),
         returnValueForMissingStub: null,
       ) as _i8.PaginatedSyncConfig<_i1.BaseEntity<String>>?);
 
   @override
   _i8.PaginatedSyncConfig<T>? getTypedConfiguration<T extends _i1.BaseEntity<String>>(String? entityType) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getTypedConfiguration,
-          [entityType],
-        ),
+        Invocation.method(#getTypedConfiguration, [entityType]),
         returnValueForMissingStub: null,
       ) as _i8.PaginatedSyncConfig<T>?);
 
   @override
-  void registerConfiguration<T extends _i1.BaseEntity<String>>(_i8.PaginatedSyncConfig<T>? config) =>
+  void registerConfiguration<T extends _i1.BaseEntity<String>>(
+    _i8.PaginatedSyncConfig<T>? config,
+  ) =>
       super.noSuchMethod(
-        Invocation.method(
-          #registerConfiguration,
-          [config],
-        ),
+        Invocation.method(#registerConfiguration, [config]),
         returnValueForMissingStub: null,
       );
 
   @override
   List<String> getEntityTypeNames() => (super.noSuchMethod(
-        Invocation.method(
-          #getEntityTypeNames,
-          [],
-        ),
+        Invocation.method(#getEntityTypeNames, []),
         returnValue: <String>[],
         returnValueForMissingStub: <String>[],
       ) as List<String>);
 
   @override
   bool hasEntityType(String? entityType) => (super.noSuchMethod(
-        Invocation.method(
-          #hasEntityType,
-          [entityType],
-        ),
+        Invocation.method(#hasEntityType, [entityType]),
         returnValue: false,
         returnValueForMissingStub: false,
       ) as bool);
@@ -356,49 +297,34 @@ class MockISyncConfigurationService extends _i2.Mock implements _i8.ISyncConfigu
 class MockISyncValidationService extends _i2.Mock implements _i9.ISyncValidationService {
   @override
   _i6.Future<void> validateVersion(String? remoteVersion) => (super.noSuchMethod(
-        Invocation.method(
-          #validateVersion,
-          [remoteVersion],
-        ),
+        Invocation.method(#validateVersion, [remoteVersion]),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
 
   @override
   _i6.Future<void> validateDeviceId(_i7.SyncDevice? remoteDevice) => (super.noSuchMethod(
-        Invocation.method(
-          #validateDeviceId,
-          [remoteDevice],
-        ),
+        Invocation.method(#validateDeviceId, [remoteDevice]),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
 
   @override
   void validateEnvironmentMode(_i10.PaginatedSyncDataDto? dto) => super.noSuchMethod(
-        Invocation.method(
-          #validateEnvironmentMode,
-          [dto],
-        ),
+        Invocation.method(#validateEnvironmentMode, [dto]),
         returnValueForMissingStub: null,
       );
 
   @override
   bool validateSyncDataIntegrity(_i10.PaginatedSyncDataDto? dto) => (super.noSuchMethod(
-        Invocation.method(
-          #validateSyncDataIntegrity,
-          [dto],
-        ),
+        Invocation.method(#validateSyncDataIntegrity, [dto]),
         returnValue: false,
         returnValueForMissingStub: false,
       ) as bool);
 
   @override
   _i6.Future<void> validateSyncPrerequisites() => (super.noSuchMethod(
-        Invocation.method(
-          #validateSyncPrerequisites,
-          [],
-        ),
+        Invocation.method(#validateSyncPrerequisites, []),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
@@ -414,112 +340,78 @@ class MockISyncCommunicationService extends _i2.Mock implements _i4.ISyncCommuni
     _i10.PaginatedSyncDataDto? dto,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #sendPaginatedDataToDevice,
-          [
-            ipAddress,
-            dto,
-          ],
+        Invocation.method(#sendPaginatedDataToDevice, [ipAddress, dto]),
+        returnValue: _i6.Future<_i4.SyncCommunicationResponse>.value(
+          _FakeSyncCommunicationResponse_2(
+            this,
+            Invocation.method(#sendPaginatedDataToDevice, [ipAddress, dto]),
+          ),
         ),
-        returnValue: _i6.Future<_i4.SyncCommunicationResponse>.value(_FakeSyncCommunicationResponse_2(
-          this,
-          Invocation.method(
-            #sendPaginatedDataToDevice,
-            [
+        returnValueForMissingStub: _i6.Future<_i4.SyncCommunicationResponse>.value(
+          _FakeSyncCommunicationResponse_2(
+            this,
+            Invocation.method(#sendPaginatedDataToDevice, [
               ipAddress,
               dto,
-            ],
+            ]),
           ),
-        )),
-        returnValueForMissingStub: _i6.Future<_i4.SyncCommunicationResponse>.value(_FakeSyncCommunicationResponse_2(
-          this,
-          Invocation.method(
-            #sendPaginatedDataToDevice,
-            [
-              ipAddress,
-              dto,
-            ],
-          ),
-        )),
+        ),
       ) as _i6.Future<_i4.SyncCommunicationResponse>);
 
   @override
-  _i6.Future<Map<String, dynamic>> convertDtoToJson(_i10.PaginatedSyncDataDto? dto) => (super.noSuchMethod(
-        Invocation.method(
-          #convertDtoToJson,
-          [dto],
+  _i6.Future<Map<String, dynamic>> convertDtoToJson(
+    _i10.PaginatedSyncDataDto? dto,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(#convertDtoToJson, [dto]),
+        returnValue: _i6.Future<Map<String, dynamic>>.value(
+          <String, dynamic>{},
         ),
-        returnValue: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-        returnValueForMissingStub: _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValueForMissingStub: _i6.Future<Map<String, dynamic>>.value(
+          <String, dynamic>{},
+        ),
       ) as _i6.Future<Map<String, dynamic>>);
 
   @override
   _i6.Future<String> serializeMessage(_i11.WebSocketMessage? message) => (super.noSuchMethod(
-        Invocation.method(
-          #serializeMessage,
-          [message],
+        Invocation.method(#serializeMessage, [message]),
+        returnValue: _i6.Future<String>.value(
+          _i12.dummyValue<String>(
+            this,
+            Invocation.method(#serializeMessage, [message]),
+          ),
         ),
-        returnValue: _i6.Future<String>.value(_i12.dummyValue<String>(
-          this,
-          Invocation.method(
-            #serializeMessage,
-            [message],
+        returnValueForMissingStub: _i6.Future<String>.value(
+          _i12.dummyValue<String>(
+            this,
+            Invocation.method(#serializeMessage, [message]),
           ),
-        )),
-        returnValueForMissingStub: _i6.Future<String>.value(_i12.dummyValue<String>(
-          this,
-          Invocation.method(
-            #serializeMessage,
-            [message],
-          ),
-        )),
+        ),
       ) as _i6.Future<String>);
 
   @override
   _i6.Future<bool> isDeviceReachable(String? ipAddress) => (super.noSuchMethod(
-        Invocation.method(
-          #isDeviceReachable,
-          [ipAddress],
-        ),
+        Invocation.method(#isDeviceReachable, [ipAddress]),
         returnValue: _i6.Future<bool>.value(false),
         returnValueForMissingStub: _i6.Future<bool>.value(false),
       ) as _i6.Future<bool>);
 
   @override
   String getWebSocketUrl(String? ipAddress) => (super.noSuchMethod(
-        Invocation.method(
-          #getWebSocketUrl,
-          [ipAddress],
-        ),
+        Invocation.method(#getWebSocketUrl, [ipAddress]),
         returnValue: _i12.dummyValue<String>(
           this,
-          Invocation.method(
-            #getWebSocketUrl,
-            [ipAddress],
-          ),
+          Invocation.method(#getWebSocketUrl, [ipAddress]),
         ),
         returnValueForMissingStub: _i12.dummyValue<String>(
           this,
-          Invocation.method(
-            #getWebSocketUrl,
-            [ipAddress],
-          ),
+          Invocation.method(#getWebSocketUrl, [ipAddress]),
         ),
       ) as String);
 
   @override
-  _i6.Future<bool> handleConnectionError(
-    String? ipAddress,
-    Exception? error,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #handleConnectionError,
-          [
-            ipAddress,
-            error,
-          ],
-        ),
+  _i6.Future<bool> handleConnectionError(String? ipAddress, Exception? error) => (super.noSuchMethod(
+        Invocation.method(#handleConnectionError, [ipAddress, error]),
         returnValue: _i6.Future<bool>.value(false),
         returnValueForMissingStub: _i6.Future<bool>.value(false),
       ) as _i6.Future<bool>);
@@ -535,13 +427,7 @@ class MockISyncDataProcessingService extends _i2.Mock implements _i13.ISyncDataP
     _i15.IRepository<T, String>? repository,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #processSyncDataBatch,
-          [
-            syncData,
-            repository,
-          ],
-        ),
+        Invocation.method(#processSyncDataBatch, [syncData, repository]),
         returnValue: _i6.Future<int>.value(0),
         returnValueForMissingStub: _i6.Future<int>.value(0),
       ) as _i6.Future<int>);
@@ -552,13 +438,10 @@ class MockISyncDataProcessingService extends _i2.Mock implements _i13.ISyncDataP
     _i15.IRepository<_i1.BaseEntity<dynamic>, dynamic>? repository,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #processSyncDataBatchDynamic,
-          [
-            syncData,
-            repository,
-          ],
-        ),
+        Invocation.method(#processSyncDataBatchDynamic, [
+          syncData,
+          repository,
+        ]),
         returnValue: _i6.Future<int>.value(0),
         returnValueForMissingStub: _i6.Future<int>.value(0),
       ) as _i6.Future<int>);
@@ -570,80 +453,60 @@ class MockISyncDataProcessingService extends _i2.Mock implements _i13.ISyncDataP
     String? operationType,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #processItemsWithMaximumYielding,
-          [
-            items,
-            repository,
-            operationType,
-          ],
-        ),
+        Invocation.method(#processItemsWithMaximumYielding, [
+          items,
+          repository,
+          operationType,
+        ]),
         returnValue: _i6.Future<int>.value(0),
         returnValueForMissingStub: _i6.Future<int>.value(0),
       ) as _i6.Future<int>);
 
   @override
   _i6.Future<int> processSingleItemWithMaximumYielding<T extends _i1.BaseEntity<String>>(
-    T? item,
-    _i15.IRepository<T, String>? repository,
-    String? operationType,
-  ) =>
+          T? item, _i15.IRepository<T, String>? repository, String? operationType) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #processSingleItemWithMaximumYielding,
-          [
-            item,
-            repository,
-            operationType,
-          ],
-        ),
+        Invocation.method(#processSingleItemWithMaximumYielding, [
+          item,
+          repository,
+          operationType,
+        ]),
         returnValue: _i6.Future<int>.value(0),
         returnValueForMissingStub: _i6.Future<int>.value(0),
       ) as _i6.Future<int>);
 
   @override
   _i6.Future<T?> checkForRecurringTaskDuplicate<T extends _i1.BaseEntity<String>>(
-    T? entity,
-    _i15.IRepository<T, String>? repository,
-  ) =>
+          T? entity, _i15.IRepository<T, String>? repository) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #checkForRecurringTaskDuplicate,
-          [
-            entity,
-            repository,
-          ],
-        ),
+        Invocation.method(#checkForRecurringTaskDuplicate, [
+          entity,
+          repository,
+        ]),
         returnValue: _i6.Future<T?>.value(),
         returnValueForMissingStub: _i6.Future<T?>.value(),
       ) as _i6.Future<T?>);
 
   @override
-  bool validateEntityForProcessing<T extends _i1.BaseEntity<String>>(T? entity) => (super.noSuchMethod(
-        Invocation.method(
-          #validateEntityForProcessing,
-          [entity],
-        ),
+  bool validateEntityForProcessing<T extends _i1.BaseEntity<String>>(
+    T? entity,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(#validateEntityForProcessing, [entity]),
         returnValue: false,
         returnValueForMissingStub: false,
       ) as bool);
 
   @override
   _i6.Future<void> cleanupSoftDeletedData(DateTime? oldestLastSyncDate) => (super.noSuchMethod(
-        Invocation.method(
-          #cleanupSoftDeletedData,
-          [oldestLastSyncDate],
-        ),
+        Invocation.method(#cleanupSoftDeletedData, [oldestLastSyncDate]),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
 
   @override
   _i6.Future<void> yieldToUIThread() => (super.noSuchMethod(
-        Invocation.method(
-          #yieldToUIThread,
-          [],
-        ),
+        Invocation.method(#yieldToUIThread, []),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
@@ -684,11 +547,7 @@ class MockISyncPaginationService extends _i2.Mock implements _i16.ISyncPaginatio
       (super.noSuchMethod(
         Invocation.method(
           #syncEntityWithPagination,
-          [
-            config,
-            syncDevice,
-            lastSyncDate,
-          ],
+          [config, syncDevice, lastSyncDate],
           {#targetDeviceId: targetDeviceId},
         ),
         returnValue: _i6.Future<bool>.value(false),
@@ -706,46 +565,33 @@ class MockISyncPaginationService extends _i2.Mock implements _i16.ISyncPaginatio
     required String? operation,
   }) =>
       super.noSuchMethod(
-        Invocation.method(
-          #updateProgress,
-          [],
-          {
-            #currentEntity: currentEntity,
-            #currentPage: currentPage,
-            #totalPages: totalPages,
-            #progressPercentage: progressPercentage,
-            #entitiesCompleted: entitiesCompleted,
-            #totalEntities: totalEntities,
-            #operation: operation,
-          },
-        ),
+        Invocation.method(#updateProgress, [], {
+          #currentEntity: currentEntity,
+          #currentPage: currentPage,
+          #totalPages: totalPages,
+          #progressPercentage: progressPercentage,
+          #entitiesCompleted: entitiesCompleted,
+          #totalEntities: totalEntities,
+          #operation: operation,
+        }),
         returnValueForMissingStub: null,
       );
 
   @override
   void resetProgress() => super.noSuchMethod(
-        Invocation.method(
-          #resetProgress,
-          [],
-        ),
+        Invocation.method(#resetProgress, []),
         returnValueForMissingStub: null,
       );
 
   @override
   _i3.SyncProgress? getCurrentProgress(String? entityType) => (super.noSuchMethod(
-        Invocation.method(
-          #getCurrentProgress,
-          [entityType],
-        ),
+        Invocation.method(#getCurrentProgress, [entityType]),
         returnValueForMissingStub: null,
       ) as _i3.SyncProgress?);
 
   @override
   Map<String, int> getServerPaginationMetadata(String? entityType) => (super.noSuchMethod(
-        Invocation.method(
-          #getServerPaginationMetadata,
-          [entityType],
-        ),
+        Invocation.method(#getServerPaginationMetadata, [entityType]),
         returnValue: <String, int>{},
         returnValueForMissingStub: <String, int>{},
       ) as Map<String, int>);
@@ -757,88 +603,51 @@ class MockISyncPaginationService extends _i2.Mock implements _i16.ISyncPaginatio
     int? totalItems,
   ) =>
       super.noSuchMethod(
-        Invocation.method(
-          #updateServerPaginationMetadata,
-          [
-            entityType,
-            totalPages,
-            totalItems,
-          ],
-        ),
+        Invocation.method(#updateServerPaginationMetadata, [
+          entityType,
+          totalPages,
+          totalItems,
+        ]),
         returnValueForMissingStub: null,
       );
 
   @override
   double calculateOverallProgress() => (super.noSuchMethod(
-        Invocation.method(
-          #calculateOverallProgress,
-          [],
-        ),
+        Invocation.method(#calculateOverallProgress, []),
         returnValue: 0.0,
         returnValueForMissingStub: 0.0,
       ) as double);
 
   @override
   _i6.Future<void> cancelSync() => (super.noSuchMethod(
-        Invocation.method(
-          #cancelSync,
-          [],
-        ),
+        Invocation.method(#cancelSync, []),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
       ) as _i6.Future<void>);
 
   @override
   Map<String, _i10.PaginatedSyncDataDto> getPendingResponseData() => (super.noSuchMethod(
-        Invocation.method(
-          #getPendingResponseData,
-          [],
-        ),
+        Invocation.method(#getPendingResponseData, []),
         returnValue: <String, _i10.PaginatedSyncDataDto>{},
         returnValueForMissingStub: <String, _i10.PaginatedSyncDataDto>{},
       ) as Map<String, _i10.PaginatedSyncDataDto>);
 
   @override
   void clearPendingResponseData() => super.noSuchMethod(
-        Invocation.method(
-          #clearPendingResponseData,
-          [],
-        ),
+        Invocation.method(#clearPendingResponseData, []),
         returnValueForMissingStub: null,
       );
 
   @override
-  int getLastSentServerPage(
-    String? deviceId,
-    String? entityType,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getLastSentServerPage,
-          [
-            deviceId,
-            entityType,
-          ],
-        ),
+  int getLastSentServerPage(String? deviceId, String? entityType) => (super.noSuchMethod(
+        Invocation.method(#getLastSentServerPage, [deviceId, entityType]),
         returnValue: 0,
         returnValueForMissingStub: 0,
       ) as int);
 
   @override
-  void setLastSentServerPage(
-    String? deviceId,
-    String? entityType,
-    int? page,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #setLastSentServerPage,
-          [
-            deviceId,
-            entityType,
-            page,
-          ],
-        ),
+  void setLastSentServerPage(String? deviceId, String? entityType, int? page) => super.noSuchMethod(
+        Invocation.method(#setLastSentServerPage, [deviceId, entityType, page]),
         returnValueForMissingStub: null,
       );
 }
