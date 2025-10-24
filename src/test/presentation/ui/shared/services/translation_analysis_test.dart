@@ -213,7 +213,7 @@ class TranslationKeysAnalyzer {
 
       // Parse YAML file
       final yamlContent = await yamlFile.readAsString();
-      final yamlData = loadYaml(yamlContent) as Map?;
+      final yamlData = _loadYamlSafely(yamlContent, yamlPath);
       if (yamlData == null) continue;
 
       // Check translation for each key
@@ -244,7 +244,7 @@ class TranslationKeysAnalyzer {
     if (!englishYamlFile.existsSync()) return untranslatedStrings;
 
     final englishYamlContent = await englishYamlFile.readAsString();
-    final englishYamlData = loadYaml(englishYamlContent) as Map?;
+    final englishYamlData = _loadYamlSafely(englishYamlContent, englishYamlPath);
     if (englishYamlData == null) return untranslatedStrings;
 
     // Check other languages for untranslated strings
@@ -259,7 +259,7 @@ class TranslationKeysAnalyzer {
 
       // Parse YAML file
       final yamlContent = await yamlFile.readAsString();
-      final yamlData = loadYaml(yamlContent) as Map?;
+      final yamlData = _loadYamlSafely(yamlContent, yamlPath);
       if (yamlData == null) continue;
 
       // Check each translation key
@@ -335,6 +335,17 @@ class TranslationKeysAnalyzer {
     }
 
     return current?.toString();
+  }
+
+  /// Safely loads YAML content with error reporting
+  Map? _loadYamlSafely(String yamlContent, String yamlPath) {
+    try {
+      return loadYaml(yamlContent) as Map?;
+    } catch (e) {
+      print('Error loading YAML file: $yamlPath');
+      print('Error details: $e');
+      return null;
+    }
   }
 }
 
