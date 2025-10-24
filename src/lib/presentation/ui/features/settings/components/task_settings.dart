@@ -236,7 +236,7 @@ class _TaskSettingsState extends State<TaskSettings> {
                         child: NumericInput(
                           initialValue: _defaultEstimatedTime ?? TaskConstants.defaultEstimatedTime,
                           minValue: 5,
-                          maxValue: 60,
+                          maxValue: 480, // Increased from 60 to 480 minutes (8 hours) for better usability
                           incrementValue: 5,
                           decrementValue: 5,
                           onValueChanged: _onEstimatedTimeChanged,
