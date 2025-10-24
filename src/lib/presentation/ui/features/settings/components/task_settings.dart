@@ -8,6 +8,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -70,8 +71,9 @@ class _TaskSettingsState extends State<TaskSettings> {
             await _saveDefaultEstimatedTime(TaskConstants.defaultEstimatedTime);
           }
           return true;
-        } catch (e) {
+        } catch (e, s) {
           // Don't show overlay notification for missing setting key - just use default
+          Logger.error('Failed to load default estimated time setting: $e\n$s');
           // Set default values anyway
           setState(() {
             _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
@@ -101,9 +103,10 @@ class _TaskSettingsState extends State<TaskSettings> {
           valueType: SettingValueType.int,
         ),
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
       // Show error message without reverting all settings
       if (mounted) {
+        Logger.error('Failed to save default estimated time setting: $error\n$stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeSaveError)),

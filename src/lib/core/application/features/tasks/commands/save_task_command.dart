@@ -104,8 +104,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       final value = setting.getValue<int?>();
       // Return null if user set to 0 (disabled), otherwise return the value
       return value == 0 ? null : value;
-    } on FormatException {
+    } on FormatException catch (e, s) {
       // Handle parsing errors specifically
+      Logger.warning('Failed to parse default estimated time setting. Error: $e\n$s');
       return TaskConstants.defaultEstimatedTime;
     } catch (e) {
       // Handle any other unexpected errors
@@ -195,9 +196,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           priority: request.priority,
           plannedDate: request.plannedDate,
           deadlineDate: request.deadlineDate,
-          estimatedTime: request.estimatedTime != null && request.estimatedTime! > 0
-              ? request.estimatedTime
-              : await _getDefaultEstimatedTime(),
+          estimatedTime: request.estimatedTime == null
+              ? await _getDefaultEstimatedTime()
+              : (request.estimatedTime! > 0 ? request.estimatedTime : null),
           completedAt: request.completedAt,
           parentTaskId: request.parentTaskId,
           order: newOrder,
