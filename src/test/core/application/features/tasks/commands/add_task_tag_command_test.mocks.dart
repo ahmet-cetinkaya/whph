@@ -28,23 +28,11 @@ import 'package:whph/core/domain/features/tasks/task_tag.dart' as _i6;
 
 class _FakePaginatedSyncData_0<T extends _i1.BaseEntity<dynamic>> extends _i2.SmartFake
     implements _i3.PaginatedSyncData<T> {
-  _FakePaginatedSyncData_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePaginatedSyncData_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakePaginatedList_1<T> extends _i2.SmartFake implements _i1.PaginatedList<T> {
-  _FakePaginatedList_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePaginatedList_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [ITaskTagRepository].
@@ -56,36 +44,20 @@ class MockITaskTagRepository extends _i2.Mock implements _i4.ITaskTagRepository 
   }
 
   @override
-  _i5.Future<bool> anyByTaskIdAndTagId(
-    String? taskId,
-    String? tagId,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #anyByTaskIdAndTagId,
-          [
-            taskId,
-            tagId,
-          ],
-        ),
+  _i5.Future<bool> anyByTaskIdAndTagId(String? taskId, String? tagId) => (super.noSuchMethod(
+        Invocation.method(#anyByTaskIdAndTagId, [taskId, tagId]),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
   @override
   _i5.Future<List<_i6.TaskTag>> getByTaskId(String? taskId) => (super.noSuchMethod(
-        Invocation.method(
-          #getByTaskId,
-          [taskId],
-        ),
+        Invocation.method(#getByTaskId, [taskId]),
         returnValue: _i5.Future<List<_i6.TaskTag>>.value(<_i6.TaskTag>[]),
       ) as _i5.Future<List<_i6.TaskTag>>);
 
   @override
   _i5.Future<List<_i6.TaskTag>> getByTagId(String? tagId) => (super.noSuchMethod(
-        Invocation.method(
-          #getByTagId,
-          [tagId],
-        ),
+        Invocation.method(#getByTagId, [tagId]),
         returnValue: _i5.Future<List<_i6.TaskTag>>.value(<_i6.TaskTag>[]),
       ) as _i5.Future<List<_i6.TaskTag>>);
 
@@ -100,17 +72,16 @@ class MockITaskTagRepository extends _i2.Mock implements _i4.ITaskTagRepository 
       (super.noSuchMethod(
         Invocation.method(
           #getTopTagsByDuration,
-          [
-            startDate,
-            endDate,
-          ],
+          [startDate, endDate],
           {
             #limit: limit,
             #filterByTags: filterByTags,
             #filterByIsArchived: filterByIsArchived,
           },
         ),
-        returnValue: _i5.Future<List<_i7.TagTimeData>>.value(<_i7.TagTimeData>[]),
+        returnValue: _i5.Future<List<_i7.TagTimeData>>.value(
+          <_i7.TagTimeData>[],
+        ),
       ) as _i5.Future<List<_i7.TagTimeData>>);
 
   @override
@@ -130,36 +101,32 @@ class MockITaskTagRepository extends _i2.Mock implements _i4.ITaskTagRepository 
             #entityType: entityType,
           },
         ),
-        returnValue: _i5.Future<_i3.PaginatedSyncData<_i6.TaskTag>>.value(_FakePaginatedSyncData_0<_i6.TaskTag>(
-          this,
-          Invocation.method(
-            #getPaginatedSyncData,
-            [lastSyncDate],
-            {
-              #pageIndex: pageIndex,
-              #pageSize: pageSize,
-              #entityType: entityType,
-            },
+        returnValue: _i5.Future<_i3.PaginatedSyncData<_i6.TaskTag>>.value(
+          _FakePaginatedSyncData_0<_i6.TaskTag>(
+            this,
+            Invocation.method(
+              #getPaginatedSyncData,
+              [lastSyncDate],
+              {
+                #pageIndex: pageIndex,
+                #pageSize: pageSize,
+                #entityType: entityType,
+              },
+            ),
           ),
-        )),
+        ),
       ) as _i5.Future<_i3.PaginatedSyncData<_i6.TaskTag>>);
 
   @override
   _i5.Future<void> hardDeleteSoftDeleted(DateTime? beforeDate) => (super.noSuchMethod(
-        Invocation.method(
-          #hardDeleteSoftDeleted,
-          [beforeDate],
-        ),
+        Invocation.method(#hardDeleteSoftDeleted, [beforeDate]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> truncate() => (super.noSuchMethod(
-        Invocation.method(
-          #truncate,
-          [],
-        ),
+        Invocation.method(#truncate, []),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
@@ -175,31 +142,27 @@ class MockITaskTagRepository extends _i2.Mock implements _i4.ITaskTagRepository 
       (super.noSuchMethod(
         Invocation.method(
           #getList,
-          [
-            pageIndex,
-            pageSize,
-          ],
+          [pageIndex, pageSize],
           {
             #includeDeleted: includeDeleted,
             #customWhereFilter: customWhereFilter,
             #customOrder: customOrder,
           },
         ),
-        returnValue: _i5.Future<_i1.PaginatedList<_i6.TaskTag>>.value(_FakePaginatedList_1<_i6.TaskTag>(
-          this,
-          Invocation.method(
-            #getList,
-            [
-              pageIndex,
-              pageSize,
-            ],
-            {
-              #includeDeleted: includeDeleted,
-              #customWhereFilter: customWhereFilter,
-              #customOrder: customOrder,
-            },
+        returnValue: _i5.Future<_i1.PaginatedList<_i6.TaskTag>>.value(
+          _FakePaginatedList_1<_i6.TaskTag>(
+            this,
+            Invocation.method(
+              #getList,
+              [pageIndex, pageSize],
+              {
+                #includeDeleted: includeDeleted,
+                #customWhereFilter: customWhereFilter,
+                #customOrder: customOrder,
+              },
+            ),
           ),
-        )),
+        ),
       ) as _i5.Future<_i1.PaginatedList<_i6.TaskTag>>);
 
   @override
@@ -209,15 +172,11 @@ class MockITaskTagRepository extends _i2.Mock implements _i4.ITaskTagRepository 
     List<_i1.CustomOrder>? customOrder,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #getAll,
-          [],
-          {
-            #includeDeleted: includeDeleted,
-            #customWhereFilter: customWhereFilter,
-            #customOrder: customOrder,
-          },
-        ),
+        Invocation.method(#getAll, [], {
+          #includeDeleted: includeDeleted,
+          #customWhereFilter: customWhereFilter,
+          #customOrder: customOrder,
+        }),
         returnValue: _i5.Future<List<_i6.TaskTag>>.value(<_i6.TaskTag>[]),
       ) as _i5.Future<List<_i6.TaskTag>>);
 
@@ -251,30 +210,21 @@ class MockITaskTagRepository extends _i2.Mock implements _i4.ITaskTagRepository 
 
   @override
   _i5.Future<void> add(_i6.TaskTag? item) => (super.noSuchMethod(
-        Invocation.method(
-          #add,
-          [item],
-        ),
+        Invocation.method(#add, [item]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> update(_i6.TaskTag? item) => (super.noSuchMethod(
-        Invocation.method(
-          #update,
-          [item],
-        ),
+        Invocation.method(#update, [item]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<void> delete(_i6.TaskTag? id) => (super.noSuchMethod(
-        Invocation.method(
-          #delete,
-          [id],
-        ),
+        Invocation.method(#delete, [id]),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);

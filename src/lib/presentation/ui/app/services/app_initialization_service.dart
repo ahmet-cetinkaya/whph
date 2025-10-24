@@ -42,11 +42,6 @@ class AppInitializationService {
 
   /// Determine if onboarding dialog should be shown
   Future<bool> _shouldShowOnboardingDialog() async {
-    if (kDebugMode) {
-      Logger.info("Showing onboarding dialog in debug mode.");
-      return true;
-    }
-
     try {
       final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
         GetSettingQuery(key: SettingKeys.onboardingCompleted),

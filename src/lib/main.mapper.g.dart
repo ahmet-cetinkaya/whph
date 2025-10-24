@@ -55,6 +55,7 @@ import 'presentation/ui/features/sync/models/sync_qr_code_message.dart' as x27 s
 import 'presentation/ui/features/tasks/components/schedule_button.dart' as x49 show ScheduleOption;
 import 'presentation/ui/shared/components/border_fade_overlay.dart' as x48 show FadeBorder;
 import 'presentation/ui/shared/components/time_logging_dialog.dart' as x50 show LoggingMode;
+import 'presentation/ui/shared/components/tour_overlay.dart' as x52 show TourHighlightShape, TourPosition;
 import 'presentation/ui/shared/enums/dialog_size.dart' as x47 show DialogSize;
 import 'presentation/ui/shared/enums/timer_mode.dart' as x51 show TimerMode;
 import 'presentation/ui/shared/services/abstraction/i_theme_service.dart' as x46 show AppThemeMode;
@@ -4408,7 +4409,11 @@ final mainGeneratedAdapter = JsonMapperAdapter(
       typeOf<List<x50.LoggingMode>>(): (value) => value.cast<x50.LoggingMode>(),
       typeOf<Set<x50.LoggingMode>>(): (value) => value.cast<x50.LoggingMode>(),
       typeOf<List<x51.TimerMode>>(): (value) => value.cast<x51.TimerMode>(),
-      typeOf<Set<x51.TimerMode>>(): (value) => value.cast<x51.TimerMode>()
+      typeOf<Set<x51.TimerMode>>(): (value) => value.cast<x51.TimerMode>(),
+      typeOf<List<x52.TourHighlightShape>>(): (value) => value.cast<x52.TourHighlightShape>(),
+      typeOf<Set<x52.TourHighlightShape>>(): (value) => value.cast<x52.TourHighlightShape>(),
+      typeOf<List<x52.TourPosition>>(): (value) => value.cast<x52.TourPosition>(),
+      typeOf<Set<x52.TourPosition>>(): (value) => value.cast<x52.TourPosition>()
     },
     enumValues: {
       x28.TrayIconType: x28.TrayIconType.values,
@@ -4440,7 +4445,9 @@ final mainGeneratedAdapter = JsonMapperAdapter(
       x48.FadeBorder: x48.FadeBorder.values,
       x49.ScheduleOption: x49.ScheduleOption.values,
       x50.LoggingMode: x50.LoggingMode.values,
-      x51.TimerMode: x51.TimerMode.values
+      x51.TimerMode: x51.TimerMode.values,
+      x52.TourHighlightShape: x52.TourHighlightShape.values,
+      x52.TourPosition: x52.TourPosition.values
     });
 
 Future<JsonMapper> initializeJsonMapperAsync(

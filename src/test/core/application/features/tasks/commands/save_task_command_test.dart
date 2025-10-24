@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -5,10 +7,13 @@ import 'package:whph/core/application/features/tasks/commands/save_task_command.
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 
 import 'save_task_command_test.mocks.dart';
 
@@ -16,6 +21,7 @@ import 'save_task_command_test.mocks.dart';
   ITaskRepository,
   ITaskTagRepository,
   ITaskTimeRecordRepository,
+  ISettingRepository,
   TaskTimeRecordService,
 ])
 void main() {
@@ -23,16 +29,29 @@ void main() {
   late MockITaskRepository mockTaskRepository;
   late MockITaskTagRepository mockTaskTagRepository;
   late MockITaskTimeRecordRepository mockTaskTimeRecordRepository;
+  late MockISettingRepository mockSettingRepository;
 
   setUp(() {
     mockTaskRepository = MockITaskRepository();
     mockTaskTagRepository = MockITaskTagRepository();
     mockTaskTimeRecordRepository = MockITaskTimeRecordRepository();
+    mockSettingRepository = MockISettingRepository();
     handler = SaveTaskCommandHandler(
       taskService: mockTaskRepository,
       taskTagRepository: mockTaskTagRepository,
       taskTimeRecordRepository: mockTaskTimeRecordRepository,
+      settingRepository: mockSettingRepository,
     );
+
+    // Mock setting repository to return default value (null means use default)
+    when(mockSettingRepository.getByKey(any)).thenAnswer((_) async => null);
+
+    // Mock getList for order calculation
+    when(mockTaskRepository.getList(any, any,
+            customWhereFilter: anyNamed('customWhereFilter'),
+            customOrder: anyNamed('customOrder'),
+            includeDeleted: anyNamed('includeDeleted')))
+        .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
   });
 
   group('SaveTaskCommandHandler Tests - Create', () {
@@ -491,6 +510,133 @@ void main() {
             task.recurrenceStartDate == null &&
             task.recurrenceEndDate == null &&
             task.recurrenceCount == null),
+      ))).called(1);
+    });
+  });
+
+  group('Default Estimated Time Tests', () {
+    test('should use 15 minute default when setting does not exist', () async {
+      // Arrange
+      final command = SaveTaskCommand(
+        title: 'Test Task',
+        description: '',
+      );
+
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime))
+          .thenThrow(Exception('Setting not found'));
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Task(
+            id: 'test-id',
+            createdDate: DateTime.now().toUtc(),
+            title: command.title,
+            description: command.description,
+          ));
+
+      // Act
+      final result = await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.estimatedTime == 15),
+      ))).called(1);
+    });
+
+    test('should use custom default when setting exists', () async {
+      // Arrange
+      final command = SaveTaskCommand(
+        title: 'Test Task',
+        description: '',
+      );
+
+      final setting = Setting(
+        id: 'setting-id',
+        key: SettingKeys.taskDefaultEstimatedTime,
+        value: '25',
+        valueType: SettingValueType.int,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime)).thenAnswer((_) async => setting);
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Task(
+            id: 'test-id',
+            createdDate: DateTime.now().toUtc(),
+            title: command.title,
+            description: command.description,
+          ));
+
+      // Act
+      final result = await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.estimatedTime == 25),
+      ))).called(1);
+    });
+
+    test('should use no estimated time when setting is disabled (0)', () async {
+      // Arrange
+      final command = SaveTaskCommand(
+        title: 'Test Task',
+        description: '',
+      );
+
+      final setting = Setting(
+        id: 'setting-id',
+        key: SettingKeys.taskDefaultEstimatedTime,
+        value: '0',
+        valueType: SettingValueType.int,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime)).thenAnswer((_) async => setting);
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Task(
+            id: 'test-id',
+            createdDate: DateTime.now().toUtc(),
+            title: command.title,
+            description: command.description,
+          ));
+
+      // Act
+      final result = await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.estimatedTime == null),
+      ))).called(1);
+    });
+
+    test('should preserve explicitly provided estimated time', () async {
+      // Arrange
+      final command = SaveTaskCommand(
+        title: 'Test Task',
+        description: '',
+        estimatedTime: 45, // Explicitly provided
+      );
+
+      final setting = Setting(
+        id: 'setting-id',
+        key: SettingKeys.taskDefaultEstimatedTime,
+        value: '15',
+        valueType: SettingValueType.int,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime)).thenAnswer((_) async => setting);
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Task(
+            id: 'test-id',
+            createdDate: DateTime.now().toUtc(),
+            title: command.title,
+            description: command.description,
+          ));
+
+      // Act
+      final result = await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.estimatedTime == 45),
       ))).called(1);
     });
   });

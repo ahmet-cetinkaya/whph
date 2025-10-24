@@ -30,23 +30,11 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_devic
 // ignore_for_file: subtype_of_sealed_class
 
 class _FakePipeline_0 extends _i1.SmartFake implements _i2.Pipeline {
-  _FakePipeline_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakePipeline_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeFuture_1<T1> extends _i1.SmartFake implements _i3.Future<T1> {
-  _FakeFuture_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeFuture_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [Mediator].
@@ -60,10 +48,7 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
   @override
   _i2.Pipeline get pipeline => (super.noSuchMethod(
         Invocation.getter(#pipeline),
-        returnValue: _FakePipeline_0(
-          this,
-          Invocation.getter(#pipeline),
-        ),
+        returnValue: _FakePipeline_0(this, Invocation.getter(#pipeline)),
       ) as _i2.Pipeline);
 
   @override
@@ -86,76 +71,53 @@ class MockMediator extends _i1.Mock implements _i4.Mediator {
 
   @override
   _i4.UnsubscribeFunc subscribeWithFunc<E extends _i6.IDomainEvent>(
-          _i3.FutureOr<void> Function(_i6.IDomainEvent)? func) =>
+    _i3.FutureOr<void> Function(_i6.IDomainEvent)? func,
+  ) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #subscribeWithFunc,
-          [func],
-        ),
+        Invocation.method(#subscribeWithFunc, [func]),
         returnValue: () {},
       ) as _i4.UnsubscribeFunc);
 
   @override
   void subscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) => super.noSuchMethod(
-        Invocation.method(
-          #subscribe,
-          [handler],
-        ),
+        Invocation.method(#subscribe, [handler]),
         returnValueForMissingStub: null,
       );
 
   @override
   void unsubscribe<E extends _i6.IDomainEvent>(_i5.IEventHandler<E>? handler) => super.noSuchMethod(
-        Invocation.method(
-          #unsubscribe,
-          [handler],
-        ),
+        Invocation.method(#unsubscribe, [handler]),
         returnValueForMissingStub: null,
       );
 
   @override
   _i3.Future<void> publish<E extends _i6.IDomainEvent>(E? event) => (super.noSuchMethod(
-        Invocation.method(
-          #publish,
-          [event],
-        ),
+        Invocation.method(#publish, [event]),
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
 
   @override
-  _i3.Future<R> send<T extends _i7.IRequest<R>, R extends Object?>(T? request) => (super.noSuchMethod(
-        Invocation.method(
-          #send,
-          [request],
-        ),
+  _i3.Future<R> send<T extends _i7.IRequest<R>, R extends Object?>(
+    T? request,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(#send, [request]),
         returnValue: _i8.ifNotNull(
               _i8.dummyValueOrNull<R>(
                 this,
-                Invocation.method(
-                  #send,
-                  [request],
-                ),
+                Invocation.method(#send, [request]),
               ),
               (R v) => _i3.Future<R>.value(v),
             ) ??
-            _FakeFuture_1<R>(
-              this,
-              Invocation.method(
-                #send,
-                [request],
-              ),
-            ),
+            _FakeFuture_1<R>(this, Invocation.method(#send, [request])),
       ) as _i3.Future<R>);
 
   @override
   void registerHandler<IR extends _i7.IRequest<R>, R, H extends _i9.IRequestHandler<IR, R>>(
           _i4.HandlerCreator<H>? creator) =>
       super.noSuchMethod(
-        Invocation.method(
-          #registerHandler,
-          [creator],
-        ),
+        Invocation.method(#registerHandler, [creator]),
         returnValueForMissingStub: null,
       );
 }
@@ -170,16 +132,9 @@ class MockIDeviceIdService extends _i1.Mock implements _i10.IDeviceIdService {
 
   @override
   _i3.Future<String> getDeviceId() => (super.noSuchMethod(
-        Invocation.method(
-          #getDeviceId,
-          [],
+        Invocation.method(#getDeviceId, []),
+        returnValue: _i3.Future<String>.value(
+          _i8.dummyValue<String>(this, Invocation.method(#getDeviceId, [])),
         ),
-        returnValue: _i3.Future<String>.value(_i8.dummyValue<String>(
-          this,
-          Invocation.method(
-            #getDeviceId,
-            [],
-          ),
-        )),
       ) as _i3.Future<String>);
 }

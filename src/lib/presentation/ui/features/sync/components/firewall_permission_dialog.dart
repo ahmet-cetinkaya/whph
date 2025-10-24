@@ -331,7 +331,6 @@ class _FirewallPermissionDialogState extends State<FirewallPermissionDialog> {
                   if (widget.onAutomaticAction != null && widget.automaticActionButtonText != null) ...[
                     Builder(
                       builder: (context) {
-                        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
                         return _isLoading
                             ? FilledButton.icon(
                                 key: _buttonKey,
