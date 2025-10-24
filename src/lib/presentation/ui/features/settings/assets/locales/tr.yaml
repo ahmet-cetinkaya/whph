@@ -241,4 +241,17 @@ settings:
       error: Günlükleri dışa aktarırken hata
       success: Günlük dosyası başarıyla dışa aktarıldı
       no_logs_available: Dışa aktarılacak günlük yok
-      file_not_exist: Günlük dosyası mevcut değil
+      file_not_exist: Günlük dosyası mevcut değil. Hata ayıklama günlük kaydını etkinleştirin ve bazı günlükler oluşturun.
+  task:
+    title: Görev Ayarları
+    preferences:
+      title: Görev Tercihleri
+      description: Görev davranışını ve varsayılan ayarları özelleştirin
+    default_estimated_time:
+      title: Varsayılan Tahmini Süre
+      description: Yeni görevler için varsayılan tahmini süreyi ayarlayın. Otomatik zaman tahminlerinden kaçınmak için bunu devre dışı bırakabilirsiniz.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Varsayılan tahmini süre ayarlanırken hata oluştu
+      save_error: Varsayılan tahmini süre kaydedilirken hata oluştu
+      key_not_found: Default estimated time key not found

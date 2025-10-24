@@ -17,6 +17,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
+import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 
 void registerTasksFeature(
   IContainer container,
@@ -25,6 +26,7 @@ void registerTasksFeature(
   ITaskTagRepository taskTagRepository,
   ITaskTimeRecordRepository taskTimeRecordRepository,
   ITagRepository tagRepository,
+  ISettingRepository settingRepository,
 ) {
   // Register the task recurrence service
   container.registerSingleton<ITaskRecurrenceService>(
@@ -37,6 +39,7 @@ void registerTasksFeature(
         taskService: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        settingRepository: settingRepository,
       ),
     )
     ..registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse, DeleteTaskCommandHandler>(

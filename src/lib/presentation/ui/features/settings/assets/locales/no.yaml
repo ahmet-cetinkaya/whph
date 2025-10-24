@@ -242,4 +242,17 @@ settings:
       error: Feil ved eksport av logger
       success: Loggfil eksportert vellykket
       no_logs_available: Ingen logger tilgjengelig for eksport. Generer noen logger først.
-      file_not_exist: Loggfil eksisterer ikke. Aktiver feilsøkingslogging og generer noen logger først.
+      file_not_exist: Loggfilen eksisterer ikke. Aktiver feilsøkingslogging og generer logger.
+  task:
+    title: Oppgaveinnstillinger
+    preferences:
+      title: Oppgaveinnstillinger
+      description: Tilpass oppførsel og standardinnstillinger for oppgaver
+    default_estimated_time:
+      title: Standard estimert tid
+      description: Sett standard estimert tid for nye oppgaver. Du kan deaktivere dette for å unngå automatiske tidsestimater.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

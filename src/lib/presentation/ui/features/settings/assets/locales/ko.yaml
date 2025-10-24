@@ -243,4 +243,17 @@ settings:
       error: 로그 내보내기 오류
       success: 로그 파일이 성공적으로 내보내졌습니다
       no_logs_available: 내보낼 로그가 없습니다
-      file_not_exist: 로그 파일이 존재하지 않습니다
+      file_not_exist: 로그 파일이 존재하지 않습니다. 디버그 로깅을 활성화하고 로그를 생성하세요.
+  task:
+    title: 작업 설정
+    preferences:
+      title: 작업 기본 설정
+      description: 작업 동작 및 기본 설정 사용자 지정
+    default_estimated_time:
+      title: 기본 예상 시간
+      description: 새 작업의 기본 예상 시간을 설정합니다. 자동 시간 예상을 방지하려면 이 기능을 비활성화할 수 있습니다.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

@@ -237,4 +237,17 @@ settings:
       error: Помилка експорту журналів
       success: Файл журналу успішно експортовано
       no_logs_available: Немає доступних журналів для експорту
-      file_not_exist: Файл журналу не існує
+      file_not_exist: Файл журналу не існує. Увімкніть debug logging і створіть журнали.
+  task:
+    title: Налаштування завдань
+    preferences:
+      title: Налаштування завдань
+      description: Налаштуйте поведінку завдань та параметри за замовчуванням
+    default_estimated_time:
+      title: Час за замовчуванням
+      description: Встановіть час за замовчуванням для нових завдань. Ви можете вимкнути це, щоб уникнути автоматичної оцінки часу.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

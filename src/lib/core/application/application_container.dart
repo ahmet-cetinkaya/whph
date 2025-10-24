@@ -107,6 +107,7 @@ void registerApplication(IContainer container) {
     taskTagRepository,
     taskTimeRecordRepository,
     tagRepository,
+    settingRepository,
   );
   registerTagsFeature(
     container,

@@ -233,3 +233,16 @@ settings:
       success: Log file exported successfully
       no_logs_available: No logs available to export. Generate some logs first.
       file_not_exist: Log file does not exist. Enable debug logging and generate some logs first.
+  task:
+    title: Task Settings
+    preferences:
+      title: Task Preferences
+      description: Customize task behavior and default settings
+    default_estimated_time:
+      title: Default Estimated Time
+      description: Set the default estimated time for new tasks. You can disable this to avoid automatic time estimates.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time setting
+      save_error: Error saving default estimated time setting
+      key_not_found: Default estimated time setting not found

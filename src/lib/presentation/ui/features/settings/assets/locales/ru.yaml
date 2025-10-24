@@ -263,4 +263,17 @@ settings:
       error: Ошибка экспорта журналов
       success: Файл журнала успешно экспортирован
       no_logs_available: Нет доступных журналов для экспорта
-      file_not_exist: Файл журнала не существует
+      file_not_exist: Файл журнала не существует. Включите отладочную регистрацию и создайте журналы.
+  task:
+    title: Настройки задач
+    preferences:
+      title: Настройки задач
+      description: Настройка поведения задач и параметров по умолчанию
+    default_estimated_time:
+      title: Время по умолчанию
+      description: Установить время по умолчанию для новых задач. Вы можете отключить это, чтобы избежать автоматической оценки времени.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

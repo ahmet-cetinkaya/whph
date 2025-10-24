@@ -241,4 +241,17 @@ settings:
       error: Error al exportar registros
       success: Archivo de registro exportado exitosamente
       no_logs_available: No hay registros disponibles para exportar. Genere algunos registros primero.
-      file_not_exist: El archivo de registro no existe. Habilite el registro de depuración y genere algunos registros primero.
+      file_not_exist: El archivo de registro no existe. Habilite el registro de depuración y genere algunos registros.
+  task:
+    title: Configuración de tareas
+    preferences:
+      title: Preferencias de tareas
+      description: Personalizar el comportamiento de las tareas y la configuración predeterminada
+    default_estimated_time:
+      title: Tiempo estimado predeterminado
+      description: Establecer el tiempo estimado predeterminado para nuevas tareas. Puede desactivar esto para evitar estimaciones de tiempo automáticas.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error al cargar el tiempo estimado predeterminado
+      save_error: Error al guardar el tiempo estimado predeterminado
+      key_not_found: Default estimated time key not found
