@@ -259,6 +259,7 @@ tasks:
       deadline_date: "期限: {date}"
       deadline_date_not_set: "期限: 未設定"
       estimated_time: "予想時間: {time}"
+      estimated_time_default: "(デフォルト)"
       estimated_time_not_set: "予想時間: 未設定"
       planned_date: "予定: {date}"
       planned_date_not_set: "予定: 未設定"

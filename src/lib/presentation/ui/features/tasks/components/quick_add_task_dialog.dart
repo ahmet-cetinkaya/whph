@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tags/services/abstraction/i_tag_r
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
@@ -202,10 +203,10 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         }
       }
     } catch (e) {
-      // Silently fail - use default of 15 minutes if setting can't be loaded
+      // Silently fail - use default of TaskConstants.defaultEstimatedTime minutes if setting can't be loaded
       if (mounted) {
         setState(() {
-          _estimatedTime = 15;
+          _estimatedTime = TaskConstants.defaultEstimatedTime;
           // Don't mark as explicitly set since this is just a default
         });
       }
@@ -672,9 +673,10 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     } else {
       // For default values, indicate it's a default
       final formattedTime = SharedUiConstants.formatMinutes(_estimatedTime);
+      final defaultText = _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeDefault);
       return _translationService.translate(
         TaskTranslationKeys.quickTaskEstimatedTime,
-        namedArgs: {'time': '$formattedTime (default)'},
+        namedArgs: {'time': '$formattedTime $defaultText'},
       );
     }
   }

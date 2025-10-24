@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Eräpäivä: {date}"
       deadline_date_not_set: "Eräpäivä: Ei asetettu"
       estimated_time: "Arvioitu Aika: {time}"
+      estimated_time_default: "(oletus)"
       estimated_time_not_set: "Arvioitu Aika: Ei asetettu"
       planned_date: "Suunniteltu: {date}"
       planned_date_not_set: "Suunniteltu: Ei asetettu"
