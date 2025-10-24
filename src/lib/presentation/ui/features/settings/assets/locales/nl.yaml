@@ -242,4 +242,17 @@ settings:
       error: Fout bij het exporteren van logs
       success: Logbestand succesvol geëxporteerd
       no_logs_available: Geen logs beschikbaar om te exporteren. Genereer eerst enkele logs.
-      file_not_exist: Logbestand bestaat niet. Schakel debug-logging in en genereer eerst enkele logs.
+      file_not_exist: Logbestand bestaat niet. Schakel debug logging in en genereer logs.
+  task:
+    title: Taakinstellingen
+    preferences:
+      title: Taakvoorkeuren
+      description: Pas taakgedrag en standaardinstellingen aan
+    default_estimated_time:
+      title: Standaard geschatte tijd
+      description: Stel de standaard geschatte tijd in voor nieuwe taken. U kunt dit uitschakelen om automatische tijdschattingen te vermijden.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

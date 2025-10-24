@@ -242,4 +242,17 @@ settings:
       error: Eroare la exportul jurnalelor
       success: Fișierul jurnal a fost exportat cu succes
       no_logs_available: Nu sunt disponibile jurnale pentru export. Generați mai întâi câteva jurnale.
-      file_not_exist: Fișierul jurnal nu există. Activați înregistrarea de depanare și generați mai întâi câteva jurnale.
+      file_not_exist: Fișierul jurnal nu există. Activați debug logging și generați jurnale.
+  task:
+    title: Setări Sarcini
+    preferences:
+      title: Preferințe Sarcini
+      description: Personalizați comportamentul sarcinilor și setările implicite
+    default_estimated_time:
+      title: Timp Estimat Implicit
+      description: Setți timpul estimat implicit pentru sarcini noi. Puteți dezactiva acest lucru pentru a evita estimările automate de timp.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

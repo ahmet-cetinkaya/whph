@@ -243,4 +243,17 @@ settings:
       error: Błąd eksportu dzienników
       success: Plik dziennika wyeksportowany pomyślnie
       no_logs_available: Brak dostępnych dzienników do eksportu
-      file_not_exist: Plik dziennika nie istnieje
+      file_not_exist: Plik dziennika nie istnieje. Włącz debugowanie i generuj dzienniki.
+  task:
+    title: Ustawienia zadań
+    preferences:
+      title: Preferencje zadań
+      description: Dostosuj zachowanie zadań i ustawienia domyślne
+    default_estimated_time:
+      title: Domyślny szacowany czas
+      description: Ustaw domyślny szacowany czas dla nowych zadań. Możesz to wyłączyć, aby uniknąć automatycznych szacunków czasu.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

@@ -242,4 +242,17 @@ settings:
       error: Erro ao exportar logs
       success: Arquivo de log exportado com sucesso
       no_logs_available: Nenhum log disponível para exportação. Gere alguns logs primeiro.
-      file_not_exist: O arquivo de log não existe. Habilite o registro de depuração e gere alguns logs primeiro.
+      file_not_exist: Arquivo de log não existe. Ative o debug logging e gere logs.
+  task:
+    title: Configurações de Tarefas
+    preferences:
+      title: Preferências de Tarefas
+      description: Personalizar comportamento das tarefas e configurações padrão
+    default_estimated_time:
+      title: Tempo Estimado Padrão
+      description: Definir tempo estimado padrão para novas tarefas. Você pode desativar isso para evitar estimativas de tempo automáticas.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

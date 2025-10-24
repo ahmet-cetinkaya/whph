@@ -243,4 +243,17 @@ settings:
       error: Errore nell'esportazione dei log
       success: File di log esportato con successo
       no_logs_available: Nessun log disponibile per l'esportazione. Genera prima alcuni log.
-      file_not_exist: Il file di log non esiste. Abilita la registrazione di debug e genera prima alcuni log.
+      file_not_exist: Il file di log non esiste. Abilita il debug logging e genera alcuni log.
+  task:
+    title: Impostazioni attività
+    preferences:
+      title: Preferenze attività
+      description: Personalizza il comportamento delle attività e le impostazioni predefinite
+    default_estimated_time:
+      title: Tempo stimato predefinito
+      description: Imposta il tempo stimato predefinito per nuove attività. Puoi disabilitare questo per evitare stime di tempo automatiche.
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: Error loading default estimated time
+      save_error: Error saving default estimated time
+      key_not_found: Default estimated time key not found

@@ -243,3 +243,16 @@ settings:
       success: Soubor protokolu byl úspěšně exportován
       no_logs_available: Žádné protokoly nejsou k dispozici pro export. Nejprve vygenerujte nějaké protokoly.
       file_not_exist: Soubor protokolu neexistuje. Povolte protokolování ladění a nejprve vygenerujte nějaké protokoly.
+  task:
+    title: Nastavení úkolů
+    preferences:
+      title: Předvolby úkolů
+      description: Přizpůsobte chování úkolů a výchozí nastavení
+    default_estimated_time:
+      title: Výchozí odhadovaný čas
+      description: Nastavte výchozí odhadovaný čas pro nové úkoly. Můžete to zakázat, abyste se vyhnuli automatickým odhadům času.
+      disabled: Zakázáno
+      minutes: "{minutes} minut"
+      load_error: Chyba při načítání výchozího odhadovaného času
+      save_error: Chyba při ukládání výchozího odhadovaného času
+      key_not_found: Klíč výchozího odhadovaného času nebyl nalezen

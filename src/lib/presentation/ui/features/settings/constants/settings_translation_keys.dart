@@ -48,6 +48,18 @@ class SettingsTranslationKeys extends application.SettingTranslationKeys {
   static const String importSelectFile = 'settings.import.select_file';
   static const String importStrategyMerge = 'settings.import.strategy.merge';
   static const String importStrategyReplace = 'settings.import.strategy.replace';
+
+  // Task Settings
+  static const String taskSettingsTitle = 'settings.task.title';
+  static const String taskPreferencesTitle = 'settings.task.preferences.title';
+  static const String taskPreferencesDescription = 'settings.task.preferences.description';
+  static const String taskDefaultEstimatedTimeTitle = 'settings.task.default_estimated_time.title';
+  static const String taskDefaultEstimatedTimeDescription = 'settings.task.default_estimated_time.description';
+  static const String taskDefaultEstimatedTimeDisabled = 'settings.task.default_estimated_time.disabled';
+  static const String taskDefaultEstimatedTimeMinutes = 'settings.task.default_estimated_time.minutes';
+  static const String taskDefaultEstimatedTimeLoadError = 'settings.task.default_estimated_time.load_error';
+  static const String taskDefaultEstimatedTimeSaveError = 'settings.task.default_estimated_time.save_error';
+  static const String taskDefaultEstimatedTimeKeyNotFound = 'settings.task.default_estimated_time.key_not_found';
   static const String importStrategyTitle = 'settings.import.strategy.title';
   static const String importSuccess = 'settings.import.success';
   static const String importTitle = 'settings.import.title';

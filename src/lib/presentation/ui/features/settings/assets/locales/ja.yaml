@@ -242,4 +242,17 @@ settings:
       error: ログのエクスポート中にエラーが発生しました
       success: ログファイルが正常にエクスポートされました
       no_logs_available: エクスポートできるログがありません。最初にいくつかのログを生成してください。
-      file_not_exist: ログファイルが存在しません。デバッグログを有効にして、最初にいくつかのログを生成してください。
+      file_not_exist: ログファイルが存在しません。デバッグログを有効にしてログを生成してください。
+  task:
+    title: タスク設定
+    preferences:
+      title: タスク設定
+      description: タスクの動作とデフォルト設定をカスタマイズ
+    default_estimated_time:
+      title: デフォルト推定時間
+      description: 新しいタスクのデフォルト推定時間を設定します。自動時間見積を避けるために無効にできます。
+      disabled: Disabled
+      minutes: "{minutes} minutes"
+      load_error: デフォルト推定時間の読み込みエラー
+      save_error: デフォルト推定時間の保存エラー
+      key_not_found: Default estimated time key not found
