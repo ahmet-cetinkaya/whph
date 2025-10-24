@@ -24,8 +24,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
-import 'package:acore/acore.dart'
-    show DateTimeHelper, DateFormatService, DateFormatType;
+import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType;
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -68,8 +67,7 @@ class QuickAddTaskDialog extends StatefulWidget {
     Function(String taskId, TaskData taskData)? onTaskCreated,
     String? initialParentTaskId,
   }) {
-    final isMobile = defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS;
+    final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
 
     final dialog = QuickAddTaskDialog(
       initialTagIds: initialTagIds,
@@ -207,8 +205,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       }
     } catch (e) {
       // Log error and use default of TaskConstants.defaultEstimatedTime minutes if setting can't be loaded
-      Logger.error(
-          'Error loading default estimated time in QuickAddTaskDialog: $e');
+      Logger.error('Error loading default estimated time in QuickAddTaskDialog: $e');
       if (mounted) {
         setState(() {
           _estimatedTime = TaskConstants.defaultEstimatedTime;
@@ -231,10 +228,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         final tag = await _tagRepository.getById(tagId);
         if (tag != null) {
           tagOptions.add(DropdownOption(
-              label: tag.name.isNotEmpty
-                  ? tag.name
-                  : _translationService
-                      .translate(SharedTranslationKeys.untitled),
+              label: tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled),
               value: tagId));
         }
       }
@@ -247,9 +241,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     } catch (e) {
       // If we can't load tag names, fallback to tag IDs with empty labels
       setState(() {
-        _selectedTags = widget.initialTagIds!
-            .map((id) => DropdownOption(label: '', value: id))
-            .toList();
+        _selectedTags = widget.initialTagIds!.map((id) => DropdownOption(label: '', value: id)).toList();
       });
     }
   }
@@ -302,10 +294,8 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         if (_estimatedTime == null) {
           _loadDefaultEstimatedTime();
         }
-        _isEstimatedTimeExplicitlySet = widget.initialEstimatedTime != null &&
-            widget.initialEstimatedTime! > 0;
-        _showEstimatedTimeSection = widget.initialEstimatedTime != null &&
-            widget.initialEstimatedTime! > 0;
+        _isEstimatedTimeExplicitlySet = widget.initialEstimatedTime != null && widget.initialEstimatedTime! > 0;
+        _showEstimatedTimeSection = widget.initialEstimatedTime != null && widget.initialEstimatedTime! > 0;
       }
       if (!_lockPlannedDate) {
         _plannedDate = widget.initialPlannedDate;
@@ -346,8 +336,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
       context: context,
-      errorMessage:
-          _translationService.translate(TaskTranslationKeys.saveTaskError),
+      errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
       operation: () async {
         final command = SaveTaskCommand(
           title: _titleController.text,
@@ -357,13 +346,10 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           estimatedTime: _estimatedTime,
           plannedDate: _plannedDate,
           deadlineDate: _deadlineDate,
-          completedAt: (widget.initialCompleted ?? false)
-              ? DateTime.now().toUtc()
-              : null,
+          completedAt: (widget.initialCompleted ?? false) ? DateTime.now().toUtc() : null,
           parentTaskId: widget.initialParentTaskId,
         );
-        return await _mediator
-            .send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+        return await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
       },
       onSuccess: (response) {
         // Notify that a task was created with the task ID (using non-nullable parameter)
@@ -412,8 +398,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   Future<void> _selectPlannedDate() async {
     final selectedDateTime = await _selectDateTime(
-      title: _translationService
-          .translate(TaskTranslationKeys.selectPlannedDateTitle),
+      title: _translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
       initialDateTime: _plannedDate,
     );
 
@@ -431,8 +416,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   Future<void> _selectDeadlineDate() async {
     final selectedDateTime = await _selectDateTime(
-      title: _translationService
-          .translate(TaskTranslationKeys.selectDeadlineDateTitle),
+      title: _translationService.translate(TaskTranslationKeys.selectDeadlineDateTitle),
       initialDateTime: _deadlineDate,
     );
 
@@ -534,15 +518,13 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_translationService
-                    .translate(TaskTranslationKeys.quickTaskLockSettings)),
+                Text(_translationService.translate(TaskTranslationKeys.quickTaskLockSettings)),
 
                 // Description
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: Text(
-                    _translationService.translate(
-                        TaskTranslationKeys.quickTaskLockDescription),
+                    _translationService.translate(TaskTranslationKeys.quickTaskLockDescription),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
@@ -560,11 +542,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                         children: [
                           // Tag lock options
                           _buildLockOptionCheckboxTile(
-                            title: _translationService
-                                .translate(TaskTranslationKeys.tagsLabel),
+                            title: _translationService.translate(TaskTranslationKeys.tagsLabel),
                             icon: TagUiConstants.tagIcon,
-                            iconColor:
-                                TaskUiConstants.getTagColor(_themeService),
+                            iconColor: TaskUiConstants.getTagColor(_themeService),
                             value: _lockTags,
                             onChanged: (bool? value) {
                               setDialogState(() {
@@ -577,14 +557,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           ),
                           // Priority lock options
                           _buildLockOptionCheckboxTile(
-                            title: _translationService
-                                .translate(TaskTranslationKeys.priorityLabel),
+                            title: _translationService.translate(TaskTranslationKeys.priorityLabel),
                             icon: TaskUiConstants.priorityOutlinedIcon,
                             iconColor: _selectedPriority == null
-                                ? theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.7)
-                                : TaskUiConstants.getPriorityColor(
-                                    _selectedPriority),
+                                ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                                : TaskUiConstants.getPriorityColor(_selectedPriority),
                             value: _lockPriority,
                             onChanged: (bool? value) {
                               setDialogState(() {
@@ -597,8 +574,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           ),
                           // Estimated time lock options
                           _buildLockOptionCheckboxTile(
-                            title: _translationService.translate(
-                                SharedTranslationKeys.timeDisplayEstimated),
+                            title: _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
                             icon: TaskUiConstants.estimatedTimeOutlinedIcon,
                             iconColor: TaskUiConstants.estimatedTimeColor,
                             value: _lockEstimatedTime,
@@ -613,8 +589,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           ),
                           // Planned date lock options
                           _buildLockOptionCheckboxTile(
-                            title: _translationService.translate(
-                                TaskTranslationKeys.plannedDateLabel),
+                            title: _translationService.translate(TaskTranslationKeys.plannedDateLabel),
                             icon: TaskUiConstants.plannedDateOutlinedIcon,
                             iconColor: TaskUiConstants.plannedDateColor,
                             value: _lockPlannedDate,
@@ -629,8 +604,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           ),
                           // Deadline date lock options
                           _buildLockOptionCheckboxTile(
-                            title: _translationService.translate(
-                                TaskTranslationKeys.deadlineDateLabel),
+                            title: _translationService.translate(TaskTranslationKeys.deadlineDateLabel),
                             icon: TaskUiConstants.deadlineDateOutlinedIcon,
                             iconColor: TaskUiConstants.deadlineDateColor,
                             value: _lockDeadlineDate,
@@ -655,8 +629,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text(_translationService
-                          .translate(SharedTranslationKeys.doneButton)),
+                      child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
                     ),
                   ],
                 ),
@@ -691,8 +664,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   String _getEstimatedTimeTooltip() {
     if (_estimatedTime == null || _estimatedTime == 0) {
-      return _translationService
-          .translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet);
+      return _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet);
     }
 
     if (_isEstimatedTimeExplicitlySet) {
@@ -703,8 +675,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     } else {
       // For default values, indicate it's a default
       final formattedTime = SharedUiConstants.formatMinutes(_estimatedTime);
-      final defaultText = _translationService
-          .translate(TaskTranslationKeys.quickTaskEstimatedTimeDefault);
+      final defaultText = _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeDefault);
       return _translationService.translate(
         TaskTranslationKeys.quickTaskEstimatedTime,
         namedArgs: {'time': '$formattedTime $defaultText'},
@@ -718,16 +689,12 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     if (date == null) {
       return _translationService.translate(
-        isDeadline
-            ? TaskTranslationKeys.quickTaskDeadlineDateNotSet
-            : TaskTranslationKeys.quickTaskPlannedDateNotSet,
+        isDeadline ? TaskTranslationKeys.quickTaskDeadlineDateNotSet : TaskTranslationKeys.quickTaskPlannedDateNotSet,
       );
     }
 
     return _translationService.translate(
-      isDeadline
-          ? TaskTranslationKeys.quickTaskDeadlineDate
-          : TaskTranslationKeys.quickTaskPlannedDate,
+      isDeadline ? TaskTranslationKeys.quickTaskDeadlineDate : TaskTranslationKeys.quickTaskPlannedDate,
       namedArgs: {'date': formattedDate.toString()},
     );
   }
@@ -737,10 +704,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       return _translationService.translate(TaskTranslationKeys.tagsLabel);
     }
 
-    final tagNames = _selectedTags
-        .map((tag) => tag.label)
-        .where((name) => name.isNotEmpty)
-        .toList();
+    final tagNames = _selectedTags.map((tag) => tag.label).where((name) => name.isNotEmpty).toList();
     if (tagNames.isEmpty) {
       return _translationService.translate(TaskTranslationKeys.tagsLabel);
     }
@@ -785,20 +749,16 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       context: context,
       size: DialogSize.min,
       child: AlertDialog(
-        title: Text(_translationService
-            .translate(TaskTranslationKeys.quickTaskResetConfirmTitle)),
-        content: Text(_translationService
-            .translate(TaskTranslationKeys.quickTaskResetConfirmMessage)),
+        title: Text(_translationService.translate(TaskTranslationKeys.quickTaskResetConfirmTitle)),
+        content: Text(_translationService.translate(TaskTranslationKeys.quickTaskResetConfirmMessage)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(_translationService
-                .translate(SharedTranslationKeys.cancelButton)),
+            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(_translationService
-                .translate(SharedTranslationKeys.confirmButton)),
+            child: Text(_translationService.translate(SharedTranslationKeys.confirmButton)),
           ),
         ],
       ),
@@ -811,8 +771,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS;
+    final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
     final theme = Theme.of(context);
 
     Widget dialogContent = Container(
@@ -820,15 +779,13 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         color: theme.colorScheme.surface,
         // Use different border radius based on platform
         borderRadius: isMobile
-            ? const BorderRadius.vertical(
-                top: Radius.circular(AppTheme.sizeLarge))
+            ? const BorderRadius.vertical(top: Radius.circular(AppTheme.sizeLarge))
             : BorderRadius.circular(AppTheme.containerBorderRadius),
       ),
       // Use mainAxisSize.min to make the container fit its content
       child: Padding(
         // Use same padding for both platforms with slightly reduced bottom padding
-        padding: EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall,
-            AppTheme.sizeLarge, AppTheme.sizeSmall),
+        padding: EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeSmall),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -840,8 +797,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 height: 4,
                 margin: EdgeInsets.only(bottom: AppTheme.sizeSmall),
                 decoration: BoxDecoration(
-                  color:
-                      theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -852,8 +808,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      _translationService
-                          .translate(TaskTranslationKeys.addTaskButtonTooltip),
+                      _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
                       style: theme.textTheme.headlineSmall?.copyWith(
                         color: theme.colorScheme.onSurface,
                       ),
@@ -878,12 +833,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 color: theme.colorScheme.onSurface,
               ),
               decoration: InputDecoration(
-                hintText: _translationService
-                    .translate(TaskTranslationKeys.quickTaskTitlePlaceholder),
+                hintText: _translationService.translate(TaskTranslationKeys.quickTaskTitlePlaceholder),
                 // Use same content padding for both platforms
-                contentPadding: EdgeInsets.symmetric(
-                    horizontal: AppTheme.sizeMedium,
-                    vertical: AppTheme.sizeSmall),
+                contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
                 // Send button in the text field
                 suffixIcon: isMobile
                     ? SizedBox(
@@ -909,8 +861,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                           color: theme.colorScheme.primary,
                         ),
                         onPressed: _createTask,
-                        tooltip: _translationService.translate(
-                            TaskTranslationKeys.addTaskButtonTooltip),
+                        tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
                       ),
               ),
               onSubmitted: (_) => _createTask(),
@@ -933,10 +884,8 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
               Container(
                 padding: EdgeInsets.all(AppTheme.sizeMedium),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest
-                      .withValues(alpha: 0.5),
-                  borderRadius:
-                      BorderRadius.circular(AppTheme.containerBorderRadius),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
                   border: Border.all(
                     color: theme.colorScheme.outline.withValues(alpha: 0.2),
                   ),
@@ -953,8 +902,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                         ),
                         SizedBox(width: AppTheme.sizeSmall),
                         Text(
-                          _translationService.translate(
-                              SharedTranslationKeys.timeDisplayEstimated),
+                          _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
                           style: theme.textTheme.labelMedium?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w500,
@@ -969,8 +917,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                             NumericInput(
                               initialValue: _estimatedTime ?? 0,
                               minValue: 0,
-                              maxValue:
-                                  480, // Increased from 60 to 480 minutes (8 hours) for better usability
+                              maxValue: 480, // Increased from 60 to 480 minutes (8 hours) for better usability
                               incrementValue: 5,
                               decrementValue: 5,
                               onValueChanged: (value) {
@@ -979,8 +926,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                                   _isEstimatedTimeExplicitlySet = true;
                                 });
                               },
-                              valueSuffix: _translationService.translate(
-                                  SharedTranslationKeys.minutesShort),
+                              valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
                               iconSize: 20,
                             ),
                             SizedBox(width: AppTheme.sizeSmall),
@@ -988,8 +934,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                               icon: Icon(
                                 Icons.clear,
                                 size: 20,
-                                color: theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.6),
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                               onPressed: () {
                                 setState(() {
@@ -997,12 +942,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                                   _isEstimatedTimeExplicitlySet = false;
                                 });
                               },
-                              tooltip: _translationService.translate(
-                                  TaskTranslationKeys
-                                      .quickTaskEstimatedTimeNotSet),
+                              tooltip: _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet),
                               padding: EdgeInsets.all(8),
-                              constraints:
-                                  BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: BoxConstraints(minWidth: 36, minHeight: 36),
                             ),
                           ],
                         ),
@@ -1034,8 +976,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           onPressed: _showLockSettingsDialog,
-          tooltip: _translationService
-              .translate(TaskTranslationKeys.quickTaskLockSettings),
+          tooltip: _translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
           iconSize: iconSize,
         ),
 
@@ -1058,16 +999,13 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         _buildActionButtonWithLock(
           child: IconButton(
             icon: Icon(
-              _selectedPriority == null
-                  ? TaskUiConstants.priorityOutlinedIcon
-                  : TaskUiConstants.priorityIcon,
+              _selectedPriority == null ? TaskUiConstants.priorityOutlinedIcon : TaskUiConstants.priorityIcon,
               color: _selectedPriority == null
                   ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                   : TaskUiConstants.getPriorityColor(_selectedPriority),
             ),
             onPressed: _togglePriority,
-            tooltip: TaskUiConstants.getPriorityTooltip(
-                _selectedPriority, _translationService),
+            tooltip: TaskUiConstants.getPriorityTooltip(_selectedPriority, _translationService),
             iconSize: iconSize,
           ),
           isLocked: _lockPriority,
@@ -1080,8 +1018,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             onPressed: _toggleEstimatedTime,
             tooltip: _estimatedTime != null
                 ? _getEstimatedTimeTooltip()
-                : _translationService.translate(
-                    TaskTranslationKeys.quickTaskEstimatedTimeNotSet),
+                : _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeNotSet),
             iconSize: iconSize,
           ),
           isLocked: _lockEstimatedTime,
@@ -1091,9 +1028,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         _buildActionButtonWithLock(
           child: IconButton(
             icon: Icon(
-              _plannedDate == null
-                  ? TaskUiConstants.plannedDateOutlinedIcon
-                  : TaskUiConstants.plannedDateIcon,
+              _plannedDate == null ? TaskUiConstants.plannedDateOutlinedIcon : TaskUiConstants.plannedDateIcon,
               color: _plannedDate == null
                   ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                   : TaskUiConstants.plannedDateColor,
@@ -1109,9 +1044,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         _buildActionButtonWithLock(
           child: IconButton(
             icon: Icon(
-              _deadlineDate == null
-                  ? TaskUiConstants.deadlineDateOutlinedIcon
-                  : TaskUiConstants.deadlineDateIcon,
+              _deadlineDate == null ? TaskUiConstants.deadlineDateOutlinedIcon : TaskUiConstants.deadlineDateIcon,
               color: _deadlineDate == null
                   ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
                   : TaskUiConstants.deadlineDateColor,
@@ -1130,8 +1063,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           onPressed: _onClearAllFields,
-          tooltip: _translationService
-              .translate(TaskTranslationKeys.quickTaskResetAll),
+          tooltip: _translationService.translate(TaskTranslationKeys.quickTaskResetAll),
           iconSize: iconSize,
         ),
       ],
