@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: Timp Estimat Implicit
       description: Setți timpul estimat implicit pentru sarcini noi. Puteți dezactiva acest lucru pentru a evita estimările automate de timp.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Error loading default estimated time
-      save_error: Error saving default estimated time
-      key_not_found: Default estimated time key not found
+      disabled: Dezactivat
+      minutes: "{minutes} minute"
+      load_error: Eroare la încărcarea timpului estimat implicit
+      save_error: Eroare la salvarea timpului estimat implicit
+      key_not_found: Cheia timpului estimat implicit nu a fost găsită

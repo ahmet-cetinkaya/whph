@@ -250,8 +250,8 @@ settings:
     default_estimated_time:
       title: Temps estimé par défaut
       description: Définir le temps estimé par défaut pour les nouvelles tâches. Vous pouvez désactiver ceci pour éviter les estimations de temps automatiques.
-      disabled: Disabled
+      disabled: Désactivé
       minutes: "{minutes} minutes"
       load_error: Erreur lors du chargement du temps estimé par défaut
       save_error: Erreur lors de l'enregistrement du temps estimé par défaut
-      key_not_found: Default estimated time key not found
+      key_not_found: Clé de temps estimé par défaut non trouvée

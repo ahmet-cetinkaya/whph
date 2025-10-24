@@ -251,8 +251,8 @@ settings:
     default_estimated_time:
       title: デフォルト推定時間
       description: 新しいタスクのデフォルト推定時間を設定します。自動時間見積を避けるために無効にできます。
-      disabled: Disabled
-      minutes: "{minutes} minutes"
+      disabled: 無効
+      minutes: "{minutes}分"
       load_error: デフォルト推定時間の読み込みエラー
       save_error: デフォルト推定時間の保存エラー
-      key_not_found: Default estimated time key not found
+      key_not_found: デフォルト推定時間キーが見つかりません

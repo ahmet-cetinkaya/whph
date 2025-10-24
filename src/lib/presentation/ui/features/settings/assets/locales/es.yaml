@@ -250,8 +250,8 @@ settings:
     default_estimated_time:
       title: Tiempo estimado predeterminado
       description: Establecer el tiempo estimado predeterminado para nuevas tareas. Puede desactivar esto para evitar estimaciones de tiempo automáticas.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
+      disabled: Desactivado
+      minutes: "{minutes} minutos"
       load_error: Error al cargar el tiempo estimado predeterminado
       save_error: Error al guardar el tiempo estimado predeterminado
-      key_not_found: Default estimated time key not found
+      key_not_found: Clave de tiempo estimado predeterminado no encontrada

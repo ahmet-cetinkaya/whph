@@ -4,6 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
@@ -185,11 +186,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   /// Loads default estimated time from settings if no initial value is provided
   Future<void> _loadDefaultEstimatedTime() async {
     try {
-      final setting = await _mediator.send<GetSettingQuery, dynamic>(
+      final setting = await _mediator.send<GetSettingQuery, Setting?>(
         GetSettingQuery(key: SettingKeys.taskDefaultEstimatedTime),
       );
 
-      if (setting != null && setting.value != null) {
+      if (setting != null) {
         final value = setting.getValue<int?>();
         if (value != null && value > 0) {
           if (mounted) {
@@ -866,7 +867,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                         ),
                         SizedBox(width: AppTheme.sizeSmall),
                         Text(
-                          'Estimated time',
+                          _translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
                           style: theme.textTheme.labelMedium?.copyWith(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w500,
@@ -890,7 +891,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                                   _isEstimatedTimeExplicitlySet = true;
                                 });
                               },
-                              valueSuffix: 'min',
+                              valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
                               iconSize: 20,
                             ),
                             SizedBox(width: AppTheme.sizeSmall),

@@ -250,8 +250,8 @@ settings:
     default_estimated_time:
       title: Varsayılan Tahmini Süre
       description: Yeni görevler için varsayılan tahmini süreyi ayarlayın. Otomatik zaman tahminlerinden kaçınmak için bunu devre dışı bırakabilirsiniz.
-      disabled: Disabled
-      minutes: "{minutes} minutes"
-      load_error: Varsayılan tahmini süre ayarlanırken hata oluştu
-      save_error: Varsayılan tahmini süre kaydedilirken hata oluştu
-      key_not_found: Default estimated time key not found
+      disabled: Devre Dışı
+      minutes: "{minutes} dakika"
+      load_error: Varsayılan tahmini süre yüklenirken hata
+      save_error: Varsayılan tahmini süre kaydedilirken hata
+      key_not_found: Varsayılan tahmini süre anahtarı bulunamadı
