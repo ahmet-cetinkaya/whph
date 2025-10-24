@@ -132,6 +132,8 @@ class _TaskSettingsState extends State<TaskSettings> {
     if (value != _defaultEstimatedTime) {
       setState(() {
         _defaultEstimatedTime = value;
+        // Enable setting if value is greater than 0
+        _isSettingEnabled = value > 0;
       });
       _saveDefaultEstimatedTime(value);
     }
