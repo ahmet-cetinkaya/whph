@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ steps.get_tag.outputs.tag-name }}
           submodules: false
 
       - name: Get tag name from release workflow
@@ -31,7 +31,7 @@ jobs:
           for workflow in "${CI_WORKFLOWS[@]}"; do
             echo "Checking workflow: $workflow"
             # Look for successful runs with tag names
-            TAG_RUN=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,headBranch,conclusion --jq ".[] | select(.conclusion == \"success\" and (.headBranch | startswith(\"v\") or .headBranch | startswith(\"refs/tags/v\"))) | .headBranch" | head -1)
+            TAG_RUN=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,headBranch,conclusion --jq '.[] | select(.conclusion == "success" and (.headBranch | startswith("v") or (.headBranch | tostring | startswith("refs/tags/v")))) | .headBranch' | head -1)
             
             if [[ -n "$TAG_RUN" ]]; then
               # Extract tag name (remove refs/tags/ prefix if present)
