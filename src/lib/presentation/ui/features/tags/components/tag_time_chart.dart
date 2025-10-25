@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
+import 'package:whph/presentation/ui/features/tags/services/time_data_service.dart';
 
 class TagTimeChart extends StatefulWidget {
   final List<String>? filterByTags;
@@ -41,6 +42,7 @@ class TagTimeChartState extends State<TagTimeChart> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tagsService = container.resolve<TagsService>();
+  final _timeDataService = container.resolve<TimeDataService>();
   GetTopTagsByTimeQueryResponse? _tagTimes;
   final bool _isLoading = false;
   int? _touchedIndex;
@@ -74,12 +76,16 @@ class TagTimeChartState extends State<TagTimeChart> {
     _tagsService.onTagCreated.addListener(_onTagUpdated);
     _tagsService.onTagUpdated.addListener(_onTagUpdated);
     _tagsService.onTagDeleted.addListener(_onTagUpdated);
+    _timeDataService.onTimeDataUpdated.addListener(_onTimeDataUpdated);
+    _timeDataService.onTimeDataChanged.addListener(_onTimeDataChanged);
   }
 
   void _removeEventListeners() {
     _tagsService.onTagCreated.removeListener(_onTagUpdated);
     _tagsService.onTagUpdated.removeListener(_onTagUpdated);
     _tagsService.onTagDeleted.removeListener(_onTagUpdated);
+    _timeDataService.onTimeDataUpdated.removeListener(_onTimeDataUpdated);
+    _timeDataService.onTimeDataChanged.removeListener(_onTimeDataChanged);
   }
 
   void _onTagUpdated() {
@@ -114,6 +120,25 @@ class TagTimeChartState extends State<TagTimeChart> {
 
     // If we don't have data yet or no specific filters, refresh to be safe
     return true;
+  }
+
+  void _onTimeDataUpdated() {
+    if (!mounted) return;
+
+    final updatedTagId = _timeDataService.onTimeDataUpdated.value;
+
+    // Only refresh if the updated tag is relevant to this chart
+    if (updatedTagId != null && _shouldRefreshForTag(updatedTagId)) {
+      refresh();
+    } else if (updatedTagId == null) {
+      // If no specific tag ID, refresh to be safe
+      refresh();
+    }
+  }
+
+  void _onTimeDataChanged() {
+    if (!mounted) return;
+    refresh();
   }
 
   Future<void> refresh() async {
