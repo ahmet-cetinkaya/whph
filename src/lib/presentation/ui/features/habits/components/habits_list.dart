@@ -103,17 +103,27 @@ class HabitsListState extends State<HabitsList> {
     _habitsService.onHabitCreated.addListener(_handleHabitChange);
     _habitsService.onHabitUpdated.addListener(_handleHabitChange);
     _habitsService.onHabitDeleted.addListener(_handleHabitChange);
+    _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordChange);
   }
 
   void _removeEventListeners() {
     _habitsService.onHabitCreated.removeListener(_handleHabitChange);
     _habitsService.onHabitUpdated.removeListener(_handleHabitChange);
     _habitsService.onHabitDeleted.removeListener(_handleHabitChange);
+    _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChange);
   }
 
   void _handleHabitChange() {
     if (!mounted) return;
     refresh();
+  }
+
+  void _handleHabitRecordChange() {
+    if (!mounted) return;
+    refresh();
+    widget.onHabitCompleted?.call();
   }
 
   @override
@@ -595,10 +605,8 @@ class HabitsListState extends State<HabitsList> {
   }
 
   void _onHabitRecordChanged() {
-    Future.delayed(const Duration(seconds: 3), () {
-      refresh();
-      widget.onHabitCompleted?.call();
-    });
+    refresh();
+    widget.onHabitCompleted?.call();
   }
 }
 
