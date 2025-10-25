@@ -16,35 +16,60 @@ jobs:
       - name: Get tag name from release workflow
         id: get_tag
         run: |
-          # Get the tag name from the release workflow outputs
-          echo "Getting tag information from release workflow..."
+          # Get the tag name from the release workflow outputs or manual input
+          echo "Getting tag information..."
           
-          # Get the release workflow run ID
-          RELEASE_RUN_ID="${{ github.event.workflow_run.id }}"
-          echo "Release workflow run ID: $RELEASE_RUN_ID"
-          
-          # Get the outputs from the release workflow
-          TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-name"]')
-          TAG_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-version"]')
-          APP_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["app-version"]')
-          
-          echo "Tag name: $TAG_NAME"
-          echo "Tag version: $TAG_VERSION"
-          echo "App version: $APP_VERSION"
-          
-          if [[ -n "$TAG_NAME" && "$TAG_NAME" != "null" ]]; then
-            echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
-            echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
-            echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
-            echo "tag-found=true" >> $GITHUB_OUTPUT
-            echo "✅ Successfully retrieved tag information from release workflow"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Manual dispatch - using latest tag"
+            # Get the latest tag from the repository
+            LATEST_TAG=$(git describe --tags --abbrev=0)
+            echo "Latest tag: $LATEST_TAG"
+            
+            if [[ -n "$LATEST_TAG" && "$LATEST_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              TAG_NAME="$LATEST_TAG"
+              TAG_VERSION="${TAG_NAME#v}"
+              # Get app version from pubspec.yaml
+              APP_VERSION=$(awk '/^version:/ {print $2}' src/pubspec.yaml)
+              
+              echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+              echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
+              echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+              echo "tag-found=true" >> $GITHUB_OUTPUT
+              echo "✅ Using latest tag: $TAG_NAME"
+            else
+              echo "tag-name=" >> $GITHUB_OUTPUT
+              echo "tag-found=false" >> $GITHUB_OUTPUT
+              echo "❌ No valid tag found"
+              exit 1
+            fi
           else
-            echo "tag-name=" >> $GITHUB_OUTPUT
-            echo "tag-found=false" >> $GITHUB_OUTPUT
-            echo "❌ No tag found in release workflow outputs"
-            echo "Available outputs:"
-            gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs'
-            exit 1
+            # Get the release workflow run ID
+            RELEASE_RUN_ID="${{ github.event.workflow_run.id }}"
+            echo "Release workflow run ID: $RELEASE_RUN_ID"
+            
+            # Get the outputs from the release workflow
+            TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-name"]')
+            TAG_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-version"]')
+            APP_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["app-version"]')
+            
+            echo "Tag name: $TAG_NAME"
+            echo "Tag version: $TAG_VERSION"
+            echo "App version: $APP_VERSION"
+            
+            if [[ -n "$TAG_NAME" && "$TAG_NAME" != "null" ]]; then
+              echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+              echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
+              echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+              echo "tag-found=true" >> $GITHUB_OUTPUT
+              echo "✅ Successfully retrieved tag information from release workflow"
+            else
+              echo "tag-name=" >> $GITHUB_OUTPUT
+              echo "tag-found=false" >> $GITHUB_OUTPUT
+              echo "❌ No tag found in release workflow outputs"
+              echo "Available outputs:"
+              gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs'
+              exit 1
+            fi
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
