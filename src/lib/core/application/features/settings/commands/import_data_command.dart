@@ -37,7 +37,7 @@ import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/notes/note.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
 import 'package:flutter/foundation.dart';
@@ -224,7 +224,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     if (data.isEmpty) {
       throw BusinessException(
         'Import data is empty',
-        SettingTranslationKeys.backupInvalidFormatError,
+        SettingsTranslationKeys.backupInvalidFormatError,
       );
     }
 
@@ -232,7 +232,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     if (data['appInfo'] == null) {
       throw BusinessException(
         'No app information found in import data',
-        SettingTranslationKeys.backupInvalidFormatError,
+        SettingsTranslationKeys.backupInvalidFormatError,
       );
     }
 
@@ -240,7 +240,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     if (data['appInfo']['version'] == null) {
       throw BusinessException(
         'No version information found in import data',
-        SettingTranslationKeys.versionMismatchError,
+        SettingsTranslationKeys.versionMismatchError,
         args: {
           'importedVersion': 'unknown',
           'currentVersion': AppInfo.version,
@@ -263,7 +263,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       if (violations.isNotEmpty) {
         throw BusinessException(
           'Foreign key integrity violations detected after import: ${violations.length} violations',
-          SettingTranslationKeys.importFailedError,
+          SettingsTranslationKeys.importFailedError,
           args: {'error': 'Data integrity check failed'},
         );
       }
@@ -295,7 +295,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       if (!compressionService.validateHeader(request.backupData)) {
         throw BusinessException(
           'Invalid backup file format',
-          SettingTranslationKeys.backupInvalidFormatError,
+          SettingsTranslationKeys.backupInvalidFormatError,
         );
       }
 
@@ -304,7 +304,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       if (!isValidChecksum) {
         throw BusinessException(
           'Backup file is corrupted',
-          SettingTranslationKeys.backupCorruptedError,
+          SettingsTranslationKeys.backupCorruptedError,
         );
       }
 
@@ -318,7 +318,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       } catch (e) {
         throw BusinessException(
           'Failed to parse backup file: Invalid JSON format',
-          SettingTranslationKeys.backupInvalidFormatError,
+          SettingsTranslationKeys.backupInvalidFormatError,
         );
       }
 
@@ -330,7 +330,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       if (importedVersion == null) {
         throw BusinessException(
           'No version information found in imported data',
-          SettingTranslationKeys.versionMismatchError,
+          SettingsTranslationKeys.versionMismatchError,
           args: {
             'importedVersion': 'unknown',
             'currentVersion': AppInfo.version,
@@ -352,7 +352,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         } catch (e) {
           throw BusinessException(
             'Failed to migrate data from version $importedVersion',
-            SettingTranslationKeys.migrationFailedError,
+            SettingsTranslationKeys.migrationFailedError,
             args: {
               'importedVersion': importedVersion,
               'currentVersion': AppInfo.version,
@@ -364,7 +364,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         // Version is not supported for migration
         throw BusinessException(
           'Unsupported version in imported data',
-          SettingTranslationKeys.versionMismatchError,
+          SettingsTranslationKeys.versionMismatchError,
           args: {
             'importedVersion': importedVersion,
             'currentVersion': AppInfo.version,
@@ -477,7 +477,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         }
         throw BusinessException(
           'Import data contains ${duplicateIds.length} duplicate IDs for ${config.name}',
-          SettingTranslationKeys.importFailedError,
+          SettingsTranslationKeys.importFailedError,
           args: {
             'entity': config.name,
             'error': 'Duplicate IDs found: ${duplicateIds.take(3).join(', ')}${duplicateIds.length > 3 ? '...' : ''}',
@@ -570,7 +570,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       }
       throw BusinessException(
         'Import error while processing ${config.name}: ${e.toString()}',
-        SettingTranslationKeys.importFailedError,
+        SettingsTranslationKeys.importFailedError,
         args: {
           'entity': config.name,
           'error': e.toString(),

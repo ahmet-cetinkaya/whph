@@ -21,7 +21,7 @@ import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
 
 enum ExportDataFileOptions { json, csv, backup }
@@ -156,7 +156,7 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
           );
       }
     } catch (e) {
-      throw BusinessException('Export failed', SettingTranslationKeys.exportFailedError);
+      throw BusinessException('Export failed', SettingsTranslationKeys.exportFailedError);
     }
   }
 
