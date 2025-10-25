@@ -1,0 +1,186 @@
+name: Google Play Store Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Deployment track'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+      promote:
+        description: 'Promote from previous track (only for alpha/beta/production)'
+        required: false
+        default: false
+        type: boolean
+      rollout_percentage:
+        description: 'Rollout percentage for production (0.1, 0.2, 0.5, 1.0)'
+        required: false
+        default: '0.1'
+        type: choice
+        options:
+          - '0.1'
+          - '0.2'
+          - '0.5'
+          - '1.0'
+      update_metadata:
+        description: 'Update store metadata'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run && github.event.workflow_run.head_sha || github.ref }}
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: "play-store"
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+
+      - name: Install OpenJDK 17
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y openjdk-17-jdk-headless
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: fastlane
+
+      - name: Install Fastlane dependencies
+        run: |
+          cd fastlane
+          bundle install
+        working-directory: fastlane
+
+      - name: Setup Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/android/app/whph-release.keystore
+
+      - name: Update Gradle Properties
+        run: |
+          cat << EOF > src/android/key.properties
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=whph-release.keystore
+          EOF
+
+      - name: Setup Google Play Service Account
+        run: |
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > fastlane/google-play-service-account.json
+
+      - name: Get application version
+        id: app_version
+        uses: ./.github/actions/get-app-version
+
+      - name: Remove non-Android platforms
+        run: |
+          cd src
+          rm -rf ios linux macos web windows
+
+      - name: Build Android App Bundle
+        run: |
+          cd src
+          fvm flutter build appbundle --release
+
+      - name: Deploy to Google Play Store
+        run: |
+          cd fastlane
+          
+          # Set environment variables for Fastlane
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
+          export KEYSTORE_FILE_PATH="../src/android/app/whph-release.keystore"
+          export KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
+          export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+          export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+          
+          # Determine deployment strategy
+          if [[ "${{ github.event.inputs.promote }}" == "true" ]]; then
+            case "${{ github.event.inputs.track }}" in
+              "alpha")
+                echo "Promoting to alpha track..."
+                bundle exec fastlane promote_to_alpha
+                ;;
+              "beta")
+                echo "Promoting to beta track..."
+                bundle exec fastlane promote_to_beta
+                ;;
+              "production")
+                echo "Promoting to production track..."
+                bundle exec fastlane promote_to_production
+                ;;
+            esac
+          else
+            case "${{ github.event.inputs.track }}" in
+              "internal")
+                echo "Deploying to internal testing..."
+                bundle exec fastlane deploy_internal
+                ;;
+              "alpha")
+                echo "Deploying to alpha track..."
+                bundle exec fastlane deploy_alpha
+                ;;
+              "beta")
+                echo "Deploying to beta track..."
+                bundle exec fastlane deploy_beta
+                ;;
+              "production")
+                if [[ "${{ github.event.inputs.rollout_percentage }}" == "1.0" ]]; then
+                  echo "Deploying to production with full rollout..."
+                  bundle exec fastlane deploy_production_full
+                else
+                  echo "Deploying to production with staged rollout..."
+                  bundle exec fastlane deploy_production
+                fi
+                ;;
+            esac
+          fi
+
+      - name: Update metadata if requested
+        if: ${{ github.event.inputs.update_metadata == 'true' }}
+        run: |
+          cd fastlane
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
+          bundle exec fastlane update_metadata
+
+      - name: Create deployment summary
+        run: |
+          echo "## 🚀 Google Play Store Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Track:** ${{ github.event.inputs.track || 'internal' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.app_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Promotion:** ${{ github.event.inputs.promote == 'true' && 'Yes' || 'No' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Rollout:** ${{ github.event.inputs.rollout_percentage || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Metadata Updated:** ${{ github.event.inputs.update_metadata == 'true' && 'Yes' || 'No' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 App Information" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package:** me.ahmetcetinkaya.whph" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version Code:** ${{ steps.app_version.outputs.build-number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version Name:** ${{ steps.app_version.outputs.version-number }}" >> $GITHUB_STEP_SUMMARY
+
