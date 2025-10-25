@@ -9,7 +9,7 @@ on:
 jobs:
   deploy-to-internal:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.workflow == 'Release All Platforms' }}
     
     steps:
       - name: Checkout code
@@ -17,6 +17,45 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           submodules: false
+
+      - name: Get tag name from release workflow
+        id: get_tag
+        run: |
+          # Get the tag name from the release workflow outputs
+          echo "Getting tag information..."
+          
+          # Check if this is a tag-based release by looking for successful CI runs with tag names
+          CI_WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
+          TAG_FOUND=""
+          
+          for workflow in "${CI_WORKFLOWS[@]}"; do
+            echo "Checking workflow: $workflow"
+            # Look for successful runs with tag names
+            TAG_RUN=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,headBranch,conclusion --jq ".[] | select(.conclusion == \"success\" and (.headBranch | startswith(\"v\") or .headBranch | startswith(\"refs/tags/v\"))) | .headBranch" | head -1)
+            
+            if [[ -n "$TAG_RUN" ]]; then
+              # Extract tag name (remove refs/tags/ prefix if present)
+              if [[ "$TAG_RUN" == refs/tags/* ]]; then
+                TAG_NAME="${TAG_RUN#refs/tags/}"
+              else
+                TAG_NAME="$TAG_RUN"
+              fi
+              
+              echo "Found tag: $TAG_NAME"
+              TAG_FOUND="$TAG_NAME"
+              break
+            fi
+          done
+          
+          if [[ -n "$TAG_FOUND" ]]; then
+            echo "tag-name=$TAG_FOUND" >> $GITHUB_OUTPUT
+            echo "tag-found=true" >> $GITHUB_OUTPUT
+          else
+            echo "tag-name=" >> $GITHUB_OUTPUT
+            echo "tag-found=false" >> $GITHUB_OUTPUT
+            echo "No tag found for this release"
+            exit 1
+          fi
 
       - name: Initialize Submodules
         uses: ./.github/actions/setup-repository
@@ -102,6 +141,7 @@ jobs:
           echo "**Version:** ${{ steps.app_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "**Track:** Internal Testing" >> $GITHUB_STEP_SUMMARY
           echo "**Trigger:** Release workflow completion (${{ github.event.workflow_run.head_branch }})" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** ${{ steps.get_tag.outputs.tag-name }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📱 App Information" >> $GITHUB_STEP_SUMMARY
           echo "- **Package:** me.ahmetcetinkaya.whph" >> $GITHUB_STEP_SUMMARY
