@@ -1,7 +1,7 @@
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 
 /// Concrete implementation of import data migration service.
 ///
@@ -53,7 +53,7 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     } catch (e) {
       throw BusinessException(
         'Invalid source version format: $sourceVersion',
-        SettingTranslationKeys.unsupportedVersionError,
+        SettingsTranslationKeys.unsupportedVersionError,
         args: {'version': sourceVersion},
       );
     }

@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
@@ -43,7 +43,7 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
     if (request.id != null) {
       setting = await _settingRepository.getById(request.id!);
       if (setting == null) {
-        throw BusinessException('Setting not found', SettingTranslationKeys.settingNotFoundError);
+        throw BusinessException('Setting not found', SettingsTranslationKeys.settingNotFoundError);
       }
 
       await _update(setting, request);

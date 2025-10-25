@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/habits/queries/get_list_habits_qu
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/ui/features/tags/services/time_data_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
@@ -21,8 +22,6 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
-  final VoidCallback? onRecordCreated;
-  final VoidCallback? onRecordDeleted;
   final bool isMiniLayout;
   final bool isDateLabelShowing;
   final int dateRange;
@@ -34,8 +33,6 @@ class HabitCard extends StatefulWidget {
     super.key,
     required this.habit,
     required this.onOpenDetails,
-    this.onRecordCreated,
-    this.onRecordDeleted,
     this.isMiniLayout = false,
     this.isDateLabelShowing = true,
     this.dateRange = 7,
@@ -52,6 +49,7 @@ class _HabitCardState extends State<HabitCard> {
   final _mediator = container.resolve<Mediator>();
   final _soundPlayer = container.resolve<acore.ISoundPlayer>();
   final _habitsService = container.resolve<HabitsService>();
+  final _timeDataService = container.resolve<TimeDataService>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
   GetListHabitRecordsQueryResponse? _habitRecords;
@@ -188,6 +186,7 @@ class _HabitCardState extends State<HabitCard> {
 
         await _refreshHabitRecords();
         _habitsService.notifyHabitRecordAdded(widget.habit.id);
+        _timeDataService.notifyTimeDataChanged();
         _soundPlayer.play(SharedSounds.done, volume: 1.0);
       },
     );
@@ -209,6 +208,7 @@ class _HabitCardState extends State<HabitCard> {
 
         await _refreshHabitRecords();
         _habitsService.notifyHabitRecordAdded(widget.habit.id);
+        _timeDataService.notifyTimeDataChanged();
         _soundPlayer.play(SharedSounds.done, volume: 1.0);
       },
     );

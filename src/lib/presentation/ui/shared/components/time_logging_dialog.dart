@@ -168,56 +168,76 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Mode selection
-            Text(
-              _getTranslation(SharedTranslationKeys.timeLoggingMode),
-              style: AppTheme.bodyLarge,
-            ),
-            const SizedBox(height: AppTheme.sizeSmall),
-            SegmentedButton<LoggingMode>(
-              segments: [
-                ButtonSegment(
-                  value: LoggingMode.addTime,
-                  label: Row(
-                    children: [
-                      Icon(
-                        Icons.add,
-                        size: 16,
+            // Mobile-friendly toggle buttons
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedMode = LoggingMode.addTime;
+                      });
+                    },
+                    icon: const Icon(Icons.add, size: 18),
+                    label: Text(_getTranslation(SharedTranslationKeys.timeLoggingAddTime)),
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor:
+                          _selectedMode == LoggingMode.addTime ? Theme.of(context).colorScheme.primaryContainer : null,
+                      foregroundColor: _selectedMode == LoggingMode.addTime
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null,
+                      side: BorderSide(
+                        color: _selectedMode == LoggingMode.addTime
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.outline,
+                        width: _selectedMode == LoggingMode.addTime ? 2 : 1,
                       ),
-                      const SizedBox(width: AppTheme.sizeSmall),
-                      Text(_getTranslation(SharedTranslationKeys.timeLoggingAddTime)),
-                    ],
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    ),
                   ),
                 ),
-                ButtonSegment(
-                  value: LoggingMode.setTotalForDay,
-                  label: Row(
-                    children: [
-                      Icon(
-                        Icons.equalizer,
-                        size: 16,
+                const SizedBox(height: AppTheme.sizeSmall),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedMode = LoggingMode.setTotalForDay;
+                      });
+                    },
+                    icon: const Icon(Icons.equalizer, size: 18),
+                    label: Text(_getTranslation(SharedTranslationKeys.timeLoggingSetTotal)),
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: _selectedMode == LoggingMode.setTotalForDay
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : null,
+                      foregroundColor: _selectedMode == LoggingMode.setTotalForDay
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : null,
+                      side: BorderSide(
+                        color: _selectedMode == LoggingMode.setTotalForDay
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.outline,
+                        width: _selectedMode == LoggingMode.setTotalForDay ? 2 : 1,
                       ),
-                      const SizedBox(width: AppTheme.sizeSmall),
-                      Text(_getTranslation(SharedTranslationKeys.timeLoggingSetTotal)),
-                    ],
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    ),
                   ),
                 ),
               ],
-              selected: {_selectedMode},
-              onSelectionChanged: (Set<LoggingMode> selection) {
-                setState(() {
-                  _selectedMode = selection.first;
-                });
-              },
             ),
-            const SizedBox(height: AppTheme.sizeLarge),
-
-            // Short description moved to top
-            Text(
-              _selectedMode == LoggingMode.addTime
-                  ? _getTranslation(SharedTranslationKeys.timeLoggingAddTimeDescription)
-                  : _getTranslation(SharedTranslationKeys.timeLoggingSetTotalDescription),
-              style: AppTheme.bodySmall.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            const SizedBox(height: AppTheme.sizeMedium),
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                _selectedMode == LoggingMode.addTime
+                    ? _getTranslation(SharedTranslationKeys.timeLoggingAddTimeDescription)
+                    : _getTranslation(SharedTranslationKeys.timeLoggingSetTotalDescription),
+                style: AppTheme.bodySmall.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: AppTheme.sizeLarge),
@@ -246,19 +266,17 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
-            Row(
-              children: [
-                Expanded(
-                  child: NumericInput(
+            Center(
+              child: Column(
+                children: [
+                  NumericInput(
                     initialValue: 0,
                     minValue: 0,
                     onValueChanged: _onHoursChanged,
                     valueSuffix: _getTranslation(SharedTranslationKeys.hours),
                   ),
-                ),
-                const SizedBox(width: AppTheme.sizeMedium),
-                Expanded(
-                  child: NumericInput(
+                  const SizedBox(height: AppTheme.sizeMedium),
+                  NumericInput(
                     initialValue: 0,
                     minValue: 0,
                     maxValue: 59,
@@ -267,8 +285,8 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                     onValueChanged: _onMinutesChanged,
                     valueSuffix: _getTranslation(SharedTranslationKeys.minutes),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
 
             if (_errorMessage != null) ...[
@@ -287,6 +305,10 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                 ),
               ),
             ],
+
+            const SizedBox(
+              height: AppTheme.sizeSmall,
+            ),
 
             // Action buttons with default style
             Row(
@@ -312,7 +334,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text(_getTranslation(SharedTranslationKeys.timeLoggingLogTime)),
+                        : Text(_getTranslation(SharedTranslationKeys.doneButton)),
                   ),
                 ),
               ],

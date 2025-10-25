@@ -1,6 +1,6 @@
-import 'package:whph/core/application/features/settings/constants/setting_translation_keys.dart' as application;
+import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart' as application;
 
-class SettingsTranslationKeys extends application.SettingTranslationKeys {
+class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   // Language Settings
   static const String languageTitle = 'settings.language.title';
   static const String languageChooseTitle = 'settings.language.choose_title';
