@@ -1,6 +1,7 @@
 name: Google Play Store Post-Release Deployment
 
 on:
+  workflow_dispatch: # Manual trigger for testing
   workflow_run:
     workflows: ["Release All Platforms"]
     types:
