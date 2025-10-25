@@ -1,0 +1,5 @@
+• Odhadovaný čas pro úkoly je nyní skutečně volitelný - můžete jej nechat prázdný bez výchozí hodnoty nula
+• Přidána možnost nastavit výchozí odhadovaný čas pro nové úkoly v nastavení
+• Vylepšeno zpracování brány firewall systému Windows pro lepší funkčnost aplikace a detekci
+• Vylepšena integrace sledování času s návyky a štítky pro lepší přehledy
+• Různá vylepšení výkonu a opravy chyb

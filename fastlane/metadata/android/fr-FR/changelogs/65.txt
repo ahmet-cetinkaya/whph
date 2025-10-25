@@ -1,0 +1,5 @@
+• Le temps estimé pour les tâches est désormais vraiment optionnel - vous pouvez le laisser vide sans qu'il soit défini par défaut sur zéro
+• Ajout de la possibilité de définir un temps estimé par défaut pour les nouvelles tâches dans les paramètres
+• Amélioration de la gestion du pare-feu Windows pour une meilleure fonctionnalité de l'application et détection
+• Intégration améliorée du suivi du temps avec les habitudes et les tags pour de meilleurs insights
+• Diverses améliorations de performances et corrections de bugs
