@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/application/features/settings/constants/setting_translation_keys.dart';
+import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 
 class GetSettingQuery implements IRequest<GetSettingQueryResponse> {
   late String? id;
@@ -55,7 +55,7 @@ class GetSettingQueryHandler implements IRequestHandler<GetSettingQuery, GetSett
       );
     }
     if (settings == null) {
-      throw BusinessException('Setting not found', SettingTranslationKeys.settingNotFoundError);
+      throw BusinessException('Setting not found', SettingsTranslationKeys.settingNotFoundError);
     }
 
     return GetSettingQueryResponse(
