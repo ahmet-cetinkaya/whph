@@ -1,0 +1,5 @@
+• Il tempo stimato per le attività è ora davvero opzionale - puoi lasciarlo vuoto senza che venga impostato automaticamente a zero
+• Aggiunta la possibilità di impostare un tempo stimato predefinito per le nuove attività nelle impostazioni
+• Migliorata la gestione del firewall di Windows per una migliore funzionalità dell'app e rilevamento
+• Integrazione migliorata del monitoraggio del tempo con abitudini e tag per migliori intuizioni
+• Varie migliorie delle prestazioni e correzioni di bug

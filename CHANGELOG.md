@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2025-10-25
+
+### Added
+- Make estimated time truly optional by treating 0 as null
+- Add default estimated time setting for tasks with UI and logic
+- Implement batch firewall rule addition for Windows and improve detection
+
+### Fixed
+- Address Gemini review feedback - remove redundant callbacks and restore UI descriptions
+- Add time data service and integrate with habit and tag components
+- Rename application layer settings translation keys file and update references
+- Replace segmented button for elapsed time dialog
+- Address final Gemini review feedback on formatting and readability
+- Resolve critical bug and improve error logging consistency
+- Address Gemini review feedback on error logging, logic, and usability
+- Improve task settings usability and error handling
+- Resolve settings logic bug for estimated time persistence
+- Address Gemini Code Assist review feedback
+- Update lcov info with revised line coverage data
+- Improve error handling in PowerShell script execution
+- Correct regex pattern and cleanup logic in PowerShell script handling
+- Fix netsh command parsing and firewall elevation issues
+- Remove obsolete firewall setup initialization
+- Improve firewall rule check for non-English systems
+- Improve firewall rule detection with PowerShell and fallback
+- Improve data migration logic and version handling
+
 ## [0.17.1] - 2025-10-13
 
 ### Added

@@ -1,0 +1,5 @@
+• El tiempo estimado para las tareas ahora es realmente opcional - puedes dejarlo en blanco sin que se establezca por defecto en cero
+• Agregada la capacidad de establecer un tiempo estimado predeterminado para nuevas tareas en configuración
+• Mejorado el manejo del firewall de Windows para una mejor funcionalidad de la aplicación y detección
+• Mejorada la integración del seguimiento del tiempo con hábitos y etiquetas para mejores insights
+• Varias mejoras de rendimiento y correcciones de errores
