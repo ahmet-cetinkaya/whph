@@ -1,0 +1,120 @@
+name: Google Play Store Post-Release Deployment
+
+on:
+  workflow_run:
+    workflows: ["Release All Platforms"]
+    types:
+      - completed
+
+jobs:
+  deploy-to-internal:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: "play-store-post-release"
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+
+      - name: Install OpenJDK 17
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y openjdk-17-jdk-headless
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: fastlane
+
+      - name: Install Fastlane dependencies
+        run: |
+          cd fastlane
+          bundle install
+        working-directory: fastlane
+
+      - name: Setup Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/android/app/whph-release.keystore
+
+      - name: Update Gradle Properties
+        run: |
+          cat << EOF > src/android/key.properties
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=whph-release.keystore
+          EOF
+
+      - name: Setup Google Play Service Account
+        run: |
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > fastlane/google-play-service-account.json
+
+      - name: Get application version
+        id: app_version
+        uses: ./.github/actions/get-app-version
+
+      - name: Remove non-Android platforms
+        run: |
+          cd src
+          rm -rf ios linux macos web windows
+
+      - name: Build Android App Bundle
+        run: |
+          cd src
+          fvm flutter build appbundle --release
+
+      - name: Deploy to Internal Testing
+        run: |
+          cd fastlane
+          
+          # Set environment variables for Fastlane
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
+          export KEYSTORE_FILE_PATH="../src/android/app/whph-release.keystore"
+          export KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
+          export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+          export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+          
+          echo "🚀 Auto-deploying version ${{ steps.app_version.outputs.version }} to internal testing after GitHub release..."
+          bundle exec fastlane deploy_internal
+
+      - name: Create post-release deployment summary
+        run: |
+          echo "## 🎮 Post-Release Deployment to Internal Testing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.app_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Track:** Internal Testing" >> $GITHUB_STEP_SUMMARY
+          echo "**Trigger:** Release workflow completion (${{ github.event.workflow_run.head_branch }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 App Information" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package:** me.ahmetcetinkaya.whph" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version Code:** ${{ steps.app_version.outputs.build-number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version Name:** ${{ steps.app_version.outputs.version-number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔄 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. ✅ GitHub release created successfully" >> $GITHUB_STEP_SUMMARY
+          echo "2. ✅ Deployed to Google Play internal testing" >> $GITHUB_STEP_SUMMARY
+          echo "3. 🔄 Test the app in internal testing" >> $GITHUB_STEP_SUMMARY
+          echo "4. 🔄 Promote to alpha when ready" >> $GITHUB_STEP_SUMMARY
+          echo "5. 🔄 Continue through beta to production" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Manual Actions Required" >> $GITHUB_STEP_SUMMARY
+          echo "- Use 'Google Play Store Deployment' workflow to promote to other tracks" >> $GITHUB_STEP_SUMMARY
+          echo "- Use 'Google Play Store Rollout Management' workflow for production rollouts" >> $GITHUB_STEP_SUMMARY

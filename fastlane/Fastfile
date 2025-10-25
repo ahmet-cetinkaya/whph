@@ -1,0 +1,284 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Build a new version for internal testing"
+  lane :build_internal do
+    gradle(
+      task: "assemble",
+      build_type: "release",
+      print_command: false,
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_FILE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"]
+      }
+    )
+  end
+
+  desc "Deploy a new version to the Google Play internal testing track"
+  lane :deploy_internal do
+    build_internal
+    
+    upload_to_play_store(
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'completed',
+      changelog: extract_changelog
+    )
+  end
+
+  desc "Deploy a new version to the Google Play alpha track"
+  lane :deploy_alpha do
+    build_internal
+    
+    upload_to_play_store(
+      track: 'alpha',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'completed',
+      changelog: extract_changelog
+    )
+  end
+
+  desc "Deploy a new version to the Google Play beta track"
+  lane :deploy_beta do
+    build_internal
+    
+    upload_to_play_store(
+      track: 'beta',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'completed',
+      changelog: extract_changelog
+    )
+  end
+
+  desc "Deploy a new version to the Google Play production track"
+  lane :deploy_production do
+    build_internal
+    
+    upload_to_play_store(
+      track: 'production',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'completed',
+      changelog: extract_changelog,
+      rollout: '0.1' # Start with 10% rollout for production
+    )
+  end
+
+  desc "Deploy a new version to the Google Play production track with full rollout"
+  lane :deploy_production_full do
+    build_internal
+    
+    upload_to_play_store(
+      track: 'production',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'completed',
+      changelog: extract_changelog,
+      rollout: '1.0' # Full rollout
+    )
+  end
+
+  desc "Update metadata for Google Play Store"
+  lane :update_metadata do
+    upload_to_play_store(
+      track: 'production',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      metadata_path: './metadata/android'
+    )
+  end
+
+  desc "Promote from internal to alpha track"
+  lane :promote_to_alpha do
+    upload_to_play_store(
+      track: 'alpha',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      from_track: 'internal',
+      promote_track: 'alpha',
+      release_status: 'completed'
+    )
+  end
+
+  desc "Promote from alpha to beta track"
+  lane :promote_to_beta do
+    upload_to_play_store(
+      track: 'beta',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      from_track: 'alpha',
+      promote_track: 'beta',
+      release_status: 'completed'
+    )
+  end
+
+  desc "Promote from beta to production track"
+  lane :promote_to_production do
+    upload_to_play_store(
+      track: 'production',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      from_track: 'beta',
+      promote_track: 'production',
+      release_status: 'completed',
+      rollout: '0.1' # Start with 10% rollout
+    )
+  end
+
+  desc "Increase production rollout percentage"
+  lane :increase_rollout do
+    # Get current rollout status
+    current_rollout = get_current_rollout_percentage
+    
+    # Calculate next rollout step
+    next_rollout = calculate_next_rollout(current_rollout)
+    
+    upload_to_play_store(
+      track: 'production',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      rollout: next_rollout.to_s,
+      release_status: 'completed'
+    )
+    
+    UI.message("Rollout increased from #{current_rollout * 100}% to #{next_rollout * 100}%")
+  end
+
+  desc "Halt production rollout"
+  lane :halt_rollout do
+    upload_to_play_store(
+      track: 'production',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      rollout: '0.0',
+      release_status: 'halted'
+    )
+  end
+
+  desc "Resume production rollout"
+  lane :resume_rollout do
+    upload_to_play_store(
+      track: 'production',
+      json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: 'completed'
+    )
+  end
+
+  # Error handling
+  error do |lane, exception|
+    UI.error("Lane #{lane} failed with exception: #{exception}")
+  end
+
+  private_lane :extract_changelog do
+    # Get version from pubspec.yaml
+    pubspec_path = File.join(Dir.pwd, '..', 'src', 'pubspec.yaml')
+    version_line = File.readlines(pubspec_path).find { |line| line.match(/^version:/) }
+    version = version_line.split(' ')[1].strip
+    
+    # Extract version number (without build number)
+    version_number = version.split('+')[0]
+    
+    # Look for changelog in metadata directory
+    changelog_path = File.join(Dir.pwd, 'metadata', 'android', 'en-US', 'changelogs', "#{version_number}.txt")
+    
+    if File.exist?(changelog_path)
+      File.read(changelog_path).strip
+    else
+      # Fallback to generic changelog
+      "Bug fixes and performance improvements for version #{version_number}"
+    end
+  end
+
+  private_lane :get_current_rollout_percentage do
+    # This would require additional API calls to get current rollout status
+    # For now, return a default value
+    0.1
+  end
+
+  private_lane :calculate_next_rollout do |current_rollout|
+    case current_rollout
+    when 0.1
+      0.2
+    when 0.2
+      0.5
+    when 0.5
+      1.0
+    else
+      1.0
+    end
+  end
+end

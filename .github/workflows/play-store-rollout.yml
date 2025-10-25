@@ -1,0 +1,101 @@
+name: Google Play Store Rollout Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Rollout action'
+        required: true
+        default: 'increase'
+        type: choice
+        options:
+          - increase
+          - halt
+          - resume
+          - full
+      track:
+        description: 'Track (only production supported for rollout management)'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+
+jobs:
+  manage-rollout:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Ruby and Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: fastlane
+
+      - name: Install Fastlane dependencies
+        run: |
+          cd fastlane
+          bundle install
+        working-directory: fastlane
+
+      - name: Setup Google Play Service Account
+        run: |
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > fastlane/google-play-service-account.json
+
+      - name: Manage Rollout
+        run: |
+          cd fastlane
+          
+          # Set environment variables for Fastlane
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
+          
+          case "${{ github.event.inputs.action }}" in
+            "increase")
+              echo "📈 Increasing rollout percentage..."
+              bundle exec fastlane increase_rollout
+              ;;
+            "halt")
+              echo "⏸️ Halting rollout..."
+              bundle exec fastlane halt_rollout
+              ;;
+            "resume")
+              echo "▶️ Resuming rollout..."
+              bundle exec fastlane resume_rollout
+              ;;
+            "full")
+              echo "🚀 Deploying full rollout..."
+              bundle exec fastlane deploy_production_full
+              ;;
+          esac
+
+      - name: Create rollout summary
+        run: |
+          echo "## 📊 Rollout Management Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** ${{ github.event.inputs.action }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Track:** ${{ github.event.inputs.track }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔄 Actions Performed" >> $GITHUB_STEP_SUMMARY
+          case "${{ github.event.inputs.action }}" in
+            "increase")
+              echo "- ✅ Rollout percentage increased" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "halt")
+              echo "- ⏸️ Rollout halted" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "resume")
+              echo "- ▶️ Rollout resumed" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "full")
+              echo "- 🚀 Full rollout deployed" >> $GITHUB_STEP_SUMMARY
+              ;;
+          esac
