@@ -22,8 +22,6 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
-  final VoidCallback? onRecordCreated;
-  final VoidCallback? onRecordDeleted;
   final bool isMiniLayout;
   final bool isDateLabelShowing;
   final int dateRange;
@@ -35,8 +33,6 @@ class HabitCard extends StatefulWidget {
     super.key,
     required this.habit,
     required this.onOpenDetails,
-    this.onRecordCreated,
-    this.onRecordDeleted,
     this.isMiniLayout = false,
     this.isDateLabelShowing = true,
     this.dateRange = 7,

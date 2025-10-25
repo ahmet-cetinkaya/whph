@@ -227,6 +227,19 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                 ),
               ],
             ),
+            const SizedBox(height: AppTheme.sizeMedium),
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                _selectedMode == LoggingMode.addTime
+                    ? _getTranslation(SharedTranslationKeys.timeLoggingAddTimeDescription)
+                    : _getTranslation(SharedTranslationKeys.timeLoggingSetTotalDescription),
+                style: AppTheme.bodySmall.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
             const SizedBox(height: AppTheme.sizeLarge),
 
             // Date selection

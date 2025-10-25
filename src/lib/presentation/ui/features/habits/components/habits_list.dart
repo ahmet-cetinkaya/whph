@@ -310,8 +310,6 @@ class HabitsListState extends State<HabitsList> {
                 isMiniLayout: true,
                 dateRange: widget.dateRange,
                 onOpenDetails: () => widget.onClickHabit(habit),
-                onRecordCreated: () => _onHabitRecordChanged(),
-                onRecordDeleted: () => _onHabitRecordChanged(),
                 isDense: true,
                 showDragHandle:
                     widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
@@ -367,8 +365,6 @@ class HabitsListState extends State<HabitsList> {
                 isMiniLayout: true,
                 dateRange: widget.dateRange,
                 onOpenDetails: () => widget.onClickHabit(habit),
-                onRecordCreated: () => _onHabitRecordChanged(),
-                onRecordDeleted: () => _onHabitRecordChanged(),
                 isDense: true,
               ),
             ),
@@ -391,8 +387,6 @@ class HabitsListState extends State<HabitsList> {
           isMiniLayout: false,
           dateRange: widget.dateRange,
           isDateLabelShowing: false,
-          onRecordCreated: () => widget.onHabitCompleted?.call(),
-          onRecordDeleted: () => widget.onHabitCompleted?.call(),
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           showDragHandle:
               widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
@@ -604,10 +598,7 @@ class HabitsListState extends State<HabitsList> {
     _backLastScrollPosition();
   }
 
-  void _onHabitRecordChanged() {
-    refresh();
-    widget.onHabitCompleted?.call();
-  }
+
 }
 
 class FilterContext {
