@@ -103,17 +103,27 @@ class HabitsListState extends State<HabitsList> {
     _habitsService.onHabitCreated.addListener(_handleHabitChange);
     _habitsService.onHabitUpdated.addListener(_handleHabitChange);
     _habitsService.onHabitDeleted.addListener(_handleHabitChange);
+    _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordChange);
   }
 
   void _removeEventListeners() {
     _habitsService.onHabitCreated.removeListener(_handleHabitChange);
     _habitsService.onHabitUpdated.removeListener(_handleHabitChange);
     _habitsService.onHabitDeleted.removeListener(_handleHabitChange);
+    _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChange);
+    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChange);
   }
 
   void _handleHabitChange() {
     if (!mounted) return;
     refresh();
+  }
+
+  void _handleHabitRecordChange() {
+    if (!mounted) return;
+    refresh();
+    widget.onHabitCompleted?.call();
   }
 
   @override
@@ -300,8 +310,6 @@ class HabitsListState extends State<HabitsList> {
                 isMiniLayout: true,
                 dateRange: widget.dateRange,
                 onOpenDetails: () => widget.onClickHabit(habit),
-                onRecordCreated: () => _onHabitRecordChanged(),
-                onRecordDeleted: () => _onHabitRecordChanged(),
                 isDense: true,
                 showDragHandle:
                     widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
@@ -357,8 +365,6 @@ class HabitsListState extends State<HabitsList> {
                 isMiniLayout: true,
                 dateRange: widget.dateRange,
                 onOpenDetails: () => widget.onClickHabit(habit),
-                onRecordCreated: () => _onHabitRecordChanged(),
-                onRecordDeleted: () => _onHabitRecordChanged(),
                 isDense: true,
               ),
             ),
@@ -381,8 +387,6 @@ class HabitsListState extends State<HabitsList> {
           isMiniLayout: false,
           dateRange: widget.dateRange,
           isDateLabelShowing: false,
-          onRecordCreated: () => widget.onHabitCompleted?.call(),
-          onRecordDeleted: () => widget.onHabitCompleted?.call(),
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           showDragHandle:
               widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
@@ -594,12 +598,7 @@ class HabitsListState extends State<HabitsList> {
     _backLastScrollPosition();
   }
 
-  void _onHabitRecordChanged() {
-    Future.delayed(const Duration(seconds: 3), () {
-      refresh();
-      widget.onHabitCompleted?.call();
-    });
-  }
+
 }
 
 class FilterContext {

@@ -7,6 +7,7 @@ import 'package:whph/presentation/ui/features/habits/services/habits_service.dar
 import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
+import 'package:whph/presentation/ui/features/tags/services/time_data_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_confetti_animation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
@@ -34,6 +35,7 @@ void registerUIPresentation(IContainer container) {
         container.resolve<ILogger>(),
       ));
   container.registerSingleton<TagsService>((_) => TagsService());
+  container.registerSingleton<TimeDataService>((_) => TimeDataService());
   container
       .registerSingleton<ISoundPlayer>((_) => Platform.isWindows ? WindowsAudioPlayer() : AudioPlayerSoundPlayer());
   container.registerSingleton<ITranslationService>((_) => TranslationService());

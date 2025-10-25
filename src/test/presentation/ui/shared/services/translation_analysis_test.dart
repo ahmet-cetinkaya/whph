@@ -115,7 +115,7 @@ class TranslationKeysAnalyzer {
     'lib/core/application/features/calendar/constants/calendar_translation_keys.dart',
     'lib/core/application/features/habits/constants/habit_translation_keys.dart',
     'lib/core/application/features/notes/constants/note_translation_keys.dart',
-    'lib/core/application/features/settings/constants/setting_translation_keys.dart',
+    'lib/core/application/features/settings/constants/settings_translation_keys.dart',
     'lib/core/application/features/sync/constants/sync_translation_keys.dart',
     'lib/core/application/features/tags/constants/tag_translation_keys.dart',
     'lib/core/application/features/tasks/constants/task_translation_keys.dart',
