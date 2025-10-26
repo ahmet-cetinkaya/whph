@@ -18,22 +18,37 @@ default_platform(:android)
 platform :android do
   desc "Runs all the tests"
   lane :test do
-    gradle(task: "test")
+    Dir.chdir("../src/android") do
+      sh("../../gradlew", "test")
+    end
   end
 
   desc "Build a new version for internal testing"
   lane :build_internal do
-    gradle(
-      task: "assemble",
-      build_type: "release",
-      print_command: false,
-      properties: {
-        "android.injected.signing.store.file" => ENV["KEYSTORE_FILE_PATH"],
-        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
-        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
-        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"]
-      }
-    )
+    UI.important("🔍 Validating build configuration...")
+
+    # Validate environment variables
+    validate_signing_config
+
+    # Check if Flutter-generated AAB exists
+    aab_path = File.join(Dir.pwd, '..', 'src', 'android', 'build', 'app', 'outputs', 'bundle', 'release', 'app-release.aab')
+    unless File.exist?(aab_path)
+      UI.error("❌ Flutter-generated AAB not found at: #{aab_path}")
+      UI.error("Please ensure 'flutter build appbundle --release' was executed successfully")
+      raise "AAB file not found"
+    end
+
+    UI.success("✅ Flutter-generated AAB found: #{aab_path}")
+
+    # Get AAB file size for validation
+    aab_size = File.size(aab_path)
+    UI.important("📦 AAB file size: #{format_bytes(aab_size)}")
+
+    if aab_size < 1_000_000 # Less than 1MB is suspicious
+      UI.error("⚠️ AAB file size seems too small (#{format_bytes(aab_size)}), please verify the build")
+    end
+
+    UI.success("✅ Build validation completed successfully")
   end
 
   desc "Deploy a new version to the Google Play internal testing track"
@@ -42,7 +57,7 @@ platform :android do
     
     upload_to_play_store(
       track: 'internal',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      aab: '../src/android/build/app/outputs/bundle/release/app-release.aab',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_metadata: false,
@@ -59,7 +74,7 @@ platform :android do
     
     upload_to_play_store(
       track: 'alpha',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      aab: '../src/android/build/app/outputs/bundle/release/app-release.aab',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_metadata: false,
@@ -76,7 +91,7 @@ platform :android do
     
     upload_to_play_store(
       track: 'beta',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      aab: '../src/android/build/app/outputs/bundle/release/app-release.aab',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_metadata: false,
@@ -93,7 +108,7 @@ platform :android do
     
     upload_to_play_store(
       track: 'production',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      aab: '../src/android/build/app/outputs/bundle/release/app-release.aab',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_metadata: false,
@@ -111,7 +126,7 @@ platform :android do
     
     upload_to_play_store(
       track: 'production',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      aab: '../src/android/build/app/outputs/bundle/release/app-release.aab',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_metadata: false,
@@ -240,7 +255,20 @@ platform :android do
 
   # Error handling
   error do |lane, exception|
-    UI.error("Lane #{lane} failed with exception: #{exception}")
+    UI.error("❌ Lane #{lane} failed with exception: #{exception}")
+    UI.error("📍 Backtrace: #{exception.backtrace.join("\n")}")
+
+    # Provide helpful troubleshooting information
+    case lane
+    when :deploy_internal, :build_internal
+      UI.important("🔧 Troubleshooting tips for build failures:")
+      UI.important("1. Verify Flutter build completed successfully")
+      UI.important("2. Check signing configuration in key.properties")
+      UI.important("3. Ensure keystore file exists and is accessible")
+      UI.important("4. Verify environment variables are set correctly")
+    else
+      UI.important("🔧 Check Fastlane configuration and Google Play credentials")
+    end
   end
 
   private_lane :extract_changelog do
@@ -280,5 +308,89 @@ platform :android do
     else
       1.0
     end
+  end
+
+  # Validate signing configuration
+  private_lane :validate_signing_config do
+    UI.important("🔐 Validating signing configuration...")
+
+    required_vars = %w[KEYSTORE_FILE_PATH KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD GOOGLE_PLAY_SERVICE_ACCOUNT_KEY]
+    missing_vars = required_vars.select { |var| ENV[var].nil? || ENV[var].empty? }
+
+    unless missing_vars.empty?
+      UI.error("❌ Missing required environment variables: #{missing_vars.join(', ')}")
+      raise "Missing signing configuration"
+    end
+
+    # Validate keystore file exists
+    keystore_path = ENV["KEYSTORE_FILE_PATH"]
+    unless File.exist?(keystore_path)
+      UI.error("❌ Keystore file not found: #{keystore_path}")
+      raise "Keystore file not found"
+    end
+
+    # Validate Google Play service account file exists
+    service_account_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"]
+    unless File.exist?(service_account_path)
+      UI.error("❌ Google Play service account file not found: #{service_account_path}")
+      raise "Service account file not found"
+    end
+
+    # Validate keystore file size (should be more than a few KB)
+    keystore_size = File.size(keystore_path)
+    if keystore_size < 1024
+      UI.error("⚠️ Keystore file seems too small: #{format_bytes(keystore_size)}")
+    end
+
+    UI.success("✅ Signing configuration validated successfully")
+    UI.important("📁 Keystore: #{keystore_path} (#{format_bytes(keystore_size)})")
+    UI.important("🔑 Key Alias: #{ENV["KEY_ALIAS"]}")
+    UI.important("📄 Service Account: #{service_account_path}")
+  end
+
+  # Format bytes for human readable output
+  private_lane :format_bytes do |bytes|
+    units = ['B', 'KB', 'MB', 'GB']
+    size = bytes.to_f
+    unit_index = 0
+
+    while size >= 1024 && unit_index < units.length - 1
+      size /= 1024
+      unit_index += 1
+    end
+
+    "#{size.round(2)} #{units[unit_index]}"
+  end
+
+  # Validate AAB file integrity
+  private_lane :validate_aab_file do |aab_path|
+    UI.important("🔍 Validating AAB file integrity...")
+
+    unless File.exist?(aab_path)
+      UI.error("❌ AAB file not found: #{aab_path}")
+      raise "AAB file not found"
+    end
+
+    # Check file size
+    file_size = File.size(aab_path)
+    UI.important("📦 AAB file size: #{format_bytes(file_size)}")
+
+    if file_size < 1_000_000 # Less than 1MB
+      UI.error("⚠️ AAB file size seems too small: #{format_bytes(file_size)}")
+      raise "AAB file too small"
+    end
+
+    if file_size > 200_000_000 # More than 200MB
+      UI.error("⚠️ AAB file size seems too large: #{format_bytes(file_size)}")
+      raise "AAB file too large"
+    end
+
+    # Check file extension
+    unless aab_path.end_with?('.aab')
+      UI.error("❌ Invalid file extension. Expected .aab file")
+      raise "Invalid file extension"
+    end
+
+    UI.success("✅ AAB file validation passed")
   end
 end

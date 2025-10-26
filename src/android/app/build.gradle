@@ -50,10 +50,26 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            if (keystoreProperties['keyAlias']) {
+                keyAlias keystoreProperties['keyAlias']
+            }
+            if (keystoreProperties['keyPassword']) {
+                keyPassword keystoreProperties['keyPassword']
+            }
+            if (keystoreProperties['storeFile']) {
+                storeFile file(keystoreProperties['storeFile'])
+            }
+            if (keystoreProperties['storePassword']) {
+                storePassword keystoreProperties['storePassword']
+            }
+
+            // Add validation for signing configuration
+            def storeFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            if (!storeFile || !storeFile.exists()) {
+                println("WARNING: Keystore file not found: ${keystoreProperties['storeFile']}")
+            } else {
+                println("Keystore file found: ${storeFile.absolutePath}")
+            }
         }
     }
 

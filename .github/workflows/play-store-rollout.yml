@@ -43,18 +43,16 @@ jobs:
 
       - name: Install Fastlane dependencies
         run: |
-          cd fastlane
           bundle install
         working-directory: fastlane
 
       - name: Setup Google Play Service Account
         run: |
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > fastlane/google-play-service-account.json
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > ./google-play-service-account.json
+        working-directory: fastlane
 
       - name: Manage Rollout
         run: |
-          cd fastlane
-          
           # Set environment variables for Fastlane
           export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
           
@@ -76,6 +74,7 @@ jobs:
               bundle exec fastlane deploy_production_full
               ;;
           esac
+        working-directory: fastlane
 
       - name: Create rollout summary
         run: |

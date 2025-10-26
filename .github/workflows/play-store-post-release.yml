@@ -1,6 +1,7 @@
 name: Google Play Store Post-Release Deployment
 
 on:
+  workflow_dispatch: # Manual trigger for testing
   workflow_run:
     workflows: ["Release All Platforms"]
     types:
@@ -9,53 +10,81 @@ on:
 jobs:
   deploy-to-internal:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.workflow == 'Release All Platforms' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.workflow == 'Release All Platforms') }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0  # Fetch all history for tags
           submodules: false
 
       - name: Get tag name from release workflow
         id: get_tag
         run: |
-          # Get the tag name from the release workflow outputs
+          # Get the tag name from the release workflow outputs or manual input
           echo "Getting tag information..."
           
-          # Check if this is a tag-based release by looking for successful CI runs with tag names
-          CI_WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
-          TAG_FOUND=""
-          
-          for workflow in "${CI_WORKFLOWS[@]}"; do
-            echo "Checking workflow: $workflow"
-            # Look for successful runs with tag names
-            TAG_RUN=$(gh run list --workflow="$workflow" --limit=10 --json databaseId,headBranch,conclusion --jq ".[] | select(.conclusion == \"success\" and (.headBranch | startswith(\"v\") or .headBranch | startswith(\"refs/tags/v\"))) | .headBranch" | head -1)
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Manual dispatch - using latest tag"
+            # Get the latest tag from the repository
+            LATEST_TAG=$(git describe --tags --abbrev=0)
+            echo "Latest tag: $LATEST_TAG"
             
-            if [[ -n "$TAG_RUN" ]]; then
-              # Extract tag name (remove refs/tags/ prefix if present)
-              if [[ "$TAG_RUN" == refs/tags/* ]]; then
-                TAG_NAME="${TAG_RUN#refs/tags/}"
-              else
-                TAG_NAME="$TAG_RUN"
-              fi
+            if [[ -n "$LATEST_TAG" && "$LATEST_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              TAG_NAME="$LATEST_TAG"
+              TAG_VERSION="${TAG_NAME#v}"
+              # Get the app version from pubspec.yaml
+              APP_VERSION=$(awk '/^version:/ {print $2}' src/pubspec.yaml)
               
-              echo "Found tag: $TAG_NAME"
-              TAG_FOUND="$TAG_NAME"
-              break
+              echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+              echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
+              echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+              echo "tag-found=true" >> $GITHUB_OUTPUT
+              echo "✅ Using latest tag: $TAG_NAME"
+            else
+              echo "tag-name=" >> $GITHUB_OUTPUT
+              echo "tag-found=false" >> $GITHUB_OUTPUT
+              echo "❌ No valid tag found"
+              exit 1
             fi
-          done
-          
-          if [[ -n "$TAG_FOUND" ]]; then
-            echo "tag-name=$TAG_FOUND" >> $GITHUB_OUTPUT
-            echo "tag-found=true" >> $GITHUB_OUTPUT
           else
-            echo "tag-name=" >> $GITHUB_OUTPUT
-            echo "tag-found=false" >> $GITHUB_OUTPUT
-            echo "No tag found for this release"
-            exit 1
+            # Get the release workflow run ID
+            RELEASE_RUN_ID="${{ github.event.workflow_run.id }}"
+            echo "Release workflow run ID: $RELEASE_RUN_ID"
+            
+            # Get the outputs from the release workflow
+            TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-name"]')
+            TAG_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-version"]')
+            APP_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["app-version"]')
+            
+            echo "Tag name: $TAG_NAME"
+            echo "Tag version: $TAG_VERSION"
+            echo "App version: $APP_VERSION"
+            
+            if [[ -n "$TAG_NAME" && "$TAG_NAME" != "null" ]]; then
+              echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+              echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
+              echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+              echo "tag-found=true" >> $GITHUB_OUTPUT
+              echo "✅ Successfully retrieved tag information from release workflow"
+            else
+              echo "tag-name=" >> $GITHUB_OUTPUT
+              echo "tag-found=false" >> $GITHUB_OUTPUT
+              echo "❌ No tag found in release workflow outputs"
+              echo "Available outputs:"
+              gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs'
+              exit 1
+            fi
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout specific tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.get_tag.outputs.tag-name }}
+          submodules: false
 
       - name: Initialize Submodules
         uses: ./.github/actions/setup-repository
@@ -85,7 +114,6 @@ jobs:
 
       - name: Install Fastlane dependencies
         run: |
-          cd fastlane
           bundle install
         working-directory: fastlane
 
@@ -102,13 +130,43 @@ jobs:
           storeFile=whph-release.keystore
           EOF
 
+      - name: Validate Signing Configuration
+        run: |
+          echo "🔐 Validating signing configuration..."
+
+          # Check if keystore was created successfully
+          if [[ ! -f "src/android/app/whph-release.keystore" ]]; then
+            echo "❌ Keystore file not found"
+            exit 1
+          fi
+
+          # Validate keystore file size
+          KEYSTORE_SIZE=$(stat -c%s "src/android/app/whph-release.keystore")
+          if [[ $KEYSTORE_SIZE -lt 1024 ]]; then
+            echo "⚠️ Keystore file seems too small: ${KEYSTORE_SIZE} bytes"
+          fi
+
+          echo "✅ Keystore file validated (${KEYSTORE_SIZE} bytes)"
+
+          # Validate key.properties
+          if [[ ! -f "src/android/key.properties" ]]; then
+            echo "❌ key.properties file not found"
+            exit 1
+          fi
+
+          echo "✅ key.properties file validated"
+
       - name: Setup Google Play Service Account
         run: |
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > fastlane/google-play-service-account.json
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > ./google-play-service-account.json
+        working-directory: fastlane
 
-      - name: Get application version
+      - name: Set application version from release workflow
         id: app_version
-        uses: ./.github/actions/get-app-version
+        run: |
+          echo "version=${{ steps.get_tag.outputs.app-version }}" >> $GITHUB_OUTPUT
+          echo "version-number=${{ steps.get_tag.outputs.tag-version }}" >> $GITHUB_OUTPUT
+          echo "build-number=$(echo "${{ steps.get_tag.outputs.app-version }}" | cut -d'+' -f2)" >> $GITHUB_OUTPUT
 
       - name: Remove non-Android platforms
         run: |
@@ -117,22 +175,131 @@ jobs:
 
       - name: Build Android App Bundle
         run: |
+          echo "🚀 Building Android App Bundle with Flutter..."
           cd src
-          fvm flutter build appbundle --release
+
+          # Clean previous builds to ensure fresh state
+          echo "🧹 Cleaning previous builds..."
+          fvm flutter clean
+          rm -rf android/app/build/
+
+          # Get dependencies
+          echo "📦 Getting Flutter dependencies..."
+          fvm flutter pub get
+
+          # Display build environment info
+          echo "📋 Build environment information:"
+          fvm flutter doctor -v
+
+          # Check Android build configuration
+          echo "🔍 Android build configuration:"
+          if [[ -f "android/key.properties" ]]; then
+            echo "✅ key.properties found"
+            echo "Keystore file: $(grep 'storeFile=' android/key.properties | cut -d'=' -f2)"
+            echo "Key alias: $(grep 'keyAlias=' android/key.properties | cut -d'=' -f2)"
+          else
+            echo "❌ key.properties not found"
+            exit 1
+          fi
+
+          # Build with verbose output for debugging
+          echo "🔨 Building AAB..."
+          fvm flutter build appbundle --release --verbose \
+            --dart-define=DEPLOYMENT_ENVIRONMENT=production \
+            --no-tree-shake-icons
+
+          # Validate build output
+          AAB_PATH="android/build/app/outputs/bundle/release/app-release.aab"
+          if [[ ! -f "$AAB_PATH" ]]; then
+            echo "❌ AAB build failed - output file not found: $AAB_PATH"
+            echo "Build artifacts search results:"
+            find android/build -name "*.aab" -o -name "*.apk" 2>/dev/null || echo "No build artifacts found"
+            echo "Build directory contents:"
+            find android/build -type f 2>/dev/null || echo "Build directory is empty"
+            exit 1
+          fi
+
+          AAB_SIZE=$(stat -c%s "$AAB_PATH")
+          echo "✅ AAB build successful: $AAB_PATH (${AAB_SIZE} bytes)"
+
+          if [[ $AAB_SIZE -lt 1000000 ]]; then
+            echo "⚠️ AAB file seems too small: ${AAB_SIZE} bytes"
+          fi
+
+          # Additional validation using aapt2 if available
+          if command -v aapt2 &> /dev/null; then
+            echo "🔍 Validating AAB with aapt2..."
+            aapt2 dump badging "$AAB_PATH" | head -5 || echo "aapt2 validation failed (non-critical)"
+          fi
 
       - name: Deploy to Internal Testing
         run: |
-          cd fastlane
-          
+          echo "🚀 Preparing to deploy version ${{ steps.app_version.outputs.version }} to internal testing..."
+
           # Set environment variables for Fastlane
           export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
           export KEYSTORE_FILE_PATH="../src/android/app/whph-release.keystore"
           export KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
           export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
           export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
-          
-          echo "🚀 Auto-deploying version ${{ steps.app_version.outputs.version }} to internal testing after GitHub release..."
-          bundle exec fastlane deploy_internal
+
+          # Validate environment variables
+          echo "🔍 Validating deployment configuration..."
+          echo "Service Account: $GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"
+          echo "Keystore Path: $KEYSTORE_FILE_PATH"
+          echo "Key Alias: $KEY_ALIAS"
+
+          # Validate AAB file exists before deployment
+          AAB_PATH="../src/android/build/app/outputs/bundle/release/app-release.aab"
+          if [[ ! -f "$AAB_PATH" ]]; then
+            echo "❌ AAB file not found: $AAB_PATH"
+            echo "Build artifacts:"
+            find ../src/android/build -name "*.aab" -o -name "*.apk" 2>/dev/null || echo "No build artifacts found"
+            exit 1
+          fi
+
+          AAB_SIZE=$(stat -c%s "$AAB_PATH")
+          echo "📦 AAB file ready: $AAB_PATH (${AAB_SIZE} bytes)"
+
+          # Run Fastlane with detailed output
+          echo "🚀 Starting Fastlane deployment..."
+          bundle exec fastlane deploy_internal --verbose
+
+          echo "✅ Deployment completed successfully!"
+        working-directory: fastlane
+
+      - name: Debug Information (if failed)
+        if: failure()
+        run: |
+          echo "🐛 Debugging information for failed deployment:"
+          echo ""
+          echo "📁 Android build directory:"
+          find src/android/build -type f 2>/dev/null || echo "No build files found"
+          echo ""
+          echo "🔑 Signing configuration:"
+          if [[ -f "src/android/key.properties" ]]; then
+            echo "key.properties exists"
+            echo "Store file: $(grep 'storeFile=' src/android/key.properties | cut -d'=' -f2 || echo 'Not found')"
+          else
+            echo "key.properties missing"
+          fi
+          echo ""
+          echo "📦 Keystore file:"
+          if [[ -f "src/android/app/whph-release.keystore" ]]; then
+            echo "Keystore exists ($(stat -c%s src/android/app/whph-release.keystore) bytes)"
+          else
+            echo "Keystore missing"
+          fi
+          echo ""
+          echo "🏪 Google Play service account:"
+          if [[ -f "fastlane/google-play-service-account.json" ]]; then
+            echo "Service account file exists"
+          else
+            echo "Service account file missing"
+          fi
+          echo ""
+          echo "📊 Fastlane status:"
+          cd fastlane && bundle exec fastlane lanes || echo "Could not list Fastlane lanes"
 
       - name: Create post-release deployment summary
         run: |
