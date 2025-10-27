@@ -597,8 +597,6 @@ class HabitsListState extends State<HabitsList> {
     await _getHabits(pageIndex: _habitList!.pageIndex + 1);
     _backLastScrollPosition();
   }
-
-
 }
 
 class FilterContext {
