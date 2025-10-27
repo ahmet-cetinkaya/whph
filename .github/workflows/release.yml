@@ -117,6 +117,10 @@ jobs:
     if: ${{ needs.check-workflows.outputs.should-release == 'true' }}
     permissions:
       contents: write
+    outputs:
+      tag-name: ${{ needs.check-workflows.outputs.tag-name }}
+      tag-version: ${{ needs.check-workflows.outputs.tag-version }}
+      app-version: ${{ needs.check-workflows.outputs.app-version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
