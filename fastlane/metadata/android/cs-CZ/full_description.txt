@@ -1,25 +1,16 @@
 WHPH je komplexní aplikace pro produktivitu navržená tak, aby vám pomohla spravovat úkoly, rozvíjet nové návyky a optimalizovat váš čas. Sleduje používání aplikací pro zlepšení soustředění, umožňuje analyzovat váš pokrok, slavit úspěchy a zůstat motivovaní.
-
-<h3>Klíčové funkce:</h3>
-<ul>
-<li><strong>Správa úkolů:</strong> Efektivně organizujte a sledujte své denní úkoly</li>
-<li><strong>Sledování návyků:</strong> Budujte a udržujte pozitivní návyky s monitorováním pokroku</li>
-<li><strong>Optimalizace času:</strong> Analyzujte vzorce využití času a zlepšete produktivitu</li>
-<li><strong>Sledování používání aplikací:</strong> Monitorujte, jak trávíte čas v různých aplikacích</li>
-<li><strong>Analýza pokroku:</strong> Prohlížejte si podrobné poznatky o vašich vzorcích produktivity</li>
-<li><strong>Systém úspěchů:</strong> Oslavujte milníky a zůstaňte motivovaní</li>
-</ul>
-
-<h3>Proč si vybrat WHPH?</h3>
-<p>WHPH kombinuje více nástrojů produktivity do jednoho sjednoceného zážitku. Ať už chcete spravovat své denní úkoly, budovat lepší návyky nebo pochopit, jak trávíte svůj čas, WHPH poskytuje poznatky a nástroje, které potřebujete ke zvýšení produktivity a dosažení svých cílů.</p>
-
-<p>Aplikace je navržena s ohledem na soukromí - všechna vaše data zůstávají na vašem zařízení, což vám dává úplnou kontrolu nad vašimi osobními informacemi o produktivitě.</p>
-
-<h3>Podporované platformy:</h3>
-<ul>
-<li>Android</li>
-<li>Windows</li>
-<li>Linux</li>
-</ul>
-
-<p>Začněte svou cestu k lepší produktivitě ještě dnes s WHPH!</p>
+Klíčové funkce:
+Správa úkolů: Efektivně organizujte a sledujte své denní úkoly
+Sledování návyků: Budujte a udržujte pozitivní návyky s monitorováním pokroku
+Optimalizace času: Analyzujte vzorce využití času a zlepšete produktivitu
+Sledování používání aplikací: Monitorujte, jak trávíte čas v různých aplikacích
+Analýza pokroku: Prohlížejte si podrobné poznatky o vašich vzorcích produktivity
+Systém úspěchů: Oslavujte milníky a zůstaňte motivovaní
+Proč si vybrat WHPH?
+WHPH kombinuje více nástrojů produktivity do jednoho sjednoceného zážitku. Ať už chcete spravovat své denní úkoly, budovat lepší návyky nebo pochopit, jak trávíte svůj čas, WHPH poskytuje poznatky a nástroje, které potřebujete ke zvýšení produktivity a dosažení svých cílů.
+Aplikace je navržena s ohledem na soukromí - všechna vaše data zůstávají na vašem zařízení, což vám dává úplnou kontrolu nad vašimi osobními informacemi o produktivitě.
+Podporované platformy:
+Android
+Windows
+Linux
+Začněte svou cestu k lepší produktivitě ještě dnes s WHPH!

@@ -1,25 +1,16 @@
 WHPH este o aplicație cuprinzătoare de productivitate concepută să vă ajute să gestionați sarcinile, să dezvoltați obiceiuri noi și să vă optimizați timpul. Urmărește utilizarea aplicațiilor pentru a îmbunătăți concentrarea, permițându-vă să vă analizați progresul, să sărbătoriți realizările și să rămâneți motivați.
-
-<h3>Caracteristici Cheie:</h3>
-<ul>
-<li><strong>Gestionarea Sarcinilor:</strong> Organizați și urmăriți eficient sarcinile zilnice</li>
-<li><strong>Urmărirea Obiceiurilor:</strong> Construiți și mențineți obiceiuri pozitive cu monitorizarea progresului</li>
-<li><strong>Optimizarea Timpului:</strong> Analizați modelele de utilizare a timpului și îmbunătățiți productivitatea</li>
-<li><strong>Urmărirea Utilizării Aplicațiilor:</strong> Monitorizați cum petreceți timpul în diferite aplicații</li>
-<li><strong>Analiza Progresului:</strong> Vizualizați informații detaliate despre modelele de productivitate</li>
-<li><strong>Sistemul de Realizări:</strong> Sărbătoriți momentele importante și rămâneți motivați</li>
-</ul>
-
-<h3>De Ce Să Alegeți WHPH?</h3>
-<p>WHPH combină multiple instrumente de productivitate într-o experiență unificată. Indiferent dacă doriți să vă gestionați sarcinile zilnice, să construiți obiceiuri mai bune sau să înțelegeți cum vă petreceți timpul, WHPH oferă perspectivele și instrumentele de care aveți nevoie pentru a vă îmbunătăți productivitatea și a vă atinge obiectivele.</p>
-
-<p>Aplicația este concepută cu confidențialitatea în minte - toate datele dvs. rămân pe dispozitivul dvs., oferindu-vă control complet asupra informațiilor personale de productivitate.</p>
-
-<h3>Platforme Suportate:</h3>
-<ul>
-<li>Android</li>
-<li>Windows</li>
-<li>Linux</li>
-</ul>
-
-<p>Începeți călătoria către o productivitate mai bună astăzi cu WHPH!</p>
+Caracteristici Cheie:
+Gestionarea Sarcinilor: Organizați și urmăriți eficient sarcinile zilnice
+Urmărirea Obiceiurilor: Construiți și mențineți obiceiuri pozitive cu monitorizarea progresului
+Optimizarea Timpului: Analizați modelele de utilizare a timpului și îmbunătățiți productivitatea
+Urmărirea Utilizării Aplicațiilor: Monitorizați cum petreceți timpul în diferite aplicații
+Analiza Progresului: Vizualizați informații detaliate despre modelele de productivitate
+Sistemul de Realizări: Sărbătoriți momentele importante și rămâneți motivați
+De Ce Să Alegeți WHPH?
+WHPH combină multiple instrumente de productivitate într-o experiență unificată. Indiferent dacă doriți să vă gestionați sarcinile zilnice, să construiți obiceiuri mai bune sau să înțelegeți cum vă petreceți timpul, WHPH oferă perspectivele și instrumentele de care aveți nevoie pentru a vă îmbunătăți productivitatea și a vă atinge obiectivele.
+Aplicația este concepută cu confidențialitatea în minte - toate datele dvs. rămân pe dispozitivul dvs., oferindu-vă control complet asupra informațiilor personale de productivitate.
+Platforme Suportate:
+Android
+Windows
+Linux
+Începeți călătoria către o productivitate mai bună astăzi cu WHPH!

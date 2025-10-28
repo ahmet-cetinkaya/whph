@@ -1,25 +1,16 @@
 WHPH, görevlerinizi yönetmenize, yeni alışkanlıklar geliştirmenize ve zamanınızı optimize etmenize yardımcı olmak için tasarlanmış kapsamlı bir üretkenlik uygulamasıdır. Odaklanmayı artırmak için uygulama kullanımını takip eder, ilerlemenizi analiz etmenize, başarıları kutlamanıza ve motive kalmanıza olanak tanır.
-
-<h3>Temel Özellikler:</h3>
-<ul>
-<li><strong>Görev Yönetimi:</strong> Günlük görevlerinizi verimli bir şekilde organize edin ve takip edin</li>
-<li><strong>Alışkanlık Takibi:</strong> İlerleme izleme ile olumlu alışkanlıklar geliştirin ve sürdürün</li>
-<li><strong>Zaman Optimizasyonu:</strong> Zaman kullanım kalıplarınızı analiz edin ve üretkenliği artırın</li>
-<li><strong>Uygulama Kullanım Takibi:</strong> Farklı uygulamalarda zamanınızı nasıl geçirdiğinizi izleyin</li>
-<li><strong>İlerleme Analizi:</strong> Üretkenlik kalıplarınız hakkında detaylı içgörüler görüntüleyin</li>
-<li><strong>Başarı Sistemi:</strong> Kilometre taşlarını kutlayın ve motive kalın</li>
-</ul>
-
-<h3>Neden WHPH'yi Seçmelisiniz?</h3>
-<p>WHPH, birden fazla üretkenlik aracını tek bir birleşik deneyimde birleştirir. Günlük görevlerinizi yönetmek, daha iyi alışkanlıklar geliştirmek veya zamanınızı nasıl geçirdiğinizi anlamak istiyorsanız, WHPH üretkenliğinizi artırmak ve hedeflerinize ulaşmak için ihtiyacınız olan içgörüleri ve araçları sağlar.</p>
-
-<p>Uygulama gizlilik gözetilerek tasarlanmıştır - tüm verileriniz cihazınızda kalır ve kişisel üretkenlik bilgileriniz üzerinde tam kontrol sahibi olursunuz.</p>
-
-<h3>Desteklenen Platformlar:</h3>
-<ul>
-<li>Android</li>
-<li>Windows</li>
-<li>Linux</li>
-</ul>
-
-<p>WHPH ile daha iyi üretkenlik yolculuğunuza bugün başlayın!</p>
+Temel Özellikler:
+Görev Yönetimi: Günlük görevlerinizi verimli bir şekilde organize edin ve takip edin
+Alışkanlık Takibi: İlerleme izleme ile olumlu alışkanlıklar geliştirin ve sürdürün
+Zaman Optimizasyonu: Zaman kullanım kalıplarınızı analiz edin ve üretkenliği artırın
+Uygulama Kullanım Takibi: Farklı uygulamalarda zamanınızı nasıl geçirdiğinizi izleyin
+İlerleme Analizi: Üretkenlik kalıplarınız hakkında detaylı içgörüler görüntüleyin
+Başarı Sistemi: Kilometre taşlarını kutlayın ve motive kalın
+Neden WHPH'yi Seçmelisiniz?
+WHPH, birden fazla üretkenlik aracını tek bir birleşik deneyimde birleştirir. Günlük görevlerinizi yönetmek, daha iyi alışkanlıklar geliştirmek veya zamanınızı nasıl geçirdiğinizi anlamak istiyorsanız, WHPH üretkenliğinizi artırmak ve hedeflerinize ulaşmak için ihtiyacınız olan içgörüleri ve araçları sağlar.
+Uygulama gizlilik gözetilerek tasarlanmıştır - tüm verileriniz cihazınızda kalır ve kişisel üretkenlik bilgileriniz üzerinde tam kontrol sahibi olursunuz.
+Desteklenen Platformlar:
+Android
+Windows
+Linux
+WHPH ile daha iyi üretkenlik yolculuğunuza bugün başlayın!

@@ -70,17 +70,15 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
-          working-directory: fastlane
+          working-directory: ./fastlane
 
       - name: Install Fastlane dependencies
         run: |
-          cd fastlane
-          bundle install
-        working-directory: fastlane
+          cd fastlane && bundle install
 
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/android/app/whph-release.keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/android/app/whph-release-key.jks
 
       - name: Update Gradle Properties
         run: |
@@ -88,12 +86,12 @@ jobs:
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
-          storeFile=whph-release.keystore
+          storeFile=whph-release-key.jks
           EOF
 
       - name: Setup Google Play Service Account
         run: |
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > fastlane/google-play-service-account.json
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_KEY }}" | base64 --decode > ./google-play-service-account.json
 
       - name: Get application version
         id: app_version
@@ -105,17 +103,31 @@ jobs:
           rm -rf ios linux macos web windows
 
       - name: Build Android App Bundle
+        timeout-minutes: 30
         run: |
           cd src
-          fvm flutter build appbundle --release
+          echo "Starting Flutter build for Android App Bundle..."
+          echo "Flutter version: $(fvm flutter --version)"
+          echo "Working directory: $(pwd)"
+          
+          # Clean build to ensure fresh state
+          fvm flutter clean
+          
+          # Get dependencies
+          fvm flutter pub get
+          
+          # Build with verbose output for debugging
+          fvm flutter build appbundle --release --verbose
+          
+          echo "Build completed successfully!"
+          echo "Generated files:"
+          find build/app/outputs/bundle/release/ -name "*.aab" -ls
 
       - name: Deploy to Google Play Store
         run: |
-          cd fastlane
-          
           # Set environment variables for Fastlane
-          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
-          export KEYSTORE_FILE_PATH="../src/android/app/whph-release.keystore"
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="../google-play-service-account.json"
+          export KEYSTORE_FILE_PATH="../src/android/app/whph-release-key.jks"
           export KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
           export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
           export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
@@ -161,13 +173,14 @@ jobs:
                 ;;
             esac
           fi
+        working-directory: fastlane
 
       - name: Update metadata if requested
         if: ${{ github.event.inputs.update_metadata == 'true' }}
         run: |
-          cd fastlane
-          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="../google-play-service-account.json"
           bundle exec fastlane update_metadata
+        working-directory: fastlane
 
       - name: Create deployment summary
         run: |
