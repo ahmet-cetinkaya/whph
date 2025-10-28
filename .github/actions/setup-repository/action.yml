@@ -8,5 +8,29 @@ runs:
       shell: bash
       run: |
         echo "Initializing acore submodule..."
-        git submodule update --init src/lib/corePackages/acore
-        echo "Acore submodule initialized successfully"
+
+        # Clean any potential submodule issues first
+        git submodule sync || echo "Submodule sync not needed"
+
+        # Initialize the acore submodule
+        if git submodule update --init --recursive src/lib/corePackages/acore; then
+          echo "✅ Acore submodule initialized successfully"
+        else
+          echo "❌ Failed to initialize acore submodule"
+          echo "🔍 Debugging submodule status:"
+          git submodule status || echo "Could not get submodule status"
+          git ls-files --stage | grep 160000 || echo "No submodules found in index"
+          exit 1
+        fi
+
+        # Verify the submodule was initialized correctly
+        if [[ -d "src/lib/corePackages/acore" && -f "src/lib/corePackages/acore/pubspec.yaml" ]]; then
+          echo "✅ Submodule verification passed"
+          echo "📁 Submodule directory: src/lib/corePackages/acore"
+          echo "📄 pubspec.yaml found: $(ls -la src/lib/corePackages/acore/pubspec.yaml)"
+        else
+          echo "❌ Submodule verification failed"
+          echo "📁 Submodule directory contents:"
+          ls -la src/lib/corePackages/acore/ 2>/dev/null || echo "Directory not found"
+          exit 1
+        fi

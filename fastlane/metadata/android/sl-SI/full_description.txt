@@ -1,25 +1,16 @@
 WHPH je celovita aplikacija za produktivnost, zasnovana za pomoč pri upravljanju nalog, razvijanju novih navad in optimizaciji vašega časa. Sledi uporabi aplikacij za izboljšanje osredotočenosti, kar vam omogoča analizirati napredek, praznovanje dosežkov in ohranjanje motivacije.
-
-<h3>Ključne Funkcije:</h3>
-<ul>
-<li><strong>Upravljanje Nalog:</strong> Učinkovito organizirajte in sledite svojim dnevnim nalogam</li>
-<li><strong>Sledenje Navad:</strong> Gradite in vzdržujte pozitivne navade z nadzorom napredka</li>
-<li><strong>Optimizacija Časa:</strong> Analizirajte vzorce uporabe časa in izboljšajte produktivnost</li>
-<li><strong>Sledenje Uporabe Aplikacij:</strong> Spremljajte, kako preživljate čas v različnih aplikacijah</li>
-<li><strong>Analiza Napredka:</strong> Oglejte si podrobne vpoglede v vaše vzorce produktivnosti</li>
-<li><strong>Sistem Dosežkov:</strong> Praznujte mejnike in ostanite motivirani</li>
-</ul>
-
-<h3>Zakaj Izbrati WHPH?</h3>
-<p>WHPH združuje več orodij za produktivnost v eno enotno izkušnjo. Ne glede na to, ali želite upravljati svoje dnevne naloge, graditi boljše navade ali razumeti, kako preživljate svoj čas, WHPH zagotavlja vpoglede in orodja, ki jih potrebujete za izboljšanje produktivnosti in doseganje ciljev.</p>
-
-<p>Aplikacija je zasnovana z mislijo na zasebnost - vsi vaši podatki ostanejo na vaši napravi, kar vam daje popoln nadzor nad vašimi osebnimi informacijami o produktivnosti.</p>
-
-<h3>Podprte Platforme:</h3>
-<ul>
-<li>Android</li>
-<li>Windows</li>
-<li>Linux</li>
-</ul>
-
-<p>Začnite svojo pot k boljši produktivnosti danes z WHPH!</p>
+Ključne Funkcije:
+Upravljanje Nalog: Učinkovito organizirajte in sledite svojim dnevnim nalogam
+Sledenje Navad: Gradite in vzdržujte pozitivne navade z nadzorom napredka
+Optimizacija Časa: Analizirajte vzorce uporabe časa in izboljšajte produktivnost
+Sledenje Uporabe Aplikacij: Spremljajte, kako preživljate čas v različnih aplikacijah
+Analiza Napredka: Oglejte si podrobne vpoglede v vaše vzorce produktivnosti
+Sistem Dosežkov: Praznujte mejnike in ostanite motivirani
+Zakaj Izbrati WHPH?
+WHPH združuje več orodij za produktivnost v eno enotno izkušnjo. Ne glede na to, ali želite upravljati svoje dnevne naloge, graditi boljše navade ali razumeti, kako preživljate svoj čas, WHPH zagotavlja vpoglede in orodja, ki jih potrebujete za izboljšanje produktivnosti in doseganje ciljev.
+Aplikacija je zasnovana z mislijo na zasebnost - vsi vaši podatki ostanejo na vaši napravi, kar vam daje popoln nadzor nad vašimi osebnimi informacijami o produktivnosti.
+Podprte Platforme:
+Android
+Windows
+Linux
+Začnite svojo pot k boljši produktivnosti danes z WHPH!
