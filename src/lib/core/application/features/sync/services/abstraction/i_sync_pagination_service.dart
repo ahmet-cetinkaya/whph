@@ -68,6 +68,10 @@ abstract class ISyncPaginationService {
   /// Clears all pending response data (should be called after processing)
   void clearPendingResponseData();
 
+  /// Validates and cleans up stale pending response data
+  /// This should be called periodically to prevent memory leaks from orphaned data
+  void validateAndCleanStalePendingData();
+
   /// Gets the last sent server page for a specific device and entity type
   int getLastSentServerPage(String deviceId, String entityType);
 
