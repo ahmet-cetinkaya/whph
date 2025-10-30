@@ -24,6 +24,8 @@ import 'package:whph/core/application/features/sync/services/sync_validation_ser
 import 'package:whph/core/application/features/sync/services/sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_data_processing_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_pagination_service.dart';
+import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
@@ -114,6 +116,11 @@ void registerSyncFeature(
   container.registerSingleton<ISyncPaginationService>((_) => SyncPaginationService(
         communicationService: container.resolve<ISyncCommunicationService>(),
         configurationService: container.resolve<ISyncConfigurationService>(),
+      ));
+
+  // Register database integrity service
+  container.registerSingleton<DatabaseIntegrityService>((_) => DatabaseIntegrityService(
+        AppDatabase.instance(),
       ));
 
   mediator

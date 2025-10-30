@@ -258,7 +258,8 @@ class SyncPaginationService implements ISyncPaginationService {
     _serverLastSentPage.clear(); // Clear the server page tracking
     _activeEntityTypes.clear();
     _isSyncCancelled = false;
-    Logger.debug('🔄 Progress tracking reset');
+    _pendingResponseData.clear(); // Clear stale pending response data
+    Logger.debug('🔄 Progress tracking reset (including pending response data)');
   }
 
   @override
@@ -578,7 +579,56 @@ class SyncPaginationService implements ISyncPaginationService {
   /// Clears all pending response data (should be called after processing)
   @override
   void clearPendingResponseData() {
+    final clearedCount = _pendingResponseData.length;
     _pendingResponseData.clear();
+    Logger.debug('🧹 Cleared $clearedCount pending response data entries');
+  }
+
+  /// Validates and cleans up stale pending response data
+  /// This should be called periodically to prevent memory leaks from orphaned data
+  @override
+  void validateAndCleanStalePendingData() {
+    if (_pendingResponseData.isEmpty) {
+      return;
+    }
+
+    final staleKeys = <String>[];
+    final now = DateTime.now();
+
+    // Check for stale pending data (older than 10 minutes)
+    const staleThreshold = Duration(minutes: 10);
+
+    _pendingResponseData.forEach((entityType, data) {
+      try {
+        // Check if the data has a timestamp we can validate
+        final syncTimestamp = data.syncDevice.createdDate;
+        if (now.difference(syncTimestamp) > staleThreshold) {
+          staleKeys.add(entityType);
+          Logger.warning(
+              '⚠️ Found stale pending sync data for $entityType (${now.difference(syncTimestamp).inMinutes} minutes old)');
+        }
+      } catch (e) {
+        // If we can't validate the timestamp, consider it stale
+        staleKeys.add(entityType);
+        Logger.warning('⚠️ Found unvalidatable pending sync data for $entityType - marking as stale');
+      }
+    });
+
+    // Remove stale entries
+    if (staleKeys.isNotEmpty) {
+      for (final key in staleKeys) {
+        _pendingResponseData.remove(key);
+        Logger.debug('🧹 Removed stale pending data for $key');
+      }
+      Logger.info('🧹 Cleaned up ${staleKeys.length} stale pending sync data entries');
+    }
+
+    // Additional safety check: if we have too much pending data, clear it all
+    if (_pendingResponseData.length > 50) {
+      Logger.warning(
+          '⚠️ Excessive pending response data (${_pendingResponseData.length} entries) - clearing all to prevent memory issues');
+      _pendingResponseData.clear();
+    }
   }
 
   /// Requests additional server pages for bidirectional sync
@@ -658,6 +708,14 @@ class SyncPaginationService implements ISyncPaginationService {
   }
 
   void dispose() {
+    Logger.debug('🗑️ Disposing SyncPaginationService and cleaning up state...');
+
+    // Clear all state to prevent memory leaks and stale data
+    resetProgress();
+
+    // Close the progress stream controller
     _progressController.close();
+
+    Logger.debug('✅ SyncPaginationService disposed successfully');
   }
 }
