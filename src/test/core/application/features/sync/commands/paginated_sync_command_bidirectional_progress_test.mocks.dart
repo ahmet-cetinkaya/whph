@@ -639,6 +639,12 @@ class MockISyncPaginationService extends _i2.Mock implements _i16.ISyncPaginatio
       );
 
   @override
+  void validateAndCleanStalePendingData() => super.noSuchMethod(
+        Invocation.method(#validateAndCleanStalePendingData, []),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   int getLastSentServerPage(String? deviceId, String? entityType) => (super.noSuchMethod(
         Invocation.method(#getLastSentServerPage, [deviceId, entityType]),
         returnValue: 0,
