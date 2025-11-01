@@ -33,7 +33,93 @@ class DesktopServerSyncService extends SyncService {
 
   final IDeviceIdService _deviceIdService;
 
-  DesktopServerSyncService(super.mediator, this._deviceIdService);
+  DesktopServerSyncService(super.mediator, this._deviceIdService) {
+    // Clean up any existing connection state at construction (fire and forget)
+    _validateAndCleanConnectionState();
+  }
+
+  /// Validates and cleans up any existing connection state
+  /// This prevents stale connection data from previous app instances
+  Future<void> _validateAndCleanConnectionState() async {
+    Logger.debug('🔍 Validating and cleaning up connection state...');
+
+    try {
+      // Clear any existing connection data that might be left from previous instances
+      final activeConnectionCount = _activeConnections.length;
+      final connectionIPCount = _connectionIPs.length;
+      final connectionTimeCount = _connectionTimes.length;
+      final connectionActivityCount = _connectionLastActivity.length;
+      final ipConnectionCount = _ipConnectionCounts.length;
+
+      if (activeConnectionCount > 0 ||
+          connectionIPCount > 0 ||
+          connectionTimeCount > 0 ||
+          connectionActivityCount > 0 ||
+          ipConnectionCount > 0) {
+        Logger.warning('⚠️ Found stale connection data from previous instance:');
+        Logger.warning('   Active connections: $activeConnectionCount');
+        Logger.warning('   Connection IPs: $connectionIPCount');
+        Logger.warning('   Connection times: $connectionTimeCount');
+        Logger.warning('   Connection activities: $connectionActivityCount');
+        Logger.warning('   IP connection counts: $ipConnectionCount');
+
+        // Force cleanup of all stale connection data
+        await _forceCleanupAllConnections();
+
+        Logger.info('🧹 Forced cleanup of stale connection data completed');
+      } else {
+        Logger.debug('✅ No stale connection data found');
+      }
+    } catch (e) {
+      Logger.error('❌ Error during connection state validation: $e');
+      // Force cleanup regardless of errors to ensure clean state
+      await _forceCleanupAllConnections();
+    }
+  }
+
+  /// Forces cleanup of all connection tracking data
+  /// This is used during startup validation and error recovery
+  Future<void> _forceCleanupAllConnections() async {
+    try {
+      // Close any lingering connections properly
+      final closeFutures = <Future>[];
+      for (final socket in List<WebSocket>.from(_activeConnections)) {
+        try {
+          if (socket.readyState != WebSocket.closed && socket.readyState != WebSocket.closing) {
+            closeFutures.add(socket.close(1001, 'Server cleaning up stale connections'));
+          }
+        } catch (e) {
+          Logger.debug('Error closing stale connection: $e');
+        }
+      }
+
+      // Wait for all close operations to complete (with timeout)
+      if (closeFutures.isNotEmpty) {
+        try {
+          await Future.wait(closeFutures).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              Logger.warning('⚠️ Some connections took too long to close, proceeding with cleanup');
+              return [];
+            },
+          );
+        } catch (e) {
+          Logger.warning('⚠️ Error during connection closure: $e');
+        }
+      }
+
+      Logger.debug('🧹 All connections closed successfully');
+    } catch (e) {
+      Logger.error('❌ Error during forced connection cleanup: $e');
+    } finally {
+      // Clear all tracking data regardless of success or failure
+      _activeConnections.clear();
+      _connectionIPs.clear();
+      _connectionTimes.clear();
+      _connectionLastActivity.clear();
+      _ipConnectionCounts.clear();
+    }
+  }
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {
@@ -580,24 +666,107 @@ class DesktopServerSyncService extends SyncService {
       _serverKeepAlive?.cancel();
       _serverKeepAlive = null;
 
-      // Close all active connections with proper cleanup
-      for (final ws in List<WebSocket>.from(_activeConnections)) {
-        try {
-          await ws.close(1001, 'Server shutting down');
-        } catch (e) {
-          Logger.debug('Error closing WebSocket connection: $e');
-        }
-        // Ensure cleanup happens for each connection
-        _cleanupConnection(ws);
-      }
-      // All connections have been cleaned up via _cleanupConnection
+      // Enhanced cleanup: ensure all connections are properly closed and cleaned up
+      await _forceCloseAllConnections();
 
       // Close the server
-      await _server?.close();
+      try {
+        await _server?.close();
+        Logger.debug('✅ Server socket closed successfully');
+      } catch (e) {
+        Logger.warning('⚠️ Error closing server socket: $e');
+      }
       _server = null;
       _isServerMode = false;
 
-      Logger.info('✅ Desktop WebSocket server stopped');
+      // Final validation to ensure clean state
+      await _validateCleanShutdown();
+
+      Logger.info('✅ Desktop WebSocket server stopped with enhanced cleanup');
+    }
+  }
+
+  /// Forces closure of all active connections with enhanced error handling
+  Future<void> _forceCloseAllConnections() async {
+    final connectionsToClose = List<WebSocket>.from(_activeConnections);
+
+    if (connectionsToClose.isEmpty) {
+      Logger.debug('📭 No active connections to close');
+      return;
+    }
+
+    Logger.info('🔒 Force closing ${connectionsToClose.length} active connections...');
+
+    // Close all connections concurrently with timeout
+    final futures = connectionsToClose.map((ws) async {
+      try {
+        if (ws.readyState != WebSocket.closed && ws.readyState != WebSocket.closing) {
+          await ws.close(1001, 'Server shutting down').timeout(
+            const Duration(seconds: 3),
+            onTimeout: () {
+              Logger.warning('⚠️ Connection close timeout, forcing closure');
+              return ws.close();
+            },
+          );
+        }
+      } catch (e) {
+        Logger.warning('⚠️ Error closing connection: $e');
+      } finally {
+        // Always cleanup tracking data, even if close fails
+        _cleanupConnection(ws);
+      }
+    });
+
+    // Wait for all connections to close (with timeout)
+    try {
+      await Future.wait(futures).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          Logger.warning('⚠️ Some connections took too long to close, proceeding with cleanup');
+          return []; // Return empty list to satisfy the Future.wait return type
+        },
+      );
+    } catch (e) {
+      Logger.warning('⚠️ Error during connection closure: $e');
+    }
+
+    // Force cleanup any remaining tracking data
+    await _forceCleanupAllConnections();
+
+    Logger.debug('✅ All connections force-closed');
+  }
+
+  /// Validates that the server has shut down cleanly
+  Future<void> _validateCleanShutdown() async {
+    try {
+      final remainingConnections = _activeConnections.length;
+      final remainingIPs = _connectionIPs.length;
+      final remainingTimes = _connectionTimes.length;
+      final remainingActivities = _connectionLastActivity.length;
+      final remainingIPCounts = _ipConnectionCounts.length;
+
+      if (remainingConnections > 0 ||
+          remainingIPs > 0 ||
+          remainingTimes > 0 ||
+          remainingActivities > 0 ||
+          remainingIPCounts > 0) {
+        Logger.warning('⚠️ Server shutdown validation found remaining tracking data:');
+        Logger.warning('   Connections: $remainingConnections');
+        Logger.warning('   IPs: $remainingIPs');
+        Logger.warning('   Times: $remainingTimes');
+        Logger.warning('   Activities: $remainingActivities');
+        Logger.warning('   IP counts: $remainingIPCounts');
+
+        // Force cleanup one more time
+        await _forceCleanupAllConnections();
+        Logger.info('🧹 Performed final cleanup after shutdown validation');
+      } else {
+        Logger.debug('✅ Server shutdown validation passed - clean state confirmed');
+      }
+    } catch (e) {
+      Logger.error('❌ Error during shutdown validation: $e');
+      // Ensure cleanup even if validation fails
+      await _forceCleanupAllConnections();
     }
   }
 
