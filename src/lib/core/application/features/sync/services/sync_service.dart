@@ -114,10 +114,10 @@ class SyncService implements ISyncService {
         Logger.warning('Database integrity issues detected before sync:');
         Logger.warning(preIntegrityReport.toString());
 
-        // Auto-fix issues if manual sync
+        // Auto-fix critical issues if manual sync (skip ancient device cleanup to preserve recent additions)
         if (isManual) {
           Logger.info('Auto-fixing database integrity issues...');
-          await integrityService.fixIntegrityIssues();
+          await integrityService.fixCriticalIntegrityIssues();
         }
       }
 

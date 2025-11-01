@@ -22,7 +22,52 @@ class DesktopSyncService extends SyncService {
   // State guards to prevent concurrent operations
   bool _isModeSwitching = false;
 
-  DesktopSyncService(super.mediator, this._deviceIdService);
+  DesktopSyncService(super.mediator, this._deviceIdService) {
+    // Validate and recover from any interrupted sync state at construction
+    _validateAndRecoverSyncState();
+  }
+
+  /// Validates and recovers from any interrupted sync state from previous app instances
+  /// This prevents crashes caused by leftover sync operations
+  void _validateAndRecoverSyncState() {
+    Logger.debug('🔍 Validating and recovering sync state...');
+
+    try {
+      // Check if we're in an inconsistent state
+      if (_isModeSwitching) {
+        Logger.warning('⚠️ Desktop sync service was in mode-switching state at startup - this indicates a crash');
+        _isModeSwitching = false; // Reset the flag
+        Logger.info('🔧 Reset mode-switching flag to prevent deadlocks');
+      }
+
+      // Validate that internal state is consistent
+      final hasServerService = _serverService != null;
+      final hasClientService = _clientService != null;
+
+      if (_currentMode == DesktopSyncMode.server && !hasServerService) {
+        Logger.warning('⚠️ Inconsistent state: server mode but no server service - resetting');
+        _currentMode = DesktopSyncMode.disabled;
+      } else if (_currentMode == DesktopSyncMode.client && !hasClientService) {
+        Logger.warning('⚠️ Inconsistent state: client mode but no client service - resetting');
+        _currentMode = DesktopSyncMode.disabled;
+      }
+
+      // Log current state for debugging
+      Logger.debug('📊 Sync service state at startup:');
+      Logger.debug('   Current mode: ${_currentMode.name}');
+      Logger.debug('   Server service: ${hasServerService ? "exists" : "null"}');
+      Logger.debug('   Client service: ${hasClientService ? "exists" : "null"}');
+      Logger.debug('   Is mode switching: $_isModeSwitching');
+
+      Logger.info('✅ Sync state validation and recovery completed');
+    } catch (e) {
+      Logger.error('❌ Error during sync state recovery: $e');
+      // Force safe state if recovery fails
+      _currentMode = DesktopSyncMode.disabled;
+      _isModeSwitching = false;
+      Logger.info('🔧 Forced safe state due to recovery error');
+    }
+  }
 
   /// Get current sync mode
   DesktopSyncMode get currentMode => _currentMode;
@@ -82,22 +127,162 @@ class DesktopSyncService extends SyncService {
       return;
     }
 
+    // Additional safety check: validate current state before switching
+    if (!_isCurrentStateValid()) {
+      Logger.warning('⚠️ Current sync state is invalid, forcing cleanup before mode switch');
+      await _forceCleanupAndReset();
+    }
+
     _isModeSwitching = true;
 
     try {
       Logger.info('🔄 Switching desktop sync from ${_currentMode.name} to ${mode.name} mode');
 
-      // Stop current mode with explicit cleanup
-      await _stopCurrentMode();
+      // Stop current mode with explicit cleanup and timeout protection
+      await _stopCurrentModeWithTimeout();
 
       _currentMode = mode;
 
-      // Start new mode
-      await _startCurrentMode();
+      // Start new mode with error recovery
+      await _startCurrentModeWithRecovery();
 
       Logger.info('✅ Successfully switched to ${mode.name} mode');
+    } catch (e) {
+      Logger.error('❌ Error during mode switch: $e');
+
+      // Recovery: try to get back to a safe state
+      Logger.warning('🔧 Attempting recovery after mode switch error...');
+      await _recoverFromModeSwitchError();
+
+      // Re-throw the error so the caller knows the switch failed
+      rethrow;
     } finally {
       _isModeSwitching = false;
+    }
+  }
+
+  /// Validates that the current sync state is consistent
+  bool _isCurrentStateValid() {
+    switch (_currentMode) {
+      case DesktopSyncMode.server:
+        return _serverService != null && _serverService!.isServerMode;
+      case DesktopSyncMode.client:
+        return _clientService != null;
+      case DesktopSyncMode.disabled:
+        return _serverService == null && _clientService == null;
+    }
+  }
+
+  /// Forces cleanup and reset to a safe state
+  Future<void> _forceCleanupAndReset() async {
+    Logger.info('🔧 Forcing cleanup and reset of sync service...');
+
+    try {
+      // Stop everything aggressively
+      await _stopCurrentModeAggressive();
+
+      // Reset state
+      _currentMode = DesktopSyncMode.disabled;
+      _isModeSwitching = false;
+
+      Logger.info('✅ Forced cleanup and reset completed');
+    } catch (e) {
+      Logger.error('❌ Error during forced cleanup: $e');
+      // Ensure we're in a safe state even if cleanup fails
+      _currentMode = DesktopSyncMode.disabled;
+      _isModeSwitching = false;
+    }
+  }
+
+  /// Stops current mode with timeout protection
+  Future<void> _stopCurrentModeWithTimeout() async {
+    try {
+      await _stopCurrentMode().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          Logger.warning('⚠️ Mode stop operation timed out, forcing aggressive cleanup');
+          return _stopCurrentModeAggressive();
+        },
+      );
+    } catch (e) {
+      Logger.warning('⚠️ Error stopping current mode, forcing aggressive cleanup: $e');
+      await _stopCurrentModeAggressive();
+    }
+  }
+
+  /// Aggressively stops current mode with error tolerance
+  Future<void> _stopCurrentModeAggressive() async {
+    Logger.debug('🛑 Performing aggressive mode stop...');
+
+    // Stop periodic timer
+    _periodicTimer?.cancel();
+    _periodicTimer = null;
+
+    // Stop server service with error tolerance
+    if (_serverService != null) {
+      try {
+        await _serverService!.stopServer();
+      } catch (e) {
+        Logger.warning('⚠️ Error stopping server service (ignoring): $e');
+      } finally {
+        _serverService?.dispose();
+        _serverService = null;
+      }
+    }
+
+    // Stop client service with error tolerance
+    if (_clientService != null) {
+      try {
+        await _clientService!.disconnectFromServer();
+      } catch (e) {
+        Logger.warning('⚠️ Error disconnecting client service (ignoring): $e');
+      } finally {
+        _clientService?.dispose();
+        _clientService = null;
+      }
+    }
+
+    Logger.debug('✅ Aggressive mode stop completed');
+  }
+
+  /// Starts current mode with error recovery
+  Future<void> _startCurrentModeWithRecovery() async {
+    try {
+      await _startCurrentMode().timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          Logger.warning('⚠️ Mode start operation timed out');
+          throw TimeoutException('Mode start operation timed out', const Duration(seconds: 15));
+        },
+      );
+    } catch (e) {
+      Logger.error('❌ Error starting current mode: $e');
+
+      // Try to recover by stopping and cleaning up
+      await _stopCurrentModeAggressive();
+      _currentMode = DesktopSyncMode.disabled;
+
+      // Re-throw the error
+      rethrow;
+    }
+  }
+
+  /// Recovers from a mode switch error
+  Future<void> _recoverFromModeSwitchError() async {
+    Logger.info('🔧 Recovering from mode switch error...');
+
+    try {
+      // Force cleanup to get back to a known good state
+      await _stopCurrentModeAggressive();
+
+      // Reset to disabled mode
+      _currentMode = DesktopSyncMode.disabled;
+
+      Logger.info('✅ Recovery completed, sync service is now in disabled mode');
+    } catch (e) {
+      Logger.error('❌ Error during recovery: $e');
+      // Last resort: ensure we're in disabled mode even if cleanup fails
+      _currentMode = DesktopSyncMode.disabled;
     }
   }
 
