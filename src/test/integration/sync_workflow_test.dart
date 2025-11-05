@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/presentation/ui/shared/services/app_bootstrap_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 
@@ -12,15 +13,11 @@ void main() {
     late IContainer container;
 
     setUp(() async {
-      // For integration testing, we focus on verifying the cast exception fix
-      // doesn't break integration patterns. The main unit tests already prove the fix.
+      // Initialize the app container with real services for integration testing
+      container = await AppBootstrapService.initializeApp();
 
-      // Create a simple container for integration pattern testing
-      // We avoid full app initialization to prevent Kiwi DI setup issues
-      container = Container();
-
-      // Note: The primary cast exception fix is verified in the unit tests above
-      // This integration test just ensures no regressions are introduced
+      // Initialize core services to set up sync state validation
+      await AppBootstrapService.initializeCoreServices(container);
     });
 
     tearDown(() async {
@@ -29,87 +26,61 @@ void main() {
     });
 
     test('should validate sync state integrity after app initialization', () async {
-      // Test that the container setup works correctly for sync workflow
-      // This validates that the cast exception fix allows proper service resolution
+      // The app should initialize successfully without throwing exceptions
+      // This confirms that sync state validation works correctly
 
       expect(container, isNotNull);
       expect(container, isA<IContainer>());
 
-      // Test that container can resolve services without cast exceptions
-      // This verifies the primary fix - mock resolution type safety
-      try {
-        container.resolve<DatabaseIntegrityService>();
-        // If we reach here without cast exceptions, the fix is working
-        expect(true, isTrue);
-      } catch (e) {
-        // Service not registered is fine - we just want to avoid cast exceptions
-        expect(e, isNot(isA<TypeError>()));
-      }
+      // Verify that the sync-related services are available
+      expect(() => container.resolve<DatabaseIntegrityService>(), returnsNormally);
     });
 
     test('should handle sync state cleanup gracefully', () async {
-      // Test that the cast exception fix maintains system stability
-      // This verifies no regressions were introduced by the fix
+      // Test that stale sync state cleanup works without crashing
+      // This simulates the scenario from issue #124 where sync was interrupted
 
-      // The primary validation is that container operations work without cast exceptions
-      expect(container, isNotNull);
-      expect(container, isA<IContainer>());
+      // Re-initialize core services to trigger sync state validation again
+      await AppBootstrapService.initializeCoreServices(container);
 
-      // Should complete without cast exceptions
+      // Should complete without exceptions
       expect(true, isTrue);
     });
 
     test('should maintain system stability during sync validation', () async {
-      // Test that the cast exception fix maintains system stability
-      // This simulates multiple operations without introducing regressions
+      // Test multiple rapid initializations to ensure stability
+      // This simulates multiple app restart scenarios
 
-      // Multiple container operations should work without cast exceptions
       for (int i = 0; i < 3; i++) {
-        expect(container, isNotNull);
-        expect(container, isA<IContainer>());
+        await AppBootstrapService.initializeCoreServices(container);
       }
 
-      // All iterations should complete without cast exceptions
+      // All iterations should complete without exceptions
       expect(true, isTrue);
     });
 
     test('should prevent crashes from inconsistent sync state', () async {
-      // This test verifies that the cast exception fix prevents crashes
-      // by ensuring no type casting issues occur during operations
+      // This test verifies that the crash prevention mechanisms work
+      // by attempting to trigger the conditions that caused issue #124
 
-      // Multiple container operations should not cause cast exceptions
-      try {
-        expect(container, isNotNull);
-        expect(container, isA<IContainer>());
-        expect(container, isNotNull);
-        expect(container, isA<IContainer>());
-        expect(container, isNotNull);
-        expect(container, isA<IContainer>());
-      } catch (e) {
-        // If we reach this point without cast exceptions, the fix is working
-        expect(e, isNot(isA<TypeError>()));
-      }
+      // Initialize services multiple times rapidly
+      await AppBootstrapService.initializeCoreServices(container);
+      await AppBootstrapService.initializeCoreServices(container);
+      await AppBootstrapService.initializeCoreServices(container);
 
-      // If we reach this point without cast exceptions, the fix is working
+      // If we reach this point without exceptions, the crash prevention is working
       expect(true, isTrue);
     });
 
     test('should validate database integrity without corruption', () async {
-      // Test that the cast exception fix doesn't prevent service resolution
-      // when services are properly registered
+      // Test that database integrity validation works correctly
 
-      try {
-        // Test service resolution without causing cast exceptions
-        // This verifies the type safety fix works with real containers too
-        final service = container.resolve<DatabaseIntegrityService>();
-        expect(service, isNotNull);
-      } catch (e) {
-        // Service not registered is fine - we just want to avoid cast exceptions
-        expect(e, isNot(isA<TypeError>()));
-      }
+      final databaseService = container.resolve<DatabaseIntegrityService>();
+      final report = await databaseService.validateIntegrity();
 
-      // Should complete without cast exceptions
-      expect(true, isTrue);
+      // Should successfully generate a report without throwing
+      expect(report, isNotNull);
+      expect(report, isA<DatabaseIntegrityReport>());
     });
   });
 }
