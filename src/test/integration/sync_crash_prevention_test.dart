@@ -1,7 +1,18 @@
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
+
+/// Test implementation of IApplicationDirectoryService for testing
+class TestApplicationDirectoryService implements IApplicationDirectoryService {
+  @override
+  Future<Directory> getApplicationDirectory() async {
+    // Return a temporary directory for testing
+    return Directory.systemTemp.createTempSync('whph_test_');
+  }
+}
 
 /// Integration test for sync crash prevention
 ///
@@ -15,8 +26,14 @@ void main() {
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
 
-      // Initialize database for testing - use singleton instance
-      database = AppDatabase.instance();
+      // Create a test container with the required IApplicationDirectoryService registration
+      final testContainer = Container();
+
+      // Register the test implementation of IApplicationDirectoryService
+      testContainer.registerSingleton<IApplicationDirectoryService>((_) => TestApplicationDirectoryService());
+
+      // Initialize database for testing with the container
+      database = AppDatabase.instance(testContainer);
 
       // Initialize integrity service with real database
       integrityService = DatabaseIntegrityService(database);
@@ -35,10 +52,6 @@ void main() {
       // Verify the report was generated successfully
       expect(report, isNotNull);
       expect(report, isA<DatabaseIntegrityReport>());
-
-      // The specific content doesn't matter as much as the fact that it doesn't crash
-      print('Database integrity validation completed successfully');
-      print('Report: ${report.toString()}');
     });
 
     test('should handle integrity fixes without crashing', () async {
