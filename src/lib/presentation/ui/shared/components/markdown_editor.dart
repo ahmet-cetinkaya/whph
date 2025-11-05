@@ -65,13 +65,13 @@ class MarkdownEditor extends StatefulWidget {
     double? height,
     ITranslationService? translationService,
   }) {
-    translationService ??= container.resolve();
+    translationService ??= container.resolve<ITranslationService>();
 
     return MarkdownEditor(
       key: key,
       controller: TextEditingController(text: initialText),
       onChanged: onChanged,
-      hintText: hintText ?? translationService!.translate(SharedTranslationKeys.markdownEditorHint),
+      hintText: hintText ?? translationService.translate(SharedTranslationKeys.markdownEditorHint),
       style: style,
       enableLinkHandling: enableLinkHandling,
       onTapLink: onTapLink,
@@ -84,7 +84,7 @@ class MarkdownEditor extends StatefulWidget {
 }
 
 class _MarkdownEditorState extends State<MarkdownEditor> {
-  final ITranslationService _translationService = container.resolve();
+  final ITranslationService _translationService = container.resolve<ITranslationService>();
   late final FocusNode _focusNode;
   bool _isPreviewMode = false;
   bool _isInitializing = true;

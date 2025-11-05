@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Rok: {date}"
       deadline_date_not_set: "Rok: Ni nastavljen"
       estimated_time: "Predviden Čas: {time}"
+      estimated_time_default: "(privzeto)"
       estimated_time_not_set: "Predviden Čas: Ni nastavljen"
       planned_date: "Načrtovano: {date}"
       planned_date_not_set: "Načrtovano: Ni nastavljen"

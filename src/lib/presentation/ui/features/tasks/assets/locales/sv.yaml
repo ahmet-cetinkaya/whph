@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Deadline: {date}"
       deadline_date_not_set: "Deadline: Inte inställd"
       estimated_time: "Uppskattad Tid: {time}"
+      estimated_time_default: "(standard)"
       estimated_time_not_set: "Uppskattad Tid: Inte inställd"
       planned_date: "Planerad: {date}"
       planned_date_not_set: "Planerad: Inte inställd"

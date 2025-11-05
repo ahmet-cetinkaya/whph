@@ -261,6 +261,7 @@ tasks:
       deadline_date: "Termen Limită: {date}"
       deadline_date_not_set: "Termen Limită: Nu setat"
       estimated_time: "Timp Estimat: {time}"
+      estimated_time_default: "(implicit)"
       estimated_time_not_set: "Timp Estimat: Nu setat"
       planned_date: "Planificat: {date}"
       planned_date_not_set: "Planificat: Nu setat"
