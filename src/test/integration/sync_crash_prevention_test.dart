@@ -7,10 +7,21 @@ import 'package:acore/acore.dart';
 
 /// Test implementation of IApplicationDirectoryService for testing
 class TestApplicationDirectoryService implements IApplicationDirectoryService {
+  Directory? _tempDir;
+
   @override
   Future<Directory> getApplicationDirectory() async {
-    // Return a temporary directory for testing
-    return Directory.systemTemp.createTempSync('whph_test_');
+    // Create a temporary directory for testing if not already created
+    _tempDir ??= Directory.systemTemp.createTempSync('whph_test_');
+    return _tempDir!;
+  }
+
+  /// Clean up the temporary directory
+  Future<void> cleanup() async {
+    if (_tempDir != null && await _tempDir!.exists()) {
+      await _tempDir!.delete(recursive: true);
+    }
+    _tempDir = null;
   }
 }
 
@@ -22,6 +33,7 @@ void main() {
   group('Sync Crash Prevention Integration Test', () {
     late AppDatabase database;
     late DatabaseIntegrityService integrityService;
+    late TestApplicationDirectoryService directoryService;
 
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +41,9 @@ void main() {
       // Create a test container with the required IApplicationDirectoryService registration
       final testContainer = Container();
 
-      // Register the test implementation of IApplicationDirectoryService
-      testContainer.registerSingleton<IApplicationDirectoryService>((_) => TestApplicationDirectoryService());
+      // Create and register the test implementation of IApplicationDirectoryService
+      directoryService = TestApplicationDirectoryService();
+      testContainer.registerSingleton<IApplicationDirectoryService>((_) => directoryService);
 
       // Initialize database for testing with the container
       database = AppDatabase.instance(testContainer);
@@ -40,6 +53,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      // Clean up test resources
+      await directoryService.cleanup();
       // Database cleanup is handled by the singleton pattern
     });
 
