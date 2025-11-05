@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/app_usage/android_app_usage_service.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
 
 /// Debug screen to test and compare app usage calculation methods.
 /// This helps identify why usage statistics are inflated compared to Digital Wellbeing.
@@ -10,11 +15,11 @@ class AndroidAppUsageDebugPage extends StatefulWidget {
 
   AndroidAppUsageDebugPage({super.key})
       : appUsageService = AndroidAppUsageService(
-          container.resolve(),
-          container.resolve(),
-          container.resolve(),
-          container.resolve(),
-          container.resolve(),
+          container.resolve<IAppUsageRepository>(),
+          container.resolve<IAppUsageTimeRecordRepository>(),
+          container.resolve<IAppUsageTagRuleRepository>(),
+          container.resolve<IAppUsageTagRepository>(),
+          container.resolve<IAppUsageFilterService>(),
         );
 
   @override

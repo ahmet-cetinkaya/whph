@@ -3,34 +3,45 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
-import 'dart:ui' as _i8;
+import 'dart:async' as _i11;
+import 'dart:ui' as _i4;
 
-import 'package:acore/acore.dart' as _i7;
-import 'package:flutter/foundation.dart' as _i10;
-import 'package:flutter/material.dart' as _i9;
-import 'package:mediatr/mediatr.dart' as _i4;
+import 'package:acore/acore.dart' as _i2;
+import 'package:flutter/material.dart' as _i5;
+import 'package:flutter/widgets.dart' as _i3;
+import 'package:mediatr/mediatr.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i18;
-import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart' as _i27;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart' as _i12;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart' as _i15;
-import 'package:whph/core/application/features/sync/models/sync_status.dart' as _i5;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart' as _i13;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart' as _i11;
-import 'package:whph/core/application/features/sync/services/database_integrity_service.dart' as _i2;
-import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart' as _i19;
-import 'package:whph/core/domain/features/habits/habit.dart' as _i26;
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart' as _i17;
-import 'package:whph/core/domain/features/sync/models/desktop_sync_settings.dart' as _i3;
-import 'package:whph/core/domain/features/sync/sync_device.dart' as _i14;
-import 'package:whph/core/domain/features/tasks/task.dart' as _i25;
-import 'package:whph/core/domain/shared/constants/app_theme.dart' as _i22;
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart' as _i16;
-import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart' as _i24;
-import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart' as _i20;
-import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart' as _i21;
-import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart' as _i23;
+import 'package:mockito/src/dummies.dart' as _i12;
+import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart'
+    as _i17;
+import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+    as _i19;
+import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart'
+    as _i22;
+import 'package:whph/core/application/features/sync/models/sync_status.dart'
+    as _i9;
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart'
+    as _i20;
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart'
+    as _i18;
+import 'package:whph/core/application/features/sync/services/database_integrity_service.dart'
+    as _i6;
+import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart'
+    as _i10;
+import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart'
+    as _i24;
+import 'package:whph/core/domain/features/sync/models/desktop_sync_settings.dart'
+    as _i7;
+import 'package:whph/core/domain/features/sync/sync_device.dart' as _i21;
+import 'package:whph/core/domain/shared/constants/app_theme.dart' as _i16;
+import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart'
+    as _i23;
+import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart'
+    as _i13;
+import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart'
+    as _i15;
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart'
+    as _i14;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -46,137 +57,629 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeDatabaseIntegrityReport_0 extends _i1.SmartFake implements _i2.DatabaseIntegrityReport {
-  _FakeDatabaseIntegrityReport_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeILogger_0 extends _i1.SmartFake implements _i2.ILogger {
+  _FakeILogger_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeDesktopSyncSettings_1 extends _i1.SmartFake implements _i3.DesktopSyncSettings {
-  _FakeDesktopSyncSettings_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeMediator_2 extends _i1.SmartFake implements _i4.Mediator {
-  _FakeMediator_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeSyncStatus_3 extends _i1.SmartFake implements _i5.SyncStatus {
-  _FakeSyncStatus_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakePipeline_4 extends _i1.SmartFake implements _i4.Pipeline {
-  _FakePipeline_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeFuture_5<T1> extends _i1.SmartFake implements _i6.Future<T1> {
-  _FakeFuture_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeILogger_6 extends _i1.SmartFake implements _i7.ILogger {
-  _FakeILogger_6(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeColor_7 extends _i1.SmartFake implements _i8.Color {
-  _FakeColor_7(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
-}
-
-class _FakeThemeData_8 extends _i1.SmartFake implements _i9.ThemeData {
-  _FakeThemeData_8(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeWidget_1 extends _i1.SmartFake implements _i3.Widget {
+  _FakeWidget_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 
   @override
-  String toString({
-    _i10.DiagnosticLevel? minLevel = _i10.DiagnosticLevel.info,
-  }) =>
+  String toString({_i3.DiagnosticLevel? minLevel = _i3.DiagnosticLevel.info}) =>
       super.toString();
 }
 
-class _FakeWidget_9 extends _i1.SmartFake implements _i9.Widget {
-  _FakeWidget_9(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeColor_2 extends _i1.SmartFake implements _i4.Color {
+  _FakeColor_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeThemeData_3 extends _i1.SmartFake implements _i5.ThemeData {
+  _FakeThemeData_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 
   @override
-  String toString({
-    _i10.DiagnosticLevel? minLevel = _i10.DiagnosticLevel.info,
-  }) =>
+  String toString({_i3.DiagnosticLevel? minLevel = _i3.DiagnosticLevel.info}) =>
       super.toString();
 }
 
-class _FakeIContainer_10 extends _i1.SmartFake implements _i7.IContainer {
-  _FakeIContainer_10(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeDatabaseIntegrityReport_4 extends _i1.SmartFake
+    implements _i6.DatabaseIntegrityReport {
+  _FakeDatabaseIntegrityReport_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeDesktopSyncSettings_5 extends _i1.SmartFake
+    implements _i7.DesktopSyncSettings {
+  _FakeDesktopSyncSettings_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeMediator_6 extends _i1.SmartFake implements _i8.Mediator {
+  _FakeMediator_6(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeSyncStatus_7 extends _i1.SmartFake implements _i9.SyncStatus {
+  _FakeSyncStatus_7(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+/// A class which mocks [ILoggerService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockILoggerService extends _i1.Mock implements _i10.ILoggerService {
+  MockILoggerService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.ILogger get logger =>
+      (super.noSuchMethod(
+            Invocation.getter(#logger),
+            returnValue: _FakeILogger_0(this, Invocation.getter(#logger)),
+          )
+          as _i2.ILogger);
+
+  @override
+  _i11.Future<void> configureLogger() =>
+      (super.noSuchMethod(
+            Invocation.method(#configureLogger, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> flush() =>
+      (super.noSuchMethod(
+            Invocation.method(#flush, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<String?> getLogFilePath() =>
+      (super.noSuchMethod(
+            Invocation.method(#getLogFilePath, []),
+            returnValue: _i11.Future<String?>.value(),
+          )
+          as _i11.Future<String?>);
+
+  @override
+  String getMemoryLogs() =>
+      (super.noSuchMethod(
+            Invocation.method(#getMemoryLogs, []),
+            returnValue: _i12.dummyValue<String>(
+              this,
+              Invocation.method(#getMemoryLogs, []),
+            ),
+          )
+          as String);
+
+  @override
+  void clearMemoryLogs() => super.noSuchMethod(
+    Invocation.method(#clearMemoryLogs, []),
+    returnValueForMissingStub: null,
+  );
+}
+
+/// A class which mocks [INotificationService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockINotificationService extends _i1.Mock
+    implements _i13.INotificationService {
+  MockINotificationService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i11.Future<void> init() =>
+      (super.noSuchMethod(
+            Invocation.method(#init, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> destroy() =>
+      (super.noSuchMethod(
+            Invocation.method(#destroy, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> show({
+    required String? title,
+    required String? body,
+    String? payload,
+    int? id,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#show, [], {
+              #title: title,
+              #body: body,
+              #payload: payload,
+              #id: id,
+            }),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> clearAll() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearAll, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<bool> isEnabled() =>
+      (super.noSuchMethod(
+            Invocation.method(#isEnabled, []),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<void> setEnabled(bool? enabled) =>
+      (super.noSuchMethod(
+            Invocation.method(#setEnabled, [enabled]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<bool> checkPermissionStatus() =>
+      (super.noSuchMethod(
+            Invocation.method(#checkPermissionStatus, []),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<bool> requestPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestPermission, []),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
+}
+
+/// A class which mocks [ITranslationService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockITranslationService extends _i1.Mock
+    implements _i14.ITranslationService {
+  MockITranslationService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i11.Future<void> init() =>
+      (super.noSuchMethod(
+            Invocation.method(#init, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  String translate(String? key, {Map<String, String>? namedArgs}) =>
+      (super.noSuchMethod(
+            Invocation.method(#translate, [key], {#namedArgs: namedArgs}),
+            returnValue: _i12.dummyValue<String>(
+              this,
+              Invocation.method(#translate, [key], {#namedArgs: namedArgs}),
+            ),
+          )
+          as String);
+
+  @override
+  _i11.Future<void> changeLanguage(
+    _i3.BuildContext? context,
+    String? languageCode,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#changeLanguage, [context, languageCode]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> changeLanguageWithoutNavigation(
+    _i3.BuildContext? context,
+    String? languageCode,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#changeLanguageWithoutNavigation, [
+              context,
+              languageCode,
+            ]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  String getCurrentLanguage(_i3.BuildContext? context) =>
+      (super.noSuchMethod(
+            Invocation.method(#getCurrentLanguage, [context]),
+            returnValue: _i12.dummyValue<String>(
+              this,
+              Invocation.method(#getCurrentLanguage, [context]),
+            ),
+          )
+          as String);
+
+  @override
+  _i3.Widget wrapWithTranslations(_i3.Widget? child) =>
+      (super.noSuchMethod(
+            Invocation.method(#wrapWithTranslations, [child]),
+            returnValue: _FakeWidget_1(
+              this,
+              Invocation.method(#wrapWithTranslations, [child]),
+            ),
+          )
+          as _i3.Widget);
+}
+
+/// A class which mocks [IThemeService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockIThemeService extends _i1.Mock implements _i15.IThemeService {
+  MockIThemeService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i15.AppThemeMode get currentThemeMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#currentThemeMode),
+            returnValue: _i15.AppThemeMode.light,
+          )
+          as _i15.AppThemeMode);
+
+  @override
+  bool get isDynamicAccentColorEnabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#isDynamicAccentColorEnabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  bool get isCustomAccentColorEnabled =>
+      (super.noSuchMethod(
+            Invocation.getter(#isCustomAccentColorEnabled),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i16.UiDensity get currentUiDensity =>
+      (super.noSuchMethod(
+            Invocation.getter(#currentUiDensity),
+            returnValue: _i16.UiDensity.compact,
+          )
+          as _i16.UiDensity);
+
+  @override
+  _i4.Color get primaryColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#primaryColor),
+            returnValue: _FakeColor_2(this, Invocation.getter(#primaryColor)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get surface0 =>
+      (super.noSuchMethod(
+            Invocation.getter(#surface0),
+            returnValue: _FakeColor_2(this, Invocation.getter(#surface0)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get surface1 =>
+      (super.noSuchMethod(
+            Invocation.getter(#surface1),
+            returnValue: _FakeColor_2(this, Invocation.getter(#surface1)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get surface2 =>
+      (super.noSuchMethod(
+            Invocation.getter(#surface2),
+            returnValue: _FakeColor_2(this, Invocation.getter(#surface2)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get surface3 =>
+      (super.noSuchMethod(
+            Invocation.getter(#surface3),
+            returnValue: _FakeColor_2(this, Invocation.getter(#surface3)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get textColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#textColor),
+            returnValue: _FakeColor_2(this, Invocation.getter(#textColor)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get secondaryTextColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#secondaryTextColor),
+            returnValue: _FakeColor_2(
+              this,
+              Invocation.getter(#secondaryTextColor),
+            ),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get lightTextColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#lightTextColor),
+            returnValue: _FakeColor_2(this, Invocation.getter(#lightTextColor)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get darkTextColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#darkTextColor),
+            returnValue: _FakeColor_2(this, Invocation.getter(#darkTextColor)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get dividerColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#dividerColor),
+            returnValue: _FakeColor_2(this, Invocation.getter(#dividerColor)),
+          )
+          as _i4.Color);
+
+  @override
+  _i4.Color get barrierColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#barrierColor),
+            returnValue: _FakeColor_2(this, Invocation.getter(#barrierColor)),
+          )
+          as _i4.Color);
+
+  @override
+  _i5.ThemeData get themeData =>
+      (super.noSuchMethod(
+            Invocation.getter(#themeData),
+            returnValue: _FakeThemeData_3(this, Invocation.getter(#themeData)),
+          )
+          as _i5.ThemeData);
+
+  @override
+  _i11.Stream<void> get themeChanges =>
+      (super.noSuchMethod(
+            Invocation.getter(#themeChanges),
+            returnValue: _i11.Stream<void>.empty(),
+          )
+          as _i11.Stream<void>);
+
+  @override
+  _i11.Future<void> initialize() =>
+      (super.noSuchMethod(
+            Invocation.method(#initialize, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> setThemeMode(_i15.AppThemeMode? mode) =>
+      (super.noSuchMethod(
+            Invocation.method(#setThemeMode, [mode]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> setDynamicAccentColor(bool? enabled) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDynamicAccentColor, [enabled]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> setCustomAccentColor(_i4.Color? color) =>
+      (super.noSuchMethod(
+            Invocation.method(#setCustomAccentColor, [color]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> setUiDensity(_i16.UiDensity? density) =>
+      (super.noSuchMethod(
+            Invocation.method(#setUiDensity, [density]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> refreshTheme() =>
+      (super.noSuchMethod(
+            Invocation.method(#refreshTheme, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+}
+
+/// A class which mocks [IDemoDataService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockIDemoDataService extends _i1.Mock implements _i17.IDemoDataService {
+  MockIDemoDataService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i11.Future<void> initializeDemoDataIfNeeded() =>
+      (super.noSuchMethod(
+            Invocation.method(#initializeDemoDataIfNeeded, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> resetDemoData() =>
+      (super.noSuchMethod(
+            Invocation.method(#resetDemoData, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<bool> isDemoDataInitialized() =>
+      (super.noSuchMethod(
+            Invocation.method(#isDemoDataInitialized, []),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<void> clearDemoData() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearDemoData, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> populateDemoData() =>
+      (super.noSuchMethod(
+            Invocation.method(#populateDemoData, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 }
 
 /// A class which mocks [DatabaseIntegrityService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatabaseIntegrityService extends _i1.Mock implements _i2.DatabaseIntegrityService {
+class MockDatabaseIntegrityService extends _i1.Mock
+    implements _i6.DatabaseIntegrityService {
   MockDatabaseIntegrityService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i2.DatabaseIntegrityReport> validateIntegrity() => (super.noSuchMethod(
-        Invocation.method(#validateIntegrity, []),
-        returnValue: _i6.Future<_i2.DatabaseIntegrityReport>.value(
-          _FakeDatabaseIntegrityReport_0(
-            this,
+  _i11.Future<_i6.DatabaseIntegrityReport> validateIntegrity() =>
+      (super.noSuchMethod(
             Invocation.method(#validateIntegrity, []),
-          ),
-        ),
-      ) as _i6.Future<_i2.DatabaseIntegrityReport>);
+            returnValue: _i11.Future<_i6.DatabaseIntegrityReport>.value(
+              _FakeDatabaseIntegrityReport_4(
+                this,
+                Invocation.method(#validateIntegrity, []),
+              ),
+            ),
+          )
+          as _i11.Future<_i6.DatabaseIntegrityReport>);
 
   @override
-  _i6.Future<void> fixIntegrityIssues() => (super.noSuchMethod(
-        Invocation.method(#fixIntegrityIssues, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> fixIntegrityIssues() =>
+      (super.noSuchMethod(
+            Invocation.method(#fixIntegrityIssues, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
-  _i6.Future<void> fixCriticalIntegrityIssues() => (super.noSuchMethod(
-        Invocation.method(#fixCriticalIntegrityIssues, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> fixCriticalIntegrityIssues() =>
+      (super.noSuchMethod(
+            Invocation.method(#fixCriticalIntegrityIssues, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 }
 
 /// A class which mocks [ISyncPaginationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockISyncPaginationService extends _i1.Mock implements _i11.ISyncPaginationService {
+class MockISyncPaginationService extends _i1.Mock
+    implements _i18.ISyncPaginationService {
   MockISyncPaginationService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Stream<_i12.SyncProgress> get progressStream => (super.noSuchMethod(
-        Invocation.getter(#progressStream),
-        returnValue: _i6.Stream<_i12.SyncProgress>.empty(),
-      ) as _i6.Stream<_i12.SyncProgress>);
+  _i11.Stream<_i19.SyncProgress> get progressStream =>
+      (super.noSuchMethod(
+            Invocation.getter(#progressStream),
+            returnValue: _i11.Stream<_i19.SyncProgress>.empty(),
+          )
+          as _i11.Stream<_i19.SyncProgress>);
 
   @override
-  bool get isSyncInProgress => (super.noSuchMethod(
-        Invocation.getter(#isSyncInProgress),
-        returnValue: false,
-      ) as bool);
+  bool get isSyncInProgress =>
+      (super.noSuchMethod(
+            Invocation.getter(#isSyncInProgress),
+            returnValue: false,
+          )
+          as bool);
 
   @override
-  List<String> get activeEntityTypes => (super.noSuchMethod(
-        Invocation.getter(#activeEntityTypes),
-        returnValue: <String>[],
-      ) as List<String>);
+  List<String> get activeEntityTypes =>
+      (super.noSuchMethod(
+            Invocation.getter(#activeEntityTypes),
+            returnValue: <String>[],
+          )
+          as List<String>);
 
   @override
-  _i6.Future<bool> syncEntityWithPagination(
-    _i13.PaginatedSyncConfig<_i7.BaseEntity<String>>? config,
-    _i14.SyncDevice? syncDevice,
+  _i11.Future<bool> syncEntityWithPagination(
+    _i20.PaginatedSyncConfig<_i2.BaseEntity<String>>? config,
+    _i21.SyncDevice? syncDevice,
     DateTime? lastSyncDate, {
     String? targetDeviceId,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #syncEntityWithPagination,
-          [config, syncDevice, lastSyncDate],
-          {#targetDeviceId: targetDeviceId},
-        ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+            Invocation.method(
+              #syncEntityWithPagination,
+              [config, syncDevice, lastSyncDate],
+              {#targetDeviceId: targetDeviceId},
+            ),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
 
   @override
   void updateProgress({
@@ -187,90 +690,100 @@ class MockISyncPaginationService extends _i1.Mock implements _i11.ISyncPaginatio
     required int? entitiesCompleted,
     required int? totalEntities,
     required String? operation,
-  }) =>
-      super.noSuchMethod(
-        Invocation.method(#updateProgress, [], {
-          #currentEntity: currentEntity,
-          #currentPage: currentPage,
-          #totalPages: totalPages,
-          #progressPercentage: progressPercentage,
-          #entitiesCompleted: entitiesCompleted,
-          #totalEntities: totalEntities,
-          #operation: operation,
-        }),
-        returnValueForMissingStub: null,
-      );
+  }) => super.noSuchMethod(
+    Invocation.method(#updateProgress, [], {
+      #currentEntity: currentEntity,
+      #currentPage: currentPage,
+      #totalPages: totalPages,
+      #progressPercentage: progressPercentage,
+      #entitiesCompleted: entitiesCompleted,
+      #totalEntities: totalEntities,
+      #operation: operation,
+    }),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void resetProgress() => super.noSuchMethod(
-        Invocation.method(#resetProgress, []),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#resetProgress, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  _i12.SyncProgress? getCurrentProgress(String? entityType) =>
-      (super.noSuchMethod(Invocation.method(#getCurrentProgress, [entityType])) as _i12.SyncProgress?);
+  _i19.SyncProgress? getCurrentProgress(String? entityType) =>
+      (super.noSuchMethod(Invocation.method(#getCurrentProgress, [entityType]))
+          as _i19.SyncProgress?);
 
   @override
-  Map<String, int> getServerPaginationMetadata(String? entityType) => (super.noSuchMethod(
-        Invocation.method(#getServerPaginationMetadata, [entityType]),
-        returnValue: <String, int>{},
-      ) as Map<String, int>);
+  Map<String, int> getServerPaginationMetadata(String? entityType) =>
+      (super.noSuchMethod(
+            Invocation.method(#getServerPaginationMetadata, [entityType]),
+            returnValue: <String, int>{},
+          )
+          as Map<String, int>);
 
   @override
   void updateServerPaginationMetadata(
     String? entityType,
     int? totalPages,
     int? totalItems,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(#updateServerPaginationMetadata, [
-          entityType,
-          totalPages,
-          totalItems,
-        ]),
-        returnValueForMissingStub: null,
-      );
+  ) => super.noSuchMethod(
+    Invocation.method(#updateServerPaginationMetadata, [
+      entityType,
+      totalPages,
+      totalItems,
+    ]),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  double calculateOverallProgress() => (super.noSuchMethod(
-        Invocation.method(#calculateOverallProgress, []),
-        returnValue: 0.0,
-      ) as double);
+  double calculateOverallProgress() =>
+      (super.noSuchMethod(
+            Invocation.method(#calculateOverallProgress, []),
+            returnValue: 0.0,
+          )
+          as double);
 
   @override
-  _i6.Future<void> cancelSync() => (super.noSuchMethod(
-        Invocation.method(#cancelSync, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> cancelSync() =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelSync, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
-  Map<String, _i15.PaginatedSyncDataDto> getPendingResponseData() => (super.noSuchMethod(
-        Invocation.method(#getPendingResponseData, []),
-        returnValue: <String, _i15.PaginatedSyncDataDto>{},
-      ) as Map<String, _i15.PaginatedSyncDataDto>);
+  Map<String, _i22.PaginatedSyncDataDto> getPendingResponseData() =>
+      (super.noSuchMethod(
+            Invocation.method(#getPendingResponseData, []),
+            returnValue: <String, _i22.PaginatedSyncDataDto>{},
+          )
+          as Map<String, _i22.PaginatedSyncDataDto>);
 
   @override
   void clearPendingResponseData() => super.noSuchMethod(
-        Invocation.method(#clearPendingResponseData, []),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#clearPendingResponseData, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void validateAndCleanStalePendingData() => super.noSuchMethod(
-        Invocation.method(#validateAndCleanStalePendingData, []),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#validateAndCleanStalePendingData, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  int getLastSentServerPage(String? deviceId, String? entityType) => (super.noSuchMethod(
-        Invocation.method(#getLastSentServerPage, [deviceId, entityType]),
-        returnValue: 0,
-      ) as int);
+  int getLastSentServerPage(String? deviceId, String? entityType) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLastSentServerPage, [deviceId, entityType]),
+            returnValue: 0,
+          )
+          as int);
 
   @override
-  void setLastSentServerPage(String? deviceId, String? entityType, int? page) => super.noSuchMethod(
+  void setLastSentServerPage(String? deviceId, String? entityType, int? page) =>
+      super.noSuchMethod(
         Invocation.method(#setLastSentServerPage, [deviceId, entityType, page]),
         returnValueForMissingStub: null,
       );
@@ -279,785 +792,198 @@ class MockISyncPaginationService extends _i1.Mock implements _i11.ISyncPaginatio
 /// A class which mocks [DesktopSyncService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDesktopSyncService extends _i1.Mock implements _i16.DesktopSyncService {
+class MockDesktopSyncService extends _i1.Mock
+    implements _i23.DesktopSyncService {
   MockDesktopSyncService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i17.DesktopSyncMode get currentMode => (super.noSuchMethod(
-        Invocation.getter(#currentMode),
-        returnValue: _i17.DesktopSyncMode.server,
-      ) as _i17.DesktopSyncMode);
+  _i24.DesktopSyncMode get currentMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#currentMode),
+            returnValue: _i24.DesktopSyncMode.server,
+          )
+          as _i24.DesktopSyncMode);
 
   @override
-  _i3.DesktopSyncSettings get settings => (super.noSuchMethod(
-        Invocation.getter(#settings),
-        returnValue: _FakeDesktopSyncSettings_1(
-          this,
-          Invocation.getter(#settings),
-        ),
-      ) as _i3.DesktopSyncSettings);
+  _i7.DesktopSyncSettings get settings =>
+      (super.noSuchMethod(
+            Invocation.getter(#settings),
+            returnValue: _FakeDesktopSyncSettings_5(
+              this,
+              Invocation.getter(#settings),
+            ),
+          )
+          as _i7.DesktopSyncSettings);
 
   @override
-  bool get isConnectedAsClient => (super.noSuchMethod(
-        Invocation.getter(#isConnectedAsClient),
-        returnValue: false,
-      ) as bool);
+  bool get isConnectedAsClient =>
+      (super.noSuchMethod(
+            Invocation.getter(#isConnectedAsClient),
+            returnValue: false,
+          )
+          as bool);
 
   @override
-  bool get isServerActive => (super.noSuchMethod(
-        Invocation.getter(#isServerActive),
-        returnValue: false,
-      ) as bool);
+  bool get isServerActive =>
+      (super.noSuchMethod(
+            Invocation.getter(#isServerActive),
+            returnValue: false,
+          )
+          as bool);
 
   @override
-  int get serverConnectionCount => (super.noSuchMethod(
-        Invocation.getter(#serverConnectionCount),
-        returnValue: 0,
-      ) as int);
+  int get serverConnectionCount =>
+      (super.noSuchMethod(
+            Invocation.getter(#serverConnectionCount),
+            returnValue: 0,
+          )
+          as int);
 
   @override
-  bool get isModeSwitching => (super.noSuchMethod(
-        Invocation.getter(#isModeSwitching),
-        returnValue: false,
-      ) as bool);
+  bool get isModeSwitching =>
+      (super.noSuchMethod(
+            Invocation.getter(#isModeSwitching),
+            returnValue: false,
+          )
+          as bool);
 
   @override
-  _i4.Mediator get mediator => (super.noSuchMethod(
-        Invocation.getter(#mediator),
-        returnValue: _FakeMediator_2(this, Invocation.getter(#mediator)),
-      ) as _i4.Mediator);
+  _i8.Mediator get mediator =>
+      (super.noSuchMethod(
+            Invocation.getter(#mediator),
+            returnValue: _FakeMediator_6(this, Invocation.getter(#mediator)),
+          )
+          as _i8.Mediator);
 
   @override
-  _i6.Stream<bool> get onSyncComplete => (super.noSuchMethod(
-        Invocation.getter(#onSyncComplete),
-        returnValue: _i6.Stream<bool>.empty(),
-      ) as _i6.Stream<bool>);
+  _i11.Stream<bool> get onSyncComplete =>
+      (super.noSuchMethod(
+            Invocation.getter(#onSyncComplete),
+            returnValue: _i11.Stream<bool>.empty(),
+          )
+          as _i11.Stream<bool>);
 
   @override
-  bool get isConnected => (super.noSuchMethod(Invocation.getter(#isConnected), returnValue: false) as bool);
+  bool get isConnected =>
+      (super.noSuchMethod(Invocation.getter(#isConnected), returnValue: false)
+          as bool);
 
   @override
-  _i6.Stream<_i12.SyncProgress> get progressStream => (super.noSuchMethod(
-        Invocation.getter(#progressStream),
-        returnValue: _i6.Stream<_i12.SyncProgress>.empty(),
-      ) as _i6.Stream<_i12.SyncProgress>);
+  _i11.Stream<_i19.SyncProgress> get progressStream =>
+      (super.noSuchMethod(
+            Invocation.getter(#progressStream),
+            returnValue: _i11.Stream<_i19.SyncProgress>.empty(),
+          )
+          as _i11.Stream<_i19.SyncProgress>);
 
   @override
-  _i6.Stream<_i5.SyncStatus> get syncStatusStream => (super.noSuchMethod(
-        Invocation.getter(#syncStatusStream),
-        returnValue: _i6.Stream<_i5.SyncStatus>.empty(),
-      ) as _i6.Stream<_i5.SyncStatus>);
+  _i11.Stream<_i9.SyncStatus> get syncStatusStream =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStream),
+            returnValue: _i11.Stream<_i9.SyncStatus>.empty(),
+          )
+          as _i11.Stream<_i9.SyncStatus>);
 
   @override
-  _i5.SyncStatus get currentSyncStatus => (super.noSuchMethod(
-        Invocation.getter(#currentSyncStatus),
-        returnValue: _FakeSyncStatus_3(
-          this,
-          Invocation.getter(#currentSyncStatus),
-        ),
-      ) as _i5.SyncStatus);
+  _i9.SyncStatus get currentSyncStatus =>
+      (super.noSuchMethod(
+            Invocation.getter(#currentSyncStatus),
+            returnValue: _FakeSyncStatus_7(
+              this,
+              Invocation.getter(#currentSyncStatus),
+            ),
+          )
+          as _i9.SyncStatus);
 
   @override
-  _i6.Future<void> updateSettings(_i3.DesktopSyncSettings? newSettings) => (super.noSuchMethod(
-        Invocation.method(#updateSettings, [newSettings]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> updateSettings(_i7.DesktopSyncSettings? newSettings) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateSettings, [newSettings]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
-  _i6.Future<void> switchToServerMode() => (super.noSuchMethod(
-        Invocation.method(#switchToServerMode, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> switchToServerMode() =>
+      (super.noSuchMethod(
+            Invocation.method(#switchToServerMode, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
-  _i6.Future<void> switchToClientMode(String? serverAddress, int? serverPort) => (super.noSuchMethod(
-        Invocation.method(#switchToClientMode, [serverAddress, serverPort]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> switchToClientMode(
+    String? serverAddress,
+    int? serverPort,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#switchToClientMode, [serverAddress, serverPort]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
-  _i6.Future<void> switchToMode(_i17.DesktopSyncMode? mode) => (super.noSuchMethod(
-        Invocation.method(#switchToMode, [mode]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> switchToMode(_i24.DesktopSyncMode? mode) =>
+      (super.noSuchMethod(
+            Invocation.method(#switchToMode, [mode]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
-  _i6.Future<void> startSync() => (super.noSuchMethod(
-        Invocation.method(#startSync, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> startSync() =>
+      (super.noSuchMethod(
+            Invocation.method(#startSync, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
   void stopSync() => super.noSuchMethod(
-        Invocation.method(#stopSync, []),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#stopSync, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void dispose() => super.noSuchMethod(
-        Invocation.method(#dispose, []),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  void updateSyncStatus(_i5.SyncStatus? status) => super.noSuchMethod(
-        Invocation.method(#updateSyncStatus, [status]),
-        returnValueForMissingStub: null,
-      );
+  void updateSyncStatus(_i9.SyncStatus? status) => super.noSuchMethod(
+    Invocation.method(#updateSyncStatus, [status]),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  _i6.Future<void> runSync({bool? isManual = false}) => (super.noSuchMethod(
-        Invocation.method(#runSync, [], {#isManual: isManual}),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> runSync({bool? isManual = false}) =>
+      (super.noSuchMethod(
+            Invocation.method(#runSync, [], {#isManual: isManual}),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
-  _i6.Future<void> runPaginatedSync({bool? isManual = false}) => (super.noSuchMethod(
-        Invocation.method(#runPaginatedSync, [], {#isManual: isManual}),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+  _i11.Future<void> runPaginatedSync({bool? isManual = false}) =>
+      (super.noSuchMethod(
+            Invocation.method(#runPaginatedSync, [], {#isManual: isManual}),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
   void notifySyncComplete() => super.noSuchMethod(
-        Invocation.method(#notifySyncComplete, []),
-        returnValueForMissingStub: null,
-      );
-}
-
-/// A class which mocks [Mediator].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockMediator extends _i1.Mock implements _i4.Mediator {
-  MockMediator() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i4.Pipeline get pipeline => (super.noSuchMethod(
-        Invocation.getter(#pipeline),
-        returnValue: _FakePipeline_4(this, Invocation.getter(#pipeline)),
-      ) as _i4.Pipeline);
-
-  @override
-  Map<Type, _i4.HandlerCreator<dynamic>> get handlers => (super.noSuchMethod(
-        Invocation.getter(#handlers),
-        returnValue: <Type, _i4.HandlerCreator<dynamic>>{},
-      ) as Map<Type, _i4.HandlerCreator<dynamic>>);
-
-  @override
-  Map<Type, List<_i4.IEventHandler<_i4.IDomainEvent>>> get eventHandlers => (super.noSuchMethod(
-        Invocation.getter(#eventHandlers),
-        returnValue: <Type, List<_i4.IEventHandler<_i4.IDomainEvent>>>{},
-      ) as Map<Type, List<_i4.IEventHandler<_i4.IDomainEvent>>>);
-
-  @override
-  Map<Type, List<_i4.FuncEventHandler<_i4.IDomainEvent>>> get eventFuncHandler => (super.noSuchMethod(
-        Invocation.getter(#eventFuncHandler),
-        returnValue: <Type, List<_i4.FuncEventHandler<_i4.IDomainEvent>>>{},
-      ) as Map<Type, List<_i4.FuncEventHandler<_i4.IDomainEvent>>>);
-
-  @override
-  _i4.UnsubscribeFunc subscribeWithFunc<E extends _i4.IDomainEvent>(
-    _i6.FutureOr<void> Function(_i4.IDomainEvent)? func,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(#subscribeWithFunc, [func]),
-        returnValue: () {},
-      ) as _i4.UnsubscribeFunc);
-
-  @override
-  void subscribe<E extends _i4.IDomainEvent>(_i4.IEventHandler<E>? handler) => super.noSuchMethod(
-        Invocation.method(#subscribe, [handler]),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void unsubscribe<E extends _i4.IDomainEvent>(_i4.IEventHandler<E>? handler) => super.noSuchMethod(
-        Invocation.method(#unsubscribe, [handler]),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i6.Future<void> publish<E extends _i4.IDomainEvent>(E? event) => (super.noSuchMethod(
-        Invocation.method(#publish, [event]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<R> send<T extends _i4.IRequest<R>, R extends Object?>(
-    T? request,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(#send, [request]),
-        returnValue: _i18.ifNotNull(
-              _i18.dummyValueOrNull<R>(
-                this,
-                Invocation.method(#send, [request]),
-              ),
-              (R v) => _i6.Future<R>.value(v),
-            ) ??
-            _FakeFuture_5<R>(this, Invocation.method(#send, [request])),
-      ) as _i6.Future<R>);
-
-  @override
-  void registerHandler<IR extends _i4.IRequest<R>, R, H extends _i4.IRequestHandler<IR, R>>(
-          _i4.HandlerCreator<H>? creator) =>
-      super.noSuchMethod(
-        Invocation.method(#registerHandler, [creator]),
-        returnValueForMissingStub: null,
-      );
-}
-
-/// A class which mocks [ILoggerService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockILoggerService extends _i1.Mock implements _i19.ILoggerService {
-  MockILoggerService() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i7.ILogger get logger => (super.noSuchMethod(
-        Invocation.getter(#logger),
-        returnValue: _FakeILogger_6(this, Invocation.getter(#logger)),
-      ) as _i7.ILogger);
-
-  @override
-  _i6.Future<void> configureLogger() => (super.noSuchMethod(
-        Invocation.method(#configureLogger, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> flush() => (super.noSuchMethod(
-        Invocation.method(#flush, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<String?> getLogFilePath() => (super.noSuchMethod(
-        Invocation.method(#getLogFilePath, []),
-        returnValue: _i6.Future<String?>.value(),
-      ) as _i6.Future<String?>);
-
-  @override
-  String getMemoryLogs() => (super.noSuchMethod(
-        Invocation.method(#getMemoryLogs, []),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.method(#getMemoryLogs, []),
-        ),
-      ) as String);
-
-  @override
-  void clearMemoryLogs() => super.noSuchMethod(
-        Invocation.method(#clearMemoryLogs, []),
-        returnValueForMissingStub: null,
-      );
-}
-
-/// A class which mocks [INotificationService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockINotificationService extends _i1.Mock implements _i20.INotificationService {
-  MockINotificationService() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i6.Future<void> init() => (super.noSuchMethod(
-        Invocation.method(#init, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> destroy() => (super.noSuchMethod(
-        Invocation.method(#destroy, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> show({
-    required String? title,
-    required String? body,
-    String? payload,
-    int? id,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(#show, [], {
-          #title: title,
-          #body: body,
-          #payload: payload,
-          #id: id,
-        }),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> clearAll() => (super.noSuchMethod(
-        Invocation.method(#clearAll, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<bool> isEnabled() => (super.noSuchMethod(
-        Invocation.method(#isEnabled, []),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
-
-  @override
-  _i6.Future<void> setEnabled(bool? enabled) => (super.noSuchMethod(
-        Invocation.method(#setEnabled, [enabled]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<bool> checkPermissionStatus() => (super.noSuchMethod(
-        Invocation.method(#checkPermissionStatus, []),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
-
-  @override
-  _i6.Future<bool> requestPermission() => (super.noSuchMethod(
-        Invocation.method(#requestPermission, []),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
-}
-
-/// A class which mocks [IThemeService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockIThemeService extends _i1.Mock implements _i21.IThemeService {
-  MockIThemeService() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i21.AppThemeMode get currentThemeMode => (super.noSuchMethod(
-        Invocation.getter(#currentThemeMode),
-        returnValue: _i21.AppThemeMode.light,
-      ) as _i21.AppThemeMode);
-
-  @override
-  bool get isDynamicAccentColorEnabled => (super.noSuchMethod(
-        Invocation.getter(#isDynamicAccentColorEnabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  bool get isCustomAccentColorEnabled => (super.noSuchMethod(
-        Invocation.getter(#isCustomAccentColorEnabled),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  _i22.UiDensity get currentUiDensity => (super.noSuchMethod(
-        Invocation.getter(#currentUiDensity),
-        returnValue: _i22.UiDensity.compact,
-      ) as _i22.UiDensity);
-
-  @override
-  _i8.Color get primaryColor => (super.noSuchMethod(
-        Invocation.getter(#primaryColor),
-        returnValue: _FakeColor_7(this, Invocation.getter(#primaryColor)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get surface0 => (super.noSuchMethod(
-        Invocation.getter(#surface0),
-        returnValue: _FakeColor_7(this, Invocation.getter(#surface0)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get surface1 => (super.noSuchMethod(
-        Invocation.getter(#surface1),
-        returnValue: _FakeColor_7(this, Invocation.getter(#surface1)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get surface2 => (super.noSuchMethod(
-        Invocation.getter(#surface2),
-        returnValue: _FakeColor_7(this, Invocation.getter(#surface2)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get surface3 => (super.noSuchMethod(
-        Invocation.getter(#surface3),
-        returnValue: _FakeColor_7(this, Invocation.getter(#surface3)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get textColor => (super.noSuchMethod(
-        Invocation.getter(#textColor),
-        returnValue: _FakeColor_7(this, Invocation.getter(#textColor)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get secondaryTextColor => (super.noSuchMethod(
-        Invocation.getter(#secondaryTextColor),
-        returnValue: _FakeColor_7(
-          this,
-          Invocation.getter(#secondaryTextColor),
-        ),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get lightTextColor => (super.noSuchMethod(
-        Invocation.getter(#lightTextColor),
-        returnValue: _FakeColor_7(this, Invocation.getter(#lightTextColor)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get darkTextColor => (super.noSuchMethod(
-        Invocation.getter(#darkTextColor),
-        returnValue: _FakeColor_7(this, Invocation.getter(#darkTextColor)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get dividerColor => (super.noSuchMethod(
-        Invocation.getter(#dividerColor),
-        returnValue: _FakeColor_7(this, Invocation.getter(#dividerColor)),
-      ) as _i8.Color);
-
-  @override
-  _i8.Color get barrierColor => (super.noSuchMethod(
-        Invocation.getter(#barrierColor),
-        returnValue: _FakeColor_7(this, Invocation.getter(#barrierColor)),
-      ) as _i8.Color);
-
-  @override
-  _i9.ThemeData get themeData => (super.noSuchMethod(
-        Invocation.getter(#themeData),
-        returnValue: _FakeThemeData_8(this, Invocation.getter(#themeData)),
-      ) as _i9.ThemeData);
-
-  @override
-  _i6.Stream<void> get themeChanges => (super.noSuchMethod(
-        Invocation.getter(#themeChanges),
-        returnValue: _i6.Stream<void>.empty(),
-      ) as _i6.Stream<void>);
-
-  @override
-  _i6.Future<void> initialize() => (super.noSuchMethod(
-        Invocation.method(#initialize, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> setThemeMode(_i21.AppThemeMode? mode) => (super.noSuchMethod(
-        Invocation.method(#setThemeMode, [mode]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> setDynamicAccentColor(bool? enabled) => (super.noSuchMethod(
-        Invocation.method(#setDynamicAccentColor, [enabled]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> setCustomAccentColor(_i8.Color? color) => (super.noSuchMethod(
-        Invocation.method(#setCustomAccentColor, [color]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> setUiDensity(_i22.UiDensity? density) => (super.noSuchMethod(
-        Invocation.method(#setUiDensity, [density]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> refreshTheme() => (super.noSuchMethod(
-        Invocation.method(#refreshTheme, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-}
-
-/// A class which mocks [ITranslationService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockITranslationService extends _i1.Mock implements _i23.ITranslationService {
-  MockITranslationService() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i6.Future<void> init() => (super.noSuchMethod(
-        Invocation.method(#init, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  String translate(String? key, {Map<String, String>? namedArgs}) => (super.noSuchMethod(
-        Invocation.method(#translate, [key], {#namedArgs: namedArgs}),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.method(#translate, [key], {#namedArgs: namedArgs}),
-        ),
-      ) as String);
-
-  @override
-  _i6.Future<void> changeLanguage(
-    _i9.BuildContext? context,
-    String? languageCode,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(#changeLanguage, [context, languageCode]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> changeLanguageWithoutNavigation(
-    _i9.BuildContext? context,
-    String? languageCode,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(#changeLanguageWithoutNavigation, [
-          context,
-          languageCode,
-        ]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  String getCurrentLanguage(_i9.BuildContext? context) => (super.noSuchMethod(
-        Invocation.method(#getCurrentLanguage, [context]),
-        returnValue: _i18.dummyValue<String>(
-          this,
-          Invocation.method(#getCurrentLanguage, [context]),
-        ),
-      ) as String);
-
-  @override
-  _i9.Widget wrapWithTranslations(_i9.Widget? child) => (super.noSuchMethod(
-        Invocation.method(#wrapWithTranslations, [child]),
-        returnValue: _FakeWidget_9(
-          this,
-          Invocation.method(#wrapWithTranslations, [child]),
-        ),
-      ) as _i9.Widget);
-}
-
-/// A class which mocks [ReminderService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockReminderService extends _i1.Mock implements _i24.ReminderService {
-  MockReminderService() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i6.Future<void> initialize() => (super.noSuchMethod(
-        Invocation.method(#initialize, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  void dispose() => super.noSuchMethod(
-        Invocation.method(#dispose, []),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  _i6.Future<void> scheduleTaskReminder(_i25.Task? task) => (super.noSuchMethod(
-        Invocation.method(#scheduleTaskReminder, [task]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> scheduleHabitReminder(_i26.Habit? habit) => (super.noSuchMethod(
-        Invocation.method(#scheduleHabitReminder, [habit]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> scheduleReminder({
-    required String? id,
-    required String? title,
-    required String? body,
-    required DateTime? scheduledDate,
-    String? payload,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(#scheduleReminder, [], {
-          #id: id,
-          #title: title,
-          #body: body,
-          #scheduledDate: scheduledDate,
-          #payload: payload,
-        }),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> scheduleRecurringReminder({
-    required String? id,
-    required String? title,
-    required String? body,
-    required _i9.TimeOfDay? time,
-    required List<int>? days,
-    String? payload,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(#scheduleRecurringReminder, [], {
-          #id: id,
-          #title: title,
-          #body: body,
-          #time: time,
-          #days: days,
-          #payload: payload,
-        }),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> cancelEntityReminders({
-    bool Function(String)? idFilter,
-    String? startsWith,
-    String? contains,
-    String? equals,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(#cancelEntityReminders, [], {
-          #idFilter: idFilter,
-          #startsWith: startsWith,
-          #contains: contains,
-          #equals: equals,
-        }),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> cancelTaskReminders(String? taskId) => (super.noSuchMethod(
-        Invocation.method(#cancelTaskReminders, [taskId]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> cancelHabitReminders(String? habitId) => (super.noSuchMethod(
-        Invocation.method(#cancelHabitReminders, [habitId]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> cancelRemindersForCompletedTask(String? taskId) => (super.noSuchMethod(
-        Invocation.method(#cancelRemindersForCompletedTask, [taskId]),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> refreshAllRemindersForLanguageChange() => (super.noSuchMethod(
-        Invocation.method(#refreshAllRemindersForLanguageChange, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-}
-
-/// A class which mocks [IDemoDataService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockIDemoDataService extends _i1.Mock implements _i27.IDemoDataService {
-  MockIDemoDataService() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i6.Future<void> initializeDemoDataIfNeeded() => (super.noSuchMethod(
-        Invocation.method(#initializeDemoDataIfNeeded, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> resetDemoData() => (super.noSuchMethod(
-        Invocation.method(#resetDemoData, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<bool> isDemoDataInitialized() => (super.noSuchMethod(
-        Invocation.method(#isDemoDataInitialized, []),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
-
-  @override
-  _i6.Future<void> clearDemoData() => (super.noSuchMethod(
-        Invocation.method(#clearDemoData, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> populateDemoData() => (super.noSuchMethod(
-        Invocation.method(#populateDemoData, []),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
-}
-
-/// A class which mocks [IContainer].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockIContainer extends _i1.Mock implements _i7.IContainer {
-  MockIContainer() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i7.IContainer get instance => (super.noSuchMethod(
-        Invocation.getter(#instance),
-        returnValue: _FakeIContainer_10(this, Invocation.getter(#instance)),
-      ) as _i7.IContainer);
-
-  @override
-  T resolve<T>() => (super.noSuchMethod(
-        Invocation.method(#resolve, []),
-        returnValue: _i18.dummyValue<T>(
-          this,
-          Invocation.method(#resolve, []),
-        ),
-      ) as T);
-
-  @override
-  void registerSingleton<T>(T Function(_i7.IContainer)? factory) => super.noSuchMethod(
-        Invocation.method(#registerSingleton, [factory]),
-        returnValueForMissingStub: null,
-      );
+    Invocation.method(#notifySyncComplete, []),
+    returnValueForMissingStub: null,
+  );
 }

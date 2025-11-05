@@ -1,7 +1,29 @@
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
+
+/// Test implementation of IApplicationDirectoryService for testing
+class TestApplicationDirectoryService implements IApplicationDirectoryService {
+  Directory? _tempDir;
+
+  @override
+  Future<Directory> getApplicationDirectory() async {
+    // Create a temporary directory for testing if not already created
+    _tempDir ??= Directory.systemTemp.createTempSync('whph_test_');
+    return _tempDir!;
+  }
+
+  /// Clean up the temporary directory
+  Future<void> cleanup() async {
+    if (_tempDir != null && await _tempDir!.exists()) {
+      await _tempDir!.delete(recursive: true);
+    }
+    _tempDir = null;
+  }
+}
 
 /// Integration test for sync crash prevention
 ///
@@ -11,18 +33,28 @@ void main() {
   group('Sync Crash Prevention Integration Test', () {
     late AppDatabase database;
     late DatabaseIntegrityService integrityService;
+    late TestApplicationDirectoryService directoryService;
 
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
 
-      // Initialize database for testing - use singleton instance
-      database = AppDatabase.instance();
+      // Create a test container with the required IApplicationDirectoryService registration
+      final testContainer = Container();
+
+      // Create and register the test implementation of IApplicationDirectoryService
+      directoryService = TestApplicationDirectoryService();
+      testContainer.registerSingleton<IApplicationDirectoryService>((_) => directoryService);
+
+      // Initialize database for testing with the container
+      database = AppDatabase.instance(testContainer);
 
       // Initialize integrity service with real database
       integrityService = DatabaseIntegrityService(database);
     });
 
     tearDownAll(() async {
+      // Clean up test resources
+      await directoryService.cleanup();
       // Database cleanup is handled by the singleton pattern
     });
 
@@ -35,10 +67,6 @@ void main() {
       // Verify the report was generated successfully
       expect(report, isNotNull);
       expect(report, isA<DatabaseIntegrityReport>());
-
-      // The specific content doesn't matter as much as the fact that it doesn't crash
-      print('Database integrity validation completed successfully');
-      print('Report: ${report.toString()}');
     });
 
     test('should handle integrity fixes without crashing', () async {

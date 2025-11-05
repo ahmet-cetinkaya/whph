@@ -275,6 +275,7 @@ tasks:
       deadline_date: "Son Tarih: {date}"
       deadline_date_not_set: "Son Tarih: Ayarlanmadı"
       estimated_time: "Tahmini Süre: {time}"
+      estimated_time_default: "(varsayılan)"
       estimated_time_not_set: "Tahmini Süre: Ayarlanmadı"
       planned_date: "Planlanan: {date}"
       planned_date_not_set: "Planlanan: Ayarlanmadı"
