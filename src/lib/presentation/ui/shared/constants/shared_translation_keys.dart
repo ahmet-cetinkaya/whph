@@ -1,4 +1,5 @@
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as application;
+import 'package:acore/acore.dart' show DateTimePickerTranslationKey;
 
 class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String saveButton = 'shared.buttons.save';
@@ -237,6 +238,13 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String selectDateRangeTitle = 'shared.datepicker.select_date_range_title';
   static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
 
+  // Quick Selection Dialog
+  static const String quickSelection = 'shared.datepicker.quick_selection';
+  static const String quickSelectionTitle = 'shared.datepicker.quick_selection_title';
+  static const String refreshSettings = 'shared.datepicker.refresh_settings';
+  static const String dateRanges = 'shared.datepicker.date_ranges';
+  static const String refreshSettingsLabel = 'shared.datepicker.refresh_settings_label';
+
   static const String date = 'shared.date';
 
   // Time Logging - Extracted from habits and tasks features to reduce redundancy
@@ -342,5 +350,76 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
     if (weekDayName == null) return '';
 
     return getWeekDayNameTranslationKey(weekDayName, short: short);
+  }
+
+  /// Maps DateTimePickerTranslationKey to SharedTranslationKeys
+  static String mapDateTimePickerKey(DateTimePickerTranslationKey key) {
+    switch (key) {
+      case DateTimePickerTranslationKey.title:
+        return SharedTranslationKeys.dateRangeTitle;
+      case DateTimePickerTranslationKey.confirm:
+        return SharedTranslationKeys.doneButton;
+      case DateTimePickerTranslationKey.cancel:
+        return SharedTranslationKeys.cancelButton;
+      case DateTimePickerTranslationKey.clear:
+        return SharedTranslationKeys.clearButton;
+      // Quick selection translations
+      case DateTimePickerTranslationKey.quickSelection:
+        return SharedTranslationKeys.quickSelection;
+      case DateTimePickerTranslationKey.quickSelectionTitle:
+        return SharedTranslationKeys.quickSelectionTitle;
+      case DateTimePickerTranslationKey.refreshSettings:
+        return SharedTranslationKeys.refreshSettings;
+      case DateTimePickerTranslationKey.dateRanges:
+        return SharedTranslationKeys.dateRanges;
+      case DateTimePickerTranslationKey.refreshSettingsLabel:
+        return SharedTranslationKeys.refreshSettingsLabel;
+      // Date picker validations - use shared translations
+      case DateTimePickerTranslationKey.selectedDateMustBeAtOrAfter:
+        return SharedTranslationKeys.selectedDateMustBeAtOrAfter;
+      case DateTimePickerTranslationKey.selectedDateMustBeAtOrBefore:
+        return SharedTranslationKeys.selectedDateMustBeAtOrBefore;
+      case DateTimePickerTranslationKey.startDateCannotBeAfterEndDate:
+        return SharedTranslationKeys.startDateCannotBeAfterEndDate;
+      case DateTimePickerTranslationKey.startDateMustBeAtOrAfter:
+        return SharedTranslationKeys.startDateMustBeAtOrAfter;
+      case DateTimePickerTranslationKey.endDateMustBeAtOrBefore:
+        return SharedTranslationKeys.endDateMustBeAtOrBefore;
+      case DateTimePickerTranslationKey.cannotSelectDateBeforeMinDate:
+        return SharedTranslationKeys.cannotSelectDateBeforeMinDate;
+      case DateTimePickerTranslationKey.cannotSelectDateAfterMaxDate:
+        return SharedTranslationKeys.cannotSelectDateAfterMaxDate;
+      case DateTimePickerTranslationKey.startDateCannotBeBeforeMinDate:
+        return SharedTranslationKeys.startDateCannotBeBeforeMinDate;
+      case DateTimePickerTranslationKey.endDateCannotBeAfterMaxDate:
+        return SharedTranslationKeys.endDateCannotBeAfterMaxDate;
+      case DateTimePickerTranslationKey.cannotSelectTimeBeforeMinDate:
+        return SharedTranslationKeys.cannotSelectTimeBeforeMinDate;
+      case DateTimePickerTranslationKey.cannotSelectTimeAfterMaxDate:
+        return SharedTranslationKeys.cannotSelectTimeAfterMaxDate;
+      case DateTimePickerTranslationKey.timeMustBeAtOrAfter:
+        return SharedTranslationKeys.timeMustBeAtOrAfter;
+      case DateTimePickerTranslationKey.timeMustBeAtOrBefore:
+        return SharedTranslationKeys.timeMustBeAtOrBefore;
+      case DateTimePickerTranslationKey.selectedDateTimeMustBeAfter:
+        return SharedTranslationKeys.selectedDateTimeMustBeAfter;
+      case DateTimePickerTranslationKey.selectDateTimeTitle:
+        return SharedTranslationKeys.selectDateTimeTitle;
+      case DateTimePickerTranslationKey.selectDateRangeTitle:
+        return SharedTranslationKeys.selectDateRangeTitle;
+      case DateTimePickerTranslationKey.noDateSelected:
+        return SharedTranslationKeys.notSetTime;
+      case DateTimePickerTranslationKey.setTime:
+        return SharedTranslationKeys.saveButton;
+      case DateTimePickerTranslationKey.selectEndDate:
+        return SharedTranslationKeys.selectDateRangeTitle;
+      case DateTimePickerTranslationKey.noDatesSelected:
+        return SharedTranslationKeys.notSetTime;
+      case DateTimePickerTranslationKey.refresh:
+        return SharedTranslationKeys.refreshTooltip;
+      default:
+        // For any other keys, try to use the key directly
+        return 'shared.datepicker.${key.name}';
+    }
   }
 }

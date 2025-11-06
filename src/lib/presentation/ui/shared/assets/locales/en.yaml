@@ -93,6 +93,13 @@ shared:
     start_date_must_be_at_or_after: Start date must be at or after {date}
     time_must_be_at_or_after: Time must be at or after {time}
     time_must_be_at_or_before: Time must be at or before {time}
+    # Quick selection dialog
+    quick_selection: Quick Selection
+    quick_selection_title: Quick Selection
+    refresh_settings: Auto-refresh
+    refresh_description: Automatically refresh the selected date range
+    date_ranges: Date Ranges
+    refresh_settings_label: Refresh Settings
   days:
     friday: Friday
     friday_short: Fri

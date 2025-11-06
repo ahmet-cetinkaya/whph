@@ -91,6 +91,11 @@ shared:
     start_date_must_be_at_or_after: 開始日は{date}以降でなければなりません
     time_must_be_at_or_after: 時間は{time}以降でなければなりません
     time_must_be_at_or_before: 時間は{time}以前でなければなりません
+    # Quick selection dialog
+    quick_selection: クイック選択
+    quick_selection_title: クイック選択
+    refresh_settings: 自動更新
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: 金曜日
     friday_short: 金

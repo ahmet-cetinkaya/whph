@@ -96,6 +96,11 @@ shared:
     start_date_must_be_at_or_after: Дата початку має бути не раніше {date}
     time_must_be_at_or_after: Час має бути не раніше {time}
     time_must_be_at_or_before: Час має бути не пізніше {time}
+    # Quick selection dialog
+    quick_selection: Швидкий вибір
+    quick_selection_title: Швидкий вибір
+    refresh_settings: Автоматичне оновлення
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: П'ятниця
     friday_short: Пт

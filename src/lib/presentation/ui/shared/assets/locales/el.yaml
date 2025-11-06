@@ -113,6 +113,11 @@ shared:
       την {date}
     time_must_be_at_or_after: Η ώρα πρέπει να είναι τις ή μετά τις {time}
     time_must_be_at_or_before: Η ώρα πρέπει να είναι τις ή πριν τις {time}
+    # Quick selection dialog
+    quick_selection: Γρήγορη επιλογή
+    quick_selection_title: Γρήγορη επιλογή
+    refresh_settings: Αυτόματη ανανέωση
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Παρασκευή
     friday_short: Παρ

@@ -366,10 +366,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   Future<void> _showDatePicker(BuildContext context) async {
     final translations = <DateTimePickerTranslationKey, String>{
-      DateTimePickerTranslationKey.title: _translationService.translate(SharedTranslationKeys.dateRangeTitle),
-      DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
-      DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
-      DateTimePickerTranslationKey.clear: _translationService.translate(SharedTranslationKeys.clearButton),
+      for (final key in DateTimePickerTranslationKey.values)
+        key: _translationService.translate(SharedTranslationKeys.mapDateTimePickerKey(key)),
     };
 
     final quickRanges = _getQuickRanges();
@@ -389,6 +387,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         // Don't update field state immediately - wait for Done button
         // The dialog will handle its own state internally
       },
+      actionButtonRadius: AppTheme.containerBorderRadius,
     );
 
     final result = await DatePickerDialog.show(

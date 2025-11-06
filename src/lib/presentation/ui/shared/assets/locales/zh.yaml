@@ -91,6 +91,11 @@ shared:
     start_date_must_be_at_or_after: 开始日期必须在 {date} 或之后
     time_must_be_at_or_after: 时间必须在 {time} 或之后
     time_must_be_at_or_before: 时间必须在 {time} 或之前
+    # Quick selection dialog
+    quick_selection: 快速选择
+    quick_selection_title: 快速选择
+    refresh_settings: 自动刷新
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: 星期五
     friday_short: 五

@@ -93,6 +93,11 @@ shared:
     start_date_must_be_at_or_after: Startdato må være på eller etter {date}
     time_must_be_at_or_after: Tidspunktet må være på eller etter {time}
     time_must_be_at_or_before: Tidspunktet må være på eller før {time}
+    # Quick selection dialog
+    quick_selection: Raskt val
+    quick_selection_title: Raskt val
+    refresh_settings: Automatisk oppdatering
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Fredag
     friday_short: Fre

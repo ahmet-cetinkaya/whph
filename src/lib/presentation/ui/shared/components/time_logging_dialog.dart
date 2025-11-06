@@ -255,6 +255,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               minDateTime: DateTime.now().subtract(const Duration(days: 30)),
               maxDateTime: DateTime.now(),
               initialValue: _selectedDate,
+              translateKey: (key) => _getTranslation(SharedTranslationKeys.mapDateTimePickerKey(key)),
             ),
             const SizedBox(height: AppTheme.sizeLarge),
 
