@@ -16,6 +16,7 @@
 *GEMINI.md
 *QWEN.md
 openspec/
+.serena/
 
 # FVM Version Cache
 .fvm/
