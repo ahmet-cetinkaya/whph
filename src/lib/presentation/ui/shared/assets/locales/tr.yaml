@@ -95,6 +95,13 @@ shared:
     start_date_must_be_at_or_after: Başlangıç tarihi {date} veya sonrası olmalıdır
     time_must_be_at_or_after: Saat {time} veya sonrası olmalıdır
     time_must_be_at_or_before: Saat {time} veya öncesi olmalıdır
+    # Quick selection dialog
+    quick_selection: Hızlı seçim
+    quick_selection_title: Hızlı seçim
+    refresh_settings: Otomatik yenileme
+    refresh_description: Seçili tarih aralığını otomatik olarak yeniler
+    date_ranges: Tarih Aralıkları
+    refresh_settings_label: Yenileme Ayarları
   days:
     friday: Cuma
     friday_short: Cum

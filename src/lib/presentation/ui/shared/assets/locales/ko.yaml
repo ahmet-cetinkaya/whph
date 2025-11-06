@@ -91,6 +91,11 @@ shared:
     start_date_must_be_at_or_after: 시작일은 {date} 이후여야 합니다
     time_must_be_at_or_after: 시간은 {time} 이후여야 합니다
     time_must_be_at_or_before: 시간은 {time} 이전이어야 합니다
+    # Quick selection dialog
+    quick_selection: 빠른 선택
+    quick_selection_title: 빠른 선택
+    refresh_settings: 자동 새로고침
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: 금요일
     friday_short: 금

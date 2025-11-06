@@ -107,6 +107,11 @@ shared:
     start_date_must_be_at_or_after: A data de início deve ser em ou após {date}
     time_must_be_at_or_after: O horário deve ser às {time} ou depois
     time_must_be_at_or_before: O horário deve ser às {time} ou antes
+    # Quick selection dialog
+    quick_selection: Seleção rápida
+    quick_selection_title: Seleção rápida
+    refresh_settings: Atualização automática
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Sexta-feira
     friday_short: Sex

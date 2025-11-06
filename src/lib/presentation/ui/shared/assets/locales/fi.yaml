@@ -99,6 +99,11 @@ shared:
     start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
     time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
     time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
+    # Quick selection dialog
+    quick_selection: Pikavalinta
+    quick_selection_title: Pikavalinta
+    refresh_settings: Automaattinen päivitys
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Perjantai
     friday_short: Pe

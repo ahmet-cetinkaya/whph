@@ -99,6 +99,11 @@ shared:
     start_date_must_be_at_or_after: De startdatum moet op of na {date} zijn
     time_must_be_at_or_after: De tijd moet op of na {time} zijn
     time_must_be_at_or_before: De tijd moet op of voor {time} zijn
+    # Quick selection dialog
+    quick_selection: Snelle selectie
+    quick_selection_title: Snelle selectie
+    refresh_settings: Automatisch vernieuwen
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Vrijdag
     friday_short: Vr

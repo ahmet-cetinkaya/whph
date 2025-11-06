@@ -93,6 +93,11 @@ shared:
     start_date_must_be_at_or_after: Začetni datum mora biti na ali po {date}
     time_must_be_at_or_after: Čas mora biti ob ali po {time}
     time_must_be_at_or_before: Čas mora biti ob ali pred {time}
+    # Quick selection dialog
+    quick_selection: Hitri izbor
+    quick_selection_title: Hitri izbor
+    refresh_settings: Samodejno osveževanje
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Petek
     friday_short: Pet

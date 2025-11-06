@@ -93,6 +93,11 @@ shared:
     start_date_must_be_at_or_after: Дата начала должна быть не раньше {date}
     time_must_be_at_or_after: Время должно быть не раньше {time}
     time_must_be_at_or_before: Время должно быть не позже {time}
+    # Quick selection dialog
+    quick_selection: Быстрый выбор
+    quick_selection_title: Быстрый выбор
+    refresh_settings: Автообновление
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Пятница
     friday_short: Пт

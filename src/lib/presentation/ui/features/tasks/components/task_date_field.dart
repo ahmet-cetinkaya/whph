@@ -152,7 +152,18 @@ class _TaskDateFieldState extends State<TaskDateField> {
               widget.translationService.translate(SharedTranslationKeys.selectDateTimeTitle),
           DateTimePickerTranslationKey.selectDateRangeTitle:
               widget.translationService.translate(SharedTranslationKeys.selectDateRangeTitle),
+          DateTimePickerTranslationKey.quickSelection:
+              widget.translationService.translate(SharedTranslationKeys.quickSelection),
+          DateTimePickerTranslationKey.quickSelectionTitle:
+              widget.translationService.translate(SharedTranslationKeys.quickSelectionTitle),
+          DateTimePickerTranslationKey.refreshSettings:
+              widget.translationService.translate(SharedTranslationKeys.refreshSettings),
+          DateTimePickerTranslationKey.dateRanges:
+              widget.translationService.translate(SharedTranslationKeys.dateRanges),
+          DateTimePickerTranslationKey.refreshSettingsLabel:
+              widget.translationService.translate(SharedTranslationKeys.refreshSettingsLabel),
         },
+        actionButtonRadius: AppTheme.containerBorderRadius,
       );
 
       final result = await DatePickerDialog.show(

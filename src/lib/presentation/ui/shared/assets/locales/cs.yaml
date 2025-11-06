@@ -93,6 +93,11 @@ shared:
     start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
     time_must_be_at_or_after: Čas musí být od {time} nebo později
     time_must_be_at_or_before: Čas musí být do {time} nebo dříve
+    # Quick selection dialog
+    quick_selection: Rychlý výběr
+    quick_selection_title: Rychlý výběr
+    refresh_settings: Automatické obnovení
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Pátek
     friday_short: Pá

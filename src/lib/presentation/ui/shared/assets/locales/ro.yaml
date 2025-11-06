@@ -99,6 +99,11 @@ shared:
     start_date_must_be_at_or_after: Data de început trebuie să fie la sau după {date}
     time_must_be_at_or_after: Ora trebuie să fie la sau după {time}
     time_must_be_at_or_before: Ora trebuie să fie la sau înainte de {time}
+    # Quick selection dialog
+    quick_selection: Selecție rapidă
+    quick_selection_title: Selecție rapidă
+    refresh_settings: Actualizare automată
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Vineri
     friday_short: Vin

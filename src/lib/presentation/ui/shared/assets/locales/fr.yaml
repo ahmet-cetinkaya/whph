@@ -111,6 +111,11 @@ shared:
     start_date_must_be_at_or_after: La date de début doit être le {date} ou après
     time_must_be_at_or_after: L'heure doit être à {time} ou après
     time_must_be_at_or_before: L'heure doit être à {time} ou avant
+    # Quick selection dialog
+    quick_selection: Sélection rapide
+    quick_selection_title: Sélection rapide
+    refresh_settings: Actualisation automatique
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Vendredi
     friday_short: Ven
