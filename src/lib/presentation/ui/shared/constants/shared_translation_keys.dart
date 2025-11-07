@@ -1,5 +1,6 @@
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as application;
 import 'package:acore/acore.dart' show DateTimePickerTranslationKey;
+import 'package:whph/corePackages/acore/lib/components/numeric_input_translation_keys.dart';
 
 class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String saveButton = 'shared.buttons.save';
@@ -266,6 +267,18 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String timeDisplayElapsedTimeTooltip = 'shared.time_display.elapsed_time_tooltip';
   static const String timeDisplayNoTimeLoggedTooltip = 'shared.time_display.no_time_logged_tooltip';
 
+  // Numeric Input
+  static const String numericInputDecrementButtonLabel = 'shared.numeric_input.decrement_button_label';
+  static const String numericInputIncrementButtonLabel = 'shared.numeric_input.increment_button_label';
+  static const String numericInputTextFieldLabel = 'shared.numeric_input.text_field_label';
+  static const String numericInputDecrementHint = 'shared.numeric_input.decrement_hint';
+  static const String numericInputIncrementHint = 'shared.numeric_input.increment_hint';
+  static const String numericInputTextFieldHint = 'shared.numeric_input.text_field_hint';
+  static const String numericInputDecrementTooltip = 'shared.numeric_input.decrement_tooltip';
+  static const String numericInputIncrementTooltip = 'shared.numeric_input.increment_tooltip';
+  static const String numericInputAtMinimumValue = 'shared.numeric_input.at_minimum_value';
+  static const String numericInputAtMaximumValue = 'shared.numeric_input.at_maximum_value';
+
   static const String help = "shared.help";
   static const String startTour = "shared.start_tour";
   static const String skipTour = "shared.skip_tour";
@@ -420,6 +433,32 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
       default:
         // For any other keys, try to use the key directly
         return 'shared.datepicker.${key.name}';
+    }
+  }
+
+  /// Maps NumericInputTranslationKey to SharedTranslationKeys
+  static String mapNumericInputKey(NumericInputTranslationKey key) {
+    switch (key) {
+      case NumericInputTranslationKey.decrementButtonLabel:
+        return SharedTranslationKeys.numericInputDecrementButtonLabel;
+      case NumericInputTranslationKey.incrementButtonLabel:
+        return SharedTranslationKeys.numericInputIncrementButtonLabel;
+      case NumericInputTranslationKey.textFieldLabel:
+        return SharedTranslationKeys.numericInputTextFieldLabel;
+      case NumericInputTranslationKey.decrementHint:
+        return SharedTranslationKeys.numericInputDecrementHint;
+      case NumericInputTranslationKey.incrementHint:
+        return SharedTranslationKeys.numericInputIncrementHint;
+      case NumericInputTranslationKey.textFieldHint:
+        return SharedTranslationKeys.numericInputTextFieldHint;
+      case NumericInputTranslationKey.decrementTooltip:
+        return SharedTranslationKeys.numericInputDecrementTooltip;
+      case NumericInputTranslationKey.incrementTooltip:
+        return SharedTranslationKeys.numericInputIncrementTooltip;
+      case NumericInputTranslationKey.atMinimumValue:
+        return SharedTranslationKeys.numericInputAtMinimumValue;
+      case NumericInputTranslationKey.atMaximumValue:
+        return SharedTranslationKeys.numericInputAtMaximumValue;
     }
   }
 }

@@ -11,7 +11,9 @@ import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, DateFormatService, DateFormatType, WeekDays;
+import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
+import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType, WeekDays;
+import 'package:whph/corePackages/acore/lib/components/numeric_input_translation_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/components/priority_select_field.dart';
@@ -612,6 +614,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _handleFieldChange(value, (val) => _task!.estimatedTime = val);
   }
 
+  /// Get NumericInput translations
+  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
+    return NumericInputTranslationKey.values.asMap().map(
+      (key, value) => MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+    );
+  }
+
   /// Event handler for planned date changes
   void _onPlannedDateChanged(DateTime? date) {
     if (!mounted || _task == null) return;
@@ -1041,11 +1050,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             incrementValue: 5,
             decrementValue: 5,
             onValueChanged: _onEstimatedTimeChanged,
-            decrementTooltip: _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
-            incrementTooltip: _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
             iconColor: AppTheme.secondaryTextColor,
             iconSize: AppTheme.iconSizeSmall,
             valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+            translations: _getNumericInputTranslations(),
           ),
         ),
       );
