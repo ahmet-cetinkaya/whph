@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, ISoundPlayer;
+import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
+import 'package:acore/acore.dart' show DateTimeHelper, ISoundPlayer;
+import 'package:whph/corePackages/acore/lib/components/numeric_input_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
@@ -816,6 +818,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     );
   }
 
+  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
+    return NumericInputTranslationKey.values.asMap().map(
+      (key, value) => MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_habit == null) {
@@ -982,11 +990,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               _saveHabit();
             });
           },
-          decrementTooltip: _translationService.translate(HabitTranslationKeys.decreaseEstimatedTime),
-          incrementTooltip: _translationService.translate(HabitTranslationKeys.increaseEstimatedTime),
           iconColor: AppTheme.secondaryTextColor,
           iconSize: AppTheme.iconSizeSmall,
           valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+          translations: _getNumericInputTranslations(),
         ),
       );
 
