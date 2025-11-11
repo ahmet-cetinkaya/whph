@@ -160,8 +160,9 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
 
   Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
     return NumericInputTranslationKey.values.asMap().map(
-      (key, value) => MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
-    );
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
   }
 
   @override
@@ -257,7 +258,6 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             const SizedBox(height: AppTheme.sizeSmall),
             DateTimePickerField(
               controller: _dateController,
-              hintText: DateFormat.yMd().format(_selectedDate),
               onConfirm: _onDateSelected,
               minDateTime: DateTime.now().subtract(const Duration(days: 30)),
               maxDateTime: DateTime.now(),

@@ -85,6 +85,10 @@ shared:
     end_date_must_be_at_or_before: Дата окончания должна быть не позже {date}
     select_date_range_title: Выберите диапазон дат
     select_date_time_title: Выберите дату и время
+    select_date_title: Выбрать дату
+    select_time_title: Выберите время
+    all_day: Весь день
+    selected_time: Выбранное время
     selected_date_must_be_at_or_after: Выбранная дата должна быть не раньше {date}
     selected_date_must_be_at_or_before: Выбранная дата должна быть не позже {date}
     selected_date_time_must_be_after: Выбранные дата и время должны быть позже {dateTime}
@@ -97,7 +101,9 @@ shared:
     quick_selection: Быстрый выбор
     quick_selection_title: Быстрый выбор
     refresh_settings: Автообновление
-    refresh_description: Automatically refresh the selected date range
+    refresh_description: Автоматически обновлять выбранный диапазон дат
+    date_ranges: Диапазоны дат
+    refresh_settings_label: Настройки обновления
   days:
     friday: Пятница
     friday_short: Пт
@@ -254,6 +260,7 @@ shared:
     last_month: Прошлый месяц
     last_three_months: Последние 3 месяца
     last_week: Прошлая неделя
+    next_week: Следующая неделя
     this_month: Этот месяц
     this_three_months: Эти 3 месяца
     this_week: Эта неделя
@@ -287,6 +294,61 @@ shared:
     question: Хотите обновить сейчас?
     success: Обновление успешно загружено!
     title: Доступно обновление!
+  date_time_picker:
+    title: Дата и время
+    confirm: Подтвердить
+    cancel: Отмена
+    set_time: Установить время
+    selected_time: Выбранное время
+    select_time_title: Выбрать время
+    select_date_title: Выбрать дату
+    no_date_selected: Дата не выбрана
+    select_end_date: Выбрать дату окончания
+    no_dates_selected: Даты не выбраны
+    refresh: Обновить
+    cannot_select_time_before_min_date: Нельзя выбрать время до {time}
+    cannot_select_time_after_max_date: Нельзя выбрать время после {time}
+    time_must_be_at_or_after: Время должно быть {time} или позже
+    time_must_be_at_or_before: Время должно быть {time} или раньше
+    selected_date_must_be_at_or_after: Выбранная дата должна быть {date} или позже
+    selected_date_must_be_at_or_before: Выбранная дата должна быть {date} или раньше
+    start_date_cannot_be_after_end_date: Дата начала не может быть после даты окончания
+    start_date_must_be_at_or_after: Дата начала должна быть {date} или позже
+    end_date_must_be_at_or_before: Дата окончания должна быть {date} или раньше
+    cannot_select_date_before_min_date: Нельзя выбрать дату до {date}
+    cannot_select_date_after_max_date: Нельзя выбрать дату после {date}
+    start_date_cannot_be_before_min_date: Дата начала не может быть до {date}
+    end_date_cannot_be_after_max_date: Дата окончания не может быть после {date}
+    selected_date_time_must_be_after: Выбранная дата и время должны быть после {dateTime}
+    select_date_time_title: Выбрать дату и время
+    select_date_range_title: Выбрать диапазон дат
+    refresh_description: Автоматически обновлять выбранный диапазон дат
+    date_time_field_label: Поле даты и времени
+    date_time_field_hint: Выбрать дату и время
+    field_label: Дата и Время
+    field_hint: Выбрать дату и время
+    allDay: Весь день
+    refreshDescription: Автоматически обновлять выбранный диапазон дат
+    quick_selection_today: Сегодня
+    quick_selection_tomorrow: Завтра
+    quick_selection_weekend: Выходные
+    quick_selection_next_week: Следующая неделя
+    quick_selection_no_date: Без даты
+    quick_selection_last_week: Прошлая неделя
+    quick_selection_last_month: Прошлый месяц
+    edit_button_label: Редактировать
+    edit_button_hint: Редактировать дату и время
+  numeric_input:
+    decrement_button_label: Уменьшить
+    increment_button_label: Увеличить
+    text_field_label: Числовое значение
+    decrement_hint: Уменьшить значение
+    increment_hint: Увеличить значение
+    text_field_hint: Введите число
+    decrement_tooltip: Уменьшить значение
+    increment_tooltip: Увеличить значение
+    at_minimum_value: Достигнуто минимальное значение
+    at_maximum_value: Достигнуто максимальное значение
   validation:
     required: "{field} обязательно."
   help: Помощь

@@ -162,8 +162,9 @@ class _TaskSettingsState extends State<TaskSettings> {
 
   Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
     return NumericInputTranslationKey.values.asMap().map(
-      (key, value) => MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
-    );
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
   }
 
   @override

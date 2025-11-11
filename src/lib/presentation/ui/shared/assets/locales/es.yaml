@@ -93,6 +93,10 @@ shared:
     end_date_must_be_at_or_before: La fecha de fin debe ser el {date} o antes
     select_date_range_title: Seleccionar rango de fechas
     select_date_time_title: Seleccionar fecha y hora
+    select_date_title: Seleccionar fecha
+    select_time_title: Seleccionar hora
+    all_day: Todo el día
+    selected_time: Hora seleccionada
     selected_date_must_be_at_or_after:
       La fecha seleccionada debe ser el {date} o
       después
@@ -115,7 +119,9 @@ shared:
     quick_selection: Selección rápida
     quick_selection_title: Selección rápida
     refresh_settings: Actualización automática
-    refresh_description: Automatically refresh the selected date range
+    refresh_description: Actualizar automáticamente el rango de fechas seleccionado
+    date_ranges: Rangos de fechas
+    refresh_settings_label: Configuración de actualización
   days:
     friday: Viernes
     friday_short: Vie
@@ -272,6 +278,7 @@ shared:
     last_month: Mes pasado
     last_three_months: Últimos 3 meses
     last_week: Semana pasada
+    next_week: Próxima semana
     this_month: Este mes
     this_three_months: Estos 3 meses
     this_week: Esta semana
@@ -305,6 +312,61 @@ shared:
     question: ¿Quieres actualizar ahora?
     success: ¡Actualización descargada exitosamente!
     title: ¡Actualización disponible!
+  date_time_picker:
+    title: Fecha y hora
+    confirm: Confirmar
+    cancel: Cancelar
+    set_time: Establecer hora
+    selected_time: Hora seleccionada
+    select_time_title: Seleccionar hora
+    select_date_title: Seleccionar fecha
+    no_date_selected: No se ha seleccionado ninguna fecha
+    select_end_date: Seleccionar fecha de fin
+    no_dates_selected: No se han seleccionado fechas
+    refresh: Actualizar
+    cannot_select_time_before_min_date: No se puede seleccionar una hora antes de {time}
+    cannot_select_time_after_max_date: No se puede seleccionar una hora después de {time}
+    time_must_be_at_or_after: La hora debe ser a partir de {time} o posterior
+    time_must_be_at_or_before: La hora debe ser hasta {time} o anterior
+    selected_date_must_be_at_or_after: La fecha seleccionada debe ser a partir de {date} o posterior
+    selected_date_must_be_at_or_before: La fecha seleccionada debe ser hasta {date} o anterior
+    start_date_cannot_be_after_end_date: La fecha de inicio no puede ser posterior a la fecha de fin
+    start_date_must_be_at_or_after: La fecha de inicio debe ser a partir de {date} o posterior
+    end_date_must_be_at_or_before: La fecha de fin debe ser hasta {date} o anterior
+    cannot_select_date_before_min_date: No se puede seleccionar una fecha antes de {date}
+    cannot_select_date_after_max_date: No se puede seleccionar una fecha después de {date}
+    start_date_cannot_be_before_min_date: La fecha de inicio no puede ser anterior a {date}
+    end_date_cannot_be_after_max_date: La fecha de fin no puede ser posterior a {date}
+    selected_date_time_must_be_after: La fecha y hora seleccionadas deben ser posteriores a {dateTime}
+    select_date_time_title: Seleccionar fecha y hora
+    select_date_range_title: Seleccionar rango de fechas
+    refresh_description: Actualizar automáticamente el rango de fechas seleccionado
+    date_time_field_label: Campo de fecha y hora
+    date_time_field_hint: Seleccionar fecha y hora
+    field_label: Fecha y Hora
+    field_hint: Seleccionar fecha y hora
+    allDay: Todo el día
+    refreshDescription: Actualizar automáticamente el rango de fechas seleccionado
+    quick_selection_today: Hoy
+    quick_selection_tomorrow: Mañana
+    quick_selection_weekend: Fin de semana
+    quick_selection_next_week: Próxima semana
+    quick_selection_no_date: Sin fecha
+    quick_selection_last_week: Hace una semana
+    quick_selection_last_month: Hace un mes
+    edit_button_label: Editar
+    edit_button_hint: Editar fecha y hora
+  numeric_input:
+    decrement_button_label: Disminuir
+    increment_button_label: Aumentar
+    text_field_label: Valor numérico
+    decrement_hint: Disminuir valor
+    increment_hint: Aumentar valor
+    text_field_hint: Ingrese un número
+    decrement_tooltip: Disminuir valor
+    increment_tooltip: Aumentar valor
+    at_minimum_value: Valor mínimo alcanzado
+    at_maximum_value: Valor máximo alcanzado
   validation:
     required: "{field} es requerido."
   help: Ayuda
