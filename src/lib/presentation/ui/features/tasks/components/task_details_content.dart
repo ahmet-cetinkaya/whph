@@ -617,8 +617,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   /// Get NumericInput translations
   Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
     return NumericInputTranslationKey.values.asMap().map(
-      (key, value) => MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
-    );
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
   }
 
   /// Event handler for planned date changes

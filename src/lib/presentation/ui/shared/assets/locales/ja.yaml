@@ -79,23 +79,29 @@ shared:
     cannot_select_time_after_max_date: "{time}より後の時間は選択できません"
     cannot_select_time_before_min_date: "{time}より前の時間は選択できません"
     deadline_cannot_be_before_planned_date: 締切日は予定日以降である必要があります
-    end_date_cannot_be_after_max_date: 終了日は{date}より後にできません
-    end_date_must_be_at_or_before: 終了日は{date}以前でなければなりません
+    end_date_cannot_be_after_max_date: 終了日は{{date}}より後にできません
+    end_date_must_be_at_or_before: 終了日は{{date}}以前でなければなりません
     select_date_range_title: 期間を選択
     select_date_time_title: 日時を選択
-    selected_date_must_be_at_or_after: 選択された日付は{date}以降でなければなりません
-    selected_date_must_be_at_or_before: 選択された日付は{date}以前でなければなりません
-    selected_date_time_must_be_after: 選択された日時は{dateTime}より後でなければなりません
+    select_date_title: 日付を選択
+    select_time_title: 時刻を選択
+    all_day: 終日
+    selected_time: 選択された時刻
+    selected_date_must_be_at_or_after: 選択された日付は{{date}}以降でなければなりません
+    selected_date_must_be_at_or_before: 選択された日付は{{date}}以前でなければなりません
+    selected_date_time_must_be_after: 選択された日時は{{dateTime}}より後でなければなりません
     start_date_cannot_be_after_end_date: 開始日は終了日より後にできません
-    start_date_cannot_be_before_min_date: 開始日は{date}より前にできません
-    start_date_must_be_at_or_after: 開始日は{date}以降でなければなりません
-    time_must_be_at_or_after: 時間は{time}以降でなければなりません
-    time_must_be_at_or_before: 時間は{time}以前でなければなりません
+    start_date_cannot_be_before_min_date: 開始日は{{date}}より前にできません
+    start_date_must_be_at_or_after: 開始日は{{date}}以降でなければなりません
+    time_must_be_at_or_after: 時間は{{time}}以降でなければなりません
+    time_must_be_at_or_before: 時間は{{time}}以前でなければなりません
     # Quick selection dialog
     quick_selection: クイック選択
     quick_selection_title: クイック選択
     refresh_settings: 自動更新
-    refresh_description: Automatically refresh the selected date range
+    refresh_description: 選択された日付範囲を自動的に更新
+    date_ranges: 日付範囲
+    refresh_settings_label: 更新設定
   days:
     friday: 金曜日
     friday_short: 金
@@ -252,6 +258,7 @@ shared:
     last_month: 先月
     last_three_months: 過去3ヶ月
     last_week: 先週
+    next_week: 来週
     this_month: 今月
     this_three_months: この3ヶ月
     this_week: 今週
@@ -285,8 +292,63 @@ shared:
     question: 今すぐ更新しますか？
     success: アップデートのダウンロードが完了しました！
     title: アップデート利用可能！
+  date_time_picker:
+    title: 日時
+    confirm: 確認
+    cancel: キャンセル
+    set_time: 時刻を設定
+    selected_time: 選択された時刻
+    select_time_title: 時刻を選択
+    select_date_title: 日付を選択
+    no_date_selected: 日付が選択されていません
+    select_end_date: 終了日を選択
+    no_dates_selected: 日付が選択されていません
+    refresh: 更新
+    cannot_select_time_before_min_date: "{{time}}より前の時刻は選択できません"
+    cannot_select_time_after_max_date: "{{time}}より後の時刻は選択できません"
+    time_must_be_at_or_after: "時刻は{{time}}以降である必要があります"
+    time_must_be_at_or_before: "時刻は{{time}}以前である必要があります"
+    selected_date_must_be_at_or_after: "選択された日付は{{date}}以降である必要があります"
+    selected_date_must_be_at_or_before: "選択された日付は{{date}}以前である必要があります"
+    start_date_cannot_be_after_end_date: 開始日は終了日より後にはできません
+    start_date_must_be_at_or_after: "開始日は{{date}}以降である必要があります"
+    end_date_must_be_at_or_before: "終了日は{{date}}以前である必要があります"
+    cannot_select_date_before_min_date: "{{date}}より前の日付は選択できません"
+    cannot_select_date_after_max_date: "{{date}}より後の日付は選択できません"
+    start_date_cannot_be_before_min_date: "開始日は{{date}}より前にはできません"
+    end_date_cannot_be_after_max_date: "終了日は{{date}}より後にはできません"
+    selected_date_time_must_be_after: "選択された日時は{{dateTime}}より後である必要があります"
+    select_date_time_title: 日時を選択
+    select_date_range_title: 日付範囲を選択
+    refresh_description: 選択された日付範囲を自動的に更新
+    date_time_field_label: 日時フィールド
+    date_time_field_hint: 日時を選択
+    field_label: 日時
+    field_hint: 日時を選択
+    allDay: 終日
+    refreshDescription: 選択した日付範囲を自動的に更新
+    quick_selection_today: 今日
+    quick_selection_tomorrow: 明日
+    quick_selection_weekend: 週末
+    quick_selection_next_week: 来週
+    quick_selection_no_date: 日付なし
+    quick_selection_last_week: 先週
+    quick_selection_last_month: 先月
+    edit_button_label: 編集
+    edit_button_hint: 日時を編集
+  numeric_input:
+    decrement_button_label: 減少
+    increment_button_label: 増加
+    text_field_label: 数値
+    decrement_hint: 値を減少
+    increment_hint: 値を増加
+    text_field_hint: 数字を入力
+    decrement_tooltip: 値を減少
+    increment_tooltip: 値を増加
+    at_minimum_value: 最小値
+    at_maximum_value: 最大値
   validation:
-    required: "{field}は必須です。"
+    required: "{{field}}は必須です。"
   help: ヘルプ
   start_tour: ツアーを開始
   skip_tour: ツアーをスキップ
