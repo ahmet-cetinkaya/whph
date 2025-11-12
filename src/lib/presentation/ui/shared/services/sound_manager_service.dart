@@ -88,11 +88,7 @@ class SoundManagerService implements ISoundManagerService {
   /// Helper method to play timer sound with proper audio focus
   Future<void> _playTimerSoundWithAudioFocus(String soundPath, {double? volume}) async {
     // Ticking sounds should not interrupt other audio playback (like music or podcasts)
-    if (volume != null) {
-      _soundPlayer.play(soundPath, volume: volume, requestAudioFocus: false);
-    } else {
-      _soundPlayer.play(soundPath, requestAudioFocus: false);
-    }
+    _soundPlayer.play(soundPath, volume: volume, requestAudioFocus: false);
   }
 
   /// Clear cached settings - useful when settings are changed
