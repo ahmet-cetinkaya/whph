@@ -41,7 +41,6 @@ class _SoundSettingsState extends State<SoundSettings> {
 
   // Debouncing for rapid interactions
   Timer? _debounceTimer;
-  final Map<String, bool> _pendingChanges = {};
 
   @override
   void initState() {
@@ -134,10 +133,7 @@ class _SoundSettingsState extends State<SoundSettings> {
     }
   }
 
-  Future<void> _saveSoundSettingBackground(String key, bool value) async {
-    // Store pending change for debouncing
-    _pendingChanges[key] = value;
-
+  Future<void> _saveAllSoundSettingsWithDebounce() async {
     // Cancel existing debounce timer
     _debounceTimer?.cancel();
 
@@ -148,24 +144,34 @@ class _SoundSettingsState extends State<SoundSettings> {
       _isSaving = true;
 
       try {
-        // Process all pending changes at once
-        final changesToSave = Map<String, bool>.from(_pendingChanges);
-        _pendingChanges.clear();
-
-        for (final entry in changesToSave.entries) {
-          final saveKey = entry.key;
-          final saveValue = entry.value;
-
-          // Save the primary setting first
-          await _mediator.send(SaveSettingCommand(
-            key: saveKey,
-            value: saveValue.toString(),
+        // The UI state is the source of truth. Save all settings based on the current state.
+        await Future.wait([
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.soundEnabled,
+            value: _soundEnabled.toString(),
             valueType: SettingValueType.bool,
-          ));
-
-          // Apply master-slave rules in background
-          await _applyMasterSlaveRulesInBackground(saveKey, saveValue);
-        }
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.taskCompletionSoundEnabled,
+            value: _taskCompletionSoundEnabled.toString(),
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.habitCompletionSoundEnabled,
+            value: _habitCompletionSoundEnabled.toString(),
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.timerControlSoundEnabled,
+            value: _timerControlSoundEnabled.toString(),
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.timerAlarmSoundEnabled,
+            value: _timerAlarmSoundEnabled.toString(),
+            valueType: SettingValueType.bool,
+          )),
+        ]);
 
         // Clear sound manager cache when settings change
         _soundManagerService.clearSettingsCache();
@@ -175,85 +181,6 @@ class _SoundSettingsState extends State<SoundSettings> {
         _isSaving = false;
       }
     });
-  }
-
-  Future<void> _applyMasterSlaveRulesInBackground(String key, bool value) async {
-    // Define sub-setting keys for easier maintenance
-    final subSettingKeys = {
-      SettingKeys.taskCompletionSoundEnabled,
-      SettingKeys.habitCompletionSoundEnabled,
-      SettingKeys.timerControlSoundEnabled,
-      SettingKeys.timerAlarmSoundEnabled,
-    };
-
-    // Rule 3 & 4: Handle master sound changes
-    if (key == SettingKeys.soundEnabled) {
-      if (value) {
-        // Rule 3: If user enable general sound setting, enable all sub sound settings
-        await Future.wait([
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.taskCompletionSoundEnabled,
-            value: 'true',
-            valueType: SettingValueType.bool,
-          )),
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.habitCompletionSoundEnabled,
-            value: 'true',
-            valueType: SettingValueType.bool,
-          )),
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.timerControlSoundEnabled,
-            value: 'true',
-            valueType: SettingValueType.bool,
-          )),
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.timerAlarmSoundEnabled,
-            value: 'true',
-            valueType: SettingValueType.bool,
-          )),
-        ]);
-      } else {
-        // Rule 4: If user disable general sound setting, disable all sub sound settings
-        await Future.wait([
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.taskCompletionSoundEnabled,
-            value: 'false',
-            valueType: SettingValueType.bool,
-          )),
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.habitCompletionSoundEnabled,
-            value: 'false',
-            valueType: SettingValueType.bool,
-          )),
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.timerControlSoundEnabled,
-            value: 'false',
-            valueType: SettingValueType.bool,
-          )),
-          _mediator.send(SaveSettingCommand(
-            key: SettingKeys.timerAlarmSoundEnabled,
-            value: 'false',
-            valueType: SettingValueType.bool,
-          )),
-        ]);
-      }
-    }
-
-    // Rule 2: If this was a sub-setting being disabled and all sub-settings are now disabled, disable master sound in database
-    if (subSettingKeys.contains(key) && !value) {
-      final allSubSettingsDisabled = !_taskCompletionSoundEnabled &&
-          !_habitCompletionSoundEnabled &&
-          !_timerControlSoundEnabled &&
-          !_timerAlarmSoundEnabled;
-
-      if (allSubSettingsDisabled) {
-        await _mediator.send(SaveSettingCommand(
-          key: SettingKeys.soundEnabled,
-          value: 'false',
-          valueType: SettingValueType.bool,
-        ));
-      }
-    }
   }
 
   void _handleSubSettingToggle(
@@ -267,8 +194,8 @@ class _SoundSettingsState extends State<SoundSettings> {
 
     updateDialogState(updateState);
     setState(updateState);
-    // Save in background without blocking UI
-    _saveSoundSettingBackground(settingKey, value);
+    // Save all sound settings in background without blocking UI
+    _saveAllSoundSettingsWithDebounce();
   }
 
   void _showSoundModal() {
@@ -308,8 +235,8 @@ class _SoundSettingsState extends State<SoundSettings> {
 
                     setDialogState(updateState);
                     setState(updateState);
-                    // Save in background without blocking UI
-                    _saveSoundSettingBackground(SettingKeys.soundEnabled, value);
+                    // Save all sound settings in background without blocking UI
+                    _saveAllSoundSettingsWithDebounce();
                   },
                 ),
                 const Divider(),
@@ -368,8 +295,7 @@ class _SoundSettingsState extends State<SoundSettings> {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  // Reload settings to reflect changes in the main tile
-                  _loadSoundSettings();
+                  // State is updated optimistically, so no need to reload here.
                 },
                 child: Text(_translationService.translate(SharedTranslationKeys.closeButton)),
               ),

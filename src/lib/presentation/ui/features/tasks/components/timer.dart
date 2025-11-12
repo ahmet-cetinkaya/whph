@@ -758,14 +758,12 @@ class _AppTimerState extends State<AppTimer> {
         return;
       }
 
-      // Play alternating tick and tock sounds with specific volume
-      // Check if timer alarm sounds are enabled before playing ticking sounds
-      if (_tickingEnabled) {
-        if (_isTickSound) {
-          _soundManagerService.playTimerTick();
-        } else {
-          _soundManagerService.playTimerTock();
-        }
+      // Play alternating tick and tock sounds
+      // The SoundManagerService is responsible for all checks, including if ticking is enabled.
+      if (_isTickSound) {
+        _soundManagerService.playTimerTick();
+      } else {
+        _soundManagerService.playTimerTock();
       }
       _isTickSound = !_isTickSound; // Toggle for next sound
     });
