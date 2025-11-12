@@ -142,7 +142,8 @@ class SoundManagerService implements ISoundManagerService {
 
   @override
   Future<void> playTimerTick() async {
-    if (await _isTimerControlSoundEnabled()) {
+    final tickingEnabled = await _getBoolSetting(SettingKeys.tickingEnabled, defaultValue: false);
+    if (await _isTimerControlSoundEnabled() && tickingEnabled) {
       final volume = await _getTickingVolume();
       _soundPlayer.play(TaskSounds.clockTick, volume: volume);
     }
@@ -150,7 +151,8 @@ class SoundManagerService implements ISoundManagerService {
 
   @override
   Future<void> playTimerTock() async {
-    if (await _isTimerControlSoundEnabled()) {
+    final tickingEnabled = await _getBoolSetting(SettingKeys.tickingEnabled, defaultValue: false);
+    if (await _isTimerControlSoundEnabled() && tickingEnabled) {
       final volume = await _getTickingVolume();
       _soundPlayer.play(TaskSounds.clockTock, volume: volume);
     }
