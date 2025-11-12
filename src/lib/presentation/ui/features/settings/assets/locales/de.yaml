@@ -47,6 +47,19 @@ settings:
     disable_error: Benachrichtigungen konnten nicht deaktiviert werden
     enable_error: Benachrichtigungen konnten nicht aktiviert werden
     title: Benachrichtigungen
+  sound:
+    title: Ton
+    subtitle: App-Töne und Benachrichtigungen konfigurieren
+    enabled: Töne aktivieren
+    task_completion: Aufgaben-Abschluss-Ton
+    habit_completion: Gewohnheiten-Abschluss-Ton
+    timer_control: Timer-Steuerungs-Ton
+    timer_alarm: Timer-Alarm-Ton
+    enable_error: Toneinstellungen konnten nicht aktiviert werden
+    disable_error: Toneinstellungen konnten nicht deaktiviert werden
+    sounds_disabled: Töne deaktiviert
+    all_sounds_enabled: Alle Töne aktiviert
+    some_sounds_enabled: Einige Töne aktiviert
   permissions:
     app_usage:
       description: Diese App benötigt die Berechtigung zum Zugriff auf App-Nutzungsstatistiken, um Ihre App-Nutzungsmuster genau zu verfolgen.

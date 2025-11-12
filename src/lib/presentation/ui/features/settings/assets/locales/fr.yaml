@@ -47,6 +47,19 @@ settings:
     disable_error: Impossible de désactiver les notifications
     enable_error: Impossible d'activer les notifications
     title: Notifications
+  sound:
+    title: Son
+    subtitle: Configurer les sons et notifications de l'application
+    enabled: Activer les Sons
+    task_completion: Son de Fin de Tâche
+    habit_completion: Son de Fin d'Habitude
+    timer_control: Son de Contrôle de Minuterie
+    timer_alarm: Son d'Alarme de Minuterie
+    enable_error: Impossible d'activer les paramètres sonores
+    disable_error: Impossible de désactiver les paramètres sonores
+    sounds_disabled: Sons désactivés
+    all_sounds_enabled: Tous les sons activés
+    some_sounds_enabled: Certains sons activés
   permissions:
     app_usage:
       description: Cette application a besoin de la permission d'accéder aux statistiques d'utilisation des applications pour suivre précisément vos modèles d'utilisation d'applications.

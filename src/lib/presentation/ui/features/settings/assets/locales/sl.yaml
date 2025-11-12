@@ -48,6 +48,19 @@ settings:
     disable_error: Spodletelo je pri onemogočanju obvestil
     enable_error: Spodletelo je pri omogočanju obvestil
     title: Obvestila
+  sound:
+    title: Zvoki
+    subtitle: Konfigurirajte zvoke in obvestila aplikacije
+    enabled: Omogoči zvoke
+    task_completion: Zvok dokončanja opravila
+    habit_completion: Zvok dokončanja navade
+    timer_control: Zvok nadzora časovnika
+    timer_alarm: Zvok alarma časovnika
+    enable_error: Spodletelo je omogočanje nastavitev zvoka
+    disable_error: Spodletelo je onemogočanje nastavitev zvoka
+    sounds_disabled: Zvoki onemogočeni
+    all_sounds_enabled: Vsi zvoki omogočeni
+    some_sounds_enabled: Nekateri zvoki omogočeni
   permissions:
     app_usage:
       description: Ta aplikacija potrebuje dovoljenje za dostop do statistik uporabe aplikacije, da natančno spremlja vzorce uporabe aplikacije.

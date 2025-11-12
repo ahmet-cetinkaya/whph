@@ -10,6 +10,20 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String enableNotificationsError = 'settings.notifications.enable_error';
   static const String disableNotificationsError = 'settings.notifications.disable_error';
 
+  // Sound Settings
+  static const String soundTitle = 'settings.sound.title';
+  static const String soundSubtitle = 'settings.sound.subtitle';
+  static const String soundEnabled = 'settings.sound.enabled';
+  static const String taskCompletionSound = 'settings.sound.task_completion';
+  static const String habitCompletionSound = 'settings.sound.habit_completion';
+  static const String timerControlSound = 'settings.sound.timer_control';
+  static const String timerAlarmSound = 'settings.sound.timer_alarm';
+  static const String enableSoundError = 'settings.sound.enable_error';
+  static const String disableSoundError = 'settings.sound.disable_error';
+  static const String soundsDisabled = 'settings.sound.sounds_disabled';
+  static const String allSoundsEnabled = 'settings.sound.all_sounds_enabled';
+  static const String someSoundsEnabled = 'settings.sound.some_sounds_enabled';
+
   // Startup Settings
   static const String startupTitle = 'settings.startup.title';
   static const String startupPermissionTitle = 'settings.permissions.startup.title';

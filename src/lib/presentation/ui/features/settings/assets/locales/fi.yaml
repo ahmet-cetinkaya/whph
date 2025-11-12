@@ -48,6 +48,19 @@ settings:
     disable_error: Ilmoitusten poistaminen käytöstä epäonnistui
     enable_error: Ilmoitusten käyttöönotto epäonnistui
     title: Ilmoitukset
+  sound:
+    title: Äänet
+    subtitle: Määritä sovelluksen äänet ja ilmoitukset
+    enabled: Ota äänet käyttöön
+    task_completion: Tehtävän suoritusääni
+    habit_completion: Tottumuksen suoritusääni
+    timer_control: Ajastimen ohjausääni
+    timer_alarm: Ajastimen hälytysääni
+    enable_error: Ääniasetusten käyttöönotto epäonnistui
+    disable_error: Ääniasetusten poistaminen käytöstä epäonnistui
+    sounds_disabled: Äänet pois käytöstä
+    all_sounds_enabled: Kaikki äänet käytössä
+    some_sounds_enabled: Osa äänistä käytössä
   permissions:
     app_usage:
       description: Tämä sovellus tarvitsee luvan sovelluksen käyttötilastoihin pääsyyn sovelluksen käyttökuvioiden tarkka seuraamiseksi.

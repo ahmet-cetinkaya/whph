@@ -48,6 +48,19 @@ settings:
     disable_error: Impossibile disabilitare le notifiche
     enable_error: Impossibile abilitare le notifiche
     title: Notifiche
+  sound:
+    title: Suono
+    subtitle: Configura suoni e notifiche dell'applicazione
+    enabled: Abilita Suoni
+    task_completion: Suono Completamento Attività
+    habit_completion: Suono Completamento Abitudine
+    timer_control: Suono Controllo Timer
+    timer_alarm: Suono Allarme Timer
+    enable_error: Impossibile abilitare le impostazioni audio
+    disable_error: Impossibile disabilitare le impostazioni audio
+    sounds_disabled: Suoni disattivati
+    all_sounds_enabled: Tutti i suoni attivati
+    some_sounds_enabled: Alcuni suoni attivati
   permissions:
     app_usage:
       description: Questa app ha bisogno del permesso per accedere alle statistiche di utilizzo app per tracciare accuratamente i tuoi pattern di utilizzo app.
