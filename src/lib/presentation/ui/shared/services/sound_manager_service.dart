@@ -66,6 +66,18 @@ class SoundManagerService implements ISoundManagerService {
     }
   }
 
+  /// Helper method to get ticking volume setting
+  Future<double> _getTickingVolume() async {
+    try {
+      final setting = await _settingRepository.getByKey(SettingKeys.tickingVolume);
+      final volume = setting?.getValue<int>() ?? 50; // Default to 50%
+      return volume / 100.0; // Convert to 0.0-1.0 range
+    } catch (e) {
+      Logger.error('Failed to get ticking volume setting: $e');
+      return 0.5; // Default to 50% if there's an error
+    }
+  }
+
   /// Clear cached settings - useful when settings are changed
   @override
   void clearSettingsCache() {
@@ -131,14 +143,16 @@ class SoundManagerService implements ISoundManagerService {
   @override
   Future<void> playTimerTick() async {
     if (await _isTimerControlSoundEnabled()) {
-      _soundPlayer.play(TaskSounds.clockTick);
+      final volume = await _getTickingVolume();
+      _soundPlayer.play(TaskSounds.clockTick, volume: volume);
     }
   }
 
   @override
   Future<void> playTimerTock() async {
     if (await _isTimerControlSoundEnabled()) {
-      _soundPlayer.play(TaskSounds.clockTock);
+      final volume = await _getTickingVolume();
+      _soundPlayer.play(TaskSounds.clockTock, volume: volume);
     }
   }
 }
