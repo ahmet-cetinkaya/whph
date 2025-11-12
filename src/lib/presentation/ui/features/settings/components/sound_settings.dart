@@ -25,6 +25,14 @@ class SoundSettings extends StatefulWidget {
 }
 
 class _SoundSettingsState extends State<SoundSettings> {
+  // Sub-setting keys for easier maintenance
+  static const Set<String> _subSettingKeys = {
+    SettingKeys.taskCompletionSoundEnabled,
+    SettingKeys.habitCompletionSoundEnabled,
+    SettingKeys.timerControlSoundEnabled,
+    SettingKeys.timerAlarmSoundEnabled,
+  };
+
   final _settingRepository = container.resolve<ISettingRepository>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
@@ -105,16 +113,8 @@ class _SoundSettingsState extends State<SoundSettings> {
   }
 
   void _applyMasterSlaveRulesForSubSettingChange(String changedKey, bool newValue) {
-    // Define sub-setting keys for easier maintenance
-    final subSettingKeys = {
-      SettingKeys.taskCompletionSoundEnabled,
-      SettingKeys.habitCompletionSoundEnabled,
-      SettingKeys.timerControlSoundEnabled,
-      SettingKeys.timerAlarmSoundEnabled,
-    };
-
     // Only apply to sub-settings, not master setting
-    if (!subSettingKeys.contains(changedKey)) return;
+    if (!_subSettingKeys.contains(changedKey)) return;
 
     // Rule 1: If any sub-setting is enabled, enable master sound
     if (newValue) {
@@ -205,91 +205,93 @@ class _SoundSettingsState extends State<SoundSettings> {
         builder: (context, setDialogState) {
           return AlertDialog(
             title: Text(_translationService.translate(SettingsTranslationKeys.soundTitle)),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 16.0,
-              children: [
-                // Master sound toggle
-                SwitchListTile(
-                  title: Text(_translationService.translate(SettingsTranslationKeys.soundEnabled)),
-                  subtitle: Text(_translationService.translate(SettingsTranslationKeys.soundSubtitle)),
-                  value: _soundEnabled,
-                  onChanged: (value) {
-                    // Optimistic UI update - update both states immediately
-                    void updateState() {
-                      _soundEnabled = value;
-                      // Show immediate visual feedback for Rule 3 & 4
-                      if (value) {
-                        _taskCompletionSoundEnabled = true;
-                        _habitCompletionSoundEnabled = true;
-                        _timerControlSoundEnabled = true;
-                        _timerAlarmSoundEnabled = true;
-                      } else {
-                        _taskCompletionSoundEnabled = false;
-                        _habitCompletionSoundEnabled = false;
-                        _timerControlSoundEnabled = false;
-                        _timerAlarmSoundEnabled = false;
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16.0,
+                children: [
+                  // Master sound toggle
+                  SwitchListTile(
+                    title: Text(_translationService.translate(SettingsTranslationKeys.soundEnabled)),
+                    subtitle: Text(_translationService.translate(SettingsTranslationKeys.soundSubtitle)),
+                    value: _soundEnabled,
+                    onChanged: (value) {
+                      // Optimistic UI update - update both states immediately
+                      void updateState() {
+                        _soundEnabled = value;
+                        // Show immediate visual feedback for Rule 3 & 4
+                        if (value) {
+                          _taskCompletionSoundEnabled = true;
+                          _habitCompletionSoundEnabled = true;
+                          _timerControlSoundEnabled = true;
+                          _timerAlarmSoundEnabled = true;
+                        } else {
+                          _taskCompletionSoundEnabled = false;
+                          _habitCompletionSoundEnabled = false;
+                          _timerControlSoundEnabled = false;
+                          _timerAlarmSoundEnabled = false;
+                        }
                       }
-                    }
 
-                    setDialogState(updateState);
-                    setState(updateState);
-                    // Save all sound settings in background without blocking UI
-                    _saveAllSoundSettingsWithDebounce();
-                  },
-                ),
-                const Divider(),
-                // Individual sound toggles with optimistic updates and background saving
-                SwitchListTile(
-                  title: Text(_translationService.translate(SettingsTranslationKeys.taskCompletionSound)),
-                  value: _taskCompletionSoundEnabled,
-                  onChanged: (value) {
-                    _handleSubSettingToggle(
-                      SettingKeys.taskCompletionSoundEnabled,
-                      value,
-                      (newValue) => _taskCompletionSoundEnabled = newValue,
-                      setDialogState,
-                    );
-                  },
-                ),
-                SwitchListTile(
-                  title: Text(_translationService.translate(SettingsTranslationKeys.habitCompletionSound)),
-                  value: _habitCompletionSoundEnabled,
-                  onChanged: (value) {
-                    _handleSubSettingToggle(
-                      SettingKeys.habitCompletionSoundEnabled,
-                      value,
-                      (newValue) => _habitCompletionSoundEnabled = newValue,
-                      setDialogState,
-                    );
-                  },
-                ),
-                SwitchListTile(
-                  title: Text(_translationService.translate(SettingsTranslationKeys.timerControlSound)),
-                  value: _timerControlSoundEnabled,
-                  onChanged: (value) {
-                    _handleSubSettingToggle(
-                      SettingKeys.timerControlSoundEnabled,
-                      value,
-                      (newValue) => _timerControlSoundEnabled = newValue,
-                      setDialogState,
-                    );
-                  },
-                ),
-                SwitchListTile(
-                  title: Text(_translationService.translate(SettingsTranslationKeys.timerAlarmSound)),
-                  value: _timerAlarmSoundEnabled,
-                  onChanged: (value) {
-                    _handleSubSettingToggle(
-                      SettingKeys.timerAlarmSoundEnabled,
-                      value,
-                      (newValue) => _timerAlarmSoundEnabled = newValue,
-                      setDialogState,
-                    );
-                  },
-                ),
-              ],
+                      setDialogState(updateState);
+                      setState(updateState);
+                      // Save all sound settings in background without blocking UI
+                      _saveAllSoundSettingsWithDebounce();
+                    },
+                  ),
+                  const Divider(),
+                  // Individual sound toggles with optimistic updates and background saving
+                  SwitchListTile(
+                    title: Text(_translationService.translate(SettingsTranslationKeys.taskCompletionSound)),
+                    value: _taskCompletionSoundEnabled,
+                    onChanged: (value) {
+                      _handleSubSettingToggle(
+                        SettingKeys.taskCompletionSoundEnabled,
+                        value,
+                        (newValue) => _taskCompletionSoundEnabled = newValue,
+                        setDialogState,
+                      );
+                    },
+                  ),
+                  SwitchListTile(
+                    title: Text(_translationService.translate(SettingsTranslationKeys.habitCompletionSound)),
+                    value: _habitCompletionSoundEnabled,
+                    onChanged: (value) {
+                      _handleSubSettingToggle(
+                        SettingKeys.habitCompletionSoundEnabled,
+                        value,
+                        (newValue) => _habitCompletionSoundEnabled = newValue,
+                        setDialogState,
+                      );
+                    },
+                  ),
+                  SwitchListTile(
+                    title: Text(_translationService.translate(SettingsTranslationKeys.timerControlSound)),
+                    value: _timerControlSoundEnabled,
+                    onChanged: (value) {
+                      _handleSubSettingToggle(
+                        SettingKeys.timerControlSoundEnabled,
+                        value,
+                        (newValue) => _timerControlSoundEnabled = newValue,
+                        setDialogState,
+                      );
+                    },
+                  ),
+                  SwitchListTile(
+                    title: Text(_translationService.translate(SettingsTranslationKeys.timerAlarmSound)),
+                    value: _timerAlarmSoundEnabled,
+                    onChanged: (value) {
+                      _handleSubSettingToggle(
+                        SettingKeys.timerAlarmSoundEnabled,
+                        value,
+                        (newValue) => _timerAlarmSoundEnabled = newValue,
+                        setDialogState,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             actions: [
               TextButton(
