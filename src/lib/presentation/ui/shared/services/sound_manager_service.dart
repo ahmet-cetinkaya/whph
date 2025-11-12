@@ -1,4 +1,5 @@
 import 'package:acore/acore.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
@@ -59,6 +60,7 @@ class SoundManagerService implements ISoundManagerService {
       final setting = await _settingRepository.getByKey(key);
       return setting?.getValue<bool>() ?? defaultValue;
     } catch (e) {
+      Logger.error('Failed to get setting "$key": $e');
       // If there's an error accessing the setting, return the default value
       return defaultValue;
     }
@@ -75,43 +77,67 @@ class SoundManagerService implements ISoundManagerService {
   }
 
   @override
-  void playTaskCompletion() async {
+  Future<void> playTaskCompletion() async {
     if (await _isTaskCompletionSoundEnabled()) {
       _soundPlayer.play(SharedSounds.done);
     }
   }
 
   @override
-  void playHabitCompletion() async {
+  Future<void> playHabitCompletion() async {
     if (await _isHabitCompletionSoundEnabled()) {
       _soundPlayer.play(SharedSounds.done);
     }
   }
 
   @override
-  void playTimerControl() async {
+  Future<void> playTimerControl() async {
     if (await _isTimerControlSoundEnabled()) {
       _soundPlayer.play(SharedSounds.button);
     }
   }
 
   @override
-  void playTimerAlarm() async {
+  Future<void> playTimerAlarm() async {
     if (await _isTimerAlarmSoundEnabled()) {
       _soundPlayer.play(SharedSounds.alarmDone);
     }
   }
 
   @override
-  void playTimerTick() async {
+  Future<void> playTimerAlarmLoop() async {
     if (await _isTimerAlarmSoundEnabled()) {
+      _soundPlayer.setLoop(true);
+      _soundPlayer.play(SharedSounds.alarmDone);
+    }
+  }
+
+  @override
+  Future<void> stopTimerAlarmLoop() async {
+    _soundPlayer.setLoop(false);
+    _soundPlayer.stop();
+  }
+
+  @override
+  Future<void> stopAll() async {
+    _soundPlayer.stop();
+  }
+
+  @override
+  Future<void> setLoop(bool loop) async {
+    _soundPlayer.setLoop(loop);
+  }
+
+  @override
+  Future<void> playTimerTick() async {
+    if (await _isTimerControlSoundEnabled()) {
       _soundPlayer.play(TaskSounds.clockTick);
     }
   }
 
   @override
-  void playTimerTock() async {
-    if (await _isTimerAlarmSoundEnabled()) {
+  Future<void> playTimerTock() async {
+    if (await _isTimerControlSoundEnabled()) {
       _soundPlayer.play(TaskSounds.clockTock);
     }
   }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, ISoundPlayer;
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
@@ -27,7 +27,6 @@ import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/components/time_display.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -59,8 +58,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
-  final _soundPlayer = container.resolve<ISoundPlayer>();
-  final _soundManagerService = container.resolve<ISoundManagerService>();
+    final _soundManagerService = container.resolve<ISoundManagerService>();
 
   GetHabitQueryResponse? _habit;
   final TextEditingController _nameController = TextEditingController();

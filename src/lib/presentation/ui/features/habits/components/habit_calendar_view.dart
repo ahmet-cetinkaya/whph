@@ -5,7 +5,6 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -48,8 +47,7 @@ class HabitCalendarView extends StatefulWidget {
 }
 
 class _HabitCalendarViewState extends State<HabitCalendarView> {
-  final _soundPlayer = container.resolve<ISoundPlayer>();
-  final _soundManagerService = container.resolve<ISoundManagerService>();
+    final _soundManagerService = container.resolve<ISoundManagerService>();
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
 
