@@ -16,6 +16,7 @@ class SoundManagerService implements ISoundManagerService {
   bool? _habitCompletionSoundEnabled;
   bool? _timerControlSoundEnabled;
   bool? _timerAlarmSoundEnabled;
+  bool? _tickingEnabled;
 
   SoundManagerService({
     required ISoundPlayer soundPlayer,
@@ -78,6 +79,22 @@ class SoundManagerService implements ISoundManagerService {
     }
   }
 
+  /// Helper method to get ticking enabled setting with caching
+  Future<bool> _isTickingEnabled() async {
+    _tickingEnabled ??= await _getBoolSetting(SettingKeys.tickingEnabled, defaultValue: false);
+    return _tickingEnabled!;
+  }
+
+  /// Helper method to play timer sound with proper audio focus
+  Future<void> _playTimerSoundWithAudioFocus(String soundPath, {double? volume}) async {
+    // Ticking sounds should not interrupt other audio playback (like music or podcasts)
+    if (volume != null) {
+      _soundPlayer.play(soundPath, volume: volume, requestAudioFocus: false);
+    } else {
+      _soundPlayer.play(soundPath, requestAudioFocus: false);
+    }
+  }
+
   /// Clear cached settings - useful when settings are changed
   @override
   void clearSettingsCache() {
@@ -86,6 +103,7 @@ class SoundManagerService implements ISoundManagerService {
     _habitCompletionSoundEnabled = null;
     _timerControlSoundEnabled = null;
     _timerAlarmSoundEnabled = null;
+    _tickingEnabled = null;
   }
 
   @override
@@ -142,19 +160,17 @@ class SoundManagerService implements ISoundManagerService {
 
   @override
   Future<void> playTimerTick() async {
-    final tickingEnabled = await _getBoolSetting(SettingKeys.tickingEnabled, defaultValue: false);
-    if (await _isTimerControlSoundEnabled() && tickingEnabled) {
+    if (await _isTimerControlSoundEnabled() && await _isTickingEnabled()) {
       final volume = await _getTickingVolume();
-      _soundPlayer.play(TaskSounds.clockTick, volume: volume);
+      _playTimerSoundWithAudioFocus(TaskSounds.clockTick, volume: volume);
     }
   }
 
   @override
   Future<void> playTimerTock() async {
-    final tickingEnabled = await _getBoolSetting(SettingKeys.tickingEnabled, defaultValue: false);
-    if (await _isTimerControlSoundEnabled() && tickingEnabled) {
+    if (await _isTimerControlSoundEnabled() && await _isTickingEnabled()) {
       final volume = await _getTickingVolume();
-      _soundPlayer.play(TaskSounds.clockTock, volume: volume);
+      _playTimerSoundWithAudioFocus(TaskSounds.clockTock, volume: volume);
     }
   }
 }
