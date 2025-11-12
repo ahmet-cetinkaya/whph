@@ -5,6 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
@@ -46,6 +47,7 @@ class AppTimer extends StatefulWidget {
 class _AppTimerState extends State<AppTimer> {
   final _mediator = container.resolve<Mediator>();
   final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
   final _notificationService = container.resolve<INotificationService>();
   final _systemTrayService = container.resolve<ISystemTrayService>();
   final _translationService = container.resolve<ITranslationService>();
@@ -235,8 +237,9 @@ class _AppTimerState extends State<AppTimer> {
 
     // The sound player's play() method handles stopping previous sounds internally
     if (mounted && _isAlarmPlaying) {
+      _soundManagerService.playTimerAlarm();
+      // Set looping for continuous alarm (needs direct sound player access)
       _soundPlayer.setLoop(true);
-      _soundPlayer.play(SharedSounds.alarmDone, volume: 1.0);
     }
 
     _sendNotification();
@@ -294,7 +297,7 @@ class _AppTimerState extends State<AppTimer> {
 
     if (mounted) {
       _soundPlayer.setLoop(false);
-      _soundPlayer.play(SharedSounds.button, volume: 1.0);
+      _soundManagerService.playTimerControl();
       _setSystemTrayIcon();
       _addTimerMenuItems();
       _updateSystemTrayTimer();
@@ -384,7 +387,7 @@ class _AppTimerState extends State<AppTimer> {
 
       // Disable looping and play button sound
       _soundPlayer.setLoop(false);
-      _soundPlayer.play(SharedSounds.button, volume: 1.0);
+      _soundManagerService.playTimerControl();
 
       // Disable wakelock when stopping timer
       _wakelockService.disable();
@@ -762,11 +765,14 @@ class _AppTimerState extends State<AppTimer> {
       }
 
       // Play alternating tick and tock sounds with specific volume
-      _soundPlayer.play(
-        _isTickSound ? TaskSounds.clockTick : TaskSounds.clockTock,
-        requestAudioFocus: false,
-        volume: _tickingVolume / 100.0,
-      );
+      // Check if timer alarm sounds are enabled before playing ticking sounds
+      if (_tickingEnabled) {
+        if (_isTickSound) {
+          _soundManagerService.playTimerTick();
+        } else {
+          _soundManagerService.playTimerTock();
+        }
+      }
       _isTickSound = !_isTickSound; // Toggle for next sound
     });
   }
