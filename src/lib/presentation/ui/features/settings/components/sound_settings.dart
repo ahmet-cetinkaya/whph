@@ -105,9 +105,17 @@ class _SoundSettingsState extends State<SoundSettings> {
     );
   }
 
-  void _applyMasterSlaveRulesForSubSettingChange(String changedKey, bool newValue, bool oldValue) {
+  void _applyMasterSlaveRulesForSubSettingChange(String changedKey, bool newValue) {
+    // Define sub-setting keys for easier maintenance
+    final subSettingKeys = {
+      SettingKeys.taskCompletionSoundEnabled,
+      SettingKeys.habitCompletionSoundEnabled,
+      SettingKeys.timerControlSoundEnabled,
+      SettingKeys.timerAlarmSoundEnabled,
+    };
+
     // Only apply to sub-settings, not master setting
-    if (changedKey == SettingKeys.soundEnabled) return;
+    if (!subSettingKeys.contains(changedKey)) return;
 
     // Rule 1: If any sub-setting is enabled, enable master sound
     if (newValue) {
@@ -170,6 +178,14 @@ class _SoundSettingsState extends State<SoundSettings> {
   }
 
   Future<void> _applyMasterSlaveRulesInBackground(String key, bool value) async {
+      // Define sub-setting keys for easier maintenance
+      final subSettingKeys = {
+        SettingKeys.taskCompletionSoundEnabled,
+        SettingKeys.habitCompletionSoundEnabled,
+        SettingKeys.timerControlSoundEnabled,
+        SettingKeys.timerAlarmSoundEnabled,
+      };
+
       // Rule 3 & 4: Handle master sound changes
       if (key == SettingKeys.soundEnabled) {
         if (value) {
@@ -224,11 +240,7 @@ class _SoundSettingsState extends State<SoundSettings> {
       }
 
       // Rule 2: If this was a sub-setting being disabled and all sub-settings are now disabled, disable master sound in database
-      if ((key == SettingKeys.taskCompletionSoundEnabled ||
-              key == SettingKeys.habitCompletionSoundEnabled ||
-              key == SettingKeys.timerControlSoundEnabled ||
-              key == SettingKeys.timerAlarmSoundEnabled) &&
-          !value) {
+      if (subSettingKeys.contains(key) && !value) {
         final allSubSettingsDisabled = !_taskCompletionSoundEnabled &&
             !_habitCompletionSoundEnabled &&
             !_timerControlSoundEnabled &&
@@ -242,6 +254,20 @@ class _SoundSettingsState extends State<SoundSettings> {
           ));
         }
       }
+  }
+
+  void _handleSubSettingToggle(String settingKey, bool value, Function(bool) setStateFunction, void Function(VoidCallback) updateDialogState) {
+    // Optimistic UI update - update both states immediately
+    void updateState() {
+      setStateFunction(value);
+      // Apply master-slave rules immediately
+      _applyMasterSlaveRulesForSubSettingChange(settingKey, value);
+    }
+
+    updateDialogState(updateState);
+    setState(updateState);
+    // Save in background without blocking UI
+    _saveSoundSettingBackground(settingKey, value);
   }
 
   void _showSoundModal() {
@@ -291,72 +317,48 @@ class _SoundSettingsState extends State<SoundSettings> {
                   title: Text(_translationService.translate(SettingsTranslationKeys.taskCompletionSound)),
                   value: _taskCompletionSoundEnabled,
                   onChanged: (value) {
-                    // Optimistic UI update - update both states immediately
-                    void updateState() {
-                      _taskCompletionSoundEnabled = value;
-                      // Apply master-slave rules immediately
-                      _applyMasterSlaveRulesForSubSettingChange(
-                          SettingKeys.taskCompletionSoundEnabled, value, _taskCompletionSoundEnabled);
-                    }
-
-                    setDialogState(updateState);
-                    setState(updateState);
-                    // Save in background without blocking UI
-                    _saveSoundSettingBackground(SettingKeys.taskCompletionSoundEnabled, value);
+                    _handleSubSettingToggle(
+                      SettingKeys.taskCompletionSoundEnabled,
+                      value,
+                      (newValue) => _taskCompletionSoundEnabled = newValue,
+                      setDialogState,
+                    );
                   },
                 ),
                 SwitchListTile(
                   title: Text(_translationService.translate(SettingsTranslationKeys.habitCompletionSound)),
                   value: _habitCompletionSoundEnabled,
                   onChanged: (value) {
-                    // Optimistic UI update - update both states immediately
-                    void updateState() {
-                      _habitCompletionSoundEnabled = value;
-                      // Apply master-slave rules immediately
-                      _applyMasterSlaveRulesForSubSettingChange(
-                          SettingKeys.habitCompletionSoundEnabled, value, _habitCompletionSoundEnabled);
-                    }
-
-                    setDialogState(updateState);
-                    setState(updateState);
-                    // Save in background without blocking UI
-                    _saveSoundSettingBackground(SettingKeys.habitCompletionSoundEnabled, value);
+                    _handleSubSettingToggle(
+                      SettingKeys.habitCompletionSoundEnabled,
+                      value,
+                      (newValue) => _habitCompletionSoundEnabled = newValue,
+                      setDialogState,
+                    );
                   },
                 ),
                 SwitchListTile(
                   title: Text(_translationService.translate(SettingsTranslationKeys.timerControlSound)),
                   value: _timerControlSoundEnabled,
                   onChanged: (value) {
-                    // Optimistic UI update - update both states immediately
-                    void updateState() {
-                      _timerControlSoundEnabled = value;
-                      // Apply master-slave rules immediately
-                      _applyMasterSlaveRulesForSubSettingChange(
-                          SettingKeys.timerControlSoundEnabled, value, _timerControlSoundEnabled);
-                    }
-
-                    setDialogState(updateState);
-                    setState(updateState);
-                    // Save in background without blocking UI
-                    _saveSoundSettingBackground(SettingKeys.timerControlSoundEnabled, value);
+                    _handleSubSettingToggle(
+                      SettingKeys.timerControlSoundEnabled,
+                      value,
+                      (newValue) => _timerControlSoundEnabled = newValue,
+                      setDialogState,
+                    );
                   },
                 ),
                 SwitchListTile(
                   title: Text(_translationService.translate(SettingsTranslationKeys.timerAlarmSound)),
                   value: _timerAlarmSoundEnabled,
                   onChanged: (value) {
-                    // Optimistic UI update - update both states immediately
-                    void updateState() {
-                      _timerAlarmSoundEnabled = value;
-                      // Apply master-slave rules immediately
-                      _applyMasterSlaveRulesForSubSettingChange(
-                          SettingKeys.timerAlarmSoundEnabled, value, _timerAlarmSoundEnabled);
-                    }
-
-                    setDialogState(updateState);
-                    setState(updateState);
-                    // Save in background without blocking UI
-                    _saveSoundSettingBackground(SettingKeys.timerAlarmSoundEnabled, value);
+                    _handleSubSettingToggle(
+                      SettingKeys.timerAlarmSoundEnabled,
+                      value,
+                      (newValue) => _timerAlarmSoundEnabled = newValue,
+                      setDialogState,
+                    );
                   },
                 ),
               ],

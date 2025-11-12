@@ -58,7 +58,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final _habitsService = container.resolve<HabitsService>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
-    final _soundManagerService = container.resolve<ISoundManagerService>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
 
   GetHabitQueryResponse? _habit;
   final TextEditingController _nameController = TextEditingController();

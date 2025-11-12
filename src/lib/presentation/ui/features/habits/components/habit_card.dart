@@ -47,7 +47,7 @@ class HabitCard extends StatefulWidget {
 
 class _HabitCardState extends State<HabitCard> {
   final _mediator = container.resolve<Mediator>();
-    final _soundManagerService = container.resolve<ISoundManagerService>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
   final _habitsService = container.resolve<HabitsService>();
   final _timeDataService = container.resolve<TimeDataService>();
   final _translationService = container.resolve<ITranslationService>();

@@ -47,7 +47,7 @@ class HabitCalendarView extends StatefulWidget {
 }
 
 class _HabitCalendarViewState extends State<HabitCalendarView> {
-    final _soundManagerService = container.resolve<ISoundManagerService>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
 
