@@ -21,7 +21,6 @@ import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dar
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/calendar/models/today_page_list_option_settings.dart';
 import 'package:whph/presentation/ui/shared/services/app_bootstrap_service.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 
 /// Background callback function for HomeWidget interactive widgets
 /// This function is called when a widget is clicked and performs the actual completion logic
