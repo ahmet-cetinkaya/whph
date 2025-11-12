@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart' hide Container;
 import 'package:home_widget/home_widget.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import '../models/widget_data.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
@@ -142,8 +143,8 @@ Future<void> _backgroundToggleTask(Mediator mediator, IContainer container, Stri
     // Play completion sound if task was completed
     if (newCompletedAt != null) {
       try {
-        final soundPlayer = container.resolve<ISoundPlayer>();
-        soundPlayer.play(SharedSounds.done, volume: 1.0);
+        final soundManagerService = container.resolve<ISoundManagerService>();
+        soundManagerService.playTaskCompletion();
       } catch (e) {
         Logger.warning('Error playing completion sound: $e');
         // Don't rethrow - sound failure shouldn't break the task completion
@@ -194,8 +195,8 @@ Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, Str
 
         // Play completion sound
         try {
-          final soundPlayer = container.resolve<ISoundPlayer>();
-          soundPlayer.play(SharedSounds.done, volume: 1.0);
+          final soundManagerService = container.resolve<ISoundManagerService>();
+          soundManagerService.playHabitCompletion();
         } catch (e) {
           Logger.warning('Error playing completion sound: $e');
         }
@@ -224,8 +225,8 @@ Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, Str
 
         // Play completion sound
         try {
-          final soundPlayer = container.resolve<ISoundPlayer>();
-          soundPlayer.play(SharedSounds.done, volume: 1.0);
+          final soundManagerService = container.resolve<ISoundManagerService>();
+          soundManagerService.playHabitCompletion();
         } catch (e) {
           Logger.warning('Error playing completion sound: $e');
         }

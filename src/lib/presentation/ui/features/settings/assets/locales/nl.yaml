@@ -48,6 +48,19 @@ settings:
     disable_error: Notificaties uitschakelen mislukt
     enable_error: Notificaties inschakelen mislukt
     title: Notificaties
+  sound:
+    title: Geluid
+    subtitle: Configureer app-geluiden en notificaties
+    enabled: Geluiden Inschakelen
+    task_completion: Taak Voltooiing Geluid
+    habit_completion: Gewoonte Voltooiing Geluid
+    timer_control: Timer Besturing Geluid
+    timer_alarm: Timer Alarm Geluid
+    enable_error: Geluidsinstellingen inschakelen mislukt
+    disable_error: Geluidsinstellingen uitschakelen mislukt
+    sounds_disabled: Geluiden uitgeschakeld
+    all_sounds_enabled: Alle geluiden ingeschakeld
+    some_sounds_enabled: Sommige geluiden ingeschakeld
   permissions:
     app_usage:
       description: Deze app heeft toestemming nodig om toegang te krijgen tot app-gebruiksstatistieken om uw app-gebruikspatronen nauwkeurig te volgen.

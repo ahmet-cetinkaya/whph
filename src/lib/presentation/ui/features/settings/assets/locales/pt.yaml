@@ -48,6 +48,19 @@ settings:
     disable_error: Falha ao desabilitar notificações
     enable_error: Falha ao habilitar notificações
     title: Notificações
+  sound:
+    title: Som
+    subtitle: Configure sons e notificações do aplicativo
+    enabled: Habilitar Sons
+    task_completion: Som de Conclusão de Tarefa
+    habit_completion: Som de Conclusão de Hábito
+    timer_control: Som de Controle do Temporizador
+    timer_alarm: Som de Alarme do Temporizador
+    enable_error: Falha ao habilitar configurações de som
+    disable_error: Falha ao desabilitar configurações de som
+    sounds_disabled: Sons desativados
+    all_sounds_enabled: Todos os sons ativados
+    some_sounds_enabled: Alguns sons ativados
   permissions:
     app_usage:
       description: Este app precisa de permissão para acessar estatísticas de uso do app para rastrear padrões de uso do app com precisão.

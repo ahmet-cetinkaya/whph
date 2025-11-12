@@ -48,6 +48,13 @@ class SettingKeys {
   static const String customAccentColor = 'CUSTOM_ACCENT_COLOR';
   static const String uiDensity = 'UI_DENSITY';
 
+  // Sound Settings
+  static const String soundEnabled = 'SOUND_ENABLED';
+  static const String taskCompletionSoundEnabled = 'TASK_COMPLETION_SOUND_ENABLED';
+  static const String habitCompletionSoundEnabled = 'HABIT_COMPLETION_SOUND_ENABLED';
+  static const String timerControlSoundEnabled = 'TIMER_CONTROL_SOUND_ENABLED';
+  static const String timerAlarmSoundEnabled = 'TIMER_ALARM_SOUND_ENABLED';
+
   // Debug Settings
   static const String debugLogsEnabled = 'DEBUG_LOGS_ENABLED';
 

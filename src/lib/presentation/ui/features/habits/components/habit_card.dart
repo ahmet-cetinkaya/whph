@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/habits/commands/toggle_habit_comp
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:acore/acore.dart' as acore;
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/features/tags/services/time_data_service.dart';
@@ -48,6 +49,7 @@ class HabitCard extends StatefulWidget {
 class _HabitCardState extends State<HabitCard> {
   final _mediator = container.resolve<Mediator>();
   final _soundPlayer = container.resolve<acore.ISoundPlayer>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
   final _habitsService = container.resolve<HabitsService>();
   final _timeDataService = container.resolve<TimeDataService>();
   final _translationService = container.resolve<ITranslationService>();
@@ -187,7 +189,7 @@ class _HabitCardState extends State<HabitCard> {
         await _refreshHabitRecords();
         _habitsService.notifyHabitRecordAdded(widget.habit.id);
         _timeDataService.notifyTimeDataChanged();
-        _soundPlayer.play(SharedSounds.done, volume: 1.0);
+        _soundManagerService.playHabitCompletion();
       },
     );
   }
@@ -209,7 +211,7 @@ class _HabitCardState extends State<HabitCard> {
         await _refreshHabitRecords();
         _habitsService.notifyHabitRecordAdded(widget.habit.id);
         _timeDataService.notifyTimeDataChanged();
-        _soundPlayer.play(SharedSounds.done, volume: 1.0);
+        _soundManagerService.playHabitCompletion();
       },
     );
   }

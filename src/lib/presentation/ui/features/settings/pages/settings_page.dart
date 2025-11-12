@@ -3,6 +3,7 @@ import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/presentation/ui/features/settings/components/about_tile.dart';
 import 'package:whph/presentation/ui/features/settings/components/language_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_settings.dart';
+import 'package:whph/presentation/ui/features/settings/components/sound_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/sync_devices_tile.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
@@ -30,10 +31,11 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _startupLoaded = false;
   bool _notificationLoaded = false;
   bool _themeLoaded = false;
+  bool _soundLoaded = false;
 
   /// Check if all settings tiles have finished loading
   bool get _isPageFullyLoaded {
-    return _startupLoaded && _notificationLoaded && _themeLoaded;
+    return _startupLoaded && _notificationLoaded && _themeLoaded && _soundLoaded;
   }
 
   void _onStartupLoaded() {
@@ -56,6 +58,14 @@ class _SettingsPageState extends State<SettingsPage> {
     if (mounted) {
       setState(() {
         _themeLoaded = true;
+      });
+    }
+  }
+
+  void _onSoundLoaded() {
+    if (mounted) {
+      setState(() {
+        _soundLoaded = true;
       });
     }
   }
@@ -90,6 +100,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Theme Settings
                   ThemeSettings(
                     onLoaded: _onThemeLoaded,
+                  ),
+
+                  // Sound Settings
+                  SoundSettings(
+                    onLoaded: _onSoundLoaded,
                   ),
 
                   // Permissions

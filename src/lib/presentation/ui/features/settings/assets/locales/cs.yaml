@@ -48,6 +48,19 @@ settings:
     disable_error: Selhání vypnutí notifikací
     enable_error: Selhání zapnutí notifikací
     title: Notifikace
+  sound:
+    title: Zvuky
+    subtitle: Nakonfigurujte zvuky a oznámení aplikace
+    enabled: Povolit zvuky
+    task_completion: Zvuk dokončení úkolu
+    habit_completion: Zvuk dokončení návyku
+    timer_control: Zvuk ovládání časovače
+    timer_alarm: Zvuk alarmu časovače
+    enable_error: Nepodařilo se povolit nastavení zvuku
+    disable_error: Nepodařilo se zakázat nastavení zvuku
+    sounds_disabled: Zvuky zakázány
+    all_sounds_enabled: Všechny zvuky povoleny
+    some_sounds_enabled: Některé zvuky povoleny
   permissions:
     app_usage:
       description: Tato aplikace potřebuje oprávnění k přístupu k statistikám používání aplikací pro přesné sledování vzorců používání aplikací.

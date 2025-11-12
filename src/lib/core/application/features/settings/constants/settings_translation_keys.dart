@@ -11,4 +11,15 @@ class SettingsTranslationKeys {
   static const String backupImportFailedError = 'settings.backup.import_failed';
   static const String backupInvalidFormatError = 'settings.backup.invalid_format';
   static const String backupCorruptedError = 'settings.backup.corrupted';
+
+  // Sound Settings
+  static const String soundTitle = 'settings.sound.title';
+  static const String soundSubtitle = 'settings.sound.subtitle';
+  static const String soundEnabled = 'settings.sound.enabled';
+  static const String taskCompletionSound = 'settings.sound.task_completion';
+  static const String habitCompletionSound = 'settings.sound.habit_completion';
+  static const String timerControlSound = 'settings.sound.timer_control';
+  static const String timerAlarmSound = 'settings.sound.timer_alarm';
+  static const String enableSoundError = 'settings.sound.enable_error';
+  static const String disableSoundError = 'settings.sound.disable_error';
 }
