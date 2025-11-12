@@ -178,85 +178,86 @@ class _SoundSettingsState extends State<SoundSettings> {
   }
 
   Future<void> _applyMasterSlaveRulesInBackground(String key, bool value) async {
-      // Define sub-setting keys for easier maintenance
-      final subSettingKeys = {
-        SettingKeys.taskCompletionSoundEnabled,
-        SettingKeys.habitCompletionSoundEnabled,
-        SettingKeys.timerControlSoundEnabled,
-        SettingKeys.timerAlarmSoundEnabled,
-      };
+    // Define sub-setting keys for easier maintenance
+    final subSettingKeys = {
+      SettingKeys.taskCompletionSoundEnabled,
+      SettingKeys.habitCompletionSoundEnabled,
+      SettingKeys.timerControlSoundEnabled,
+      SettingKeys.timerAlarmSoundEnabled,
+    };
 
-      // Rule 3 & 4: Handle master sound changes
-      if (key == SettingKeys.soundEnabled) {
-        if (value) {
-          // Rule 3: If user enable general sound setting, enable all sub sound settings
-          await Future.wait([
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.taskCompletionSoundEnabled,
-              value: 'true',
-              valueType: SettingValueType.bool,
-            )),
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.habitCompletionSoundEnabled,
-              value: 'true',
-              valueType: SettingValueType.bool,
-            )),
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.timerControlSoundEnabled,
-              value: 'true',
-              valueType: SettingValueType.bool,
-            )),
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.timerAlarmSoundEnabled,
-              value: 'true',
-              valueType: SettingValueType.bool,
-            )),
-          ]);
-        } else {
-          // Rule 4: If user disable general sound setting, disable all sub sound settings
-          await Future.wait([
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.taskCompletionSoundEnabled,
-              value: 'false',
-              valueType: SettingValueType.bool,
-            )),
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.habitCompletionSoundEnabled,
-              value: 'false',
-              valueType: SettingValueType.bool,
-            )),
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.timerControlSoundEnabled,
-              value: 'false',
-              valueType: SettingValueType.bool,
-            )),
-            _mediator.send(SaveSettingCommand(
-              key: SettingKeys.timerAlarmSoundEnabled,
-              value: 'false',
-              valueType: SettingValueType.bool,
-            )),
-          ]);
-        }
-      }
-
-      // Rule 2: If this was a sub-setting being disabled and all sub-settings are now disabled, disable master sound in database
-      if (subSettingKeys.contains(key) && !value) {
-        final allSubSettingsDisabled = !_taskCompletionSoundEnabled &&
-            !_habitCompletionSoundEnabled &&
-            !_timerControlSoundEnabled &&
-            !_timerAlarmSoundEnabled;
-
-        if (allSubSettingsDisabled) {
-          await _mediator.send(SaveSettingCommand(
-            key: SettingKeys.soundEnabled,
+    // Rule 3 & 4: Handle master sound changes
+    if (key == SettingKeys.soundEnabled) {
+      if (value) {
+        // Rule 3: If user enable general sound setting, enable all sub sound settings
+        await Future.wait([
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.taskCompletionSoundEnabled,
+            value: 'true',
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.habitCompletionSoundEnabled,
+            value: 'true',
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.timerControlSoundEnabled,
+            value: 'true',
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.timerAlarmSoundEnabled,
+            value: 'true',
+            valueType: SettingValueType.bool,
+          )),
+        ]);
+      } else {
+        // Rule 4: If user disable general sound setting, disable all sub sound settings
+        await Future.wait([
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.taskCompletionSoundEnabled,
             value: 'false',
             valueType: SettingValueType.bool,
-          ));
-        }
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.habitCompletionSoundEnabled,
+            value: 'false',
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.timerControlSoundEnabled,
+            value: 'false',
+            valueType: SettingValueType.bool,
+          )),
+          _mediator.send(SaveSettingCommand(
+            key: SettingKeys.timerAlarmSoundEnabled,
+            value: 'false',
+            valueType: SettingValueType.bool,
+          )),
+        ]);
       }
+    }
+
+    // Rule 2: If this was a sub-setting being disabled and all sub-settings are now disabled, disable master sound in database
+    if (subSettingKeys.contains(key) && !value) {
+      final allSubSettingsDisabled = !_taskCompletionSoundEnabled &&
+          !_habitCompletionSoundEnabled &&
+          !_timerControlSoundEnabled &&
+          !_timerAlarmSoundEnabled;
+
+      if (allSubSettingsDisabled) {
+        await _mediator.send(SaveSettingCommand(
+          key: SettingKeys.soundEnabled,
+          value: 'false',
+          valueType: SettingValueType.bool,
+        ));
+      }
+    }
   }
 
-  void _handleSubSettingToggle(String settingKey, bool value, Function(bool) setStateFunction, void Function(VoidCallback) updateDialogState) {
+  void _handleSubSettingToggle(
+      String settingKey, bool value, Function(bool) setStateFunction, void Function(VoidCallback) updateDialogState) {
     // Optimistic UI update - update both states immediately
     void updateState() {
       setStateFunction(value);
