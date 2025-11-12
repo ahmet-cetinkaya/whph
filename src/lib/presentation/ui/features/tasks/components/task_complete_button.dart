@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:acore/acore.dart' show DateTimeHelper, ISoundPlayer, ILogger;
+import 'package:acore/acore.dart' show DateTimeHelper, ILogger;
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -36,7 +36,7 @@ class TaskCompleteButton extends StatefulWidget {
 
 class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final _mediator = container.resolve<Mediator>();
-  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
   final _recurrenceService = container.resolve<ITaskRecurrenceService>();
@@ -121,7 +121,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         _logger.debug('TaskCompleteButton: Task save completed successfully');
 
         if (command.completedAt != null) {
-          _soundPlayer.play(SharedSounds.done, volume: 1.0);
+          _soundManagerService.playTaskCompletion();
         }
       },
       onSuccess: () {
