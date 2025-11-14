@@ -1,6 +1,6 @@
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as application;
 import 'package:acore/acore.dart' show DateTimePickerTranslationKey;
-import 'package:whph/corePackages/acore/lib/components/numeric_input_translation_keys.dart';
+import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input_translation_keys.dart';
 
 class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String saveButton = 'shared.buttons.save';
@@ -519,7 +519,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
         return SharedTranslationKeys.dateTimePickerQuickSelectionLastWeek;
       case DateTimePickerTranslationKey.quickSelectionLastMonth:
         return SharedTranslationKeys.dateTimePickerQuickSelectionLastMonth;
-            // Handle weekday abbreviations dynamically
+      // Handle weekday abbreviations dynamically
       case DateTimePickerTranslationKey.weekdayMonShort:
         return getWeekDayTranslationKey(1, short: true);
       case DateTimePickerTranslationKey.weekdayTueShort:
