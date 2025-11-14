@@ -10,7 +10,7 @@ import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_tra
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_distinct_device_names_query.dart';
 import 'dart:async';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 
 class DeviceSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedDevices;

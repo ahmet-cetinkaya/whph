@@ -4,7 +4,6 @@ import 'package:whph/core/application/features/settings/commands/import_data_com
 import 'package:whph/main.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
@@ -13,7 +12,6 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 import 'dart:typed_data';
 

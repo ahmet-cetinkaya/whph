@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 
 class SyncDevicesTile extends StatelessWidget {
