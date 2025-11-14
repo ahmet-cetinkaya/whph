@@ -361,6 +361,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         // The dialog will handle its own state internally
       },
       actionButtonRadius: AppTheme.containerBorderRadius,
+      allowNullConfirm: true,
     );
 
     final result = await DatePickerDialog.show(
