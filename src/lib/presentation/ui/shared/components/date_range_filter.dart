@@ -314,7 +314,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           return DateTime(now.year, now.month, lastDayOfMonth.day, 23, 59, 59);
         },
       ),
-            QuickDateRange(
+      QuickDateRange(
         key: 'last_week',
         label: _translationService.translate(SharedTranslationKeys.lastWeek),
         startDateCalculator: () {
@@ -387,7 +387,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       if (hasRefreshToggleOnlyChanged) {
         quickSelectionKey = _activeQuickSelectionKey;
         isQuickSelection = true;
-              } else if (startDate != null && endDate != null) {
+      } else if (startDate != null && endDate != null) {
         // Check for actual quick date selections
         // Check in order of specificity: most specific first to avoid false matches
         final quickRangesToCheck = quickRanges;
@@ -410,7 +410,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           return aPos.compareTo(bPos);
         });
 
-        
         for (final quickRange in quickRangesToCheck) {
           final quickStart = quickRange.startDateCalculator();
           final quickEnd = quickRange.endDateCalculator();
@@ -443,12 +442,12 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
             endDate: endDate!,
             isAutoRefreshEnabled: refreshEnabled, // Use the actual refresh state from dialog
           );
-                  } else {
+        } else {
           newSetting = DateFilterSetting.manual(
             startDate: startDate,
             endDate: endDate,
           );
-                  }
+        }
       } else if (hasRefreshToggleOnlyChanged && _dateFilterSetting != null) {
         // Even if dates are cleared but we had a setting before, create a new setting with updated refresh state
         newSetting = DateFilterSetting(

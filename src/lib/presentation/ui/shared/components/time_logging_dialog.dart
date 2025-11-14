@@ -5,8 +5,8 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input_translation_keys.dart';
+import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input.dart';
+import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input_translation_keys.dart';
 
 // Event class for time logging
 class TimeLoggingSubmittedEvent {

@@ -28,8 +28,8 @@ import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFo
 import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input_translation_keys.dart';
+import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input.dart';
+import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input_translation_keys.dart';
 
 class QuickAddTaskDialog extends StatefulWidget {
   final List<String>? initialTagIds;
