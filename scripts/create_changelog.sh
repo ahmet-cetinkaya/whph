@@ -5,7 +5,7 @@
 # If changelog_text is not provided, it will be auto-generated from commit messages since the last version tag
 # Use --auto flag to automatically accept generated changelog without confirmation
 # Use --all-versions flag to generate changelog for all historical versions
-# 
+#
 # Creates two changelogs:
 # 1. Project root CHANGELOG.md (Keep a Changelog format)
 # 2. Fastlane changelog for app stores
@@ -25,22 +25,22 @@ CHANGELOG_TEXT=""
 
 for arg in "$@"; do
     case $arg in
-        --auto)
-            AUTO_ACCEPT=true
-            shift
-            ;;
-        --all-versions)
-            ALL_VERSIONS=true
-            shift
-            ;;
-        *)
-            if [ -z "$VERSION_CODE" ]; then
-                VERSION_CODE="$arg"
-            elif [ -z "$CHANGELOG_TEXT" ]; then
-                CHANGELOG_TEXT="$arg"
-            fi
-            shift
-            ;;
+    --auto)
+        AUTO_ACCEPT=true
+        shift
+        ;;
+    --all-versions)
+        ALL_VERSIONS=true
+        shift
+        ;;
+    *)
+        if [ -z "$VERSION_CODE" ]; then
+            VERSION_CODE="$arg"
+        elif [ -z "$CHANGELOG_TEXT" ]; then
+            CHANGELOG_TEXT="$arg"
+        fi
+        shift
+        ;;
     esac
 done
 
@@ -60,14 +60,14 @@ capitalize_first_letter() {
 generate_changelog_from_commits() {
     local start_tag="$1"
     local end_tag="$2"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # If generating for current version (no parameters), use latest tag to HEAD
     if [ -z "$start_tag" ] && [ -z "$end_tag" ]; then
         # Get the latest version tag
         LATEST_TAG=$(git tag --sort=-version:refname | head -1)
-        
+
         if [ -z "$LATEST_TAG" ]; then
             echo "Warning: No version tags found. Using all commits from the beginning." >&2
             COMMIT_RANGE="HEAD"
@@ -87,7 +87,7 @@ generate_changelog_from_commits() {
         COMMIT_RANGE="$start_tag..$end_tag"
         echo "Generating changelog from commits between $start_tag and $end_tag" >&2
     fi
-    
+
     # Get commit messages and categorize them
     ADDED=""
     CHANGED=""
@@ -95,12 +95,12 @@ generate_changelog_from_commits() {
     REMOVED=""
     FIXED=""
     SECURITY=""
-    
+
     while IFS= read -r commit; do
         if [ -n "$commit" ]; then
             # Extract commit message (everything after the hash and space)
             MESSAGE=$(echo "$commit" | cut -d' ' -f2-)
-            
+
             # Skip version bump commits and merge commits
             if [[ ! "$MESSAGE" =~ ^(chore:\ update\ app\ version|Merge\ ) ]]; then
                 # Categorize commit message - only user-facing changes
@@ -109,46 +109,46 @@ generate_changelog_from_commits() {
                     TYPE=$(echo "$MESSAGE" | cut -d':' -f1 | sed 's/(.*//')
                     DESCRIPTION=$(echo "$MESSAGE" | cut -d':' -f2- | sed 's/^ *//')
                     DESCRIPTION=$(capitalize_first_letter "$DESCRIPTION")
-                    
+
                     # Only include user-facing commit types
                     case "$TYPE" in
-                        "feat")
-                            # New features for users
-                            if [ -z "$ADDED" ]; then
-                                ADDED="- $DESCRIPTION"
-                            else
-                                ADDED="$ADDED\n- $DESCRIPTION"
-                            fi
-                            ;;
-                        "fix")
-                            # Bug fixes
-                            if [ -z "$FIXED" ]; then
-                                FIXED="- $DESCRIPTION"
-                            else
-                                FIXED="$FIXED\n- $DESCRIPTION"
-                            fi
-                            ;;
-                        "perf")
-                            # Performance improvements
+                    "feat")
+                        # New features for users
+                        if [ -z "$ADDED" ]; then
+                            ADDED="- $DESCRIPTION"
+                        else
+                            ADDED="$ADDED\n- $DESCRIPTION"
+                        fi
+                        ;;
+                    "fix")
+                        # Bug fixes
+                        if [ -z "$FIXED" ]; then
+                            FIXED="- $DESCRIPTION"
+                        else
+                            FIXED="$FIXED\n- $DESCRIPTION"
+                        fi
+                        ;;
+                    "perf")
+                        # Performance improvements
+                        if [ -z "$CHANGED" ]; then
+                            CHANGED="- $DESCRIPTION"
+                        else
+                            CHANGED="$CHANGED\n- $DESCRIPTION"
+                        fi
+                        ;;
+                    "refactor")
+                        # Only include refactors that affect user experience
+                        if [[ "$DESCRIPTION" =~ (UI|user|interface|experience|performance) ]]; then
                             if [ -z "$CHANGED" ]; then
                                 CHANGED="- $DESCRIPTION"
                             else
                                 CHANGED="$CHANGED\n- $DESCRIPTION"
                             fi
-                            ;;
-                        "refactor")
-                            # Only include refactors that affect user experience
-                            if [[ "$DESCRIPTION" =~ (UI|user|interface|experience|performance) ]]; then
-                                if [ -z "$CHANGED" ]; then
-                                    CHANGED="- $DESCRIPTION"
-                                else
-                                    CHANGED="$CHANGED\n- $DESCRIPTION"
-                                fi
-                            fi
-                            ;;
+                        fi
+                        ;;
                         # Skip these types as they don't affect end users:
                         # "docs" - documentation changes
-                        # "style" - code style changes  
+                        # "style" - code style changes
                         # "test" - test additions/changes
                         # "build" - build system changes
                         # "ci" - CI/CD changes
@@ -156,12 +156,12 @@ generate_changelog_from_commits() {
                     esac
                 else
                     # Non-conventional commit - only include if it seems user-facing
-                    if [[ "$MESSAGE" =~ ^(add|new|create).*(feature|function|capability) ]] || \
-                       [[ "$MESSAGE" =~ ^(improve|enhance|update).*(UI|user|interface|performance) ]] || \
-                       [[ "$MESSAGE" =~ ^(fix|resolve|correct).*(bug|issue|problem|error) ]]; then
-                        
+                    if [[ "$MESSAGE" =~ ^(add|new|create).*(feature|function|capability) ]] ||
+                        [[ "$MESSAGE" =~ ^(improve|enhance|update).*(UI|user|interface|performance) ]] ||
+                        [[ "$MESSAGE" =~ ^(fix|resolve|correct).*(bug|issue|problem|error) ]]; then
+
                         MESSAGE=$(capitalize_first_letter "$MESSAGE")
-                        
+
                         if [[ "$MESSAGE" =~ ^(Add|New|Create) ]]; then
                             if [ -z "$ADDED" ]; then
                                 ADDED="- $MESSAGE"
@@ -187,14 +187,14 @@ generate_changelog_from_commits() {
             fi
         fi
     done < <(git log --oneline --no-merges $COMMIT_RANGE)
-    
+
     # Build changelog sections
     CHANGELOG_SECTIONS=""
-    
+
     if [ -n "$ADDED" ]; then
         CHANGELOG_SECTIONS="### Added\n$ADDED\n"
     fi
-    
+
     if [ -n "$CHANGED" ]; then
         if [ -n "$CHANGELOG_SECTIONS" ]; then
             CHANGELOG_SECTIONS="$CHANGELOG_SECTIONS\n### Changed\n$CHANGED\n"
@@ -202,7 +202,7 @@ generate_changelog_from_commits() {
             CHANGELOG_SECTIONS="### Changed\n$CHANGED\n"
         fi
     fi
-    
+
     if [ -n "$DEPRECATED" ]; then
         if [ -n "$CHANGELOG_SECTIONS" ]; then
             CHANGELOG_SECTIONS="$CHANGELOG_SECTIONS\n### Deprecated\n$DEPRECATED\n"
@@ -210,7 +210,7 @@ generate_changelog_from_commits() {
             CHANGELOG_SECTIONS="### Deprecated\n$DEPRECATED\n"
         fi
     fi
-    
+
     if [ -n "$REMOVED" ]; then
         if [ -n "$CHANGELOG_SECTIONS" ]; then
             CHANGELOG_SECTIONS="$CHANGELOG_SECTIONS\n### Removed\n$REMOVED\n"
@@ -218,7 +218,7 @@ generate_changelog_from_commits() {
             CHANGELOG_SECTIONS="### Removed\n$REMOVED\n"
         fi
     fi
-    
+
     if [ -n "$FIXED" ]; then
         if [ -n "$CHANGELOG_SECTIONS" ]; then
             CHANGELOG_SECTIONS="$CHANGELOG_SECTIONS\n### Fixed\n$FIXED\n"
@@ -226,7 +226,7 @@ generate_changelog_from_commits() {
             CHANGELOG_SECTIONS="### Fixed\n$FIXED\n"
         fi
     fi
-    
+
     if [ -n "$SECURITY" ]; then
         if [ -n "$CHANGELOG_SECTIONS" ]; then
             CHANGELOG_SECTIONS="$CHANGELOG_SECTIONS\n### Security\n$SECURITY\n"
@@ -234,28 +234,28 @@ generate_changelog_from_commits() {
             CHANGELOG_SECTIONS="### Security\n$SECURITY\n"
         fi
     fi
-    
+
     echo -e "$CHANGELOG_SECTIONS"
 }
 
 # Function to generate changelog for all versions
 generate_all_versions_changelog() {
     cd "$PROJECT_ROOT"
-    
+
     echo "Generating changelog for all historical versions..."
-    
+
     # Get all tags sorted by version
     ALL_TAGS=($(git tag --sort=version:refname))
-    
+
     if [ ${#ALL_TAGS[@]} -eq 0 ]; then
         echo "No version tags found in repository."
         return 1
     fi
-    
+
     echo "Found ${#ALL_TAGS[@]} version tags: ${ALL_TAGS[*]}"
-    
+
     # Start with the changelog header
-    cat > "$MAIN_CHANGELOG" << EOF
+    cat >"$MAIN_CHANGELOG" <<EOF
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -266,24 +266,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 EOF
-    
+
     # Create changelog directory if it doesn't exist
     mkdir -p "$CHANGELOG_DIR"
-    
+
     # Generate changelog for each version (newest first)
-    for (( i=${#ALL_TAGS[@]}-1; i>=0; i-- )); do
+    for ((i = ${#ALL_TAGS[@]} - 1; i >= 0; i--)); do
         current_tag="${ALL_TAGS[$i]}"
         previous_tag=""
-        
+
         if [ $i -gt 0 ]; then
-            previous_tag="${ALL_TAGS[$((i-1))]}"
+            previous_tag="${ALL_TAGS[$((i - 1))]}"
         fi
-        
+
         echo "Processing version $current_tag..."
-        
+
         # Get the tag date
         tag_date=$(git log -1 --format=%ai "$current_tag" | cut -d' ' -f1)
-        
+
         # Get version code from pubspec.yaml at this tag
         version_code=""
         if git show "$current_tag:src/pubspec.yaml" >/dev/null 2>&1; then
@@ -292,7 +292,7 @@ EOF
                 version_code="${BASH_REMATCH[1]}"
             fi
         fi
-        
+
         # Generate changelog content for this version
         if [ -n "$previous_tag" ]; then
             changelog_content=$(generate_changelog_from_commits "$previous_tag" "$current_tag")
@@ -300,55 +300,55 @@ EOF
             # First version - get all commits up to this tag
             changelog_content=$(generate_changelog_from_commits "" "$current_tag")
         fi
-        
+
         # Clean version number (remove 'v' prefix if present)
         clean_version=$(echo "$current_tag" | sed 's/^v//')
-        
+
         # Add to main changelog
-        echo "## [$clean_version] - $tag_date" >> "$MAIN_CHANGELOG"
-        echo "" >> "$MAIN_CHANGELOG"
-        
+        echo "## [$clean_version] - $tag_date" >>"$MAIN_CHANGELOG"
+        echo "" >>"$MAIN_CHANGELOG"
+
         if [ -n "$changelog_content" ]; then
-            echo -e "$changelog_content" >> "$MAIN_CHANGELOG"
+            echo -e "$changelog_content" >>"$MAIN_CHANGELOG"
         else
-            echo "### Changed" >> "$MAIN_CHANGELOG"
-            echo "- Various behind-the-scenes improvements and optimizations for a better experience" >> "$MAIN_CHANGELOG"
+            echo "### Changed" >>"$MAIN_CHANGELOG"
+            echo "- Various behind-the-scenes improvements and optimizations for a better experience" >>"$MAIN_CHANGELOG"
         fi
-        
-        echo "" >> "$MAIN_CHANGELOG"
-        
+
+        echo "" >>"$MAIN_CHANGELOG"
+
         # Create Fastlane changelog if we have version code
         if [ -n "$version_code" ] && [ -n "$changelog_content" ]; then
             fastlane_content=$(convert_to_fastlane_format "$changelog_content")
             if [ -n "$fastlane_content" ]; then
                 fastlane_file="$CHANGELOG_DIR/$version_code.txt"
-                echo -e "$fastlane_content" > "$fastlane_file"
-                
+                echo -e "$fastlane_content" >"$fastlane_file"
+
                 # Check file size (F-Droid limit: 500 bytes)
-                file_size=$(wc -c < "$fastlane_file")
+                file_size=$(wc -c <"$fastlane_file")
                 if [ $file_size -gt 500 ]; then
                     echo "  ⚠️  Warning: Changelog for version code $version_code is $file_size bytes (exceeds 500 byte limit)"
                     # Truncate to fit limit - keep first few items and add "..."
                     truncated_content=$(echo -e "$fastlane_content" | head -c 450)
                     # Find the last complete line
                     last_newline=$(echo "$truncated_content" | grep -o ".*" | tail -1)
-                    echo -e "$last_newline\n• ..." > "$fastlane_file"
-                    file_size=$(wc -c < "$fastlane_file")
+                    echo -e "$last_newline\n• ..." >"$fastlane_file"
+                    file_size=$(wc -c <"$fastlane_file")
                 fi
-                
+
                 echo "  📱 Created Fastlane changelog: $version_code.txt ($file_size bytes)"
             fi
         elif [ -n "$version_code" ]; then
             # Create minimal Fastlane changelog even if no user-facing changes
             fastlane_file="$CHANGELOG_DIR/$version_code.txt"
-            echo "• Various behind-the-scenes improvements and optimizations for a better experience" > "$fastlane_file"
+            echo "• Various behind-the-scenes improvements and optimizations for a better experience" >"$fastlane_file"
             echo "  📱 Created minimal Fastlane changelog: $version_code.txt"
         fi
     done
-    
+
     # Count Fastlane changelogs created
     fastlane_count=$(ls "$CHANGELOG_DIR"/*.txt 2>/dev/null | wc -l)
-    
+
     echo "✅ Generated complete changelog for all ${#ALL_TAGS[@]} versions"
     echo "📱 Created $fastlane_count Fastlane changelog files"
 }
@@ -356,40 +356,40 @@ EOF
 # Function to convert Keep a Changelog format to simple bullet points for Fastlane
 convert_to_fastlane_format() {
     local keep_a_changelog_content="$1"
-    
+
     # Convert to fastlane format and limit to stay under 500 bytes
     # Extract lines that start with "- " (bullet points), ignoring section headers
-    local fastlane_content=$(echo -e "$keep_a_changelog_content" | \
-    grep "^- " | \
-    sed 's/^- /• /' | \
-    while IFS= read -r line; do
-        if [ -n "$line" ]; then
-            # Extract the content after the bullet point
-            content="${line#• }"
-            # Capitalize first letter and add bullet point back
-            echo "• $(capitalize_first_letter "$content")"
-        fi
-    done)
-    
+    local fastlane_content=$(echo -e "$keep_a_changelog_content" |
+        grep "^- " |
+        sed 's/^- /• /' |
+        while IFS= read -r line; do
+            if [ -n "$line" ]; then
+                # Extract the content after the bullet point
+                content="${line#• }"
+                # Capitalize first letter and add bullet point back
+                echo "• $(capitalize_first_letter "$content")"
+            fi
+        done)
+
     # If no bullet points found, return empty (should not happen with fallback)
     if [ -z "$fastlane_content" ]; then
         echo ""
         return 1
     fi
-    
+
     # Check if content exceeds 500 bytes and truncate if needed
     local content_size=$(echo -e "$fastlane_content" | wc -c)
-    
+
     if [ $content_size -gt 450 ]; then
         # Take only first few items to stay under limit
         local truncated_content=""
         local current_size=0
-        
+
         echo -e "$fastlane_content" | while IFS= read -r line; do
             if [ -n "$line" ]; then
                 local line_size=$(echo "$line" | wc -c)
                 local new_size=$((current_size + line_size + 1)) # +1 for newline
-                
+
                 if [ $new_size -lt 450 ]; then
                     if [ -z "$truncated_content" ]; then
                         truncated_content="$line"
@@ -402,7 +402,7 @@ convert_to_fastlane_format() {
                 fi
             fi
         done
-        
+
         # Use head to get first 6 items max to stay under 500 bytes
         echo -e "$fastlane_content" | head -6
     else
@@ -415,12 +415,12 @@ update_main_changelog() {
     local version="$1"
     local changelog_content="$2"
     local date=$(date +%Y-%m-%d)
-    
+
     local new_entry="## [$version] - $date\n\n$changelog_content"
-    
+
     if [ ! -f "$MAIN_CHANGELOG" ]; then
         # Create new CHANGELOG.md
-        cat > "$MAIN_CHANGELOG" << EOF
+        cat >"$MAIN_CHANGELOG" <<EOF
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -447,7 +447,7 @@ EOF
                     next
                 }
                 { print }
-            ' "$MAIN_CHANGELOG" > "$MAIN_CHANGELOG.tmp"
+            ' "$MAIN_CHANGELOG" >"$MAIN_CHANGELOG.tmp"
             mv "$MAIN_CHANGELOG.tmp" "$MAIN_CHANGELOG"
         else
             # If no Unreleased section, add after the header
@@ -466,7 +466,7 @@ EOF
                     next
                 }
                 { print }
-            ' "$MAIN_CHANGELOG" > "$MAIN_CHANGELOG.tmp"
+            ' "$MAIN_CHANGELOG" >"$MAIN_CHANGELOG.tmp"
             mv "$MAIN_CHANGELOG.tmp" "$MAIN_CHANGELOG"
         fi
     fi
@@ -475,12 +475,12 @@ EOF
 # Function to extract changelog content from CHANGELOG.md for a specific version
 extract_changelog_from_main() {
     local version="$1"
-    
+
     if [ ! -f "$MAIN_CHANGELOG" ]; then
         echo "CHANGELOG.md not found"
         return 1
     fi
-    
+
     # Extract content between version section and next version section
     local content=$(awk "
         /^## \[$version\]/ { found=1; next }
@@ -488,7 +488,7 @@ extract_changelog_from_main() {
         found && /^###/ { print }
         found && /^- / { print }
     " "$MAIN_CHANGELOG")
-    
+
     if [ -n "$content" ]; then
         echo -e "$content"
     else
@@ -500,9 +500,9 @@ extract_changelog_from_main() {
 # Function to get version from version code using git tags
 get_version_from_code() {
     local version_code="$1"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Search through git tags for matching version code
     for tag in $(git tag --sort=-version:refname); do
         if git show "$tag:src/pubspec.yaml" >/dev/null 2>&1; then
@@ -517,7 +517,7 @@ get_version_from_code() {
             fi
         fi
     done
-    
+
     echo "Unknown version for code $version_code"
     return 1
 }
@@ -526,45 +526,45 @@ get_version_from_code() {
 if [ "$ALL_VERSIONS" = true ]; then
     echo "🔄 Generating changelog for all historical versions..."
     echo ""
-    
+
     if [ "$AUTO_ACCEPT" = false ]; then
         echo "This will completely regenerate CHANGELOG.md with all historical versions."
         echo ""
         read -p "Do you want to continue? (y/N): " confirm
-        
+
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
             echo "Operation cancelled."
             exit 1
         fi
     fi
-    
+
     # Generate changelog for all versions
     generate_all_versions_changelog
-    
+
     echo "✅ Complete changelog generated successfully!"
     echo "📝 Main changelog: $MAIN_CHANGELOG"
     echo "📱 Fastlane directory: $CHANGELOG_DIR"
-    
+
     # Show statistics
     version_count=$(grep -c "^## \[" "$MAIN_CHANGELOG")
     fastlane_count=$(ls "$CHANGELOG_DIR"/*.txt 2>/dev/null | wc -l)
     echo "📊 Total versions documented: $version_count"
     echo "📊 Fastlane changelogs created: $fastlane_count"
-    
+
     exit 0
 fi
 
 # Regular changelog generation (single version)
 if [ -z "$CHANGELOG_TEXT" ]; then
     echo "No changelog text provided. Generating changelog for current version from pubspec.yaml..."
-    
+
     # For the current version, we use pubspec.yaml version and generate changelog from last tag to HEAD
     if [ "$VERSION_CODE" = "$CURRENT_VERSION_CODE" ]; then
         echo "Generating changelog for current version $CURRENT_VERSION (code: $VERSION_CODE)..."
         echo "Checking for changes since last git tag..."
-        
+
         CHANGELOG_CONTENT=$(generate_changelog_from_commits)
-        
+
         if [ -z "$CHANGELOG_CONTENT" ]; then
             echo "No user-facing changes found since last version."
             echo "All commits appear to be internal changes (CI, build, tests, etc.)"
@@ -573,19 +573,19 @@ if [ -z "$CHANGELOG_TEXT" ]; then
     else
         # For historical versions, try to find the corresponding git tag
         TARGET_VERSION=$(get_version_from_code "$VERSION_CODE")
-        
+
         if [ $? -eq 0 ] && [ "$TARGET_VERSION" != "Unknown version for code $VERSION_CODE" ]; then
             echo "Found existing version $TARGET_VERSION for code $VERSION_CODE"
-            
+
             # Try to extract from existing CHANGELOG.md
             CHANGELOG_CONTENT=$(extract_changelog_from_main "$TARGET_VERSION")
-            
+
             if [ $? -eq 0 ] && [ -n "$CHANGELOG_CONTENT" ]; then
                 echo "Using existing changelog content from CHANGELOG.md for version $TARGET_VERSION"
             else
                 echo "No existing changelog found, generating from commit messages..."
                 CHANGELOG_CONTENT=$(generate_changelog_from_commits)
-                
+
                 if [ -z "$CHANGELOG_CONTENT" ]; then
                     echo "No user-facing changes found since last version."
                     echo "All commits appear to be internal changes (CI, build, tests, etc.)"
@@ -595,7 +595,7 @@ if [ -z "$CHANGELOG_TEXT" ]; then
         else
             echo "Generating from commit messages for version code $VERSION_CODE..."
             CHANGELOG_CONTENT=$(generate_changelog_from_commits)
-            
+
             if [ -z "$CHANGELOG_CONTENT" ]; then
                 echo "No user-facing changes found since last version."
                 echo "All commits appear to be internal changes (CI, build, tests, etc.)"
@@ -603,24 +603,24 @@ if [ -z "$CHANGELOG_TEXT" ]; then
             fi
         fi
     fi
-    
+
     echo ""
     echo "Generated changelog (Keep a Changelog format):"
     echo -e "$CHANGELOG_CONTENT"
     echo ""
-    
+
     # Convert to Fastlane format for preview
     FASTLANE_CHANGELOG=$(convert_to_fastlane_format "$CHANGELOG_CONTENT")
     echo "Fastlane format preview:"
     echo -e "$FASTLANE_CHANGELOG"
     echo ""
-    
+
     if [ "$AUTO_ACCEPT" = true ]; then
         echo "Auto-accepting generated changelog (--auto flag provided)"
         CHANGELOG_TEXT="$FASTLANE_CHANGELOG"
     else
         read -p "Do you want to use this generated changelog? (y/N): " confirm
-        
+
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
             echo "Usage: $0 [version_code] \"changelog text\" [--auto] [--all-versions]"
             echo "Current version code: $CURRENT_VERSION_CODE"
@@ -632,10 +632,10 @@ if [ -z "$CHANGELOG_TEXT" ]; then
             echo "  $0 --all-versions --auto     # Generate complete historical changelog"
             exit 1
         fi
-        
+
         CHANGELOG_TEXT="$FASTLANE_CHANGELOG"
     fi
-    
+
     # Update main CHANGELOG.md only for current version
     if [ "$VERSION_CODE" = "$CURRENT_VERSION_CODE" ]; then
         echo "Updating main CHANGELOG.md for current version $CURRENT_VERSION..."
@@ -644,7 +644,7 @@ if [ -z "$CHANGELOG_TEXT" ]; then
     else
         echo "Skipping CHANGELOG.md update for historical version $TARGET_VERSION"
     fi
-    
+
 else
     # Manual changelog provided - create a simple Keep a Changelog entry
     # Capitalize each item in the manual changelog
@@ -667,10 +667,10 @@ CHANGELOG_FILE="$CHANGELOG_DIR/$VERSION_CODE.txt"
 mkdir -p "$CHANGELOG_DIR"
 
 # Create changelog file
-echo -e "$CHANGELOG_TEXT" > "$CHANGELOG_FILE"
+echo -e "$CHANGELOG_TEXT" >"$CHANGELOG_FILE"
 
 # Check file size (F-Droid limit: 500 bytes)
-FILE_SIZE=$(wc -c < "$CHANGELOG_FILE")
+FILE_SIZE=$(wc -c <"$CHANGELOG_FILE")
 if [ $FILE_SIZE -gt 500 ]; then
     echo "Warning: Changelog is $FILE_SIZE bytes, which exceeds F-Droid's 500 byte limit"
     echo "Please shorten the changelog text."
