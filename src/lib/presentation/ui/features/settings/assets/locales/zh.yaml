@@ -48,6 +48,19 @@ settings:
     disable_error: 禁用通知失败
     enable_error: 启用通知失败
     title: 通知
+  sound:
+    title: 声音
+    subtitle: 配置应用程序声音和通知
+    enabled: 启用声音
+    task_completion: 任务完成声音
+    habit_completion: 习惯完成声音
+    timer_control: 计时器控制声音
+    timer_alarm: 计时器警报声音
+    enable_error: 启用声音设置失败
+    disable_error: 禁用声音设置失败
+    sounds_disabled: 声音已禁用
+    all_sounds_enabled: 所有声音已启用
+    some_sounds_enabled: 部分声音已启用
   permissions:
     app_usage:
       description: 此应用需要访问应用使用统计的权限以准确跟踪您的应用使用模式。
