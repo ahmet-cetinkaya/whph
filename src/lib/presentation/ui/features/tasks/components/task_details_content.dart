@@ -11,9 +11,9 @@ import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType, WeekDays;
-import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input_translation_keys.dart';
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/components/priority_select_field.dart';
