@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, ISoundPlayer;
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper;
 import 'package:whph/corePackages/acore/lib/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
