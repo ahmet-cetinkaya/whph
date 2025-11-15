@@ -20,19 +20,19 @@ check_file() {
     local file_path="$1"
     local file_type="$2"
     local lang="$3"
-    
+
     if [ ! -f "$file_path" ]; then
         echo "❌ ERROR: Missing $file_type for $lang"
         ERRORS=$((ERRORS + 1))
         return 1
     fi
-    
+
     if [ ! -s "$file_path" ]; then
         echo "⚠️  WARNING: Empty $file_type for $lang"
         WARNINGS=$((WARNINGS + 1))
         return 1
     fi
-    
+
     return 0
 }
 
@@ -42,7 +42,7 @@ validate_description_length() {
     local max_length="$2"
     local desc_type="$3"
     local lang="$4"
-    
+
     if [ -f "$file_path" ]; then
         local length=$(head -1 "$file_path" | wc -c)
         if [ $length -gt $max_length ]; then
@@ -57,9 +57,9 @@ validate_changelog_length() {
     local file_path="$1"
     local lang="$2"
     local version="$3"
-    
+
     if [ -f "$file_path" ]; then
-        local byte_size=$(wc -c < "$file_path")
+        local byte_size=$(wc -c <"$file_path")
         if [ $byte_size -gt 500 ]; then
             echo "⚠️  WARNING: Changelog $version.txt too long for $lang ($byte_size > 500 bytes)"
             WARNINGS=$((WARNINGS + 1))
@@ -88,17 +88,17 @@ echo
 for lang in $LANGUAGES; do
     echo "🌍 Validating $lang..."
     lang_dir="$METADATA_DIR/$lang"
-    
+
     # Check required files
     check_file "$lang_dir/title.txt" "title.txt" "$lang"
     check_file "$lang_dir/short_description.txt" "short_description.txt" "$lang"
     check_file "$lang_dir/full_description.txt" "full_description.txt" "$lang"
-    
+
     # Validate description lengths (F-Droid limits)
     validate_description_length "$lang_dir/title.txt" 50 "Title" "$lang"
     validate_description_length "$lang_dir/short_description.txt" 80 "Short description" "$lang"
     validate_description_length "$lang_dir/full_description.txt" 4000 "Full description" "$lang"
-    
+
     # Check images directory
     if [ ! -d "$lang_dir/images" ]; then
         echo "⚠️  WARNING: Missing images directory for $lang"
@@ -109,7 +109,7 @@ for lang in $LANGUAGES; do
             echo "⚠️  WARNING: Missing icon.png for $lang"
             WARNINGS=$((WARNINGS + 1))
         fi
-        
+
         # Check screenshots
         if [ ! -d "$lang_dir/images/phoneScreenshots" ]; then
             echo "⚠️  WARNING: Missing phoneScreenshots directory for $lang"
@@ -125,7 +125,7 @@ for lang in $LANGUAGES; do
             fi
         fi
     fi
-    
+
     # Check changelogs
     if [ ! -d "$lang_dir/changelogs" ]; then
         echo "⚠️  WARNING: Missing changelogs directory for $lang"
@@ -144,7 +144,7 @@ for lang in $LANGUAGES; do
             fi
         fi
     fi
-    
+
     echo "   ✅ $lang validation complete"
     echo
 done

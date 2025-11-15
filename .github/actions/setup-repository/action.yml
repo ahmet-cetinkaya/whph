@@ -14,7 +14,7 @@ runs:
 
         # Initialize the acore submodule
         if git submodule update --init --recursive src/lib/corePackages/acore; then
-          echo "✅ Acore submodule initialized successfully"
+          echo "✅ ACore Flutter submodule initialized successfully"
         else
           echo "❌ Failed to initialize acore submodule"
           echo "🔍 Debugging submodule status:"

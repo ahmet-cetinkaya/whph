@@ -33,7 +33,7 @@ CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed '
 echo "Current version: $CURRENT_VERSION"
 
 # Split version into components
-IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
+IFS='.' read -r -a VERSION_PARTS <<<"$CURRENT_VERSION"
 MAJOR=${VERSION_PARTS[0]}
 MINOR=${VERSION_PARTS[1]}
 PATCH=${VERSION_PARTS[2]}
@@ -42,18 +42,18 @@ echo "Current: $MAJOR.$MINOR.$PATCH"
 
 # Bump version based on type
 case $BUMP_TYPE in
-    "major")
-        MAJOR=$((MAJOR + 1))
-        MINOR=0
-        PATCH=0
-        ;;
-    "minor")
-        MINOR=$((MINOR + 1))
-        PATCH=0
-        ;;
-    "patch")
-        PATCH=$((PATCH + 1))
-        ;;
+"major")
+    MAJOR=$((MAJOR + 1))
+    MINOR=0
+    PATCH=0
+    ;;
+"minor")
+    MINOR=$((MINOR + 1))
+    PATCH=0
+    ;;
+"patch")
+    PATCH=$((PATCH + 1))
+    ;;
 esac
 
 NEW_VERSION="$MAJOR.$MINOR.$PATCH"
@@ -101,7 +101,7 @@ echo "Creating version bump commit..."
 # Stage changes in the main repository
 echo "Staging main repository changes..."
 git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "CHANGELOG.md"
-for d in fastlane/metadata/android/*/ ; do
+for d in fastlane/metadata/android/*/; do
     git add "${d}changelogs"
 
 done

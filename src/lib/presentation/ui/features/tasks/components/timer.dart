@@ -21,8 +21,6 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 
 class AppTimer extends StatefulWidget {
   final Function(Duration)? onTick; // For UI updates only - receives current elapsed/remaining time

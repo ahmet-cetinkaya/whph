@@ -85,6 +85,12 @@ shared:
     end_date_must_be_at_or_before: Bitiş tarihi {date} veya öncesi olmalıdır
     select_date_range_title: Tarih aralığı seçin
     select_date_time_title: Tarih ve saat seçin
+    select_date_title: Tarih Seç
+    select_time_title: Saat Seç
+    all_day: Tüm Gün
+    selected_time: Seçili Saat
+    date_ranges: Tarih Aralıkları
+    refresh_settings_label: Yenileme Ayarları
     selected_date_must_be_at_or_after: Seçilen tarih {date} veya sonrası olmalıdır
     selected_date_must_be_at_or_before: Seçilen tarih {date} veya öncesi olmalıdır
     selected_date_time_must_be_after: Seçilen tarih ve saat {dateTime} sonrası olmalıdır
@@ -95,6 +101,11 @@ shared:
     start_date_must_be_at_or_after: Başlangıç tarihi {date} veya sonrası olmalıdır
     time_must_be_at_or_after: Saat {time} veya sonrası olmalıdır
     time_must_be_at_or_before: Saat {time} veya öncesi olmalıdır
+    # Quick selection dialog
+    quick_selection: Hızlı seçim
+    quick_selection_title: Hızlı seçim
+    refresh_settings: Otomatik yenileme
+    refresh_description: Seçili tarih aralığını otomatik olarak yeniler
   days:
     friday: Cuma
     friday_short: Cum
@@ -254,6 +265,7 @@ shared:
     last_month: Son Ay
     last_three_months: Son 3 Ay
     last_week: Son Hafta
+    next_week: Gelecek Hafta
     this_month: Bu Ay
     this_three_months: Bu 3 Ay
     this_week: Bu Hafta
@@ -292,3 +304,58 @@ shared:
   help: Yardım
   start_tour: Turu Başlat
   skip_tour: Turu Atla
+  date_time_picker:
+    title: Tarih ve Saat
+    confirm: Onayla
+    cancel: İptal
+    set_time: Saat Ayarla
+    selected_time: Seçili Saat
+    select_time_title: Saat Seç
+    select_date_title: Tarih Seç
+    no_date_selected: Tarih seçilmedi
+    select_end_date: Bitiş Tarihi Seç
+    no_dates_selected: Tarih seçilmedi
+    refresh: Yenile
+    cannot_select_time_before_min_date: "{time} öncesi saat seçilemez"
+    cannot_select_time_after_max_date: "{time} sonrası saat seçilemez"
+    time_must_be_at_or_after: "Saat {time} veya sonrası olmalı"
+    time_must_be_at_or_before: "Saat {time} veya öncesi olmalı"
+    selected_date_must_be_at_or_after: "Seçili tarih {date} veya sonrası olmalı"
+    selected_date_must_be_at_or_before: "Seçili tarih {date} veya öncesi olmalı"
+    start_date_cannot_be_after_end_date: Başlangıç tarihi bitiş tarihinden sonra olamaz
+    start_date_must_be_at_or_after: "Başlangıç tarihi {date} veya sonrası olmalı"
+    end_date_must_be_at_or_before: "Bitiş tarihi {date} veya öncesi olmalı"
+    cannot_select_date_before_min_date: "{date} öncesi tarih seçilemez"
+    cannot_select_date_after_max_date: "{date} sonrası tarih seçilemez"
+    start_date_cannot_be_before_min_date: "Başlangıç tarihi {date} öncesi olamaz"
+    end_date_cannot_be_after_max_date: "Bitiş tarihi {date} sonrası olamaz"
+    selected_date_time_must_be_after: "Seçili tarih ve saat {dateTime} sonrası olmalı"
+    select_date_time_title: Tarih ve Saat Seç
+    select_date_range_title: Tarih Aralığı Seç
+    refresh_description: Seçili tarih aralığını otomatik yenile
+    date_time_field_label: Tarih ve Saat Alanı
+    date_time_field_hint: Tarih ve saat seç
+    field_label: Tarih ve Saat
+    field_hint: Tarih ve saat seç
+    allDay: Tüm gün
+    refreshDescription: Seçilen tarih aralığını otomatik olarak yenile
+    quick_selection_today: Bugün
+    quick_selection_tomorrow: Yarın
+    quick_selection_weekend: Hafta sonu
+    quick_selection_next_week: Gelecek hafta
+    quick_selection_no_date: Tarih yok
+    quick_selection_last_week: Son bir hafta
+    quick_selection_last_month: Son bir ay
+    edit_button_label: Düzenle
+    edit_button_hint: Tarih ve saati düzenle
+  numeric_input:
+    decrement_button_label: Azalt
+    increment_button_label: Artır
+    text_field_label: Sayısal Değer
+    decrement_hint: Değeri azalt
+    increment_hint: Değeri artır
+    text_field_hint: Bir sayı girin
+    decrement_tooltip: Değeri azalt
+    increment_tooltip: Değeri artır
+    at_minimum_value: Minimum değere ulaşıldı
+    at_maximum_value: Maksimum değere ulaşıldı

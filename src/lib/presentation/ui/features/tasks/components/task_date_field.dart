@@ -114,45 +114,14 @@ class _TaskDateFieldState extends State<TaskDateField> {
         dateTimeValidator: null, // Use built-in minDate validation instead
         validationErrorMessage: null, // Use built-in validation messages
         translations: {
-          DateTimePickerTranslationKey.setTime: widget.translationService.translate(SharedTranslationKeys.change),
-          DateTimePickerTranslationKey.noDateSelected:
-              widget.translationService.translate(SharedTranslationKeys.notSetTime),
-          DateTimePickerTranslationKey.clear: widget.translationService.translate(SharedTranslationKeys.clearButton),
-          // Built-in validation messages - use task-specific message for deadline validation
+          // Use centralized translation mapping with task-specific overrides
+          for (final key in DateTimePickerTranslationKey.values)
+            key: widget.translationService.translate(SharedTranslationKeys.mapDateTimePickerKey(key)),
+          // Override task-specific validation messages
           DateTimePickerTranslationKey.selectedDateMustBeAtOrAfter:
               widget.translationService.translate(TaskTranslationKeys.deadlineTimeInvalid),
-          // General date picker validations - use shared translations
-          DateTimePickerTranslationKey.selectedDateMustBeAtOrBefore:
-              widget.translationService.translate(SharedTranslationKeys.selectedDateMustBeAtOrBefore),
-          DateTimePickerTranslationKey.startDateCannotBeAfterEndDate:
-              widget.translationService.translate(SharedTranslationKeys.startDateCannotBeAfterEndDate),
-          DateTimePickerTranslationKey.startDateMustBeAtOrAfter:
-              widget.translationService.translate(SharedTranslationKeys.startDateMustBeAtOrAfter),
-          DateTimePickerTranslationKey.endDateMustBeAtOrBefore:
-              widget.translationService.translate(SharedTranslationKeys.endDateMustBeAtOrBefore),
-          DateTimePickerTranslationKey.cannotSelectDateBeforeMinDate:
-              widget.translationService.translate(SharedTranslationKeys.cannotSelectDateBeforeMinDate),
-          DateTimePickerTranslationKey.cannotSelectDateAfterMaxDate:
-              widget.translationService.translate(SharedTranslationKeys.cannotSelectDateAfterMaxDate),
-          DateTimePickerTranslationKey.startDateCannotBeBeforeMinDate:
-              widget.translationService.translate(SharedTranslationKeys.startDateCannotBeBeforeMinDate),
-          DateTimePickerTranslationKey.endDateCannotBeAfterMaxDate:
-              widget.translationService.translate(SharedTranslationKeys.endDateCannotBeAfterMaxDate),
-          DateTimePickerTranslationKey.cannotSelectTimeBeforeMinDate:
-              widget.translationService.translate(SharedTranslationKeys.cannotSelectTimeBeforeMinDate),
-          DateTimePickerTranslationKey.cannotSelectTimeAfterMaxDate:
-              widget.translationService.translate(SharedTranslationKeys.cannotSelectTimeAfterMaxDate),
-          DateTimePickerTranslationKey.timeMustBeAtOrAfter:
-              widget.translationService.translate(SharedTranslationKeys.timeMustBeAtOrAfter),
-          DateTimePickerTranslationKey.timeMustBeAtOrBefore:
-              widget.translationService.translate(SharedTranslationKeys.timeMustBeAtOrBefore),
-          DateTimePickerTranslationKey.selectedDateTimeMustBeAfter:
-              widget.translationService.translate(SharedTranslationKeys.selectedDateTimeMustBeAfter),
-          DateTimePickerTranslationKey.selectDateTimeTitle:
-              widget.translationService.translate(SharedTranslationKeys.selectDateTimeTitle),
-          DateTimePickerTranslationKey.selectDateRangeTitle:
-              widget.translationService.translate(SharedTranslationKeys.selectDateRangeTitle),
         },
+        actionButtonRadius: AppTheme.containerBorderRadius,
       );
 
       final result = await DatePickerDialog.show(

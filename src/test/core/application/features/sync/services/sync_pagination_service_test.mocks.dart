@@ -8,10 +8,14 @@ import 'dart:async' as _i3;
 import 'package:acore/acore.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart' as _i4;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart' as _i2;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart' as _i7;
-import 'package:whph/core/application/shared/models/websocket_request.dart' as _i5;
+import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart'
+    as _i4;
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart'
+    as _i2;
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart'
+    as _i7;
+import 'package:whph/core/application/shared/models/websocket_request.dart'
+    as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,14 +31,17 @@ import 'package:whph/core/application/shared/models/websocket_request.dart' as _
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeSyncCommunicationResponse_0 extends _i1.SmartFake implements _i2.SyncCommunicationResponse {
-  _FakeSyncCommunicationResponse_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSyncCommunicationResponse_0 extends _i1.SmartFake
+    implements _i2.SyncCommunicationResponse {
+  _FakeSyncCommunicationResponse_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [ISyncCommunicationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockISyncCommunicationService extends _i1.Mock implements _i2.ISyncCommunicationService {
+class MockISyncCommunicationService extends _i1.Mock
+    implements _i2.ISyncCommunicationService {
   MockISyncCommunicationService() {
     _i1.throwOnMissingStub(this);
   }
@@ -45,72 +52,86 @@ class MockISyncCommunicationService extends _i1.Mock implements _i2.ISyncCommuni
     _i4.PaginatedSyncDataDto? dto,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(#sendPaginatedDataToDevice, [ipAddress, dto]),
-        returnValue: _i3.Future<_i2.SyncCommunicationResponse>.value(
-          _FakeSyncCommunicationResponse_0(
-            this,
             Invocation.method(#sendPaginatedDataToDevice, [ipAddress, dto]),
-          ),
-        ),
-      ) as _i3.Future<_i2.SyncCommunicationResponse>);
+            returnValue: _i3.Future<_i2.SyncCommunicationResponse>.value(
+              _FakeSyncCommunicationResponse_0(
+                this,
+                Invocation.method(#sendPaginatedDataToDevice, [ipAddress, dto]),
+              ),
+            ),
+          )
+          as _i3.Future<_i2.SyncCommunicationResponse>);
 
   @override
   _i3.Future<Map<String, dynamic>> convertDtoToJson(
     _i4.PaginatedSyncDataDto? dto,
   ) =>
       (super.noSuchMethod(
-        Invocation.method(#convertDtoToJson, [dto]),
-        returnValue: _i3.Future<Map<String, dynamic>>.value(
-          <String, dynamic>{},
-        ),
-      ) as _i3.Future<Map<String, dynamic>>);
+            Invocation.method(#convertDtoToJson, [dto]),
+            returnValue: _i3.Future<Map<String, dynamic>>.value(
+              <String, dynamic>{},
+            ),
+          )
+          as _i3.Future<Map<String, dynamic>>);
 
   @override
-  _i3.Future<String> serializeMessage(_i5.WebSocketMessage? message) => (super.noSuchMethod(
-        Invocation.method(#serializeMessage, [message]),
-        returnValue: _i3.Future<String>.value(
-          _i6.dummyValue<String>(
-            this,
+  _i3.Future<String> serializeMessage(_i5.WebSocketMessage? message) =>
+      (super.noSuchMethod(
             Invocation.method(#serializeMessage, [message]),
-          ),
-        ),
-      ) as _i3.Future<String>);
+            returnValue: _i3.Future<String>.value(
+              _i6.dummyValue<String>(
+                this,
+                Invocation.method(#serializeMessage, [message]),
+              ),
+            ),
+          )
+          as _i3.Future<String>);
 
   @override
-  _i3.Future<bool> isDeviceReachable(String? ipAddress) => (super.noSuchMethod(
-        Invocation.method(#isDeviceReachable, [ipAddress]),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+  _i3.Future<bool> isDeviceReachable(String? ipAddress) =>
+      (super.noSuchMethod(
+            Invocation.method(#isDeviceReachable, [ipAddress]),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 
   @override
-  String getWebSocketUrl(String? ipAddress) => (super.noSuchMethod(
-        Invocation.method(#getWebSocketUrl, [ipAddress]),
-        returnValue: _i6.dummyValue<String>(
-          this,
-          Invocation.method(#getWebSocketUrl, [ipAddress]),
-        ),
-      ) as String);
+  String getWebSocketUrl(String? ipAddress) =>
+      (super.noSuchMethod(
+            Invocation.method(#getWebSocketUrl, [ipAddress]),
+            returnValue: _i6.dummyValue<String>(
+              this,
+              Invocation.method(#getWebSocketUrl, [ipAddress]),
+            ),
+          )
+          as String);
 
   @override
-  _i3.Future<bool> handleConnectionError(String? ipAddress, Exception? error) => (super.noSuchMethod(
-        Invocation.method(#handleConnectionError, [ipAddress, error]),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+  _i3.Future<bool> handleConnectionError(String? ipAddress, Exception? error) =>
+      (super.noSuchMethod(
+            Invocation.method(#handleConnectionError, [ipAddress, error]),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 }
 
 /// A class which mocks [ISyncConfigurationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockISyncConfigurationService extends _i1.Mock implements _i7.ISyncConfigurationService {
+class MockISyncConfigurationService extends _i1.Mock
+    implements _i7.ISyncConfigurationService {
   MockISyncConfigurationService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>> getAllConfigurations() => (super.noSuchMethod(
-        Invocation.method(#getAllConfigurations, []),
-        returnValue: <_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>[],
-      ) as List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>);
+  List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>
+  getAllConfigurations() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAllConfigurations, []),
+            returnValue: <_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>[],
+          )
+          as List<_i7.PaginatedSyncConfig<_i8.BaseEntity<String>>>);
 
   @override
   _i7.PaginatedSyncConfig<_i8.BaseEntity<String>>? getConfiguration(
@@ -120,29 +141,34 @@ class MockISyncConfigurationService extends _i1.Mock implements _i7.ISyncConfigu
           as _i7.PaginatedSyncConfig<_i8.BaseEntity<String>>?);
 
   @override
-  _i7.PaginatedSyncConfig<T>? getTypedConfiguration<T extends _i8.BaseEntity<String>>(String? entityType) =>
+  _i7.PaginatedSyncConfig<T>?
+  getTypedConfiguration<T extends _i8.BaseEntity<String>>(String? entityType) =>
       (super.noSuchMethod(
-        Invocation.method(#getTypedConfiguration, [entityType]),
-      ) as _i7.PaginatedSyncConfig<T>?);
+            Invocation.method(#getTypedConfiguration, [entityType]),
+          )
+          as _i7.PaginatedSyncConfig<T>?);
 
   @override
   void registerConfiguration<T extends _i8.BaseEntity<String>>(
     _i7.PaginatedSyncConfig<T>? config,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(#registerConfiguration, [config]),
-        returnValueForMissingStub: null,
-      );
+  ) => super.noSuchMethod(
+    Invocation.method(#registerConfiguration, [config]),
+    returnValueForMissingStub: null,
+  );
 
   @override
-  List<String> getEntityTypeNames() => (super.noSuchMethod(
-        Invocation.method(#getEntityTypeNames, []),
-        returnValue: <String>[],
-      ) as List<String>);
+  List<String> getEntityTypeNames() =>
+      (super.noSuchMethod(
+            Invocation.method(#getEntityTypeNames, []),
+            returnValue: <String>[],
+          )
+          as List<String>);
 
   @override
-  bool hasEntityType(String? entityType) => (super.noSuchMethod(
-        Invocation.method(#hasEntityType, [entityType]),
-        returnValue: false,
-      ) as bool);
+  bool hasEntityType(String? entityType) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEntityType, [entityType]),
+            returnValue: false,
+          )
+          as bool);
 }

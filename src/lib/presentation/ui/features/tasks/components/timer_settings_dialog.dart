@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
@@ -251,6 +252,13 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
       );
       Navigator.of(context).pop();
     }
+  }
+
+  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
+    return NumericInputTranslationKey.values.asMap().map(
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
   }
 
   @override
@@ -554,6 +562,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                   decrementValue: step,
                   valueSuffix: valueSuffix,
                   iconSize: 18,
+                  translations: _getNumericInputTranslations(),
                 ),
               ),
             ),

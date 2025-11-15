@@ -8,8 +8,8 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/features/about/components/support_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 
 class SupportDialogService implements ISupportDialogService {
   final Mediator _mediator;

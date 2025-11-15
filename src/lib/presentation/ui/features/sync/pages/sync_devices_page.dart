@@ -23,8 +23,6 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/components/manual_connection_dialog.dart';
