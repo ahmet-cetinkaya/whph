@@ -3,7 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
@@ -12,7 +12,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'dart:async';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 import 'package:acore/acore.dart' show SortDirection, SortOption;
 

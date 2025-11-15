@@ -85,6 +85,12 @@ shared:
     end_date_must_be_at_or_before: Končni datum mora biti na ali pred {date}
     select_date_range_title: Izberite obdobje
     select_date_time_title: Izberite datum in čas
+    select_date_title: Izberi datum
+    select_time_title: Izberi Čas
+    all_day: Ves Dan
+    selected_time: Izbrani Čas
+    date_ranges: Območja Datumov
+    refresh_settings_label: Nastavitve Osveževanja
     selected_date_must_be_at_or_after: Izbrani datum mora biti na ali po {date}
     selected_date_must_be_at_or_before: Izbrani datum mora biti na ali pred {date}
     selected_date_time_must_be_after: Izbrani datum in čas morata biti po {dateTime}
@@ -93,6 +99,11 @@ shared:
     start_date_must_be_at_or_after: Začetni datum mora biti na ali po {date}
     time_must_be_at_or_after: Čas mora biti ob ali po {time}
     time_must_be_at_or_before: Čas mora biti ob ali pred {time}
+    # Quick selection dialog
+    quick_selection: Hitri izbor
+    quick_selection_title: Hitri izbor
+    refresh_settings: Samodejno osveževanje
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Petek
     friday_short: Pet
@@ -249,6 +260,7 @@ shared:
     last_month: Prejšnji mesec
     last_three_months: Zadnji 3 meseci
     last_week: Prejšnji teden
+    next_week: Naslednji teden
     this_month: Ta mesec
     this_three_months: Ti 3 meseci
     this_week: Ta teden
@@ -288,3 +300,58 @@ shared:
   help: Pomoč
   start_tour: Začni predstavitev
   skip_tour: Preskoči predstavitev
+  date_time_picker:
+    title: Datum in Čas
+    confirm: Potrdi
+    cancel: Prekliči
+    set_time: Nastavi Čas
+    selected_time: Izbrani Čas
+    select_time_title: Izberi Čas
+    select_date_title: Izberi Datum
+    no_date_selected: Ni izbranega datuma
+    select_end_date: Izberi Končni Datum
+    no_dates_selected: Ni izbranih datumov
+    refresh: Osveži
+    cannot_select_time_before_min_date: Časa ni mogoče izbrati pred {time}
+    cannot_select_time_after_max_date: Časa ni mogoče izbrati po {time}
+    time_must_be_at_or_after: Čas mora biti {time} ali kasneje
+    time_must_be_at_or_before: Čas mora biti {time} ali prej
+    selected_date_must_be_at_or_after: Izbrani datum mora biti {date} ali kasneje
+    selected_date_must_be_at_or_before: Izbrani datum mora biti {date} ali prej
+    start_date_cannot_be_after_end_date: Začetni datum ne more biti po končnem datumu
+    start_date_must_be_at_or_after: Začetni datum mora biti {date} ali kasneje
+    end_date_must_be_at_or_before: Končni datum mora biti {date} ali prej
+    cannot_select_date_before_min_date: Datuma ni mogoče izbrati pred {date}
+    cannot_select_date_after_max_date: Datuma ni mogoče izbrati po {date}
+    start_date_cannot_be_before_min_date: Začetni datum ne more biti pred {date}
+    end_date_cannot_be_after_max_date: Končni datum ne more biti po {date}
+    selected_date_time_must_be_after: Izbrani datum in čas morata biti po {dateTime}
+    select_date_time_title: Izberi Datum in Čas
+    select_date_range_title: Izberi Območje Datumov
+    refresh_description: Samodejno osveži izbrano območje datumov
+    date_time_field_label: Polje Datum in Čas
+    date_time_field_hint: Izberi datum in čas
+    field_label: Datum in Čas
+    field_hint: Izberi datum in čas
+    allDay: Ves dan
+    refreshDescription: Samodejno osveži izbrani datumski obseg
+    quick_selection_today: Danes
+    quick_selection_tomorrow: Jutri
+    quick_selection_weekend: Vikend
+    quick_selection_next_week: Naslednji teden
+    quick_selection_no_date: Brez datuma
+    quick_selection_last_week: Prejšnji teden
+    quick_selection_last_month: Prejšnji mesec
+    edit_button_label: Uredi
+    edit_button_hint: Uredi datum in čas
+  numeric_input:
+    decrement_button_label: Zmanjšaj
+    increment_button_label: Povečaj
+    text_field_label: Numerična Vrednost
+    decrement_hint: Zmanjšaj vrednost
+    increment_hint: Povečaj vrednost
+    text_field_hint: Vnesite številko
+    decrement_tooltip: Zmanjšaj vrednost
+    increment_tooltip: Povečaj vrednost
+    at_minimum_value: Dosežena minimalna vrednost
+    at_maximum_value: Dosežena maksimalna vrednost

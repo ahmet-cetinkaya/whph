@@ -5,7 +5,8 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
-import 'package:acore/components/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 
 // Event class for time logging
 class TimeLoggingSubmittedEvent {
@@ -157,6 +158,13 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
     return _translationService.translate(key);
   }
 
+  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
+    return NumericInputTranslationKey.values.asMap().map(
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -250,11 +258,11 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             const SizedBox(height: AppTheme.sizeSmall),
             DateTimePickerField(
               controller: _dateController,
-              hintText: DateFormat.yMd().format(_selectedDate),
               onConfirm: _onDateSelected,
               minDateTime: DateTime.now().subtract(const Duration(days: 30)),
               maxDateTime: DateTime.now(),
               initialValue: _selectedDate,
+              translateKey: (key) => _getTranslation(SharedTranslationKeys.mapDateTimePickerKey(key)),
             ),
             const SizedBox(height: AppTheme.sizeLarge),
 
@@ -274,6 +282,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                     minValue: 0,
                     onValueChanged: _onHoursChanged,
                     valueSuffix: _getTranslation(SharedTranslationKeys.hours),
+                    translations: _getNumericInputTranslations(),
                   ),
                   const SizedBox(height: AppTheme.sizeMedium),
                   NumericInput(
@@ -284,6 +293,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                     incrementValue: 5,
                     onValueChanged: _onMinutesChanged,
                     valueSuffix: _getTranslation(SharedTranslationKeys.minutes),
+                    translations: _getNumericInputTranslations(),
                   ),
                 ],
               ),

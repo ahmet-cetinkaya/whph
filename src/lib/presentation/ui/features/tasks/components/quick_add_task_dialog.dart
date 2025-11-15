@@ -25,10 +25,11 @@ import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType;
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:acore/acore.dart' show NumericInput;
+import 'package:acore/components/numeric_input/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 
 class QuickAddTaskDialog extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -712,6 +713,13 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     return tagNames.join(', ');
   }
 
+  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
+    return NumericInputTranslationKey.values.asMap().map(
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
+  }
+
   Widget _buildEstimatedTimeIcon() {
     final theme = Theme.of(context);
 
@@ -928,6 +936,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                               },
                               valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
                               iconSize: 20,
+                              translations: _getNumericInputTranslations(),
                             ),
                             SizedBox(width: AppTheme.sizeSmall),
                             IconButton(

@@ -1,4 +1,6 @@
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as application;
+import 'package:acore/acore.dart' show DateTimePickerTranslationKey;
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 
 class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String saveButton = 'shared.buttons.save';
@@ -70,7 +72,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String this3Months = 'shared.time_periods.this_three_months';
   static const String lastWeek = 'shared.time_periods.last_week';
   static const String lastMonth = 'shared.time_periods.last_month';
-  static const String last3Months = 'shared.time_periods.last_three_months';
+  static const String nextWeek = 'shared.time_periods.next_week';
   static const String custom = 'shared.time_periods.custom';
 
   // Days of week
@@ -234,8 +236,24 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String timeMustBeAtOrBefore = 'shared.datepicker.time_must_be_at_or_before';
   static const String selectedDateTimeMustBeAfter = 'shared.datepicker.selected_date_time_must_be_after';
   static const String selectDateTimeTitle = 'shared.datepicker.select_date_time_title';
+  static const String selectTimeTitle = 'shared.datepicker.select_time_title';
+  static const String selectedTime = 'shared.datepicker.selected_time';
+  static const String selectDateTitle = 'shared.datepicker.select_date_title';
   static const String selectDateRangeTitle = 'shared.datepicker.select_date_range_title';
   static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
+
+  // Quick Selection Dialog
+  static const String quickSelection = 'shared.datepicker.quick_selection';
+  static const String quickSelectionTitle = 'shared.datepicker.quick_selection_title';
+  static const String refreshSettings = 'shared.datepicker.refresh_settings';
+  static const String dateRanges = 'shared.datepicker.date_ranges';
+  static const String refreshSettingsLabel = 'shared.datepicker.refresh_settings_label';
+
+  // DateTimePickerField Accessibility
+  static const String dateTimeFieldLabel = 'shared.date_time_picker.field_label';
+  static const String dateTimeFieldHint = 'shared.date_time_picker.field_hint';
+  static const String editButtonLabel = 'shared.date_time_picker.edit_button_label';
+  static const String editButtonHint = 'shared.date_time_picker.edit_button_hint';
 
   static const String date = 'shared.date';
 
@@ -257,6 +275,69 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String timeDisplayElapsed = 'shared.time_display.elapsed';
   static const String timeDisplayElapsedTimeTooltip = 'shared.time_display.elapsed_time_tooltip';
   static const String timeDisplayNoTimeLoggedTooltip = 'shared.time_display.no_time_logged_tooltip';
+
+  // Numeric Input
+  static const String numericInputDecrementButtonLabel = 'shared.numeric_input.decrement_button_label';
+  static const String numericInputIncrementButtonLabel = 'shared.numeric_input.increment_button_label';
+  static const String numericInputTextFieldLabel = 'shared.numeric_input.text_field_label';
+  static const String numericInputDecrementHint = 'shared.numeric_input.decrement_hint';
+  static const String numericInputIncrementHint = 'shared.numeric_input.increment_hint';
+  static const String numericInputTextFieldHint = 'shared.numeric_input.text_field_hint';
+  static const String numericInputDecrementTooltip = 'shared.numeric_input.decrement_tooltip';
+  static const String numericInputIncrementTooltip = 'shared.numeric_input.increment_tooltip';
+  static const String numericInputAtMinimumValue = 'shared.numeric_input.at_minimum_value';
+  static const String numericInputAtMaximumValue = 'shared.numeric_input.at_maximum_value';
+
+  // Date Time Picker
+  static const String dateTimePickerTitle = 'shared.date_time_picker.title';
+  static const String dateTimePickerConfirm = 'shared.date_time_picker.confirm';
+  static const String dateTimePickerCancel = 'shared.date_time_picker.cancel';
+  static const String dateTimePickerSetTime = 'shared.date_time_picker.set_time';
+  static const String dateTimePickerSelectedTime = 'shared.date_time_picker.selected_time';
+  static const String dateTimePickerSelectTimeTitle = 'shared.date_time_picker.select_time_title';
+  static const String dateTimePickerSelectDateTitle = 'shared.date_time_picker.select_date_title';
+  static const String dateTimePickerNoDateSelected = 'shared.date_time_picker.no_date_selected';
+  static const String dateTimePickerSelectEndDate = 'shared.date_time_picker.select_end_date';
+  static const String dateTimePickerNoDatesSelected = 'shared.date_time_picker.no_dates_selected';
+  static const String dateTimePickerRefresh = 'shared.date_time_picker.refresh';
+  static const String dateTimePickerCannotSelectTimeBeforeMinDate =
+      'shared.date_time_picker.cannot_select_time_before_min_date';
+  static const String dateTimePickerCannotSelectTimeAfterMaxDate =
+      'shared.date_time_picker.cannot_select_time_after_max_date';
+  static const String dateTimePickerTimeMustBeAtOrAfter = 'shared.date_time_picker.time_must_be_at_or_after';
+  static const String dateTimePickerTimeMustBeAtOrBefore = 'shared.date_time_picker.time_must_be_at_or_before';
+  static const String dateTimePickerSelectedDateMustBeAtOrAfter =
+      'shared.date_time_picker.selected_date_must_be_at_or_after';
+  static const String dateTimePickerSelectedDateMustBeAtOrBefore =
+      'shared.date_time_picker.selected_date_must_be_at_or_before';
+  static const String dateTimePickerStartDateCannotBeAfterEndDate =
+      'shared.date_time_picker.start_date_cannot_be_after_end_date';
+  static const String dateTimePickerStartDateMustBeAtOrAfter = 'shared.date_time_picker.start_date_must_be_at_or_after';
+  static const String dateTimePickerEndDateMustBeAtOrBefore = 'shared.date_time_picker.end_date_must_be_at_or_before';
+  static const String dateTimePickerCannotSelectDateBeforeMinDate =
+      'shared.date_time_picker.cannot_select_date_before_min_date';
+  static const String dateTimePickerCannotSelectDateAfterMaxDate =
+      'shared.date_time_picker.cannot_select_date_after_max_date';
+  static const String dateTimePickerStartDateCannotBeBeforeMinDate =
+      'shared.date_time_picker.start_date_cannot_be_before_min_date';
+  static const String dateTimePickerEndDateCannotBeAfterMaxDate =
+      'shared.date_time_picker.end_date_cannot_be_after_max_date';
+  static const String dateTimePickerSelectedDateTimeMustBeAfter =
+      'shared.date_time_picker.selected_date_time_must_be_after';
+  static const String dateTimePickerSelectDateTimeTitle = 'shared.date_time_picker.select_date_time_title';
+  static const String dateTimePickerSelectDateRangeTitle = 'shared.date_time_picker.select_date_range_title';
+  static const String dateTimePickerRefreshDescription = 'shared.date_time_picker.refresh_description';
+  static const String dateTimePickerDateTimeFieldLabel = 'shared.date_time_picker.date_time_field_label';
+  static const String dateTimePickerDateTimeFieldHint = 'shared.date_time_picker.date_time_field_hint';
+  static const String dateTimePickerEditButtonLabel = 'shared.date_time_picker.edit_button_label';
+  static const String dateTimePickerEditButtonHint = 'shared.date_time_picker.edit_button_hint';
+  static const String dateTimePickerQuickSelectionToday = 'shared.date_time_picker.quick_selection_today';
+  static const String dateTimePickerQuickSelectionTomorrow = 'shared.date_time_picker.quick_selection_tomorrow';
+  static const String dateTimePickerQuickSelectionWeekend = 'shared.date_time_picker.quick_selection_weekend';
+  static const String dateTimePickerQuickSelectionNextWeek = 'shared.date_time_picker.quick_selection_next_week';
+  static const String dateTimePickerQuickSelectionNoDate = 'shared.date_time_picker.quick_selection_no_date';
+  static const String dateTimePickerQuickSelectionLastWeek = 'shared.date_time_picker.quick_selection_last_week';
+  static const String dateTimePickerQuickSelectionLastMonth = 'shared.date_time_picker.quick_selection_last_month';
 
   static const String help = "shared.help";
   static const String startTour = "shared.start_tour";
@@ -342,5 +423,146 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
     if (weekDayName == null) return '';
 
     return getWeekDayNameTranslationKey(weekDayName, short: short);
+  }
+
+  /// Maps DateTimePickerTranslationKey to SharedTranslationKeys
+  static String mapDateTimePickerKey(DateTimePickerTranslationKey key) {
+    switch (key) {
+      case DateTimePickerTranslationKey.title:
+        return SharedTranslationKeys.dateTimePickerTitle;
+      case DateTimePickerTranslationKey.confirm:
+        return SharedTranslationKeys.dateTimePickerConfirm;
+      case DateTimePickerTranslationKey.cancel:
+        return SharedTranslationKeys.dateTimePickerCancel;
+      case DateTimePickerTranslationKey.clear:
+        return SharedTranslationKeys.clearButton;
+      case DateTimePickerTranslationKey.setTime:
+        return SharedTranslationKeys.dateTimePickerSetTime;
+      case DateTimePickerTranslationKey.selectedTime:
+        return SharedTranslationKeys.dateTimePickerSelectedTime;
+      case DateTimePickerTranslationKey.selectTimeTitle:
+        return SharedTranslationKeys.dateTimePickerSelectTimeTitle;
+      case DateTimePickerTranslationKey.selectDateTitle:
+        return SharedTranslationKeys.dateTimePickerSelectDateTitle;
+      case DateTimePickerTranslationKey.noDateSelected:
+        return SharedTranslationKeys.dateTimePickerNoDateSelected;
+      case DateTimePickerTranslationKey.selectEndDate:
+        return SharedTranslationKeys.dateTimePickerSelectEndDate;
+      case DateTimePickerTranslationKey.noDatesSelected:
+        return SharedTranslationKeys.dateTimePickerNoDatesSelected;
+      case DateTimePickerTranslationKey.refresh:
+        return SharedTranslationKeys.dateTimePickerRefresh;
+      case DateTimePickerTranslationKey.cannotSelectTimeBeforeMinDate:
+        return SharedTranslationKeys.dateTimePickerCannotSelectTimeBeforeMinDate;
+      case DateTimePickerTranslationKey.cannotSelectTimeAfterMaxDate:
+        return SharedTranslationKeys.dateTimePickerCannotSelectTimeAfterMaxDate;
+      case DateTimePickerTranslationKey.timeMustBeAtOrAfter:
+        return SharedTranslationKeys.dateTimePickerTimeMustBeAtOrAfter;
+      case DateTimePickerTranslationKey.timeMustBeAtOrBefore:
+        return SharedTranslationKeys.dateTimePickerTimeMustBeAtOrBefore;
+      case DateTimePickerTranslationKey.selectedDateMustBeAtOrAfter:
+        return SharedTranslationKeys.dateTimePickerSelectedDateMustBeAtOrAfter;
+      case DateTimePickerTranslationKey.selectedDateMustBeAtOrBefore:
+        return SharedTranslationKeys.dateTimePickerSelectedDateMustBeAtOrBefore;
+      case DateTimePickerTranslationKey.startDateCannotBeAfterEndDate:
+        return SharedTranslationKeys.dateTimePickerStartDateCannotBeAfterEndDate;
+      case DateTimePickerTranslationKey.startDateMustBeAtOrAfter:
+        return SharedTranslationKeys.dateTimePickerStartDateMustBeAtOrAfter;
+      case DateTimePickerTranslationKey.endDateMustBeAtOrBefore:
+        return SharedTranslationKeys.dateTimePickerEndDateMustBeAtOrBefore;
+      case DateTimePickerTranslationKey.cannotSelectDateBeforeMinDate:
+        return SharedTranslationKeys.dateTimePickerCannotSelectDateBeforeMinDate;
+      case DateTimePickerTranslationKey.cannotSelectDateAfterMaxDate:
+        return SharedTranslationKeys.dateTimePickerCannotSelectDateAfterMaxDate;
+      case DateTimePickerTranslationKey.startDateCannotBeBeforeMinDate:
+        return SharedTranslationKeys.dateTimePickerStartDateCannotBeBeforeMinDate;
+      case DateTimePickerTranslationKey.endDateCannotBeAfterMaxDate:
+        return SharedTranslationKeys.dateTimePickerEndDateCannotBeAfterMaxDate;
+      case DateTimePickerTranslationKey.selectedDateTimeMustBeAfter:
+        return SharedTranslationKeys.dateTimePickerSelectedDateTimeMustBeAfter;
+      case DateTimePickerTranslationKey.selectDateTimeTitle:
+        return SharedTranslationKeys.dateTimePickerSelectDateTimeTitle;
+      case DateTimePickerTranslationKey.selectDateRangeTitle:
+        return SharedTranslationKeys.dateTimePickerSelectDateRangeTitle;
+      // Quick selection translations
+      case DateTimePickerTranslationKey.quickSelection:
+        return SharedTranslationKeys.quickSelection;
+      case DateTimePickerTranslationKey.quickSelectionTitle:
+        return SharedTranslationKeys.quickSelectionTitle;
+      case DateTimePickerTranslationKey.refreshSettings:
+        return SharedTranslationKeys.refreshSettings;
+      case DateTimePickerTranslationKey.dateRanges:
+        return SharedTranslationKeys.dateRanges;
+      case DateTimePickerTranslationKey.refreshSettingsLabel:
+        return SharedTranslationKeys.refreshSettingsLabel;
+      // DateTimePickerField Accessibility
+      case DateTimePickerTranslationKey.dateTimeFieldLabel:
+        return SharedTranslationKeys.dateTimePickerDateTimeFieldLabel;
+      case DateTimePickerTranslationKey.dateTimeFieldHint:
+        return SharedTranslationKeys.dateTimePickerDateTimeFieldHint;
+      case DateTimePickerTranslationKey.editButtonLabel:
+        return SharedTranslationKeys.dateTimePickerEditButtonLabel;
+      case DateTimePickerTranslationKey.editButtonHint:
+        return SharedTranslationKeys.dateTimePickerEditButtonHint;
+      // Quick Selection translations
+      case DateTimePickerTranslationKey.quickSelectionToday:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionToday;
+      case DateTimePickerTranslationKey.quickSelectionTomorrow:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionTomorrow;
+      case DateTimePickerTranslationKey.quickSelectionWeekend:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionWeekend;
+      case DateTimePickerTranslationKey.quickSelectionNextWeek:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionNextWeek;
+      case DateTimePickerTranslationKey.quickSelectionNoDate:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionNoDate;
+      case DateTimePickerTranslationKey.quickSelectionLastWeek:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionLastWeek;
+      case DateTimePickerTranslationKey.quickSelectionLastMonth:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionLastMonth;
+      // Handle weekday abbreviations dynamically
+      case DateTimePickerTranslationKey.weekdayMonShort:
+        return getWeekDayTranslationKey(1, short: true);
+      case DateTimePickerTranslationKey.weekdayTueShort:
+        return getWeekDayTranslationKey(2, short: true);
+      case DateTimePickerTranslationKey.weekdayWedShort:
+        return getWeekDayTranslationKey(3, short: true);
+      case DateTimePickerTranslationKey.weekdayThuShort:
+        return getWeekDayTranslationKey(4, short: true);
+      case DateTimePickerTranslationKey.weekdayFriShort:
+        return getWeekDayTranslationKey(5, short: true);
+      case DateTimePickerTranslationKey.weekdaySatShort:
+        return getWeekDayTranslationKey(6, short: true);
+      case DateTimePickerTranslationKey.weekdaySunShort:
+        return getWeekDayTranslationKey(7, short: true);
+      default:
+        // For any other keys, try to use the key directly
+        return 'shared.date_time_picker.${key.name}';
+    }
+  }
+
+  /// Maps NumericInputTranslationKey to SharedTranslationKeys
+  static String mapNumericInputKey(NumericInputTranslationKey key) {
+    switch (key) {
+      case NumericInputTranslationKey.decrementButtonLabel:
+        return SharedTranslationKeys.numericInputDecrementButtonLabel;
+      case NumericInputTranslationKey.incrementButtonLabel:
+        return SharedTranslationKeys.numericInputIncrementButtonLabel;
+      case NumericInputTranslationKey.textFieldLabel:
+        return SharedTranslationKeys.numericInputTextFieldLabel;
+      case NumericInputTranslationKey.decrementHint:
+        return SharedTranslationKeys.numericInputDecrementHint;
+      case NumericInputTranslationKey.incrementHint:
+        return SharedTranslationKeys.numericInputIncrementHint;
+      case NumericInputTranslationKey.textFieldHint:
+        return SharedTranslationKeys.numericInputTextFieldHint;
+      case NumericInputTranslationKey.decrementTooltip:
+        return SharedTranslationKeys.numericInputDecrementTooltip;
+      case NumericInputTranslationKey.incrementTooltip:
+        return SharedTranslationKeys.numericInputIncrementTooltip;
+      case NumericInputTranslationKey.atMinimumValue:
+        return SharedTranslationKeys.numericInputAtMinimumValue;
+      case NumericInputTranslationKey.atMaximumValue:
+        return SharedTranslationKeys.numericInputAtMaximumValue;
+    }
   }
 }

@@ -315,24 +315,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         },
       ),
       QuickDateRange(
-        key: 'this_3_months',
-        label: _translationService.translate(SharedTranslationKeys.this3Months),
-        startDateCalculator: () {
-          final now = DateTime.now();
-          final monthsToSubtract = (now.month - 1) % 3;
-          return DateTime(now.year, now.month - monthsToSubtract, 1);
-        },
-        endDateCalculator: () {
-          final now = DateTime.now();
-          final monthsToSubtract = (now.month - 1) % 3;
-          final endMonth = now.month - monthsToSubtract + 2;
-          final endYear = now.year + (endMonth > 12 ? 1 : 0);
-          final adjustedEndMonth = endMonth > 12 ? endMonth - 12 : endMonth;
-          final lastDayOfEndMonth = DateTime(endYear, adjustedEndMonth + 1, 0);
-          return DateTime(endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
-        },
-      ),
-      QuickDateRange(
         key: 'last_week',
         label: _translationService.translate(SharedTranslationKeys.lastWeek),
         startDateCalculator: () {
@@ -350,15 +332,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         },
         endDateCalculator: () => DateTime.now(),
       ),
-      QuickDateRange(
-        key: 'last_3_months',
-        label: _translationService.translate(SharedTranslationKeys.last3Months),
-        startDateCalculator: () {
-          final now = DateTime.now();
-          return now.subtract(const Duration(days: 90));
-        },
-        endDateCalculator: () => DateTime.now(),
-      ),
     ];
 
     return quickRanges;
@@ -366,10 +339,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
   Future<void> _showDatePicker(BuildContext context) async {
     final translations = <DateTimePickerTranslationKey, String>{
-      DateTimePickerTranslationKey.title: _translationService.translate(SharedTranslationKeys.dateRangeTitle),
-      DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
-      DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
-      DateTimePickerTranslationKey.clear: _translationService.translate(SharedTranslationKeys.clearButton),
+      for (final key in DateTimePickerTranslationKey.values)
+        key: _translationService.translate(SharedTranslationKeys.mapDateTimePickerKey(key)),
     };
 
     final quickRanges = _getQuickRanges();
@@ -389,6 +360,8 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         // Don't update field state immediately - wait for Done button
         // The dialog will handle its own state internally
       },
+      actionButtonRadius: AppTheme.containerBorderRadius,
+      allowNullConfirm: true,
     );
 
     final result = await DatePickerDialog.show(
@@ -425,10 +398,9 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
           'today',
           'this_week',
           'this_month',
-          'this_3_months',
+          'next_week',
           'last_week',
           'last_month',
-          'last_3_months',
         ];
 
         quickRangesToCheck.sort((a, b) {
@@ -452,10 +424,17 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
             break;
           }
         }
+
+        // If no match was found but DatePickerResult provided a key, use it
+        if (!isQuickSelection && result.quickSelectionKey != null) {
+          quickSelectionKey = result.quickSelectionKey;
+          isQuickSelection = true;
+        }
       }
 
       // Create the appropriate date filter setting
       DateFilterSetting? newSetting;
+
       if (startDate != null || endDate != null) {
         if (isQuickSelection && quickSelectionKey != null) {
           newSetting = DateFilterSetting.quickSelection(
@@ -505,6 +484,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
       // Call both callbacks for backward compatibility
       // Always call callbacks when dialog is confirmed - let parent handle if there are actual changes
+
       widget.onDateFilterChange(startDate, endDate);
       widget.onDateFilterSettingChange?.call(newSetting);
 
@@ -649,9 +629,14 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
             selectedEnd.minute == 59 &&
             selectedEnd.second == 59;
 
+      case 'next_week':
+        // For "next_week" selections, use precise date-time matching within small tolerance
+        final startDiff = selectedStart.difference(quickStart).abs();
+        final endDiff = selectedEnd.difference(quickEnd).abs();
+        return startDiff.inSeconds < 60 && endDiff.inSeconds < 60;
+
       case 'last_week':
       case 'last_month':
-      case 'last_3_months':
         // For "last" selections, use precise date-time matching within small tolerance
         final startDiff = selectedStart.difference(quickStart).abs();
         final endDiff = selectedEnd.difference(quickEnd).abs();

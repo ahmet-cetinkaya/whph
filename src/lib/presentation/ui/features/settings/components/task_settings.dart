@@ -6,7 +6,8 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input.dart';
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
@@ -159,6 +160,13 @@ class _TaskSettingsState extends State<TaskSettings> {
     }
   }
 
+  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
+    return NumericInputTranslationKey.values.asMap().map(
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -246,6 +254,7 @@ class _TaskSettingsState extends State<TaskSettings> {
                           valueSuffix: _translationService.translate(SharedTranslationKeys.minutes),
                           iconSize: 20,
                           iconColor: theme.colorScheme.primary,
+                          translations: _getNumericInputTranslations(),
                         ),
                       ),
                     ],
