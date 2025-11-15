@@ -47,6 +47,19 @@ settings:
     disable_error: No se pudieron desactivar las notificaciones
     enable_error: No se pudieron activar las notificaciones
     title: Notificaciones
+  sound:
+    title: Sonido
+    subtitle: Configurar sonidos y notificaciones de la aplicación
+    enabled: Activar Sonidos
+    task_completion: Sonido de Finalización de Tarea
+    habit_completion: Sonido de Finalización de Hábito
+    timer_control: Sonido de Control de Temporizador
+    timer_alarm: Sonido de Alarma de Temporizador
+    enable_error: No se pudieron activar las configuraciones de sonido
+    disable_error: No se pudieron desactivar las configuraciones de sonido
+    sounds_disabled: Sonidos desactivados
+    all_sounds_enabled: Todos los sonidos activados
+    some_sounds_enabled: Algunos sonidos activados
   permissions:
     app_usage:
       description: Esta aplicación necesita permiso para acceder a las estadísticas de uso de aplicaciones para rastrear tus patrones de uso de aplicaciones con precisión.

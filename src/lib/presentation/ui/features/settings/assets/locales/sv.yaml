@@ -48,6 +48,19 @@ settings:
     disable_error: Misslyckades med att inaktivera notiser
     enable_error: Misslyckades med att aktivera notiser
     title: Notiser
+  sound:
+    title: Ljud
+    subtitle: Konfigurera appljud och aviseringar
+    enabled: Aktivera ljud
+    task_completion: Ljud för uppgiftsläggning
+    habit_completion: Ljud för vaneavslutning
+    timer_control: Ljud för timerkontroll
+    timer_alarm: Ljud för timerlarm
+    enable_error: Misslyckades med att aktivera ljudinställningar
+    disable_error: Misslyckades med att inaktivera ljudinställningar
+    sounds_disabled: Ljud inaktiverade
+    all_sounds_enabled: Alla ljud aktiverade
+    some_sounds_enabled: Vissa ljud aktiverade
   permissions:
     app_usage:
       description: Denna app behöver behörighet för att komma åt app-användningsstatistik för att spåra dina app-användningsmönster korrekt.

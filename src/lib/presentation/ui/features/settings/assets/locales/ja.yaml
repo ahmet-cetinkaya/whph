@@ -48,6 +48,19 @@ settings:
     disable_error: 通知の無効化に失敗しました
     enable_error: 通知の有効化に失敗しました
     title: 通知
+  sound:
+    title: サウンド
+    subtitle: アプリのサウンドと通知を設定
+    enabled: サウンドを有効にする
+    task_completion: タスク完了サウンド
+    habit_completion: 習慣完了サウンド
+    timer_control: タイマー制御サウンド
+    timer_alarm: タイマーアラームサウンド
+    enable_error: サウンド設定の有効化に失敗しました
+    disable_error: サウンド設定の無効化に失敗しました
+    sounds_disabled: サウンド無効
+    all_sounds_enabled: すべてのサウンド有効
+    some_sounds_enabled: 一部のサウンド有効
   permissions:
     app_usage:
       description: このアプリはアプリ使用パターンを正確に追跡するためにアプリ使用統計へのアクセス許可が必要です。

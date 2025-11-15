@@ -48,6 +48,19 @@ settings:
     disable_error: 알림 비활성화에 실패했습니다
     enable_error: 알림 활성화에 실패했습니다
     title: 알림
+  sound:
+    title: 사운드
+    subtitle: 앱 사운드 및 알림 설정
+    enabled: 사운드 활성화
+    task_completion: 작업 완료 사운드
+    habit_completion: 습관 완료 사운드
+    timer_control: 타이머 제어 사운드
+    timer_alarm: 타이머 알람 사운드
+    enable_error: 사운드 설정 활성화에 실패했습니다
+    disable_error: 사운드 설정 비활성화에 실패했습니다
+    sounds_disabled: 소리 비활성화됨
+    all_sounds_enabled: 모든 소리 활성화됨
+    some_sounds_enabled: 일부 소리 활성화됨
   permissions:
     app_usage:
       description: 이 앱은 앱 사용 패턴을 정확하게 추적하기 위해 앱 사용 통계에 대한 액세스 권한이 필요합니다.

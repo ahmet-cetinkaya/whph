@@ -48,6 +48,19 @@ settings:
     disable_error: Kunne ikke deaktivere varsler
     enable_error: Kunne ikke aktivere varsler
     title: Varsler
+  sound:
+    title: Lyder
+    subtitle: Konfigurer app-lyder og varsler
+    enabled: Aktiver lyder
+    task_completion: Oppgavefullføringslyd
+    habit_completion: Vanefullføringslyd
+    timer_control: Timer-kontrolllyd
+    timer_alarm: Timer-alarmlyd
+    enable_error: Kunne ikke aktivere lydinnstillinger
+    disable_error: Kunne ikke deaktivere lydinnstillinger
+    sounds_disabled: Lyder deaktivert
+    all_sounds_enabled: Alle lyder aktivert
+    some_sounds_enabled: Noen lyder aktivert
   permissions:
     app_usage:
       description: Denne appen trenger tillatelse til å få tilgang til app-bruksstatistikk for å spore app-bruksmønstrene dine nøyaktig.

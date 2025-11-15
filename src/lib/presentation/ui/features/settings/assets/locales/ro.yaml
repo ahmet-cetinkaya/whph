@@ -48,6 +48,19 @@ settings:
     disable_error: Eșec la dezactivarea notificărilor
     enable_error: Eșec la activarea notificărilor
     title: Notificări
+  sound:
+    title: Sunete
+    subtitle: Configurați sunetele și notificările aplicației
+    enabled: Activare sunete
+    task_completion: Sunet finalizare sarcină
+    habit_completion: Sunet finalizare obicei
+    timer_control: Sunet control timer
+    timer_alarm: Sunet alarmă timer
+    enable_error: Eșec la activarea setărilor de sunet
+    disable_error: Eșec la dezactivarea setărilor de sunet
+    sounds_disabled: Sunete dezactivate
+    all_sounds_enabled: Toate sunetele activate
+    some_sounds_enabled: Unele sunete activate
   permissions:
     app_usage:
       description: Această aplicație are nevoie de permisiune pentru a accesa statisticile de utilizare a aplicației pentru a urmări cu precizie modelele de utilizare a aplicației.
