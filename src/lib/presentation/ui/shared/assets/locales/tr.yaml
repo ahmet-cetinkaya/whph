@@ -316,20 +316,20 @@ shared:
     select_end_date: Bitiş Tarihi Seç
     no_dates_selected: Tarih seçilmedi
     refresh: Yenile
-    cannot_select_time_before_min_date: "{{time}} öncesi saat seçilemez"
-    cannot_select_time_after_max_date: "{{time}} sonrası saat seçilemez"
-    time_must_be_at_or_after: "Saat {{time}} veya sonrası olmalı"
-    time_must_be_at_or_before: "Saat {{time}} veya öncesi olmalı"
-    selected_date_must_be_at_or_after: "Seçili tarih {{date}} veya sonrası olmalı"
-    selected_date_must_be_at_or_before: "Seçili tarih {{date}} veya öncesi olmalı"
+    cannot_select_time_before_min_date: "{time} öncesi saat seçilemez"
+    cannot_select_time_after_max_date: "{time} sonrası saat seçilemez"
+    time_must_be_at_or_after: "Saat {time} veya sonrası olmalı"
+    time_must_be_at_or_before: "Saat {time} veya öncesi olmalı"
+    selected_date_must_be_at_or_after: "Seçili tarih {date} veya sonrası olmalı"
+    selected_date_must_be_at_or_before: "Seçili tarih {date} veya öncesi olmalı"
     start_date_cannot_be_after_end_date: Başlangıç tarihi bitiş tarihinden sonra olamaz
-    start_date_must_be_at_or_after: "Başlangıç tarihi {{date}} veya sonrası olmalı"
-    end_date_must_be_at_or_before: "Bitiş tarihi {{date}} veya öncesi olmalı"
-    cannot_select_date_before_min_date: "{{date}} öncesi tarih seçilemez"
-    cannot_select_date_after_max_date: "{{date}} sonrası tarih seçilemez"
-    start_date_cannot_be_before_min_date: "Başlangıç tarihi {{date}} öncesi olamaz"
-    end_date_cannot_be_after_max_date: "Bitiş tarihi {{date}} sonrası olamaz"
-    selected_date_time_must_be_after: "Seçili tarih ve saat {{dateTime}} sonrası olmalı"
+    start_date_must_be_at_or_after: "Başlangıç tarihi {date} veya sonrası olmalı"
+    end_date_must_be_at_or_before: "Bitiş tarihi {date} veya öncesi olmalı"
+    cannot_select_date_before_min_date: "{date} öncesi tarih seçilemez"
+    cannot_select_date_after_max_date: "{date} sonrası tarih seçilemez"
+    start_date_cannot_be_before_min_date: "Başlangıç tarihi {date} öncesi olamaz"
+    end_date_cannot_be_after_max_date: "Bitiş tarihi {date} sonrası olamaz"
+    selected_date_time_must_be_after: "Seçili tarih ve saat {dateTime} sonrası olmalı"
     select_date_time_title: Tarih ve Saat Seç
     select_date_range_title: Tarih Aralığı Seç
     refresh_description: Seçili tarih aralığını otomatik yenile
