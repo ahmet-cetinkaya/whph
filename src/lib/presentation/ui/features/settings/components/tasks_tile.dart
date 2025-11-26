@@ -4,8 +4,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/components/task_preferences_dialog.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 
 class TasksTile extends StatelessWidget {
   const TasksTile({super.key});

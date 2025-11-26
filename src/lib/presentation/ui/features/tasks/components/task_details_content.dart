@@ -11,8 +11,9 @@ import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
-import 'package:acore/acore.dart'
-    show NumericInput, DateTimeHelper, DateFormatService, DateFormatType, WeekDays, NumericInputTranslationKey;
+import 'package:acore/components/numeric_input/numeric_input.dart';
+import 'package:acore/acore.dart' show DateTimeHelper, DateFormatService, DateFormatType, WeekDays;
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/components/priority_select_field.dart';
@@ -28,8 +29,8 @@ import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
@@ -613,6 +614,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _handleFieldChange(value, (val) => _task!.estimatedTime = val);
   }
 
+  /// Get NumericInput translations
+  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
+    return NumericInputTranslationKey.values.asMap().map(
+          (key, value) =>
+              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
+        );
+  }
+
   /// Event handler for planned date changes
   void _onPlannedDateChanged(DateTime? date) {
     if (!mounted || _task == null) return;
@@ -1042,15 +1051,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             incrementValue: 5,
             decrementValue: 5,
             onValueChanged: _onEstimatedTimeChanged,
-            translations: {
-              NumericInputTranslationKey.decrementTooltip:
-                  _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
-              NumericInputTranslationKey.incrementTooltip:
-                  _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
-            },
             iconColor: AppTheme.secondaryTextColor,
             iconSize: AppTheme.iconSizeSmall,
             valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+            translations: _getNumericInputTranslations(),
           ),
         ),
       );
@@ -1081,7 +1085,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             controller: _plannedDateController,
             focusNode: _plannedDateFocusNode,
             hintText: '',
-            minDateTime: DateTime.now(),
+            minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
             onDateChanged: _onPlannedDateChanged,
             onReminderChanged: _onPlannedReminderChanged,
             reminderValue: _task!.plannedDateReminderTime,

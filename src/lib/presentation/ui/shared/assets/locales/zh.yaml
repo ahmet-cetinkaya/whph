@@ -83,6 +83,10 @@ shared:
     end_date_must_be_at_or_before: 结束日期必须在 {date} 或之前
     select_date_range_title: 选择日期范围
     select_date_time_title: 选择日期和时间
+    select_date_title: 选择日期
+    select_time_title: 选择时间
+    all_day: 全天
+    selected_time: 已选时间
     selected_date_must_be_at_or_after: 选定的日期必须在 {date} 或之后
     selected_date_must_be_at_or_before: 选定的日期必须在 {date} 或之前
     selected_date_time_must_be_after: 选定的日期和时间必须在 {dateTime} 之后
@@ -92,6 +96,13 @@ shared:
     select_time_title: 选择时间
     time_must_be_at_or_after: 时间必须在 {time} 或之后
     time_must_be_at_or_before: 时间必须在 {time} 或之前
+    # Quick selection dialog
+    quick_selection: 快速选择
+    quick_selection_title: 快速选择
+    refresh_settings: 自动刷新
+    refresh_description: 自动刷新所选日期范围
+    date_ranges: 日期范围
+    refresh_settings_label: 刷新设置
   days:
     friday: 星期五
     friday_short: 五
@@ -252,6 +263,7 @@ shared:
     last_month: 上个月
     last_three_months: 过去3个月
     last_week: 上周
+    next_week: 下周
     this_month: 本月
     this_three_months: 最近3个月
     this_week: 本周
@@ -286,6 +298,61 @@ shared:
     question: 您想现在更新吗？
     success: 更新下载成功！
     title: 有可用更新！
+  date_time_picker:
+    title: 日期和时间
+    confirm: 确认
+    cancel: 取消
+    set_time: 设置时间
+    selected_time: 已选时间
+    select_time_title: 选择时间
+    select_date_title: 选择日期
+    no_date_selected: 未选择日期
+    select_end_date: 选择结束日期
+    no_dates_selected: 未选择日期
+    refresh: 刷新
+    cannot_select_time_before_min_date: 无法在{time}之前选择时间
+    cannot_select_time_after_max_date: 无法在{time}之后选择时间
+    time_must_be_at_or_after: 时间必须在{time}或之后
+    time_must_be_at_or_before: 时间必须在{time}或之前
+    selected_date_must_be_at_or_after: 选择的日期必须在{date}或之后
+    selected_date_must_be_at_or_before: 选择的日期必须在{date}或之前
+    start_date_cannot_be_after_end_date: 开始日期不能在结束日期之后
+    start_date_must_be_at_or_after: 开始日期必须在{date}或之后
+    end_date_must_be_at_or_before: 结束日期必须在{date}或之前
+    cannot_select_date_before_min_date: 无法在{date}之前选择日期
+    cannot_select_date_after_max_date: 无法在{date}之后选择日期
+    start_date_cannot_be_before_min_date: 开始日期不能在{date}之前
+    end_date_cannot_be_after_max_date: 结束日期不能在{date}之后
+    selected_date_time_must_be_after: 选择的日期和时间必须在{dateTime}之后
+    select_date_time_title: 选择日期和时间
+    select_date_range_title: 选择日期范围
+    refresh_description: 自动刷新所选日期范围
+    date_time_field_label: 日期时间字段
+    date_time_field_hint: 选择日期和时间
+    field_label: 日期时间
+    field_hint: 选择日期时间
+    allDay: 全天
+    refreshDescription: 自动刷新选定的日期范围
+    quick_selection_today: 今天
+    quick_selection_tomorrow: 明天
+    quick_selection_weekend: 周末
+    quick_selection_next_week: 下周
+    quick_selection_no_date: 无日期
+    quick_selection_last_week: 上周
+    quick_selection_last_month: 上个月
+    edit_button_label: 编辑
+    edit_button_hint: 编辑日期和时间
+  numeric_input:
+    decrement_button_label: 减少
+    increment_button_label: 增加
+    text_field_label: 数值
+    decrement_hint: 减少值
+    increment_hint: 增加值
+    text_field_hint: 输入数字
+    decrement_tooltip: 减少值
+    increment_tooltip: 增加值
+    at_minimum_value: 达到最小值
+    at_maximum_value: 达到最大值
   validation:
     required: "{field}是必需的。"
   help: 帮助

@@ -5,11 +5,11 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 
 class TaskDeleteButton extends StatefulWidget {
   final String taskId;

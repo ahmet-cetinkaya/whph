@@ -44,6 +44,19 @@ settings:
     disable_error: Failed to disable notifications
     enable_error: Failed to enable notifications
     title: Notifications
+  sound:
+    title: Sound
+    subtitle: Configure app sounds and notifications
+    enabled: Enable Sounds
+    task_completion: Task Completion Sound
+    habit_completion: Habit Completion Sound
+    timer_control: Timer Control Sound
+    timer_alarm: Timer Alarm Sound
+    enable_error: Failed to enable sound settings
+    disable_error: Failed to disable sound settings
+    sounds_disabled: Sounds disabled
+    all_sounds_enabled: All sounds enabled
+    some_sounds_enabled: Some sounds enabled
   permissions:
     app_usage:
       description: This app needs permission to access app usage statistics to track your app usage patterns accurately.

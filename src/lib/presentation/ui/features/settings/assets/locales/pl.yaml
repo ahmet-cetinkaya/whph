@@ -48,6 +48,19 @@ settings:
     disable_error: Nie udało się wyłączyć powiadomień
     enable_error: Nie udało się włączyć powiadomień
     title: Powiadomienia
+  sound:
+    title: Dźwięki
+    subtitle: Skonfiguruj dźwięki i powiadomienia aplikacji
+    enabled: Włącz dźwięki
+    task_completion: Dźwięk ukończenia zadania
+    habit_completion: Dźwięk ukończenia nawyku
+    timer_control: Dźwięk sterowania zegarem
+    timer_alarm: Dźwięk alarmu zegara
+    enable_error: Nie udało się włączyć ustawień dźwięku
+    disable_error: Nie udało się wyłączyć ustawień dźwięku
+    sounds_disabled: Dźwięki wyłączone
+    all_sounds_enabled: Wszystkie dźwięki włączone
+    some_sounds_enabled: Niektóre dźwięki włączone
   permissions:
     app_usage:
       description: Ta aplikacja potrzebuje uprawnień do dostępu do statystyk użycia aplikacji, aby dokładnie śledzić wzorce użycia aplikacji.

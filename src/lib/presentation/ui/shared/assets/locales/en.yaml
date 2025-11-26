@@ -85,7 +85,10 @@ shared:
     end_date_must_be_at_or_before: End date must be at or before {date}
     select_date_range_title: Select Date Range
     select_date_time_title: Select Date and Time
+    select_date_title: Select Date
     select_time_title: Select Time
+    all_day: All Day
+    selected_time: Selected Time
     selected_date_must_be_at_or_after: Selected date must be at or after {date}
     selected_date_must_be_at_or_before: Selected date must be at or before {date}
     selected_date_time_must_be_after: Selected date and time must be after {dateTime}
@@ -94,6 +97,13 @@ shared:
     start_date_must_be_at_or_after: Start date must be at or after {date}
     time_must_be_at_or_after: Time must be at or after {time}
     time_must_be_at_or_before: Time must be at or before {time}
+    # Quick selection dialog
+    quick_selection: Quick Selection
+    quick_selection_title: Quick Selection
+    refresh_settings: Auto-refresh
+    refresh_description: Automatically refresh the selected date range
+    date_ranges: Date Ranges
+    refresh_settings_label: Refresh Settings
   days:
     friday: Friday
     friday_short: Fri
@@ -228,10 +238,6 @@ shared:
       title: Hourly Usage
   time:
     not_set: Not set
-    all_day: All Day
-  time_picker:
-    hour_label: Hour
-    minute_label: Minute
   time_display:
     elapsed: Elapsed
     elapsed_time_tooltip: Time spent on this task
@@ -254,6 +260,7 @@ shared:
     last_month: Last Month
     last_three_months: Last 3 Months
     last_week: Last Week
+    next_week: Next Week
     this_month: This Month
     this_three_months: This 3 Months
     this_week: This Week
@@ -272,7 +279,6 @@ shared:
   units:
     days: days
     hours: hr
-    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sec
@@ -290,6 +296,61 @@ shared:
     title: Update Available!
   validation:
     required: "{field} is required."
+  date_time_picker:
+    title: Date and Time
+    confirm: Confirm
+    cancel: Cancel
+    set_time: Set Time
+    selected_time: Selected Time
+    select_time_title: Select Time
+    select_date_title: Select Date
+    no_date_selected: No date selected
+    select_end_date: Select End Date
+    no_dates_selected: No dates selected
+    refresh: Refresh
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be at or after {time}
+    time_must_be_at_or_before: Time must be at or before {time}
+    selected_date_must_be_at_or_after: Selected date must be at or after {date}
+    selected_date_must_be_at_or_before: Selected date must be at or before {date}
+    start_date_cannot_be_after_end_date: Start date cannot be after end date
+    start_date_must_be_at_or_after: Start date must be at or after {date}
+    end_date_must_be_at_or_before: End date must be at or before {date}
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select Date and Time
+    select_date_range_title: Select Date Range
+    refresh_description: Automatically refresh the selected date range
+    date_time_field_label: Date and Time Field
+    date_time_field_hint: Select date and time
+    field_label: Date and Time
+    field_hint: Select date and time
+    allDay: All Day
+    refreshDescription: Automatically refresh the selected date range
+    quick_selection_today: Today
+    quick_selection_tomorrow: Tomorrow
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Next Week
+    quick_selection_no_date: No Date
+    quick_selection_last_week: Last a Week
+    quick_selection_last_month: Last a Month
+    edit_button_label: Edit
+    edit_button_hint: Edit date and time
+  numeric_input:
+    decrement_button_label: Decrement
+    increment_button_label: Increment
+    text_field_label: Numeric Value
+    decrement_hint: Decrement value
+    increment_hint: Increment value
+    text_field_hint: Enter a number
+    decrement_tooltip: Decrement value
+    increment_tooltip: Increment value
+    at_minimum_value: At minimum value
+    at_maximum_value: At maximum value
   help: Help
   start_tour: Start Tour
   skip_tour: Skip Tour

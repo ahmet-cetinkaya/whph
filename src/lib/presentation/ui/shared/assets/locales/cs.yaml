@@ -86,6 +86,10 @@ shared:
     end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
     select_date_range_title: Vybrat rozsah dat
     select_date_time_title: Vybrat datum a čas
+    select_date_title: Vybrat datum
+    select_time_title: Vybrat čas
+    all_day: Celý den
+    selected_time: Vybraný čas
     selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
     selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
     selected_date_time_must_be_after: Vybrané datum a čas musí být po {dateTime}
@@ -94,6 +98,13 @@ shared:
     start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
     time_must_be_at_or_after: Čas musí být od {time} nebo později
     time_must_be_at_or_before: Čas musí být do {time} nebo dříve
+    # Quick selection dialog
+    quick_selection: Rychlý výběr
+    quick_selection_title: Rychlý výběr
+    refresh_settings: Automatické obnovení
+    refresh_description: Automaticky obnovit vybraný rozsah dat
+    date_ranges: Rozsahy dat
+    refresh_settings_label: Nastavení obnovení
   days:
     friday: Pátek
     friday_short: Pá
@@ -254,6 +265,7 @@ shared:
     last_month: Minulý měsíc
     last_three_months: Poslední 3 měsíce
     last_week: Minulý týden
+    next_week: Příští týden
     this_month: Tento měsíc
     this_three_months: Tyto 3 měsíce
     this_week: Tento týden
@@ -291,5 +303,60 @@ shared:
   help: Nápověda
   start_tour: Spustit prohlídku
   skip_tour: Přeskočit prohlídku
+  date_time_picker:
+    title: Datum a čas
+    confirm: Potvrdit
+    cancel: Zrušit
+    set_time: Nastavit čas
+    selected_time: Vybraný čas
+    select_time_title: Vybrat čas
+    select_date_title: Vybrat datum
+    no_date_selected: Nebylo vybráno žádné datum
+    select_end_date: Vybrat koncové datum
+    no_dates_selected: Nebyly vybrány žádné datumy
+    refresh: Obnovit
+    cannot_select_time_before_min_date: Nelze vybrat čas před {time}
+    cannot_select_time_after_max_date: Nelze vybrat čas po {time}
+    time_must_be_at_or_after: Čas musí být od {time} nebo později
+    time_must_be_at_or_before: Čas musí být do {time} nebo dříve
+    selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
+    selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
+    start_date_cannot_be_after_end_date: Počáteční datum nemůže být po koncovém datu
+    start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
+    end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
+    cannot_select_date_before_min_date: Nelze vybrat datum před {date}
+    cannot_select_date_after_max_date: Nelze vybrat datum po {date}
+    start_date_cannot_be_before_min_date: Počáteční datum nemůže být před {date}
+    end_date_cannot_be_after_max_date: Koncové datum nemůže být po {date}
+    selected_date_time_must_be_after: Vybrané datum a čas musí být po {dateTime}
+    select_date_time_title: Vybrat datum a čas
+    select_date_range_title: Vybrat rozsah dat
+    refresh_description: Automaticky obnovit vybraný rozsah dat
+    date_time_field_label: Pole data a času
+    date_time_field_hint: Vybrat datum a čas
+    field_label: Datum a čas
+    field_hint: Vybrat datum a čas
+    allDay: Celý den
+    refreshDescription: Automaticky obnovit vybraný rozsah dat
+    quick_selection_today: Dnes
+    quick_selection_tomorrow: Zítra
+    quick_selection_weekend: Víkend
+    quick_selection_next_week: Příští týden
+    quick_selection_no_date: Bez data
+    quick_selection_last_week: Minulý týden
+    quick_selection_last_month: Minulý měsíc
+    edit_button_label: Upravit
+    edit_button_hint: Upravit datum a čas
+  numeric_input:
+    decrement_button_label: Snížit
+    increment_button_label: Zvýšit
+    text_field_label: Číselná hodnota
+    decrement_hint: Snížit hodnotu
+    increment_hint: Zvýšit hodnotu
+    text_field_hint: Zadejte číslo
+    decrement_tooltip: Snížit hodnotu
+    increment_tooltip: Zvýšit hodnotu
+    at_minimum_value: Dosaženo minimální hodnoty
+    at_maximum_value: Dosaženo maximální hodnoty
   validation:
     required: "{field} je povinné."

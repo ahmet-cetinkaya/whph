@@ -48,6 +48,19 @@ settings:
     disable_error: Kunne ikke deaktivere notifikationer
     enable_error: Kunne ikke aktivere notifikationer
     title: Notifikationer
+  sound:
+    title: Lyd
+    subtitle: Konfigurer app-lyde og notifikationer
+    enabled: Aktiver Lyde
+    task_completion: Opgavefuldførelse Lyd
+    habit_completion: Vanefuldførelse Lyd
+    timer_control: Timerkontrol Lyd
+    timer_alarm: Timeralarm Lyd
+    enable_error: Kunne ikke aktivere lydindstillinger
+    disable_error: Kunne ikke deaktivere lydindstillinger
+    sounds_disabled: Lyde deaktiveret
+    all_sounds_enabled: Alle lyde aktiveret
+    some_sounds_enabled: Nogle lyde aktiveret
   permissions:
     app_usage:
       description: Denne app har brug for tilladelse til at få adgang til app-brugsstatistik for at spore dine app-brugsmønstre præcist.

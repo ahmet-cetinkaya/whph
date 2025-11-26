@@ -756,7 +756,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: PlatformUtils.isDesktop ? DialogSize.small : DialogSize.medium,
+      size: DialogSize.medium,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           final theme = Theme.of(context);
