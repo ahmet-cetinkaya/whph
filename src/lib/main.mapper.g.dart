@@ -7,9 +7,9 @@ import 'core/application/features/settings/commands/export_data_command.dart' as
 import 'core/application/features/settings/commands/import_data_command.dart' as x44 show ImportStrategy;
 import 'core/application/features/sync/commands/paginated_sync_command.dart' as x22 show PaginatedSyncCommandResponse;
 import 'core/application/features/sync/models/bidirectional_sync_progress.dart' as x24 show BidirectionalSyncProgress, OverallSyncProgress, SyncDirection, SyncPhase;
-import 'core/application/features/sync/models/paginated_sync_data.dart' as x1 show PaginatedSyncData, SyncProgress;
+import 'core/application/features/sync/models/paginated_sync_data.dart' as x0 show PaginatedSyncData, SyncProgress;
 import 'core/application/features/sync/models/paginated_sync_data_dto.dart' as x23 show PaginatedSyncDataDto;
-import 'core/application/features/sync/models/sync_data.dart' as x2 show SyncData;
+import 'core/application/features/sync/models/sync_data.dart' as x1 show SyncData;
 import 'core/application/features/sync/models/sync_status.dart' as x45 show SyncState;
 import 'core/application/features/sync/services/sync_conflict_resolution_service.dart' as x46 show ConflictAction;
 import 'core/application/features/tags/models/tag_time_category.dart' as x39 show TagTimeCategory;
@@ -17,46 +17,45 @@ import 'core/application/features/tags/queries/get_list_tags_query.dart' as x41 
 import 'core/application/features/tasks/queries/get_list_tasks_query.dart' as x47 show TaskSortFields;
 import 'core/application/features/widget/models/widget_data.dart' as x26 show WidgetTaskData, WidgetHabitData, WidgetData;
 import 'core/application/shared/models/websocket_request.dart' as x25 show WebSocketMessage;
-import 'core/domain/features/app_usages/app_usage.dart' as x3 show AppUsage;
-import 'core/domain/features/app_usages/app_usage_ignore_rule.dart' as x7 show AppUsageIgnoreRule;
-import 'core/domain/features/app_usages/app_usage_tag.dart' as x4 show AppUsageTag;
-import 'core/domain/features/app_usages/app_usage_tag_rule.dart' as x6 show AppUsageTagRule;
-import 'core/domain/features/app_usages/app_usage_time_record.dart' as x5 show AppUsageTimeRecord;
-import 'core/domain/features/habits/habit.dart' as x8 show Habit;
-import 'core/domain/features/habits/habit_record.dart' as x9 show HabitRecord;
-import 'core/domain/features/habits/habit_tag.dart' as x10 show HabitTag;
+import 'core/domain/features/app_usages/app_usage.dart' as x2 show AppUsage;
+import 'core/domain/features/app_usages/app_usage_ignore_rule.dart' as x6 show AppUsageIgnoreRule;
+import 'core/domain/features/app_usages/app_usage_tag.dart' as x3 show AppUsageTag;
+import 'core/domain/features/app_usages/app_usage_tag_rule.dart' as x5 show AppUsageTagRule;
+import 'core/domain/features/app_usages/app_usage_time_record.dart' as x4 show AppUsageTimeRecord;
+import 'core/domain/features/habits/habit.dart' as x7 show Habit;
+import 'core/domain/features/habits/habit_record.dart' as x8 show HabitRecord;
+import 'core/domain/features/habits/habit_tag.dart' as x9 show HabitTag;
 import 'core/domain/features/habits/habit_time_record.dart' as x21 show HabitTimeRecord;
-import 'core/domain/features/notes/note.dart' as x18 show Note;
-import 'core/domain/features/notes/note_tag.dart' as x19 show NoteTag;
-import 'core/domain/features/settings/setting.dart' as x16 show Setting, SettingValueType;
+import 'core/domain/features/notes/note.dart' as x17 show Note;
+import 'core/domain/features/notes/note_tag.dart' as x18 show NoteTag;
+import 'core/domain/features/settings/setting.dart' as x15 show Setting, SettingValueType;
 import 'core/domain/features/sync/models/desktop_sync_mode.dart' as x48 show DesktopSyncMode;
-import 'core/domain/features/sync/sync_device.dart' as x17 show SyncDevice;
-import 'core/domain/features/tags/tag.dart' as x11 show Tag;
-import 'core/domain/features/tags/tag_tag.dart' as x12 show TagTag;
+import 'core/domain/features/sync/sync_device.dart' as x16 show SyncDevice;
+import 'core/domain/features/tags/tag.dart' as x10 show Tag;
+import 'core/domain/features/tags/tag_tag.dart' as x11 show TagTag;
 import 'core/domain/features/tasks/models/task_with_total_duration.dart' as x20 show TaskWithTotalDuration;
-import 'core/domain/features/tasks/task.dart' as x13 show Task, EisenhowerPriority, ReminderTime, RecurrenceType;
-import 'core/domain/features/tasks/task_tag.dart' as x14 show TaskTag;
-import 'core/domain/features/tasks/task_time_record.dart' as x15 show TaskTimeRecord;
+import 'core/domain/features/tasks/task.dart' as x12 show Task, EisenhowerPriority, ReminderTime, RecurrenceType;
+import 'core/domain/features/tasks/task_tag.dart' as x13 show TaskTag;
+import 'core/domain/features/tasks/task_time_record.dart' as x14 show TaskTimeRecord;
 import 'core/domain/shared/constants/app_assets.dart' as x28 show TrayIconType;
 import 'core/domain/shared/constants/app_theme.dart' as x49 show UiDensity;
-import 'package:acore/components/date_time_picker/date_picker_dialog.dart' as x32 show QuickSelectionType;
-import 'package:acore/components/date_time_picker/date_picker_types.dart' as x30 show DateSelectionMode;
-import 'package:acore/components/date_time_picker/date_time_picker_translation_keys.dart' as x29 show DateTimePickerTranslationKey;
-import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart' as x34 show NumericInputTranslationKey;
-import 'package:acore/logging/log_level.dart' as x35 show LogLevel;
-import 'package:acore/repository/models/base_entity.dart' as x0 show BaseEntity;
-import 'package:acore/repository/models/sort_direction.dart' as x36 show SortDirection;
+import 'package:acore/components/border_fade_overlay.dart' as x30 show FadeBorder;
+import 'package:acore/components/date_time_picker/date_picker_types.dart' as x32 show DateSelectionMode;
+import 'package:acore/components/date_time_picker/date_time_picker_translation_keys.dart' as x31 show DateTimePickerTranslationKey;
+import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart' as x35 show NumericInputTranslationKey;
+import 'package:acore/logging/log_level.dart' as x36 show LogLevel;
+import 'package:acore/repository/models/base_entity.dart' as x19 show BaseEntity;
+import 'package:acore/repository/models/sort_direction.dart' as x37 show SortDirection;
 import 'package:acore/time/date_format_service.dart' as x33 show DateFormatType;
-import 'package:acore/time/week_days.dart' as x37 show WeekDays;
-import 'package:acore/utils/dialog_size.dart' as x38 show DialogSize;
-import 'package:acore/utils/responsive_util.dart' as x31 show ResponsiveDeviceType, ResponsiveLayoutType, LandscapeLayoutStrategy;
+import 'package:acore/time/week_days.dart' as x38 show WeekDays;
+import 'package:acore/utils/dialog_size.dart' as x29 show DialogSize;
+import 'package:acore/utils/responsive_util.dart' as x34 show ResponsiveDeviceType, ResponsiveLayoutType, LandscapeLayoutStrategy;
 import 'package:dart_json_mapper/dart_json_mapper.dart' show JsonMapper, JsonMapperAdapter, SerializationOptions, DeserializationOptions, typeOf;
 import 'presentation/ui/features/sync/models/sync_qr_code_message.dart' as x27 show SyncQrCodeMessage;
-import 'presentation/ui/features/tasks/components/schedule_button.dart' as x52 show ScheduleOption;
-import 'presentation/ui/shared/components/border_fade_overlay.dart' as x51 show FadeBorder;
-import 'presentation/ui/shared/components/time_logging_dialog.dart' as x53 show LoggingMode;
-import 'presentation/ui/shared/components/tour_overlay.dart' as x55 show TourHighlightShape, TourPosition;
-import 'presentation/ui/shared/enums/timer_mode.dart' as x54 show TimerMode;
+import 'presentation/ui/features/tasks/components/schedule_button.dart' as x51 show ScheduleOption;
+import 'presentation/ui/shared/components/time_logging_dialog.dart' as x52 show LoggingMode;
+import 'presentation/ui/shared/components/tour_overlay.dart' as x54 show TourHighlightShape, TourPosition;
+import 'presentation/ui/shared/enums/timer_mode.dart' as x53 show TimerMode;
 import 'presentation/ui/shared/services/abstraction/i_theme_service.dart' as x50 show AppThemeMode;
 // This file has been generated by the reflectable package.
 // https://github.com/dart-lang/reflectable.
@@ -124,48 +123,48 @@ final mainGeneratedAdapter = JsonMapperAdapter(
   reflectableData: _data,
   memberSymbolMap: _memberSymbolMap,
   valueDecorators: {
-    typeOf<List<x0.BaseEntity>>(): (value) => value.cast<x0.BaseEntity>(),
-    typeOf<Set<x0.BaseEntity>>(): (value) => value.cast<x0.BaseEntity>(),
-    typeOf<List<x1.PaginatedSyncData>>(): (value) => value.cast<x1.PaginatedSyncData>(),
-    typeOf<Set<x1.PaginatedSyncData>>(): (value) => value.cast<x1.PaginatedSyncData>(),
-    typeOf<List<x1.SyncProgress>>(): (value) => value.cast<x1.SyncProgress>(),
-    typeOf<Set<x1.SyncProgress>>(): (value) => value.cast<x1.SyncProgress>(),
-    typeOf<List<x2.SyncData>>(): (value) => value.cast<x2.SyncData>(),
-    typeOf<Set<x2.SyncData>>(): (value) => value.cast<x2.SyncData>(),
-    typeOf<List<x3.AppUsage>>(): (value) => value.cast<x3.AppUsage>(),
-    typeOf<Set<x3.AppUsage>>(): (value) => value.cast<x3.AppUsage>(),
-    typeOf<List<x4.AppUsageTag>>(): (value) => value.cast<x4.AppUsageTag>(),
-    typeOf<Set<x4.AppUsageTag>>(): (value) => value.cast<x4.AppUsageTag>(),
-    typeOf<List<x5.AppUsageTimeRecord>>(): (value) => value.cast<x5.AppUsageTimeRecord>(),
-    typeOf<Set<x5.AppUsageTimeRecord>>(): (value) => value.cast<x5.AppUsageTimeRecord>(),
-    typeOf<List<x6.AppUsageTagRule>>(): (value) => value.cast<x6.AppUsageTagRule>(),
-    typeOf<Set<x6.AppUsageTagRule>>(): (value) => value.cast<x6.AppUsageTagRule>(),
-    typeOf<List<x7.AppUsageIgnoreRule>>(): (value) => value.cast<x7.AppUsageIgnoreRule>(),
-    typeOf<Set<x7.AppUsageIgnoreRule>>(): (value) => value.cast<x7.AppUsageIgnoreRule>(),
-    typeOf<List<x8.Habit>>(): (value) => value.cast<x8.Habit>(),
-    typeOf<Set<x8.Habit>>(): (value) => value.cast<x8.Habit>(),
-    typeOf<List<x9.HabitRecord>>(): (value) => value.cast<x9.HabitRecord>(),
-    typeOf<Set<x9.HabitRecord>>(): (value) => value.cast<x9.HabitRecord>(),
-    typeOf<List<x10.HabitTag>>(): (value) => value.cast<x10.HabitTag>(),
-    typeOf<Set<x10.HabitTag>>(): (value) => value.cast<x10.HabitTag>(),
-    typeOf<List<x11.Tag>>(): (value) => value.cast<x11.Tag>(),
-    typeOf<Set<x11.Tag>>(): (value) => value.cast<x11.Tag>(),
-    typeOf<List<x12.TagTag>>(): (value) => value.cast<x12.TagTag>(),
-    typeOf<Set<x12.TagTag>>(): (value) => value.cast<x12.TagTag>(),
-    typeOf<List<x13.Task>>(): (value) => value.cast<x13.Task>(),
-    typeOf<Set<x13.Task>>(): (value) => value.cast<x13.Task>(),
-    typeOf<List<x14.TaskTag>>(): (value) => value.cast<x14.TaskTag>(),
-    typeOf<Set<x14.TaskTag>>(): (value) => value.cast<x14.TaskTag>(),
-    typeOf<List<x15.TaskTimeRecord>>(): (value) => value.cast<x15.TaskTimeRecord>(),
-    typeOf<Set<x15.TaskTimeRecord>>(): (value) => value.cast<x15.TaskTimeRecord>(),
-    typeOf<List<x16.Setting>>(): (value) => value.cast<x16.Setting>(),
-    typeOf<Set<x16.Setting>>(): (value) => value.cast<x16.Setting>(),
-    typeOf<List<x17.SyncDevice>>(): (value) => value.cast<x17.SyncDevice>(),
-    typeOf<Set<x17.SyncDevice>>(): (value) => value.cast<x17.SyncDevice>(),
-    typeOf<List<x18.Note>>(): (value) => value.cast<x18.Note>(),
-    typeOf<Set<x18.Note>>(): (value) => value.cast<x18.Note>(),
-    typeOf<List<x19.NoteTag>>(): (value) => value.cast<x19.NoteTag>(),
-    typeOf<Set<x19.NoteTag>>(): (value) => value.cast<x19.NoteTag>(),
+    typeOf<List<x0.PaginatedSyncData>>(): (value) => value.cast<x0.PaginatedSyncData>(),
+    typeOf<Set<x0.PaginatedSyncData>>(): (value) => value.cast<x0.PaginatedSyncData>(),
+    typeOf<List<x0.SyncProgress>>(): (value) => value.cast<x0.SyncProgress>(),
+    typeOf<Set<x0.SyncProgress>>(): (value) => value.cast<x0.SyncProgress>(),
+    typeOf<List<x1.SyncData>>(): (value) => value.cast<x1.SyncData>(),
+    typeOf<Set<x1.SyncData>>(): (value) => value.cast<x1.SyncData>(),
+    typeOf<List<x2.AppUsage>>(): (value) => value.cast<x2.AppUsage>(),
+    typeOf<Set<x2.AppUsage>>(): (value) => value.cast<x2.AppUsage>(),
+    typeOf<List<x3.AppUsageTag>>(): (value) => value.cast<x3.AppUsageTag>(),
+    typeOf<Set<x3.AppUsageTag>>(): (value) => value.cast<x3.AppUsageTag>(),
+    typeOf<List<x4.AppUsageTimeRecord>>(): (value) => value.cast<x4.AppUsageTimeRecord>(),
+    typeOf<Set<x4.AppUsageTimeRecord>>(): (value) => value.cast<x4.AppUsageTimeRecord>(),
+    typeOf<List<x5.AppUsageTagRule>>(): (value) => value.cast<x5.AppUsageTagRule>(),
+    typeOf<Set<x5.AppUsageTagRule>>(): (value) => value.cast<x5.AppUsageTagRule>(),
+    typeOf<List<x6.AppUsageIgnoreRule>>(): (value) => value.cast<x6.AppUsageIgnoreRule>(),
+    typeOf<Set<x6.AppUsageIgnoreRule>>(): (value) => value.cast<x6.AppUsageIgnoreRule>(),
+    typeOf<List<x7.Habit>>(): (value) => value.cast<x7.Habit>(),
+    typeOf<Set<x7.Habit>>(): (value) => value.cast<x7.Habit>(),
+    typeOf<List<x8.HabitRecord>>(): (value) => value.cast<x8.HabitRecord>(),
+    typeOf<Set<x8.HabitRecord>>(): (value) => value.cast<x8.HabitRecord>(),
+    typeOf<List<x9.HabitTag>>(): (value) => value.cast<x9.HabitTag>(),
+    typeOf<Set<x9.HabitTag>>(): (value) => value.cast<x9.HabitTag>(),
+    typeOf<List<x10.Tag>>(): (value) => value.cast<x10.Tag>(),
+    typeOf<Set<x10.Tag>>(): (value) => value.cast<x10.Tag>(),
+    typeOf<List<x11.TagTag>>(): (value) => value.cast<x11.TagTag>(),
+    typeOf<Set<x11.TagTag>>(): (value) => value.cast<x11.TagTag>(),
+    typeOf<List<x12.Task>>(): (value) => value.cast<x12.Task>(),
+    typeOf<Set<x12.Task>>(): (value) => value.cast<x12.Task>(),
+    typeOf<List<x13.TaskTag>>(): (value) => value.cast<x13.TaskTag>(),
+    typeOf<Set<x13.TaskTag>>(): (value) => value.cast<x13.TaskTag>(),
+    typeOf<List<x14.TaskTimeRecord>>(): (value) => value.cast<x14.TaskTimeRecord>(),
+    typeOf<Set<x14.TaskTimeRecord>>(): (value) => value.cast<x14.TaskTimeRecord>(),
+    typeOf<List<x15.Setting>>(): (value) => value.cast<x15.Setting>(),
+    typeOf<Set<x15.Setting>>(): (value) => value.cast<x15.Setting>(),
+    typeOf<List<x16.SyncDevice>>(): (value) => value.cast<x16.SyncDevice>(),
+    typeOf<Set<x16.SyncDevice>>(): (value) => value.cast<x16.SyncDevice>(),
+    typeOf<List<x17.Note>>(): (value) => value.cast<x17.Note>(),
+    typeOf<Set<x17.Note>>(): (value) => value.cast<x17.Note>(),
+    typeOf<List<x18.NoteTag>>(): (value) => value.cast<x18.NoteTag>(),
+    typeOf<Set<x18.NoteTag>>(): (value) => value.cast<x18.NoteTag>(),
+    typeOf<List<x19.BaseEntity>>(): (value) => value.cast<x19.BaseEntity>(),
+    typeOf<Set<x19.BaseEntity>>(): (value) => value.cast<x19.BaseEntity>(),
     typeOf<List<x20.TaskWithTotalDuration>>(): (value) => value.cast<x20.TaskWithTotalDuration>(),
     typeOf<Set<x20.TaskWithTotalDuration>>(): (value) => value.cast<x20.TaskWithTotalDuration>(),
     typeOf<List<x21.HabitTimeRecord>>(): (value) => value.cast<x21.HabitTimeRecord>(),
@@ -190,38 +189,38 @@ final mainGeneratedAdapter = JsonMapperAdapter(
     typeOf<Set<x27.SyncQrCodeMessage>>(): (value) => value.cast<x27.SyncQrCodeMessage>(),
     typeOf<List<x28.TrayIconType>>(): (value) => value.cast<x28.TrayIconType>(),
     typeOf<Set<x28.TrayIconType>>(): (value) => value.cast<x28.TrayIconType>(),
-    typeOf<List<x29.DateTimePickerTranslationKey>>(): (value) => value.cast<x29.DateTimePickerTranslationKey>(),
-    typeOf<Set<x29.DateTimePickerTranslationKey>>(): (value) => value.cast<x29.DateTimePickerTranslationKey>(),
-    typeOf<List<x30.DateSelectionMode>>(): (value) => value.cast<x30.DateSelectionMode>(),
-    typeOf<Set<x30.DateSelectionMode>>(): (value) => value.cast<x30.DateSelectionMode>(),
-    typeOf<List<x31.ResponsiveDeviceType>>(): (value) => value.cast<x31.ResponsiveDeviceType>(),
-    typeOf<Set<x31.ResponsiveDeviceType>>(): (value) => value.cast<x31.ResponsiveDeviceType>(),
-    typeOf<List<x31.ResponsiveLayoutType>>(): (value) => value.cast<x31.ResponsiveLayoutType>(),
-    typeOf<Set<x31.ResponsiveLayoutType>>(): (value) => value.cast<x31.ResponsiveLayoutType>(),
-    typeOf<List<x31.LandscapeLayoutStrategy>>(): (value) => value.cast<x31.LandscapeLayoutStrategy>(),
-    typeOf<Set<x31.LandscapeLayoutStrategy>>(): (value) => value.cast<x31.LandscapeLayoutStrategy>(),
-    typeOf<List<x32.QuickSelectionType>>(): (value) => value.cast<x32.QuickSelectionType>(),
-    typeOf<Set<x32.QuickSelectionType>>(): (value) => value.cast<x32.QuickSelectionType>(),
+    typeOf<List<x12.EisenhowerPriority>>(): (value) => value.cast<x12.EisenhowerPriority>(),
+    typeOf<Set<x12.EisenhowerPriority>>(): (value) => value.cast<x12.EisenhowerPriority>(),
+    typeOf<List<x12.ReminderTime>>(): (value) => value.cast<x12.ReminderTime>(),
+    typeOf<Set<x12.ReminderTime>>(): (value) => value.cast<x12.ReminderTime>(),
+    typeOf<List<x12.RecurrenceType>>(): (value) => value.cast<x12.RecurrenceType>(),
+    typeOf<Set<x12.RecurrenceType>>(): (value) => value.cast<x12.RecurrenceType>(),
+    typeOf<List<x15.SettingValueType>>(): (value) => value.cast<x15.SettingValueType>(),
+    typeOf<Set<x15.SettingValueType>>(): (value) => value.cast<x15.SettingValueType>(),
+    typeOf<List<x29.DialogSize>>(): (value) => value.cast<x29.DialogSize>(),
+    typeOf<Set<x29.DialogSize>>(): (value) => value.cast<x29.DialogSize>(),
+    typeOf<List<x30.FadeBorder>>(): (value) => value.cast<x30.FadeBorder>(),
+    typeOf<Set<x30.FadeBorder>>(): (value) => value.cast<x30.FadeBorder>(),
+    typeOf<List<x31.DateTimePickerTranslationKey>>(): (value) => value.cast<x31.DateTimePickerTranslationKey>(),
+    typeOf<Set<x31.DateTimePickerTranslationKey>>(): (value) => value.cast<x31.DateTimePickerTranslationKey>(),
+    typeOf<List<x32.DateSelectionMode>>(): (value) => value.cast<x32.DateSelectionMode>(),
+    typeOf<Set<x32.DateSelectionMode>>(): (value) => value.cast<x32.DateSelectionMode>(),
     typeOf<List<x33.DateFormatType>>(): (value) => value.cast<x33.DateFormatType>(),
     typeOf<Set<x33.DateFormatType>>(): (value) => value.cast<x33.DateFormatType>(),
-    typeOf<List<x34.NumericInputTranslationKey>>(): (value) => value.cast<x34.NumericInputTranslationKey>(),
-    typeOf<Set<x34.NumericInputTranslationKey>>(): (value) => value.cast<x34.NumericInputTranslationKey>(),
-    typeOf<List<x35.LogLevel>>(): (value) => value.cast<x35.LogLevel>(),
-    typeOf<Set<x35.LogLevel>>(): (value) => value.cast<x35.LogLevel>(),
-    typeOf<List<x36.SortDirection>>(): (value) => value.cast<x36.SortDirection>(),
-    typeOf<Set<x36.SortDirection>>(): (value) => value.cast<x36.SortDirection>(),
-    typeOf<List<x37.WeekDays>>(): (value) => value.cast<x37.WeekDays>(),
-    typeOf<Set<x37.WeekDays>>(): (value) => value.cast<x37.WeekDays>(),
-    typeOf<List<x38.DialogSize>>(): (value) => value.cast<x38.DialogSize>(),
-    typeOf<Set<x38.DialogSize>>(): (value) => value.cast<x38.DialogSize>(),
-    typeOf<List<x13.EisenhowerPriority>>(): (value) => value.cast<x13.EisenhowerPriority>(),
-    typeOf<Set<x13.EisenhowerPriority>>(): (value) => value.cast<x13.EisenhowerPriority>(),
-    typeOf<List<x13.ReminderTime>>(): (value) => value.cast<x13.ReminderTime>(),
-    typeOf<Set<x13.ReminderTime>>(): (value) => value.cast<x13.ReminderTime>(),
-    typeOf<List<x13.RecurrenceType>>(): (value) => value.cast<x13.RecurrenceType>(),
-    typeOf<Set<x13.RecurrenceType>>(): (value) => value.cast<x13.RecurrenceType>(),
-    typeOf<List<x16.SettingValueType>>(): (value) => value.cast<x16.SettingValueType>(),
-    typeOf<Set<x16.SettingValueType>>(): (value) => value.cast<x16.SettingValueType>(),
+    typeOf<List<x34.ResponsiveDeviceType>>(): (value) => value.cast<x34.ResponsiveDeviceType>(),
+    typeOf<Set<x34.ResponsiveDeviceType>>(): (value) => value.cast<x34.ResponsiveDeviceType>(),
+    typeOf<List<x34.ResponsiveLayoutType>>(): (value) => value.cast<x34.ResponsiveLayoutType>(),
+    typeOf<Set<x34.ResponsiveLayoutType>>(): (value) => value.cast<x34.ResponsiveLayoutType>(),
+    typeOf<List<x34.LandscapeLayoutStrategy>>(): (value) => value.cast<x34.LandscapeLayoutStrategy>(),
+    typeOf<Set<x34.LandscapeLayoutStrategy>>(): (value) => value.cast<x34.LandscapeLayoutStrategy>(),
+    typeOf<List<x35.NumericInputTranslationKey>>(): (value) => value.cast<x35.NumericInputTranslationKey>(),
+    typeOf<Set<x35.NumericInputTranslationKey>>(): (value) => value.cast<x35.NumericInputTranslationKey>(),
+    typeOf<List<x36.LogLevel>>(): (value) => value.cast<x36.LogLevel>(),
+    typeOf<Set<x36.LogLevel>>(): (value) => value.cast<x36.LogLevel>(),
+    typeOf<List<x37.SortDirection>>(): (value) => value.cast<x37.SortDirection>(),
+    typeOf<Set<x37.SortDirection>>(): (value) => value.cast<x37.SortDirection>(),
+    typeOf<List<x38.WeekDays>>(): (value) => value.cast<x38.WeekDays>(),
+    typeOf<Set<x38.WeekDays>>(): (value) => value.cast<x38.WeekDays>(),
     typeOf<List<x39.TagTimeCategory>>(): (value) => value.cast<x39.TagTimeCategory>(),
     typeOf<Set<x39.TagTimeCategory>>(): (value) => value.cast<x39.TagTimeCategory>(),
     typeOf<List<x40.HabitSortFields>>(): (value) => value.cast<x40.HabitSortFields>(),
@@ -250,37 +249,35 @@ final mainGeneratedAdapter = JsonMapperAdapter(
     typeOf<Set<x49.UiDensity>>(): (value) => value.cast<x49.UiDensity>(),
     typeOf<List<x50.AppThemeMode>>(): (value) => value.cast<x50.AppThemeMode>(),
     typeOf<Set<x50.AppThemeMode>>(): (value) => value.cast<x50.AppThemeMode>(),
-    typeOf<List<x51.FadeBorder>>(): (value) => value.cast<x51.FadeBorder>(),
-    typeOf<Set<x51.FadeBorder>>(): (value) => value.cast<x51.FadeBorder>(),
-    typeOf<List<x52.ScheduleOption>>(): (value) => value.cast<x52.ScheduleOption>(),
-    typeOf<Set<x52.ScheduleOption>>(): (value) => value.cast<x52.ScheduleOption>(),
-    typeOf<List<x53.LoggingMode>>(): (value) => value.cast<x53.LoggingMode>(),
-    typeOf<Set<x53.LoggingMode>>(): (value) => value.cast<x53.LoggingMode>(),
-    typeOf<List<x54.TimerMode>>(): (value) => value.cast<x54.TimerMode>(),
-    typeOf<Set<x54.TimerMode>>(): (value) => value.cast<x54.TimerMode>(),
-    typeOf<List<x55.TourHighlightShape>>(): (value) => value.cast<x55.TourHighlightShape>(),
-    typeOf<Set<x55.TourHighlightShape>>(): (value) => value.cast<x55.TourHighlightShape>(),
-    typeOf<List<x55.TourPosition>>(): (value) => value.cast<x55.TourPosition>(),
-    typeOf<Set<x55.TourPosition>>(): (value) => value.cast<x55.TourPosition>()
+    typeOf<List<x51.ScheduleOption>>(): (value) => value.cast<x51.ScheduleOption>(),
+    typeOf<Set<x51.ScheduleOption>>(): (value) => value.cast<x51.ScheduleOption>(),
+    typeOf<List<x52.LoggingMode>>(): (value) => value.cast<x52.LoggingMode>(),
+    typeOf<Set<x52.LoggingMode>>(): (value) => value.cast<x52.LoggingMode>(),
+    typeOf<List<x53.TimerMode>>(): (value) => value.cast<x53.TimerMode>(),
+    typeOf<Set<x53.TimerMode>>(): (value) => value.cast<x53.TimerMode>(),
+    typeOf<List<x54.TourHighlightShape>>(): (value) => value.cast<x54.TourHighlightShape>(),
+    typeOf<Set<x54.TourHighlightShape>>(): (value) => value.cast<x54.TourHighlightShape>(),
+    typeOf<List<x54.TourPosition>>(): (value) => value.cast<x54.TourPosition>(),
+    typeOf<Set<x54.TourPosition>>(): (value) => value.cast<x54.TourPosition>()
 },
   enumValues: {
     x28.TrayIconType: x28.TrayIconType.values,
-    x29.DateTimePickerTranslationKey: x29.DateTimePickerTranslationKey.values,
-    x30.DateSelectionMode: x30.DateSelectionMode.values,
-    x31.ResponsiveDeviceType: x31.ResponsiveDeviceType.values,
-    x31.ResponsiveLayoutType: x31.ResponsiveLayoutType.values,
-    x31.LandscapeLayoutStrategy: x31.LandscapeLayoutStrategy.values,
-    x32.QuickSelectionType: x32.QuickSelectionType.values,
+    x12.EisenhowerPriority: x12.EisenhowerPriority.values,
+    x12.ReminderTime: x12.ReminderTime.values,
+    x12.RecurrenceType: x12.RecurrenceType.values,
+    x15.SettingValueType: x15.SettingValueType.values,
+    x29.DialogSize: x29.DialogSize.values,
+    x30.FadeBorder: x30.FadeBorder.values,
+    x31.DateTimePickerTranslationKey: x31.DateTimePickerTranslationKey.values,
+    x32.DateSelectionMode: x32.DateSelectionMode.values,
     x33.DateFormatType: x33.DateFormatType.values,
-    x34.NumericInputTranslationKey: x34.NumericInputTranslationKey.values,
-    x35.LogLevel: x35.LogLevel.values,
-    x36.SortDirection: x36.SortDirection.values,
-    x37.WeekDays: x37.WeekDays.values,
-    x38.DialogSize: x38.DialogSize.values,
-    x13.EisenhowerPriority: x13.EisenhowerPriority.values,
-    x13.ReminderTime: x13.ReminderTime.values,
-    x13.RecurrenceType: x13.RecurrenceType.values,
-    x16.SettingValueType: x16.SettingValueType.values,
+    x34.ResponsiveDeviceType: x34.ResponsiveDeviceType.values,
+    x34.ResponsiveLayoutType: x34.ResponsiveLayoutType.values,
+    x34.LandscapeLayoutStrategy: x34.LandscapeLayoutStrategy.values,
+    x35.NumericInputTranslationKey: x35.NumericInputTranslationKey.values,
+    x36.LogLevel: x36.LogLevel.values,
+    x37.SortDirection: x37.SortDirection.values,
+    x38.WeekDays: x38.WeekDays.values,
     x39.TagTimeCategory: x39.TagTimeCategory.values,
     x40.HabitSortFields: x40.HabitSortFields.values,
     x41.TagSortFields: x41.TagSortFields.values,
@@ -295,12 +292,11 @@ final mainGeneratedAdapter = JsonMapperAdapter(
     x48.DesktopSyncMode: x48.DesktopSyncMode.values,
     x49.UiDensity: x49.UiDensity.values,
     x50.AppThemeMode: x50.AppThemeMode.values,
-    x51.FadeBorder: x51.FadeBorder.values,
-    x52.ScheduleOption: x52.ScheduleOption.values,
-    x53.LoggingMode: x53.LoggingMode.values,
-    x54.TimerMode: x54.TimerMode.values,
-    x55.TourHighlightShape: x55.TourHighlightShape.values,
-    x55.TourPosition: x55.TourPosition.values
+    x51.ScheduleOption: x51.ScheduleOption.values,
+    x52.LoggingMode: x52.LoggingMode.values,
+    x53.TimerMode: x53.TimerMode.values,
+    x54.TourHighlightShape: x54.TourHighlightShape.values,
+    x54.TourPosition: x54.TourPosition.values
 });
 
 Future<JsonMapper> initializeJsonMapperAsync({Iterable<JsonMapperAdapter> adapters = const [], SerializationOptions? serializationOptions, DeserializationOptions? deserializationOptions}) => Future(() => initializeJsonMapper(adapters: adapters, serializationOptions: serializationOptions, deserializationOptions: deserializationOptions));

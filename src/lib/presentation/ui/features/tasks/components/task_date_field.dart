@@ -108,7 +108,6 @@ class _TaskDateFieldState extends State<TaskDateField> {
         showTime: true,
         enableManualInput: true,
         titleText: widget.translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
-        confirmButtonText: widget.translationService.translate(SharedTranslationKeys.confirmButton),
         cancelButtonText: widget.translationService.translate(SharedTranslationKeys.cancelButton),
         allowNullConfirm: true,
         dateTimeValidator: null, // Use built-in minDate validation instead
@@ -129,7 +128,7 @@ class _TaskDateFieldState extends State<TaskDateField> {
         config: config,
       );
 
-      if (result != null && result.isConfirmed && mounted) {
+      if (result != null && result.selectedDate != null && mounted) {
         if (result.selectedDate != null) {
           // Date was selected
           final selectedDateTime = result.selectedDate!;
