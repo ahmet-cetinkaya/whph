@@ -83,26 +83,22 @@ shared:
     end_date_must_be_at_or_before: 结束日期必须在 {date} 或之前
     select_date_range_title: 选择日期范围
     select_date_time_title: 选择日期和时间
-    select_date_title: 选择日期
-    select_time_title: 选择时间
-    all_day: 全天
-    selected_time: 已选时间
     selected_date_must_be_at_or_after: 选定的日期必须在 {date} 或之后
     selected_date_must_be_at_or_before: 选定的日期必须在 {date} 或之前
     selected_date_time_must_be_after: 选定的日期和时间必须在 {dateTime} 之后
     start_date_cannot_be_after_end_date: 开始日期不能晚于结束日期
     start_date_cannot_be_before_min_date: 开始日期不能早于 {date}
     start_date_must_be_at_or_after: 开始日期必须在 {date} 或之后
-    select_time_title: 选择时间
     time_must_be_at_or_after: 时间必须在 {time} 或之后
     time_must_be_at_or_before: 时间必须在 {time} 或之前
-    # Quick selection dialog
-    quick_selection: 快速选择
-    quick_selection_title: 快速选择
-    refresh_settings: 自动刷新
-    refresh_description: 自动刷新所选日期范围
-    date_ranges: 日期范围
-    refresh_settings_label: 刷新设置
+    select_time_title: Select time
+    selected_time: Selected time
+    select_date_title: Select date
+    quick_selection: Quick selection
+    quick_selection_title: Quick selection
+    refresh_settings: Auto refresh
+    date_ranges: Date ranges
+    refresh_settings_label: Refresh settings
   days:
     friday: 星期五
     friday_short: 五
@@ -237,10 +233,6 @@ shared:
       title: 每小时使用情况
   time:
     not_set: 未设置
-    all_day: 全天
-  time_picker:
-    hour_label: 小时
-    minute_label: 分钟
   time_display:
     elapsed: 已用
     elapsed_time_tooltip: 此任务已用时间
@@ -263,11 +255,11 @@ shared:
     last_month: 上个月
     last_three_months: 过去3个月
     last_week: 上周
-    next_week: 下周
     this_month: 本月
     this_three_months: 最近3个月
     this_week: 本周
     today: 今天
+    next_week: 下周
   timer:
     label: 计时器
     normal: 普通
@@ -282,7 +274,7 @@ shared:
   units:
     days: 天
     hours: 小时
-    hours_short: 小时
+    hours_short: h
     minutes: 分钟
     minutes_short: 分
     seconds: 秒
@@ -298,63 +290,67 @@ shared:
     question: 您想现在更新吗？
     success: 更新下载成功！
     title: 有可用更新！
-  date_time_picker:
-    title: 日期和时间
-    confirm: 确认
-    cancel: 取消
-    set_time: 设置时间
-    selected_time: 已选时间
-    select_time_title: 选择时间
-    select_date_title: 选择日期
-    no_date_selected: 未选择日期
-    select_end_date: 选择结束日期
-    no_dates_selected: 未选择日期
-    refresh: 刷新
-    cannot_select_time_before_min_date: 无法在{time}之前选择时间
-    cannot_select_time_after_max_date: 无法在{time}之后选择时间
-    time_must_be_at_or_after: 时间必须在{time}或之后
-    time_must_be_at_or_before: 时间必须在{time}或之前
-    selected_date_must_be_at_or_after: 选择的日期必须在{date}或之后
-    selected_date_must_be_at_or_before: 选择的日期必须在{date}或之前
-    start_date_cannot_be_after_end_date: 开始日期不能在结束日期之后
-    start_date_must_be_at_or_after: 开始日期必须在{date}或之后
-    end_date_must_be_at_or_before: 结束日期必须在{date}或之前
-    cannot_select_date_before_min_date: 无法在{date}之前选择日期
-    cannot_select_date_after_max_date: 无法在{date}之后选择日期
-    start_date_cannot_be_before_min_date: 开始日期不能在{date}之前
-    end_date_cannot_be_after_max_date: 结束日期不能在{date}之后
-    selected_date_time_must_be_after: 选择的日期和时间必须在{dateTime}之后
-    select_date_time_title: 选择日期和时间
-    select_date_range_title: 选择日期范围
-    refresh_description: 自动刷新所选日期范围
-    date_time_field_label: 日期时间字段
-    date_time_field_hint: 选择日期和时间
-    field_label: 日期时间
-    field_hint: 选择日期时间
-    allDay: 全天
-    refreshDescription: 自动刷新选定的日期范围
-    quick_selection_today: 今天
-    quick_selection_tomorrow: 明天
-    quick_selection_weekend: 周末
-    quick_selection_next_week: 下周
-    quick_selection_no_date: 无日期
-    quick_selection_last_week: 上周
-    quick_selection_last_month: 上个月
-    edit_button_label: 编辑
-    edit_button_hint: 编辑日期和时间
-  numeric_input:
-    decrement_button_label: 减少
-    increment_button_label: 增加
-    text_field_label: 数值
-    decrement_hint: 减少值
-    increment_hint: 增加值
-    text_field_hint: 输入数字
-    decrement_tooltip: 减少值
-    increment_tooltip: 增加值
-    at_minimum_value: 达到最小值
-    at_maximum_value: 达到最大值
   validation:
     required: "{field}是必需的。"
   help: 帮助
   start_tour: 开始导览
+  date_picker:
+    all_day: 全天
+    time_picker_hour_label: 小时
+    time_picker_minute_label: 分钟
+  date_time_picker:
+    field_label: Date and time
+    field_hint: Select date and time
+    edit_button_label: Edit
+    edit_button_hint: Edit date and time
+    title: Date and time
+    confirm: Confirm
+    cancel: Cancel
+    set_time: Set time
+    selected_time: Selected time
+    select_time_title: Select time
+    select_date_title: Select date
+    no_date_selected: No date selected
+    select_end_date: Select end date
+    no_dates_selected: No dates selected
+    refresh: Refresh
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be {time} or later
+    time_must_be_at_or_before: Time must be {time} or earlier
+    selected_date_must_be_at_or_after: Selected date must be {date} or later
+    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    start_date_cannot_be_after_end_date: 开始日期不能晚于结束日期
+    start_date_must_be_at_or_after: Start date must be {date} or later
+    end_date_must_be_at_or_before: End date must be {date} or earlier
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select date and time
+    select_date_range_title: Select date range
+    refresh_description: 自动刷新选定的日期范围
+    date_time_field_label: Date and time field
+    date_time_field_hint: Select date and time
+    allDay: All day
+    refreshDescription: Automatically refresh selected date range
+    quick_selection_today: Today
+    quick_selection_tomorrow: Tomorrow
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Next week
+    quick_selection_no_date: No date
+    quick_selection_last_week: Last week
+    quick_selection_last_month: Last month
+  numeric_input:
+    decrement_button_label: Decrease
+    increment_button_label: Increase
+    text_field_label: Numeric value
+    decrement_hint: Decrease value
+    increment_hint: Increase value
+    text_field_hint: Enter number
+    decrement_tooltip: Decrease value
+    increment_tooltip: Increase value
+    at_minimum_value: At minimum value
+    at_maximum_value: At maximum value
   skip_tour: 跳过导览

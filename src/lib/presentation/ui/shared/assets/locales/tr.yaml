@@ -85,12 +85,6 @@ shared:
     end_date_must_be_at_or_before: Bitiş tarihi {date} veya öncesi olmalıdır
     select_date_range_title: Tarih aralığı seçin
     select_date_time_title: Tarih ve saat seçin
-    select_date_title: Tarih Seç
-    select_time_title: Saat Seç
-    all_day: Tüm Gün
-    selected_time: Seçili Saat
-    date_ranges: Tarih Aralıkları
-    refresh_settings_label: Yenileme Ayarları
     selected_date_must_be_at_or_after: Seçilen tarih {date} veya sonrası olmalıdır
     selected_date_must_be_at_or_before: Seçilen tarih {date} veya öncesi olmalıdır
     selected_date_time_must_be_after: Seçilen tarih ve saat {dateTime} sonrası olmalıdır
@@ -101,11 +95,14 @@ shared:
     start_date_must_be_at_or_after: Başlangıç tarihi {date} veya sonrası olmalıdır
     time_must_be_at_or_after: Saat {time} veya sonrası olmalıdır
     time_must_be_at_or_before: Saat {time} veya öncesi olmalıdır
-    # Quick selection dialog
-    quick_selection: Hızlı seçim
-    quick_selection_title: Hızlı seçim
-    refresh_settings: Otomatik yenileme
-    refresh_description: Seçili tarih aralığını otomatik olarak yeniler
+    select_time_title: Select time
+    selected_time: Selected time
+    select_date_title: Select date
+    quick_selection: Quick selection
+    quick_selection_title: Quick selection
+    refresh_settings: Auto refresh
+    date_ranges: Date ranges
+    refresh_settings_label: Refresh settings
   days:
     friday: Cuma
     friday_short: Cum
@@ -265,11 +262,11 @@ shared:
     last_month: Son Ay
     last_three_months: Son 3 Ay
     last_week: Son Hafta
-    next_week: Gelecek Hafta
     this_month: Bu Ay
     this_three_months: Bu 3 Ay
     this_week: Bu Hafta
     today: Bugün
+    next_week: Gelecek hafta
   timer:
     label: Zamanlayıcı
     normal: Normal
@@ -284,6 +281,7 @@ shared:
   units:
     days: gün
     hours: sa
+    hours_short: h
     minutes: dk
     minutes_short: dk
     seconds: sn
@@ -303,59 +301,63 @@ shared:
     required: "{field} zorunludur."
   help: Yardım
   start_tour: Turu Başlat
-  skip_tour: Turu Atla
+  date_picker:
+    all_day: Tüm gün
+    time_picker_hour_label: Saat
+    time_picker_minute_label: Dakika
   date_time_picker:
-    title: Tarih ve Saat
+    field_label: Date and time
+    field_hint: Select date and time
+    edit_button_label: Edit
+    edit_button_hint: Edit date and time
+    title: Date and time
     confirm: Onayla
     cancel: İptal
-    set_time: Saat Ayarla
-    selected_time: Seçili Saat
-    select_time_title: Saat Seç
-    select_date_title: Tarih Seç
-    no_date_selected: Tarih seçilmedi
-    select_end_date: Bitiş Tarihi Seç
-    no_dates_selected: Tarih seçilmedi
-    refresh: Yenile
-    cannot_select_time_before_min_date: "{time} öncesi saat seçilemez"
-    cannot_select_time_after_max_date: "{time} sonrası saat seçilemez"
-    time_must_be_at_or_after: "Saat {time} veya sonrası olmalı"
-    time_must_be_at_or_before: "Saat {time} veya öncesi olmalı"
-    selected_date_must_be_at_or_after: "Seçili tarih {date} veya sonrası olmalı"
-    selected_date_must_be_at_or_before: "Seçili tarih {date} veya öncesi olmalı"
+    set_time: Set time
+    selected_time: Selected time
+    select_time_title: Select time
+    select_date_title: Select date
+    no_date_selected: No date selected
+    select_end_date: Select end date
+    no_dates_selected: No dates selected
+    refresh: Refresh
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be {time} or later
+    time_must_be_at_or_before: Time must be {time} or earlier
+    selected_date_must_be_at_or_after: Selected date must be {date} or later
+    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
     start_date_cannot_be_after_end_date: Başlangıç tarihi bitiş tarihinden sonra olamaz
-    start_date_must_be_at_or_after: "Başlangıç tarihi {date} veya sonrası olmalı"
-    end_date_must_be_at_or_before: "Bitiş tarihi {date} veya öncesi olmalı"
-    cannot_select_date_before_min_date: "{date} öncesi tarih seçilemez"
-    cannot_select_date_after_max_date: "{date} sonrası tarih seçilemez"
-    start_date_cannot_be_before_min_date: "Başlangıç tarihi {date} öncesi olamaz"
-    end_date_cannot_be_after_max_date: "Bitiş tarihi {date} sonrası olamaz"
-    selected_date_time_must_be_after: "Seçili tarih ve saat {dateTime} sonrası olmalı"
-    select_date_time_title: Tarih ve Saat Seç
-    select_date_range_title: Tarih Aralığı Seç
-    refresh_description: Seçili tarih aralığını otomatik yenile
-    date_time_field_label: Tarih ve Saat Alanı
-    date_time_field_hint: Tarih ve saat seç
-    field_label: Tarih ve Saat
-    field_hint: Tarih ve saat seç
-    allDay: Tüm gün
-    refreshDescription: Seçilen tarih aralığını otomatik olarak yenile
-    quick_selection_today: Bugün
-    quick_selection_tomorrow: Yarın
-    quick_selection_weekend: Hafta sonu
-    quick_selection_next_week: Gelecek hafta
-    quick_selection_no_date: Tarih yok
-    quick_selection_last_week: Son bir hafta
-    quick_selection_last_month: Son bir ay
-    edit_button_label: Düzenle
-    edit_button_hint: Tarih ve saati düzenle
+    start_date_must_be_at_or_after: Start date must be {date} or later
+    end_date_must_be_at_or_before: End date must be {date} or earlier
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select date and time
+    select_date_range_title: Select date range
+    refresh_description: Seçilen tarih aralığını otomatik olarak yenile
+    date_time_field_label: Date and time field
+    date_time_field_hint: Select date and time
+    allDay: All day
+    refreshDescription: Automatically refresh selected date range
+    quick_selection_today: Today
+    quick_selection_tomorrow: Tomorrow
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Next week
+    quick_selection_no_date: No date
+    quick_selection_last_week: Last week
+    quick_selection_last_month: Last month
   numeric_input:
-    decrement_button_label: Azalt
-    increment_button_label: Artır
-    text_field_label: Sayısal Değer
-    decrement_hint: Değeri azalt
-    increment_hint: Değeri artır
-    text_field_hint: Bir sayı girin
-    decrement_tooltip: Değeri azalt
-    increment_tooltip: Değeri artır
-    at_minimum_value: Minimum değere ulaşıldı
-    at_maximum_value: Maksimum değere ulaşıldı
+    decrement_button_label: Decrease
+    increment_button_label: Increase
+    text_field_label: Numeric value
+    decrement_hint: Decrease value
+    increment_hint: Increase value
+    text_field_hint: Enter number
+    decrement_tooltip: Decrease value
+    increment_tooltip: Increase value
+    at_minimum_value: At minimum value
+    at_maximum_value: At maximum value
+  skip_tour: Turu Atla
