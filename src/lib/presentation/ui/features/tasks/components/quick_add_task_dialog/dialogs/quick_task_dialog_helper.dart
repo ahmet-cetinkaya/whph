@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
+import 'package:acore/acore.dart' show DialogSize, ResponsiveDialogHelper;
 
 /// Helper class for showing quick task dialogs responsively
 class QuickTaskDialogHelper {
