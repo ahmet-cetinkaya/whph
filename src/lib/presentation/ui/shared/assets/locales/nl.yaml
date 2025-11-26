@@ -85,6 +85,7 @@ shared:
     end_date_must_be_at_or_before: De einddatum moet op of voor {date} zijn
     select_date_range_title: Selecteer datumbereik
     select_date_time_title: Selecteer datum en tijd
+    select_time_title: Selecteer tijd
     selected_date_must_be_at_or_after:
       De geselecteerde datum moet op of na {date}
       zijn
@@ -233,12 +234,16 @@ shared:
       title: Uurlijks gebruik
   time:
     not_set: Niet ingesteld
+    all_day: Hele dag
   time_display:
     elapsed: Verstreken
     elapsed_time_tooltip: Tijd besteed aan deze taak
     estimated: Geschat
     estimated_time_tooltip: Geschatte tijd om deze taak te voltooien
     no_time_logged_tooltip: Nog geen tijd geregistreerd
+  time_picker:
+    hour_label: Uur
+    minute_label: Minuut
   time_logging:
     add_time: Tijd toevoegen
     add_time_description: Tijd toevoegen aan het bestaande totaal
@@ -273,6 +278,7 @@ shared:
   units:
     days: dagen
     hours: uur
+    hours_short: u
     minutes: min
     minutes_short: m
     seconds: sec

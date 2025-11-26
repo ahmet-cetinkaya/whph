@@ -91,6 +91,7 @@ shared:
     start_date_cannot_be_after_end_date: Začetni datum ne more biti po končnem datumu
     start_date_cannot_be_before_min_date: Začetni datum ne more biti pred {date}
     start_date_must_be_at_or_after: Začetni datum mora biti na ali po {date}
+    select_time_title: Izberi čas
     time_must_be_at_or_after: Čas mora biti ob ali po {time}
     time_must_be_at_or_before: Čas mora biti ob ali pred {time}
   days:
@@ -227,6 +228,10 @@ shared:
       title: Urna uporaba
   time:
     not_set: Ni nastavljeno
+    all_day: Cel dan
+  time_picker:
+    hour_label: Ura
+    minute_label: Minuta
   time_display:
     elapsed: Preteklo
     elapsed_time_tooltip: Čas, porabljen za to nalogo
@@ -267,6 +272,7 @@ shared:
   units:
     days: dni
     hours: ur
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sek

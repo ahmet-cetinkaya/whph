@@ -33,6 +33,7 @@ class TagSelectDropdown extends StatefulWidget {
   final bool initialNoneSelected;
   final bool initialShowNoTagsFilter;
   final Function(List<DropdownOption<String>>, bool isNoneSelected) onTagsSelected;
+  final ButtonStyle? buttonStyle;
 
   const TagSelectDropdown({
     super.key,
@@ -52,6 +53,7 @@ class TagSelectDropdown extends StatefulWidget {
     this.showNoneOption = false,
     this.initialNoneSelected = false,
     this.initialShowNoTagsFilter = false,
+    this.buttonStyle,
   });
 
   @override
@@ -213,7 +215,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             appBar: AppBar(
               backgroundColor: Theme.of(context).cardColor,
               title: Text(_translationService.translate(TagTranslationKeys.selectTooltip)),
-              automaticallyImplyLeading: false,
+              automaticallyImplyLeading: true,
               actions: [
                 if (tempSelectedTags.isNotEmpty || _hasExplicitlySelectedNone)
                   IconButton(
@@ -501,6 +503,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
           onPressed: () => _showTagSelectionModal(context),
           tooltip: displayTooltip,
+          style: widget.buttonStyle,
         );
         if (selectedTagNames.isNotEmpty) {
           displayTooltip = selectedTagNames.join(', ');
@@ -522,6 +525,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
         onPressed: () => _showTagSelectionModal(context),
         tooltip: displayTooltip,
+        style: widget.buttonStyle,
       );
     }
 
@@ -554,6 +558,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
                     onPressed: () => _showTagSelectionModal(context),
                     tooltip: displayTooltip ?? '',
+                    style: widget.buttonStyle,
                   ),
           ),
         if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
@@ -569,6 +574,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
               onPressed: () => _showTagSelectionModal(context),
               tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
+              style: widget.buttonStyle,
             ),
           ),
       ],

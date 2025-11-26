@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Додати нове завдання
+  date_picker:
+    quick_selection:
+      today: Сьогодні
+      tomorrow: Завтра
+      this_weekend: Ці вихідні
+      weekend: Вихідні
+      next_week: Наступний тиждень
+      next_weekend: Наступні вихідні
   all_tasks_done: Всі завдання виконані!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Додати опис...
       label: Опис
+      context: Додайте детальну інформацію про ваше завдання, щоб допомогти собі пам'ятати ключові деталі та відстежувати прогрес.
     elapsed_time:
       label: Витрачений час
-    estimated_time:
-      label: Орієнтовний час
     is_completed: Виконано
     parent_task:
       label: Батьківське завдання
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Назва
     total_elapsed_time: Загальний витрачений час
+  estimated_time:
+    label: Орієнтовний час
+    description: Встановіть реалістичну оцінку часу для ефективного планування завдання та відстеження продуктивності.
   errors:
     add_tag: Сталася неочікувана помилка під час додавання тегу
     adding_tag: Не вдалося додати тег
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Вибрати пріоритет
+    description: Встановіть пріоритет завдання, використовуючи матрицю Ейзенхауера - класифікація Термінове/Важливе для ефективного управління завданнями
     tooltips:
       none: Без пріоритету
       not_urgent_important: Не терміново, але важливо

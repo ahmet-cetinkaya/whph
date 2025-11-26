@@ -85,6 +85,7 @@ shared:
     end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
     select_date_range_title: Valitse päivämääräväli
     select_date_time_title: Valitse päivämäärä ja aika
+    select_time_title: Valitse aika
     selected_date_must_be_at_or_after:
       Valitun päivämäärän täytyy olla {date} tai
       sen jälkeen
@@ -233,12 +234,16 @@ shared:
       title: Tuntikäyttö
   time:
     not_set: Ei asetettu
+    all_day: Koko päivä
   time_display:
     elapsed: Kulunut
     elapsed_time_tooltip: Tähän tehtävään käytetty aika
     estimated: Arvioitu
     estimated_time_tooltip: Arvioitu aika tämän tehtävän suorittamiseen
     no_time_logged_tooltip: Aikaa ei ole vielä kirjattu
+  time_picker:
+    hour_label: Tunti
+    minute_label: Minuutti
   time_logging:
     add_time: Lisää aika
     add_time_description: Lisää aika olemassa olevaan kokonaisaikaan
@@ -273,6 +278,7 @@ shared:
   units:
     days: päivää
     hours: t
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: s

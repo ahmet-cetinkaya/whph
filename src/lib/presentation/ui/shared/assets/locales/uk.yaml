@@ -94,6 +94,7 @@ shared:
     start_date_cannot_be_after_end_date: Дата початку не може бути пізніше дати завершення
     start_date_cannot_be_before_min_date: Дата початку не може бути раніше {date}
     start_date_must_be_at_or_after: Дата початку має бути не раніше {date}
+    select_time_title: Виберіть час
     time_must_be_at_or_after: Час має бути не раніше {time}
     time_must_be_at_or_before: Час має бути не пізніше {time}
   days:
@@ -230,6 +231,10 @@ shared:
       title: Погодинне використання
   time:
     not_set: Не встановлено
+    all_day: Весь день
+  time_picker:
+    hour_label: Година
+    minute_label: Хвилина
   time_display:
     elapsed: Минуло
     elapsed_time_tooltip: Час, витрачений на це завдання
@@ -270,6 +275,7 @@ shared:
   units:
     days: днів
     hours: год
+    hours_short: г
     minutes: хв
     minutes_short: хв
     seconds: сек

@@ -78,6 +78,7 @@ shared:
     cannot_select_date_before_min_date: "{date} 이전 날짜는 선택할 수 없습니다"
     cannot_select_time_after_max_date: "{time} 이후 시간은 선택할 수 없습니다"
     cannot_select_time_before_min_date: "{time} 이전 시간은 선택할 수 없습니다"
+    select_time_title: 시간 선택
     deadline_cannot_be_before_planned_date: 마감일은 계획된 날짜와 같거나 이후여야 합니다
     end_date_cannot_be_after_max_date: 종료일은 {date} 이후가 될 수 없습니다
     end_date_must_be_at_or_before: 종료일은 {date} 이전이어야 합니다
@@ -225,6 +226,10 @@ shared:
       title: 시간별 사용량
   time:
     not_set: 설정되지 않음
+    all_day: 종일
+  time_picker:
+    hour_label: 시
+    minute_label: 분
   time_display:
     elapsed: 경과
     elapsed_time_tooltip: 이 작업에 소요된 시간
@@ -265,6 +270,7 @@ shared:
   units:
     days: 일
     hours: 시간
+    hours_short: 시
     minutes: 분
     minutes_short: 분
     seconds: 초

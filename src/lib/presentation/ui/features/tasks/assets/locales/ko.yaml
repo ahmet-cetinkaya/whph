@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: 새 작업 추가
+  date_picker:
+    quick_selection:
+      today: 오늘
+      tomorrow: 내일
+      this_weekend: 이번 주말
+      weekend: 주말
+      next_week: 다음 주
+      next_weekend: 다음 주말
   all_tasks_done: 모든 작업이 완료되었습니다!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: 설명 추가...
       label: 설명
+      context: 작업에 대한 자세한 정보를 추가하여 핵심 세부 사항을 기억하고 진행 상황을 추적하는 데 도움을 받으세요.
     elapsed_time:
       label: 경과 시간
-    estimated_time:
-      label: 예상 시간
     is_completed: 완료됨
     parent_task:
       label: 상위 작업
@@ -44,6 +51,9 @@ tasks:
     title:
       label: 제목
     total_elapsed_time: 총 경과 시간
+  estimated_time:
+    label: 예상 시간
+    description: 작업을 효과적으로 계획하고 생산성을 추적하기 위해 현실적인 시간 예측을 설정하세요.
   errors:
     add_tag: 태그 추가 중 예상치 못한 오류가 발생했습니다
     adding_tag: 태그 추가에 실패했습니다
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: 우선순위 선택
+    description: 아이젠하워 매트릭스를 사용하여 작업 우선순위 설정 - 긴급/중요 분류를 통한 효과적인 작업 관리
     tooltips:
       none: 우선순위 없음
       not_urgent_important: 긴급하지 않지만 중요함

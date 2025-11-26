@@ -11,7 +11,8 @@ import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, DateFormatService, DateFormatType, WeekDays;
+import 'package:acore/acore.dart'
+    show NumericInput, DateTimeHelper, DateFormatService, DateFormatType, WeekDays, NumericInputTranslationKey;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/components/priority_select_field.dart';
@@ -1041,8 +1042,12 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             incrementValue: 5,
             decrementValue: 5,
             onValueChanged: _onEstimatedTimeChanged,
-            decrementTooltip: _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
-            incrementTooltip: _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
+            translations: {
+              NumericInputTranslationKey.decrementTooltip:
+                  _translationService.translate(TaskTranslationKeys.decreaseEstimatedTime),
+              NumericInputTranslationKey.incrementTooltip:
+                  _translationService.translate(TaskTranslationKeys.increaseEstimatedTime),
+            },
             iconColor: AppTheme.secondaryTextColor,
             iconSize: AppTheme.iconSizeSmall,
             valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
@@ -1076,7 +1081,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             controller: _plannedDateController,
             focusNode: _plannedDateFocusNode,
             hintText: '',
-            minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+            minDateTime: DateTime.now(),
             onDateChanged: _onPlannedDateChanged,
             onReminderChanged: _onPlannedReminderChanged,
             reminderValue: _task!.plannedDateReminderTime,

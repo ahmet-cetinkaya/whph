@@ -93,6 +93,7 @@ shared:
       {date}
     select_date_range_title: Επιλέξτε εύρος ημερομηνιών
     select_date_time_title: Επιλέξτε ημερομηνία και ώρα
+    select_time_title: Επιλέξτε ώρα
     selected_date_must_be_at_or_after:
       Η επιλεγμένη ημερομηνία πρέπει να είναι την
       ή μετά την {date}
@@ -247,12 +248,16 @@ shared:
       title: Ωριαία χρήση
   time:
     not_set: Δεν έχει οριστεί
+    all_day: Όλη την ημέρα
   time_display:
     elapsed: Παρελθών
     elapsed_time_tooltip: Χρόνος που δαπανήθηκε για αυτήν την εργασία
     estimated: Εκτιμώμενος
     estimated_time_tooltip: Εκτιμώμενος χρόνος για την ολοκλήρωση αυτής της εργασίας
     no_time_logged_tooltip: Δεν έχει καταγραφεί ακόμη χρόνος
+  time_picker:
+    hour_label: Ώρα
+    minute_label: Λεπτό
   time_logging:
     add_time: Προσθήκη χρόνου
     add_time_description: Προσθήκη χρόνου στο υπάρχον σύνολο
@@ -287,6 +292,7 @@ shared:
   units:
     days: ημέρες
     hours: ώρες
+    hours_short: ώ
     minutes: λεπτά
     minutes_short: λ
     seconds: δευτερόλεπτα

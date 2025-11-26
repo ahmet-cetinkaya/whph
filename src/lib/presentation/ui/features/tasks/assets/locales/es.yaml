@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Añadir nueva tarea
+  date_picker:
+    quick_selection:
+      today: Hoy
+      tomorrow: Mañana
+      this_weekend: Este fin de semana
+      weekend: Fin de semana
+      next_week: Próxima semana
+      next_weekend: Próximo fin de semana
   all_tasks_done: ¡Todas las tareas completadas!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Añadir descripción...
       label: Descripción
+      context: Agregue información detallada sobre su tarea para ayudarle a recordar detalles clave y seguir el progreso.
     elapsed_time:
       label: Tiempo transcurrido
-    estimated_time:
-      label: Tiempo estimado
     is_completed: Completado
     parent_task:
       label: Tarea padre
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Título
     total_elapsed_time: Tiempo total transcurrido
+  estimated_time:
+    label: Tiempo estimado
+    description: Establece una estimación de tiempo realista para planificar tu tarea eficazmente y rastrear la productividad.
   errors:
     add_tag: Error inesperado al añadir la etiqueta
     adding_tag: No se pudo añadir la etiqueta
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Seleccionar prioridad
+    description: Establezca la prioridad de la tarea usando la Matriz de Eisenhower - clasificación Urgente/Importante para una gestión de tareas efectiva
     tooltips:
       none: Sin prioridad
       not_urgent_important: No urgente pero importante

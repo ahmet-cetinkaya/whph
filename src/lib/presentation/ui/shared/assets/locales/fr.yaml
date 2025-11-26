@@ -93,6 +93,7 @@ shared:
     end_date_must_be_at_or_before: La date de fin doit être le {date} ou avant
     select_date_range_title: Sélectionner la plage de dates
     select_date_time_title: Sélectionner la date et l'heure
+    select_time_title: Sélectionner l'heure
     selected_date_must_be_at_or_after:
       La date sélectionnée doit être le {date} ou
       après
@@ -245,6 +246,10 @@ shared:
       title: Utilisation horaire
   time:
     not_set: Non défini
+    all_day: Toute la journée
+  time_picker:
+    hour_label: Heure
+    minute_label: Minute
   time_display:
     elapsed: Écoulé
     elapsed_time_tooltip: Temps passé sur cette tâche
@@ -285,6 +290,7 @@ shared:
   units:
     days: jours
     hours: h
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sec

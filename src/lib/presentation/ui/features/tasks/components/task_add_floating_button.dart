@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog.dart';
+import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog/quick_add_task_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -93,9 +93,9 @@ class TaskAddFloatingButton extends StatelessWidget {
       initialDeadlineDate: initialDeadlineDate,
       initialPriority: initialPriority,
       initialEstimatedTime: initialEstimatedTime,
-      initialParentTaskId: initialParentTaskId,
       initialTitle: initialTitle,
       initialCompleted: initialCompleted,
+      initialParentTaskId: initialParentTaskId,
       onTaskCreated: onTaskCreated,
     );
   }

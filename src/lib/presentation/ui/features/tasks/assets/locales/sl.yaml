@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Dodaj novo nalogo
+  date_picker:
+    quick_selection:
+      today: Danes
+      tomorrow: Jutri
+      this_weekend: Ta konec tedna
+      weekend: Konec tedna
+      next_week: Naslednji teden
+      next_weekend: Naslednji konec tedna
   all_tasks_done: Vse naloge končane!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Dodaj opis...
       label: Opis
+      context: Dodajte podrobne informacije o svoji nalogi, da vam bodo pomagale pri spominjanju ključnih podrobnosti in sledenju napredka.
     elapsed_time:
       label: Minulo Čas
-    estimated_time:
-      label: Predviden Čas
     is_completed: Končana
     parent_task:
       label: Nadrejena Naloga
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Naslov
     total_elapsed_time: Skupni Minuli Čas
+  estimated_time:
+    label: Predviden Čas
+    description: Nastavite realistično oceno časa za učinkovito načrtovanje naloge in spremljanje produktivnosti.
   errors:
     add_tag: Nepričakovana napaka pri dodajanju oznake
     adding_tag: Napaka pri dodajanju oznake
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Izberi Prioriteto
+    description: Nastavite prednost opravila z uporabo Eisenhowerjeve matrice - Kritično/Pomembno razvrščanje za učinkovito upravljanje opravili
     tooltips:
       none: Brez Prioritete
       not_urgent_important: Ni Nujno a Pomembno

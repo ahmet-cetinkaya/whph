@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, ISoundPlayer;
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, ISoundPlayer, NumericInputTranslationKey;
 import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
@@ -982,8 +982,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               _saveHabit();
             });
           },
-          decrementTooltip: _translationService.translate(HabitTranslationKeys.decreaseEstimatedTime),
-          incrementTooltip: _translationService.translate(HabitTranslationKeys.increaseEstimatedTime),
+          translations: {
+            NumericInputTranslationKey.decrementTooltip:
+                _translationService.translate(HabitTranslationKeys.decreaseEstimatedTime),
+            NumericInputTranslationKey.incrementTooltip:
+                _translationService.translate(HabitTranslationKeys.increaseEstimatedTime),
+          },
           iconColor: AppTheme.secondaryTextColor,
           iconSize: AppTheme.iconSizeSmall,
           valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),

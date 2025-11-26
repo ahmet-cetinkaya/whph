@@ -97,6 +97,7 @@ shared:
       sfârșit
     start_date_cannot_be_before_min_date: Data de început nu poate fi înainte de {date}
     start_date_must_be_at_or_after: Data de început trebuie să fie la sau după {date}
+    select_time_title: Selectează ora
     time_must_be_at_or_after: Ora trebuie să fie la sau după {time}
     time_must_be_at_or_before: Ora trebuie să fie la sau înainte de {time}
   days:
@@ -233,6 +234,10 @@ shared:
       title: Utilizare pe ore
   time:
     not_set: Nu este setat
+    all_day: Toată ziua
+  time_picker:
+    hour_label: Oră
+    minute_label: Minut
   time_display:
     elapsed: Scurs
     elapsed_time_tooltip: Timp petrecut pe această sarcină
@@ -273,6 +278,7 @@ shared:
   units:
     days: zile
     hours: ore
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sec

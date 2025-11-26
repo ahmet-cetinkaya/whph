@@ -78,6 +78,7 @@ shared:
     cannot_select_date_before_min_date: Kan ikke vælge dato før {date}
     cannot_select_time_after_max_date: Kan ikke vælge tid efter {time}
     cannot_select_time_before_min_date: Kan ikke vælge tid før {time}
+    select_time_title: Vælg tidspunkt
     deadline_cannot_be_before_planned_date:
       Deadline skal være på eller efter den
       planlagte dato
@@ -227,6 +228,10 @@ shared:
       title: Timelig brug
   time:
     not_set: Ikke indstillet
+    all_day: Hele dagen
+  time_picker:
+    hour_label: Time
+    minute_label: Minut
   time_display:
     elapsed: Forløbet
     elapsed_time_tooltip: Tid brugt på denne opgave
@@ -267,6 +272,7 @@ shared:
   units:
     days: dage
     hours: timer
+    hours_short: t
     minutes: min
     minutes_short: m
     seconds: sek

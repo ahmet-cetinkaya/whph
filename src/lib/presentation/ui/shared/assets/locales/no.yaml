@@ -91,6 +91,7 @@ shared:
     start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
     start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
     start_date_must_be_at_or_after: Startdato må være på eller etter {date}
+    select_time_title: Velg tidspunkt
     time_must_be_at_or_after: Tidspunktet må være på eller etter {time}
     time_must_be_at_or_before: Tidspunktet må være på eller før {time}
   days:
@@ -227,6 +228,10 @@ shared:
       title: Timevis bruk
   time:
     not_set: Ikke satt
+    all_day: Hele dagen
+  time_picker:
+    hour_label: Time
+    minute_label: Minutt
   time_display:
     elapsed: Forløpt
     elapsed_time_tooltip: Tid brukt på denne oppgaven
@@ -267,6 +272,7 @@ shared:
   units:
     days: dager
     hours: timer
+    hours_short: t
     minutes: min
     minutes_short: m
     seconds: sek

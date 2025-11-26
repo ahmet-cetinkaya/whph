@@ -78,6 +78,7 @@ shared:
     cannot_select_date_before_min_date: "{date}より前の日付は選択できません"
     cannot_select_time_after_max_date: "{time}より後の時間は選択できません"
     cannot_select_time_before_min_date: "{time}より前の時間は選択できません"
+    select_time_title: 時間を選択
     deadline_cannot_be_before_planned_date: 締切日は予定日以降である必要があります
     end_date_cannot_be_after_max_date: 終了日は{date}より後にできません
     end_date_must_be_at_or_before: 終了日は{date}以前でなければなりません
@@ -225,6 +226,10 @@ shared:
       title: 時間別使用状況
   time:
     not_set: 未設定
+    all_day: 終日
+  time_picker:
+    hour_label: 時
+    minute_label: 分
   time_display:
     elapsed: 経過
     elapsed_time_tooltip: このタスクに費やされた時間
@@ -265,6 +270,7 @@ shared:
   units:
     days: 日
     hours: 時間
+    hours_short: 時
     minutes: 分
     minutes_short: 分
     seconds: 秒

@@ -172,7 +172,7 @@ void showResponsiveBottomSheet(BuildContext context, {required Widget child}) {
   ResponsiveDialogHelper.showResponsiveDialog(
     context: context,
     child: SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
+      padding: EdgeInsets.all(AppTheme.sizeLarge),
       child: child,
     ),
     size: DialogSize.medium,

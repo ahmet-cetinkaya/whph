@@ -93,6 +93,7 @@ shared:
       niż data zakończenia
     start_date_cannot_be_before_min_date: Data rozpoczęcia nie może być przed {date}
     start_date_must_be_at_or_after: Data rozpoczęcia musi być {date} lub później
+    select_time_title: Wybierz czas
     time_must_be_at_or_after: Czas musi być o {time} lub później
     time_must_be_at_or_before: Czas musi być o {time} lub wcześniej
   days:
@@ -229,6 +230,10 @@ shared:
       title: Użycie godzinowe
   time:
     not_set: Nie ustawiono
+    all_day: Cały dzień
+  time_picker:
+    hour_label: Godzina
+    minute_label: Minuta
   time_display:
     elapsed: Upłynął
     elapsed_time_tooltip: Czas spędzony na tym zadaniu
@@ -269,6 +274,7 @@ shared:
   units:
     days: dni
     hours: godz
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sek

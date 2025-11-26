@@ -85,6 +85,7 @@ shared:
     end_date_must_be_at_or_before: End date must be at or before {date}
     select_date_range_title: Select Date Range
     select_date_time_title: Select Date and Time
+    select_time_title: Select Time
     selected_date_must_be_at_or_after: Selected date must be at or after {date}
     selected_date_must_be_at_or_before: Selected date must be at or before {date}
     selected_date_time_must_be_after: Selected date and time must be after {dateTime}
@@ -227,6 +228,10 @@ shared:
       title: Hourly Usage
   time:
     not_set: Not set
+    all_day: All Day
+  time_picker:
+    hour_label: Hour
+    minute_label: Minute
   time_display:
     elapsed: Elapsed
     elapsed_time_tooltip: Time spent on this task
@@ -267,6 +272,7 @@ shared:
   units:
     days: days
     hours: hr
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sec

@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Nieuwe taak toevoegen
+  date_picker:
+    quick_selection:
+      today: Vandaag
+      tomorrow: Morgen
+      this_weekend: Dit weekend
+      weekend: Weekend
+      next_week: Volgende week
+      next_weekend: Volgend weekend
   all_tasks_done: Alle taken voltooid!
   card:
     schedule:
@@ -18,32 +26,33 @@ tasks:
     message: Weet je zeker dat je deze taak wilt verwijderen?
     title: Taak Verwijderen
   details:
+    title:
+      label: Titel
+    tags:
+      hint: Selecteer tags om te associëren
+      label: Tags
+    priority:
+      label: Prioriteit
+    planned_date:
+      label: Geplande Datum
     deadline_date:
       label: Deadline Datum
     description:
       hint: Beschrijving toevoegen...
       label: Beschrijving
+      context: Voeg gedetailleerde informatie over uw taak toe om u te helpen belangrijke details te onthouden en de voortgang te volgen.
     elapsed_time:
       label: Verstreken Tijd
-    estimated_time:
-      label: Geschatte Tijd
-    is_completed: Voltooid
     parent_task:
       label: Ouder Taak
       tooltip: Klik om naar ouder taak te navigeren
-    planned_date:
-      label: Geplande Datum
-    priority:
-      label: Prioriteit
     sub_tasks:
       label: Subtaken
-    tags:
-      hint: Selecteer tags om te associëren
-      label: Tags
     tags_hint: Selecteer tags voor taak
-    title:
-      label: Titel
     total_elapsed_time: Totale Verstreken Tijd
+  estimated_time:
+    label: Geschatte Tijd
+    description: Stel realistische tijdschattingen in om uw taak effectief te plannen en productiviteit te volgen.
   errors:
     add_tag: Onverwachte fout opgetreden bij het toevoegen van tag
     adding_tag: Mislukt om tag toe te voegen
@@ -232,6 +241,7 @@ tasks:
   priority:
     selection:
       title: Selecteer Prioriteit
+    description: Stel taakprioriteit in met de Eisenhower-matrix - Dringend/Belangrijk-classificatie voor effectieve taakbeheer
     tooltips:
       none: Geen Prioriteit
       not_urgent_important: Niet Dringend maar Belangrijk

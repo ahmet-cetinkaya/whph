@@ -91,6 +91,7 @@ shared:
     start_date_cannot_be_after_end_date: Startdatum kan inte vara efter slutdatum
     start_date_cannot_be_before_min_date: Startdatum kan inte vara före {date}
     start_date_must_be_at_or_after: Startdatum måste vara på eller efter {date}
+    select_time_title: Välj tid
     time_must_be_at_or_after: Tiden måste vara på eller efter {time}
     time_must_be_at_or_before: Tiden måste vara på eller före {time}
   days:
@@ -227,6 +228,10 @@ shared:
       title: Timvis användning
   time:
     not_set: Inte inställd
+    all_day: Hela dagen
+  time_picker:
+    hour_label: Timme
+    minute_label: Minut
   time_display:
     elapsed: Förfluten
     elapsed_time_tooltip: Tid spenderad på denna uppgift
@@ -267,6 +272,7 @@ shared:
   units:
     days: dagar
     hours: tim
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sek
