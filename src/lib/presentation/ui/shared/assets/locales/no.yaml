@@ -85,26 +85,22 @@ shared:
     end_date_must_be_at_or_before: Sluttdato må være på eller før {date}
     select_date_range_title: Velg datoperiode
     select_date_time_title: Velg dato og tid
-    select_date_title: Velg dato
-    select_time_title: Velg tidspunkt
-    all_day: Hele dagen
-    selected_time: Valgt tidspunkt
     selected_date_must_be_at_or_after: Valgt dato må være på eller etter {date}
     selected_date_must_be_at_or_before: Valgt dato må være på eller før {date}
     selected_date_time_must_be_after: Valgt dato og tid må være etter {dateTime}
     start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
     start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
     start_date_must_be_at_or_after: Startdato må være på eller etter {date}
-    select_time_title: Velg tidspunkt
     time_must_be_at_or_after: Tidspunktet må være på eller etter {time}
     time_must_be_at_or_before: Tidspunktet må være på eller før {time}
-    # Quick selection dialog
-    quick_selection: Raskt val
-    quick_selection_title: Raskt val
-    refresh_settings: Automatisk oppdatering
-    refresh_description: Oppdater valgt datoområde automatisk
-    date_ranges: Datoområder
-    refresh_settings_label: Oppdateringsinnstillinger
+    select_time_title: Select time
+    selected_time: Selected time
+    select_date_title: Select date
+    quick_selection: Quick selection
+    quick_selection_title: Quick selection
+    refresh_settings: Auto refresh
+    date_ranges: Date ranges
+    refresh_settings_label: Refresh settings
   days:
     friday: Fredag
     friday_short: Fre
@@ -239,10 +235,6 @@ shared:
       title: Timevis bruk
   time:
     not_set: Ikke satt
-    all_day: Hele dagen
-  time_picker:
-    hour_label: Time
-    minute_label: Minutt
   time_display:
     elapsed: Forløpt
     elapsed_time_tooltip: Tid brukt på denne oppgaven
@@ -265,11 +257,11 @@ shared:
     last_month: Forrige måned
     last_three_months: Siste 3 måneder
     last_week: Forrige uke
-    next_week: Neste uke
     this_month: Denne måneden
     this_three_months: Disse 3 månedene
     this_week: Denne uken
     today: I dag
+    next_week: Neste uke
   timer:
     label: Timer
     normal: Normal
@@ -284,7 +276,7 @@ shared:
   units:
     days: dager
     hours: timer
-    hours_short: t
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sek
@@ -300,63 +292,67 @@ shared:
     question: Vil du oppdatere nå?
     success: Oppdatering lastet ned!
     title: Oppdatering tilgjengelig!
-  date_time_picker:
-    title: Dato og tid
-    confirm: Bekreft
-    cancel: Avbryt
-    set_time: Angi tid
-    selected_time: Valgt tid
-    select_time_title: Velg tid
-    select_date_title: Velg dato
-    no_date_selected: Ingen dato valgt
-    select_end_date: Velg sluttdato
-    no_dates_selected: Ingen datoer valgt
-    refresh: Oppdater
-    cannot_select_time_before_min_date: Kan ikke velge tid før {time}
-    cannot_select_time_after_max_date: Kan ikke velge tid etter {time}
-    time_must_be_at_or_after: Tid må være {time} eller senere
-    time_must_be_at_or_before: Tid må være {time} eller tidligere
-    selected_date_must_be_at_or_after: Valgt dato må være {date} eller senere
-    selected_date_must_be_at_or_before: Valgt dato må være {date} eller tidligere
-    start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
-    start_date_must_be_at_or_after: Startdato må være {date} eller senere
-    end_date_must_be_at_or_before: Sluttdato må være {date} eller tidligere
-    cannot_select_date_before_min_date: Kan ikke velge dato før {date}
-    cannot_select_date_after_max_date: Kan ikke velge dato etter {date}
-    start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
-    end_date_cannot_be_after_max_date: Sluttdato kan ikke være etter {date}
-    selected_date_time_must_be_after: Valgt dato og tid må være etter {dateTime}
-    select_date_time_title: Velg dato og tid
-    select_date_range_title: Velg datoområde
-    refresh_description: Oppdater valgt datoområde automatisk
-    date_time_field_label: Dato- og tidsfelt
-    date_time_field_hint: Velg dato og tid
-    field_label: Dato og Tid
-    field_hint: Velg dato og tid
-    allDay: Hele dagen
-    refreshDescription: Oppdater valgt datoområde automatisk
-    quick_selection_today: I dag
-    quick_selection_tomorrow: I morgen
-    quick_selection_weekend: Helg
-    quick_selection_next_week: Neste uke
-    quick_selection_no_date: Ingen dato
-    quick_selection_last_week: Siste uke
-    quick_selection_last_month: Siste måned
-    edit_button_label: Rediger
-    edit_button_hint: Rediger dato og tid
-  numeric_input:
-    decrement_button_label: Reduser
-    increment_button_label: Øk
-    text_field_label: Numerisk verdi
-    decrement_hint: Reduser verdi
-    increment_hint: Øk verdi
-    text_field_hint: Skriv inn et tall
-    decrement_tooltip: Reduser verdi
-    increment_tooltip: Øk verdi
-    at_minimum_value: Minimumsverdi nådd
-    at_maximum_value: Maksimumsverdi nådd
   validation:
     required: "{field} er påkrevd."
   help: Hjelp
   start_tour: Start omvisning
+  date_picker:
+    all_day: Hele dagen
+    time_picker_hour_label: Time
+    time_picker_minute_label: Minutt
+  date_time_picker:
+    field_label: Date and time
+    field_hint: Select date and time
+    edit_button_label: Edit
+    edit_button_hint: Edit date and time
+    title: Date and time
+    confirm: Confirm
+    cancel: Cancel
+    set_time: Set time
+    selected_time: Selected time
+    select_time_title: Select time
+    select_date_title: Select date
+    no_date_selected: No date selected
+    select_end_date: Select end date
+    no_dates_selected: No dates selected
+    refresh: Refresh
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be {time} or later
+    time_must_be_at_or_before: Time must be {time} or earlier
+    selected_date_must_be_at_or_after: Selected date must be {date} or later
+    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
+    start_date_must_be_at_or_after: Start date must be {date} or later
+    end_date_must_be_at_or_before: End date must be {date} or earlier
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select date and time
+    select_date_range_title: Select date range
+    refresh_description: Oppdater automatisk valgt datointervall
+    date_time_field_label: Date and time field
+    date_time_field_hint: Select date and time
+    allDay: All day
+    refreshDescription: Automatically refresh selected date range
+    quick_selection_today: Today
+    quick_selection_tomorrow: Tomorrow
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Next week
+    quick_selection_no_date: No date
+    quick_selection_last_week: Last week
+    quick_selection_last_month: Last month
+  numeric_input:
+    decrement_button_label: Decrease
+    increment_button_label: Increase
+    text_field_label: Numeric value
+    decrement_hint: Decrease value
+    increment_hint: Increase value
+    text_field_hint: Enter number
+    decrement_tooltip: Decrease value
+    increment_tooltip: Increase value
+    at_minimum_value: At minimum value
+    at_maximum_value: At maximum value
   skip_tour: Hopp over omvisning

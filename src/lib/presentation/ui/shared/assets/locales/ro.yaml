@@ -87,12 +87,6 @@ shared:
       {date}
     select_date_range_title: Selectați intervalul de date
     select_date_time_title: Selectați data și ora
-    select_date_title: Selectați Data
-    select_time_title: Selectează Ora
-    all_day: Toată Ziua
-    selected_time: Oră Selectată
-    date_ranges: Intervale de Date
-    refresh_settings_label: Setări Reîmprospătare
     selected_date_must_be_at_or_after: Data selectată trebuie să fie la sau după {date}
     selected_date_must_be_at_or_before:
       Data selectată trebuie să fie la sau înainte
@@ -103,14 +97,16 @@ shared:
       sfârșit
     start_date_cannot_be_before_min_date: Data de început nu poate fi înainte de {date}
     start_date_must_be_at_or_after: Data de început trebuie să fie la sau după {date}
-    select_time_title: Selectează ora
     time_must_be_at_or_after: Ora trebuie să fie la sau după {time}
     time_must_be_at_or_before: Ora trebuie să fie la sau înainte de {time}
-    # Quick selection dialog
-    quick_selection: Selecție rapidă
-    quick_selection_title: Selecție rapidă
-    refresh_settings: Actualizare automată
-    refresh_description: Automatically refresh the selected date range
+    select_time_title: Select time
+    selected_time: Selected time
+    select_date_title: Select date
+    quick_selection: Quick selection
+    quick_selection_title: Quick selection
+    refresh_settings: Auto refresh
+    date_ranges: Date ranges
+    refresh_settings_label: Refresh settings
   days:
     friday: Vineri
     friday_short: Vin
@@ -245,10 +241,6 @@ shared:
       title: Utilizare pe ore
   time:
     not_set: Nu este setat
-    all_day: Toată ziua
-  time_picker:
-    hour_label: Oră
-    minute_label: Minut
   time_display:
     elapsed: Scurs
     elapsed_time_tooltip: Timp petrecut pe această sarcină
@@ -271,11 +263,11 @@ shared:
     last_month: Luna trecută
     last_three_months: Ultimele 3 luni
     last_week: Săptămâna trecută
-    next_week: Săptămâna viitoare
     this_month: Luna aceasta
     this_three_months: Aceste 3 luni
     this_week: Săptămâna aceasta
     today: Astăzi
+    next_week: Next week
   timer:
     label: Temporizator
     normal: Normal
@@ -310,59 +302,63 @@ shared:
     required: "{field} este obligatoriu."
   help: Ajutor
   start_tour: Pornește turul
-  skip_tour: Sari peste tur
+  date_picker:
+    all_day: All day
+    time_picker_hour_label: Hour
+    time_picker_minute_label: Minute
   date_time_picker:
-    title: Dată și Oră
-    confirm: Confirmă
-    cancel: Anulează
-    set_time: Setează Ora
-    selected_time: Oră Selectată
-    select_time_title: Selectează Ora
-    select_date_title: Selectează Data
-    no_date_selected: Nicio dată selectată
-    select_end_date: Selectează Data de Sfârșit
-    no_dates_selected: Nicio dată selectată
-    refresh: Reîmprospătează
-    cannot_select_time_before_min_date: Nu se poate selecta ora înainte de {time}
-    cannot_select_time_after_max_date: Nu se poate selecta ora după {time}
-    time_must_be_at_or_after: Ora trebuie să fie {time} sau ulterioară
-    time_must_be_at_or_before: Ora trebuie să fie {time} sau anterioară
-    selected_date_must_be_at_or_after: Data selectată trebuie să fie {date} sau ulterioară
-    selected_date_must_be_at_or_before: Data selectată trebuie să fie {date} sau anterioară
+    field_label: Date and time
+    field_hint: Select date and time
+    edit_button_label: Edit
+    edit_button_hint: Edit date and time
+    title: Date and time
+    confirm: Confirm
+    cancel: Cancel
+    set_time: Set time
+    selected_time: Selected time
+    select_time_title: Select time
+    select_date_title: Select date
+    no_date_selected: No date selected
+    select_end_date: Select end date
+    no_dates_selected: No dates selected
+    refresh: Refresh
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be {time} or later
+    time_must_be_at_or_before: Time must be {time} or earlier
+    selected_date_must_be_at_or_after: Selected date must be {date} or later
+    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
     start_date_cannot_be_after_end_date: Data de început nu poate fi după data de sfârșit
-    start_date_must_be_at_or_after: Data de început trebuie să fie {date} sau ulterioară
-    end_date_must_be_at_or_before: Data de sfârșit trebuie să fie {date} sau anterioară
-    cannot_select_date_before_min_date: Nu se poate selecta data înainte de {date}
-    cannot_select_date_after_max_date: Nu se poate selecta data după {date}
-    start_date_cannot_be_before_min_date: Data de început nu poate fi înainte de {date}
-    end_date_cannot_be_after_max_date: Data de sfârșit nu poate fi după {date}
-    selected_date_time_must_be_after: Data și ora selectate trebuie să fie după {dateTime}
-    select_date_time_title: Selectează Dată și Oră
-    select_date_range_title: Selectează Interval de Date
-    refresh_description: Reîmprospătează automat intervalul de date selectat
-    date_time_field_label: Câmp Dată și Oră
-    date_time_field_hint: Selectează dată și oră
-    field_label: Data și Ora
-    field_hint: Selectează data și ora
-    allDay: Toată ziua
-    refreshDescription: Actualizează automat intervalul de date selectat
-    quick_selection_today: Astăzi
-    quick_selection_tomorrow: Mâine
+    start_date_must_be_at_or_after: Start date must be {date} or later
+    end_date_must_be_at_or_before: End date must be {date} or earlier
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select date and time
+    select_date_range_title: Select date range
+    refresh_description: Reîmprospătează automatically intervalul de date selectat
+    date_time_field_label: Date and time field
+    date_time_field_hint: Select date and time
+    allDay: All day
+    refreshDescription: Automatically refresh selected date range
+    quick_selection_today: Today
+    quick_selection_tomorrow: Tomorrow
     quick_selection_weekend: Weekend
-    quick_selection_next_week: Săptămâna viitoare
-    quick_selection_no_date: Fără dată
-    quick_selection_last_week: Săptămâna trecută
-    quick_selection_last_month: Luna trecută
-    edit_button_label: Editează
-    edit_button_hint: Editează data și ora
+    quick_selection_next_week: Next week
+    quick_selection_no_date: No date
+    quick_selection_last_week: Last week
+    quick_selection_last_month: Last month
   numeric_input:
-    decrement_button_label: Scade
-    increment_button_label: Crește
-    text_field_label: Valoare Numerică
-    decrement_hint: Scade valoarea
-    increment_hint: Crește valoarea
-    text_field_hint: Introdu un număr
-    decrement_tooltip: Scade valoarea
-    increment_tooltip: Crește valoarea
-    at_minimum_value: Valoare minimă atinsă
-    at_maximum_value: Valoare maximă atinsă
+    decrement_button_label: Decrease
+    increment_button_label: Increase
+    text_field_label: Numeric value
+    decrement_hint: Decrease value
+    increment_hint: Increase value
+    text_field_hint: Enter number
+    decrement_tooltip: Decrease value
+    increment_tooltip: Increase value
+    at_minimum_value: At minimum value
+    at_maximum_value: At maximum value
+  skip_tour: Sari peste tur
