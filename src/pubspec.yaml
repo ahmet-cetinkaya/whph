@@ -13,10 +13,10 @@ scripts:
   # To run commands: `rps <command>`
   # For example, to run the `clean` command: `rps clean`
   clean: bash scripts/clean.sh
-  format: dart fix --apply && dart format . -l 120 && prettier --write "**/*.{yaml,yml,json}" "!android/fdroid/**"
+format: ../scripts/format.sh
   gen: ./scripts/generate_gen_files.sh
   gen:icons: fvm flutter pub run icons_launcher:create
-  gen:migrate: fvm flutter pub run drift_dev make-migrations && rps format
+  gen:migrate: fvm flutter pub run drift_dev make-migrations
   gen:changelog: bash ../scripts/create_changelog.sh --auto
   gen:changelog:all: bash ../scripts/create_changelog.sh --all-versions --auto
   release:linux: fvm flutter build linux --release

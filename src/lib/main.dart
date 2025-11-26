@@ -15,6 +15,8 @@ import 'package:whph/core/application/features/widget/services/widget_service.da
 import 'package:whph/core/application/features/widget/services/widget_update_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 
 /// Global navigator key for accessing context throughout the application
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -44,6 +46,15 @@ void main(List<String> args) async {
     try {
       container = await AppBootstrapService.initializeApp();
       tempContainer = container;
+
+      // Configure responsive dialog helper with WHPH theme settings
+      ResponsiveDialogHelper.configure(
+        ResponsiveDialogConfig(
+          screenMediumBreakpoint: AppTheme.screenMedium,
+          containerBorderRadius: AppTheme.containerBorderRadius,
+          isDesktopScreen: (context) => AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenMedium),
+        ),
+      );
     } catch (e) {
       debugPrint('Critical error during container initialization: $e');
       debugPrint('Cannot proceed with app initialization. Exiting...');

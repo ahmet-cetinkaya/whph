@@ -85,7 +85,10 @@ shared:
     end_date_must_be_at_or_before: De einddatum moet op of voor {date} zijn
     select_date_range_title: Selecteer datumbereik
     select_date_time_title: Selecteer datum en tijd
+    select_date_title: Selecteer datum
     select_time_title: Selecteer tijd
+    all_day: Hele dag
+    selected_time: Geselecteerde tijd
     selected_date_must_be_at_or_after:
       De geselecteerde datum moet op of na {date}
       zijn
@@ -100,6 +103,13 @@ shared:
     start_date_must_be_at_or_after: De startdatum moet op of na {date} zijn
     time_must_be_at_or_after: De tijd moet op of na {time} zijn
     time_must_be_at_or_before: De tijd moet op of voor {time} zijn
+    # Quick selection dialog
+    quick_selection: Snelle selectie
+    quick_selection_title: Snelle selectie
+    refresh_settings: Automatisch vernieuwen
+    refresh_description: Geselecteerde datumbereik automatisch vernieuwen
+    date_ranges: Datumbereiken
+    refresh_settings_label: Vernieuwingsinstellingen
   days:
     friday: Vrijdag
     friday_short: Vr
@@ -234,16 +244,12 @@ shared:
       title: Uurlijks gebruik
   time:
     not_set: Niet ingesteld
-    all_day: Hele dag
   time_display:
     elapsed: Verstreken
     elapsed_time_tooltip: Tijd besteed aan deze taak
     estimated: Geschat
     estimated_time_tooltip: Geschatte tijd om deze taak te voltooien
     no_time_logged_tooltip: Nog geen tijd geregistreerd
-  time_picker:
-    hour_label: Uur
-    minute_label: Minuut
   time_logging:
     add_time: Tijd toevoegen
     add_time_description: Tijd toevoegen aan het bestaande totaal
@@ -260,6 +266,7 @@ shared:
     last_month: Vorige maand
     last_three_months: Laatste 3 maanden
     last_week: Vorige week
+    next_week: Volgende week
     this_month: Deze maand
     this_three_months: Deze 3 maanden
     this_week: Deze week
@@ -278,7 +285,6 @@ shared:
   units:
     days: dagen
     hours: uur
-    hours_short: u
     minutes: min
     minutes_short: m
     seconds: sec
@@ -294,6 +300,61 @@ shared:
     question: Wil je nu bijwerken?
     success: Update succesvol gedownload!
     title: Update beschikbaar!
+  date_time_picker:
+    title: Datum en tijd
+    confirm: Bevestigen
+    cancel: Annuleren
+    set_time: Tijd instellen
+    selected_time: Geselecteerde tijd
+    select_time_title: Tijd selecteren
+    select_date_title: Datum selecteren
+    no_date_selected: Geen datum geselecteerd
+    select_end_date: Einddatum selecteren
+    no_dates_selected: Geen datums geselecteerd
+    refresh: Vernieuwen
+    cannot_select_time_before_min_date: Kan geen tijd selecteren voor {time}
+    cannot_select_time_after_max_date: Kan geen tijd selecteren na {time}
+    time_must_be_at_or_after: Tijd moet {time} of later zijn
+    time_must_be_at_or_before: Tijd moet {time} of eerder zijn
+    selected_date_must_be_at_or_after: Geselecteerde datum moet {date} of later zijn
+    selected_date_must_be_at_or_before: Geselecteerde datum moet {date} of eerder zijn
+    start_date_cannot_be_after_end_date: Startdatum kan niet na einddatum zijn
+    start_date_must_be_at_or_after: Startdatum moet {date} of later zijn
+    end_date_must_be_at_or_before: Einddatum moet {date} of eerder zijn
+    cannot_select_date_before_min_date: Kan geen datum selecteren voor {date}
+    cannot_select_date_after_max_date: Kan geen datum selecteren na {date}
+    start_date_cannot_be_before_min_date: Startdatum kan niet voor {date} zijn
+    end_date_cannot_be_after_max_date: Einddatum kan niet na {date} zijn
+    selected_date_time_must_be_after: Geselecteerde datum en tijd moeten na {dateTime} zijn
+    select_date_time_title: Datum en tijd selecteren
+    select_date_range_title: Datumbereik selecteren
+    refresh_description: Geselecteerde datumbereik automatisch vernieuwen
+    date_time_field_label: Datum en tijd veld
+    date_time_field_hint: Datum en tijd selecteren
+    field_label: Datum en Tijd
+    field_hint: Datum en tijd selecteren
+    allDay: Hele dag
+    refreshDescription: Geselecteer datumbereik automatisch vernieuwen
+    quick_selection_today: Vandaag
+    quick_selection_tomorrow: Morgen
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Volgende week
+    quick_selection_no_date: Geen datum
+    quick_selection_last_week: Een week geleden
+    quick_selection_last_month: Een maand geleden
+    edit_button_label: Bewerken
+    edit_button_hint: Datum en tijd bewerken
+  numeric_input:
+    decrement_button_label: Verlagen
+    increment_button_label: Verhogen
+    text_field_label: Numerieke waarde
+    decrement_hint: Waarde verlagen
+    increment_hint: Waarde verhogen
+    text_field_hint: Voer een getal in
+    decrement_tooltip: Waarde verlagen
+    increment_tooltip: Waarde verhogen
+    at_minimum_value: Minimumwaarde bereikt
+    at_maximum_value: Maximumwaarde bereikt
   validation:
     required: "{field} is verplicht."
   help: Help

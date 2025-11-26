@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:acore/acore.dart' hide Container;
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -47,7 +47,7 @@ class HabitCalendarView extends StatefulWidget {
 }
 
 class _HabitCalendarViewState extends State<HabitCalendarView> {
-  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
 
@@ -250,11 +250,11 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
                 if (dailyCompletionCount > 0 && dailyCompletionCount >= widget.dailyTarget) {
                   // If daily goal is met, remove ALL records for this day (reset to 0)
                   await widget.onDeleteAllRecordsForDay(date);
-                  _soundPlayer.play(SharedSounds.done, volume: 1.0);
+                  _soundManagerService.playHabitCompletion();
                 } else {
                   // Add a new record
                   await widget.onCreateRecord(widget.habitId, date);
-                  _soundPlayer.play(SharedSounds.done, volume: 1.0);
+                  _soundManagerService.playHabitCompletion();
                 }
               } else {
                 // Simple habit behavior - remove ALL records for this day
@@ -265,7 +265,7 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
                 } else {
                   // Add a new record
                   await widget.onCreateRecord(widget.habitId, date);
-                  _soundPlayer.play(SharedSounds.done, volume: 1.0);
+                  _soundManagerService.playHabitCompletion();
                 }
               }
               widget.onRecordChanged?.call();

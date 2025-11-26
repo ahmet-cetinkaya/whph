@@ -47,6 +47,19 @@ settings:
     disable_error: Bildirimler devre dışı bırakılamadı
     enable_error: Bildirimler etkinleştirilemedi
     title: Bildirimler
+  sound:
+    title: Ses
+    subtitle: Uygulama seslerini ve bildirimlerini yapılandır
+    enabled: Sesleri Etkinleştir
+    task_completion: Görev Tamamlama Sesi
+    habit_completion: Alışkanlık Tamamlama Sesi
+    timer_control: Zamanlayıcı Kontrol Sesi
+    timer_alarm: Zamanlayıcı Alarm Sesi
+    enable_error: Ses ayarları etkinleştirilemedi
+    disable_error: Ses ayarları devre dışı bırakılamadı
+    sounds_disabled: Sesler devre dışı
+    all_sounds_enabled: Tüm sesler etkin
+    some_sounds_enabled: Bazı sesler etkin
   permissions:
     app_usage:
       description: Bu uygulama, uygulama kullanım istatistiklerinizi doğru bir şekilde takip edebilmek için uygulama kullanım verilerine erişim izni gerektirir.

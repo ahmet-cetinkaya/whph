@@ -5,15 +5,14 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer_settings_dialog.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_sounds.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
@@ -43,7 +42,7 @@ class AppTimer extends StatefulWidget {
 
 class _AppTimerState extends State<AppTimer> {
   final _mediator = container.resolve<Mediator>();
-  final _soundPlayer = container.resolve<ISoundPlayer>();
+  final _soundManagerService = container.resolve<ISoundManagerService>();
   final _notificationService = container.resolve<INotificationService>();
   final _systemTrayService = container.resolve<ISystemTrayService>();
   final _translationService = container.resolve<ITranslationService>();
@@ -125,7 +124,7 @@ class _AppTimerState extends State<AppTimer> {
     _tickingTimer?.cancel();
 
     // Stop any playing sounds
-    _soundPlayer.stop();
+    _soundManagerService.stopAll();
 
     // Disable wakelock when disposing
     _wakelockService.disable();
@@ -233,8 +232,7 @@ class _AppTimerState extends State<AppTimer> {
 
     // The sound player's play() method handles stopping previous sounds internally
     if (mounted && _isAlarmPlaying) {
-      _soundPlayer.setLoop(true);
-      _soundPlayer.play(SharedSounds.alarmDone, volume: 1.0);
+      _soundManagerService.playTimerAlarmLoop();
     }
 
     _sendNotification();
@@ -274,8 +272,7 @@ class _AppTimerState extends State<AppTimer> {
   }
 
   void _stopAlarm() {
-    _soundPlayer.stop();
-    _soundPlayer.setLoop(false);
+    _soundManagerService.stopTimerAlarmLoop();
     setState(() {
       _isAlarmPlaying = false;
     });
@@ -291,8 +288,8 @@ class _AppTimerState extends State<AppTimer> {
     widget.onTimerStart?.call();
 
     if (mounted) {
-      _soundPlayer.setLoop(false);
-      _soundPlayer.play(SharedSounds.button, volume: 1.0);
+      _soundManagerService.setLoop(false);
+      _soundManagerService.playTimerControl();
       _setSystemTrayIcon();
       _addTimerMenuItems();
       _updateSystemTrayTimer();
@@ -378,11 +375,11 @@ class _AppTimerState extends State<AppTimer> {
       _stopTicking();
 
       // Stop any playing sounds before playing button sound
-      _soundPlayer.stop();
+      _soundManagerService.stopAll();
 
       // Disable looping and play button sound
-      _soundPlayer.setLoop(false);
-      _soundPlayer.play(SharedSounds.button, volume: 1.0);
+      _soundManagerService.setLoop(false);
+      _soundManagerService.playTimerControl();
 
       // Disable wakelock when stopping timer
       _wakelockService.disable();
@@ -411,7 +408,7 @@ class _AppTimerState extends State<AppTimer> {
         // Stop timer
         _timer.cancel();
 
-        _soundPlayer.stop(); // Stop any playing sounds
+        _soundManagerService.stopAll(); // Stop any playing sounds
       });
 
       _resetSystemTrayIcon();
@@ -759,12 +756,13 @@ class _AppTimerState extends State<AppTimer> {
         return;
       }
 
-      // Play alternating tick and tock sounds with specific volume
-      _soundPlayer.play(
-        _isTickSound ? TaskSounds.clockTick : TaskSounds.clockTock,
-        requestAudioFocus: false,
-        volume: _tickingVolume / 100.0,
-      );
+      // Play alternating tick and tock sounds
+      // The SoundManagerService is responsible for all checks, including if ticking is enabled.
+      if (_isTickSound) {
+        _soundManagerService.playTimerTick();
+      } else {
+        _soundManagerService.playTimerTock();
+      }
       _isTickSound = !_isTickSound; // Toggle for next sound
     });
   }

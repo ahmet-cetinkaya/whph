@@ -41,6 +41,7 @@ The installer will be created at `build\windows\installer\whph-setup.exe`.
 ## Configuration
 
 The installer script automatically:
+
 - Uses the app version from `pubspec.yaml`
 - Includes all files from the Flutter Windows build
 - Sets up proper program files installation
@@ -50,6 +51,7 @@ The installer script automatically:
 ## Language Support
 
 The installer supports multiple languages:
+
 - **English** (default)
 - **Turkish** (Türkçe)
 

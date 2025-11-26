@@ -85,6 +85,12 @@ shared:
     end_date_must_be_at_or_before: Data zakończenia musi być {date} lub wcześniej
     select_date_range_title: Wybierz zakres dat
     select_date_time_title: Wybierz datę i czas
+    select_date_title: Wybierz datę
+    select_time_title: Wybierz czas
+    all_day: Cały dzień
+    selected_time: Wybrany czas
+    date_ranges: Zakresy dat
+    refresh_settings_label: Ustawienia odświeżania
     selected_date_must_be_at_or_after: Wybrana data musi być {date} lub później
     selected_date_must_be_at_or_before: Wybrana data musi być {date} lub wcześniej
     selected_date_time_must_be_after: Wybrana data i czas muszą być po {dateTime}
@@ -96,6 +102,11 @@ shared:
     select_time_title: Wybierz czas
     time_must_be_at_or_after: Czas musi być o {time} lub później
     time_must_be_at_or_before: Czas musi być o {time} lub wcześniej
+    # Quick selection dialog
+    quick_selection: Szybki wybór
+    quick_selection_title: Szybki wybór
+    refresh_settings: Automatyczne odświeżanie
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: Piątek
     friday_short: Pt
@@ -256,6 +267,7 @@ shared:
     last_month: Ostatni miesiąc
     last_three_months: Ostatnie 3 miesiące
     last_week: Ostatni tydzień
+    next_week: Następny tydzień
     this_month: Ten miesiąc
     this_three_months: Te 3 miesiące
     this_week: Ten tydzień
@@ -295,3 +307,58 @@ shared:
   help: Pomoc
   start_tour: Rozpocznij wycieczkę
   skip_tour: Pomiń wycieczkę
+  date_time_picker:
+    title: Data i godzina
+    confirm: Potwierdź
+    cancel: Anuluj
+    set_time: Ustaw czas
+    selected_time: Wybrany czas
+    select_time_title: Wybierz czas
+    select_date_title: Wybierz datę
+    no_date_selected: Nie wybrano daty
+    select_end_date: Wybierz datę końcową
+    no_dates_selected: Nie wybrano dat
+    refresh: Odśwież
+    cannot_select_time_before_min_date: Nie można wybrać czasu przed {time}
+    cannot_select_time_after_max_date: Nie można wybrać czasu po {time}
+    time_must_be_at_or_after: Czas musi być {time} lub później
+    time_must_be_at_or_before: Czas musi być {time} lub wcześniej
+    selected_date_must_be_at_or_after: Wybrana data musi być {date} lub później
+    selected_date_must_be_at_or_before: Wybrana data musi być {date} lub wcześniej
+    start_date_cannot_be_after_end_date: Data początkowa nie może być po dacie końcowej
+    start_date_must_be_at_or_after: Data początkowa musi być {date} lub później
+    end_date_must_be_at_or_before: Data końcowa musi być {date} lub wcześniej
+    cannot_select_date_before_min_date: Nie można wybrać daty przed {date}
+    cannot_select_date_after_max_date: Nie można wybrać daty po {date}
+    start_date_cannot_be_before_min_date: Data początkowa nie może być przed {date}
+    end_date_cannot_be_after_max_date: Data końcowa nie może być po {date}
+    selected_date_time_must_be_after: Wybrana data i godzina muszą być po {dateTime}
+    select_date_time_title: Wybierz datę i godzinę
+    select_date_range_title: Wybierz zakres dat
+    refresh_description: Automatycznie odświeżaj wybrany zakres dat
+    date_time_field_label: Pole daty i godziny
+    date_time_field_hint: Wybierz datę i godzinę
+    field_label: Data i Godzina
+    field_hint: Wybierz datę i godzinę
+    allDay: Cały dzień
+    refreshDescription: Automatycznie odświeżaj wybrany zakres dat
+    quick_selection_today: Dziś
+    quick_selection_tomorrow: Jutro
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Przyszły tydzień
+    quick_selection_no_date: Bez daty
+    quick_selection_last_week: Ostatni tydzień
+    quick_selection_last_month: Ostatni miesiąc
+    edit_button_label: Edytuj
+    edit_button_hint: Edytuj datę i godzinę
+  numeric_input:
+    decrement_button_label: Zmniejsz
+    increment_button_label: Zwiększ
+    text_field_label: Wartość liczbowowa
+    decrement_hint: Zmniejsz wartość
+    increment_hint: Zwiększ wartość
+    text_field_hint: Wpisz liczbę
+    decrement_tooltip: Zmniejsz wartość
+    increment_tooltip: Zwiększ wartość
+    at_minimum_value: Osiągnięto wartość minimalną
+    at_maximum_value: Osiągnięto wartość maksymalną

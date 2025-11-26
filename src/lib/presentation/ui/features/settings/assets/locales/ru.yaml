@@ -49,6 +49,19 @@ settings:
     disable_error: Не удалось отключить уведомления
     enable_error: Не удалось включить уведомления
     title: Уведомления
+  sound:
+    title: Звук
+    subtitle: Настройка звуков и уведомлений приложения
+    enabled: Включить Звуки
+    task_completion: Звук Завершения Задачи
+    habit_completion: Звук Завершения Привычки
+    timer_control: Звук Управления Таймером
+    timer_alarm: Звук Сигнала Таймера
+    enable_error: Не удалось включить настройки звука
+    disable_error: Не удалось отключить настройки звука
+    sounds_disabled: Звуки отключены
+    all_sounds_enabled: Все звуки включены
+    some_sounds_enabled: Некоторые звуки включены
   permissions:
     app_usage:
       description: Этому приложению нужно разрешение на доступ к статистике

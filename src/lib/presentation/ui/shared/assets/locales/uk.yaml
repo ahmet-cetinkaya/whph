@@ -88,6 +88,12 @@ shared:
     end_date_must_be_at_or_before: Дата завершення має бути не пізніше {date}
     select_date_range_title: Виберіть діапазон дат
     select_date_time_title: Виберіть дату і час
+    select_date_title: Вибрати дату
+    select_time_title: Обрати Час
+    all_day: Ввесь День
+    selected_time: Обраний Час
+    date_ranges: Діапазони Дат
+    refresh_settings_label: Налаштування Оновлення
     selected_date_must_be_at_or_after: Вибрана дата має бути не раніше {date}
     selected_date_must_be_at_or_before: Вибрана дата має бути не пізніше {date}
     selected_date_time_must_be_after: Вибрані дата і час мають бути пізніше {dateTime}
@@ -97,6 +103,11 @@ shared:
     select_time_title: Виберіть час
     time_must_be_at_or_after: Час має бути не раніше {time}
     time_must_be_at_or_before: Час має бути не пізніше {time}
+    # Quick selection dialog
+    quick_selection: Швидкий вибір
+    quick_selection_title: Швидкий вибір
+    refresh_settings: Автоматичне оновлення
+    refresh_description: Automatically refresh the selected date range
   days:
     friday: П'ятниця
     friday_short: Пт
@@ -257,6 +268,7 @@ shared:
     last_month: Минулий місяць
     last_three_months: Останні 3 місяці
     last_week: Минулий тиждень
+    next_week: Наступний тиждень
     this_month: Цей місяць
     this_three_months: Ці 3 місяці
     this_week: Цей тиждень
@@ -296,3 +308,58 @@ shared:
   help: Допомога
   start_tour: Почати тур
   skip_tour: Пропустити тур
+  date_time_picker:
+    title: Дата і Час
+    confirm: Підтвердити
+    cancel: Скасувати
+    set_time: Встановити Час
+    selected_time: Обраний Час
+    select_time_title: Обрати Час
+    select_date_title: Обрати Дату
+    no_date_selected: Дату не вибрано
+    select_end_date: Обрати Кінцеву Дату
+    no_dates_selected: Дати не вибрано
+    refresh: Оновити
+    cannot_select_time_before_min_date: Неможливо вибрати час до {time}
+    cannot_select_time_after_max_date: Неможливо вибрати час після {time}
+    time_must_be_at_or_after: Час повинен бути {time} або пізніше
+    time_must_be_at_or_before: Час повинен бути {time} або раніше
+    selected_date_must_be_at_or_after: Обрана дата повинна бути {date} або пізніше
+    selected_date_must_be_at_or_before: Обрана дата повинна бути {date} або раніше
+    start_date_cannot_be_after_end_date: Початкова дата не може бути після кінцевої дати
+    start_date_must_be_at_or_after: Початкова дата повинна бути {date} або пізніше
+    end_date_must_be_at_or_before: Кінцева дата повинна бути {date} або раніше
+    cannot_select_date_before_min_date: Неможливо вибрати дату до {date}
+    cannot_select_date_after_max_date: Неможливо вибрати дату після {date}
+    start_date_cannot_be_before_min_date: Початкова дата не може бути до {date}
+    end_date_cannot_be_after_max_date: Кінцева дата не може бути після {date}
+    selected_date_time_must_be_after: Обрана дата і час повинні бути після {dateTime}
+    select_date_time_title: Обрати Дату і Час
+    select_date_range_title: Обрати Діапазон Дат
+    refresh_description: Автоматично оновлювати обраний діапазон дат
+    date_time_field_label: Поле Дати і Часу
+    date_time_field_hint: Обрати дату і час
+    field_label: Дата і Час
+    field_hint: Обрати дату і час
+    allDay: Весь день
+    refreshDescription: Автоматично оновлювати вибраний діапазон дат
+    quick_selection_today: Сьогодні
+    quick_selection_tomorrow: Завтра
+    quick_selection_weekend: Вихідні
+    quick_selection_next_week: Наступний тиждень
+    quick_selection_no_date: Без дати
+    quick_selection_last_week: Минулій тиждень
+    quick_selection_last_month: Минулий місяць
+    edit_button_label: Редагувати
+    edit_button_hint: Редагувати дату і час
+  numeric_input:
+    decrement_button_label: Зменшити
+    increment_button_label: Збільшити
+    text_field_label: Числове Значення
+    decrement_hint: Зменшити значення
+    increment_hint: Збільшити значення
+    text_field_hint: Введіть число
+    decrement_tooltip: Зменшити значення
+    increment_tooltip: Збільшити значення
+    at_minimum_value: Досягнуто мінімального значення
+    at_maximum_value: Досягнуто максимального значення

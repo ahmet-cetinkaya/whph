@@ -9,6 +9,4 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 echo "🔧 Fixing relative imports to package imports for acore..."
 find . -name "*.g.dart" -exec sed -i "s|import 'corePackages/acore/lib/|import 'package:acore/|g" {} \;
 
-echo "📝 Generated files completed!"
-
 echo "✅ Code generation completed successfully!"
