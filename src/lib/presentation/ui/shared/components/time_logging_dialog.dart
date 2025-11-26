@@ -4,8 +4,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
-import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
-import 'package:acore/components/numeric_input.dart';
+import 'package:acore/acore.dart' as acore;
 
 // Event class for time logging
 class TimeLoggingSubmittedEvent {
@@ -248,9 +247,11 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               style: AppTheme.bodyLarge,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
-            DateTimePickerField(
+            acore.DateTimePickerField(
               controller: _dateController,
-              hintText: DateFormat.yMd().format(_selectedDate),
+              decoration: InputDecoration(
+                hintText: DateFormat.yMd().format(_selectedDate),
+              ),
               onConfirm: _onDateSelected,
               minDateTime: DateTime.now().subtract(const Duration(days: 30)),
               maxDateTime: DateTime.now(),
@@ -269,14 +270,14 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             Center(
               child: Column(
                 children: [
-                  NumericInput(
+                  acore.NumericInput(
                     initialValue: 0,
                     minValue: 0,
                     onValueChanged: _onHoursChanged,
                     valueSuffix: _getTranslation(SharedTranslationKeys.hours),
                   ),
                   const SizedBox(height: AppTheme.sizeMedium),
-                  NumericInput(
+                  acore.NumericInput(
                     initialValue: 0,
                     minValue: 0,
                     maxValue: 59,

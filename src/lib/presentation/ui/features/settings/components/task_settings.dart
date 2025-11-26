@@ -6,7 +6,7 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 

@@ -54,6 +54,12 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String quickTaskLockSettings = 'tasks.quick_task.lock_settings';
   static const String quickTaskLockDescription = 'tasks.quick_task.lock_description';
 
+  // Estimated Time Dialog
+  static const String estimatedTimeDescription = 'tasks.estimated_time.description';
+
+  // Priority Selection Dialog
+  static const String priorityDescription = 'tasks.priority.description';
+
   // Quick Task Tooltips
   static const String quickTaskEstimatedTime = 'tasks.quick_task.tooltips.estimated_time';
   static const String quickTaskEstimatedTimeDefault = 'tasks.quick_task.tooltips.estimated_time_default';
@@ -79,6 +85,14 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String taskScheduleToday = 'tasks.card.schedule.today';
   static const String taskScheduleTomorrow = 'tasks.card.schedule.tomorrow';
 
+  // Date Picker Quick Selections
+  static const String today = 'tasks.date_picker.quick_selection.today';
+  static const String tomorrow = 'tasks.date_picker.quick_selection.tomorrow';
+  static const String thisWeekend = 'tasks.date_picker.quick_selection.this_weekend';
+  static const String weekend = 'tasks.date_picker.quick_selection.weekend';
+  static const String nextWeek = 'tasks.date_picker.quick_selection.next_week';
+  static const String nextWeekend = 'tasks.date_picker.quick_selection.next_weekend';
+
   // Task Delete
   static const String taskDeleteTitle = 'tasks.delete.title';
   static const String taskDeleteMessage = 'tasks.delete.message';
@@ -100,6 +114,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String deadlineDateLabel = 'tasks.details.deadline_date.label';
   static const String descriptionLabel = 'tasks.details.description.label';
   static const String addDescriptionHint = 'tasks.details.description.hint';
+  static const String descriptionContext = 'tasks.details.description.context';
 
   // Help
   static const String detailsHelpTitle = 'tasks.help.details.title';

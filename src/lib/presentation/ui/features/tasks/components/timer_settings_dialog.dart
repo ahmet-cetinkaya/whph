@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/corePackages/acore/lib/components/numeric_input.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';

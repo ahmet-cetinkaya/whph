@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Ajouter une nouvelle tâche
+  date_picker:
+    quick_selection:
+      today: Aujourd'hui
+      tomorrow: Demain
+      this_weekend: Ce week-end
+      weekend: Week-end
+      next_week: Semaine prochaine
+      next_weekend: Week-end prochain
   all_tasks_done: Toutes les tâches terminées !
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Ajouter une description...
       label: Description
+      context: Ajoutez des informations détaillées sur votre tâche pour vous aider à vous souvenir des détails clés et suivre les progrès.
     elapsed_time:
       label: Temps écoulé
-    estimated_time:
-      label: Temps estimé
     is_completed: Terminé
     parent_task:
       label: Tâche parente
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Titre
     total_elapsed_time: Temps total écoulé
+  estimated_time:
+    label: Temps estimé
+    description: Définissez des temps estimés réalistes pour planifier votre tâche efficacement et suivre la productivité.
   errors:
     add_tag: Erreur inattendue lors de l'ajout du tag
     adding_tag: Impossible d'ajouter le tag
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Sélectionner la priorité
+    description: Définissez la priorité de la tâche en utilisant la matrice d'Eisenhower - classification Urgent/Important pour une gestion efficace des tâches
     tooltips:
       none: Aucune priorité
       not_urgent_important: Pas urgent mais important

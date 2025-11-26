@@ -89,6 +89,7 @@ shared:
     start_date_cannot_be_after_end_date: 开始日期不能晚于结束日期
     start_date_cannot_be_before_min_date: 开始日期不能早于 {date}
     start_date_must_be_at_or_after: 开始日期必须在 {date} 或之后
+    select_time_title: 选择时间
     time_must_be_at_or_after: 时间必须在 {time} 或之后
     time_must_be_at_or_before: 时间必须在 {time} 或之前
   days:
@@ -225,6 +226,10 @@ shared:
       title: 每小时使用情况
   time:
     not_set: 未设置
+    all_day: 全天
+  time_picker:
+    hour_label: 小时
+    minute_label: 分钟
   time_display:
     elapsed: 已用
     elapsed_time_tooltip: 此任务已用时间
@@ -265,6 +270,7 @@ shared:
   units:
     days: 天
     hours: 小时
+    hours_short: 小时
     minutes: 分钟
     minutes_short: 分
     seconds: 秒

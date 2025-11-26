@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Neue Aufgabe hinzufügen
+  date_picker:
+    quick_selection:
+      today: Heute
+      tomorrow: Morgen
+      this_weekend: Dieses Wochenende
+      weekend: Wochenende
+      next_week: Nächste Woche
+      next_weekend: Nächstes Wochenende
   all_tasks_done: Alle Aufgaben erledigt!
   card:
     schedule:
@@ -18,32 +26,33 @@ tasks:
     message: Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?
     title: Aufgabe löschen
   details:
+    title:
+      label: Titel
+    tags:
+      hint: Tags auswählen
+      label: Tags
+    priority:
+      label: Priorität
+    planned_date:
+      label: Geplantes Datum
     deadline_date:
       label: Fälligkeitsdatum
     description:
       hint: Beschreibung hinzufügen...
       label: Beschreibung
+      context: Fügen Sie detaillierte Informationen über Ihre Aufgabe hinzu, um Ihnen zu helfen, wichtige Details zu merken und den Fortschritt zu verfolgen.
     elapsed_time:
       label: Verstrichene Zeit
-    estimated_time:
-      label: Geschätzte Zeit
-    is_completed: Erledigt
     parent_task:
       label: Übergeordnete Aufgabe
-      tooltip: Klicken, um zur übergeordneten Aufgabe zu navigieren
-    planned_date:
-      label: Geplantes Datum
-    priority:
-      label: Priorität
+      tooltip: Zur übergeordneten Aufgabe navigieren
     sub_tasks:
       label: Unteraufgaben
-    tags:
-      hint: Tags zum Verknüpfen auswählen
-      label: Tags
     tags_hint: Tags für Aufgabe auswählen
-    title:
-      label: Titel
-    total_elapsed_time: Gesamte verstrichene Zeit
+    total_elapsed_time: Gesamt verstrichene Zeit
+  estimated_time:
+    label: Geschätzte Zeit
+    description: Legen Sie realistische Zeitschätzungen fest, um Ihre Aufgabe effektiv zu planen und die Produktivität zu verfolgen.
   errors:
     add_tag: Unerwarteter Fehler beim Hinzufügen des Tags
     adding_tag: Tag konnte nicht hinzugefügt werden
@@ -232,6 +241,7 @@ tasks:
   priority:
     selection:
       title: Priorität auswählen
+    description: Legen Sie Task-Priorität mithilfe der Eisenhower-Matrix fest - Dringend/Wichtig-Klassifizierung für effektives Task-Management
     tooltips:
       none: Keine Priorität
       not_urgent_important: Nicht dringend aber wichtig

@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import '../constants/shared_translation_keys.dart';
+import '../../features/tasks/constants/task_translation_keys.dart';
 
 class DateRangeFilter extends StatefulWidget {
   final DateTime? selectedStartDate;
@@ -370,6 +371,38 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
       DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
       DateTimePickerTranslationKey.clear: _translationService.translate(SharedTranslationKeys.clearButton),
+      // Quick selection translations (using available keys)
+      DateTimePickerTranslationKey.quickSelectionToday: _translationService.translate(SharedTranslationKeys.today),
+      DateTimePickerTranslationKey.quickSelectionTomorrow: _translationService.translate(TaskTranslationKeys.tomorrow),
+      DateTimePickerTranslationKey.quickSelectionWeekend: _translationService.translate(TaskTranslationKeys.weekend),
+      DateTimePickerTranslationKey.quickSelectionNextWeek: _translationService.translate(TaskTranslationKeys.nextWeek),
+      DateTimePickerTranslationKey.quickSelectionNoDate:
+          _translationService.translate(SharedTranslationKeys.notSetTime),
+      DateTimePickerTranslationKey.quickSelectionLastWeek:
+          _translationService.translate(SharedTranslationKeys.lastWeek),
+      DateTimePickerTranslationKey.quickSelectionLastMonth:
+          _translationService.translate(SharedTranslationKeys.lastMonth),
+      // Time picker unit translations
+      DateTimePickerTranslationKey.weekdayMonShort:
+          _translationService.translate(SharedTranslationKeys.weekDayMonShort),
+      DateTimePickerTranslationKey.weekdayTueShort:
+          _translationService.translate(SharedTranslationKeys.weekDayTueShort),
+      DateTimePickerTranslationKey.weekdayWedShort:
+          _translationService.translate(SharedTranslationKeys.weekDayWedShort),
+      DateTimePickerTranslationKey.weekdayThuShort:
+          _translationService.translate(SharedTranslationKeys.weekDayThuShort),
+      DateTimePickerTranslationKey.weekdayFriShort:
+          _translationService.translate(SharedTranslationKeys.weekDayFriShort),
+      DateTimePickerTranslationKey.weekdaySatShort:
+          _translationService.translate(SharedTranslationKeys.weekDaySatShort),
+      DateTimePickerTranslationKey.weekdaySunShort:
+          _translationService.translate(SharedTranslationKeys.weekDaySunShort),
+      // Time picker hour/minute labels
+      DateTimePickerTranslationKey.timePickerHourLabel:
+          _translationService.translate(SharedTranslationKeys.timePickerHourLabel),
+      DateTimePickerTranslationKey.timePickerMinuteLabel:
+          _translationService.translate(SharedTranslationKeys.timePickerMinuteLabel),
+      DateTimePickerTranslationKey.timePickerAllDayLabel: _translationService.translate(SharedTranslationKeys.allDay),
     };
 
     final quickRanges = _getQuickRanges();
@@ -396,10 +429,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       config: config,
     );
 
-    if (result != null && result.isConfirmed) {
+    if (result != null && !result.wasCancelled) {
       final startDate = result.startDate;
       final endDate = result.endDate;
-      final refreshEnabled = result.isRefreshEnabled ?? false;
+      final refreshEnabled = result.isRefreshEnabled;
 
       // Check if only refresh toggle changed (same dates, existing quick selection)
       final hasRefreshToggleOnlyChanged = startDate == _selectedStartDate &&

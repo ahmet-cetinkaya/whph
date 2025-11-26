@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: 新しいタスクを追加
+  date_picker:
+    quick_selection:
+      today: 今日
+      tomorrow: 明日
+      this_weekend: 今週末
+      weekend: 週末
+      next_week: 来週
+      next_weekend: 来週末
   all_tasks_done: すべてのタスクが完了しました！
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: 説明を追加...
       label: 説明
+      context: タスクに関する詳細情報を追加して、重要な詳細を覚え、進捗を追跡するのに役立ててください。
     elapsed_time:
       label: 経過時間
-    estimated_time:
-      label: 予想時間
     is_completed: 完了
     parent_task:
       label: 親タスク
@@ -44,6 +51,9 @@ tasks:
     title:
       label: タイトル
     total_elapsed_time: 総経過時間
+  estimated_time:
+    label: 予想時間
+    description: 効率的にタスクを計画し、生産性を追跡するために、現実的な時間見積もりを設定します。
   errors:
     add_tag: タグの追加中に予期しないエラーが発生しました
     adding_tag: タグの追加に失敗しました
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: 優先度を選択
+    description: アイゼンハワー・マトリクスを使用してタスクの優先順位を設定 - 緊急/重要分類による効果的なタスク管理
     tooltips:
       none: 優先度なし
       not_urgent_important: 緊急でないが重要

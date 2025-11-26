@@ -95,6 +95,7 @@ shared:
     end_date_must_be_at_or_before: La data di fine deve essere il {date} o precedente
     select_date_range_title: Seleziona intervallo date
     select_date_time_title: Seleziona data e ora
+    select_time_title: Seleziona ora
     selected_date_must_be_at_or_after:
       La data selezionata deve essere il {date} o
       successiva
@@ -247,12 +248,16 @@ shared:
       title: Utilizzo orario
   time:
     not_set: Non impostato
+    all_day: Tutta la giornata
   time_display:
     elapsed: Trascorso
     elapsed_time_tooltip: Tempo trascorso su questa attività
     estimated: Stimato
     estimated_time_tooltip: Tempo stimato per completare questa attività
     no_time_logged_tooltip: Nessun tempo registrato ancora
+  time_picker:
+    hour_label: Ora
+    minute_label: Minuto
   time_logging:
     add_time: Aggiungi tempo
     add_time_description: Aggiungi tempo al totale esistente
@@ -287,6 +292,7 @@ shared:
   units:
     days: giorni
     hours: h
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sec

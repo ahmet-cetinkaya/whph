@@ -85,6 +85,7 @@ shared:
     end_date_must_be_at_or_before: Bitiş tarihi {date} veya öncesi olmalıdır
     select_date_range_title: Tarih aralığı seçin
     select_date_time_title: Tarih ve saat seçin
+    select_time_title: Saat Seç
     selected_date_must_be_at_or_after: Seçilen tarih {date} veya sonrası olmalıdır
     selected_date_must_be_at_or_before: Seçilen tarih {date} veya öncesi olmalıdır
     selected_date_time_must_be_after: Seçilen tarih ve saat {dateTime} sonrası olmalıdır
@@ -232,6 +233,10 @@ shared:
       title: Saatlik Kullanım
   time:
     not_set: Ayarlanmadı
+    all_day: Tüm gün
+  time_picker:
+    hour_label: Saat
+    minute_label: Dakika
   time_display:
     elapsed: Geçen
     elapsed_time_tooltip: Bu göreve harcanan süre
@@ -272,6 +277,7 @@ shared:
   units:
     days: gün
     hours: sa
+    hours_short: sa
     minutes: dk
     minutes_short: dk
     seconds: sn

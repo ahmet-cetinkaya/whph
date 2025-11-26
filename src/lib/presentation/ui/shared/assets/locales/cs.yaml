@@ -78,6 +78,7 @@ shared:
     cannot_select_date_before_min_date: Nelze vybrat datum před {date}
     cannot_select_time_after_max_date: Nelze vybrat čas po {time}
     cannot_select_time_before_min_date: Nelze vybrat čas před {time}
+    select_time_title: Vybrat čas
     deadline_cannot_be_before_planned_date:
       Termín musí být v den plánovaného data
       nebo později
@@ -227,6 +228,10 @@ shared:
       title: Hodinové využití
   time:
     not_set: Nenastaveno
+    all_day: Celý den
+  time_picker:
+    hour_label: Hodina
+    minute_label: Minuta
   time_display:
     elapsed: Uplynulý
     elapsed_time_tooltip: Čas strávený touto úlohou
@@ -267,6 +272,7 @@ shared:
   units:
     days: dny
     hours: hod
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sek

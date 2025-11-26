@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Legg til ny oppgave
+  date_picker:
+    quick_selection:
+      today: I dag
+      tomorrow: I morgen
+      this_weekend: Denne helgen
+      weekend: Helg
+      next_week: Neste uke
+      next_weekend: Neste helg
   all_tasks_done: Alle oppgaver fullført!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Legg til beskrivelse...
       label: Beskrivelse
+      context: Legg til detaljert informasjon om oppgaven din for å hjelpe deg med å huske nøkkeldetaljer og spore fremdrift.
     elapsed_time:
       label: Forløpt Tid
-    estimated_time:
-      label: Estimert Tid
     is_completed: Fullført
     parent_task:
       label: Forelder Oppgave
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Tittel
     total_elapsed_time: Total Forløpt Tid
+  estimated_time:
+    label: Estimert Tid
+    description: Sett en realistisk tidsvurdering for å planlegge oppgaven din effektivt og spore produktivitet.
   errors:
     add_tag: Uventet feil oppstod under tilføyelse av tag
     adding_tag: Feil ved tilføyelse av tag
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Velg Prioritet
+    description: Angi oppgaveprioritet ved hjelp av Eisenhowers matrise - Haster/Viktig-klassifisering for effektiv oppgavebehandling
     tooltips:
       none: Ingen Prioritet
       not_urgent_important: Ikke Presserende men Viktig

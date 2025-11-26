@@ -4,7 +4,7 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
-import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog.dart';
+import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog/quick_add_task_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
@@ -129,9 +129,9 @@ class _TaskAddButtonState extends State<TaskAddButton> {
         initialPlannedDate: widget.initialPlannedDate,
         initialDeadlineDate: widget.initialDeadlineDate,
         initialEstimatedTime: widget.initialEstimatedTime,
-        initialParentTaskId: widget.initialParentTaskId,
         initialTitle: widget.initialTitle,
         initialCompleted: widget.initialCompleted,
+        initialParentTaskId: widget.initialParentTaskId,
         onTaskCreated: (taskId, taskData) {
           if (widget.onTaskCreated != null) {
             widget.onTaskCreated!(taskId, taskData);

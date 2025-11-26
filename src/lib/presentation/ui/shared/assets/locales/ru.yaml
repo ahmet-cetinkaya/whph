@@ -85,6 +85,7 @@ shared:
     end_date_must_be_at_or_before: Дата окончания должна быть не позже {date}
     select_date_range_title: Выберите диапазон дат
     select_date_time_title: Выберите дату и время
+    select_time_title: Выберите время
     selected_date_must_be_at_or_after: Выбранная дата должна быть не раньше {date}
     selected_date_must_be_at_or_before: Выбранная дата должна быть не позже {date}
     selected_date_time_must_be_after: Выбранные дата и время должны быть позже {dateTime}
@@ -227,12 +228,16 @@ shared:
       title: Почасовое использование
   time:
     not_set: Не установлено
+    all_day: Весь день
   time_display:
     elapsed: Прошло
     elapsed_time_tooltip: Время, затраченное на задачу
     estimated: Оценка
     estimated_time_tooltip: Оценка времени для завершения задачи
     no_time_logged_tooltip: Время еще не записано
+  time_picker:
+    hour_label: Час
+    minute_label: Минута
   time_logging:
     add_time: Добавить время
     add_time_description: Добавить время к существующему итогу
@@ -267,6 +272,7 @@ shared:
   units:
     days: дни
     hours: ч
+    hours_short: ч
     minutes: мин
     minutes_short: м
     seconds: сек

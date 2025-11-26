@@ -105,6 +105,7 @@ shared:
       data de término
     start_date_cannot_be_before_min_date: A data de início não pode ser antes de {date}
     start_date_must_be_at_or_after: A data de início deve ser em ou após {date}
+    select_time_title: Selecionar horário
     time_must_be_at_or_after: O horário deve ser às {time} ou depois
     time_must_be_at_or_before: O horário deve ser às {time} ou antes
   days:
@@ -241,6 +242,10 @@ shared:
       title: Uso por hora
   time:
     not_set: Não definido
+    all_day: Dia inteiro
+  time_picker:
+    hour_label: Hora
+    minute_label: Minuto
   time_display:
     elapsed: Decorrido
     elapsed_time_tooltip: Tempo gasto nesta tarefa
@@ -281,6 +286,7 @@ shared:
   units:
     days: dias
     hours: h
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: seg

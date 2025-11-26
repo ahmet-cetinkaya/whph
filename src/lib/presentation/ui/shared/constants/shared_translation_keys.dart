@@ -36,12 +36,18 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   // Units
   static const String minutes = 'shared.units.minutes';
   static const String minutesShort = 'shared.units.minutes_short';
+  static const String hoursShort = 'shared.units.hours_short';
   static const String days = 'shared.units.days';
   static const String hours = 'shared.units.hours';
   static const String seconds = 'shared.units.seconds';
 
+  // Time picker labels
+  static const String timePickerHourLabel = 'shared.time_picker.hour_label';
+  static const String timePickerMinuteLabel = 'shared.time_picker.minute_label';
+
   // Time not set
   static const String notSetTime = 'shared.time.not_set';
+  static const String allDay = 'shared.time.all_day';
 
   // Tooltips
   static const String filterByTagsTooltip = 'shared.tooltips.filter_by_tags';
@@ -234,6 +240,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String timeMustBeAtOrBefore = 'shared.datepicker.time_must_be_at_or_before';
   static const String selectedDateTimeMustBeAfter = 'shared.datepicker.selected_date_time_must_be_after';
   static const String selectDateTimeTitle = 'shared.datepicker.select_date_time_title';
+  static const String selectTimeTitle = 'shared.datepicker.select_time_title';
   static const String selectDateRangeTitle = 'shared.datepicker.select_date_range_title';
   static const String deadlineCannotBeBeforePlannedDate = 'shared.datepicker.deadline_cannot_be_before_planned_date';
 

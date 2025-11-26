@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:markdown_toolbar/markdown_toolbar.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -191,41 +192,92 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                 children: [
                   // Markdown Toolbar
                   Expanded(
-                    child: MarkdownToolbar(
-                      controller: widget.controller,
-                      useIncludedTextField: false,
-                      focusNode: _focusNode,
-                      // Style
-                      collapsable: false,
-                      backgroundColor: toolbarBgColor,
-                      borderRadius: BorderRadius.circular(8),
-                      iconColor: theme.colorScheme.primary,
-                      iconSize: 20,
-                      dropdownTextColor: theme.colorScheme.primary,
-                      width: 36,
-                      height: 36,
-                      spacing: 4,
-                      runSpacing: 4,
-                      // Customize toolbar tooltips
-                      showTooltips: true,
-                      imageTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorImageTooltip),
-                      headingTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorHeadingTooltip),
-                      checkboxTooltip:
-                          _translationService.translate(SharedTranslationKeys.markdownEditorCheckboxTooltip),
-                      boldTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorBoldTooltip),
-                      italicTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorItalicTooltip),
-                      strikethroughTooltip:
-                          _translationService.translate(SharedTranslationKeys.markdownEditorStrikethroughTooltip),
-                      linkTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorLinkTooltip),
-                      codeTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorCodeTooltip),
-                      bulletedListTooltip:
-                          _translationService.translate(SharedTranslationKeys.markdownEditorBulletedListTooltip),
-                      numberedListTooltip:
-                          _translationService.translate(SharedTranslationKeys.markdownEditorNumberedListTooltip),
-                      quoteTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorQuoteTooltip),
-                      horizontalRuleTooltip:
-                          _translationService.translate(SharedTranslationKeys.markdownEditorHorizontalRuleTooltip),
-                    ),
+                    child: (defaultTargetPlatform == TargetPlatform.android ||
+                            defaultTargetPlatform == TargetPlatform.iOS)
+                        ? SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: MarkdownToolbar(
+                              controller: widget.controller,
+                              useIncludedTextField: false,
+                              focusNode: _focusNode,
+                              // Style
+                              collapsable: false,
+                              backgroundColor: toolbarBgColor,
+                              borderRadius: BorderRadius.circular(8),
+                              iconColor: theme.colorScheme.primary,
+                              iconSize: 20,
+                              dropdownTextColor: theme.colorScheme.primary,
+                              width: 36,
+                              height: 36,
+                              spacing: 4,
+                              runSpacing: 4,
+                              // Customize toolbar tooltips
+                              showTooltips: true,
+                              imageTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorImageTooltip),
+                              headingTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorHeadingTooltip),
+                              checkboxTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorCheckboxTooltip),
+                              boldTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorBoldTooltip),
+                              italicTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorItalicTooltip),
+                              strikethroughTooltip: _translationService
+                                  .translate(SharedTranslationKeys.markdownEditorStrikethroughTooltip),
+                              linkTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorLinkTooltip),
+                              codeTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorCodeTooltip),
+                              bulletedListTooltip: _translationService
+                                  .translate(SharedTranslationKeys.markdownEditorBulletedListTooltip),
+                              numberedListTooltip: _translationService
+                                  .translate(SharedTranslationKeys.markdownEditorNumberedListTooltip),
+                              quoteTooltip:
+                                  _translationService.translate(SharedTranslationKeys.markdownEditorQuoteTooltip),
+                              horizontalRuleTooltip: _translationService
+                                  .translate(SharedTranslationKeys.markdownEditorHorizontalRuleTooltip),
+                            ),
+                          )
+                        : MarkdownToolbar(
+                            controller: widget.controller,
+                            useIncludedTextField: false,
+                            focusNode: _focusNode,
+                            // Style
+                            collapsable: false,
+                            backgroundColor: toolbarBgColor,
+                            borderRadius: BorderRadius.circular(8),
+                            iconColor: theme.colorScheme.primary,
+                            iconSize: 20,
+                            dropdownTextColor: theme.colorScheme.primary,
+                            width: 36,
+                            height: 36,
+                            spacing: 4,
+                            runSpacing: 4,
+                            // Customize toolbar tooltips
+                            showTooltips: true,
+                            imageTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorImageTooltip),
+                            headingTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorHeadingTooltip),
+                            checkboxTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorCheckboxTooltip),
+                            boldTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorBoldTooltip),
+                            italicTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorItalicTooltip),
+                            strikethroughTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorStrikethroughTooltip),
+                            linkTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorLinkTooltip),
+                            codeTooltip: _translationService.translate(SharedTranslationKeys.markdownEditorCodeTooltip),
+                            bulletedListTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorBulletedListTooltip),
+                            numberedListTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorNumberedListTooltip),
+                            quoteTooltip:
+                                _translationService.translate(SharedTranslationKeys.markdownEditorQuoteTooltip),
+                            horizontalRuleTooltip: _translationService
+                                .translate(SharedTranslationKeys.markdownEditorHorizontalRuleTooltip),
+                          ),
                   ),
                   // Preview Toggle Button
                   Container(

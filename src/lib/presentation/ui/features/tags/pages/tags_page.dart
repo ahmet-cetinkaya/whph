@@ -11,7 +11,6 @@ import 'package:whph/presentation/ui/features/tags/components/tag_add_button.dar
 import 'package:whph/presentation/ui/features/tags/components/tag_list_options.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/ui/features/tags/components/tags_list.dart';
-import 'package:whph/presentation/ui/shared/enums/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
@@ -20,7 +19,6 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/presentation/ui/shared/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
