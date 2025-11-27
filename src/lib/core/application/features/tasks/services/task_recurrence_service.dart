@@ -2,6 +2,7 @@ import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:meta/meta.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 
@@ -224,10 +225,42 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
   /// Calculates the next planned and deadline dates for recurrence
   ({DateTime plannedDate, DateTime? deadlineDate}) _calculateNextDates(Task task) {
-    final nextPlannedDate = calculateNextRecurrenceDate(task, task.plannedDate ?? DateTime.now().toUtc());
-    final nextDeadlineDate = task.deadlineDate != null ? calculateNextRecurrenceDate(task, task.deadlineDate!) : null;
+    DateTime? primaryDate, secondaryDate;
+    Duration? originalOffset;
 
-    return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
+    // Determine which date exists and calculate offset
+    if (task.plannedDate != null && task.deadlineDate != null) {
+      originalOffset = task.deadlineDate!.difference(task.plannedDate!);
+      primaryDate = task.plannedDate;
+    } else if (task.plannedDate != null) {
+      primaryDate = task.plannedDate;
+    } else if (task.deadlineDate != null) {
+      primaryDate = task.deadlineDate;
+    } else {
+      primaryDate = DateTime.now().toUtc();
+    }
+
+    // Calculate next recurrence for primary date
+    final nextPrimaryDate = calculateNextRecurrenceDate(task, primaryDate!);
+
+    // Apply same offset to secondary date
+    if (originalOffset != null) {
+      secondaryDate = nextPrimaryDate.add(originalOffset);
+    }
+
+    // Return in correct order
+    if (task.plannedDate != null) {
+      return (plannedDate: nextPrimaryDate, deadlineDate: secondaryDate);
+    } else {
+      return (plannedDate: secondaryDate ?? nextPrimaryDate, deadlineDate: nextPrimaryDate);
+    }
+  }
+
+  /// Test helper method to expose _calculateNextDates for testing
+  /// This method should only be used in unit tests
+  @visibleForTesting
+  ({DateTime plannedDate, DateTime? deadlineDate}) calculateNextDatesForTesting(Task task) {
+    return _calculateNextDates(task);
   }
 
   /// Retrieves tags associated with a task
