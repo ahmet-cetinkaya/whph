@@ -46,7 +46,8 @@ void registerUIPresentation(IContainer container) {
         settingRepository: container.resolve<ISettingRepository>(),
       ));
   container.registerSingleton<ITranslationService>((_) => TranslationService());
-  container.registerSingleton<IThemeService>((_) => ThemeService(mediator: container.resolve<Mediator>()));
+  container.registerSingleton<IThemeService>(
+      (c) => ThemeService(mediator: c.resolve<Mediator>(), logger: c.resolve<ILogger>()));
   container.registerSingleton<IConfettiAnimationService>((_) => ConfettiAnimationService());
   container.registerSingleton<ISupportDialogService>(
     (_) {
