@@ -8,7 +8,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 
 /// Dialog content component for editing task description
 /// Follows the same architectural pattern as EstimatedTimeDialogContent
-class DescriptionDialogContent extends StatelessWidget {
+class DescriptionDialogContent extends StatefulWidget {
   final String description;
   final ValueChanged<String> onChanged;
   final ITranslationService translationService;
@@ -23,25 +23,44 @@ class DescriptionDialogContent extends StatelessWidget {
   });
 
   @override
+  State<DescriptionDialogContent> createState() => _DescriptionDialogContentState();
+}
+
+class _DescriptionDialogContentState extends State<DescriptionDialogContent> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.description);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: theme.cardColor,
+        backgroundColor: widget.theme.cardColor,
         title: Text(
           TaskTranslationKeys.descriptionLabel.tr(),
         ),
         automaticallyImplyLeading: true,
         actions: [
-          if (description.isNotEmpty)
+          if (widget.description.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.clear),
-              onPressed: () => onChanged(''),
-              tooltip: translationService.translate(SharedTranslationKeys.clearButton),
+              onPressed: () => widget.onChanged(''),
+              tooltip: widget.translationService.translate(SharedTranslationKeys.clearButton),
             ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(translationService.translate(SharedTranslationKeys.doneButton)),
+            child: Text(widget.translationService.translate(SharedTranslationKeys.doneButton)),
           ),
           const SizedBox(width: AppTheme.sizeSmall),
         ],
@@ -65,17 +84,17 @@ class DescriptionDialogContent extends StatelessWidget {
     return Container(
       height: 200,
       decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
+        border: Border.all(color: widget.theme.colorScheme.outline.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(12),
       ),
       child: MarkdownEditor(
-        controller: TextEditingController(text: description),
-        hintText: translationService.translate('tasks.details.description.hint'),
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface,
+        controller: _controller,
+        hintText: widget.translationService.translate('tasks.details.description.hint'),
+        style: widget.theme.textTheme.bodySmall?.copyWith(
+          color: widget.theme.colorScheme.onSurface,
         ),
-        toolbarBackground: theme.colorScheme.surface,
-        onChanged: onChanged,
+        toolbarBackground: widget.theme.colorScheme.surface,
+        onChanged: widget.onChanged,
       ),
     );
   }
