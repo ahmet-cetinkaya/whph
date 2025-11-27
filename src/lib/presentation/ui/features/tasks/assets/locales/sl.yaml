@@ -262,6 +262,7 @@ tasks:
       podobnih nalog. Zaklenjene lastnosti se ne bodo počistile ob ponastavitvi obrazca.
     lock_settings: Nastavitve Zaklepanja
     reset_all: Ponastavi vsa polja
+    task_added_successfully: Naloga uspešno dodana
     reset_confirm:
       message: Ste prepričani, da želite ponastaviti vsa polja? Ta akcija ni mogoča za razveljaviti.
       title: Ponastavi Vsa Polja

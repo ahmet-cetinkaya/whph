@@ -261,6 +261,7 @@ tasks:
       vergelijkbare taken. Gelockte eigenschappen worden niet gewist bij het resetten van het formulier.
     lock_settings: Lock Instellingen
     reset_all: Reset alle velden
+    task_added_successfully: Taak succesvol toegevoegd
     reset_confirm:
       message: Weet je zeker dat je alle velden wilt resetten? Deze actie kan niet ongedaan gemaakt worden.
       title: Reset Alle Velden

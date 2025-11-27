@@ -260,6 +260,7 @@ tasks:
     lock_description: 複数の類似したタスクを作成する際に値を保持するためにプロパティをロックします。ロックされたプロパティはフォームをリセットしてもクリアされません。
     lock_settings: ロック設定
     reset_all: すべてのフィールドをリセット
+    task_added_successfully: タスクが正常に追加されました
     reset_confirm:
       message: すべてのフィールドをリセットしてもよろしいですか？この操作は元に戻せません。
       title: すべてのフィールドをリセット

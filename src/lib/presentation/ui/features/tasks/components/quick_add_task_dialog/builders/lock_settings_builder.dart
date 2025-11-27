@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/main.dart';
 
 /// Builds lock option checkbox tiles for quick task dialog
@@ -95,7 +96,7 @@ class LockSettingsBuilder {
   static Widget buildLockIndicator({
     required BuildContext context,
     required bool isLocked,
-    double size = 16,
+    double size = AppTheme.iconSizeXSmall,
   }) {
     if (!isLocked) return SizedBox.shrink();
 
@@ -131,7 +132,7 @@ class LockSettingsBuilder {
           if (isLocked) ...[
             Icon(
               Icons.lock,
-              size: 12,
+              size: AppTheme.iconSize2XSmall,
               color: Theme.of(context).colorScheme.primary,
             ),
             SizedBox(width: 4),

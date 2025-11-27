@@ -260,6 +260,7 @@ tasks:
     lock_description: 锁定属性以在创建多个相似任务时保留其值。锁定的属性在重置表单时不会被清除。
     lock_settings: 锁定设置
     reset_all: 重置所有字段
+    task_added_successfully: 任务添加成功
     reset_confirm:
       message: 您确定要重置所有字段吗？此操作无法撤销。
       title: 重置所有字段

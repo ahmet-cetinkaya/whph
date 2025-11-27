@@ -261,6 +261,7 @@ tasks:
       similar tasks. Locked properties won't be cleared when you reset the form.
     lock_settings: Lock Settings
     reset_all: Reset all fields
+    task_added_successfully: Task added successfully
     reset_confirm:
       message: Are you sure you want to reset all fields? This action cannot be undone.
       title: Reset All Fields

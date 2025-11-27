@@ -263,6 +263,7 @@ tasks:
       el formulario.
     lock_settings: Configuración de bloqueo
     reset_all: Reiniciar todos los campos
+    task_added_successfully: Tarea añadida con éxito
     reset_confirm:
       message:
         ¿Estás seguro de que quieres reiniciar todos los campos? Esta acción

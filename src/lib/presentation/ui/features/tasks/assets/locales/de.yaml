@@ -262,6 +262,7 @@ tasks:
       des Formulars nicht gelöscht.
     lock_settings: Sperreinstellungen
     reset_all: Alle Felder zurücksetzen
+    task_added_successfully: Aufgabe erfolgreich hinzugefügt
     reset_confirm:
       message:
         Sind Sie sicher, dass Sie alle Felder zurücksetzen möchten? Diese Aktion

@@ -275,6 +275,7 @@ tasks:
       kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
     lock_settings: Kilit Ayarları
     reset_all: Tüm alanları sıfırla
+    task_added_successfully: Görev başarıyla eklendi
     reset_confirm:
       message: Tüm alanları sıfırlamak istediğinize emin misiniz?
       title: Tüm Alanları Sıfırla

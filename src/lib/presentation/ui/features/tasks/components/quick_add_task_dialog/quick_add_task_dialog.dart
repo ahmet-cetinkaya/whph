@@ -24,6 +24,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'builders/estimated_time_dialog_content.dart';
@@ -375,6 +376,14 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       onSuccess: (response) {
         // Notify that a task was created with the task ID (using non-nullable parameter)
         _tasksService.notifyTaskCreated(response.id);
+
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: _translationService.translate(
+            TaskTranslationKeys.taskAddedSuccessfully,
+            namedArgs: {'title': _titleController.text},
+          ),
+        );
 
         if (widget.onTaskCreated != null) {
           // Create a TaskData object with all the task information
@@ -1093,6 +1102,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     // Use larger gap for desktop, smaller for mobile
     final buttonGap = isMobile ? 2.0 : AppTheme.sizeXSmall; // 6px for desktop, 2px for mobile
 
+    // Check if any locks are enabled
+    final hasAnyLocks = _lockTags || _lockPriority || _lockEstimatedTime || _lockPlannedDate || _lockDeadlineDate;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -1101,7 +1113,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         IconButton(
           icon: Icon(
             Icons.lock_outline,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            color: hasAnyLocks
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           onPressed: _showLockSettingsDialog,
           tooltip: _translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
@@ -1350,7 +1364,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
               ),
               child: Icon(
                 Icons.lock,
-                size: 12,
+                size: AppTheme.iconSize2XSmall,
                 color: theme.colorScheme.primary,
               ),
             ),

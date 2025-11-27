@@ -261,6 +261,7 @@ tasks:
       Zamkněte vlastnosti, aby si zachovaly své hodnoty při vytváření více podobných úkolů. Zamknuté vlastnosti nebudou vymazány, když resetujete formulář.
     lock_settings: Nastavení zámku
     reset_all: Resetovat všechna pole
+    task_added_successfully: Úkol úspěšně přidán
     reset_confirm:
       message: Jste si jisti, že chcete resetovat všechna pole? Tato akce nelze vrátit zpět.
       title: Resetovat všechna pole

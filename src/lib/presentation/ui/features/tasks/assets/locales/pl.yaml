@@ -263,6 +263,7 @@ tasks:
       formularza.
     lock_settings: Ustawienia blokady
     reset_all: Resetuj wszystkie pola
+    task_added_successfully: Zadanie dodane pomyślnie
     reset_confirm:
       message:
         Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być
