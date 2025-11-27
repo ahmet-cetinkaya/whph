@@ -9,7 +9,7 @@ import 'package:whph/presentation/ui/features/app_usages/components/app_usage_ig
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/border_fade_overlay.dart';
+import 'package:acore/acore.dart' as acore;
 
 class AppUsageRulesPage extends StatefulWidget {
   static const String route = '/app-usages/rules';
@@ -56,8 +56,8 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
           children: [
-            BorderFadeOverlay(
-              fadeBorders: {FadeBorder.right},
+            acore.BorderFadeOverlay(
+              fadeBorders: {acore.FadeBorder.right},
               child: TabBar(
                 controller: _tabController,
                 isScrollable: true,

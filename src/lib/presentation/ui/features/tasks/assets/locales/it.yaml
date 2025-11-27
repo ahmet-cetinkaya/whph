@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Aggiungi nuova attività
+  date_picker:
+    quick_selection:
+      today: Oggi
+      tomorrow: Domani
+      this_weekend: Questo weekend
+      weekend: Weekend
+      next_week: Prossima settimana
+      next_weekend: Prossimo weekend
   all_tasks_done: Tutte le attività completate!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Aggiungi descrizione...
       label: Descrizione
+      context: Aggiungi informazioni dettagliate sulla tua attività per aiutarti a ricordare i dettagli chiave e monitorare i progressi.
     elapsed_time:
       label: Tempo trascorso
-    estimated_time:
-      label: Tempo stimato
     is_completed: Completato
     parent_task:
       label: Attività padre
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Titolo
     total_elapsed_time: Tempo totale trascorso
+  estimated_time:
+    label: Tempo stimato
+    description: Imposta stime di tempo realistiche per pianificare efficacemente la tua attività e tracciare la produttività.
   errors:
     add_tag: Errore imprevisto durante l'aggiunta del tag
     adding_tag: Impossibile aggiungere il tag
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Seleziona priorità
+    description: Imposta la priorità del compito usando la Matrice di Eisenhower - classificazione Urgente/Importante per una gestione efficace dei compiti
     tooltips:
       none: Nessuna priorità
       not_urgent_important: Non urgente ma importante
@@ -252,6 +263,7 @@ tasks:
       il modulo.
     lock_settings: Impostazioni blocco
     reset_all: Reimposta tutti i campi
+    task_added_successfully: Attività aggiunta con successo
     reset_confirm:
       message:
         Sei sicuro di voler reimpostare tutti i campi? Questa azione non può

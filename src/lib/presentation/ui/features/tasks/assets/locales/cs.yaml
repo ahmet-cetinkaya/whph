@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Přidat nový úkol
+  date_picker:
+    quick_selection:
+      today: Dnes
+      tomorrow: Zítra
+      this_weekend: Tento víkend
+      weekend: Víkend
+      next_week: Příští týden
+      next_weekend: Příští víkend
   all_tasks_done: Všechny úkoly dokončeny!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Přidejte popis...
       label: Popis
+      context: Přidejte podrobné informace o svém úkolu, které vám pomohou pamatovat si klíčové detaily a sledovat pokrok.
     elapsed_time:
       label: Uplynulý čas
-    estimated_time:
-      label: Odhadovaný čas
     is_completed: Dokončeno
     parent_task:
       label: Nadřazený úkol
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Titulek
     total_elapsed_time: Celkový uplynulý čas
+  estimated_time:
+    label: Odhadovaný čas
+    description: Stanovte realistický odhad času pro efektivní plánování úkolu a sledování produktivity.
   errors:
     add_tag: Neočekávaná chyba při přidávání štítku
     adding_tag: Selhání přidání štítku
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Vybrat prioritu
+    description: Nastavte prioritu úkolu pomocí Eisenhowerovy matice - klasifikace Naléhavé/Důležité pro efektivní správu úkolů
     tooltips:
       none: Žádná priorita
       not_urgent_important: Ne naléhavé, ale důležité
@@ -250,6 +261,7 @@ tasks:
       Zamkněte vlastnosti, aby si zachovaly své hodnoty při vytváření více podobných úkolů. Zamknuté vlastnosti nebudou vymazány, když resetujete formulář.
     lock_settings: Nastavení zámku
     reset_all: Resetovat všechna pole
+    task_added_successfully: Úkol úspěšně přidán
     reset_confirm:
       message: Jste si jisti, že chcete resetovat všechna pole? Tato akce nelze vrátit zpět.
       title: Resetovat všechna pole

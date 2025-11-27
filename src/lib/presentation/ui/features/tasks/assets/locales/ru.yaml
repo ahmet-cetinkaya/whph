@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Добавить новую задачу
+  date_picker:
+    quick_selection:
+      today: Сегодня
+      tomorrow: Завтра
+      this_weekend: Эти выходные
+      weekend: Выходные
+      next_week: Следующая неделя
+      next_weekend: Следующие выходные
   all_tasks_done: Все задачи выполнены!
   card:
     schedule:
@@ -18,32 +26,33 @@ tasks:
     message: Вы уверены, что хотите удалить эту задачу?
     title: Удалить задачу
   details:
+    title:
+      label: Заголовок
+    tags:
+      hint: Выбрать теги для связи
+      label: Теги
+    priority:
+      label: Приоритет
+    planned_date:
+      label: Запланированная дата
     deadline_date:
       label: Дата срока
     description:
       hint: Добавить описание...
       label: Описание
+      context: Добавьте подробную информацию о вашей задаче, чтобы помочь вам запомнить ключевые детали и отслеживать прогресс.
     elapsed_time:
       label: Затраченное время
-    estimated_time:
-      label: Предполагаемое время
-    is_completed: Завершено
     parent_task:
       label: Родительская задача
       tooltip: Нажмите для перехода к родительской задаче
-    planned_date:
-      label: Запланированная дата
-    priority:
-      label: Приоритет
     sub_tasks:
       label: Подзадачи
-    tags:
-      hint: Выбрать теги для связи
-      label: Теги
     tags_hint: Выбрать теги для задачи
-    title:
-      label: Заголовок
     total_elapsed_time: Общее затраченное время
+  estimated_time:
+    label: Предполагаемое время
+    description: Устанавливайте реалистичные временные оценки для эффективного планирования задачи и отслеживания продуктивности.
   errors:
     add_tag: Неожиданная ошибка при добавлении тега
     adding_tag: Не удалось добавить тег
@@ -233,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Выбрать приоритет
+    description: Установите приоритет задачи с помощью матрицы Эйзенхауэра - классификация Срочное/Важное для эффективного управления задачами
     tooltips:
       none: Без приоритета
       not_urgent_important: Не срочно, но важно
@@ -253,6 +263,7 @@ tasks:
       формы.
     lock_settings: Настройки блокировки
     reset_all: Сбросить все поля
+    task_added_successfully: Задача успешно добавлена
     reset_confirm:
       message: Вы уверены, что хотите сбросить все поля? Это действие нельзя отменить.
       title: Сбросить все поля

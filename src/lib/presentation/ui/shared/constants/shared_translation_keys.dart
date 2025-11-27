@@ -38,6 +38,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   // Units
   static const String minutes = 'shared.units.minutes';
   static const String minutesShort = 'shared.units.minutes_short';
+  static const String hoursShort = 'shared.units.hours_short';
   static const String days = 'shared.units.days';
   static const String hours = 'shared.units.hours';
   static const String seconds = 'shared.units.seconds';
@@ -74,6 +75,11 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String lastMonth = 'shared.time_periods.last_month';
   static const String nextWeek = 'shared.time_periods.next_week';
   static const String custom = 'shared.time_periods.custom';
+
+  // Date picker
+  static const String allDay = 'shared.date_picker.all_day';
+  static const String timePickerHourLabel = 'shared.date_picker.time_picker_hour_label';
+  static const String timePickerMinuteLabel = 'shared.date_picker.time_picker_minute_label';
 
   // Days of week
   static const String monday = 'shared.days.monday';

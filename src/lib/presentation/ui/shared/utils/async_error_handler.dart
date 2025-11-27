@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 /// A utility class that provides methods to handle asynchronous operations with error handling.
 ///
@@ -17,6 +18,7 @@ class AsyncErrorHandler {
   /// - [finallyAction] - Optional callback that runs regardless of success or failure
   /// - [errorMessage] - Custom error message for unexpected errors
   /// - [checkMounted] - Whether to check if the widget is still mounted before showing errors
+  /// - [errorPosition] - Position of the error notification (default: bottom)
   static Future<T?> execute<T>({
     required BuildContext context,
     required Future<T> Function() operation,
@@ -25,6 +27,7 @@ class AsyncErrorHandler {
     VoidCallback? finallyAction,
     String? errorMessage,
     bool checkMounted = true,
+    NotificationPosition errorPosition = NotificationPosition.bottom,
   }) async {
     try {
       final result = await operation();
@@ -39,7 +42,7 @@ class AsyncErrorHandler {
       return result;
     } on BusinessException catch (e) {
       if (!checkMounted || context.mounted) {
-        ErrorHelper.showError(context, e);
+        ErrorHelper.showError(context, e, position: errorPosition);
       }
       if (onError != null) {
         onError(e);
@@ -54,6 +57,7 @@ class AsyncErrorHandler {
           e is Exception ? e : Exception(e.toString()),
           stackTrace,
           message: errorMessage,
+          position: errorPosition,
         );
       }
 
@@ -78,6 +82,7 @@ class AsyncErrorHandler {
   /// - [finallyAction] - Optional callback that runs regardless of success or failure
   /// - [errorMessage] - Custom error message for unexpected errors
   /// - [checkMounted] - Whether to check if the widget is still mounted before showing errors
+  /// - [errorPosition] - Position of the error notification (default: bottom)
   static Future<void> executeVoid({
     required BuildContext context,
     required Future<void> Function() operation,
@@ -86,6 +91,7 @@ class AsyncErrorHandler {
     VoidCallback? finallyAction,
     String? errorMessage,
     bool checkMounted = true,
+    NotificationPosition errorPosition = NotificationPosition.bottom,
   }) async {
     try {
       await operation();
@@ -98,7 +104,7 @@ class AsyncErrorHandler {
       }
     } on BusinessException catch (e) {
       if (!checkMounted || context.mounted) {
-        ErrorHelper.showError(context, e);
+        ErrorHelper.showError(context, e, position: errorPosition);
       }
       if (onError != null) {
         onError(e);
@@ -113,6 +119,7 @@ class AsyncErrorHandler {
           e is Exception ? e : Exception(e.toString()),
           stackTrace,
           message: errorMessage,
+          position: errorPosition,
         );
       }
 
@@ -138,6 +145,7 @@ class AsyncErrorHandler {
   /// - [onError] - Optional callback for handling errors
   /// - [finallyAction] - Optional callback that runs regardless of success or failure (after setLoading(false))
   /// - [errorMessage] - Custom error message for unexpected errors
+  /// - [errorPosition] - Position of the error notification (default: bottom)
   static Future<T?> executeWithLoading<T>({
     required BuildContext context,
     required Future<T> Function() operation,
@@ -146,6 +154,7 @@ class AsyncErrorHandler {
     Function(Object error)? onError,
     VoidCallback? finallyAction,
     String? errorMessage,
+    NotificationPosition errorPosition = NotificationPosition.bottom,
   }) async {
     setLoading(true);
 
@@ -162,7 +171,7 @@ class AsyncErrorHandler {
       return result;
     } on BusinessException catch (e) {
       if (context.mounted) {
-        ErrorHelper.showError(context, e);
+        ErrorHelper.showError(context, e, position: errorPosition);
       }
       if (onError != null) {
         onError(e);
@@ -177,6 +186,7 @@ class AsyncErrorHandler {
           e is Exception ? e : Exception(e.toString()),
           stackTrace,
           message: errorMessage,
+          position: errorPosition,
         );
       }
 
@@ -208,6 +218,7 @@ class AsyncErrorHandler {
     Function(T result)? onSuccess,
     Function(Object error)? onError,
     VoidCallback? finallyAction,
+    NotificationPosition errorPosition = NotificationPosition.bottom,
   }) async {
     if (!context.mounted) return null;
 
@@ -229,6 +240,7 @@ class AsyncErrorHandler {
       onSuccess: onSuccess,
       onError: onError,
       finallyAction: finallyAction,
+      errorPosition: errorPosition,
     );
   }
 }

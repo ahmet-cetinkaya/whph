@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Lisää uusi tehtävä
+  date_picker:
+    quick_selection:
+      today: Tänään
+      tomorrow: Huomenna
+      this_weekend: Tämä viikonloppu
+      weekend: Viikonloppu
+      next_week: Ensi viikko
+      next_weekend: Ensi viikonloppu
   all_tasks_done: Kaikki tehtävät valmiiksi!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Lisää kuvaus...
       label: Kuvaus
+      context: Lisää yksityiskohtaisia tietoja tehtävästäsi auttaaksesi sinua muistamaan tärkeitä yksityiskohtia ja seuraamaan edistymistä.
     elapsed_time:
       label: Kulunut Aika
-    estimated_time:
-      label: Arvioitu Aika
     is_completed: Valmis
     parent_task:
       label: Ylemmän tason Tehtävä
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Otsikko
     total_elapsed_time: Kokonaiskulunut Aika
+  estimated_time:
+    label: Arvioitu Aika
+    description: Aseta realistinen aikavaativus tehokkaaseen tehtävän suunnitteluun ja tuottavuuden seurantaan.
   errors:
     add_tag: Odottamaton virhe lisättäessä tunnistetta
     adding_tag: Tunnisteen lisäys epäonnistui
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Valitse Prioriteetti
+    description: Aseta tehtävän prioriteetti Eisenhowerin matriisilla - Kiireellinen/Tärkeä -luokittelu tehokasta tehtävänhallintaa varten
     tooltips:
       none: Ei Prioriteettia
       not_urgent_important: Ei Kiireellinen mutta Tärkeä
@@ -251,6 +262,7 @@ tasks:
       samanlaisia tehtäviä. Lukitut ominaisuudet eivät tyhjene kun nollaat lomakkeen.
     lock_settings: Lukitusasetukset
     reset_all: Nollaa kaikki kentät
+    task_added_successfully: Tehtävä lisätty onnistuneesti
     reset_confirm:
       message: Oletko varma että haluat nollata kaikki kentät? Tätä toimintoa ei voi perua.
       title: Nollaa Kaikki Kentät
