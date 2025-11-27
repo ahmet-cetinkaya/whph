@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -10,8 +11,9 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:acore/acore.dart' hide Container;
 
-class ThemeService implements IThemeService {
+class ThemeService with WidgetsBindingObserver implements IThemeService {
   final Mediator _mediator;
+  final ILogger _logger;
   final StreamController<void> _themeChangesController = StreamController<void>.broadcast();
 
   AppThemeMode _currentThemeMode = AppThemeMode.auto;
@@ -23,8 +25,12 @@ class ThemeService implements IThemeService {
   Color _primaryColor = domain.AppTheme.primaryColor;
   ColorScheme? _dynamicLightColorScheme;
   ColorScheme? _dynamicDarkColorScheme;
+  Timer? _linuxThemePollingTimer;
+  bool _isPollingLinuxTheme = false;
 
-  ThemeService({required Mediator mediator}) : _mediator = mediator;
+  ThemeService({required Mediator mediator, required ILogger logger})
+      : _mediator = mediator,
+        _logger = logger;
 
   @override
   AppThemeMode get currentThemeMode => _storedThemeMode;
@@ -494,9 +500,37 @@ class ThemeService implements IThemeService {
 
   @override
   Future<void> initialize() async {
+    WidgetsBinding.instance.addObserver(this);
     await _loadThemeSettings();
     if (_isDynamicAccentColorEnabled) {
       await _loadDynamicAccentColor();
+    }
+
+    if (Platform.isLinux) {
+      // Poll for theme changes on Linux since WidgetsBindingObserver might not fire
+      _linuxThemePollingTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
+        if (_storedThemeMode == AppThemeMode.auto && !_isPollingLinuxTheme) {
+          _isPollingLinuxTheme = true;
+          try {
+            final newBrightness = await _getSystemBrightness();
+            final currentBrightness = _currentThemeMode == AppThemeMode.light ? Brightness.light : Brightness.dark;
+
+            if (currentBrightness != newBrightness) {
+              await _updateActualThemeMode();
+              _notifyThemeChanged();
+            }
+          } finally {
+            _isPollingLinuxTheme = false;
+          }
+        }
+      });
+    }
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    if (_storedThemeMode == AppThemeMode.auto) {
+      _updateActualThemeMode().then((_) => _notifyThemeChanged());
     }
   }
 
@@ -712,6 +746,83 @@ class ThemeService implements IThemeService {
   /// Gets the system brightness/theme mode
   Future<Brightness> _getSystemBrightness() async {
     try {
+      if (Platform.isLinux) {
+        // 1. Try GNOME (gsettings)
+        try {
+          final result = await Process.run(
+            'gsettings',
+            ['get', 'org.gnome.desktop.interface', 'color-scheme'],
+          );
+          if (result.exitCode == 0) {
+            final output = result.stdout.toString().trim();
+            if (output.contains('prefer-dark')) {
+              return Brightness.dark;
+            } else if (output.contains('default') || output.contains('prefer-light')) {
+              return Brightness.light;
+            }
+          }
+        } catch (e) {
+          _logger.debug('Failed to detect GNOME theme: $e');
+        }
+
+        // 2. Try KDE (kreadconfig)
+        try {
+          // Check kdeglobals for [Colors:Window] BackgroundNormal
+          // Or simpler: check [General] ColorScheme
+          // kreadconfig5 or kreadconfig6
+          for (final cmd in ['kreadconfig6', 'kreadconfig5']) {
+            final result = await Process.run(
+              cmd,
+              ['--group', 'General', '--key', 'ColorScheme'],
+            );
+            if (result.exitCode == 0) {
+              final output = result.stdout.toString().trim().toLowerCase();
+              if (output.isNotEmpty) {
+                // Common dark themes often have "Dark" or "Black" in the name
+                if (output.contains('dark') || output.contains('black')) {
+                  return Brightness.dark;
+                }
+                // If we found a scheme but it's not obviously dark, assume light?
+                // Or maybe we should check BackgroundNormal color...
+                // Let's try a safer check if possible, but for now this is a reasonable heuristic
+                return Brightness.light;
+              }
+            }
+          }
+        } catch (e) {
+          _logger.debug('Failed to detect KDE theme: $e');
+        }
+
+        // 3. Try Freedesktop Portal (DBus) - Universal
+        try {
+          // dbus-send --session --print-reply=literal --dest=org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read string:'org.freedesktop.appearance' string:'color-scheme'
+          // Returns: variant       uint32 1 (1 = Dark, 0 = Light, 2 = No preference)
+          final result = await Process.run(
+            'dbus-send',
+            [
+              '--session',
+              '--print-reply=literal',
+              '--dest=org.freedesktop.portal.Desktop',
+              '/org/freedesktop/portal/desktop',
+              'org.freedesktop.portal.Settings.Read',
+              'string:org.freedesktop.appearance',
+              'string:color-scheme'
+            ],
+          );
+          if (result.exitCode == 0) {
+            final output = result.stdout.toString().trim();
+            // Output format example: variant       uint32 1
+            if (output.contains('uint32 1')) {
+              return Brightness.dark;
+            } else if (output.contains('uint32 0')) {
+              return Brightness.light;
+            }
+          }
+        } catch (e) {
+          _logger.debug('Failed to detect Freedesktop Portal theme: $e');
+        }
+      }
+
       // Use MediaQuery to get system brightness
       // This will be called from a context where MediaQuery is available
       // For now, we'll use a platform channel to get system theme
@@ -840,6 +951,8 @@ class ThemeService implements IThemeService {
   }
 
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _linuxThemePollingTimer?.cancel();
     _themeChangesController.close();
   }
 }
