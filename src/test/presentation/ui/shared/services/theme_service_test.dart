@@ -6,21 +6,53 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/presentation/ui/shared/services/theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:acore/acore.dart';
 
 import 'theme_service_test.mocks.dart';
+
+class TestLogger implements ILogger {
+  @override
+  void debug(String message, [Object? error, StackTrace? stackTrace]) {
+    // Do nothing in tests
+  }
+
+  @override
+  void error(String message, [Object? error, StackTrace? stackTrace]) {
+    // Do nothing in tests
+  }
+
+  @override
+  void info(String message, [Object? error, StackTrace? stackTrace]) {
+    // Do nothing in tests
+  }
+
+  @override
+  void warning(String message, [Object? error, StackTrace? stackTrace]) {
+    // Do nothing in tests
+  }
+
+  @override
+  void fatal(String message, [Object? error, StackTrace? stackTrace]) {
+    // Do nothing in tests
+  }
+}
 
 @GenerateMocks([Mediator])
 void main() {
   late ThemeService themeService;
   late MockMediator mockMediator;
+  late TestLogger testLogger;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     mockMediator = MockMediator();
-    themeService = ThemeService(mediator: mockMediator);
+    testLogger = TestLogger();
+    themeService = ThemeService(mediator: mockMediator, logger: testLogger);
   });
 
-  tearDown(() {
+  tearDown(() async {
+    // Add a small delay to ensure all async operations complete before disposal
+    await Future.delayed(const Duration(milliseconds: 100));
     themeService.dispose();
   });
 
@@ -34,24 +66,32 @@ void main() {
                 createdDate: DateTime.now().toUtc(),
               ));
 
-      // Initialize service
       await themeService.initialize();
-
-      // Set theme mode to auto first
       await themeService.setThemeMode(AppThemeMode.auto);
 
-      // Verify initial state is auto
-      expect(themeService.currentThemeMode, AppThemeMode.auto);
+      // Wait for async operations inside initialize/setThemeMode to complete
+      await Future.delayed(Duration.zero);
 
-      // Note: In test environment, we cannot easily mock system brightness changes
-      // So we'll just verify the service is in auto mode and responsive to changes
-
-      // Assert that the service responds to system brightness changes
-      themeService.didChangePlatformBrightness();
-
-      // The service should be in auto mode and have a valid theme
+      // Verify initial state is auto and has a valid theme
       expect(themeService.currentThemeMode, AppThemeMode.auto);
       expect(themeService.themeData.brightness, isA<Brightness>());
+
+      // Act: Simulate system brightness change by calling the method directly
+      // Note: In test environment, we can't easily mock the actual platform brightness
+      // But we can verify that calling didChangePlatformBrightness doesn't crash
+      // and that the service remains in auto mode
+      themeService.didChangePlatformBrightness();
+
+      // Wait for async operations in didChangePlatformBrightness to complete
+      await Future.delayed(Duration.zero);
+
+      // Assert: The service should still be in auto mode and have a valid theme
+      expect(themeService.currentThemeMode, AppThemeMode.auto);
+      expect(themeService.themeData.brightness, isA<Brightness>());
+
+      // Additional verification: The service should be responsive to changes
+      // and not throw exceptions when system brightness changes
+      expect(() => themeService.didChangePlatformBrightness(), returnsNormally);
     });
 
     test('should NOT update theme when system brightness changes and mode is manual', () async {
