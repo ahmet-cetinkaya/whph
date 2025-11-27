@@ -359,6 +359,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     await AsyncErrorHandler.execute<SaveTaskCommandResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
+      errorPosition: (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS)
+          ? NotificationPosition.top
+          : NotificationPosition.bottom,
       operation: () async {
         final command = SaveTaskCommand(
           title: _titleController.text,
@@ -377,12 +380,14 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         // Notify that a task was created with the task ID (using non-nullable parameter)
         _tasksService.notifyTaskCreated(response.id);
 
+        final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
         OverlayNotificationHelper.showSuccess(
           context: context,
           message: _translationService.translate(
             TaskTranslationKeys.taskAddedSuccessfully,
             namedArgs: {'title': _titleController.text},
           ),
+          position: isMobile ? NotificationPosition.top : NotificationPosition.bottom,
         );
 
         if (widget.onTaskCreated != null) {

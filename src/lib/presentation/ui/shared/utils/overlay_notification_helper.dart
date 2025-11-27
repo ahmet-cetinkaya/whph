@@ -7,6 +7,9 @@ import 'package:whph/main.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/core/shared/utils/logger.dart';
 
+/// Enum for notification position
+enum NotificationPosition { top, bottom }
+
 /// A helper class for showing overlay notifications that appear above all content,
 /// independent of Scaffold widgets. These notifications appear at the top of the screen
 /// and automatically dismiss after a specified duration.
@@ -22,6 +25,7 @@ class OverlayNotificationHelper {
     Duration duration = const Duration(seconds: 4),
     VoidCallback? onTap,
     Widget? actionWidget,
+    NotificationPosition position = NotificationPosition.bottom,
   }) {
     // Remove any existing overlay first
     hideNotification();
@@ -43,6 +47,7 @@ class OverlayNotificationHelper {
         onTap: onTap,
         onDismiss: hideNotification,
         actionWidget: actionWidget,
+        position: position,
       ),
     );
 
@@ -56,6 +61,7 @@ class OverlayNotificationHelper {
     Duration duration = const Duration(seconds: 5),
     VoidCallback? onTap,
     Widget? actionWidget,
+    NotificationPosition position = NotificationPosition.bottom,
   }) {
     showNotification(
       context: context,
@@ -65,6 +71,7 @@ class OverlayNotificationHelper {
       duration: duration,
       onTap: onTap,
       actionWidget: actionWidget,
+      position: position,
     );
   }
 
@@ -75,6 +82,7 @@ class OverlayNotificationHelper {
     Duration duration = const Duration(seconds: 3),
     VoidCallback? onTap,
     Widget? actionWidget,
+    NotificationPosition position = NotificationPosition.bottom,
   }) {
     showNotification(
       context: context,
@@ -84,6 +92,7 @@ class OverlayNotificationHelper {
       duration: duration,
       onTap: onTap,
       actionWidget: actionWidget,
+      position: position,
     );
   }
 
@@ -94,6 +103,7 @@ class OverlayNotificationHelper {
     Duration duration = const Duration(seconds: 3),
     VoidCallback? onTap,
     Widget? actionWidget,
+    NotificationPosition position = NotificationPosition.bottom,
   }) {
     final themeService = container.resolve<IThemeService>();
     showNotification(
@@ -104,6 +114,7 @@ class OverlayNotificationHelper {
       duration: duration,
       onTap: onTap,
       actionWidget: actionWidget,
+      position: position,
     );
   }
 
@@ -114,6 +125,7 @@ class OverlayNotificationHelper {
     Duration duration = const Duration(seconds: 30),
     VoidCallback? onTap,
     Widget? actionWidget,
+    NotificationPosition position = NotificationPosition.bottom,
   }) {
     final themeService = container.resolve<IThemeService>();
     showNotification(
@@ -133,6 +145,7 @@ class OverlayNotificationHelper {
                   AlwaysStoppedAnimation<Color>(ColorContrastHelper.getContrastingTextColor(themeService.primaryColor)),
             ),
           ),
+      position: position,
     );
   }
 
@@ -153,6 +166,7 @@ class _NotificationOverlay extends StatefulWidget {
     this.onTap,
     required this.onDismiss,
     this.actionWidget,
+    this.position = NotificationPosition.bottom,
   });
 
   final String message;
@@ -162,6 +176,7 @@ class _NotificationOverlay extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback onDismiss;
   final Widget? actionWidget;
+  final NotificationPosition position;
 
   @override
   State<_NotificationOverlay> createState() => _NotificationOverlayState();
@@ -205,15 +220,17 @@ class _NotificationOverlayState extends State<_NotificationOverlay> with SingleT
   @override
   Widget build(BuildContext context) {
     final contrastingTextColor = ColorContrastHelper.getContrastingTextColor(widget.backgroundColor);
+    final isTop = widget.position == NotificationPosition.top;
 
     return Positioned(
       left: 0,
       right: 0,
-      bottom: 0,
+      top: isTop ? 0 : null,
+      bottom: isTop ? null : 0,
       child: SafeArea(
         child: SlideTransition(
           position: Tween<Offset>(
-            begin: const Offset(0, 1),
+            begin: Offset(0, isTop ? -1 : 1),
             end: Offset.zero,
           ).animate(_animation),
           child: Material(
