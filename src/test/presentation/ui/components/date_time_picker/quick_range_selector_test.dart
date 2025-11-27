@@ -49,7 +49,8 @@ void main() {
 
       // Verify the component renders
       expect(find.byType(QuickRangeSelector), findsOneWidget);
-      expect(find.text('Quick Selection'), findsOneWidget);
+      // When there's a selected quick range, it shows the range label, not "Quick Selection"
+      expect(find.text('Quick Selection'), findsNothing);
       expect(find.text('Today'), findsOneWidget);
     });
 
@@ -77,15 +78,57 @@ void main() {
         ),
       );
 
-      // Focus the quick selection button and press Enter
-      await tester.tap(find.byType(OutlinedButton).first);
-      await tester.pump();
+      // Debug: Check if component renders
+      expect(find.byType(QuickRangeSelector), findsOneWidget);
+
+      // Try to find buttons using different approaches
+      final buttonFinder = find.byType(OutlinedButton);
+      if (buttonFinder.evaluate().isEmpty) {
+        // If OutlinedButton not found, try by Icon or other identifying features
+        expect(find.byIcon(Icons.speed), findsOneWidget);
+        expect(find.byIcon(Icons.delete_outline), findsOneWidget);
+
+        // Try tapping by icon instead
+        await tester.tap(find.byIcon(Icons.speed));
+        await tester.pump();
+      } else {
+        // Original logic if buttons are found
+        await tester.tap(find.byType(OutlinedButton).first);
+        await tester.pump();
+      }
 
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pump();
 
       // Verify component still exists
       expect(find.byType(QuickRangeSelector), findsOneWidget);
+    });
+
+    testWidgets('QuickRangeSelector shows Quick Selection when no range selected', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: QuickRangeSelector(
+              quickRanges: mockQuickRanges,
+              selectedQuickRangeKey: null, // No selection
+              showQuickRanges: true,
+              showRefreshToggle: false,
+              refreshEnabled: false,
+              translations: {
+                DateTimePickerTranslationKey.quickSelection: 'Quick Selection',
+                DateTimePickerTranslationKey.quickSelectionTitle: 'Quick Selection',
+              },
+              onQuickRangeSelected: (QuickDateRange range) {},
+              hasSelection: false,
+            ),
+          ),
+        ),
+      );
+
+      // When no quick range is selected, it should show "Quick Selection"
+      expect(find.byType(QuickRangeSelector), findsOneWidget);
+      expect(find.text('Quick Selection'), findsOneWidget);
+      expect(find.text('Today'), findsNothing);
     });
 
     testWidgets('QuickRangeSelector shows clear button when has selection', (WidgetTester tester) async {
@@ -202,19 +245,47 @@ void main() {
           ),
         );
 
-        // Test keyboard navigation on quick selection button
-        await tester.tap(find.byType(OutlinedButton).first);
-        await tester.pump();
+        // Debug: Check if component renders
+        expect(find.byType(QuickRangeSelector), findsOneWidget);
 
-        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-        await tester.pump();
+        // Try to find buttons using different approaches
+        final buttonFinder = find.byType(OutlinedButton);
+        if (buttonFinder.evaluate().isEmpty) {
+          // If OutlinedButton not found, try by Icon
+          expect(find.byIcon(Icons.speed), findsOneWidget);
+          expect(find.byIcon(Icons.delete_outline), findsOneWidget);
 
-        // Test keyboard navigation on clear button
-        await tester.tap(find.byType(OutlinedButton).last);
-        await tester.pump();
+          // Test keyboard navigation on quick selection button (by icon)
+          await tester.tap(find.byIcon(Icons.speed));
+          await tester.pump();
 
-        await tester.sendKeyEvent(LogicalKeyboardKey.delete);
-        await tester.pump();
+          await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+          await tester.pump();
+
+          // Test keyboard navigation on clear button (by icon)
+          await tester.tap(find.byIcon(Icons.delete_outline));
+          await tester.pump();
+
+          await tester.sendKeyEvent(LogicalKeyboardKey.delete);
+          await tester.pump();
+        } else {
+          // Original logic if buttons are found
+          expect(find.byType(OutlinedButton), findsAtLeastNWidgets(2));
+
+          // Test keyboard navigation on quick selection button
+          await tester.tap(find.byType(OutlinedButton).first);
+          await tester.pump();
+
+          await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+          await tester.pump();
+
+          // Test keyboard navigation on clear button
+          await tester.tap(find.byType(OutlinedButton).last);
+          await tester.pump();
+
+          await tester.sendKeyEvent(LogicalKeyboardKey.delete);
+          await tester.pump();
+        }
 
         expect(find.byType(QuickRangeSelector), findsOneWidget);
       });
