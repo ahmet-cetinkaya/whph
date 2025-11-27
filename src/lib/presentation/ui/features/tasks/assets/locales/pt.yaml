@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Adicionar nova tarefa
+  date_picker:
+    quick_selection:
+      today: Hoje
+      tomorrow: Amanhã
+      this_weekend: Este fim de semana
+      weekend: Fim de semana
+      next_week: Próxima semana
+      next_weekend: Próximo fim de semana
   all_tasks_done: Todas as tarefas concluídas!
   card:
     schedule:
@@ -18,32 +26,33 @@ tasks:
     message: Tem certeza de que deseja excluir esta tarefa?
     title: Excluir Tarefa
   details:
+    title:
+      label: Título
+    tags:
+      hint: Selecionar tags para associar
+      label: Tags
+    priority:
+      label: Prioridade
+    planned_date:
+      label: Data Planejada
     deadline_date:
       label: Data Limite
     description:
       hint: Adicionar descrição...
       label: Descrição
+      context: Adicione informações detalhadas sobre sua tarefa para ajudá-lo a lembrar detalhes importantes e acompanhar o progresso.
     elapsed_time:
       label: Tempo Decorrido
-    estimated_time:
-      label: Tempo Estimado
-    is_completed: Concluída
     parent_task:
       label: Tarefa Pai
       tooltip: Clique para navegar para tarefa pai
-    planned_date:
-      label: Data Planejada
-    priority:
-      label: Prioridade
     sub_tasks:
       label: Sub-tarefas
-    tags:
-      hint: Selecionar tags para associar
-      label: Tags
     tags_hint: Selecionar tags para tarefa
-    title:
-      label: Título
     total_elapsed_time: Tempo Total Decorrido
+  estimated_time:
+    label: Tempo Estimado
+    description: Defina estimativas de tempo realistas para planear sua tarefa eficazmente e rastrear a produtividade.
   errors:
     add_tag: Erro inesperado ocorreu ao adicionar tag
     adding_tag: Falha ao adicionar tag
@@ -232,6 +241,7 @@ tasks:
   priority:
     selection:
       title: Selecionar Prioridade
+    description: Defina a prioridade da tarefa usando a Matriz de Eisenhower - classificação Urgente/Importante para gerenciamento eficaz de tarefas
     tooltips:
       none: Nenhuma Prioridade
       not_urgent_important: Não Urgente mas Importante
@@ -251,6 +261,7 @@ tasks:
       tarefas semelhantes. Propriedades travadas não serão limpas ao resetar o formulário.
     lock_settings: Configurações de Travamento
     reset_all: Resetar todos os campos
+    task_added_successfully: Tarefa adicionada com sucesso
     reset_confirm:
       message: Tem certeza de que deseja resetar todos os campos? Esta ação não pode ser desfeita.
       title: Resetar Todos os Campos

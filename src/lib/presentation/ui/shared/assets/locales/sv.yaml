@@ -85,12 +85,6 @@ shared:
     end_date_must_be_at_or_before: Slutdatum måste vara på eller före {date}
     select_date_range_title: Välj datumintervall
     select_date_time_title: Välj datum och tid
-    select_date_title: Välj datum
-    select_time_title: Välj Tid
-    all_day: Hela Dagen
-    selected_time: Vald Tid
-    date_ranges: Datumintervall
-    refresh_settings_label: Uppdateringsinställningar
     selected_date_must_be_at_or_after: Valt datum måste vara på eller efter {date}
     selected_date_must_be_at_or_before: Valt datum måste vara på eller före {date}
     selected_date_time_must_be_after: Valt datum och tid måste vara efter {dateTime}
@@ -99,11 +93,14 @@ shared:
     start_date_must_be_at_or_after: Startdatum måste vara på eller efter {date}
     time_must_be_at_or_after: Tiden måste vara på eller efter {time}
     time_must_be_at_or_before: Tiden måste vara på eller före {time}
-    # Quick selection dialog
-    quick_selection: Snabbval
-    quick_selection_title: Snabbval
-    refresh_settings: Automatisk uppdatering
-    refresh_description: Automatically refresh the selected date range
+    select_time_title: Select time
+    selected_time: Selected time
+    select_date_title: Select date
+    quick_selection: Quick selection
+    quick_selection_title: Quick selection
+    refresh_settings: Auto refresh
+    date_ranges: Date ranges
+    refresh_settings_label: Refresh settings
   days:
     friday: Fredag
     friday_short: Fre
@@ -260,11 +257,11 @@ shared:
     last_month: Förra månaden
     last_three_months: Senaste 3 månaderna
     last_week: Förra veckan
-    next_week: Nästa vecka
     this_month: Denna månad
     this_three_months: Dessa 3 månader
     this_week: Denna vecka
     today: Idag
+    next_week: Nästa vecka
   timer:
     label: Timer
     normal: Normal
@@ -279,6 +276,7 @@ shared:
   units:
     days: dagar
     hours: tim
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sek
@@ -298,59 +296,63 @@ shared:
     required: "{field} krävs."
   help: Hjälp
   start_tour: Starta rundtur
-  skip_tour: Hoppa över rundtur
+  date_picker:
+    all_day: Hela dagen
+    time_picker_hour_label: Timme
+    time_picker_minute_label: Minut
   date_time_picker:
-    title: Datum och Tid
-    confirm: Bekräfta
-    cancel: Avbryt
-    set_time: Ställ in Tid
-    selected_time: Vald Tid
-    select_time_title: Välj Tid
-    select_date_title: Välj Datum
-    no_date_selected: Inget datum valt
-    select_end_date: Välj Slutdatum
-    no_dates_selected: Inga datum valda
-    refresh: Uppdatera
-    cannot_select_time_before_min_date: Kan inte välja tid före {time}
-    cannot_select_time_after_max_date: Kan inte välja tid efter {time}
-    time_must_be_at_or_after: Tiden måste vara {time} eller senare
-    time_must_be_at_or_before: Tiden måste vara {time} eller tidigare
-    selected_date_must_be_at_or_after: Valt datum måste vara {date} eller senare
-    selected_date_must_be_at_or_before: Valt datum måste vara {date} eller tidigare
+    field_label: Date and time
+    field_hint: Select date and time
+    edit_button_label: Edit
+    edit_button_hint: Edit date and time
+    title: Date and time
+    confirm: Confirm
+    cancel: Cancel
+    set_time: Set time
+    selected_time: Selected time
+    select_time_title: Select time
+    select_date_title: Select date
+    no_date_selected: No date selected
+    select_end_date: Select end date
+    no_dates_selected: No dates selected
+    refresh: Refresh
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be {time} or later
+    time_must_be_at_or_before: Time must be {time} or earlier
+    selected_date_must_be_at_or_after: Selected date must be {date} or later
+    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
     start_date_cannot_be_after_end_date: Startdatum kan inte vara efter slutdatum
-    start_date_must_be_at_or_after: Startdatum måste vara {date} eller senare
-    end_date_must_be_at_or_before: Slutdatum måste vara {date} eller tidigare
-    cannot_select_date_before_min_date: Kan inte välja datum före {date}
-    cannot_select_date_after_max_date: Kan inte välja datum efter {date}
-    start_date_cannot_be_before_min_date: Startdatum kan inte vara före {date}
-    end_date_cannot_be_after_max_date: Slutdatum kan inte vara efter {date}
-    selected_date_time_must_be_after: Valt datum och tid måste vara efter {dateTime}
-    select_date_time_title: Välj Datum och Tid
-    select_date_range_title: Välj Datumintervall
-    refresh_description: Uppdatera valt datumintervall automatiskt
-    date_time_field_label: Datum- och Tidfält
-    date_time_field_hint: Välj datum och tid
-    field_label: Datum och Tid
-    field_hint: Välj datum och tid
-    allDay: Hela dagen
-    refreshDescription: Uppdatera valt datumintervall automatiskt
-    quick_selection_today: Idag
-    quick_selection_tomorrow: Imorgon
-    quick_selection_weekend: Helg
-    quick_selection_next_week: Nästa vecka
-    quick_selection_no_date: Inget datum
-    quick_selection_last_week: För en vecka sedan
-    quick_selection_last_month: För en månad sedan
-    edit_button_label: Redigera
-    edit_button_hint: Redigera datum och tid
+    start_date_must_be_at_or_after: Start date must be {date} or later
+    end_date_must_be_at_or_before: End date must be {date} or earlier
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select date and time
+    select_date_range_title: Select date range
+    refresh_description: Uppdatera automatiskt valt datumintervall
+    date_time_field_label: Date and time field
+    date_time_field_hint: Select date and time
+    allDay: All day
+    refreshDescription: Automatically refresh selected date range
+    quick_selection_today: Today
+    quick_selection_tomorrow: Tomorrow
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Next week
+    quick_selection_no_date: No date
+    quick_selection_last_week: Last week
+    quick_selection_last_month: Last month
   numeric_input:
-    decrement_button_label: Minska
-    increment_button_label: Öka
-    text_field_label: Numeriskt Värde
-    decrement_hint: Minska värde
-    increment_hint: Öka värde
-    text_field_hint: Mata in ett tal
-    decrement_tooltip: Minska värde
-    increment_tooltip: Öka värde
-    at_minimum_value: Minimivärde uppnått
-    at_maximum_value: Maximivärde uppnått
+    decrement_button_label: Decrease
+    increment_button_label: Increase
+    text_field_label: Numeric value
+    decrement_hint: Decrease value
+    increment_hint: Increase value
+    text_field_hint: Enter number
+    decrement_tooltip: Decrease value
+    increment_tooltip: Increase value
+    at_minimum_value: At minimum value
+    at_maximum_value: At maximum value
+  skip_tour: Hoppa över rundtur

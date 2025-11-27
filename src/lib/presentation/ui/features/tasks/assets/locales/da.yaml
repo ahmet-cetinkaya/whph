@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Tilføj ny opgave
+  date_picker:
+    quick_selection:
+      today: I dag
+      tomorrow: I morgen
+      this_weekend: Denne weekend
+      weekend: Weekend
+      next_week: Næste uge
+      next_weekend: Næste weekend
   all_tasks_done: Alle opgaver færdige!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Tilføj beskrivelse...
       label: Beskrivelse
+      context: Tilføj detaljerede oplysninger om din opgave for at hjælpe dig med at huske nøgleoplysninger og spore fremskridt.
     elapsed_time:
       label: Forløbet tid
-    estimated_time:
-      label: Estimeret tid
     is_completed: Færdig
     parent_task:
       label: Overordnet opgave
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Titel
     total_elapsed_time: Total forløbet tid
+  estimated_time:
+    label: Estimeret tid
+    description: Sæt en realistisk tidsvurdering for at planere din opgave effektivt og spore produktivitet.
   errors:
     add_tag: Uventet fejl opstod under tilføjelse af tag
     adding_tag: Kunne ikke tilføje tag
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Vælg prioritet
+    description: Indstil opgaveprioritet ved hjælp af Eisenhowers Matrix - Presserende/Vigtig klassifikation for effektiv opgavestyring
     tooltips:
       none: Ingen prioritet
       not_urgent_important: Ikke presserende men vigtig
@@ -251,6 +262,7 @@ tasks:
       lignende opgaver. Låste egenskaber vil ikke blive ryddet, når du nulstiller formularen.
     lock_settings: Lås Indstillinger
     reset_all: Nulstil alle felter
+    task_added_successfully: Opgave tilføjet med succes
     reset_confirm:
       message: Er du sikker på, at du vil nulstille alle felter? Denne handling kan ikke fortrydes.
       title: Nulstil Alle Felter

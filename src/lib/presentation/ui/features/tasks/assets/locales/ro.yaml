@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Adaugă sarcină nouă
+  date_picker:
+    quick_selection:
+      today: Astăzi
+      tomorrow: Mâine
+      this_weekend: Acest weekend
+      weekend: Weekend
+      next_week: Săptămâna viitoare
+      next_weekend: Weekendul viitor
   all_tasks_done: Toate sarcinile finalizate!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Adaugă descriere...
       label: Descriere
+      context: Adăugați informații detaliate despre sarcina dvs. pentru a vă ajuta să rețineți detaliile cheie și să urmăriți progresul.
     elapsed_time:
       label: Timp Scurs
-    estimated_time:
-      label: Timp Estimat
     is_completed: Finalizată
     parent_task:
       label: Sarcină Parent
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Titlu
     total_elapsed_time: Timp Total Scurs
+  estimated_time:
+    label: Timp Estimat
+    description: Stabiliți o estimare de timp realistă pentru a planifica eficient sarcina și a urmări productivitatea.
   errors:
     add_tag: Eroare neașteptată la adăugarea etichetei
     adding_tag: Eșec la adăugarea etichetei
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Selectează Prioritate
+    description: Stabiliți prioritatea sarcinii folosind Matricea Eisenhower - clasificare Urgent/Important pentru managementul eficient al sarcinilor
     tooltips:
       none: Nicio Prioritate
       not_urgent_important: Nu Urgentă dar Importantă
@@ -251,6 +262,7 @@ tasks:
       sarcini similare. Proprietățile blocate nu vor fi șterse când resetezi formularul.
     lock_settings: Setări Blocare
     reset_all: Resetează toate câmpurile
+    task_added_successfully: Sarcină adăugată cu succes
     reset_confirm:
       message: Ești sigur că vrei să resetezi toate câmpurile? Această acțiune nu poate fi anulată.
       title: Resetează Toate Câmpurile

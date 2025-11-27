@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Dodaj nowe zadanie
+  date_picker:
+    quick_selection:
+      today: Dziś
+      tomorrow: Jutro
+      this_weekend: Ten weekend
+      weekend: Weekend
+      next_week: Następny tydzień
+      next_weekend: Następny weekend
   all_tasks_done: Wszystkie zadania ukończone!
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: Dodaj opis...
       label: Opis
+      context: Dodaj szczegółowe informacje o swoim zadaniu, aby pomóc sobie pamiętać kluczowe szczegóły i śledzić postępy.
     elapsed_time:
       label: Czas wykonania
-    estimated_time:
-      label: Szacowany czas
     is_completed: Ukończone
     parent_task:
       label: Zadanie nadrzędne
@@ -44,6 +51,9 @@ tasks:
     title:
       label: Tytuł
     total_elapsed_time: Całkowity czas wykonania
+  estimated_time:
+    label: Szacowany czas
+    description: Ustaw realistyczny szacowany czas, aby efektywnie zaplanować zadanie i śledzić produktywność.
   errors:
     add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu
     adding_tag: Nie udało się dodać tagu
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: Wybierz priorytet
+    description: Ustaw priorytet zadania używając macierzy Eisenhowera - klasyfikacja Pilne/Ważne dla efektywnego zarządzania zadaniami
     tooltips:
       none: Brak priorytetu
       not_urgent_important: Niepilne ale ważne
@@ -252,6 +263,7 @@ tasks:
       formularza.
     lock_settings: Ustawienia blokady
     reset_all: Resetuj wszystkie pola
+    task_added_successfully: Zadanie dodane pomyślnie
     reset_confirm:
       message:
         Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być

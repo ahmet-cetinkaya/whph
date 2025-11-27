@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Add new task
+  date_picker:
+    quick_selection:
+      today: Today
+      tomorrow: Tomorrow
+      this_weekend: This Weekend
+      weekend: Weekend
+      next_week: Next Week
+      next_weekend: Next Weekend
   all_tasks_done: All tasks completed!
   card:
     schedule:
@@ -18,32 +26,33 @@ tasks:
     message: Are you sure you want to delete this task?
     title: Delete Task
   details:
+    title:
+      label: Title
+    tags:
+      hint: Select tags to associate
+      label: Tags
+    priority:
+      label: Priority
+    planned_date:
+      label: Planned Date
     deadline_date:
       label: Deadline Date
     description:
       hint: Add description...
       label: Description
+      context: Add detailed information about your task to help you remember key details and track progress.
     elapsed_time:
       label: Elapsed Time
-    estimated_time:
-      label: Estimated Time
-    is_completed: Completed
     parent_task:
       label: Parent Task
       tooltip: Click to navigate to parent task
-    planned_date:
-      label: Planned Date
-    priority:
-      label: Priority
     sub_tasks:
       label: Sub-tasks
-    tags:
-      hint: Select tags to associate
-      label: Tags
     tags_hint: Select tags for task
-    title:
-      label: Title
     total_elapsed_time: Total Elapsed Time
+  estimated_time:
+    label: Estimated Time
+    description: Set a realistic time estimate to plan your task effectively and track productivity.
   errors:
     add_tag: Unexpected error occurred while adding tag
     adding_tag: Failed to add tag
@@ -232,6 +241,7 @@ tasks:
   priority:
     selection:
       title: Select Priority
+    description: Set task priority using Eisenhower Matrix - Urgent/Important classification for effective task management
     tooltips:
       none: No Priority
       not_urgent_important: Not Urgent but Important
@@ -251,6 +261,7 @@ tasks:
       similar tasks. Locked properties won't be cleared when you reset the form.
     lock_settings: Lock Settings
     reset_all: Reset all fields
+    task_added_successfully: Task added successfully
     reset_confirm:
       message: Are you sure you want to reset all fields? This action cannot be undone.
       title: Reset All Fields

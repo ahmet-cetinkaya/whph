@@ -60,14 +60,14 @@ shared:
     tabs:
       custom: Vlastní
       palette: Barvy
-    title: Výběr barvy
+    title: Datum a čas
   data:
     created_date_label: Datum vytvoření
     modified_date_label: Datum úpravy
     name_label: Název
   date: Datum
   date_filter:
-    title: Vybrat rozsah dat
+    title: Datum a čas
     tooltips:
       clear: Vymazat filtr data
       filter: Filtrovat podle data
@@ -85,10 +85,6 @@ shared:
     end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
     select_date_range_title: Vybrat rozsah dat
     select_date_time_title: Vybrat datum a čas
-    select_date_title: Vybrat datum
-    select_time_title: Vybrat čas
-    all_day: Celý den
-    selected_time: Vybraný čas
     selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
     selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
     selected_date_time_must_be_after: Vybrané datum a čas musí být po {dateTime}
@@ -97,13 +93,14 @@ shared:
     start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
     time_must_be_at_or_after: Čas musí být od {time} nebo později
     time_must_be_at_or_before: Čas musí být do {time} nebo dříve
-    # Quick selection dialog
-    quick_selection: Rychlý výběr
-    quick_selection_title: Rychlý výběr
-    refresh_settings: Automatické obnovení
-    refresh_description: Automaticky obnovit vybraný rozsah dat
-    date_ranges: Rozsahy dat
-    refresh_settings_label: Nastavení obnovení
+    select_time_title: Vybrat čas
+    selected_time: Vybraný čas
+    select_date_title: Vybrat datum
+    quick_selection: Quick selection
+    quick_selection_title: Quick selection
+    refresh_settings: Auto refresh
+    date_ranges: Date ranges
+    refresh_settings_label: Refresh settings
   days:
     friday: Pátek
     friday_short: Pá
@@ -174,7 +171,7 @@ shared:
     description: Během spuštění aplikace došlo k chybě. Může to být způsobeno systémovým problémem nebo nekompatibilní konfigurací.
     details_title: Podrobnosti chyby
     report_button: Nahlásit problém
-    title: Chyba při spuštění aplikace
+    title: Datum a čas
   filters:
     search: Hledat
   messages:
@@ -205,7 +202,7 @@ shared:
       or: '"|" znamená NEBO'
       start: '"^" odpovídá začátku textu'
     tips_title: 💡 Tipy
-    title: Příklady vzorů
+    title: Datum a čas
   report_error: Nahlásit chybu
   save_list_options: Uložit možnosti seznamu
   search:
@@ -260,11 +257,11 @@ shared:
     last_month: Minulý měsíc
     last_three_months: Poslední 3 měsíce
     last_week: Minulý týden
-    next_week: Příští týden
     this_month: Tento měsíc
     this_three_months: Tyto 3 měsíce
     this_week: Tento týden
     today: Dnes
+    next_week: Příští týden
   timer:
     label: Časovač
     normal: Normální
@@ -279,6 +276,7 @@ shared:
   units:
     days: dny
     hours: hod
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: sek
@@ -293,11 +291,24 @@ shared:
     message: Je k dispozici nová verze ({version}).
     question: Chcete aktualizovat nyní?
     success: Aktualizace byla úspěšně stažena!
-    title: Aktualizace k dispozici!
+    title: Datum a čas
   help: Nápověda
   start_tour: Spustit prohlídku
   skip_tour: Přeskočit prohlídku
+  validation:
+    required: Required
+  date_picker:
+    time_picker_minute_label: Minuta
+    all_day: Celý den
+    required: "{field} je povinné."
+    time_picker_hour_label: Hodina
   date_time_picker:
+    quick_selection_last_month: Minulý měsíc
+    field_label: Datum a čas
+    time_picker_minute_label: Minuta
+    field_hint: Vybrat datum a čas
+    edit_button_label: Upravit
+    edit_button_hint: Upravit datum a čas
     title: Datum a čas
     confirm: Potvrdit
     cancel: Zrušit
@@ -328,8 +339,6 @@ shared:
     refresh_description: Automaticky obnovit vybraný rozsah dat
     date_time_field_label: Pole data a času
     date_time_field_hint: Vybrat datum a čas
-    field_label: Datum a čas
-    field_hint: Vybrat datum a čas
     allDay: Celý den
     refreshDescription: Automaticky obnovit vybraný rozsah dat
     quick_selection_today: Dnes
@@ -338,11 +347,9 @@ shared:
     quick_selection_next_week: Příští týden
     quick_selection_no_date: Bez data
     quick_selection_last_week: Minulý týden
-    quick_selection_last_month: Minulý měsíc
-    edit_button_label: Upravit
-    edit_button_hint: Upravit datum a čas
   numeric_input:
     decrement_button_label: Snížit
+    quick_selection_last_month: Minulý měsíc
     increment_button_label: Zvýšit
     text_field_label: Číselná hodnota
     decrement_hint: Snížit hodnotu
@@ -352,5 +359,3 @@ shared:
     increment_tooltip: Zvýšit hodnotu
     at_minimum_value: Dosaženo minimální hodnoty
     at_maximum_value: Dosaženo maximální hodnoty
-  validation:
-    required: "{field} je povinné."

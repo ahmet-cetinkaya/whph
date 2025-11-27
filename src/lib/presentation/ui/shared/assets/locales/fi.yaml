@@ -85,10 +85,6 @@ shared:
     end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
     select_date_range_title: Valitse päivämääräväli
     select_date_time_title: Valitse päivämäärä ja aika
-    select_date_title: Valitse päivämäärä
-    select_time_title: Valitse aika
-    all_day: Koko päivä
-    selected_time: Valittu aika
     selected_date_must_be_at_or_after:
       Valitun päivämäärän täytyy olla {date} tai
       sen jälkeen
@@ -98,18 +94,19 @@ shared:
     selected_date_time_must_be_after:
       Valitun päivämäärän ja ajan täytyy olla {dateTime}
       jälkeen
-    start_date_cannot_be_after_end_date: Aloituspäivä ei voi olla lopetuspäivän jälkeen
+    start_date_cannot_be_after_end_date: Aloituspäivämäärä ei voi olla loppupäivämäärän jälkeen
     start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
     start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
     time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
     time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
-    # Quick selection dialog
-    quick_selection: Pikavalinta
-    quick_selection_title: Pikavalinta
-    refresh_settings: Automaattinen päivitys
-    refresh_description: Päivitä valittu päiväalue automaattisesti
-    date_ranges: Päiväalueet
-    refresh_settings_label: Päivitysasetukset
+    select_time_title: Select time
+    selected_time: Selected time
+    select_date_title: Select date
+    quick_selection: Quick selection
+    quick_selection_title: Quick selection
+    refresh_settings: Auto refresh
+    date_ranges: Date ranges
+    refresh_settings_label: Refresh settings
   days:
     friday: Perjantai
     friday_short: Pe
@@ -266,11 +263,11 @@ shared:
     last_month: Viime kuussa
     last_three_months: Viimeiset 3 kuukautta
     last_week: Viime viikolla
-    next_week: Ensi viikko
     this_month: Tässä kuussa
     this_three_months: Nämä 3 kuukautta
     this_week: Tällä viikolla
     today: Tänään
+    next_week: Ensi viikko
   timer:
     label: Ajastin
     normal: Normaali
@@ -285,6 +282,7 @@ shared:
   units:
     days: päivää
     hours: t
+    hours_short: h
     minutes: min
     minutes_short: m
     seconds: s
@@ -303,60 +301,67 @@ shared:
   help: Apua
   start_tour: Aloita kierros
   skip_tour: Ohita kierros
+  validation:
+    required: Required
+  date_picker:
+    time_picker_minute_label: Minute
+    all_day: Koko päivä
+    required: "{field} on pakollinen."
+    time_picker_hour_label: Tunti
   date_time_picker:
-    title: Päivä ja aika
+    quick_selection_last_month: Last month
+    field_label: Date and time
+    time_picker_minute_label: Minuutti
+    field_hint: Select date and time
+    edit_button_label: Edit
+    edit_button_hint: Edit date and time
+    title: Date and time
     confirm: Vahvista
     cancel: Peruuta
-    set_time: Aseta aika
-    selected_time: Valittu aika
-    select_time_title: Valitse aika
-    select_date_title: Valitse päivä
-    no_date_selected: Ei päivämäärää valittu
-    select_end_date: Valitse päättymispäivä
-    no_dates_selected: Ei päivämääriä valittu
-    refresh: Päivitä
-    cannot_select_time_before_min_date: Aikaa ei voi valita ennen {time}
-    cannot_select_time_after_max_date: Aikaa ei voi valita jälkeen {time}
-    time_must_be_at_or_after: Ajan on oltava {time} tai sen jälkeen
-    time_must_be_at_or_before: Ajan on oltava {time} tai ennen sitä
-    selected_date_must_be_at_or_after: Valitun päivän on oltava {date} tai sen jälkeen
-    selected_date_must_be_at_or_before: Valitun päivän on oltava {date} tai ennen sitä
-    start_date_cannot_be_after_end_date: Alkupäivä ei voi olla päättymispäivän jälkeen
-    start_date_must_be_at_or_after: Alkupäivän on oltava {date} tai sen jälkeen
-    end_date_must_be_at_or_before: Päättymispäivän on oltava {date} tai ennen sitä
-    cannot_select_date_before_min_date: Päivämäärää ei voi valita ennen {date}
-    cannot_select_date_after_max_date: Päivämäärää ei voi valita jälkeen {date}
-    start_date_cannot_be_before_min_date: Alkupäivä ei voi olla ennen {date}
-    end_date_cannot_be_after_max_date: Päättymispäivä ei voi olla jälkeen {date}
-    selected_date_time_must_be_after: Valitun päivän ja ajan on oltava {dateTime} jälkeen
-    select_date_time_title: Valitse päivä ja aika
-    select_date_range_title: Valitse päiväalue
-    refresh_description: Päivitä valittu päiväalue automaattisesti
-    date_time_field_label: Päivä- ja aikakenttä
-    date_time_field_hint: Valitse päivä ja aika
-    field_label: Päivämäärä ja Aika
-    field_hint: Valitse päivämäärä ja aika
-    allDay: Koko päivä
-    refreshDescription: Päivitä valittu päiväalue automaattisesti
-    quick_selection_today: Tänään
-    quick_selection_tomorrow: Huomenna
-    quick_selection_weekend: Viikonloppu
-    quick_selection_next_week: Ensi viikko
-    quick_selection_no_date: Ei päivämäärää
-    quick_selection_last_week: Viimeinen viikko
-    quick_selection_last_month: Viimeinen kuukausi
-    edit_button_label: Muokkaa
-    edit_button_hint: Muokkaa päivää ja aikaa
+    set_time: Set time
+    selected_time: Selected time
+    select_time_title: Select time
+    select_date_title: Select date
+    no_date_selected: No date selected
+    select_end_date: Select end date
+    no_dates_selected: No dates selected
+    refresh: Refresh
+    cannot_select_time_before_min_date: Cannot select time before {time}
+    cannot_select_time_after_max_date: Cannot select time after {time}
+    time_must_be_at_or_after: Time must be {time} or later
+    time_must_be_at_or_before: Time must be {time} or earlier
+    selected_date_must_be_at_or_after: Selected date must be {date} or later
+    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    start_date_cannot_be_after_end_date: Aloituspäivämäärä ei voi olla loppupäivämäärän jälkeen
+    start_date_must_be_at_or_after: Start date must be {date} or later
+    end_date_must_be_at_or_before: End date must be {date} or earlier
+    cannot_select_date_before_min_date: Cannot select date before {date}
+    cannot_select_date_after_max_date: Cannot select date after {date}
+    start_date_cannot_be_before_min_date: Start date cannot be before {date}
+    end_date_cannot_be_after_max_date: End date cannot be after {date}
+    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
+    select_date_time_title: Select date and time
+    select_date_range_title: Select date range
+    refresh_description: Päivitä valittu aikaväli automaattisesti
+    date_time_field_label: Date and time field
+    date_time_field_hint: Select date and time
+    allDay: All day
+    refreshDescription: Automatically refresh selected date range
+    quick_selection_today: Today
+    quick_selection_tomorrow: Tomorrow
+    quick_selection_weekend: Weekend
+    quick_selection_next_week: Next week
+    quick_selection_no_date: No date
+    quick_selection_last_week: Last week
   numeric_input:
-    decrement_button_label: Vähennä
-    increment_button_label: Lisää
-    text_field_label: Numeerinen arvo
-    decrement_hint: Vähennä arvoa
-    increment_hint: Lisää arvoa
-    text_field_hint: Syötä numero
-    decrement_tooltip: Vähennä arvoa
-    increment_tooltip: Lisää arvoa
-    at_minimum_value: Vähimmäisarvo saavutettu
-    at_maximum_value: Maksimiarvo saavutettu
-  validation:
-    required: "{field} on pakollinen."
+    decrement_button_label: Decrease
+    quick_selection_last_month: Last month
+    increment_button_label: Increase
+    text_field_label: Numeric value
+    decrement_hint: Decrease value
+    increment_hint: Increase value
+    text_field_hint: Enter number
+    decrement_tooltip: Decrease value
+    increment_tooltip: Increase value
+    at_minimum_value: At minimum value
+    at_maximum_value: At maximum value

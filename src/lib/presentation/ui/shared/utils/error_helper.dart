@@ -16,7 +16,7 @@ class ErrorHelper {
     _translationService = translationService;
   }
 
-  static void showError(BuildContext context, Exception error) {
+  static void showError(BuildContext context, Exception error, {NotificationPosition position = NotificationPosition.bottom}) {
     final message = error is BusinessException
         ? _translationService.translate(error.errorCode, namedArgs: error.args)
         : error.toString();
@@ -24,10 +24,12 @@ class ErrorHelper {
     OverlayNotificationHelper.showError(
       context: context,
       message: message,
+      position: position,
     );
   }
 
-  static void showUnexpectedError(BuildContext context, Object error, StackTrace stackTrace, {String? message}) {
+  static void showUnexpectedError(BuildContext context, Object error, StackTrace stackTrace,
+      {String? message, NotificationPosition position = NotificationPosition.bottom}) {
     final errorMessage = message ?? _translationService.translate(SharedTranslationKeys.unexpectedError);
     final reportText = _translationService.translate(
       SharedTranslationKeys.reportError,
@@ -46,6 +48,7 @@ class ErrorHelper {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         ),
       ),
+      position: position,
     );
   }
 

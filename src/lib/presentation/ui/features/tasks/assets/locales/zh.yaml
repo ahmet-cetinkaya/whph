@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: 添加新任务
+  date_picker:
+    quick_selection:
+      today: 今天
+      tomorrow: 明天
+      this_weekend: 这个周末
+      weekend: 周末
+      next_week: 下周
+      next_weekend: 下周末
   all_tasks_done: 所有任务已完成！
   card:
     schedule:
@@ -23,10 +31,9 @@ tasks:
     description:
       hint: 添加描述...
       label: 描述
+      context: 添加有关您任务的详细信息，以帮助您记住关键细节并跟踪进度。
     elapsed_time:
       label: 已用时间
-    estimated_time:
-      label: 预计时间
     is_completed: 已完成
     parent_task:
       label: 父任务
@@ -44,6 +51,9 @@ tasks:
     title:
       label: 标题
     total_elapsed_time: 总用时
+  estimated_time:
+    label: 预计时间
+    description: 设定现实的时间估算，以有效规划您的任务并追踪生产力。
   errors:
     add_tag: 添加标签时发生意外错误
     adding_tag: 添加标签失败
@@ -232,6 +242,7 @@ tasks:
   priority:
     selection:
       title: 选择优先级
+    description: 使用艾森豪威尔矩阵设置任务优先级 - 紧急/重要分类，实现有效任务管理
     tooltips:
       none: 无优先级
       not_urgent_important: 不紧急但重要
@@ -249,6 +260,7 @@ tasks:
     lock_description: 锁定属性以在创建多个相似任务时保留其值。锁定的属性在重置表单时不会被清除。
     lock_settings: 锁定设置
     reset_all: 重置所有字段
+    task_added_successfully: 任务添加成功
     reset_confirm:
       message: 您确定要重置所有字段吗？此操作无法撤销。
       title: 重置所有字段

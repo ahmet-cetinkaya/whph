@@ -369,10 +369,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       config: config,
     );
 
-    if (result != null && result.isConfirmed) {
+    if (result != null) {
       final startDate = result.startDate;
       final endDate = result.endDate;
-      final refreshEnabled = result.isRefreshEnabled ?? false;
+      final refreshEnabled = result.isRefreshEnabled;
 
       // Check if only refresh toggle changed (same dates, existing quick selection)
       final hasRefreshToggleOnlyChanged = startDate == _selectedStartDate &&

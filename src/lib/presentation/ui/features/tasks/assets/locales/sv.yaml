@@ -1,6 +1,14 @@
 tasks:
   add_button:
     tooltip: Lägg till ny uppgift
+  date_picker:
+    quick_selection:
+      today: Idag
+      tomorrow: Imorgon
+      this_weekend: Denna helg
+      weekend: Helg
+      next_week: Nästa vecka
+      next_weekend: Nästa helg
   all_tasks_done: Alla uppgifter klara!
   card:
     schedule:
@@ -18,32 +26,33 @@ tasks:
     message: Är du säker på att du vill ta bort denna uppgift?
     title: Ta Bort Uppgift
   details:
+    title:
+      label: Titel
+    tags:
+      hint: Välj taggar att associera
+      label: Taggar
+    priority:
+      label: Prioritet
+    planned_date:
+      label: Planerat Datum
     deadline_date:
       label: Förfallodatum
     description:
       hint: Lägg till beskrivning...
       label: Beskrivning
+      context: Lägg till detaljerad information om din uppgift för att hjälpa dig komma ihåg viktiga detaljer och följa framsteg.
     elapsed_time:
       label: Förfluten Tid
-    estimated_time:
-      label: Uppskattad Tid
-    is_completed: Slutförd
     parent_task:
       label: Överordnad Uppgift
       tooltip: Klicka för att navigera till överordnad uppgift
-    planned_date:
-      label: Planerat Datum
-    priority:
-      label: Prioritet
     sub_tasks:
       label: Underuppgifter
-    tags:
-      hint: Välj taggar att associera
-      label: Taggar
     tags_hint: Välj taggar för uppgift
-    title:
-      label: Titel
     total_elapsed_time: Total Förfluten Tid
+  estimated_time:
+    label: Uppskattad Tid
+    description: Sätt realistiska tidsuppskattningar för att effektivt planera din uppgift och följa produktivitet.
   errors:
     add_tag: Oväntat fel uppstod vid tillägg av tagg
     adding_tag: Misslyckades att lägga till tagg
@@ -232,6 +241,7 @@ tasks:
   priority:
     selection:
       title: Välj Prioritet
+    description: Ställ in uppgiftsprioritet med Eisenhower-matrisen - Brådskande/Viktig-klassificering för effektiv uppgiftshantering
     tooltips:
       none: Ingen Prioritet
       not_urgent_important: Inte Brådskande men Viktig
@@ -251,6 +261,7 @@ tasks:
       liknande uppgifter. Låsta egenskaper rensas inte när du återställer formuläret.
     lock_settings: Lås Inställningar
     reset_all: Återställ alla fält
+    task_added_successfully: Uppgift tillagd med lyckat
     reset_confirm:
       message: Är du säker på att du vill återställa alla fält? Denna åtgärd kan inte ångras.
       title: Återställ Alla Fält
