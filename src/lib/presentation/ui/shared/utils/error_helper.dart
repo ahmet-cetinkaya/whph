@@ -16,7 +16,8 @@ class ErrorHelper {
     _translationService = translationService;
   }
 
-  static void showError(BuildContext context, Exception error, {NotificationPosition position = NotificationPosition.bottom}) {
+  static void showError(BuildContext context, Exception error,
+      {NotificationPosition position = NotificationPosition.bottom}) {
     final message = error is BusinessException
         ? _translationService.translate(error.errorCode, namedArgs: error.args)
         : error.toString();

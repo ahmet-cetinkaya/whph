@@ -1118,9 +1118,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         IconButton(
           icon: Icon(
             Icons.lock_outline,
-            color: hasAnyLocks
-                ? theme.colorScheme.primary
-                : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            color: hasAnyLocks ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           onPressed: _showLockSettingsDialog,
           tooltip: _translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
