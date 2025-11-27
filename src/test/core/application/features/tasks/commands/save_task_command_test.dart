@@ -446,7 +446,7 @@ void main() {
         id: taskId,
         title: 'Test Task',
         completedAt: null,
-        recurrenceType: RecurrenceType.weekly,
+        recurrenceType: RecurrenceType.daysOfWeek,
         recurrenceInterval: 2,
         recurrenceDays: [WeekDays.monday, WeekDays.friday],
         recurrenceStartDate: recurrenceStartDate,
@@ -465,7 +465,7 @@ void main() {
       verify(mockTaskRepository.update(argThat(
         predicate<Task>((task) =>
             task.id == taskId &&
-            task.recurrenceType == RecurrenceType.weekly &&
+            task.recurrenceType == RecurrenceType.daysOfWeek &&
             task.recurrenceInterval == 2 &&
             task.recurrenceStartDate == DateTimeHelper.toUtcDateTime(recurrenceStartDate) &&
             task.recurrenceEndDate == DateTimeHelper.toUtcDateTime(recurrenceEndDate) &&
@@ -480,7 +480,7 @@ void main() {
         id: taskId,
         createdDate: DateTime.now().toUtc(),
         title: 'Test Task',
-        recurrenceType: RecurrenceType.weekly,
+        recurrenceType: RecurrenceType.daysOfWeek,
         recurrenceInterval: 2,
         recurrenceStartDate: DateTime(2023, 1, 1),
         recurrenceEndDate: DateTime(2023, 12, 31),

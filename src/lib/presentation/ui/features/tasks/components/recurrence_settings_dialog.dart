@@ -75,8 +75,12 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
                 _recurrenceEndDate = null;
                 _recurrenceCount = null;
               } else {
-                _recurrenceInterval ??= 1;
-                if (type == RecurrenceType.weekly && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
+                if (type == RecurrenceType.daysOfWeek) {
+                  _recurrenceInterval = 1; // Always every week for daysOfWeek
+                } else {
+                  _recurrenceInterval ??= 1; // Default for other types
+                }
+                if (type == RecurrenceType.daysOfWeek && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
                   _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]];
                 }
                 _recurrenceStartDate ??= DateTime.now();

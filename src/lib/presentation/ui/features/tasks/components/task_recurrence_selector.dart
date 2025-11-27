@@ -73,10 +73,10 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
     // Determine if we're using end date or count
     _isUsingEndDate = widget.recurrenceEndDate != null || widget.recurrenceCount == null;
 
-    // If recurrence type is weekly and no days are selected, initialize _recurrenceDays locally.
+    // If recurrence type is daysOfWeek and no days are selected, initialize _recurrenceDays locally.
     // The parent (TaskDetailsContent) is responsible for setting these defaults in the actual task data
     // when the recurrence type is first set or loaded.
-    if (_selectedRecurrenceType == RecurrenceType.weekly && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
+    if (_selectedRecurrenceType == RecurrenceType.daysOfWeek && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
       _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]]; // WeekDay enum is 0-based, weekday is 1-based
       // DO NOT call widget.onRecurrenceDaysChanged here; parent handles defaults.
     }
@@ -165,11 +165,13 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
         return widget.translationService.translate(TaskTranslationKeys.recurrenceNone);
       case RecurrenceType.daily:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceDaily);
-      case RecurrenceType.weekly:
-        // For weekly recurrence, check if all weekdays are selected
+      case RecurrenceType.daysOfWeek:
+        // For daysOfWeek recurrence, check if all weekdays are selected
         if (_recurrenceDays?.length == WeekDays.values.length) {
           return widget.translationService.translate(TaskTranslationKeys.everyDay);
         }
+        return widget.translationService.translate(TaskTranslationKeys.recurrenceDaysOfWeek);
+      case RecurrenceType.weekly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceWeekly);
       case RecurrenceType.monthly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceMonthly);
@@ -233,18 +235,22 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                       _isUsingEndDate = true; // Default to end date when recurrence is off
                     } else {
                       // Set default interval if changing to a type that uses it
-                      _recurrenceInterval ??= 1;
+                      if (value == RecurrenceType.daysOfWeek) {
+                        _recurrenceInterval = 1; // Always every week for daysOfWeek
+                      } else {
+                        _recurrenceInterval ??= 1; // Default for other types
+                      }
 
                       // Set default start date if none exists
                       _recurrenceStartDate ??= DateTime.now();
 
-                      // Set default weekly days if type is weekly and no days are selected
-                      if (value == RecurrenceType.weekly) {
+                      // Set default days if type is daysOfWeek and no days are selected
+                      if (value == RecurrenceType.daysOfWeek) {
                         if (_recurrenceDays == null || _recurrenceDays!.isEmpty) {
                           _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]];
                         }
-                      } else {
-                        _recurrenceDays = null; // Clear days if not weekly
+                      } else if (value != RecurrenceType.daysOfWeek) {
+                        _recurrenceDays = null; // Clear days if not daysOfWeek
                       }
 
                       // Default end condition: if both end date and count are null, default to using end date.
@@ -275,7 +281,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
           const SizedBox(height: AppTheme.sizeLarge),
 
           // Interval configuration (for daily, weekly, monthly, yearly, custom)
-          if (_selectedRecurrenceType != RecurrenceType.none) ...[
+          if (_selectedRecurrenceType != RecurrenceType.none &&
+              _selectedRecurrenceType != RecurrenceType.daysOfWeek) ...[
             Row(
               children: [
                 Expanded(
@@ -305,8 +312,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
             ),
           ],
 
-          // Specific weekdays selector (only for weekly recurrence)
-          if (_selectedRecurrenceType == RecurrenceType.weekly) ...[
+          // Specific weekdays selector (only for daysOfWeek recurrence)
+          if (_selectedRecurrenceType == RecurrenceType.daysOfWeek) ...[
             const SizedBox(height: AppTheme.sizeLarge),
             Text(
               widget.translationService.translate(TaskTranslationKeys.recurrenceWeekDaysLabel),
@@ -559,6 +566,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
     switch (_selectedRecurrenceType) {
       case RecurrenceType.daily:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceDaySuffix);
+      case RecurrenceType.daysOfWeek:
       case RecurrenceType.weekly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceWeekSuffix);
       case RecurrenceType.monthly:

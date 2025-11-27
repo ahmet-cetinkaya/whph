@@ -181,6 +181,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String recurrenceNone = 'tasks.recurrence.none';
   static const String recurrenceDaily = 'tasks.recurrence.daily';
   static const String recurrenceWeekly = 'tasks.recurrence.weekly';
+  static const String recurrenceDaysOfWeek = 'tasks.recurrence.daysOfWeek';
   static const String recurrenceMonthly = 'tasks.recurrence.monthly';
   static const String recurrenceYearly = 'tasks.recurrence.yearly';
   static const String recurrenceCustom = 'tasks.recurrence.custom';

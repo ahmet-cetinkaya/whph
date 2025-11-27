@@ -40,7 +40,9 @@ tasks:
     description:
       hint: Add description...
       label: Description
-      context: Add detailed information about your task to help you remember key details and track progress.
+      context:
+        Add detailed information about your task to help you remember key details
+        and track progress.
     elapsed_time:
       label: Elapsed Time
     parent_task:
@@ -52,7 +54,9 @@ tasks:
     total_elapsed_time: Total Elapsed Time
   estimated_time:
     label: Estimated Time
-    description: Set a realistic time estimate to plan your task effectively and track productivity.
+    description:
+      Set a realistic time estimate to plan your task effectively and track
+      productivity.
   errors:
     add_tag: Unexpected error occurred while adding tag
     adding_tag: Failed to add tag
@@ -82,112 +86,123 @@ tasks:
       filter_by_tags: Filter by tags
   help:
     details:
-      content: |
-        Master your task management and maximize productivity by organizing, prioritizing, and tracking your work effectively.
-
-        ## ⚡ Why Is It Important?
-
-        Effective task management is the foundation of productivity. Properly structured tasks with clear priorities and deadlines help you focus on what matters most and prevent important work from falling through the cracks.
-
-        ## 📝 Task Organization
-
-        Structure your tasks with comprehensive details to maintain clarity and focus. Use tags, priorities, and time estimates to create a systematic approach to your workload.
-
-        - 🏷️ Categorize tasks with meaningful tags
-        - ⚖️ Set priorities using proven frameworks
-        - ⏱️ Estimate time requirements accurately
-        - 📅 Plan realistic deadlines and schedules
-
-        ## ⏰ Time Management
-
-        Track your time investments to understand your work patterns and improve efficiency. Proper time management transforms scattered efforts into focused productivity.
-
-        - 📊 Monitor actual vs. estimated time
-        - 🎯 Focus on high-impact activities
-        - 📈 Analyze productivity patterns over time
-        - ⏳ Balance urgent and important tasks
-
-        ## 📊 Priority Framework (Eisenhower Matrix)
-
-        Organize your tasks using this proven prioritization method to ensure you're always working on the right things at the right time.
-
-        - 🔥 **Urgent & Important:** Handle immediately - crisis management and deadlines
-        - 📈 **Important, Not Urgent:** Schedule strategically - planning and skill development  
-        - ⚡ **Urgent, Not Important:** Delegate when possible - interruptions and some meetings
-        - 🗑️ **Neither Urgent nor Important:** Eliminate - time-wasters and low-value activities
+      content:
+        "Master your task management and maximize productivity by organizing,\
+        \ prioritizing, and tracking your work effectively.\n\n## ⚡ Why Is It Important?\n\
+        \nEffective task management is the foundation of productivity. Properly structured\
+        \ tasks with clear priorities and deadlines help you focus on what matters\
+        \ most and prevent important work from falling through the cracks.\n\n## \U0001F4DD\
+        \ Task Organization\n\nStructure your tasks with comprehensive details to\
+        \ maintain clarity and focus. Use tags, priorities, and time estimates to\
+        \ create a systematic approach to your workload.\n\n- \U0001F3F7️ Categorize\
+        \ tasks with meaningful tags\n- ⚖️ Set priorities using proven frameworks\n\
+        - ⏱️ Estimate time requirements accurately\n- \U0001F4C5 Plan realistic deadlines\
+        \ and schedules\n\n## ⏰ Time Management\n\nTrack your time investments to\
+        \ understand your work patterns and improve efficiency. Proper time management\
+        \ transforms scattered efforts into focused productivity.\n\n- \U0001F4CA\
+        \ Monitor actual vs. estimated time\n- \U0001F3AF Focus on high-impact activities\n\
+        - \U0001F4C8 Analyze productivity patterns over time\n- ⏳ Balance urgent and\
+        \ important tasks\n\n## \U0001F4CA Priority Framework (Eisenhower Matrix)\n\
+        \nOrganize your tasks using this proven prioritization method to ensure you're\
+        \ always working on the right things at the right time.\n\n- \U0001F525 **Urgent\
+        \ & Important:** Handle immediately - crisis management and deadlines\n- \U0001F4C8\
+        \ **Important, Not Urgent:** Schedule strategically - planning and skill development\
+        \  \n- ⚡ **Urgent, Not Important:** Delegate when possible - interruptions\
+        \ and some meetings\n- \U0001F5D1️ **Neither Urgent nor Important:** Eliminate\
+        \ - time-wasters and low-value activities\n"
       title: Task Management & Productivity Guide
     overview:
-      content: |
-        Transform your productivity with systematic task management that helps you stay organized, focused, and in control of your workload.
+      content:
+        "Transform your productivity with systematic task management that helps
+        you stay organized, focused, and in control of your workload.
+
 
         ## ⚡ Why Is It Important?
 
-        Effective task management is the cornerstone of personal and professional success. By organizing your work systematically, you reduce stress, meet deadlines consistently, and create space for meaningful progress on important goals.
+
+        Effective task management is the cornerstone of personal and professional
+        success. By organizing your work systematically, you reduce stress, meet deadlines
+        consistently, and create space for meaningful progress on important goals.
+
 
         ## 📋 Task Organization
 
-        Create a structured approach to managing your responsibilities. Well-organized tasks lead to clear priorities and efficient execution of your daily work.
+
+        Create a structured approach to managing your responsibilities. Well-organized
+        tasks lead to clear priorities and efficient execution of your daily work.
+
 
         - ✅ Create and categorize tasks systematically
+
         - 🏷️ Group related work with meaningful tags
+
         - ⚖️ Set clear priorities and deadlines
+
         - 🔍 Use filters and search for quick access
+
 
         ## ⏱️ Time Tracking & Focus
 
-        Monitor your time investments to understand productivity patterns and optimize your workflow. Time awareness leads to better planning and improved performance.
+
+        Monitor your time investments to understand productivity patterns and optimize
+        your workflow. Time awareness leads to better planning and improved performance.
+
 
         - ⏰ Track actual time spent per task
+
         - 🎯 Use Marathon Mode for focused work sessions
+
         - 📊 Analyze completion patterns and trends
+
         - 🔄 Review and adjust time estimates regularly
+
 
         ## 📈 Progress Monitoring
 
-        Keep track of your accomplishments and learn from your work patterns. Regular review and reflection drive continuous improvement in your productivity system.
+
+        Keep track of your accomplishments and learn from your work patterns. Regular
+        review and reflection drive continuous improvement in your productivity system.
+
 
         - 📈 Monitor task completion rates
+
         - 📅 Review daily and weekly progress
+
         - 🎯 Identify bottlenecks and optimization opportunities
+
         - 🏆 Celebrate achievements and milestone completions
+
+        "
       title: Task Management & Workflow Guide
   marathon:
     details:
       title: Task Details
     help:
-      content: |
-        Maximize your focus and productivity with structured work sessions that help you maintain deep concentration while preventing burnout.
-
-        ## ⚡ Why Is It Important?
-
-        Focused work sessions are essential for deep work and high-quality output. By working in structured intervals with regular breaks, you maintain peak mental performance while avoiding the fatigue that comes from extended, unfocused work periods.
-
-        ## ⏰ Time-Boxed Focus Sessions
-
-        Use proven time management techniques to structure your work for maximum efficiency. Structured sessions help you maintain concentration and complete tasks more effectively.
-
-        - 🎯 **Classic Focus:** 25 minutes work / 5 minutes break
-        - 📈 **Extended Focus:** 50 minutes work / 10 minutes break  
-        - 🔄 **Long Break:** 15-30 minutes after 4 sessions
-        - ⚖️ **Custom Timing:** Adjust intervals to match your natural rhythm
-
-        ## 🧠 Cognitive Benefits
-
-        Structured work sessions leverage your brain's natural attention cycles to optimize performance and prevent mental fatigue that reduces quality and creativity.
-
-        - 🎯 Enhanced focus and deep concentration
-        - 🔋 Reduced mental fatigue and burnout
-        - 💪 Sustained motivation through regular accomplishments
-        - ⚡ Improved time awareness and planning accuracy
-
-        ## 📊 Performance Optimization
-
-        Track your focused work patterns to understand your peak productivity times and optimize your schedule for maximum effectiveness.
-
-        - 🏷️ Categorize focus sessions with tags for analysis
-        - 📈 Monitor productivity patterns across different times
-        - 🚫 Eliminate distractions before starting sessions
-        - 🚶 Use breaks for physical movement and mental reset
+      content:
+        "Maximize your focus and productivity with structured work sessions\
+        \ that help you maintain deep concentration while preventing burnout.\n\n\
+        ## ⚡ Why Is It Important?\n\nFocused work sessions are essential for deep\
+        \ work and high-quality output. By working in structured intervals with regular\
+        \ breaks, you maintain peak mental performance while avoiding the fatigue\
+        \ that comes from extended, unfocused work periods.\n\n## ⏰ Time-Boxed Focus\
+        \ Sessions\n\nUse proven time management techniques to structure your work\
+        \ for maximum efficiency. Structured sessions help you maintain concentration\
+        \ and complete tasks more effectively.\n\n- \U0001F3AF **Classic Focus:**\
+        \ 25 minutes work / 5 minutes break\n- \U0001F4C8 **Extended Focus:** 50 minutes\
+        \ work / 10 minutes break  \n- \U0001F504 **Long Break:** 15-30 minutes after\
+        \ 4 sessions\n- ⚖️ **Custom Timing:** Adjust intervals to match your natural\
+        \ rhythm\n\n## \U0001F9E0 Cognitive Benefits\n\nStructured work sessions leverage\
+        \ your brain's natural attention cycles to optimize performance and prevent\
+        \ mental fatigue that reduces quality and creativity.\n\n- \U0001F3AF Enhanced\
+        \ focus and deep concentration\n- \U0001F50B Reduced mental fatigue and burnout\n\
+        - \U0001F4AA Sustained motivation through regular accomplishments\n- ⚡ Improved\
+        \ time awareness and planning accuracy\n\n## \U0001F4CA Performance Optimization\n\
+        \nTrack your focused work patterns to understand your peak productivity times\
+        \ and optimize your schedule for maximum effectiveness.\n\n- \U0001F3F7️ Categorize\
+        \ focus sessions with tags for analysis\n- \U0001F4C8 Monitor productivity\
+        \ patterns across different times\n- \U0001F6AB Eliminate distractions before\
+        \ starting sessions\n- \U0001F6B6 Use breaks for physical movement and mental\
+        \ reset\n"
       title: Focused Work Sessions & Time Management Guide
       tooltip: Marathon help tooltip
     label: Marathon Mode
@@ -241,7 +256,9 @@ tasks:
   priority:
     selection:
       title: Select Priority
-    description: Set task priority using Eisenhower Matrix - Urgent/Important classification for effective task management
+    description:
+      Set task priority using Eisenhower Matrix - Urgent/Important classification
+      for effective task management
     tooltips:
       none: No Priority
       not_urgent_important: Not Urgent but Important
@@ -272,7 +289,7 @@ tasks:
       deadline_date: "Deadline: {date}"
       deadline_date_not_set: "Deadline: Not set"
       estimated_time: "Estimated Time: {time}"
-      estimated_time_default: "(default)"
+      estimated_time_default: (default)
       estimated_time_not_set: "Estimated Time: Not set"
       planned_date: "Planned: {date}"
       planned_date_not_set: "Planned: Not set"
@@ -303,14 +320,15 @@ tasks:
       endsOnDate: ends on
       everyDay: every day
       occurrences: occurrences
-      true: true
-      starts: starts
       on: "on"
+      starts: starts
+      true: "on"
     weekDays: Days of week
     weekSuffix: week(s)
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
+    daysOfWeek: Days of week
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder
@@ -352,31 +370,56 @@ tasks:
     show_completed_tasks: Filter completed tasks
     show_subtasks: Show subtasks
   validation:
-    deadline_cannot_be_before_planned: Deadline must be scheduled after the planned date
+    deadline_cannot_be_before_planned:
+      Deadline must be scheduled after the planned
+      date
     deadline_time_invalid: Please enter a valid deadline time
   tour:
     task_management:
       title: Task Management
-      description: Create and organize tasks with priorities, deadlines, and reminders. Use the Pomodoro timer to stay focused and track your progress on important tasks.
+      description:
+        Create and organize tasks with priorities, deadlines, and reminders.
+        Use the Pomodoro timer to stay focused and track your progress on important
+        tasks.
     add_tasks:
       title: Add New Tasks
-      description: Create new tasks quickly with this button. Set titles, priorities, deadlines, tags, and more. Add subtasks and reminders to stay on top of your work.
+      description:
+        Create new tasks quickly with this button. Set titles, priorities,
+        deadlines, tags, and more. Add subtasks and reminders to stay on top of your
+        work.
     your_tasks:
       title: Your Tasks
-      description: View and manage all your tasks in one place. Click any task to see details, mark as complete, edit information, or delete. Stay organized and track your progress.
+      description:
+        View and manage all your tasks in one place. Click any task to
+        see details, mark as complete, edit information, or delete. Stay organized
+        and track your progress.
     filter_search:
       title: Filter & Search
-      description: Powerful filtering options to find exactly what you need. Filter by tags, dates, completion status, or use search. Sort tasks and toggle subtasks for better organization.
+      description:
+        Powerful filtering options to find exactly what you need. Filter
+        by tags, dates, completion status, or use search. Sort tasks and toggle subtasks
+        for better organization.
     marathon:
       app_usage:
         title: App Usage & Time Insights
-        description: Monitor app usage patterns and analyze time spent across different activities. Get insights into your digital habits and optimize your productivity.
+        description:
+          Monitor app usage patterns and analyze time spent across different
+          activities. Get insights into your digital habits and optimize your productivity.
       usage_statistics:
         title: Usage Statistics
-        description: View detailed app usage data and time distribution. Analyze your productivity patterns, track time spent on different applications, and identify areas for improvement.
+        description:
+          View detailed app usage data and time distribution. Analyze your
+          productivity patterns, track time spent on different applications, and identify
+          areas for improvement.
       filter_sort:
         title: Filter & Sort
-        description: Filter app usage data by date range, tags, or specific devices. Sort and organize your usage statistics to gain better insights into your time management.
+        description:
+          Filter app usage data by date range, tags, or specific devices.
+          Sort and organize your usage statistics to gain better insights into your
+          time management.
       tracking_settings:
         title: Tracking Settings
-        description: Configure app tracking rules, set up automatic tagging, and manage which applications to monitor. Customize tracking to match your productivity needs.
+        description:
+          Configure app tracking rules, set up automatic tagging, and manage
+          which applications to monitor. Customize tracking to match your productivity
+          needs.
