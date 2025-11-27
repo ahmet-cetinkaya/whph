@@ -770,21 +770,27 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixDays)})';
         }
         break;
-      case RecurrenceType.weekly:
-        summary = _translationService.translate(TaskTranslationKeys.recurrenceWeekly);
+      case RecurrenceType.daysOfWeek:
         final days = _taskRecurrenceService.getRecurrenceDays(_task!);
         if (days != null && days.isNotEmpty) {
           // Check if all weekdays are selected
           if (days.length == WeekDays.values.length && WeekDays.values.every((weekDay) => days.contains(weekDay))) {
-            summary += ' ${_translationService.translate(TaskTranslationKeys.everyDay)}';
+            summary = _translationService.translate(TaskTranslationKeys.everyDay);
           } else {
             final dayNames = days
                 .map((day) => _translationService
                     .translate(SharedTranslationKeys.getWeekDayNameTranslationKey(day.name, short: true)))
                 .join(', ');
-            summary += ' ${_translationService.translate(TaskTranslationKeys.on)} $dayNames';
+            summary = dayNames;
           }
+        } else {
+          // Fallback if no days selected (shouldn't happen with proper UI)
+          summary = _translationService.translate(TaskTranslationKeys.recurrenceDaysOfWeek);
         }
+        // Note: daysOfWeek is always every week (interval = 1), so no interval display needed
+        break;
+      case RecurrenceType.weekly:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceWeekly);
         if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
           summary +=
               ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixWeeks)})';

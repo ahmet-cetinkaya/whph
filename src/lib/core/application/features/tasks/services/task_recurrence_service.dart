@@ -54,7 +54,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         nextDate = currentDate.add(Duration(days: task.recurrenceInterval ?? 1));
         return nextDate;
 
-      case RecurrenceType.weekly:
+      case RecurrenceType.daysOfWeek:
         if (recurrenceDays != null && recurrenceDays.isNotEmpty) {
           // Find the next day that matches one of the recurrence days
           final int currentWeekday = currentDate.weekday; // 1 = Monday, 7 = Sunday
@@ -108,9 +108,13 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
           return currentDate.add(Duration(days: daysToAdd));
         } else {
-          // Simple weekly recurrence without specific days
+          // Fallback to simple weekly recurrence if no days specified
           return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
         }
+
+      case RecurrenceType.weekly:
+        // Simple weekly recurrence - same weekday every N weeks
+        return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
 
       case RecurrenceType.monthly:
         // Calculate the next month, preserving the day of month if possible

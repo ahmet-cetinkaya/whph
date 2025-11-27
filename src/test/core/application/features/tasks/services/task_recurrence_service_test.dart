@@ -97,9 +97,9 @@ void main() {
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
-          title: 'Weekly Task',
+          title: 'Days of Week Task',
           completedAt: null,
-          recurrenceType: RecurrenceType.weekly,
+          recurrenceType: RecurrenceType.daysOfWeek,
           recurrenceDaysString: 'monday,wednesday,friday',
         );
 
@@ -192,20 +192,43 @@ void main() {
         final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
 
         // Assert
-        final expectedDate = DateTime(2024, 1, 22); // Next Monday
+        final expectedDate = DateTime(2024, 1, 22); // Next Monday (7 days later)
         expect(nextDate.year, expectedDate.year);
         expect(nextDate.month, expectedDate.month);
         expect(nextDate.day, expectedDate.day);
       });
 
-      test('calculateNextRecurrenceDate should handle weekly recurrence with specific days', () {
+      test('calculateNextRecurrenceDate should handle weekly recurrence with interval', () {
         // Arrange
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
-          title: 'Weekly Task',
+          title: 'Biweekly Task',
           completedAt: null,
           recurrenceType: RecurrenceType.weekly,
+          recurrenceInterval: 2, // Every 2 weeks
+        );
+
+        final currentDate = DateTime(2024, 1, 15); // Monday
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert
+        final expectedDate = DateTime(2024, 1, 29); // Next Monday in 2 weeks
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence with specific days', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
           recurrenceDaysString: 'monday,wednesday,friday',
         );
 
@@ -216,6 +239,76 @@ void main() {
 
         // Assert
         final expectedDate = DateTime(2024, 1, 17); // Next Wednesday
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence wrapping to next week', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'monday,wednesday,friday',
+        );
+
+        final currentDate = DateTime(2024, 1, 17); // Wednesday
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert
+        final expectedDate = DateTime(2024, 1, 19); // Next Friday
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence with interval', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'tuesday',
+          recurrenceInterval: 2, // Every 2 weeks
+        );
+
+        final currentDate = DateTime(2024, 1, 2); // Tuesday
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert
+        final expectedDate = DateTime(2024, 1, 16); // Next Tuesday in 2 weeks
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence with all days selected', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+        );
+
+        final currentDate = DateTime(2024, 1, 15); // Monday
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert
+        final expectedDate = DateTime(2024, 1, 16); // Next day (Tuesday)
         expect(nextDate.year, expectedDate.year);
         expect(nextDate.month, expectedDate.month);
         expect(nextDate.day, expectedDate.day);
@@ -326,6 +419,123 @@ void main() {
 
         // Assert
         expect(nextDate, currentDate);
+      });
+    });
+
+    group('Edge Cases and Backward Compatibility', () {
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence without specified days', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          // No recurrenceDaysString specified
+        );
+
+        final currentDate = DateTime(2024, 1, 15); // Monday
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert - Should fallback to simple weekly recurrence
+        final expectedDate = DateTime(2024, 1, 22); // Next Monday
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence with empty days string', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: '', // Empty string
+        );
+
+        final currentDate = DateTime(2024, 1, 15); // Monday
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert - Should fallback to simple weekly recurrence
+        final expectedDate = DateTime(2024, 1, 22); // Next Monday
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence at week boundary', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'monday,tuesday',
+        );
+
+        final currentDate = DateTime(2024, 1, 28); // Sunday
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert - Should wrap to next week Monday
+        final expectedDate = DateTime(2024, 1, 29); // Next Monday
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle weekly recurrence across month boundaries', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Weekly Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.weekly,
+          recurrenceInterval: 1,
+        );
+
+        final currentDate = DateTime(2024, 1, 31); // January 31st (Thursday)
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert
+        final expectedDate = DateTime(2024, 2, 7); // February 7th (Thursday)
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('calculateNextRecurrenceDate should handle daysOfWeek recurrence across year boundaries', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Days of Week Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'wednesday',
+        );
+
+        final currentDate = DateTime(2023, 12, 27); // December 27th (Wednesday)
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert - Should go to next Wednesday in January
+        final expectedDate = DateTime(2024, 1, 3); // January 3rd (Wednesday)
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
       });
     });
   });
