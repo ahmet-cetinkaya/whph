@@ -60,14 +60,14 @@ shared:
     tabs:
       custom: Vlastní
       palette: Barvy
-    title: Výběr barvy
+    title: Datum a čas
   data:
     created_date_label: Datum vytvoření
     modified_date_label: Datum úpravy
     name_label: Název
   date: Datum
   date_filter:
-    title: Vybrat rozsah dat
+    title: Datum a čas
     tooltips:
       clear: Vymazat filtr data
       filter: Filtrovat podle data
@@ -93,9 +93,9 @@ shared:
     start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
     time_must_be_at_or_after: Čas musí být od {time} nebo později
     time_must_be_at_or_before: Čas musí být do {time} nebo dříve
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
+    select_time_title: Vybrat čas
+    selected_time: Vybraný čas
+    select_date_title: Vybrat datum
     quick_selection: Quick selection
     quick_selection_title: Quick selection
     refresh_settings: Auto refresh
@@ -171,7 +171,7 @@ shared:
     description: Během spuštění aplikace došlo k chybě. Může to být způsobeno systémovým problémem nebo nekompatibilní konfigurací.
     details_title: Podrobnosti chyby
     report_button: Nahlásit problém
-    title: Chyba při spuštění aplikace
+    title: Datum a čas
   filters:
     search: Hledat
   messages:
@@ -202,7 +202,7 @@ shared:
       or: '"|" znamená NEBO'
       start: '"^" odpovídá začátku textu'
     tips_title: 💡 Tipy
-    title: Příklady vzorů
+    title: Datum a čas
   report_error: Nahlásit chybu
   save_list_options: Uložit možnosti seznamu
   search:
@@ -291,71 +291,71 @@ shared:
     message: Je k dispozici nová verze ({version}).
     question: Chcete aktualizovat nyní?
     success: Aktualizace byla úspěšně stažena!
-    title: Aktualizace k dispozici!
+    title: Datum a čas
   help: Nápověda
   start_tour: Spustit prohlídku
   skip_tour: Přeskočit prohlídku
   validation:
     required: Required
   date_picker:
-    time_picker_minute_label: Minute
+    time_picker_minute_label: Minuta
     all_day: Celý den
     required: "{field} je povinné."
     time_picker_hour_label: Hodina
   date_time_picker:
-    quick_selection_last_month: Last month
-    field_label: Date and time
+    quick_selection_last_month: Minulý měsíc
+    field_label: Datum a čas
     time_picker_minute_label: Minuta
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
+    field_hint: Vybrat datum a čas
+    edit_button_label: Upravit
+    edit_button_hint: Upravit datum a čas
+    title: Datum a čas
     confirm: Potvrdit
     cancel: Zrušit
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    set_time: Nastavit čas
+    selected_time: Vybraný čas
+    select_time_title: Vybrat čas
+    select_date_title: Vybrat datum
+    no_date_selected: Nebylo vybráno žádné datum
+    select_end_date: Vybrat koncové datum
+    no_dates_selected: Nebyly vybrány žádné datumy
+    refresh: Obnovit
+    cannot_select_time_before_min_date: Nelze vybrat čas před {time}
+    cannot_select_time_after_max_date: Nelze vybrat čas po {time}
+    time_must_be_at_or_after: Čas musí být od {time} nebo později
+    time_must_be_at_or_before: Čas musí být do {time} nebo dříve
+    selected_date_must_be_at_or_after: Vybrané datum musí být od {date} nebo později
+    selected_date_must_be_at_or_before: Vybrané datum musí být do {date} nebo dříve
     start_date_cannot_be_after_end_date: Počáteční datum nemůže být po koncovém datu
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Počáteční datum musí být od {date} nebo později
+    end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
+    cannot_select_date_before_min_date: Nelze vybrat datum před {date}
+    cannot_select_date_after_max_date: Nelze vybrat datum po {date}
+    start_date_cannot_be_before_min_date: Počáteční datum nemůže být před {date}
+    end_date_cannot_be_after_max_date: Koncové datum nemůže být po {date}
+    selected_date_time_must_be_after: Vybrané datum a čas musí být po {dateTime}
+    select_date_time_title: Vybrat datum a čas
+    select_date_range_title: Vybrat rozsah dat
     refresh_description: Automaticky obnovit vybraný rozsah dat
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
+    date_time_field_label: Pole data a času
+    date_time_field_hint: Vybrat datum a čas
+    allDay: Celý den
+    refreshDescription: Automaticky obnovit vybraný rozsah dat
+    quick_selection_today: Dnes
+    quick_selection_tomorrow: Zítra
+    quick_selection_weekend: Víkend
+    quick_selection_next_week: Příští týden
+    quick_selection_no_date: Bez data
+    quick_selection_last_week: Minulý týden
   numeric_input:
-    decrement_button_label: Decrease
-    quick_selection_last_month: Last month
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Snížit
+    quick_selection_last_month: Minulý měsíc
+    increment_button_label: Zvýšit
+    text_field_label: Číselná hodnota
+    decrement_hint: Snížit hodnotu
+    increment_hint: Zvýšit hodnotu
+    text_field_hint: Zadejte číslo
+    decrement_tooltip: Snížit hodnotu
+    increment_tooltip: Zvýšit hodnotu
+    at_minimum_value: Dosaženo minimální hodnoty
+    at_maximum_value: Dosaženo maximální hodnoty

@@ -60,24 +60,24 @@ shared:
     tabs:
       custom: Benutzerdefiniert
       palette: Farben
-    title: Farbauswahl
+    title: Datum und Uhrzeit
   data:
     created_date_label: Erstellungsdatum
     modified_date_label: Änderungsdatum
     name_label: Name
   date: Datum
   date_filter:
-    title: Datumsbereich auswählen
+    title: Datum und Uhrzeit
     tooltips:
       clear: Datumsfilter löschen
       filter: Nach Datum filtern
   date_format:
     hint: TT/MM/JJJJ
   datepicker:
-    cannot_select_date_after_max_date: Datum kann nicht nach dem {date} gewählt werden
-    cannot_select_date_before_min_date: Datum kann nicht vor dem {date} gewählt werden
-    cannot_select_time_after_max_date: Zeit kann nicht nach {time} gewählt werden
-    cannot_select_time_before_min_date: Zeit kann nicht vor {time} gewählt werden
+    cannot_select_date_after_max_date: Datum kann nicht nach {date} ausgewählt werden
+    cannot_select_date_before_min_date: Datum kann nicht vor {date} ausgewählt werden
+    cannot_select_time_after_max_date: Zeit kann nicht nach {time} ausgewählt werden
+    cannot_select_time_before_min_date: Zeit kann nicht vor {time} ausgewählt werden
     deadline_cannot_be_before_planned_date:
       Fälligkeitsdatum muss am oder nach dem
       geplanten Datum liegen
@@ -99,9 +99,9 @@ shared:
     start_date_must_be_at_or_after: Startdatum muss am oder nach dem {date} sein
     time_must_be_at_or_after: Zeit muss um oder nach {time} sein
     time_must_be_at_or_before: Zeit muss um oder vor {time} sein
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
+    select_time_title: Zeit auswählen
+    selected_time: Ausgewählte Zeit
+    select_date_title: Datum auswählen
     quick_selection: Quick selection
     quick_selection_title: Quick selection
     refresh_settings: Auto refresh
@@ -177,7 +177,7 @@ shared:
     description: Etwas ist während des App-Starts schiefgelaufen. Dies könnte auf ein Systemproblem oder eine inkompatible Konfiguration zurückzuführen sein.
     details_title: Fehlerdetails
     report_button: Problem melden
-    title: App-Startfehler
+    title: Datum und Uhrzeit
   filters:
     search: Suchen
   messages:
@@ -208,7 +208,7 @@ shared:
       or: '"|" bedeutet ODER'
       start: '"^" entspricht dem Textanfang'
     tips_title: 💡 Tipps
-    title: Muster-Beispiele
+    title: Datum und Uhrzeit
   report_error: Fehler melden
   save_list_options: Listenoptionen speichern
   search:
@@ -297,7 +297,7 @@ shared:
     message: Eine neue Version ({version}) ist verfügbar.
     question: Möchten Sie jetzt aktualisieren?
     success: Update erfolgreich heruntergeladen!
-    title: Update verfügbar!
+    title: Datum und Uhrzeit
   validation:
     required: "{field} ist erforderlich."
   help: Hilfe
@@ -307,58 +307,58 @@ shared:
     time_picker_hour_label: Stunde
     time_picker_minute_label: Minute
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
+    field_label: Datum und Uhrzeit
+    field_hint: Datum und Uhrzeit auswählen
+    edit_button_label: Bearbeiten
+    edit_button_hint: Datum und Uhrzeit bearbeiten
+    title: Datum und Uhrzeit
     confirm: Bestätigen
     cancel: Abbrechen
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    set_time: Zeit einstellen
+    selected_time: Ausgewählte Zeit
+    select_time_title: Zeit auswählen
+    select_date_title: Datum auswählen
+    no_date_selected: Kein Datum ausgewählt
+    select_end_date: Enddatum auswählen
+    no_dates_selected: Keine Daten ausgewählt
+    refresh: Aktualisieren
+    cannot_select_time_before_min_date: Zeit kann nicht vor {time} ausgewählt werden
+    cannot_select_time_after_max_date: Zeit kann nicht nach {time} ausgewählt werden
+    time_must_be_at_or_after: Zeit muss um oder nach {time} sein
+    time_must_be_at_or_before: Zeit muss um oder vor {time} sein
+    selected_date_must_be_at_or_after: Ausgewähltes Datum muss am oder nach dem {date} sein
+    selected_date_must_be_at_or_before: Ausgewähltes Datum muss am oder vor dem {date} sein
     start_date_cannot_be_after_end_date: Startdatum kann nicht nach Enddatum liegen
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Startdatum muss am oder nach dem {date} sein
+    end_date_must_be_at_or_before: Enddatum muss am oder vor dem {date} sein
+    cannot_select_date_before_min_date: Datum kann nicht vor {date} ausgewählt werden
+    cannot_select_date_after_max_date: Datum kann nicht nach {date} ausgewählt werden
+    start_date_cannot_be_before_min_date: Startdatum kann nicht vor dem {date} liegen
+    end_date_cannot_be_after_max_date: Enddatum kann nicht nach dem {date} liegen
+    selected_date_time_must_be_after: Ausgewähltes Datum und Uhrzeit müssen nach {dateTime} sein
+    select_date_time_title: Datum und Uhrzeit auswählen
+    select_date_range_title: Datumsbereich auswählen
     refresh_description: Ausgewählten Datumsbereich automatisch aktualisieren
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: Datum-Uhrzeit-Feld
+    date_time_field_hint: Datum und Uhrzeit auswählen
+    allDay: Ganztägig
+    refreshDescription: Automatisch den ausgewählten Datumsbereich aktualisieren
+    quick_selection_today: Heute
+    quick_selection_tomorrow: Morgen
+    quick_selection_weekend: Wochenende
+    quick_selection_next_week: Nächste Woche
+    quick_selection_no_date: Kein Datum
+    quick_selection_last_week: Vor einer Woche
+    quick_selection_last_month: Vor einem Monat
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Verringern
+    increment_button_label: Erhöhen
+    text_field_label: Numerischer Wert
+    decrement_hint: Wert verringern
+    increment_hint: Wert erhöhen
+    text_field_hint: Zahl eingeben
+    decrement_tooltip: Wert verringern
+    increment_tooltip: Wert erhöhen
+    at_minimum_value: Mindestwert erreicht
+    at_maximum_value: Höchstwert erreicht
   skip_tour: Tour überspringen
