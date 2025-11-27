@@ -262,6 +262,7 @@ tasks:
       lignende opgaver. Låste egenskaber vil ikke blive ryddet, når du nulstiller formularen.
     lock_settings: Lås Indstillinger
     reset_all: Nulstil alle felter
+    task_added_successfully: Opgave tilføjet med succes
     reset_confirm:
       message: Er du sikker på, at du vil nulstille alle felter? Denne handling kan ikke fortrydes.
       title: Nulstil Alle Felter

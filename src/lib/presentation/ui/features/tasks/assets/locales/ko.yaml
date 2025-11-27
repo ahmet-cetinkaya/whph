@@ -262,6 +262,7 @@ tasks:
       않습니다.
     lock_settings: 잠금 설정
     reset_all: 모든 필드 재설정
+    task_added_successfully: 작업이 성공적으로 추가되었습니다
     reset_confirm:
       message: 모든 필드를 재설정하시겠습니까? 이 작업은 되돌릴 수 없습니다.
       title: 모든 필드 재설정

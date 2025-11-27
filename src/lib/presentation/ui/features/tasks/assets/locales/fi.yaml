@@ -262,6 +262,7 @@ tasks:
       samanlaisia tehtäviä. Lukitut ominaisuudet eivät tyhjene kun nollaat lomakkeen.
     lock_settings: Lukitusasetukset
     reset_all: Nollaa kaikki kentät
+    task_added_successfully: Tehtävä lisätty onnistuneesti
     reset_confirm:
       message: Oletko varma että haluat nollata kaikki kentät? Tätä toimintoa ei voi perua.
       title: Nollaa Kaikki Kentät

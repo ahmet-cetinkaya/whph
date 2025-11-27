@@ -261,6 +261,7 @@ tasks:
       liknande uppgifter. Låsta egenskaper rensas inte när du återställer formuläret.
     lock_settings: Lås Inställningar
     reset_all: Återställ alla fält
+    task_added_successfully: Uppgift tillagd med lyckat
     reset_confirm:
       message: Är du säker på att du vill återställa alla fält? Denna åtgärd kan inte ångras.
       title: Återställ Alla Fält

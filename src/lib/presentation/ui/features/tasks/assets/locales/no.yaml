@@ -262,6 +262,7 @@ tasks:
       lignende oppgaver. Låste egenskaper tømmes ikke når du nullstiller skjemaet.
     lock_settings: Lås Innstillinger
     reset_all: Nullstill alle felt
+    task_added_successfully: Oppgave lagt til med suksess
     reset_confirm:
       message: Er du sikker på at du vil nullstille alle felt? Denne handlingen kan ikke angres.
       title: Nullstill Alle Felt

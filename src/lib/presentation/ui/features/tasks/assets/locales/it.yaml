@@ -263,6 +263,7 @@ tasks:
       il modulo.
     lock_settings: Impostazioni blocco
     reset_all: Reimposta tutti i campi
+    task_added_successfully: Attività aggiunta con successo
     reset_confirm:
       message:
         Sei sicuro di voler reimpostare tutti i campi? Questa azione non può

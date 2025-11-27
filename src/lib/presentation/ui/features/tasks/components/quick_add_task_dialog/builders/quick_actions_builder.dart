@@ -4,6 +4,7 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 /// Builds quick action buttons for task dialog
 class QuickActionsBuilder {
@@ -68,7 +69,7 @@ class QuickActionsBuilder {
                   SizedBox(width: 4),
                   Icon(
                     Icons.lock,
-                    size: 12,
+                    size: AppTheme.iconSize2XSmall,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ],

@@ -261,6 +261,7 @@ tasks:
       tarefas semelhantes. Propriedades travadas não serão limpas ao resetar o formulário.
     lock_settings: Configurações de Travamento
     reset_all: Resetar todos os campos
+    task_added_successfully: Tarefa adicionada com sucesso
     reset_confirm:
       message: Tem certeza de que deseja resetar todos os campos? Esta ação não pode ser desfeita.
       title: Resetar Todos os Campos
