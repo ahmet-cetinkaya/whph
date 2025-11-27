@@ -57,12 +57,8 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
       case RecurrenceType.daysOfWeek:
         if (recurrenceDays != null && recurrenceDays.isNotEmpty) {
-          // Find the next day that matches one of the recurrence days
-          final int currentWeekday = currentDate.weekday; // 1 = Monday, 7 = Sunday
-
-          // Convert our enum to weekday numbers
-          final List<int> weekdays = recurrenceDays.map((day) {
-            // Adjust for Dart's DateTime weekday (1-7, Monday-Sunday)
+          final List<int> selectedWeekdays = recurrenceDays.map((day) {
+            // Convert WeekDays enum to weekday numbers (1-7, Monday-Sunday)
             switch (day) {
               case WeekDays.monday:
                 return 1;
@@ -80,34 +76,33 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
                 return 7;
             }
           }).toList();
+          selectedWeekdays.sort();
 
-          // Sort weekdays
-          weekdays.sort();
+          // Start searching from tomorrow (not current day)
+          DateTime searchDate = currentDate.add(const Duration(days: 1));
 
-          // Find the next weekday from the current one
-          int? nextWeekday;
-          for (final weekday in weekdays) {
-            if (weekday > currentWeekday) {
-              nextWeekday = weekday;
-              break;
+          // Search for the next matching weekday within a reasonable range (4 weeks)
+          for (int daysFromNow = 0; daysFromNow < 28; daysFromNow++) {
+            DateTime candidateDate = searchDate.add(Duration(days: daysFromNow));
+            int candidateWeekday = candidateDate.weekday;
+
+            if (selectedWeekdays.contains(candidateWeekday)) {
+              // Apply interval if specified (every N weeks)
+              if (task.recurrenceInterval != null && task.recurrenceInterval! > 1) {
+                // Check if this occurrence fits the interval pattern
+                DateTime referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? task.createdDate;
+                int weeksFromStart = (candidateDate.difference(referenceDate).inDays / 7).floor();
+                if (weeksFromStart % task.recurrenceInterval! == 0) {
+                  return candidateDate;
+                }
+              } else {
+                return candidateDate;
+              }
             }
           }
 
-          // If no next weekday found in the current week, take the first one in the next week
-          nextWeekday ??= weekdays.first;
-
-          // Calculate days to add
-          int daysToAdd = nextWeekday - currentWeekday;
-          if (daysToAdd <= 0) {
-            daysToAdd += 7; // Move to next week
-          }
-
-          // Add interval weeks if specified (skipping the first occurrence)
-          if (task.recurrenceInterval != null && task.recurrenceInterval! > 1) {
-            daysToAdd += (task.recurrenceInterval! - 1) * 7;
-          }
-
-          return currentDate.add(Duration(days: daysToAdd));
+          // Fallback to simple week addition
+          return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
         } else {
           // Fallback to simple weekly recurrence if no days specified
           return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
