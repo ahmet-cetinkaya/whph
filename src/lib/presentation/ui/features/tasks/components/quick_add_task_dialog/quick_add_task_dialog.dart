@@ -806,7 +806,6 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           final theme = Theme.of(context);
-
           return DescriptionDialogContent(
             description: tempDescription,
             onChanged: (value) {
