@@ -7,6 +7,8 @@ import 'package:whph/core/application/features/tasks/commands/save_task_command.
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/core/application/features/tasks/utils/task_recurrence_validator.dart';
+import 'package:whph/core/application/features/tasks/utils/date_helper.dart';
 
 class TaskRecurrenceService implements ITaskRecurrenceService {
   final ILogger _logger;
@@ -17,26 +19,24 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     return task.recurrenceType != RecurrenceType.none;
   }
 
-  /// Determines if a recurring task can create a next instance based on its recurrence rules
   @override
   bool canCreateNextInstance(Task task) {
     if (!isRecurring(task)) {
       return false;
     }
 
-    // If there's no end date or count limit, we can always create new instances
+    TaskRecurrenceValidator.validateRecurrenceParameters(task);
+
     if (task.recurrenceEndDate == null && task.recurrenceCount == null) {
       return true;
     }
 
-    // Check if we've reached the end date
     if (task.recurrenceEndDate != null) {
-      DateTime lastDate = task.plannedDate ?? task.deadlineDate ?? DateTime.now();
-      DateTime nextDate = calculateNextRecurrenceDate(task, lastDate);
+      final DateTime lastDate = task.plannedDate ?? task.deadlineDate ?? DateTime.now();
+      final DateTime nextDate = calculateNextRecurrenceDate(task, lastDate);
       return !nextDate.isAfter(task.recurrenceEndDate!);
     }
 
-    // Check if we've reached the maximum count
     if (task.recurrenceCount != null) {
       return task.recurrenceCount! > 0;
     }
@@ -44,106 +44,36 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     return true;
   }
 
-  /// Calculates the next recurrence date based on the task's recurrence settings
   @override
   DateTime calculateNextRecurrenceDate(Task task, DateTime currentDate) {
+    TaskRecurrenceValidator.validateRecurrenceParameters(task);
+
     final List<WeekDays>? recurrenceDays = getRecurrenceDays(task);
 
-    DateTime nextDate;
     switch (task.recurrenceType) {
       case RecurrenceType.daily:
-        nextDate = currentDate.add(Duration(days: task.recurrenceInterval ?? 1));
-        return nextDate;
+        return currentDate.add(Duration(days: task.recurrenceInterval ?? 1));
 
       case RecurrenceType.daysOfWeek:
         if (recurrenceDays != null && recurrenceDays.isNotEmpty) {
-          final List<int> selectedWeekdays = recurrenceDays.map((day) {
-            // Convert WeekDays enum to weekday numbers (1-7, Monday-Sunday)
-            switch (day) {
-              case WeekDays.monday:
-                return 1;
-              case WeekDays.tuesday:
-                return 2;
-              case WeekDays.wednesday:
-                return 3;
-              case WeekDays.thursday:
-                return 4;
-              case WeekDays.friday:
-                return 5;
-              case WeekDays.saturday:
-                return 6;
-              case WeekDays.sunday:
-                return 7;
-            }
-          }).toList();
-          selectedWeekdays.sort();
+          final selectedWeekdays = recurrenceDays.map((day) => DateHelper.weekDayToNumber(day)).toList()..sort();
 
-          // Start searching from tomorrow (not current day)
-          DateTime searchDate = currentDate.add(const Duration(days: 1));
+          final referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? task.createdDate;
 
-          // Search for the next matching weekday within a reasonable range (4 weeks)
-          for (int daysFromNow = 0; daysFromNow < 28; daysFromNow++) {
-            DateTime candidateDate = searchDate.add(Duration(days: daysFromNow));
-            int candidateWeekday = candidateDate.weekday;
-
-            if (selectedWeekdays.contains(candidateWeekday)) {
-              // Apply interval if specified (every N weeks)
-              if (task.recurrenceInterval != null && task.recurrenceInterval! > 1) {
-                // Check if this occurrence fits the interval pattern
-                DateTime referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? task.createdDate;
-                int weeksFromStart = (candidateDate.difference(referenceDate).inDays / 7).floor();
-                if (weeksFromStart % task.recurrenceInterval! == 0) {
-                  return candidateDate;
-                }
-              } else {
-                return candidateDate;
-              }
-            }
-          }
-
-          // Fallback to simple week addition
-          return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
-        } else {
-          // Fallback to simple weekly recurrence if no days specified
-          return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
+          return DateHelper.findNextWeekdayOccurrence(
+            currentDate,
+            selectedWeekdays,
+            task.recurrenceInterval,
+            referenceDate,
+          );
         }
+        return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
 
       case RecurrenceType.weekly:
-        // Simple weekly recurrence - same weekday every N weeks
         return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
 
       case RecurrenceType.monthly:
-        // Calculate the next month, preserving the day of month if possible
-        int year = currentDate.year;
-        int month = currentDate.month + (task.recurrenceInterval ?? 1);
-
-        // Adjust for year overflow
-        while (month > 12) {
-          month -= 12;
-          year++;
-        }
-
-        // Create a new date with the calculated year and month
-        final DateTime nextDate = DateTime(
-          year,
-          month,
-          1, // Start with first day of month
-          currentDate.hour,
-          currentDate.minute,
-        );
-
-        // Try to use the same day of month, but cap to last day of the month
-        final int desiredDay = currentDate.day;
-        final int lastDayOfMonth = DateTime(nextDate.year, nextDate.month + 1, 0).day;
-        final int actualDay = desiredDay > lastDayOfMonth ? lastDayOfMonth : desiredDay;
-
-        return DateTime(
-          nextDate.year,
-          nextDate.month,
-          actualDay,
-          nextDate.hour,
-          nextDate.minute,
-        );
+        return DateHelper.calculateNextMonthDate(currentDate, task.recurrenceInterval ?? 1);
 
       case RecurrenceType.yearly:
         return DateTime(

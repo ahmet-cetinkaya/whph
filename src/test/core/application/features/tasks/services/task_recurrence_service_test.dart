@@ -710,6 +710,216 @@ void main() {
         expect(result.deadlineDate!.minute, 30);
       });
     });
+
+    group('Input Validation Tests', () {
+      test('should throw ArgumentError for negative recurrence interval', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Invalid Recurring Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daily,
+          recurrenceInterval: -1, // Negative interval
+        );
+
+        // Act & Assert
+        expect(
+          () => service.calculateNextRecurrenceDate(task, DateTime.now()),
+          throwsA(isA<ArgumentError>()),
+        );
+      });
+
+      test('should throw ArgumentError for zero recurrence interval', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Invalid Recurring Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daily,
+          recurrenceInterval: 0, // Zero interval
+        );
+
+        // Act & Assert
+        expect(
+          () => service.calculateNextRecurrenceDate(task, DateTime.now()),
+          throwsA(isA<ArgumentError>()),
+        );
+      });
+
+      test('should throw ArgumentError for future recurrence start date', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Future Date Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daily,
+          recurrenceStartDate: DateTime.now().add(const Duration(days: 400)), // Too far in future
+        );
+
+        // Act & Assert
+        expect(
+          () => service.calculateNextRecurrenceDate(task, DateTime.now()),
+          throwsA(isA<ArgumentError>()),
+        );
+      });
+
+      test('should handle daysOfWeek with no days specified (backward compatibility)', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'No Days Specified Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: '', // Empty days string - should fallback to weekly
+        );
+
+        final currentDate = DateTime(2024, 1, 15); // Monday
+
+        // Act & Assert - Should fallback to simple weekly recurrence
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+        final expectedDate = DateTime(2024, 1, 22); // Next Monday
+        expect(nextDate.year, expectedDate.year);
+        expect(nextDate.month, expectedDate.month);
+        expect(nextDate.day, expectedDate.day);
+      });
+
+      test('should validate parameters in canCreateNextInstance method', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Invalid Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daily,
+          recurrenceInterval: -1, // Invalid interval
+        );
+
+        // Act & Assert
+        expect(
+          () => service.canCreateNextInstance(task),
+          throwsA(isA<ArgumentError>()),
+        );
+      });
+    });
+
+    group('Boundary Condition Tests', () {
+      test('should handle year boundaries correctly for monthly recurrence', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Year Boundary Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.monthly,
+          recurrenceInterval: 1,
+        );
+
+        final currentDate = DateTime(2023, 12, 15); // December 15th
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert
+        expect(nextDate.year, 2024);
+        expect(nextDate.month, 1);
+        expect(nextDate.day, 15);
+      });
+
+      test('should handle leap years correctly for monthly recurrence', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Leap Year Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.monthly,
+          recurrenceInterval: 1,
+        );
+
+        final currentDate = DateTime(2024, 1, 31); // January 31st in leap year
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert - Should cap to February 29th in leap year
+        expect(nextDate.year, 2024);
+        expect(nextDate.month, 2);
+        expect(nextDate.day, 29);
+      });
+
+      test('should handle month end boundaries correctly', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Month End Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.monthly,
+          recurrenceInterval: 1,
+        );
+
+        final currentDate = DateTime(2024, 3, 31); // March 31st
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert - April has 30 days
+        expect(nextDate.year, 2024);
+        expect(nextDate.month, 4);
+        expect(nextDate.day, 30);
+      });
+
+      test('should handle extreme daysOfWeek search scenario', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Extreme Search Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'saturday', // Only Saturday
+          recurrenceInterval: 13, // Every 13 weeks
+        );
+
+        // Start from a Monday far from a Saturday matching the interval
+        final currentDate = DateTime(2024, 1, 1); // Monday
+
+        // Act - Should not hang or take too long
+        final stopwatch = Stopwatch()..start();
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+        stopwatch.stop();
+
+        // Assert
+        expect(stopwatch.elapsedMilliseconds, lessThan(50)); // Should be very fast
+        expect(nextDate.weekday, DateTime.saturday);
+      });
+
+      test('should handle non-leap year February correctly', () {
+        // Arrange
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Non-leap Year February Task',
+          completedAt: null,
+          recurrenceType: RecurrenceType.monthly,
+          recurrenceInterval: 1,
+        );
+
+        final currentDate = DateTime(2023, 1, 31); // January 31st, 2023 (not leap year)
+
+        // Act
+        final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+        // Assert - February 2023 has 28 days
+        expect(nextDate.year, 2023);
+        expect(nextDate.month, 2);
+        expect(nextDate.day, 28);
+      });
+    });
   });
 }
 
