@@ -31,7 +31,9 @@ tasks:
     description:
       hint: Dodaj opis...
       label: Opis
-      context: Dodaj szczegółowe informacje o swoim zadaniu, aby pomóc sobie pamiętać kluczowe szczegóły i śledzić postępy.
+      context:
+        Dodaj szczegółowe informacje o swoim zadaniu, aby pomóc sobie pamiętać
+        kluczowe szczegóły i śledzić postępy.
     elapsed_time:
       label: Czas wykonania
     is_completed: Ukończone
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Całkowity czas wykonania
   estimated_time:
     label: Szacowany czas
-    description: Ustaw realistyczny szacowany czas, aby efektywnie zaplanować zadanie i śledzić produktywność.
+    description:
+      Ustaw realistyczny szacowany czas, aby efektywnie zaplanować zadanie
+      i śledzić produktywność.
   errors:
     add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu
     adding_tag: Nie udało się dodać tagu
@@ -83,112 +87,206 @@ tasks:
       filter_by_tags: Filtruj według tagów
   help:
     details:
-      content: |
-        Opanuj zarządzanie zadaniami i zmaksymalizuj produktywność poprzez organizowanie, ustalanie priorytetów i śledzenie swojej pracy w sposób efektywny.
+      content:
+        "Opanuj zarządzanie zadaniami i zmaksymalizuj produktywność poprzez
+        organizowanie, ustalanie priorytetów i śledzenie swojej pracy w sposób efektywny.
+
 
         ## ⚡ Dlaczego to ważne?
 
-        Efektywne zarządzanie zadaniami to podstawa produktywności. Właściwie ustrukturyzowane zadania z jasnymi priorytetami i terminami pomagają skupić się na tym, co najważniejsze i zapobiegają przeoczeniu ważnej pracy.
+
+        Efektywne zarządzanie zadaniami to podstawa produktywności. Właściwie ustrukturyzowane
+        zadania z jasnymi priorytetami i terminami pomagają skupić się na tym, co
+        najważniejsze i zapobiegają przeoczeniu ważnej pracy.
+
 
         ## 📝 Organizacja zadań
 
-        Strukturyzuj swoje zadania ze szczegółowymi informacjami, aby zachować jasność i skupienie. Używaj tagów, priorytetów i szacowania czasu, aby stworzyć systematyczne podejście do obciążenia pracą.
+
+        Strukturyzuj swoje zadania ze szczegółowymi informacjami, aby zachować jasność
+        i skupienie. Używaj tagów, priorytetów i szacowania czasu, aby stworzyć systematyczne
+        podejście do obciążenia pracą.
+
 
         - 🏷️ Kategoryzuj zadania za pomocą znaczących tagów
+
         - ⚖️ Ustalaj priorytety używając sprawdzonych frameworków
+
         - ⏱️ Dokładnie szacuj wymagania czasowe
+
         - 📅 Planuj realistyczne terminy i harmonogramy
+
 
         ## ⏰ Zarządzanie czasem
 
-        Śledź swoje inwestycje czasowe, aby zrozumieć wzorce pracy i poprawić efektywność. Właściwe zarządzanie czasem przekształca rozproszone wysiłki w skupioną produktywność.
+
+        Śledź swoje inwestycje czasowe, aby zrozumieć wzorce pracy i poprawić efektywność.
+        Właściwe zarządzanie czasem przekształca rozproszone wysiłki w skupioną produktywność.
+
 
         - 📊 Monitoruj rzeczywisty vs szacowany czas
+
         - 🎯 Skupiaj się na działaniach o wysokim wpływie
+
         - 📈 Analizuj wzorce produktywności w czasie
+
         - ⏳ Równoważ pilne i ważne zadania
+
 
         ## 📊 Framework priorytetów (Macierz Eisenhowera)
 
-        Organizuj swoje zadania używając tej sprawdzonej metody priorytetyzacji, aby zapewnić, że zawsze pracujesz nad właściwymi rzeczami we właściwym czasie.
+
+        Organizuj swoje zadania używając tej sprawdzonej metody priorytetyzacji, aby
+        zapewnić, że zawsze pracujesz nad właściwymi rzeczami we właściwym czasie.
+
 
         - 🔥 **Pilne i ważne:** Obsługuj natychmiast - zarządzanie kryzysowe i terminy
+
         - 📈 **Ważne, niepilne:** Planuj strategicznie - planowanie i rozwój umiejętności
+
         - ⚡ **Pilne, nieważne:** Deleguj gdy to możliwe - przerwania i niektóre spotkania
-        - 🗑️ **Ani pilne, ani ważne:** Eliminuj - marnowanie czasu i działania o niskiej wartości
+
+        - 🗑️ **Ani pilne, ani ważne:** Eliminuj - marnowanie czasu i działania o niskiej
+        wartości
+
+        "
       title: Przewodnik zarządzania zadaniami i produktywności
     overview:
-      content: |
-        Przekształć swoją produktywność dzięki systematycznemu zarządzaniu zadaniami, które pomaga pozostać zorganizowanym, skupionym i kontrolować obciążenie pracą.
+      content:
+        "Przekształć swoją produktywność dzięki systematycznemu zarządzaniu
+        zadaniami, które pomaga pozostać zorganizowanym, skupionym i kontrolować obciążenie
+        pracą.
+
 
         ## ⚡ Dlaczego to ważne?
 
-        Efektywne zarządzanie zadaniami to kamień węgielny osobistego i zawodowego sukcesu. Poprzez systematyczne organizowanie pracy redukujesz stres, konsekwentnie dotrzymujesz terminów i tworzysz przestrzeń dla znaczącego postępu w ważnych celach.
+
+        Efektywne zarządzanie zadaniami to kamień węgielny osobistego i zawodowego
+        sukcesu. Poprzez systematyczne organizowanie pracy redukujesz stres, konsekwentnie
+        dotrzymujesz terminów i tworzysz przestrzeń dla znaczącego postępu w ważnych
+        celach.
+
 
         ## 📋 Organizacja zadań
 
-        Stwórz ustrukturyzowane podejście do zarządzania swoimi obowiązkami. Dobrze zorganizowane zadania prowadzą do jasnych priorytetów i efektywnej realizacji codziennej pracy.
+
+        Stwórz ustrukturyzowane podejście do zarządzania swoimi obowiązkami. Dobrze
+        zorganizowane zadania prowadzą do jasnych priorytetów i efektywnej realizacji
+        codziennej pracy.
+
 
         - ✅ Twórz i kategoryzuj zadania systematycznie
+
         - 🏷️ Grupuj powiązaną pracę za pomocą znaczących tagów
+
         - ⚖️ Ustalaj jasne priorytety i terminy
+
         - 🔍 Używaj filtrów i wyszukiwania dla szybkiego dostępu
+
 
         ## ⏱️ Śledzenie czasu i skupienie
 
-        Monitoruj swoje inwestycje czasowe, aby zrozumieć wzorce produktywności i zoptymalizować przepływ pracy. Świadomość czasu prowadzi do lepszego planowania i poprawy wydajności.
+
+        Monitoruj swoje inwestycje czasowe, aby zrozumieć wzorce produktywności i
+        zoptymalizować przepływ pracy. Świadomość czasu prowadzi do lepszego planowania
+        i poprawy wydajności.
+
 
         - ⏰ Śledź rzeczywisty czas spędzony na zadaniu
+
         - 🎯 Używaj trybu maratonu dla skupionych sesji pracy
+
         - 📊 Analizuj wzorce ukończenia i trendy
+
         - 🔄 Regularnie przeglądaj i dostosowuj szacowania czasu
+
 
         ## 📈 Monitorowanie postępu
 
-        Śledź swoje osiągnięcia i ucz się ze swoich wzorców pracy. Regularne przeglądy i refleksje napędzają ciągłe doskonalenie systemu produktywności.
+
+        Śledź swoje osiągnięcia i ucz się ze swoich wzorców pracy. Regularne przeglądy
+        i refleksje napędzają ciągłe doskonalenie systemu produktywności.
+
 
         - 📈 Monitoruj wskaźniki ukończenia zadań
+
         - 📅 Przeglądaj dzienny i tygodniowy postęp
+
         - 🎯 Identyfikuj wąskie gardła i możliwości optymalizacji
+
         - 🏆 Świętuj osiągnięcia i ukończenie kamieni milowych
+
+        "
       title: Przewodnik zarządzania zadaniami i przepływem pracy
   marathon:
     details:
       title: Szczegóły zadania
     help:
-      content: |
-        Zmaksymalizuj swoje skupienie i produktywność dzięki ustrukturyzowanym sesjom pracy, które pomagają utrzymać głęboką koncentrację jednocześnie zapobiegając wypaleniu.
+      content:
+        "Zmaksymalizuj swoje skupienie i produktywność dzięki ustrukturyzowanym
+        sesjom pracy, które pomagają utrzymać głęboką koncentrację jednocześnie zapobiegając
+        wypaleniu.
+
 
         ## ⚡ Dlaczego to ważne?
 
-        Skupione sesje pracy są niezbędne dla głębokiej pracy i wysokiej jakości rezultatów. Pracując w ustrukturyzowanych interwałach z regularnymi przerwami, utrzymujesz szczytową wydajność umysłową jednocześnie unikając zmęczenia, które wynika z przedłużonych, nieskupionych okresów pracy.
+
+        Skupione sesje pracy są niezbędne dla głębokiej pracy i wysokiej jakości rezultatów.
+        Pracując w ustrukturyzowanych interwałach z regularnymi przerwami, utrzymujesz
+        szczytową wydajność umysłową jednocześnie unikając zmęczenia, które wynika
+        z przedłużonych, nieskupionych okresów pracy.
+
 
         ## ⏰ Sesje skupienia z ograniczonym czasem
 
-        Używaj sprawdzonych technik zarządzania czasem do strukturyzowania pracy dla maksymalnej efektywności. Ustrukturyzowane sesje pomagają utrzymać koncentrację i skuteczniej ukończyć zadania.
+
+        Używaj sprawdzonych technik zarządzania czasem do strukturyzowania pracy dla
+        maksymalnej efektywności. Ustrukturyzowane sesje pomagają utrzymać koncentrację
+        i skuteczniej ukończyć zadania.
+
 
         - 🎯 **Klasyczne skupienie:** 25 minut pracy / 5 minut przerwy
+
         - 📈 **Rozszerzone skupienie:** 50 minut pracy / 10 minut przerwy
+
         - 🔄 **Długa przerwa:** 15-30 minut po 4 sesjach
+
         - ⚖️ **Niestandardowy czas:** Dostosuj interwały do swojego naturalnego rytmu
+
 
         ## 🧠 Korzyści poznawcze
 
-        Ustrukturyzowane sesje pracy wykorzystują naturalne cykle uwagi mózgu, aby zoptymalizować wydajność i zapobiec zmęczeniu umysłowemu, które obniża jakość i kreatywność.
+
+        Ustrukturyzowane sesje pracy wykorzystują naturalne cykle uwagi mózgu, aby
+        zoptymalizować wydajność i zapobiec zmęczeniu umysłowemu, które obniża jakość
+        i kreatywność.
+
 
         - 🎯 Wzmocnione skupienie i głęboka koncentracja
+
         - 🔋 Zmniejszone zmęczenie umysłowe i wypalenie
+
         - 💪 Utrzymana motywacja poprzez regularne osiągnięcia
+
         - ⚡ Poprawiona świadomość czasu i dokładność planowania
+
 
         ## 📊 Optymalizacja wydajności
 
-        Śledź swoje wzorce skupionej pracy, aby zrozumieć swoje szczytowe czasy produktywności i zoptymalizować harmonogram dla maksymalnej efektywności.
+
+        Śledź swoje wzorce skupionej pracy, aby zrozumieć swoje szczytowe czasy produktywności
+        i zoptymalizować harmonogram dla maksymalnej efektywności.
+
 
         - 🏷️ Kategoryzuj sesje skupienia tagami do analizy
+
         - 📈 Monitoruj wzorce produktywności w różnych czasach
+
         - 🚫 Eliminuj rozproszenia przed rozpoczęciem sesji
+
         - 🚶 Używaj przerw na ruch fizyczny i reset umysłowy
+
+        "
       title: Przewodnik skupionych sesji pracy i zarządzania czasem
       tooltip: Podpowiedź pomocy maratonu
     label: Tryb maratonu
@@ -242,7 +340,9 @@ tasks:
   priority:
     selection:
       title: Wybierz priorytet
-    description: Ustaw priorytet zadania używając macierzy Eisenhowera - klasyfikacja Pilne/Ważne dla efektywnego zarządzania zadaniami
+    description:
+      Ustaw priorytet zadania używając macierzy Eisenhowera - klasyfikacja
+      Pilne/Ważne dla efektywnego zarządzania zadaniami
     tooltips:
       none: Brak priorytetu
       not_urgent_important: Niepilne ale ważne
@@ -276,7 +376,7 @@ tasks:
       deadline_date: "Termin: {date}"
       deadline_date_not_set: "Termin: Nie ustawiono"
       estimated_time: "Szacowany czas: {time}"
-      estimated_time_default: "(domyślny)"
+      estimated_time_default: (domyślny)
       estimated_time_not_set: "Szacowany czas: Nie ustawiono"
       planned_date: "Planowane: {date}"
       planned_date_not_set: "Planowane: Nie ustawiono"
@@ -309,12 +409,18 @@ tasks:
       true: w
       everyDay: każdy dzień
       starts: rozpoczyna się
-      "on": "w"
+      "on": w
     weekDays: Dni tygodnia
     weekSuffix: tydzień/tygodnie
     weekly: Tygodniowo
     yearSuffix: rok/lata
     yearly: Rocznie
+    daysOfWeek: Dni tygodnia
+    ends:
+      label: Kończy się
+      never: Nigdy
+      onDate: W dacie
+      after: Po
   reminder:
     atTime: O zaplanowanej godzinie
     deadlineReminderLabel: Przypomnienie o terminie
@@ -340,26 +446,50 @@ tasks:
   tour:
     task_management:
       title: Zarządzanie zadaniami
-      description: Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami. Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych zadaniach.
+      description:
+        Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami.
+        Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych
+        zadaniach.
     add_tasks:
       title: Dodaj nowe zadania
-      description: Szybko twórz nowe zadania za pomocą tego przycisku. Ustaw tytuły, priorytety, terminy, tagi i więcej. Dodaj podzadania i przypomnienia, aby być na bieżąco z pracą.
+      description:
+        Szybko twórz nowe zadania za pomocą tego przycisku. Ustaw tytuły,
+        priorytety, terminy, tagi i więcej. Dodaj podzadania i przypomnienia, aby
+        być na bieżąco z pracą.
     your_tasks:
       title: Twoje zadania
-      description: Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu. Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone, edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
+      description:
+        Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu.
+        Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone,
+        edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
     filter_search:
       title: Filtruj i szukaj
-      description: Zaawansowane opcje filtrowania, aby znaleźć dokładnie to, czego potrzebujesz. Filtruj według tagów, dat, statusu ukończenia lub użyj wyszukiwania. Sortuj zadania i przełączaj podzadania dla lepszej organizacji.
+      description:
+        Zaawansowane opcje filtrowania, aby znaleźć dokładnie to, czego
+        potrzebujesz. Filtruj według tagów, dat, statusu ukończenia lub użyj wyszukiwania.
+        Sortuj zadania i przełączaj podzadania dla lepszej organizacji.
     marathon:
       app_usage:
         title: Użycie aplikacji i analiza czasu
-        description: Monitoruj wzorce użycia aplikacji i analizuj czas poświęcany różnym aktywnościom. Zdobądź wgląd w swoje cyfrowe nawyki i zoptymalizuj produktywność.
+        description:
+          Monitoruj wzorce użycia aplikacji i analizuj czas poświęcany
+          różnym aktywnościom. Zdobądź wgląd w swoje cyfrowe nawyki i zoptymalizuj
+          produktywność.
       usage_statistics:
         title: Statystyki użycia
-        description: Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i identyfikuj obszary do poprawy.
+        description:
+          Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj
+          swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i
+          identyfikuj obszary do poprawy.
       filter_sort:
         title: Filtruj i sortuj
-        description: Filtruj dane użycia aplikacji według zakresu dat, tagów lub konkretnych urządzeń. Sortuj i organizuj swoje statystyki użycia, aby uzyskać lepszy wgląd w zarządzanie czasem.
+        description:
+          Filtruj dane użycia aplikacji według zakresu dat, tagów lub konkretnych
+          urządzeń. Sortuj i organizuj swoje statystyki użycia, aby uzyskać lepszy
+          wgląd w zarządzanie czasem.
       tracking_settings:
         title: Ustawienia śledzenia
-        description: Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie i zarządzaj, które aplikacje mają być monitorowane. Dostosuj śledzenie do swoich potrzeb produktywnościowych.
+        description:
+          Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie
+          i zarządzaj, które aplikacje mają być monitorowane. Dostosuj śledzenie do
+          swoich potrzeb produktywnościowych.

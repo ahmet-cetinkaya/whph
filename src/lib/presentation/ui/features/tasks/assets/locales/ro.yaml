@@ -31,7 +31,9 @@ tasks:
     description:
       hint: Adaugă descriere...
       label: Descriere
-      context: Adăugați informații detaliate despre sarcina dvs. pentru a vă ajuta să rețineți detaliile cheie și să urmăriți progresul.
+      context:
+        Adăugați informații detaliate despre sarcina dvs. pentru a vă ajuta
+        să rețineți detaliile cheie și să urmăriți progresul.
     elapsed_time:
       label: Timp Scurs
     is_completed: Finalizată
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Timp Total Scurs
   estimated_time:
     label: Timp Estimat
-    description: Stabiliți o estimare de timp realistă pentru a planifica eficient sarcina și a urmări productivitatea.
+    description:
+      Stabiliți o estimare de timp realistă pentru a planifica eficient
+      sarcina și a urmări productivitatea.
   errors:
     add_tag: Eroare neașteptată la adăugarea etichetei
     adding_tag: Eșec la adăugarea etichetei
@@ -83,112 +87,132 @@ tasks:
       filter_by_tags: Filtru după etichete
   help:
     details:
-      content: |
-        Stăpânește gestionarea sarcinilor și maximizează productivitatea organizând, prioritizând și urmărind munca ta eficient.
-
-        ## ⚡ De Ce Este Important?
-
-        Gestionarea eficientă a sarcinilor este baza productivității. Sarcini structurate corect cu priorități și termene clare te ajută să te concentrezi pe ceea ce contează cel mai mult și previne ca munca importantă să cadă prin crăpături.
-
-        ## 📝 Organizare Sarcini
-
-        Structurează sarcinile tale cu detalii cuprinzătoare pentru a menține claritatea și focusul. Folosește etichete, priorități și estimări de timp pentru a crea o abordare sistematică a sarcinilor tale.
-
-        - 🏷️ Categorizează sarcinile cu etichete semnificative
-        - ⚖️ Setează priorități folosind cadre dovedite
-        - ⏱️ Estimează cerințele de timp cu acuratețe
-        - 📅 Planifică termene și programe realiste
-
-        ## ⏰ Gestionare Timp
-
-        Urmărește investițiile tale de timp pentru a înțelege modelele tale de muncă și a îmbunătăți eficiența. Gestionarea timpului corect transformă eforturile dispersate în productivitate focalizată.
-
-        - 📊 Monitorizează timpul real vs estimat
-        - 🎯 Concentrează-te pe activități cu impact ridicat
-        - 📈 Analizează modelele de productivitate în timp
-        - ⏳ Echilibrează sarcinile urgente și importante
-
-        ## 📊 Cadru de Prioritate (Matrița Eisenhower)
-
-        Organizează sarcinile tale folosind această metodă de prioritizare dovedită pentru a te asigura că lucrezi întotdeauna la lucrurile potrivite la momentul potrivit.
-
-        - 🔥 **Urgentă & Importantă:** Gestionează imediat - gestionarea crizelor și termenele
-        - 📈 **Importantă, Nu Urgentă:** Planifică strategic - planificare și dezvoltare de abilități  
-        - ⚡ **Urgentă, Nu Importantă:** Delegă când este posibil - întreruperi și unele întâlniri
-        - 🗑️ **Nici Urgentă nici Importantă:** Elimină - risipitori de timp și activități de valoare scăzută
+      content:
+        "Stăpânește gestionarea sarcinilor și maximizează productivitatea organizând,\
+        \ prioritizând și urmărind munca ta eficient.\n\n## ⚡ De Ce Este Important?\n\
+        \nGestionarea eficientă a sarcinilor este baza productivității. Sarcini structurate\
+        \ corect cu priorități și termene clare te ajută să te concentrezi pe ceea\
+        \ ce contează cel mai mult și previne ca munca importantă să cadă prin crăpături.\n\
+        \n## \U0001F4DD Organizare Sarcini\n\nStructurează sarcinile tale cu detalii\
+        \ cuprinzătoare pentru a menține claritatea și focusul. Folosește etichete,\
+        \ priorități și estimări de timp pentru a crea o abordare sistematică a sarcinilor\
+        \ tale.\n\n- \U0001F3F7️ Categorizează sarcinile cu etichete semnificative\n\
+        - ⚖️ Setează priorități folosind cadre dovedite\n- ⏱️ Estimează cerințele\
+        \ de timp cu acuratețe\n- \U0001F4C5 Planifică termene și programe realiste\n\
+        \n## ⏰ Gestionare Timp\n\nUrmărește investițiile tale de timp pentru a înțelege\
+        \ modelele tale de muncă și a îmbunătăți eficiența. Gestionarea timpului corect\
+        \ transformă eforturile dispersate în productivitate focalizată.\n\n- \U0001F4CA\
+        \ Monitorizează timpul real vs estimat\n- \U0001F3AF Concentrează-te pe activități\
+        \ cu impact ridicat\n- \U0001F4C8 Analizează modelele de productivitate în\
+        \ timp\n- ⏳ Echilibrează sarcinile urgente și importante\n\n## \U0001F4CA\
+        \ Cadru de Prioritate (Matrița Eisenhower)\n\nOrganizează sarcinile tale folosind\
+        \ această metodă de prioritizare dovedită pentru a te asigura că lucrezi întotdeauna\
+        \ la lucrurile potrivite la momentul potrivit.\n\n- \U0001F525 **Urgentă &\
+        \ Importantă:** Gestionează imediat - gestionarea crizelor și termenele\n\
+        - \U0001F4C8 **Importantă, Nu Urgentă:** Planifică strategic - planificare\
+        \ și dezvoltare de abilități  \n- ⚡ **Urgentă, Nu Importantă:** Delegă când\
+        \ este posibil - întreruperi și unele întâlniri\n- \U0001F5D1️ **Nici Urgentă\
+        \ nici Importantă:** Elimină - risipitori de timp și activități de valoare\
+        \ scăzută\n"
       title: Gestionare Sarcini & Ghid de Productivitate
     overview:
-      content: |
-        Transformă productivitatea ta cu gestionare sistematică a sarcinilor care te ajută să rămâi organizat, focalizat și în control al sarcinilor tale.
+      content:
+        "Transformă productivitatea ta cu gestionare sistematică a sarcinilor
+        care te ajută să rămâi organizat, focalizat și în control al sarcinilor tale.
+
 
         ## ⚡ De Ce Este Important?
 
-        Gestionarea eficientă a sarcinilor este piatra de temelie a succesului personal și profesional. Prin organizarea muncii tale sistematic, reduci stresul, respecți termenele constant și creezi spațiu pentru progres semnificativ în obiective importante.
+
+        Gestionarea eficientă a sarcinilor este piatra de temelie a succesului personal
+        și profesional. Prin organizarea muncii tale sistematic, reduci stresul, respecți
+        termenele constant și creezi spațiu pentru progres semnificativ în obiective
+        importante.
+
 
         ## 📋 Organizare Sarcini
 
-        Creează o abordare structurată pentru gestionarea responsabilităților tale. Sarcini bine organizate duc la priorități clare și execuție eficientă a muncii zilnice.
+
+        Creează o abordare structurată pentru gestionarea responsabilităților tale.
+        Sarcini bine organizate duc la priorități clare și execuție eficientă a muncii
+        zilnice.
+
 
         - ✅ Creează și categorizează sarcinile sistematic
+
         - 🏷️ Grupează munca legată cu etichete semnificative
+
         - ⚖️ Setează priorități și termene clare
+
         - 🔍 Folosește filtre și căutare pentru acces rapid
+
 
         ## ⏱️ Urmărire Timp & Fokus
 
-        Monitorizează investițiile tale de timp pentru a înțelege modelele de productivitate și a optimiza fluxul tău de muncă. Conștientizarea timpului duce la planificare mai bună și performanță îmbunătățită.
+
+        Monitorizează investițiile tale de timp pentru a înțelege modelele de productivitate
+        și a optimiza fluxul tău de muncă. Conștientizarea timpului duce la planificare
+        mai bună și performanță îmbunătățită.
+
 
         - ⏰ Urmărește timpul real petrecut pe sarcină
+
         - 🎯 Folosește Modul Maraton pentru sesiuni de muncă focalizate
+
         - 📊 Analizează modelele de finalizare și tendințe
+
         - 🔄 Revizuiește și ajustează estimările de timp regulat
+
 
         ## 📈 Monitorizare Progres
 
-        Ține evidența realizărilor tale și învață din modelele tale de muncă. Revizuirea și reflecția regulată impulsionează îmbunătățirea continuă a sistemului tău de productivitate.
+
+        Ține evidența realizărilor tale și învață din modelele tale de muncă. Revizuirea
+        și reflecția regulată impulsionează îmbunătățirea continuă a sistemului tău
+        de productivitate.
+
 
         - 📈 Monitorizează ratele de finalizare a sarcinilor
+
         - 📅 Revizuiește progresul zilnic și săptămânal
+
         - 🎯 Identifică blocaje și oportunități de optimizare
+
         - 🏆 Sărbătorește realizări și finalizări de etape
+
+        "
       title: Gestionare Sarcini & Ghid de Flux de Muncă
   marathon:
     details:
       title: Detalii Sarcină
     help:
-      content: |
-        Maximizează focusul și productivitatea ta cu sesiuni de muncă structurate care te ajută să menții concentrare profundă prevenind epuizarea.
-
-        ## ⚡ De Ce Este Important?
-
-        Sesiunile de muncă focalizate sunt esențiale pentru muncă profundă și ieșire de înaltă calitate. Prin lucrul în intervale structurate cu pauze regulate, menții performanța mentală de vârf evitând oboseala din perioade prelungite de muncă nefocalizată.
-
-        ## ⏰ Sesiuni de Fokus Limitate în Timp
-
-        Folosește tehnici dovedite de gestionare a timpului pentru a structura munca ta pentru eficiență maximă. Sesiunile structurate te ajută să menții concentrarea și să finalizezi sarcinile mai eficient.
-
-        - 🎯 **Fokus Clasic:** 25 minute muncă / 5 minute pauză
-        - 📈 **Fokus Extins:** 50 minute muncă / 10 minute pauză  
-        - 🔄 **Pauză Lungă:** 15-30 minute după 4 sesiuni
-        - ⚖️ **Timing Personalizat:** Ajustează intervalele pentru a se potrivi ritmului tău natural
-
-        ## 🧠 Beneficii Cognitive
-
-        Sesiunile de muncă structurate exploatează ciclurile naturale de atenție ale creierului tău pentru a optimiza performanța și a preveni oboseala mentală care reduce calitatea și creativitatea.
-
-        - 🎯 Fokus îmbunătățit și concentrare profundă
-        - 🔋 Oboseală mentală redusă și epuizare
-        - 💪 Motivație susținută prin realizări regulate
-        - ⚡ Conștientizare a timpului îmbunătățită și precizie de planificare
-
-        ## 📊 Optimizare Performanță
-
-        Urmărește modelele tale de muncă focalizată pentru a înțelege orele tale de vârf de productivitate și a optimiza programul tău pentru eficiență maximă.
-
-        - 🏷️ Categorizează sesiunile de fokus cu etichete pentru analiză
-        - 📈 Monitorizează modelele de productivitate în diferite ore
-        - 🚫 Elimină distracțiile înainte de a începe sesiunile
-        - 🚶 Folosește pauzele pentru mișcare fizică și reset mental
+      content:
+        "Maximizează focusul și productivitatea ta cu sesiuni de muncă structurate\
+        \ care te ajută să menții concentrare profundă prevenind epuizarea.\n\n##\
+        \ ⚡ De Ce Este Important?\n\nSesiunile de muncă focalizate sunt esențiale\
+        \ pentru muncă profundă și ieșire de înaltă calitate. Prin lucrul în intervale\
+        \ structurate cu pauze regulate, menții performanța mentală de vârf evitând\
+        \ oboseala din perioade prelungite de muncă nefocalizată.\n\n## ⏰ Sesiuni\
+        \ de Fokus Limitate în Timp\n\nFolosește tehnici dovedite de gestionare a\
+        \ timpului pentru a structura munca ta pentru eficiență maximă. Sesiunile\
+        \ structurate te ajută să menții concentrarea și să finalizezi sarcinile mai\
+        \ eficient.\n\n- \U0001F3AF **Fokus Clasic:** 25 minute muncă / 5 minute pauză\n\
+        - \U0001F4C8 **Fokus Extins:** 50 minute muncă / 10 minute pauză  \n- \U0001F504\
+        \ **Pauză Lungă:** 15-30 minute după 4 sesiuni\n- ⚖️ **Timing Personalizat:**\
+        \ Ajustează intervalele pentru a se potrivi ritmului tău natural\n\n## \U0001F9E0\
+        \ Beneficii Cognitive\n\nSesiunile de muncă structurate exploatează ciclurile\
+        \ naturale de atenție ale creierului tău pentru a optimiza performanța și\
+        \ a preveni oboseala mentală care reduce calitatea și creativitatea.\n\n-\
+        \ \U0001F3AF Fokus îmbunătățit și concentrare profundă\n- \U0001F50B Oboseală\
+        \ mentală redusă și epuizare\n- \U0001F4AA Motivație susținută prin realizări\
+        \ regulate\n- ⚡ Conștientizare a timpului îmbunătățită și precizie de planificare\n\
+        \n## \U0001F4CA Optimizare Performanță\n\nUrmărește modelele tale de muncă\
+        \ focalizată pentru a înțelege orele tale de vârf de productivitate și a optimiza\
+        \ programul tău pentru eficiență maximă.\n\n- \U0001F3F7️ Categorizează sesiunile\
+        \ de fokus cu etichete pentru analiză\n- \U0001F4C8 Monitorizează modelele\
+        \ de productivitate în diferite ore\n- \U0001F6AB Elimină distracțiile înainte\
+        \ de a începe sesiunile\n- \U0001F6B6 Folosește pauzele pentru mișcare fizică\
+        \ și reset mental\n"
       title: Sesiuni de Muncă Focalizate & Ghid de Gestionare a Timpului
       tooltip: Tooltip ajutor Maraton
     label: Mod Maraton
@@ -242,7 +266,9 @@ tasks:
   priority:
     selection:
       title: Selectează Prioritate
-    description: Stabiliți prioritatea sarcinii folosind Matricea Eisenhower - clasificare Urgent/Important pentru managementul eficient al sarcinilor
+    description:
+      Stabiliți prioritatea sarcinii folosind Matricea Eisenhower - clasificare
+      Urgent/Important pentru managementul eficient al sarcinilor
     tooltips:
       none: Nicio Prioritate
       not_urgent_important: Nu Urgentă dar Importantă
@@ -258,13 +284,16 @@ tasks:
   quick_task:
     create_error: Eroare la crearea sarcinii
     lock_description:
-      Blochează proprietățile pentru a reține valorile lor când creezi multiple
-      sarcini similare. Proprietățile blocate nu vor fi șterse când resetezi formularul.
+      Blochează proprietățile pentru a reține valorile lor când creezi
+      multiple sarcini similare. Proprietățile blocate nu vor fi șterse când resetezi
+      formularul.
     lock_settings: Setări Blocare
     reset_all: Resetează toate câmpurile
     task_added_successfully: Sarcină adăugată cu succes
     reset_confirm:
-      message: Ești sigur că vrei să resetezi toate câmpurile? Această acțiune nu poate fi anulată.
+      message:
+        Ești sigur că vrei să resetezi toate câmpurile? Această acțiune nu
+        poate fi anulată.
       title: Resetează Toate Câmpurile
     title: Sarcină Rapidă
     title_hint: Introdu un titlu descriptiv al sarcinii...
@@ -273,7 +302,7 @@ tasks:
       deadline_date: "Termen Limită: {date}"
       deadline_date_not_set: "Termen Limită: Nu setat"
       estimated_time: "Timp Estimat: {time}"
-      estimated_time_default: "(implicit)"
+      estimated_time_default: (implicit)
       estimated_time_not_set: "Timp Estimat: Nu setat"
       planned_date: "Planificat: {date}"
       planned_date_not_set: "Planificat: Nu setat"
@@ -304,14 +333,20 @@ tasks:
       endsOnDate: se termină la
       everyDay: în fiecare zi
       occurrences: occurrences
-      true: true
+      true: "on"
       starts: începe
-      on: "on"
+      "on": pe
     weekDays: Zilele săptămânii
     weekSuffix: săptămână(ă)
     weekly: Saptămânal
     yearSuffix: an(i)
     yearly: Anual
+    daysOfWeek: Zilele săptămânii
+    ends:
+      label: Se termină
+      never: Niciodată
+      onDate: La dată
+      after: După
   reminder:
     atTime: La ora programată
     deadlineReminderLabel: Amintire Termen Limită
@@ -335,7 +370,9 @@ tasks:
     total_time: Timp Total pentru Zi
   timer:
     mode:
-      description: Alege între tehnica Pomodoro, timer de numărătoare inversă sau cronometru
+      description:
+        Alege între tehnica Pomodoro, timer de numărătoare inversă sau
+        cronometru
       normal: Timer Normal
       pomodoro: Pomodoro
       stopwatch: Cronometru
@@ -358,26 +395,50 @@ tasks:
   tour:
     task_management:
       title: Gestionare Sarcini
-      description: Creează și organizează sarcini cu priorități, termene limită și mementouri. Folosește timerul Pomodoro pentru a menține concentrarea și a urmări progresul în sarcini importante.
+      description:
+        Creează și organizează sarcini cu priorități, termene limită și
+        mementouri. Folosește timerul Pomodoro pentru a menține concentrarea și a
+        urmări progresul în sarcini importante.
     add_tasks:
       title: Adaugă Sarcini Noi
-      description: Creează rapid sarcini noi cu acest buton. Setează titluri, priorități, termene limită, etichete și mai mult. Adaugă sub-sarcini și mementouri pentru a rămâne la curent cu munca ta.
+      description:
+        Creează rapid sarcini noi cu acest buton. Setează titluri, priorități,
+        termene limită, etichete și mai mult. Adaugă sub-sarcini și mementouri pentru
+        a rămâne la curent cu munca ta.
     your_tasks:
       title: Sarcinile Tale
-      description: Vizualizează și gestionează toate sarcinile tale într-un singur loc. Click pe orice sarcină pentru a vedea detalii, a o marca ca finalizată, a edita informații sau a o șterge. Rămâi organizat și urmărește progresul.
+      description:
+        Vizualizează și gestionează toate sarcinile tale într-un singur
+        loc. Click pe orice sarcină pentru a vedea detalii, a o marca ca finalizată,
+        a edita informații sau a o șterge. Rămâi organizat și urmărește progresul.
     filter_search:
       title: Filtrare & Căutare
-      description: Opțiuni puternice de filtrare pentru a găsi exact ceea ce ai nevoie. Filtrează după etichete, date, status de finalizare sau folosește căutarea. Sortează sarcini și comută sub-sarcini pentru o mai bună organizare.
+      description:
+        Opțiuni puternice de filtrare pentru a găsi exact ceea ce ai nevoie.
+        Filtrează după etichete, date, status de finalizare sau folosește căutarea.
+        Sortează sarcini și comută sub-sarcini pentru o mai bună organizare.
     marathon:
       app_usage:
         title: Utilizare Aplicații & Analiză Timp
-        description: Monitorizează modelele de utilizare a aplicațiilor și analizează timpul petrecut în diverse activități. Obține perspective asupra obiceiurilor tale digitale și optimizează-ți productivitatea.
+        description:
+          Monitorizează modelele de utilizare a aplicațiilor și analizează
+          timpul petrecut în diverse activități. Obține perspective asupra obiceiurilor
+          tale digitale și optimizează-ți productivitatea.
       usage_statistics:
         title: Statistici Utilizare
-        description: Afișează date detaliate despre utilizarea aplicațiilor și distribuția timpului. Analizează modelele tale de productivitate, urmărește timpul petrecut în diverse aplicații și identifică zonele de îmbunătățire.
+        description:
+          Afișează date detaliate despre utilizarea aplicațiilor și distribuția
+          timpului. Analizează modelele tale de productivitate, urmărește timpul petrecut
+          în diverse aplicații și identifică zonele de îmbunătățire.
       filter_sort:
         title: Filtrare & Sortare
-        description: Filtrează datele de utilizare a aplicațiilor după intervalul de date, etichete sau dispozitive specifice. Sortează și organizează statisticile tale de utilizare pentru perspective mai bune asupra gestionării timpului.
+        description:
+          Filtrează datele de utilizare a aplicațiilor după intervalul
+          de date, etichete sau dispozitive specifice. Sortează și organizează statisticile
+          tale de utilizare pentru perspective mai bune asupra gestionării timpului.
       tracking_settings:
         title: Setări Urmărire
-        description: Configurează regulile de urmărire a aplicațiilor, setează etichetarea automată și gestionează ce aplicații să urmărești. Personalizează urmărirea în funcție de nevoile tale de productivitate.
+        description:
+          Configurează regulile de urmărire a aplicațiilor, setează etichetarea
+          automată și gestionează ce aplicații să urmărești. Personalizează urmărirea
+          în funcție de nevoile tale de productivitate.

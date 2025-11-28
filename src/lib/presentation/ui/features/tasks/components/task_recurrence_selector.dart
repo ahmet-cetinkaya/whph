@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:acore/acore.dart';
+import 'package:flutter/material.dart' hide DatePickerDialog;
+import 'package:acore/acore.dart' hide Container;
+import 'package:acore/components/date_time_picker/date_picker_dialog.dart' as picker;
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -53,7 +54,6 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
   DateTime? _recurrenceStartDate;
   DateTime? _recurrenceEndDate;
   int? _recurrenceCount;
-  bool _isUsingEndDate = true;
 
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
@@ -70,13 +70,10 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
     _recurrenceEndDate = widget.recurrenceEndDate;
     _recurrenceCount = widget.recurrenceCount;
 
-    // Determine if we're using end date or count
-    _isUsingEndDate = widget.recurrenceEndDate != null || widget.recurrenceCount == null;
-
-    // If recurrence type is weekly and no days are selected, initialize _recurrenceDays locally.
+    // If recurrence type is daysOfWeek and no days are selected, initialize _recurrenceDays locally.
     // The parent (TaskDetailsContent) is responsible for setting these defaults in the actual task data
     // when the recurrence type is first set or loaded.
-    if (_selectedRecurrenceType == RecurrenceType.weekly && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
+    if (_selectedRecurrenceType == RecurrenceType.daysOfWeek && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
       _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]]; // WeekDay enum is 0-based, weekday is 1-based
       // DO NOT call widget.onRecurrenceDaysChanged here; parent handles defaults.
     }
@@ -109,9 +106,6 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       _recurrenceStartDate = widget.recurrenceStartDate;
       _recurrenceEndDate = widget.recurrenceEndDate;
       _recurrenceCount = widget.recurrenceCount;
-
-      // Update isUsingEndDate based on incoming values
-      _isUsingEndDate = widget.recurrenceEndDate != null || widget.recurrenceCount == null;
 
       _updateControllers();
     }
@@ -165,11 +159,13 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
         return widget.translationService.translate(TaskTranslationKeys.recurrenceNone);
       case RecurrenceType.daily:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceDaily);
-      case RecurrenceType.weekly:
-        // For weekly recurrence, check if all weekdays are selected
+      case RecurrenceType.daysOfWeek:
+        // For daysOfWeek recurrence, check if all weekdays are selected
         if (_recurrenceDays?.length == WeekDays.values.length) {
           return widget.translationService.translate(TaskTranslationKeys.everyDay);
         }
+        return widget.translationService.translate(TaskTranslationKeys.recurrenceDaysOfWeek);
+      case RecurrenceType.weekly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceWeekly);
       case RecurrenceType.monthly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceMonthly);
@@ -202,352 +198,255 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InputDecorator(
+        DropdownButtonFormField<RecurrenceType>(
+          value: _selectedRecurrenceType,
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: 0),
-            isDense: true,
+            labelText: widget.translationService.translate(TaskTranslationKeys.recurrenceLabel),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<RecurrenceType>(
-              value: _selectedRecurrenceType,
-              isExpanded: true,
-              isDense: true,
-              items: RecurrenceType.values.map((type) {
-                return DropdownMenuItem<RecurrenceType>(
-                  value: type,
-                  child: Text(_getRecurrenceTypeLabel(type)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedRecurrenceType = value;
+          items: RecurrenceType.values.map((type) {
+            return DropdownMenuItem(
+              value: type,
+              child: Text(_getRecurrenceTypeLabel(type)),
+            );
+          }).toList(),
+          onChanged: (RecurrenceType? newValue) {
+            if (newValue != null && newValue != _selectedRecurrenceType) {
+              setState(() {
+                _selectedRecurrenceType = newValue;
 
-                    if (value == RecurrenceType.none) {
-                      _recurrenceInterval = null;
-                      _recurrenceDays = null;
-                      _recurrenceStartDate = null;
-                      _recurrenceEndDate = null;
-                      _recurrenceCount = null;
-                      _isUsingEndDate = true; // Default to end date when recurrence is off
-                    } else {
-                      // Set default interval if changing to a type that uses it
-                      _recurrenceInterval ??= 1;
+                if (newValue == RecurrenceType.none) {
+                  _recurrenceInterval = null;
+                  _recurrenceDays = null;
+                  _recurrenceStartDate = null;
+                  _recurrenceEndDate = null;
+                  _recurrenceCount = null;
+                } else {
+                  if (newValue == RecurrenceType.daysOfWeek) {
+                    _recurrenceInterval = 1;
+                  } else {
+                    _recurrenceInterval ??= 1;
+                  }
 
-                      // Set default start date if none exists
-                      _recurrenceStartDate ??= DateTime.now();
+                  _recurrenceStartDate ??= DateTime.now();
 
-                      // Set default weekly days if type is weekly and no days are selected
-                      if (value == RecurrenceType.weekly) {
-                        if (_recurrenceDays == null || _recurrenceDays!.isEmpty) {
-                          _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]];
-                        }
-                      } else {
-                        _recurrenceDays = null; // Clear days if not weekly
-                      }
-
-                      // Default end condition: if both end date and count are null, default to using end date.
-                      // If one is already set, respect that.
-                      if (_recurrenceEndDate == null && _recurrenceCount == null) {
-                        _isUsingEndDate = true;
-                      } else if (_recurrenceEndDate != null) {
-                        _isUsingEndDate = true;
-                      } else {
-                        // _recurrenceCount != null
-                        _isUsingEndDate = false;
-                      }
+                  if (newValue == RecurrenceType.daysOfWeek) {
+                    if (_recurrenceDays == null || _recurrenceDays!.isEmpty) {
+                      _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]];
                     }
-                    _updateControllers(); // Update text controllers based on new local state
-                  });
-
-                  // Notify parent of ONLY the type change.
-                  // Parent (TaskDetailsContent) will handle saving all dependent defaults.
-                  widget.onRecurrenceTypeChanged(value);
+                  } else if (newValue != RecurrenceType.daysOfWeek) {
+                    _recurrenceDays = null;
+                  }
                 }
-              },
-            ),
-          ),
+                _updateControllers();
+              });
+
+              widget.onRecurrenceTypeChanged(newValue);
+            }
+          },
         ),
 
         // Only show configuration options if a recurrence type is selected
         if (_selectedRecurrenceType != RecurrenceType.none) ...[
           const SizedBox(height: AppTheme.sizeLarge),
 
-          // Interval configuration (for daily, weekly, monthly, yearly, custom)
+          // Interval configuration (for all recurrence types except none)
           if (_selectedRecurrenceType != RecurrenceType.none) ...[
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _intervalController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: widget.translationService.translate(TaskTranslationKeys.recurrenceIntervalLabel),
-                      border: const OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
-                    ),
-                    onChanged: (value) {
-                      final interval = int.tryParse(value);
-                      if (interval != null && interval > 0) {
-                        setState(() {
-                          _recurrenceInterval = interval;
-                        });
-                        widget.onRecurrenceIntervalChanged(interval);
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(width: AppTheme.sizeSmall),
-                Text(_getIntervalSuffix()),
-              ],
+            const SizedBox(height: 24),
+            Text(
+              widget.translationService.translate(TaskTranslationKeys.recurrenceIntervalLabel),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            NumericInput(
+              value: _recurrenceInterval ?? 1,
+              minValue: 1,
+              maxValue: 999,
+              onValueChanged: (value) {
+                setState(() {
+                  _recurrenceInterval = value;
+                  _intervalController.text = value.toString();
+                });
+                widget.onRecurrenceIntervalChanged(value);
+              },
+              valueSuffix: _getIntervalSuffix(),
+              style: NumericInputStyle.contained,
             ),
           ],
 
-          // Specific weekdays selector (only for weekly recurrence)
-          if (_selectedRecurrenceType == RecurrenceType.weekly) ...[
-            const SizedBox(height: AppTheme.sizeLarge),
+          // Specific weekdays selector (only for daysOfWeek recurrence)
+          if (_selectedRecurrenceType == RecurrenceType.daysOfWeek) ...[
+            const SizedBox(height: 24),
             Text(
               widget.translationService.translate(TaskTranslationKeys.recurrenceWeekDaysLabel),
-              style: AppTheme.bodyMedium,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: AppTheme.sizeSmall),
+            const SizedBox(height: 12),
             Wrap(
-              spacing: 6,
-              runSpacing: 6,
+              spacing: 8,
+              runSpacing: 8,
               children: WeekDays.values.map((day) {
                 final isSelected = _recurrenceDays?.contains(day) ?? false;
                 return FilterChip(
                   label: Text(_getWeekDayLabel(day)),
-                  labelStyle: TextStyle(fontSize: 13),
-                  padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
                   selected: isSelected,
+                  showCheckmark: false,
+                  avatar: isSelected
+                      ? CircleAvatar(
+                          backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                          radius: 8,
+                          child: Icon(Icons.check, size: 12, color: Theme.of(context).colorScheme.primaryContainer),
+                        )
+                      : null,
                   onSelected: (selected) {
                     setState(() {
                       _recurrenceDays ??= [];
-
                       if (selected) {
                         _recurrenceDays!.add(day);
                       } else {
                         _recurrenceDays!.remove(day);
                       }
-
-                      // If empty, select all days
                       if (_recurrenceDays!.isEmpty) {
                         _recurrenceDays = null;
                       }
                     });
-
                     widget.onRecurrenceDaysChanged(_recurrenceDays);
                   },
                 );
               }).toList(),
             ),
           ],
-          const SizedBox(height: AppTheme.sizeLarge),
+          const SizedBox(height: 24),
 
           // Recurrence date range
           Text(
             widget.translationService.translate(TaskTranslationKeys.recurrenceRangeLabel),
-            style: AppTheme.bodyMedium,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: AppTheme.sizeSmall),
+          const SizedBox(height: 16),
 
           // Start date
-          Row(
-            children: [
-              Text(
-                "${widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel)}: ",
-                style: AppTheme.bodyMedium,
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    final DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: _recurrenceStartDate ?? DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      helpText: widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
-                    );
-                    if (pickedDate != null) {
-                      setState(() {
-                        _recurrenceStartDate = pickedDate;
-                        _startDateController.text = DateFormatService.formatForDisplay(_recurrenceStartDate!, context,
-                            type: DateFormatType.dateTime);
-                      });
-                      widget.onRecurrenceStartDateChanged(pickedDate);
+          Text(
+            widget.translationService.translate(TaskTranslationKeys.starts),
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          const SizedBox(height: 8),
+          _datePickerField(
+            controller: _startDateController,
+            initialDate: _recurrenceStartDate,
+            minDate: DateTime(2000),
+            maxDate: DateTime(2100),
+            hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
+            icon: Icons.calendar_today,
+            onDateSelected: (date) {
+              if (date != null) {
+                setState(() {
+                  _recurrenceStartDate = date;
+                  _startDateController.text =
+                      DateFormatService.formatForDisplay(date, context, type: DateFormatType.dateTime);
+                });
+                widget.onRecurrenceStartDateChanged(date);
+              }
+            },
+          ),
+
+          const SizedBox(height: 16),
+
+          // End Condition Selection
+          Text(
+            widget.translationService.translate(TaskTranslationKeys.recurrenceEndsLabel),
+            style: Theme.of(context).textTheme.labelMedium,
+          ),
+          const SizedBox(height: 8),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final width = (constraints.maxWidth - 16) / 3;
+              return ToggleButtons(
+                isSelected: [
+                  _recurrenceEndDate == null && _recurrenceCount == null, // Forever
+                  _recurrenceEndDate != null, // Until Date
+                  _recurrenceCount != null, // Count
+                ],
+                onPressed: (index) {
+                  setState(() {
+                    if (index == 0) {
+                      // Forever
+                      _recurrenceEndDate = null;
+                      _recurrenceCount = null;
+                      _endDateController.clear();
+                      _countController.clear();
+                      widget.onRecurrenceEndDateChanged(null);
+                      widget.onRecurrenceCountChanged(null);
+                    } else if (index == 1) {
+                      // Until Date
+                      _recurrenceCount = null;
+                      _recurrenceEndDate ??= _getMinimumEndDate().add(const Duration(days: 30));
+                      _updateControllers();
+                      widget.onRecurrenceCountChanged(null);
+                      widget.onRecurrenceEndDateChanged(_recurrenceEndDate);
+                    } else if (index == 2) {
+                      // Count
+                      _recurrenceEndDate = null;
+                      _recurrenceCount ??= 5;
+                      _updateControllers();
+                      widget.onRecurrenceEndDateChanged(null);
+                      widget.onRecurrenceCountChanged(_recurrenceCount);
                     }
-                  },
-                  child: AbsorbPointer(
-                    child: TextField(
-                      controller: _startDateController,
-                      decoration: InputDecoration(
-                        hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
-                        suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
-                        isDense: true,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                  });
+                },
+                borderRadius: BorderRadius.circular(8),
+                constraints: BoxConstraints(minWidth: width, minHeight: 40),
+                children: [
+                  Text(widget.translationService.translate(TaskTranslationKeys.recurrenceEndsNever)),
+                  Text(widget.translationService.translate(TaskTranslationKeys.recurrenceEndsOnDate)),
+                  Text(widget.translationService.translate(TaskTranslationKeys.recurrenceEndsAfter)),
+                ],
+              );
+            },
           ),
 
-          const SizedBox(height: AppTheme.sizeSmall),
-
-          // End type selector (end date or count)
-          Wrap(
-            spacing: 4,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Radio<bool>(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    value: true,
-                    groupValue: _isUsingEndDate,
-                    onChanged: (value) {
-                      setState(() {
-                        _isUsingEndDate = value ?? true;
-
-                        // Reset the other option
-                        if (_isUsingEndDate) {
-                          _recurrenceCount = null;
-                          widget.onRecurrenceCountChanged(null);
-                        } else {
-                          _recurrenceEndDate = null;
-                          widget.onRecurrenceEndDateChanged(null);
-                        }
-                      });
-                    },
-                  ),
-                  Text(
-                    widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel),
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              ),
-              const SizedBox(width: AppTheme.sizeSmall),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Radio<bool>(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    value: false,
-                    groupValue: _isUsingEndDate,
-                    onChanged: (value) {
-                      setState(() {
-                        _isUsingEndDate = value ?? true;
-
-                        // Reset the other option and set defaults
-                        if (!_isUsingEndDate) {
-                          _recurrenceEndDate = null;
-                          _recurrenceCount = _recurrenceCount ?? 10;
-                          _countController.text = _recurrenceCount.toString();
-                          widget.onRecurrenceEndDateChanged(null);
-                          widget.onRecurrenceCountChanged(_recurrenceCount);
-                        } else {
-                          _recurrenceCount = null;
-                          widget.onRecurrenceCountChanged(null);
-                        }
-                      });
-                    },
-                  ),
-                  Text(
-                    widget.translationService.translate(TaskTranslationKeys.recurrenceCountLabel),
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          const SizedBox(height: AppTheme.sizeSmall),
+          const SizedBox(height: 16),
 
           // End date selector (if using end date)
-          if (_isUsingEndDate) ...[
-            Row(
-              children: [
-                Text(
-                  "${widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel)}: ",
-                  style: AppTheme.bodyMedium,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () async {
-                      final DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: _recurrenceEndDate ??
-                            (_recurrenceStartDate?.add(const Duration(days: 30)) ??
-                                DateTime.now().toUtc().add(const Duration(days: 30))),
-                        firstDate: _getMinimumEndDate(),
-                        lastDate: DateTime(2100),
-                        helpText: widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel),
-                      );
-
-                      if (pickedDate != null) {
-                        setState(() {
-                          _recurrenceEndDate = pickedDate;
-                          _endDateController.text = DateFormatService.formatForDisplay(_recurrenceEndDate!, context,
-                              type: DateFormatType.dateTime);
-                        });
-                        widget.onRecurrenceEndDateChanged(pickedDate);
-                      }
-                    },
-                    child: AbsorbPointer(
-                      child: TextField(
-                        controller: _endDateController,
-                        decoration: InputDecoration(
-                          hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
-                          suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
-                          isDense: true,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          if (_recurrenceEndDate != null) ...[
+            _datePickerField(
+              controller: _endDateController,
+              initialDate: _recurrenceEndDate ??
+                  (_recurrenceStartDate?.add(const Duration(days: 30)) ??
+                      DateTime.now().toUtc().add(const Duration(days: 30))),
+              minDate: _getMinimumEndDate(),
+              maxDate: DateTime(2100),
+              hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
+              icon: Icons.event_busy,
+              onDateSelected: (date) {
+                if (date != null) {
+                  setState(() {
+                    _recurrenceEndDate = date;
+                    _endDateController.text =
+                        DateFormatService.formatForDisplay(date, context, type: DateFormatType.dateTime);
+                  });
+                  widget.onRecurrenceEndDateChanged(date);
+                }
+              },
             ),
           ],
 
           // Count selector (if using count)
-          if (!_isUsingEndDate) ...[
-            Row(
-              children: [
-                Text(
-                  "${widget.translationService.translate(TaskTranslationKeys.recurrenceCountLabel)}: ",
-                  style: AppTheme.bodyMedium,
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: _countController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: widget.translationService.translate(TaskTranslationKeys.enterCountHint),
-                      isDense: true,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
-                    ),
-                    onChanged: (value) {
-                      final count = int.tryParse(value);
-                      if (count != null && count > 0) {
-                        setState(() {
-                          _recurrenceCount = count;
-                        });
-                        widget.onRecurrenceCountChanged(count);
-                      }
-                    },
-                  ),
-                ),
-              ],
+          if (_recurrenceCount != null) ...[
+            NumericInput(
+              value: _recurrenceCount ?? 1,
+              minValue: 1,
+              maxValue: 999,
+              onValueChanged: (value) {
+                setState(() {
+                  _recurrenceCount = value;
+                  _countController.text = value.toString();
+                });
+                widget.onRecurrenceCountChanged(value);
+              },
+              valueSuffix: widget.translationService.translate(TaskTranslationKeys.occurrences),
+              style: NumericInputStyle.contained,
             ),
           ],
         ],
@@ -559,6 +458,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
     switch (_selectedRecurrenceType) {
       case RecurrenceType.daily:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceDaySuffix);
+      case RecurrenceType.daysOfWeek:
       case RecurrenceType.weekly:
         return widget.translationService.translate(TaskTranslationKeys.recurrenceWeekSuffix);
       case RecurrenceType.monthly:
@@ -568,5 +468,65 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       default:
         return '';
     }
+  }
+
+  Widget _datePickerField({
+    required TextEditingController controller,
+    DateTime? initialDate,
+    DateTime? minDate,
+    DateTime? maxDate,
+    required String hintText,
+    String? label,
+    IconData? icon,
+    required Function(DateTime?) onDateSelected,
+  }) {
+    return GestureDetector(
+      onTap: () async {
+        if (!context.mounted) return;
+
+        final config = DatePickerConfig(
+          selectionMode: DateSelectionMode.single,
+          initialDate: initialDate,
+          minDate: minDate,
+          maxDate: maxDate,
+          formatType: DateFormatType.date,
+          showTime: false,
+          enableManualInput: true,
+          titleText: label ?? widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
+          translations: {
+            DateTimePickerTranslationKey.title:
+                label ?? widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
+            DateTimePickerTranslationKey.confirm: widget.translationService.translate(SharedTranslationKeys.doneButton),
+            DateTimePickerTranslationKey.cancel:
+                widget.translationService.translate(SharedTranslationKeys.cancelButton),
+          },
+        );
+
+        final result = await picker.DatePickerDialog.show(
+          context: context,
+          config: config,
+        );
+
+        if (result != null && !result.wasCancelled && result.selectedDate != null && mounted) {
+          final selectedDate = result.selectedDate!;
+          controller.text = DateFormatService.formatForDisplay(selectedDate, context, type: DateFormatType.date);
+          onDateSelected(selectedDate);
+        }
+      },
+      child: AbsorbPointer(
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            hintText: hintText,
+            prefixIcon: icon != null ? Icon(icon, size: 20) : null,
+            suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
+            isDense: true,
+            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ),
+    );
   }
 }
