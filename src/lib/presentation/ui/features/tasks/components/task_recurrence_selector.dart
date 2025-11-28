@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide DatePickerDialog;
 import 'package:acore/acore.dart';
+import 'package:acore/components/date_time_picker/date_picker_dialog.dart' as picker;
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -206,8 +207,30 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       children: [
         InputDecorator(
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: 0),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.outline,
+                width: 1,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.outline,
+                width: 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: 2,
+              ),
+            ),
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.surface,
+            contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: 12),
             isDense: true,
           ),
           child: DropdownButtonHideUnderline(
@@ -317,7 +340,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
             const SizedBox(height: AppTheme.sizeLarge),
             Text(
               widget.translationService.translate(TaskTranslationKeys.recurrenceWeekDaysLabel),
-              style: AppTheme.bodyMedium,
+              style: Theme.of(context).textTheme.labelSmall,
             ),
             const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
@@ -357,7 +380,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
           // Recurrence date range
           Text(
             widget.translationService.translate(TaskTranslationKeys.recurrenceRangeLabel),
-            style: AppTheme.bodyMedium,
+            style: Theme.of(context).textTheme.labelSmall,
           ),
           const SizedBox(height: AppTheme.sizeSmall),
 
@@ -366,39 +389,25 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
             children: [
               Text(
                 "${widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel)}: ",
-                style: AppTheme.bodyMedium,
+                style: Theme.of(context).textTheme.labelSmall,
               ),
               Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    final DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: _recurrenceStartDate ?? DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      helpText: widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
-                    );
-                    if (pickedDate != null) {
+                child: _datePickerField(
+                  controller: _startDateController,
+                  initialDate: _recurrenceStartDate,
+                  minDate: DateTime(2000),
+                  maxDate: DateTime(2100),
+                  hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
+                  onDateSelected: (date) {
+                    if (date != null) {
                       setState(() {
-                        _recurrenceStartDate = pickedDate;
-                        _startDateController.text = DateFormatService.formatForDisplay(_recurrenceStartDate!, context,
+                        _recurrenceStartDate = date;
+                        _startDateController.text = DateFormatService.formatForDisplay(date, context,
                             type: DateFormatType.dateTime);
                       });
-                      widget.onRecurrenceStartDateChanged(pickedDate);
+                      widget.onRecurrenceStartDateChanged(date);
                     }
                   },
-                  child: AbsorbPointer(
-                    child: TextField(
-                      controller: _startDateController,
-                      decoration: InputDecoration(
-                        hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
-                        suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
-                        isDense: true,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
@@ -435,7 +444,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                   ),
                   Text(
                     widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel),
-                    style: TextStyle(fontSize: 14),
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ],
               ),
@@ -468,7 +477,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
                   ),
                   Text(
                     widget.translationService.translate(TaskTranslationKeys.recurrenceCountLabel),
-                    style: TextStyle(fontSize: 14),
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ],
               ),
@@ -483,42 +492,27 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
               children: [
                 Text(
                   "${widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel)}: ",
-                  style: AppTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () async {
-                      final DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: _recurrenceEndDate ??
-                            (_recurrenceStartDate?.add(const Duration(days: 30)) ??
-                                DateTime.now().toUtc().add(const Duration(days: 30))),
-                        firstDate: _getMinimumEndDate(),
-                        lastDate: DateTime(2100),
-                        helpText: widget.translationService.translate(TaskTranslationKeys.recurrenceEndDateLabel),
-                      );
-
-                      if (pickedDate != null) {
+                  child: _datePickerField(
+                    controller: _endDateController,
+                    initialDate: _recurrenceEndDate ??
+                        (_recurrenceStartDate?.add(const Duration(days: 30)) ??
+                            DateTime.now().toUtc().add(const Duration(days: 30))),
+                    minDate: _getMinimumEndDate(),
+                    maxDate: DateTime(2100),
+                    hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
+                    onDateSelected: (date) {
+                      if (date != null) {
                         setState(() {
-                          _recurrenceEndDate = pickedDate;
-                          _endDateController.text = DateFormatService.formatForDisplay(_recurrenceEndDate!, context,
+                          _recurrenceEndDate = date;
+                          _endDateController.text = DateFormatService.formatForDisplay(date, context,
                               type: DateFormatType.dateTime);
                         });
-                        widget.onRecurrenceEndDateChanged(pickedDate);
+                        widget.onRecurrenceEndDateChanged(date);
                       }
                     },
-                    child: AbsorbPointer(
-                      child: TextField(
-                        controller: _endDateController,
-                        decoration: InputDecoration(
-                          hintText: widget.translationService.translate(TaskTranslationKeys.selectDateHint),
-                          suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
-                          isDense: true,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ],
@@ -531,7 +525,7 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
               children: [
                 Text(
                   "${widget.translationService.translate(TaskTranslationKeys.recurrenceCountLabel)}: ",
-                  style: AppTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
                 Expanded(
                   child: TextField(
@@ -576,5 +570,59 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
       default:
         return '';
     }
+  }
+
+  Widget _datePickerField({
+    required TextEditingController controller,
+    DateTime? initialDate,
+    DateTime? minDate,
+    DateTime? maxDate,
+    required String hintText,
+    required Function(DateTime?) onDateSelected,
+  }) {
+    return GestureDetector(
+      onTap: () async {
+        if (!context.mounted) return;
+
+        final config = DatePickerConfig(
+          selectionMode: DateSelectionMode.single,
+          initialDate: initialDate,
+          minDate: minDate,
+          maxDate: maxDate,
+          formatType: DateFormatType.date,
+          showTime: false,
+          enableManualInput: true,
+          titleText: widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
+          translations: {
+            DateTimePickerTranslationKey.title: widget.translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
+            DateTimePickerTranslationKey.confirm: widget.translationService.translate(SharedTranslationKeys.doneButton),
+            DateTimePickerTranslationKey.cancel: widget.translationService.translate(SharedTranslationKeys.cancelButton),
+          },
+        );
+
+        final result = await picker.DatePickerDialog.show(
+          context: context,
+          config: config,
+        );
+
+        if (result != null && !result.wasCancelled && result.selectedDate != null && mounted) {
+          final selectedDate = result.selectedDate!;
+          controller.text = DateFormatService.formatForDisplay(selectedDate, context, type: DateFormatType.date);
+          onDateSelected(selectedDate);
+        }
+      },
+      child: AbsorbPointer(
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hintText,
+            suffixIcon: Icon(SharedUiConstants.calendarIcon, size: AppTheme.iconSizeSmall),
+            isDense: true,
+            contentPadding: EdgeInsets.symmetric(vertical: AppTheme.sizeSmall, horizontal: AppTheme.sizeSmall),
+            border: const OutlineInputBorder(),
+          ),
+        ),
+      ),
+    );
   }
 }
