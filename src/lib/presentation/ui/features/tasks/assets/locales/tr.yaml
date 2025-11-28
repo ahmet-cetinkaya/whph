@@ -372,7 +372,7 @@ tasks:
       occurrences: tekrarlama
       true: günlerinde
       everyDay: her gün
-      starts: başlangıç
+      starts: Başlangıç
       "on": de
     weekDays: Haftanın günleri
     weekSuffix: hafta
@@ -381,7 +381,7 @@ tasks:
     yearly: Yıllık
     daysOfWeek: Haftanın günleri
     ends:
-      label: Biter
+      label: Bitiş
       never: Asla
       onDate: Tarihinde
       after: Sonra
