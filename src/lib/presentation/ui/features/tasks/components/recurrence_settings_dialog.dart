@@ -52,93 +52,116 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
     _recurrenceCount = widget.initialRecurrenceCount;
   }
 
+  void _handleSave() {
+    Navigator.of(context).pop({
+      'recurrenceType': _recurrenceType,
+      'recurrenceInterval': _recurrenceInterval,
+      'recurrenceDays': _recurrenceDays,
+      'recurrenceStartDate': _recurrenceStartDate,
+      'recurrenceEndDate': _recurrenceEndDate,
+      'recurrenceCount': _recurrenceCount,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(_translationService.translate(TaskTranslationKeys.recurrenceLabel)),
-      content: SingleChildScrollView(
-        child: TaskRecurrenceSelector(
-          recurrenceType: _recurrenceType,
-          recurrenceInterval: _recurrenceInterval,
-          recurrenceDays: _recurrenceDays,
-          recurrenceStartDate: _recurrenceStartDate,
-          recurrenceEndDate: _recurrenceEndDate,
-          recurrenceCount: _recurrenceCount,
-          plannedDate: widget.plannedDate,
-          onRecurrenceTypeChanged: (type) {
-            setState(() {
-              _recurrenceType = type;
-              if (type == RecurrenceType.none) {
-                _recurrenceInterval = null;
-                _recurrenceDays = null;
-                _recurrenceStartDate = null;
-                _recurrenceEndDate = null;
-                _recurrenceCount = null;
-              } else {
-                _recurrenceInterval ??= 1;
-                if (type == RecurrenceType.weekly && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
-                  _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]];
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      appBar: AppBar(
+        title: Text(
+          _translationService.translate(TaskTranslationKeys.recurrenceLabel),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: false,
+        backgroundColor: theme.colorScheme.surface,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+          tooltip: _translationService.translate(SharedTranslationKeys.cancelButton),
+        ),
+        actions: [
+          TextButton(
+            onPressed: _handleSave,
+            style: TextButton.styleFrom(
+              foregroundColor: theme.colorScheme.primary,
+              textStyle: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+            ),
+            child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: TaskRecurrenceSelector(
+            recurrenceType: _recurrenceType,
+            recurrenceInterval: _recurrenceInterval,
+            recurrenceDays: _recurrenceDays,
+            recurrenceStartDate: _recurrenceStartDate,
+            recurrenceEndDate: _recurrenceEndDate,
+            recurrenceCount: _recurrenceCount,
+            plannedDate: widget.plannedDate,
+            onRecurrenceTypeChanged: (type) {
+              setState(() {
+                _recurrenceType = type;
+                if (type == RecurrenceType.none) {
+                  _recurrenceInterval = null;
+                  _recurrenceDays = null;
+                  _recurrenceStartDate = null;
+                  _recurrenceEndDate = null;
+                  _recurrenceCount = null;
+                } else {
+                  _recurrenceInterval ??= 1;
+                  if (type == RecurrenceType.daysOfWeek && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
+                    _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]];
+                  }
+                  _recurrenceStartDate ??= DateTime.now();
                 }
-                _recurrenceStartDate ??= DateTime.now();
-              }
-            });
-          },
-          onRecurrenceIntervalChanged: (interval) {
-            setState(() {
-              _recurrenceInterval = interval;
-            });
-          },
-          onRecurrenceDaysChanged: (days) {
-            setState(() {
-              _recurrenceDays = days;
-            });
-          },
-          onRecurrenceStartDateChanged: (date) {
-            setState(() {
-              _recurrenceStartDate = date;
-            });
-          },
-          onRecurrenceEndDateChanged: (date) {
-            setState(() {
-              _recurrenceEndDate = date;
-              if (date != null) {
-                _recurrenceCount = null; // Clear count if end date is set
-              }
-            });
-          },
-          onRecurrenceCountChanged: (count) {
-            setState(() {
-              _recurrenceCount = count;
-              if (count != null) {
-                _recurrenceEndDate = null; // Clear end date if count is set
-              }
-            });
-          },
-          translationService: _translationService,
+              });
+            },
+            onRecurrenceIntervalChanged: (interval) {
+              setState(() {
+                _recurrenceInterval = interval;
+              });
+            },
+            onRecurrenceDaysChanged: (days) {
+              setState(() {
+                _recurrenceDays = days;
+              });
+            },
+            onRecurrenceStartDateChanged: (date) {
+              setState(() {
+                _recurrenceStartDate = date;
+              });
+            },
+            onRecurrenceEndDateChanged: (date) {
+              setState(() {
+                _recurrenceEndDate = date;
+                if (date != null) {
+                  _recurrenceCount = null;
+                }
+              });
+            },
+            onRecurrenceCountChanged: (count) {
+              setState(() {
+                _recurrenceCount = count;
+                if (count != null) {
+                  _recurrenceEndDate = null;
+                }
+              });
+            },
+            translationService: _translationService,
+          ),
         ),
       ),
-      actions: <Widget>[
-        TextButton(
-          child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
-          onPressed: () {
-            Navigator.of(context).pop(); // Close dialog without returning data
-          },
-        ),
-        TextButton(
-          child: Text(_translationService.translate(SharedTranslationKeys.saveButton)),
-          onPressed: () {
-            // Return the selected settings
-            Navigator.of(context).pop({
-              'recurrenceType': _recurrenceType,
-              'recurrenceInterval': _recurrenceInterval,
-              'recurrenceDays': _recurrenceDays,
-              'recurrenceStartDate': _recurrenceStartDate,
-              'recurrenceEndDate': _recurrenceEndDate,
-              'recurrenceCount': _recurrenceCount,
-            });
-          },
-        ),
-      ],
     );
   }
 }

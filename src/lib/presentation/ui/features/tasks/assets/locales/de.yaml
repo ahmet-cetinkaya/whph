@@ -40,7 +40,9 @@ tasks:
     description:
       hint: Beschreibung hinzufügen...
       label: Beschreibung
-      context: Fügen Sie detaillierte Informationen über Ihre Aufgabe hinzu, um Ihnen zu helfen, wichtige Details zu merken und den Fortschritt zu verfolgen.
+      context:
+        Fügen Sie detaillierte Informationen über Ihre Aufgabe hinzu, um Ihnen
+        zu helfen, wichtige Details zu merken und den Fortschritt zu verfolgen.
     elapsed_time:
       label: Verstrichene Zeit
     parent_task:
@@ -52,7 +54,9 @@ tasks:
     total_elapsed_time: Gesamt verstrichene Zeit
   estimated_time:
     label: Geschätzte Zeit
-    description: Legen Sie realistische Zeitschätzungen fest, um Ihre Aufgabe effektiv zu planen und die Produktivität zu verfolgen.
+    description:
+      Legen Sie realistische Zeitschätzungen fest, um Ihre Aufgabe effektiv
+      zu planen und die Produktivität zu verfolgen.
   errors:
     add_tag: Unerwarteter Fehler beim Hinzufügen des Tags
     adding_tag: Tag konnte nicht hinzugefügt werden
@@ -82,112 +86,211 @@ tasks:
       filter_by_tags: Nach Tags filtern
   help:
     details:
-      content: |
-        Meistern Sie Ihr Aufgabenmanagement und maximieren Sie die Produktivität, indem Sie Ihre Arbeit effektiv organisieren, priorisieren und verfolgen.
+      content:
+        "Meistern Sie Ihr Aufgabenmanagement und maximieren Sie die Produktivität,
+        indem Sie Ihre Arbeit effektiv organisieren, priorisieren und verfolgen.
+
 
         ## ⚡ Warum ist es wichtig?
 
-        Effektives Aufgabenmanagement ist die Grundlage der Produktivität. Richtig strukturierte Aufgaben mit klaren Prioritäten und Fristen helfen Ihnen, sich auf das Wichtigste zu konzentrieren und verhindern, dass wichtige Arbeit übersehen wird.
+
+        Effektives Aufgabenmanagement ist die Grundlage der Produktivität. Richtig
+        strukturierte Aufgaben mit klaren Prioritäten und Fristen helfen Ihnen, sich
+        auf das Wichtigste zu konzentrieren und verhindern, dass wichtige Arbeit übersehen
+        wird.
+
 
         ## 📝 Aufgabenorganisation
 
-        Strukturieren Sie Ihre Aufgaben mit umfassenden Details, um Klarheit und Fokus zu bewahren. Verwenden Sie Tags, Prioritäten und Zeitschätzungen, um einen systematischen Ansatz für Ihre Arbeitsbelastung zu schaffen.
+
+        Strukturieren Sie Ihre Aufgaben mit umfassenden Details, um Klarheit und Fokus
+        zu bewahren. Verwenden Sie Tags, Prioritäten und Zeitschätzungen, um einen
+        systematischen Ansatz für Ihre Arbeitsbelastung zu schaffen.
+
 
         - 🏷️ Aufgaben mit aussagekräftigen Tags kategorisieren
+
         - ⚖️ Prioritäten mit bewährten Frameworks setzen
+
         - ⏱️ Zeitanforderungen genau schätzen
+
         - 📅 Realistische Fristen und Zeitpläne planen
+
 
         ## ⏰ Zeitmanagement
 
-        Verfolgen Sie Ihre Zeitinvestitionen, um Ihre Arbeitsmuster zu verstehen und die Effizienz zu verbessern. Richtiges Zeitmanagement verwandelt verstreute Bemühungen in fokussierte Produktivität.
+
+        Verfolgen Sie Ihre Zeitinvestitionen, um Ihre Arbeitsmuster zu verstehen und
+        die Effizienz zu verbessern. Richtiges Zeitmanagement verwandelt verstreute
+        Bemühungen in fokussierte Produktivität.
+
 
         - 📊 Tatsächliche vs. geschätzte Zeit überwachen
+
         - 🎯 Sich auf wirkungsvolle Aktivitäten konzentrieren
+
         - 📈 Produktivitätsmuster über die Zeit analysieren
+
         - ⏳ Dringende und wichtige Aufgaben ausbalancieren
+
 
         ## 📊 Prioritäts-Framework (Eisenhower-Matrix)
 
-        Organisieren Sie Ihre Aufgaben mit dieser bewährten Priorisierungsmethode, um sicherzustellen, dass Sie immer zur richtigen Zeit an den richtigen Dingen arbeiten.
+
+        Organisieren Sie Ihre Aufgaben mit dieser bewährten Priorisierungsmethode,
+        um sicherzustellen, dass Sie immer zur richtigen Zeit an den richtigen Dingen
+        arbeiten.
+
 
         - 🔥 **Dringend & Wichtig:** Sofort bearbeiten - Krisenmanagement und Fristen
+
         - 📈 **Wichtig, nicht dringend:** Strategisch planen - Planung und Kompetenzentwicklung
-        - ⚡ **Dringend, nicht wichtig:** Wenn möglich delegieren - Unterbrechungen und einige Meetings
-        - 🗑️ **Weder dringend noch wichtig:** Eliminieren - Zeitverschwender und geringwertige Aktivitäten
+
+        - ⚡ **Dringend, nicht wichtig:** Wenn möglich delegieren - Unterbrechungen
+        und einige Meetings
+
+        - 🗑️ **Weder dringend noch wichtig:** Eliminieren - Zeitverschwender und geringwertige
+        Aktivitäten
+
+        "
       title: Aufgabenmanagement & Produktivitätsleitfaden
     overview:
-      content: |
-        Transformieren Sie Ihre Produktivität mit systematischem Aufgabenmanagement, das Ihnen hilft, organisiert, fokussiert und in Kontrolle Ihrer Arbeitsbelastung zu bleiben.
+      content:
+        "Transformieren Sie Ihre Produktivität mit systematischem Aufgabenmanagement,
+        das Ihnen hilft, organisiert, fokussiert und in Kontrolle Ihrer Arbeitsbelastung
+        zu bleiben.
+
 
         ## ⚡ Warum ist es wichtig?
 
-        Effektives Aufgabenmanagement ist der Grundstein für persönlichen und beruflichen Erfolg. Durch systematische Organisation Ihrer Arbeit reduzieren Sie Stress, halten Fristen konsequent ein und schaffen Raum für bedeutsamen Fortschritt bei wichtigen Zielen.
+
+        Effektives Aufgabenmanagement ist der Grundstein für persönlichen und beruflichen
+        Erfolg. Durch systematische Organisation Ihrer Arbeit reduzieren Sie Stress,
+        halten Fristen konsequent ein und schaffen Raum für bedeutsamen Fortschritt
+        bei wichtigen Zielen.
+
 
         ## 📋 Aufgabenorganisation
 
-        Erstellen Sie einen strukturierten Ansatz für die Verwaltung Ihrer Verantwortlichkeiten. Gut organisierte Aufgaben führen zu klaren Prioritäten und effizienter Ausführung Ihrer täglichen Arbeit.
+
+        Erstellen Sie einen strukturierten Ansatz für die Verwaltung Ihrer Verantwortlichkeiten.
+        Gut organisierte Aufgaben führen zu klaren Prioritäten und effizienter Ausführung
+        Ihrer täglichen Arbeit.
+
 
         - ✅ Aufgaben systematisch erstellen und kategorisieren
+
         - 🏷️ Verwandte Arbeiten mit aussagekräftigen Tags gruppieren
+
         - ⚖️ Klare Prioritäten und Fristen setzen
+
         - 🔍 Filter und Suche für schnellen Zugriff verwenden
+
 
         ## ⏱️ Zeitverfolgung & Fokus
 
-        Überwachen Sie Ihre Zeitinvestitionen, um Produktivitätsmuster zu verstehen und Ihren Arbeitsablauf zu optimieren. Zeitbewusstsein führt zu besserer Planung und verbesserter Leistung.
+
+        Überwachen Sie Ihre Zeitinvestitionen, um Produktivitätsmuster zu verstehen
+        und Ihren Arbeitsablauf zu optimieren. Zeitbewusstsein führt zu besserer Planung
+        und verbesserter Leistung.
+
 
         - ⏰ Tatsächlich aufgewendete Zeit pro Aufgabe verfolgen
+
         - 🎯 Marathon-Modus für fokussierte Arbeitssitzungen verwenden
+
         - 📊 Erledigungsmuster und Trends analysieren
+
         - 🔄 Zeitschätzungen regelmäßig überprüfen und anpassen
+
 
         ## 📈 Fortschrittsüberwachung
 
-        Verfolgen Sie Ihre Erfolge und lernen Sie aus Ihren Arbeitsmustern. Regelmäßige Überprüfung und Reflexion fördern kontinuierliche Verbesserung in Ihrem Produktivitätssystem.
+
+        Verfolgen Sie Ihre Erfolge und lernen Sie aus Ihren Arbeitsmustern. Regelmäßige
+        Überprüfung und Reflexion fördern kontinuierliche Verbesserung in Ihrem Produktivitätssystem.
+
 
         - 📈 Aufgabenerledigungsraten überwachen
+
         - 📅 Täglichen und wöchentlichen Fortschritt überprüfen
+
         - 🎯 Engpässe und Optimierungsmöglichkeiten identifizieren
+
         - 🏆 Erfolge und Meilensteine feiern
+
+        "
       title: Aufgabenmanagement & Workflow-Leitfaden
   marathon:
     details:
       title: Aufgabendetails
     help:
-      content: |
-        Maximieren Sie Ihren Fokus und Ihre Produktivität mit strukturierten Arbeitssitzungen, die Ihnen helfen, tiefe Konzentration aufrechtzuerhalten und gleichzeitig Burnout zu vermeiden.
+      content:
+        "Maximieren Sie Ihren Fokus und Ihre Produktivität mit strukturierten
+        Arbeitssitzungen, die Ihnen helfen, tiefe Konzentration aufrechtzuerhalten
+        und gleichzeitig Burnout zu vermeiden.
+
 
         ## ⚡ Warum ist es wichtig?
 
-        Fokussierte Arbeitssitzungen sind essentiell für tiefe Arbeit und hochwertige Ergebnisse. Durch Arbeiten in strukturierten Intervallen mit regelmäßigen Pausen erhalten Sie Spitzenleistung und vermeiden die Ermüdung, die durch längere, unfokussierte Arbeitsperioden entsteht.
+
+        Fokussierte Arbeitssitzungen sind essentiell für tiefe Arbeit und hochwertige
+        Ergebnisse. Durch Arbeiten in strukturierten Intervallen mit regelmäßigen
+        Pausen erhalten Sie Spitzenleistung und vermeiden die Ermüdung, die durch
+        längere, unfokussierte Arbeitsperioden entsteht.
+
 
         ## ⏰ Zeitboxed Fokus-Sitzungen
 
-        Verwenden Sie bewährte Zeitmanagement-Techniken, um Ihre Arbeit für maximale Effizienz zu strukturieren. Strukturierte Sitzungen helfen Ihnen, die Konzentration aufrechtzuerhalten und Aufgaben effektiver zu erledigen.
+
+        Verwenden Sie bewährte Zeitmanagement-Techniken, um Ihre Arbeit für maximale
+        Effizienz zu strukturieren. Strukturierte Sitzungen helfen Ihnen, die Konzentration
+        aufrechtzuerhalten und Aufgaben effektiver zu erledigen.
+
 
         - 🎯 **Klassischer Fokus:** 25 Minuten Arbeit / 5 Minuten Pause
+
         - 📈 **Erweiterter Fokus:** 50 Minuten Arbeit / 10 Minuten Pause
+
         - 🔄 **Lange Pause:** 15-30 Minuten nach 4 Sitzungen
-        - ⚖️ **Benutzerdefinierte Zeit:** Intervalle an Ihren natürlichen Rhythmus anpassen
+
+        - ⚖️ **Benutzerdefinierte Zeit:** Intervalle an Ihren natürlichen Rhythmus
+        anpassen
+
 
         ## 🧠 Kognitive Vorteile
 
-        Strukturierte Arbeitssitzungen nutzen die natürlichen Aufmerksamkeitszyklen Ihres Gehirns, um die Leistung zu optimieren und mentale Ermüdung zu verhindern, die Qualität und Kreativität reduziert.
+
+        Strukturierte Arbeitssitzungen nutzen die natürlichen Aufmerksamkeitszyklen
+        Ihres Gehirns, um die Leistung zu optimieren und mentale Ermüdung zu verhindern,
+        die Qualität und Kreativität reduziert.
+
 
         - 🎯 Verbesserte Fokussierung und tiefe Konzentration
+
         - 🔋 Reduzierte mentale Ermüdung und Burnout
+
         - 💪 Anhaltende Motivation durch regelmäßige Erfolge
+
         - ⚡ Verbessertes Zeitbewusstsein und Planungsgenauigkeit
+
 
         ## 📊 Leistungsoptimierung
 
-        Verfolgen Sie Ihre fokussierten Arbeitsmuster, um Ihre Spitzenproduktivitätszeiten zu verstehen und Ihren Zeitplan für maximale Effektivität zu optimieren.
+
+        Verfolgen Sie Ihre fokussierten Arbeitsmuster, um Ihre Spitzenproduktivitätszeiten
+        zu verstehen und Ihren Zeitplan für maximale Effektivität zu optimieren.
+
 
         - 🏷️ Fokus-Sitzungen mit Tags für Analyse kategorisieren
+
         - 📈 Produktivitätsmuster zu verschiedenen Zeiten überwachen
+
         - 🚫 Ablenkungen vor Sitzungsbeginn eliminieren
+
         - 🚶 Pausen für körperliche Bewegung und mentale Erholung nutzen
+
+        "
       title: Fokussierte Arbeitssitzungen & Zeitmanagement-Leitfaden
       tooltip: Marathon-Hilfe-Tooltip
     label: Marathon-Modus
@@ -241,7 +344,9 @@ tasks:
   priority:
     selection:
       title: Priorität auswählen
-    description: Legen Sie Task-Priorität mithilfe der Eisenhower-Matrix fest - Dringend/Wichtig-Klassifizierung für effektives Task-Management
+    description:
+      Legen Sie Task-Priorität mithilfe der Eisenhower-Matrix fest - Dringend/Wichtig-Klassifizierung
+      für effektives Task-Management
     tooltips:
       none: Keine Priorität
       not_urgent_important: Nicht dringend aber wichtig
@@ -275,7 +380,7 @@ tasks:
       deadline_date: "Frist: {date}"
       deadline_date_not_set: "Frist: Nicht festgelegt"
       estimated_time: "Geschätzte Zeit: {time}"
-      estimated_time_default: "(Standard)"
+      estimated_time_default: (Standard)
       estimated_time_not_set: "Geschätzte Zeit: Nicht festgelegt"
       planned_date: "Geplant: {date}"
       planned_date_not_set: "Geplant: Nicht festgelegt"
@@ -308,12 +413,18 @@ tasks:
       true: am
       everyDay: jeden Tag
       starts: beginnt
-      "on": "an"
+      "on": an
     weekDays: Wochentage
     weekSuffix: Woche(n)
     weekly: Wöchentlich
     yearSuffix: Jahr(e)
     yearly: Jährlich
+    daysOfWeek: Wochentage
+    ends:
+      label: Endet
+      never: Niemals
+      onDate: An Datum
+      after: Nach
   reminder:
     atTime: Zur geplanten Zeit
     deadlineReminderLabel: Fristerinnerung
@@ -341,26 +452,52 @@ tasks:
   tour:
     task_management:
       title: Aufgabenmanagement
-      description: Erstellen und organisieren Sie Aufgaben mit Prioritäten, Fristen und Erinnerungen. Nutzen Sie den Pomodoro-Timer, um fokussiert zu bleiben und Ihren Fortschritt bei wichtigen Aufgaben zu verfolgen.
+      description:
+        Erstellen und organisieren Sie Aufgaben mit Prioritäten, Fristen
+        und Erinnerungen. Nutzen Sie den Pomodoro-Timer, um fokussiert zu bleiben
+        und Ihren Fortschritt bei wichtigen Aufgaben zu verfolgen.
     add_tasks:
       title: Neue Aufgaben hinzufügen
-      description: Erstellen Sie schnell neue Aufgaben mit dieser Schaltfläche. Legen Sie Titel, Prioritäten, Fristen, Tags und mehr fest. Fügen Sie Unteraufgaben und Erinnerungen hinzu, um Ihre Arbeit im Blick zu behalten.
+      description:
+        Erstellen Sie schnell neue Aufgaben mit dieser Schaltfläche. Legen
+        Sie Titel, Prioritäten, Fristen, Tags und mehr fest. Fügen Sie Unteraufgaben
+        und Erinnerungen hinzu, um Ihre Arbeit im Blick zu behalten.
     your_tasks:
       title: Ihre Aufgaben
-      description: Sehen und verwalten Sie alle Ihre Aufgaben an einem Ort. Klicken Sie auf eine beliebige Aufgabe, um Details anzuzeigen, als erledigt zu markieren, Informationen zu bearbeiten oder zu löschen. Bleiben Sie organisiert und verfolgen Sie Ihren Fortschritt.
+      description:
+        Sehen und verwalten Sie alle Ihre Aufgaben an einem Ort. Klicken
+        Sie auf eine beliebige Aufgabe, um Details anzuzeigen, als erledigt zu markieren,
+        Informationen zu bearbeiten oder zu löschen. Bleiben Sie organisiert und verfolgen
+        Sie Ihren Fortschritt.
     filter_search:
       title: Filter & Suche
-      description: Leistungsstarke Filteroptionen, um genau das zu finden, was Sie benötigen. Filtern Sie nach Tags, Datumsangaben, Erledigungsstatus oder verwenden Sie die Suche. Sortieren Sie Aufgaben und schalten Sie Unteraufgaben für eine bessere Organisation.
+      description:
+        Leistungsstarke Filteroptionen, um genau das zu finden, was Sie
+        benötigen. Filtern Sie nach Tags, Datumsangaben, Erledigungsstatus oder verwenden
+        Sie die Suche. Sortieren Sie Aufgaben und schalten Sie Unteraufgaben für eine
+        bessere Organisation.
     marathon:
       app_usage:
         title: App-Nutzung & Zeit-Einblicke
-        description: Überwachen Sie App-Nutzungsmuster und analysieren Sie die Zeit, die Sie für verschiedene Aktivitäten aufwenden. Erhalten Sie Einblicke in Ihre digitalen Gewohnheiten und optimieren Sie Ihre Produktivität.
+        description:
+          Überwachen Sie App-Nutzungsmuster und analysieren Sie die Zeit,
+          die Sie für verschiedene Aktivitäten aufwenden. Erhalten Sie Einblicke in
+          Ihre digitalen Gewohnheiten und optimieren Sie Ihre Produktivität.
       usage_statistics:
         title: Nutzungsstatistiken
-        description: Detaillierte App-Nutzungsdaten und Zeitverteilung anzeigen. Analysieren Sie Ihre Produktivitätsmuster, verfolgen Sie die Zeit, die Sie für verschiedene Anwendungen aufwenden, und identifizieren Sie Verbesserungsbereiche.
+        description:
+          Detaillierte App-Nutzungsdaten und Zeitverteilung anzeigen. Analysieren
+          Sie Ihre Produktivitätsmuster, verfolgen Sie die Zeit, die Sie für verschiedene
+          Anwendungen aufwenden, und identifizieren Sie Verbesserungsbereiche.
       filter_sort:
         title: Filter & Sortierung
-        description: Filtern Sie App-Nutzungsdaten nach Zeitraum, Tags oder bestimmten Geräten. Sortieren und organisieren Sie Ihre Nutzungsstatistiken, um bessere Einblicke in Ihr Zeitmanagement zu erhalten.
+        description:
+          Filtern Sie App-Nutzungsdaten nach Zeitraum, Tags oder bestimmten
+          Geräten. Sortieren und organisieren Sie Ihre Nutzungsstatistiken, um bessere
+          Einblicke in Ihr Zeitmanagement zu erhalten.
       tracking_settings:
         title: Tracking-Einstellungen
-        description: Konfigurieren Sie App-Tracking-Regeln, richten Sie automatische Tagging ein und verwalten Sie, welche Anwendungen überwacht werden sollen. Passen Sie das Tracking an Ihre Produktivitätsbedürfnisse an.
+        description:
+          Konfigurieren Sie App-Tracking-Regeln, richten Sie automatische
+          Tagging ein und verwalten Sie, welche Anwendungen überwacht werden sollen.
+          Passen Sie das Tracking an Ihre Produktivitätsbedürfnisse an.

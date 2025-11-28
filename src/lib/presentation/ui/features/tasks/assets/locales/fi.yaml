@@ -31,7 +31,9 @@ tasks:
     description:
       hint: Lisää kuvaus...
       label: Kuvaus
-      context: Lisää yksityiskohtaisia tietoja tehtävästäsi auttaaksesi sinua muistamaan tärkeitä yksityiskohtia ja seuraamaan edistymistä.
+      context:
+        Lisää yksityiskohtaisia tietoja tehtävästäsi auttaaksesi sinua muistamaan
+        tärkeitä yksityiskohtia ja seuraamaan edistymistä.
     elapsed_time:
       label: Kulunut Aika
     is_completed: Valmis
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Kokonaiskulunut Aika
   estimated_time:
     label: Arvioitu Aika
-    description: Aseta realistinen aikavaativus tehokkaaseen tehtävän suunnitteluun ja tuottavuuden seurantaan.
+    description:
+      Aseta realistinen aikavaativus tehokkaaseen tehtävän suunnitteluun
+      ja tuottavuuden seurantaan.
   errors:
     add_tag: Odottamaton virhe lisättäessä tunnistetta
     adding_tag: Tunnisteen lisäys epäonnistui
@@ -83,112 +87,124 @@ tasks:
       filter_by_tags: Suodata tunnisteiden mukaan
   help:
     details:
-      content: |
-        Hallitse tehtäviäsi ja maksimoi tuottavuutesi järjestämällä, priorisoimalla ja seuraamalla työtäsi tehokkaasti.
-
-        ## ⚡ Miksi Se On Tärkeää?
-
-        Tehokas tehtävänhallinta on tuottavuuden perusta. Oikein strukturoidut tehtävät selkeillä prioriteeteilla ja määräajoilla auttavat keskittymään siihen, mikä on tärkeintä, ja estävät tärkeän työn putoamasta läpi.
-
-        ## 📝 Tehtävänhallinta
-
-        Rakenna tehtäviisi kattavat tiedot selkeyden ja fokuksen ylläpitämiseksi. Käytä tunnisteita, prioriteetteja ja aikahintoja luodaksesi systemaattisen lähestymistavan työkuormaan.
-
-        - 🏷️ Kategorisoi tehtävät merkityksellisillä tunnisteilla
-        - ⚖️ Aseta prioriteetteja käyttäen todistettuja kehyksiä
-        - ⏱️ Arvioi aikavaatimukset tarkasti
-        - 📅 Suunnittele realistisia määräaikoja ja aikatauluja
-
-        ## ⏰ Aikanhallinta
-
-        Seuraa aikainvestointeja ymmärtääksesi työmallejasi ja parantaaksesi tehokkuutta. Oikea aikanhallinta muuttaa hajautetut ponnistelut keskittyneeksi tuottavuudeksi.
-
-        - 📊 Seuraa todellista vs arvioitua aikaa
-        - 🎯 Keskity korkean vaikutuksen aktiviteetteihin
-        - 📈 Analysoi tuottavuusmalleja ajan myötä
-        - ⏳ Tasapainota kiireelliset ja tärkeät tehtävät
-
-        ## 📊 Prioriteettikehys (Eisenhowerin Matriisi)
-
-        Järjestä tehtäväsi käyttäen tätä todistettua priorisointimenetelmää varmistaaksesi että työskentelet aina oikeissa asioissa oikeaan aikaan.
-
-        - 🔥 **Kiireellinen & Tärkeä:** Käsittele välittömästi - kriisinhallinta ja määräajat
-        - 📈 **Tärkeä, Ei Kiireellinen:** Aikatauluta strategisesti - suunnittelu ja taitojen kehittäminen  
-        - ⚡ **Kiireellinen, Ei Tärkeä:** Delegoi kun mahdollista - keskeytykset ja jotkut kokoukset
-        - 🗑️ **Ei Kiireellinen tai Tärkeä:** Poista - aikahukkaajat ja matalan arvon aktiviteetit
+      content:
+        "Hallitse tehtäviäsi ja maksimoi tuottavuutesi järjestämällä, priorisoimalla\
+        \ ja seuraamalla työtäsi tehokkaasti.\n\n## ⚡ Miksi Se On Tärkeää?\n\nTehokas\
+        \ tehtävänhallinta on tuottavuuden perusta. Oikein strukturoidut tehtävät\
+        \ selkeillä prioriteeteilla ja määräajoilla auttavat keskittymään siihen,\
+        \ mikä on tärkeintä, ja estävät tärkeän työn putoamasta läpi.\n\n## \U0001F4DD\
+        \ Tehtävänhallinta\n\nRakenna tehtäviisi kattavat tiedot selkeyden ja fokuksen\
+        \ ylläpitämiseksi. Käytä tunnisteita, prioriteetteja ja aikahintoja luodaksesi\
+        \ systemaattisen lähestymistavan työkuormaan.\n\n- \U0001F3F7️ Kategorisoi\
+        \ tehtävät merkityksellisillä tunnisteilla\n- ⚖️ Aseta prioriteetteja käyttäen\
+        \ todistettuja kehyksiä\n- ⏱️ Arvioi aikavaatimukset tarkasti\n- \U0001F4C5\
+        \ Suunnittele realistisia määräaikoja ja aikatauluja\n\n## ⏰ Aikanhallinta\n\
+        \nSeuraa aikainvestointeja ymmärtääksesi työmallejasi ja parantaaksesi tehokkuutta.\
+        \ Oikea aikanhallinta muuttaa hajautetut ponnistelut keskittyneeksi tuottavuudeksi.\n\
+        \n- \U0001F4CA Seuraa todellista vs arvioitua aikaa\n- \U0001F3AF Keskity\
+        \ korkean vaikutuksen aktiviteetteihin\n- \U0001F4C8 Analysoi tuottavuusmalleja\
+        \ ajan myötä\n- ⏳ Tasapainota kiireelliset ja tärkeät tehtävät\n\n## \U0001F4CA\
+        \ Prioriteettikehys (Eisenhowerin Matriisi)\n\nJärjestä tehtäväsi käyttäen\
+        \ tätä todistettua priorisointimenetelmää varmistaaksesi että työskentelet\
+        \ aina oikeissa asioissa oikeaan aikaan.\n\n- \U0001F525 **Kiireellinen &\
+        \ Tärkeä:** Käsittele välittömästi - kriisinhallinta ja määräajat\n- \U0001F4C8\
+        \ **Tärkeä, Ei Kiireellinen:** Aikatauluta strategisesti - suunnittelu ja\
+        \ taitojen kehittäminen  \n- ⚡ **Kiireellinen, Ei Tärkeä:** Delegoi kun mahdollista\
+        \ - keskeytykset ja jotkut kokoukset\n- \U0001F5D1️ **Ei Kiireellinen tai\
+        \ Tärkeä:** Poista - aikahukkaajat ja matalan arvon aktiviteetit\n"
       title: Tehtävänhallinta & Tuottavuusopas
     overview:
-      content: |
-        Muuta tuottavuutesi systemaattisella tehtävänhallinnalla joka auttaa pysymään järjestettynä, keskittyneenä ja työkuorman hallinnassa.
+      content:
+        "Muuta tuottavuutesi systemaattisella tehtävänhallinnalla joka auttaa
+        pysymään järjestettynä, keskittyneenä ja työkuorman hallinnassa.
+
 
         ## ⚡ Miksi Se On Tärkeää?
 
-        Tehokas tehtävänhallinta on henkilökohtaisen ja ammatillisen menestyksen kulmakivi. Järjestämällä työsi systemaattisesti vähennät stressiä, pidät määräajat ja luot tilaa merkittävälle edistymiselle tärkeissä tavoitteissa.
+
+        Tehokas tehtävänhallinta on henkilökohtaisen ja ammatillisen menestyksen kulmakivi.
+        Järjestämällä työsi systemaattisesti vähennät stressiä, pidät määräajat ja
+        luot tilaa merkittävälle edistymiselle tärkeissä tavoitteissa.
+
 
         ## 📋 Tehtävänhallinta
 
-        Luo strukturoitu lähestymistapa vastuiden hallintaan. Hyvin järjestetyt tehtävät johtavat selkeisiin prioriteetteihin ja tehokkaaseen päivittäisen työn suorittamiseen.
+
+        Luo strukturoitu lähestymistapa vastuiden hallintaan. Hyvin järjestetyt tehtävät
+        johtavat selkeisiin prioriteetteihin ja tehokkaaseen päivittäisen työn suorittamiseen.
+
 
         - ✅ Luo ja kategorisoi tehtäviä systemaattisesti
+
         - 🏷️ Ryhmittele liittyvää työtä merkityksellisillä tunnisteilla
+
         - ⚖️ Aseta selkeät prioriteetit ja määräajat
+
         - 🔍 Käytä suodattimia ja hakua nopeaan pääsyyn
+
 
         ## ⏱️ Aikaseuranta & Fokus
 
-        Seuraa aikainvestointeja ymmärtääksesi tuottavuusmalleja ja optimoidaksesi työvirtaasi. Aikawareness johtaa parempaan suunnitteluun ja parannettuun suorituskykyyn.
+
+        Seuraa aikainvestointeja ymmärtääksesi tuottavuusmalleja ja optimoidaksesi
+        työvirtaasi. Aikawareness johtaa parempaan suunnitteluun ja parannettuun suorituskykyyn.
+
 
         - ⏰ Seuraa todellista aikaa per tehtävä
+
         - 🎯 Käytä Maraton-tilaa keskittyneille työistunnoille
+
         - 📊 Analysoi valmistumismalleja ja trendejä
+
         - 🔄 Tarkista ja säädä aikahintoja säännöllisesti
+
 
         ## 📈 Edistymisen Seuranta
 
-        Pidä kirjaa saavutuksistasi ja opi työmalleistasi. Säännöllinen tarkistus ja heijastus ajavat jatkuvaa parannusta tuottavuusjärjestelmässäsi.
+
+        Pidä kirjaa saavutuksistasi ja opi työmalleistasi. Säännöllinen tarkistus
+        ja heijastus ajavat jatkuvaa parannusta tuottavuusjärjestelmässäsi.
+
 
         - 📈 Seuraa tehtävävalmistumisprosentteja
+
         - 📅 Tarkista päivittäistä ja viikoittaista edistymistä
+
         - 🎯 Tunnista pullonkaulat ja optimointimahdollisuudet
+
         - 🏆 Juhli saavutuksia ja virstanpylväiden valmistumisia
+
+        "
       title: Tehtävänhallinta & Työvirtaopas
   marathon:
     details:
       title: Tehtävän Tiedot
     help:
-      content: |
-        Maksimoi fokuksesi ja tuottavuutesi strukturoiduilla työistunnoilla jotka auttavat ylläpitämään syvää keskittymistä estäen burnoutin.
-
-        ## ⚡ Miksi Se On Tärkeää?
-
-        Keskittyneet työistunnot ovat olennaisia syvään työhön ja korkealaatuiseen tuotokseen. Työskentelemällä strukturoiduissa intervaleissa säännöllisillä tauoilla ylläpidät huippupsyykkistä suorituskykyä välttäen väsymyksen pitkistä, epäkeskittyneistä työjaksoista.
-
-        ## ⏰ Aikaraajatut Fokusistunnot
-
-        Käytä todistettuja aikanhallintatekniikoita strukturoidaksesi työsi maksimaaliseen tehokkuuteen. Strukturoidut istunnot auttavat ylläpitämään keskittymistä ja suorittamaan tehtäviä tehokkaammin.
-
-        - 🎯 **Klassinen Fokus:** 25 minuuttia työtä / 5 minuuttia tauko
-        - 📈 **Laajennettu Fokus:** 50 minuuttia työtä / 10 minuuttia tauko  
-        - 🔄 **Pitkä Tauko:** 15-30 minuuttia 4 istunnon jälkeen
-        - ⚖️ **Mukautettu Ajoitus:** Säädä intervallit vastaamaan luonnollista rytmiäsi
-
-        ## 🧠 Kognitiiviset Edut
-
-        Strukturoidut työistunnot hyödyntävät aivojesi luonnollisia huomiokykyjä optimoidakseen suorituskyvyn ja estääkseen psyykkisen väsymyksen joka vähentää laatua ja luovuutta.
-
-        - 🎯 Parannettu fokus ja syvä keskittyminen
-        - 🔋 Vähentynyt psyykkinen väsymys ja burnout
-        - 💪 Kestävä motivaatio säännöllisten saavutusten kautta
-        - ⚡ Parannettu aikawareness ja suunnittelutarkkuus
-
-        ## 📊 Suorituskyvyn Optimointi
-
-        Seuraa keskittyneitä työmalliasi ymmärtääksesi huipputuottavuusaikasi ja optimoidaksesi aikataulusi maksimaaliseen tehokkuuteen.
-
-        - 🏷️ Kategorisoi fokusistunnot tunnisteilla analyysia varten
-        - 📈 Seuraa tuottavuusmalleja eri aikoina
-        - 🚫 Poista häiriöt ennen istuntojen aloittamista
-        - 🚶 Käytä taukoja fyysiseen liikkeeseen ja psyykkiseen resetointiin
+      content:
+        "Maksimoi fokuksesi ja tuottavuutesi strukturoiduilla työistunnoilla\
+        \ jotka auttavat ylläpitämään syvää keskittymistä estäen burnoutin.\n\n##\
+        \ ⚡ Miksi Se On Tärkeää?\n\nKeskittyneet työistunnot ovat olennaisia syvään\
+        \ työhön ja korkealaatuiseen tuotokseen. Työskentelemällä strukturoiduissa\
+        \ intervaleissa säännöllisillä tauoilla ylläpidät huippupsyykkistä suorituskykyä\
+        \ välttäen väsymyksen pitkistä, epäkeskittyneistä työjaksoista.\n\n## ⏰ Aikaraajatut\
+        \ Fokusistunnot\n\nKäytä todistettuja aikanhallintatekniikoita strukturoidaksesi\
+        \ työsi maksimaaliseen tehokkuuteen. Strukturoidut istunnot auttavat ylläpitämään\
+        \ keskittymistä ja suorittamaan tehtäviä tehokkaammin.\n\n- \U0001F3AF **Klassinen\
+        \ Fokus:** 25 minuuttia työtä / 5 minuuttia tauko\n- \U0001F4C8 **Laajennettu\
+        \ Fokus:** 50 minuuttia työtä / 10 minuuttia tauko  \n- \U0001F504 **Pitkä\
+        \ Tauko:** 15-30 minuuttia 4 istunnon jälkeen\n- ⚖️ **Mukautettu Ajoitus:**\
+        \ Säädä intervallit vastaamaan luonnollista rytmiäsi\n\n## \U0001F9E0 Kognitiiviset\
+        \ Edut\n\nStrukturoidut työistunnot hyödyntävät aivojesi luonnollisia huomiokykyjä\
+        \ optimoidakseen suorituskyvyn ja estääkseen psyykkisen väsymyksen joka vähentää\
+        \ laatua ja luovuutta.\n\n- \U0001F3AF Parannettu fokus ja syvä keskittyminen\n\
+        - \U0001F50B Vähentynyt psyykkinen väsymys ja burnout\n- \U0001F4AA Kestävä\
+        \ motivaatio säännöllisten saavutusten kautta\n- ⚡ Parannettu aikawareness\
+        \ ja suunnittelutarkkuus\n\n## \U0001F4CA Suorituskyvyn Optimointi\n\nSeuraa\
+        \ keskittyneitä työmalliasi ymmärtääksesi huipputuottavuusaikasi ja optimoidaksesi\
+        \ aikataulusi maksimaaliseen tehokkuuteen.\n\n- \U0001F3F7️ Kategorisoi fokusistunnot\
+        \ tunnisteilla analyysia varten\n- \U0001F4C8 Seuraa tuottavuusmalleja eri\
+        \ aikoina\n- \U0001F6AB Poista häiriöt ennen istuntojen aloittamista\n- \U0001F6B6\
+        \ Käytä taukoja fyysiseen liikkeeseen ja psyykkiseen resetointiin\n"
       title: Keskittyneet Työistunnot & Aikanhallintaopas
       tooltip: Marathonin apuväline
     label: Maraton-tila
@@ -242,7 +258,9 @@ tasks:
   priority:
     selection:
       title: Valitse Prioriteetti
-    description: Aseta tehtävän prioriteetti Eisenhowerin matriisilla - Kiireellinen/Tärkeä -luokittelu tehokasta tehtävänhallintaa varten
+    description:
+      Aseta tehtävän prioriteetti Eisenhowerin matriisilla - Kiireellinen/Tärkeä
+      -luokittelu tehokasta tehtävänhallintaa varten
     tooltips:
       none: Ei Prioriteettia
       not_urgent_important: Ei Kiireellinen mutta Tärkeä
@@ -264,7 +282,9 @@ tasks:
     reset_all: Nollaa kaikki kentät
     task_added_successfully: Tehtävä lisätty onnistuneesti
     reset_confirm:
-      message: Oletko varma että haluat nollata kaikki kentät? Tätä toimintoa ei voi perua.
+      message:
+        Oletko varma että haluat nollata kaikki kentät? Tätä toimintoa ei voi
+        perua.
       title: Nollaa Kaikki Kentät
     title: Nopea Tehtävä
     title_hint: Anna kuvaileva tehtäväotsikko...
@@ -273,7 +293,7 @@ tasks:
       deadline_date: "Eräpäivä: {date}"
       deadline_date_not_set: "Eräpäivä: Ei asetettu"
       estimated_time: "Arvioitu Aika: {time}"
-      estimated_time_default: "(oletus)"
+      estimated_time_default: (oletus)
       estimated_time_not_set: "Arvioitu Aika: Ei asetettu"
       planned_date: "Suunniteltu: {date}"
       planned_date_not_set: "Suunniteltu: Ei asetettu"
@@ -304,14 +324,20 @@ tasks:
       endsOnDate: päättyy
       everyDay: joka päivä
       occurrences: esiintymiä
-      true: päivässä
+      true: päivänä
       starts: alkaa
-      on: päivänä
+      "on": päivänä
     weekDays: Viikon Päivät
     weekSuffix: viikko(a)
     weekly: Viikoittain
     yearSuffix: vuosi/vuotta
     yearly: Vuosittain
+    daysOfWeek: Viikonpäivät
+    ends:
+      label: Päättyy
+      never: Ei koskaan
+      onDate: Päivämääränä
+      after: Jälkeen
   reminder:
     atTime: Aikataulun mukaisesti
     deadlineReminderLabel: Eräpäivä Muistutus
@@ -358,26 +384,49 @@ tasks:
   tour:
     task_management:
       title: Tehtävien hallinta
-      description: Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla. Käytä Pomodoro-ajastinta pysyäksesi keskittyneenä ja seurataksesi edistymistäsi tärkeissä tehtävissä.
+      description:
+        Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla.
+        Käytä Pomodoro-ajastinta pysyäksesi keskittyneenä ja seurataksesi edistymistäsi
+        tärkeissä tehtävissä.
     add_tasks:
       title: Lisää uusia tehtäviä
-      description: Luo uusia tehtäviä nopeasti tällä painikkeella. Aseta otsikot, prioriteetit, määräajat, tunnisteet ja paljon muuta. Lisää alitehtäviä ja muistutuksia pysyäksesi työssä mukana.
+      description:
+        Luo uusia tehtäviä nopeasti tällä painikkeella. Aseta otsikot,
+        prioriteetit, määräajat, tunnisteet ja paljon muuta. Lisää alitehtäviä ja
+        muistutuksia pysyäksesi työssä mukana.
     your_tasks:
       title: Sinun tehtäväsi
-      description: Katso ja hallitse kaikkia tehtäviäsi yhdessä paikassa. Klikkaa mitä tahansa tehtävää nähdäksesi tiedot, merkataksesi valmiiksi, muokataksesi tietoja tai poistaaksesi. Pysy järjestettynä ja seuraa edistymistäsi.
+      description:
+        Katso ja hallitse kaikkia tehtäviäsi yhdessä paikassa. Klikkaa
+        mitä tahansa tehtävää nähdäksesi tiedot, merkataksesi valmiiksi, muokataksesi
+        tietoja tai poistaaksesi. Pysy järjestettynä ja seuraa edistymistäsi.
     filter_search:
       title: Suodatus & Haku
-      description: Tehokkaat suodatusvaihtoehdot löytääksesi juuri sen, mitä tarvitset. Suodata tunnisteiden, päivämäärien, valmiustilan tai hakutoiminnon mukaan. Lajittele tehtäviä ja vaihda alitehtäviä paremman järjestelyn vuoksi.
+      description:
+        Tehokkaat suodatusvaihtoehdot löytääksesi juuri sen, mitä tarvitset.
+        Suodata tunnisteiden, päivämäärien, valmiustilan tai hakutoiminnon mukaan.
+        Lajittele tehtäviä ja vaihda alitehtäviä paremman järjestelyn vuoksi.
     marathon:
       app_usage:
         title: Sovelluksen käyttö ja aika-analytiikka
-        description: Seuraa sovelluksen käyttötapoja ja analysoi aikaa, joka kuluu eri toimintoihin. Hanki tietoa digitaalisista tavoista ja optimoi tuottavuuttasi.
+        description:
+          Seuraa sovelluksen käyttötapoja ja analysoi aikaa, joka kuluu
+          eri toimintoihin. Hanki tietoa digitaalisista tavoista ja optimoi tuottavuuttasi.
       usage_statistics:
         title: Käyttötilastot
-        description: Näytä yksityiskohtaiset sovelluksen käyttötiedot ja ajanjakauma. Analysoi tuottavuusmalleja, seuraa aikaa, joka kuluu eri sovelluksiin, ja tunnista parannusmahdollisuuksia.
+        description:
+          Näytä yksityiskohtaiset sovelluksen käyttötiedot ja ajanjakauma.
+          Analysoi tuottavuusmalleja, seuraa aikaa, joka kuluu eri sovelluksiin, ja
+          tunnista parannusmahdollisuuksia.
       filter_sort:
         title: Suodatus & Lajittelu
-        description: Suodata sovelluksen käyttötietoja aikavälin, tunnisteiden tai tiettyjen laitteiden mukaan. Lajittele ja järjestä käyttötilastoja saadaksesi parempia oivalluksia ajanhallinnasta.
+        description:
+          Suodata sovelluksen käyttötietoja aikavälin, tunnisteiden tai
+          tiettyjen laitteiden mukaan. Lajittele ja järjestä käyttötilastoja saadaksesi
+          parempia oivalluksia ajanhallinnasta.
       tracking_settings:
         title: Seuranta-asetukset
-        description: Määritä sovelluksen seurantasäännöt, aseta automaattinen merkintä ja hallitse seurattavia sovelluksia. Mukauta seurantaa tuottavuustarpeidesi mukaan.
+        description:
+          Määritä sovelluksen seurantasäännöt, aseta automaattinen merkintä
+          ja hallitse seurattavia sovelluksia. Mukauta seurantaa tuottavuustarpeidesi
+          mukaan.

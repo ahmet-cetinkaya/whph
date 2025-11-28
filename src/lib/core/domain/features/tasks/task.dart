@@ -23,6 +23,7 @@ enum ReminderTime {
 enum RecurrenceType {
   none,
   daily,
+  daysOfWeek,
   weekly,
   monthly,
   yearly,

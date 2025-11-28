@@ -31,7 +31,9 @@ tasks:
     description:
       hint: Přidejte popis...
       label: Popis
-      context: Přidejte podrobné informace o svém úkolu, které vám pomohou pamatovat si klíčové detaily a sledovat pokrok.
+      context:
+        Přidejte podrobné informace o svém úkolu, které vám pomohou pamatovat
+        si klíčové detaily a sledovat pokrok.
     elapsed_time:
       label: Uplynulý čas
     is_completed: Dokončeno
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Celkový uplynulý čas
   estimated_time:
     label: Odhadovaný čas
-    description: Stanovte realistický odhad času pro efektivní plánování úkolu a sledování produktivity.
+    description:
+      Stanovte realistický odhad času pro efektivní plánování úkolu a sledování
+      produktivity.
   errors:
     add_tag: Neočekávaná chyba při přidávání štítku
     adding_tag: Selhání přidání štítku
@@ -83,112 +87,204 @@ tasks:
       filter_by_tags: Filtrovat podle štítků
   help:
     details:
-      content: |
-        Řiďte své úkoly a maximalizujte produktivitu organizovaným plánováním, prioritizací a sledováním času.
+      content:
+        "Řiďte své úkoly a maximalizujte produktivitu organizovaným plánováním,
+        prioritizací a sledováním času.
+
 
         ## ⚡ Proč je to důležité?
 
-        Efektivní management úkolů je základ produktivity. Správně strukturované úkoly s jasnými prioritami a termíny vám pomohou udržet soustředění na to nejdůležitější a zabránit, aby důležitá práce propadla skrz.
+
+        Efektivní management úkolů je základ produktivity. Správně strukturované úkoly
+        s jasnými prioritami a termíny vám pomohou udržet soustředění na to nejdůležitější
+        a zabránit, aby důležitá práce propadla skrz.
+
 
         ## 📝 Organizace úkolů
 
-        Strukturovaný přístup k managementu úkolů vám umožní jasně prioritizovat a plánovat vaši práci. Dobře organizované úkoly vedou k lepšímu rozhodování a efektivnějšímu využití času.
+
+        Strukturovaný přístup k managementu úkolů vám umožní jasně prioritizovat a
+        plánovat vaši práci. Dobře organizované úkoly vedou k lepšímu rozhodování
+        a efektivnějšímu využití času.
+
 
         - 🏷️ Kategorizujte úkoly pomocí smysluplných štítků
+
         - ⚖️ Nastavte priority pomocí osvědčených rámců
+
         - ⏱️ Odhadujte časové požadavky přesně
+
         - 📅 Plánujte realistické termíny a harmonogramy
+
 
         ## ⏰ Řízení času
 
-        Sledujte své investice času pro porozumění vašim pracovním vzorcům a zlepšení efektivity. Správný management času transformuje rozptýlené snahy v zaměřenou produktivitu.
+
+        Sledujte své investice času pro porozumění vašim pracovním vzorcům a zlepšení
+        efektivity. Správný management času transformuje rozptýlené snahy v zaměřenou
+        produktivitu.
+
 
         - 📊 Monitorujte aktuální vs. odhadovaný čas
+
         - 🎯 Zaměřte se na aktivity s vysokým dopadem
+
         - 📈 Analyzujte produktivní vzorce v čase
+
         - ⏳ Vyvažte naléhavé a důležité úkoly
+
 
         ## 📊 Rámec prioritizace (Eisenhowerova matice)
 
-        Organizujte své úkoly pomocí této osvědčené metody prioritizace, abyste zajistili, že vždy pracujete na správných věcech ve správný čas.
+
+        Organizujte své úkoly pomocí této osvědčené metody prioritizace, abyste zajistili,
+        že vždy pracujete na správných věcech ve správný čas.
+
 
         - 🔥 **Naléhavé a důležité:** Řešte okamžitě - management krizí a termíny
+
         - 📈 **Důležité, ne naléhavé:** Plánujte strategicky - plánování a rozvoj dovedností
-        - ⚡ **Naléhavé, ne důležité:** Delegujte, když je to možné - přerušení a některé schůzky
-        - 🗑️ **Ani naléhavé ani důležité:** Eliminujte - časové zloděje a nízkohodnotné aktivity
+
+        - ⚡ **Naléhavé, ne důležité:** Delegujte, když je to možné - přerušení a některé
+        schůzky
+
+        - 🗑️ **Ani naléhavé ani důležité:** Eliminujte - časové zloděje a nízkohodnotné
+        aktivity
+
+        "
       title: Průvodce managementem úkolů a produktivitou
     overview:
-      content: |
-        Transformujte svou produktivitu systematickým managementem úkolů, který vám pomůže zůstat organizovaným, zaměřeným a v kontrolě nad svým pracovním objemem.
+      content:
+        "Transformujte svou produktivitu systematickým managementem úkolů,
+        který vám pomůže zůstat organizovaným, zaměřeným a v kontrolě nad svým pracovním
+        objemem.
+
 
         ## ⚡ Proč je to důležité?
 
-        Efektivní management úkolů je základním kamenem osobního a profesionálního úspěchu. Organizací vaší práce systematicky snižujete stres, konzistentně splňujete termíny a vytváříte prostor pro smysluplný pokrok na důležitých cílech.
+
+        Efektivní management úkolů je základním kamenem osobního a profesionálního
+        úspěchu. Organizací vaší práce systematicky snižujete stres, konzistentně
+        splňujete termíny a vytváříte prostor pro smysluplný pokrok na důležitých
+        cílech.
+
 
         ## 📋 Organizace úkolů
 
-        Vytvořte strukturovaný přístup k řízení svých odpovědností. Dobře organizované úkoly vedou k jasným prioritám a efektivní exekuci vaší denní práce.
+
+        Vytvořte strukturovaný přístup k řízení svých odpovědností. Dobře organizované
+        úkoly vedou k jasným prioritám a efektivní exekuci vaší denní práce.
+
 
         - ✅ Vytvářejte a kategorizujte úkoly systematicky
+
         - 🏷️ Grupujte související práci smysluplnými štítky
+
         - ⚖️ Nastavte jasné priority a termíny
+
         - 🔍 Používejte filtry a vyhledávání pro rychlý přístup
+
 
         ## ⏱️ Sledování času a fokus
 
-        Sledujte své investice času pro porozumění produktivním vzorcům a optimalizaci workflow. Povědomí o čase vede k lepšímu plánování a zlepšenému výkonu.
+
+        Sledujte své investice času pro porozumění produktivním vzorcům a optimalizaci
+        workflow. Povědomí o čase vede k lepšímu plánování a zlepšenému výkonu.
+
 
         - ⏰ Sledujte skutečný čas strávený na úkol
+
         - 🎯 Používejte Maratonový režim pro zaměřené pracovní relace
+
         - 📊 Analyzujte vzorce dokončování a trendy
+
         - 🔄 Pravidelně revidujte a upravujte odhady času
+
 
         ## 📈 Monitorování pokroku
 
-        Sledujte své úspěchy a naučte se z vašich pracovních vzorců. Pravidelný přehled a reflexe pohánějí kontinuální zlepšení ve vašem produktivním systému.
+
+        Sledujte své úspěchy a naučte se z vašich pracovních vzorců. Pravidelný přehled
+        a reflexe pohánějí kontinuální zlepšení ve vašem produktivním systému.
+
 
         - 📈 Monitorujte míru dokončení úkolů
+
         - 📅 Přehlídejte denní a týdenní pokrok
+
         - 🎯 Identifikujte úzká místa a příležitosti k optimalizaci
+
         - 🏆 Oslavujte úspěchy a dokončení milníků
+
+        "
       title: Průvodce managementem úkolů a workflow
   marathon:
     details:
       title: Detaily úkolu
     help:
-      content: |
-        Maximalizujte svůj fokus a produktivitu strukturovanými pracovními relacemi, které vám pomohou udržet hlubokou koncentraci při prevenci vyhoření.
+      content:
+        "Maximalizujte svůj fokus a produktivitu strukturovanými pracovními
+        relacemi, které vám pomohou udržet hlubokou koncentraci při prevenci vyhoření.
+
 
         ## ⚡ Proč je to důležité?
 
-        Zaměřené pracovní relace jsou esenciální pro hlubokou práci a kvalitní výstup. Práce strukturovanými intervaly s pravidelnými přestávkami udržuje špičkový mentální výkon při vyhýbání se únavě z prodloužených, nezaměřených pracovních období.
+
+        Zaměřené pracovní relace jsou esenciální pro hlubokou práci a kvalitní výstup.
+        Práce strukturovanými intervaly s pravidelnými přestávkami udržuje špičkový
+        mentální výkon při vyhýbání se únavě z prodloužených, nezaměřených pracovních
+        období.
+
 
         ## ⏰ Časové rámce zaměřených relací
 
-        Používejte osvědčené techniky managementu času k strukturování vaší práce pro maximální efektivitu. Strukturované relace vám pomohou udržet koncentraci a dokončit úkoly efektivněji.
+
+        Používejte osvědčené techniky managementu času k strukturování vaší práce
+        pro maximální efektivitu. Strukturované relace vám pomohou udržet koncentraci
+        a dokončit úkoly efektivněji.
+
 
         - 🎯 **Klasický fokus:** 25 minut práce / 5 minut přestávka
+
         - 📈 **Rozšířené fokus:** 50 minut práce / 10 minut přestávka
+
         - 🔄 **Dlouhá přestávka:** 15-30 minut po 4 relacích
+
         - ⚖️ **Vlastní časování:** Upravte intervaly podle svého přirozeného rytmu
+
 
         ## 🧠 Kognitivní výhody
 
-        Strukturované pracovní relace využívají přirozené cykly pozornosti mozku k optimalizaci výkonu a prevenci mentální únavy, která snižuje kvalitu a kreativitu.
+
+        Strukturované pracovní relace využívají přirozené cykly pozornosti mozku k
+        optimalizaci výkonu a prevenci mentální únavy, která snižuje kvalitu a kreativitu.
+
 
         - 🎯 Zlepšená koncentrace a hluboké soustředění
+
         - 🔋 Snížení mentální únavy a vyhoření
+
         - 💪 Udržení motivace prostřednictvím pravidelných úspěchů
+
         - ⚡ Zlepšené povědomí o čase a přesnost plánování
+
 
         ## 📊 Optimalizace výkonu
 
-        Sledujte své zaměřené pracovní vzorce pro porozumění vašim špičkovým produktivním časům a optimalizaci vašeho harmonogramu pro maximální efektivitu.
+
+        Sledujte své zaměřené pracovní vzorce pro porozumění vašim špičkovým produktivním
+        časům a optimalizaci vašeho harmonogramu pro maximální efektivitu.
+
 
         - 🏷️ Kategorizujte fokusové relace štítky pro analýzu
+
         - 📈 Monitorujte produktivní vzorce napříč různými časy
+
         - 🚫 Eliminujte rušivé prvky před zahájením relací
+
         - 🚶 Používejte přestávky pro fyzické hnutí a mentální reset
+
+        "
       title: Zaměřené pracovní relace a průvodce managementem času
       tooltip: Nápověda maratón
     label: Maratonový režim
@@ -242,7 +338,9 @@ tasks:
   priority:
     selection:
       title: Vybrat prioritu
-    description: Nastavte prioritu úkolu pomocí Eisenhowerovy matice - klasifikace Naléhavé/Důležité pro efektivní správu úkolů
+    description:
+      Nastavte prioritu úkolu pomocí Eisenhowerovy matice - klasifikace
+      Naléhavé/Důležité pro efektivní správu úkolů
     tooltips:
       none: Žádná priorita
       not_urgent_important: Ne naléhavé, ale důležité
@@ -257,13 +355,19 @@ tasks:
       urgent_not_important: Naléhavé, ale ne důležité
   quick_task:
     create_error: Chyba při vytváření úkolu
-    lock_description: |
-      Zamkněte vlastnosti, aby si zachovaly své hodnoty při vytváření více podobných úkolů. Zamknuté vlastnosti nebudou vymazány, když resetujete formulář.
+    lock_description:
+      "Zamkněte vlastnosti, aby si zachovaly své hodnoty při vytváření
+      více podobných úkolů. Zamknuté vlastnosti nebudou vymazány, když resetujete
+      formulář.
+
+      "
     lock_settings: Nastavení zámku
     reset_all: Resetovat všechna pole
     task_added_successfully: Úkol úspěšně přidán
     reset_confirm:
-      message: Jste si jisti, že chcete resetovat všechna pole? Tato akce nelze vrátit zpět.
+      message:
+        Jste si jisti, že chcete resetovat všechna pole? Tato akce nelze vrátit
+        zpět.
       title: Resetovat všechna pole
     title: Rychlý úkol
     title_hint: Zadejte popisný titulek úkolu...
@@ -272,7 +376,7 @@ tasks:
       deadline_date: "Termín: {date}"
       deadline_date_not_set: "Termín: Není nastaveno"
       estimated_time: "Odhadovaný čas: {time}"
-      estimated_time_default: "(výchozí)"
+      estimated_time_default: (výchozí)
       estimated_time_not_set: "Odhadovaný čas: Není nastaveno"
       planned_date: "Plánováno: {date}"
       planned_date_not_set: "Plánováno: Není nastaveno"
@@ -303,14 +407,20 @@ tasks:
       endsOnDate: končí
       everyDay: každý den
       occurrences: výskytech
-      true: true
+      true: na
       starts: začíná
-      on: "na"
+      "on": dne
     weekDays: Dny týdne
     weekSuffix: týden(ů)
     weekly: Týdně
     yearSuffix: rok(y)
     yearly: Ročně
+    daysOfWeek: Dny v týdnu
+    ends:
+      label: Končí
+      never: Nikdy
+      onDate: K datu
+      after: Po
   reminder:
     atTime: V plánovaném čase
     deadlineReminderLabel: Připomínka splatnosti
@@ -336,26 +446,50 @@ tasks:
   tour:
     task_management:
       title: Management úkolů
-      description: Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami. Používejte Pomodoro časovač pro zůstání soustředění a sledování pokroku na důležitých úkolech.
+      description:
+        Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami.
+        Používejte Pomodoro časovač pro zůstání soustředění a sledování pokroku na
+        důležitých úkolech.
     add_tasks:
       title: Přidání nových úkolů
-      description: Rychle vytvářejte nové úkoly pomocí tohoto tlačítka. Nastavujte titulky, priority, termíny, štítky a další. Přidávejte podúkoly a připomínky pro zůstání na chodu.
+      description:
+        Rychle vytvářejte nové úkoly pomocí tohoto tlačítka. Nastavujte
+        titulky, priority, termíny, štítky a další. Přidávejte podúkoly a připomínky
+        pro zůstání na chodu.
     your_tasks:
       title: Vaše úkoly
-      description: Zobrazujte a spravujte všechny své úkoly na jednom místě. Klikněte na libovolný úkol pro zobrazení detailů, označení jako dokončený, úpravu informací nebo smazání. Zůstaňte organizovaní a sledujte svůj pokrok.
+      description:
+        Zobrazujte a spravujte všechny své úkoly na jednom místě. Klikněte
+        na libovolný úkol pro zobrazení detailů, označení jako dokončený, úpravu informací
+        nebo smazání. Zůstaňte organizovaní a sledujte svůj pokrok.
     filter_search:
       title: Filtr a vyhledávání
-      description: Výkonné možnosti filtrování pro nalezení přesně toho, co potřebujete. Filtrujte podle štítků, dat, stavu dokončení nebo použijte vyhledávání. Řaďte úkoly a přepínejte podúkoly pro lepší organizaci.
+      description:
+        Výkonné možnosti filtrování pro nalezení přesně toho, co potřebujete.
+        Filtrujte podle štítků, dat, stavu dokončení nebo použijte vyhledávání. Řaďte
+        úkoly a přepínejte podúkoly pro lepší organizaci.
     marathon:
       app_usage:
         title: Využití aplikace a časové poznatky
-        description: Monitorujte vzorce využití aplikace a analyzujte čas strávený různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte svou produktivitu.
+        description:
+          Monitorujte vzorce využití aplikace a analyzujte čas strávený
+          různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte
+          svou produktivitu.
       usage_statistics:
         title: Statistiky využití
-        description: Zobrazujte detailní data o využití aplikace a distribuci času. Analyzujte své produktivní vzorce, sledujte čas strávený různými aplikacemi a identifikujte oblasti pro zlepšení.
+        description:
+          Zobrazujte detailní data o využití aplikace a distribuci času.
+          Analyzujte své produktivní vzorce, sledujte čas strávený různými aplikacemi
+          a identifikujte oblasti pro zlepšení.
       filter_sort:
         title: Filtr a řazení
-        description: Filtrování dat o využití aplikace podle časového rozsahu, štítků nebo konkrétních zařízení. Řaďte a organizujte statistiky využití pro získání lepších poznatků o správě času.
+        description:
+          Filtrování dat o využití aplikace podle časového rozsahu, štítků
+          nebo konkrétních zařízení. Řaďte a organizujte statistiky využití pro získání
+          lepších poznatků o správě času.
       tracking_settings:
         title: Nastavení sledování
-        description: Nakonfigurujte pravidla sledování aplikací, nastavte automatické štítkování a spravujte, které aplikace sledovat. Přizpůsobte sledování potřebám vaší produktivity.
+        description:
+          Nakonfigurujte pravidla sledování aplikací, nastavte automatické
+          štítkování a spravujte, které aplikace sledovat. Přizpůsobte sledování potřebám
+          vaší produktivity.

@@ -181,6 +181,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String recurrenceNone = 'tasks.recurrence.none';
   static const String recurrenceDaily = 'tasks.recurrence.daily';
   static const String recurrenceWeekly = 'tasks.recurrence.weekly';
+  static const String recurrenceDaysOfWeek = 'tasks.recurrence.daysOfWeek';
   static const String recurrenceMonthly = 'tasks.recurrence.monthly';
   static const String recurrenceYearly = 'tasks.recurrence.yearly';
   static const String recurrenceCustom = 'tasks.recurrence.custom';
@@ -210,6 +211,12 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String endsAfter = 'tasks.recurrence.summary.endsAfter';
   static const String everyDay = 'tasks.recurrence.summary.everyDay';
   static const String occurrences = 'tasks.recurrence.summary.occurrences';
+
+  // Recurrence End Options
+  static const String recurrenceEndsLabel = 'tasks.recurrence.ends.label';
+  static const String recurrenceEndsNever = 'tasks.recurrence.ends.never';
+  static const String recurrenceEndsOnDate = 'tasks.recurrence.ends.onDate';
+  static const String recurrenceEndsAfter = 'tasks.recurrence.ends.after';
 
   // Validation Messages
   static const String deadlineTimeInvalid = 'tasks.validation.deadline_time_invalid';

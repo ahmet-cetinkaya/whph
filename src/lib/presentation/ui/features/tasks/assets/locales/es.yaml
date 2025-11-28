@@ -31,7 +31,9 @@ tasks:
     description:
       hint: Añadir descripción...
       label: Descripción
-      context: Agregue información detallada sobre su tarea para ayudarle a recordar detalles clave y seguir el progreso.
+      context:
+        Agregue información detallada sobre su tarea para ayudarle a recordar
+        detalles clave y seguir el progreso.
     elapsed_time:
       label: Tiempo transcurrido
     is_completed: Completado
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Tiempo total transcurrido
   estimated_time:
     label: Tiempo estimado
-    description: Establece una estimación de tiempo realista para planificar tu tarea eficazmente y rastrear la productividad.
+    description:
+      Establece una estimación de tiempo realista para planificar tu tarea
+      eficazmente y rastrear la productividad.
   errors:
     add_tag: Error inesperado al añadir la etiqueta
     adding_tag: No se pudo añadir la etiqueta
@@ -83,112 +87,209 @@ tasks:
       filter_by_tags: Filtrar por etiquetas
   help:
     details:
-      content: |
-        Domina tu gestión de tareas y maximiza la productividad organizando, priorizando y siguiendo tu trabajo de manera efectiva.
+      content:
+        "Domina tu gestión de tareas y maximiza la productividad organizando,
+        priorizando y siguiendo tu trabajo de manera efectiva.
+
 
         ## ⚡ ¿Por qué es importante?
 
-        La gestión efectiva de tareas es la base de la productividad. Las tareas bien estructuradas con prioridades claras y fechas límite te ayudan a enfocarte en lo que más importa y previenen que el trabajo importante se escape.
+
+        La gestión efectiva de tareas es la base de la productividad. Las tareas bien
+        estructuradas con prioridades claras y fechas límite te ayudan a enfocarte
+        en lo que más importa y previenen que el trabajo importante se escape.
+
 
         ## 📝 Organización de tareas
 
-        Estructura tus tareas con detalles comprensivos para mantener claridad y enfoque. Usa etiquetas, prioridades y estimaciones de tiempo para crear un enfoque sistemático a tu carga de trabajo.
+
+        Estructura tus tareas con detalles comprensivos para mantener claridad y enfoque.
+        Usa etiquetas, prioridades y estimaciones de tiempo para crear un enfoque
+        sistemático a tu carga de trabajo.
+
 
         - 🏷️ Categoriza tareas con etiquetas significativas
+
         - ⚖️ Establece prioridades usando marcos probados
+
         - ⏱️ Estima requerimientos de tiempo con precisión
+
         - 📅 Planifica fechas límite y horarios realistas
+
 
         ## ⏰ Gestión del tiempo
 
-        Rastrea tus inversiones de tiempo para entender tus patrones de trabajo y mejorar la eficiencia. La gestión apropiada del tiempo transforma esfuerzos dispersos en productividad enfocada.
+
+        Rastrea tus inversiones de tiempo para entender tus patrones de trabajo y
+        mejorar la eficiencia. La gestión apropiada del tiempo transforma esfuerzos
+        dispersos en productividad enfocada.
+
 
         - 📊 Monitorea tiempo real vs estimado
+
         - 🎯 Enfócate en actividades de alto impacto
+
         - 📈 Analiza patrones de productividad a lo largo del tiempo
+
         - ⏳ Equilibra tareas urgentes e importantes
+
 
         ## 📊 Marco de prioridades (Matriz de Eisenhower)
 
-        Organiza tus tareas usando este método de priorización probado para asegurar que siempre estés trabajando en las cosas correctas en el momento correcto.
 
-        - 🔥 **Urgente e Importante:** Maneja inmediatamente - gestión de crisis y fechas límite
-        - 📈 **Importante, no urgente:** Planifica estratégicamente - planificación y desarrollo de habilidades
-        - ⚡ **Urgente, no importante:** Delega cuando sea posible - interrupciones y algunas reuniones
-        - 🗑️ **Ni urgente ni importante:** Elimina - actividades que pierden tiempo y de bajo valor
+        Organiza tus tareas usando este método de priorización probado para asegurar
+        que siempre estés trabajando en las cosas correctas en el momento correcto.
+
+
+        - 🔥 **Urgente e Importante:** Maneja inmediatamente - gestión de crisis y
+        fechas límite
+
+        - 📈 **Importante, no urgente:** Planifica estratégicamente - planificación
+        y desarrollo de habilidades
+
+        - ⚡ **Urgente, no importante:** Delega cuando sea posible - interrupciones
+        y algunas reuniones
+
+        - 🗑️ **Ni urgente ni importante:** Elimina - actividades que pierden tiempo
+        y de bajo valor
+
+        "
       title: Guía de gestión de tareas y productividad
     overview:
-      content: |
-        Transforma tu productividad con gestión sistemática de tareas que te ayude a mantenerte organizado, enfocado y en control de tu carga de trabajo.
+      content:
+        "Transforma tu productividad con gestión sistemática de tareas que
+        te ayude a mantenerte organizado, enfocado y en control de tu carga de trabajo.
+
 
         ## ⚡ ¿Por qué es importante?
 
-        La gestión efectiva de tareas es la piedra angular del éxito personal y profesional. Al organizar sistemáticamente tu trabajo, reduces el estrés, cumples fechas límite consistentemente y creas espacio para progreso significativo en objetivos importantes.
+
+        La gestión efectiva de tareas es la piedra angular del éxito personal y profesional.
+        Al organizar sistemáticamente tu trabajo, reduces el estrés, cumples fechas
+        límite consistentemente y creas espacio para progreso significativo en objetivos
+        importantes.
+
 
         ## 📋 Organización de tareas
 
-        Crea un enfoque estructurado para gestionar tus responsabilidades. Las tareas bien organizadas llevan a prioridades claras y ejecución eficiente de tu trabajo diario.
+
+        Crea un enfoque estructurado para gestionar tus responsabilidades. Las tareas
+        bien organizadas llevan a prioridades claras y ejecución eficiente de tu trabajo
+        diario.
+
 
         - ✅ Crea y categoriza tareas sistemáticamente
+
         - 🏷️ Agrupa trabajo relacionado con etiquetas significativas
+
         - ⚖️ Establece prioridades y fechas límite claras
+
         - 🔍 Usa filtros y búsqueda para acceso rápido
+
 
         ## ⏱️ Seguimiento de tiempo y enfoque
 
-        Monitorea tus inversiones de tiempo para entender patrones de productividad y optimizar tu flujo de trabajo. La conciencia del tiempo lleva a mejor planificación y rendimiento mejorado.
+
+        Monitorea tus inversiones de tiempo para entender patrones de productividad
+        y optimizar tu flujo de trabajo. La conciencia del tiempo lleva a mejor planificación
+        y rendimiento mejorado.
+
 
         - ⏰ Rastrea tiempo real gastado por tarea
+
         - 🎯 Usa modo Maratón para sesiones de trabajo enfocadas
+
         - 📊 Analiza patrones y tendencias de finalización
+
         - 🔄 Revisa y ajusta estimaciones de tiempo regularmente
+
 
         ## 📈 Monitoreo de progreso
 
-        Rastrea tus logros y aprende de tus patrones de trabajo. La revisión y reflexión regular impulsan la mejora continua en tu sistema de productividad.
+
+        Rastrea tus logros y aprende de tus patrones de trabajo. La revisión y reflexión
+        regular impulsan la mejora continua en tu sistema de productividad.
+
 
         - 📈 Monitorea tasas de finalización de tareas
+
         - 📅 Revisa progreso diario y semanal
+
         - 🎯 Identifica cuellos de botella y oportunidades de optimización
+
         - 🏆 Celebra logros y finalizaciones de hitos
+
+        "
       title: Guía de gestión de tareas y flujo de trabajo
   marathon:
     details:
       title: Detalles de la tarea
     help:
-      content: |
-        Maximiza tu enfoque y productividad con sesiones de trabajo estructuradas que te ayuden a mantener concentración profunda mientras previenen el agotamiento.
+      content:
+        "Maximiza tu enfoque y productividad con sesiones de trabajo estructuradas
+        que te ayuden a mantener concentración profunda mientras previenen el agotamiento.
+
 
         ## ⚡ ¿Por qué es importante?
 
-        Las sesiones de trabajo enfocadas son esenciales para trabajo profundo y resultados de alta calidad. Al trabajar en intervalos estructurados con descansos regulares, mantienes rendimiento mental pico mientras evitas la fatiga que viene de períodos de trabajo extendidos y sin enfoque.
+
+        Las sesiones de trabajo enfocadas son esenciales para trabajo profundo y resultados
+        de alta calidad. Al trabajar en intervalos estructurados con descansos regulares,
+        mantienes rendimiento mental pico mientras evitas la fatiga que viene de períodos
+        de trabajo extendidos y sin enfoque.
+
 
         ## ⏰ Sesiones de enfoque cronometradas
 
-        Usa técnicas de gestión del tiempo probadas para estructurar tu trabajo para máxima eficiencia. Las sesiones estructuradas te ayudan a mantener concentración y completar tareas más efectivamente.
+
+        Usa técnicas de gestión del tiempo probadas para estructurar tu trabajo para
+        máxima eficiencia. Las sesiones estructuradas te ayudan a mantener concentración
+        y completar tareas más efectivamente.
+
 
         - 🎯 **Enfoque clásico:** 25 minutos trabajo / 5 minutos descanso
+
         - 📈 **Enfoque extendido:** 50 minutos trabajo / 10 minutos descanso
+
         - 🔄 **Descanso largo:** 15-30 minutos después de 4 sesiones
-        - ⚖️ **Tiempo personalizado:** Ajusta intervalos para coincidir con tu ritmo natural
+
+        - ⚖️ **Tiempo personalizado:** Ajusta intervalos para coincidir con tu ritmo
+        natural
+
 
         ## 🧠 Beneficios cognitivos
 
-        Las sesiones de trabajo estructuradas aprovechan los ciclos de atención naturales de tu cerebro para optimizar rendimiento y prevenir fatiga mental que reduce calidad y creatividad.
+
+        Las sesiones de trabajo estructuradas aprovechan los ciclos de atención naturales
+        de tu cerebro para optimizar rendimiento y prevenir fatiga mental que reduce
+        calidad y creatividad.
+
 
         - 🎯 Enfoque mejorado y concentración profunda
+
         - 🔋 Fatiga mental y agotamiento reducidos
+
         - 💪 Motivación sostenida a través de logros regulares
+
         - ⚡ Conciencia del tiempo y precisión de planificación mejoradas
+
 
         ## 📊 Optimización de rendimiento
 
-        Rastrea tus patrones de trabajo enfocado para entender tus tiempos de productividad pico y optimizar tu horario para máxima efectividad.
+
+        Rastrea tus patrones de trabajo enfocado para entender tus tiempos de productividad
+        pico y optimizar tu horario para máxima efectividad.
+
 
         - 🏷️ Categoriza sesiones de enfoque con etiquetas para análisis
+
         - 📈 Monitorea patrones de productividad en diferentes momentos
+
         - 🚫 Elimina distracciones antes de comenzar sesiones
+
         - 🚶 Usa descansos para movimiento físico y reinicio mental
+
+        "
       title: Guía de sesiones de trabajo enfocadas y gestión del tiempo
       tooltip: Tooltip de ayuda de Maratón
     label: Modo Maratón
@@ -242,7 +343,9 @@ tasks:
   priority:
     selection:
       title: Seleccionar prioridad
-    description: Establezca la prioridad de la tarea usando la Matriz de Eisenhower - clasificación Urgente/Importante para una gestión de tareas efectiva
+    description:
+      Establezca la prioridad de la tarea usando la Matriz de Eisenhower
+      - clasificación Urgente/Importante para una gestión de tareas efectiva
     tooltips:
       none: Sin prioridad
       not_urgent_important: No urgente pero importante
@@ -276,7 +379,7 @@ tasks:
       deadline_date: "Fecha límite: {date}"
       deadline_date_not_set: "Fecha límite: No establecida"
       estimated_time: "Tiempo estimado: {time}"
-      estimated_time_default: "(predeterminado)"
+      estimated_time_default: (predeterminado)
       estimated_time_not_set: "Tiempo estimado: No establecido"
       planned_date: "Planificado: {date}"
       planned_date_not_set: "Planificado: No establecido"
@@ -309,12 +412,18 @@ tasks:
       true: el
       everyDay: cada día
       starts: comienza
-      "on": "el"
+      "on": el
     weekDays: Días de la semana
     weekSuffix: semana(s)
     weekly: Semanal
     yearSuffix: año(s)
     yearly: Anual
+    daysOfWeek: Días de la semana
+    ends:
+      label: Termina
+      never: Nunca
+      onDate: En fecha
+      after: Después
   reminder:
     atTime: A la hora programada
     deadlineReminderLabel: Recordatorio de fecha límite
@@ -342,26 +451,50 @@ tasks:
   tour:
     task_management:
       title: Gestión de tareas
-      description: Crea y organiza tareas con prioridades, fechas límite y recordatorios. Usa el temporizador Pomodoro para mantenerte enfocado y rastrear tu progreso en tareas importantes.
+      description:
+        Crea y organiza tareas con prioridades, fechas límite y recordatorios.
+        Usa el temporizador Pomodoro para mantenerte enfocado y rastrear tu progreso
+        en tareas importantes.
     add_tasks:
       title: Añadir nuevas tareas
-      description: Crea nuevas tareas rápidamente con este botón. Establece títulos, prioridades, fechas límite, etiquetas y más. Añade subtareas y recordatorios para mantenerte al día con tu trabajo.
+      description:
+        Crea nuevas tareas rápidamente con este botón. Establece títulos,
+        prioridades, fechas límite, etiquetas y más. Añade subtareas y recordatorios
+        para mantenerte al día con tu trabajo.
     your_tasks:
       title: Tus tareas
-      description: Visualiza y gestiona todas tus tareas en un solo lugar. Haz clic en cualquier tarea para ver detalles, marcar como completada, editar información o eliminar. Mantente organizado y rastrea tu progreso.
+      description:
+        Visualiza y gestiona todas tus tareas en un solo lugar. Haz clic
+        en cualquier tarea para ver detalles, marcar como completada, editar información
+        o eliminar. Mantente organizado y rastrea tu progreso.
     filter_search:
       title: Filtrar y buscar
-      description: Potentes opciones de filtrado para encontrar exactamente lo que necesitas. Filtra por etiquetas, fechas, estado de finalización o usa la búsqueda. Ordena tareas y alterna subtareas para una mejor organización.
+      description:
+        Potentes opciones de filtrado para encontrar exactamente lo que
+        necesitas. Filtra por etiquetas, fechas, estado de finalización o usa la búsqueda.
+        Ordena tareas y alterna subtareas para una mejor organización.
     marathon:
       app_usage:
         title: Uso de aplicaciones e información de tiempo
-        description: Monitorea patrones de uso de aplicaciones y analiza el tiempo que dedicas a diferentes actividades. Obtén información sobre tus hábitos digitales y optimiza tu productividad.
+        description:
+          Monitorea patrones de uso de aplicaciones y analiza el tiempo
+          que dedicas a diferentes actividades. Obtén información sobre tus hábitos
+          digitales y optimiza tu productividad.
       usage_statistics:
         title: Estadísticas de uso
-        description: Visualiza datos detallados de uso de aplicaciones y distribución del tiempo. Analiza tus patrones de productividad, rastrea el tiempo dedicado a diferentes aplicaciones e identifica áreas de mejora.
+        description:
+          Visualiza datos detallados de uso de aplicaciones y distribución
+          del tiempo. Analiza tus patrones de productividad, rastrea el tiempo dedicado
+          a diferentes aplicaciones e identifica áreas de mejora.
       filter_sort:
         title: Filtrar y ordenar
-        description: Filtra datos de uso de aplicaciones por rango de fechas, etiquetas o dispositivos específicos. Ordena y organiza tus estadísticas de uso para obtener mejores perspectivas sobre tu gestión del tiempo.
+        description:
+          Filtra datos de uso de aplicaciones por rango de fechas, etiquetas
+          o dispositivos específicos. Ordena y organiza tus estadísticas de uso para
+          obtener mejores perspectivas sobre tu gestión del tiempo.
       tracking_settings:
         title: Configuración de seguimiento
-        description: Configura reglas de seguimiento de aplicaciones, establece etiquetado automático y gestiona qué aplicaciones monitorear. Personaliza el seguimiento para adaptarse a tus necesidades de productividad.
+        description:
+          Configura reglas de seguimiento de aplicaciones, establece etiquetado
+          automático y gestiona qué aplicaciones monitorear. Personaliza el seguimiento
+          para adaptarse a tus necesidades de productividad.

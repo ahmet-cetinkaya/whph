@@ -41,7 +41,9 @@ tasks:
     description:
       hint: Açıklama ekle...
       label: Açıklama
-      context: Göreviniz hakkında detaylı bilgi ekleyerek önemli ayrıntıları hatırlayın ve ilerlemeyi takip edin.
+      context:
+        Göreviniz hakkında detaylı bilgi ekleyerek önemli ayrıntıları hatırlayın
+        ve ilerlemeyi takip edin.
     elapsed_time:
       label: Geçen Süre
     parent_task:
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Toplam Geçen Süre
   estimated_time:
     label: Tahmini Süre
-    description: Görevinizi etkili bir şekilde planlamak ve üretkenliği takip etmek için gerçekçi zaman tahmini yapın.
+    description:
+      Görevinizi etkili bir şekilde planlamak ve üretkenliği takip etmek
+      için gerçekçi zaman tahmini yapın.
   errors:
     add_tag: Etiket eklenirken beklenmedik bir hata oluştu
     adding_tag: Etiket eklenemedi
@@ -83,125 +87,173 @@ tasks:
       filter_by_tags: Etiketlere göre filtrele
   help:
     details:
-      content: |
-        Görev yönetiminizde ustalaşın ve işlerinizi organize ederek, önceliklendirerek ve takip ederek verimliliğinizi maksimuma çıkarın.
+      content:
+        "Görev yönetiminizde ustalaşın ve işlerinizi organize ederek, önceliklendirerek
+        ve takip ederek verimliliğinizi maksimuma çıkarın.
+
 
         ## ⚡ Neden Önemli?
 
-        Etkili görev yönetimi, verimliliğin temelidir. Açık öncelikler ve son tarihlerle düzgün yapılandırılmış görevler, en önemli işlere odaklanmanıza yardımcı olur ve önemli işlerin gözden kaçmasını önler.
+
+        Etkili görev yönetimi, verimliliğin temelidir. Açık öncelikler ve son tarihlerle
+        düzgün yapılandırılmış görevler, en önemli işlere odaklanmanıza yardımcı olur
+        ve önemli işlerin gözden kaçmasını önler.
+
 
         ## 📝 Görev Organizasyonu
 
-        Netlik ve odaklanmayı korumak için görevlerinizi kapsamlı detaylarla yapılandırın. Sistematik bir iş yükü yaklaşımı oluşturmak için etiketler, öncelikler ve zaman tahminleri kullanın.
+
+        Netlik ve odaklanmayı korumak için görevlerinizi kapsamlı detaylarla yapılandırın.
+        Sistematik bir iş yükü yaklaşımı oluşturmak için etiketler, öncelikler ve
+        zaman tahminleri kullanın.
+
 
         - 🏷️ Görevleri anlamlı etiketlerle kategorilere ayırın
+
         - ⚖️ Kanıtlanmış çerçeveleri kullanarak öncelikler belirleyin
+
         - ⏱️ Zaman gereksinimlerini doğru bir şekilde tahmin edin
+
         - 📅 Gerçekçi son tarihler ve programlar planlayın
+
 
         ## ⏰ Zaman Yönetimi
 
-        İş modellerinizi anlamak ve verimliliği artırmak için zaman yatırımlarınızı takip edin. Doğru zaman yönetimi, dağınık çabaları odaklı verimliliğe dönüştürür.
+
+        İş modellerinizi anlamak ve verimliliği artırmak için zaman yatırımlarınızı
+        takip edin. Doğru zaman yönetimi, dağınık çabaları odaklı verimliliğe dönüştürür.
+
 
         - 📊 Gerçek ve tahmini zamanı karşılaştırın
+
         - 🎯 Yüksek etkili faaliyetlere odaklanın
+
         - 📈 Zaman içinde verimlilik modellerini analiz edin
+
         - ⏳ Acil ve önemli görevleri dengeleyin
+
 
         ## 📊 Öncelik Çerçevesi (Eisenhower Matrisi)
 
-        Her zaman doğru zamanda doğru işler üzerinde çalıştığınızdan emin olmak için bu kanıtlanmış önceliklendirme yöntemini kullanarak görevlerinizi organize edin.
+
+        Her zaman doğru zamanda doğru işler üzerinde çalıştığınızdan emin olmak için
+        bu kanıtlanmış önceliklendirme yöntemini kullanarak görevlerinizi organize
+        edin.
+
 
         - 🔥 **Acil ve Önemli:** Hemen halledin - kriz yönetimi ve son tarihler
-        - 📈 **Önemli, Acil Değil:** Stratejik olarak planlayın - planlama ve beceri geliştirme
-        - ⚡ **Acil, Önemli Değil:** Mümkün olduğunda devredin - kesintiler ve bazı toplantılar
-        - 🗑️ **Ne Acil Ne Önemli:** Ortadan kaldırın - zaman kaybettiren ve düşük değerli faaliyetler
+
+        - 📈 **Önemli, Acil Değil:** Stratejik olarak planlayın - planlama ve beceri
+        geliştirme
+
+        - ⚡ **Acil, Önemli Değil:** Mümkün olduğunda devredin - kesintiler ve bazı
+        toplantılar
+
+        - 🗑️ **Ne Acil Ne Önemli:** Ortadan kaldırın - zaman kaybettiren ve düşük
+        değerli faaliyetler
+
+        "
       title: Görev Yönetimi ve Verimlilik Rehberi
     overview:
-      content: |
-        İş yükünüzü organize etmenize, odaklı kalmanıza ve kontrolü elinizde tutmanıza yardımcı olan sistematik görev yönetimi ile verimliliğinizi dönüştürün.
-
-        ## ⚡ Neden Önemli?
-
-        Etkili görev yönetimi, kişisel ve profesyonel başarının temel taşıdır. İşinizi sistematik olarak organize ederek stresi azaltır, son tarihlere tutarlı bir şekilde uyar ve önemli hedeflerde anlamlı ilerleme için alan yaratırsınız.
-
-        ## 📋 Görev Organizasyonu
-
-        Sorumluluklarınızı yönetmek için yapılandırılmış bir yaklaşım oluşturun. İyi organize edilmiş görevler, net önceliklere ve günlük işlerinizin verimli yürütülmesine yol açar.
-
-        - ✅ Görevleri sistematik olarak oluşturun ve kategorilere ayırın
-        - 🏷️ İlgili işleri anlamlı etiketlerle gruplayın
-        - ⚖️ Net öncelikler ve son tarihler belirleyin
-        - 🔍 Hızlı erişim için filtreler ve arama kullanın
-
-        ## ⏱️ Zaman Takibi ve Odaklanma
-
-        Verimlilik modellerini anlamak ve iş akışınızı optimize etmek için zaman yatırımlarınızı izleyin. Zaman bilinci, daha iyi planlamaya ve gelişmiş performansa yol açar.
-
-        - ⏰ Her görev için harcanan gerçek zamanı takip edin
-        - 🎯 Odaklı çalışma seansları için Maraton Modu'nu kullanın
-        - 📊 Tamamlama kalıplarını ve eğilimlerini analiz edin
-        - 🔄 Zaman tahminlerini düzenli olarak gözden geçirin ve ayarlayın
-
-        ## 📈 İlerleme İzleme
-
-        Başarılarınızı takip edin ve iş modellerinizden öğrenin. Düzenli inceleme ve düşünme, verimlilik sisteminizde sürekli gelişimi sağlar.
-
-        - 📈 Görev tamamlama oranlarını izleyin
-        - 📅 Günlük ve haftalık ilerlemeyi gözden geçirin
-        - 🎯 Darboğazları ve optimizasyon fırsatlarını belirleyin
-        - 🏆 Başarıları ve dönüm noktası tamamlamalarını kutlayın
-
-        - **Zaman Takibi:**
-          - Odaklanma için Maraton modu
-          - Görev başına zamanı takip edin
-          - Tamamlama geçmişini görüntüleyin
-
-        ## 💡 İpuçları
-
-        - Büyük görevleri parçalara ayırın
-        - Projeler için etiketleri kullanın
-        - Gerçekçi son tarihler belirleyin
-        - İlerlemenizi takip edin
-        - Düzenli olarak gözden geçirin
+      content:
+        "İş yükünüzü organize etmenize, odaklı kalmanıza ve kontrolü elinizde\
+        \ tutmanıza yardımcı olan sistematik görev yönetimi ile verimliliğinizi dönüştürün.\n\
+        \n## ⚡ Neden Önemli?\n\nEtkili görev yönetimi, kişisel ve profesyonel başarının\
+        \ temel taşıdır. İşinizi sistematik olarak organize ederek stresi azaltır,\
+        \ son tarihlere tutarlı bir şekilde uyar ve önemli hedeflerde anlamlı ilerleme\
+        \ için alan yaratırsınız.\n\n## \U0001F4CB Görev Organizasyonu\n\nSorumluluklarınızı\
+        \ yönetmek için yapılandırılmış bir yaklaşım oluşturun. İyi organize edilmiş\
+        \ görevler, net önceliklere ve günlük işlerinizin verimli yürütülmesine yol\
+        \ açar.\n\n- ✅ Görevleri sistematik olarak oluşturun ve kategorilere ayırın\n\
+        - \U0001F3F7️ İlgili işleri anlamlı etiketlerle gruplayın\n- ⚖️ Net öncelikler\
+        \ ve son tarihler belirleyin\n- \U0001F50D Hızlı erişim için filtreler ve\
+        \ arama kullanın\n\n## ⏱️ Zaman Takibi ve Odaklanma\n\nVerimlilik modellerini\
+        \ anlamak ve iş akışınızı optimize etmek için zaman yatırımlarınızı izleyin.\
+        \ Zaman bilinci, daha iyi planlamaya ve gelişmiş performansa yol açar.\n\n\
+        - ⏰ Her görev için harcanan gerçek zamanı takip edin\n- \U0001F3AF Odaklı\
+        \ çalışma seansları için Maraton Modu'nu kullanın\n- \U0001F4CA Tamamlama\
+        \ kalıplarını ve eğilimlerini analiz edin\n- \U0001F504 Zaman tahminlerini\
+        \ düzenli olarak gözden geçirin ve ayarlayın\n\n## \U0001F4C8 İlerleme İzleme\n\
+        \nBaşarılarınızı takip edin ve iş modellerinizden öğrenin. Düzenli inceleme\
+        \ ve düşünme, verimlilik sisteminizde sürekli gelişimi sağlar.\n\n- \U0001F4C8\
+        \ Görev tamamlama oranlarını izleyin\n- \U0001F4C5 Günlük ve haftalık ilerlemeyi\
+        \ gözden geçirin\n- \U0001F3AF Darboğazları ve optimizasyon fırsatlarını belirleyin\n\
+        - \U0001F3C6 Başarıları ve dönüm noktası tamamlamalarını kutlayın\n\n- **Zaman\
+        \ Takibi:**\n  - Odaklanma için Maraton modu\n  - Görev başına zamanı takip\
+        \ edin\n  - Tamamlama geçmişini görüntüleyin\n\n## \U0001F4A1 İpuçları\n\n\
+        - Büyük görevleri parçalara ayırın\n- Projeler için etiketleri kullanın\n\
+        - Gerçekçi son tarihler belirleyin\n- İlerlemenizi takip edin\n- Düzenli olarak\
+        \ gözden geçirin\n"
       title: Görev Yönetimi ve İş Akışı Rehberi
   marathon:
     details:
       title: Görev Detayları
     help:
-      content: |
-        Tükenmişliği önlerken derin konsantrasyonu korumanıza yardımcı olan yapılandırılmış çalışma seansları ile odaklanmanızı ve verimliliğinizi maksimuma çıkarın.
+      content:
+        "Tükenmişliği önlerken derin konsantrasyonu korumanıza yardımcı olan
+        yapılandırılmış çalışma seansları ile odaklanmanızı ve verimliliğinizi maksimuma
+        çıkarın.
+
 
         ## ⚡ Neden Önemli?
 
-        Odaklı çalışma seansları, derin çalışma ve yüksek kaliteli çıktı için hayati önemdedir. Düzenli molalarla yapılandırılmış aralıklarla çalışarak, uzun, odaksız çalışma dönemlerinden gelen yorgunluğu önlerken zihinsel performansınızı en üst düzeyde tutarsınız.
+
+        Odaklı çalışma seansları, derin çalışma ve yüksek kaliteli çıktı için hayati
+        önemdedir. Düzenli molalarla yapılandırılmış aralıklarla çalışarak, uzun,
+        odaksız çalışma dönemlerinden gelen yorgunluğu önlerken zihinsel performansınızı
+        en üst düzeyde tutarsınız.
+
 
         ## ⏰ Zaman Kutulu Odak Seansları
 
-        Maximum verimlilik için çalışmanızı yapılandırmak amacıyla kanıtlanmış zaman yönetimi tekniklerini kullanın. Yapılandırılmış seanslar, konsantrasyonu korumanıza ve görevleri daha etkili bir şekilde tamamlamanıza yardımcı olur.
+
+        Maximum verimlilik için çalışmanızı yapılandırmak amacıyla kanıtlanmış zaman
+        yönetimi tekniklerini kullanın. Yapılandırılmış seanslar, konsantrasyonu korumanıza
+        ve görevleri daha etkili bir şekilde tamamlamanıza yardımcı olur.
+
 
         - 🎯 **Klasik Odak:** 25 dakika çalışma / 5 dakika mola
+
         - 📈 **Uzatılmış Odak:** 50 dakika çalışma / 10 dakika mola
+
         - 🔄 **Uzun Mola:** 4 seanstan sonra 15-30 dakika
+
         - ⚖️ **Özel Zamanlama:** Doğal ritminize uyacak şekilde aralıkları ayarlayın
+
 
         ## 🧠 Bilişsel Faydalar
 
-        Yapılandırılmış çalışma seansları, performansı optimize etmek ve kalite ile yaratıcılığı azaltan zihinsel yorgunluğu önlemek için beynin doğal dikkat döngülerinden yararlanır.
+
+        Yapılandırılmış çalışma seansları, performansı optimize etmek ve kalite ile
+        yaratıcılığı azaltan zihinsel yorgunluğu önlemek için beynin doğal dikkat
+        döngülerinden yararlanır.
+
 
         - 🎯 Gelişmiş odaklanma ve derin konsantrasyon
+
         - 🔋 Azaltılmış zihinsel yorgunluk ve tükenmişlik
+
         - 💪 Düzenli başarılar yoluyla sürdürülen motivasyon
+
         - ⚡ Gelişmiş zaman bilinci ve planlama doğruluğu
+
 
         ## 📊 Performans Optimizasyonu
 
-        En yüksek etkililik için zamanlamanızı optimize etmek amacıyla odaklı çalışma modellerinizi takip ederek en üst verimlilik zamanlarınızı anlayın.
+
+        En yüksek etkililik için zamanlamanızı optimize etmek amacıyla odaklı çalışma
+        modellerinizi takip ederek en üst verimlilik zamanlarınızı anlayın.
+
 
         - 🏷️ Analiz için odak seanslarını etiketlerle kategorilere ayırın
+
         - 📈 Farklı zamanlarda verimlilik modellerini izleyin
+
         - 🚫 Seans başlamadan önce dikkat dağıtıcıları ortadan kaldırın
+
         - 🚶 Fiziksel hareket ve zihinsel reset için molaları kullanın
+
+        "
       title: Odaklı Çalışma Seansları ve Zaman Yönetimi Rehberi
       tooltip: Maraton yardım ipucu
     label: Maraton Modu
@@ -255,7 +307,9 @@ tasks:
   priority:
     selection:
       title: Öncelik Seç
-    description: Eisenhower Matrisi'ni kullanarak görev önceliğini ayarlayın - Etkili görev yönetimi için Acil/Önemli sınıflandırma
+    description:
+      Eisenhower Matrisi'ni kullanarak görev önceliğini ayarlayın - Etkili
+      görev yönetimi için Acil/Önemli sınıflandırma
     tooltips:
       none: Öncelik Yok
       not_urgent_important: Acil Değil ama Önemli
@@ -286,7 +340,7 @@ tasks:
       deadline_date: "Son Tarih: {date}"
       deadline_date_not_set: "Son Tarih: Ayarlanmadı"
       estimated_time: "Tahmini Süre: {time}"
-      estimated_time_default: "(varsayılan)"
+      estimated_time_default: (varsayılan)
       estimated_time_not_set: "Tahmini Süre: Ayarlanmadı"
       planned_date: "Planlanan: {date}"
       planned_date_not_set: "Planlanan: Ayarlanmadı"
@@ -318,13 +372,19 @@ tasks:
       occurrences: tekrarlama
       true: günlerinde
       everyDay: her gün
-      starts: başlangıç
-      "on": "de"
+      starts: Başlangıç
+      "on": de
     weekDays: Haftanın günleri
     weekSuffix: hafta
     weekly: Haftalık
     yearSuffix: yıl
     yearly: Yıllık
+    daysOfWeek: Haftanın günleri
+    ends:
+      label: Bitiş
+      never: Asla
+      onDate: Tarihinde
+      after: Sonra
   reminder:
     atTime: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı
@@ -350,26 +410,50 @@ tasks:
   tour:
     task_management:
       title: Görev Yönetimi
-      description: Öncelikler, son tarihler ve hatırlatıcılarla görevler oluşturun ve düzenleyin. Pomodoro zamanlayıcısını kullanarak odaklanmanızı koruyun ve önemli görevlerde ilerlemenizi takip edin.
+      description:
+        Öncelikler, son tarihler ve hatırlatıcılarla görevler oluşturun
+        ve düzenleyin. Pomodoro zamanlayıcısını kullanarak odaklanmanızı koruyun ve
+        önemli görevlerde ilerlemenizi takip edin.
     add_tasks:
       title: Yeni Görevler Ekle
-      description: Bu düğmeyle hızlıca yeni görevler oluşturun. Başlıklar, öncelikler, son tarihler, etiketler ve daha fazlasını ayarlayın. İşlerinizde güncel kalmak için alt görevler ve hatırlatıcılar ekleyin.
+      description:
+        Bu düğmeyle hızlıca yeni görevler oluşturun. Başlıklar, öncelikler,
+        son tarihler, etiketler ve daha fazlasını ayarlayın. İşlerinizde güncel kalmak
+        için alt görevler ve hatırlatıcılar ekleyin.
     your_tasks:
       title: Görevleriniz
-      description: Tüm görevlerinizi tek bir yerde görüntüleyin ve yönetin. Ayrıntıları görmek, tamamlandı olarak işaretlemek, bilgileri düzenlemek veya silmek için herhangi bir göreve tıklayın. Organize kalın ve ilerlemenizi takip edin.
+      description:
+        Tüm görevlerinizi tek bir yerde görüntüleyin ve yönetin. Ayrıntıları
+        görmek, tamamlandı olarak işaretlemek, bilgileri düzenlemek veya silmek için
+        herhangi bir göreve tıklayın. Organize kalın ve ilerlemenizi takip edin.
     filter_search:
       title: Filtrele & Ara
-      description: Tam olarak ihtiyacınız olan şeyi bulmak için güçlü filtre seçenekleri. Etiketlere, tarihlere, tamamlanma durumuna göre filtreleyin veya arama kullanın. Daha iyi organizasyon için görevleri sıralayın ve alt görevleri değiştirin.
+      description:
+        Tam olarak ihtiyacınız olan şeyi bulmak için güçlü filtre seçenekleri.
+        Etiketlere, tarihlere, tamamlanma durumuna göre filtreleyin veya arama kullanın.
+        Daha iyi organizasyon için görevleri sıralayın ve alt görevleri değiştirin.
     marathon:
       app_usage:
         title: Uygulama Kullanımı & Zaman Analizi
-        description: Uygulama kullanım modellerini izleyin ve farklı etkinliklere harcadığınız zamanı analiz edin. Dijital alışkanlıklarınız hakkında içgörüler elde edin ve verimliliğinizi optimize edin.
+        description:
+          Uygulama kullanım modellerini izleyin ve farklı etkinliklere
+          harcadığınız zamanı analiz edin. Dijital alışkanlıklarınız hakkında içgörüler
+          elde edin ve verimliliğinizi optimize edin.
       usage_statistics:
         title: Kullanım İstatistikleri
-        description: Detaylı uygulama kullanım verilerini ve zaman dağılımını görüntüleyin. Verimlilik modellerinizi analiz edin, farklı uygulamalara harcadığınız zamanı takip edin ve iyileştirme alanlarını belirleyin.
+        description:
+          Detaylı uygulama kullanım verilerini ve zaman dağılımını görüntüleyin.
+          Verimlilik modellerinizi analiz edin, farklı uygulamalara harcadığınız zamanı
+          takip edin ve iyileştirme alanlarını belirleyin.
       filter_sort:
         title: Filtrele & Sırala
-        description: Uygulama kullanım verilerini tarih aralığına, etiketlere veya belirli cihazlara göre filtreleyin. Zaman yönetimiyle ilgili daha iyi içgörüler için kullanım istatistiklerinizi sıralayın ve düzenleyin.
+        description:
+          Uygulama kullanım verilerini tarih aralığına, etiketlere veya
+          belirli cihazlara göre filtreleyin. Zaman yönetimiyle ilgili daha iyi içgörüler
+          için kullanım istatistiklerinizi sıralayın ve düzenleyin.
       tracking_settings:
         title: Takip Ayarları
-        description: Uygulama takip kurallarını yapılandırın, otomatik etiketlemeyi ayarlayın ve hangi uygulamaların takip edileceğini yönetin. Verimlilik ihtiyaçlarınıza göre takibi özelleştirin.
+        description:
+          Uygulama takip kurallarını yapılandırın, otomatik etiketlemeyi
+          ayarlayın ve hangi uygulamaların takip edileceğini yönetin. Verimlilik ihtiyaçlarınıza
+          göre takibi özelleştirin.

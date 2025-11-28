@@ -31,7 +31,9 @@ tasks:
     description:
       hint: Aggiungi descrizione...
       label: Descrizione
-      context: Aggiungi informazioni dettagliate sulla tua attività per aiutarti a ricordare i dettagli chiave e monitorare i progressi.
+      context:
+        Aggiungi informazioni dettagliate sulla tua attività per aiutarti a
+        ricordare i dettagli chiave e monitorare i progressi.
     elapsed_time:
       label: Tempo trascorso
     is_completed: Completato
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Tempo totale trascorso
   estimated_time:
     label: Tempo stimato
-    description: Imposta stime di tempo realistiche per pianificare efficacemente la tua attività e tracciare la produttività.
+    description:
+      Imposta stime di tempo realistiche per pianificare efficacemente
+      la tua attività e tracciare la produttività.
   errors:
     add_tag: Errore imprevisto durante l'aggiunta del tag
     adding_tag: Impossibile aggiungere il tag
@@ -83,112 +87,210 @@ tasks:
       filter_by_tags: Filtra per tag
   help:
     details:
-      content: |
-        Padroneggia la gestione delle attività e massimizza la produttività organizzando, prioritizzando e tracciando il tuo lavoro efficacemente.
+      content:
+        "Padroneggia la gestione delle attività e massimizza la produttività
+        organizzando, prioritizzando e tracciando il tuo lavoro efficacemente.
+
 
         ## ⚡ Perché è importante?
 
-        La gestione efficace delle attività è la base della produttività. Attività ben strutturate con priorità chiare e scadenze ti aiutano a concentrarti su ciò che conta di più e prevengono che il lavoro importante vada perso.
+
+        La gestione efficace delle attività è la base della produttività. Attività
+        ben strutturate con priorità chiare e scadenze ti aiutano a concentrarti su
+        ciò che conta di più e prevengono che il lavoro importante vada perso.
+
 
         ## 📝 Organizzazione delle attività
 
-        Struttura le tue attività con dettagli completi per mantenere chiarezza e focus. Usa tag, priorità e stime temporali per creare un approccio sistematico al tuo carico di lavoro.
+
+        Struttura le tue attività con dettagli completi per mantenere chiarezza e
+        focus. Usa tag, priorità e stime temporali per creare un approccio sistematico
+        al tuo carico di lavoro.
+
 
         - 🏷️ Categorizza le attività con tag significativi
+
         - ⚖️ Imposta priorità usando framework comprovati
+
         - ⏱️ Stima accuratamente i requisiti temporali
+
         - 📅 Pianifica scadenze e programmi realistici
+
 
         ## ⏰ Gestione del tempo
 
-        Traccia i tuoi investimenti temporali per comprendere i tuoi pattern di lavoro e migliorare l'efficienza. Una gestione appropriata del tempo trasforma sforzi dispersi in produttività focalizzata.
+
+        Traccia i tuoi investimenti temporali per comprendere i tuoi pattern di lavoro
+        e migliorare l'efficienza. Una gestione appropriata del tempo trasforma sforzi
+        dispersi in produttività focalizzata.
+
 
         - 📊 Monitora tempo effettivo vs stimato
+
         - 🎯 Concentrati su attività ad alto impatto
+
         - 📈 Analizza i pattern di produttività nel tempo
+
         - ⏳ Bilancia attività urgenti e importanti
+
 
         ## 📊 Framework delle priorità (Matrice di Eisenhower)
 
-        Organizza le tue attività usando questo metodo di prioritizzazione comprovato per assicurarti di lavorare sempre sulle cose giuste al momento giusto.
+
+        Organizza le tue attività usando questo metodo di prioritizzazione comprovato
+        per assicurarti di lavorare sempre sulle cose giuste al momento giusto.
+
 
         - 🔥 **Urgente e Importante:** Gestisci immediatamente - gestione crisi e scadenze
-        - 📈 **Importante, non urgente:** Pianifica strategicamente - pianificazione e sviluppo competenze
-        - ⚡ **Urgente, non importante:** Delega quando possibile - interruzioni e alcuni meeting
-        - 🗑️ **Né urgente né importante:** Elimina - attività che fanno perdere tempo e di basso valore
+
+        - 📈 **Importante, non urgente:** Pianifica strategicamente - pianificazione
+        e sviluppo competenze
+
+        - ⚡ **Urgente, non importante:** Delega quando possibile - interruzioni e
+        alcuni meeting
+
+        - 🗑️ **Né urgente né importante:** Elimina - attività che fanno perdere tempo
+        e di basso valore
+
+        "
       title: Guida alla gestione delle attività e produttività
     overview:
-      content: |
-        Trasforma la tua produttività con una gestione sistematica delle attività che ti aiuta a rimanere organizzato, focalizzato e in controllo del tuo carico di lavoro.
+      content:
+        "Trasforma la tua produttività con una gestione sistematica delle attività
+        che ti aiuta a rimanere organizzato, focalizzato e in controllo del tuo carico
+        di lavoro.
+
 
         ## ⚡ Perché è importante?
 
-        La gestione efficace delle attività è la pietra angolare del successo personale e professionale. Organizzando sistematicamente il tuo lavoro, riduci lo stress, rispetti le scadenze costantemente e crei spazio per progressi significativi su obiettivi importanti.
+
+        La gestione efficace delle attività è la pietra angolare del successo personale
+        e professionale. Organizzando sistematicamente il tuo lavoro, riduci lo stress,
+        rispetti le scadenze costantemente e crei spazio per progressi significativi
+        su obiettivi importanti.
+
 
         ## 📋 Organizzazione delle attività
 
-        Crea un approccio strutturato per gestire le tue responsabilità. Attività ben organizzate portano a priorità chiare ed esecuzione efficiente del tuo lavoro quotidiano.
+
+        Crea un approccio strutturato per gestire le tue responsabilità. Attività
+        ben organizzate portano a priorità chiare ed esecuzione efficiente del tuo
+        lavoro quotidiano.
+
 
         - ✅ Crea e categorizza attività sistematicamente
+
         - 🏷️ Raggruppa lavoro correlato con tag significativi
+
         - ⚖️ Imposta priorità e scadenze chiare
+
         - 🔍 Usa filtri e ricerca per accesso rapido
+
 
         ## ⏱️ Tracciamento del tempo e focus
 
-        Monitora i tuoi investimenti temporali per comprendere i pattern di produttività e ottimizzare il tuo flusso di lavoro. La consapevolezza del tempo porta a una migliore pianificazione e prestazioni migliorate.
+
+        Monitora i tuoi investimenti temporali per comprendere i pattern di produttività
+        e ottimizzare il tuo flusso di lavoro. La consapevolezza del tempo porta a
+        una migliore pianificazione e prestazioni migliorate.
+
 
         - ⏰ Traccia il tempo effettivo speso per attività
+
         - 🎯 Usa la modalità Maratona per sessioni di lavoro focalizzate
+
         - 📊 Analizza pattern e trend di completamento
+
         - 🔄 Rivedi e aggiusta regolarmente le stime temporali
+
 
         ## 📈 Monitoraggio dei progressi
 
-        Traccia i tuoi risultati e impara dai tuoi pattern di lavoro. Revisione e riflessione regolari guidano il miglioramento continuo nel tuo sistema di produttività.
+
+        Traccia i tuoi risultati e impara dai tuoi pattern di lavoro. Revisione e
+        riflessione regolari guidano il miglioramento continuo nel tuo sistema di
+        produttività.
+
 
         - 📈 Monitora i tassi di completamento delle attività
+
         - 📅 Rivedi i progressi giornalieri e settimanali
+
         - 🎯 Identifica colli di bottiglia e opportunità di ottimizzazione
+
         - 🏆 Celebra risultati e completamenti di milestone
+
+        "
       title: Guida alla gestione delle attività e flusso di lavoro
   marathon:
     details:
       title: Dettagli attività
     help:
-      content: |
-        Massimizza il tuo focus e produttività con sessioni di lavoro strutturate che ti aiutano a mantenere una concentrazione profonda prevenendo il burnout.
+      content:
+        "Massimizza il tuo focus e produttività con sessioni di lavoro strutturate
+        che ti aiutano a mantenere una concentrazione profonda prevenendo il burnout.
+
 
         ## ⚡ Perché è importante?
 
-        Le sessioni di lavoro focalizzate sono essenziali per il lavoro profondo e output di alta qualità. Lavorando in intervalli strutturati con pause regolari, mantieni prestazioni mentali di picco evitando la fatica che deriva da periodi di lavoro estesi e non focalizzati.
+
+        Le sessioni di lavoro focalizzate sono essenziali per il lavoro profondo e
+        output di alta qualità. Lavorando in intervalli strutturati con pause regolari,
+        mantieni prestazioni mentali di picco evitando la fatica che deriva da periodi
+        di lavoro estesi e non focalizzati.
+
 
         ## ⏰ Sessioni di focus temporizzate
 
-        Usa tecniche di gestione del tempo comprovate per strutturare il tuo lavoro per la massima efficienza. Le sessioni strutturate ti aiutano a mantenere la concentrazione e completare le attività più efficacemente.
+
+        Usa tecniche di gestione del tempo comprovate per strutturare il tuo lavoro
+        per la massima efficienza. Le sessioni strutturate ti aiutano a mantenere
+        la concentrazione e completare le attività più efficacemente.
+
 
         - 🎯 **Focus classico:** 25 minuti lavoro / 5 minuti pausa
+
         - 📈 **Focus esteso:** 50 minuti lavoro / 10 minuti pausa
+
         - 🔄 **Pausa lunga:** 15-30 minuti dopo 4 sessioni
-        - ⚖️ **Timing personalizzato:** Aggiusta gli intervalli per adattarli al tuo ritmo naturale
+
+        - ⚖️ **Timing personalizzato:** Aggiusta gli intervalli per adattarli al tuo
+        ritmo naturale
+
 
         ## 🧠 Benefici cognitivi
 
-        Le sessioni di lavoro strutturate sfruttano i cicli di attenzione naturali del tuo cervello per ottimizzare le prestazioni e prevenire la fatica mentale che riduce qualità e creatività.
+
+        Le sessioni di lavoro strutturate sfruttano i cicli di attenzione naturali
+        del tuo cervello per ottimizzare le prestazioni e prevenire la fatica mentale
+        che riduce qualità e creatività.
+
 
         - 🎯 Focus migliorato e concentrazione profonda
+
         - 🔋 Fatica mentale e burnout ridotti
+
         - 💪 Motivazione sostenuta attraverso risultati regolari
+
         - ⚡ Consapevolezza del tempo e accuratezza di pianificazione migliorate
+
 
         ## 📊 Ottimizzazione delle prestazioni
 
-        Traccia i tuoi pattern di lavoro focalizzato per comprendere i tuoi tempi di produttività di picco e ottimizzare il tuo programma per la massima efficacia.
+
+        Traccia i tuoi pattern di lavoro focalizzato per comprendere i tuoi tempi
+        di produttività di picco e ottimizzare il tuo programma per la massima efficacia.
+
 
         - 🏷️ Categorizza le sessioni di focus con tag per l'analisi
+
         - 📈 Monitora i pattern di produttività in momenti diversi
+
         - 🚫 Elimina le distrazioni prima di iniziare le sessioni
+
         - 🚶 Usa le pause per movimento fisico e reset mentale
+
+        "
       title: Guida alle sessioni di lavoro focalizzate e gestione del tempo
       tooltip: Tooltip aiuto Maratona
     label: Modalità Maratona
@@ -242,7 +344,9 @@ tasks:
   priority:
     selection:
       title: Seleziona priorità
-    description: Imposta la priorità del compito usando la Matrice di Eisenhower - classificazione Urgente/Importante per una gestione efficace dei compiti
+    description:
+      Imposta la priorità del compito usando la Matrice di Eisenhower -
+      classificazione Urgente/Importante per una gestione efficace dei compiti
     tooltips:
       none: Nessuna priorità
       not_urgent_important: Non urgente ma importante
@@ -276,7 +380,7 @@ tasks:
       deadline_date: "Scadenza: {date}"
       deadline_date_not_set: "Scadenza: Non impostata"
       estimated_time: "Tempo stimato: {time}"
-      estimated_time_default: "(predefinito)"
+      estimated_time_default: (predefinito)
       estimated_time_not_set: "Tempo stimato: Non impostato"
       planned_date: "Pianificato: {date}"
       planned_date_not_set: "Pianificato: Non impostato"
@@ -309,12 +413,18 @@ tasks:
       true: il
       everyDay: ogni giorno
       starts: inizia
-      "on": "il"
+      "on": il
     weekDays: Giorni della settimana
     weekSuffix: settimana/e
     weekly: Settimanale
     yearSuffix: anno/i
     yearly: Annuale
+    daysOfWeek: Giorni della settimana
+    ends:
+      label: Termina
+      never: Mai
+      onDate: In data
+      after: Dopo
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza
@@ -335,31 +445,58 @@ tasks:
     show_completed_tasks: Filtra attività completate
     show_subtasks: Mostra sottoattività
   validation:
-    deadline_cannot_be_before_planned: La data di scadenza deve essere successiva alla data pianificata
+    deadline_cannot_be_before_planned:
+      La data di scadenza deve essere successiva
+      alla data pianificata
     deadline_time_invalid: L'orario della scadenza non è valido
   tour:
     task_management:
       title: Gestione attività
-      description: Crea e organizza attività con priorità, scadenze e promemoria. Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi sulle attività importanti.
+      description:
+        Crea e organizza attività con priorità, scadenze e promemoria.
+        Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi
+        sulle attività importanti.
     add_tasks:
       title: Aggiungi nuove attività
-      description: Crea rapidamente nuove attività con questo pulsante. Imposta titoli, priorità, scadenze, tag e altro. Aggiungi sotto-attività e promemoria per rimanere aggiornato sul tuo lavoro.
+      description:
+        Crea rapidamente nuove attività con questo pulsante. Imposta titoli,
+        priorità, scadenze, tag e altro. Aggiungi sotto-attività e promemoria per
+        rimanere aggiornato sul tuo lavoro.
     your_tasks:
       title: Le tue attività
-      description: Visualizza e gestisci tutte le tue attività in un unico posto. Clicca su qualsiasi attività per vedere i dettagli, contrassegnarla come completata, modificare le informazioni o eliminarla. Rimani organizzato e traccia i tuoi progressi.
+      description:
+        Visualizza e gestisci tutte le tue attività in un unico posto.
+        Clicca su qualsiasi attività per vedere i dettagli, contrassegnarla come completata,
+        modificare le informazioni o eliminarla. Rimani organizzato e traccia i tuoi
+        progressi.
     filter_search:
       title: Filtra & Cerca
-      description: Potenti opzioni di filtro per trovare esattamente ciò di cui hai bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina le attività e alterna le sotto-attività per una migliore organizzazione.
+      description:
+        Potenti opzioni di filtro per trovare esattamente ciò di cui hai
+        bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina
+        le attività e alterna le sotto-attività per una migliore organizzazione.
     marathon:
       app_usage:
         title: Utilizzo app e analisi temporale
-        description: Monitora i pattern di utilizzo delle app e analizza il tempo dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini digitali e ottimizza la tua produttività.
+        description:
+          Monitora i pattern di utilizzo delle app e analizza il tempo
+          dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini
+          digitali e ottimizza la tua produttività.
       usage_statistics:
         title: Statistiche di utilizzo
-        description: Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato a diverse applicazioni e identifica aree di miglioramento.
+        description:
+          Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione
+          del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato
+          a diverse applicazioni e identifica aree di miglioramento.
       filter_sort:
         title: Filtra & Ordina
-        description: Filtra i dati sull'utilizzo delle app per intervallo di date, tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo per ottenere migliori prospettive sulla gestione del tempo.
+        description:
+          Filtra i dati sull'utilizzo delle app per intervallo di date,
+          tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo
+          per ottenere migliori prospettive sulla gestione del tempo.
       tracking_settings:
         title: Impostazioni di tracciamento
-        description: Configura le regole di tracciamento delle app, imposta l'etichettatura automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento in base alle tue esigenze di produttività.
+        description:
+          Configura le regole di tracciamento delle app, imposta l'etichettatura
+          automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento
+          in base alle tue esigenze di produttività.

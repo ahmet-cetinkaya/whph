@@ -31,7 +31,9 @@ tasks:
     description:
       hint: Ajouter une description...
       label: Description
-      context: Ajoutez des informations détaillées sur votre tâche pour vous aider à vous souvenir des détails clés et suivre les progrès.
+      context:
+        Ajoutez des informations détaillées sur votre tâche pour vous aider
+        à vous souvenir des détails clés et suivre les progrès.
     elapsed_time:
       label: Temps écoulé
     is_completed: Terminé
@@ -53,7 +55,9 @@ tasks:
     total_elapsed_time: Temps total écoulé
   estimated_time:
     label: Temps estimé
-    description: Définissez des temps estimés réalistes pour planifier votre tâche efficacement et suivre la productivité.
+    description:
+      Définissez des temps estimés réalistes pour planifier votre tâche
+      efficacement et suivre la productivité.
   errors:
     add_tag: Erreur inattendue lors de l'ajout du tag
     adding_tag: Impossible d'ajouter le tag
@@ -83,112 +87,214 @@ tasks:
       filter_by_tags: Filtrer par tags
   help:
     details:
-      content: |
-        Maîtrisez votre gestion des tâches et maximisez la productivité en organisant, priorisant et suivant votre travail efficacement.
+      content:
+        "Maîtrisez votre gestion des tâches et maximisez la productivité en
+        organisant, priorisant et suivant votre travail efficacement.
+
 
         ## ⚡ Pourquoi est-ce important ?
 
-        La gestion efficace des tâches est le fondement de la productivité. Des tâches bien structurées avec des priorités claires et des échéances vous aident à vous concentrer sur ce qui compte le plus et empêchent le travail important de passer à travers les mailles du filet.
+
+        La gestion efficace des tâches est le fondement de la productivité. Des tâches
+        bien structurées avec des priorités claires et des échéances vous aident à
+        vous concentrer sur ce qui compte le plus et empêchent le travail important
+        de passer à travers les mailles du filet.
+
 
         ## 📝 Organisation des tâches
 
-        Structurez vos tâches avec des détails complets pour maintenir la clarté et la concentration. Utilisez des tags, priorités et estimations de temps pour créer une approche systématique de votre charge de travail.
+
+        Structurez vos tâches avec des détails complets pour maintenir la clarté et
+        la concentration. Utilisez des tags, priorités et estimations de temps pour
+        créer une approche systématique de votre charge de travail.
+
 
         - 🏷️ Catégorisez les tâches avec des tags significatifs
+
         - ⚖️ Définissez des priorités en utilisant des frameworks éprouvés
+
         - ⏱️ Estimez précisément les exigences de temps
+
         - 📅 Planifiez des échéances et horaires réalistes
+
 
         ## ⏰ Gestion du temps
 
-        Suivez vos investissements en temps pour comprendre vos modèles de travail et améliorer l'efficacité. Une gestion appropriée du temps transforme les efforts dispersés en productivité focalisée.
+
+        Suivez vos investissements en temps pour comprendre vos modèles de travail
+        et améliorer l'efficacité. Une gestion appropriée du temps transforme les
+        efforts dispersés en productivité focalisée.
+
 
         - 📊 Surveillez le temps réel vs estimé
+
         - 🎯 Concentrez-vous sur les activités à fort impact
+
         - 📈 Analysez les modèles de productivité dans le temps
+
         - ⏳ Équilibrez les tâches urgentes et importantes
+
 
         ## 📊 Cadre de priorité (Matrice d'Eisenhower)
 
-        Organisez vos tâches en utilisant cette méthode de priorisation éprouvée pour vous assurer de toujours travailler sur les bonnes choses au bon moment.
+
+        Organisez vos tâches en utilisant cette méthode de priorisation éprouvée pour
+        vous assurer de toujours travailler sur les bonnes choses au bon moment.
+
 
         - 🔥 **Urgent et Important :** Gérez immédiatement - gestion de crise et échéances
-        - 📈 **Important, pas urgent :** Planifiez stratégiquement - planification et développement des compétences
-        - ⚡ **Urgent, pas important :** Déléguez si possible - interruptions et certaines réunions
-        - 🗑️ **Ni urgent ni important :** Éliminez - activités chronophages et de faible valeur
+
+        - 📈 **Important, pas urgent :** Planifiez stratégiquement - planification
+        et développement des compétences
+
+        - ⚡ **Urgent, pas important :** Déléguez si possible - interruptions et certaines
+        réunions
+
+        - 🗑️ **Ni urgent ni important :** Éliminez - activités chronophages et de
+        faible valeur
+
+        "
       title: Guide de gestion des tâches et de productivité
     overview:
-      content: |
-        Transformez votre productivité avec une gestion systématique des tâches qui vous aide à rester organisé, concentré et en contrôle de votre charge de travail.
+      content:
+        "Transformez votre productivité avec une gestion systématique des tâches
+        qui vous aide à rester organisé, concentré et en contrôle de votre charge
+        de travail.
+
 
         ## ⚡ Pourquoi est-ce important ?
 
-        La gestion efficace des tâches est la pierre angulaire du succès personnel et professionnel. En organisant systématiquement votre travail, vous réduisez le stress, respectez les échéances de manière cohérente et créez de l'espace pour des progrès significatifs sur des objectifs importants.
+
+        La gestion efficace des tâches est la pierre angulaire du succès personnel
+        et professionnel. En organisant systématiquement votre travail, vous réduisez
+        le stress, respectez les échéances de manière cohérente et créez de l'espace
+        pour des progrès significatifs sur des objectifs importants.
+
 
         ## 📋 Organisation des tâches
 
-        Créez une approche structurée pour gérer vos responsabilités. Des tâches bien organisées mènent à des priorités claires et une exécution efficace de votre travail quotidien.
+
+        Créez une approche structurée pour gérer vos responsabilités. Des tâches bien
+        organisées mènent à des priorités claires et une exécution efficace de votre
+        travail quotidien.
+
 
         - ✅ Créez et catégorisez les tâches systématiquement
+
         - 🏷️ Groupez le travail connexe avec des tags significatifs
+
         - ⚖️ Définissez des priorités et échéances claires
+
         - 🔍 Utilisez des filtres et la recherche pour un accès rapide
+
 
         ## ⏱️ Suivi du temps et concentration
 
-        Surveillez vos investissements en temps pour comprendre les modèles de productivité et optimiser votre flux de travail. La conscience du temps mène à une meilleure planification et une performance améliorée.
+
+        Surveillez vos investissements en temps pour comprendre les modèles de productivité
+        et optimiser votre flux de travail. La conscience du temps mène à une meilleure
+        planification et une performance améliorée.
+
 
         - ⏰ Suivez le temps réel passé par tâche
+
         - 🎯 Utilisez le mode Marathon pour des sessions de travail concentrées
+
         - 📊 Analysez les modèles et tendances d'achèvement
+
         - 🔄 Révisez et ajustez régulièrement les estimations de temps
+
 
         ## 📈 Surveillance des progrès
 
-        Suivez vos accomplissements et apprenez de vos modèles de travail. La révision et réflexion régulières favorisent l'amélioration continue de votre système de productivité.
+
+        Suivez vos accomplissements et apprenez de vos modèles de travail. La révision
+        et réflexion régulières favorisent l'amélioration continue de votre système
+        de productivité.
+
 
         - 📈 Surveillez les taux d'achèvement des tâches
+
         - 📅 Révisez les progrès quotidiens et hebdomadaires
+
         - 🎯 Identifiez les goulots d'étranglement et opportunités d'optimisation
+
         - 🏆 Célébrez les réalisations et achèvements d'étapes importantes
+
+        "
       title: Guide de gestion des tâches et de flux de travail
   marathon:
     details:
       title: Détails de la tâche
     help:
-      content: |
-        Maximisez votre concentration et productivité avec des sessions de travail structurées qui vous aident à maintenir une concentration profonde tout en prévenant l'épuisement.
+      content:
+        "Maximisez votre concentration et productivité avec des sessions de
+        travail structurées qui vous aident à maintenir une concentration profonde
+        tout en prévenant l'épuisement.
+
 
         ## ⚡ Pourquoi est-ce important ?
 
-        Les sessions de travail concentrées sont essentielles pour le travail en profondeur et des résultats de haute qualité. En travaillant par intervalles structurés avec des pauses régulières, vous maintenez des performances mentales optimales tout en évitant la fatigue qui vient de périodes de travail prolongées et non concentrées.
+
+        Les sessions de travail concentrées sont essentielles pour le travail en profondeur
+        et des résultats de haute qualité. En travaillant par intervalles structurés
+        avec des pauses régulières, vous maintenez des performances mentales optimales
+        tout en évitant la fatigue qui vient de périodes de travail prolongées et
+        non concentrées.
+
 
         ## ⏰ Sessions de concentration chronométrées
 
-        Utilisez des techniques de gestion du temps éprouvées pour structurer votre travail pour une efficacité maximale. Les sessions structurées vous aident à maintenir la concentration et à accomplir les tâches plus efficacement.
+
+        Utilisez des techniques de gestion du temps éprouvées pour structurer votre
+        travail pour une efficacité maximale. Les sessions structurées vous aident
+        à maintenir la concentration et à accomplir les tâches plus efficacement.
+
 
         - 🎯 **Concentration classique :** 25 minutes de travail / 5 minutes de pause
+
         - 📈 **Concentration étendue :** 50 minutes de travail / 10 minutes de pause
+
         - 🔄 **Pause longue :** 15-30 minutes après 4 sessions
-        - ⚖️ **Timing personnalisé :** Ajustez les intervalles selon votre rythme naturel
+
+        - ⚖️ **Timing personnalisé :** Ajustez les intervalles selon votre rythme
+        naturel
+
 
         ## 🧠 Avantages cognitifs
 
-        Les sessions de travail structurées exploitent les cycles d'attention naturels de votre cerveau pour optimiser les performances et prévenir la fatigue mentale qui réduit la qualité et la créativité.
+
+        Les sessions de travail structurées exploitent les cycles d'attention naturels
+        de votre cerveau pour optimiser les performances et prévenir la fatigue mentale
+        qui réduit la qualité et la créativité.
+
 
         - 🎯 Concentration améliorée et concentration profonde
+
         - 🔋 Fatigue mentale et épuisement réduits
+
         - 💪 Motivation soutenue grâce à des accomplissements réguliers
+
         - ⚡ Conscience du temps et précision de planification améliorées
+
 
         ## 📊 Optimisation des performances
 
-        Suivez vos modèles de travail concentré pour comprendre vos heures de productivité optimales et optimiser votre horaire pour une efficacité maximale.
+
+        Suivez vos modèles de travail concentré pour comprendre vos heures de productivité
+        optimales et optimiser votre horaire pour une efficacité maximale.
+
 
         - 🏷️ Catégorisez les sessions de concentration avec des tags pour l'analyse
+
         - 📈 Surveillez les modèles de productivité à différents moments
+
         - 🚫 Éliminez les distractions avant de commencer les sessions
-        - 🚶 Utilisez les pauses pour le mouvement physique et la réinitialisation mentale
+
+        - 🚶 Utilisez les pauses pour le mouvement physique et la réinitialisation
+        mentale
+
+        "
       title: Guide des sessions de travail concentrées et de gestion du temps
       tooltip: Info-bulle d'aide Marathon
     label: Mode Marathon
@@ -242,7 +348,9 @@ tasks:
   priority:
     selection:
       title: Sélectionner la priorité
-    description: Définissez la priorité de la tâche en utilisant la matrice d'Eisenhower - classification Urgent/Important pour une gestion efficace des tâches
+    description:
+      Définissez la priorité de la tâche en utilisant la matrice d'Eisenhower
+      - classification Urgent/Important pour une gestion efficace des tâches
     tooltips:
       none: Aucune priorité
       not_urgent_important: Pas urgent mais important
@@ -276,7 +384,7 @@ tasks:
       deadline_date: "Échéance : {date}"
       deadline_date_not_set: "Échéance : Non définie"
       estimated_time: "Temps estimé : {time}"
-      estimated_time_default: "(par défaut)"
+      estimated_time_default: (par défaut)
       estimated_time_not_set: "Temps estimé : Non défini"
       planned_date: "Prévu : {date}"
       planned_date_not_set: "Prévu : Non défini"
@@ -309,12 +417,18 @@ tasks:
       true: le
       everyDay: tous les jours
       starts: commence
-      "on": "le"
+      "on": le
     weekDays: Jours de la semaine
     weekSuffix: semaine(s)
     weekly: Hebdomadaire
     yearSuffix: année(s)
     yearly: Annuel
+    daysOfWeek: Jours de la semaine
+    ends:
+      label: Se termine
+      never: Jamais
+      onDate: À la date
+      after: Après
   reminder:
     atTime: À l'heure prévue
     deadlineReminderLabel: Rappel d'échéance
@@ -342,26 +456,51 @@ tasks:
   tour:
     task_management:
       title: Gestion des tâches
-      description: Créez et organisez des tâches avec des priorités, des échéances et des rappels. Utilisez le minuteur Pomodoro pour rester concentré et suivre vos progrès sur les tâches importantes.
+      description:
+        Créez et organisez des tâches avec des priorités, des échéances
+        et des rappels. Utilisez le minuteur Pomodoro pour rester concentré et suivre
+        vos progrès sur les tâches importantes.
     add_tasks:
       title: Ajouter de nouvelles tâches
-      description: Créez rapidement de nouvelles tâches avec ce bouton. Définissez les titres, priorités, échéances, tags et plus encore. Ajoutez des sous-tâches et des rappels pour rester à jour dans votre travail.
+      description:
+        Créez rapidement de nouvelles tâches avec ce bouton. Définissez
+        les titres, priorités, échéances, tags et plus encore. Ajoutez des sous-tâches
+        et des rappels pour rester à jour dans votre travail.
     your_tasks:
       title: Vos tâches
-      description: Visualisez et gérez toutes vos tâches en un seul endroit. Cliquez sur n'importe quelle tâche pour voir les détails, la marquer comme terminée, modifier les informations ou la supprimer. Restez organisé et suivez vos progrès.
+      description:
+        Visualisez et gérez toutes vos tâches en un seul endroit. Cliquez
+        sur n'importe quelle tâche pour voir les détails, la marquer comme terminée,
+        modifier les informations ou la supprimer. Restez organisé et suivez vos progrès.
     filter_search:
       title: Filtrer & Rechercher
-      description: Puissantes options de filtrage pour trouver exactement ce dont vous avez besoin. Filtrez par tags, dates, statut d'achèvement ou utilisez la recherche. Triez les tâches et basculez les sous-tâches pour une meilleure organisation.
+      description:
+        Puissantes options de filtrage pour trouver exactement ce dont
+        vous avez besoin. Filtrez par tags, dates, statut d'achèvement ou utilisez
+        la recherche. Triez les tâches et basculez les sous-tâches pour une meilleure
+        organisation.
     marathon:
       app_usage:
         title: Utilisation des applications et analyses temporelles
-        description: Surveillez les modèles d'utilisation des applications et analysez le temps consacré à différentes activités. Obtenez des aperçus sur vos habitudes numériques et optimisez votre productivité.
+        description:
+          Surveillez les modèles d'utilisation des applications et analysez
+          le temps consacré à différentes activités. Obtenez des aperçus sur vos habitudes
+          numériques et optimisez votre productivité.
       usage_statistics:
         title: Statistiques d'utilisation
-        description: Affichez des données détaillées sur l'utilisation des applications et la répartition du temps. Analysez vos modèles de productivité, suivez le temps passé sur différentes applications et identifiez les domaines d'amélioration.
+        description:
+          Affichez des données détaillées sur l'utilisation des applications
+          et la répartition du temps. Analysez vos modèles de productivité, suivez
+          le temps passé sur différentes applications et identifiez les domaines d'amélioration.
       filter_sort:
         title: Filtrer & Trier
-        description: Filtrez les données d'utilisation des applications par période, tags ou appareils spécifiques. Triez et organisez vos statistiques d'utilisation pour obtenir de meilleures perspectives sur votre gestion du temps.
+        description:
+          Filtrez les données d'utilisation des applications par période,
+          tags ou appareils spécifiques. Triez et organisez vos statistiques d'utilisation
+          pour obtenir de meilleures perspectives sur votre gestion du temps.
       tracking_settings:
         title: Paramètres de suivi
-        description: Configurez les règles de suivi des applications, mettez en place un étiquetage automatique et gérez les applications à surveiller. Personnalisez le suivi en fonction de vos besoins de productivité.
+        description:
+          Configurez les règles de suivi des applications, mettez en place
+          un étiquetage automatique et gérez les applications à surveiller. Personnalisez
+          le suivi en fonction de vos besoins de productivité.
