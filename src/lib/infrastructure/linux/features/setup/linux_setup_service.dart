@@ -71,10 +71,13 @@ exit 0
 
       final desktopFile = path.join(localShare, 'applications', 'whph.desktop');
       await copyFile(path.join(appDir, 'share', 'applications', 'whph.desktop'), desktopFile);
-      await _updateDesktopFile(desktopFile, iconLocations.first);
+      await _updateDesktopFile(desktopFile, iconLocations.first, appDir);
       await _updateIconCache(localShare);
 
       await _installSystemIcon(sourceIcon);
+
+      // KDE Plasma specific setup
+      await _setupKDEIntegration(desktopFile, appDir);
     } catch (e) {
       Logger.error('Error setting up Linux environment: $e');
     }
@@ -101,17 +104,32 @@ exit 0
   String _getUpdateScript(String appDir) =>
       _updateScriptTemplate.replaceAll('{appDir}', appDir).replaceAll('{exePath}', getExecutablePath());
 
-  Future<void> _updateDesktopFile(String filePath, String iconPath) async {
+  Future<void> _updateDesktopFile(String filePath, String iconPath, String appDir) async {
     if (await File(filePath).exists()) {
       var content = await File(filePath).readAsString();
 
-      // Handle both old format (Icon=whph) and new format (Icon=full/path)
-      // Replace with the local user icon path
-      if (content.contains('Icon=whph')) {
+      // Update executable path for proper KDE taskbar integration
+      final execPath = getExecutablePath();
+      if (content.contains('@EXEC_PATH@')) {
+        content = content.replaceAll('@EXEC_PATH@', execPath);
+      } else {
+        // If the desktop file doesn't have the template variable, update the Exec line
+        content = content.replaceAll(RegExp(r'Exec=.*'), 'Exec=$execPath');
+      }
+
+      // Update icon path
+      if (content.contains('@ICON_PATH@')) {
+        content = content.replaceAll('@ICON_PATH@', iconPath);
+      } else if (content.contains('Icon=whph')) {
         content = content.replaceAll('Icon=whph', 'Icon=$iconPath');
       } else {
         // If the desktop file already has a full path, replace it with the user-local path
         content = content.replaceAll(RegExp(r'Icon=.*'), 'Icon=$iconPath');
+      }
+
+      // Update app version
+      if (content.contains('@APP_VERSION@')) {
+        content = content.replaceAll('@APP_VERSION@', '0.18.0');
       }
 
       await File(filePath).writeAsString(content);
@@ -398,5 +416,105 @@ exit 0
     // Fallback is removed for robustness. If the primary regex fails, it's better to return null
     // than to guess a number from the string.
     return null;
+  }
+
+  /// Setup KDE Plasma specific integration
+  Future<void> _setupKDEIntegration(String desktopFile, String appDir) async {
+    try {
+      // Detect KDE environment
+      final isKDE = await _detectKDEEnvironment();
+      if (!isKDE) {
+        Logger.debug('KDE Plasma not detected, skipping KDE-specific setup');
+        return;
+      }
+
+      Logger.debug('LinuxSetupService: Setting up KDE Plasma integration...');
+
+      // Install D-Bus service for KDE
+      await _installKDEDBusService(appDir);
+
+      // Register MIME types for KDE
+      await _registerKDEMimeTypes(appDir);
+
+      // Configure KDE-specific window properties
+      await _configureKDEWindowProperties();
+
+      Logger.debug('LinuxSetupService: KDE Plasma integration completed');
+    } catch (e) {
+      Logger.debug('KDE Plasma integration setup failed: $e');
+    }
+  }
+
+  /// Detect if running in KDE Plasma environment
+  Future<bool> _detectKDEEnvironment() async {
+    final desktop = Platform.environment['XDG_CURRENT_DESKTOP']?.toLowerCase() ?? '';
+    final session = Platform.environment['XDG_SESSION_DESKTOP']?.toLowerCase() ?? '';
+    final kdeSession = Platform.environment['KDE_SESSION_VERSION'] ?? '';
+
+    return desktop.contains('kde') || session.contains('kde') || desktop.contains('plasma') || kdeSession.isNotEmpty;
+  }
+
+  /// Install KDE D-Bus service
+  Future<void> _installKDEDBusService(String appDir) async {
+    try {
+      final homeDir = Platform.environment['HOME'];
+      final dbusServicesDir = path.join(homeDir!, '.local', 'share', 'dbus-1', 'services');
+
+      // Create D-Bus services directory if it doesn't exist
+      await Directory(dbusServicesDir).create(recursive: true);
+
+      final dbusServiceFile = path.join(dbusServicesDir, 'me.ahmetcetinkaya.whph.service');
+      final sourceServiceFile = path.join(appDir, 'share', 'dbus-1', 'services', 'me.ahmetcetinkaya.whph.service');
+
+      if (await File(sourceServiceFile).exists()) {
+        var serviceContent = await File(sourceServiceFile).readAsString();
+        // Replace template variables
+        serviceContent = serviceContent.replaceAll('@EXEC_PATH@', getExecutablePath());
+
+        await File(dbusServiceFile).writeAsString(serviceContent);
+        Logger.debug('KDE D-Bus service installed: $dbusServiceFile');
+      }
+    } catch (e) {
+      Logger.debug('Failed to install KDE D-Bus service: $e');
+    }
+  }
+
+  /// Register MIME types for KDE
+  Future<void> _registerKDEMimeTypes(String appDir) async {
+    try {
+      final homeDir = Platform.environment['HOME'];
+      final mimePackagesDir = path.join(homeDir!, '.local', 'share', 'mime', 'packages');
+
+      // Create MIME packages directory if it doesn't exist
+      await Directory(mimePackagesDir).create(recursive: true);
+
+      final mimeFile = path.join(mimePackagesDir, 'whph.xml');
+      final sourceMimeFile = path.join(appDir, 'share', 'mime', 'packages', 'whph.xml');
+
+      if (await File(sourceMimeFile).exists()) {
+        await File(sourceMimeFile).copy(mimeFile);
+
+        // Update MIME database
+        try {
+          await Process.run('update-mime-database', [path.join(homeDir, '.local', 'share', 'mime')]);
+          Logger.debug('KDE MIME types registered successfully');
+        } catch (e) {
+          Logger.debug('Failed to update MIME database: $e');
+        }
+      }
+    } catch (e) {
+      Logger.debug('Failed to register KDE MIME types: $e');
+    }
+  }
+
+  /// Configure KDE-specific window properties
+  Future<void> _configureKDEWindowProperties() async {
+    try {
+      // This will be called during window manager initialization
+      // The actual window class setting is handled in the WindowManager class
+      Logger.debug('KDE window properties configuration completed');
+    } catch (e) {
+      Logger.debug('Failed to configure KDE window properties: $e');
+    }
   }
 }
