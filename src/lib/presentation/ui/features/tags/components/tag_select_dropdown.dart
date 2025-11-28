@@ -213,7 +213,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              backgroundColor: Theme.of(context).cardColor,
               title: Text(_translationService.translate(TagTranslationKeys.selectTooltip)),
               automaticallyImplyLeading: true,
               actions: [

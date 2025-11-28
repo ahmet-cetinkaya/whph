@@ -178,7 +178,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
         leading: widget.appBarLeading ??
             (widget.showBackButton
@@ -376,7 +375,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       type: BottomNavigationBarType.fixed,
       selectedItemColor: _themeService.primaryColor,
       unselectedItemColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-      backgroundColor: Theme.of(context).cardColor,
       elevation: 8,
       items: [
         ...mainNavItems.map(

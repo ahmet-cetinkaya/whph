@@ -41,7 +41,6 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
         title: Text(_translationService.translate(AppUsageTranslationKeys.rulesTitle)),
         actions: [

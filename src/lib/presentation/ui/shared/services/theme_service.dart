@@ -464,7 +464,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
         ),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: surface0,
+        backgroundColor: surface2,
         foregroundColor: textColor,
         elevation: isDark ? 0 : 1,
         shadowColor: isDark ? Colors.transparent : Colors.black.withValues(alpha: 0.1),

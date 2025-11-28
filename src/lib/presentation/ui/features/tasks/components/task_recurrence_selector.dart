@@ -251,29 +251,25 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
         if (_selectedRecurrenceType != RecurrenceType.none) ...[
           const SizedBox(height: AppTheme.sizeLarge),
 
-          // Interval configuration (for all recurrence types except none)
-          if (_selectedRecurrenceType != RecurrenceType.none) ...[
-            const SizedBox(height: 24),
-            Text(
-              widget.translationService.translate(TaskTranslationKeys.recurrenceIntervalLabel),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            NumericInput(
-              value: _recurrenceInterval ?? 1,
-              minValue: 1,
-              maxValue: 999,
-              onValueChanged: (value) {
-                setState(() {
-                  _recurrenceInterval = value;
-                  _intervalController.text = value.toString();
-                });
-                widget.onRecurrenceIntervalChanged(value);
-              },
-              valueSuffix: _getIntervalSuffix(),
-              style: NumericInputStyle.contained,
-            ),
-          ],
+          Text(
+            widget.translationService.translate(TaskTranslationKeys.recurrenceIntervalLabel),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          NumericInput(
+            value: _recurrenceInterval ?? 1,
+            minValue: 1,
+            maxValue: 999,
+            onValueChanged: (value) {
+              setState(() {
+                _recurrenceInterval = value;
+                _intervalController.text = value.toString();
+              });
+              widget.onRecurrenceIntervalChanged(value);
+            },
+            valueSuffix: _getIntervalSuffix(),
+            style: NumericInputStyle.contained,
+          ),
 
           // Specific weekdays selector (only for daysOfWeek recurrence)
           if (_selectedRecurrenceType == RecurrenceType.daysOfWeek) ...[

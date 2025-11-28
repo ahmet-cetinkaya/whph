@@ -57,7 +57,6 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

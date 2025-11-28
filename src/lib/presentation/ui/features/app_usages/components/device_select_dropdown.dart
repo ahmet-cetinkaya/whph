@@ -161,7 +161,6 @@ class _DeviceSelectDropdownState extends State<DeviceSelectDropdown> {
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              backgroundColor: Theme.of(context).cardColor,
               title: Text(_translationService.translate(AppUsageTranslationKeys.deviceLabel)),
               automaticallyImplyLeading: false,
               actions: [

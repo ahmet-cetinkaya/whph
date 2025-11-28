@@ -709,7 +709,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     // This makes the page more compatible when displayed in dialogs/bottom sheets
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
         title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
         actions: [
