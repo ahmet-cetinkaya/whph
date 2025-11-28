@@ -336,6 +336,11 @@ tasks:
     yearSuffix: år
     yearly: Årlig
     daysOfWeek: Ukedager
+    ends:
+      label: Slutter
+      never: Aldri
+      onDate: På dato
+      after: Etter
   reminder:
     atTime: På planlagt tid
     deadlineReminderLabel: Frist Påminnelse

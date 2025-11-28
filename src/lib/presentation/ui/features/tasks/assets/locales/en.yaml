@@ -320,15 +320,20 @@ tasks:
       endsOnDate: ends on
       everyDay: every day
       occurrences: occurrences
-      on: "on"
-      starts: starts
       true: "on"
+      starts: starts
+      "on": "on"
     weekDays: Days of week
     weekSuffix: week(s)
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
     daysOfWeek: Days of week
+    ends:
+      label: Ends
+      never: Never
+      onDate: On Date
+      after: After
   reminder:
     atTime: At the scheduled time
     deadlineReminderLabel: Deadline Reminder

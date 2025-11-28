@@ -342,6 +342,11 @@ tasks:
     yearSuffix: an(i)
     yearly: Anual
     daysOfWeek: Zilele săptămânii
+    ends:
+      label: Se termină
+      never: Niciodată
+      onDate: La dată
+      after: După
   reminder:
     atTime: La ora programată
     deadlineReminderLabel: Amintire Termen Limită

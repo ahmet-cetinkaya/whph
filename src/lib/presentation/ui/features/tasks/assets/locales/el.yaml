@@ -346,6 +346,11 @@ tasks:
     yearSuffix: χρόνο(υς)
     yearly: Ετήσια
     daysOfWeek: Μέρες της εβδομάδας
+    ends:
+      label: Λήγει
+      never: Ποτέ
+      onDate: Σε ημερομηνία
+      after: Μετά από
   reminder:
     atTime: Στη προγραμματισμένη ώρα
     deadlineReminderLabel: Υπενθύμιση Προθεσμίας

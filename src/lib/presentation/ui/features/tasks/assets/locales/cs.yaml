@@ -416,6 +416,11 @@ tasks:
     yearSuffix: rok(y)
     yearly: Ročně
     daysOfWeek: Dny v týdnu
+    ends:
+      label: Končí
+      never: Nikdy
+      onDate: K datu
+      after: Po
   reminder:
     atTime: V plánovaném čase
     deadlineReminderLabel: Připomínka splatnosti

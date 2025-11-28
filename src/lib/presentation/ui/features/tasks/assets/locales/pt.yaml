@@ -339,6 +339,11 @@ tasks:
     yearSuffix: ano(s)
     yearly: Anual
     daysOfWeek: Dias da semana
+    ends:
+      label: Termina
+      never: Nunca
+      onDate: Na data
+      after: Após
   reminder:
     atTime: No horário agendado
     deadlineReminderLabel: Lembrete de Prazo

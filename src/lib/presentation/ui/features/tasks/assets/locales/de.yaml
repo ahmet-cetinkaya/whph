@@ -420,6 +420,11 @@ tasks:
     yearSuffix: Jahr(e)
     yearly: Jährlich
     daysOfWeek: Wochentage
+    ends:
+      label: Endet
+      never: Niemals
+      onDate: An Datum
+      after: Nach
   reminder:
     atTime: Zur geplanten Zeit
     deadlineReminderLabel: Fristerinnerung

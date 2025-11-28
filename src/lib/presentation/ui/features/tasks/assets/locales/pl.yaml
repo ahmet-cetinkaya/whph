@@ -416,6 +416,11 @@ tasks:
     yearSuffix: rok/lata
     yearly: Rocznie
     daysOfWeek: Dni tygodnia
+    ends:
+      label: Kończy się
+      never: Nigdy
+      onDate: W dacie
+      after: Po
   reminder:
     atTime: O zaplanowanej godzinie
     deadlineReminderLabel: Przypomnienie o terminie

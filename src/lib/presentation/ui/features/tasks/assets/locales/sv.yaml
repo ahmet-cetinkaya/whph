@@ -334,6 +334,11 @@ tasks:
     yearSuffix: år
     yearly: Årligen
     daysOfWeek: Veckodagar
+    ends:
+      label: Slutar
+      never: Aldrig
+      onDate: På datum
+      after: Efter
   reminder:
     atTime: Vid schemalagd tid
     deadlineReminderLabel: Deadline Påminnelse

@@ -377,6 +377,11 @@ tasks:
     yearSuffix: 年
     yearly: 毎年
     daysOfWeek: 曜日
+    ends:
+      label: 終了
+      never: なし
+      onDate: 日付で
+      after: 後
   reminder:
     atTime: 予定時刻に
     deadlineReminderLabel: 期限リマインダー

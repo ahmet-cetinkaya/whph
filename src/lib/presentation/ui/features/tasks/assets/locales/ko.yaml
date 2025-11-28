@@ -384,6 +384,11 @@ tasks:
     yearSuffix: 년
     yearly: 매년
     daysOfWeek: 요일
+    ends:
+      label: 종료
+      never: 없음
+      onDate: 날짜에
+      after: 후
   reminder:
     atTime: 예정된 시간에
     deadlineReminderLabel: 마감일 알림
