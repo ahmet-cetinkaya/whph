@@ -34,6 +34,45 @@ validate_input() {
     esac
 }
 
+# Extract version from package
+extract_version_from_package() {
+    local archive="whph-linux-$ARCH.tar.gz"
+
+    if [[ ! -f "$archive" ]]; then
+        return 1
+    fi
+
+    # Try to extract pubspec.yaml from the archive and read version
+    local version=$(tar -tf "$archive" 2>/dev/null | grep "pubspec.yaml$" | head -1)
+    if [[ -n "$version" ]]; then
+        # Extract pubspec.yaml to temporary location and read version
+        local temp_dir=$(mktemp -d)
+        tar -xzf "$archive" -C "$temp_dir" "*/pubspec.yaml" 2>/dev/null || {
+            rm -rf "$temp_dir"
+            return 1
+        }
+
+        # Find the pubspec.yaml file
+        local pubspec_file=$(find "$temp_dir" -name "pubspec.yaml" | head -1)
+        if [[ -f "$pubspec_file" ]]; then
+            local extracted_version=$(grep -oP 'version:\s*\K[0-9]+\.[0-9]+\.[0-9]+' "$pubspec_file" 2>/dev/null)
+            rm -rf "$temp_dir"
+            echo "$extracted_version"
+            return 0
+        fi
+
+        rm -rf "$temp_dir"
+    fi
+
+    # Fallback: try to extract version from archive name (for backward compatibility)
+    if [[ "$archive" =~ whph-linux-[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+        echo "$archive" | grep -oP '[0-9]+\.[0-9]+\.[0-9]+'
+        return 0
+    fi
+
+    return 1
+}
+
 # Secure file extraction
 secure_extract() {
     local archive="$1"
@@ -54,8 +93,17 @@ secure_extract() {
 }
 
 WHPH_INSTALL_DIR="${WHPH_INSTALL_DIR:-/opt/whph}"
-WHPH_VERSION="${WHPH_VERSION:-0.18.0}"
+WHPH_VERSION="${WHPH_VERSION:-}"
 ARCH="$(uname -m)"
+
+# Extract version from package if not specified
+if [[ -z "$WHPH_VERSION" ]]; then
+    WHPH_VERSION=$(extract_version_from_package)
+    if [[ -z "$WHPH_VERSION" ]]; then
+        error "Could not determine WHPH version. Please specify with WHPH_VERSION environment variable."
+    fi
+    log "Detected WHPH version: $WHPH_VERSION"
+fi
 
 # Validate environment variables
 validate_input "$WHPH_INSTALL_DIR" "path"
@@ -82,12 +130,37 @@ validate_system() {
     log "Detected distribution: $PRETTY_NAME"
 
     # Validate dependencies
-    local deps=("gtk3" "libayatana-appindicator" "libnotify" "sqlite3")
-    for dep in "${deps[@]}"; do
-        if ! command -v "$dep" >/dev/null 2>&1; then
-            warn "$dep not found, please install required dependencies"
+    local missing_deps=()
+
+    # Check for actual executables and libraries
+    if ! command -v "notify-send" >/dev/null 2>&1; then
+        missing_deps+=("libnotify (notify-send command)")
+    fi
+
+    if ! command -v "sqlite3" >/dev/null 2>&1; then
+        missing_deps+=("sqlite3")
+    fi
+
+    # Check for GTK3 using pkg-config if available, otherwise check for gtk-launch
+    if command -v "pkg-config" >/dev/null 2>&1; then
+        if ! pkg-config --exists "gtk+-3.0" 2>/dev/null; then
+            missing_deps+=("gtk3 (GTK+ 3.0 development libraries)")
         fi
-    done
+    elif ! command -v "gtk-launch" >/dev/null 2>&1; then
+        missing_deps+=("gtk3 (GTK+ 3.0 libraries)")
+    fi
+
+    # Check for appindicator using pkg-config
+    if command -v "pkg-config" >/dev/null 2>&1; then
+        if ! pkg-config --exists "ayatana-appindicator3-0.1" 2>/dev/null; then
+            missing_deps+=("libayatana-appindicator (Ayatana AppIndicator library)")
+        fi
+    fi
+
+    # Report missing dependencies
+    if [ ${#missing_deps[@]} -gt 0 ]; then
+        error "Missing dependencies: ${missing_deps[*]}"
+    fi
 }
 
 # Installation with proper permissions
