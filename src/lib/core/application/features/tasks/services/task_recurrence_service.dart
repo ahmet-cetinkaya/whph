@@ -176,8 +176,14 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     // Return in correct order
     if (task.plannedDate != null) {
       return (plannedDate: nextPrimaryDate, deadlineDate: secondaryDate);
+    } else if (task.deadlineDate != null) {
+      // primaryDate was deadlineDate, so nextPrimaryDate is the next deadline.
+      // Set plannedDate to a reasonable time before the deadline (e.g., 1 day before)
+      final plannedDate = nextPrimaryDate.subtract(const Duration(days: 1));
+      return (plannedDate: plannedDate, deadlineDate: nextPrimaryDate);
     } else {
-      return (plannedDate: secondaryDate ?? nextPrimaryDate, deadlineDate: nextPrimaryDate);
+      // Both were null, primaryDate was now(), so nextPrimaryDate is the next planned date.
+      return (plannedDate: nextPrimaryDate, deadlineDate: null);
     }
   }
 

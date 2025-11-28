@@ -119,11 +119,7 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
                   _recurrenceEndDate = null;
                   _recurrenceCount = null;
                 } else {
-                  if (type == RecurrenceType.daysOfWeek) {
-                    _recurrenceInterval = 1;
-                  } else {
-                    _recurrenceInterval ??= 1;
-                  }
+                  _recurrenceInterval ??= 1;
                   if (type == RecurrenceType.daysOfWeek && (_recurrenceDays == null || _recurrenceDays!.isEmpty)) {
                     _recurrenceDays = [WeekDays.values[DateTime.now().weekday - 1]];
                   }

@@ -251,9 +251,8 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
         if (_selectedRecurrenceType != RecurrenceType.none) ...[
           const SizedBox(height: AppTheme.sizeLarge),
 
-          // Interval configuration (for daily, weekly, monthly, yearly, custom)
-          if (_selectedRecurrenceType != RecurrenceType.none &&
-              _selectedRecurrenceType != RecurrenceType.daysOfWeek) ...[
+          // Interval configuration (for all recurrence types except none)
+          if (_selectedRecurrenceType != RecurrenceType.none) ...[
             const SizedBox(height: 24),
             Text(
               widget.translationService.translate(TaskTranslationKeys.recurrenceIntervalLabel),
