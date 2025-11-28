@@ -1,9 +1,65 @@
 #!/bin/bash
 set -euo pipefail
 
+# Security settings
+unset IFS
+PATH="/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Input validation functions
+validate_input() {
+    local input="$1"
+    local type="$2"
+
+    case "$type" in
+    "path")
+        # Check for path traversal attempts
+        if [[ "$input" =~ \.\./|\.\. ]]; then
+            error "Path traversal detected in: $input"
+        fi
+        # Check for null bytes
+        if [[ "$input" =~ $'\0' ]]; then
+            error "Null bytes detected in: $input"
+        fi
+        # Check for excessive length
+        if [[ ${#input} -gt 255 ]]; then
+            error "Path too long: $input"
+        fi
+        ;;
+    "version")
+        # Validate version format (x.y.z)
+        if [[ ! "$input" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            error "Invalid version format: $input"
+        fi
+        ;;
+    esac
+}
+
+# Secure file extraction
+secure_extract() {
+    local archive="$1"
+    local destination="$2"
+
+    # Validate inputs
+    validate_input "$archive" "path"
+    validate_input "$destination" "path"
+
+    # Check file type
+    if ! file "$archive" | grep -q "gzip compressed"; then
+        error "Invalid archive format: $archive"
+    fi
+
+    # Extract with security options
+    tar -xzf "$archive" -C "$destination" --strip-components=1 \
+        --no-same-owner --no-same-permissions
+}
+
 WHPH_INSTALL_DIR="${WHPH_INSTALL_DIR:-/opt/whph}"
 WHPH_VERSION="${WHPH_VERSION:-0.18.0}"
 ARCH="$(uname -m)"
+
+# Validate environment variables
+validate_input "$WHPH_INSTALL_DIR" "path"
+validate_input "$WHPH_VERSION" "version"
 
 # Logging and error handling
 log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
@@ -38,22 +94,47 @@ validate_system() {
 install_whph() {
     log "Installing WHPH to $WHPH_INSTALL_DIR..."
 
-    # Create installation directory
-    sudo mkdir -p "$WHPH_INSTALL_DIR"
-    sudo chown root:root "$WHPH_INSTALL_DIR"
-    sudo chmod 755 "$WHPH_INSTALL_DIR"
-
-    # Extract and install application
-    if [[ -f "whph-linux-$ARCH.tar.gz" ]]; then
-        sudo tar -xzf "whph-linux-$ARCH.tar.gz" -C "$WHPH_INSTALL_DIR" --strip-components=1
-    else
-        error "WHPH package not found: whph-linux-$ARCH.tar.gz"
+    # Validate installation directory path
+    if [[ "$WHPH_INSTALL_DIR" != "/opt/whph" && "$WHPH_INSTALL_DIR" != "/usr/local/whph" ]]; then
+        warn "Installing to non-standard directory: $WHPH_INSTALL_DIR"
+        read -p "Continue? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            error "Installation cancelled by user"
+        fi
     fi
 
-    # Set proper permissions
-    sudo chown -R root:root "$WHPH_INSTALL_DIR"
-    sudo chmod 755 "$WHPH_INSTALL_DIR/whph"
-    sudo chmod 644 "$WHPH_INSTALL_DIR/share/applications/whph.desktop"
+    # Create installation directory securely
+    if ! sudo mkdir -p "$WHPH_INSTALL_DIR"; then
+        error "Failed to create installation directory: $WHPH_INSTALL_DIR"
+    fi
+
+    # Set secure permissions
+    sudo chown root:root "$WHPH_INSTALL_DIR" || error "Failed to set ownership"
+    sudo chmod 755 "$WHPH_INSTALL_DIR" || error "Failed to set permissions"
+
+    # Validate and extract application
+    local archive="whph-linux-$ARCH.tar.gz"
+    if [[ -f "$archive" ]]; then
+        log "Extracting WHPH from $archive..."
+        secure_extract "$archive" "$WHPH_INSTALL_DIR"
+    else
+        error "WHPH package not found: $archive"
+    fi
+
+    # Verify installation
+    if [[ ! -f "$WHPH_INSTALL_DIR/whph" ]]; then
+        error "Installation failed: binary not found"
+    fi
+
+    # Set proper permissions securely
+    sudo chown -R root:root "$WHPH_INSTALL_DIR" || error "Failed to set file ownership"
+    sudo chmod 755 "$WHPH_INSTALL_DIR/whph" || error "Failed to set executable permissions"
+
+    # Set permissions for config files if they exist
+    if [[ -f "$WHPH_INSTALL_DIR/share/applications/whph.desktop" ]]; then
+        sudo chmod 644 "$WHPH_INSTALL_DIR/share/applications/whph.desktop"
+    fi
 }
 
 # Desktop integration
