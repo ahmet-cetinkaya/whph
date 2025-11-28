@@ -23,7 +23,6 @@ class TaskPreferencesDialog extends StatelessWidget {
         return Scaffold(
           backgroundColor: theme.scaffoldBackgroundColor,
           appBar: AppBar(
-            backgroundColor: theme.cardColor,
             title: Text(
               translationService.translate(SettingsTranslationKeys.taskSettingsTitle),
             ),

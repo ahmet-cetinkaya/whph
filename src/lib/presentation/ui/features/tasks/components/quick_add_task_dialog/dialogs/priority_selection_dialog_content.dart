@@ -29,7 +29,6 @@ class PrioritySelectionDialogContent extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: theme.cardColor,
         title: Text(translationService.translate(TaskTranslationKeys.priorityLabel)),
         automaticallyImplyLeading: true,
         actions: [

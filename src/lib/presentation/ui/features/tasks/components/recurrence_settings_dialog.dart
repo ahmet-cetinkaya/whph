@@ -77,7 +77,6 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
           ),
         ),
         centerTitle: false,
-        backgroundColor: theme.colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

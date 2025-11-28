@@ -21,7 +21,6 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
         title: Text(_translationService.translate(AboutTranslationKeys.aboutTitle)),
       ),

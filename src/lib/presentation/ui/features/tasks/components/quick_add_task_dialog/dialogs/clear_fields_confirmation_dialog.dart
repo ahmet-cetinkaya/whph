@@ -86,7 +86,6 @@ class ClearFieldsConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: theme.cardColor,
       title: Text(title),
       content: Column(
         mainAxisSize: MainAxisSize.min,

@@ -26,7 +26,6 @@ class _PermissionsPageState extends State<PermissionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
         title: Text(_translationService.translate(SettingsTranslationKeys.permissionsTitle)),
       ),

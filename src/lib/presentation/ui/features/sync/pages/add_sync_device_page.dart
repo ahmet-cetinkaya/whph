@@ -444,7 +444,6 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).cardColor,
         elevation: 0,
         title: Text(_translationService.translate(SyncTranslationKeys.addSyncDevice)),
         actions: [

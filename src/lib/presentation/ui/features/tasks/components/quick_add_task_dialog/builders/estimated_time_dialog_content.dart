@@ -30,7 +30,6 @@ class EstimatedTimeDialogContent extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: theme.cardColor,
         title: Text(translationService.translate(SharedTranslationKeys.timeDisplayEstimated)),
         automaticallyImplyLeading: true,
         actions: [
