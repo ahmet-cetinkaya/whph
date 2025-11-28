@@ -12,4 +12,7 @@ class _Channels {
 
   /// App usage detection channel
   String get appUsage => "${LinuxAppConstants.packageName}/app_usage";
+
+  /// Window management channel
+  String get windowManagement => "${LinuxAppConstants.packageName}/window_management";
 }
