@@ -54,9 +54,44 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(_translationService.translate(TaskTranslationKeys.recurrenceLabel)),
-      content: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_translationService.translate(TaskTranslationKeys.recurrenceLabel)),
+        backgroundColor: Theme.of(context).cardColor,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop(); // Close dialog without returning data
+          },
+          tooltip: _translationService.translate(SharedTranslationKeys.cancelButton),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Return the selected settings
+              Navigator.of(context).pop({
+                'recurrenceType': _recurrenceType,
+                'recurrenceInterval': _recurrenceInterval,
+                'recurrenceDays': _recurrenceDays,
+                'recurrenceStartDate': _recurrenceStartDate,
+                'recurrenceEndDate': _recurrenceEndDate,
+                'recurrenceCount': _recurrenceCount,
+              });
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: TaskRecurrenceSelector(
           recurrenceType: _recurrenceType,
           recurrenceInterval: _recurrenceInterval,
@@ -121,28 +156,6 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
           translationService: _translationService,
         ),
       ),
-      actions: <Widget>[
-        TextButton(
-          child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
-          onPressed: () {
-            Navigator.of(context).pop(); // Close dialog without returning data
-          },
-        ),
-        TextButton(
-          child: Text(_translationService.translate(SharedTranslationKeys.saveButton)),
-          onPressed: () {
-            // Return the selected settings
-            Navigator.of(context).pop({
-              'recurrenceType': _recurrenceType,
-              'recurrenceInterval': _recurrenceInterval,
-              'recurrenceDays': _recurrenceDays,
-              'recurrenceStartDate': _recurrenceStartDate,
-              'recurrenceEndDate': _recurrenceEndDate,
-              'recurrenceCount': _recurrenceCount,
-            });
-          },
-        ),
-      ],
     );
   }
 }

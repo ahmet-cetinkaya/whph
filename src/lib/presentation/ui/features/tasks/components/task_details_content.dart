@@ -1127,19 +1127,17 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _openRecurrenceDialog() async {
     if (_task == null) return;
 
-    final result = await showDialog<Map<String, dynamic>>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<Map<String, dynamic>>(
       context: context,
-      builder: (BuildContext context) {
-        return RecurrenceSettingsDialog(
-          initialRecurrenceType: _task!.recurrenceType,
-          initialRecurrenceInterval: _task!.recurrenceInterval,
-          initialRecurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
-          initialRecurrenceStartDate: _task!.recurrenceStartDate,
-          initialRecurrenceEndDate: _task!.recurrenceEndDate,
-          initialRecurrenceCount: _task!.recurrenceCount,
-          plannedDate: _task!.plannedDate,
-        );
-      },
+      child: RecurrenceSettingsDialog(
+        initialRecurrenceType: _task!.recurrenceType,
+        initialRecurrenceInterval: _task!.recurrenceInterval,
+        initialRecurrenceDays: _taskRecurrenceService.getRecurrenceDays(_task!),
+        initialRecurrenceStartDate: _task!.recurrenceStartDate,
+        initialRecurrenceEndDate: _task!.recurrenceEndDate,
+        initialRecurrenceCount: _task!.recurrenceCount,
+        plannedDate: _task!.plannedDate,
+      ),
     );
 
     if (result != null) {
