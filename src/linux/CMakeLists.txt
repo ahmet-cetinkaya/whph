@@ -158,12 +158,41 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
     COMPONENT Runtime)
 endif()
 
-# Configure and install desktop file with proper icon path
+# Enhanced variables for desktop integration
+set(APP_VERSION "@APP_VERSION@")
+set(EXEC_PATH "${CMAKE_INSTALL_PREFIX}/bin/${BINARY_NAME}")
 set(ICON_PATH "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps/whph.png")
+
+# Development vs Production handling
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+    set(EXEC_PATH "${CMAKE_BINARY_DIR}/bundle/${BINARY_NAME}")
+    set(ICON_PATH "${CMAKE_BINARY_DIR}/bundle/share/icons/hicolor/512x512/apps/whph.png")
+    message(STATUS "Development mode: Exec path ${EXEC_PATH}")
+else()
+    message(STATUS "Production mode: Exec path ${EXEC_PATH}")
+endif()
+
+# Configure desktop file with proper variable substitution
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/whph.desktop.in"
                "${CMAKE_BINARY_DIR}/whph.desktop" @ONLY)
 install(FILES "${CMAKE_BINARY_DIR}/whph.desktop"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications"
+    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+    COMPONENT Runtime
+)
+
+# D-Bus service registration
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/whph.service.in"
+               "${CMAKE_BINARY_DIR}/whph.service" @ONLY)
+install(FILES "${CMAKE_BINARY_DIR}/whph.service"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dbus-1/services"
+    COMPONENT Runtime
+)
+
+# MIME type registration
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/whph.xml"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/mime/packages"
+    COMPONENT Runtime
 )
 
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png"
@@ -191,10 +220,30 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/imag
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
 
-# Force icon cache update after installation
+# Post-installation hooks for system integration
 install(CODE "
+    # Update desktop database
+    execute_process(
+        COMMAND update-desktop-database -q ${CMAKE_INSTALL_PREFIX}/share/applications
+        ERROR_QUIET
+    )
+
+    # Update icon cache
     execute_process(
         COMMAND gtk-update-icon-cache -f -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor
+        ERROR_QUIET
     )
-")
+
+    # Update MIME database
+    execute_process(
+        COMMAND update-mime-database -n ${CMAKE_INSTALL_PREFIX}/share/mime
+        ERROR_QUIET
+    )
+
+    # Register D-Bus services
+    execute_process(
+        COMMAND systemctl --user daemon-reload
+        ERROR_QUIET
+    )
+" COMPONENT Runtime)
 

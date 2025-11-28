@@ -16,59 +16,130 @@ struct _MyApplication {
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
+// Global variable to store the main window for later access
+static GtkWindow* main_window = nullptr;
+
 // Method channel callback for getting active window and focusing windows
 static void get_active_window_method_call_cb(FlMethodChannel* channel,
                                            FlMethodCall* method_call,
                                            gpointer user_data) {
   g_autoptr(FlMethodResponse) response = nullptr;
-  
+
   const gchar* method = fl_method_call_get_name(method_call);
-  
+
   if (strcmp(method, "getActiveWindow") == 0) {
     auto detector = WindowDetector::Create();
     WindowInfo info = detector->GetActiveWindow();
-    
+
     // Create result string in format: "title,application"
     std::string result = info.title + "," + info.application;
-    
+
     g_autoptr(FlValue) flutter_result = fl_value_new_string(result.c_str());
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(flutter_result));
   } else if (strcmp(method, "focusWindow") == 0) {
     // Get the window title parameter
     FlValue* args = fl_method_call_get_args(method_call);
     const gchar* window_title = "whph"; // default
-    
+
     if (args && fl_value_get_type(args) == FL_VALUE_TYPE_STRING) {
       window_title = fl_value_get_string(args);
     }
-    
+
     auto detector = WindowDetector::Create();
     bool success = detector->FocusWindow(window_title);
-    
+
     g_autoptr(FlValue) flutter_result = fl_value_new_bool(success);
     response = FL_METHOD_RESPONSE(fl_method_success_response_new(flutter_result));
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }
-  
+
   fl_method_call_respond(method_call, response, nullptr);
 }
 
-// Setup method channel
-static void setup_method_channel(FlView* view) {
+// Method channel callback for window management
+static void window_management_method_call_cb(FlMethodChannel* channel,
+                                             FlMethodCall* method_call,
+                                             gpointer user_data) {
+  g_autoptr(FlMethodResponse) response = nullptr;
+
+  const gchar* method = fl_method_call_get_name(method_call);
+
+  if (strcmp(method, "setWindowClass") == 0) {
+    // Get the window class parameter
+    FlValue* args = fl_method_call_get_args(method_call);
+    const gchar* window_class = "me.ahmetcetinkaya.whph"; // default
+
+    if (args && fl_value_get_type(args) == FL_VALUE_TYPE_STRING) {
+      window_class = fl_value_get_string(args);
+    }
+
+    bool success = false;
+
+#ifdef GDK_WINDOWING_X11
+    if (main_window && GDK_IS_X11_WINDOW(gtk_widget_get_window(GTK_WIDGET(main_window)))) {
+      GdkWindow* gdk_window = gtk_widget_get_window(GTK_WIDGET(main_window));
+      if (GDK_IS_X11_WINDOW(gdk_window)) {
+        // Set the WM_CLASS property for X11 windows
+        gdk_window_set_role(gdk_window, window_class);
+
+        // Also set the class hint for better KDE integration
+        XClassHint* class_hint = XAllocClassHint();
+        if (class_hint) {
+          class_hint->res_name = const_cast<char*>(window_class);
+          class_hint->res_class = const_cast<char*>(window_class);
+
+          XSetClassHint(GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
+                        GDK_WINDOW_XID(gdk_window),
+                        class_hint);
+
+          XFree(class_hint);
+          success = true;
+        }
+      }
+    }
+#endif
+
+    g_autoptr(FlValue) flutter_result = fl_value_new_bool(success);
+    response = FL_METHOD_RESPONSE(fl_method_success_response_new(flutter_result));
+  } else {
+    response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
+  }
+
+  fl_method_call_respond(method_call, response, nullptr);
+}
+
+// Setup method channels
+static void setup_method_channels(FlView* view) {
   FlEngine* engine = fl_view_get_engine(view);
   FlBinaryMessenger* messenger = fl_engine_get_binary_messenger(engine);
-  
-  g_autoptr(FlStandardMethodCodec) codec = fl_standard_method_codec_new();
-  g_autoptr(FlMethodChannel) channel = fl_method_channel_new(
+
+  // Setup app usage method channel
+  g_autoptr(FlStandardMethodCodec) app_usage_codec = fl_standard_method_codec_new();
+  g_autoptr(FlMethodChannel) app_usage_channel = fl_method_channel_new(
     messenger,
     APP_USAGE_CHANNEL,
-    FL_METHOD_CODEC(codec)
+    FL_METHOD_CODEC(app_usage_codec)
   );
-  
+
   fl_method_channel_set_method_call_handler(
-    channel,
+    app_usage_channel,
     get_active_window_method_call_cb,
+    nullptr,
+    nullptr
+  );
+
+  // Setup window management method channel
+  g_autoptr(FlStandardMethodCodec) window_management_codec = fl_standard_method_codec_new();
+  g_autoptr(FlMethodChannel) window_management_channel = fl_method_channel_new(
+    messenger,
+    WINDOW_MANAGEMENT_CHANNEL,
+    FL_METHOD_CODEC(window_management_codec)
+  );
+
+  fl_method_channel_set_method_call_handler(
+    window_management_channel,
+    window_management_method_call_cb,
     nullptr,
     nullptr
   );
@@ -79,6 +150,9 @@ static void my_application_activate(GApplication* application) {
   MyApplication* self = MY_APPLICATION(application);
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
+
+  // Store the main window reference for later access
+  main_window = window;
 
   // Set window icon
   GError *error = nullptr;
@@ -129,8 +203,8 @@ static void my_application_activate(GApplication* application) {
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
 
-  // Setup our method channel
-  setup_method_channel(view);
+  // Setup our method channels
+  setup_method_channels(view);
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
   

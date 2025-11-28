@@ -71,10 +71,13 @@ exit 0
 
       final desktopFile = path.join(localShare, 'applications', 'whph.desktop');
       await copyFile(path.join(appDir, 'share', 'applications', 'whph.desktop'), desktopFile);
-      await _updateDesktopFile(desktopFile, iconLocations.first);
+      await _updateDesktopFile(desktopFile, iconLocations.first, appDir);
       await _updateIconCache(localShare);
 
       await _installSystemIcon(sourceIcon);
+
+      // KDE Plasma specific setup
+      await _setupKDEIntegration(appDir);
     } catch (e) {
       Logger.error('Error setting up Linux environment: $e');
     }
@@ -101,21 +104,145 @@ exit 0
   String _getUpdateScript(String appDir) =>
       _updateScriptTemplate.replaceAll('{appDir}', appDir).replaceAll('{exePath}', getExecutablePath());
 
-  Future<void> _updateDesktopFile(String filePath, String iconPath) async {
-    if (await File(filePath).exists()) {
-      var content = await File(filePath).readAsString();
+  Future<void> _updateDesktopFile(String filePath, String iconPath, String appDir) async {
+    if (!await File(filePath).exists()) {
+      Logger.error('Desktop file not found: $filePath');
+      return;
+    }
 
-      // Handle both old format (Icon=whph) and new format (Icon=full/path)
-      // Replace with the local user icon path
-      if (content.contains('Icon=whph')) {
-        content = content.replaceAll('Icon=whph', 'Icon=$iconPath');
-      } else {
-        // If the desktop file already has a full path, replace it with the user-local path
-        content = content.replaceAll(RegExp(r'Icon=.*'), 'Icon=$iconPath');
+    try {
+      var content = await File(filePath).readAsString();
+      final execPath = getExecutablePath();
+      final appVersion = await _getAppVersion();
+
+      // Validate inputs
+      if (execPath.isEmpty) {
+        Logger.error('Executable path is empty');
+        return;
       }
 
-      await File(filePath).writeAsString(content);
+      if (iconPath.isEmpty || !File(iconPath).existsSync()) {
+        Logger.warning('Icon path is invalid: $iconPath');
+      }
+
+      // Improved template variable replacement with regex patterns
+      final templateReplacements = {
+        '@EXEC_PATH@': execPath,
+        '@ICON_PATH@': iconPath,
+        '@APP_VERSION@': appVersion,
+      };
+
+      final regexReplacements = {
+        // Fallback patterns (for production builds)
+        RegExp(r'^Exec\s*=\s*.+$', multiLine: true): 'Exec=$execPath',
+        RegExp(r'^Icon\s*=\s*whph$', multiLine: true): 'Icon=$iconPath',
+        RegExp(r'^Icon\s*=\s*/[^/\n]+/[^/\n]+/[^/\n]+$', multiLine: true): 'Icon=$iconPath', // Replace full icon paths
+        RegExp(r'^X-GNOME-Bugzilla-Version\s*=\s*.+$', multiLine: true): 'X-GNOME-Bugzilla-Version=$appVersion',
+        RegExp(r'^X-AppImage-Version\s*=\s*.+$', multiLine: true): 'X-AppImage-Version=$appVersion',
+      };
+
+      // Validate template variables exist
+      final missingVars = _validateTemplateVariables(content, templateReplacements);
+      if (missingVars.isNotEmpty) {
+        Logger.warning('Missing template variable replacements: ${missingVars.join(', ')}');
+      }
+
+      bool hasChanges = false;
+
+      // Replace template variables first
+      for (final entry in templateReplacements.entries) {
+        if (content.contains(entry.key)) {
+          content = content.replaceAll(entry.key, entry.value);
+          hasChanges = true;
+          Logger.debug('Replaced template variable: ${entry.key} -> ${entry.value}');
+        }
+      }
+
+      // Then apply regex patterns
+      for (final entry in regexReplacements.entries) {
+        if (entry.key.hasMatch(content)) {
+          content = content.replaceAll(entry.key, entry.value);
+          hasChanges = true;
+          Logger.debug('Replaced pattern: ${entry.key.pattern} -> ${entry.value}');
+        }
+      }
+
+      // Additional validation and cleanup
+      content = _validateAndCleanDesktopFile(content);
+
+      if (hasChanges) {
+        await File(filePath).writeAsString(content);
+        Logger.debug('Desktop file updated successfully: $filePath');
+      } else {
+        Logger.debug('No template variables found in desktop file: $filePath');
+      }
+    } catch (e) {
+      Logger.error('Failed to update desktop file $filePath: $e');
     }
+  }
+
+  /// Validate template variables in desktop file content
+  List<String> _validateTemplateVariables(String content, Map<String, String> replacements) {
+    final missingVariables = <String>[];
+    final templateVariables = [
+      '@EXEC_PATH@',
+      '@ICON_PATH@',
+      '@APP_VERSION@',
+    ];
+
+    // Check for required template variables in development mode
+    for (final variable in templateVariables) {
+      if (content.contains(variable) && !replacements.containsKey(variable)) {
+        missingVariables.add(variable);
+      }
+    }
+
+    return missingVariables;
+  }
+
+  /// Validate and clean desktop file content
+  String _validateAndCleanDesktopFile(String content) {
+    // Ensure required keys are present
+    final requiredKeys = ['Type=Application', 'Categories='];
+
+    for (final key in requiredKeys) {
+      if (!content.contains(RegExp('^$key', multiLine: true))) {
+        Logger.warning('Missing required desktop file key: $key');
+      }
+    }
+
+    // Validate desktop file format
+    final validationErrors = <String>[];
+
+    // Check for invalid characters
+    if (content.contains(RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'))) {
+      validationErrors.add('Invalid control characters found');
+    }
+
+    // Check for proper key-value format
+    final lines = content.split('\n');
+    for (int i = 0; i < lines.length; i++) {
+      final line = lines[i].trim();
+      if (line.isNotEmpty && !line.startsWith('#') && !line.startsWith('[')) {
+        if (!line.contains('=') || line.startsWith('=')) {
+          validationErrors.add('Invalid key-value format at line ${i + 1}: $line');
+        }
+      }
+    }
+
+    if (validationErrors.isNotEmpty) {
+      Logger.warning('Desktop file validation errors: ${validationErrors.join(', ')}');
+    }
+
+    // Clean up multiple empty lines
+    content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+    // Ensure file ends with newline
+    if (!content.endsWith('\n')) {
+      content += '\n';
+    }
+
+    return content;
   }
 
   Future<void> _updateIconCache(String sharePath) async {
@@ -398,5 +525,146 @@ exit 0
     // Fallback is removed for robustness. If the primary regex fails, it's better to return null
     // than to guess a number from the string.
     return null;
+  }
+
+  /// Setup KDE Plasma specific integration
+  Future<void> _setupKDEIntegration(String appDir) async {
+    try {
+      // Detect KDE environment
+      final isKDE = await _detectKDEEnvironment();
+      if (!isKDE) {
+        Logger.debug('KDE Plasma not detected, skipping KDE-specific setup');
+        return;
+      }
+
+      Logger.debug('LinuxSetupService: Setting up KDE Plasma integration...');
+
+      // Install D-Bus service for KDE
+      await _installKDEDBusService(appDir);
+
+      // Register MIME types for KDE
+      await _registerKDEMimeTypes(appDir);
+
+      // Configure KDE-specific window properties
+      await _configureKDEWindowProperties();
+
+      Logger.debug('LinuxSetupService: KDE Plasma integration completed');
+    } catch (e) {
+      Logger.debug('KDE Plasma integration setup failed: $e');
+    }
+  }
+
+  /// Detect if running in KDE Plasma environment
+  Future<bool> _detectKDEEnvironment() async {
+    final desktop = Platform.environment['XDG_CURRENT_DESKTOP']?.toLowerCase() ?? '';
+    final session = Platform.environment['XDG_SESSION_DESKTOP']?.toLowerCase() ?? '';
+    final kdeSession = Platform.environment['KDE_SESSION_VERSION'] ?? '';
+
+    return desktop.contains('kde') || session.contains('kde') || desktop.contains('plasma') || kdeSession.isNotEmpty;
+  }
+
+  /// Install KDE D-Bus service
+  Future<void> _installKDEDBusService(String appDir) async {
+    try {
+      final homeDir = Platform.environment['HOME'];
+      final dbusServicesDir = path.join(homeDir!, '.local', 'share', 'dbus-1', 'services');
+
+      // Create D-Bus services directory if it doesn't exist
+      await Directory(dbusServicesDir).create(recursive: true);
+
+      final dbusServiceFile = path.join(dbusServicesDir, 'me.ahmetcetinkaya.whph.service');
+      final sourceServiceFile = path.join(appDir, 'share', 'dbus-1', 'services', 'me.ahmetcetinkaya.whph.service');
+
+      if (await File(sourceServiceFile).exists()) {
+        var serviceContent = await File(sourceServiceFile).readAsString();
+        // Replace template variables
+        serviceContent = serviceContent.replaceAll('@EXEC_PATH@', getExecutablePath());
+
+        await File(dbusServiceFile).writeAsString(serviceContent);
+        Logger.debug('KDE D-Bus service installed: $dbusServiceFile');
+      }
+    } catch (e) {
+      Logger.debug('Failed to install KDE D-Bus service: $e');
+    }
+  }
+
+  /// Register MIME types for KDE
+  Future<void> _registerKDEMimeTypes(String appDir) async {
+    try {
+      final homeDir = Platform.environment['HOME'];
+      final mimePackagesDir = path.join(homeDir!, '.local', 'share', 'mime', 'packages');
+
+      // Create MIME packages directory if it doesn't exist
+      await Directory(mimePackagesDir).create(recursive: true);
+
+      final mimeFile = path.join(mimePackagesDir, 'whph.xml');
+      final sourceMimeFile = path.join(appDir, 'share', 'mime', 'packages', 'whph.xml');
+
+      if (await File(sourceMimeFile).exists()) {
+        await File(sourceMimeFile).copy(mimeFile);
+
+        // Update MIME database
+        try {
+          await Process.run('update-mime-database', [path.join(homeDir, '.local', 'share', 'mime')]);
+          Logger.debug('KDE MIME types registered successfully');
+        } catch (e) {
+          Logger.debug('Failed to update MIME database: $e');
+        }
+      }
+    } catch (e) {
+      Logger.debug('Failed to register KDE MIME types: $e');
+    }
+  }
+
+  /// Configure KDE-specific window properties
+  Future<void> _configureKDEWindowProperties() async {
+    try {
+      // This will be called during window manager initialization
+      // The actual window class setting is handled in the WindowManager class
+      Logger.debug('KDE window properties configuration completed');
+    } catch (e) {
+      Logger.debug('Failed to configure KDE window properties: $e');
+    }
+  }
+
+  /// Get app version from pubspec.yaml
+  Future<String> _getAppVersion() async {
+    try {
+      // First try to read from package_info (runtime)
+      try {
+        // This would require package_info_plus dependency
+        // For now, we'll read from pubspec.yaml directly
+        final pubspecFile = File('pubspec.yaml');
+        if (await pubspecFile.exists()) {
+          final content = await pubspecFile.readAsString();
+          final versionMatch = RegExp(r'version:\s*([0-9]+\.[0-9]+\.[0-9]+)').firstMatch(content);
+          if (versionMatch != null) {
+            return versionMatch.group(1) ?? '0.18.0';
+          }
+        }
+      } catch (e) {
+        Logger.debug('Failed to get version from package_info: $e');
+      }
+
+      // Fallback to reading pubspec.yaml from app directory
+      final appDir = path.dirname(Platform.resolvedExecutable);
+      final pubspecPath = path.join(appDir, 'data', 'flutter_assets', 'pubspec.yaml');
+
+      final pubspecFile = File(pubspecPath);
+      if (await pubspecFile.exists()) {
+        final content = await pubspecFile.readAsString();
+        final versionMatch = RegExp(r'version:\s*([0-9]+\.[0-9]+\.[0-9]+)').firstMatch(content);
+        if (versionMatch != null) {
+          return versionMatch.group(1) ?? '0.18.0';
+        }
+      }
+
+      // Final fallback
+      Logger.warning('Could not determine app version, using default');
+      return '0.18.0';
+    } catch (e) {
+      Logger.debug('Error getting app version: $e');
+      return '0.18.0';
+    }
   }
 }

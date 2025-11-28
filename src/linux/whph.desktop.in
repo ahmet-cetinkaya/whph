@@ -1,10 +1,66 @@
 [Desktop Entry]
 # App name should match AppInfo.name in lib/core/domain/shared/constants/app_info.dart
+Version=@APP_VERSION@
 Name=Work Hard Play Hard
-Comment=WHPH is a comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
-Exec=whph
+Name[cs]=Pracuj Tvrdě Hraj Tvrdě
+Name[da]=Arbejd Hård Spil Hård
+Name[de]=Arbeit Hart Spielen Hart
+Name[el]=Δουλεύστε Σκληρά Παίξτε Σκληρά
+Name[es]=Trabaja Duro Juega Duro
+Name[fi]=Työskentele Kovaa Pelaa Kovaa
+Name[fr]=Travail Dur Jeu Dur
+Name[it]=Lavora Sforta Gioca Sforta
+Name[ja]=ハードワーク ハードプレイ
+Name[ko]=열심히 일하고 열심히 놀자
+Name[nl]=Werk Hard Play Hard
+Name[no]=Jobbe Hard Play Hard
+Name[pl]=Pracuj Ciężko Graj Ciężko
+Name[pt]=Trabalhe Duro Jogue Duro
+Name[ro]=Lucrează Greu Joacă Greu
+Name[ru]=Работай усердно Играй усердно
+Name[sl]=Delaj Trdo Igraj Trdo
+Name[sv]=Arbeta Hårt Spela Hårt
+Name[tr]=Sert Çalış Sert Oyna
+Name[uk]=Працюй Уважно Грай Уважно
+Name[zh]=努力工作 努力娱乐
+Comment=Productivity app for task management, habit tracking and time optimization
+Comment[cs]=Aplikace pro správu úkolů, sledování návyků a optimalizaci času
+Comment[da]=Productivitetsapp til opgavestyring, vaneoverv og timestyring
+Comment[de]=App zur Aufgabenverwaltung, Gewohnheitsverfolgung und Zeitsynchronisierung
+Comment[el]=Εφαρμογή παραγωγικότητας για διαχείριση εργασιών, παρακολούθηση συνηθειών και βελτιστοποίηση χρόνου
+Comment[es]=Aplicación de productividad para gestión de tareas, seguimiento de hábitos y optimización del tiempo
+Comment[fi]=Tuottavuussovellus tehtävien hallintaan, tapojen seurantaan ja ajan optimointiin
+Comment[fr]=Application de productivité pour la gestion des tâches, le suivi des habitudes et l'optimisation du temps
+Comment[it]=App di produttività per la gestione delle attività, il tracciamento delle abitudini e l'ottimizzazione del tempo
+Comment[ja]=タスク管理、習慣追跡、時間最適化のための生産性アプリ
+Comment[ko]=업무 관리, 습관 추적, 시간 최적화를 위한 생산성 앱
+Comment[nl]=Productiviteitsapp voor taakbeheer, gewoontevolging en tijdoptimalisatie
+Comment[no]=Produktivitetsapp for oppgavebehandling, vaneovervåkning og tidsoptimalisering
+Comment[pl]=Aplikacja produktywności do zarządzania zadaniami, śledzenia nawyków i optymalizacji czasu
+Comment[pt]=Aplicativo de produtividade para gerenciamento de tarefas, rastreamento de hábitos e otimização de tempo
+Comment[ro]=Aplicație de productivitate pentru gestionarea sarcinilor, urmărirea obiceiurilor și optimizarea timpului
+Comment[ru]=Приложение для управления задачами, отслеживания привычек и оптимизации времени
+Comment[sl]=Aplikacija za upravljanje opravil, sledenje navad in optimizacijo časa
+Comment[sv]=Produktivitetsapp för uppgiftshantering, vaneföljning och tidsoptimering
+Comment[tr]=Görev yönetimi, alışkanlık takibi ve zaman optimizasyonu için üretkenlik uygulaması
+Comment[uk]=Додаток для управління завданнями, відстеження звичок та оптимізації часу
+Comment[zh]=用于任务管理、习惯追踪和时间优化的生产力应用
+Type=Application
+Categories=Utility;Office;Productivity;TimeManagement;
+Exec=@EXEC_PATH@ %U
 Icon=@ICON_PATH@
 Terminal=false
-Type=Application
-Categories=Utility;
+StartupNotify=true
 StartupWMClass=whph
+DBusActivatable=true
+MimeType=application/x-whph;
+Keywords=tasks;habits;time;productivity;management;
+
+# KDE Plasma specific enhancements
+X-KDE-SubstituteUID=false
+X-KDE-StartupNotify=true
+X-KDE-Protocols=file,http,https
+X-KDE-Priority=TopLevel
+
+# Cross-desktop compatibility
+X-GNOME-UsesNotifications=true
