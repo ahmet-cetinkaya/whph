@@ -420,6 +420,11 @@ tasks:
     yearSuffix: anno/i
     yearly: Annuale
     daysOfWeek: Giorni della settimana
+    ends:
+      label: Termina
+      never: Mai
+      onDate: In data
+      after: Dopo
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza

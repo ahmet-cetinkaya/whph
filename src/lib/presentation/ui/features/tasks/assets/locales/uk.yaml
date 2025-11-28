@@ -417,6 +417,11 @@ tasks:
     yearSuffix: рік(и)
     yearly: Щорічно
     daysOfWeek: Дні тижня
+    ends:
+      label: Закінчується
+      never: Ніколи
+      onDate: На дату
+      after: Після
   reminder:
     atTime: О запланованому часі
     deadlineReminderLabel: Нагадування про дедлайн

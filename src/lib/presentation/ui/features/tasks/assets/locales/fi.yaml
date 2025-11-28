@@ -333,6 +333,11 @@ tasks:
     yearSuffix: vuosi/vuotta
     yearly: Vuosittain
     daysOfWeek: Viikonpäivät
+    ends:
+      label: Päättyy
+      never: Ei koskaan
+      onDate: Päivämääränä
+      after: Jälkeen
   reminder:
     atTime: Aikataulun mukaisesti
     deadlineReminderLabel: Eräpäivä Muistutus

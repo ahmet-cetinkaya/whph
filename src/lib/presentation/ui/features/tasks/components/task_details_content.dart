@@ -1129,6 +1129,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     final result = await ResponsiveDialogHelper.showResponsiveDialog<Map<String, dynamic>>(
       context: context,
+      size: DialogSize.large,
       child: RecurrenceSettingsDialog(
         initialRecurrenceType: _task!.recurrenceType,
         initialRecurrenceInterval: _task!.recurrenceInterval,

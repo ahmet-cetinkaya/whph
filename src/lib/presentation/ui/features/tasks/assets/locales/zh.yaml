@@ -376,6 +376,11 @@ tasks:
     yearSuffix: 年
     yearly: 每年
     daysOfWeek: 星期几
+    ends:
+      label: 结束
+      never: 从不
+      onDate: 按日期
+      after: 之后
   reminder:
     atTime: 在预定时间
     deadlineReminderLabel: 截止日期提醒

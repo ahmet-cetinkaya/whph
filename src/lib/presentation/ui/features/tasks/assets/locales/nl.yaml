@@ -338,6 +338,11 @@ tasks:
     yearSuffix: jaar(en)
     yearly: Jaarlijks
     daysOfWeek: Dagen van de week
+    ends:
+      label: Eindigt
+      never: Nooit
+      onDate: Op datum
+      after: Na
   reminder:
     atTime: Op het geplande tijdstip
     deadlineReminderLabel: Deadline Herinnering

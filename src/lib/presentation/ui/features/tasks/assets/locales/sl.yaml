@@ -335,6 +335,11 @@ tasks:
     yearSuffix: leto(a)
     yearly: Letno
     daysOfWeek: Dni v tednu
+    ends:
+      label: Se konča
+      never: Nikoli
+      onDate: Na datum
+      after: Po
   reminder:
     atTime: Ob načrtovanem času
     deadlineReminderLabel: Opomnik Rok

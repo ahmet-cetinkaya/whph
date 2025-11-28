@@ -380,6 +380,11 @@ tasks:
     yearSuffix: yıl
     yearly: Yıllık
     daysOfWeek: Haftanın günleri
+    ends:
+      label: Biter
+      never: Asla
+      onDate: Tarihinde
+      after: Sonra
   reminder:
     atTime: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı
