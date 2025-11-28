@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/x-whph">
+        <comment>WHPH productivity data</comment>
+        <comment xml:lang="cs">Produktivní data WHPH</comment>
+        <comment xml:lang="da">WHPH produktivitetsdata</comment>
+        <comment xml:lang="de">WHPH Produktivitätsdaten</comment>
+        <comment xml:lang="el">Δεδομένα παραγωγικότητας WHPH</comment>
+        <comment xml:lang="es">Datos de productividad WHPH</comment>
+        <comment xml:lang="fi">WHPH tuottavuusdata</comment>
+        <comment xml:lang="fr">Données de productivité WHPH</comment>
+        <comment xml:lang="it">Dati di produttività WHPH</comment>
+        <comment xml:lang="ja">WHPH生産性データ</comment>
+        <comment xml:lang="ko">WHPH 생산성 데이터</comment>
+        <comment xml:lang="nl">WHPH productiviteitsdata</comment>
+        <comment xml:lang="no">WHPH produktivitetsdata</comment>
+        <comment xml:lang="pl">Dane produktywności WHPH</comment>
+        <comment xml:lang="pt">Dados de produtividade WHPH</comment>
+        <comment xml:lang="ro">Date de productivitate WHPH</comment>
+        <comment xml:lang="ru">Данные продуктивности WHPH</comment>
+        <comment xml:lang="sl">Podatki o produktivnosti WHPH</comment>
+        <comment xml:lang="sv">WHPH produktivitetsdata</comment>
+        <comment xml:lang="tr">WHPH üretkenlik verileri</comment>
+        <comment xml:lang="uk">Дані продуктивності WHPH</comment>
+        <comment xml:lang="zh">WHPH生产力数据</comment>
+        <icon name="whph"/>
+        <glob pattern="*.whph"/>
+    </mime-type>
+</mime-info>

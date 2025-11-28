@@ -58,4 +58,7 @@ abstract class IWindowManager {
 
   /// Set whether the window should prevent close
   Future<void> setPreventClose(bool preventClose);
+
+  /// Set the window class for desktop integration (important for KDE taskbar grouping)
+  Future<void> setWindowClass(String windowClass);
 }
