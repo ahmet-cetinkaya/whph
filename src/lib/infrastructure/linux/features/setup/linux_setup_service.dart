@@ -77,7 +77,7 @@ exit 0
       await _installSystemIcon(sourceIcon);
 
       // KDE Plasma specific setup
-      await _setupKDEIntegration(desktopFile, appDir);
+      await _setupKDEIntegration(appDir);
     } catch (e) {
       Logger.error('Error setting up Linux environment: $e');
     }
@@ -528,7 +528,7 @@ exit 0
   }
 
   /// Setup KDE Plasma specific integration
-  Future<void> _setupKDEIntegration(String desktopFile, String appDir) async {
+  Future<void> _setupKDEIntegration(String appDir) async {
     try {
       // Detect KDE environment
       final isKDE = await _detectKDEEnvironment();
