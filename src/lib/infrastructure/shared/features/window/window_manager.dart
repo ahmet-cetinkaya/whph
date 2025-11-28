@@ -1,11 +1,16 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart' as wm;
 import 'abstractions/i_window_manager.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
+// Import Linux-specific constants
+import 'package:whph/infrastructure/linux/constants/linux_app_constants.dart';
+
 /// Base implementation of WindowManagerInterface using window_manager package
 class WindowManager implements IWindowManager {
+  static final MethodChannel _linuxWindowChannel = MethodChannel(LinuxAppConstants.channels.windowManagement);
+
   @override
   Future<void> initialize() async {
     await wm.windowManager.ensureInitialized();
@@ -104,14 +109,19 @@ class WindowManager implements IWindowManager {
   @override
   Future<void> setWindowClass(String windowClass) async {
     try {
-      // Set window class using window_manager's internal window handle
       if (Platform.isLinux) {
-        // For Linux, we can try to set the window class through various methods
-        // Note: window_manager doesn't expose direct window class setting,
-        // but we can ensure the window title and other properties are set correctly
+        // Use the native platform channel for Linux to properly set window class
+        final success = await _linuxWindowChannel.invokeMethod<bool>('setWindowClass', windowClass);
+        if (success == true) {
+          Logger.debug('Window class set successfully for KDE integration: $windowClass');
+        } else {
+          Logger.warning('Failed to set window class for KDE integration: $windowClass');
+        }
+      } else {
+        // For non-Linux platforms, use fallback method
         final currentTitle = await wm.windowManager.getTitle();
         await wm.windowManager.setTitle(currentTitle);
-        Logger.debug('Window class setting attempted for KDE integration: $windowClass');
+        Logger.debug('Window class setting fallback used: $windowClass');
       }
     } catch (e) {
       Logger.debug('Failed to set window class: $e');

@@ -10,5 +10,6 @@
 
 // Method channel names
 #define APP_USAGE_CHANNEL PACKAGE_NAME "/app_usage"
+#define WINDOW_MANAGEMENT_CHANNEL PACKAGE_NAME "/window_management"
 
 #endif // APP_CONSTANTS_H
