@@ -295,12 +295,12 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         task_table.recurrence_end_date,
         task_table.recurrence_count,
         task_table.recurrence_parent_id,
-        COALESCE(SUM(task_time_record_table.duration), 0) as total_duration
+        (SELECT COALESCE(SUM(task_time_record_table.duration), 0)
+         FROM task_time_record_table
+         WHERE task_time_record_table.task_id = task_table.id
+         AND task_time_record_table.deleted_date IS NULL) as total_duration
       FROM ${table.actualTableName} task_table
-      LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
-        AND task_time_record_table.deleted_date IS NULL
       ${whereClause ?? ''}
-      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.planned_date_reminder_custom_offset, task_table.deadline_date_reminder_time, task_table.deadline_date_reminder_custom_offset, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
       ${orderByClause ?? ''}
       LIMIT ? OFFSET ?
     ''';
@@ -568,12 +568,12 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         task_table.recurrence_end_date,
         task_table.recurrence_count,
         task_table.recurrence_parent_id,
-        COALESCE(SUM(task_time_record_table.duration), 0) as total_duration
+        (SELECT COALESCE(SUM(task_time_record_table.duration), 0)
+         FROM task_time_record_table
+         WHERE task_time_record_table.task_id = task_table.id
+         AND task_time_record_table.deleted_date IS NULL) as total_duration
       FROM ${table.actualTableName} task_table
-      LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
-        AND task_time_record_table.deleted_date IS NULL
       ${whereClause ?? ''}
-      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.planned_date_reminder_custom_offset, task_table.deadline_date_reminder_time, task_table.deadline_date_reminder_custom_offset, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
       ${orderByClause ?? ''}
       LIMIT ? OFFSET ?
     ''';
