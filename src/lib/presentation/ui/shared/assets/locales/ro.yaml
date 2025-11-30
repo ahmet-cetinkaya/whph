@@ -149,24 +149,40 @@ shared:
     file_write: Eroare la scrierea fișierului
     loading: Eroare la încărcarea datelor
     report_subject: "{appName} App: Raport de eroare neașteptată"
-    report_template: |
-      Salut, am întâlnit o eroare neașteptată în timp ce foloseam aplicația {appName}.
+    report_template:
+      "Salut, am întâlnit o eroare neașteptată în timp ce foloseam
+      aplicația {appName}.
+
 
       Iată informații care ar putea ajuta la diagnosticarea problemei:
+
       Versiunea aplicației: {version}
+
       Informații despre dispozitiv: {device}
+
       SO: {os}
+
       Versiunea SO: {osVersion}
+
       Mesajul de eroare:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Vă rog să mă ajutați să rezolv această problemă.
 
+
       Mulțumesc!
+
+      "
     saving: Eroare la salvarea datelor
     storage_permission: Este necesară permisiunea de stocare
     storage_permission_denied: Permisiunea de stocare a fost refuzată
@@ -174,7 +190,9 @@ shared:
   startup_error:
     copied_to_clipboard: Detaliile erorii au fost copiate în clipboard
     copy_button: Copiază detaliile erorii
-    description: Ceva a mers prost în timpul pornirii aplicației. Acest lucru poate fi cauzat de o problemă de sistem sau o configurație incompatibilă.
+    description:
+      Ceva a mers prost în timpul pornirii aplicației. Acest lucru poate
+      fi cauzat de o problemă de sistem sau o configurație incompatibilă.
     details_title: Detalii Eroare
     report_button: Raportează Problemă
     title: Eroare la Pornirea Aplicației
@@ -241,6 +259,10 @@ shared:
       title: Utilizare pe ore
   time:
     not_set: Nu este setat
+    minutes: minute
+    hours: ore
+    days: zile
+    weeks: săptămâni
   time_display:
     elapsed: Scurs
     elapsed_time_tooltip: Timp petrecut pe această sarcină
@@ -328,7 +350,9 @@ shared:
     time_must_be_at_or_before: Time must be {time} or earlier
     selected_date_must_be_at_or_after: Selected date must be {date} or later
     selected_date_must_be_at_or_before: Selected date must be {date} or earlier
-    start_date_cannot_be_after_end_date: Data de început nu poate fi după data de sfârșit
+    start_date_cannot_be_after_end_date:
+      Data de început nu poate fi după data de
+      sfârșit
     start_date_must_be_at_or_after: Start date must be {date} or later
     end_date_must_be_at_or_before: End date must be {date} or earlier
     cannot_select_date_before_min_date: Cannot select date before {date}

@@ -20,7 +20,7 @@ import 'package:whph/presentation/ui/features/tasks/components/priority_select_f
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_date_field.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_date_picker_field.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -197,6 +197,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Also make reminder fields visible if they have non-default values
       if (_hasFieldContent(keyPlannedDateReminder)) _visibleOptionalFields.add(keyPlannedDateReminder);
       if (_hasFieldContent(keyDeadlineDateReminder)) _visibleOptionalFields.add(keyDeadlineDateReminder);
+
+      // Make reminder fields available as chips even when no date is set for better discoverability
+      _visibleOptionalFields.add(keyPlannedDateReminder);
+      _visibleOptionalFields.add(keyDeadlineDateReminder);
     });
   }
 
@@ -389,7 +393,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         errorMessage: _translationService.translate(TaskTranslationKeys.getTagsError),
         operation: () => _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query),
         onSuccess: (response) {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
           setState(() {
             if (_taskTags == null) {
               _taskTags = response;
@@ -552,7 +558,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       completedAt: _task!.completedAt,
       // Pass reminder settings
       plannedDateReminderTime: _task!.plannedDateReminderTime,
+      plannedDateReminderCustomOffset: _task!.plannedDateReminderCustomOffset,
       deadlineDateReminderTime: _task!.deadlineDateReminderTime,
+      deadlineDateReminderCustomOffset: _task!.deadlineDateReminderCustomOffset,
       // Pass all recurrence settings
       recurrenceType: _task!.recurrenceType,
       recurrenceInterval: _task!.recurrenceInterval,
@@ -569,6 +577,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       print('Executing save command for task ${saveCommand.id}');
       print('  Planned date: ${saveCommand.plannedDate}');
       print('  Deadline date: ${saveCommand.deadlineDate}');
+      print('  Planned Reminder: ${saveCommand.plannedDateReminderTime}');
+      print('  Planned Custom Offset: ${saveCommand.plannedDateReminderCustomOffset}');
+      print('  Deadline Reminder: ${saveCommand.deadlineDateReminderTime}');
+      print('  Deadline Custom Offset: ${saveCommand.deadlineDateReminderCustomOffset}');
     }
 
     // Check if context is still mounted and safe to use before executing async operations
@@ -655,8 +667,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   /// Event handler for planned date reminder changes
-  void _onPlannedReminderChanged(ReminderTime value) {
-    _handleFieldChange(value, (val) => _task!.plannedDateReminderTime = val);
+  void _onPlannedReminderChanged(ReminderTime value, int? customOffset) {
+    _handleFieldChange(value, (val) {
+      _task!.plannedDateReminderTime = val;
+      _task!.plannedDateReminderCustomOffset = customOffset;
+    });
   }
 
   /// Event handler for deadline date changes
@@ -692,8 +707,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   /// Event handler for deadline date reminder changes
-  void _onDeadlineReminderChanged(ReminderTime value) {
-    _handleFieldChange(value, (val) => _task!.deadlineDateReminderTime = val);
+  void _onDeadlineReminderChanged(ReminderTime value, int? customOffset) {
+    _handleFieldChange(value, (val) {
+      _task!.deadlineDateReminderTime = val;
+      _task!.deadlineDateReminderCustomOffset = customOffset;
+    });
   }
 
   /// Event handler for description changes
@@ -917,8 +935,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       keyDeadlineDate,
       keyRecurrence,
       keyDescription,
+      keyPlannedDateReminder,
+      keyDeadlineDateReminder,
       // keyParentTask - Parent task should never appear as chip, only when data exists
-      // Reminder fields are handled with their corresponding date fields
+      // Reminder fields are now included for better discoverability
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
@@ -1086,18 +1106,20 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         icon: TaskUiConstants.plannedDateIcon,
         widget: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-          child: TaskDateField(
+          child: TaskDatePickerField(
             key: ValueKey('planned_date_${_task!.id}'),
             controller: _plannedDateController,
-            focusNode: _plannedDateFocusNode,
             hintText: '',
             minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
             onDateChanged: _onPlannedDateChanged,
             onReminderChanged: _onPlannedReminderChanged,
             reminderValue: _task!.plannedDateReminderTime,
+            reminderCustomOffset: _task!.plannedDateReminderCustomOffset,
             translationService: _translationService,
             reminderLabelPrefix: 'tasks.reminder.planned',
             dateIcon: TaskUiConstants.plannedDateIcon,
+            focusNode: _plannedDateFocusNode,
+            context: context,
           ),
         ),
       );
@@ -1107,19 +1129,21 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         icon: TaskUiConstants.deadlineDateIcon,
         widget: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-          child: TaskDateField(
+          child: TaskDatePickerField(
             key: ValueKey('deadline_date_${_task!.id}'),
             controller: _deadlineDateController,
-            focusNode: _deadlineDateFocusNode,
             hintText: '',
             minDateTime: _getMinimumDeadlineDate(),
             plannedDateTime: _task!.plannedDate,
             onDateChanged: _onDeadlineDateChanged,
             onReminderChanged: _onDeadlineReminderChanged,
             reminderValue: _task!.deadlineDateReminderTime,
+            reminderCustomOffset: _task!.deadlineDateReminderCustomOffset,
             translationService: _translationService,
             reminderLabelPrefix: 'tasks.reminder.deadline',
             dateIcon: TaskUiConstants.deadlineDateIcon,
+            focusNode: _deadlineDateFocusNode,
+            context: context,
           ),
         ),
       );
@@ -1235,12 +1259,26 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Widget to build optional field chips
   Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {
+    String? tooltip;
+
+    // Add helpful tooltips for reminder fields
+    if (fieldKey == keyPlannedDateReminder || fieldKey == keyDeadlineDateReminder) {
+      final hasDate = fieldKey == keyPlannedDateReminder ? _task!.plannedDate != null : _task!.deadlineDate != null;
+
+      if (!hasDate) {
+        tooltip = _translationService.translate(TaskTranslationKeys.reminderDateRequiredTooltip);
+      } else {
+        tooltip = _translationService.translate(TaskTranslationKeys.reminderHelpText);
+      }
+    }
+
     return OptionalFieldChip(
       label: _getFieldLabel(fieldKey),
       icon: _getFieldIcon(fieldKey),
       selected: _isFieldVisible(fieldKey),
       onSelected: (_) => _toggleOptionalField(fieldKey),
       backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
+      tooltip: tooltip,
     );
   }
 

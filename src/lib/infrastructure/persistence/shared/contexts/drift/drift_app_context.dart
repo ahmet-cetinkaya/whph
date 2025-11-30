@@ -100,7 +100,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 28;
+  int get schemaVersion => 29;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {
@@ -1110,6 +1110,11 @@ class AppDatabase extends _$AppDatabase {
                   // Step 4: Rename the new table to the original name
                   await customStatement('ALTER TABLE task_table_new RENAME TO task_table');
                 });
+              },
+              from28To29: (m, schema) async {
+                // Add custom reminder offset columns to task_table
+                await m.addColumn(taskTable, taskTable.plannedDateReminderCustomOffset);
+                await m.addColumn(taskTable, taskTable.deadlineDateReminderCustomOffset);
               },
             )(m, from, to);
 

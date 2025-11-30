@@ -24,6 +24,7 @@ openspec/
 # Other
 *.log
 .temp/
+core.[0-9]*
 
 # Coverage reports
 src/coverage/

@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Adicionar nova tarefa
-  date_picker:
-    quick_selection:
-      today: Hoje
-      tomorrow: Amanhã
-      this_weekend: Este fim de semana
-      weekend: Fim de semana
-      next_week: Próxima semana
-      next_weekend: Próximo fim de semana
   all_tasks_done: Todas as tarefas concluídas!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Agendar tarefa
   complete:
     error: Erro inesperado ocorreu ao salvar conclusão da tarefa.
+  date_picker:
+    quick_selection:
+      next_week: Próxima semana
+      next_weekend: Próximo fim de semana
+      this_weekend: Este fim de semana
+      today: Hoje
+      tomorrow: Amanhã
+      weekend: Fim de semana
+      next_weekday: Próximo dia útil
   date_selection:
     deadline_date_title: Selecionar data limite
     planned_date_title: Selecionar data planejada
@@ -26,37 +27,32 @@ tasks:
     message: Tem certeza de que deseja excluir esta tarefa?
     title: Excluir Tarefa
   details:
-    title:
-      label: Título
-    tags:
-      hint: Selecionar tags para associar
-      label: Tags
-    priority:
-      label: Prioridade
-    planned_date:
-      label: Data Planejada
     deadline_date:
       label: Data Limite
     description:
-      hint: Adicionar descrição...
-      label: Descrição
       context:
         Adicione informações detalhadas sobre sua tarefa para ajudá-lo a lembrar
         detalhes importantes e acompanhar o progresso.
+      hint: Adicionar descrição...
+      label: Descrição
     elapsed_time:
       label: Tempo Decorrido
     parent_task:
       label: Tarefa Pai
       tooltip: Clique para navegar para tarefa pai
+    planned_date:
+      label: Data Planejada
+    priority:
+      label: Prioridade
     sub_tasks:
       label: Sub-tarefas
+    tags:
+      hint: Selecionar tags para associar
+      label: Tags
     tags_hint: Selecionar tags para tarefa
+    title:
+      label: Título
     total_elapsed_time: Tempo Total Decorrido
-  estimated_time:
-    label: Tempo Estimado
-    description:
-      Defina estimativas de tempo realistas para planear sua tarefa eficazmente
-      e rastrear a produtividade.
   errors:
     add_tag: Erro inesperado ocorreu ao adicionar tag
     adding_tag: Falha ao adicionar tag
@@ -75,6 +71,11 @@ tasks:
     task_tag_already_deleted: Tag da tarefa já foi excluída
     task_tag_already_exists: Esta tag da tarefa já existe
     task_tag_not_found: Tag da tarefa não encontrada
+  estimated_time:
+    description:
+      Defina estimativas de tempo realistas para planear sua tarefa eficazmente
+      e rastrear a produtividade.
+    label: Tempo Estimado
   filters:
     completion: Por Status de Conclusão
     deadline_date: Por Data Limite
@@ -262,11 +263,11 @@ tasks:
     urgent_important: Urgente e Importante
     urgent_not_important: Urgente mas Não Importante
   priority:
-    selection:
-      title: Selecionar Prioridade
     description:
       Defina a prioridade da tarefa usando a Matriz de Eisenhower - classificação
       Urgente/Importante para gerenciamento eficaz de tarefas
+    selection:
+      title: Selecionar Prioridade
     tooltips:
       none: Nenhuma Prioridade
       not_urgent_important: Não Urgente mas Importante
@@ -286,12 +287,12 @@ tasks:
       tarefas semelhantes. Propriedades travadas não serão limpas ao resetar o formulário.
     lock_settings: Configurações de Travamento
     reset_all: Resetar todos os campos
-    task_added_successfully: Tarefa adicionada com sucesso
     reset_confirm:
       message:
         Tem certeza de que deseja resetar todos os campos? Esta ação não pode
         ser desfeita.
       title: Resetar Todos os Campos
+    task_added_successfully: Tarefa adicionada com sucesso
     title: Tarefa Rápida
     title_hint: Digite um título descritivo da tarefa...
     title_placeholder: O que precisa ser feito?
@@ -308,7 +309,13 @@ tasks:
     custom: Personalizado
     daily: Diário
     daySuffix: dia(s)
+    daysOfWeek: Dias da semana
     endDate: Data de término
+    ends:
+      after: Após
+      label: Termina
+      never: Nunca
+      onDate: Na data
     enterCountHint: Digite contagem
     interval:
       label: Repetir a cada
@@ -338,12 +345,6 @@ tasks:
     weekly: Semanal
     yearSuffix: ano(s)
     yearly: Anual
-    daysOfWeek: Dias da semana
-    ends:
-      label: Termina
-      never: Nunca
-      onDate: Na data
-      after: Após
   reminder:
     atTime: No horário agendado
     deadlineReminderLabel: Lembrete de Prazo
@@ -353,6 +354,10 @@ tasks:
     oneDayBefore: 1 dia antes
     oneHourBefore: 1 hora antes
     plannedReminderLabel: Lembrete de Data Planejada
+    section_title: Lembretes
+    custom: Personalizado
+    custom_title: Lembrete personalizado
+    before_suffix: antes
   task_details: Detalhes da Tarefa
   time_logging:
     add_time: Adicionar Tempo
@@ -383,59 +388,69 @@ tasks:
     decrease_estimated_time: Diminuir tempo estimado
     edit_title: Editar título
     increase_estimated_time: Aumentar tempo estimado
+    reminder_date_required: Configure primeiro uma data para configurar os lembretes
+    reminder_help_text: Definir um lembrete para ser notificado antes da data da tarefa
     set_reminder: Definir lembrete
+    set_reminder_with_status: Definir lembrete - Sem lembrete
     show_completed_tasks: Filtrar tarefas concluídas
+    show_sub_tasks: Mostrar subtarefas
     show_subtasks: Mostrar subtarefas
-  validation:
-    deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada
-    deadline_time_invalid: Hora limite inválida
   tour:
-    task_management:
-      title: Gerenciamento de Tarefas
-      description:
-        Crie e organize tarefas com prioridades, prazos e lembretes. Use
-        o timer Pomodoro para manter o foco e acompanhar seu progresso em tarefas
-        importantes.
     add_tasks:
-      title: Adicionar Novas Tarefas
       description:
         Crie rapidamente novas tarefas com este botão. Defina títulos,
         prioridades, prazos, tags e mais. Adicione subtarefas e lembretes para manter-se
         atualizado com seu trabalho.
-    your_tasks:
-      title: Suas Tarefas
-      description:
-        Veja e gerencie todas as suas tarefas em um só lugar. Clique em
-        qualquer tarefa para ver detalhes, marcar como concluída, editar informações
-        ou excluir. Mantenha-se organizado e acompanhe seu progresso.
+      title: Adicionar Novas Tarefas
     filter_search:
-      title: Filtrar & Pesquisar
       description:
         Opções poderosas de filtragem para encontrar exatamente o que você
         precisa. Filtre por tags, datas, status de conclusão ou use a pesquisa. Ordene
         tarefas e alterne subtarefas para melhor organização.
+      title: Filtrar & Pesquisar
     marathon:
       app_usage:
-        title: Uso de Aplicativos & Análise de Tempo
         description:
           Monitore padrões de uso de aplicativos e analise o tempo gasto
           em diferentes atividades. Obtenha insights sobre seus hábitos digitais e
           otimize sua produtividade.
-      usage_statistics:
-        title: Estatísticas de Uso
-        description:
-          Veja dados detalhados de uso de aplicativos e distribuição de
-          tempo. Analise seus padrões de produtividade, acompanhe o tempo gasto em
-          diferentes aplicativos e identifique áreas de melhoria.
+        title: Uso de Aplicativos & Análise de Tempo
       filter_sort:
-        title: Filtrar & Ordenar
         description:
           Filtre dados de uso de aplicativos por intervalo de datas, tags
           ou dispositivos específicos. Ordene e organize suas estatísticas de uso
           para obter melhores insights sobre gestão de tempo.
+        title: Filtrar & Ordenar
       tracking_settings:
-        title: Configurações de Rastreamento
         description:
           Configure regras de rastreamento de aplicativos, defina marcação
           automática e gerencie quais aplicativos monitorar. Personalize o rastreamento
           de acordo com suas necessidades de produtividade.
+        title: Configurações de Rastreamento
+      usage_statistics:
+        description:
+          Veja dados detalhados de uso de aplicativos e distribuição de
+          tempo. Analise seus padrões de produtividade, acompanhe o tempo gasto em
+          diferentes aplicativos e identifique áreas de melhoria.
+        title: Estatísticas de Uso
+    task_management:
+      description:
+        Crie e organize tarefas com prioridades, prazos e lembretes. Use
+        o timer Pomodoro para manter o foco e acompanhar seu progresso em tarefas
+        importantes.
+      title: Gerenciamento de Tarefas
+    your_tasks:
+      description:
+        Veja e gerencie todas as suas tarefas em um só lugar. Clique em
+        qualquer tarefa para ver detalhes, marcar como concluída, editar informações
+        ou excluir. Mantenha-se organizado e acompanhe seu progresso.
+      title: Suas Tarefas
+  validation:
+    deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada
+    deadline_time_invalid: Hora limite inválida
+shared:
+  time:
+    minutes: minutos
+    hours: horas
+    days: dias
+    weeks: semanas

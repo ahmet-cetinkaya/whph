@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Přidat nový úkol
-  date_picker:
-    quick_selection:
-      today: Dnes
-      tomorrow: Zítra
-      this_weekend: Tento víkend
-      weekend: Víkend
-      next_week: Příští týden
-      next_weekend: Příští víkend
   all_tasks_done: Všechny úkoly dokončeny!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Naplánovat úkol
   complete:
     error: Neočekávaná chyba při ukládání dokončení úkolu.
+  date_picker:
+    quick_selection:
+      next_week: Příští týden
+      next_weekend: Příští víkend
+      this_weekend: Tento víkend
+      today: Dnes
+      tomorrow: Zítra
+      weekend: Víkend
+      next_weekday: Příští pracovní den
   date_selection:
     deadline_date_title: Vyberte datum splatnosti
     planned_date_title: Vyberte plánované datum
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Datum splatnosti
     description:
-      hint: Přidejte popis...
-      label: Popis
       context:
         Přidejte podrobné informace o svém úkolu, které vám pomohou pamatovat
         si klíčové detaily a sledovat pokrok.
+      hint: Přidejte popis...
+      label: Popis
     elapsed_time:
       label: Uplynulý čas
     is_completed: Dokončeno
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Titulek
     total_elapsed_time: Celkový uplynulý čas
-  estimated_time:
-    label: Odhadovaný čas
-    description:
-      Stanovte realistický odhad času pro efektivní plánování úkolu a sledování
-      produktivity.
   errors:
     add_tag: Neočekávaná chyba při přidávání štítku
     adding_tag: Selhání přidání štítku
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Štítek úkolu již smazán
     task_tag_already_exists: Tento štítek úkolu již existuje
     task_tag_not_found: Štítek úkolu nenalezen
+  estimated_time:
+    description:
+      Stanovte realistický odhad času pro efektivní plánování úkolu a sledování
+      produktivity.
+    label: Odhadovaný čas
   filters:
     completion: Podle stavu dokončení
     deadline_date: Podle data splatnosti
@@ -319,9 +320,9 @@ tasks:
       long_break_duration: Doba dlouhé přestávky
       sessions_before_long_break: Relace před dlouhou přestávkou
       ticking_sound: Povolit tikající zvuk
-      ticking_volume: Hlasitost tikání
-      ticking_speed: Rychlost tikání
       ticking_sound_section: Tikající zvuk
+      ticking_speed: Rychlost tikání
+      ticking_volume: Hlasitost tikání
       timer_label: Trvání relace
       title: Nastavení časovače
       work_duration: Doba práce
@@ -336,11 +337,11 @@ tasks:
     urgent_important: Naléhavé a důležité
     urgent_not_important: Naléhavé, ale ne důležité
   priority:
-    selection:
-      title: Vybrat prioritu
     description:
       Nastavte prioritu úkolu pomocí Eisenhowerovy matice - klasifikace
       Naléhavé/Důležité pro efektivní správu úkolů
+    selection:
+      title: Vybrat prioritu
     tooltips:
       none: Žádná priorita
       not_urgent_important: Ne naléhavé, ale důležité
@@ -363,12 +364,12 @@ tasks:
       "
     lock_settings: Nastavení zámku
     reset_all: Resetovat všechna pole
-    task_added_successfully: Úkol úspěšně přidán
     reset_confirm:
       message:
         Jste si jisti, že chcete resetovat všechna pole? Tato akce nelze vrátit
         zpět.
       title: Resetovat všechna pole
+    task_added_successfully: Úkol úspěšně přidán
     title: Rychlý úkol
     title_hint: Zadejte popisný titulek úkolu...
     title_placeholder: Co je potřeba udělat?
@@ -385,7 +386,13 @@ tasks:
     custom: Vlastní
     daily: Denně
     daySuffix: den(y)
+    daysOfWeek: Dny v týdnu
     endDate: Datum konce
+    ends:
+      after: Po
+      label: Končí
+      never: Nikdy
+      onDate: K datu
     enterCountHint: Zadejte počet
     interval:
       label: Opakovat každých
@@ -415,12 +422,6 @@ tasks:
     weekly: Týdně
     yearSuffix: rok(y)
     yearly: Ročně
-    daysOfWeek: Dny v týdnu
-    ends:
-      label: Končí
-      never: Nikdy
-      onDate: K datu
-      after: Po
   reminder:
     atTime: V plánovaném čase
     deadlineReminderLabel: Připomínka splatnosti
@@ -430,6 +431,10 @@ tasks:
     oneDayBefore: 1 den před
     oneHourBefore: 1 hodina před
     plannedReminderLabel: Připomínka plánovaného data
+    section_title: Připomínky
+    custom: Vlastní
+    custom_title: Vlastní připomenutí
+    before_suffix: před
   task_details: Detaily úkolu
   title: Úkoly
   tooltips:
@@ -437,59 +442,71 @@ tasks:
     decrease_estimated_time: Zmenšit odhadovaný čas
     edit_title: Upravit titulek
     increase_estimated_time: Zvětšit odhadovaný čas
+    reminder_date_required: Nejprve nastavte datum pro konfiguraci připomínek
+    reminder_help_text:
+      Nastavte si připomínku, abyste byli upozorněni před datem
+      úkolu
     set_reminder: Nastavit připomínku
+    set_reminder_with_status: Nastavit připomínku - Žádná připomínka
     show_completed_tasks: Filtrovat dokončené úkoly
+    show_sub_tasks: Zobrazit dílčí úkoly
     show_subtasks: Zobrazit podúkoly
-  validation:
-    deadline_cannot_be_before_planned: Datum splatnosti musí být po plánovaném datu
-    deadline_time_invalid: Prosím zadejte platný čas splatnosti
   tour:
-    task_management:
-      title: Management úkolů
-      description:
-        Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami.
-        Používejte Pomodoro časovač pro zůstání soustředění a sledování pokroku na
-        důležitých úkolech.
     add_tasks:
-      title: Přidání nových úkolů
       description:
         Rychle vytvářejte nové úkoly pomocí tohoto tlačítka. Nastavujte
         titulky, priority, termíny, štítky a další. Přidávejte podúkoly a připomínky
         pro zůstání na chodu.
-    your_tasks:
-      title: Vaše úkoly
-      description:
-        Zobrazujte a spravujte všechny své úkoly na jednom místě. Klikněte
-        na libovolný úkol pro zobrazení detailů, označení jako dokončený, úpravu informací
-        nebo smazání. Zůstaňte organizovaní a sledujte svůj pokrok.
+      title: Přidání nových úkolů
     filter_search:
-      title: Filtr a vyhledávání
       description:
         Výkonné možnosti filtrování pro nalezení přesně toho, co potřebujete.
         Filtrujte podle štítků, dat, stavu dokončení nebo použijte vyhledávání. Řaďte
         úkoly a přepínejte podúkoly pro lepší organizaci.
+      title: Filtr a vyhledávání
     marathon:
       app_usage:
-        title: Využití aplikace a časové poznatky
         description:
           Monitorujte vzorce využití aplikace a analyzujte čas strávený
           různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte
           svou produktivitu.
-      usage_statistics:
-        title: Statistiky využití
-        description:
-          Zobrazujte detailní data o využití aplikace a distribuci času.
-          Analyzujte své produktivní vzorce, sledujte čas strávený různými aplikacemi
-          a identifikujte oblasti pro zlepšení.
+        title: Využití aplikace a časové poznatky
       filter_sort:
-        title: Filtr a řazení
         description:
           Filtrování dat o využití aplikace podle časového rozsahu, štítků
           nebo konkrétních zařízení. Řaďte a organizujte statistiky využití pro získání
           lepších poznatků o správě času.
+        title: Filtr a řazení
       tracking_settings:
-        title: Nastavení sledování
         description:
           Nakonfigurujte pravidla sledování aplikací, nastavte automatické
           štítkování a spravujte, které aplikace sledovat. Přizpůsobte sledování potřebám
           vaší produktivity.
+        title: Nastavení sledování
+      usage_statistics:
+        description:
+          Zobrazujte detailní data o využití aplikace a distribuci času.
+          Analyzujte své produktivní vzorce, sledujte čas strávený různými aplikacemi
+          a identifikujte oblasti pro zlepšení.
+        title: Statistiky využití
+    task_management:
+      description:
+        Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami.
+        Používejte Pomodoro časovač pro zůstání soustředění a sledování pokroku na
+        důležitých úkolech.
+      title: Management úkolů
+    your_tasks:
+      description:
+        Zobrazujte a spravujte všechny své úkoly na jednom místě. Klikněte
+        na libovolný úkol pro zobrazení detailů, označení jako dokončený, úpravu informací
+        nebo smazání. Zůstaňte organizovaní a sledujte svůj pokrok.
+      title: Vaše úkoly
+  validation:
+    deadline_cannot_be_before_planned: Datum splatnosti musí být po plánovaném datu
+    deadline_time_invalid: Prosím zadejte platný čas splatnosti
+shared:
+  time:
+    minutes: minuty
+    hours: hodiny
+    days: dny
+    weeks: týdny

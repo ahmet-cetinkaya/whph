@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Dodaj novo nalogo
-  date_picker:
-    quick_selection:
-      today: Danes
-      tomorrow: Jutri
-      this_weekend: Ta konec tedna
-      weekend: Konec tedna
-      next_week: Naslednji teden
-      next_weekend: Naslednji konec tedna
   all_tasks_done: Vse naloge končane!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Načrtuj nalogo
   complete:
     error: Nepričakovana napaka pri shranjevanju zaključka naloge.
+  date_picker:
+    quick_selection:
+      next_week: Naslednji teden
+      next_weekend: Naslednji konec tedna
+      this_weekend: Ta konec tedna
+      today: Danes
+      tomorrow: Jutri
+      weekend: Konec tedna
+      next_weekday: Naslednji delovni dan
   date_selection:
     deadline_date_title: Izberi rok
     planned_date_title: Izberi načrtovan datum
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Rok
     description:
-      hint: Dodaj opis...
-      label: Opis
       context:
         Dodajte podrobne informacije o svoji nalogi, da vam bodo pomagale pri
         spominjanju ključnih podrobnosti in sledenju napredka.
+      hint: Dodaj opis...
+      label: Opis
     elapsed_time:
       label: Minulo Čas
     is_completed: Končana
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Naslov
     total_elapsed_time: Skupni Minuli Čas
-  estimated_time:
-    label: Predviden Čas
-    description:
-      Nastavite realistično oceno časa za učinkovito načrtovanje naloge
-      in spremljanje produktivnosti.
   errors:
     add_tag: Nepričakovana napaka pri dodajanju oznake
     adding_tag: Napaka pri dodajanju oznake
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Oznaka naloge je že izbrisana
     task_tag_already_exists: Ta oznaka naloge že obstaja
     task_tag_not_found: Oznaka naloge ni najdena
+  estimated_time:
+    description:
+      Nastavite realistično oceno časa za učinkovito načrtovanje naloge
+      in spremljanje produktivnosti.
+    label: Predviden Čas
   filters:
     completion: Po Statusu Zaključka
     deadline_date: Po Roku
@@ -257,11 +258,11 @@ tasks:
     urgent_important: Nujno in Pomembno
     urgent_not_important: Nujno a Ni Pomembno
   priority:
-    selection:
-      title: Izberi Prioriteto
     description:
       Nastavite prednost opravila z uporabo Eisenhowerjeve matrice - Kritično/Pomembno
       razvrščanje za učinkovito upravljanje opravili
+    selection:
+      title: Izberi Prioriteto
     tooltips:
       none: Brez Prioritete
       not_urgent_important: Ni Nujno a Pomembno
@@ -282,12 +283,12 @@ tasks:
       obrazca.
     lock_settings: Nastavitve Zaklepanja
     reset_all: Ponastavi vsa polja
-    task_added_successfully: Naloga uspešno dodana
     reset_confirm:
       message:
         Ste prepričani, da želite ponastaviti vsa polja? Ta akcija ni mogoča
         za razveljaviti.
       title: Ponastavi Vsa Polja
+    task_added_successfully: Naloga uspešno dodana
     title: Hitra Naloga
     title_hint: Vnesi opisni naslov naloge...
     title_placeholder: Kaj je treba storiti?
@@ -304,7 +305,13 @@ tasks:
     custom: Po meri
     daily: Dnevno
     daySuffix: dan(i)
+    daysOfWeek: Dni v tednu
     endDate: Datum konca
+    ends:
+      after: Po
+      label: Se konča
+      never: Nikoli
+      onDate: Na datum
     enterCountHint: Vnesi število
     interval:
       label: Ponovi vsak
@@ -334,12 +341,6 @@ tasks:
     weekly: Tedensko
     yearSuffix: leto(a)
     yearly: Letno
-    daysOfWeek: Dni v tednu
-    ends:
-      label: Se konča
-      never: Nikoli
-      onDate: Na datum
-      after: Po
   reminder:
     atTime: Ob načrtovanem času
     deadlineReminderLabel: Opomnik Rok
@@ -349,6 +350,10 @@ tasks:
     oneDayBefore: 1 dan pred
     oneHourBefore: 1 uro pred
     plannedReminderLabel: Opomnik Načrtovanega Datuma
+    section_title: Opomniki
+    custom: Po meri
+    custom_title: Prilagojeno opomnik
+    before_suffix: pred
   task_details: Podrobnosti Naloge
   time_logging:
     add_time: Dodaj Čas
@@ -377,59 +382,69 @@ tasks:
     decrease_estimated_time: Zmanjšaj predviden čas
     edit_title: Uredi naslov
     increase_estimated_time: Povečaj predviden čas
+    reminder_date_required: Najprej nastavite datum za konfiguracijo opomnikov
+    reminder_help_text: Nastavite opomnik, da boste obveščeni pred datumom opravila
     set_reminder: Nastavi opomnik
+    set_reminder_with_status: Nastavi opomnik - Brez opomnika
     show_completed_tasks: Filtriraj končane naloge
+    show_sub_tasks: Prikaži podopravke
     show_subtasks: Pokaži podnaloge
-  validation:
-    deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
-    deadline_time_invalid: Čas roka je neveljaven
   tour:
-    task_management:
-      title: Upravljanje Nalog
-      description:
-        Ustvarite in organizirajte naloge s prednostmi, roki in opomniki.
-        Uporabite časovnik Pomodoro, da ostanete osredotočeni in spremljate napredek
-        pri pomembnih nalogah.
     add_tasks:
-      title: Dodaj Nove Naloge
       description:
         Hitro ustvarite nove naloge s tem gumbom. Nastavite naslove, prednosti,
         roke, oznake in več. Dodajte podnaloge in opomnike, da ostanete na tekočem
         s svojim delom.
-    your_tasks:
-      title: Vaše Naloge
-      description:
-        Ogledujte in upravljajte vse svoje naloge na enem mestu. Kliknite
-        katerokoli nalogo za ogled podrobnosti, označite kot končano, uredite informacije
-        ali izbrišite. Ostanite organizirani in spremljajte svoj napredek.
+      title: Dodaj Nove Naloge
     filter_search:
-      title: Filtriraj & Išči
       description:
         Zmogljive možnosti filtriranja za iskanje ravno tistega, kar potrebujete.
         Filtrirajte po oznakah, datumih, statusu zaključka ali uporabite iskanje.
         Razvrstite naloge in preklopite podnaloge za boljšo organizacijo.
+      title: Filtriraj & Išči
     marathon:
       app_usage:
-        title: Uporaba Aplikacij & Časovna Analiza
         description:
           Spremljajte vzorce uporabe aplikacij in analizirajte čas, porabljen
           za različne dejavnosti. Pridobite vpogled v svoje digitalne navade in optimizirajte
           svojo produktivnost.
-      usage_statistics:
-        title: Statistika Uporabe
-        description:
-          Ogled podrobnih podatkov o uporabi aplikacij in porazdelitvi
-          časa. Analizirajte svoje vzorce produktivnosti, spremljajte čas, porabljen
-          za različne aplikacije, in prepoznajte področja za izboljšave.
+        title: Uporaba Aplikacij & Časovna Analiza
       filter_sort:
-        title: Filtriraj & Razvrsti
         description:
           Filtrirajte podatke o uporabi aplikacij po časovnem obdobju,
           oznakah ali določenih napravah. Razvrstite in organizirajte svojo statistiko
           uporabe za boljše vpoglede v upravljanje časa.
+        title: Filtriraj & Razvrsti
       tracking_settings:
-        title: Nastavitve Sledenja
         description:
           Konfigurirajte pravila sledenja aplikacij, nastavite samodejno
           označevanje in upravljajte, katere aplikacije naj se spremljajo. Prilagodite
           sledenje glede na svoje potrebe po produktivnosti.
+        title: Nastavitve Sledenja
+      usage_statistics:
+        description:
+          Ogled podrobnih podatkov o uporabi aplikacij in porazdelitvi
+          časa. Analizirajte svoje vzorce produktivnosti, spremljajte čas, porabljen
+          za različne aplikacije, in prepoznajte področja za izboljšave.
+        title: Statistika Uporabe
+    task_management:
+      description:
+        Ustvarite in organizirajte naloge s prednostmi, roki in opomniki.
+        Uporabite časovnik Pomodoro, da ostanete osredotočeni in spremljate napredek
+        pri pomembnih nalogah.
+      title: Upravljanje Nalog
+    your_tasks:
+      description:
+        Ogledujte in upravljajte vse svoje naloge na enem mestu. Kliknite
+        katerokoli nalogo za ogled podrobnosti, označite kot končano, uredite informacije
+        ali izbrišite. Ostanite organizirani in spremljajte svoj napredek.
+      title: Vaše Naloge
+  validation:
+    deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
+    deadline_time_invalid: Čas roka je neveljaven
+shared:
+  time:
+    minutes: minute
+    hours: ure
+    days: dni
+    weeks: tedni

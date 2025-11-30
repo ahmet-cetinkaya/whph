@@ -143,24 +143,40 @@ shared:
     file_write: Feil under skriving av fil
     loading: Feil oppstod under lasting av data
     report_subject: "{appName} App: Uventet feilrapport"
-    report_template: |
-      Hei, jeg støtte på en uventet feil mens jeg brukte {appName} appen.
+    report_template:
+      "Hei, jeg støtte på en uventet feil mens jeg brukte {appName}
+      appen.
+
 
       Her er informasjon som kan hjelpe deg med å diagnostisere problemet:
+
       App-versjon: {version}
+
       Enhetsinfo: {device}
+
       OS: {os}
+
       OS-versjon: {osVersion}
+
       Feilmelding:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Vennligst hjelp meg å løse dette problemet.
 
+
       Takk!
+
+      "
     saving: Feil oppstod under lagring av data
     storage_permission: Lagringstillatelse kreves
     storage_permission_denied: Lagringstillatelse nektet
@@ -168,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Feildetaljer kopiert til utklippstavle
     copy_button: Kopier feildetaljer
-    description: Noe gikk galt under app-start. Dette kan skyldes et systemproblem eller inkompatibel konfigurasjon.
+    description:
+      Noe gikk galt under app-start. Dette kan skyldes et systemproblem
+      eller inkompatibel konfigurasjon.
     details_title: Feildetaljer
     report_button: Rapporter problem
     title: App-startfeil
@@ -235,6 +253,10 @@ shared:
       title: Timevis bruk
   time:
     not_set: Ikke satt
+    minutes: minutter
+    hours: timer
+    days: dager
+    weeks: uker
   time_display:
     elapsed: Forløpt
     elapsed_time_tooltip: Tid brukt på denne oppgaven

@@ -143,24 +143,40 @@ shared:
     file_write: Fel vid skrivning av fil
     loading: Fel uppstod vid laddning av data
     report_subject: "{appName} App: Oväntad felrapport"
-    report_template: |
-      Hej, jag stötte på ett oväntat fel när jag använde {appName} appen.
+    report_template:
+      "Hej, jag stötte på ett oväntat fel när jag använde {appName}
+      appen.
+
 
       Här är information som kan hjälpa till att diagnostisera problemet:
+
       App-version: {version}
+
       Enhetsinformation: {device}
+
       OS: {os}
+
       OS-version: {osVersion}
+
       Felmeddelande:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Hjälp mig att lösa detta problem.
 
+
       Tack!
+
+      "
     saving: Fel uppstod vid sparande av data
     storage_permission: Lagringstillstånd krävs
     storage_permission_denied: Lagringstillstånd nekat
@@ -168,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Feltdetaljer kopierade till urklipp
     copy_button: Kopiera feltdetaljer
-    description: Något gick fel under appstarten. Detta kan bero på ett systemproblem eller inkompatibel konfiguration.
+    description:
+      Något gick fel under appstarten. Detta kan bero på ett systemproblem
+      eller inkompatibel konfiguration.
     details_title: Feltdetaljer
     report_button: Rapportera Problem
     title: Appstartfel
@@ -235,6 +253,10 @@ shared:
       title: Timvis användning
   time:
     not_set: Inte inställd
+    minutes: minuter
+    hours: timmar
+    days: dagar
+    weeks: veckor
   time_display:
     elapsed: Förfluten
     elapsed_time_tooltip: Tid spenderad på denna uppgift

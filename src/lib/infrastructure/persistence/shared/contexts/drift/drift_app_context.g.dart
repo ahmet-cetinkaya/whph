@@ -4210,6 +4210,20 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
               defaultValue: const Constant(0))
           .withConverter<ReminderTime>(
               $TaskTableTable.$converterdeadlineDateReminderTime);
+  static const VerificationMeta _plannedDateReminderCustomOffsetMeta =
+      const VerificationMeta('plannedDateReminderCustomOffset');
+  @override
+  late final GeneratedColumn<int> plannedDateReminderCustomOffset =
+      GeneratedColumn<int>(
+          'planned_date_reminder_custom_offset', aliasedName, true,
+          type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _deadlineDateReminderCustomOffsetMeta =
+      const VerificationMeta('deadlineDateReminderCustomOffset');
+  @override
+  late final GeneratedColumn<int> deadlineDateReminderCustomOffset =
+      GeneratedColumn<int>(
+          'deadline_date_reminder_custom_offset', aliasedName, true,
+          type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   late final GeneratedColumnWithTypeConverter<RecurrenceType, int>
       recurrenceType = GeneratedColumn<int>(
@@ -4272,6 +4286,8 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
         order,
         plannedDateReminderTime,
         deadlineDateReminderTime,
+        plannedDateReminderCustomOffset,
+        deadlineDateReminderCustomOffset,
         recurrenceType,
         recurrenceInterval,
         recurrenceDaysString,
@@ -4361,6 +4377,20 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       context.handle(
           _orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
     }
+    if (data.containsKey('planned_date_reminder_custom_offset')) {
+      context.handle(
+          _plannedDateReminderCustomOffsetMeta,
+          plannedDateReminderCustomOffset.isAcceptableOrUnknown(
+              data['planned_date_reminder_custom_offset']!,
+              _plannedDateReminderCustomOffsetMeta));
+    }
+    if (data.containsKey('deadline_date_reminder_custom_offset')) {
+      context.handle(
+          _deadlineDateReminderCustomOffsetMeta,
+          deadlineDateReminderCustomOffset.isAcceptableOrUnknown(
+              data['deadline_date_reminder_custom_offset']!,
+              _deadlineDateReminderCustomOffsetMeta));
+    }
     if (data.containsKey('recurrence_interval')) {
       context.handle(
           _recurrenceIntervalMeta,
@@ -4440,6 +4470,12 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
           .$converterdeadlineDateReminderTime
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
               data['${effectivePrefix}deadline_date_reminder_time'])!),
+      plannedDateReminderCustomOffset: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}planned_date_reminder_custom_offset']),
+      deadlineDateReminderCustomOffset: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}deadline_date_reminder_custom_offset']),
       recurrenceType: $TaskTableTable.$converterrecurrenceType.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.int, data['${effectivePrefix}recurrence_type'])!),
@@ -4495,6 +4531,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<double> order;
   final Value<ReminderTime> plannedDateReminderTime;
   final Value<ReminderTime> deadlineDateReminderTime;
+  final Value<int?> plannedDateReminderCustomOffset;
+  final Value<int?> deadlineDateReminderCustomOffset;
   final Value<RecurrenceType> recurrenceType;
   final Value<int?> recurrenceInterval;
   final Value<String?> recurrenceDaysString;
@@ -4519,6 +4557,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.order = const Value.absent(),
     this.plannedDateReminderTime = const Value.absent(),
     this.deadlineDateReminderTime = const Value.absent(),
+    this.plannedDateReminderCustomOffset = const Value.absent(),
+    this.deadlineDateReminderCustomOffset = const Value.absent(),
     this.recurrenceType = const Value.absent(),
     this.recurrenceInterval = const Value.absent(),
     this.recurrenceDaysString = const Value.absent(),
@@ -4544,6 +4584,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.order = const Value.absent(),
     this.plannedDateReminderTime = const Value.absent(),
     this.deadlineDateReminderTime = const Value.absent(),
+    this.plannedDateReminderCustomOffset = const Value.absent(),
+    this.deadlineDateReminderCustomOffset = const Value.absent(),
     this.recurrenceType = const Value.absent(),
     this.recurrenceInterval = const Value.absent(),
     this.recurrenceDaysString = const Value.absent(),
@@ -4571,6 +4613,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     Expression<double>? order,
     Expression<int>? plannedDateReminderTime,
     Expression<int>? deadlineDateReminderTime,
+    Expression<int>? plannedDateReminderCustomOffset,
+    Expression<int>? deadlineDateReminderCustomOffset,
     Expression<int>? recurrenceType,
     Expression<int>? recurrenceInterval,
     Expression<String>? recurrenceDaysString,
@@ -4598,6 +4642,11 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
         'planned_date_reminder_time': plannedDateReminderTime,
       if (deadlineDateReminderTime != null)
         'deadline_date_reminder_time': deadlineDateReminderTime,
+      if (plannedDateReminderCustomOffset != null)
+        'planned_date_reminder_custom_offset': plannedDateReminderCustomOffset,
+      if (deadlineDateReminderCustomOffset != null)
+        'deadline_date_reminder_custom_offset':
+            deadlineDateReminderCustomOffset,
       if (recurrenceType != null) 'recurrence_type': recurrenceType,
       if (recurrenceInterval != null) 'recurrence_interval': recurrenceInterval,
       if (recurrenceDaysString != null)
@@ -4628,6 +4677,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       Value<double>? order,
       Value<ReminderTime>? plannedDateReminderTime,
       Value<ReminderTime>? deadlineDateReminderTime,
+      Value<int?>? plannedDateReminderCustomOffset,
+      Value<int?>? deadlineDateReminderCustomOffset,
       Value<RecurrenceType>? recurrenceType,
       Value<int?>? recurrenceInterval,
       Value<String?>? recurrenceDaysString,
@@ -4654,6 +4705,10 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime:
           deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      plannedDateReminderCustomOffset: plannedDateReminderCustomOffset ??
+          this.plannedDateReminderCustomOffset,
+      deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset ??
+          this.deadlineDateReminderCustomOffset,
       recurrenceType: recurrenceType ?? this.recurrenceType,
       recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
       recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
@@ -4718,6 +4773,14 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           .$converterdeadlineDateReminderTime
           .toSql(deadlineDateReminderTime.value));
     }
+    if (plannedDateReminderCustomOffset.present) {
+      map['planned_date_reminder_custom_offset'] =
+          Variable<int>(plannedDateReminderCustomOffset.value);
+    }
+    if (deadlineDateReminderCustomOffset.present) {
+      map['deadline_date_reminder_custom_offset'] =
+          Variable<int>(deadlineDateReminderCustomOffset.value);
+    }
     if (recurrenceType.present) {
       map['recurrence_type'] = Variable<int>(
           $TaskTableTable.$converterrecurrenceType.toSql(recurrenceType.value));
@@ -4766,6 +4829,10 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           ..write('order: $order, ')
           ..write('plannedDateReminderTime: $plannedDateReminderTime, ')
           ..write('deadlineDateReminderTime: $deadlineDateReminderTime, ')
+          ..write(
+              'plannedDateReminderCustomOffset: $plannedDateReminderCustomOffset, ')
+          ..write(
+              'deadlineDateReminderCustomOffset: $deadlineDateReminderCustomOffset, ')
           ..write('recurrenceType: $recurrenceType, ')
           ..write('recurrenceInterval: $recurrenceInterval, ')
           ..write('recurrenceDaysString: $recurrenceDaysString, ')
@@ -8686,6 +8753,8 @@ typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   Value<double> order,
   Value<ReminderTime> plannedDateReminderTime,
   Value<ReminderTime> deadlineDateReminderTime,
+  Value<int?> plannedDateReminderCustomOffset,
+  Value<int?> deadlineDateReminderCustomOffset,
   Value<RecurrenceType> recurrenceType,
   Value<int?> recurrenceInterval,
   Value<String?> recurrenceDaysString,
@@ -8711,6 +8780,8 @@ typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<double> order,
   Value<ReminderTime> plannedDateReminderTime,
   Value<ReminderTime> deadlineDateReminderTime,
+  Value<int?> plannedDateReminderCustomOffset,
+  Value<int?> deadlineDateReminderCustomOffset,
   Value<RecurrenceType> recurrenceType,
   Value<int?> recurrenceInterval,
   Value<String?> recurrenceDaysString,
@@ -8780,6 +8851,14 @@ class $$TaskTableTableFilterComposer
       get deadlineDateReminderTime => $composableBuilder(
           column: $table.deadlineDateReminderTime,
           builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get plannedDateReminderCustomOffset => $composableBuilder(
+      column: $table.plannedDateReminderCustomOffset,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get deadlineDateReminderCustomOffset => $composableBuilder(
+      column: $table.deadlineDateReminderCustomOffset,
+      builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<RecurrenceType, RecurrenceType, int>
       get recurrenceType => $composableBuilder(
@@ -8871,6 +8950,16 @@ class $$TaskTableTableOrderingComposer
       column: $table.deadlineDateReminderTime,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get plannedDateReminderCustomOffset =>
+      $composableBuilder(
+          column: $table.plannedDateReminderCustomOffset,
+          builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get deadlineDateReminderCustomOffset =>
+      $composableBuilder(
+          column: $table.deadlineDateReminderCustomOffset,
+          builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get recurrenceType => $composableBuilder(
       column: $table.recurrenceType,
       builder: (column) => ColumnOrderings(column));
@@ -8956,6 +9045,16 @@ class $$TaskTableTableAnnotationComposer
       get deadlineDateReminderTime => $composableBuilder(
           column: $table.deadlineDateReminderTime, builder: (column) => column);
 
+  GeneratedColumn<int> get plannedDateReminderCustomOffset =>
+      $composableBuilder(
+          column: $table.plannedDateReminderCustomOffset,
+          builder: (column) => column);
+
+  GeneratedColumn<int> get deadlineDateReminderCustomOffset =>
+      $composableBuilder(
+          column: $table.deadlineDateReminderCustomOffset,
+          builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<RecurrenceType, int> get recurrenceType =>
       $composableBuilder(
           column: $table.recurrenceType, builder: (column) => column);
@@ -9017,6 +9116,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<double> order = const Value.absent(),
             Value<ReminderTime> plannedDateReminderTime = const Value.absent(),
             Value<ReminderTime> deadlineDateReminderTime = const Value.absent(),
+            Value<int?> plannedDateReminderCustomOffset = const Value.absent(),
+            Value<int?> deadlineDateReminderCustomOffset = const Value.absent(),
             Value<RecurrenceType> recurrenceType = const Value.absent(),
             Value<int?> recurrenceInterval = const Value.absent(),
             Value<String?> recurrenceDaysString = const Value.absent(),
@@ -9042,6 +9143,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             order: order,
             plannedDateReminderTime: plannedDateReminderTime,
             deadlineDateReminderTime: deadlineDateReminderTime,
+            plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
+            deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset,
             recurrenceType: recurrenceType,
             recurrenceInterval: recurrenceInterval,
             recurrenceDaysString: recurrenceDaysString,
@@ -9067,6 +9170,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<double> order = const Value.absent(),
             Value<ReminderTime> plannedDateReminderTime = const Value.absent(),
             Value<ReminderTime> deadlineDateReminderTime = const Value.absent(),
+            Value<int?> plannedDateReminderCustomOffset = const Value.absent(),
+            Value<int?> deadlineDateReminderCustomOffset = const Value.absent(),
             Value<RecurrenceType> recurrenceType = const Value.absent(),
             Value<int?> recurrenceInterval = const Value.absent(),
             Value<String?> recurrenceDaysString = const Value.absent(),
@@ -9092,6 +9197,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             order: order,
             plannedDateReminderTime: plannedDateReminderTime,
             deadlineDateReminderTime: deadlineDateReminderTime,
+            plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
+            deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset,
             recurrenceType: recurrenceType,
             recurrenceInterval: recurrenceInterval,
             recurrenceDaysString: recurrenceDaysString,
