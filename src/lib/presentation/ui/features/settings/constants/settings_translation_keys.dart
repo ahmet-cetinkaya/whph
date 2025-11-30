@@ -36,6 +36,12 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String enableStartupError = 'settings.startup.enable_error';
   static const String disableStartupError = 'settings.startup.disable_error';
 
+  // Delete database
+  static const String resetDatabaseDescription = 'settings.reset_database.description';
+  static const String resetDatabaseTitle = 'settings.reset_database.title';
+  static const String resetDatabaseConfirmationMessage = 'settings.reset_database.confirmation_message';
+  static const String resetDatabaseSuccess = 'settings.reset_database.success';
+
   // Settings Page
   static const String settingsTitle = 'settings.title';
   static const String syncDevicesTitle = 'settings.sync_devices.title';

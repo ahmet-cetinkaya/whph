@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/settings/components/debug_logs_settings.dart';
+import 'package:whph/presentation/ui/features/settings/components/reset_database_settings_tile.dart';
 import 'package:whph/presentation/ui/features/settings/components/tasks_tile.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -40,11 +41,9 @@ class AdvancedSettingsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 8.0,
                   children: [
-                    // Tasks Settings
                     const TasksTile(),
-
-                    // Debug Logs Settings
                     const DebugLogsSettings(),
+                    ResetDatabaseSettingsTile(translationService: translationService),
                   ],
                 ),
               ),

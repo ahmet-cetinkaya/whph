@@ -28,6 +28,8 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
+import 'package:whph/core/application/features/settings/commands/reset_database_command.dart';
+import 'package:whph/core/application/features/settings/services/abstraction/i_reset_database_service.dart';
 
 void registerSettingsFeature(
   IContainer container,
@@ -112,6 +114,11 @@ void registerSettingsFeature(
         noteTagRepository: noteTagRepository,
         migrationService: container.resolve<IImportDataMigrationService>(),
         compressionService: container.resolve<ICompressionService>(),
+      ),
+    )
+    ..registerHandler<ResetDatabaseCommand, ResetDatabaseCommandResponse, ResetDatabaseCommandHandler>(
+      () => ResetDatabaseCommandHandler(
+        resetDatabaseService: container.resolve<IResetDatabaseService>(),
       ),
     );
 }

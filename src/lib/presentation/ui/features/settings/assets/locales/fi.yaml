@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: Peruuta
-
 settings:
   about:
     title: Tietoja
@@ -14,7 +13,9 @@ settings:
     csv_description: Voit käyttää tätä Excelissä ja vastaavissa sovelluksissa.
     error: Vienti epäonnistui
     in_progress: Viedään tietoja, odota hetki...
-    json_description: Vie tiedot luettavassa JSON-muodossa kehitystä ja vianetsintää varten.
+    json_description:
+      Vie tiedot luettavassa JSON-muodossa kehitystä ja vianetsintää
+      varten.
     select_directory: Valitse vientikansio
     select_path: Valitse tallennuspaikka
     select_type: Valitse vientimuoto
@@ -27,7 +28,9 @@ settings:
     error: Tuonti epäonnistui
     error.entity: Virhe tyypissä
     in_progress: Tuodaan tietoja, odota hetki...
-    migration_failed: Tuonti epäonnistui. Varmista, että sovelluksen uusin versio on asennettu.
+    migration_failed:
+      Tuonti epäonnistui. Varmista, että sovelluksen uusin versio
+      on asennettu.
     select_file: Valitse tiedosto
     strategy:
       merge: Yhdistä olemassa oleviin tietoihin
@@ -63,19 +66,28 @@ settings:
     some_sounds_enabled: Osa äänistä käytössä
   permissions:
     app_usage:
-      description: Tämä sovellus tarvitsee luvan sovelluksen käyttötilastoihin pääsyyn sovelluksen käyttökuvioiden tarkka seuraamiseksi.
+      description:
+        Tämä sovellus tarvitsee luvan sovelluksen käyttötilastoihin pääsyyn
+        sovelluksen käyttökuvioiden tarkka seuraamiseksi.
       instructions: "Ohjeet:"
       steps:
         step1: Paina "Avaa Asetukset" -painiketta
-        step2: Käytön sallimisen asetusten näytöllä, joka avautuu, etsi "{appName}" luettelosta
+        step2:
+          Käytön sallimisen asetusten näytöllä, joka avautuu, etsi "{appName}"
+          luettelosta
         step3: Napauta "{appName}"
         step4: Ota käyttöön "Salli käyttöoikeus" tai kytke kytkin PÄÄLLÄ
       title: Sovelluksen käyttöoikeus
     battery_optimization:
-      description: Luotettavien ilmoitusten vuoksi tämä sovellus on suljettava pois akun optimoinnista. Ilman tätä muistutukset voivat viivästyä tai jäädä toimittamatta kokonaan.
+      description:
+        Luotettavien ilmoitusten vuoksi tämä sovellus on suljettava pois
+        akun optimoinnista. Ilman tätä muistutukset voivat viivästyä tai jäädä toimittamatta
+        kokonaan.
       importance: Tämän asetuksen sijainti voi vaihdella riippuen laitteen valmistajasta.
       instructions: "Ohjeet:"
-      not_disabled: Akun optimointi on edelleen käytössä. Anna lupa, jotta asiaankuuluva toiminto toimii oikein.
+      not_disabled:
+        Akun optimointi on edelleen käytössä. Anna lupa, jotta asiaankuuluva
+        toiminto toimii oikein.
       steps:
         step1: Paina "Avaa Asetukset" -painiketta
         step2: Asetusten näytöllä, joka avautuu, etsi "{appName}"
@@ -85,20 +97,26 @@ settings:
         step6: Valitse "Rajoittamaton"
       title: Akun optimointi
     exact_alarm:
-      description: Android 12+ vaatii luvan tarkkojen hälytysten ajoitukseen, jotta muistutukset toimivat oikein.
+      description:
+        Android 12+ vaatii luvan tarkkojen hälytysten ajoitukseen, jotta
+        muistutukset toimivat oikein.
       instructions: "Ohjeet:"
       steps:
         android12plus:
           step2: Siirry Hälytykset & muistutukset ja ota lupa käyttöön
           step3: Vahvista tarkka hälytyslupa
         step1: Paina "Avaa Asetukset" -painiketta
-        step2: 'Avoimella {appName}-sovelluksen Hälytykset & muistutukset -sivulla ota käyttöön "Salli hälytysten ja muistutusten asettaminen"'
+        step2:
+          Avoimella {appName}-sovelluksen Hälytykset & muistutukset -sivulla
+          ota käyttöön "Salli hälytysten ja muistutusten asettaminen"
       title: Tarkka hälytyslupa
     fix_it: Korjaa se
     granted: Lupa annettu
     instructions: Ohjeet
     notification:
-      description: Ilmoituslupa on vaadittu muistutusten vastaanottamiseen. Ilman tätä lupaa et saa ilmoituksia.
+      description:
+        Ilmoituslupa on vaadittu muistutusten vastaanottamiseen. Ilman
+        tätä lupaa et saa ilmoituksia.
       instructions: "Ohjeet:"
       steps:
         android:
@@ -112,69 +130,101 @@ settings:
     open_terminal: Avaa terminaali
     firewall:
       title: Palomuurin lupa
-      description: Salli WHPH:n kommunikoida {platform}-palomuurin läpi portissa 44040 laitesynkronointia varten.
-      dialog_description: WHPH tarvitsee palomuurin lupaa, jotta muut laitteet voivat muodostaa yhteyden synkronointia varten. Seuraa alla olevia komentoja määrittääksesi {platform}-palomuurin. Löydät nämä vaiheet myös ohjevalikosta.
+      description:
+        Salli WHPH:n kommunikoida {platform}-palomuurin läpi portissa 44040
+        laitesynkronointia varten.
+      dialog_description:
+        WHPH tarvitsee palomuurin lupaa, jotta muut laitteet voivat
+        muodostaa yhteyden synkronointia varten. Seuraa alla olevia komentoja määrittääksesi
+        {platform}-palomuurin. Löydät nämä vaiheet myös ohjevalikosta.
       dialog_info_text: "Huomautus: Löydät nämä vaiheet myös ohjevalikosta."
-      linux_manual_confirmation_button: "Olen määrittänyt"
+      linux_manual_confirmation_button: Olen määrittänyt
       save_confirmation_error: Palomuurin vahvistusasetuksen tallentaminen epäonnistui
       rule_added_success: Palomuurisääntö lisätty onnistuneesti
-      rule_add_error: Palomuurisäännön lisääminen epäonnistui. Kokeile manuaalisia vaiheita.
-      add_rule_button: "Lisää palomuurisääntö"
-      windows_auto_description: "Napsauta 'Lisää palomuurisääntö' lisätäksesi palomuurisäännön automaattisesti UAC-lupapyynnöllä. Jos haluat lisätä manuaalisesti, seuraa alla olevia vaiheita:"
+      rule_add_error:
+        Palomuurisäännön lisääminen epäonnistui. Kokeile manuaalisia
+        vaiheita.
+      add_rule_button: Lisää palomuurisääntö
+      windows_auto_description:
+        "Napsauta 'Lisää palomuurisääntö' lisätäksesi palomuurisäännön
+        automaattisesti UAC-lupapyynnöllä. Jos haluat lisätä manuaalisesti, seuraa
+        alla olevia vaiheita:"
       instructions:
         linux:
-          step1: "Avaa pääte"
+          step1: Avaa pääte
           step2: "Tarkista palomuurin tila:"
           step3: "Lisää palomuurisääntö (jos UFW on aktiivinen):"
           step4: "Vahvista, että sääntö lisättiin:"
           method_terminal_title: "Menetelmä 1: Päätteen komento"
         windows:
-          step1: "Avaa Windows Defender -palomuuri Ohjauspaneelista"
-          step2: "Napsauta Vasemmassa reunassa Lisäasetukset"
-          step3: "Vasemmassa ruudussa napsauta Saapuvat säännöt"
-          step4: "Oikeassa ruudussa napsauta Uusi sääntö..."
-          step5: "Valitse Portti ja napsauta Seuraava"
-          step6: "Valitse TCP ja syötä 44040 tiettyjen paikallisten porttien kenttään"
-          step7: "Valitse Salli yhteys ja napsauta Seuraava"
-          step8: "Valitse kaikki profiilit (Toimialue, Yksityinen, Julkinen) ja napsauta Seuraava"
-          step9: "Anna nimeksi esimerkiksi WHPH Sync Port 44040 ja napsauta Valmis"
+          step1: Avaa Windows Defender -palomuuri Ohjauspaneelista
+          step2: Napsauta Vasemmassa reunassa Lisäasetukset
+          step3: Vasemmassa ruudussa napsauta Saapuvat säännöt
+          step4: Oikeassa ruudussa napsauta Uusi sääntö...
+          step5: Valitse Portti ja napsauta Seuraava
+          step6: Valitse TCP ja syötä 44040 tiettyjen paikallisten porttien kenttään
+          step7: Valitse Salli yhteys ja napsauta Seuraava
+          step8:
+            Valitse kaikki profiilit (Toimialue, Yksityinen, Julkinen) ja napsauta
+            Seuraava
+          step9: Anna nimeksi esimerkiksi WHPH Sync Port 44040 ja napsauta Valmis
           method_gui_title: "Menetelmä 1: Windowsin palomuurin graafinen käyttöliittymä"
           method_command_title: "Menetelmä 2: Komentokehote"
-          step_open_defender: "Avaa Windows Defender -palomuuri → Lisäasetukset"
-          step_create_inbound_rule: 'Luo saapuva sääntö: Saapuvat säännöt → Uusi sääntö → Portti → TCP → 44040 → Salli → Kaikki profiilit → Nimi: "WHPH Sync (Saapuva)"'
-          step_create_outbound_rule: 'Luo lähtevä sääntö: Lähtevät säännöt → Uusi sääntö → Portti → TCP → 44040 → Salli → Kaikki profiilit → Nimi: "WHPH Sync (Lähtevä)"'
+          step_open_defender: Avaa Windows Defender -palomuuri → Lisäasetukset
+          step_create_inbound_rule:
+            'Luo saapuva sääntö: Saapuvat säännöt → Uusi sääntö
+            → Portti → TCP → 44040 → Salli → Kaikki profiilit → Nimi: "WHPH Sync (Saapuva)"'
+          step_create_outbound_rule:
+            'Luo lähtevä sääntö: Lähtevät säännöt → Uusi
+            sääntö → Portti → TCP → 44040 → Salli → Kaikki profiilit → Nimi: "WHPH
+            Sync (Lähtevä)"'
           alternative_command_prompt:
             title: "Vaihtoehtoinen: Käytä komentokehotetta"
             steps:
-              cmd_step1: "Avaa komentokehote järjestelmänvalvojana"
+              cmd_step1: Avaa komentokehote järjestelmänvalvojana
               cmd_step2: "Lisää palomuurisääntö:"
-        step_open_command_prompt: "1. Avaa komentokehote järjestelmänvalvojana"
+        step_open_command_prompt: 1. Avaa komentokehote järjestelmänvalvojana
         step_run_commands: "2. Suorita nämä komennot:"
-        step_open_terminal: "1. Avaa pääte"
+        step_open_terminal: 1. Avaa pääte
         step_run_command: "2. Suorita tämä komento (vaatii sudo-oikeudet):"
-        step_click_confirmation: "3. Komennon suorittamisen jälkeen napsauta alla olevaa vahvistuspainiketta"
-      manual_configure_instruction: "Määritä palomuurisäännöt manuaalisesti synkronointia varten (vaatii järjestelmänvalvojan oikeudet):"
+        step_click_confirmation:
+          3. Komennon suorittamisen jälkeen napsauta alla olevaa
+          vahvistuspainiketta
+      manual_configure_instruction:
+        "Määritä palomuurisäännöt manuaalisesti synkronointia
+        varten (vaatii järjestelmänvalvojan oikeudet):"
     startup:
-      description: Sovelluksen automaattinen käynnistyminen laitteen kanssa vaatii auto-käynnistysluvan. Tämä varmistaa, että muistutukset ja ilmoitukset toimivat oikein jopa laitteen uudelleenkäynnistyksen jälkeen.
-      importance: Auto-käynnistysasetuksen sijainti vaihtelee tai voi puuttua riippuen laitteen valmistajasta.
+      description:
+        Sovelluksen automaattinen käynnistyminen laitteen kanssa vaatii
+        auto-käynnistysluvan. Tämä varmistaa, että muistutukset ja ilmoitukset toimivat
+        oikein jopa laitteen uudelleenkäynnistyksen jälkeen.
+      importance:
+        Auto-käynnistysasetuksen sijainti vaihtelee tai voi puuttua riippuen
+        laitteen valmistajasta.
       instructions: "Ohjeet:"
       steps:
         step1: Paina "Avaa Asetukset" -painiketta
-        step2: 'Asetusten näytöllä, joka avautuu, etsi "{appName}"-sovellus'
-        step3: 'Ota käyttöön "Auto-käynnistys", "Autorun", "Käynnistä käynnistyksessä" tai vastaava lupa'
+        step2: Asetusten näytöllä, joka avautuu, etsi "{appName}"-sovellus
+        step3:
+          Ota käyttöön "Auto-käynnistys", "Autorun", "Käynnistä käynnistyksessä"
+          tai vastaava lupa
       title: Auto-käynnistyslupa
     title: Luvat
   startup:
     disable_error: Käynnistysasetuksen poistaminen käytöstä epäonnistui
     enable_error: Käynnistysasetuksen käyttöönotto epäonnistui
-    subtitle: Napauta avataksesi järjestelmäasetukset ja ottaa käyttöön auto-käynnistyslupa sovellukselle
+    subtitle:
+      Napauta avataksesi järjestelmäasetukset ja ottaa käyttöön auto-käynnistyslupa
+      sovellukselle
     title: Käynnistys käynnistyksessä
   sync_devices:
     title: Synkronoi laitteet
   title: Asetukset
   backup:
     title: Varmuuskopio
-    description: Luo ja palauta pakatut varmuuskopiot sovelluksesi tiedoista käyttämällä turvallista .whph-muotoa
+    description:
+      Luo ja palauta pakatut varmuuskopiot sovelluksesi tiedoista käyttämällä
+      turvallista .whph-muotoa
     export:
       title: Luo varmuuskopio
       description: Vie kaikki tietosi pakattuun .whph-varmuuskopiotiedostoon
@@ -212,7 +262,9 @@ settings:
         description: Seuraa järjestelmän teema-asetuksia
     dynamic_accent:
       title: Dynaaminen korostusväri
-      description: Jos järjestelmäsi tukee sitä, pääväri mukautuu järjestelmän dynaamisen väriskaalan mukaan
+      description:
+        Jos järjestelmäsi tukee sitä, pääväri mukautuu järjestelmän dynaamisen
+        väriskaalan mukaan
       feature: Dynaaminen
     custom_accent:
       title: Mukautettu korostusväri
@@ -221,7 +273,9 @@ settings:
     error: Teema-asetusten lataus epäonnistui
   ui_density:
     title: Tiheys
-    description: Säädä tekstin ja käyttöliittymäelementtien kokoa parantaaksesi luettavuutta korkean DPI:n näytöillä
+    description:
+      Säädä tekstin ja käyttöliittymäelementtien kokoa parantaaksesi luettavuutta
+      korkean DPI:n näytöillä
     compact: Kompakti
     normal: Normaali
     large: Suuri
@@ -232,7 +286,9 @@ settings:
     description: Lisäasetukset ja kehittäjätyökalut
   debug_logs:
     title: Virheenkorjauslokit
-    description: Ota käyttöön yksityiskohtainen lokitiedostoon kirjaaminen vianmääritystä ja tukea varten
+    description:
+      Ota käyttöön yksityiskohtainen lokitiedostoon kirjaaminen vianmääritystä
+      ja tukea varten
     load_settings_error: Virhe ladattaessa virheenkorjauslokien asetuksia
     update_settings_error: Virhe päivitettäessä virheenkorjauslokien asetuksia
     view:
@@ -240,22 +296,30 @@ settings:
       description: Näytä ja vie nykyiset virheenkorjauslokit
     page:
       title: Virheenkorjauslokit
-      description: Näytä nykyiset virheenkorjauslokimerkinnät. Lokit tyhjennetään ja kierrätetään automaattisesti liiallisen levynkäytön estämiseksi.
+      description:
+        Näytä nykyiset virheenkorjauslokimerkinnät. Lokit tyhjennetään
+        ja kierrätetään automaattisesti liiallisen levynkäytön estämiseksi.
       content: Lokin sisältö
       refresh: Päivitä lokit
       copy: Kopioi leikepöydälle
       save_as: Tallenna tiedostona
       copied: Virheenkorjauslokit kopioitu leikepöydälle
       load_error: Virhe virheenkorjauslokien lataamisessa
-      not_enabled: Virheenkorjauslokitus ei ole käytössä. Ota se käyttöön lisäasetuksista aloittaaksesi lokien keräämisen.
-      no_file: Virheenkorjauslokitiedostoa ei löytynyt. Lokit luodaan virheenkorjauslokituksen käyttöönoton ja sovelluksen lokimerkintöjen luomisen jälkeen.
+      not_enabled:
+        Virheenkorjauslokitus ei ole käytössä. Ota se käyttöön lisäasetuksista
+        aloittaaksesi lokien keräämisen.
+      no_file:
+        Virheenkorjauslokitiedostoa ei löytynyt. Lokit luodaan virheenkorjauslokituksen
+        käyttöönoton ja sovelluksen lokimerkintöjen luomisen jälkeen.
       empty: Virheenkorjauslokitiedosto on tyhjä. Lokimerkintöjä ei ole vielä tallennettu.
     export:
       dialog_title: Vie virheenkorjauslokit
       error: Virhe lokien viemisessä
       success: Lokitiedosto viety onnistuneesti
       no_logs_available: Ei lokeja saatavilla vietäväksi. Luo ensin joitakin lokeja.
-      file_not_exist: Lokitiedostoa ei ole olemassa. Ota virheenkorjausloki käyttöön ja luo lokeja.
+      file_not_exist:
+        Lokitiedostoa ei ole olemassa. Ota virheenkorjausloki käyttöön
+        ja luo lokeja.
   task:
     title: Tehtäväasetukset
     preferences:
@@ -263,9 +327,21 @@ settings:
       description: Mukauta tehtävien toimintaa ja oletusasetuksia
     default_estimated_time:
       title: Oletusarvioitu aika
-      description: Aseta oletusarvioitu aika uusille tehtäville. Voit poistaa tämän käytöstä välttääksesi automaattisia aikaarvioita.
+      description:
+        Aseta oletusarvioitu aika uusille tehtäville. Voit poistaa tämän
+        käytöstä välttääksesi automaattisia aikaarvioita.
       disabled: Poissa käytöstä
       minutes: "{minutes} minuuttia"
       load_error: Virhe oletusarvioidun ajan lataamisessa
       save_error: Virhe oletusarvioidun ajan tallentamisessa
       key_not_found: Oletusarvioidun ajan avainta ei löytynyt
+  reset_database:
+    title: Nollaa Tietokanta
+    description:
+      Poista kaikki tiedot ja nollaa sovellus alkuperäiseen tilaaneseen.
+      Tätä toimintoa ei voi kumota.
+    confirmation_message:
+      Oletko varma, että haluat nollata tietokannan? Tämä poistaa
+      pysyvästi kaikki tehtäväsi, tapasi, muistiinpanosi ja asetuksesi. Tätä toimintoa
+      ei voi kumota.
+    success: Tietokanta on nollattu onnistuneesti.

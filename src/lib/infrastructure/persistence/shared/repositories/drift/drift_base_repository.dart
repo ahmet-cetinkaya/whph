@@ -10,11 +10,12 @@ import 'package:whph/core/shared/utils/logger.dart';
 abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {
   @protected
-  final AppDatabase database;
+  AppDatabase get database => AppDatabase.instance();
+
   @protected
   final TableInfo<TTable, TEntity> table;
 
-  DriftBaseRepository(this.database, this.table);
+  DriftBaseRepository(AppDatabase _, this.table);
 
   Insertable<TEntity> toCompanion(TEntity entity);
   Expression<TEntityId> getPrimaryKey(TTable t);

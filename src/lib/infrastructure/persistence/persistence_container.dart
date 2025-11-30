@@ -36,10 +36,14 @@ import 'package:whph/infrastructure/persistence/features/tasks/drift_task_reposi
 import 'package:whph/infrastructure/persistence/features/tasks/drift_task_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/drift_task_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/settings/services/abstraction/i_reset_database_service.dart';
+import 'package:whph/infrastructure/persistence/features/settings/reset_database_service.dart';
 
 void registerPersistence(IContainer container) {
   // Initialize the database with the container for dependency injection
-  AppDatabase.instance(container);
+  // Initialize the database with the container for dependency injection
+  final appDatabase = AppDatabase.instance(container);
+  container.registerSingleton<AppDatabase>((_) => appDatabase);
 
   container.registerSingleton<IAppUsageIgnoreRuleRepository>((_) => DriftAppUsageIgnoreRuleRepository());
   container.registerSingleton<IAppUsageRepository>((_) => DriftAppUsageRepository());
@@ -59,4 +63,8 @@ void registerPersistence(IContainer container) {
   container.registerSingleton<ITaskRepository>((_) => DriftTaskRepository());
   container.registerSingleton<ITaskTagRepository>((_) => DriftTaskTagRepository());
   container.registerSingleton<ITaskTimeRecordRepository>((_) => DriftTaskTimeRecordRepository());
+  container.registerSingleton<IResetDatabaseService>((_) {
+    final appDatabase = container.resolve<AppDatabase>();
+    return ResetDatabaseService(appDatabase: appDatabase);
+  });
 }

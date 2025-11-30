@@ -287,6 +287,54 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
+  /// Resets the database by deleting the file and re-initializing
+  /// This is a destructive operation and should be used with caution
+  Future<void> resetDatabase() async {
+    if (isTestMode) {
+      debugPrint('Database reset not available in test mode');
+      return;
+    }
+
+    try {
+      debugPrint('🗑️ Starting database reset...');
+
+      // Close the connection first
+      await close();
+
+      final dbFolder = await _getApplicationDirectory();
+      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+
+      if (await dbFile.exists()) {
+        await dbFile.delete();
+        debugPrint('✅ Database file deleted: ${dbFile.path}');
+      }
+
+      // Also delete any journal/wal files
+      final journalFile = File('${dbFile.path}-journal');
+      if (await journalFile.exists()) {
+        await journalFile.delete();
+      }
+
+      final walFile = File('${dbFile.path}-wal');
+      if (await walFile.exists()) {
+        await walFile.delete();
+      }
+
+      final shmFile = File('${dbFile.path}-shm');
+      if (await shmFile.exists()) {
+        await shmFile.delete();
+      }
+
+      // Reset the instance to force re-initialization on next access
+      _instance = null;
+
+      debugPrint('✅ Database reset completed successfully');
+    } catch (e) {
+      debugPrint('❌ Failed to reset database: $e');
+      throw StateError('Failed to reset database: $e');
+    }
+  }
+
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(

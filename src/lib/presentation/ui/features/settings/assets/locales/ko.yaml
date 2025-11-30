@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: 취소
-
 settings:
   about:
     title: 앱 정보
@@ -67,20 +66,22 @@ settings:
       instructions: "지침:"
       steps:
         step1: '"설정 열기" 버튼을 누르세요'
-        step2: '열린 사용 액세스 설정 화면에서 목록에서 "{appName}"을 찾으세요'
+        step2: 열린 사용 액세스 설정 화면에서 목록에서 "{appName}"을 찾으세요
         step3: '"{appName}"을 탭하세요'
         step4: '"사용 액세스 허용"을 활성화하거나 스위치를 ON으로 전환하세요'
       title: 앱 사용 권한
     battery_optimization:
-      description: 신뢰할 수 있는 알림을 위해 이 앱을 배터리 최적화에서 제외해야 합니다. 이것이 없으면 알림이 지연되거나 전혀 전달되지 않을 수 있습니다.
+      description:
+        신뢰할 수 있는 알림을 위해 이 앱을 배터리 최적화에서 제외해야 합니다. 이것이 없으면 알림이 지연되거나 전혀 전달되지
+        않을 수 있습니다.
       importance: 이 설정의 위치는 기기 제조업체에 따라 다를 수 있습니다.
       instructions: "지침:"
       not_disabled: 배터리 최적화가 여전히 활성화되어 있습니다. 관련 기능이 올바르게 작동하도록 권한을 제공하세요.
       steps:
         step1: '"설정 열기" 버튼을 누르세요'
-        step2: '열린 설정 화면에서 "{appName}"을 찾으세요'
+        step2: 열린 설정 화면에서 "{appName}"을 찾으세요
         step3: '"{appName}"을 탭하세요'
-        step4: '열린 페이지에서 "백그라운드 사용 허용"이 활성화되어 있는지 확인하세요'
+        step4: 열린 페이지에서 "백그라운드 사용 허용"이 활성화되어 있는지 확인하세요
         step5: '"백그라운드 사용 허용"을 탭하세요'
         step6: '"무제한"을 선택하세요'
       title: 배터리 최적화
@@ -92,7 +93,7 @@ settings:
           step2: 알람 및 알림으로 이동하여 권한을 활성화하세요
           step3: 정확한 알람 권한을 확인하세요
         step1: '"설정 열기" 버튼을 누르세요'
-        step2: '열린 {appName} 앱의 알람 및 알림 페이지에서 "알람 및 알림 설정 허용"을 활성화하세요'
+        step2: 열린 {appName} 앱의 알람 및 알림 페이지에서 "알람 및 알림 설정 허용"을 활성화하세요
       title: 정확한 알람 권한
     fix_it: 수정하기
     granted: 권한이 부여되었습니다
@@ -113,54 +114,64 @@ settings:
     firewall:
       title: 방화벽 권한
       description: 기기 동기화를 위해 WHPH가 {platform} 방화벽의 포트 44040을 통해 통신할 수 있도록 허용합니다.
-      dialog_description: WHPH는 동기화를 위해 다른 기기가 연결할 수 있도록 방화벽 권한이 필요합니다. 아래 명령에 따라 {platform} 방화벽을 설정하세요. 이 단계는 도움말 메뉴에서도 찾을 수 있습니다.
+      dialog_description:
+        WHPH는 동기화를 위해 다른 기기가 연결할 수 있도록 방화벽 권한이 필요합니다. 아래 명령에 따라
+        {platform} 방화벽을 설정하세요. 이 단계는 도움말 메뉴에서도 찾을 수 있습니다.
       dialog_info_text: "참고: 이 단계는 도움말 메뉴에서도 찾을 수 있습니다."
-      linux_manual_confirmation_button: "설정했습니다"
+      linux_manual_confirmation_button: 설정했습니다
       save_confirmation_error: 방화벽 확인 설정 저장에 실패했습니다
       rule_added_success: 방화벽 규칙이 성공적으로 추가되었습니다
       rule_add_error: 방화벽 규칙 추가에 실패했습니다. 수동 단계를 시도하세요.
-      add_rule_button: "방화벽 규칙 추가"
-      windows_auto_description: "UAC 권한 요청으로 방화벽 규칙을 자동으로 추가하려면 '방화벽 규칙 추가'를 클릭하세요. 수동으로 추가하려면 아래 단계를 따르세요:"
+      add_rule_button: 방화벽 규칙 추가
+      windows_auto_description:
+        "UAC 권한 요청으로 방화벽 규칙을 자동으로 추가하려면 '방화벽 규칙 추가'를 클릭하세요.
+        수동으로 추가하려면 아래 단계를 따르세요:"
       instructions:
         linux:
-          step1: "터미널 열기"
+          step1: 터미널 열기
           step2: "방화벽 상태 확인:"
           step3: "방화벽 규칙 추가 (UFW가 활성인 경우):"
           step4: "규칙이 추가되었는지 확인:"
           method_terminal_title: "방법 1: 터미널 명령"
         windows:
-          step1: "제어판에서 Windows Defender 방화벽 열기"
-          step2: "왼쪽의 고급 설정 클릭"
-          step3: "왼쪽 창에서 인바운드 규칙 클릭"
-          step4: "오른쪽 창에서 새 규칙... 클릭"
-          step5: "포트 선택 후 다음 클릭"
-          step6: "TCP 선택하고 특정 로컬 포트 필드에 44040 입력"
-          step7: "연결 허용 선택 후 다음 클릭"
-          step8: "모든 프로파일(도메인, 개인, 공용) 체크 후 다음 클릭"
-          step9: "WHPH Sync Port 44040과 같은 이름 입력 후 마침 클릭"
+          step1: 제어판에서 Windows Defender 방화벽 열기
+          step2: 왼쪽의 고급 설정 클릭
+          step3: 왼쪽 창에서 인바운드 규칙 클릭
+          step4: 오른쪽 창에서 새 규칙... 클릭
+          step5: 포트 선택 후 다음 클릭
+          step6: TCP 선택하고 특정 로컬 포트 필드에 44040 입력
+          step7: 연결 허용 선택 후 다음 클릭
+          step8: 모든 프로파일(도메인, 개인, 공용) 체크 후 다음 클릭
+          step9: WHPH Sync Port 44040과 같은 이름 입력 후 마침 클릭
           method_gui_title: "방법 1: Windows 방화벽 GUI"
           method_command_title: "방법 2: 명령 프롬프트"
-          step_open_defender: "Windows Defender 방화벽 → 고급 설정 열기"
-          step_create_inbound_rule: '인바운드 규칙 생성: 인바운드 규칙 → 새 규칙 → 포트 → TCP → 44040 → 허용 → 모든 프로파일 → 이름: "WHPH Sync (인바운드)"'
-          step_create_outbound_rule: '아웃바운드 규칙 생성: 아웃바운드 규칙 → 새 규칙 → 포트 → TCP → 44040 → 허용 → 모든 프로파일 → 이름: "WHPH Sync (아웃바운드)"'
+          step_open_defender: Windows Defender 방화벽 → 고급 설정 열기
+          step_create_inbound_rule:
+            '인바운드 규칙 생성: 인바운드 규칙 → 새 규칙 → 포트 → TCP → 44040
+            → 허용 → 모든 프로파일 → 이름: "WHPH Sync (인바운드)"'
+          step_create_outbound_rule:
+            '아웃바운드 규칙 생성: 아웃바운드 규칙 → 새 규칙 → 포트 → TCP → 44040
+            → 허용 → 모든 프로파일 → 이름: "WHPH Sync (아웃바운드)"'
           alternative_command_prompt:
             title: "대안: 명령 프롬프트 사용"
             steps:
-              cmd_step1: "관리자로 명령 프롬프트 열기"
+              cmd_step1: 관리자로 명령 프롬프트 열기
               cmd_step2: "방화벽 규칙 추가:"
-        step_open_command_prompt: "1. 관리자로 명령 프롬프트 열기"
+        step_open_command_prompt: 1. 관리자로 명령 프롬프트 열기
         step_run_commands: "2. 다음 명령어 실행:"
-        step_open_terminal: "1. 터미널 열기"
+        step_open_terminal: 1. 터미널 열기
         step_run_command: "2. 다음 명령어 실행 (sudo 권한 필요):"
-        step_click_confirmation: "3. 명령어 실행 후 아래 확인 버튼 클릭"
+        step_click_confirmation: 3. 명령어 실행 후 아래 확인 버튼 클릭
       manual_configure_instruction: "동기화를 위해 방화벽 규칙을 수동으로 구성 (관리자 권한 필요):"
     startup:
-      description: 앱이 기기와 함께 자동으로 시작되려면 자동 시작 권한이 필요합니다. 이렇게 하면 기기 재시작 후에도 알림과 알림이 제대로 작동합니다.
+      description:
+        앱이 기기와 함께 자동으로 시작되려면 자동 시작 권한이 필요합니다. 이렇게 하면 기기 재시작 후에도 알림과 알림이
+        제대로 작동합니다.
       importance: 자동 시작 설정 위치는 기기 제조업체에 따라 다르거나 존재하지 않을 수 있습니다.
       instructions: "지침:"
       steps:
         step1: '"설정 열기" 버튼을 누르세요'
-        step2: '열린 설정 화면에서 "{appName}" 앱을 찾으세요'
+        step2: 열린 설정 화면에서 "{appName}" 앱을 찾으세요
         step3: '"자동 시작", "자동 실행", "부팅 시 시작" 또는 유사한 권한을 활성화하세요'
       title: 자동 시작 권한
     title: 권한
@@ -219,7 +230,6 @@ settings:
       description: 앱의 외관을 개인화하기 위해 사용자 정의 강조 색상을 선택하세요
       feature: 사용자 정의
     error: 테마 설정 로드에 실패했습니다
-
   ui_density:
     title: 밀도
     description: 고해상도 DPI 디스플레이에서 가독성을 높이기 위해 텍스트와 UI 요소의 크기를 조정합니다
@@ -270,3 +280,10 @@ settings:
       load_error: 기본 예상 시간 로드 오류
       save_error: 기본 예상 시간 저장 오류
       key_not_found: 기본 예상 시간 키를 찾을 수 없음
+  reset_database:
+    title: 데이터베이스 재설정
+    description: 모든 데이터를 삭제하고 애플리케이션을 초기 상태로 재설정합니다. 이 작업은 되돌릴 수 없습니다.
+    confirmation_message:
+      데이터베이스를 재설정하시겠습니까? 이렇게 하면 모든 작업, 습관, 메모 및 설정이 영구적으로 삭제됩니다.
+      이 작업은 되돌릴 수 없습니다.
+    success: 데이터베이스가 성공적으로 재설정되었습니다.

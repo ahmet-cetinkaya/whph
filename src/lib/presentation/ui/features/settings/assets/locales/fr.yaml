@@ -10,10 +10,14 @@ settings:
     setting_not_found: Paramètre non trouvé
     version_mismatch: Version non trouvée
   export:
-    csv_description: Vous pouvez utiliser ceci pour visualiser dans Excel et applications similaires.
+    csv_description:
+      Vous pouvez utiliser ceci pour visualiser dans Excel et applications
+      similaires.
     error: Échec de l'exportation
     in_progress: Exportation des données, veuillez patienter...
-    json_description: Exporter les données au format JSON lisible à des fins de développement et de débogage.
+    json_description:
+      Exporter les données au format JSON lisible à des fins de développement
+      et de débogage.
     select_directory: Sélectionner le répertoire d'exportation
     select_path: Sélectionner l'emplacement de sauvegarde
     select_type: Sélectionner le format d'exportation
@@ -26,7 +30,9 @@ settings:
     error: Échec de l'importation
     error.entity: Erreur dans le type
     in_progress: Importation des données, veuillez patienter...
-    migration_failed: Échec de l'importation. Veuillez vous assurer d'avoir installé la dernière version de l'application.
+    migration_failed:
+      Échec de l'importation. Veuillez vous assurer d'avoir installé
+      la dernière version de l'application.
     select_file: Sélectionner le fichier
     strategy:
       merge: Fusionner avec les données existantes
@@ -37,7 +43,9 @@ settings:
     unsupported_version: Version non supportée
     version_mismatch: Version non trouvée
   import_export:
-    description: Exportez vos données dans différents formats ou importez des données depuis des fichiers de sauvegarde
+    description:
+      Exportez vos données dans différents formats ou importez des données
+      depuis des fichiers de sauvegarde
     select_action: Sélectionner l'action d'import/export
     title: Import/Export
   language:
@@ -62,42 +70,64 @@ settings:
     some_sounds_enabled: Certains sons activés
   permissions:
     app_usage:
-      description: Cette application a besoin de la permission d'accéder aux statistiques d'utilisation des applications pour suivre précisément vos modèles d'utilisation d'applications.
+      description:
+        Cette application a besoin de la permission d'accéder aux statistiques
+        d'utilisation des applications pour suivre précisément vos modèles d'utilisation
+        d'applications.
       instructions: "Instructions :"
       steps:
         step1: Appuyez sur le bouton "Ouvrir les paramètres"
-        step2: Dans l'écran des paramètres d'accès d'utilisation qui s'ouvre, trouvez "{appName}" dans la liste
+        step2:
+          Dans l'écran des paramètres d'accès d'utilisation qui s'ouvre, trouvez
+          "{appName}" dans la liste
         step3: Appuyez sur "{appName}"
-        step4: Activez "Autoriser l'accès d'utilisation" ou basculez l'interrupteur sur ON
+        step4:
+          Activez "Autoriser l'accès d'utilisation" ou basculez l'interrupteur
+          sur ON
       title: Permission d'utilisation d'application
     battery_optimization:
-      description: Pour des notifications fiables, cette application doit être exclue de l'optimisation de la batterie. Sans cela, les rappels peuvent être retardés ou pas du tout livrés.
-      importance: L'emplacement de ce paramètre peut varier selon le fabricant de votre appareil.
+      description:
+        Pour des notifications fiables, cette application doit être exclue
+        de l'optimisation de la batterie. Sans cela, les rappels peuvent être retardés
+        ou pas du tout livrés.
+      importance:
+        L'emplacement de ce paramètre peut varier selon le fabricant de
+        votre appareil.
       instructions: "Instructions :"
-      not_disabled: L'optimisation de la batterie est toujours activée. Accordez la permission pour que la fonction correspondante fonctionne correctement.
+      not_disabled:
+        L'optimisation de la batterie est toujours activée. Accordez la
+        permission pour que la fonction correspondante fonctionne correctement.
       steps:
         step1: Appuyez sur le bouton "Ouvrir les paramètres"
         step2: Dans l'écran des paramètres qui s'ouvre, trouvez "{appName}"
         step3: Appuyez sur "{appName}"
-        step4: Assurez-vous que "Autoriser l'utilisation en arrière-plan" est activé sur la page qui s'ouvre
+        step4:
+          Assurez-vous que "Autoriser l'utilisation en arrière-plan" est activé
+          sur la page qui s'ouvre
         step5: Appuyez sur "Autoriser l'utilisation en arrière-plan"
         step6: Sélectionnez "Non restreint"
       title: Optimisation de la batterie
     exact_alarm:
-      description: Android 12+ nécessite la permission de programmer des alarmes exactes pour que les rappels fonctionnent correctement.
+      description:
+        Android 12+ nécessite la permission de programmer des alarmes exactes
+        pour que les rappels fonctionnent correctement.
       instructions: "Instructions :"
       steps:
         android12plus:
           step2: Allez dans Alarmes et rappels et activez la permission
           step3: Confirmez la permission d'alarme exacte
         step1: Appuyez sur le bouton "Ouvrir les paramètres"
-        step2: 'Dans la page Alarmes et rappels de l''application {appName} qui s''ouvre, activez "Autoriser la définition d''alarmes et rappels"'
+        step2:
+          Dans la page Alarmes et rappels de l'application {appName} qui s'ouvre,
+          activez "Autoriser la définition d'alarmes et rappels"
       title: Permission d'alarme exacte
     fix_it: Corriger
     granted: Permission accordée
     instructions: Instructions
     notification:
-      description: La permission de notification est requise pour recevoir les rappels. Sans cette permission, vous ne recevrez aucune notification.
+      description:
+        La permission de notification est requise pour recevoir les rappels.
+        Sans cette permission, vous ne recevrez aucune notification.
       instructions: "Instructions :"
       steps:
         android:
@@ -111,79 +141,122 @@ settings:
     open_terminal: Ouvrir le terminal
     firewall:
       title: Permission de pare-feu
-      description: Autoriser WHPH à communiquer via le pare-feu {platform} sur le port 44040 pour la synchronisation des appareils.
-      dialog_description: WHPH a besoin de la permission de pare-feu pour permettre à d'autres appareils de se connecter pour la synchronisation. Suivez les commandes ci-dessous pour configurer votre pare-feu {platform}. Vous pouvez également trouver ces étapes dans le menu d'aide.
-      dialog_info_text: "Remarque : Vous pouvez également trouver ces étapes dans le menu d'aide."
-      linux_manual_confirmation_button: "J'ai configuré"
-      save_confirmation_error: Échec de l'enregistrement du paramètre de confirmation du pare-feu
+      description:
+        Autoriser WHPH à communiquer via le pare-feu {platform} sur le
+        port 44040 pour la synchronisation des appareils.
+      dialog_description:
+        WHPH a besoin de la permission de pare-feu pour permettre
+        à d'autres appareils de se connecter pour la synchronisation. Suivez les commandes
+        ci-dessous pour configurer votre pare-feu {platform}. Vous pouvez également
+        trouver ces étapes dans le menu d'aide.
+      dialog_info_text:
+        "Remarque : Vous pouvez également trouver ces étapes dans
+        le menu d'aide."
+      linux_manual_confirmation_button: J'ai configuré
+      save_confirmation_error:
+        Échec de l'enregistrement du paramètre de confirmation
+        du pare-feu
       rule_added_success: Règle de pare-feu ajoutée avec succès
-      rule_add_error: Échec de l'ajout de la règle de pare-feu. Essayez les étapes manuelles.
-      add_rule_button: "Ajouter une règle de pare-feu"
-      windows_auto_description: "Cliquez sur 'Ajouter une règle de pare-feu' pour ajouter automatiquement la règle de pare-feu avec demande de permission UAC. Si vous préférez ajouter manuellement, suivez les étapes ci-dessous :"
+      rule_add_error:
+        Échec de l'ajout de la règle de pare-feu. Essayez les étapes
+        manuelles.
+      add_rule_button: Ajouter une règle de pare-feu
+      windows_auto_description:
+        "Cliquez sur 'Ajouter une règle de pare-feu' pour
+        ajouter automatiquement la règle de pare-feu avec demande de permission UAC.
+        Si vous préférez ajouter manuellement, suivez les étapes ci-dessous :"
       instructions:
         linux:
-          step1: "Ouvrez un terminal"
+          step1: Ouvrez un terminal
           step2: "Vérifiez l'état du pare-feu :"
           step3: "Ajoutez une règle de pare-feu (si UFW est actif) :"
           step4: "Vérifiez que la règle a été ajoutée :"
           method_terminal_title: "Méthode 1 : Commande terminal"
         windows:
-          step1: "Ouvrez le Pare-feu Windows Defender depuis le Panneau de configuration"
-          step2: "Cliquez sur Paramètres avancés à gauche"
-          step3: "Dans le volet gauche, cliquez sur Règles de trafic entrant"
-          step4: "Dans le volet droit, cliquez sur Nouvelle règle..."
-          step5: "Sélectionnez Port et cliquez sur Suivant"
-          step6: "Sélectionnez TCP et entrez 44040 dans le champ des ports locaux spécifiques"
-          step7: "Sélectionnez Autoriser la connexion et cliquez sur Suivant"
-          step8: "Cochez tous les profils (Domaine, Privé, Public) et cliquez sur Suivant"
-          step9: "Entrez un nom comme WHPH Sync Port 44040 et cliquez sur Terminer"
+          step1: Ouvrez le Pare-feu Windows Defender depuis le Panneau de configuration
+          step2: Cliquez sur Paramètres avancés à gauche
+          step3: Dans le volet gauche, cliquez sur Règles de trafic entrant
+          step4: Dans le volet droit, cliquez sur Nouvelle règle...
+          step5: Sélectionnez Port et cliquez sur Suivant
+          step6: Sélectionnez TCP et entrez 44040 dans le champ des ports locaux spécifiques
+          step7: Sélectionnez Autoriser la connexion et cliquez sur Suivant
+          step8: Cochez tous les profils (Domaine, Privé, Public) et cliquez sur Suivant
+          step9: Entrez un nom comme WHPH Sync Port 44040 et cliquez sur Terminer
           method_gui_title: "Méthode 1 : Interface graphique du pare-feu Windows"
           method_command_title: "Méthode 2 : Invite de commandes"
-          step_open_defender: "Ouvrez le Pare-feu Windows Defender → Paramètres avancés"
-          step_create_inbound_rule: 'Créer une règle entrante : Règles de trafic entrant → Nouvelle règle → Port → TCP → 44040 → Autoriser → Tous les profils → Nom : "WHPH Sync (Entrant)"'
-          step_create_outbound_rule: 'Créer une règle sortante : Règles de trafic sortant → Nouvelle règle → Port → TCP → 44040 → Autoriser → Tous les profils → Nom : "WHPH Sync (Sortant)"'
+          step_open_defender: Ouvrez le Pare-feu Windows Defender → Paramètres avancés
+          step_create_inbound_rule:
+            'Créer une règle entrante : Règles de trafic entrant
+            → Nouvelle règle → Port → TCP → 44040 → Autoriser → Tous les profils →
+            Nom : "WHPH Sync (Entrant)"'
+          step_create_outbound_rule:
+            'Créer une règle sortante : Règles de trafic
+            sortant → Nouvelle règle → Port → TCP → 44040 → Autoriser → Tous les profils
+            → Nom : "WHPH Sync (Sortant)"'
           alternative_command_prompt:
             title: "Alternative : Utiliser l'Invite de commandes"
             steps:
-              cmd_step1: "Ouvrez l'Invite de commandes en tant qu'administrateur"
+              cmd_step1: Ouvrez l'Invite de commandes en tant qu'administrateur
               cmd_step2: "Ajoutez une règle de pare-feu :"
-        step_open_command_prompt: "1. Ouvrez l'Invite de commandes en tant qu'administrateur"
+        step_open_command_prompt: 1. Ouvrez l'Invite de commandes en tant qu'administrateur
         step_run_commands: "2. Exécutez ces commandes :"
-        step_open_terminal: "1. Ouvrez un terminal"
-        step_run_command: "2. Exécutez cette commande (nécessite des privilèges sudo) :"
-        step_click_confirmation: "3. Après avoir exécuté la commande, cliquez sur le bouton de confirmation ci-dessous"
-      manual_configure_instruction: "Configurez manuellement les règles de pare-feu pour la synchronisation (nécessite des privilèges administrateur) :"
+        step_open_terminal: 1. Ouvrez un terminal
+        step_run_command:
+          "2. Exécutez cette commande (nécessite des privilèges sudo)
+          :"
+        step_click_confirmation:
+          3. Après avoir exécuté la commande, cliquez sur le
+          bouton de confirmation ci-dessous
+      manual_configure_instruction:
+        "Configurez manuellement les règles de pare-feu
+        pour la synchronisation (nécessite des privilèges administrateur) :"
     startup:
-      description: Pour que l'application démarre automatiquement avec votre appareil, la permission de démarrage automatique est requise. Cela garantit que les rappels et notifications fonctionnent correctement même après les redémarrages de l'appareil.
-      importance: L'emplacement du paramètre de démarrage automatique varie ou peut ne pas être présent selon le fabricant de l'appareil.
+      description:
+        Pour que l'application démarre automatiquement avec votre appareil,
+        la permission de démarrage automatique est requise. Cela garantit que les
+        rappels et notifications fonctionnent correctement même après les redémarrages
+        de l'appareil.
+      importance:
+        L'emplacement du paramètre de démarrage automatique varie ou peut
+        ne pas être présent selon le fabricant de l'appareil.
       instructions: "Instructions :"
       steps:
         step1: Appuyez sur le bouton "Ouvrir les paramètres"
-        step2: 'Dans l''écran des paramètres qui s''ouvre, trouvez l''application "{appName}"'
-        step3: 'Activez "Démarrage automatique", "Exécution automatique", "Démarrer au boot" ou permission similaire'
+        step2: Dans l'écran des paramètres qui s'ouvre, trouvez l'application "{appName}"
+        step3:
+          Activez "Démarrage automatique", "Exécution automatique", "Démarrer
+          au boot" ou permission similaire
       title: Permission de démarrage automatique
     title: Permissions
   startup:
     disable_error: Impossible de désactiver le paramètre de démarrage
     enable_error: Impossible d'activer le paramètre de démarrage
-    subtitle: Appuyez pour ouvrir les paramètres système et activer la permission de démarrage automatique pour l'application
+    subtitle:
+      Appuyez pour ouvrir les paramètres système et activer la permission
+      de démarrage automatique pour l'application
     title: Démarrer au démarrage
   sync_devices:
     title: Synchroniser les appareils
   title: Paramètres
   backup:
     title: Sauvegarde
-    description: Créer et restaurer des sauvegardes compressées de vos données d'application en utilisant le format sécurisé .whph
+    description:
+      Créer et restaurer des sauvegardes compressées de vos données d'application
+      en utilisant le format sécurisé .whph
     export:
       title: Créer une sauvegarde
-      description: Exporter toutes vos données vers un fichier de sauvegarde .whph compressé
+      description:
+        Exporter toutes vos données vers un fichier de sauvegarde .whph
+        compressé
       in_progress: Création de la sauvegarde, veuillez patienter...
       success: "Sauvegarde créée avec succès. Emplacement du fichier :"
       error: Échec de la création de la sauvegarde
       select_path: Sélectionner l'emplacement de sauvegarde
     import:
       title: Restaurer la sauvegarde
-      description: Importer des données depuis un fichier de sauvegarde .whph créé précédemment
+      description:
+        Importer des données depuis un fichier de sauvegarde .whph créé
+        précédemment
       in_progress: Restauration de la sauvegarde, veuillez patienter...
       success: Sauvegarde restaurée avec succès
       error: Échec de la restauration de la sauvegarde
@@ -198,7 +271,9 @@ settings:
     invalid_format: Format de fichier de sauvegarde invalide
     invalid_format_error: Format de fichier de sauvegarde invalide
     corrupted: Le fichier de sauvegarde est corrompu ou endommagé
-    export_description: Créer un fichier de sauvegarde compressé contenant toutes vos données
+    export_description:
+      Créer un fichier de sauvegarde compressé contenant toutes
+      vos données
   theme:
     title: Thème
     description: Personnaliser l'apparence de WHPH
@@ -211,16 +286,22 @@ settings:
         description: Suivre les paramètres du thème système
     dynamic_accent:
       title: Couleur d'accent dynamique
-      description: Si votre système le prend en charge, la couleur primaire s'adaptera en fonction du schéma de couleurs dynamique du système
+      description:
+        Si votre système le prend en charge, la couleur primaire s'adaptera
+        en fonction du schéma de couleurs dynamique du système
       feature: Dynamique
     custom_accent:
       title: Couleur d'accent personnalisée
-      description: Choisissez une couleur d'accent personnalisée pour personnaliser l'apparence de votre application
+      description:
+        Choisissez une couleur d'accent personnalisée pour personnaliser
+        l'apparence de votre application
       feature: Personnalisé
     error: Échec du chargement des paramètres de thème
   ui_density:
     title: Densité
-    description: Ajustez la taille du texte et des éléments UI pour améliorer la lisibilité sur les écrans haute résolution
+    description:
+      Ajustez la taille du texte et des éléments UI pour améliorer la lisibilité
+      sur les écrans haute résolution
     compact: Compact
     normal: Normal
     large: Large
@@ -231,40 +312,74 @@ settings:
     description: Paramètres avancés et outils de développement
   debug_logs:
     title: Journaux de débogage
-    description: Activer la journalisation détaillée dans un fichier pour le dépannage et le support
-    load_settings_error: Erreur lors du chargement des paramètres des journaux de débogage
-    update_settings_error: Erreur lors de la mise à jour du paramètre des journaux de débogage
+    description:
+      Activer la journalisation détaillée dans un fichier pour le dépannage
+      et le support
+    load_settings_error:
+      Erreur lors du chargement des paramètres des journaux de
+      débogage
+    update_settings_error:
+      Erreur lors de la mise à jour du paramètre des journaux
+      de débogage
     view:
       title: Voir les journaux de débogage
       description: Voir et exporter les journaux de débogage actuels
     page:
       title: Journaux de débogage
-      description: Voir les entrées actuelles du journal de débogage. Les journaux sont automatiquement vidés et pivotés pour éviter une utilisation excessive du disque.
+      description:
+        Voir les entrées actuelles du journal de débogage. Les journaux
+        sont automatiquement vidés et pivotés pour éviter une utilisation excessive
+        du disque.
       content: Contenu du journal
       refresh: Actualiser les journaux
       copy: Copier dans le presse-papiers
       save_as: Enregistrer sous fichier
       copied: Journaux de débogage copiés dans le presse-papiers
       load_error: Erreur lors du chargement des journaux de débogage
-      not_enabled: La journalisation de débogage n'est pas activée. Activez-la dans les paramètres avancés pour commencer à collecter les journaux.
-      no_file: Aucun fichier de journal de débogage trouvé. Les journaux seront créés après activation de la journalisation de débogage et génération d'entrées de journal par l'application.
-      empty: Le fichier de journal de débogage est vide. Aucune entrée de journal n'a encore été enregistrée.
+      not_enabled:
+        La journalisation de débogage n'est pas activée. Activez-la dans
+        les paramètres avancés pour commencer à collecter les journaux.
+      no_file:
+        Aucun fichier de journal de débogage trouvé. Les journaux seront créés
+        après activation de la journalisation de débogage et génération d'entrées
+        de journal par l'application.
+      empty:
+        Le fichier de journal de débogage est vide. Aucune entrée de journal
+        n'a encore été enregistrée.
     export:
       dialog_title: Exporter les journaux de débogage
       error: Erreur lors de l'exportation des journaux
       success: Fichier de journal exporté avec succès
-      no_logs_available: Aucun journal disponible à exporter. Générez d'abord quelques journaux.
-      file_not_exist: Le fichier journal n'existe pas. Activez la journalisation de débogage et générez des journaux.
+      no_logs_available:
+        Aucun journal disponible à exporter. Générez d'abord quelques
+        journaux.
+      file_not_exist:
+        Le fichier journal n'existe pas. Activez la journalisation de
+        débogage et générez des journaux.
   task:
     title: Paramètres des tâches
     preferences:
       title: Préférences des tâches
-      description: Personnaliser le comportement des tâches et les paramètres par défaut
+      description:
+        Personnaliser le comportement des tâches et les paramètres par
+        défaut
     default_estimated_time:
       title: Temps estimé par défaut
-      description: Définir le temps estimé par défaut pour les nouvelles tâches. Vous pouvez désactiver ceci pour éviter les estimations de temps automatiques.
+      description:
+        Définir le temps estimé par défaut pour les nouvelles tâches. Vous
+        pouvez désactiver ceci pour éviter les estimations de temps automatiques.
       disabled: Désactivé
       minutes: "{minutes} minutes"
       load_error: Erreur lors du chargement du temps estimé par défaut
       save_error: Erreur lors de l'enregistrement du temps estimé par défaut
       key_not_found: Clé de temps estimé par défaut non trouvée
+  reset_database:
+    title: Réinitialiser la Base de Données
+    description:
+      Supprimer toutes les données et réinitialiser l'application à son
+      état initial. Cette action ne peut pas être annulée.
+    confirmation_message:
+      Êtes-vous sûr de vouloir réinitialiser la base de données
+      ? Ceci supprimera définitivement toutes vos tâches, habitudes, notes et paramètres.
+      Cette action ne peut pas être annulée.
+    success: La base de données a été réinitialisée avec succès.
