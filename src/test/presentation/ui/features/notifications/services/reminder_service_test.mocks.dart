@@ -15,6 +15,9 @@ import 'package:mediatr/src/internals/i_request_handler.dart' as _i11;
 import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
+import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart'
+    as _i17;
+import 'package:whph/core/domain/features/tasks/task.dart' as _i18;
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart'
     as _i16;
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart'
@@ -638,4 +641,70 @@ class MockINotificationPayloadHandler extends _i1.Mock
             ),
           )
           as String);
+}
+
+/// A class which mocks [IReminderCalculationService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockIReminderCalculationService extends _i1.Mock
+    implements _i17.IReminderCalculationService {
+  MockIReminderCalculationService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  DateTime? calculateReminderDateTime({
+    required DateTime? baseDate,
+    required _i18.ReminderTime? reminderTime,
+    int? customOffset,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#calculateReminderDateTime, [], {
+              #baseDate: baseDate,
+              #reminderTime: reminderTime,
+              #customOffset: customOffset,
+            }),
+          )
+          as DateTime?);
+
+  @override
+  bool validateReminderSettings({
+    required _i18.ReminderTime? reminderTime,
+    int? customOffset,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#validateReminderSettings, [], {
+              #reminderTime: reminderTime,
+              #customOffset: customOffset,
+            }),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  DateTime? getNextReminderOccurrence({
+    required _i18.Task? task,
+    DateTime? afterDate,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getNextReminderOccurrence, [], {
+              #task: task,
+              #afterDate: afterDate,
+            }),
+          )
+          as DateTime?);
+
+  @override
+  bool shouldReminderTrigger({
+    required _i18.Task? task,
+    required DateTime? currentTime,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#shouldReminderTrigger, [], {
+              #task: task,
+              #currentTime: currentTime,
+            }),
+            returnValue: false,
+          )
+          as bool);
 }

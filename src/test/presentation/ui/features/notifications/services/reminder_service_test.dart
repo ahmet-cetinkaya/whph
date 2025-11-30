@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:mediatr/mediatr.dart';
@@ -20,6 +21,7 @@ import 'reminder_service_test.mocks.dart';
   HabitsService,
   ITranslationService,
   INotificationPayloadHandler,
+  IReminderCalculationService,
 ])
 void main() {
   late ReminderService reminderService;
@@ -29,6 +31,7 @@ void main() {
   late MockHabitsService mockHabitsService;
   late MockITranslationService mockTranslationService;
   late MockINotificationPayloadHandler mockNotificationPayloadHandler;
+  late MockIReminderCalculationService mockReminderCalculationService;
 
   setUp(() {
     mockReminderService = MockIReminderService();
@@ -37,6 +40,7 @@ void main() {
     mockHabitsService = MockHabitsService();
     mockTranslationService = MockITranslationService();
     mockNotificationPayloadHandler = MockINotificationPayloadHandler();
+    mockReminderCalculationService = MockIReminderCalculationService();
 
     // Setup default stubs
     when(mockTranslationService.translate(any, namedArgs: anyNamed('namedArgs')))
@@ -72,6 +76,7 @@ void main() {
       mockHabitsService,
       mockTranslationService,
       mockNotificationPayloadHandler,
+      mockReminderCalculationService,
     );
   });
 
@@ -86,6 +91,13 @@ void main() {
       plannedDateReminderTime: ReminderTime.custom,
       plannedDateReminderCustomOffset: 30, // 30 minutes before
     );
+
+    // Mock the reminder calculation service
+    when(mockReminderCalculationService.calculateReminderDateTime(
+      baseDate: anyNamed('baseDate'),
+      reminderTime: anyNamed('reminderTime'),
+      customOffset: anyNamed('customOffset'),
+    )).thenReturn(futureDate.subtract(const Duration(minutes: 30)));
 
     // Act
     await reminderService.scheduleTaskReminder(task);

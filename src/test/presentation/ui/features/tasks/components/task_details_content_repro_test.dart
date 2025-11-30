@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_date_picker_field.dart';
-import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
@@ -14,7 +13,6 @@ import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:acore/acore.dart';
 
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
@@ -86,12 +84,12 @@ class FakeSoundManagerService extends Fake implements ISoundManagerService {
 class FakeLogger extends Fake implements ILogger {
   @override
   void debug(String message, [Object? error, StackTrace? stackTrace]) {
-    print('DEBUG: $message');
+    debugPrint('DEBUG: $message');
   }
 
   @override
   void error(String message, [Object? error, StackTrace? stackTrace]) {
-    print('ERROR: $message');
+    debugPrint('ERROR: $message');
   }
 }
 
@@ -171,7 +169,7 @@ void main() {
 
     // Verify if loading
     if (find.byType(CircularProgressIndicator).evaluate().isNotEmpty) {
-      print('Still loading...');
+      debugPrint('Still loading...');
     }
 
     // Simulate changing reminder to custom

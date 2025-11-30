@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/habits/queries/get_habit_query.da
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
@@ -27,6 +28,7 @@ class ReminderService {
   final HabitsService _habitsService;
   final ITranslationService _translationService;
   final INotificationPayloadHandler _notificationPayloadHandler;
+  final IReminderCalculationService _reminderCalculationService;
   late final NotificationTranslationService _notificationTranslationService;
 
   ReminderService(
@@ -36,6 +38,7 @@ class ReminderService {
     this._habitsService,
     this._translationService,
     this._notificationPayloadHandler,
+    this._reminderCalculationService,
   ) {
     _notificationTranslationService = NotificationTranslationService(_translationService);
   }
@@ -242,11 +245,17 @@ class ReminderService {
 
     // Schedule planned date reminder if set
     if (task.plannedDate != null && task.plannedDateReminderTime != ReminderTime.none) {
-      final reminderTime = _calculateTaskReminderTime(
-        task.plannedDate!,
-        task.plannedDateReminderTime,
-        task.plannedDateReminderCustomOffset,
+      final reminderTime = _reminderCalculationService.calculateReminderDateTime(
+        baseDate: task.plannedDate,
+        reminderTime: task.plannedDateReminderTime,
+        customOffset: task.plannedDateReminderCustomOffset,
       );
+
+      // Skip if reminder calculation failed
+      if (reminderTime == null) {
+        Logger.warning('⚠️ ReminderService: Failed to calculate planned reminder time for task ${task.id}');
+        return;
+      }
 
       Logger.debug('🔔 ReminderService: Scheduling planned reminder for task ${task.id}');
       Logger.debug('   Planned Date: ${task.plannedDate}');
@@ -280,11 +289,17 @@ class ReminderService {
 
     // Schedule deadline date reminder
     if (task.deadlineDate != null && task.deadlineDateReminderTime != ReminderTime.none) {
-      final reminderTime = _calculateTaskReminderTime(
-        task.deadlineDate!,
-        task.deadlineDateReminderTime,
-        task.deadlineDateReminderCustomOffset,
+      final reminderTime = _reminderCalculationService.calculateReminderDateTime(
+        baseDate: task.deadlineDate,
+        reminderTime: task.deadlineDateReminderTime,
+        customOffset: task.deadlineDateReminderCustomOffset,
       );
+
+      // Skip if reminder calculation failed
+      if (reminderTime == null) {
+        Logger.warning('⚠️ ReminderService: Failed to calculate deadline reminder time for task ${task.id}');
+        return;
+      }
 
       Logger.debug('🔔 ReminderService: Scheduling deadline reminder for task ${task.id}');
       Logger.debug('   Deadline Date: ${task.deadlineDate}');
@@ -482,37 +497,6 @@ class ReminderService {
       await _scheduleExistingTaskReminders();
     } catch (e) {
       Logger.error('🔔 ReminderService: Error refreshing reminders for language change: $e');
-    }
-  }
-
-  /// Calculate the reminder time based on the task date and reminder setting
-  DateTime _calculateTaskReminderTime(DateTime taskDate, ReminderTime reminderTime, [int? customOffset]) {
-    Logger.debug('🔔 ReminderService: Calculating reminder time');
-    Logger.debug('   Task Date: $taskDate');
-    Logger.debug('   Reminder Time Type: $reminderTime');
-    Logger.debug('   Custom Offset: $customOffset');
-
-    switch (reminderTime) {
-      case ReminderTime.atTime:
-        return taskDate;
-      case ReminderTime.fiveMinutesBefore:
-        return taskDate.subtract(const Duration(minutes: 5));
-      case ReminderTime.fifteenMinutesBefore:
-        return taskDate.subtract(const Duration(minutes: 15));
-      case ReminderTime.oneHourBefore:
-        return taskDate.subtract(const Duration(hours: 1));
-      case ReminderTime.oneDayBefore:
-        return taskDate.subtract(const Duration(days: 1));
-      case ReminderTime.custom:
-        if (customOffset != null) {
-          final calculated = taskDate.subtract(Duration(minutes: customOffset));
-          Logger.debug('   Calculated Custom Time: $calculated');
-          return calculated;
-        }
-        Logger.warning('   ⚠️ Custom offset is null for ReminderTime.custom! Fallback to taskDate.');
-        return taskDate; // Fallback if offset is missing
-      case ReminderTime.none:
-        return taskDate;
     }
   }
 
