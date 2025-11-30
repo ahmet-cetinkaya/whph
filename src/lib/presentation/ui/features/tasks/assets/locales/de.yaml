@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Neue Aufgabe hinzufügen
-  date_picker:
-    quick_selection:
-      today: Heute
-      tomorrow: Morgen
-      this_weekend: Dieses Wochenende
-      weekend: Wochenende
-      next_week: Nächste Woche
-      next_weekend: Nächstes Wochenende
   all_tasks_done: Alle Aufgaben erledigt!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Aufgabe planen
   complete:
     error: Unerwarteter Fehler beim Speichern der Aufgabenerledigung.
+  date_picker:
+    quick_selection:
+      next_week: Nächste Woche
+      next_weekend: Nächstes Wochenende
+      this_weekend: Dieses Wochenende
+      today: Heute
+      tomorrow: Morgen
+      weekend: Wochenende
+      next_weekday: Nächster Arbeitstag
   date_selection:
     deadline_date_title: Fälligkeitsdatum auswählen
     planned_date_title: Geplantes Datum auswählen
@@ -26,37 +27,32 @@ tasks:
     message: Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?
     title: Aufgabe löschen
   details:
-    title:
-      label: Titel
-    tags:
-      hint: Tags auswählen
-      label: Tags
-    priority:
-      label: Priorität
-    planned_date:
-      label: Geplantes Datum
     deadline_date:
       label: Fälligkeitsdatum
     description:
-      hint: Beschreibung hinzufügen...
-      label: Beschreibung
       context:
         Fügen Sie detaillierte Informationen über Ihre Aufgabe hinzu, um Ihnen
         zu helfen, wichtige Details zu merken und den Fortschritt zu verfolgen.
+      hint: Beschreibung hinzufügen...
+      label: Beschreibung
     elapsed_time:
       label: Verstrichene Zeit
     parent_task:
       label: Übergeordnete Aufgabe
       tooltip: Zur übergeordneten Aufgabe navigieren
+    planned_date:
+      label: Geplantes Datum
+    priority:
+      label: Priorität
     sub_tasks:
       label: Unteraufgaben
+    tags:
+      hint: Tags auswählen
+      label: Tags
     tags_hint: Tags für Aufgabe auswählen
+    title:
+      label: Titel
     total_elapsed_time: Gesamt verstrichene Zeit
-  estimated_time:
-    label: Geschätzte Zeit
-    description:
-      Legen Sie realistische Zeitschätzungen fest, um Ihre Aufgabe effektiv
-      zu planen und die Produktivität zu verfolgen.
   errors:
     add_tag: Unerwarteter Fehler beim Hinzufügen des Tags
     adding_tag: Tag konnte nicht hinzugefügt werden
@@ -75,6 +71,11 @@ tasks:
     task_tag_already_deleted: Aufgaben-Tag ist bereits gelöscht
     task_tag_already_exists: Dieses Aufgaben-Tag existiert bereits
     task_tag_not_found: Aufgaben-Tag nicht gefunden
+  estimated_time:
+    description:
+      Legen Sie realistische Zeitschätzungen fest, um Ihre Aufgabe effektiv
+      zu planen und die Produktivität zu verfolgen.
+    label: Geschätzte Zeit
   filters:
     completion: Nach Erledigungsstatus
     deadline_date: Nach Fälligkeitsdatum
@@ -342,11 +343,11 @@ tasks:
     urgent_important: Dringend und wichtig
     urgent_not_important: Dringend aber nicht wichtig
   priority:
-    selection:
-      title: Priorität auswählen
     description:
       Legen Sie Task-Priorität mithilfe der Eisenhower-Matrix fest - Dringend/Wichtig-Klassifizierung
       für effektives Task-Management
+    selection:
+      title: Priorität auswählen
     tooltips:
       none: Keine Priorität
       not_urgent_important: Nicht dringend aber wichtig
@@ -367,12 +368,12 @@ tasks:
       des Formulars nicht gelöscht.
     lock_settings: Sperreinstellungen
     reset_all: Alle Felder zurücksetzen
-    task_added_successfully: Aufgabe erfolgreich hinzugefügt
     reset_confirm:
       message:
         Sind Sie sicher, dass Sie alle Felder zurücksetzen möchten? Diese Aktion
         kann nicht rückgängig gemacht werden.
       title: Alle Felder zurücksetzen
+    task_added_successfully: Aufgabe erfolgreich hinzugefügt
     title: Schnellaufgabe
     title_hint: Aufgabentitel
     title_placeholder: Was muss erledigt werden?
@@ -389,7 +390,13 @@ tasks:
     custom: Benutzerdefiniert
     daily: Täglich
     daySuffix: Tag(e)
+    daysOfWeek: Wochentage
     endDate: Enddatum
+    ends:
+      after: Nach
+      label: Endet
+      never: Niemals
+      onDate: An Datum
     enterCountHint: Anzahl eingeben
     interval:
       label: Wiederholen alle
@@ -419,12 +426,6 @@ tasks:
     weekly: Wöchentlich
     yearSuffix: Jahr(e)
     yearly: Jährlich
-    daysOfWeek: Wochentage
-    ends:
-      label: Endet
-      never: Niemals
-      onDate: An Datum
-      after: Nach
   reminder:
     atTime: Zur geplanten Zeit
     deadlineReminderLabel: Fristerinnerung
@@ -434,6 +435,7 @@ tasks:
     oneDayBefore: 1 Tag vorher
     oneHourBefore: 1 Stunde vorher
     plannedReminderLabel: Geplante Datumserinnerung
+    section_title: Erinnerungen
   task_details: Aufgabendetails
   title: Aufgaben
   tooltips:
@@ -441,63 +443,69 @@ tasks:
     decrease_estimated_time: Geschätzte Zeit verringern
     edit_title: Titel bearbeiten
     increase_estimated_time: Geschätzte Zeit erhöhen
+    reminder_date_required: Legen Sie zuerst ein Datum fest, um Erinnerungen zu konfigurieren
+    reminder_help_text:
+      Legen Sie eine Erinnerung fest, um vor dem Aufgabendatum benachrichtigt
+      zu werden
     set_reminder: Erinnerung setzen
+    set_reminder_with_status: Erinnerung festlegen - Keine Erinnerung
     show_completed_tasks: Erledigte Aufgaben filtern
+    show_sub_tasks: Teilaufgaben anzeigen
     show_subtasks: Unteraufgaben anzeigen
-  validation:
-    deadline_cannot_be_before_planned:
-      Das Fälligkeitsdatum darf nicht vor dem geplanten
-      Datum liegen
-    deadline_time_invalid: Termin-Uhrzeit ist ungültig
   tour:
-    task_management:
-      title: Aufgabenmanagement
-      description:
-        Erstellen und organisieren Sie Aufgaben mit Prioritäten, Fristen
-        und Erinnerungen. Nutzen Sie den Pomodoro-Timer, um fokussiert zu bleiben
-        und Ihren Fortschritt bei wichtigen Aufgaben zu verfolgen.
     add_tasks:
-      title: Neue Aufgaben hinzufügen
       description:
         Erstellen Sie schnell neue Aufgaben mit dieser Schaltfläche. Legen
         Sie Titel, Prioritäten, Fristen, Tags und mehr fest. Fügen Sie Unteraufgaben
         und Erinnerungen hinzu, um Ihre Arbeit im Blick zu behalten.
-    your_tasks:
-      title: Ihre Aufgaben
-      description:
-        Sehen und verwalten Sie alle Ihre Aufgaben an einem Ort. Klicken
-        Sie auf eine beliebige Aufgabe, um Details anzuzeigen, als erledigt zu markieren,
-        Informationen zu bearbeiten oder zu löschen. Bleiben Sie organisiert und verfolgen
-        Sie Ihren Fortschritt.
+      title: Neue Aufgaben hinzufügen
     filter_search:
-      title: Filter & Suche
       description:
         Leistungsstarke Filteroptionen, um genau das zu finden, was Sie
         benötigen. Filtern Sie nach Tags, Datumsangaben, Erledigungsstatus oder verwenden
         Sie die Suche. Sortieren Sie Aufgaben und schalten Sie Unteraufgaben für eine
         bessere Organisation.
+      title: Filter & Suche
     marathon:
       app_usage:
-        title: App-Nutzung & Zeit-Einblicke
         description:
           Überwachen Sie App-Nutzungsmuster und analysieren Sie die Zeit,
           die Sie für verschiedene Aktivitäten aufwenden. Erhalten Sie Einblicke in
           Ihre digitalen Gewohnheiten und optimieren Sie Ihre Produktivität.
-      usage_statistics:
-        title: Nutzungsstatistiken
-        description:
-          Detaillierte App-Nutzungsdaten und Zeitverteilung anzeigen. Analysieren
-          Sie Ihre Produktivitätsmuster, verfolgen Sie die Zeit, die Sie für verschiedene
-          Anwendungen aufwenden, und identifizieren Sie Verbesserungsbereiche.
+        title: App-Nutzung & Zeit-Einblicke
       filter_sort:
-        title: Filter & Sortierung
         description:
           Filtern Sie App-Nutzungsdaten nach Zeitraum, Tags oder bestimmten
           Geräten. Sortieren und organisieren Sie Ihre Nutzungsstatistiken, um bessere
           Einblicke in Ihr Zeitmanagement zu erhalten.
+        title: Filter & Sortierung
       tracking_settings:
-        title: Tracking-Einstellungen
         description:
           Konfigurieren Sie App-Tracking-Regeln, richten Sie automatische
           Tagging ein und verwalten Sie, welche Anwendungen überwacht werden sollen.
           Passen Sie das Tracking an Ihre Produktivitätsbedürfnisse an.
+        title: Tracking-Einstellungen
+      usage_statistics:
+        description:
+          Detaillierte App-Nutzungsdaten und Zeitverteilung anzeigen. Analysieren
+          Sie Ihre Produktivitätsmuster, verfolgen Sie die Zeit, die Sie für verschiedene
+          Anwendungen aufwenden, und identifizieren Sie Verbesserungsbereiche.
+        title: Nutzungsstatistiken
+    task_management:
+      description:
+        Erstellen und organisieren Sie Aufgaben mit Prioritäten, Fristen
+        und Erinnerungen. Nutzen Sie den Pomodoro-Timer, um fokussiert zu bleiben
+        und Ihren Fortschritt bei wichtigen Aufgaben zu verfolgen.
+      title: Aufgabenmanagement
+    your_tasks:
+      description:
+        Sehen und verwalten Sie alle Ihre Aufgaben an einem Ort. Klicken
+        Sie auf eine beliebige Aufgabe, um Details anzuzeigen, als erledigt zu markieren,
+        Informationen zu bearbeiten oder zu löschen. Bleiben Sie organisiert und verfolgen
+        Sie Ihren Fortschritt.
+      title: Ihre Aufgaben
+  validation:
+    deadline_cannot_be_before_planned:
+      Das Fälligkeitsdatum darf nicht vor dem geplanten
+      Datum liegen
+    deadline_time_invalid: Termin-Uhrzeit ist ungültig

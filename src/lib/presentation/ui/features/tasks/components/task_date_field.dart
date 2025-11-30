@@ -3,8 +3,8 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'task_date_picker_dialog.dart';
 
 /// A widget for displaying a date field with a reminder icon
 class TaskDateField extends StatefulWidget {
@@ -99,36 +99,24 @@ class _TaskDateFieldState extends State<TaskDateField> {
         }
       }
 
-      final config = DatePickerConfig(
-        selectionMode: DateSelectionMode.single,
-        initialDate: initialDate,
-        minDate: widget.plannedDateTime ?? widget.minDateTime, // Use planned date as minDate for deadline validation
-        maxDate: null,
-        formatType: DateFormatType.dateTime,
-        showTime: true,
-        enableManualInput: true,
-        titleText: widget.translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
-        cancelButtonText: widget.translationService.translate(SharedTranslationKeys.cancelButton),
-        allowNullConfirm: true,
-        dateTimeValidator: null, // Use built-in minDate validation instead
-        validationErrorMessage: null, // Use built-in validation messages
-        translations: {
-          // Use centralized translation mapping with task-specific overrides
-          for (final key in DateTimePickerTranslationKey.values)
-            key: widget.translationService.translate(SharedTranslationKeys.mapDateTimePickerKey(key)),
-          // Override task-specific validation messages
-          DateTimePickerTranslationKey.selectedDateMustBeAtOrAfter:
-              widget.translationService.translate(TaskTranslationKeys.deadlineTimeInvalid),
-        },
-        actionButtonRadius: AppTheme.containerBorderRadius,
-      );
-
-      final result = await DatePickerDialog.show(
+      final result = await TaskDatePickerDialog.showSimple(
         context: context,
-        config: config,
+        config: TaskDatePickerConfig(
+          initialDate: initialDate,
+          titleText: widget.translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
+          minDate: widget.plannedDateTime ?? widget.minDateTime, // Use planned date as minDate for deadline validation
+          maxDate: null,
+          formatType: DateFormatType.dateTime,
+          showTime: true,
+          showQuickRanges: false, // Simple mode without quick ranges
+          useResponsiveDesign: false, // Simple mode without responsive design
+          enableFooterActions: false, // Simple mode without footer actions
+          translationService: widget.translationService,
+          dialogSize: DialogSize.medium, // Smaller dialog for simple mode
+        ),
       );
 
-      if (result != null && result.selectedDate != null && mounted) {
+      if (result != null && !result.wasCancelled && mounted) {
         if (result.selectedDate != null) {
           // Date was selected
           final selectedDateTime = result.selectedDate!;
@@ -190,10 +178,14 @@ class _TaskDateFieldState extends State<TaskDateField> {
           PopupMenuButton<ReminderTime>(
             icon: Icon(
               Icons.notifications,
-              color: hasReminder ? Theme.of(context).colorScheme.primary : AppTheme.secondaryTextColor,
-              size: AppTheme.iconSizeSmall,
+              color: hasReminder
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              size: AppTheme.iconSizeMedium,
             ),
-            tooltip: widget.translationService.translate(TaskTranslationKeys.setReminderTooltip),
+            tooltip: hasReminder
+                ? widget.translationService.translate(TaskTranslationKeys.setReminderTooltip)
+                : widget.translationService.translate(TaskTranslationKeys.setReminderWithStatusTooltip),
             onSelected: widget.onReminderChanged,
             itemBuilder: (context) => ReminderTime.values.map((reminderTime) {
               return PopupMenuItem<ReminderTime>(

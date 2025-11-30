@@ -20,7 +20,7 @@ import 'package:whph/presentation/ui/features/tasks/components/priority_select_f
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_date_field.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_date_picker_field.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -197,6 +197,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       // Also make reminder fields visible if they have non-default values
       if (_hasFieldContent(keyPlannedDateReminder)) _visibleOptionalFields.add(keyPlannedDateReminder);
       if (_hasFieldContent(keyDeadlineDateReminder)) _visibleOptionalFields.add(keyDeadlineDateReminder);
+
+      // Make reminder fields available as chips even when no date is set for better discoverability
+      _visibleOptionalFields.add(keyPlannedDateReminder);
+      _visibleOptionalFields.add(keyDeadlineDateReminder);
     });
   }
 
@@ -917,8 +921,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       keyDeadlineDate,
       keyRecurrence,
       keyDescription,
+      keyPlannedDateReminder,
+      keyDeadlineDateReminder,
       // keyParentTask - Parent task should never appear as chip, only when data exists
-      // Reminder fields are handled with their corresponding date fields
+      // Reminder fields are now included for better discoverability
     ].where((field) => _shouldShowAsChip(field)).toList();
 
     return SingleChildScrollView(
@@ -1086,10 +1092,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         icon: TaskUiConstants.plannedDateIcon,
         widget: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-          child: TaskDateField(
+          child: TaskDatePickerField(
             key: ValueKey('planned_date_${_task!.id}'),
             controller: _plannedDateController,
-            focusNode: _plannedDateFocusNode,
             hintText: '',
             minDateTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
             onDateChanged: _onPlannedDateChanged,
@@ -1098,6 +1103,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             translationService: _translationService,
             reminderLabelPrefix: 'tasks.reminder.planned',
             dateIcon: TaskUiConstants.plannedDateIcon,
+            focusNode: _plannedDateFocusNode,
+            context: context,
           ),
         ),
       );
@@ -1107,10 +1114,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         icon: TaskUiConstants.deadlineDateIcon,
         widget: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-          child: TaskDateField(
+          child: TaskDatePickerField(
             key: ValueKey('deadline_date_${_task!.id}'),
             controller: _deadlineDateController,
-            focusNode: _deadlineDateFocusNode,
             hintText: '',
             minDateTime: _getMinimumDeadlineDate(),
             plannedDateTime: _task!.plannedDate,
@@ -1120,6 +1126,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             translationService: _translationService,
             reminderLabelPrefix: 'tasks.reminder.deadline',
             dateIcon: TaskUiConstants.deadlineDateIcon,
+            focusNode: _deadlineDateFocusNode,
+            context: context,
           ),
         ),
       );
@@ -1235,12 +1243,26 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Widget to build optional field chips
   Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {
+    String? tooltip;
+
+    // Add helpful tooltips for reminder fields
+    if (fieldKey == keyPlannedDateReminder || fieldKey == keyDeadlineDateReminder) {
+      final hasDate = fieldKey == keyPlannedDateReminder ? _task!.plannedDate != null : _task!.deadlineDate != null;
+
+      if (!hasDate) {
+        tooltip = _translationService.translate(TaskTranslationKeys.reminderDateRequiredTooltip);
+      } else {
+        tooltip = _translationService.translate(TaskTranslationKeys.reminderHelpText);
+      }
+    }
+
     return OptionalFieldChip(
       label: _getFieldLabel(fieldKey),
       icon: _getFieldIcon(fieldKey),
       selected: _isFieldVisible(fieldKey),
       onSelected: (_) => _toggleOptionalField(fieldKey),
       backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
+      tooltip: tooltip,
     );
   }
 

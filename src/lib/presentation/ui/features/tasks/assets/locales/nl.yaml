@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Nieuwe taak toevoegen
-  date_picker:
-    quick_selection:
-      today: Vandaag
-      tomorrow: Morgen
-      this_weekend: Dit weekend
-      weekend: Weekend
-      next_week: Volgende week
-      next_weekend: Volgend weekend
   all_tasks_done: Alle taken voltooid!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Taak plannen
   complete:
     error: Onverwachte fout opgetreden bij het opslaan van taakvoltooiing.
+  date_picker:
+    quick_selection:
+      next_week: Volgende week
+      next_weekend: Volgend weekend
+      this_weekend: Dit weekend
+      today: Vandaag
+      tomorrow: Morgen
+      weekend: Weekend
+      next_weekday: Volgende werkdag
   date_selection:
     deadline_date_title: Selecteer deadline datum
     planned_date_title: Selecteer geplande datum
@@ -26,37 +27,32 @@ tasks:
     message: Weet je zeker dat je deze taak wilt verwijderen?
     title: Taak Verwijderen
   details:
-    title:
-      label: Titel
-    tags:
-      hint: Selecteer tags om te associëren
-      label: Tags
-    priority:
-      label: Prioriteit
-    planned_date:
-      label: Geplande Datum
     deadline_date:
       label: Deadline Datum
     description:
-      hint: Beschrijving toevoegen...
-      label: Beschrijving
       context:
         Voeg gedetailleerde informatie over uw taak toe om u te helpen belangrijke
         details te onthouden en de voortgang te volgen.
+      hint: Beschrijving toevoegen...
+      label: Beschrijving
     elapsed_time:
       label: Verstreken Tijd
     parent_task:
       label: Ouder Taak
       tooltip: Klik om naar ouder taak te navigeren
+    planned_date:
+      label: Geplande Datum
+    priority:
+      label: Prioriteit
     sub_tasks:
       label: Subtaken
+    tags:
+      hint: Selecteer tags om te associëren
+      label: Tags
     tags_hint: Selecteer tags voor taak
+    title:
+      label: Titel
     total_elapsed_time: Totale Verstreken Tijd
-  estimated_time:
-    label: Geschatte Tijd
-    description:
-      Stel realistische tijdschattingen in om uw taak effectief te plannen
-      en productiviteit te volgen.
   errors:
     add_tag: Onverwachte fout opgetreden bij het toevoegen van tag
     adding_tag: Mislukt om tag toe te voegen
@@ -75,6 +71,11 @@ tasks:
     task_tag_already_deleted: Taak tag is al verwijderd
     task_tag_already_exists: Deze taak tag bestaat al
     task_tag_not_found: Taak tag niet gevonden
+  estimated_time:
+    description:
+      Stel realistische tijdschattingen in om uw taak effectief te plannen
+      en productiviteit te volgen.
+    label: Geschatte Tijd
   filters:
     completion: Op Voltooiingsstatus
     deadline_date: Op Deadline Datum
@@ -260,11 +261,11 @@ tasks:
     urgent_important: Dringend en Belangrijk
     urgent_not_important: Dringend maar Niet Belangrijk
   priority:
-    selection:
-      title: Selecteer Prioriteit
     description:
       Stel taakprioriteit in met de Eisenhower-matrix - Dringend/Belangrijk-classificatie
       voor effectieve taakbeheer
+    selection:
+      title: Selecteer Prioriteit
     tooltips:
       none: Geen Prioriteit
       not_urgent_important: Niet Dringend maar Belangrijk
@@ -285,12 +286,12 @@ tasks:
       bij het resetten van het formulier.
     lock_settings: Lock Instellingen
     reset_all: Reset alle velden
-    task_added_successfully: Taak succesvol toegevoegd
     reset_confirm:
       message:
         Weet je zeker dat je alle velden wilt resetten? Deze actie kan niet
         ongedaan gemaakt worden.
       title: Reset Alle Velden
+    task_added_successfully: Taak succesvol toegevoegd
     title: Snelle Taak
     title_hint: Voer een beschrijvende taak titel in...
     title_placeholder: Wat moet er gedaan worden?
@@ -307,7 +308,13 @@ tasks:
     custom: Aangepast
     daily: Dagelijks
     daySuffix: dag(en)
+    daysOfWeek: Dagen van de week
     endDate: Einddatum
+    ends:
+      after: Na
+      label: Eindigt
+      never: Nooit
+      onDate: Op datum
     enterCountHint: Voer aantal in
     interval:
       label: Herhaal elke
@@ -337,12 +344,6 @@ tasks:
     weekly: Wekelijks
     yearSuffix: jaar(en)
     yearly: Jaarlijks
-    daysOfWeek: Dagen van de week
-    ends:
-      label: Eindigt
-      never: Nooit
-      onDate: Op datum
-      after: Na
   reminder:
     atTime: Op het geplande tijdstip
     deadlineReminderLabel: Deadline Herinnering
@@ -352,6 +353,7 @@ tasks:
     oneDayBefore: 1 dag ervoor
     oneHourBefore: 1 uur ervoor
     plannedReminderLabel: Geplande Datum Herinnering
+    section_title: Herinneringen
   task_details: Taakdetails
   time_logging:
     add_time: Tijd Toevoegen
@@ -380,58 +382,64 @@ tasks:
     decrease_estimated_time: Geschatte tijd verlagen
     edit_title: Titel bewerken
     increase_estimated_time: Geschatte tijd verhogen
+    reminder_date_required: Stel eerst een datum in om herinneringen te configureren
+    reminder_help_text:
+      Stel een herinnering in om te worden gewaarschuwd voor de
+      taakdatum
     set_reminder: Herinnering instellen
+    set_reminder_with_status: Herinnering instellen - Geen herinnering
     show_completed_tasks: Gefilterde voltooide taken
+    show_sub_tasks: Subtaken weergeven
     show_subtasks: Subtaken tonen
-  validation:
-    deadline_cannot_be_before_planned: Deadline moet na de geplande datum zijn
-    deadline_time_invalid: Deadline tijd is ongeldig
   tour:
-    task_management:
-      title: Taakbeheer
-      description:
-        Creëer en organiseer taken met prioriteiten, deadlines en herinneringen.
-        Gebruik de Pomodoro-timer om gefocust te blijven en je voortgang bij te houden
-        op belangrijke taken.
     add_tasks:
-      title: Nieuwe taken toevoegen
       description:
         Creëer snel nieuwe taken met deze knop. Stel titels, prioriteiten,
         deadlines, tags en meer in. Voeg subtaken en herinneringen toe om up-to-date
         te blijven met je werk.
-    your_tasks:
-      title: Jouw taken
-      description:
-        Bekijk en beheer al je taken op één plek. Klik op elke taak om
-        details te bekijken, als voltooid te markeren, informatie te bewerken of te
-        verwijderen. Blijf georganiseerd en volg je voortgang.
+      title: Nieuwe taken toevoegen
     filter_search:
-      title: Filteren & Zoeken
       description:
         Krachtige filteropties om precies te vinden wat je nodig hebt.
         Filter op tags, datums, voltooiingsstatus of gebruik de zoekfunctie. Sorteer
         taken en schakel subtaken voor betere organisatie.
+      title: Filteren & Zoeken
     marathon:
       app_usage:
-        title: App-gebruik & Tijdanalyse
         description:
           Monitor app-gebruikspatronen en analyseer de tijd die je besteedt
           aan verschillende activiteiten. Verkrijg inzicht in je digitale gewoonten
           en optimaliseer je productiviteit.
-      usage_statistics:
-        title: Gebruiksstatistieken
-        description:
-          Bekijk gedetailleerde app-gebruiksgegevens en tijdsverdeling.
-          Analyseer je productiviteitspatronen, volg de tijd die je besteedt aan verschillende
-          applicaties en identificeer verbeterpunten.
+        title: App-gebruik & Tijdanalyse
       filter_sort:
-        title: Filteren & Sorteren
         description:
           Filter app-gebruiksgegevens op datumbereik, tags of specifieke
           apparaten. Sorteer en organiseer je gebruiksstatistieken voor betere inzichten
           in tijdsbeheer.
+        title: Filteren & Sorteren
       tracking_settings:
-        title: Tracking-instellingen
         description:
           Configureer app-trackingregels, stel automatische tagging in
           en beheer welke applicaties je wilt volgen. Pas tracking aan op je productiviteitsbehoeften.
+        title: Tracking-instellingen
+      usage_statistics:
+        description:
+          Bekijk gedetailleerde app-gebruiksgegevens en tijdsverdeling.
+          Analyseer je productiviteitspatronen, volg de tijd die je besteedt aan verschillende
+          applicaties en identificeer verbeterpunten.
+        title: Gebruiksstatistieken
+    task_management:
+      description:
+        Creëer en organiseer taken met prioriteiten, deadlines en herinneringen.
+        Gebruik de Pomodoro-timer om gefocust te blijven en je voortgang bij te houden
+        op belangrijke taken.
+      title: Taakbeheer
+    your_tasks:
+      description:
+        Bekijk en beheer al je taken op één plek. Klik op elke taak om
+        details te bekijken, als voltooid te markeren, informatie te bewerken of te
+        verwijderen. Blijf georganiseerd en volg je voortgang.
+      title: Jouw taken
+  validation:
+    deadline_cannot_be_before_planned: Deadline moet na de geplande datum zijn
+    deadline_time_invalid: Deadline tijd is ongeldig

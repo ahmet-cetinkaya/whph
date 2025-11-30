@@ -66,6 +66,7 @@ class ScheduleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<ScheduleOption>(
+      tooltip: translationService.translate(TaskTranslationKeys.taskScheduleTooltip),
       icon: Icon(
         Icons.schedule,
         color: AppTheme.secondaryTextColor,

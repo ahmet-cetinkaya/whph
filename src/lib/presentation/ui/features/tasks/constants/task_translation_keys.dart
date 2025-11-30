@@ -92,6 +92,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String thisWeekend = 'tasks.date_picker.quick_selection.this_weekend';
   static const String weekend = 'tasks.date_picker.quick_selection.weekend';
   static const String nextWeek = 'tasks.date_picker.quick_selection.next_week';
+  static const String nextWeekday = 'tasks.date_picker.quick_selection.next_weekday';
   static const String nextWeekend = 'tasks.date_picker.quick_selection.next_weekend';
 
   // Task Delete
@@ -139,8 +140,11 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // Tooltips
   static const String editTitleTooltip = 'tasks.tooltips.edit_title';
   static const String showCompletedTasksTooltip = 'tasks.tooltips.show_completed_tasks';
-  static const String showSubTasksTooltip = 'tasks.tooltips.show_subtasks';
+  static const String showSubTasksTooltip = 'tasks.tooltips.show_sub_tasks';
   static const String setReminderTooltip = 'tasks.tooltips.set_reminder';
+  static const String setReminderWithStatusTooltip = 'tasks.tooltips.set_reminder_with_status';
+  static const String reminderHelpText = 'tasks.tooltips.reminder_help_text';
+  static const String reminderDateRequiredTooltip = 'tasks.tooltips.reminder_date_required';
   static const String clearDateTooltip = 'tasks.tooltips.clear_date';
   static const String decreaseEstimatedTime = 'tasks.tooltips.decrease_estimated_time';
   static const String increaseEstimatedTime = 'tasks.tooltips.increase_estimated_time';
@@ -175,6 +179,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String reminderOneDayBefore = 'tasks.reminder.oneDayBefore';
   static const String reminderPlannedLabel = 'tasks.reminder.plannedReminderLabel';
   static const String reminderDeadlineLabel = 'tasks.reminder.deadlineReminderLabel';
+  static const String reminderSectionTitle = 'tasks.reminder.section_title';
 
   // Recurrence Types and Labels
   static const String recurrenceLabel = 'tasks.recurrence.label';

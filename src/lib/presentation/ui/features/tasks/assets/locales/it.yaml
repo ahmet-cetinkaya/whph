@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Aggiungi nuova attività
-  date_picker:
-    quick_selection:
-      today: Oggi
-      tomorrow: Domani
-      this_weekend: Questo weekend
-      weekend: Weekend
-      next_week: Prossima settimana
-      next_weekend: Prossimo weekend
   all_tasks_done: Tutte le attività completate!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Programma attività
   complete:
     error: Errore imprevisto durante il salvataggio del completamento dell'attività.
+  date_picker:
+    quick_selection:
+      next_week: Prossima settimana
+      next_weekend: Prossimo weekend
+      this_weekend: Questo weekend
+      today: Oggi
+      tomorrow: Domani
+      weekend: Weekend
+      next_weekday: Prossimo giorno feriale
   date_selection:
     deadline_date_title: Seleziona data di scadenza
     planned_date_title: Seleziona data pianificata
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Data di scadenza
     description:
-      hint: Aggiungi descrizione...
-      label: Descrizione
       context:
         Aggiungi informazioni dettagliate sulla tua attività per aiutarti a
         ricordare i dettagli chiave e monitorare i progressi.
+      hint: Aggiungi descrizione...
+      label: Descrizione
     elapsed_time:
       label: Tempo trascorso
     is_completed: Completato
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Titolo
     total_elapsed_time: Tempo totale trascorso
-  estimated_time:
-    label: Tempo stimato
-    description:
-      Imposta stime di tempo realistiche per pianificare efficacemente
-      la tua attività e tracciare la produttività.
   errors:
     add_tag: Errore imprevisto durante l'aggiunta del tag
     adding_tag: Impossibile aggiungere il tag
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Il tag dell'attività è già eliminato
     task_tag_already_exists: Questo tag dell'attività esiste già
     task_tag_not_found: Tag dell'attività non trovato
+  estimated_time:
+    description:
+      Imposta stime di tempo realistiche per pianificare efficacemente
+      la tua attività e tracciare la produttività.
+    label: Tempo stimato
   filters:
     completion: Per stato di completamento
     deadline_date: Per data di scadenza
@@ -342,11 +343,11 @@ tasks:
     urgent_important: Urgente e importante
     urgent_not_important: Urgente ma non importante
   priority:
-    selection:
-      title: Seleziona priorità
     description:
       Imposta la priorità del compito usando la Matrice di Eisenhower -
       classificazione Urgente/Importante per una gestione efficace dei compiti
+    selection:
+      title: Seleziona priorità
     tooltips:
       none: Nessuna priorità
       not_urgent_important: Non urgente ma importante
@@ -367,12 +368,12 @@ tasks:
       il modulo.
     lock_settings: Impostazioni blocco
     reset_all: Reimposta tutti i campi
-    task_added_successfully: Attività aggiunta con successo
     reset_confirm:
       message:
         Sei sicuro di voler reimpostare tutti i campi? Questa azione non può
         essere annullata.
       title: Reimposta tutti i campi
+    task_added_successfully: Attività aggiunta con successo
     title: Attività rapida
     title_hint: Titolo attività
     title_placeholder: Cosa deve essere fatto?
@@ -389,7 +390,13 @@ tasks:
     custom: Personalizzato
     daily: Giornaliero
     daySuffix: giorno/i
+    daysOfWeek: Giorni della settimana
     endDate: Data fine
+    ends:
+      after: Dopo
+      label: Termina
+      never: Mai
+      onDate: In data
     enterCountHint: Inserisci numero
     interval:
       label: Ripeti ogni
@@ -419,12 +426,6 @@ tasks:
     weekly: Settimanale
     yearSuffix: anno/i
     yearly: Annuale
-    daysOfWeek: Giorni della settimana
-    ends:
-      label: Termina
-      never: Mai
-      onDate: In data
-      after: Dopo
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza
@@ -434,6 +435,7 @@ tasks:
     oneDayBefore: 1 giorno prima
     oneHourBefore: 1 ora prima
     plannedReminderLabel: Promemoria data pianificata
+    section_title: Promemoria
   task_details: Dettagli attività
   title: Attività
   tooltips:
@@ -441,62 +443,68 @@ tasks:
     decrease_estimated_time: Diminuisci tempo stimato
     edit_title: Modifica titolo
     increase_estimated_time: Aumenta tempo stimato
+    reminder_date_required: Configura prima una data per configurare i promemoria
+    reminder_help_text:
+      Imposta un promemoria per essere notificato prima della data
+      dell'attività
     set_reminder: Imposta promemoria
+    set_reminder_with_status: Imposta promemoria - Nessun promemoria
     show_completed_tasks: Filtra attività completate
+    show_sub_tasks: Mostra sottoattività
     show_subtasks: Mostra sottoattività
-  validation:
-    deadline_cannot_be_before_planned:
-      La data di scadenza deve essere successiva
-      alla data pianificata
-    deadline_time_invalid: L'orario della scadenza non è valido
   tour:
-    task_management:
-      title: Gestione attività
-      description:
-        Crea e organizza attività con priorità, scadenze e promemoria.
-        Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi
-        sulle attività importanti.
     add_tasks:
-      title: Aggiungi nuove attività
       description:
         Crea rapidamente nuove attività con questo pulsante. Imposta titoli,
         priorità, scadenze, tag e altro. Aggiungi sotto-attività e promemoria per
         rimanere aggiornato sul tuo lavoro.
+      title: Aggiungi nuove attività
+    filter_search:
+      description:
+        Potenti opzioni di filtro per trovare esattamente ciò di cui hai
+        bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina
+        le attività e alterna le sotto-attività per una migliore organizzazione.
+      title: Filtra & Cerca
+    marathon:
+      app_usage:
+        description:
+          Monitora i pattern di utilizzo delle app e analizza il tempo
+          dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini
+          digitali e ottimizza la tua produttività.
+        title: Utilizzo app e analisi temporale
+      filter_sort:
+        description:
+          Filtra i dati sull'utilizzo delle app per intervallo di date,
+          tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo
+          per ottenere migliori prospettive sulla gestione del tempo.
+        title: Filtra & Ordina
+      tracking_settings:
+        description:
+          Configura le regole di tracciamento delle app, imposta l'etichettatura
+          automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento
+          in base alle tue esigenze di produttività.
+        title: Impostazioni di tracciamento
+      usage_statistics:
+        description:
+          Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione
+          del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato
+          a diverse applicazioni e identifica aree di miglioramento.
+        title: Statistiche di utilizzo
+    task_management:
+      description:
+        Crea e organizza attività con priorità, scadenze e promemoria.
+        Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi
+        sulle attività importanti.
+      title: Gestione attività
     your_tasks:
-      title: Le tue attività
       description:
         Visualizza e gestisci tutte le tue attività in un unico posto.
         Clicca su qualsiasi attività per vedere i dettagli, contrassegnarla come completata,
         modificare le informazioni o eliminarla. Rimani organizzato e traccia i tuoi
         progressi.
-    filter_search:
-      title: Filtra & Cerca
-      description:
-        Potenti opzioni di filtro per trovare esattamente ciò di cui hai
-        bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina
-        le attività e alterna le sotto-attività per una migliore organizzazione.
-    marathon:
-      app_usage:
-        title: Utilizzo app e analisi temporale
-        description:
-          Monitora i pattern di utilizzo delle app e analizza il tempo
-          dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini
-          digitali e ottimizza la tua produttività.
-      usage_statistics:
-        title: Statistiche di utilizzo
-        description:
-          Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione
-          del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato
-          a diverse applicazioni e identifica aree di miglioramento.
-      filter_sort:
-        title: Filtra & Ordina
-        description:
-          Filtra i dati sull'utilizzo delle app per intervallo di date,
-          tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo
-          per ottenere migliori prospettive sulla gestione del tempo.
-      tracking_settings:
-        title: Impostazioni di tracciamento
-        description:
-          Configura le regole di tracciamento delle app, imposta l'etichettatura
-          automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento
-          in base alle tue esigenze di produttività.
+      title: Le tue attività
+  validation:
+    deadline_cannot_be_before_planned:
+      La data di scadenza deve essere successiva
+      alla data pianificata
+    deadline_time_invalid: L'orario della scadenza non è valido

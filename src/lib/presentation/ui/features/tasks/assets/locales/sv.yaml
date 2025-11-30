@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Lägg till ny uppgift
-  date_picker:
-    quick_selection:
-      today: Idag
-      tomorrow: Imorgon
-      this_weekend: Denna helg
-      weekend: Helg
-      next_week: Nästa vecka
-      next_weekend: Nästa helg
   all_tasks_done: Alla uppgifter klara!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Schemalägg uppgift
   complete:
     error: Oväntat fel uppstod vid sparande av uppgiftens slutförande.
+  date_picker:
+    quick_selection:
+      next_week: Nästa vecka
+      next_weekend: Nästa helg
+      this_weekend: Denna helg
+      today: Idag
+      tomorrow: Imorgon
+      weekend: Helg
+      next_weekday: Nästa vardag
   date_selection:
     deadline_date_title: Välj förfallodatum
     planned_date_title: Välj planerat datum
@@ -26,37 +27,32 @@ tasks:
     message: Är du säker på att du vill ta bort denna uppgift?
     title: Ta Bort Uppgift
   details:
-    title:
-      label: Titel
-    tags:
-      hint: Välj taggar att associera
-      label: Taggar
-    priority:
-      label: Prioritet
-    planned_date:
-      label: Planerat Datum
     deadline_date:
       label: Förfallodatum
     description:
-      hint: Lägg till beskrivning...
-      label: Beskrivning
       context:
         Lägg till detaljerad information om din uppgift för att hjälpa dig
         komma ihåg viktiga detaljer och följa framsteg.
+      hint: Lägg till beskrivning...
+      label: Beskrivning
     elapsed_time:
       label: Förfluten Tid
     parent_task:
       label: Överordnad Uppgift
       tooltip: Klicka för att navigera till överordnad uppgift
+    planned_date:
+      label: Planerat Datum
+    priority:
+      label: Prioritet
     sub_tasks:
       label: Underuppgifter
+    tags:
+      hint: Välj taggar att associera
+      label: Taggar
     tags_hint: Välj taggar för uppgift
+    title:
+      label: Titel
     total_elapsed_time: Total Förfluten Tid
-  estimated_time:
-    label: Uppskattad Tid
-    description:
-      Sätt realistiska tidsuppskattningar för att effektivt planera din
-      uppgift och följa produktivitet.
   errors:
     add_tag: Oväntat fel uppstod vid tillägg av tagg
     adding_tag: Misslyckades att lägga till tagg
@@ -75,6 +71,11 @@ tasks:
     task_tag_already_deleted: Uppgiftstagg är redan borttagen
     task_tag_already_exists: Denna uppgiftstagg finns redan
     task_tag_not_found: Uppgiftstagg hittades inte
+  estimated_time:
+    description:
+      Sätt realistiska tidsuppskattningar för att effektivt planera din
+      uppgift och följa produktivitet.
+    label: Uppskattad Tid
   filters:
     completion: Efter Slutförandestatus
     deadline_date: Efter Förfallodatum
@@ -257,11 +258,11 @@ tasks:
     urgent_important: Brådskande och Viktig
     urgent_not_important: Brådskande men Inte Viktig
   priority:
-    selection:
-      title: Välj Prioritet
     description:
       Ställ in uppgiftsprioritet med Eisenhower-matrisen - Brådskande/Viktig-klassificering
       för effektiv uppgiftshantering
+    selection:
+      title: Välj Prioritet
     tooltips:
       none: Ingen Prioritet
       not_urgent_important: Inte Brådskande men Viktig
@@ -281,12 +282,12 @@ tasks:
       flera liknande uppgifter. Låsta egenskaper rensas inte när du återställer formuläret.
     lock_settings: Lås Inställningar
     reset_all: Återställ alla fält
-    task_added_successfully: Uppgift tillagd med lyckat
     reset_confirm:
       message:
         Är du säker på att du vill återställa alla fält? Denna åtgärd kan inte
         ångras.
       title: Återställ Alla Fält
+    task_added_successfully: Uppgift tillagd med lyckat
     title: Snabb Uppgift
     title_hint: Ange en beskrivande uppgiftstitel...
     title_placeholder: Vad behöver göras?
@@ -303,7 +304,13 @@ tasks:
     custom: Anpassad
     daily: Dagligen
     daySuffix: dag(ar)
+    daysOfWeek: Veckodagar
     endDate: Slutdatum
+    ends:
+      after: Efter
+      label: Slutar
+      never: Aldrig
+      onDate: På datum
     enterCountHint: Ange antal
     interval:
       label: Upprepa var
@@ -333,12 +340,6 @@ tasks:
     weekly: Veckovis
     yearSuffix: år
     yearly: Årligen
-    daysOfWeek: Veckodagar
-    ends:
-      label: Slutar
-      never: Aldrig
-      onDate: På datum
-      after: Efter
   reminder:
     atTime: Vid schemalagd tid
     deadlineReminderLabel: Deadline Påminnelse
@@ -348,6 +349,7 @@ tasks:
     oneDayBefore: 1 dag innan
     oneHourBefore: 1 timme innan
     plannedReminderLabel: Planerat Datum Påminnelse
+    section_title: Påminnelser
   task_details: Uppgiftsdetaljer
   time_logging:
     add_time: Lägg Till Tid
@@ -376,59 +378,63 @@ tasks:
     decrease_estimated_time: Minska uppskattad tid
     edit_title: Redigera titel
     increase_estimated_time: Öka uppskattad tid
+    reminder_date_required: Ställ in ett datum först för att konfigurera påminnelser
+    reminder_help_text: Ställ in en påminnelse för att bli meddelad före uppgiftsdatumet
     set_reminder: Sätt påminnelse
+    set_reminder_with_status: Sätt påminnelse - Ingen påminnelse
     show_completed_tasks: Filtrera slutförda uppgifter
+    show_sub_tasks: Visa underuppgifter
     show_subtasks: Visa underuppgifter
-  validation:
-    deadline_cannot_be_before_planned: Deadline datum måste vara efter planerat datum
-    deadline_time_invalid: Deadline tid är ogiltig
   tour:
-    task_management:
-      title: Uppgiftshantering
-      description:
-        Skapa och organisera uppgifter med prioriteringar, deadlines och
-        påminnelser. Använd Pomodoro-timern för att behålla fokus och spåra dina framsteg
-        på viktiga uppgifter.
     add_tasks:
-      title: Lägg Till Nya Uppgifter
       description:
         Skapa snabbt nya uppgifter med denna knapp. Ställ in titlar, prioriteringar,
         deadlines, taggar och mer. Lägg till underuppgifter och påminnelser för att
         hålla dig uppdaterad om ditt arbete.
-    your_tasks:
-      title: Dina Uppgifter
-      description:
-        Visa och hantera alla dina uppgifter på ett ställe. Klicka på vilken
-        uppgift som helst för att se detaljer, markera som slutförd, redigera information
-        eller ta bort. Håll dig organiserad och spåra dina framsteg.
+      title: Lägg Till Nya Uppgifter
     filter_search:
-      title: Filtrera & Sök
       description:
         Kraftfulla filteralternativ för att hitta exakt det du behöver.
         Filtrera efter taggar, datum, slutförandestatus eller använd sökningen. Sortera
         uppgifter och växla underuppgifter för bättre organisation.
+      title: Filtrera & Sök
     marathon:
       app_usage:
-        title: Appanvändning & Tidsanalys
         description:
           Övervaka appanvändningsmönster och analysera tiden du spenderar
           på olika aktiviteter. Få insikter om dina digitala vanor och optimera din
           produktivitet.
-      usage_statistics:
-        title: Användningsstatistik
-        description:
-          Visa detaljerad appanvändningsdata och tidsfördelning. Analysera
-          dina produktivitetsmönster, spåra tiden du spenderar på olika applikationer
-          och identifiera förbättringsområden.
+        title: Appanvändning & Tidsanalys
       filter_sort:
-        title: Filtrera & Sortera
         description:
           Filtrera appanvändningsdata efter datumintervall, taggar eller
           specifika enheter. Sortera och organisera din användningsstatistik för bättre
           insikter i tidsstyrning.
+        title: Filtrera & Sortera
       tracking_settings:
-        title: Spårningsinställningar
         description:
           Konfigurera appspårningsregler, ställ in automatisk taggning
           och hantera vilka applikationer som ska spåras. Anpassa spårningen efter
           dina produktivitetsbehov.
+        title: Spårningsinställningar
+      usage_statistics:
+        description:
+          Visa detaljerad appanvändningsdata och tidsfördelning. Analysera
+          dina produktivitetsmönster, spåra tiden du spenderar på olika applikationer
+          och identifiera förbättringsområden.
+        title: Användningsstatistik
+    task_management:
+      description:
+        Skapa och organisera uppgifter med prioriteringar, deadlines och
+        påminnelser. Använd Pomodoro-timern för att behålla fokus och spåra dina framsteg
+        på viktiga uppgifter.
+      title: Uppgiftshantering
+    your_tasks:
+      description:
+        Visa och hantera alla dina uppgifter på ett ställe. Klicka på vilken
+        uppgift som helst för att se detaljer, markera som slutförd, redigera information
+        eller ta bort. Håll dig organiserad och spåra dina framsteg.
+      title: Dina Uppgifter
+  validation:
+    deadline_cannot_be_before_planned: Deadline datum måste vara efter planerat datum
+    deadline_time_invalid: Deadline tid är ogiltig

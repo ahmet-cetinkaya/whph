@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Dodaj nowe zadanie
-  date_picker:
-    quick_selection:
-      today: Dziś
-      tomorrow: Jutro
-      this_weekend: Ten weekend
-      weekend: Weekend
-      next_week: Następny tydzień
-      next_weekend: Następny weekend
   all_tasks_done: Wszystkie zadania ukończone!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Zaplanuj zadanie
   complete:
     error: Wystąpił nieoczekiwany błąd podczas zapisywania ukończenia zadania.
+  date_picker:
+    quick_selection:
+      next_week: Następny tydzień
+      next_weekend: Następny weekend
+      this_weekend: Ten weekend
+      today: Dziś
+      tomorrow: Jutro
+      weekend: Weekend
+      next_weekday: Następny dzień roboczy
   date_selection:
     deadline_date_title: Wybierz datę terminu
     planned_date_title: Wybierz planowaną datę
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Data terminu
     description:
-      hint: Dodaj opis...
-      label: Opis
       context:
         Dodaj szczegółowe informacje o swoim zadaniu, aby pomóc sobie pamiętać
         kluczowe szczegóły i śledzić postępy.
+      hint: Dodaj opis...
+      label: Opis
     elapsed_time:
       label: Czas wykonania
     is_completed: Ukończone
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Tytuł
     total_elapsed_time: Całkowity czas wykonania
-  estimated_time:
-    label: Szacowany czas
-    description:
-      Ustaw realistyczny szacowany czas, aby efektywnie zaplanować zadanie
-      i śledzić produktywność.
   errors:
     add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu
     adding_tag: Nie udało się dodać tagu
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Tag zadania został już usunięty
     task_tag_already_exists: Ten tag zadania już istnieje
     task_tag_not_found: Nie znaleziono tagu zadania
+  estimated_time:
+    description:
+      Ustaw realistyczny szacowany czas, aby efektywnie zaplanować zadanie
+      i śledzić produktywność.
+    label: Szacowany czas
   filters:
     completion: Według statusu ukończenia
     deadline_date: Według daty terminu
@@ -338,11 +339,11 @@ tasks:
     urgent_important: Pilne i ważne
     urgent_not_important: Pilne ale nieważne
   priority:
-    selection:
-      title: Wybierz priorytet
     description:
       Ustaw priorytet zadania używając macierzy Eisenhowera - klasyfikacja
       Pilne/Ważne dla efektywnego zarządzania zadaniami
+    selection:
+      title: Wybierz priorytet
     tooltips:
       none: Brak priorytetu
       not_urgent_important: Niepilne ale ważne
@@ -363,12 +364,12 @@ tasks:
       formularza.
     lock_settings: Ustawienia blokady
     reset_all: Resetuj wszystkie pola
-    task_added_successfully: Zadanie dodane pomyślnie
     reset_confirm:
       message:
         Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być
         cofnięta.
       title: Resetuj wszystkie pola
+    task_added_successfully: Zadanie dodane pomyślnie
     title: Szybkie zadanie
     title_hint: Wprowadź opisowy tytuł zadania...
     title_placeholder: Co trzeba zrobić?
@@ -385,7 +386,13 @@ tasks:
     custom: Niestandardowe
     daily: Codziennie
     daySuffix: dzień/dni
+    daysOfWeek: Dni tygodnia
     endDate: Data końcowa
+    ends:
+      after: Po
+      label: Kończy się
+      never: Nigdy
+      onDate: W dacie
     enterCountHint: Wprowadź liczbę
     interval:
       label: Powtarzaj co
@@ -415,12 +422,6 @@ tasks:
     weekly: Tygodniowo
     yearSuffix: rok/lata
     yearly: Rocznie
-    daysOfWeek: Dni tygodnia
-    ends:
-      label: Kończy się
-      never: Nigdy
-      onDate: W dacie
-      after: Po
   reminder:
     atTime: O zaplanowanej godzinie
     deadlineReminderLabel: Przypomnienie o terminie
@@ -430,6 +431,7 @@ tasks:
     oneDayBefore: 1 dzień wcześniej
     oneHourBefore: 1 godzinę wcześniej
     plannedReminderLabel: Przypomnienie o planowanej dacie
+    section_title: Przypomnienia
   task_details: Szczegóły zadania
   title: Zadania
   tooltips:
@@ -437,59 +439,65 @@ tasks:
     decrease_estimated_time: Zmniejsz szacowany czas
     edit_title: Edytuj tytuł
     increase_estimated_time: Zwiększ szacowany czas
+    reminder_date_required: Najpierw ustaw datę, aby skonfigurować przypomnienia
+    reminder_help_text:
+      Ustaw przypomnienie, aby otrzymać powiadomienie przed datą
+      zadania
     set_reminder: Ustaw przypomnienie
+    set_reminder_with_status: Ustaw przypomnienie - Brak przypomnienia
     show_completed_tasks: Filtruj ukończone zadania
+    show_sub_tasks: Pokaż podzadania
     show_subtasks: Pokaż podzadania
-  validation:
-    deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana
-    deadline_time_invalid: Nieprawidłowy czas terminu
   tour:
-    task_management:
-      title: Zarządzanie zadaniami
-      description:
-        Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami.
-        Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych
-        zadaniach.
     add_tasks:
-      title: Dodaj nowe zadania
       description:
         Szybko twórz nowe zadania za pomocą tego przycisku. Ustaw tytuły,
         priorytety, terminy, tagi i więcej. Dodaj podzadania i przypomnienia, aby
         być na bieżąco z pracą.
-    your_tasks:
-      title: Twoje zadania
-      description:
-        Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu.
-        Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone,
-        edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
+      title: Dodaj nowe zadania
     filter_search:
-      title: Filtruj i szukaj
       description:
         Zaawansowane opcje filtrowania, aby znaleźć dokładnie to, czego
         potrzebujesz. Filtruj według tagów, dat, statusu ukończenia lub użyj wyszukiwania.
         Sortuj zadania i przełączaj podzadania dla lepszej organizacji.
+      title: Filtruj i szukaj
     marathon:
       app_usage:
-        title: Użycie aplikacji i analiza czasu
         description:
           Monitoruj wzorce użycia aplikacji i analizuj czas poświęcany
           różnym aktywnościom. Zdobądź wgląd w swoje cyfrowe nawyki i zoptymalizuj
           produktywność.
-      usage_statistics:
-        title: Statystyki użycia
-        description:
-          Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj
-          swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i
-          identyfikuj obszary do poprawy.
+        title: Użycie aplikacji i analiza czasu
       filter_sort:
-        title: Filtruj i sortuj
         description:
           Filtruj dane użycia aplikacji według zakresu dat, tagów lub konkretnych
           urządzeń. Sortuj i organizuj swoje statystyki użycia, aby uzyskać lepszy
           wgląd w zarządzanie czasem.
+        title: Filtruj i sortuj
       tracking_settings:
-        title: Ustawienia śledzenia
         description:
           Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie
           i zarządzaj, które aplikacje mają być monitorowane. Dostosuj śledzenie do
           swoich potrzeb produktywnościowych.
+        title: Ustawienia śledzenia
+      usage_statistics:
+        description:
+          Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj
+          swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i
+          identyfikuj obszary do poprawy.
+        title: Statystyki użycia
+    task_management:
+      description:
+        Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami.
+        Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych
+        zadaniach.
+      title: Zarządzanie zadaniami
+    your_tasks:
+      description:
+        Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu.
+        Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone,
+        edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
+      title: Twoje zadania
+  validation:
+    deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana
+    deadline_time_invalid: Nieprawidłowy czas terminu

@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: 新しいタスクを追加
-  date_picker:
-    quick_selection:
-      today: 今日
-      tomorrow: 明日
-      this_weekend: 今週末
-      weekend: 週末
-      next_week: 来週
-      next_weekend: 来週末
   all_tasks_done: すべてのタスクが完了しました！
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: タスクをスケジュール
   complete:
     error: タスク完了の保存中に予期しないエラーが発生しました。
+  date_picker:
+    quick_selection:
+      next_week: 来週
+      next_weekend: 来週末
+      this_weekend: 今週末
+      today: 今日
+      tomorrow: 明日
+      weekend: 週末
+      next_weekday: 次の平日
   date_selection:
     deadline_date_title: 期限日を選択
     planned_date_title: 予定日を選択
@@ -29,9 +30,9 @@ tasks:
     deadline_date:
       label: 期限日
     description:
+      context: タスクに関する詳細情報を追加して、重要な詳細を覚え、進捗を追跡するのに役立ててください。
       hint: 説明を追加...
       label: 説明
-      context: タスクに関する詳細情報を追加して、重要な詳細を覚え、進捗を追跡するのに役立ててください。
     elapsed_time:
       label: 経過時間
     is_completed: 完了
@@ -51,9 +52,6 @@ tasks:
     title:
       label: タイトル
     total_elapsed_time: 総経過時間
-  estimated_time:
-    label: 予想時間
-    description: 効率的にタスクを計画し、生産性を追跡するために、現実的な時間見積もりを設定します。
   errors:
     add_tag: タグの追加中に予期しないエラーが発生しました
     adding_tag: タグの追加に失敗しました
@@ -72,6 +70,9 @@ tasks:
     task_tag_already_deleted: タスクタグは既に削除されています
     task_tag_already_exists: このタスクタグは既に存在します
     task_tag_not_found: タスクタグが見つかりません
+  estimated_time:
+    description: 効率的にタスクを計画し、生産性を追跡するために、現実的な時間見積もりを設定します。
+    label: 予想時間
   filters:
     completion: 完了状況で絞り込み
     deadline_date: 期限日で絞り込み
@@ -306,9 +307,9 @@ tasks:
     urgent_important: 緊急かつ重要
     urgent_not_important: 緊急だが重要でない
   priority:
+    description: アイゼンハワー・マトリクスを使用してタスクの優先順位を設定 - 緊急/重要分類による効果的なタスク管理
     selection:
       title: 優先度を選択
-    description: アイゼンハワー・マトリクスを使用してタスクの優先順位を設定 - 緊急/重要分類による効果的なタスク管理
     tooltips:
       none: 優先度なし
       not_urgent_important: 緊急でないが重要
@@ -326,10 +327,10 @@ tasks:
     lock_description: 複数の類似したタスクを作成する際に値を保持するためにプロパティをロックします。ロックされたプロパティはフォームをリセットしてもクリアされません。
     lock_settings: ロック設定
     reset_all: すべてのフィールドをリセット
-    task_added_successfully: タスクが正常に追加されました
     reset_confirm:
       message: すべてのフィールドをリセットしてもよろしいですか？この操作は元に戻せません。
       title: すべてのフィールドをリセット
+    task_added_successfully: タスクが正常に追加されました
     title: クイックタスク
     title_hint: 分かりやすいタスクタイトルを入力してください...
     title_placeholder: 何をする必要がありますか？
@@ -346,7 +347,13 @@ tasks:
     custom: カスタム
     daily: 毎日
     daySuffix: 日
+    daysOfWeek: 曜日
     endDate: 終了日
+    ends:
+      after: 後
+      label: 終了
+      never: なし
+      onDate: 日付で
     enterCountHint: 回数を入力
     interval:
       label: 繰り返し間隔
@@ -376,12 +383,6 @@ tasks:
     weekly: 毎週
     yearSuffix: 年
     yearly: 毎年
-    daysOfWeek: 曜日
-    ends:
-      label: 終了
-      never: なし
-      onDate: 日付で
-      after: 後
   reminder:
     atTime: 予定時刻に
     deadlineReminderLabel: 期限リマインダー
@@ -391,6 +392,7 @@ tasks:
     oneDayBefore: 1日前
     oneHourBefore: 1時間前
     plannedReminderLabel: 予定日リマインダー
+    section_title: リマインダー
   task_details: タスクの詳細
   title: タスク
   tooltips:
@@ -398,35 +400,39 @@ tasks:
     decrease_estimated_time: 予想時間を減らす
     edit_title: タイトルを編集
     increase_estimated_time: 予想時間を増やす
+    reminder_date_required: まず日付を設定してリマインダーを構成してください
+    reminder_help_text: タスク日付の前に通知されるようにリマインダーを設定
     set_reminder: リマインダーを設定
+    set_reminder_with_status: リマインダー設定 - リマインダーなし
     show_completed_tasks: 完了したタスクをフィルター
+    show_sub_tasks: サブタスクを表示
     show_subtasks: サブタスクを表示
+  tour:
+    add_tasks:
+      description: このボタンで素早く新しいタスクを作成できます。タイトル、優先度、期限、タグなどを設定しましょう。サブタスクやリマインダーを追加して作業の最新情報を維持できます。
+      title: 新しいタスクを追加
+    filter_search:
+      description: 必要なものを見つけるための強力なフィルターオプション。タグ、日付、完了状況でフィルターしたり、検索を使用できます。タスクを並べ替え、サブタスクを切り替えてより良い整理ができます。
+      title: フィルターと検索
+    marathon:
+      app_usage:
+        description: アプリの使用パターンを監視し、さまざまな活動に費やした時間を分析します。デジタル習慣に関する洞察を得て、生産性を最適化しましょう。
+        title: アプリ使用状況と時間分析
+      filter_sort:
+        description: 期間、タグ、または特定のデバイスでアプリの使用データをフィルターします。使用統計を並べ替え・整理して、時間管理についてのより良い洞察を得ましょう。
+        title: フィルターと並べ替え
+      tracking_settings:
+        description: アプリの追跡ルールを設定し、自動タグ付けを構成し、監視するアプリケーションを管理します。生産性ニーズに合わせて追跡をカスタマイズしましょう。
+        title: 追跡設定
+      usage_statistics:
+        description: アプリの使用データと時間配分の詳細を表示します。生産性パターンを分析し、さまざまなアプリケーションに費やした時間を追跡し、改善領域を特定します。
+        title: 使用統計
+    task_management:
+      description: 優先度、期限、リマインダー付きのタスクを作成・整理します。ポモドーロタイマーを使用して集中力を維持し、重要なタスクの進捗を追跡しましょう。
+      title: タスク管理
+    your_tasks:
+      description: すべてのタスクを一か所で表示・管理できます。任意のタスクをクリックして詳細を表示、完了としてマーク、情報の編集、削除が可能です。整理された状態を維持し、進捗を追跡しましょう。
+      title: あなたのタスク
   validation:
     deadline_cannot_be_before_planned: 期限は予定日より後でなければなりません
     deadline_time_invalid: 期限時間が無効です
-  tour:
-    task_management:
-      title: タスク管理
-      description: 優先度、期限、リマインダー付きのタスクを作成・整理します。ポモドーロタイマーを使用して集中力を維持し、重要なタスクの進捗を追跡しましょう。
-    add_tasks:
-      title: 新しいタスクを追加
-      description: このボタンで素早く新しいタスクを作成できます。タイトル、優先度、期限、タグなどを設定しましょう。サブタスクやリマインダーを追加して作業の最新情報を維持できます。
-    your_tasks:
-      title: あなたのタスク
-      description: すべてのタスクを一か所で表示・管理できます。任意のタスクをクリックして詳細を表示、完了としてマーク、情報の編集、削除が可能です。整理された状態を維持し、進捗を追跡しましょう。
-    filter_search:
-      title: フィルターと検索
-      description: 必要なものを見つけるための強力なフィルターオプション。タグ、日付、完了状況でフィルターしたり、検索を使用できます。タスクを並べ替え、サブタスクを切り替えてより良い整理ができます。
-    marathon:
-      app_usage:
-        title: アプリ使用状況と時間分析
-        description: アプリの使用パターンを監視し、さまざまな活動に費やした時間を分析します。デジタル習慣に関する洞察を得て、生産性を最適化しましょう。
-      usage_statistics:
-        title: 使用統計
-        description: アプリの使用データと時間配分の詳細を表示します。生産性パターンを分析し、さまざまなアプリケーションに費やした時間を追跡し、改善領域を特定します。
-      filter_sort:
-        title: フィルターと並べ替え
-        description: 期間、タグ、または特定のデバイスでアプリの使用データをフィルターします。使用統計を並べ替え・整理して、時間管理についてのより良い洞察を得ましょう。
-      tracking_settings:
-        title: 追跡設定
-        description: アプリの追跡ルールを設定し、自動タグ付けを構成し、監視するアプリケーションを管理します。生産性ニーズに合わせて追跡をカスタマイズしましょう。

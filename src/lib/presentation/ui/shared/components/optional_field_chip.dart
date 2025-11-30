@@ -8,6 +8,7 @@ class OptionalFieldChip extends StatelessWidget {
   final ValueChanged<bool> onSelected;
   final Color? backgroundColor;
   final Color? selectedColor;
+  final String? tooltip;
 
   const OptionalFieldChip({
     super.key,
@@ -17,11 +18,12 @@ class OptionalFieldChip extends StatelessWidget {
     required this.onSelected,
     this.backgroundColor,
     this.selectedColor,
+    this.tooltip,
   });
 
   @override
   Widget build(BuildContext context) {
-    return FilterChip(
+    final chip = FilterChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -42,5 +44,15 @@ class OptionalFieldChip extends StatelessWidget {
       showCheckmark: false,
       visualDensity: VisualDensity.compact,
     );
+
+    // Wrap with tooltip if provided
+    if (tooltip != null) {
+      return Tooltip(
+        message: tooltip!,
+        child: chip,
+      );
+    }
+
+    return chip;
   }
 }

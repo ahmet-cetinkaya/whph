@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: 새 작업 추가
-  date_picker:
-    quick_selection:
-      today: 오늘
-      tomorrow: 내일
-      this_weekend: 이번 주말
-      weekend: 주말
-      next_week: 다음 주
-      next_weekend: 다음 주말
   all_tasks_done: 모든 작업이 완료되었습니다!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: 작업 일정 잡기
   complete:
     error: 작업 완료 저장 중 예상치 못한 오류가 발생했습니다.
+  date_picker:
+    quick_selection:
+      next_week: 다음 주
+      next_weekend: 다음 주말
+      this_weekend: 이번 주말
+      today: 오늘
+      tomorrow: 내일
+      weekend: 주말
+      next_weekday: 다음 평일
   date_selection:
     deadline_date_title: 마감일 선택
     planned_date_title: 계획일 선택
@@ -29,9 +30,9 @@ tasks:
     deadline_date:
       label: 마감일
     description:
+      context: 작업에 대한 자세한 정보를 추가하여 핵심 세부 사항을 기억하고 진행 상황을 추적하는 데 도움을 받으세요.
       hint: 설명 추가...
       label: 설명
-      context: 작업에 대한 자세한 정보를 추가하여 핵심 세부 사항을 기억하고 진행 상황을 추적하는 데 도움을 받으세요.
     elapsed_time:
       label: 경과 시간
     is_completed: 완료됨
@@ -51,9 +52,6 @@ tasks:
     title:
       label: 제목
     total_elapsed_time: 총 경과 시간
-  estimated_time:
-    label: 예상 시간
-    description: 작업을 효과적으로 계획하고 생산성을 추적하기 위해 현실적인 시간 예측을 설정하세요.
   errors:
     add_tag: 태그 추가 중 예상치 못한 오류가 발생했습니다
     adding_tag: 태그 추가에 실패했습니다
@@ -72,6 +70,9 @@ tasks:
     task_tag_already_deleted: 작업 태그가 이미 삭제되었습니다
     task_tag_already_exists: 이 작업 태그가 이미 존재합니다
     task_tag_not_found: 작업 태그를 찾을 수 없습니다
+  estimated_time:
+    description: 작업을 효과적으로 계획하고 생산성을 추적하기 위해 현실적인 시간 예측을 설정하세요.
+    label: 예상 시간
   filters:
     completion: 완료 상태별
     deadline_date: 마감일별
@@ -311,9 +312,9 @@ tasks:
     urgent_important: 긴급하고 중요함
     urgent_not_important: 긴급하지만 중요하지 않음
   priority:
+    description: 아이젠하워 매트릭스를 사용하여 작업 우선순위 설정 - 긴급/중요 분류를 통한 효과적인 작업 관리
     selection:
       title: 우선순위 선택
-    description: 아이젠하워 매트릭스를 사용하여 작업 우선순위 설정 - 긴급/중요 분류를 통한 효과적인 작업 관리
     tooltips:
       none: 우선순위 없음
       not_urgent_important: 긴급하지 않지만 중요함
@@ -333,10 +334,10 @@ tasks:
       않습니다.
     lock_settings: 잠금 설정
     reset_all: 모든 필드 재설정
-    task_added_successfully: 작업이 성공적으로 추가되었습니다
     reset_confirm:
       message: 모든 필드를 재설정하시겠습니까? 이 작업은 되돌릴 수 없습니다.
       title: 모든 필드 재설정
+    task_added_successfully: 작업이 성공적으로 추가되었습니다
     title: 빠른 작업
     title_hint: 작업 제목
     title_placeholder: 무엇을 해야 하나요?
@@ -353,7 +354,13 @@ tasks:
     custom: 사용자 정의
     daily: 매일
     daySuffix: 일
+    daysOfWeek: 요일
     endDate: 종료일
+    ends:
+      after: 후
+      label: 종료
+      never: 없음
+      onDate: 날짜에
     enterCountHint: 횟수 입력
     interval:
       label: 반복 간격
@@ -383,12 +390,6 @@ tasks:
     weekly: 매주
     yearSuffix: 년
     yearly: 매년
-    daysOfWeek: 요일
-    ends:
-      label: 종료
-      never: 없음
-      onDate: 날짜에
-      after: 후
   reminder:
     atTime: 예정된 시간에
     deadlineReminderLabel: 마감일 알림
@@ -398,6 +399,7 @@ tasks:
     oneDayBefore: 1일 전
     oneHourBefore: 1시간 전
     plannedReminderLabel: 계획일 알림
+    section_title: 알림
   task_details: 작업 세부 정보
   title: 작업
   tooltips:
@@ -405,51 +407,55 @@ tasks:
     decrease_estimated_time: 예상 시간 줄이기
     edit_title: 제목 편집
     increase_estimated_time: 예상 시간 늘리기
+    reminder_date_required: 리마인더를 구성하려면 먼저 날짜를 설정하세요
+    reminder_help_text: 작업 날짜 전에 알림을 받도록 미리 알림을 설정
     set_reminder: 알림 설정
+    set_reminder_with_status: 알림 설정 - 알림 없음
     show_completed_tasks: 완료된 작업 필터링
+    show_sub_tasks: 하위 작업 표시
     show_subtasks: 하위 작업 표시
-  validation:
-    deadline_cannot_be_before_planned: 마감일이 계획일 이후여야 합니다
-    deadline_time_invalid: 마감 시간이 잘못되었습니다
   tour:
-    task_management:
-      title: 작업 관리
-      description:
-        우선순위, 마감일, 알림과 함께 작업을 생성하고 정리하세요. 포모도로 타이머를 사용하여 집중력을 유지하고 중요한
-        작업의 진행 상황을 추적하세요.
     add_tasks:
-      title: 새 작업 추가
       description:
         이 버튼으로 빠르게 새 작업을 생성하세요. 제목, 우선순위, 마감일, 태그 등을 설정하세요. 하위 작업과 알림을
         추가하여 작업 최신 정보를 유지하세요.
-    your_tasks:
-      title: 당신의 작업
-      description:
-        모든 작업을 한 곳에서 보고 관리하세요. 아무 작업이나 클릭하여 세부 정보를 보고, 완료로 표시하고, 정보를 편집하거나
-        삭제하세요. 정리된 상태를 유지하고 진행 상황을 추적하세요.
+      title: 새 작업 추가
     filter_search:
-      title: 필터 및 검색
       description:
         필요한 것을 정확히 찾을 수 있는 강력한 필터 옵션입니다. 태그, 날짜, 완료 상태별로 필터하거나 검색을 사용하세요.
         작업을 정렬하고 하위 작업을 전환하여 더 나은 정리를 하세요.
+      title: 필터 및 검색
     marathon:
       app_usage:
-        title: 앱 사용 및 시간 분석
         description:
           앱 사용 패턴을 모니터링하고 다양한 활동에 소요한 시간을 분석하세요. 디지털 습관에 대한 통찰력을 얻고 생산성을
           최적화하세요.
-      usage_statistics:
-        title: 사용 통계
-        description:
-          앱 사용 데이터와 시간 분배의 상세 정보를 보여줍니다. 생산성 패턴을 분석하고, 다양한 애플리케이션에 소요한
-          시간을 추적하며, 개선 영역을 파악하세요.
+        title: 앱 사용 및 시간 분석
       filter_sort:
-        title: 필터 및 정렬
         description:
           기간, 태그 또는 특정 기기별로 앱 사용 데이터를 필터링하세요. 사용 통계를 정렬하고 조직화하여 시간 관리에
           대한 더 나은 통찰력을 얻으세요.
+        title: 필터 및 정렬
       tracking_settings:
-        title: 추적 설정
         description:
           앱 추적 규칙을 구성하고, 자동 태깅을 설정하며, 추적할 애플리케이션을 관리하세요. 생산성 요구사항에 맞게 추적을
           사용자 정의하세요.
+        title: 추적 설정
+      usage_statistics:
+        description:
+          앱 사용 데이터와 시간 분배의 상세 정보를 보여줍니다. 생산성 패턴을 분석하고, 다양한 애플리케이션에 소요한
+          시간을 추적하며, 개선 영역을 파악하세요.
+        title: 사용 통계
+    task_management:
+      description:
+        우선순위, 마감일, 알림과 함께 작업을 생성하고 정리하세요. 포모도로 타이머를 사용하여 집중력을 유지하고 중요한
+        작업의 진행 상황을 추적하세요.
+      title: 작업 관리
+    your_tasks:
+      description:
+        모든 작업을 한 곳에서 보고 관리하세요. 아무 작업이나 클릭하여 세부 정보를 보고, 완료로 표시하고, 정보를 편집하거나
+        삭제하세요. 정리된 상태를 유지하고 진행 상황을 추적하세요.
+      title: 당신의 작업
+  validation:
+    deadline_cannot_be_before_planned: 마감일이 계획일 이후여야 합니다
+    deadline_time_invalid: 마감 시간이 잘못되었습니다
