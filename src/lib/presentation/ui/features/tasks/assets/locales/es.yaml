@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Añadir nueva tarea
-  date_picker:
-    quick_selection:
-      today: Hoy
-      tomorrow: Mañana
-      this_weekend: Este fin de semana
-      weekend: Fin de semana
-      next_week: Próxima semana
-      next_weekend: Próximo fin de semana
   all_tasks_done: ¡Todas las tareas completadas!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Programar tarea
   complete:
     error: Error inesperado al guardar la finalización de la tarea.
+  date_picker:
+    quick_selection:
+      next_week: Próxima semana
+      next_weekend: Próximo fin de semana
+      this_weekend: Este fin de semana
+      today: Hoy
+      tomorrow: Mañana
+      weekend: Fin de semana
+      next_weekday: Próximo día laboral
   date_selection:
     deadline_date_title: Seleccionar fecha límite
     planned_date_title: Seleccionar fecha planificada
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Fecha límite
     description:
-      hint: Añadir descripción...
-      label: Descripción
       context:
         Agregue información detallada sobre su tarea para ayudarle a recordar
         detalles clave y seguir el progreso.
+      hint: Añadir descripción...
+      label: Descripción
     elapsed_time:
       label: Tiempo transcurrido
     is_completed: Completado
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Título
     total_elapsed_time: Tiempo total transcurrido
-  estimated_time:
-    label: Tiempo estimado
-    description:
-      Establece una estimación de tiempo realista para planificar tu tarea
-      eficazmente y rastrear la productividad.
   errors:
     add_tag: Error inesperado al añadir la etiqueta
     adding_tag: No se pudo añadir la etiqueta
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: La etiqueta de tarea ya está eliminada
     task_tag_already_exists: Esta etiqueta de tarea ya existe
     task_tag_not_found: Etiqueta de tarea no encontrada
+  estimated_time:
+    description:
+      Establece una estimación de tiempo realista para planificar tu tarea
+      eficazmente y rastrear la productividad.
+    label: Tiempo estimado
   filters:
     completion: Por estado de finalización
     deadline_date: Por fecha límite
@@ -341,11 +342,11 @@ tasks:
     urgent_important: Urgente e importante
     urgent_not_important: Urgente pero no importante
   priority:
-    selection:
-      title: Seleccionar prioridad
     description:
       Establezca la prioridad de la tarea usando la Matriz de Eisenhower
       - clasificación Urgente/Importante para una gestión de tareas efectiva
+    selection:
+      title: Seleccionar prioridad
     tooltips:
       none: Sin prioridad
       not_urgent_important: No urgente pero importante
@@ -366,12 +367,12 @@ tasks:
       el formulario.
     lock_settings: Configuración de bloqueo
     reset_all: Reiniciar todos los campos
-    task_added_successfully: Tarea añadida con éxito
     reset_confirm:
       message:
         ¿Estás seguro de que quieres reiniciar todos los campos? Esta acción
         no se puede deshacer.
       title: Reiniciar todos los campos
+    task_added_successfully: Tarea añadida con éxito
     title: Tarea rápida
     title_hint: Título de la tarea
     title_placeholder: ¿Qué necesita ser hecho?
@@ -388,7 +389,13 @@ tasks:
     custom: Personalizado
     daily: Diario
     daySuffix: día(s)
+    daysOfWeek: Días de la semana
     endDate: Fecha de fin
+    ends:
+      after: Después
+      label: Termina
+      never: Nunca
+      onDate: En fecha
     enterCountHint: Ingresar cantidad
     interval:
       label: Repetir cada
@@ -418,12 +425,6 @@ tasks:
     weekly: Semanal
     yearSuffix: año(s)
     yearly: Anual
-    daysOfWeek: Días de la semana
-    ends:
-      label: Termina
-      never: Nunca
-      onDate: En fecha
-      after: Después
   reminder:
     atTime: A la hora programada
     deadlineReminderLabel: Recordatorio de fecha límite
@@ -433,6 +434,10 @@ tasks:
     oneDayBefore: 1 día antes
     oneHourBefore: 1 hora antes
     plannedReminderLabel: Recordatorio de fecha planificada
+    section_title: Recordatorios
+    custom: Personalizado
+    custom_title: Recordatorio personalizado
+    before_suffix: antes
   task_details: Detalles de la tarea
   title: Tareas
   tooltips:
@@ -440,61 +445,73 @@ tasks:
     decrease_estimated_time: Disminuir tiempo estimado
     edit_title: Editar título
     increase_estimated_time: Aumentar tiempo estimado
+    reminder_date_required: Configure primero una fecha para configurar los recordatorios
+    reminder_help_text:
+      Establece un recordatorio para ser notificado antes de la
+      fecha de la tarea
     set_reminder: Establecer recordatorio
+    set_reminder_with_status: Establecer recordatorio - Sin recordatorio
     show_completed_tasks: Filtrar tareas completadas
+    show_sub_tasks: Mostrar subtareas
     show_subtasks: Mostrar subtareas
+  tour:
+    add_tasks:
+      description:
+        Crea nuevas tareas rápidamente con este botón. Establece títulos,
+        prioridades, fechas límite, etiquetas y más. Añade subtareas y recordatorios
+        para mantenerte al día con tu trabajo.
+      title: Añadir nuevas tareas
+    filter_search:
+      description:
+        Potentes opciones de filtrado para encontrar exactamente lo que
+        necesitas. Filtra por etiquetas, fechas, estado de finalización o usa la búsqueda.
+        Ordena tareas y alterna subtareas para una mejor organización.
+      title: Filtrar y buscar
+    marathon:
+      app_usage:
+        description:
+          Monitorea patrones de uso de aplicaciones y analiza el tiempo
+          que dedicas a diferentes actividades. Obtén información sobre tus hábitos
+          digitales y optimiza tu productividad.
+        title: Uso de aplicaciones e información de tiempo
+      filter_sort:
+        description:
+          Filtra datos de uso de aplicaciones por rango de fechas, etiquetas
+          o dispositivos específicos. Ordena y organiza tus estadísticas de uso para
+          obtener mejores perspectivas sobre tu gestión del tiempo.
+        title: Filtrar y ordenar
+      tracking_settings:
+        description:
+          Configura reglas de seguimiento de aplicaciones, establece etiquetado
+          automático y gestiona qué aplicaciones monitorear. Personaliza el seguimiento
+          para adaptarse a tus necesidades de productividad.
+        title: Configuración de seguimiento
+      usage_statistics:
+        description:
+          Visualiza datos detallados de uso de aplicaciones y distribución
+          del tiempo. Analiza tus patrones de productividad, rastrea el tiempo dedicado
+          a diferentes aplicaciones e identifica áreas de mejora.
+        title: Estadísticas de uso
+    task_management:
+      description:
+        Crea y organiza tareas con prioridades, fechas límite y recordatorios.
+        Usa el temporizador Pomodoro para mantenerte enfocado y rastrear tu progreso
+        en tareas importantes.
+      title: Gestión de tareas
+    your_tasks:
+      description:
+        Visualiza y gestiona todas tus tareas en un solo lugar. Haz clic
+        en cualquier tarea para ver detalles, marcar como completada, editar información
+        o eliminar. Mantente organizado y rastrea tu progreso.
+      title: Tus tareas
   validation:
     deadline_cannot_be_before_planned:
       La fecha límite debe ser posterior a la fecha
       planificada
     deadline_time_invalid: La hora límite no es válida
-  tour:
-    task_management:
-      title: Gestión de tareas
-      description:
-        Crea y organiza tareas con prioridades, fechas límite y recordatorios.
-        Usa el temporizador Pomodoro para mantenerte enfocado y rastrear tu progreso
-        en tareas importantes.
-    add_tasks:
-      title: Añadir nuevas tareas
-      description:
-        Crea nuevas tareas rápidamente con este botón. Establece títulos,
-        prioridades, fechas límite, etiquetas y más. Añade subtareas y recordatorios
-        para mantenerte al día con tu trabajo.
-    your_tasks:
-      title: Tus tareas
-      description:
-        Visualiza y gestiona todas tus tareas en un solo lugar. Haz clic
-        en cualquier tarea para ver detalles, marcar como completada, editar información
-        o eliminar. Mantente organizado y rastrea tu progreso.
-    filter_search:
-      title: Filtrar y buscar
-      description:
-        Potentes opciones de filtrado para encontrar exactamente lo que
-        necesitas. Filtra por etiquetas, fechas, estado de finalización o usa la búsqueda.
-        Ordena tareas y alterna subtareas para una mejor organización.
-    marathon:
-      app_usage:
-        title: Uso de aplicaciones e información de tiempo
-        description:
-          Monitorea patrones de uso de aplicaciones y analiza el tiempo
-          que dedicas a diferentes actividades. Obtén información sobre tus hábitos
-          digitales y optimiza tu productividad.
-      usage_statistics:
-        title: Estadísticas de uso
-        description:
-          Visualiza datos detallados de uso de aplicaciones y distribución
-          del tiempo. Analiza tus patrones de productividad, rastrea el tiempo dedicado
-          a diferentes aplicaciones e identifica áreas de mejora.
-      filter_sort:
-        title: Filtrar y ordenar
-        description:
-          Filtra datos de uso de aplicaciones por rango de fechas, etiquetas
-          o dispositivos específicos. Ordena y organiza tus estadísticas de uso para
-          obtener mejores perspectivas sobre tu gestión del tiempo.
-      tracking_settings:
-        title: Configuración de seguimiento
-        description:
-          Configura reglas de seguimiento de aplicaciones, establece etiquetado
-          automático y gestiona qué aplicaciones monitorear. Personaliza el seguimiento
-          para adaptarse a tus necesidades de productividad.
+shared:
+  time:
+    minutes: minutos
+    hours: horas
+    days: días
+    weeks: semanas

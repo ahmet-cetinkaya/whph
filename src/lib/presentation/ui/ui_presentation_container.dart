@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
@@ -62,6 +63,7 @@ void registerUIPresentation(IContainer container) {
         container.resolve<HabitsService>(),
         container.resolve<ITranslationService>(),
         container.resolve<INotificationPayloadHandler>(),
+        container.resolve<IReminderCalculationService>(),
       ));
   container.registerSingleton<INotificationPayloadHandler>(
     (_) => JsonNotificationPayloadHandler(navigatorKey),

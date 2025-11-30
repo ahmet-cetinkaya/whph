@@ -1,0 +1,190 @@
+import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/shared/utils/logger.dart';
+
+class ReminderCalculationService extends IReminderCalculationService {
+  final ITaskRecurrenceService _recurrenceService;
+
+  ReminderCalculationService(this._recurrenceService);
+
+  @override
+  DateTime? calculateReminderDateTime({
+    required DateTime? baseDate,
+    required ReminderTime reminderTime,
+    int? customOffset,
+  }) {
+    if (baseDate == null || reminderTime == ReminderTime.none) {
+      return null;
+    }
+
+    if (!validateReminderSettings(reminderTime: reminderTime, customOffset: customOffset)) {
+      Logger.warning('⚠️ ReminderCalculationService: Invalid reminder settings provided');
+      return null;
+    }
+
+    try {
+      switch (reminderTime) {
+        case ReminderTime.atTime:
+          return baseDate;
+
+        case ReminderTime.fiveMinutesBefore:
+          return baseDate.subtract(const Duration(minutes: 5));
+
+        case ReminderTime.fifteenMinutesBefore:
+          return baseDate.subtract(const Duration(minutes: 15));
+
+        case ReminderTime.oneHourBefore:
+          return baseDate.subtract(const Duration(hours: 1));
+
+        case ReminderTime.oneDayBefore:
+          return baseDate.subtract(const Duration(days: 1));
+
+        case ReminderTime.custom:
+          if (customOffset != null) {
+            return baseDate.subtract(Duration(minutes: customOffset));
+          }
+          Logger.warning('⚠️ ReminderCalculationService: Custom reminder time requires offset');
+          return null;
+
+        case ReminderTime.none:
+          return null;
+      }
+    } catch (e) {
+      Logger.error('❌ ReminderCalculationService: Error calculating reminder datetime: $e');
+      return null;
+    }
+  }
+
+  @override
+  bool validateReminderSettings({
+    required ReminderTime reminderTime,
+    int? customOffset,
+  }) {
+    if (reminderTime == ReminderTime.none) {
+      return true; // No reminder is valid
+    }
+
+    if (reminderTime == ReminderTime.custom) {
+      return ReminderOffsets.isValidCustomOffset(customOffset);
+    }
+
+    // For predefined reminder times, no additional validation needed
+    return true;
+  }
+
+  @override
+  DateTime? getNextReminderOccurrence({
+    required Task task,
+    DateTime? afterDate,
+  }) {
+    try {
+      final searchDate = afterDate ?? DateTime.now();
+
+      // If task is not recurring, check single reminder
+      if (!_recurrenceService.isRecurring(task)) {
+        return calculateReminderDateTime(
+          baseDate: task.plannedDate ?? task.deadlineDate,
+          reminderTime: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderTime
+              : task.deadlineDateReminderTime,
+          customOffset: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderCustomOffset
+              : task.deadlineDateReminderCustomOffset,
+        );
+      }
+
+      // For recurring tasks, calculate next occurrence
+      final baseDate = task.plannedDate ?? task.deadlineDate ?? searchDate;
+
+      // Check if we can create the next instance
+      if (!_recurrenceService.canCreateNextInstance(task)) {
+        // Check the final occurrence
+        final reminderDateTime = calculateReminderDateTime(
+          baseDate: baseDate,
+          reminderTime: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderTime
+              : task.deadlineDateReminderTime,
+          customOffset: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderCustomOffset
+              : task.deadlineDateReminderCustomOffset,
+        );
+        if (reminderDateTime != null && reminderDateTime.isAfter(searchDate)) {
+          return reminderDateTime;
+        }
+        return null;
+      }
+
+      // Calculate next recurrence date
+      final nextRecurrenceDate = _recurrenceService.calculateNextRecurrenceDate(task, baseDate);
+
+      // If next date is in the past, check current date
+      if (nextRecurrenceDate.isBefore(searchDate) || nextRecurrenceDate.isAtSameMomentAs(searchDate)) {
+        // Calculate reminder for a future date
+        final futureDate = searchDate.add(const Duration(days: 1));
+        return calculateReminderDateTime(
+          baseDate: futureDate,
+          reminderTime: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderTime
+              : task.deadlineDateReminderTime,
+          customOffset: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderCustomOffset
+              : task.deadlineDateReminderCustomOffset,
+        );
+      }
+
+      // Calculate reminder for the next recurrence
+      return calculateReminderDateTime(
+        baseDate: nextRecurrenceDate,
+        reminderTime: task.plannedDateReminderTime != ReminderTime.none
+            ? task.plannedDateReminderTime
+            : task.deadlineDateReminderTime,
+        customOffset: task.plannedDateReminderTime != ReminderTime.none
+            ? task.plannedDateReminderCustomOffset
+            : task.deadlineDateReminderCustomOffset,
+      );
+    } catch (e) {
+      Logger.error('❌ ReminderCalculationService: Error getting next reminder occurrence: $e');
+      return null;
+    }
+  }
+
+  @override
+  bool shouldReminderTrigger({
+    required Task task,
+    required DateTime currentTime,
+  }) {
+    try {
+      // For non-recurring tasks
+      if (task.recurrenceType == RecurrenceType.none) {
+        final reminderDateTime = calculateReminderDateTime(
+          baseDate: task.plannedDate ?? task.deadlineDate,
+          reminderTime: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderTime
+              : task.deadlineDateReminderTime,
+          customOffset: task.plannedDateReminderTime != ReminderTime.none
+              ? task.plannedDateReminderCustomOffset
+              : task.deadlineDateReminderCustomOffset,
+        );
+
+        if (reminderDateTime == null) return false;
+
+        // Check if current time is within a reasonable window (e.g., within 1 minute)
+        final timeDifference = currentTime.difference(reminderDateTime).abs();
+        return timeDifference.inMinutes <= 1;
+      }
+
+      // For recurring tasks, check if we're due for a reminder
+      final nextReminder =
+          getNextReminderOccurrence(task: task, afterDate: currentTime.subtract(const Duration(minutes: 1)));
+
+      if (nextReminder == null) return false;
+
+      final timeDifference = nextReminder.difference(currentTime).abs();
+      return timeDifference.inMinutes <= 1;
+    } catch (e) {
+      Logger.error('❌ ReminderCalculationService: Error checking if reminder should trigger: $e');
+      return false;
+    }
+  }
+}

@@ -145,24 +145,40 @@ shared:
     file_write: Błąd podczas zapisywania pliku
     loading: Wystąpił błąd podczas ładowania danych
     report_subject: "{appName} App: Raport nieoczekiwanego błędu"
-    report_template: |
-      Cześć, napotkałem nieoczekiwany błąd podczas korzystania z aplikacji {appName}.
+    report_template:
+      "Cześć, napotkałem nieoczekiwany błąd podczas korzystania z aplikacji
+      {appName}.
+
 
       Oto informacje, które mogą pomóc w zdiagnozowaniu problemu:
+
       Wersja aplikacji: {version}
+
       Informacje o urządzeniu: {device}
+
       System operacyjny: {os}
+
       Wersja systemu: {osVersion}
+
       Komunikat błędu:
+
       ```
+
       {error}
+
       Ślad stosu:
+
       {stackTrace}
+
       ```
+
 
       Proszę o pomoc w rozwiązaniu tego problemu.
 
+
       Dziękuję!
+
+      "
     saving: Wystąpił błąd podczas zapisywania danych
     storage_permission: Wymagane uprawnienie do pamięci
     storage_permission_denied: Odmówiono dostępu do pamięci
@@ -170,7 +186,9 @@ shared:
   startup_error:
     copied_to_clipboard: Szczegóły błędu skopiowane do schowka
     copy_button: Kopiuj szczegóły błędu
-    description: Coś poszło nie tak podczas uruchamiania aplikacji. Może to być spowodowane problemem systemowym lub niezgodną konfiguracją.
+    description:
+      Coś poszło nie tak podczas uruchamiania aplikacji. Może to być spowodowane
+      problemem systemowym lub niezgodną konfiguracją.
     details_title: Szczegóły Błędu
     report_button: Zgłoś Problem
     title: Błąd Uruchamiania Aplikacji
@@ -237,6 +255,10 @@ shared:
       title: Użycie godzinowe
   time:
     not_set: Nie ustawiono
+    minutes: minuty
+    hours: godziny
+    days: dni
+    weeks: tygodnie
   time_display:
     elapsed: Upłynął
     elapsed_time_tooltip: Czas spędzony na tym zadaniu
@@ -324,7 +346,9 @@ shared:
     time_must_be_at_or_before: Time must be {time} or earlier
     selected_date_must_be_at_or_after: Selected date must be {date} or later
     selected_date_must_be_at_or_before: Selected date must be {date} or earlier
-    start_date_cannot_be_after_end_date: Data początkowa nie może być późniejsza niż data końcowa
+    start_date_cannot_be_after_end_date:
+      Data początkowa nie może być późniejsza niż
+      data końcowa
     start_date_must_be_at_or_after: Start date must be {date} or later
     end_date_must_be_at_or_before: End date must be {date} or earlier
     cannot_select_date_before_min_date: Cannot select date before {date}

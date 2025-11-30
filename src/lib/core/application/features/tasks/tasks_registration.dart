@@ -17,6 +17,8 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
+import 'package:whph/core/application/features/tasks/services/reminder_calculation_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 
 void registerTasksFeature(
@@ -31,6 +33,11 @@ void registerTasksFeature(
   // Register the task recurrence service
   container.registerSingleton<ITaskRecurrenceService>(
     (container) => TaskRecurrenceService(container.resolve<ILogger>()),
+  );
+
+  // Register the reminder calculation service
+  container.registerSingleton<IReminderCalculationService>(
+    (container) => ReminderCalculationService(container.resolve<ITaskRecurrenceService>()),
   );
 
   mediator

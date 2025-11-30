@@ -17,6 +17,7 @@ enum ReminderTime {
   fifteenMinutesBefore,
   oneHourBefore,
   oneDayBefore,
+  custom,
 }
 
 /// Recurrence type options for recurring tasks
@@ -47,6 +48,10 @@ class Task extends BaseEntity<String> {
 
   @JsonProperty(defaultValue: 'ReminderTime.none')
   ReminderTime deadlineDateReminderTime = ReminderTime.none;
+
+  // Custom reminder offsets (in minutes)
+  int? plannedDateReminderCustomOffset;
+  int? deadlineDateReminderCustomOffset;
 
   // Recurrence settings
   @JsonProperty(defaultValue: 'RecurrenceType.none')
@@ -82,6 +87,32 @@ class Task extends BaseEntity<String> {
     completedAt = null;
   }
 
+  /// Validates custom reminder offset for planned date
+  bool get isValidPlannedDateCustomOffset {
+    return ReminderOffsets.isValidCustomOffset(plannedDateReminderCustomOffset);
+  }
+
+  /// Validates custom reminder offset for deadline date
+  bool get isValidDeadlineDateCustomOffset {
+    return ReminderOffsets.isValidCustomOffset(deadlineDateReminderCustomOffset);
+  }
+
+  /// Gets a human-readable description for planned date reminder offset
+  String? get plannedDateReminderDescription {
+    if (plannedDateReminderTime == ReminderTime.custom && isValidPlannedDateCustomOffset) {
+      return ReminderOffsets.getOffsetDescription(plannedDateReminderCustomOffset!);
+    }
+    return null;
+  }
+
+  /// Gets a human-readable description for deadline date reminder offset
+  String? get deadlineDateReminderDescription {
+    if (deadlineDateReminderTime == ReminderTime.custom && isValidDeadlineDateCustomOffset) {
+      return ReminderOffsets.getOffsetDescription(deadlineDateReminderCustomOffset!);
+    }
+    return null;
+  }
+
   Task({
     required super.id,
     required super.createdDate,
@@ -98,6 +129,8 @@ class Task extends BaseEntity<String> {
     this.order = 0.0,
     this.plannedDateReminderTime = ReminderTime.none,
     this.deadlineDateReminderTime = ReminderTime.none,
+    this.plannedDateReminderCustomOffset,
+    this.deadlineDateReminderCustomOffset,
     this.recurrenceType = RecurrenceType.none,
     this.recurrenceInterval,
     this.recurrenceDaysString,
@@ -131,6 +164,8 @@ class Task extends BaseEntity<String> {
         'order': order,
         'plannedDateReminderTime': plannedDateReminderTime.toString(),
         'deadlineDateReminderTime': deadlineDateReminderTime.toString(),
+        'plannedDateReminderCustomOffset': plannedDateReminderCustomOffset,
+        'deadlineDateReminderCustomOffset': deadlineDateReminderCustomOffset,
         'recurrenceType': recurrenceType.toString(),
         'recurrenceInterval': recurrenceInterval,
         'recurrenceDaysString': recurrenceDaysString,
@@ -158,6 +193,8 @@ class Task extends BaseEntity<String> {
     double? order,
     ReminderTime? plannedDateReminderTime,
     ReminderTime? deadlineDateReminderTime,
+    int? plannedDateReminderCustomOffset,
+    int? deadlineDateReminderCustomOffset,
     RecurrenceType? recurrenceType,
     int? recurrenceInterval,
     String? recurrenceDaysString,
@@ -182,6 +219,8 @@ class Task extends BaseEntity<String> {
       order: order ?? this.order,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      plannedDateReminderCustomOffset: plannedDateReminderCustomOffset ?? this.plannedDateReminderCustomOffset,
+      deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset ?? this.deadlineDateReminderCustomOffset,
       recurrenceType: recurrenceType ?? this.recurrenceType,
       recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
       recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
@@ -236,6 +275,29 @@ class Task extends BaseEntity<String> {
         recurrenceCount = countValue.toInt();
       }
 
+      // Handle custom reminder offsets with validation
+      int? plannedDateReminderCustomOffset;
+      final plannedOffsetValue = json['plannedDateReminderCustomOffset'];
+      if (plannedOffsetValue is num) {
+        plannedDateReminderCustomOffset = plannedOffsetValue.toInt();
+        if (!ReminderOffsets.isValidCustomOffset(plannedDateReminderCustomOffset)) {
+          Logger.warning(
+              '⚠️ Task.fromJson: Invalid plannedDateReminderCustomOffset value "$plannedDateReminderCustomOffset", ignoring value');
+          plannedDateReminderCustomOffset = null;
+        }
+      }
+
+      int? deadlineDateReminderCustomOffset;
+      final deadlineOffsetValue = json['deadlineDateReminderCustomOffset'];
+      if (deadlineOffsetValue is num) {
+        deadlineDateReminderCustomOffset = deadlineOffsetValue.toInt();
+        if (!ReminderOffsets.isValidCustomOffset(deadlineDateReminderCustomOffset)) {
+          Logger.warning(
+              '⚠️ Task.fromJson: Invalid deadlineDateReminderCustomOffset value "$deadlineDateReminderCustomOffset", ignoring value');
+          deadlineDateReminderCustomOffset = null;
+        }
+      }
+
       // Handle enum parsing with better error handling
       final priority = json['priority'] != null
           ? _parseEnum<EisenhowerPriority?>(EisenhowerPriority.values, json['priority'], null, 'priority')
@@ -279,6 +341,8 @@ class Task extends BaseEntity<String> {
         order: order,
         plannedDateReminderTime: plannedDateReminderTime,
         deadlineDateReminderTime: deadlineDateReminderTime,
+        plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
+        deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset,
         recurrenceType: recurrenceType,
         recurrenceInterval: recurrenceInterval,
         recurrenceDaysString: json['recurrenceDaysString'] as String?,
@@ -295,5 +359,37 @@ class Task extends BaseEntity<String> {
       Logger.error('❌ Stack trace: $stackTrace');
       rethrow;
     }
+  }
+}
+
+/// Constants for reminder offset values and validation
+class ReminderOffsets {
+  static const int fiveMinutes = 5;
+  static const int fifteenMinutes = 15;
+  static const int oneHour = 60;
+  static const int oneDay = 1440; // 24 * 60
+  static const int oneWeek = 10080; // 7 * 24 * 60
+
+  // Validation bounds
+  static const int minCustomOffset = 1; // 1 minute minimum
+  static const int maxCustomOffset = 525600; // 1 year maximum (60 * 24 * 365)
+
+  /// Validates if a custom offset is within acceptable range
+  static bool isValidCustomOffset(int? offset) {
+    return offset != null && offset >= minCustomOffset && offset <= maxCustomOffset;
+  }
+
+  /// Gets a human-readable description for the offset
+  static String getOffsetDescription(int offset) {
+    if (offset == fiveMinutes) return '5 minutes';
+    if (offset == fifteenMinutes) return '15 minutes';
+    if (offset == oneHour) return '1 hour';
+    if (offset == oneDay) return '1 day';
+    if (offset == oneWeek) return '1 week';
+
+    if (offset < 60) return '$offset minutes';
+    if (offset < 1440) return '${(offset / 60).round()} hours';
+    if (offset < 10080) return '${(offset / 1440).round()} days';
+    return '${(offset / 10080).round()} weeks';
   }
 }

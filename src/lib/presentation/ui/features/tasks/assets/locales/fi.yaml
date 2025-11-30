@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Lisää uusi tehtävä
-  date_picker:
-    quick_selection:
-      today: Tänään
-      tomorrow: Huomenna
-      this_weekend: Tämä viikonloppu
-      weekend: Viikonloppu
-      next_week: Ensi viikko
-      next_weekend: Ensi viikonloppu
   all_tasks_done: Kaikki tehtävät valmiiksi!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Aikatauluta tehtävä
   complete:
     error: Odottamaton virhe tallennettaessa tehtävän valmistumista.
+  date_picker:
+    quick_selection:
+      next_week: Ensi viikko
+      next_weekend: Ensi viikonloppu
+      this_weekend: Tämä viikonloppu
+      today: Tänään
+      tomorrow: Huomenna
+      weekend: Viikonloppu
+      next_weekday: Seuraava arkipäivä
   date_selection:
     deadline_date_title: Valitse eräpäivä
     planned_date_title: Valitse suunniteltu päivä
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Eräpäivä
     description:
-      hint: Lisää kuvaus...
-      label: Kuvaus
       context:
         Lisää yksityiskohtaisia tietoja tehtävästäsi auttaaksesi sinua muistamaan
         tärkeitä yksityiskohtia ja seuraamaan edistymistä.
+      hint: Lisää kuvaus...
+      label: Kuvaus
     elapsed_time:
       label: Kulunut Aika
     is_completed: Valmis
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Otsikko
     total_elapsed_time: Kokonaiskulunut Aika
-  estimated_time:
-    label: Arvioitu Aika
-    description:
-      Aseta realistinen aikavaativus tehokkaaseen tehtävän suunnitteluun
-      ja tuottavuuden seurantaan.
   errors:
     add_tag: Odottamaton virhe lisättäessä tunnistetta
     adding_tag: Tunnisteen lisäys epäonnistui
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Tehtävän tunniste on jo poistettu
     task_tag_already_exists: Tämä tehtävän tunniste on jo olemassa
     task_tag_not_found: Tehtävän tunnistetta ei löytynyt
+  estimated_time:
+    description:
+      Aseta realistinen aikavaativus tehokkaaseen tehtävän suunnitteluun
+      ja tuottavuuden seurantaan.
+    label: Arvioitu Aika
   filters:
     completion: Valmistumistilan Mukaan
     deadline_date: Eräpäivän Mukaan
@@ -256,11 +257,11 @@ tasks:
     urgent_important: Kiireellinen ja Tärkeä
     urgent_not_important: Kiireellinen mutta Ei Tärkeä
   priority:
-    selection:
-      title: Valitse Prioriteetti
     description:
       Aseta tehtävän prioriteetti Eisenhowerin matriisilla - Kiireellinen/Tärkeä
       -luokittelu tehokasta tehtävänhallintaa varten
+    selection:
+      title: Valitse Prioriteetti
     tooltips:
       none: Ei Prioriteettia
       not_urgent_important: Ei Kiireellinen mutta Tärkeä
@@ -280,12 +281,12 @@ tasks:
       samanlaisia tehtäviä. Lukitut ominaisuudet eivät tyhjene kun nollaat lomakkeen.
     lock_settings: Lukitusasetukset
     reset_all: Nollaa kaikki kentät
-    task_added_successfully: Tehtävä lisätty onnistuneesti
     reset_confirm:
       message:
         Oletko varma että haluat nollata kaikki kentät? Tätä toimintoa ei voi
         perua.
       title: Nollaa Kaikki Kentät
+    task_added_successfully: Tehtävä lisätty onnistuneesti
     title: Nopea Tehtävä
     title_hint: Anna kuvaileva tehtäväotsikko...
     title_placeholder: Mitä pitää tehdä?
@@ -302,7 +303,13 @@ tasks:
     custom: Mukautettu
     daily: Päivittäin
     daySuffix: päivä(ä)
+    daysOfWeek: Viikonpäivät
     endDate: Lopetuspäivä
+    ends:
+      after: Jälkeen
+      label: Päättyy
+      never: Ei koskaan
+      onDate: Päivämääränä
     enterCountHint: Anna määrä
     interval:
       label: Toista joka
@@ -332,12 +339,6 @@ tasks:
     weekly: Viikoittain
     yearSuffix: vuosi/vuotta
     yearly: Vuosittain
-    daysOfWeek: Viikonpäivät
-    ends:
-      label: Päättyy
-      never: Ei koskaan
-      onDate: Päivämääränä
-      after: Jälkeen
   reminder:
     atTime: Aikataulun mukaisesti
     deadlineReminderLabel: Eräpäivä Muistutus
@@ -347,6 +348,10 @@ tasks:
     oneDayBefore: 1 päivä ennen
     oneHourBefore: 1 tunti ennen
     plannedReminderLabel: Suunnitellun Päivän Muistutus
+    section_title: Muistutukset
+    custom: Mukautettu
+    custom_title: Mukautettu muistutus
+    before_suffix: ennen
   task_details: Tehtävän Tiedot
   time_logging:
     add_time: Lisää Aika
@@ -375,58 +380,68 @@ tasks:
     decrease_estimated_time: Vähennä arvioitua aikaa
     edit_title: Muokkaa otsikkoa
     increase_estimated_time: Lisää arvioitua aikaa
+    reminder_date_required: Aseta päivämäärä ensin määrittääksesi muistutuksia
+    reminder_help_text: Aseta muistutus saat ilmoitetaan ennen tehtävän päivämäärää
     set_reminder: Aseta muistutus
+    set_reminder_with_status: Aseta muistutus - Ei muistutusta
     show_completed_tasks: Suodata valmistuneet tehtävät
+    show_sub_tasks: Näytä alitehtävät
     show_subtasks: Näytä alitehtävät
-  validation:
-    deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen
-    deadline_time_invalid: Määräajan aika on virheellinen
   tour:
-    task_management:
-      title: Tehtävien hallinta
-      description:
-        Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla.
-        Käytä Pomodoro-ajastinta pysyäksesi keskittyneenä ja seurataksesi edistymistäsi
-        tärkeissä tehtävissä.
     add_tasks:
-      title: Lisää uusia tehtäviä
       description:
         Luo uusia tehtäviä nopeasti tällä painikkeella. Aseta otsikot,
         prioriteetit, määräajat, tunnisteet ja paljon muuta. Lisää alitehtäviä ja
         muistutuksia pysyäksesi työssä mukana.
-    your_tasks:
-      title: Sinun tehtäväsi
-      description:
-        Katso ja hallitse kaikkia tehtäviäsi yhdessä paikassa. Klikkaa
-        mitä tahansa tehtävää nähdäksesi tiedot, merkataksesi valmiiksi, muokataksesi
-        tietoja tai poistaaksesi. Pysy järjestettynä ja seuraa edistymistäsi.
+      title: Lisää uusia tehtäviä
     filter_search:
-      title: Suodatus & Haku
       description:
         Tehokkaat suodatusvaihtoehdot löytääksesi juuri sen, mitä tarvitset.
         Suodata tunnisteiden, päivämäärien, valmiustilan tai hakutoiminnon mukaan.
         Lajittele tehtäviä ja vaihda alitehtäviä paremman järjestelyn vuoksi.
+      title: Suodatus & Haku
     marathon:
       app_usage:
-        title: Sovelluksen käyttö ja aika-analytiikka
         description:
           Seuraa sovelluksen käyttötapoja ja analysoi aikaa, joka kuluu
           eri toimintoihin. Hanki tietoa digitaalisista tavoista ja optimoi tuottavuuttasi.
-      usage_statistics:
-        title: Käyttötilastot
-        description:
-          Näytä yksityiskohtaiset sovelluksen käyttötiedot ja ajanjakauma.
-          Analysoi tuottavuusmalleja, seuraa aikaa, joka kuluu eri sovelluksiin, ja
-          tunnista parannusmahdollisuuksia.
+        title: Sovelluksen käyttö ja aika-analytiikka
       filter_sort:
-        title: Suodatus & Lajittelu
         description:
           Suodata sovelluksen käyttötietoja aikavälin, tunnisteiden tai
           tiettyjen laitteiden mukaan. Lajittele ja järjestä käyttötilastoja saadaksesi
           parempia oivalluksia ajanhallinnasta.
+        title: Suodatus & Lajittelu
       tracking_settings:
-        title: Seuranta-asetukset
         description:
           Määritä sovelluksen seurantasäännöt, aseta automaattinen merkintä
           ja hallitse seurattavia sovelluksia. Mukauta seurantaa tuottavuustarpeidesi
           mukaan.
+        title: Seuranta-asetukset
+      usage_statistics:
+        description:
+          Näytä yksityiskohtaiset sovelluksen käyttötiedot ja ajanjakauma.
+          Analysoi tuottavuusmalleja, seuraa aikaa, joka kuluu eri sovelluksiin, ja
+          tunnista parannusmahdollisuuksia.
+        title: Käyttötilastot
+    task_management:
+      description:
+        Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla.
+        Käytä Pomodoro-ajastinta pysyäksesi keskittyneenä ja seurataksesi edistymistäsi
+        tärkeissä tehtävissä.
+      title: Tehtävien hallinta
+    your_tasks:
+      description:
+        Katso ja hallitse kaikkia tehtäviäsi yhdessä paikassa. Klikkaa
+        mitä tahansa tehtävää nähdäksesi tiedot, merkataksesi valmiiksi, muokataksesi
+        tietoja tai poistaaksesi. Pysy järjestettynä ja seuraa edistymistäsi.
+      title: Sinun tehtäväsi
+  validation:
+    deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen
+    deadline_time_invalid: Määräajan aika on virheellinen
+shared:
+  time:
+    minutes: minuutit
+    hours: tunnit
+    days: päivät
+    weeks: viikot

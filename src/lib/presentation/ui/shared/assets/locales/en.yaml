@@ -143,24 +143,40 @@ shared:
     file_write: Error while writing file
     loading: Error occurred while loading data
     report_subject: "{appName} App: Unexpected Error Report"
-    report_template: |
-      Hi, I encountered an unexpected error while using the {appName} app.
+    report_template:
+      "Hi, I encountered an unexpected error while using the {appName}
+      app.
+
 
       Here's information that might help you diagnose the issue:
+
       App Version: {version}
+
       Device Info: {device}
+
       OS: {os}
+
       OS Version: {osVersion}
+
       Error Message:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Please help me resolve this issue.
 
+
       Thanks!
+
+      "
     saving: Error occurred while saving data
     storage_permission: Storage permission required
     storage_permission_denied: Storage permission denied
@@ -168,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Error details copied to clipboard
     copy_button: Copy error details
-    description: Something went wrong during app startup. This could be due to a system issue or incompatible configuration.
+    description:
+      Something went wrong during app startup. This could be due to a system
+      issue or incompatible configuration.
     details_title: Error Details
     report_button: Report Issue
     title: App Startup Error
@@ -235,6 +253,10 @@ shared:
       title: Hourly Usage
   time:
     not_set: Not set
+    minutes: minutes
+    hours: hours
+    days: days
+    weeks: weeks
   time_display:
     elapsed: Elapsed
     elapsed_time_tooltip: Time spent on this task

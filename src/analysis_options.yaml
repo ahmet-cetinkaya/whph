@@ -28,6 +28,11 @@ linter:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
+    # Allow single-line control structures without curly braces for better readability
+    # This rule is disabled to maintain consistency with existing codebase style
+    # and allow concise expressions like `if (condition) doSomething();`
+    curly_braces_in_flow_control_structures: false
+
 analyzer:
   errors:
     # Ignore relative lib import issues in generated files

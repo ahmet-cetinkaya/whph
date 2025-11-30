@@ -143,24 +143,40 @@ shared:
     file_write: Fejl under skrivning af fil
     loading: Der opstod en fejl under indlæsning af data
     report_subject: "{appName} App: Uventet fejlrapport"
-    report_template: |
-      Hej, jeg stødte på en uventet fejl, mens jeg brugte {appName} appen.
+    report_template:
+      "Hej, jeg stødte på en uventet fejl, mens jeg brugte {appName}
+      appen.
+
 
       Her er information, der kan hjælpe dig med at diagnosticere problemet:
+
       App-version: {version}
+
       Enhedsinfo: {device}
+
       OS: {os}
+
       OS-version: {osVersion}
+
       Fejlbesked:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Hjælp mig venligst med at løse dette problem.
 
+
       Tak!
+
+      "
     saving: Der opstod en fejl under gemning af data
     storage_permission: Lagerrettighed påkrævet
     storage_permission_denied: Lagerrettighed nægtet
@@ -168,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Fejldetaljer kopieret til udklipsholder
     copy_button: Kopiér fejldetaljer
-    description: Noget gik galt under appens opstart. Dette kan skyldes et systemproblem eller inkompatibel konfiguration.
+    description:
+      Noget gik galt under appens opstart. Dette kan skyldes et systemproblem
+      eller inkompatibel konfiguration.
     details_title: Fejldetaljer
     report_button: Rapporter problem
     title: App-opstartfejl
@@ -235,6 +253,10 @@ shared:
       title: Timelig brug
   time:
     not_set: Ikke indstillet
+    minutes: minutter
+    hours: timer
+    days: dage
+    weeks: uger
   time_display:
     elapsed: Forløbet
     elapsed_time_tooltip: Tid brugt på denne opgave
