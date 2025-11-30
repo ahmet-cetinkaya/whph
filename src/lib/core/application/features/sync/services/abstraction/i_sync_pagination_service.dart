@@ -17,6 +17,7 @@ abstract class ISyncPaginationService {
     SyncDevice syncDevice,
     DateTime lastSyncDate, {
     String? targetDeviceId,
+    Future<void> Function(PaginatedSyncDataDto pageData)? onPageReceived,
   });
 
   /// Updates the progress for a specific entity type

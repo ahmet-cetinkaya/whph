@@ -49,6 +49,7 @@ class SyncPaginationService implements ISyncPaginationService {
     SyncDevice syncDevice,
     DateTime lastSyncDate, {
     String? targetDeviceId,
+    Future<void> Function(PaginatedSyncDataDto pageData)? onPageReceived,
   }) async {
     if (_isSyncCancelled) {
       Logger.warning('⚠️ Sync operation was cancelled');
@@ -140,16 +141,21 @@ class SyncPaginationService implements ISyncPaginationService {
 
           // Check if server indicates bidirectional sync is needed
           if (!response.isComplete) {
-            Logger.info('🔄 Server has data to send back for ${config.name} - storing for later processing');
+            Logger.info('🔄 Server has data to send back for ${config.name}');
 
             // Store server response data for processing by the command handler
             if (response.responseData != null) {
-              Logger.info('📨 Server response data received for ${config.name} - storing for command processing');
+              Logger.info('📨 Server response data received for ${config.name}');
 
-              // Log storage of received data
-              Logger.info('🔍 Storing ${config.name} response data: ${response.responseData!.entityType}');
-
-              _pendingResponseData[config.name] = response.responseData!;
+              // If callback is provided, process immediately and DO NOT store in pendingResponseData
+              if (onPageReceived != null) {
+                Logger.info('⚡ Processing ${config.name} response data immediately via callback');
+                await onPageReceived(response.responseData!);
+              } else {
+                // Legacy behavior: Store for later processing
+                Logger.info('🔍 Storing ${config.name} response data for later processing');
+                _pendingResponseData[config.name] = response.responseData!;
+              }
 
               // Check if server has more pages to send for bidirectional sync
               final responseData = response.responseData!;
@@ -168,6 +174,7 @@ class SyncPaginationService implements ISyncPaginationService {
                   currentServerPage + 1,
                   totalServerPages,
                   SyncPaginationConfig.defaultNetworkPageSize,
+                  onPageReceived: onPageReceived, // Pass the callback
                 );
               }
             } else {
@@ -638,8 +645,9 @@ class SyncPaginationService implements ISyncPaginationService {
     String entityType,
     int startServerPage,
     int totalServerPages,
-    int pageSize,
-  ) async {
+    int pageSize, {
+    Future<void> Function(PaginatedSyncDataDto pageData)? onPageReceived,
+  }) async {
     Logger.info(
         '🔄 Requesting additional server pages for $entityType: pages $startServerPage-${totalServerPages - 1}');
 
@@ -673,15 +681,20 @@ class SyncPaginationService implements ISyncPaginationService {
         if (response.responseData != null) {
           Logger.info('📨 Received additional $entityType server page $serverPage data');
 
-          // Store alongside existing data for this entity type
-          // The command handler will process all accumulated data together
-          final existingData = _pendingResponseData[entityType];
-          if (existingData != null) {
-            // We have multiple pages - the command handler will need to merge them
-            Logger.info('🔗 Accumulating additional server page data for $entityType');
-            _pendingResponseData['${entityType}_page_$serverPage'] = response.responseData!;
+          if (onPageReceived != null) {
+            Logger.info('⚡ Processing additional $entityType page $serverPage immediately via callback');
+            await onPageReceived(response.responseData!);
           } else {
-            _pendingResponseData[entityType] = response.responseData!;
+            // Store alongside existing data for this entity type
+            // The command handler will process all accumulated data together
+            final existingData = _pendingResponseData[entityType];
+            if (existingData != null) {
+              // We have multiple pages - the command handler will need to merge them
+              Logger.info('🔗 Accumulating additional server page data for $entityType');
+              _pendingResponseData['${entityType}_page_$serverPage'] = response.responseData!;
+            } else {
+              _pendingResponseData[entityType] = response.responseData!;
+            }
           }
 
           // Check if this was the last page

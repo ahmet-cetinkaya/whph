@@ -652,10 +652,56 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             Logger.info('Device has previous sync date - getting data modified after ${syncDevice.lastSyncDate}');
           }
 
+          // Define callback for immediate batch processing
+          Future<void> onPageReceived(PaginatedSyncDataDto pageData) async {
+            // Update progress to show incoming data processing
+            _updateBidirectionalProgress(BidirectionalSyncProgress.incomingStart(
+              entityType: pageData.entityType,
+              deviceId: syncDevice.id,
+              totalItems: pageData.totalItems,
+              metadata: {
+                'responseProcessing': true,
+                'sourceDevice': pageData.syncDevice.id,
+                'pageIndex': pageData.pageIndex,
+                'totalPages': pageData.totalPages,
+                'currentServerPage': pageData.currentServerPage,
+                'totalServerPages': pageData.totalServerPages,
+                'batchProcessing': true,
+              },
+            ));
+
+            try {
+              Logger.info(
+                  '⚡ Batch processing ${pageData.entityType} data (server page ${pageData.currentServerPage ?? 0}/${pageData.totalServerPages ?? 0})');
+
+              final processedCount = await _processPaginatedSyncDto(pageData);
+
+              // Update progress to show completion for this batch
+              _updateBidirectionalProgress(BidirectionalSyncProgress.completed(
+                entityType: pageData.entityType,
+                deviceId: syncDevice.id,
+                itemsProcessed: processedCount,
+                metadata: {
+                  'bidirectionalResponse': true,
+                  'sourceDevice': pageData.syncDevice.id,
+                  'processedAt': DateTime.now().toIso8601String(),
+                  'batchProcessed': true,
+                },
+              ));
+
+              Logger.info(
+                  '✅ Batch processed $processedCount items from ${pageData.entityType} (page ${pageData.currentServerPage ?? 0})');
+            } catch (e) {
+              Logger.error('❌ Failed to batch process response data for ${pageData.entityType}: $e');
+              // We don't rethrow here to allow other pages to proceed, but we log the error
+            }
+          }
+
           final success = await _paginationService.syncEntityWithPagination(
             config,
             syncDevice,
             lastSyncDate,
+            onPageReceived: onPageReceived,
           );
 
           if (!success) {

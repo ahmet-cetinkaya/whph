@@ -635,12 +635,16 @@ class MockISyncPaginationService extends _i2.Mock
     _i7.SyncDevice? syncDevice,
     DateTime? lastSyncDate, {
     String? targetDeviceId,
+    _i6.Future<void> Function(_i10.PaginatedSyncDataDto)? onPageReceived,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #syncEntityWithPagination,
               [config, syncDevice, lastSyncDate],
-              {#targetDeviceId: targetDeviceId},
+              {
+                #targetDeviceId: targetDeviceId,
+                #onPageReceived: onPageReceived,
+              },
             ),
             returnValue: _i6.Future<bool>.value(false),
             returnValueForMissingStub: _i6.Future<bool>.value(false),
