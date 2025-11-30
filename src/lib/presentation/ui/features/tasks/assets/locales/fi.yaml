@@ -349,6 +349,9 @@ tasks:
     oneHourBefore: 1 tunti ennen
     plannedReminderLabel: Suunnitellun Päivän Muistutus
     section_title: Muistutukset
+    custom: Mukautettu
+    custom_title: Mukautettu muistutus
+    before_suffix: ennen
   task_details: Tehtävän Tiedot
   time_logging:
     add_time: Lisää Aika
@@ -436,3 +439,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen
     deadline_time_invalid: Määräajan aika on virheellinen
+shared:
+  time:
+    minutes: minuutit
+    hours: tunnit
+    days: päivät
+    weeks: viikot

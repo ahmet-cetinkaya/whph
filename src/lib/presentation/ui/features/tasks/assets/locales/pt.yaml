@@ -355,6 +355,9 @@ tasks:
     oneHourBefore: 1 hora antes
     plannedReminderLabel: Lembrete de Data Planejada
     section_title: Lembretes
+    custom: Personalizado
+    custom_title: Lembrete personalizado
+    before_suffix: antes
   task_details: Detalhes da Tarefa
   time_logging:
     add_time: Adicionar Tempo
@@ -445,3 +448,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada
     deadline_time_invalid: Hora limite inválida
+shared:
+  time:
+    minutes: minutos
+    hours: horas
+    days: dias
+    weeks: semanas

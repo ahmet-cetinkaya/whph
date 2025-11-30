@@ -436,6 +436,9 @@ tasks:
     oneHourBefore: 1 Stunde vorher
     plannedReminderLabel: Geplante Datumserinnerung
     section_title: Erinnerungen
+    custom: Benutzerdefiniert
+    custom_title: Benutzerdefinierte Erinnerung
+    before_suffix: vor
   task_details: Aufgabendetails
   title: Aufgaben
   tooltips:
@@ -509,3 +512,9 @@ tasks:
       Das Fälligkeitsdatum darf nicht vor dem geplanten
       Datum liegen
     deadline_time_invalid: Termin-Uhrzeit ist ungültig
+shared:
+  time:
+    minutes: Minuten
+    hours: Stunden
+    days: Tage
+    weeks: Wochen

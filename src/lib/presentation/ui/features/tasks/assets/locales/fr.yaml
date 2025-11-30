@@ -440,6 +440,9 @@ tasks:
     oneHourBefore: 1 heure avant
     plannedReminderLabel: Rappel de date prévue
     section_title: Rappels
+    custom: Personnalisé
+    custom_title: Rappel personnalisé
+    before_suffix: avant
   task_details: Détails de la tâche
   title: Tâches
   tooltips:
@@ -512,3 +515,9 @@ tasks:
       La date d'échéance doit être postérieure à
       la date planifiée
     deadline_time_invalid: L'heure d'échéance n'est pas valide
+shared:
+  time:
+    minutes: minutes
+    hours: heures
+    days: jours
+    weeks: semaines

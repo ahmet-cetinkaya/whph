@@ -351,6 +351,9 @@ tasks:
     oneHourBefore: 1 uro pred
     plannedReminderLabel: Opomnik Načrtovanega Datuma
     section_title: Opomniki
+    custom: Po meri
+    custom_title: Prilagojeno opomnik
+    before_suffix: pred
   task_details: Podrobnosti Naloge
   time_logging:
     add_time: Dodaj Čas
@@ -439,3 +442,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
     deadline_time_invalid: Čas roka je neveljaven
+shared:
+  time:
+    minutes: minute
+    hours: ure
+    days: dni
+    weeks: tedni

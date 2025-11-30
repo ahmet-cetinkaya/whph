@@ -35,7 +35,9 @@ class GetTaskQueryResponse extends Task {
       required this.subTasks,
       this.parentTask,
       super.plannedDateReminderTime = ReminderTime.none,
+      super.plannedDateReminderCustomOffset,
       super.deadlineDateReminderTime = ReminderTime.none,
+      super.deadlineDateReminderCustomOffset,
       super.recurrenceType = RecurrenceType.none,
       super.recurrenceInterval,
       super.recurrenceDaysString,
@@ -96,7 +98,9 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
       subTasks: subTasks,
       parentTask: fetchedParentTask,
       plannedDateReminderTime: task.plannedDateReminderTime,
+      plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
       deadlineDateReminderTime: task.deadlineDateReminderTime,
+      deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
       recurrenceType: task.recurrenceType,
       recurrenceInterval: task.recurrenceInterval,
       recurrenceDaysString: task.recurrenceDaysString,
@@ -108,3 +112,4 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
     );
   }
 }
+

@@ -393,6 +393,9 @@ tasks:
     oneHourBefore: 1時間前
     plannedReminderLabel: 予定日リマインダー
     section_title: リマインダー
+    custom: カスタム
+    custom_title: カスタムリマインダー
+    before_suffix: 前
   task_details: タスクの詳細
   title: タスク
   tooltips:
@@ -436,3 +439,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: 期限は予定日より後でなければなりません
     deadline_time_invalid: 期限時間が無効です
+shared:
+  time:
+    minutes: 分
+    hours: 時間
+    days: 日
+    weeks: 週

@@ -434,6 +434,9 @@ tasks:
     oneHourBefore: За 1 час
     plannedReminderLabel: Напоминание о запланированной дате
     section_title: Напоминания
+    custom: Пользовательский
+    custom_title: Пользовательское напоминание
+    before_suffix: до
   task_details: Детали задачи
   title: Задачи
   tooltips:
@@ -506,3 +509,9 @@ tasks:
       Крайний срок должен быть после запланированной
       даты
     deadline_time_invalid: Неверное время крайнего срока
+shared:
+  time:
+    minutes: минуты
+    hours: часы
+    days: дни
+    weeks: недели

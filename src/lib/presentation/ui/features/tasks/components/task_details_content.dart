@@ -393,7 +393,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         errorMessage: _translationService.translate(TaskTranslationKeys.getTagsError),
         operation: () => _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(query),
         onSuccess: (response) {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
           setState(() {
             if (_taskTags == null) {
               _taskTags = response;
@@ -556,7 +558,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       completedAt: _task!.completedAt,
       // Pass reminder settings
       plannedDateReminderTime: _task!.plannedDateReminderTime,
+      plannedDateReminderCustomOffset: _task!.plannedDateReminderCustomOffset,
       deadlineDateReminderTime: _task!.deadlineDateReminderTime,
+      deadlineDateReminderCustomOffset: _task!.deadlineDateReminderCustomOffset,
       // Pass all recurrence settings
       recurrenceType: _task!.recurrenceType,
       recurrenceInterval: _task!.recurrenceInterval,
@@ -573,6 +577,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       print('Executing save command for task ${saveCommand.id}');
       print('  Planned date: ${saveCommand.plannedDate}');
       print('  Deadline date: ${saveCommand.deadlineDate}');
+      print('  Planned Reminder: ${saveCommand.plannedDateReminderTime}');
+      print('  Planned Custom Offset: ${saveCommand.plannedDateReminderCustomOffset}');
+      print('  Deadline Reminder: ${saveCommand.deadlineDateReminderTime}');
+      print('  Deadline Custom Offset: ${saveCommand.deadlineDateReminderCustomOffset}');
     }
 
     // Check if context is still mounted and safe to use before executing async operations
@@ -659,8 +667,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   /// Event handler for planned date reminder changes
-  void _onPlannedReminderChanged(ReminderTime value) {
-    _handleFieldChange(value, (val) => _task!.plannedDateReminderTime = val);
+  void _onPlannedReminderChanged(ReminderTime value, int? customOffset) {
+    _handleFieldChange(value, (val) {
+      _task!.plannedDateReminderTime = val;
+      _task!.plannedDateReminderCustomOffset = customOffset;
+    });
   }
 
   /// Event handler for deadline date changes
@@ -696,8 +707,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   /// Event handler for deadline date reminder changes
-  void _onDeadlineReminderChanged(ReminderTime value) {
-    _handleFieldChange(value, (val) => _task!.deadlineDateReminderTime = val);
+  void _onDeadlineReminderChanged(ReminderTime value, int? customOffset) {
+    _handleFieldChange(value, (val) {
+      _task!.deadlineDateReminderTime = val;
+      _task!.deadlineDateReminderCustomOffset = customOffset;
+    });
   }
 
   /// Event handler for description changes
@@ -1100,6 +1114,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             onDateChanged: _onPlannedDateChanged,
             onReminderChanged: _onPlannedReminderChanged,
             reminderValue: _task!.plannedDateReminderTime,
+            reminderCustomOffset: _task!.plannedDateReminderCustomOffset,
             translationService: _translationService,
             reminderLabelPrefix: 'tasks.reminder.planned',
             dateIcon: TaskUiConstants.plannedDateIcon,
@@ -1123,6 +1138,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             onDateChanged: _onDeadlineDateChanged,
             onReminderChanged: _onDeadlineReminderChanged,
             reminderValue: _task!.deadlineDateReminderTime,
+            reminderCustomOffset: _task!.deadlineDateReminderCustomOffset,
             translationService: _translationService,
             reminderLabelPrefix: 'tasks.reminder.deadline',
             dateIcon: TaskUiConstants.deadlineDateIcon,

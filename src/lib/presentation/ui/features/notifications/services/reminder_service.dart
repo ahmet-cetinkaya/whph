@@ -242,9 +242,20 @@ class ReminderService {
 
     // Schedule planned date reminder if set
     if (task.plannedDate != null && task.plannedDateReminderTime != ReminderTime.none) {
-      final reminderTime = _calculateTaskReminderTime(task.plannedDate!, task.plannedDateReminderTime);
+      final reminderTime = _calculateTaskReminderTime(
+        task.plannedDate!,
+        task.plannedDateReminderTime,
+        task.plannedDateReminderCustomOffset,
+      );
 
-      // Only schedule if the reminder time is in the future
+      Logger.debug('🔔 ReminderService: Scheduling planned reminder for task ${task.id}');
+      Logger.debug('   Planned Date: ${task.plannedDate}');
+      Logger.debug('   Reminder Time: ${task.plannedDateReminderTime}');
+      Logger.debug('   Custom Offset: ${task.plannedDateReminderCustomOffset}');
+      Logger.debug('   Calculated Reminder Time: $reminderTime');
+      Logger.debug('   Current Time: ${DateTime.now()}');
+      Logger.debug('   Is Future: ${reminderTime.isAfter(DateTime.now())}');
+
       if (reminderTime.isAfter(DateTime.now())) {
         // Pre-translate notification strings to ensure they work in background
         final notificationStrings = _notificationTranslationService.preTranslateNotificationStrings(
@@ -267,11 +278,22 @@ class ReminderService {
       }
     }
 
-    // Schedule deadline date reminder if set
+    // Schedule deadline date reminder
     if (task.deadlineDate != null && task.deadlineDateReminderTime != ReminderTime.none) {
-      final reminderTime = _calculateTaskReminderTime(task.deadlineDate!, task.deadlineDateReminderTime);
+      final reminderTime = _calculateTaskReminderTime(
+        task.deadlineDate!,
+        task.deadlineDateReminderTime,
+        task.deadlineDateReminderCustomOffset,
+      );
 
-      // Only schedule if the reminder time is in the future
+      Logger.debug('🔔 ReminderService: Scheduling deadline reminder for task ${task.id}');
+      Logger.debug('   Deadline Date: ${task.deadlineDate}');
+      Logger.debug('   Reminder Time: ${task.deadlineDateReminderTime}');
+      Logger.debug('   Custom Offset: ${task.deadlineDateReminderCustomOffset}');
+      Logger.debug('   Calculated Reminder Time: $reminderTime');
+      Logger.debug('   Current Time: ${DateTime.now()}');
+      Logger.debug('   Is Future: ${reminderTime.isAfter(DateTime.now())}');
+
       if (reminderTime.isAfter(DateTime.now())) {
         // Pre-translate notification strings to ensure they work in background
         final notificationStrings = _notificationTranslationService.preTranslateNotificationStrings(
@@ -353,6 +375,11 @@ class ReminderService {
     // Convert to local time using helper method that handles UTC check internally
     final localScheduledDate = DateTimeHelper.toLocalDateTime(scheduledDate);
 
+    Logger.debug('🔔 ReminderService: Scheduling generic reminder');
+    Logger.debug('   ID: $id');
+    Logger.debug('   Scheduled Date (Local): $localScheduledDate');
+    Logger.debug('   Current Time: ${DateTime.now()}');
+
     // Compare with current local time
     if (localScheduledDate.isAfter(DateTime.now())) {
       await _reminderService.scheduleReminder(
@@ -362,6 +389,9 @@ class ReminderService {
         scheduledDate: localScheduledDate,
         payload: payload,
       );
+      Logger.debug('   ✅ Reminder scheduled successfully');
+    } else {
+      Logger.debug('   ❌ Reminder NOT scheduled (in the past)');
     }
   }
 
@@ -456,7 +486,12 @@ class ReminderService {
   }
 
   /// Calculate the reminder time based on the task date and reminder setting
-  DateTime _calculateTaskReminderTime(DateTime taskDate, ReminderTime reminderTime) {
+  DateTime _calculateTaskReminderTime(DateTime taskDate, ReminderTime reminderTime, [int? customOffset]) {
+    Logger.debug('🔔 ReminderService: Calculating reminder time');
+    Logger.debug('   Task Date: $taskDate');
+    Logger.debug('   Reminder Time Type: $reminderTime');
+    Logger.debug('   Custom Offset: $customOffset');
+
     switch (reminderTime) {
       case ReminderTime.atTime:
         return taskDate;
@@ -468,6 +503,14 @@ class ReminderService {
         return taskDate.subtract(const Duration(hours: 1));
       case ReminderTime.oneDayBefore:
         return taskDate.subtract(const Duration(days: 1));
+      case ReminderTime.custom:
+        if (customOffset != null) {
+          final calculated = taskDate.subtract(Duration(minutes: customOffset));
+          Logger.debug('   Calculated Custom Time: $calculated');
+          return calculated;
+        }
+        Logger.warning('   ⚠️ Custom offset is null for ReminderTime.custom! Fallback to taskDate.');
+        return taskDate; // Fallback if offset is missing
       case ReminderTime.none:
         return taskDate;
     }

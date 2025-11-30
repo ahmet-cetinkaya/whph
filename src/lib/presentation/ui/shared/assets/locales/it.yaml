@@ -163,24 +163,40 @@ shared:
     file_write: Errore durante la scrittura del file
     loading: Errore durante il caricamento dei dati
     report_subject: "App {appName}: Segnalazione errore imprevisto"
-    report_template: |
-      Ciao, ho riscontrato un errore imprevisto mentre utilizzavo l'app {appName}.
+    report_template:
+      "Ciao, ho riscontrato un errore imprevisto mentre utilizzavo
+      l'app {appName}.
+
 
       Ecco le informazioni che potrebbero aiutarti a diagnosticare il problema:
+
       Versione app: {version}
+
       Informazioni dispositivo: {device}
+
       Sistema operativo: {os}
+
       Versione OS: {osVersion}
+
       Messaggio di errore:
+
       ```
+
       {error}
+
       Stack trace:
+
       {stackTrace}
+
       ```
+
 
       Per favore aiutami a risolvere questo problema.
 
+
       Grazie!
+
+      "
     saving: Errore durante il salvataggio dei dati
     storage_permission: Permesso di archiviazione richiesto
     storage_permission_denied: Permesso di archiviazione negato
@@ -188,7 +204,9 @@ shared:
   startup_error:
     copied_to_clipboard: Dettagli errore copiati negli appunti
     copy_button: Copia dettagli errore
-    description: Qualcosa è andato storto durante l'avvio dell'app. Potrebbe essere dovuto a un problema di sistema o a una configurazione incompatibile.
+    description:
+      Qualcosa è andato storto durante l'avvio dell'app. Potrebbe essere
+      dovuto a un problema di sistema o a una configurazione incompatibile.
     details_title: Dettagli Errore
     report_button: Segnala Problema
     title: Errore Avvio App
@@ -255,6 +273,10 @@ shared:
       title: Utilizzo orario
   time:
     not_set: Non impostato
+    minutes: minuti
+    hours: ore
+    days: giorni
+    weeks: settimane
   time_display:
     elapsed: Trascorso
     elapsed_time_tooltip: Tempo trascorso su questa attività
@@ -346,7 +368,9 @@ shared:
     time_must_be_at_or_before: Time must be {time} or earlier
     selected_date_must_be_at_or_after: Selected date must be {date} or later
     selected_date_must_be_at_or_before: Selected date must be {date} or earlier
-    start_date_cannot_be_after_end_date: La data di inizio non può essere dopo la data di fine
+    start_date_cannot_be_after_end_date:
+      La data di inizio non può essere dopo la
+      data di fine
     start_date_must_be_at_or_after: Start date must be {date} or later
     end_date_must_be_at_or_before: End date must be {date} or earlier
     cannot_select_date_before_min_date: Cannot select date before {date}

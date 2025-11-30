@@ -352,6 +352,9 @@ tasks:
     oneHourBefore: 1 time før
     plannedReminderLabel: Planlagt Dato Påminnelse
     section_title: Påminnelser
+    custom: Egendefinert
+    custom_title: Egendefinert påminnelse
+    before_suffix: før
   task_details: Oppgavedetaljer
   time_logging:
     add_time: Legg Til Tid
@@ -440,3 +443,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen
     deadline_time_invalid: Frist tidspunkt er ugyldig
+shared:
+  time:
+    minutes: minutter
+    hours: timer
+    days: dager
+    weeks: uker

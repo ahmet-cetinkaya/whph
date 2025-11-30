@@ -94,7 +94,9 @@ shared:
     selected_date_time_must_be_after:
       Valitun päivämäärän ja ajan täytyy olla {dateTime}
       jälkeen
-    start_date_cannot_be_after_end_date: Aloituspäivämäärä ei voi olla loppupäivämäärän jälkeen
+    start_date_cannot_be_after_end_date:
+      Aloituspäivämäärä ei voi olla loppupäivämäärän
+      jälkeen
     start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
     start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
     time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
@@ -149,24 +151,40 @@ shared:
     file_write: Virhe tiedoston kirjoittamisessa
     loading: Virhe tietojen lataamisessa
     report_subject: "{appName} Sovellus: Odottamaton virheraportti"
-    report_template: |
-      Hei, kohtasin odottamattoman virheen käyttäessäni {appName} sovellusta.
+    report_template:
+      "Hei, kohtasin odottamattoman virheen käyttäessäni {appName}
+      sovellusta.
+
 
       Tässä on tietoja, jotka voivat auttaa ongelman diagnosoinnissa:
+
       Sovelluksen versio: {version}
+
       Laitteen tiedot: {device}
+
       Käyttöjärjestelmä: {os}
+
       Käyttöjärjestelmän versio: {osVersion}
+
       Virheviesti:
+
       ```
+
       {error}
+
       Pinojälki:
+
       {stackTrace}
+
       ```
+
 
       Auttakaa minua ratkaisemaan tämä ongelma.
 
+
       Kiitos!
+
+      "
     saving: Virhe tietojen tallentamisessa
     storage_permission: Tallennuslupa vaaditaan
     storage_permission_denied: Tallennuslupa evätty
@@ -174,7 +192,9 @@ shared:
   startup_error:
     copied_to_clipboard: Virheen tiedot kopioitu leikepöydälle
     copy_button: Kopioi virheen tiedot
-    description: Jokin meni pieleen sovelluksen käynnistyksessä. Tämä voi johtua järjestelmäongelmasta tai yhteensopimattomasta kokoonpanosta.
+    description:
+      Jokin meni pieleen sovelluksen käynnistyksessä. Tämä voi johtua järjestelmäongelmasta
+      tai yhteensopimattomasta kokoonpanosta.
     details_title: Virheen Tiedot
     report_button: Ilmoita Ongelmasta
     title: Sovelluksen Käynnistysvirhe
@@ -241,6 +261,10 @@ shared:
       title: Tuntikäyttö
   time:
     not_set: Ei asetettu
+    minutes: minuutit
+    hours: tunnit
+    days: päivät
+    weeks: viikot
   time_display:
     elapsed: Kulunut
     elapsed_time_tooltip: Tähän tehtävään käytetty aika
@@ -332,7 +356,9 @@ shared:
     time_must_be_at_or_before: Time must be {time} or earlier
     selected_date_must_be_at_or_after: Selected date must be {date} or later
     selected_date_must_be_at_or_before: Selected date must be {date} or earlier
-    start_date_cannot_be_after_end_date: Aloituspäivämäärä ei voi olla loppupäivämäärän jälkeen
+    start_date_cannot_be_after_end_date:
+      Aloituspäivämäärä ei voi olla loppupäivämäärän
+      jälkeen
     start_date_must_be_at_or_after: Start date must be {date} or later
     end_date_must_be_at_or_before: End date must be {date} or earlier
     cannot_select_date_before_min_date: Cannot select date before {date}

@@ -362,6 +362,9 @@ tasks:
     oneHourBefore: 1 ώρα πριν
     plannedReminderLabel: Υπενθύμιση Προγραμματισμένης Ημερομηνίας
     section_title: Υπενθυμήσεις
+    custom: Προσαρμοσμένο
+    custom_title: Προσαρμοσμένη υπενθύμιση
+    before_suffix: πριν
   task_details: Λεπτομέρειες Εργασίας
   time_logging:
     add_time: Προσθήκη Χρόνου
@@ -458,3 +461,9 @@ tasks:
       Η ημερομηνία προθεσμίας πρέπει να είναι μετά
       την προγραμματισμένη ημερομηνία
     deadline_time_invalid: Παρακαλώ εισαγάγετε έγκυρη ώρα προθεσμίας
+shared:
+  time:
+    minutes: λεπτά
+    hours: ώρες
+    days: ημέρες
+    weeks: εβδομάδες

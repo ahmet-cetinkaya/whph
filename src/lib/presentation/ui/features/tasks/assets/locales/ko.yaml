@@ -400,6 +400,9 @@ tasks:
     oneHourBefore: 1시간 전
     plannedReminderLabel: 계획일 알림
     section_title: 알림
+    custom: 사용자 정의
+    custom_title: 사용자 정의 알림
+    before_suffix: 전
   task_details: 작업 세부 정보
   title: 작업
   tooltips:
@@ -459,3 +462,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: 마감일이 계획일 이후여야 합니다
     deadline_time_invalid: 마감 시간이 잘못되었습니다
+shared:
+  time:
+    minutes: 분
+    hours: 시간
+    days: 일
+    weeks: 주

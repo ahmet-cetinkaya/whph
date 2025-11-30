@@ -433,6 +433,9 @@ tasks:
     oneHourBefore: За 1 годину
     plannedReminderLabel: Нагадування про заплановану дату
     section_title: Нагадування
+    custom: Налаштований
+    custom_title: Налаштоване нагадування
+    before_suffix: до
   task_details: Деталі завдання
   title: Завдання
   tooltips:
@@ -505,3 +508,9 @@ tasks:
       Крайній термін має бути після запланованої
       дати
     deadline_time_invalid: Неправильний час крайнього терміну
+shared:
+  time:
+    minutes: хвилини
+    hours: години
+    days: дні
+    weeks: тижні

@@ -32,6 +32,8 @@ class TaskTable extends Table {
       intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
   IntColumn get deadlineDateReminderTime =>
       intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
+  IntColumn get plannedDateReminderCustomOffset => integer().nullable()();
+  IntColumn get deadlineDateReminderCustomOffset => integer().nullable()();
 
   // Recurrence settings
   IntColumn get recurrenceType =>
@@ -204,6 +206,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       completedAt: convertToDateTime(data['completed_at']),
       parentTaskId: data['parent_task_id'] as String?,
       order: (data['order'] is num) ? (data['order'] as num).toDouble() : 0.0,
+      plannedDateReminderCustomOffset: data['planned_date_reminder_custom_offset'] as int?,
+      deadlineDateReminderCustomOffset: data['deadline_date_reminder_custom_offset'] as int?,
     );
 
     // Explicitly set reminder values
@@ -281,7 +285,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         task_table.deleted_date,
         task_table."order",
         task_table.planned_date_reminder_time,
+        task_table.planned_date_reminder_custom_offset,
         task_table.deadline_date_reminder_time,
+        task_table.deadline_date_reminder_custom_offset,
         task_table.recurrence_type,
         task_table.recurrence_interval,
         task_table.recurrence_days_string,
@@ -294,7 +300,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
         AND task_time_record_table.deleted_date IS NULL
       ${whereClause ?? ''}
-      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.deadline_date_reminder_time, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
+      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.planned_date_reminder_custom_offset, task_table.deadline_date_reminder_time, task_table.deadline_date_reminder_custom_offset, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
       ${orderByClause ?? ''}
       LIMIT ? OFFSET ?
     ''';
@@ -341,7 +347,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         parentTaskId: task.parentTaskId,
         order: task.order,
         plannedDateReminderTime: task.plannedDateReminderTime,
+        plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
         deadlineDateReminderTime: task.deadlineDateReminderTime,
+        deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
         createdDate: task.createdDate,
         modifiedDate: task.modifiedDate,
         deletedDate: task.deletedDate,
@@ -550,7 +558,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         task_table.deleted_date,
         task_table."order",
         task_table.planned_date_reminder_time,
+        task_table.planned_date_reminder_custom_offset,
         task_table.deadline_date_reminder_time,
+        task_table.deadline_date_reminder_custom_offset,
         task_table.recurrence_type,
         task_table.recurrence_interval,
         task_table.recurrence_days_string,
@@ -563,7 +573,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       LEFT JOIN task_time_record_table ON task_table.id = task_time_record_table.task_id 
         AND task_time_record_table.deleted_date IS NULL
       ${whereClause ?? ''}
-      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.deadline_date_reminder_time, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
+      GROUP BY task_table.id, task_table.parent_task_id, task_table.title, task_table.description, task_table.priority, task_table.planned_date, task_table.deadline_date, task_table.estimated_time, task_table.completed_at, task_table.created_date, task_table.modified_date, task_table.deleted_date, task_table."order", task_table.planned_date_reminder_time, task_table.planned_date_reminder_custom_offset, task_table.deadline_date_reminder_time, task_table.deadline_date_reminder_custom_offset, task_table.recurrence_type, task_table.recurrence_interval, task_table.recurrence_days_string, task_table.recurrence_start_date, task_table.recurrence_end_date, task_table.recurrence_count, task_table.recurrence_parent_id
       ${orderByClause ?? ''}
       LIMIT ? OFFSET ?
     ''';
@@ -608,7 +618,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         parentTaskId: task.parentTaskId,
         order: task.order,
         plannedDateReminderTime: task.plannedDateReminderTime,
+        plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
         deadlineDateReminderTime: task.deadlineDateReminderTime,
+        deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
         createdDate: task.createdDate,
         modifiedDate: task.modifiedDate,
         deletedDate: task.deletedDate,
@@ -672,7 +684,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       deletedDate: Value(entity.deletedDate),
       order: Value(entity.order),
       plannedDateReminderTime: Value(entity.plannedDateReminderTime),
+      plannedDateReminderCustomOffset: Value(entity.plannedDateReminderCustomOffset),
       deadlineDateReminderTime: Value(entity.deadlineDateReminderTime),
+      deadlineDateReminderCustomOffset: Value(entity.deadlineDateReminderCustomOffset),
       recurrenceType: Value(entity.recurrenceType),
       recurrenceInterval: Value(entity.recurrenceInterval),
       recurrenceDaysString: Value(entity.recurrenceDaysString),

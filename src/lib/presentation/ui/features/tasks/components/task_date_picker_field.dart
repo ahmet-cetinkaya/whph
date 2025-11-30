@@ -13,10 +13,11 @@ class TaskDatePickerField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final Function(DateTime?) onDateChanged;
-  final Function(ReminderTime) onReminderChanged;
+  final Function(ReminderTime, int?) onReminderChanged;
   final DateTime? minDateTime;
   final DateTime? plannedDateTime; // For deadline date validation with time
   final ReminderTime reminderValue;
+  final int? reminderCustomOffset;
   final ITranslationService translationService;
   final String reminderLabelPrefix;
   final IconData dateIcon;
@@ -30,6 +31,7 @@ class TaskDatePickerField extends StatefulWidget {
     required this.onDateChanged,
     required this.onReminderChanged,
     required this.reminderValue,
+    this.reminderCustomOffset,
     required this.translationService,
     required this.reminderLabelPrefix,
     this.minDateTime,
@@ -62,8 +64,9 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
   @override
   void didUpdateWidget(TaskDatePickerField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Only update tooltip when reminder value changes (not date changes per user requirement)
-    if (oldWidget.reminderValue != widget.reminderValue) {
+    // Update tooltip when reminder value or custom offset changes (not date changes per user requirement)
+    if (oldWidget.reminderValue != widget.reminderValue ||
+        oldWidget.reminderCustomOffset != widget.reminderCustomOffset) {
       _updateTooltip();
     }
   }
@@ -98,6 +101,7 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
         translationService: widget.translationService,
         currentReminder: widget.reminderValue,
         date: parsedDate,
+        customOffset: widget.reminderCustomOffset,
       );
       _tooltipInitialized = true;
     });
@@ -161,6 +165,7 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
         config: TaskDatePickerConfig(
           initialDate: initialDate,
           initialReminderTime: widget.reminderValue, // ReminderTime is not nullable
+          initialReminderCustomOffset: widget.reminderCustomOffset,
           titleText: titleText,
           // Only use minDateTime for date validation, don't use plannedDateTime as minDate
           // as it can interfere with time picker display
@@ -203,7 +208,7 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
 
         // Handle reminder changes
         if (result.reminderTime != null) {
-          widget.onReminderChanged(result.reminderTime!);
+          widget.onReminderChanged(result.reminderTime!, result.reminderCustomOffset);
         }
       }
     } finally {
@@ -218,14 +223,15 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
   Future<void> _showReminderDialog() async {
     if (widget.context == null) return;
 
-    final selectedReminder = await TaskDatePickerDialog.showReminderSelectionDialog(
+    final result = await TaskDatePickerDialog.showReminderSelectionDialog(
       widget.context!,
       widget.reminderValue,
       widget.translationService,
+      widget.reminderCustomOffset,
     );
 
-    if (selectedReminder != null && mounted) {
-      widget.onReminderChanged(selectedReminder);
+    if (result != null && mounted) {
+      widget.onReminderChanged(result.reminderTime, result.customOffset);
     }
   }
 

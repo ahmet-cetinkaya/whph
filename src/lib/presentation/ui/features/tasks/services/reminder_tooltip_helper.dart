@@ -18,6 +18,7 @@ class ReminderTooltipHelper {
     required ITranslationService translationService,
     required ReminderTime currentReminder,
     required DateTime? date,
+    int? customOffset,
   }) {
     // Handle no date case
     if (date == null) {
@@ -30,6 +31,21 @@ class ReminderTooltipHelper {
     }
 
     // Show only the reminder type (no date prefix)
+    if (currentReminder == ReminderTime.custom && customOffset != null) {
+      if (customOffset % (60 * 24 * 7) == 0) {
+        final weeks = customOffset ~/ (60 * 24 * 7);
+        return '$weeks ${translationService.translate(TaskTranslationKeys.weeks)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+      } else if (customOffset % (60 * 24) == 0) {
+        final days = customOffset ~/ (60 * 24);
+        return '$days ${translationService.translate(TaskTranslationKeys.days)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+      } else if (customOffset % 60 == 0) {
+        final hours = customOffset ~/ 60;
+        return '$hours ${translationService.translate(TaskTranslationKeys.hours)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+      } else {
+        return '$customOffset ${translationService.translate(TaskTranslationKeys.minutes)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+      }
+    }
+
     final reminderTypeKey = TaskTranslationKeys.getReminderTypeKey(currentReminder);
     final reminderType = translationService.translate(reminderTypeKey);
 

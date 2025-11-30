@@ -434,6 +434,9 @@ tasks:
     oneHourBefore: 1 time før
     plannedReminderLabel: Planlagt Dato Påmindelse
     section_title: Påmindelser
+    custom: Brugerdefineret
+    custom_title: Brugerdefineret påmindelse
+    before_suffix: før
   task_details: Opgavedetaljer
   title: Opgaver
   tooltips:
@@ -501,3 +504,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Frist skal være efter den planlagte dato
     deadline_time_invalid: Indtast gyldig fristtid
+shared:
+  time:
+    minutes: minutter
+    hours: timer
+    days: dage
+    weeks: uger

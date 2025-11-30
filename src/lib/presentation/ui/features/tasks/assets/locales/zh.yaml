@@ -392,6 +392,9 @@ tasks:
     oneHourBefore: 1小时前
     plannedReminderLabel: 计划日期提醒
     section_title: 提醒
+    custom: 自定义
+    custom_title: 自定义提醒
+    before_suffix: 前
   task_details: 任务详情
   title: 任务
   tooltips:
@@ -435,3 +438,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: 截止日期必须在计划日期之后
     deadline_time_invalid: 截止时间无效
+shared:
+  time:
+    minutes: 分钟
+    hours: 小时
+    days: 天
+    weeks: 周

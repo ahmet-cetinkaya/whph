@@ -432,6 +432,9 @@ tasks:
     oneHourBefore: 1 hodina před
     plannedReminderLabel: Připomínka plánovaného data
     section_title: Připomínky
+    custom: Vlastní
+    custom_title: Vlastní připomenutí
+    before_suffix: před
   task_details: Detaily úkolu
   title: Úkoly
   tooltips:
@@ -501,3 +504,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Datum splatnosti musí být po plánovaném datu
     deadline_time_invalid: Prosím zadejte platný čas splatnosti
+shared:
+  time:
+    minutes: minuty
+    hours: hodiny
+    days: dny
+    weeks: týdny

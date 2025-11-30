@@ -354,6 +354,9 @@ tasks:
     oneHourBefore: 1 uur ervoor
     plannedReminderLabel: Geplande Datum Herinnering
     section_title: Herinneringen
+    custom: Aangepast
+    custom_title: Aangepaste herinnering
+    before_suffix: voor
   task_details: Taakdetails
   time_logging:
     add_time: Tijd Toevoegen
@@ -443,3 +446,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Deadline moet na de geplande datum zijn
     deadline_time_invalid: Deadline tijd is ongeldig
+shared:
+  time:
+    minutes: minuten
+    hours: uren
+    days: dagen
+    weeks: weken

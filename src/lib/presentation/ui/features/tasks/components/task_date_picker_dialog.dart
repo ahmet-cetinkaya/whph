@@ -6,6 +6,7 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/features/tasks/components/custom_reminder_dialog.dart';
 
 /// Configuration for TaskDatePickerDialog
 class TaskDatePickerConfig {
@@ -19,6 +20,7 @@ class TaskDatePickerConfig {
   final bool useResponsiveDesign;
   final bool enableFooterActions;
   final ReminderTime? initialReminderTime;
+  final int? initialReminderCustomOffset;
   final ITranslationService? translationService;
   final DialogSize dialogSize;
   final acore.DateFormatType formatType;
@@ -35,6 +37,7 @@ class TaskDatePickerConfig {
     this.useResponsiveDesign = true,
     this.enableFooterActions = true,
     this.initialReminderTime,
+    this.initialReminderCustomOffset,
     this.translationService,
     this.dialogSize = DialogSize.large,
     this.formatType = acore.DateFormatType.dateTime,
@@ -53,6 +56,7 @@ class TaskDatePickerConfig {
     bool? useResponsiveDesign,
     bool? enableFooterActions,
     ReminderTime? initialReminderTime,
+    int? initialReminderCustomOffset,
     ITranslationService? translationService,
     DialogSize? dialogSize,
     acore.DateFormatType? formatType,
@@ -69,6 +73,7 @@ class TaskDatePickerConfig {
       useResponsiveDesign: useResponsiveDesign ?? this.useResponsiveDesign,
       enableFooterActions: enableFooterActions ?? this.enableFooterActions,
       initialReminderTime: initialReminderTime ?? this.initialReminderTime,
+      initialReminderCustomOffset: initialReminderCustomOffset ?? this.initialReminderCustomOffset,
       translationService: translationService ?? this.translationService,
       dialogSize: dialogSize ?? this.dialogSize,
       formatType: formatType ?? this.formatType,
@@ -81,11 +86,13 @@ class TaskDatePickerConfig {
 class TaskDatePickerResult {
   final DateTime? selectedDate;
   final ReminderTime? reminderTime;
+  final int? reminderCustomOffset;
   final bool wasCancelled;
 
   const TaskDatePickerResult({
     this.selectedDate,
     this.reminderTime,
+    this.reminderCustomOffset,
     this.wasCancelled = false,
   });
 
@@ -103,18 +110,21 @@ class TaskDatePickerDialog {
   }) async {
     // Create ValueNotifier for dynamic updates
     final reminderNotifier = ValueNotifier<ReminderTime?>(config.initialReminderTime ?? ReminderTime.none);
+    final customOffsetNotifier = ValueNotifier<int?>(config.initialReminderCustomOffset);
 
     try {
       final result = await _showDatePickerDialog(
         context: context,
         config: config.copyWith(context: context),
         reminderNotifier: reminderNotifier,
+        customOffsetNotifier: customOffsetNotifier,
       );
 
       if (result != null && !result.wasCancelled) {
         return TaskDatePickerResult(
           selectedDate: result.selectedDate,
           reminderTime: reminderNotifier.value,
+          reminderCustomOffset: customOffsetNotifier.value,
           wasCancelled: false,
         );
       } else {
@@ -122,6 +132,7 @@ class TaskDatePickerDialog {
       }
     } finally {
       reminderNotifier.dispose();
+      customOffsetNotifier.dispose();
     }
   }
 
@@ -134,12 +145,14 @@ class TaskDatePickerDialog {
       context: context,
       config: config.copyWith(context: context),
       reminderNotifier: null,
+      customOffsetNotifier: null,
     );
 
     if (result != null && !result.wasCancelled) {
       return TaskDatePickerResult(
         selectedDate: result.selectedDate,
         reminderTime: null,
+        reminderCustomOffset: null,
         wasCancelled: false,
       );
     } else {
@@ -152,16 +165,17 @@ class TaskDatePickerDialog {
     required BuildContext context,
     required TaskDatePickerConfig config,
     ValueNotifier<ReminderTime?>? reminderNotifier,
+    ValueNotifier<int?>? customOffsetNotifier,
   }) async {
     if (config.useResponsiveDesign) {
       return await acore.DatePickerDialog.showResponsive(
         context: context,
-        config: _buildDatePickerConfig(config, reminderNotifier),
+        config: _buildDatePickerConfig(config, reminderNotifier, customOffsetNotifier),
       );
     } else {
       return await acore.DatePickerDialog.show(
         context: context,
-        config: _buildDatePickerConfig(config, reminderNotifier),
+        config: _buildDatePickerConfig(config, reminderNotifier, customOffsetNotifier),
       );
     }
   }
@@ -170,6 +184,7 @@ class TaskDatePickerDialog {
   static acore.DatePickerConfig _buildDatePickerConfig(
     TaskDatePickerConfig config,
     ValueNotifier<ReminderTime?>? reminderNotifier,
+    ValueNotifier<int?>? customOffsetNotifier,
   ) {
     final translationService = config.translationService;
 
@@ -189,7 +204,7 @@ class TaskDatePickerDialog {
       doneButtonText: translationService?.translate(SharedTranslationKeys.doneButton),
       cancelButtonText: translationService?.translate(SharedTranslationKeys.cancelButton),
       footerActions: config.enableFooterActions && reminderNotifier != null
-          ? _buildFooterActions(reminderNotifier, translationService, config.context)
+          ? _buildFooterActions(reminderNotifier, customOffsetNotifier, translationService, config.context)
           : null,
       formatType: config.formatType,
       translations: _buildTranslations(translationService),
@@ -199,22 +214,27 @@ class TaskDatePickerDialog {
   /// Builds footer actions for reminder functionality
   static List<acore.DatePickerFooterAction> _buildFooterActions(
     ValueNotifier<ReminderTime?> reminderNotifier,
+    ValueNotifier<int?>? customOffsetNotifier,
     ITranslationService? translationService,
     BuildContext? context, // Add context parameter
   ) {
     return [
       acore.DatePickerFooterAction(
         icon: () => _getReminderIcon(reminderNotifier.value),
-        label: () => _getReminderLabel(reminderNotifier.value, translationService),
+        label: () => _getReminderLabel(reminderNotifier.value, translationService, customOffsetNotifier?.value),
         onPressed: () async {
           if (context == null) return;
-          final selectedReminder = await showReminderSelectionDialog(
+          final result = await showReminderSelectionDialog(
             context, // Pass the context parameter
             reminderNotifier.value,
             translationService,
+            customOffsetNotifier?.value,
           );
-          if (selectedReminder != null) {
-            reminderNotifier.value = selectedReminder;
+          if (result != null) {
+            reminderNotifier.value = result.reminderTime;
+            if (customOffsetNotifier != null) {
+              customOffsetNotifier.value = result.customOffset;
+            }
           }
         },
         color: () => _getReminderColor(reminderNotifier.value),
@@ -285,10 +305,11 @@ class TaskDatePickerDialog {
   }
 
   /// Shows reminder selection dialog
-  static Future<ReminderTime?> showReminderSelectionDialog(
+  static Future<ReminderSelectionResult?> showReminderSelectionDialog(
     BuildContext context,
     ReminderTime? currentReminder,
     ITranslationService? translationService,
+    int? currentCustomOffset,
   ) async {
     final child = Scaffold(
       appBar: AppBar(
@@ -313,22 +334,37 @@ class TaskDatePickerDialog {
                   : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
             ),
             title: Text(
-              _getReminderLabel(reminderTime, translationService),
+              _getReminderLabel(reminderTime, translationService, currentCustomOffset),
               style: TextStyle(
                 color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
             trailing: isSelected ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
-            onTap: () {
-              Navigator.of(context).pop(reminderTime);
+            onTap: () async {
+              if (reminderTime == ReminderTime.custom) {
+                final customMinutes = await CustomReminderDialog.show(
+                  context,
+                  translationService!,
+                  initialMinutes: currentCustomOffset,
+                );
+
+                if (customMinutes != null && context.mounted) {
+                  Navigator.of(context).pop(ReminderSelectionResult(
+                    reminderTime: ReminderTime.custom,
+                    customOffset: customMinutes,
+                  ));
+                }
+              } else {
+                Navigator.of(context).pop(ReminderSelectionResult(reminderTime: reminderTime));
+              }
             },
           );
         }).toList(),
       ),
     );
 
-    return await ResponsiveDialogHelper.showResponsiveDialog<ReminderTime>(
+    return await ResponsiveDialogHelper.showResponsiveDialog<ReminderSelectionResult>(
       context: context,
       child: child,
       size: DialogSize.medium,
@@ -350,13 +386,16 @@ class TaskDatePickerDialog {
       case ReminderTime.oneHourBefore:
       case ReminderTime.oneDayBefore:
         return Icons.notifications_active;
+      case ReminderTime.custom:
+        return Icons.edit_notifications;
       case null:
         return Icons.notifications_off_outlined;
     }
   }
 
   /// Gets label for reminder time
-  static String _getReminderLabel(ReminderTime? reminderTime, ITranslationService? translationService) {
+  static String _getReminderLabel(ReminderTime? reminderTime, ITranslationService? translationService,
+      [int? customOffset]) {
     switch (reminderTime) {
       case ReminderTime.none:
         return translationService?.translate(TaskTranslationKeys.reminderNone) ?? 'None';
@@ -370,6 +409,22 @@ class TaskDatePickerDialog {
         return translationService?.translate(TaskTranslationKeys.reminderOneHourBefore) ?? '1 hour before';
       case ReminderTime.oneDayBefore:
         return translationService?.translate(TaskTranslationKeys.reminderOneDayBefore) ?? '1 day before';
+      case ReminderTime.custom:
+        if (customOffset != null && translationService != null) {
+          if (customOffset % (60 * 24 * 7) == 0) {
+            final weeks = customOffset ~/ (60 * 24 * 7);
+            return '$weeks ${translationService.translate(TaskTranslationKeys.weeks)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+          } else if (customOffset % (60 * 24) == 0) {
+            final days = customOffset ~/ (60 * 24);
+            return '$days ${translationService.translate(TaskTranslationKeys.days)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+          } else if (customOffset % 60 == 0) {
+            final hours = customOffset ~/ 60;
+            return '$hours ${translationService.translate(TaskTranslationKeys.hours)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+          } else {
+            return '$customOffset ${translationService.translate(TaskTranslationKeys.minutes)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+          }
+        }
+        return translationService?.translate(TaskTranslationKeys.reminderCustom) ?? 'Custom';
       case null:
         return translationService?.translate(TaskTranslationKeys.reminderNone) ?? 'None';
     }
@@ -385,4 +440,14 @@ class TaskDatePickerDialog {
       return Colors.blue;
     }
   }
+}
+
+class ReminderSelectionResult {
+  final ReminderTime reminderTime;
+  final int? customOffset;
+
+  const ReminderSelectionResult({
+    required this.reminderTime,
+    this.customOffset,
+  });
 }

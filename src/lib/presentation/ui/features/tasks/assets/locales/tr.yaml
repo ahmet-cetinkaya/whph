@@ -396,6 +396,9 @@ tasks:
     oneHourBefore: 1 saat önce
     plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
     section_title: Hatırlatıcılar
+    custom: Özel
+    custom_title: Özel Hatırlatıcı
+    before_suffix: önce
   task_details: Görev Detayları
   title: Görevler
   tooltips:
@@ -465,3 +468,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
     deadline_time_invalid: Son tarih zamanı geçersiz
+shared:
+  time:
+    minutes: dakika
+    hours: saat
+    days: gün
+    weeks: hafta

@@ -358,6 +358,9 @@ tasks:
     oneHourBefore: 1 oră înainte
     plannedReminderLabel: Amintire Data Planificată
     section_title: Amintiri
+    custom: Personalizat
+    custom_title: Memento personalizat
+    before_suffix: înainte
   task_details: Detalii Sarcină
   time_logging:
     add_time: Adaugă Timp
@@ -448,3 +451,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Data limită trebuie să fie după data planificată
     deadline_time_invalid: Ora termenului limită este invalidă
+shared:
+  time:
+    minutes: minute
+    hours: ore
+    days: zile
+    weeks: săptămâni

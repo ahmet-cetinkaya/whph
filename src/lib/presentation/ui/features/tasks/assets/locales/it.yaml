@@ -436,6 +436,9 @@ tasks:
     oneHourBefore: 1 ora prima
     plannedReminderLabel: Promemoria data pianificata
     section_title: Promemoria
+    custom: Personalizzato
+    custom_title: Promemoria personalizzato
+    before_suffix: prima
   task_details: Dettagli attività
   title: Attività
   tooltips:
@@ -508,3 +511,9 @@ tasks:
       La data di scadenza deve essere successiva
       alla data pianificata
     deadline_time_invalid: L'orario della scadenza non è valido
+shared:
+  time:
+    minutes: minuti
+    hours: ore
+    days: giorni
+    weeks: settimane

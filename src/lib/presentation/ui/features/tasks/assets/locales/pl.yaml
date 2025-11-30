@@ -432,6 +432,9 @@ tasks:
     oneHourBefore: 1 godzinę wcześniej
     plannedReminderLabel: Przypomnienie o planowanej dacie
     section_title: Przypomnienia
+    custom: Własne
+    custom_title: Własne przypomnienie
+    before_suffix: przed
   task_details: Szczegóły zadania
   title: Zadania
   tooltips:
@@ -501,3 +504,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana
     deadline_time_invalid: Nieprawidłowy czas terminu
+shared:
+  time:
+    minutes: minuty
+    hours: godziny
+    days: dni
+    weeks: tygodnie

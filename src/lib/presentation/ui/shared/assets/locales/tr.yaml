@@ -145,24 +145,40 @@ shared:
     file_write: Dosya yazılırken hata oluştu
     loading: Veri yüklenirken hata oluştu
     report_subject: "{appName}: Beklenmeyen Hata Bildirimi"
-    report_template: |
-      Merhaba, {appName} uygulamasını kullanırken beklenmedik bir hatayla karşılaştım.
+    report_template:
+      "Merhaba, {appName} uygulamasını kullanırken beklenmedik bir
+      hatayla karşılaştım.
+
 
       Sorunu teşhis etmenize yardımcı olabilecek bilgiler:
+
       Uygulama Sürümü: {version}
+
       Cihaz Bilgisi: {device}
+
       İşletim Sistemi: {os}
+
       İşletim Sistemi Sürümü: {osVersion}
+
       Hata Mesajı:
+
       ```
+
       {error}
+
       Yığın İzleme:
+
       {stackTrace}
+
       ```
+
 
       Lütfen bu sorunu çözmeme yardımcı olun.
 
+
       Teşekkürler!
+
+      "
     saving: Veri kaydedilirken hata oluştu
     storage_permission: Depolama izni gerekli
     storage_permission_denied: Depolama izni reddedildi
@@ -170,7 +186,9 @@ shared:
   startup_error:
     copied_to_clipboard: Hata detayları panoya kopyalandı
     copy_button: Hata detaylarını kopyala
-    description: Uygulama başlangıcında bir şeyler ters gitti. Bu, bir sistem sorunu veya uyumsuz yapılandırma nedeniyle olabilir.
+    description:
+      Uygulama başlangıcında bir şeyler ters gitti. Bu, bir sistem sorunu
+      veya uyumsuz yapılandırma nedeniyle olabilir.
     details_title: Hata Detayları
     report_button: Sorunu Bildir
     title: Uygulama Başlatma Hatası
@@ -240,6 +258,10 @@ shared:
       title: Saatlik Kullanım
   time:
     not_set: Ayarlanmadı
+    minutes: dakika
+    hours: saat
+    days: gün
+    weeks: hafta
   time_display:
     elapsed: Geçen
     elapsed_time_tooltip: Bu göreve harcanan süre
@@ -323,18 +345,20 @@ shared:
     refresh: Yenile
     cannot_select_time_before_min_date: "{time} öncesinde zaman seçilemez"
     cannot_select_time_after_max_date: "{time} sonrası zaman seçilemez"
-    time_must_be_at_or_after: "Zaman {time} veya sonrası olmalı"
-    time_must_be_at_or_before: "Zaman {time} veya öncesi olmalı"
-    selected_date_must_be_at_or_after: "Seçilen tarih {date} veya sonrası olmalı"
-    selected_date_must_be_at_or_before: "Seçilen tarih {date} veya öncesi olmalı"
+    time_must_be_at_or_after: Zaman {time} veya sonrası olmalı
+    time_must_be_at_or_before: Zaman {time} veya öncesi olmalı
+    selected_date_must_be_at_or_after: Seçilen tarih {date} veya sonrası olmalı
+    selected_date_must_be_at_or_before: Seçilen tarih {date} veya öncesi olmalı
     start_date_cannot_be_after_end_date: Başlangıç tarihi bitiş tarihinden sonra olamaz
-    start_date_must_be_at_or_after: "Başlangıç tarihi {date} veya sonrası olmalı"
-    end_date_must_be_at_or_before: "Bitiş tarihi {date} veya öncesi olmalı"
+    start_date_must_be_at_or_after: Başlangıç tarihi {date} veya sonrası olmalı
+    end_date_must_be_at_or_before: Bitiş tarihi {date} veya öncesi olmalı
     cannot_select_date_before_min_date: "{date} tarihinden önce tarih seçilemez"
     cannot_select_date_after_max_date: "{date} tarihinden sonra tarih seçilemez"
-    start_date_cannot_be_before_min_date: "Başlangıç tarihi {date} tarihinden önce olamaz"
-    end_date_cannot_be_after_max_date: "Bitiş tarihi {date} tarihinden sonra olamaz"
-    selected_date_time_must_be_after: "Seçilen tarih ve saat {dateTime} sonrası olmalı"
+    start_date_cannot_be_before_min_date:
+      Başlangıç tarihi {date} tarihinden önce
+      olamaz
+    end_date_cannot_be_after_max_date: Bitiş tarihi {date} tarihinden sonra olamaz
+    selected_date_time_must_be_after: Seçilen tarih ve saat {dateTime} sonrası olmalı
     select_date_time_title: Tarih ve saat seç
     select_date_range_title: Tarih aralığı seç
     refresh_description: Seçilen tarih aralığını otomatik olarak yenile

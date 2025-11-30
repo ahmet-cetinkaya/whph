@@ -435,6 +435,9 @@ tasks:
     oneHourBefore: 1 hora antes
     plannedReminderLabel: Recordatorio de fecha planificada
     section_title: Recordatorios
+    custom: Personalizado
+    custom_title: Recordatorio personalizado
+    before_suffix: antes
   task_details: Detalles de la tarea
   title: Tareas
   tooltips:
@@ -506,3 +509,9 @@ tasks:
       La fecha límite debe ser posterior a la fecha
       planificada
     deadline_time_invalid: La hora límite no es válida
+shared:
+  time:
+    minutes: minutos
+    hours: horas
+    days: días
+    weeks: semanas

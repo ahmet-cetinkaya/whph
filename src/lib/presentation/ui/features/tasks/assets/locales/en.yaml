@@ -352,6 +352,9 @@ tasks:
     planned_reminder_label: Planned Date Reminder
     plannedReminderLabel: Planned Date Reminder
     section_title: Reminders
+    custom: Custom
+    custom_title: Custom Reminder
+    before_suffix: before
   task_details: Task Details
   time_logging:
     add_time: Add Time
@@ -440,3 +443,9 @@ tasks:
       Deadline must be scheduled after the planned
       date
     deadline_time_invalid: Please enter a valid deadline time
+shared:
+  time:
+    minutes: minutes
+    hours: hours
+    days: days
+    weeks: weeks

@@ -9,13 +9,15 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 class TaskReminderSection extends StatelessWidget {
   final ReminderTime plannedDateReminderValue;
   final ReminderTime deadlineDateReminderValue;
-  final Function(ReminderTime) onPlannedReminderChanged;
-  final Function(ReminderTime) onDeadlineReminderChanged;
+  final Function(ReminderTime, int?) onPlannedReminderChanged;
+  final Function(ReminderTime, int?) onDeadlineReminderChanged;
   final ITranslationService translationService;
   final DateTime? plannedDate;
   final DateTime? deadlineDate;
   final bool showPlannedReminder;
   final bool showDeadlineReminder;
+  final int? plannedDateReminderCustomOffset;
+  final int? deadlineDateReminderCustomOffset;
 
   const TaskReminderSection({
     super.key,
@@ -28,6 +30,8 @@ class TaskReminderSection extends StatelessWidget {
     this.deadlineDate,
     this.showPlannedReminder = true,
     this.showDeadlineReminder = true,
+    this.plannedDateReminderCustomOffset,
+    this.deadlineDateReminderCustomOffset,
   });
 
   Widget _buildReminderInfoBox(BuildContext context, String message) {
@@ -69,9 +73,10 @@ class TaskReminderSection extends StatelessWidget {
     required String title,
     required IconData icon,
     required ReminderTime value,
-    required Function(ReminderTime) onChanged,
+    required Function(ReminderTime, int?) onChanged,
     required DateTime? date,
     required String labelPrefix,
+    int? customOffset,
   }) {
     final hasDate = date != null;
 
@@ -136,6 +141,7 @@ class TaskReminderSection extends StatelessWidget {
                 onChanged: onChanged,
                 translationService: translationService,
                 labelPrefix: labelPrefix,
+                customOffset: customOffset,
               ),
             ],
           ],
@@ -185,6 +191,7 @@ class TaskReminderSection extends StatelessWidget {
             onChanged: onPlannedReminderChanged,
             date: plannedDate,
             labelPrefix: 'tasks.reminder.planned',
+            customOffset: plannedDateReminderCustomOffset,
           ),
 
         // Deadline date reminder
@@ -197,6 +204,7 @@ class TaskReminderSection extends StatelessWidget {
             onChanged: onDeadlineReminderChanged,
             date: deadlineDate,
             labelPrefix: 'tasks.reminder.deadline',
+            customOffset: deadlineDateReminderCustomOffset,
           ),
       ],
     );

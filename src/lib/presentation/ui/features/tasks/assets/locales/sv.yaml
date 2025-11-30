@@ -350,6 +350,9 @@ tasks:
     oneHourBefore: 1 timme innan
     plannedReminderLabel: Planerat Datum Påminnelse
     section_title: Påminnelser
+    custom: Anpassad
+    custom_title: Anpassad påminnelse
+    before_suffix: innan
   task_details: Uppgiftsdetaljer
   time_logging:
     add_time: Lägg Till Tid
@@ -438,3 +441,9 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Deadline datum måste vara efter planerat datum
     deadline_time_invalid: Deadline tid är ogiltig
+shared:
+  time:
+    minutes: minuter
+    hours: timmar
+    days: dagar
+    weeks: veckor
