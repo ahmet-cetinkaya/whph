@@ -159,44 +159,38 @@ class _CustomReminderDialogState extends State<CustomReminderDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Numeric Input
-            Expanded(
-              flex: 2,
-              child: NumericInput(
-                initialValue: _value,
-                minValue: 1,
-                onValueChanged: (val) {
-                  setState(() {
-                    _value = val;
-                  });
-                },
-                style: NumericInputStyle.contained,
-              ),
+            NumericInput(
+              initialValue: _value,
+              minValue: 1,
+              onValueChanged: (val) {
+                setState(() {
+                  _value = val;
+                });
+              },
+              style: NumericInputStyle.contained,
             ),
-            const SizedBox(width: AppTheme.sizeMedium),
+            const SizedBox(height: AppTheme.sizeMedium),
 
             // Unit Selection
-            Expanded(
-              flex: 3,
-              child: DropdownButtonFormField<CustomReminderUnit>(
-                value: _unit,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                ),
-                items: CustomReminderUnit.values.map((unit) {
-                  return DropdownMenuItem(
-                    value: unit,
-                    child: Text(_getUnitLabel(unit)),
-                  );
-                }).toList(),
-                onChanged: (newUnit) {
-                  if (newUnit != null) {
-                    setState(() {
-                      _unit = newUnit;
-                    });
-                  }
-                },
+            DropdownButtonFormField<CustomReminderUnit>(
+              value: _unit,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
+              items: CustomReminderUnit.values.map((unit) {
+                return DropdownMenuItem(
+                  value: unit,
+                  child: Text(_getUnitLabel(unit)),
+                );
+              }).toList(),
+              onChanged: (newUnit) {
+                if (newUnit != null) {
+                  setState(() {
+                    _unit = newUnit;
+                  });
+                }
+              },
             ),
           ],
         ),
