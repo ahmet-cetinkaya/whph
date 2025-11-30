@@ -163,24 +163,40 @@ shared:
     file_write: Σφάλμα κατά την εγγραφή αρχείου
     loading: Παρουσιάστηκε σφάλμα κατά τη φόρτωση δεδομένων
     report_subject: "{appName} Εφαρμογή: Αναφορά απροσδόκητου σφάλματος"
-    report_template: |
-      Γεια σας, αντιμετώπισα ένα απροσδόκητο σφάλμα κατά τη χρήση της εφαρμογής {appName}.
+    report_template:
+      "Γεια σας, αντιμετώπισα ένα απροσδόκητο σφάλμα κατά τη χρήση
+      της εφαρμογής {appName}.
+
 
       Εδώ είναι πληροφορίες που μπορεί να σας βοηθήσουν να διαγνώσετε το πρόβλημα:
+
       Έκδοση εφαρμογής: {version}
+
       Πληροφορίες συσκευής: {device}
+
       Λειτουργικό σύστημα: {os}
+
       Έκδοση λειτουργικού συστήματος: {osVersion}
+
       Μήνυμα σφάλματος:
+
       ```
+
       {error}
+
       Ίχνος στοίβας:
+
       {stackTrace}
+
       ```
+
 
       Παρακαλώ βοηθήστε με να λύσω αυτό το πρόβλημα.
 
+
       Ευχαριστώ!
+
+      "
     saving: Παρουσιάστηκε σφάλμα κατά την αποθήκευση δεδομένων
     storage_permission: Απαιτείται άδεια αποθήκευσης
     storage_permission_denied: Η άδεια αποθήκευσης απορρίφθηκε
@@ -188,7 +204,9 @@ shared:
   startup_error:
     copied_to_clipboard: Λεπτομέρειες σφάλματος αντιγράφηκαν στο πρόχειρο
     copy_button: Αντιγραφή λεπτομερειών σφάλματος
-    description: Κάτι πήγε στραβά κατά την εκκίνηση της εφαρμογής. Αυτό μπορεί να οφείλεται σε πρόβλημα συστήματος ή μη συμβατή διαμόρφωση.
+    description:
+      Κάτι πήγε στραβά κατά την εκκίνηση της εφαρμογής. Αυτό μπορεί να
+      οφείλεται σε πρόβλημα συστήματος ή μη συμβατή διαμόρφωση.
     details_title: Λεπτομέρειες Σφάλματος
     report_button: Αναφορά Προβλήματος
     title: Σφάλμα Εκκίνησης Εφαρμογής
@@ -255,6 +273,10 @@ shared:
       title: Ωριαία χρήση
   time:
     not_set: Δεν έχει οριστεί
+    minutes: λεπτά
+    hours: ώρες
+    days: ημέρες
+    weeks: εβδομάδες
   time_display:
     elapsed: Παρελθών
     elapsed_time_tooltip: Χρόνος που δαπανήθηκε για αυτήν την εργασία
@@ -342,7 +364,9 @@ shared:
     time_must_be_at_or_before: Time must be {time} or earlier
     selected_date_must_be_at_or_after: Selected date must be {date} or later
     selected_date_must_be_at_or_before: Selected date must be {date} or earlier
-    start_date_cannot_be_after_end_date: Η ημερομηνία έναρξης δεν μπορεί να είναι μετά την ημερομηνία λήξης
+    start_date_cannot_be_after_end_date:
+      Η ημερομηνία έναρξης δεν μπορεί να είναι
+      μετά την ημερομηνία λήξης
     start_date_must_be_at_or_after: Start date must be {date} or later
     end_date_must_be_at_or_before: End date must be {date} or earlier
     cannot_select_date_before_min_date: Cannot select date before {date}

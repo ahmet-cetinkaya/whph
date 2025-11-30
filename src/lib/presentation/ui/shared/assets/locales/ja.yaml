@@ -141,24 +141,39 @@ shared:
     file_write: ファイル書き込み中にエラーが発生しました
     loading: データの読み込み中にエラーが発生しました
     report_subject: "{appName} アプリ: 予期しないエラーレポート"
-    report_template: |
-      こんにちは、{appName}アプリの使用中に予期しないエラーが発生しました。
+    report_template:
+      "こんにちは、{appName}アプリの使用中に予期しないエラーが発生しました。
+
 
       問題の診断に役立つ情報は以下の通りです：
+
       アプリバージョン: {version}
+
       デバイス情報: {device}
+
       OS: {os}
+
       OSバージョン: {osVersion}
+
       エラーメッセージ:
+
       ```
+
       {error}
+
       スタックトレース:
+
       {stackTrace}
+
       ```
+
 
       この問題の解決をお願いします。
 
+
       よろしくお願いします！
+
+      "
     saving: データの保存中にエラーが発生しました
     storage_permission: ストレージ権限が必要です
     storage_permission_denied: ストレージ権限が拒否されました
@@ -233,6 +248,10 @@ shared:
       title: 時間別使用状況
   time:
     not_set: 未設定
+    minutes: 分
+    hours: 時間
+    days: 日
+    weeks: 週
   time_display:
     elapsed: 経過
     elapsed_time_tooltip: このタスクに費やされた時間

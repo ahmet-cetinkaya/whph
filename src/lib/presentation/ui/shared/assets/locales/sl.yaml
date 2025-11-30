@@ -143,24 +143,40 @@ shared:
     file_write: Napaka pri pisanju datoteke
     loading: Napaka pri nalaganju podatkov
     report_subject: "{appName} Aplikacija: Poročilo o nepričakovani napaki"
-    report_template: |
-      Pozdravljeni, naletел sem na nepričakovano napako med uporabo aplikacije {appName}.
+    report_template:
+      "Pozdravljeni, naletел sem na nepričakovano napako med uporabo
+      aplikacije {appName}.
+
 
       Tukaj so informacije, ki lahko pomagajo pri diagnosticiranju problema:
+
       Različica aplikacije: {version}
+
       Informacije o napravi: {device}
+
       OS: {os}
+
       Različica OS: {osVersion}
+
       Sporočilo o napaki:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Prosim pomagajte mi rešiti ta problem.
 
+
       Hvala!
+
+      "
     saving: Napaka pri shranjevanju podatkov
     storage_permission: Potrebno je dovoljenje za shranjevanje
     storage_permission_denied: Dovoljenje za shranjevanje zavrnjeno
@@ -168,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Podrobnosti napake kopirane v odložišče
     copy_button: Kopiraj podrobnosti napake
-    description: Nekaj je šlo narobe med zagonom aplikacije. To je lahko posledica sistemske težave ali nekompatibilne konfiguracije.
+    description:
+      Nekaj je šlo narobe med zagonom aplikacije. To je lahko posledica
+      sistemske težave ali nekompatibilne konfiguracije.
     details_title: Podrobnosti Napake
     report_button: Prijavi Težavo
     title: Napaka Zagona Aplikacije
@@ -235,6 +253,10 @@ shared:
       title: Urna uporaba
   time:
     not_set: Ni nastavljeno
+    minutes: minute
+    hours: ure
+    days: dni
+    weeks: tedni
   time_display:
     elapsed: Preteklo
     elapsed_time_tooltip: Čas, porabljen za to nalogo

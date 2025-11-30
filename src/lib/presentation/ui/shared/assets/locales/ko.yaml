@@ -141,24 +141,39 @@ shared:
     file_write: 파일 쓰기 중 오류가 발생했습니다
     loading: 데이터 로드 중 오류가 발생했습니다
     report_subject: "{appName} 앱: 예상치 못한 오류 보고서"
-    report_template: |
-      안녕하세요, {appName} 앱 사용 중 예상치 못한 오류가 발생했습니다.
+    report_template:
+      "안녕하세요, {appName} 앱 사용 중 예상치 못한 오류가 발생했습니다.
+
 
       문제 진단에 도움이 될 정보는 다음과 같습니다:
+
       앱 버전: {version}
+
       기기 정보: {device}
+
       OS: {os}
+
       OS 버전: {osVersion}
+
       오류 메시지:
+
       ```
+
       {error}
+
       스택 추적:
+
       {stackTrace}
+
       ```
+
 
       이 문제 해결을 도와주세요.
 
+
       감사합니다!
+
+      "
     saving: 데이터 저장 중 오류가 발생했습니다
     storage_permission: 저장소 권한이 필요합니다
     storage_permission_denied: 저장소 권한이 거부되었습니다
@@ -233,6 +248,10 @@ shared:
       title: 시간별 사용량
   time:
     not_set: 설정되지 않음
+    minutes: 분
+    hours: 시간
+    days: 일
+    weeks: 주
   time_display:
     elapsed: 경과
     elapsed_time_tooltip: 이 작업에 소요된 시간

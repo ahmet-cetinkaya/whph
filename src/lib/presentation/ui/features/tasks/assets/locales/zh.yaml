@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: 添加新任务
-  date_picker:
-    quick_selection:
-      today: 今天
-      tomorrow: 明天
-      this_weekend: 这个周末
-      weekend: 周末
-      next_week: 下周
-      next_weekend: 下周末
   all_tasks_done: 所有任务已完成！
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: 安排任务
   complete:
     error: 保存任务完成状态时发生意外错误。
+  date_picker:
+    quick_selection:
+      next_week: 下周
+      next_weekend: 下周末
+      this_weekend: 这个周末
+      today: 今天
+      tomorrow: 明天
+      weekend: 周末
+      next_weekday: 下一个工作日
   date_selection:
     deadline_date_title: 选择截止日期
     planned_date_title: 选择计划日期
@@ -29,9 +30,9 @@ tasks:
     deadline_date:
       label: 截止日期
     description:
+      context: 添加有关您任务的详细信息，以帮助您记住关键细节并跟踪进度。
       hint: 添加描述...
       label: 描述
-      context: 添加有关您任务的详细信息，以帮助您记住关键细节并跟踪进度。
     elapsed_time:
       label: 已用时间
     is_completed: 已完成
@@ -51,9 +52,6 @@ tasks:
     title:
       label: 标题
     total_elapsed_time: 总用时
-  estimated_time:
-    label: 预计时间
-    description: 设定现实的时间估算，以有效规划您的任务并追踪生产力。
   errors:
     add_tag: 添加标签时发生意外错误
     adding_tag: 添加标签失败
@@ -72,6 +70,9 @@ tasks:
     task_tag_already_deleted: 任务标签已被删除
     task_tag_already_exists: 此任务标签已存在
     task_tag_not_found: 未找到任务标签
+  estimated_time:
+    description: 设定现实的时间估算，以有效规划您的任务并追踪生产力。
+    label: 预计时间
   filters:
     completion: 按完成状态
     deadline_date: 按截止日期
@@ -305,9 +306,9 @@ tasks:
     urgent_important: 紧急且重要
     urgent_not_important: 紧急但不重要
   priority:
+    description: 使用艾森豪威尔矩阵设置任务优先级 - 紧急/重要分类，实现有效任务管理
     selection:
       title: 选择优先级
-    description: 使用艾森豪威尔矩阵设置任务优先级 - 紧急/重要分类，实现有效任务管理
     tooltips:
       none: 无优先级
       not_urgent_important: 不紧急但重要
@@ -325,10 +326,10 @@ tasks:
     lock_description: 锁定属性以在创建多个相似任务时保留其值。锁定的属性在重置表单时不会被清除。
     lock_settings: 锁定设置
     reset_all: 重置所有字段
-    task_added_successfully: 任务添加成功
     reset_confirm:
       message: 您确定要重置所有字段吗？此操作无法撤销。
       title: 重置所有字段
+    task_added_successfully: 任务添加成功
     title: 快速任务
     title_hint: 请输入描述性的任务标题...
     title_placeholder: 需要做什么？
@@ -345,7 +346,13 @@ tasks:
     custom: 自定义
     daily: 每日
     daySuffix: 天
+    daysOfWeek: 星期几
     endDate: 结束日期
+    ends:
+      after: 之后
+      label: 结束
+      never: 从不
+      onDate: 按日期
     enterCountHint: 输入次数
     interval:
       label: 重复间隔
@@ -375,12 +382,6 @@ tasks:
     weekly: 每周
     yearSuffix: 年
     yearly: 每年
-    daysOfWeek: 星期几
-    ends:
-      label: 结束
-      never: 从不
-      onDate: 按日期
-      after: 之后
   reminder:
     atTime: 在预定时间
     deadlineReminderLabel: 截止日期提醒
@@ -390,6 +391,10 @@ tasks:
     oneDayBefore: 1天前
     oneHourBefore: 1小时前
     plannedReminderLabel: 计划日期提醒
+    section_title: 提醒
+    custom: 自定义
+    custom_title: 自定义提醒
+    before_suffix: 前
   task_details: 任务详情
   title: 任务
   tooltips:
@@ -397,35 +402,45 @@ tasks:
     decrease_estimated_time: 减少预计时间
     edit_title: 编辑标题
     increase_estimated_time: 增加预计时间
+    reminder_date_required: 首先设置日期以配置提醒
+    reminder_help_text: 设置提醒，以便在任务日期前收到通知
     set_reminder: 设置提醒
+    set_reminder_with_status: 设置提醒 - 无提醒
     show_completed_tasks: 筛选已完成任务
+    show_sub_tasks: 显示子任务
     show_subtasks: 显示子任务
+  tour:
+    add_tasks:
+      description: 使用此按钮快速创建新任务。设置标题、优先级、截止日期、标签等。添加子任务和提醒以跟上您的工作进度。
+      title: 添加新任务
+    filter_search:
+      description: 强大的筛选选项来精确找到您需要的内容。按标签、日期、完成状态筛选或使用搜索功能。对任务进行排序并切换子任务以实现更好的组织。
+      title: 筛选和搜索
+    marathon:
+      app_usage:
+        description: 监控应用使用模式并分析花费在不同活动上的时间。深入了解您的数字习惯并优化您的生产力。
+        title: 应用使用和时间分析
+      filter_sort:
+        description: 按日期范围、标签或特定设备筛选应用使用数据。对使用统计数据进行排序和组织，以获得更好的时间管理见解。
+        title: 筛选和排序
+      tracking_settings:
+        description: 配置应用跟踪规则，设置自动标记并管理要跟踪的应用程序。根据您的生产力需求自定义跟踪。
+        title: 跟踪设置
+      usage_statistics:
+        description: 查看详细的应用使用数据和时间分布。分析您的生产力模式，跟踪花费在不同应用程序上的时间，并识别改进领域。
+        title: 使用统计
+    task_management:
+      description: 创建和组织具有优先级、截止日期和提醒的任务。使用番茄钟定时器保持专注并跟踪重要任务的进度。
+      title: 任务管理
+    your_tasks:
+      description: 在一个地方查看和管理所有任务。点击任何任务查看详细信息、标记为完成、编辑信息或删除。保持井井有条并跟踪您的进度。
+      title: 您的任务
   validation:
     deadline_cannot_be_before_planned: 截止日期必须在计划日期之后
     deadline_time_invalid: 截止时间无效
-  tour:
-    task_management:
-      title: 任务管理
-      description: 创建和组织具有优先级、截止日期和提醒的任务。使用番茄钟定时器保持专注并跟踪重要任务的进度。
-    add_tasks:
-      title: 添加新任务
-      description: 使用此按钮快速创建新任务。设置标题、优先级、截止日期、标签等。添加子任务和提醒以跟上您的工作进度。
-    your_tasks:
-      title: 您的任务
-      description: 在一个地方查看和管理所有任务。点击任何任务查看详细信息、标记为完成、编辑信息或删除。保持井井有条并跟踪您的进度。
-    filter_search:
-      title: 筛选和搜索
-      description: 强大的筛选选项来精确找到您需要的内容。按标签、日期、完成状态筛选或使用搜索功能。对任务进行排序并切换子任务以实现更好的组织。
-    marathon:
-      app_usage:
-        title: 应用使用和时间分析
-        description: 监控应用使用模式并分析花费在不同活动上的时间。深入了解您的数字习惯并优化您的生产力。
-      usage_statistics:
-        title: 使用统计
-        description: 查看详细的应用使用数据和时间分布。分析您的生产力模式，跟踪花费在不同应用程序上的时间，并识别改进领域。
-      filter_sort:
-        title: 筛选和排序
-        description: 按日期范围、标签或特定设备筛选应用使用数据。对使用统计数据进行排序和组织，以获得更好的时间管理见解。
-      tracking_settings:
-        title: 跟踪设置
-        description: 配置应用跟踪规则，设置自动标记并管理要跟踪的应用程序。根据您的生产力需求自定义跟踪。
+shared:
+  time:
+    minutes: 分钟
+    hours: 小时
+    days: 天
+    weeks: 周

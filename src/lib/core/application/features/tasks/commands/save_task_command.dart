@@ -26,7 +26,9 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? parentTaskId;
   final double? order;
   final ReminderTime? plannedDateReminderTime;
+  final int? plannedDateReminderCustomOffset;
   final ReminderTime? deadlineDateReminderTime;
+  final int? deadlineDateReminderCustomOffset;
   final RecurrenceType? recurrenceType;
   final int? recurrenceInterval;
   final List<WeekDays>? recurrenceDays;
@@ -48,7 +50,9 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     this.parentTaskId,
     this.order,
     this.plannedDateReminderTime,
+    this.plannedDateReminderCustomOffset,
     this.deadlineDateReminderTime,
+    this.deadlineDateReminderCustomOffset,
     this.recurrenceType,
     this.recurrenceInterval,
     this.recurrenceDays,
@@ -140,10 +144,12 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       // Always update reminder settings
       if (request.plannedDateReminderTime != null) {
         task.plannedDateReminderTime = request.plannedDateReminderTime!;
+        task.plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
       }
 
       if (request.deadlineDateReminderTime != null) {
         task.deadlineDateReminderTime = request.deadlineDateReminderTime!;
+        task.deadlineDateReminderCustomOffset = request.deadlineDateReminderCustomOffset;
       }
 
       // Update recurrence settings if provided
@@ -203,7 +209,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: request.plannedDateReminderTime ?? ReminderTime.none,
+          plannedDateReminderCustomOffset: request.plannedDateReminderCustomOffset,
           deadlineDateReminderTime: request.deadlineDateReminderTime ?? ReminderTime.none,
+          deadlineDateReminderCustomOffset: request.deadlineDateReminderCustomOffset,
           recurrenceType: request.recurrenceType ?? RecurrenceType.none,
           recurrenceInterval: request.recurrenceInterval,
           recurrenceStartDate: request.recurrenceStartDate,

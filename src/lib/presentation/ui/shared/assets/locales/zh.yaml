@@ -141,24 +141,38 @@ shared:
     file_write: 写入文件时发生错误
     loading: 加载数据时发生错误
     report_subject: "{appName} 应用：意外错误报告"
-    report_template: |
-      您好，我在使用 {appName} 应用时遇到了意外错误。
+    report_template: "您好，我在使用 {appName} 应用时遇到了意外错误。
+
 
       以下信息可能有助于您诊断问题：
+
       应用版本：{version}
+
       设备信息：{device}
+
       操作系统：{os}
+
       系统版本：{osVersion}
+
       错误信息：
+
       ```
+
       {error}
+
       堆栈跟踪：
+
       {stackTrace}
+
       ```
+
 
       请帮助我解决这个问题。
 
+
       谢谢！
+
+      "
     saving: 保存数据时发生错误
     storage_permission: 需要存储权限
     storage_permission_denied: 存储权限被拒绝
@@ -233,6 +247,10 @@ shared:
       title: 每小时使用情况
   time:
     not_set: 未设置
+    minutes: 分钟
+    hours: 小时
+    days: 天
+    weeks: 周
   time_display:
     elapsed: 已用
     elapsed_time_tooltip: 此任务已用时间

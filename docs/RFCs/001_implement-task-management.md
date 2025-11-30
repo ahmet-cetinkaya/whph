@@ -44,7 +44,6 @@ Assumptions: Uses drift for DB (core/shared/repositories/drift/); table_calendar
 
 - **Cloud Sync (Firebase)**: Rejected for privacy (PRD 1.3, 5.1.3).
 - **NoSQL (Hive)**: Dismissed for relational needs; Drift better for queries.
-- **Third-Party APIs (Todoist)**: Avoided for open-source control.
 - **Flat Lists**: Insufficient for hierarchies (PRD 4.1).
 
 ## Implementation Notes

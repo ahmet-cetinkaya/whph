@@ -17,6 +17,7 @@ enum ReminderTime {
   fifteenMinutesBefore,
   oneHourBefore,
   oneDayBefore,
+  custom,
 }
 
 /// Recurrence type options for recurring tasks
@@ -47,6 +48,10 @@ class Task extends BaseEntity<String> {
 
   @JsonProperty(defaultValue: 'ReminderTime.none')
   ReminderTime deadlineDateReminderTime = ReminderTime.none;
+
+  // Custom reminder offsets (in minutes)
+  int? plannedDateReminderCustomOffset;
+  int? deadlineDateReminderCustomOffset;
 
   // Recurrence settings
   @JsonProperty(defaultValue: 'RecurrenceType.none')
@@ -98,6 +103,8 @@ class Task extends BaseEntity<String> {
     this.order = 0.0,
     this.plannedDateReminderTime = ReminderTime.none,
     this.deadlineDateReminderTime = ReminderTime.none,
+    this.plannedDateReminderCustomOffset,
+    this.deadlineDateReminderCustomOffset,
     this.recurrenceType = RecurrenceType.none,
     this.recurrenceInterval,
     this.recurrenceDaysString,
@@ -131,6 +138,8 @@ class Task extends BaseEntity<String> {
         'order': order,
         'plannedDateReminderTime': plannedDateReminderTime.toString(),
         'deadlineDateReminderTime': deadlineDateReminderTime.toString(),
+        'plannedDateReminderCustomOffset': plannedDateReminderCustomOffset,
+        'deadlineDateReminderCustomOffset': deadlineDateReminderCustomOffset,
         'recurrenceType': recurrenceType.toString(),
         'recurrenceInterval': recurrenceInterval,
         'recurrenceDaysString': recurrenceDaysString,
@@ -158,6 +167,8 @@ class Task extends BaseEntity<String> {
     double? order,
     ReminderTime? plannedDateReminderTime,
     ReminderTime? deadlineDateReminderTime,
+    int? plannedDateReminderCustomOffset,
+    int? deadlineDateReminderCustomOffset,
     RecurrenceType? recurrenceType,
     int? recurrenceInterval,
     String? recurrenceDaysString,
@@ -182,6 +193,8 @@ class Task extends BaseEntity<String> {
       order: order ?? this.order,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      plannedDateReminderCustomOffset: plannedDateReminderCustomOffset ?? this.plannedDateReminderCustomOffset,
+      deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset ?? this.deadlineDateReminderCustomOffset,
       recurrenceType: recurrenceType ?? this.recurrenceType,
       recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
       recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
@@ -236,6 +249,19 @@ class Task extends BaseEntity<String> {
         recurrenceCount = countValue.toInt();
       }
 
+      // Handle custom reminder offsets
+      int? plannedDateReminderCustomOffset;
+      final plannedOffsetValue = json['plannedDateReminderCustomOffset'];
+      if (plannedOffsetValue is num) {
+        plannedDateReminderCustomOffset = plannedOffsetValue.toInt();
+      }
+
+      int? deadlineDateReminderCustomOffset;
+      final deadlineOffsetValue = json['deadlineDateReminderCustomOffset'];
+      if (deadlineOffsetValue is num) {
+        deadlineDateReminderCustomOffset = deadlineOffsetValue.toInt();
+      }
+
       // Handle enum parsing with better error handling
       final priority = json['priority'] != null
           ? _parseEnum<EisenhowerPriority?>(EisenhowerPriority.values, json['priority'], null, 'priority')
@@ -279,6 +305,8 @@ class Task extends BaseEntity<String> {
         order: order,
         plannedDateReminderTime: plannedDateReminderTime,
         deadlineDateReminderTime: deadlineDateReminderTime,
+        plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
+        deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset,
         recurrenceType: recurrenceType,
         recurrenceInterval: recurrenceInterval,
         recurrenceDaysString: json['recurrenceDaysString'] as String?,

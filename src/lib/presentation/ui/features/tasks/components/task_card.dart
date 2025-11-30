@@ -281,18 +281,14 @@ class TaskCard extends StatelessWidget {
       // Use the helper method to get the standardized translation key
       final reminderTypeKey = TaskTranslationKeys.getReminderTypeKey(taskItem.plannedDateReminderTime);
       final reminderType = _translationService.translate(reminderTypeKey);
-      final dateText = DateTimeHelper.formatDate(taskItem.plannedDate!);
-      reminderTexts
-          .add('${_translationService.translate(TaskTranslationKeys.reminderPlannedLabel)}: $dateText ($reminderType)');
+      reminderTexts.add(reminderType);
     }
 
     if (taskItem.deadlineDate != null && taskItem.deadlineDateReminderTime != ReminderTime.none) {
       // Use the helper method to get the standardized translation key
       final reminderTypeKey = TaskTranslationKeys.getReminderTypeKey(taskItem.deadlineDateReminderTime);
       final reminderType = _translationService.translate(reminderTypeKey);
-      final dateText = DateTimeHelper.formatDate(taskItem.deadlineDate!);
-      reminderTexts.add(
-          '${_translationService.translate(TaskTranslationKeys.reminderDeadlineLabel)}: $dateText ($reminderType)');
+      reminderTexts.add(reminderType);
     }
 
     return reminderTexts.join('\n');

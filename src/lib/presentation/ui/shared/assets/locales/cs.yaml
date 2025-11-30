@@ -143,24 +143,40 @@ shared:
     file_write: Chyba při zápisu souboru
     loading: Při načítání dat došlo k chybě
     report_subject: "{appName} Aplikace: Hlášení neočekávané chyby"
-    report_template: |
-      Dobrý den, narazil jsem na neočekávanou chybu při používání aplikace {appName}.
+    report_template:
+      "Dobrý den, narazil jsem na neočekávanou chybu při používání
+      aplikace {appName}.
+
 
       Zde jsou informace, které by vám mohly pomoci diagnostikovat problém:
+
       Verze aplikace: {version}
+
       Informace o zařízení: {device}
+
       OS: {os}
+
       Verze OS: {osVersion}
+
       Chybová zpráva:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Prosím pomozte mi vyřešit tento problém.
 
+
       Děkuji!
+
+      "
     saving: Při ukládání dat došlo k chybě
     storage_permission: Vyžaduje se oprávnění k úložišti
     storage_permission_denied: Oprávnění k úložišti bylo zamítnuto
@@ -168,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Podrobnosti chyby zkopírovány do schránky
     copy_button: Kopírovat podrobnosti chyby
-    description: Během spuštění aplikace došlo k chybě. Může to být způsobeno systémovým problémem nebo nekompatibilní konfigurací.
+    description:
+      Během spuštění aplikace došlo k chybě. Může to být způsobeno systémovým
+      problémem nebo nekompatibilní konfigurací.
     details_title: Podrobnosti chyby
     report_button: Nahlásit problém
     title: Datum a čas
@@ -235,6 +253,10 @@ shared:
       title: Hodinové využití
   time:
     not_set: Nenastaveno
+    minutes: minuty
+    hours: hodiny
+    days: dny
+    weeks: týdny
   time_display:
     elapsed: Uplynulý
     elapsed_time_tooltip: Čas strávený touto úlohou

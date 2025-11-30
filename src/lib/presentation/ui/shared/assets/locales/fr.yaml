@@ -161,24 +161,40 @@ shared:
     file_write: Erreur lors de l'écriture du fichier
     loading: Erreur lors du chargement des données
     report_subject: "App {appName} : Rapport d'erreur inattendue"
-    report_template: |
-      Bonjour, j'ai rencontré une erreur inattendue en utilisant l'application {appName}.
+    report_template: "Bonjour, j'ai rencontré une erreur inattendue en utilisant
+      l'application {appName}.
 
-      Voici les informations qui pourraient vous aider à diagnostiquer le problème :
+
+      Voici les informations qui pourraient vous aider à diagnostiquer le problème
+      :
+
       Version de l'app : {version}
+
       Informations sur l'appareil : {device}
+
       Système d'exploitation : {os}
+
       Version de l'OS : {osVersion}
+
       Message d'erreur :
+
       ```
+
       {error}
+
       Trace de pile :
+
       {stackTrace}
+
       ```
+
 
       Veuillez m'aider à résoudre ce problème.
 
+
       Merci !
+
+      "
     saving: Erreur lors de l'enregistrement des données
     storage_permission: Permission de stockage requise
     storage_permission_denied: Permission de stockage refusée
@@ -186,7 +202,9 @@ shared:
   startup_error:
     copied_to_clipboard: Détails de l'erreur copiés dans le presse-papiers
     copy_button: Copier les détails de l'erreur
-    description: Quelque chose s'est mal passé lors du démarrage de l'application. Cela peut être dû à un problème système ou à une configuration incompatible.
+    description:
+      Quelque chose s'est mal passé lors du démarrage de l'application.
+      Cela peut être dû à un problème système ou à une configuration incompatible.
     details_title: Détails de l'Erreur
     report_button: Signaler un Problème
     title: Erreur de Démarrage de l'Application
@@ -253,6 +271,10 @@ shared:
       title: Utilisation horaire
   time:
     not_set: Non défini
+    minutes: minutes
+    hours: heures
+    days: jours
+    weeks: semaines
   time_display:
     elapsed: Écoulé
     elapsed_time_tooltip: Temps passé sur cette tâche
@@ -340,7 +362,9 @@ shared:
     time_must_be_at_or_before: Time must be {time} or earlier
     selected_date_must_be_at_or_after: Selected date must be {date} or later
     selected_date_must_be_at_or_before: Selected date must be {date} or earlier
-    start_date_cannot_be_after_end_date: La date de début ne peut pas être après la date de fin
+    start_date_cannot_be_after_end_date:
+      La date de début ne peut pas être après la
+      date de fin
     start_date_must_be_at_or_after: Start date must be {date} or later
     end_date_must_be_at_or_before: End date must be {date} or earlier
     cannot_select_date_before_min_date: Cannot select date before {date}

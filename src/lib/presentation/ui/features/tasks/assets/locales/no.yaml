@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Legg til ny oppgave
-  date_picker:
-    quick_selection:
-      today: I dag
-      tomorrow: I morgen
-      this_weekend: Denne helgen
-      weekend: Helg
-      next_week: Neste uke
-      next_weekend: Neste helg
   all_tasks_done: Alle oppgaver fullført!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Planlegg oppgave
   complete:
     error: Uventet feil oppstod under lagring av oppgavefullføring.
+  date_picker:
+    quick_selection:
+      next_week: Neste uke
+      next_weekend: Neste helg
+      this_weekend: Denne helgen
+      today: I dag
+      tomorrow: I morgen
+      weekend: Helg
+      next_weekday: Neste virkedag
   date_selection:
     deadline_date_title: Velg fristdato
     planned_date_title: Velg planlagt dato
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Fristdato
     description:
-      hint: Legg til beskrivelse...
-      label: Beskrivelse
       context:
         Legg til detaljert informasjon om oppgaven din for å hjelpe deg med
         å huske nøkkeldetaljer og spore fremdrift.
+      hint: Legg til beskrivelse...
+      label: Beskrivelse
     elapsed_time:
       label: Forløpt Tid
     is_completed: Fullført
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Tittel
     total_elapsed_time: Total Forløpt Tid
-  estimated_time:
-    label: Estimert Tid
-    description:
-      Sett en realistisk tidsvurdering for å planlegge oppgaven din effektivt
-      og spore produktivitet.
   errors:
     add_tag: Uventet feil oppstod under tilføyelse av tag
     adding_tag: Feil ved tilføyelse av tag
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Oppgavtag er allerede slettet
     task_tag_already_exists: Denne oppgavtaggen finnes allerede
     task_tag_not_found: Oppgavtag ikke funnet
+  estimated_time:
+    description:
+      Sett en realistisk tidsvurdering for å planlegge oppgaven din effektivt
+      og spore produktivitet.
+    label: Estimert Tid
   filters:
     completion: Etter Fullføringsstatus
     deadline_date: Etter Fristdato
@@ -259,11 +260,11 @@ tasks:
     urgent_important: Presserende og Viktig
     urgent_not_important: Presserende men Ikke Viktig
   priority:
-    selection:
-      title: Velg Prioritet
     description:
       Angi oppgaveprioritet ved hjelp av Eisenhowers matrise - Haster/Viktig-klassifisering
       for effektiv oppgavebehandling
+    selection:
+      title: Velg Prioritet
     tooltips:
       none: Ingen Prioritet
       not_urgent_important: Ikke Presserende men Viktig
@@ -283,12 +284,12 @@ tasks:
       flere lignende oppgaver. Låste egenskaper tømmes ikke når du nullstiller skjemaet.
     lock_settings: Lås Innstillinger
     reset_all: Nullstill alle felt
-    task_added_successfully: Oppgave lagt til med suksess
     reset_confirm:
       message:
         Er du sikker på at du vil nullstille alle felt? Denne handlingen kan
         ikke angres.
       title: Nullstill Alle Felt
+    task_added_successfully: Oppgave lagt til med suksess
     title: Rask Oppgave
     title_hint: Skriv inn en beskrivende oppgavetittel...
     title_placeholder: Hva må gjøres?
@@ -305,7 +306,13 @@ tasks:
     custom: Tilpasset
     daily: Daglig
     daySuffix: dag(er)
+    daysOfWeek: Ukedager
     endDate: Sluttdato
+    ends:
+      after: Etter
+      label: Slutter
+      never: Aldri
+      onDate: På dato
     enterCountHint: Skriv inn antall
     interval:
       label: Gjentas hver
@@ -335,12 +342,6 @@ tasks:
     weekly: Ukentlig
     yearSuffix: år
     yearly: Årlig
-    daysOfWeek: Ukedager
-    ends:
-      label: Slutter
-      never: Aldri
-      onDate: På dato
-      after: Etter
   reminder:
     atTime: På planlagt tid
     deadlineReminderLabel: Frist Påminnelse
@@ -350,6 +351,10 @@ tasks:
     oneDayBefore: 1 dag før
     oneHourBefore: 1 time før
     plannedReminderLabel: Planlagt Dato Påminnelse
+    section_title: Påminnelser
+    custom: Egendefinert
+    custom_title: Egendefinert påminnelse
+    before_suffix: før
   task_details: Oppgavedetaljer
   time_logging:
     add_time: Legg Til Tid
@@ -378,57 +383,69 @@ tasks:
     decrease_estimated_time: Reduser estimert tid
     edit_title: Rediger tittel
     increase_estimated_time: Øk estimert tid
+    reminder_date_required: Still inn en dato først for å konfigurere påminnelser
+    reminder_help_text:
+      Still inn en påminnelse for å bli varslet før oppgavedato
+      dato
     set_reminder: Sett påminnelse
+    set_reminder_with_status: Angi påminnelse - Ingen påminnelse
     show_completed_tasks: Filtrer fullførte oppgaver
+    show_sub_tasks: Vis underoppgaver
     show_subtasks: Vis underoppgaver
-  validation:
-    deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen
-    deadline_time_invalid: Frist tidspunkt er ugyldig
   tour:
-    task_management:
-      title: Oppgavehåndtering
-      description:
-        Opprett og organiser oppgaver med prioriteter, frister og påminnelser.
-        Bruk Pomodoro-timeren for å holde fokus og spore fremgangen din på viktige
-        oppgaver.
     add_tasks:
-      title: Legg til nye oppgaver
       description:
         Opprett raskt nye oppgaver med denne knappen. Sett titler, prioriteter,
         frister, tagger og mer. Legg til underoppgaver og påminnelser for å holde
         deg oppdatert på arbeidet ditt.
-    your_tasks:
-      title: Dine oppgaver
-      description:
-        Se og administrer alle oppgavene dine på ett sted. Klikk på hvilken
-        som helst oppgave for å se detaljer, merke som fullført, redigere informasjon
-        eller slette. Hold deg organisert og spor fremgangen din.
+      title: Legg til nye oppgaver
     filter_search:
-      title: Filtrer & Søk
       description:
         Kraftige filteralternativer for å finne akkurat det du trenger.
         Filtrer etter tagger, datoer, fullføringsstatus eller bruk søk. Sorter oppgaver
         og veksle underoppgaver for bedre organisering.
+      title: Filtrer & Søk
     marathon:
       app_usage:
-        title: App-bruk & Tidsanalyse
         description:
           Overvåk app-brukmønstre og analyser tiden du bruker på ulike
           aktiviteter. Få innsikt i dine digitale vaner og optimaliser produktiviteten
           din.
-      usage_statistics:
-        title: Bruksstatistikk
-        description:
-          Vis detaljert app-brukdata og tidsfordeling. Analyser produktivitetsmønstre,
-          spor tiden du bruker på ulike applikasjoner og identifiser forbedringsområder.
+        title: App-bruk & Tidsanalyse
       filter_sort:
-        title: Filtrer & Sorter
         description:
           Filtrer app-brukdata etter datoområde, tagger eller spesifikke
           enheter. Sorter og organiser bruksstatistikken din for bedre innsikt i tidsstyring.
+        title: Filtrer & Sorter
       tracking_settings:
-        title: Sporingsinnstillinger
         description:
           Konfigurer app-sporingsregler, sett opp automatisk tagging og
           administrer hvilke applikasjoner som skal spores. Tilpass sporingen etter
           dine produktivitetsbehov.
+        title: Sporingsinnstillinger
+      usage_statistics:
+        description:
+          Vis detaljert app-brukdata og tidsfordeling. Analyser produktivitetsmønstre,
+          spor tiden du bruker på ulike applikasjoner og identifiser forbedringsområder.
+        title: Bruksstatistikk
+    task_management:
+      description:
+        Opprett og organiser oppgaver med prioriteter, frister og påminnelser.
+        Bruk Pomodoro-timeren for å holde fokus og spore fremgangen din på viktige
+        oppgaver.
+      title: Oppgavehåndtering
+    your_tasks:
+      description:
+        Se og administrer alle oppgavene dine på ett sted. Klikk på hvilken
+        som helst oppgave for å se detaljer, merke som fullført, redigere informasjon
+        eller slette. Hold deg organisert og spor fremgangen din.
+      title: Dine oppgaver
+  validation:
+    deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen
+    deadline_time_invalid: Frist tidspunkt er ugyldig
+shared:
+  time:
+    minutes: minutter
+    hours: timer
+    days: dager
+    weeks: uker

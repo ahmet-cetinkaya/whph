@@ -149,24 +149,40 @@ shared:
     file_write: Fout bij het schrijven van bestand
     loading: Fout bij het laden van gegevens
     report_subject: "{appName} App: Onverwacht foutrapport"
-    report_template: |
-      Hallo, ik kwam een onverwachte fout tegen tijdens het gebruik van de {appName} app.
+    report_template:
+      "Hallo, ik kwam een onverwachte fout tegen tijdens het gebruik
+      van de {appName} app.
+
 
       Hier is informatie die kan helpen bij het diagnosticeren van het probleem:
+
       App-versie: {version}
+
       Apparaatinfo: {device}
+
       Besturingssysteem: {os}
+
       OS-versie: {osVersion}
+
       Foutmelding:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Help me alsjeblieft dit probleem op te lossen.
 
+
       Bedankt!
+
+      "
     saving: Fout bij het opslaan van gegevens
     storage_permission: Opslagtoestemming vereist
     storage_permission_denied: Opslagtoestemming geweigerd
@@ -174,7 +190,9 @@ shared:
   startup_error:
     copied_to_clipboard: Foutdetails gekopieerd naar klembord
     copy_button: Kopieer foutdetails
-    description: Er is iets misgegaan tijdens de app-start. Dit kan te wijten zijn aan een systeemplatform of incompatibele configuratie.
+    description:
+      Er is iets misgegaan tijdens de app-start. Dit kan te wijten zijn
+      aan een systeemplatform of incompatibele configuratie.
     details_title: Foutdetails
     report_button: Probleem melden
     title: App Startfout
@@ -241,6 +259,10 @@ shared:
       title: Uurlijks gebruik
   time:
     not_set: Niet ingesteld
+    minutes: minuten
+    hours: uren
+    days: dagen
+    weeks: weken
   time_display:
     elapsed: Verstreken
     elapsed_time_tooltip: Tijd besteed aan deze taak

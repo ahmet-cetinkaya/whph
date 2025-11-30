@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Yeni görev ekle
-  date_picker:
-    quick_selection:
-      today: Bugün
-      tomorrow: Yarın
-      this_weekend: Bu Hafta Sonu
-      weekend: Hafta Sonu
-      next_week: Gelecek Hafta
-      next_weekend: Gelecek Hafta Sonu
   all_tasks_done: Tüm görevler tamamlandı!
   card:
     schedule:
@@ -19,6 +11,15 @@ tasks:
       schedule: Görevi planla
   complete:
     error: Görev tamamlanırken beklenmedik bir hata oluştu.
+  date_picker:
+    quick_selection:
+      next_week: Gelecek Hafta
+      next_weekend: Gelecek Hafta Sonu
+      this_weekend: Bu Hafta Sonu
+      today: Bugün
+      tomorrow: Yarın
+      weekend: Hafta Sonu
+      next_weekday: Gelecek Haftaiçi
   date_selection:
     deadline_date_title: Son tarihi seçin
     planned_date_title: Planlanan tarihi seçin
@@ -27,37 +28,32 @@ tasks:
     message: Bu görevi silmek istediğinize emin misiniz?
     title: Görevi Sil
   details:
-    title:
-      label: Başlık
-    tags:
-      hint: Etiket seç
-      label: Etiketler
-    priority:
-      label: Öncelik
-    planned_date:
-      label: Planlanan Tarih
     deadline_date:
       label: Son Tarih
     description:
-      hint: Açıklama ekle...
-      label: Açıklama
       context:
         Göreviniz hakkında detaylı bilgi ekleyerek önemli ayrıntıları hatırlayın
         ve ilerlemeyi takip edin.
+      hint: Açıklama ekle...
+      label: Açıklama
     elapsed_time:
       label: Geçen Süre
     parent_task:
       label: Üst Görev
       tooltip: Üst görevi görüntülemek için tıklayın
+    planned_date:
+      label: Planlanan Tarih
+    priority:
+      label: Öncelik
     sub_tasks:
       label: Alt görevler
+    tags:
+      hint: Etiket seç
+      label: Etiketler
     tags_hint: Görev için etiket seçin
+    title:
+      label: Başlık
     total_elapsed_time: Toplam Geçen Süre
-  estimated_time:
-    label: Tahmini Süre
-    description:
-      Görevinizi etkili bir şekilde planlamak ve üretkenliği takip etmek
-      için gerçekçi zaman tahmini yapın.
   errors:
     add_tag: Etiket eklenirken beklenmedik bir hata oluştu
     adding_tag: Etiket eklenemedi
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Görev etiketi zaten silinmiş
     task_tag_already_exists: Bu görev etiketi zaten mevcut
     task_tag_not_found: Görev etiketi bulunamadı
+  estimated_time:
+    description:
+      Görevinizi etkili bir şekilde planlamak ve üretkenliği takip etmek
+      için gerçekçi zaman tahmini yapın.
+    label: Tahmini Süre
   filters:
     completion: Tamamlanma Durumuna Göre
     deadline_date: Son Tarihe Göre
@@ -305,11 +306,11 @@ tasks:
     urgent_important: Acil ve Önemli
     urgent_not_important: Acil ama Önemli Değil
   priority:
-    selection:
-      title: Öncelik Seç
     description:
       Eisenhower Matrisi'ni kullanarak görev önceliğini ayarlayın - Etkili
       görev yönetimi için Acil/Önemli sınıflandırma
+    selection:
+      title: Öncelik Seç
     tooltips:
       none: Öncelik Yok
       not_urgent_important: Acil Değil ama Önemli
@@ -329,10 +330,10 @@ tasks:
       kilitleyin. Kilitli özellikler formu sıfırlarken temizlenmez.
     lock_settings: Kilit Ayarları
     reset_all: Tüm alanları sıfırla
-    task_added_successfully: Görev başarıyla eklendi
     reset_confirm:
       message: Tüm alanları sıfırlamak istediğinize emin misiniz?
       title: Tüm Alanları Sıfırla
+    task_added_successfully: Görev başarıyla eklendi
     title: Hızlı Görev
     title_hint: Görev başlığı
     title_placeholder: Ne yapılması gerekiyor?
@@ -349,7 +350,13 @@ tasks:
     custom: Özel
     daily: Günlük
     daySuffix: gün
+    daysOfWeek: Haftanın günleri
     endDate: Bitiş tarihi
+    ends:
+      after: Sonra
+      label: Bitiş
+      never: Asla
+      onDate: Tarihinde
     enterCountHint: Sayı girin
     interval:
       label: Her
@@ -379,12 +386,6 @@ tasks:
     weekly: Haftalık
     yearSuffix: yıl
     yearly: Yıllık
-    daysOfWeek: Haftanın günleri
-    ends:
-      label: Bitiş
-      never: Asla
-      onDate: Tarihinde
-      after: Sonra
   reminder:
     atTime: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı
@@ -394,6 +395,10 @@ tasks:
     oneDayBefore: 1 gün önce
     oneHourBefore: 1 saat önce
     plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
+    section_title: Hatırlatıcılar
+    custom: Özel
+    custom_title: Özel Hatırlatıcı
+    before_suffix: önce
   task_details: Görev Detayları
   title: Görevler
   tooltips:
@@ -401,59 +406,71 @@ tasks:
     decrease_estimated_time: Tahmini süreyi azalt
     edit_title: Başlığı düzenle
     increase_estimated_time: Tahmini süreyi artır
+    reminder_date_required: Hatırlatıcıları yapılandırmak için önce bir tarih ayarlayın
+    reminder_help_text:
+      Görev görev tarihinden önce bildirim alacak şekilde hatırlatıcı
+      ayarlayın
     set_reminder: Hatırlatıcı ayarla
+    set_reminder_with_status: Hatırlatıcı ayarla - Hatırlatıcı yok
     show_completed_tasks: Tamamlanan görevleri filtrele
+    show_sub_tasks: Alt görevleri göster
     show_subtasks: Alt görevleri göster
-  validation:
-    deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
-    deadline_time_invalid: Son tarih zamanı geçersiz
   tour:
-    task_management:
-      title: Görev Yönetimi
-      description:
-        Öncelikler, son tarihler ve hatırlatıcılarla görevler oluşturun
-        ve düzenleyin. Pomodoro zamanlayıcısını kullanarak odaklanmanızı koruyun ve
-        önemli görevlerde ilerlemenizi takip edin.
     add_tasks:
-      title: Yeni Görevler Ekle
       description:
         Bu düğmeyle hızlıca yeni görevler oluşturun. Başlıklar, öncelikler,
         son tarihler, etiketler ve daha fazlasını ayarlayın. İşlerinizde güncel kalmak
         için alt görevler ve hatırlatıcılar ekleyin.
-    your_tasks:
-      title: Görevleriniz
-      description:
-        Tüm görevlerinizi tek bir yerde görüntüleyin ve yönetin. Ayrıntıları
-        görmek, tamamlandı olarak işaretlemek, bilgileri düzenlemek veya silmek için
-        herhangi bir göreve tıklayın. Organize kalın ve ilerlemenizi takip edin.
+      title: Yeni Görevler Ekle
     filter_search:
-      title: Filtrele & Ara
       description:
         Tam olarak ihtiyacınız olan şeyi bulmak için güçlü filtre seçenekleri.
         Etiketlere, tarihlere, tamamlanma durumuna göre filtreleyin veya arama kullanın.
         Daha iyi organizasyon için görevleri sıralayın ve alt görevleri değiştirin.
+      title: Filtrele & Ara
     marathon:
       app_usage:
-        title: Uygulama Kullanımı & Zaman Analizi
         description:
           Uygulama kullanım modellerini izleyin ve farklı etkinliklere
           harcadığınız zamanı analiz edin. Dijital alışkanlıklarınız hakkında içgörüler
           elde edin ve verimliliğinizi optimize edin.
-      usage_statistics:
-        title: Kullanım İstatistikleri
-        description:
-          Detaylı uygulama kullanım verilerini ve zaman dağılımını görüntüleyin.
-          Verimlilik modellerinizi analiz edin, farklı uygulamalara harcadığınız zamanı
-          takip edin ve iyileştirme alanlarını belirleyin.
+        title: Uygulama Kullanımı & Zaman Analizi
       filter_sort:
-        title: Filtrele & Sırala
         description:
           Uygulama kullanım verilerini tarih aralığına, etiketlere veya
           belirli cihazlara göre filtreleyin. Zaman yönetimiyle ilgili daha iyi içgörüler
           için kullanım istatistiklerinizi sıralayın ve düzenleyin.
+        title: Filtrele & Sırala
       tracking_settings:
-        title: Takip Ayarları
         description:
           Uygulama takip kurallarını yapılandırın, otomatik etiketlemeyi
           ayarlayın ve hangi uygulamaların takip edileceğini yönetin. Verimlilik ihtiyaçlarınıza
           göre takibi özelleştirin.
+        title: Takip Ayarları
+      usage_statistics:
+        description:
+          Detaylı uygulama kullanım verilerini ve zaman dağılımını görüntüleyin.
+          Verimlilik modellerinizi analiz edin, farklı uygulamalara harcadığınız zamanı
+          takip edin ve iyileştirme alanlarını belirleyin.
+        title: Kullanım İstatistikleri
+    task_management:
+      description:
+        Öncelikler, son tarihler ve hatırlatıcılarla görevler oluşturun
+        ve düzenleyin. Pomodoro zamanlayıcısını kullanarak odaklanmanızı koruyun ve
+        önemli görevlerde ilerlemenizi takip edin.
+      title: Görev Yönetimi
+    your_tasks:
+      description:
+        Tüm görevlerinizi tek bir yerde görüntüleyin ve yönetin. Ayrıntıları
+        görmek, tamamlandı olarak işaretlemek, bilgileri düzenlemek veya silmek için
+        herhangi bir göreve tıklayın. Organize kalın ve ilerlemenizi takip edin.
+      title: Görevleriniz
+  validation:
+    deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
+    deadline_time_invalid: Son tarih zamanı geçersiz
+shared:
+  time:
+    minutes: dakika
+    hours: saat
+    days: gün
+    weeks: hafta

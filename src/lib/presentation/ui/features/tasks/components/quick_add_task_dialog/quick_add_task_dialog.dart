@@ -36,6 +36,9 @@ import 'dialogs/lock_settings_dialog_content.dart';
 import 'dialogs/clear_fields_confirmation_dialog.dart';
 import 'models/lock_settings_state.dart';
 
+// Import the new TaskDatePickerDialog
+import '../task_date_picker_dialog.dart';
+
 class QuickAddTaskDialog extends StatefulWidget {
   final List<String>? initialTagIds;
   final DateTime? initialPlannedDate;
@@ -152,6 +155,8 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   int? _estimatedTime;
   DateTime? _plannedDate;
   DateTime? _deadlineDate;
+  ReminderTime _plannedDateReminderTime = ReminderTime.none;
+  ReminderTime _deadlineDateReminderTime = ReminderTime.none;
   List<DropdownOption<String>> _selectedTags = [];
 
   // Track if estimated time was explicitly set by user (not from default)
@@ -186,7 +191,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     if (widget.initialDescription != null) {
       _descriptionController.text = widget.initialDescription!;
       _showDescriptionSection = true; // Show section if there's initial content
-      // Close estimated time section if description has initial content
+      // Close estimated time section if description has initial content and no estimated time
       _showEstimatedTimeSection = false;
     }
 
@@ -284,7 +289,6 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
     _titleController.dispose();
     _descriptionController.dispose();
     _plannedDateController.dispose();
@@ -371,6 +375,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
           estimatedTime: _estimatedTime,
           plannedDate: _plannedDate,
           deadlineDate: _deadlineDate,
+          // Include reminder settings
+          plannedDateReminderTime: _plannedDateReminderTime,
+          deadlineDateReminderTime: _deadlineDateReminderTime,
           completedAt: (widget.initialCompleted ?? false) ? DateTime.now().toUtc() : null,
           parentTaskId: widget.initialParentTaskId,
         );
@@ -432,277 +439,69 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   }
 
   Future<void> _selectPlannedDate() async {
-    final result = await acore.DatePickerDialog.showResponsive(
+    final result = await TaskDatePickerDialog.showWithReminder(
       context: context,
-      config: acore.DatePickerConfig(
-        dialogSize: DialogSize.large,
-        selectionMode: acore.DateSelectionMode.single,
+      config: TaskDatePickerConfig(
         initialDate: _plannedDate,
+        initialReminderTime: _plannedDateReminderTime,
+        titleText: _translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
         showTime: true,
         showQuickRanges: true,
-        useMobileScaffoldLayout: true,
-        validationErrorAtTop: true,
-        quickRanges: [
-          acore.QuickDateRange(
-            key: 'today',
-            label: _translationService.translate(TaskTranslationKeys.today),
-            startDateCalculator: () => DateTime.now(),
-            endDateCalculator: () => DateTime.now(),
-          ),
-          acore.QuickDateRange(
-            key: 'tomorrow',
-            label: _translationService.translate(TaskTranslationKeys.tomorrow),
-            startDateCalculator: () => DateTime.now().add(const Duration(days: 1)),
-            endDateCalculator: () => DateTime.now().add(const Duration(days: 1)),
-          ),
-          if (DateTime.now().weekday < DateTime.saturday) ...[
-            acore.QuickDateRange(
-              key: 'this_weekend',
-              label: _translationService.translate(TaskTranslationKeys.thisWeekend),
-              startDateCalculator: () {
-                final now = DateTime.now();
-                return now.add(Duration(days: DateTime.saturday - now.weekday));
-              },
-              endDateCalculator: () {
-                final now = DateTime.now();
-                return now.add(Duration(days: DateTime.sunday - now.weekday));
-              },
-            ),
-          ],
-          acore.QuickDateRange(
-            key: 'next_week',
-            label: _translationService.translate(TaskTranslationKeys.nextWeek),
-            startDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: 8 - now.weekday)); // Next Monday
-            },
-            endDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: 14 - now.weekday)); // Next Sunday
-            },
-          ),
-          acore.QuickDateRange(
-            key: 'next_weekend',
-            label: _translationService.translate(TaskTranslationKeys.nextWeekend),
-            startDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: (7 - now.weekday) + 6)); // Next Saturday
-            },
-            endDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: (7 - now.weekday) + 7)); // Next Sunday
-            },
-          ),
-        ],
-        singleDateTitle: _translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
-        titleText: _translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
-        doneButtonText: _translationService.translate(SharedTranslationKeys.doneButton),
-        cancelButtonText: _translationService.translate(SharedTranslationKeys.cancelButton),
+        useResponsiveDesign: true,
+        enableFooterActions: true,
+        translationService: _translationService,
         minDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day), // Start of today
-        formatType: acore.DateFormatType.dateTime,
-        translations: {
-          acore.DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
-          acore.DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
-          acore.DateTimePickerTranslationKey.setTime: _translationService.translate(SharedTranslationKeys.change),
-          acore.DateTimePickerTranslationKey.allDay: _translationService.translate(SharedTranslationKeys.allDay),
-          // Override title keys for mobile scaffold
-          acore.DateTimePickerTranslationKey.selectDateTimeTitle:
-              _translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
-          acore.DateTimePickerTranslationKey.selectTimeTitle:
-              _translationService.translate(SharedTranslationKeys.selectTimeTitle),
-          // Quick selection translations (using available keys)
-          acore.DateTimePickerTranslationKey.quickSelectionToday:
-              _translationService.translate(SharedTranslationKeys.today),
-          acore.DateTimePickerTranslationKey.quickSelectionTomorrow:
-              _translationService.translate(TaskTranslationKeys.tomorrow),
-          acore.DateTimePickerTranslationKey.quickSelectionWeekend:
-              _translationService.translate(TaskTranslationKeys.weekend),
-          acore.DateTimePickerTranslationKey.quickSelectionNextWeek:
-              _translationService.translate(TaskTranslationKeys.nextWeek),
-          acore.DateTimePickerTranslationKey.quickSelectionNoDate:
-              _translationService.translate(SharedTranslationKeys.notSetTime),
-          acore.DateTimePickerTranslationKey.quickSelectionLastWeek:
-              _translationService.translate(SharedTranslationKeys.lastWeek),
-          acore.DateTimePickerTranslationKey.quickSelectionLastMonth:
-              _translationService.translate(SharedTranslationKeys.lastMonth),
-          // Time picker unit translations
-          acore.DateTimePickerTranslationKey.weekdayMonShort:
-              _translationService.translate(SharedTranslationKeys.weekDayMonShort),
-          acore.DateTimePickerTranslationKey.weekdayTueShort:
-              _translationService.translate(SharedTranslationKeys.weekDayTueShort),
-          acore.DateTimePickerTranslationKey.weekdayWedShort:
-              _translationService.translate(SharedTranslationKeys.weekDayWedShort),
-          acore.DateTimePickerTranslationKey.weekdayThuShort:
-              _translationService.translate(SharedTranslationKeys.weekDayThuShort),
-          acore.DateTimePickerTranslationKey.weekdayFriShort:
-              _translationService.translate(SharedTranslationKeys.weekDayFriShort),
-          acore.DateTimePickerTranslationKey.weekdaySatShort:
-              _translationService.translate(SharedTranslationKeys.weekDaySatShort),
-          acore.DateTimePickerTranslationKey.weekdaySunShort:
-              _translationService.translate(SharedTranslationKeys.weekDaySunShort),
-          // Time picker hour/minute labels
-          acore.DateTimePickerTranslationKey.timePickerHourLabel:
-              _translationService.translate(SharedTranslationKeys.timePickerHourLabel),
-          acore.DateTimePickerTranslationKey.timePickerMinuteLabel:
-              _translationService.translate(SharedTranslationKeys.timePickerMinuteLabel),
-          acore.DateTimePickerTranslationKey.timePickerAllDayLabel:
-              _translationService.translate(SharedTranslationKeys.allDay),
-          // Validation translations
-          acore.DateTimePickerTranslationKey.selectedDateMustBeAtOrAfter:
-              _translationService.translate(SharedTranslationKeys.selectedDateMustBeAtOrAfter),
-          acore.DateTimePickerTranslationKey.selectedDateMustBeAtOrBefore:
-              _translationService.translate(SharedTranslationKeys.selectedDateMustBeAtOrBefore),
-        },
       ),
     );
 
-    if (result != null && !result.wasCancelled && result.selectedDate != null) {
+    if (result != null && !result.wasCancelled) {
       setState(() {
-        _plannedDate = result.selectedDate!;
-        _plannedDateController.text = acore.DateFormatService.formatForInput(
-          result.selectedDate!,
-          context,
-          type: acore.DateFormatType.dateTime,
-        );
+        _plannedDate = result.selectedDate;
+        _plannedDateReminderTime = result.reminderTime ?? ReminderTime.none;
+        if (result.selectedDate != null) {
+          _plannedDateController.text = acore.DateFormatService.formatForInput(
+            result.selectedDate!,
+            context,
+            type: acore.DateFormatType.dateTime,
+          );
+        } else {
+          _plannedDateController.clear();
+        }
       });
     }
   }
 
   Future<void> _selectDeadlineDate() async {
-    final result = await acore.DatePickerDialog.showResponsive(
+    final result = await TaskDatePickerDialog.showWithReminder(
       context: context,
-      config: acore.DatePickerConfig(
-        dialogSize: DialogSize.large,
-        selectionMode: acore.DateSelectionMode.single,
+      config: TaskDatePickerConfig(
         initialDate: _deadlineDate,
+        initialReminderTime: _deadlineDateReminderTime,
+        titleText: _translationService.translate(TaskTranslationKeys.selectDeadlineDateTitle),
         showTime: true,
         showQuickRanges: true,
-        useMobileScaffoldLayout: true,
-        validationErrorAtTop: true,
-        quickRanges: [
-          acore.QuickDateRange(
-            key: 'today',
-            label: _translationService.translate(TaskTranslationKeys.today),
-            startDateCalculator: () => DateTime.now(),
-            endDateCalculator: () => DateTime.now(),
-          ),
-          acore.QuickDateRange(
-            key: 'tomorrow',
-            label: _translationService.translate(TaskTranslationKeys.tomorrow),
-            startDateCalculator: () => DateTime.now().add(const Duration(days: 1)),
-            endDateCalculator: () => DateTime.now().add(const Duration(days: 1)),
-          ),
-          if (DateTime.now().weekday < DateTime.saturday) ...[
-            acore.QuickDateRange(
-              key: 'this_weekend',
-              label: _translationService.translate(TaskTranslationKeys.thisWeekend),
-              startDateCalculator: () {
-                final now = DateTime.now();
-                return now.add(Duration(days: DateTime.saturday - now.weekday));
-              },
-              endDateCalculator: () {
-                final now = DateTime.now();
-                return now.add(Duration(days: DateTime.sunday - now.weekday));
-              },
-            ),
-          ],
-          acore.QuickDateRange(
-            key: 'next_week',
-            label: _translationService.translate(TaskTranslationKeys.nextWeek),
-            startDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: 8 - now.weekday)); // Next Monday
-            },
-            endDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: 14 - now.weekday)); // Next Sunday
-            },
-          ),
-          acore.QuickDateRange(
-            key: 'next_weekend',
-            label: _translationService.translate(TaskTranslationKeys.nextWeekend),
-            startDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: (7 - now.weekday) + 6)); // Next Saturday
-            },
-            endDateCalculator: () {
-              final now = DateTime.now();
-              return now.add(Duration(days: (7 - now.weekday) + 7)); // Next Sunday
-            },
-          ),
-        ],
-        singleDateTitle: _translationService.translate(TaskTranslationKeys.selectDeadlineDateTitle),
-        titleText: _translationService.translate(TaskTranslationKeys.selectDeadlineDateTitle),
-        doneButtonText: _translationService.translate(SharedTranslationKeys.doneButton),
-        cancelButtonText: _translationService.translate(SharedTranslationKeys.cancelButton),
+        useResponsiveDesign: true,
+        enableFooterActions: true,
+        translationService: _translationService,
         minDate: _plannedDate ??
-            DateTime(DateTime.now().year, DateTime.now().month,
-                DateTime.now().day), // Deadline should be at or after planned date
-        formatType: acore.DateFormatType.dateTime,
-        translations: {
-          acore.DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
-          acore.DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
-          acore.DateTimePickerTranslationKey.setTime: _translationService.translate(SharedTranslationKeys.change),
-          acore.DateTimePickerTranslationKey.allDay: _translationService.translate(SharedTranslationKeys.allDay),
-          // Override title keys for mobile scaffold
-          acore.DateTimePickerTranslationKey.selectDateTimeTitle:
-              _translationService.translate(TaskTranslationKeys.selectDeadlineDateTitle),
-          acore.DateTimePickerTranslationKey.selectTimeTitle:
-              _translationService.translate(SharedTranslationKeys.selectTimeTitle),
-          // Quick selection translations (using available keys)
-          acore.DateTimePickerTranslationKey.quickSelectionToday:
-              _translationService.translate(SharedTranslationKeys.today),
-          acore.DateTimePickerTranslationKey.quickSelectionTomorrow:
-              _translationService.translate(TaskTranslationKeys.tomorrow),
-          acore.DateTimePickerTranslationKey.quickSelectionWeekend:
-              _translationService.translate(TaskTranslationKeys.weekend),
-          acore.DateTimePickerTranslationKey.quickSelectionNextWeek:
-              _translationService.translate(TaskTranslationKeys.nextWeek),
-          acore.DateTimePickerTranslationKey.quickSelectionNoDate:
-              _translationService.translate(SharedTranslationKeys.notSetTime),
-          acore.DateTimePickerTranslationKey.quickSelectionLastWeek:
-              _translationService.translate(SharedTranslationKeys.lastWeek),
-          acore.DateTimePickerTranslationKey.quickSelectionLastMonth:
-              _translationService.translate(SharedTranslationKeys.lastMonth),
-          // Time picker unit translations
-          acore.DateTimePickerTranslationKey.weekdayMonShort:
-              _translationService.translate(SharedTranslationKeys.weekDayMonShort),
-          acore.DateTimePickerTranslationKey.weekdayTueShort:
-              _translationService.translate(SharedTranslationKeys.weekDayTueShort),
-          acore.DateTimePickerTranslationKey.weekdayWedShort:
-              _translationService.translate(SharedTranslationKeys.weekDayWedShort),
-          acore.DateTimePickerTranslationKey.weekdayThuShort:
-              _translationService.translate(SharedTranslationKeys.weekDayThuShort),
-          acore.DateTimePickerTranslationKey.weekdayFriShort:
-              _translationService.translate(SharedTranslationKeys.weekDayFriShort),
-          acore.DateTimePickerTranslationKey.weekdaySatShort:
-              _translationService.translate(SharedTranslationKeys.weekDaySatShort),
-          acore.DateTimePickerTranslationKey.weekdaySunShort:
-              _translationService.translate(SharedTranslationKeys.weekDaySunShort),
-          // Time picker hour/minute labels
-          acore.DateTimePickerTranslationKey.timePickerHourLabel:
-              _translationService.translate(SharedTranslationKeys.timePickerHourLabel),
-          acore.DateTimePickerTranslationKey.timePickerMinuteLabel:
-              _translationService.translate(SharedTranslationKeys.timePickerMinuteLabel),
-          acore.DateTimePickerTranslationKey.timePickerAllDayLabel:
-              _translationService.translate(SharedTranslationKeys.allDay),
-          // Validation translations
-          acore.DateTimePickerTranslationKey.selectedDateMustBeAtOrAfter:
-              _translationService.translate(SharedTranslationKeys.selectedDateMustBeAtOrAfter),
-          acore.DateTimePickerTranslationKey.selectedDateMustBeAtOrBefore:
-              _translationService.translate(SharedTranslationKeys.selectedDateMustBeAtOrBefore),
-        },
+            DateTime(
+                DateTime.now().year, DateTime.now().month, DateTime.now().day), // Start of today or after planned date
       ),
     );
 
-    if (result != null && !result.wasCancelled && result.selectedDate != null) {
+    if (result != null && !result.wasCancelled) {
       setState(() {
-        _deadlineDate = result.selectedDate!;
-        _deadlineDateController.text = acore.DateFormatService.formatForInput(
-          result.selectedDate!,
-          context,
-          type: acore.DateFormatType.dateTime,
-        );
+        _deadlineDate = result.selectedDate;
+        _deadlineDateReminderTime = result.reminderTime ?? ReminderTime.none;
+        if (result.selectedDate != null) {
+          _deadlineDateController.text = acore.DateFormatService.formatForInput(
+            result.selectedDate!,
+            context,
+            type: acore.DateFormatType.dateTime,
+          );
+        } else {
+          _deadlineDateController.clear();
+        }
       });
     }
   }

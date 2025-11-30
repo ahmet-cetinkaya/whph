@@ -1,14 +1,6 @@
 tasks:
   add_button:
     tooltip: Adaugă sarcină nouă
-  date_picker:
-    quick_selection:
-      today: Astăzi
-      tomorrow: Mâine
-      this_weekend: Acest weekend
-      weekend: Weekend
-      next_week: Săptămâna viitoare
-      next_weekend: Weekendul viitor
   all_tasks_done: Toate sarcinile finalizate!
   card:
     schedule:
@@ -18,6 +10,15 @@ tasks:
       schedule: Planificare sarcină
   complete:
     error: Eroare neașteptată la salvarea finalizării sarcinii.
+  date_picker:
+    quick_selection:
+      next_week: Săptămâna viitoare
+      next_weekend: Weekendul viitor
+      this_weekend: Acest weekend
+      today: Astăzi
+      tomorrow: Mâine
+      weekend: Weekend
+      next_weekday: Următoarea zi lucrătoare
   date_selection:
     deadline_date_title: Selectează data limită
     planned_date_title: Selectează data planificată
@@ -29,11 +30,11 @@ tasks:
     deadline_date:
       label: Data Limită
     description:
-      hint: Adaugă descriere...
-      label: Descriere
       context:
         Adăugați informații detaliate despre sarcina dvs. pentru a vă ajuta
         să rețineți detaliile cheie și să urmăriți progresul.
+      hint: Adaugă descriere...
+      label: Descriere
     elapsed_time:
       label: Timp Scurs
     is_completed: Finalizată
@@ -53,11 +54,6 @@ tasks:
     title:
       label: Titlu
     total_elapsed_time: Timp Total Scurs
-  estimated_time:
-    label: Timp Estimat
-    description:
-      Stabiliți o estimare de timp realistă pentru a planifica eficient
-      sarcina și a urmări productivitatea.
   errors:
     add_tag: Eroare neașteptată la adăugarea etichetei
     adding_tag: Eșec la adăugarea etichetei
@@ -76,6 +72,11 @@ tasks:
     task_tag_already_deleted: Eticheta sarcinii este deja ștearsă
     task_tag_already_exists: Această etichetă a sarcinii există deja
     task_tag_not_found: Eticheta sarcinii negăsită
+  estimated_time:
+    description:
+      Stabiliți o estimare de timp realistă pentru a planifica eficient
+      sarcina și a urmări productivitatea.
+    label: Timp Estimat
   filters:
     completion: După Status de Finalizare
     deadline_date: După Data Limită
@@ -264,11 +265,11 @@ tasks:
     urgent_important: Urgentă și Importantă
     urgent_not_important: Urgentă dar Nu Importantă
   priority:
-    selection:
-      title: Selectează Prioritate
     description:
       Stabiliți prioritatea sarcinii folosind Matricea Eisenhower - clasificare
       Urgent/Important pentru managementul eficient al sarcinilor
+    selection:
+      title: Selectează Prioritate
     tooltips:
       none: Nicio Prioritate
       not_urgent_important: Nu Urgentă dar Importantă
@@ -289,12 +290,12 @@ tasks:
       formularul.
     lock_settings: Setări Blocare
     reset_all: Resetează toate câmpurile
-    task_added_successfully: Sarcină adăugată cu succes
     reset_confirm:
       message:
         Ești sigur că vrei să resetezi toate câmpurile? Această acțiune nu
         poate fi anulată.
       title: Resetează Toate Câmpurile
+    task_added_successfully: Sarcină adăugată cu succes
     title: Sarcină Rapidă
     title_hint: Introdu un titlu descriptiv al sarcinii...
     title_placeholder: Ce trebuie făcut?
@@ -311,7 +312,13 @@ tasks:
     custom: Personalizat
     daily: Zilnic
     daySuffix: zi(le)
+    daysOfWeek: Zilele săptămânii
     endDate: Data de sfârșit
+    ends:
+      after: După
+      label: Se termină
+      never: Niciodată
+      onDate: La dată
     enterCountHint: Introdu număr
     interval:
       label: Repetă la fiecare
@@ -341,12 +348,6 @@ tasks:
     weekly: Saptămânal
     yearSuffix: an(i)
     yearly: Anual
-    daysOfWeek: Zilele săptămânii
-    ends:
-      label: Se termină
-      never: Niciodată
-      onDate: La dată
-      after: După
   reminder:
     atTime: La ora programată
     deadlineReminderLabel: Amintire Termen Limită
@@ -356,6 +357,10 @@ tasks:
     oneDayBefore: 1 zi înainte
     oneHourBefore: 1 oră înainte
     plannedReminderLabel: Amintire Data Planificată
+    section_title: Amintiri
+    custom: Personalizat
+    custom_title: Memento personalizat
+    before_suffix: înainte
   task_details: Detalii Sarcină
   time_logging:
     add_time: Adaugă Timp
@@ -386,59 +391,69 @@ tasks:
     decrease_estimated_time: Scade timpul estimat
     edit_title: Editează titlu
     increase_estimated_time: Crește timpul estimat
+    reminder_date_required: Configurați întâi o dată pentru a configura amintirile
+    reminder_help_text: Setați o amintire pentru a fi notificat înainte de data sarcinii
     set_reminder: Setează amintire
+    set_reminder_with_status: Setează amintire - Fără amintire
     show_completed_tasks: Filtrează sarcinile finalizate
+    show_sub_tasks: Afișează sub sarcini
     show_subtasks: Afișează sub-sarcini
-  validation:
-    deadline_cannot_be_before_planned: Data limită trebuie să fie după data planificată
-    deadline_time_invalid: Ora termenului limită este invalidă
   tour:
-    task_management:
-      title: Gestionare Sarcini
-      description:
-        Creează și organizează sarcini cu priorități, termene limită și
-        mementouri. Folosește timerul Pomodoro pentru a menține concentrarea și a
-        urmări progresul în sarcini importante.
     add_tasks:
-      title: Adaugă Sarcini Noi
       description:
         Creează rapid sarcini noi cu acest buton. Setează titluri, priorități,
         termene limită, etichete și mai mult. Adaugă sub-sarcini și mementouri pentru
         a rămâne la curent cu munca ta.
-    your_tasks:
-      title: Sarcinile Tale
-      description:
-        Vizualizează și gestionează toate sarcinile tale într-un singur
-        loc. Click pe orice sarcină pentru a vedea detalii, a o marca ca finalizată,
-        a edita informații sau a o șterge. Rămâi organizat și urmărește progresul.
+      title: Adaugă Sarcini Noi
     filter_search:
-      title: Filtrare & Căutare
       description:
         Opțiuni puternice de filtrare pentru a găsi exact ceea ce ai nevoie.
         Filtrează după etichete, date, status de finalizare sau folosește căutarea.
         Sortează sarcini și comută sub-sarcini pentru o mai bună organizare.
+      title: Filtrare & Căutare
     marathon:
       app_usage:
-        title: Utilizare Aplicații & Analiză Timp
         description:
           Monitorizează modelele de utilizare a aplicațiilor și analizează
           timpul petrecut în diverse activități. Obține perspective asupra obiceiurilor
           tale digitale și optimizează-ți productivitatea.
-      usage_statistics:
-        title: Statistici Utilizare
-        description:
-          Afișează date detaliate despre utilizarea aplicațiilor și distribuția
-          timpului. Analizează modelele tale de productivitate, urmărește timpul petrecut
-          în diverse aplicații și identifică zonele de îmbunătățire.
+        title: Utilizare Aplicații & Analiză Timp
       filter_sort:
-        title: Filtrare & Sortare
         description:
           Filtrează datele de utilizare a aplicațiilor după intervalul
           de date, etichete sau dispozitive specifice. Sortează și organizează statisticile
           tale de utilizare pentru perspective mai bune asupra gestionării timpului.
+        title: Filtrare & Sortare
       tracking_settings:
-        title: Setări Urmărire
         description:
           Configurează regulile de urmărire a aplicațiilor, setează etichetarea
           automată și gestionează ce aplicații să urmărești. Personalizează urmărirea
           în funcție de nevoile tale de productivitate.
+        title: Setări Urmărire
+      usage_statistics:
+        description:
+          Afișează date detaliate despre utilizarea aplicațiilor și distribuția
+          timpului. Analizează modelele tale de productivitate, urmărește timpul petrecut
+          în diverse aplicații și identifică zonele de îmbunătățire.
+        title: Statistici Utilizare
+    task_management:
+      description:
+        Creează și organizează sarcini cu priorități, termene limită și
+        mementouri. Folosește timerul Pomodoro pentru a menține concentrarea și a
+        urmări progresul în sarcini importante.
+      title: Gestionare Sarcini
+    your_tasks:
+      description:
+        Vizualizează și gestionează toate sarcinile tale într-un singur
+        loc. Click pe orice sarcină pentru a vedea detalii, a o marca ca finalizată,
+        a edita informații sau a o șterge. Rămâi organizat și urmărește progresul.
+      title: Sarcinile Tale
+  validation:
+    deadline_cannot_be_before_planned: Data limită trebuie să fie după data planificată
+    deadline_time_invalid: Ora termenului limită este invalidă
+shared:
+  time:
+    minutes: minute
+    hours: ore
+    days: zile
+    weeks: săptămâni

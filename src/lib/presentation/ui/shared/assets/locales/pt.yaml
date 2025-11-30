@@ -157,24 +157,39 @@ shared:
     file_write: Erro ao escrever arquivo
     loading: Erro ao carregar dados
     report_subject: "{appName} App: Relatório de erro inesperado"
-    report_template: |
-      Olá, encontrei um erro inesperado ao usar o aplicativo {appName}.
+    report_template:
+      "Olá, encontrei um erro inesperado ao usar o aplicativo {appName}.
+
 
       Aqui estão informações que podem ajudar a diagnosticar o problema:
+
       Versão do app: {version}
+
       Informações do dispositivo: {device}
+
       SO: {os}
+
       Versão do SO: {osVersion}
+
       Mensagem de erro:
+
       ```
+
       {error}
+
       Stack Trace:
+
       {stackTrace}
+
       ```
+
 
       Por favor, me ajudem a resolver este problema.
 
+
       Obrigado!
+
+      "
     saving: Erro ao salvar dados
     storage_permission: Permissão de armazenamento necessária
     storage_permission_denied: Permissão de armazenamento negada
@@ -182,7 +197,9 @@ shared:
   startup_error:
     copied_to_clipboard: Detalhes do erro copiados para a área de transferência
     copy_button: Copiar detalhes do erro
-    description: Algo deu errado durante a inicialização do aplicativo. Isso pode ser devido a um problema do sistema ou configuração incompatível.
+    description:
+      Algo deu errado durante a inicialização do aplicativo. Isso pode
+      ser devido a um problema do sistema ou configuração incompatível.
     details_title: Detalhes do Erro
     report_button: Relatar Problema
     title: Erro de Inicialização do Aplicativo
@@ -249,6 +266,10 @@ shared:
       title: Uso por hora
   time:
     not_set: Não definido
+    minutes: minutos
+    hours: horas
+    days: dias
+    weeks: semanas
   time_display:
     elapsed: Decorrido
     elapsed_time_tooltip: Tempo gasto nesta tarefa
@@ -336,7 +357,9 @@ shared:
     time_must_be_at_or_before: Time must be {time} or earlier
     selected_date_must_be_at_or_after: Selected date must be {date} or later
     selected_date_must_be_at_or_before: Selected date must be {date} or earlier
-    start_date_cannot_be_after_end_date: A data de início não pode ser posterior à data de fim
+    start_date_cannot_be_after_end_date:
+      A data de início não pode ser posterior à
+      data de fim
     start_date_must_be_at_or_after: Start date must be {date} or later
     end_date_must_be_at_or_before: End date must be {date} or earlier
     cannot_select_date_before_min_date: Cannot select date before {date}
