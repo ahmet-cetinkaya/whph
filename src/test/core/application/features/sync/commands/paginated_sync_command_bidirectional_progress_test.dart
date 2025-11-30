@@ -6,6 +6,8 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/bidirectional_sync_progress.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
@@ -14,6 +16,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as whph_repo;
 import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph/core/domain/features/tasks/task.dart';
 
 import 'paginated_sync_command_bidirectional_progress_test.mocks.dart';
 
@@ -115,7 +118,8 @@ void main() {
         when(mockConfigurationService.getAllConfigurations()).thenReturn(mockConfigs);
         when(mockConfigurationService.getConfiguration('Task')).thenReturn(mockConfigs.first);
         when(mockCommunicationService.isDeviceReachable(any)).thenAnswer((_) async => true);
-        when(mockPaginationService.syncEntityWithPagination(any, any, any)).thenAnswer((_) async => true);
+        when(mockPaginationService.syncEntityWithPagination(any, any, any, onPageReceived: anyNamed('onPageReceived')))
+            .thenAnswer((_) async => true);
         when(mockSyncDeviceRepository.update(any)).thenAnswer((_) async {});
         when(mockSyncDeviceRepository.getById(any)).thenAnswer((_) async => syncDevice);
 
@@ -177,7 +181,7 @@ void main() {
       test('should track error states in progress', () async {
         // Arrange
         final syncDevice = createMockSyncDevice('device1');
-        final dto = createMockPaginatedSyncDataDto('Task', syncDevice);
+        final dto = createMockPaginatedSyncDataDto('Task', syncDevice, includeSyncData: true);
 
         when(mockValidationService.validateVersion(any)).thenAnswer((_) async {});
         when(mockValidationService.validateDeviceId(any)).thenAnswer((_) async {});
@@ -300,7 +304,8 @@ void main() {
         when(mockConfigurationService.getConfiguration('Task')).thenReturn(mockConfigs.first);
         when(mockConfigurationService.getConfiguration('Habit')).thenReturn(mockConfigs.last);
         when(mockCommunicationService.isDeviceReachable(any)).thenAnswer((_) async => true);
-        when(mockPaginationService.syncEntityWithPagination(any, any, any)).thenAnswer((_) async => true);
+        when(mockPaginationService.syncEntityWithPagination(any, any, any, onPageReceived: anyNamed('onPageReceived')))
+            .thenAnswer((_) async => true);
         when(mockSyncDeviceRepository.update(any)).thenAnswer((_) async {});
         when(mockSyncDeviceRepository.getById(any)).thenAnswer((_) async => device1);
 
@@ -350,7 +355,32 @@ PaginatedSyncDataDto createMockPaginatedSyncDataDto(
   int pageIndex = 0,
   int totalPages = 1,
   int totalItems = 10,
+  bool includeSyncData = false, // For error test, we need sync data to trigger processing
 }) {
+  // Create sync data with dummy items to trigger processing
+  final syncData = includeSyncData
+      ? PaginatedSyncData<Task>(
+          data: SyncData<Task>(createSync: [
+            Task(
+                id: 'test-task-1',
+                title: 'Test Task 1',
+                description: 'Test Description 1',
+                createdDate: DateTime.now()),
+            Task(
+                id: 'test-task-2',
+                title: 'Test Task 2',
+                description: 'Test Description 2',
+                createdDate: DateTime.now()),
+          ], updateSync: [], deleteSync: []),
+          pageIndex: pageIndex,
+          pageSize: 50,
+          totalPages: totalPages,
+          totalItems: 2,
+          isLastPage: true,
+          entityType: entityType,
+        )
+      : null;
+
   return PaginatedSyncDataDto(
     appVersion: '1.0.0',
     syncDevice: syncDevice,
@@ -361,6 +391,7 @@ PaginatedSyncDataDto createMockPaginatedSyncDataDto(
     totalPages: totalPages,
     totalItems: totalItems,
     isLastPage: pageIndex == totalPages - 1,
+    tasksSyncData: syncData, // Only include for tests that need it
   );
 }
 
@@ -370,13 +401,44 @@ class MockPaginatedSyncConfig extends PaginatedSyncConfig<BaseEntity<String>> {
       : super(
           name: name,
           repository: MockRepository(),
-          getPaginatedSyncData: (_, __, ___, ____) => throw UnimplementedError(),
-          getPaginatedSyncDataFromDto: (_) => null,
+          getPaginatedSyncData: (_, __, ___, ____) => Future.value(PaginatedSyncData<BaseEntity<String>>(
+            data: SyncData<BaseEntity<String>>(createSync: [], updateSync: [], deleteSync: []),
+            pageIndex: 0,
+            pageSize: 50,
+            totalPages: 1,
+            totalItems: 0,
+            isLastPage: true,
+            entityType: name,
+          )),
+          getPaginatedSyncDataFromDto: (dto) {
+            // Convert the typed sync data back to the base type for testing
+            final tasksData = dto.tasksSyncData;
+            if (tasksData == null) return null;
+            return PaginatedSyncData<BaseEntity<String>>(
+              data: SyncData<BaseEntity<String>>(
+                createSync: tasksData.data.createSync.cast<BaseEntity<String>>(),
+                updateSync: tasksData.data.updateSync.cast<BaseEntity<String>>(),
+                deleteSync: tasksData.data.deleteSync.cast<BaseEntity<String>>(),
+              ),
+              pageIndex: tasksData.pageIndex,
+              pageSize: tasksData.pageSize,
+              totalPages: tasksData.totalPages,
+              totalItems: tasksData.totalItems,
+              isLastPage: tasksData.isLastPage,
+              entityType: tasksData.entityType,
+            );
+          },
         );
 }
 
 // Use a mock for the repository that implements the whph version of IRepository
-class MockRepository extends Mock implements whph_repo.IRepository<BaseEntity<String>, String> {}
+class MockRepository extends Mock implements whph_repo.IRepository<BaseEntity<String>, String> {
+  @override
+  Future<List<BaseEntity<String>>> getAll(
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+    return []; // Return empty list to prevent null errors
+  }
+}
 
 PaginatedSyncConfig createMockPaginatedSyncConfig(String name) {
   return MockPaginatedSyncConfig(name);
