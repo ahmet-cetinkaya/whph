@@ -2,8 +2,9 @@ import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 @UseRowClass(HabitRecord)
 class HabitRecordTable extends Table {
@@ -42,47 +43,58 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
   @override
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
       String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) async {
-    final query = database.select(table)
-      ..where((t) =>
-          t.habitId.equals(habitId) &
-          t.occurredAt.isNotNull() &
-          t.occurredAt.isBetweenValues(startDate, endDate) &
-          t.deletedDate.isNull())
-      ..limit(pageSize, offset: pageIndex * pageSize);
-    final result = await query.get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    final count = await (database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND occurred_at IS NOT NULL AND occurred_at BETWEEN ? AND ? AND deleted_date IS NULL',
-      variables: [Variable<String>(habitId), Variable<DateTime>(startDate), Variable<DateTime>(endDate)],
-      readsFrom: {table},
-    ).getSingleOrNull());
-    final totalCount = count?.data['count'] as int? ?? 0;
+      final query = currentDatabase.select(table)
+        ..where((t) =>
+            t.habitId.equals(habitId) &
+            t.occurredAt.isNotNull() &
+            t.occurredAt.isBetweenValues(startDate, endDate) &
+            t.deletedDate.isNull())
+        ..limit(pageSize, offset: pageIndex * pageSize);
+      final result = await query.get();
 
-    return PaginatedList(
-      items: result,
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalItemCount: totalCount,
-    );
+      final count = await (currentDatabase.customSelect(
+        'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND occurred_at IS NOT NULL AND occurred_at BETWEEN ? AND ? AND deleted_date IS NULL',
+        variables: [Variable<String>(habitId), Variable<DateTime>(startDate), Variable<DateTime>(endDate)],
+        readsFrom: {table},
+      ).getSingleOrNull());
+      final totalCount = count?.data['count'] as int? ?? 0;
+
+      return PaginatedList(
+        items: result,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalItemCount: totalCount,
+      );
+    });
   }
 
   /// Count occurrences for a habit on a specific date
   @override
   Future<int> countByHabitIdAndDate(String habitId, DateTime date) async {
-    final startOfDay = DateTime(date.year, date.month, date.day);
-    final endOfDay = startOfDay.add(const Duration(days: 1));
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    final result = await database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND occurred_at IS NOT NULL AND occurred_at >= ? AND occurred_at < ? AND deleted_date IS NULL',
-      variables: [Variable<String>(habitId), Variable<DateTime>(startOfDay), Variable<DateTime>(endOfDay)],
-      readsFrom: {table},
-    ).getSingleOrNull();
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    return result?.data['count'] as int? ?? 0;
+      final result = await currentDatabase.customSelect(
+        'SELECT COUNT(*) AS count FROM ${table.actualTableName} WHERE habit_id = ? AND occurred_at IS NOT NULL AND occurred_at >= ? AND occurred_at < ? AND deleted_date IS NULL',
+        variables: [Variable<String>(habitId), Variable<DateTime>(startOfDay), Variable<DateTime>(endOfDay)],
+        readsFrom: {table},
+      ).getSingleOrNull();
+
+      return result?.data['count'] as int? ?? 0;
+    });
   }
 
   @override
   Future<List<HabitRecord>> getByHabitId(String habitId) async {
-    return (database.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      return (currentDatabase.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
+    });
   }
 }

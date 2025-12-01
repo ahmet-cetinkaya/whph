@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
@@ -47,25 +48,28 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    final query = database.customSelect(
-      '''
-      SELECT COALESCE(SUM(duration), 0) as total_duration
-      FROM task_time_record_table
-      WHERE task_id = ?
-        AND deleted_date IS NULL
-        ${startDate != null ? 'AND created_date >= ?' : ''}
-        ${endDate != null ? 'AND created_date < ?' : ''}
-      ''',
-      variables: [
-        Variable<String>(taskId),
-        if (startDate != null) Variable<DateTime>(startDate),
-        if (endDate != null) Variable<DateTime>(endDate),
-      ],
-      readsFrom: {table},
-    );
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      final query = currentDatabase.customSelect(
+        '''
+        SELECT COALESCE(SUM(duration), 0) as total_duration
+        FROM task_time_record_table
+        WHERE task_id = ?
+          AND deleted_date IS NULL
+          ${startDate != null ? 'AND created_date >= ?' : ''}
+          ${endDate != null ? 'AND created_date < ?' : ''}
+        ''',
+        variables: [
+          Variable<String>(taskId),
+          if (startDate != null) Variable<DateTime>(startDate),
+          if (endDate != null) Variable<DateTime>(endDate),
+        ],
+        readsFrom: {table},
+      );
 
-    final result = await query.getSingleOrNull();
-    return result?.read<int>('total_duration') ?? 0;
+      final result = await query.getSingleOrNull();
+      return result?.read<int>('total_duration') ?? 0;
+    });
   }
 
   @override
@@ -74,40 +78,46 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    if (taskIds.isEmpty) return {};
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      if (taskIds.isEmpty) return {};
 
-    final placeholders = taskIds.map((_) => '?').join(',');
-    final query = database.customSelect(
-      '''
-      SELECT task_id, COALESCE(SUM(duration), 0) as total_duration
-      FROM task_time_record_table
-      WHERE task_id IN ($placeholders)
-        AND deleted_date IS NULL
-        ${startDate != null ? 'AND created_date >= ?' : ''}
-        ${endDate != null ? 'AND created_date < ?' : ''}
-      GROUP BY task_id
-      ''',
-      variables: [
-        ...taskIds.map((id) => Variable<String>(id)),
-        if (startDate != null) Variable<DateTime>(startDate),
-        if (endDate != null) Variable<DateTime>(endDate),
-      ],
-      readsFrom: {table},
-    );
+      final placeholders = taskIds.map((_) => '?').join(',');
+      final query = currentDatabase.customSelect(
+        '''
+        SELECT task_id, COALESCE(SUM(duration), 0) as total_duration
+        FROM task_time_record_table
+        WHERE task_id IN ($placeholders)
+          AND deleted_date IS NULL
+          ${startDate != null ? 'AND created_date >= ?' : ''}
+          ${endDate != null ? 'AND created_date < ?' : ''}
+        GROUP BY task_id
+        ''',
+        variables: [
+          ...taskIds.map((id) => Variable<String>(id)),
+          if (startDate != null) Variable<DateTime>(startDate),
+          if (endDate != null) Variable<DateTime>(endDate),
+        ],
+        readsFrom: {table},
+      );
 
-    final results = await query.get();
-    final map = {for (final result in results) result.read<String>('task_id'): result.read<int>('total_duration')};
+      final results = await query.get();
+      final map = {for (final result in results) result.read<String>('task_id'): result.read<int>('total_duration')};
 
-    // Ensure all taskIds have an entry, even if they have no time records
-    for (final taskId in taskIds) {
-      map.putIfAbsent(taskId, () => 0);
-    }
+      // Ensure all taskIds have an entry, even if they have no time records
+      for (final taskId in taskIds) {
+        map.putIfAbsent(taskId, () => 0);
+      }
 
-    return map;
+      return map;
+    });
   }
 
   @override
   Future<List<TaskTimeRecord>> getByTaskId(String taskId) async {
-    return (database.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      return (currentDatabase.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
+    });
   }
 }

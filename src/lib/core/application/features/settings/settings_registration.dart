@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/settings/commands/import_data_com
 
 import 'package:whph/core/application/shared/services/compression_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/core/application/features/settings/services/import_data_migration_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
@@ -52,6 +53,13 @@ void registerSettingsFeature(
   INoteRepository noteRepository,
   INoteTagRepository noteTagRepository,
 ) {
+  // Register the database connection manager
+  container.registerSingleton<DatabaseConnectionManager>((_) => DatabaseConnectionManager.instance);
+
+  // Initialize the connection manager
+  final connectionManager = container.resolve<DatabaseConnectionManager>();
+  connectionManager.initialize();
+
   // Register the import data migration service
   container.registerSingleton<IImportDataMigrationService>((_) => ImportDataMigrationService());
 

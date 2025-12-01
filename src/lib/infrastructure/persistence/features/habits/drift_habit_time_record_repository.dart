@@ -1,8 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/features/habits/drift_habits_repository.dart';
 
 @UseRowClass(HabitTimeRecord)
@@ -31,11 +32,15 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
 
   @override
   Future<void> add(HabitTimeRecord item) async {
-    // Preserve the original createdDate instead of auto-setting it
-    final originalCreatedDate = item.createdDate;
-    item.createdDate = originalCreatedDate; // Don't let base class override this
-    HabitTimeRecord insertedItem = await database.into(table).insertReturning(toCompanion(item));
-    item.id = insertedItem.id;
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+
+      // Preserve the original createdDate instead of auto-setting it
+      final originalCreatedDate = item.createdDate;
+      item.createdDate = originalCreatedDate; // Don't let base class override this
+      HabitTimeRecord insertedItem = await currentDatabase.into(table).insertReturning(toCompanion(item));
+      item.id = insertedItem.id;
+    });
   }
 
   @override
@@ -54,81 +59,95 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
 
   @override
   Future<int> getTotalDurationByHabitId(String habitId, {DateTime? startDate, DateTime? endDate}) async {
-    final query = database.customSelect(
-      '''
-      SELECT COALESCE(SUM(duration), 0) as total_duration
-      FROM habit_time_record_table
-      WHERE habit_id = ?
-        AND deleted_date IS NULL
-        ${startDate != null ? 'AND created_date >= ?' : ''}
-        ${endDate != null ? 'AND created_date <= ?' : ''}
-      ''',
-      variables: [
-        Variable<String>(habitId),
-        if (startDate != null) Variable<DateTime>(startDate),
-        if (endDate != null) Variable<DateTime>(endDate),
-      ],
-      readsFrom: {table},
-    );
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    final result = await query.getSingleOrNull();
-    return result?.data['total_duration'] as int? ?? 0;
+      final query = currentDatabase.customSelect(
+        '''
+        SELECT COALESCE(SUM(duration), 0) as total_duration
+        FROM habit_time_record_table
+        WHERE habit_id = ?
+          AND deleted_date IS NULL
+          ${startDate != null ? 'AND created_date >= ?' : ''}
+          ${endDate != null ? 'AND created_date <= ?' : ''}
+        ''',
+        variables: [
+          Variable<String>(habitId),
+          if (startDate != null) Variable<DateTime>(startDate),
+          if (endDate != null) Variable<DateTime>(endDate),
+        ],
+        readsFrom: {table},
+      );
+
+      final result = await query.getSingleOrNull();
+      return result?.data['total_duration'] as int? ?? 0;
+    });
   }
 
   @override
   Future<List<HabitTimeRecord>> getByHabitId(String habitId) async {
-    return (database.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      return (currentDatabase.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
+    });
   }
 
   @override
   Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async {
-    return (database.select(table)
-          ..where((t) =>
-              t.habitId.equals(habitId) &
-              (t.occurredAt.isBetweenValues(start, end) |
-                  (t.occurredAt.isNull() & t.createdDate.isBetweenValues(start, end))) &
-              t.deletedDate.isNull()))
-        .get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      return (currentDatabase.select(table)
+            ..where((t) =>
+                t.habitId.equals(habitId) &
+                (t.occurredAt.isBetweenValues(start, end) |
+                    (t.occurredAt.isNull() & t.createdDate.isBetweenValues(start, end))) &
+                t.deletedDate.isNull()))
+          .get();
+    });
   }
 
   @override
   Future<Map<String, int>> getTotalDurationsByHabitIds(List<String> habitIds,
       {DateTime? startDate, DateTime? endDate}) async {
-    if (habitIds.isEmpty) return {};
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    final placeholders = habitIds.map((_) => '?').join(',');
-    final query = database.customSelect(
-      '''
-      SELECT habit_id, COALESCE(SUM(duration), 0) as total_duration
-      FROM habit_time_record_table
-      WHERE habit_id IN ($placeholders)
-        AND deleted_date IS NULL
-        ${startDate != null ? 'AND created_date >= ?' : ''}
-        ${endDate != null ? 'AND created_date <= ?' : ''}
-      GROUP BY habit_id
-      ''',
-      variables: [
-        ...habitIds.map((id) => Variable<String>(id)),
-        if (startDate != null) Variable<DateTime>(startDate),
-        if (endDate != null) Variable<DateTime>(endDate),
-      ],
-      readsFrom: {table},
-    );
+      if (habitIds.isEmpty) return {};
 
-    final results = await query.get();
-    final map = <String, int>{};
+      final placeholders = habitIds.map((_) => '?').join(',');
+      final query = currentDatabase.customSelect(
+        '''
+        SELECT habit_id, COALESCE(SUM(duration), 0) as total_duration
+        FROM habit_time_record_table
+        WHERE habit_id IN ($placeholders)
+          AND deleted_date IS NULL
+          ${startDate != null ? 'AND created_date >= ?' : ''}
+          ${endDate != null ? 'AND created_date <= ?' : ''}
+        GROUP BY habit_id
+        ''',
+        variables: [
+          ...habitIds.map((id) => Variable<String>(id)),
+          if (startDate != null) Variable<DateTime>(startDate),
+          if (endDate != null) Variable<DateTime>(endDate),
+        ],
+        readsFrom: {table},
+      );
 
-    for (final result in results) {
-      final habitId = result.data['habit_id'] as String;
-      final totalDuration = result.data['total_duration'] as int? ?? 0;
-      map[habitId] = totalDuration;
-    }
+      final results = await query.get();
+      final map = <String, int>{};
 
-    // Ensure all habitIds have an entry, even if they have no time records
-    for (final habitId in habitIds) {
-      map.putIfAbsent(habitId, () => 0);
-    }
+      for (final result in results) {
+        final habitId = result.data['habit_id'] as String;
+        final totalDuration = result.data['total_duration'] as int? ?? 0;
+        map[habitId] = totalDuration;
+      }
 
-    return map;
+      // Ensure all habitIds have an entry, even if they have no time records
+      for (final habitId in habitIds) {
+        map.putIfAbsent(habitId, () => 0);
+      }
+
+      return map;
+    });
   }
 }

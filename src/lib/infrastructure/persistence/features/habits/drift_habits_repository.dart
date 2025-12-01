@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:acore/acore.dart' as acore;
@@ -68,22 +69,28 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
 
   @override
   Future<String> getReminderDaysById(String id) async {
-    final result = await database.customSelect(
-      'SELECT reminder_days FROM ${table.actualTableName} WHERE id = ?',
-      variables: [Variable.withString(id)],
-      readsFrom: {table},
-    ).getSingleOrNull();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      final result = await currentDatabase.customSelect(
+        'SELECT reminder_days FROM ${table.actualTableName} WHERE id = ?',
+        variables: [Variable.withString(id)],
+        readsFrom: {table},
+      ).getSingleOrNull();
 
-    final reminderDays = result != null ? result.data['reminder_days'] as String : '';
-    return reminderDays;
+      final reminderDays = result != null ? result.data['reminder_days'] as String : '';
+      return reminderDays;
+    });
   }
 
   @override
   Future<void> updateAll(List<Habit> habits) async {
-    await database.transaction(() async {
-      for (final habit in habits) {
-        await database.update(table).replace(toCompanion(habit));
-      }
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      await currentDatabase.transaction(() async {
+        for (final habit in habits) {
+          await currentDatabase.update(table).replace(toCompanion(habit));
+        }
+      });
     });
   }
 
@@ -92,74 +99,78 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,
       List<acore.CustomOrder>? customOrder}) async {
-    // Check if sorting by actualTime is requested
-    final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    if (!hasActualTimeSort) {
-      // Use default implementation if no actualTime sorting
-      return super.getList(pageIndex, pageSize,
-          includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
-    }
+      // Check if sorting by actualTime is requested
+      final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
 
-    // Build custom query with LEFT JOIN for actualTime sorting
-    List<String> whereClauses = [
-      if (customWhereFilter != null) "(${customWhereFilter.query})",
-      if (!includeDeleted) 'h.deleted_date IS NULL',
-    ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+      if (!hasActualTimeSort) {
+        // Use default implementation if no actualTime sorting
+        return await super.getList(pageIndex, pageSize,
+            includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
+      }
 
-    // Build ORDER BY clause with special handling for actual_time
-    String? orderByClause;
-    if (customOrder?.isNotEmpty == true) {
-      final orderClauses = customOrder!.map((order) {
-        if (order.field == "actual_time") {
-          return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
-        } else {
-          return "`h.${order.field}` IS NULL, `h.${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
-        }
-      }).join(', ');
-      orderByClause = ' ORDER BY $orderClauses ';
-    }
+      // Build custom query with LEFT JOIN for actualTime sorting
+      List<String> whereClauses = [
+        if (customWhereFilter != null) "(${customWhereFilter.query})",
+        if (!includeDeleted) 'h.deleted_date IS NULL',
+      ];
+      String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
-    final query = database.customSelect(
-      """
-      SELECT h.*
-      FROM habit_table h
-      LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL
-      ${whereClause ?? ''}
-      GROUP BY h.id
-      ${orderByClause ?? ''}
-      LIMIT ? OFFSET ?
-      """,
-      variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
-        Variable.withInt(pageSize),
-        Variable.withInt(pageIndex * pageSize)
-      ],
-      readsFrom: {table, database.habitTimeRecordTable},
-    ).map((row) => table.map(row.data));
-    final result = await query.get();
+      // Build ORDER BY clause with special handling for actual_time
+      String? orderByClause;
+      if (customOrder?.isNotEmpty == true) {
+        final orderClauses = customOrder!.map((order) {
+          if (order.field == "actual_time") {
+            return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+          } else {
+            return "`h.${order.field}` IS NULL, `h.${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+          }
+        }).join(', ');
+        orderByClause = ' ORDER BY $orderClauses ';
+      }
 
-    // Get count using the same JOIN logic
-    final count = await database.customSelect(
-      """
-      SELECT COUNT(DISTINCT h.id) AS count
-      FROM habit_table h
-      LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL
-      ${whereClause ?? ''}
-      """,
-      variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
-      ],
-    ).getSingleOrNull();
-    final totalCount = count?.data['count'] as int? ?? 0;
+      final query = currentDatabase.customSelect(
+        """
+        SELECT h.*
+        FROM habit_table h
+        LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL
+        ${whereClause ?? ''}
+        GROUP BY h.id
+        ${orderByClause ?? ''}
+        LIMIT ? OFFSET ?
+        """,
+        variables: [
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+          Variable.withInt(pageSize),
+          Variable.withInt(pageIndex * pageSize)
+        ],
+        readsFrom: {table, currentDatabase.habitTimeRecordTable},
+      ).map((row) => table.map(row.data));
+      final result = await query.get();
 
-    return acore.PaginatedList(
-      items: await Future.wait(result.map((entity) => entity is Future<Habit> ? entity : Future.value(entity))),
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalItemCount: totalCount,
-    );
+      // Get count using the same JOIN logic
+      final count = await currentDatabase.customSelect(
+        """
+        SELECT COUNT(DISTINCT h.id) AS count
+        FROM habit_table h
+        LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL
+        ${whereClause ?? ''}
+        """,
+        variables: [
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        ],
+      ).getSingleOrNull();
+      final totalCount = count?.data['count'] as int? ?? 0;
+
+      return acore.PaginatedList(
+        items: await Future.wait(result.map((entity) => entity is Future<Habit> ? entity : Future.value(entity))),
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalItemCount: totalCount,
+      );
+    });
   }
 
   Variable _convertToQueryVariable(Object value) {

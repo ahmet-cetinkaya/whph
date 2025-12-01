@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
@@ -50,79 +51,86 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
     CustomWhereFilter? customWhereFilter,
     List<CustomOrder>? customOrder,
   }) async {
-    // First get paginated primary tags
-    final tags = await getList(
-      pageIndex,
-      pageSize,
-      customWhereFilter: customWhereFilter,
-      customOrder: customOrder,
-    );
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    if (tags.items.isEmpty) {
+      // First get paginated primary tags
+      final tags = await getList(
+        pageIndex,
+        pageSize,
+        customWhereFilter: customWhereFilter,
+        customOrder: customOrder,
+      );
+
+      if (tags.items.isEmpty) {
+        return PaginatedList<(Tag, List<Tag>)>(
+          items: [],
+          totalItemCount: 0,
+          pageIndex: pageIndex,
+          pageSize: pageSize,
+        );
+      }
+
+      // For each primary tag, get its related tags in a single query
+      final relatedTagsQuery = '''
+        SELECT t.*, tt.primary_tag_id
+        FROM tag_tag_table tt
+        JOIN tag_table t ON t.id = tt.secondary_tag_id
+        WHERE tt.primary_tag_id IN (${tags.items.map((_) => '?').join(',')})
+          AND tt.deleted_date IS NULL
+          AND t.deleted_date IS NULL
+      ''';
+
+      final variables = tags.items.map((tag) => Variable<String>(tag.id)).toList();
+      final relatedTagRows = await (currentDatabase.customSelect(
+        relatedTagsQuery,
+        variables: variables,
+      )).get();
+
+      // Convert rows to Tag objects and group by primary tag
+      final relatedTagsMap = <String, List<Tag>>{};
+      for (final row in relatedTagRows) {
+        final tag = Tag(
+          id: row.read<String>('id'),
+          createdDate: row.read<DateTime>('created_date'),
+          modifiedDate: row.read<DateTime?>('modified_date'),
+          deletedDate: row.read<DateTime?>('deleted_date'),
+          name: row.read<String>('name'),
+          color: row.read<String?>('color'),
+          isArchived: row.read<bool>('is_archived'),
+        );
+
+        // Get primary tag ID from the join
+        final primaryTagId = row.read<String>('primary_tag_id');
+        relatedTagsMap.putIfAbsent(primaryTagId, () => []).add(tag);
+      }
+
+      // Create result tuples with tags and their related tags
+      final resultItems = tags.items
+          .map(
+            (tag) => (tag, relatedTagsMap[tag.id] ?? <Tag>[]),
+          )
+          .toList();
+
       return PaginatedList<(Tag, List<Tag>)>(
-        items: [],
-        totalItemCount: 0,
-        pageIndex: pageIndex,
-        pageSize: pageSize,
+        items: resultItems,
+        totalItemCount: tags.totalItemCount,
+        pageIndex: tags.pageIndex,
+        pageSize: tags.pageSize,
       );
-    }
-
-    // For each primary tag, get its related tags in a single query
-    final relatedTagsQuery = '''
-      SELECT t.*, tt.primary_tag_id
-      FROM tag_tag_table tt
-      JOIN tag_table t ON t.id = tt.secondary_tag_id
-      WHERE tt.primary_tag_id IN (${tags.items.map((_) => '?').join(',')})
-        AND tt.deleted_date IS NULL
-        AND t.deleted_date IS NULL
-    ''';
-
-    final variables = tags.items.map((tag) => Variable<String>(tag.id)).toList();
-    final relatedTagRows = await (database.customSelect(
-      relatedTagsQuery,
-      variables: variables,
-    )).get();
-
-    // Convert rows to Tag objects and group by primary tag
-    final relatedTagsMap = <String, List<Tag>>{};
-    for (final row in relatedTagRows) {
-      final tag = Tag(
-        id: row.read<String>('id'),
-        createdDate: row.read<DateTime>('created_date'),
-        modifiedDate: row.read<DateTime?>('modified_date'),
-        deletedDate: row.read<DateTime?>('deleted_date'),
-        name: row.read<String>('name'),
-        color: row.read<String?>('color'),
-        isArchived: row.read<bool>('is_archived'),
-      );
-
-      // Get primary tag ID from the join
-      final primaryTagId = row.read<String>('primary_tag_id');
-      relatedTagsMap.putIfAbsent(primaryTagId, () => []).add(tag);
-    }
-
-    // Create result tuples with tags and their related tags
-    final resultItems = tags.items
-        .map(
-          (tag) => (tag, relatedTagsMap[tag.id] ?? <Tag>[]),
-        )
-        .toList();
-
-    return PaginatedList<(Tag, List<Tag>)>(
-      items: resultItems,
-      totalItemCount: tags.totalItemCount,
-      pageIndex: tags.pageIndex,
-      pageSize: tags.pageSize,
-    );
+    });
   }
 
   @override
   Future<Map<String, Tag>> getByIds(List<String> tagIds) async {
-    if (tagIds.isEmpty) return {};
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      if (tagIds.isEmpty) return {};
 
-    final query = database.select(table)..where((t) => t.id.isIn(tagIds) & t.deletedDate.isNull());
+      final query = currentDatabase.select(table)..where((t) => t.id.isIn(tagIds) & t.deletedDate.isNull());
 
-    final tags = await query.get();
-    return {for (final tag in tags) tag.id: tag};
+      final tags = await query.get();
+      return {for (final tag in tags) tag.id: tag};
+    });
   }
 }

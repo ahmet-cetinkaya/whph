@@ -6,6 +6,7 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
 @UseRowClass(Task)
@@ -58,26 +59,30 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
   @override
   Future<Task?> getById(String id, {bool includeDeleted = false}) async {
-    List<String> whereClauses = [
-      'id = ?',
-      if (!includeDeleted) 'deleted_date IS NULL',
-    ];
-    String whereClause = whereClauses.join(' AND ');
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    final results = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
-      variables: [Variable.withString(id.toString())],
-      readsFrom: {table},
-    ).get();
+      List<String> whereClauses = [
+        'id = ?',
+        if (!includeDeleted) 'deleted_date IS NULL',
+      ];
+      String whereClause = whereClauses.join(' AND ');
 
-    if (results.isEmpty) return null;
+      final results = await currentDatabase.customSelect(
+        'SELECT * FROM ${table.actualTableName} WHERE $whereClause',
+        variables: [Variable.withString(id.toString())],
+        readsFrom: {table},
+      ).get();
 
-    // Clean up duplicates in the background (keep the first, delete the rest)
-    if (results.length > 1) {
-      _cleanupDuplicateTasksInBackground(id, results.skip(1).toList());
-    }
+      if (results.isEmpty) return null;
 
-    return _mapTaskFromRow(results.first.data);
+      // Clean up duplicates in the background (keep the first, delete the rest)
+      if (results.length > 1) {
+        _cleanupDuplicateTasksInBackground(id, results.skip(1).toList());
+      }
+
+      return _mapTaskFromRow(results.first.data);
+    });
   }
 
   Future<void> _cleanupDuplicateTasksInBackground(String taskId, List<QueryRow> duplicatesToDelete) async {
@@ -87,11 +92,14 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       final rowIds = duplicatesToDelete.map((d) => d.data['rowid'] as int).toList();
       final placeholders = List.filled(rowIds.length, '?').join(',');
 
-      await database.customStatement(
-        'DELETE FROM ${table.actualTableName} WHERE rowid IN ($placeholders)',
-        rowIds.map((id) => Variable.withInt(id)).toList(),
-      );
-      Logger.info('Cleaned up ${rowIds.length} duplicate tasks for ID $taskId.');
+      return DatabaseConnectionManager.instance.executeWithRetry(() async {
+        final currentDatabase = AppDatabase.instance();
+        await currentDatabase.customStatement(
+          'DELETE FROM ${table.actualTableName} WHERE rowid IN ($placeholders)',
+          rowIds.map((id) => Variable.withInt(id)).toList(),
+        );
+        Logger.info('Cleaned up ${rowIds.length} duplicate tasks for ID $taskId.');
+      });
     } catch (e) {
       // Log the error but don't throw - this is a background cleanup operation
       Logger.warning('Failed to cleanup duplicate tasks for ID $taskId: $e');
@@ -104,50 +112,54 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     CustomWhereFilter? customWhereFilter,
     bool includeDeleted = false,
   }) async {
-    final allResults = <Task>[];
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    // Build the query
-    String query = 'SELECT * FROM ${table.actualTableName}';
-    final variables = <Variable>[];
+      final allResults = <Task>[];
 
-    // Add where clause if needed
-    if (!includeDeleted || customWhereFilter != null) {
-      query += ' WHERE ';
+      // Build the query
+      String query = 'SELECT * FROM ${table.actualTableName}';
+      final variables = <Variable>[];
 
-      if (!includeDeleted) {
-        query += 'deleted_date IS NULL';
+      // Add where clause if needed
+      if (!includeDeleted || customWhereFilter != null) {
+        query += ' WHERE ';
 
-        if (customWhereFilter != null) {
-          query += ' AND ${customWhereFilter.query}';
+        if (!includeDeleted) {
+          query += 'deleted_date IS NULL';
+
+          if (customWhereFilter != null) {
+            query += ' AND ${customWhereFilter.query}';
+            variables.addAll(customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
+          }
+        } else if (customWhereFilter != null) {
+          query += customWhereFilter.query;
           variables.addAll(customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
         }
-      } else if (customWhereFilter != null) {
-        query += customWhereFilter.query;
-        variables.addAll(customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
       }
-    }
 
-    // Add order by clause if needed
-    if (customOrder != null && customOrder.isNotEmpty) {
-      query += ' ORDER BY ';
-      query += customOrder
-          .map((order) =>
-              '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
-          .join(', ');
-    }
+      // Add order by clause if needed
+      if (customOrder != null && customOrder.isNotEmpty) {
+        query += ' ORDER BY ';
+        query += customOrder
+            .map((order) =>
+                '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
+            .join(', ');
+      }
 
-    // Execute the query
-    final result = await database
-        .customSelect(
-          query,
-          variables: variables,
-          readsFrom: {table},
-        )
-        .map((row) => _mapTaskFromRow(row.data))
-        .get();
+      // Execute the query
+      final result = await currentDatabase
+          .customSelect(
+            query,
+            variables: variables,
+            readsFrom: {table},
+          )
+          .map((row) => _mapTaskFromRow(row.data))
+          .get();
 
-    allResults.addAll(result);
-    return allResults;
+      allResults.addAll(result);
+      return allResults;
+    });
   }
 
   // Helper method to convert values to query variables
@@ -251,128 +263,137 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     CustomWhereFilter? customWhereFilter,
     List<CustomOrder>? customOrder,
   }) async {
-    List<String> whereClauses = [
-      // NOTE: CustomWhereFilter should use fully qualified column names (e.g., 'task_table.created_date')
-      // to avoid ambiguity when referencing columns that exist in both joined tables
-      if (customWhereFilter != null) "(${customWhereFilter.query})",
-      if (!includeDeleted) 'task_table.deleted_date IS NULL',
-    ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) {
-            // Handle total_duration which is an alias, not a table column
-            if (order.field == 'total_duration') {
-              return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
-            }
-            return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
-          }).join(', ')} '
-        : null;
+      List<String> whereClauses = [
+        // NOTE: CustomWhereFilter should use fully qualified column names (e.g., 'task_table.created_date')
+        // to avoid ambiguity when referencing columns that exist in both joined tables
+        if (customWhereFilter != null) "(${customWhereFilter.query})",
+        if (!includeDeleted) 'task_table.deleted_date IS NULL',
+      ];
+      String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
-    final baseQuery = '''
-      SELECT 
-        task_table.id,
-        task_table.parent_task_id,
-        task_table.title,
-        task_table.description,
-        task_table.priority,
-        task_table.planned_date,
-        task_table.deadline_date,
-        task_table.estimated_time,
-        task_table.completed_at,
-        task_table.created_date,
-        task_table.modified_date,
-        task_table.deleted_date,
-        task_table."order",
-        task_table.planned_date_reminder_time,
-        task_table.planned_date_reminder_custom_offset,
-        task_table.deadline_date_reminder_time,
-        task_table.deadline_date_reminder_custom_offset,
-        task_table.recurrence_type,
-        task_table.recurrence_interval,
-        task_table.recurrence_days_string,
-        task_table.recurrence_start_date,
-        task_table.recurrence_end_date,
-        task_table.recurrence_count,
-        task_table.recurrence_parent_id,
-        (SELECT COALESCE(SUM(task_time_record_table.duration), 0)
-         FROM task_time_record_table
-         WHERE task_time_record_table.task_id = task_table.id
-         AND task_time_record_table.deleted_date IS NULL) as total_duration
-      FROM ${table.actualTableName} task_table
-      ${whereClause ?? ''}
-      ${orderByClause ?? ''}
-      LIMIT ? OFFSET ?
-    ''';
+      String? orderByClause = customOrder?.isNotEmpty == true
+          ? ' ORDER BY ${customOrder!.map((order) {
+              // Handle total_duration which is an alias, not a table column
+              if (order.field == 'total_duration') {
+                return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+              }
+              return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+            }).join(', ')} '
+          : null;
 
-    final query = database.customSelect(
-      baseQuery,
-      variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
-        Variable.withInt(pageSize),
-        Variable.withInt(pageIndex * pageSize)
-      ],
-      readsFrom: {table, database.taskTimeRecordTable},
-    );
+      final baseQuery = '''
+        SELECT 
+          task_table.id,
+          task_table.parent_task_id,
+          task_table.title,
+          task_table.description,
+          task_table.priority,
+          task_table.planned_date,
+          task_table.deadline_date,
+          task_table.estimated_time,
+          task_table.completed_at,
+          task_table.created_date,
+          task_table.modified_date,
+          task_table.deleted_date,
+          task_table."order",
+          task_table.planned_date_reminder_time,
+          task_table.planned_date_reminder_custom_offset,
+          task_table.deadline_date_reminder_time,
+          task_table.deadline_date_reminder_custom_offset,
+          task_table.recurrence_type,
+          task_table.recurrence_interval,
+          task_table.recurrence_days_string,
+          task_table.recurrence_start_date,
+          task_table.recurrence_end_date,
+          task_table.recurrence_count,
+          task_table.recurrence_parent_id,
+          (SELECT COALESCE(SUM(task_time_record_table.duration), 0)
+           FROM task_time_record_table
+           WHERE task_time_record_table.task_id = task_table.id
+           AND task_time_record_table.deleted_date IS NULL) as total_duration
+        FROM ${table.actualTableName} task_table
+        ${whereClause ?? ''}
+        ${orderByClause ?? ''}
+        LIMIT ? OFFSET ?
+      ''';
 
-    final result = await query.get();
-
-    // Count total records (without pagination)
-    final countQuery = '''
-      SELECT COUNT(*) as count 
-      FROM ${table.actualTableName} task_table
-      ${whereClause ?? ''}
-    ''';
-    final count = await database.customSelect(
-      countQuery,
-      variables: [if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e))],
-    ).getSingleOrNull();
-    final totalCount = count?.data['count'] as int? ?? 0;
-
-    final items = result.map((row) {
-      final taskData = Map<String, dynamic>.from(row.data);
-      final totalDuration = taskData['total_duration'] as int? ?? 0;
-      taskData.remove('total_duration');
-
-      final task = _mapTaskFromRow(taskData);
-      return TaskWithTotalDuration(
-        id: task.id,
-        title: task.title,
-        totalDuration: totalDuration,
-        priority: task.priority,
-        plannedDate: task.plannedDate,
-        deadlineDate: task.deadlineDate,
-        completedAt: task.completedAt,
-        estimatedTime: task.estimatedTime,
-        parentTaskId: task.parentTaskId,
-        order: task.order,
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
-        createdDate: task.createdDate,
-        modifiedDate: task.modifiedDate,
-        deletedDate: task.deletedDate,
+      final query = currentDatabase.customSelect(
+        baseQuery,
+        variables: [
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+          Variable.withInt(pageSize),
+          Variable.withInt(pageIndex * pageSize)
+        ],
+        readsFrom: {table, currentDatabase.taskTimeRecordTable},
       );
-    }).toList();
 
-    return PaginatedList(
-      items: items,
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalItemCount: totalCount,
-    );
+      final result = await query.get();
+
+      // Count total records (without pagination)
+      final countQuery = '''
+        SELECT COUNT(*) as count 
+        FROM ${table.actualTableName} task_table
+        ${whereClause ?? ''}
+      ''';
+      final count = await currentDatabase.customSelect(
+        countQuery,
+        variables: [
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e))
+        ],
+      ).getSingleOrNull();
+      final totalCount = count?.data['count'] as int? ?? 0;
+
+      final items = result.map((row) {
+        final taskData = Map<String, dynamic>.from(row.data);
+        final totalDuration = taskData['total_duration'] as int? ?? 0;
+        taskData.remove('total_duration');
+
+        final task = _mapTaskFromRow(taskData);
+        return TaskWithTotalDuration(
+          id: task.id,
+          title: task.title,
+          totalDuration: totalDuration,
+          priority: task.priority,
+          plannedDate: task.plannedDate,
+          deadlineDate: task.deadlineDate,
+          completedAt: task.completedAt,
+          estimatedTime: task.estimatedTime,
+          parentTaskId: task.parentTaskId,
+          order: task.order,
+          plannedDateReminderTime: task.plannedDateReminderTime,
+          plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
+          deadlineDateReminderTime: task.deadlineDateReminderTime,
+          deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
+          createdDate: task.createdDate,
+          modifiedDate: task.modifiedDate,
+          deletedDate: task.deletedDate,
+        );
+      }).toList();
+
+      return PaginatedList(
+        items: items,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalItemCount: totalCount,
+      );
+    });
   }
 
   @override
   Future<List<Task>> getByParentTaskId(String parentTaskId) async {
-    final result = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE parent_task_id = ? AND deleted_date IS NULL',
-      variables: [Variable.withString(parentTaskId)],
-      readsFrom: {table},
-    ).get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      final result = await currentDatabase.customSelect(
+        'SELECT * FROM ${table.actualTableName} WHERE parent_task_id = ? AND deleted_date IS NULL',
+        variables: [Variable.withString(parentTaskId)],
+        readsFrom: {table},
+      ).get();
 
-    return result.map((row) => _mapTaskFromRow(row.data)).toList();
+      return result.map((row) => _mapTaskFromRow(row.data)).toList();
+    });
   }
 
   @override
@@ -382,257 +403,261 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     TaskQueryFilter? filter,
     bool includeDeleted = false,
   }) async {
-    final f = filter ?? const TaskQueryFilter();
-    final filterByTags = f.tags;
-    final filterNoTags = f.noTags;
-    final filterByPlannedStartDate = f.plannedStartDate;
-    final filterByPlannedEndDate = f.plannedEndDate;
-    final filterByDeadlineStartDate = f.deadlineStartDate;
-    final filterByDeadlineEndDate = f.deadlineEndDate;
-    final filterDateOr = f.dateOr;
-    final filterByCompleted = f.completed;
-    final filterByCompletedStartDate = f.completedStartDate;
-    final filterByCompletedEndDate = f.completedEndDate;
-    final filterBySearch = f.search;
-    final filterByParentTaskId = f.parentTaskId;
-    final areParentAndSubTasksIncluded = f.includeParentAndSubTasks;
-    final sortBy = f.sortBy;
-    final sortByCustomSort = f.sortByCustomSort;
-    final ignoreArchivedTagVisibility = f.ignoreArchivedTagVisibility;
-    // Build conditions for the query
-    final conditions = <String>[];
-    final variables = <Variable>[];
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    // Build basic filters that apply to both cases
-    if (filterByTags != null && filterByTags.isNotEmpty) {
-      final placeholders = List.filled(filterByTags.length, '?').join(',');
-      conditions.add(
-          '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($placeholders) AND deleted_date IS NULL) > 0');
-      variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
-    }
+      final f = filter ?? const TaskQueryFilter();
+      final filterByTags = f.tags;
+      final filterNoTags = f.noTags;
+      final filterByPlannedStartDate = f.plannedStartDate;
+      final filterByPlannedEndDate = f.plannedEndDate;
+      final filterByDeadlineStartDate = f.deadlineStartDate;
+      final filterByDeadlineEndDate = f.deadlineEndDate;
+      final filterDateOr = f.dateOr;
+      final filterByCompleted = f.completed;
+      final filterByCompletedStartDate = f.completedStartDate;
+      final filterByCompletedEndDate = f.completedEndDate;
+      final filterBySearch = f.search;
+      final filterByParentTaskId = f.parentTaskId;
+      final areParentAndSubTasksIncluded = f.includeParentAndSubTasks;
+      final sortBy = f.sortBy;
+      final sortByCustomSort = f.sortByCustomSort;
+      final ignoreArchivedTagVisibility = f.ignoreArchivedTagVisibility;
+      // Build conditions for the query
+      final conditions = <String>[];
+      final variables = <Variable>[];
 
-    // No tags filter
-    if (filterNoTags) {
-      conditions
-          .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
-    }
+      // Build basic filters that apply to both cases
+      if (filterByTags != null && filterByTags.isNotEmpty) {
+        final placeholders = List.filled(filterByTags.length, '?').join(',');
+        conditions.add(
+            '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND tag_id IN ($placeholders) AND deleted_date IS NULL) > 0');
+        variables.addAll(filterByTags.map((tagId) => Variable.withString(tagId)));
+      }
 
-    // Exclude tasks only if ALL their tags are archived (show if at least one tag is not archived)
-    if (!ignoreArchivedTagVisibility) {
-      conditions.add('''
-        task_table.id NOT IN (
-          SELECT DISTINCT tt1.task_id 
-          FROM task_tag_table tt1
-          WHERE tt1.deleted_date IS NULL
-          AND NOT EXISTS (
-            SELECT 1 
-            FROM task_tag_table tt2
-            INNER JOIN tag_table t ON tt2.tag_id = t.id
-            WHERE tt2.task_id = tt1.task_id 
-            AND tt2.deleted_date IS NULL
-            AND (t.is_archived = 0 OR t.is_archived IS NULL)
+      // No tags filter
+      if (filterNoTags) {
+        conditions
+            .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
+      }
+
+      // Exclude tasks only if ALL their tags are archived (show if at least one tag is not archived)
+      if (!ignoreArchivedTagVisibility) {
+        conditions.add('''
+          task_table.id NOT IN (
+            SELECT DISTINCT tt1.task_id 
+            FROM task_tag_table tt1
+            WHERE tt1.deleted_date IS NULL
+            AND NOT EXISTS (
+              SELECT 1 
+              FROM task_tag_table tt2
+              INNER JOIN tag_table t ON tt2.tag_id = t.id
+              WHERE tt2.task_id = tt1.task_id 
+              AND tt2.deleted_date IS NULL
+              AND (t.is_archived = 0 OR t.is_archived IS NULL)
+            )
           )
-        )
-      ''');
-    }
-
-    // Completed date range filter
-    if (filterByCompletedStartDate != null || filterByCompletedEndDate != null) {
-      if (filterByCompletedStartDate != null && filterByCompletedEndDate != null) {
-        // Convert DateTime to Unix timestamp (seconds) to match database storage format
-        conditions.add('task_table.completed_at >= ? AND task_table.completed_at < ?');
-        variables.add(Variable.withInt(filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
-        // Add one day to end date to include the entire end day
-        final nextDay = filterByCompletedEndDate.add(const Duration(days: 1));
-        variables.add(Variable.withInt(nextDay.millisecondsSinceEpoch ~/ 1000));
-      } else if (filterByCompletedStartDate != null) {
-        conditions.add('task_table.completed_at >= ?');
-        variables.add(Variable.withInt(filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
-      } else if (filterByCompletedEndDate != null) {
-        // Include the entire end day by adding one day and using < instead of <=
-        conditions.add('task_table.completed_at < ?');
-        final nextDay = filterByCompletedEndDate.add(const Duration(days: 1));
-        variables.add(Variable.withInt(nextDay.millisecondsSinceEpoch ~/ 1000));
-      }
-    }
-
-    if (areParentAndSubTasksIncluded) {
-      // Complex case: include both parent tasks and subtasks with filters applied to both
-      final dateResult = _buildDateCondition(
-        filterByPlannedStartDate: filterByPlannedStartDate,
-        filterByPlannedEndDate: filterByPlannedEndDate,
-        filterByDeadlineStartDate: filterByDeadlineStartDate,
-        filterByDeadlineEndDate: filterByDeadlineEndDate,
-        filterDateOr: filterDateOr,
-        areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
-      );
-
-      final searchResult = _buildSearchCondition(filterBySearch: filterBySearch);
-      final completionResult = _buildCompletionCondition(
-          filterByCompleted: filterByCompleted, areParentAndSubTasksIncluded: areParentAndSubTasksIncluded);
-
-      final parentSubtaskResult = _buildParentAndSubtaskFilterCondition(
-        searchCondition: searchResult.condition,
-        dateCondition: dateResult.condition,
-        completedCondition: completionResult.condition,
-        searchVariables: searchResult.variables,
-        dateVariables: dateResult.variables,
-        completedVariables: completionResult.variables,
-        filterByTags: filterByTags,
-      );
-
-      conditions.add(parentSubtaskResult.condition);
-      variables.addAll(parentSubtaskResult.variables);
-    } else {
-      // Simple case: only parent tasks or only subtasks with filters applied to the main task
-      final dateResult = _buildDateCondition(
-        filterByPlannedStartDate: filterByPlannedStartDate,
-        filterByPlannedEndDate: filterByPlannedEndDate,
-        filterByDeadlineStartDate: filterByDeadlineStartDate,
-        filterByDeadlineEndDate: filterByDeadlineEndDate,
-        filterDateOr: filterDateOr,
-        areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
-      );
-
-      if (dateResult.condition != '1=1') {
-        conditions.add(dateResult.condition);
-        variables.addAll(dateResult.variables);
+        ''');
       }
 
-      if (filterBySearch?.isNotEmpty ?? false) {
-        conditions.add('task_table.title LIKE ?');
-        variables.add(Variable.withString('%$filterBySearch%'));
-      }
-
-      // Completed filter - apply when NOT including parent and sub tasks together
-      if (filterByCompleted != null) {
-        if (filterByCompleted) {
-          conditions.add('task_table.completed_at IS NOT NULL');
-        } else {
-          conditions.add('task_table.completed_at IS NULL');
+      // Completed date range filter
+      if (filterByCompletedStartDate != null || filterByCompletedEndDate != null) {
+        if (filterByCompletedStartDate != null && filterByCompletedEndDate != null) {
+          // Convert DateTime to Unix timestamp (seconds) to match database storage format
+          conditions.add('task_table.completed_at >= ? AND task_table.completed_at < ?');
+          variables.add(Variable.withInt(filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
+          // Add one day to end date to include the entire end day
+          final nextDay = filterByCompletedEndDate.add(const Duration(days: 1));
+          variables.add(Variable.withInt(nextDay.millisecondsSinceEpoch ~/ 1000));
+        } else if (filterByCompletedStartDate != null) {
+          conditions.add('task_table.completed_at >= ?');
+          variables.add(Variable.withInt(filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
+        } else if (filterByCompletedEndDate != null) {
+          // Include the entire end day by adding one day and using < instead of <=
+          conditions.add('task_table.completed_at < ?');
+          final nextDay = filterByCompletedEndDate.add(const Duration(days: 1));
+          variables.add(Variable.withInt(nextDay.millisecondsSinceEpoch ~/ 1000));
         }
       }
 
-      // Parent task filter
-      if (filterByParentTaskId != null) {
-        conditions.add('task_table.parent_task_id = ?');
-        variables.add(Variable.withString(filterByParentTaskId));
+      if (areParentAndSubTasksIncluded) {
+        // Complex case: include both parent tasks and subtasks with filters applied to both
+        final dateResult = _buildDateCondition(
+          filterByPlannedStartDate: filterByPlannedStartDate,
+          filterByPlannedEndDate: filterByPlannedEndDate,
+          filterByDeadlineStartDate: filterByDeadlineStartDate,
+          filterByDeadlineEndDate: filterByDeadlineEndDate,
+          filterDateOr: filterDateOr,
+          areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
+        );
+
+        final searchResult = _buildSearchCondition(filterBySearch: filterBySearch);
+        final completionResult = _buildCompletionCondition(
+            filterByCompleted: filterByCompleted, areParentAndSubTasksIncluded: areParentAndSubTasksIncluded);
+
+        final parentSubtaskResult = _buildParentAndSubtaskFilterCondition(
+          searchCondition: searchResult.condition,
+          dateCondition: dateResult.condition,
+          completedCondition: completionResult.condition,
+          searchVariables: searchResult.variables,
+          dateVariables: dateResult.variables,
+          completedVariables: completionResult.variables,
+          filterByTags: filterByTags,
+        );
+
+        conditions.add(parentSubtaskResult.condition);
+        variables.addAll(parentSubtaskResult.variables);
       } else {
-        conditions.add('task_table.parent_task_id IS NULL');
-      }
-    }
+        // Simple case: only parent tasks or only subtasks with filters applied to the main task
+        final dateResult = _buildDateCondition(
+          filterByPlannedStartDate: filterByPlannedStartDate,
+          filterByPlannedEndDate: filterByPlannedEndDate,
+          filterByDeadlineStartDate: filterByDeadlineStartDate,
+          filterByDeadlineEndDate: filterByDeadlineEndDate,
+          filterDateOr: filterDateOr,
+          areParentAndSubTasksIncluded: areParentAndSubTasksIncluded,
+        );
 
-    if (!includeDeleted) {
-      conditions.add('task_table.deleted_date IS NULL');
-    }
-
-    String? whereClause = conditions.isNotEmpty ? " WHERE ${conditions.join(' AND ')} " : null;
-
-    // Build order by clause
-    String? orderByClause;
-    if (sortByCustomSort) {
-      orderByClause = ' ORDER BY task_table.`order` IS NULL, task_table.`order` ASC ';
-    } else if (sortBy != null && sortBy.isNotEmpty) {
-      orderByClause = ' ORDER BY ${sortBy.map((order) {
-        // Handle total_duration which is an alias, not a table column
-        if (order.field == 'total_duration') {
-          return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+        if (dateResult.condition != '1=1') {
+          conditions.add(dateResult.condition);
+          variables.addAll(dateResult.variables);
         }
-        return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
-      }).join(', ')} ';
-    }
 
-    final baseQuery = '''
-      SELECT 
-        task_table.id,
-        task_table.parent_task_id,
-        task_table.title,
-        task_table.description,
-        task_table.priority,
-        task_table.planned_date,
-        task_table.deadline_date,
-        task_table.estimated_time,
-        task_table.completed_at,
-        task_table.created_date,
-        task_table.modified_date,
-        task_table.deleted_date,
-        task_table."order",
-        task_table.planned_date_reminder_time,
-        task_table.planned_date_reminder_custom_offset,
-        task_table.deadline_date_reminder_time,
-        task_table.deadline_date_reminder_custom_offset,
-        task_table.recurrence_type,
-        task_table.recurrence_interval,
-        task_table.recurrence_days_string,
-        task_table.recurrence_start_date,
-        task_table.recurrence_end_date,
-        task_table.recurrence_count,
-        task_table.recurrence_parent_id,
-        (SELECT COALESCE(SUM(task_time_record_table.duration), 0)
-         FROM task_time_record_table
-         WHERE task_time_record_table.task_id = task_table.id
-         AND task_time_record_table.deleted_date IS NULL) as total_duration
-      FROM ${table.actualTableName} task_table
-      ${whereClause ?? ''}
-      ${orderByClause ?? ''}
-      LIMIT ? OFFSET ?
-    ''';
+        if (filterBySearch?.isNotEmpty ?? false) {
+          conditions.add('task_table.title LIKE ?');
+          variables.add(Variable.withString('%$filterBySearch%'));
+        }
 
-    final query = database.customSelect(
-      baseQuery,
-      variables: [...variables, Variable.withInt(pageSize), Variable.withInt(pageIndex * pageSize)],
-      readsFrom: {table, database.taskTimeRecordTable},
-    );
+        // Completed filter - apply when NOT including parent and sub tasks together
+        if (filterByCompleted != null) {
+          if (filterByCompleted) {
+            conditions.add('task_table.completed_at IS NOT NULL');
+          } else {
+            conditions.add('task_table.completed_at IS NULL');
+          }
+        }
 
-    final result = await query.get();
+        // Parent task filter
+        if (filterByParentTaskId != null) {
+          conditions.add('task_table.parent_task_id = ?');
+          variables.add(Variable.withString(filterByParentTaskId));
+        } else {
+          conditions.add('task_table.parent_task_id IS NULL');
+        }
+      }
 
-    // Count total records (without pagination)
-    final countQuery = '''
-      SELECT COUNT(*) as count 
-      FROM ${table.actualTableName} task_table
-      ${whereClause ?? ''}
-    ''';
-    final count = await database
-        .customSelect(
-          countQuery,
-          variables: variables,
-        )
-        .getSingleOrNull();
-    final totalCount = count?.data['count'] as int? ?? 0;
+      if (!includeDeleted) {
+        conditions.add('task_table.deleted_date IS NULL');
+      }
 
-    final items = result.map((row) {
-      final taskData = Map<String, dynamic>.from(row.data);
-      final totalDuration = taskData['total_duration'] as int? ?? 0;
-      taskData.remove('total_duration');
+      String? whereClause = conditions.isNotEmpty ? " WHERE ${conditions.join(' AND ')} " : null;
 
-      final task = _mapTaskFromRow(taskData);
-      return TaskWithTotalDuration(
-        id: task.id,
-        title: task.title,
-        totalDuration: totalDuration,
-        priority: task.priority,
-        plannedDate: task.plannedDate,
-        deadlineDate: task.deadlineDate,
-        completedAt: task.completedAt,
-        estimatedTime: task.estimatedTime,
-        parentTaskId: task.parentTaskId,
-        order: task.order,
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
-        createdDate: task.createdDate,
-        modifiedDate: task.modifiedDate,
-        deletedDate: task.deletedDate,
+      // Build order by clause
+      String? orderByClause;
+      if (sortByCustomSort) {
+        orderByClause = ' ORDER BY task_table.`order` IS NULL, task_table.`order` ASC ';
+      } else if (sortBy != null && sortBy.isNotEmpty) {
+        orderByClause = ' ORDER BY ${sortBy.map((order) {
+          // Handle total_duration which is an alias, not a table column
+          if (order.field == 'total_duration') {
+            return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+          }
+          return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+        }).join(', ')} ';
+      }
+
+      final baseQuery = '''
+        SELECT 
+          task_table.id,
+          task_table.parent_task_id,
+          task_table.title,
+          task_table.description,
+          task_table.priority,
+          task_table.planned_date,
+          task_table.deadline_date,
+          task_table.estimated_time,
+          task_table.completed_at,
+          task_table.created_date,
+          task_table.modified_date,
+          task_table.deleted_date,
+          task_table."order",
+          task_table.planned_date_reminder_time,
+          task_table.planned_date_reminder_custom_offset,
+          task_table.deadline_date_reminder_time,
+          task_table.deadline_date_reminder_custom_offset,
+          task_table.recurrence_type,
+          task_table.recurrence_interval,
+          task_table.recurrence_days_string,
+          task_table.recurrence_start_date,
+          task_table.recurrence_end_date,
+          task_table.recurrence_count,
+          task_table.recurrence_parent_id,
+          (SELECT COALESCE(SUM(task_time_record_table.duration), 0)
+           FROM task_time_record_table
+           WHERE task_time_record_table.task_id = task_table.id
+           AND task_time_record_table.deleted_date IS NULL) as total_duration
+        FROM ${table.actualTableName} task_table
+        ${whereClause ?? ''}
+        ${orderByClause ?? ''}
+        LIMIT ? OFFSET ?
+      ''';
+
+      final query = currentDatabase.customSelect(
+        baseQuery,
+        variables: [...variables, Variable.withInt(pageSize), Variable.withInt(pageIndex * pageSize)],
+        readsFrom: {table, currentDatabase.taskTimeRecordTable},
       );
-    }).toList();
 
-    return PaginatedList(
-      items: items,
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalItemCount: totalCount,
-    );
+      final result = await query.get();
+
+      // Count total records (without pagination)
+      final countQuery = '''
+        SELECT COUNT(*) as count 
+        FROM ${table.actualTableName} task_table
+        ${whereClause ?? ''}
+      ''';
+      final count = await currentDatabase
+          .customSelect(
+            countQuery,
+            variables: variables,
+          )
+          .getSingleOrNull();
+      final totalCount = count?.data['count'] as int? ?? 0;
+
+      final items = result.map((row) {
+        final taskData = Map<String, dynamic>.from(row.data);
+        final totalDuration = taskData['total_duration'] as int? ?? 0;
+        taskData.remove('total_duration');
+
+        final task = _mapTaskFromRow(taskData);
+        return TaskWithTotalDuration(
+          id: task.id,
+          title: task.title,
+          totalDuration: totalDuration,
+          priority: task.priority,
+          plannedDate: task.plannedDate,
+          deadlineDate: task.deadlineDate,
+          completedAt: task.completedAt,
+          estimatedTime: task.estimatedTime,
+          parentTaskId: task.parentTaskId,
+          order: task.order,
+          plannedDateReminderTime: task.plannedDateReminderTime,
+          plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
+          deadlineDateReminderTime: task.deadlineDateReminderTime,
+          deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
+          createdDate: task.createdDate,
+          modifiedDate: task.modifiedDate,
+          deletedDate: task.deletedDate,
+        );
+      }).toList();
+
+      return PaginatedList(
+        items: items,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalItemCount: totalCount,
+      );
+    });
   }
 
   @override
@@ -652,13 +677,16 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
   @override
   Future<List<Task>> getByRecurrenceParentId(String recurrenceParentId) async {
-    final result = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE recurrence_parent_id = ? AND deleted_date IS NULL',
-      variables: [Variable.withString(recurrenceParentId)],
-      readsFrom: {table},
-    ).get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      final result = await currentDatabase.customSelect(
+        'SELECT * FROM ${table.actualTableName} WHERE recurrence_parent_id = ? AND deleted_date IS NULL',
+        variables: [Variable.withString(recurrenceParentId)],
+        readsFrom: {table},
+      ).get();
 
-    return result.map((row) => _mapTaskFromRow(row.data)).toList();
+      return result.map((row) => _mapTaskFromRow(row.data)).toList();
+    });
   }
 
   @override

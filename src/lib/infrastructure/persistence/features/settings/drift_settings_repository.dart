@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
@@ -41,12 +42,15 @@ class DriftSettingRepository extends DriftBaseRepository<Setting, String, Settin
 
   @override
   Future<Setting?> getByKey(String key) async {
-    final query = database.select(table)
-      ..where((tbl) => tbl.key.equals(key))
-      ..orderBy([(t) => OrderingTerm.desc(t.createdDate)])
-      ..limit(1);
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      final query = currentDatabase.select(table)
+        ..where((tbl) => tbl.key.equals(key))
+        ..orderBy([(t) => OrderingTerm.desc(t.createdDate)])
+        ..limit(1);
 
-    final result = await query.getSingleOrNull();
-    return result;
+      final result = await query.getSingleOrNull();
+      return result;
+    });
   }
 }

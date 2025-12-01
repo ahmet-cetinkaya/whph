@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
@@ -39,20 +40,29 @@ class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTa
 
   @override
   Future<List<NoteTag>> getByNoteId(String noteId) async {
-    return (database.select(table)..where((t) => t.noteId.equals(noteId) & t.deletedDate.isNull())).get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      return (currentDatabase.select(table)..where((t) => t.noteId.equals(noteId) & t.deletedDate.isNull())).get();
+    });
   }
 
   @override
   Future<NoteTag?> getByNoteIdAndTagId(String noteId, String tagId) async {
-    final query = database.select(table)
-      ..where((t) => t.noteId.equals(noteId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      final query = currentDatabase.select(table)
+        ..where((t) => t.noteId.equals(noteId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
 
-    final results = await query.get();
-    return results.isEmpty ? null : results.first;
+      final results = await query.get();
+      return results.isEmpty ? null : results.first;
+    });
   }
 
   @override
   Future<List<NoteTag>> getByTagId(String tagId) async {
-    return (database.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      return (currentDatabase.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
+    });
   }
 }

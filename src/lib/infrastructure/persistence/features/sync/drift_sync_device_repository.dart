@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
@@ -48,10 +49,13 @@ class DriftSyncDeviceRepository extends DriftBaseRepository<SyncDevice, String, 
 
   @override
   Future<SyncDevice?> getByFromToIp(String fromIp, String toIp) async {
-    return await (database.select(table)
-          ..where((t) =>
-              (t.fromIp.equals(fromIp) & t.toIp.equals(toIp) | t.fromIp.equals(toIp) & t.toIp.equals(fromIp)) &
-              t.deletedDate.isNull()))
-        .getSingleOrNull();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      return await (currentDatabase.select(table)
+            ..where((t) =>
+                (t.fromIp.equals(fromIp) & t.toIp.equals(toIp) | t.fromIp.equals(toIp) & t.toIp.equals(fromIp)) &
+                t.deletedDate.isNull()))
+          .getSingleOrNull();
+    });
   }
 }

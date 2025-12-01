@@ -2,8 +2,9 @@ import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 @UseRowClass(AppUsage)
 class AppUsageTable extends Table {
@@ -48,14 +49,18 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
       {required String name, required int year, required int month, required int day, required int hour}) async {
     // Note: This method correctly uses created_date as it's finding when the app usage entity was first created,
     // not when the actual usage occurred (which would use usage_date from app_usage_time_record_table)
-    return await (database.select(table)
-          ..where((t) =>
-              t.name.equals(name) &
-              t.createdDate.year.equals(year) &
-              t.createdDate.month.equals(month) &
-              t.createdDate.day.equals(day) &
-              t.createdDate.hour.equals(hour)))
-        .getSingleOrNull();
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+
+      return await (currentDatabase.select(table)
+            ..where((t) =>
+                t.name.equals(name) &
+                t.createdDate.year.equals(year) &
+                t.createdDate.month.equals(month) &
+                t.createdDate.day.equals(day) &
+                t.createdDate.hour.equals(hour)))
+          .getSingleOrNull();
+    });
   }
 
   @override
@@ -66,108 +71,112 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    final query = database.customSelect(
-      '''
-      WITH FilteredPeriodAppUsages AS (
-        SELECT au.id, au.name, COALESCE(SUM(autr.duration), 0) as total_duration
-        FROM app_usage_table au
-        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
-          AND autr.deleted_date IS NULL
-          ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
-          ${endDate != null ? 'AND autr.usage_date < ?' : ''}
-        WHERE au.deleted_date IS NULL
-        GROUP BY au.id, au.name
-      ),
-      FirstAppUsage AS (
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+
+      final query = currentDatabase.customSelect(
+        '''
+        WITH FilteredPeriodAppUsages AS (
+          SELECT au.id, au.name, COALESCE(SUM(autr.duration), 0) as total_duration
+          FROM app_usage_table au
+          LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
+            AND autr.deleted_date IS NULL
+            ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+            ${endDate != null ? 'AND autr.usage_date < ?' : ''}
+          WHERE au.deleted_date IS NULL
+          GROUP BY au.id, au.name
+        ),
+        FirstAppUsage AS (
+          SELECT 
+            t.name,
+            t.id as first_id,
+            t.color,
+            t.display_name,
+            t.device_name,
+            t.created_date,
+            ROW_NUMBER() OVER (PARTITION BY t.name ORDER BY t.created_date ASC) as rn
+          FROM app_usage_table t
+          WHERE t.deleted_date IS NULL
+        )
         SELECT 
-          t.name,
-          t.id as first_id,
-          t.color,
-          t.display_name,
-          t.device_name,
-          t.created_date,
-          ROW_NUMBER() OVER (PARTITION BY t.name ORDER BY t.created_date ASC) as rn
-        FROM app_usage_table t
-        WHERE t.deleted_date IS NULL
-      )
-      SELECT 
-        fa.first_id as id,
-        fp.name,
-        fa.display_name,
-        fa.color,
-        fa.device_name,
-        fp.total_duration as duration,
-        MIN(t.created_date) as created_date,
-        MAX(t.modified_date) as modified_date,
-        MAX(t.deleted_date) as deleted_date
-      FROM FilteredPeriodAppUsages fp
-      INNER JOIN app_usage_table t ON fp.name = t.name
-      LEFT JOIN FirstAppUsage fa ON fp.name = fa.name AND fa.rn = 1
-      ${filterByTags != null && filterByTags.isNotEmpty ? '''
-      WHERE EXISTS (
-        SELECT 1 FROM app_usage_tag_table att 
-        WHERE att.app_usage_id = fa.first_id 
-        AND att.deleted_date IS NULL 
-        AND att.tag_id IN (${List.filled(filterByTags.length, '?').join(',')})
-      )
-      ''' : ''}
-      GROUP BY fp.name, fa.first_id, fa.display_name, fa.color, fp.total_duration
-      ORDER BY fp.total_duration DESC
-      LIMIT ? OFFSET ?
-      ''',
-      variables: [
-        if (startDate != null) Variable.withDateTime(startDate),
-        if (endDate != null) Variable.withDateTime(endDate),
-        if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
-        Variable.withInt(pageSize),
-        Variable.withInt(pageIndex * pageSize),
-      ],
-    );
+          fa.first_id as id,
+          fp.name,
+          fa.display_name,
+          fa.color,
+          fa.device_name,
+          fp.total_duration as duration,
+          MIN(t.created_date) as created_date,
+          MAX(t.modified_date) as modified_date,
+          MAX(t.deleted_date) as deleted_date
+        FROM FilteredPeriodAppUsages fp
+        INNER JOIN app_usage_table t ON fp.name = t.name
+        LEFT JOIN FirstAppUsage fa ON fp.name = fa.name AND fa.rn = 1
+        ${filterByTags != null && filterByTags.isNotEmpty ? '''
+        WHERE EXISTS (
+          SELECT 1 FROM app_usage_tag_table att 
+          WHERE att.app_usage_id = fa.first_id 
+          AND att.deleted_date IS NULL 
+          AND att.tag_id IN (${List.filled(filterByTags.length, '?').join(',')})
+        )
+        ''' : ''}
+        GROUP BY fp.name, fa.first_id, fa.display_name, fa.color, fp.total_duration
+        ORDER BY fp.total_duration DESC
+        LIMIT ? OFFSET ?
+        ''',
+        variables: [
+          if (startDate != null) Variable.withDateTime(startDate),
+          if (endDate != null) Variable.withDateTime(endDate),
+          if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
+          Variable.withInt(pageSize),
+          Variable.withInt(pageIndex * pageSize),
+        ],
+      );
 
-    final result = await query
-        .map((row) => AppUsage(
-            id: row.read<String>('id'),
-            name: row.read<String>('name'),
-            displayName: row.read<String?>('display_name'),
-            color: row.read<String?>('color'),
-            deviceName: row.read<String?>('device_name'),
-            createdDate: row.read<DateTime>('created_date'),
-            modifiedDate: row.read<DateTime?>('modified_date'),
-            deletedDate: row.read<DateTime?>('deleted_date')))
-        .get();
+      final result = await query
+          .map((row) => AppUsage(
+              id: row.read<String>('id'),
+              name: row.read<String>('name'),
+              displayName: row.read<String?>('display_name'),
+              color: row.read<String?>('color'),
+              deviceName: row.read<String?>('device_name'),
+              createdDate: row.read<DateTime>('created_date'),
+              modifiedDate: row.read<DateTime?>('modified_date'),
+              deletedDate: row.read<DateTime?>('deleted_date')))
+          .get();
 
-    final totalCountQuery = database.customSelect(
-      '''
-      WITH FilteredPeriodAppUsages AS (
-        SELECT DISTINCT au.name
-        FROM app_usage_table au
-        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
-          AND autr.deleted_date IS NULL
-          ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
-          ${endDate != null ? 'AND autr.usage_date < ?' : ''}
-        WHERE au.deleted_date IS NULL
-      )
-      SELECT COUNT(*) as count 
-      FROM FilteredPeriodAppUsages fp
-      INNER JOIN app_usage_table t ON fp.name = t.name
-      WHERE EXISTS (
-        SELECT 1 FROM app_usage_table au
-        LEFT JOIN app_usage_tag_table att ON au.id = att.app_usage_id
-        WHERE au.name = fp.name
-        AND au.deleted_date IS NULL
-        AND att.deleted_date IS NULL
-        ${filterByTags != null && filterByTags.isNotEmpty ? 'AND att.tag_id IN (${List.filled(filterByTags.length, '?').join(',')})' : ''}
-      )
-      ''',
-      variables: [
-        if (startDate != null) Variable.withDateTime(startDate),
-        if (endDate != null) Variable.withDateTime(endDate),
-        if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
-      ],
-    );
+      final totalCountQuery = currentDatabase.customSelect(
+        '''
+        WITH FilteredPeriodAppUsages AS (
+          SELECT DISTINCT au.name
+          FROM app_usage_table au
+          LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
+            AND autr.deleted_date IS NULL
+            ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+            ${endDate != null ? 'AND autr.usage_date < ?' : ''}
+          WHERE au.deleted_date IS NULL
+        )
+        SELECT COUNT(*) as count 
+        FROM FilteredPeriodAppUsages fp
+        INNER JOIN app_usage_table t ON fp.name = t.name
+        WHERE EXISTS (
+          SELECT 1 FROM app_usage_table au
+          LEFT JOIN app_usage_tag_table att ON au.id = att.app_usage_id
+          WHERE au.name = fp.name
+          AND au.deleted_date IS NULL
+          AND att.deleted_date IS NULL
+          ${filterByTags != null && filterByTags.isNotEmpty ? 'AND att.tag_id IN (${List.filled(filterByTags.length, '?').join(',')})' : ''}
+        )
+        ''',
+        variables: [
+          if (startDate != null) Variable.withDateTime(startDate),
+          if (endDate != null) Variable.withDateTime(endDate),
+          if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
+        ],
+      );
 
-    final totalItemCount = await totalCountQuery.map((row) => row.read<int>('count')).getSingle();
-    return PaginatedList<AppUsage>(
-        items: result, totalItemCount: totalItemCount, pageIndex: pageIndex, pageSize: pageSize);
+      final totalItemCount = await totalCountQuery.map((row) => row.read<int>('count')).getSingle();
+      return PaginatedList<AppUsage>(
+          items: result, totalItemCount: totalItemCount, pageIndex: pageIndex, pageSize: pageSize);
+    });
   }
 }

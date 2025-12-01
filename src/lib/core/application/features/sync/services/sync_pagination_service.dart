@@ -36,7 +36,7 @@ class SyncPaginationService implements ISyncPaginationService {
 
   // Memory management tracking
   static const int _maxPendingDataItems = 50; // Maximum items to store in memory
-  static const int _cleanupThreshold = 30;   // Trigger cleanup when this many items accumulate
+  static const int _cleanupThreshold = 30; // Trigger cleanup when this many items accumulate
 
   SyncPaginationService({
     required ISyncCommunicationService communicationService,
@@ -730,9 +730,8 @@ class SyncPaginationService implements ISyncPaginationService {
     }
 
     // Check if there are any actual items to sync
-    final totalItems = syncData.data.createSync.length +
-                      syncData.data.updateSync.length +
-                      syncData.data.deleteSync.length;
+    final totalItems =
+        syncData.data.createSync.length + syncData.data.updateSync.length + syncData.data.deleteSync.length;
 
     if (totalItems == 0) {
       Logger.warning('⚠️ Skipping $dataDescription - empty sync data');
@@ -788,9 +787,7 @@ class SyncPaginationService implements ISyncPaginationService {
     Logger.info('🧹 Cleaning up old pending sync data (${_pendingResponseData.length} items)');
 
     // Remove paginated data first (additional pages), keeping main entity data
-    final keysToRemove = _pendingResponseData.keys
-        .where((key) => key.contains('_page_'))
-        .toList();
+    final keysToRemove = _pendingResponseData.keys.where((key) => key.contains('_page_')).toList();
 
     for (final key in keysToRemove) {
       _pendingResponseData.remove(key);

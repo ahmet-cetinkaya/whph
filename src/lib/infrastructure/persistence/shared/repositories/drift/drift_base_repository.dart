@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/infrastructure/persistence/shared/services/database_connection_manager.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
@@ -24,41 +25,46 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,
       List<acore.CustomOrder>? customOrder}) async {
-    List<String> whereClauses = [
-      if (customWhereFilter != null) "(${customWhereFilter.query})",
-      if (!includeDeleted) 'deleted_date IS NULL',
-    ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      // Get a fresh database instance to avoid connection issues
+      final currentDatabase = AppDatabase.instance();
 
-    String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
-        : null;
+      List<String> whereClauses = [
+        if (customWhereFilter != null) "(${customWhereFilter.query})",
+        if (!includeDeleted) 'deleted_date IS NULL',
+      ];
+      String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
-    final query = database.customSelect(
-      "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''}LIMIT ? OFFSET ?",
-      variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
-        Variable.withInt(pageSize),
-        Variable.withInt(pageIndex * pageSize)
-      ],
-      readsFrom: {table},
-    ).map((row) => table.map(row.data));
-    final result = await query.get();
+      String? orderByClause = customOrder?.isNotEmpty == true
+          ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+          : null;
 
-    final count = await ((database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
-      variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
-      ],
-    )).getSingleOrNull());
-    final totalCount = count?.data['count'] as int? ?? 0;
+      final query = currentDatabase.customSelect(
+        "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''}LIMIT ? OFFSET ?",
+        variables: [
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+          Variable.withInt(pageSize),
+          Variable.withInt(pageIndex * pageSize)
+        ],
+        readsFrom: {table},
+      ).map((row) => table.map(row.data));
+      final result = await query.get();
 
-    return acore.PaginatedList(
-      items: await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))),
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalItemCount: totalCount,
-    );
+      final count = await ((currentDatabase.customSelect(
+        'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
+        variables: [
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        ],
+      )).getSingleOrNull());
+      final totalCount = count?.data['count'] as int? ?? 0;
+
+      return acore.PaginatedList(
+        items: await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))),
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalItemCount: totalCount,
+      );
+    });
   }
 
   @override
@@ -66,117 +72,145 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,
       List<acore.CustomOrder>? customOrder}) async {
-    List<String> whereClauses = [
-      if (customWhereFilter != null) "(${customWhereFilter.query})",
-      if (!includeDeleted) 'deleted_date IS NULL',
-    ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
-    String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
-        : null;
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    const int chunkSize = 1000;
-    List<TEntity> allResults = [];
+      List<String> whereClauses = [
+        if (customWhereFilter != null) "(${customWhereFilter.query})",
+        if (!includeDeleted) 'deleted_date IS NULL',
+      ];
+      String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+      String? orderByClause = customOrder?.isNotEmpty == true
+          ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+          : null;
 
-    // Get total counts
-    final countResult = await database.customSelect(
-      'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
-      variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
-      ],
-    ).getSingleOrNull();
-    final totalCount = countResult?.data['count'] as int? ?? 0;
-    final totalPages = (totalCount / chunkSize).ceil();
+      const int chunkSize = 1000;
+      List<TEntity> allResults = [];
 
-    // Get all data in chunks
-    for (int pageIndex = 0; pageIndex < totalPages; pageIndex++) {
-      final query = database.customSelect(
-        "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
+      // Get total counts
+      final countResult = await currentDatabase.customSelect(
+        'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
         variables: [
           if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
-          Variable.withInt(chunkSize),
-          Variable.withInt(pageIndex * chunkSize),
         ],
-        readsFrom: {table},
-      ).map((row) => table.map(row.data));
-      final result = await query.get();
+      ).getSingleOrNull();
+      final totalCount = countResult?.data['count'] as int? ?? 0;
+      final totalPages = (totalCount / chunkSize).ceil();
 
-      allResults
-          .addAll(await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))));
-    }
+      // Get all data in chunks
+      for (int pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+        final query = currentDatabase.customSelect(
+          "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
+          variables: [
+            if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+            Variable.withInt(chunkSize),
+            Variable.withInt(pageIndex * chunkSize),
+          ],
+          readsFrom: {table},
+        ).map((row) => table.map(row.data));
+        final result = await query.get();
 
-    return allResults;
+        allResults.addAll(
+            await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))));
+      }
+
+      return allResults;
+    });
   }
 
   @override
   Future<TEntity?> getById(TEntityId id, {bool includeDeleted = false}) async {
-    List<String> whereClauses = [
-      'id = ?',
-      if (!includeDeleted) 'deleted_date IS NULL',
-    ];
-    String whereClause = whereClauses.join(' AND ');
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    final results = await database.customSelect(
-      'SELECT * FROM ${table.actualTableName} WHERE $whereClause ORDER BY created_date DESC LIMIT 1',
-      variables: [Variable.withString(id.toString())],
-      readsFrom: {table},
-    ).get();
+      List<String> whereClauses = [
+        'id = ?',
+        if (!includeDeleted) 'deleted_date IS NULL',
+      ];
+      String whereClause = whereClauses.join(' AND ');
 
-    if (results.isEmpty) return null;
+      final results = await currentDatabase.customSelect(
+        'SELECT * FROM ${table.actualTableName} WHERE $whereClause ORDER BY created_date DESC LIMIT 1',
+        variables: [Variable.withString(id.toString())],
+        readsFrom: {table},
+      ).get();
 
-    if (results.length > 1) {
-      Logger.warning('Multiple records found for ID $id in ${table.actualTableName}, returning most recent result');
-    }
+      if (results.isEmpty) return null;
 
-    return table.map(results.first.data);
+      if (results.length > 1) {
+        Logger.warning('Multiple records found for ID $id in ${table.actualTableName}, returning most recent result');
+      }
+
+      return table.map(results.first.data);
+    });
   }
 
   @override
   Future<TEntity?> getFirst(acore.CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
-    List<String> whereClauses = [
-      customWhereFilter.query,
-      if (!includeDeleted) 'deleted_date IS NULL',
-    ];
-    String whereClause = whereClauses.join(' AND ');
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    return database
-        .customSelect(
-          'SELECT * FROM ${table.actualTableName} WHERE $whereClause LIMIT 1',
-          variables: customWhereFilter.variables.map((e) => _convertToQueryVariable(e)).toList(),
-          readsFrom: {table},
-        )
-        .getSingleOrNull()
-        .then((value) => value != null ? table.map(value.data) : null);
+      List<String> whereClauses = [
+        customWhereFilter.query,
+        if (!includeDeleted) 'deleted_date IS NULL',
+      ];
+      String whereClause = whereClauses.join(' AND ');
+
+      return currentDatabase
+          .customSelect(
+            'SELECT * FROM ${table.actualTableName} WHERE $whereClause LIMIT 1',
+            variables: customWhereFilter.variables.map((e) => _convertToQueryVariable(e)).toList(),
+            readsFrom: {table},
+          )
+          .getSingleOrNull()
+          .then((value) => value != null ? table.map(value.data) : null);
+    });
   }
 
   @override
   Future<void> add(TEntity item) async {
-    item.createdDate = DateTime.now().toUtc();
-    TEntity insertedItem = await database.into(table).insertReturning(toCompanion(item));
-    item.id = insertedItem.id;
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+
+      item.createdDate = DateTime.now().toUtc();
+      TEntity insertedItem = await currentDatabase.into(table).insertReturning(toCompanion(item));
+      item.id = insertedItem.id;
+    });
   }
 
   @override
   Future<void> update(TEntity item) async {
-    item.modifiedDate = DateTime.now().toUtc();
-    final companion = toCompanion(item);
-    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+
+      item.modifiedDate = DateTime.now().toUtc();
+      final companion = toCompanion(item);
+      await (currentDatabase.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    });
   }
 
   @override
   Future<void> delete(TEntity item) async {
-    item.deletedDate = DateTime.now().toUtc();
-    final companion = toCompanion(item);
-    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+
+      item.deletedDate = DateTime.now().toUtc();
+      final companion = toCompanion(item);
+      await (currentDatabase.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    });
   }
 
   @override
   Future<void> hardDeleteSoftDeleted(DateTime beforeDate) async {
-    final dateStr = beforeDate.toIso8601String();
-    await (database.customStatement(
-      'DELETE FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date < ?',
-      [dateStr],
-    ));
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+
+      final dateStr = beforeDate.toIso8601String();
+      await currentDatabase.customStatement(
+        'DELETE FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date < ?',
+        [dateStr],
+      );
+    });
   }
 
   /// Gets paginated sync data for efficient memory usage and network transmission
@@ -187,136 +221,160 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     int pageSize = SyncPaginationConfig.defaultDatabasePageSize,
     String? entityType,
   }) async {
-    Logger.debug('📄 Getting paginated sync data for ${table.actualTableName} - Page $pageIndex, Size $pageSize');
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
 
-    // Ensure page size doesn't exceed maximum
-    pageSize = pageSize > SyncPaginationConfig.maxPageSize ? SyncPaginationConfig.maxPageSize : pageSize;
+      Logger.debug('📄 Getting paginated sync data for ${table.actualTableName} - Page $pageIndex, Size $pageSize');
 
-    // Handle null lastSyncDate by using a very early date for initial sync
-    final effectiveLastSyncDate = lastSyncDate;
-    Logger.debug('🕒 Using lastSyncDate: $effectiveLastSyncDate for ${table.actualTableName}');
+      // Ensure page size doesn't exceed maximum
+      pageSize = pageSize > SyncPaginationConfig.maxPageSize ? SyncPaginationConfig.maxPageSize : pageSize;
 
-    // Check if this is an initial sync (lastSyncDate is very old, indicating first sync)
-    final isInitialSync = effectiveLastSyncDate.isBefore(DateTime(2010));
-    Logger.debug('🔄 Initial sync detected: $isInitialSync for ${table.actualTableName}');
+      // Handle null lastSyncDate by using a very early date for initial sync
+      final effectiveLastSyncDate = lastSyncDate;
+      Logger.debug('🕒 Using lastSyncDate: $effectiveLastSyncDate for ${table.actualTableName}');
 
-    // Get counts for each operation type
-    final createCount = isInitialSync
-        ? await _getCountForQuery(
-            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NULL',
-            [],
-          )
-        : await _getCountForQuery(
-            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL',
-            [Variable.withDateTime(effectiveLastSyncDate)],
-          );
+      // Check if this is an initial sync (lastSyncDate is very old, indicating first sync)
+      final isInitialSync = effectiveLastSyncDate.isBefore(DateTime(2010));
+      Logger.debug('🔄 Initial sync detected: $isInitialSync for ${table.actualTableName}');
 
-    final updateCount = isInitialSync
-        ? 0 // No updates for initial sync, everything is treated as create
-        : await _getCountForQuery(
-            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL',
-            [Variable.withDateTime(effectiveLastSyncDate)],
-          );
-
-    final deleteCount = isInitialSync
-        ? 0 // No deletes for initial sync
-        : await _getCountForQuery(
-            'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?',
-            [Variable.withDateTime(effectiveLastSyncDate)],
-          );
-
-    // Debug: Also get total record count to compare
-    final totalRecordsCount = await _getCountForQuery(
-      'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NULL',
-      [],
-    );
-
-    final totalItems = createCount + updateCount + deleteCount;
-    final totalPages = totalItems > 0 ? ((totalItems / pageSize).ceil()) : 1;
-    final isLastPage = pageIndex >= totalPages - 1;
-
-    Logger.info(
-        '📊 Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems (isInitialSync: $isInitialSync)');
-    Logger.info(
-        '🔍 Total records in ${table.actualTableName}: $totalRecordsCount (active records), using sync filter date: $effectiveLastSyncDate');
-
-    // Calculate which items to fetch for this page
-    final offset = pageIndex * pageSize;
-    var remainingItems = pageSize;
-
-    List<TEntity> createSync = [];
-    List<TEntity> updateSync = [];
-    List<TEntity> deleteSync = [];
-
-    // Distribute items across create, update, delete operations
-    if (offset < createCount && remainingItems > 0) {
-      final createOffset = offset;
-      final createLimit = remainingItems > (createCount - createOffset) ? (createCount - createOffset) : remainingItems;
-
-      createSync = isInitialSync
-          ? await _getPaginatedQueryResults(
-              'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
-              [Variable.withInt(createLimit), Variable.withInt(createOffset)],
+      // Get counts for each operation type
+      final createCount = isInitialSync
+          ? await _getCountForQuery(
+              currentDatabase,
+              'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NULL',
+              [],
             )
-          : await _getPaginatedQueryResults(
-              'SELECT * FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
-              [
-                Variable.withDateTime(effectiveLastSyncDate),
-                Variable.withInt(createLimit),
-                Variable.withInt(createOffset)
-              ],
+          : await _getCountForQuery(
+              currentDatabase,
+              'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL',
+              [Variable.withDateTime(effectiveLastSyncDate)],
             );
-      remainingItems -= createSync.length;
-    }
 
-    if (offset + pageSize > createCount && remainingItems > 0) {
-      final updateOffset = offset > createCount ? offset - createCount : 0;
-      final updateLimit = remainingItems > (updateCount - updateOffset) ? (updateCount - updateOffset) : remainingItems;
+      final updateCount = isInitialSync
+          ? 0 // No updates for initial sync, everything is treated as create
+          : await _getCountForQuery(
+              currentDatabase,
+              'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL',
+              [Variable.withDateTime(effectiveLastSyncDate)],
+            );
 
-      if (updateLimit > 0) {
-        updateSync = await _getPaginatedQueryResults(
-          'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL ORDER BY modified_date ASC LIMIT ? OFFSET ?',
-          [Variable.withDateTime(effectiveLastSyncDate), Variable.withInt(updateLimit), Variable.withInt(updateOffset)],
-        );
-        remainingItems -= updateSync.length;
+      final deleteCount = isInitialSync
+          ? 0 // No deletes for initial sync
+          : await _getCountForQuery(
+              currentDatabase,
+              'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ?',
+              [Variable.withDateTime(effectiveLastSyncDate)],
+            );
+
+      // Debug: Also get total record count to compare
+      final totalRecordsCount = await _getCountForQuery(
+        currentDatabase,
+        'SELECT COUNT(*) as count FROM ${table.actualTableName} WHERE deleted_date IS NULL',
+        [],
+      );
+
+      final totalItems = createCount + updateCount + deleteCount;
+      final totalPages = totalItems > 0 ? ((totalItems / pageSize).ceil()) : 1;
+      final isLastPage = pageIndex >= totalPages - 1;
+
+      Logger.info(
+          '📊 Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems (isInitialSync: $isInitialSync)');
+      Logger.info(
+          '🔍 Total records in ${table.actualTableName}: $totalRecordsCount (active records), using sync filter date: $effectiveLastSyncDate');
+
+      // Calculate which items to fetch for this page
+      final offset = pageIndex * pageSize;
+      var remainingItems = pageSize;
+
+      List<TEntity> createSync = [];
+      List<TEntity> updateSync = [];
+      List<TEntity> deleteSync = [];
+
+      // Distribute items across create, update, delete operations
+      if (offset < createCount && remainingItems > 0) {
+        final createOffset = offset;
+        final createLimit =
+            remainingItems > (createCount - createOffset) ? (createCount - createOffset) : remainingItems;
+
+        createSync = isInitialSync
+            ? await _getPaginatedQueryResults(
+                currentDatabase,
+                'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
+                [Variable.withInt(createLimit), Variable.withInt(createOffset)],
+              )
+            : await _getPaginatedQueryResults(
+                currentDatabase,
+                'SELECT * FROM ${table.actualTableName} WHERE created_date > ? AND deleted_date IS NULL ORDER BY created_date ASC LIMIT ? OFFSET ?',
+                [
+                  Variable.withDateTime(effectiveLastSyncDate),
+                  Variable.withInt(createLimit),
+                  Variable.withInt(createOffset)
+                ],
+              );
+        remainingItems -= createSync.length;
       }
-    }
 
-    if (offset + pageSize > createCount + updateCount && remainingItems > 0) {
-      final deleteOffset = offset > (createCount + updateCount) ? offset - (createCount + updateCount) : 0;
-      final deleteLimit = remainingItems > (deleteCount - deleteOffset) ? (deleteCount - deleteOffset) : remainingItems;
+      if (offset + pageSize > createCount && remainingItems > 0) {
+        final updateOffset = offset > createCount ? offset - createCount : 0;
+        final updateLimit =
+            remainingItems > (updateCount - updateOffset) ? (updateCount - updateOffset) : remainingItems;
 
-      if (deleteLimit > 0) {
-        deleteSync = await _getPaginatedQueryResults(
-          'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ? ORDER BY deleted_date ASC LIMIT ? OFFSET ?',
-          [Variable.withDateTime(effectiveLastSyncDate), Variable.withInt(deleteLimit), Variable.withInt(deleteOffset)],
-        );
+        if (updateLimit > 0) {
+          updateSync = await _getPaginatedQueryResults(
+            currentDatabase,
+            'SELECT * FROM ${table.actualTableName} WHERE modified_date IS NOT NULL AND modified_date > ? AND deleted_date IS NULL ORDER BY modified_date ASC LIMIT ? OFFSET ?',
+            [
+              Variable.withDateTime(effectiveLastSyncDate),
+              Variable.withInt(updateLimit),
+              Variable.withInt(updateOffset)
+            ],
+          );
+          remainingItems -= updateSync.length;
+        }
       }
-    }
 
-    final syncData = SyncData<TEntity>(
-      createSync: createSync,
-      updateSync: updateSync,
-      deleteSync: deleteSync,
-    );
+      if (offset + pageSize > createCount + updateCount && remainingItems > 0) {
+        final deleteOffset = offset > (createCount + updateCount) ? offset - (createCount + updateCount) : 0;
+        final deleteLimit =
+            remainingItems > (deleteCount - deleteOffset) ? (deleteCount - deleteOffset) : remainingItems;
 
-    Logger.debug(
-        '📦 Page $pageIndex result: ${createSync.length} creates, ${updateSync.length} updates, ${deleteSync.length} deletes');
+        if (deleteLimit > 0) {
+          deleteSync = await _getPaginatedQueryResults(
+            currentDatabase,
+            'SELECT * FROM ${table.actualTableName} WHERE deleted_date IS NOT NULL AND deleted_date > ? ORDER BY deleted_date ASC LIMIT ? OFFSET ?',
+            [
+              Variable.withDateTime(effectiveLastSyncDate),
+              Variable.withInt(deleteLimit),
+              Variable.withInt(deleteOffset)
+            ],
+          );
+        }
+      }
 
-    return PaginatedSyncData<TEntity>(
-      data: syncData,
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalPages: totalPages,
-      totalItems: totalItems,
-      isLastPage: isLastPage,
-      entityType: entityType ?? TEntity.toString(),
-    );
+      final syncData = SyncData<TEntity>(
+        createSync: createSync,
+        updateSync: updateSync,
+        deleteSync: deleteSync,
+      );
+
+      Logger.debug(
+          '📦 Page $pageIndex result: ${createSync.length} creates, ${updateSync.length} updates, ${deleteSync.length} deletes');
+
+      return PaginatedSyncData<TEntity>(
+        data: syncData,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        totalPages: totalPages,
+        totalItems: totalItems,
+        isLastPage: isLastPage,
+        entityType: entityType ?? TEntity.toString(),
+      );
+    });
   }
 
   /// Helper method to get count from a query
-  Future<int> _getCountForQuery(String query, List<Variable> variables) async {
-    final result = await database
+  Future<int> _getCountForQuery(AppDatabase currentDatabase, String query, List<Variable> variables) async {
+    final result = await currentDatabase
         .customSelect(
           query,
           variables: variables,
@@ -327,8 +385,9 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
   }
 
   /// Helper method to get paginated query results
-  Future<List<TEntity>> _getPaginatedQueryResults(String query, List<Variable> variables) async {
-    final a = database.customSelect(
+  Future<List<TEntity>> _getPaginatedQueryResults(
+      AppDatabase currentDatabase, String query, List<Variable> variables) async {
+    final a = currentDatabase.customSelect(
       query,
       variables: variables,
       readsFrom: {table},
@@ -366,6 +425,9 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
 
   @override
   Future<void> truncate() async {
-    await database.customStatement('DELETE FROM ${table.actualTableName}');
+    return DatabaseConnectionManager.instance.executeWithRetry(() async {
+      final currentDatabase = AppDatabase.instance();
+      await currentDatabase.customStatement('DELETE FROM ${table.actualTableName}');
+    });
   }
 }
