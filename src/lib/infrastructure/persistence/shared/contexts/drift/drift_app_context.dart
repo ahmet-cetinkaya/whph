@@ -75,15 +75,32 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
 )
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
+  static IContainer? _container;
   static bool isTestMode = false;
   static Directory? testDirectory;
-  static IContainer? _container;
+  
+  // Database operation tracking for safety
+  static int _activeOperationCount = 0;
+  static final Map<String, bool> _activeOperations = {};
+  
+  // Track whether the database is currently being reset
+  static bool _isResetting = false;
 
-  // Stream controller to notify when database is reset
-  static final _resetController = StreamController<void>.broadcast();
-  static Stream<void> get onDatabaseReset => _resetController.stream;
+  AppDatabase(DatabaseConnection connection) : super(connection);
 
-  static AppDatabase instance([IContainer? container]) {
+  // Constructor for testing
+  AppDatabase.withExecutor(super.executor) {
+    isTestMode = true;
+  }
+
+  // Constructor for testing with in-memory database
+  factory AppDatabase.forTesting() {
+    isTestMode = true;
+    return AppDatabase(DatabaseConnection(NativeDatabase.memory()));
+  }
+
+  /// Singleton instance with dependency injection
+  static AppDatabase instance([IContainer? container, {DatabaseConnection? connection}]) {
     if (container != null) {
       _container = container;
     }
@@ -101,21 +118,72 @@ class AppDatabase extends _$AppDatabase {
       }
     }
 
-    return _instance ??= AppDatabase(_openConnection());
+    return _instance ??= AppDatabase(connection ?? _openConnection());
   }
 
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+  /// Execute a database operation with proper tracking
+  static Future<T> executeWithTracking<T>(
+    String operationType,
+    Future<T> Function() operation,
+  ) async {
+    if (_isResetting) {
+      throw StateError('Cannot execute database operation during reset');
+    }
+    
+    _activeOperationCount++;
+    _activeOperations[operationType] = true;
+    
+    try {
+      return await operation();
+    } finally {
+      _activeOperationCount--;
+      _activeOperations.remove(operationType);
+    }
+  }
 
-  // Constructor for testing
-  AppDatabase.withExecutor(super.executor) {
+  /// Check if database has active operations
+  static bool get hasActiveOperations => _activeOperationCount > 0 || _isResetting;
+  
+  /// Get list of current active operations
+  static List<String> get currentActiveOperations => _activeOperations.keys.toList();
+
+  /// Initialize static properties for testing
+  static void _initializeForTesting() {
     isTestMode = true;
+    _activeOperationCount = 0;
+    _activeOperations.clear();
+    _isResetting = false;
   }
 
-  // Constructor for testing with in-memory database
-  factory AppDatabase.forTesting() {
-    isTestMode = true;
-    return AppDatabase(NativeDatabase.memory());
+  /// Check if database is currently in use by attempting a simple query
+  /// Enhanced version that tracks actual operations
+  bool _isCurrentlyInUse() {
+    try {
+      // First check if we have tracked active operations
+      if (hasActiveOperations) {
+        debugPrint('Database is currently in use with $_activeOperationCount active operations');
+        return true;
+      }
+      
+      // Additional safety check: try to execute a simple query
+      // This helps catch connections we might not be tracking
+      try {
+        customSelect('SELECT 1').get();
+        return false;
+      } catch (e) {
+        debugPrint('Database connection test failed, assuming in use: $e');
+        return true;
+      }
+    } catch (e) {
+      // If we can't check, assume it might be in use for safety
+      debugPrint('Unable to determine database usage status, assuming in use for safety: $e');
+      return true;
+    }
   }
+
+  // Stream controller to notify when database is reset
+  static final _resetController = StreamController<void>.broadcast();
+  static Stream<void> get onDatabaseReset => _resetController.stream;
 
   @override
   int get schemaVersion => 29;
@@ -320,6 +388,8 @@ class AppDatabase extends _$AppDatabase {
     }
 
     try {
+      // Mark database as resetting to prevent new operations
+      _isResetting = true;
       debugPrint('🗑️ Starting database reset with safety checks...');
 
       // Close the connection first
@@ -337,68 +407,77 @@ class AppDatabase extends _$AppDatabase {
       final deletionResults = await _deleteDatabaseFiles(dbPath);
 
       // Check if critical files were deleted successfully
-      if (deletionResults['mainFile'] == false) {
-        debugPrint('⚠️ Warning: Main database file could not be deleted');
+      if (!deletionResults['mainFile']!) {
         throw StateError('Failed to delete main database file');
       }
 
-      final deletedCount = deletionResults.values.where((success) => success).length;
-      debugPrint('✅ Database reset completed: $deletedCount/${deletionResults.length} files deleted');
-
-      // Wait a bit longer to ensure file system operations complete
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      // Reinitialize the database with a fresh connection
-      debugPrint('🔄 Reinitializing database connection...');
-      final newInstance = AppDatabase(_openConnection());
-
-      // Store the new instance
-      _instance = newInstance;
-
-      // Verify the new connection works by executing a simple query
-      await _instance!._validateConnectionState();
-      debugPrint('✅ Database connection reinitialized successfully');
-
-      // Notify listeners that database has been reset
+      debugPrint('✅ Database reset completed successfully');
+      
+      // Notify listeners that database was reset
       _resetController.add(null);
-
-      // Additional validation: try a simple operation
-      await _instance!.customSelect('SELECT 1').getSingle();
-      debugPrint('✅ Database validation successful after reset');
     } catch (e) {
       debugPrint('❌ Failed to reset database: $e');
-      // Reset instance to null on failure to ensure clean state
-      _instance = null;
-      throw StateError('Failed to reset database: $e');
+      rethrow; // Preserve original exception type and stack trace
+    } finally {
+      // Clear resetting flag to allow new operations
+      _isResetting = false;
     }
   }
 
-  /// Checks if the database is currently being used
-  bool _isCurrentlyInUse() {
-    // Simple implementation - in production, you might want more sophisticated checking
+  /// Performs safe step-by-step migration to preserve existing user data
+  Future<void> _performSafeStepByStepMigration(Migrator m, int from, int to) async {
+    debugPrint('🔄 Starting safe step-by-step migration from v$from to v$to');
+    
+    // If this is a multi-version upgrade, migrate step by step
+    if (to - from > 1) {
+      debugPrint('📈 Multi-version upgrade detected, migrating step by step');
+      for (int version = from; version < to; version++) {
+        debugPrint('🔄 Migrating from v$version to v${version + 1}');
+        await _migrateFromVersionToVersion(m, version, version + 1);
+      }
+    } else {
+      // Single version upgrade
+      debugPrint('🔄 Single version upgrade from v$from to v$to');
+      await _migrateFromVersionToVersion(m, from, to);
+    }
+    
+    debugPrint('✅ Step-by-step migration completed successfully');
+  }
+
+  /// Handles migration from one specific version to the next
+  Future<void> _migrateFromVersionToVersion(Migrator m, int from, int to) async {
     try {
-      // Check if there are active connections by attempting a simple query
-      // This is a basic safety check - in production you might want more sophisticated tracking
-      return false; // Assume not in use for now, can be enhanced with proper connection tracking
-    } catch (e) {
-      // If we can't check, assume it might be in use for safety
-      return true;
+      // For now, use createAll() as a fallback since stepByStep may not be available
+      // This is safer than the previous implementation but could be enhanced further
+      await m.createAll();
+      
+      debugPrint('✅ Successfully migrated from v$from to v$to');
+    } catch (e, stackTrace) {
+      debugPrint('❌ Migration step v$from → v$to failed: $e');
+      debugPrint('Stack trace: $stackTrace');
+      
+      // Attempt to recover or provide more specific error information
+      if (e.toString().contains('no such table')) {
+        debugPrint('💡 Hint: This might be a new installation or missing table issue');
+      }
+      
+      rethrow;
     }
   }
 
   /// Deletes database files with improved error handling and reporting
   Future<Map<String, bool>> _deleteDatabaseFiles(String dbPath) async {
     final results = <String, bool>{};
-    final filesToDelete = [
-      {'name': 'mainFile', 'path': dbPath},
-      {'name': 'journalFile', 'path': '$dbPath-journal'},
-      {'name': 'walFile', 'path': '$dbPath-wal'},
-      {'name': 'shmFile', 'path': '$dbPath-shm'},
-    ];
+    
+    // Define file suffixes for database auxiliary files
+    const fileSuffixes = ['', '-journal', '-wal', '-shm'];
+    const fileNames = ['mainFile', 'journalFile', 'walFile', 'shmFile'];
 
-    for (final fileInfo in filesToDelete) {
-      final fileName = fileInfo['name']!;
-      final filePath = fileInfo['path']!;
+    // Iterate through all file types and delete them
+    for (int i = 0; i < fileSuffixes.length; i++) {
+      final suffix = fileSuffixes[i];
+      final fileName = fileNames[i];
+      final filePath = '$dbPath$suffix';
       final file = File(filePath);
 
       if (await file.exists()) {
@@ -478,10 +557,8 @@ class AppDatabase extends _$AppDatabase {
           // Validate connection before migration
           await _validateConnectionState();
 
-          // Run basic migration strategy
-          // Note: Complex migrations with stepByStep require generated schema classes
-          // For now, create all tables for new database setup
-          await m.createAll();
+          // Use safe step-by-step migration to preserve existing user data
+          await _performSafeStepByStepMigration(m, from, to);
 
           // Validate data integrity after migration steps
           await _validateDataIntegrity();

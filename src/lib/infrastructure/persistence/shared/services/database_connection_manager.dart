@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/shared/utils/logger.dart';
 
@@ -96,13 +97,51 @@ class DatabaseConnectionManager {
   }
 
   /// Check if an error is related to database connection issues
+  /// Uses proper exception type checking instead of brittle string matching
   bool _isConnectionError(dynamic error) {
+    // Check specific exception types first
+    if (error is StateError) {
+      return _isStateConnectionError(error);
+    }
+    
+    if (error is IOException) {
+      return _isIOException(error);
+    }
+    
+    // Fallback to limited string matching for unknown exception types
+    // This maintains backward compatibility while being more targeted
     final errorString = error.toString().toLowerCase();
+    return _isStringIndicativeOfConnectionError(errorString);
+  }
+
+  /// Check StateError exceptions for database connection issues
+  bool _isStateConnectionError(StateError error) {
+    final message = error.message.toLowerCase();
+    
+    return message.contains('database is closed') ||
+           message.contains('connection was closed') ||
+           message.contains('bad state') ||
+           message.contains('database has been closed') ||
+           message.contains('connection is not available');
+  }
+
+  /// Check IOException exceptions for database file access issues
+  bool _isIOException(IOException error) {
+    final message = error.toString().toLowerCase();
+    
+    return message.contains('no such file or directory') ||
+           message.contains('permission denied') ||
+           message.contains('file system is read-only') ||
+           message.contains('disk is full') ||
+           message.contains('input/output error');
+  }
+
+  /// Limited string matching for fallback cases
+  bool _isStringIndicativeOfConnectionError(String errorString) {
     return errorString.contains('connection was closed') ||
-        errorString.contains('bad state') ||
-        errorString.contains('database is closed') ||
-        errorString.contains('no such database') ||
-        errorString.contains('database disk image is malformed');
+           errorString.contains('database is closed') ||
+           errorString.contains('no such database') ||
+           errorString.contains('database disk image is malformed');
   }
 
   /// Dispose the connection manager

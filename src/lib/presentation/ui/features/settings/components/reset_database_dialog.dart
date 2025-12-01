@@ -6,6 +6,7 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
@@ -102,8 +103,14 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
           message: _translationService.translate(SettingsTranslationKeys.resetDatabaseSuccess),
         );
 
-        // Close the ResetDatabaseDialog
-        Navigator.pop(context);
+        // Wait a moment to show the success message before restarting
+        await Future.delayed(const Duration(seconds: 2));
+
+        // Restart the application to ensure a clean state after database reset
+        if (context.mounted) {
+          Logger.info('🔄 Restarting application after successful database reset');
+          Phoenix.rebirth(context);
+        }
       }
     } catch (e, stackTrace) {
       if (context.mounted) {

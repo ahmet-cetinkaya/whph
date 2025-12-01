@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
+import 'package:whph/core/application/features/sync/constants/sync_pagination_constants.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
@@ -32,11 +34,13 @@ class SyncPaginationService implements ISyncPaginationService {
   bool _isSyncCancelled = false;
 
   // Store response data from bidirectional sync for processing by command
-  final Map<String, PaginatedSyncDataDto> _pendingResponseData = {};
+  // Using LinkedHashMap to preserve insertion order for consistent cleanup behavior
+  final Map<String, PaginatedSyncDataDto> _pendingResponseData = LinkedHashMap<String, PaginatedSyncDataDto>();
 
-  // Memory management tracking
-  static const int _maxPendingDataItems = 50; // Maximum items to store in memory
-  static const int _cleanupThreshold = 30; // Trigger cleanup when this many items accumulate
+  // Memory management tracking - using constants from SyncPaginationConstants
+  // Maximum items to store in memory and trigger cleanup threshold
+  static const int _maxPendingDataItems = SyncPaginationConstants.maxPendingDataItems;
+  static const int _cleanupThreshold = SyncPaginationConstants.cleanupThreshold;
 
   SyncPaginationService({
     required ISyncCommunicationService communicationService,
@@ -797,7 +801,7 @@ class SyncPaginationService implements ISyncPaginationService {
     if (_pendingResponseData.length > _cleanupThreshold) {
       final entityTypes = _pendingResponseData.keys
           .where((key) => !key.contains('_page_'))
-          .take(10) // Remove up to 10 entity types
+          .take(SyncPaginationConstants.maxEntityTypesToRemoveOnCleanup) // Remove up to maxEntityTypesToRemoveOnCleanup entity types
           .toList();
 
       for (final entityType in entityTypes) {
