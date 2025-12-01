@@ -100,9 +100,13 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Singleton instance with dependency injection
-  static AppDatabase instance([IContainer? container, {DatabaseConnection? connection}]) {
+  static AppDatabase instance([IContainer? container]) {
+    IContainer? connectionContainer = container;
+    DatabaseConnection? connection;
+    
     if (container != null) {
       _container = container;
+      connectionContainer = container;
     }
 
     // Return existing instance if available and not closed

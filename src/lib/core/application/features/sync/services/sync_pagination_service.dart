@@ -717,6 +717,7 @@ class SyncPaginationService implements ISyncPaginationService {
   }
 
   /// Processes server response data either immediately via callback or stores it for later processing
+  /// This helper method reduces code duplication by centralizing callback processing logic
   void _processServerResponse({
     required String entityType,
     required PaginatedSyncDataDto responseData,
@@ -724,63 +725,33 @@ class SyncPaginationService implements ISyncPaginationService {
     int? serverPage,
     Future<void> Function(PaginatedSyncDataDto pageData)? onPageReceived,
   }) {
-    final dataDescription = isAdditionalPage ? 'additional $entityType page $serverPage' : entityType;
+    // Log response information
+    final pageType = isAdditionalPage ? 'additional page' : 'main response';
+    final pageInfo = serverPage != null ? ' (server page $serverPage)' : '';
+    
+    Logger.info('📨 Processing $pageType for $entityType$pageInfo');
 
-    // Null safety check for response data
-    final syncData = responseData.getPopulatedSyncData();
-    if (syncData == null) {
-      Logger.warning('⚠️ Skipping $dataDescription - no data to process');
-      return;
-    }
-
-    // Check if there are any actual items to sync
-    final totalItems =
-        syncData.data.createSync.length + syncData.data.updateSync.length + syncData.data.deleteSync.length;
-
-    if (totalItems == 0) {
-      Logger.warning('⚠️ Skipping $dataDescription - empty sync data');
-      return;
-    }
-
+    // If callback is provided, process immediately and DO NOT store in pendingResponseData
     if (onPageReceived != null) {
-      Logger.info('⚡ Processing $dataDescription immediately via callback');
-
+      Logger.info('⚡ Processing $entityType $pageType immediately via callback');
+      
       // Process callback asynchronously to avoid blocking sync operations
       Future.microtask(() async {
         try {
           await onPageReceived(responseData);
         } catch (e, stackTrace) {
-          Logger.error('❌ Error in sync callback for $dataDescription: $e\n$stackTrace');
+          Logger.error('❌ Error in sync callback for $entityType: $e\n$stackTrace');
           // Don't rethrow to prevent breaking the sync operation
         }
       });
     } else {
-      Logger.info('🔍 Storing $dataDescription for later processing');
-
-      // Check memory pressure before storing
-      if (_pendingResponseData.length >= _maxPendingDataItems) {
-        Logger.warning('⚠️ Memory pressure detected: ${_pendingResponseData.length} pending items, triggering cleanup');
-        _cleanupOldPendingData();
-      }
-
-      if (isAdditionalPage) {
-        // For additional pages, store with page identifier if data already exists
-        final existingData = _pendingResponseData[entityType];
-        if (existingData != null) {
-          _pendingResponseData['${entityType}_page_$serverPage'] = responseData;
-          Logger.info('🔗 Accumulating additional server page data for $entityType');
-        } else {
-          _pendingResponseData[entityType] = responseData;
-        }
-      } else {
-        // For initial response, store directly under entity type
-        _pendingResponseData[entityType] = responseData;
-      }
-
-      // Check if cleanup is needed
-      if (_pendingResponseData.length >= _cleanupThreshold) {
-        _cleanupOldPendingData();
-      }
+      // Legacy behavior: Store for later processing
+      final storageKey = isAdditionalPage && serverPage != null 
+          ? '${entityType}_page_$serverPage' 
+          : entityType;
+      
+      Logger.info('🔍 Storing $entityType $pageType for later processing (key: $storageKey)');
+      _pendingResponseData[storageKey] = responseData;
     }
   }
 
