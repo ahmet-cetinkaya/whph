@@ -34,6 +34,10 @@ class SyncPaginationService implements ISyncPaginationService {
   // Store response data from bidirectional sync for processing by command
   final Map<String, PaginatedSyncDataDto> _pendingResponseData = {};
 
+  // Memory management tracking
+  static const int _maxPendingDataItems = 50; // Maximum items to store in memory
+  static const int _cleanupThreshold = 30;   // Trigger cleanup when this many items accumulate
+
   SyncPaginationService({
     required ISyncCommunicationService communicationService,
     required ISyncConfigurationService configurationService,
@@ -717,13 +721,45 @@ class SyncPaginationService implements ISyncPaginationService {
     Future<void> Function(PaginatedSyncDataDto pageData)? onPageReceived,
   }) {
     final dataDescription = isAdditionalPage ? 'additional $entityType page $serverPage' : entityType;
-    
+
+    // Null safety check for response data
+    final syncData = responseData.getPopulatedSyncData();
+    if (syncData == null) {
+      Logger.warning('⚠️ Skipping $dataDescription - no data to process');
+      return;
+    }
+
+    // Check if there are any actual items to sync
+    final totalItems = syncData.data.createSync.length +
+                      syncData.data.updateSync.length +
+                      syncData.data.deleteSync.length;
+
+    if (totalItems == 0) {
+      Logger.warning('⚠️ Skipping $dataDescription - empty sync data');
+      return;
+    }
+
     if (onPageReceived != null) {
       Logger.info('⚡ Processing $dataDescription immediately via callback');
-      onPageReceived(responseData);
+
+      // Process callback asynchronously to avoid blocking sync operations
+      Future.microtask(() async {
+        try {
+          await onPageReceived(responseData);
+        } catch (e, stackTrace) {
+          Logger.error('❌ Error in sync callback for $dataDescription: $e\n$stackTrace');
+          // Don't rethrow to prevent breaking the sync operation
+        }
+      });
     } else {
       Logger.info('🔍 Storing $dataDescription for later processing');
-      
+
+      // Check memory pressure before storing
+      if (_pendingResponseData.length >= _maxPendingDataItems) {
+        Logger.warning('⚠️ Memory pressure detected: ${_pendingResponseData.length} pending items, triggering cleanup');
+        _cleanupOldPendingData();
+      }
+
       if (isAdditionalPage) {
         // For additional pages, store with page identifier if data already exists
         final existingData = _pendingResponseData[entityType];
@@ -737,7 +773,42 @@ class SyncPaginationService implements ISyncPaginationService {
         // For initial response, store directly under entity type
         _pendingResponseData[entityType] = responseData;
       }
+
+      // Check if cleanup is needed
+      if (_pendingResponseData.length >= _cleanupThreshold) {
+        _cleanupOldPendingData();
+      }
     }
+  }
+
+  /// Cleans up old pending data to prevent memory leaks
+  void _cleanupOldPendingData() {
+    if (_pendingResponseData.length <= _cleanupThreshold) return;
+
+    Logger.info('🧹 Cleaning up old pending sync data (${_pendingResponseData.length} items)');
+
+    // Remove paginated data first (additional pages), keeping main entity data
+    final keysToRemove = _pendingResponseData.keys
+        .where((key) => key.contains('_page_'))
+        .toList();
+
+    for (final key in keysToRemove) {
+      _pendingResponseData.remove(key);
+    }
+
+    // If still over threshold, remove oldest entries by entity type
+    if (_pendingResponseData.length > _cleanupThreshold) {
+      final entityTypes = _pendingResponseData.keys
+          .where((key) => !key.contains('_page_'))
+          .take(10) // Remove up to 10 entity types
+          .toList();
+
+      for (final entityType in entityTypes) {
+        _pendingResponseData.remove(entityType);
+      }
+    }
+
+    Logger.info('✅ Cleanup completed: ${_pendingResponseData.length} items remaining');
   }
 
   void dispose() {

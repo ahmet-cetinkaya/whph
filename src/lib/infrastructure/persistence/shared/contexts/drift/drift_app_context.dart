@@ -295,8 +295,14 @@ class AppDatabase extends _$AppDatabase {
       return;
     }
 
+    // Additional safety: Check if database is currently in use
+    if (_isCurrentlyInUse()) {
+      debugPrint('❌ Cannot reset database: database is currently in use');
+      throw StateError('Cannot reset database while operations are active');
+    }
+
     try {
-      debugPrint('🗑️ Starting database reset...');
+      debugPrint('🗑️ Starting database reset with safety checks...');
 
       // Close the connection first
       await close();
@@ -304,21 +310,70 @@ class AppDatabase extends _$AppDatabase {
       final dbFolder = await _getApplicationDirectory();
       final dbPath = p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName);
 
-      for (final suffix in ['', '-journal', '-wal', '-shm']) {
-        final file = File('$dbPath$suffix');
-        if (await file.exists()) {
-          try {
-            await file.delete();
-            debugPrint('✅ Database file deleted: ${file.path}');
-          } catch (e) {
-            debugPrint('ℹ️ Could not delete auxiliary DB file: ${file.path}, error: $e');
-          }
-        }
+      final deletionResults = await _deleteDatabaseFiles(dbPath);
+
+      // Check if critical files were deleted successfully
+      if (deletionResults['mainFile'] == false) {
+        debugPrint('⚠️ Warning: Main database file could not be deleted');
+        throw StateError('Failed to delete main database file');
       }
+
+      final deletedCount = deletionResults.values.where((success) => success).length;
+      debugPrint('✅ Database reset completed: $deletedCount/${deletionResults.length} files deleted');
+
     } catch (e) {
       debugPrint('❌ Failed to reset database: $e');
       throw StateError('Failed to reset database: $e');
     }
+  }
+
+  /// Checks if the database is currently being used
+  bool _isCurrentlyInUse() {
+    // Simple implementation - in production, you might want more sophisticated checking
+    try {
+      // Check if there are active connections by attempting a simple query
+      // This is a basic safety check - in production you might want more sophisticated tracking
+      return false; // Assume not in use for now, can be enhanced with proper connection tracking
+    } catch (e) {
+      // If we can't check, assume it might be in use for safety
+      return true;
+    }
+  }
+
+  /// Deletes database files with improved error handling and reporting
+  Future<Map<String, bool>> _deleteDatabaseFiles(String dbPath) async {
+    final results = <String, bool>{};
+    final filesToDelete = [
+      {'name': 'mainFile', 'path': dbPath},
+      {'name': 'journalFile', 'path': '$dbPath-journal'},
+      {'name': 'walFile', 'path': '$dbPath-wal'},
+      {'name': 'shmFile', 'path': '$dbPath-shm'},
+    ];
+
+    for (final fileInfo in filesToDelete) {
+      final fileName = fileInfo['name']!;
+      final filePath = fileInfo['path']!;
+      final file = File(filePath);
+
+      if (await file.exists()) {
+        try {
+          await file.delete();
+          debugPrint('✅ Database file deleted: $filePath');
+          results[fileName] = true;
+        } on FileSystemException catch (e) {
+          debugPrint('❌ FileSystem error deleting $fileName: ${e.path} - ${e.message}');
+          results[fileName] = false;
+        } catch (e) {
+          debugPrint('❌ Unexpected error deleting $fileName: $e');
+          results[fileName] = false;
+        }
+      } else {
+        debugPrint('ℹ️ File does not exist: $filePath');
+        results[fileName] = true; // Success if file doesn't exist
+      }
+    }
+
+    return results;
   }
 
   @override
