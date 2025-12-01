@@ -293,11 +293,19 @@ settings:
           "Varoitus: Tätä toimenpidettä ei voi perua. Kaikki tietosi poistetaan
           pysyvästi."
         confirm_text: Vahvista pyyhkäisemällä
+        resetting: Nollataan tietokantaa...
       restart_screen:
-        title: Nollataan tietokantaa...
+        completed_title: Tietokanta on nollattu onnistuneesti
         desktop_message: Sovellus käynnistyy uudelleen {seconds} sekunnissa.
         mobile_message: Käynnistä sovellus manuaalisesti uudelleen prosessin viimeistämiseksi.
         restart_now_button: Käynnistä Uudelleen Nyt
+      error:
+        title: Nollaus epäonnistui
+        message:
+          Tietokantaa ei voitu nollata. Yritä uudelleen tai ota yhteyttä tukeen,
+          jos ongelma jatkuu.
+        cancel: Peruuta
+        retry: Yritä uudelleen
   debug_logs:
     title: Virheenkorjauslokit
     description:

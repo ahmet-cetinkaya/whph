@@ -296,13 +296,21 @@ settings:
           "Varning: Denna åtgärd kan inte ångras. Alla dina data kommer att
           raderas permanent."
         confirm_text: Svep för att bekräfta
+        resetting: Återställer databas...
       restart_screen:
-        title: Återställer Databas...
+        completed_title: Databasen har återställts framgångsrikt
         desktop_message: Applikationen kommer att starta om om {seconds} sekunder.
         mobile_message:
           Vänligen starta om applikationen manuellt för att slutföra
           processen.
         restart_now_button: Starta Om Nu
+      error:
+        title: Återställning misslyckades
+        message:
+          Kunde inte återställa databasen. Försök igen eller kontakta support
+          om problemet kvarstår.
+        cancel: Avbryt
+        retry: Försök igen
   debug_logs:
     title: Felsökningsloggar
     description: Aktivera detaljerad loggning till fil för felsökning och support

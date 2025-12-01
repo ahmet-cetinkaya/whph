@@ -305,11 +305,19 @@ settings:
           "Waarschuwing: Deze actie kan niet ongedaan worden gemaakt. Al uw
           data wordt permanent verwijderd."
         confirm_text: Swipe om te bevestigen
+        resetting: Database resetten...
       restart_screen:
-        title: Database Resetten...
+        completed_title: Database is succesvol gereset
         desktop_message: De applicatie herstart over {seconds} seconden.
         mobile_message: Herstart de applicatie handmatig om het proces te voltooien.
         restart_now_button: Nu Herstarten
+      error:
+        title: Reset mislukt
+        message:
+          Kon database niet resetten. Probeer opnieuw of neem contact op met
+          support als het probleem aanhoudt.
+        cancel: Annuleren
+        retry: Opnieuw proberen
   debug_logs:
     title: Debug-logs
     description:

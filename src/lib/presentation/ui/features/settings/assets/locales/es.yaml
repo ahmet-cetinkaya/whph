@@ -315,13 +315,21 @@ settings:
           "Advertencia: Esta acción no se puede deshacer. Todos sus datos serán
           eliminados permanentemente."
         confirm_text: Desliza para confirmar
+        resetting: Restableciendo base de datos...
       restart_screen:
-        title: Restableciendo Base de Datos...
+        completed_title: La base de datos ha sido restablecida exitosamente
         desktop_message: La aplicación se reiniciará en {seconds} segundos.
         mobile_message:
           Por favor reinicie manualmente la aplicación para completar
           el proceso.
         restart_now_button: Reiniciar Ahora
+      error:
+        title: Restablecimiento fallido
+        message:
+          No se pudo restablecer la base de datos. Inténtelo de nuevo o contacte
+          con soporte si el problema persiste.
+        cancel: Cancelar
+        retry: Reintentar
   debug_logs:
     title: Registros de depuración
     description:

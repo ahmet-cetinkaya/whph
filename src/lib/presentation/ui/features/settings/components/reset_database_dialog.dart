@@ -7,23 +7,76 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
-class ResetDatabaseDialog extends StatelessWidget {
+class ResetDatabaseDialog extends StatefulWidget {
   const ResetDatabaseDialog({super.key});
 
+  @override
+  State<ResetDatabaseDialog> createState() => _ResetDatabaseDialogState();
+}
+
+class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
+  bool _isResetting = false;
+
   Future<void> _handleReset(BuildContext context) async {
-    // Navigate to restart screen immediately
-    if (context.mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const RestartScreen()),
-        (route) => false,
-      );
+    setState(() {
+      _isResetting = true;
+    });
+
+    try {
+      // Perform reset first
+      await AppDatabase.instance().resetDatabase();
+
+      // Only navigate on success
+      if (context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const RestartScreen()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      // Reset loading state on error
+      if (context.mounted) {
+        setState(() {
+          _isResetting = false;
+        });
+
+        // Show error dialog
+        _showErrorDialog(context, e);
+      }
     }
+  }
 
-    // Small delay to allow UI to update
-    await Future.delayed(const Duration(milliseconds: 500));
+  void _showErrorDialog(BuildContext context, dynamic error) {
+    final translationService = container.resolve<ITranslationService>();
 
-    // Perform reset
-    await AppDatabase.instance().resetDatabase();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          translationService.translate(SettingsTranslationKeys.resetDatabaseErrorTitle),
+        ),
+        content: Text(
+          translationService.translate(SettingsTranslationKeys.resetDatabaseErrorMessage),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              translationService.translate(SettingsTranslationKeys.resetDatabaseErrorCancel),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _handleReset(context);
+            },
+            child: Text(
+              translationService.translate(SettingsTranslationKeys.resetDatabaseErrorRetry),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -59,13 +112,25 @@ class ResetDatabaseDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppTheme.sizeXLarge),
-              SwipeToConfirm(
-                text: translationService.translate(SettingsTranslationKeys.resetDatabaseDialogConfirmText),
-                onConfirmed: () => _handleReset(context),
-                backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                sliderColor: theme.colorScheme.error,
-                iconColor: theme.colorScheme.onError,
-              ),
+              _isResetting
+                  ? Column(
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: AppTheme.sizeLarge),
+                        Text(
+                          translationService.translate(SettingsTranslationKeys.resetDatabaseDialogResetting),
+                          style: theme.textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    )
+                  : SwipeToConfirm(
+                      text: translationService.translate(SettingsTranslationKeys.resetDatabaseDialogConfirmText),
+                      onConfirmed: () => _handleReset(context),
+                      backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                      sliderColor: theme.colorScheme.error,
+                      iconColor: theme.colorScheme.onError,
+                    ),
               const SizedBox(height: AppTheme.sizeLarge),
             ],
           ),

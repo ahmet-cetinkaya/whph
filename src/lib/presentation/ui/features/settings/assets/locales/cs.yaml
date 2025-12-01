@@ -296,11 +296,19 @@ settings:
           "Upozornění: Tuto akci nelze vrátit zpět. Všechna vaše data budou
           trvale smazána."
         confirm_text: Potvrďte potažením
+        resetting: Resetování databáze...
       restart_screen:
-        title: Resetování databáze...
+        completed_title: Databáze byla úspěšně resetována
         desktop_message: Aplikace se restartuje za {seconds} sekund.
         mobile_message: Pro dokončení procesu prosím ručně restartujte aplikaci.
         restart_now_button: Restartovat nyní
+      error:
+        title: Resetování selhalo
+        message:
+          Nepodařilo se resetovat databázi. Zkuste to znovu nebo kontaktujte
+          podporu, pokud problém přetrvává.
+        cancel: Zrušit
+        retry: Zkusit znovu
   debug_logs:
     title: Protokoly ladění
     description: Povolit podrobné protokolování do souboru pro řešení problémů a podporu

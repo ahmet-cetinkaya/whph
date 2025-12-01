@@ -304,13 +304,21 @@ settings:
           "Aviso: Esta ação não pode ser desfeita. Todos os seus dados serão
           permanentemente excluídos."
         confirm_text: Deslize para confirmar
+        resetting: Redefinindo banco de dados...
       restart_screen:
-        title: Redefinindo Banco de Dados...
+        completed_title: Banco de dados redefinido com sucesso
         desktop_message: O aplicativo será reiniciado em {seconds} segundos.
         mobile_message:
           Por favor reinicie manualmente o aplicativo para completar
           o processo.
         restart_now_button: Reiniciar Agora
+      error:
+        title: Redefinição falhou
+        message:
+          Não foi possível redefinir o banco de dados. Tente novamente ou contate
+          o suporte se o problema persistir.
+        cancel: Cancelar
+        retry: Tentar novamente
   debug_logs:
     title: Logs de Depuração
     description:

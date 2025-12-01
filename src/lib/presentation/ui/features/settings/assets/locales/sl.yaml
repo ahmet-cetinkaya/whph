@@ -303,11 +303,19 @@ settings:
           "Opozorilo: Tega dejanja ni mogoče razveljaviti. Vsi vaši podatki
           bodo trajno izbrisani."
         confirm_text: Povlecite za potrditev
+        resetting: Ponastavljanje zbirke podatkov...
       restart_screen:
-        title: Ponastavljanje Zbirke Podatkov...
+        completed_title: Zbirka podatkov je bila uspešno ponastavljena
         desktop_message: Aplikacija se bo ponovno zagnala v {seconds} sekundah.
         mobile_message: Prosimo, ročno ponovno zaženite aplikacijo za dokončanje postopka.
         restart_now_button: Ponovno Zaženi Zdaj
+      error:
+        title: Ponastavljanje ni uspelo
+        message:
+          Zbirke podatkov ni bilo mogoče ponastaviti. Poskusite znova ali se
+          obrnite na podporo, če se problem nadaljuje.
+        cancel: Prekliči
+        retry: Poskusi znova
   debug_logs:
     title: Dnevniki razhroščevanja
     description:

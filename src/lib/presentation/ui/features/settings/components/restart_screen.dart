@@ -86,10 +86,14 @@ class _RestartScreenState extends State<RestartScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircularProgressIndicator(),
+              Icon(
+                Icons.check_circle_rounded,
+                size: 64,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(height: AppTheme.sizeLarge),
               Text(
-                translationService.translate(SettingsTranslationKeys.resetDatabaseRestartScreenTitle),
+                translationService.translate(SettingsTranslationKeys.resetDatabaseRestartScreenCompletedTitle),
                 style: theme.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),

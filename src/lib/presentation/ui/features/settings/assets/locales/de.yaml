@@ -316,13 +316,22 @@ settings:
           "Warnung: Diese Aktion kann nicht rückgängig gemacht werden. Alle
           Ihre Daten werden permanent gelöscht."
         confirm_text: Wischen Sie zum Bestätigen
+        resetting: Datenbank wird zurückgesetzt...
       restart_screen:
-        title: Datenbank wird zurückgesetzt...
+        completed_title: Datenbank wurde erfolgreich zurückgesetzt
         desktop_message: Die Anwendung wird in {seconds} Sekunden neu gestartet.
         mobile_message:
           Bitte starten Sie die Anwendung manuell neu, um den Vorgang
           abzuschließen.
         restart_now_button: Jetzt neu starten
+      error:
+        title: Zurücksetzen fehlgeschlagen
+        message:
+          Datenbank konnte nicht zurückgesetzt werden. Bitte versuchen Sie
+          es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin
+          besteht.
+        cancel: Abbrechen
+        retry: Wiederholen
   debug_logs:
     title: Debug-Protokolle
     description: Detaillierte Protokollierung für Fehlerbehebung und Support aktivieren

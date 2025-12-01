@@ -290,13 +290,21 @@ settings:
           "Advarsel: Denne handlingen kan ikke angres. Alle dine data vil bli
           slettet permanent."
         confirm_text: Sveip for å bekrefte
+        resetting: Tilbakestiller database...
       restart_screen:
-        title: Tilbakestiller Database...
+        completed_title: Databasen har blitt tilbakestilt med suksess
         desktop_message: Applikasjonen vil starte på nytt om {seconds} sekunder.
         mobile_message:
           Vennligst start applikasjonen på nytt manuelt for å fullføre
           prosessen.
         restart_now_button: Start på Nytt Nå
+      error:
+        title: Tilbakestilling feilet
+        message:
+          Kunne ikke tilbakestille databasen. Prøv igjen eller kontakt support
+          hvis problemet vedvarer.
+        cancel: Avbryt
+        retry: Prøv igjen
   debug_logs:
     title: Feilsøkingslogger
     description: Aktiver detaljert logging til fil for feilsøking og støtte

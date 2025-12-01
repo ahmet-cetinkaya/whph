@@ -240,11 +240,17 @@ settings:
         title: データベースをリセット
         warning: 警告：この操作は元に戻せません。すべてのデータが永久に削除されます。
         confirm_text: スワイプして確認
+        resetting: データベースをリセット中...
       restart_screen:
-        title: データベースをリセット中...
+        completed_title: データベースが正常にリセットされました
         desktop_message: アプリケーションは{seconds}秒後に再起動します。
         mobile_message: プロセスを完了するために手動でアプリケーションを再起動してください。
         restart_now_button: 今すぐ再起動
+      error:
+        title: リセット失敗
+        message: データベースのリセットに失敗しました。問題が解決しない場合は、もう一度お試しいただくか、サポートにお問い合わせください。
+        cancel: キャンセル
+        retry: 再試行
   debug_logs:
     title: デバッグログ
     description: トラブルシューティングとサポートのためにファイルへの詳細ログを有効にする

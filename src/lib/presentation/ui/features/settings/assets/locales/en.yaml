@@ -227,8 +227,14 @@ settings:
         title: Reset Database
         warning: "Warning: This action cannot be undone. All your data will be permanently deleted."
         confirm_text: Swipe to confirm
+        resetting: Resetting database...
+      error:
+        title: Reset Failed
+        message: "Failed to reset database. Please try again or contact support if the issue persists."
+        cancel: Cancel
+        retry: Retry
       restart_screen:
-        title: Resetting Database...
+        completed_title: Database has been reset successfully
         desktop_message: "The application will restart in {seconds} seconds."
         mobile_message: "Please manually restart the application to complete the process."
         restart_now_button: Restart Now

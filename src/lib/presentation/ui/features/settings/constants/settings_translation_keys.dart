@@ -259,7 +259,12 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String resetDatabaseDialogTitle = 'settings.advanced.reset_database.dialog.title';
   static const String resetDatabaseDialogWarning = 'settings.advanced.reset_database.dialog.warning';
   static const String resetDatabaseDialogConfirmText = 'settings.advanced.reset_database.dialog.confirm_text';
-  static const String resetDatabaseRestartScreenTitle = 'settings.advanced.reset_database.restart_screen.title';
+  static const String resetDatabaseDialogResetting = 'settings.advanced.reset_database.dialog.resetting';
+  static const String resetDatabaseErrorTitle = 'settings.advanced.reset_database.error.title';
+  static const String resetDatabaseErrorMessage = 'settings.advanced.reset_database.error.message';
+  static const String resetDatabaseErrorCancel = 'settings.advanced.reset_database.error.cancel';
+  static const String resetDatabaseErrorRetry = 'settings.advanced.reset_database.error.retry';
+  static const String resetDatabaseRestartScreenCompletedTitle = 'settings.advanced.reset_database.restart_screen.completed_title';
   static const String resetDatabaseRestartScreenDesktopMessage =
       'settings.advanced.reset_database.restart_screen.desktop_message';
   static const String resetDatabaseRestartScreenMobileMessage =

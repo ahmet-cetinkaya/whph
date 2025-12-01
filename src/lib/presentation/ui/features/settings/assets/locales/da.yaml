@@ -288,11 +288,19 @@ settings:
           "Advarsel: Denne handling kan ikke fortrydes. Alle dine data bliver
           slettet permanent."
         confirm_text: Stryg for at bekræfte
+        resetting: Nulstiller database...
       restart_screen:
-        title: Nulstiller Database...
+        completed_title: Databasen er blevet nulstillet med succes
         desktop_message: Applikationen genstarter om {seconds} sekunder.
         mobile_message: Genstart venligst applikationen manuelt for at fuldføre processen.
         restart_now_button: Genstart Nu
+      error:
+        title: Nulstilling mislykkedes
+        message:
+          Kunne ikke nulstille databasen. Prøv igen eller kontakt support hvis
+          problemet fortsætter.
+        cancel: Annuller
+        retry: Prøv igen
   debug_logs:
     title: Debug-logfiler
     description: Aktiver detaljeret logføring til fil for fejlfinding og support

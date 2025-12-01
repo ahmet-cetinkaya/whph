@@ -248,11 +248,17 @@ settings:
         title: 데이터베이스 재설정
         warning: "경고: 이 작업은 실행 취소할 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다."
         confirm_text: 확인을 위해 스와이프
+        resetting: 데이터베이스 재설정 중...
       restart_screen:
-        title: 데이터베이스 재설정 중...
+        completed_title: 데이터베이스가 성공적으로 재설정되었습니다
         desktop_message: 애플리케이션이 {seconds}초 후에 재시작됩니다.
         mobile_message: 프로세스를 완료하기 위해 수동으로 애플리케이션을 재시작해주세요.
         restart_now_button: 지금 재시작
+      error:
+        title: 재설정 실패
+        message: 데이터베이스를 재설정하지 못했습니다. 다시 시도하거나 문제가 지속되면 지원팀에 문의하세요.
+        cancel: 취소
+        retry: 다시 시도
   debug_logs:
     title: 디버그 로그
     description: 문제 해결 및 지원을 위해 파일에 상세한 로깅 활성화

@@ -299,13 +299,21 @@ settings:
         title: Veritabanını Sıfırla
         warning: "Uyarı: Bu işlem geri alınamaz. Tüm verileriniz kalıcı olarak silinecektir."
         confirm_text: Onaylamak için kaydırın
+        resetting: Veritabanı sıfırlanıyor...
       restart_screen:
-        title: Veritabanı Sıfırlanıyor...
+        completed_title: Veritabanı başarıyla sıfırlandı
         desktop_message: Uygulama {seconds} saniye içinde yeniden başlatılacak.
         mobile_message:
           İşlemi tamamlamak için lütfen uygulamayı manuel olarak yeniden
           başlatın.
         restart_now_button: Şimdi Yeniden Başlat
+      error:
+        title: Sıfırlama Başarısız
+        message:
+          Veritabanı sıfırlanamadı. Lütfen tekrar deneyin veya sorun devam
+          ederse destek ile iletişime geçin.
+        cancel: İptal
+        retry: Tekrar Dene
   debug_logs:
     title: Hata Ayıklama Günlükleri
     description: Sorun giderme ve destek için ayrıntılı günlük kaydını etkinleştir

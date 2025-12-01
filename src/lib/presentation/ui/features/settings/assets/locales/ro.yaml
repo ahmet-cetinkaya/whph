@@ -307,11 +307,19 @@ settings:
           "Avertisment: Această acțiune nu poate fi anulată. Toate datele dvs.
           vor fi șterse permanent."
         confirm_text: Glisați pentru a confirma
+        resetting: Se resetează baza de date...
       restart_screen:
-        title: Resetare Bază de Date...
+        completed_title: Baza de date a fost resetată cu succes
         desktop_message: Aplicația va reporni în {seconds} secunde.
         mobile_message: Vă rugăm reporniți manual aplicația pentru a finaliza procesul.
         restart_now_button: Repornește Acum
+      error:
+        title: Resetare eșuată
+        message:
+          Nu s-a putut reseta baza de date. Încercați din nou sau contactați
+          suportul dacă problema persistă.
+        cancel: Anulează
+        retry: Reîncearcă
   debug_logs:
     title: Jurnale de Depanare
     description: Activați înregistrarea detaliată în fișier pentru depanare și suport
