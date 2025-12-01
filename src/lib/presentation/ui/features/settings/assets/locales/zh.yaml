@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: 取消
-
 settings:
   about:
     title: 关于应用
@@ -18,7 +17,7 @@ settings:
     select_directory: 选择导出目录
     select_path: 选择保存位置
     select_type: 选择导出格式
-    success: "导出成功。文件位置："
+    success: 导出成功。文件位置：
     title: 导出
     canceled: 用户取消导出
   export_data:
@@ -64,48 +63,48 @@ settings:
   permissions:
     app_usage:
       description: 此应用需要访问应用使用统计的权限以准确跟踪您的应用使用模式。
-      instructions: "说明："
+      instructions: 说明：
       steps:
-        step1: '按下"打开设置"按钮'
-        step2: '在打开的使用访问设置界面中，从列表中找到"{appName}"'
-        step3: '点击"{appName}"'
-        step4: '启用"允许使用访问"或将开关切换到开启'
+        step1: 按下"打开设置"按钮
+        step2: 在打开的使用访问设置界面中，从列表中找到"{appName}"
+        step3: 点击"{appName}"
+        step4: 启用"允许使用访问"或将开关切换到开启
       title: 应用使用权限
     battery_optimization:
       description: 为了可靠的通知，此应用需要从电池优化中排除。没有这个，提醒可能会延迟或根本不会送达。
       importance: 此设置的位置可能因设备制造商而异。
-      instructions: "说明："
+      instructions: 说明：
       not_disabled: 电池优化仍然启用。请提供权限以使相关功能正常工作。
       steps:
-        step1: '按下"打开设置"按钮'
-        step2: '在打开的设置界面中找到"{appName}"'
-        step3: '点击"{appName}"'
-        step4: '确保在打开的页面上启用"允许后台使用"'
-        step5: '点击"允许后台使用"'
-        step6: '选择"无限制"'
+        step1: 按下"打开设置"按钮
+        step2: 在打开的设置界面中找到"{appName}"
+        step3: 点击"{appName}"
+        step4: 确保在打开的页面上启用"允许后台使用"
+        step5: 点击"允许后台使用"
+        step6: 选择"无限制"
       title: 电池优化
     exact_alarm:
       description: Android 12+ 需要权限来安排精确闹钟以使提醒正常工作。
-      instructions: "说明："
+      instructions: 说明：
       steps:
         android12plus:
           step2: 转到闹钟和提醒并启用权限
           step3: 确认精确闹钟权限
-        step1: '按下"打开设置"按钮'
-        step2: '在打开的 {appName} 应用的闹钟和提醒页面中，启用"允许设置闹钟和提醒"'
+        step1: 按下"打开设置"按钮
+        step2: 在打开的 {appName} 应用的闹钟和提醒页面中，启用"允许设置闹钟和提醒"
       title: 精确闹钟权限
     fix_it: 修复
     granted: 权限已授予
     instructions: 说明
     notification:
       description: 接收提醒需要通知权限。没有此权限，您将不会收到任何通知。
-      instructions: "说明："
+      instructions: 说明：
       steps:
         android:
-          step1: '按下"打开设置"按钮'
+          step1: 按下"打开设置"按钮
           step2: 出现提示时允许通知
         ios:
-          step1: '按下"打开设置"按钮'
+          step1: 按下"打开设置"按钮
           step2: 出现提示时允许通知
       title: 通知权限
     open_settings: 打开设置
@@ -114,54 +113,54 @@ settings:
       title: 防火墙权限
       description: 允许WHPH通过{platform}防火墙在端口44040上通信以进行设备同步。
       dialog_description: WHPH需要防火墙权限以允许其他设备连接进行同步。请按照以下命令配置您的{platform}防火墙。您也可以在帮助菜单中找到这些步骤。
-      dialog_info_text: "注意：您也可以在帮助菜单中找到这些步骤。"
-      linux_manual_confirmation_button: "我已配置"
+      dialog_info_text: 注意：您也可以在帮助菜单中找到这些步骤。
+      linux_manual_confirmation_button: 我已配置
       save_confirmation_error: 保存防火墙确认设置失败
       rule_added_success: 防火墙规则添加成功
       rule_add_error: 添加防火墙规则失败。请尝试手动步骤。
-      add_rule_button: "添加防火墙规则"
-      windows_auto_description: "点击'添加防火墙规则'以使用UAC权限请求自动添加防火墙规则。如果您更喜欢手动添加，请按照以下步骤操作："
+      add_rule_button: 添加防火墙规则
+      windows_auto_description: 点击'添加防火墙规则'以使用UAC权限请求自动添加防火墙规则。如果您更喜欢手动添加，请按照以下步骤操作：
       instructions:
         linux:
-          step1: "打开终端"
-          step2: "检查防火墙状态："
-          step3: "添加防火墙规则（如果UFW处于活动状态）："
-          step4: "验证规则已添加："
-          method_terminal_title: "方法1：终端命令"
+          step1: 打开终端
+          step2: 检查防火墙状态：
+          step3: 添加防火墙规则（如果UFW处于活动状态）：
+          step4: 验证规则已添加：
+          method_terminal_title: 方法1：终端命令
         windows:
-          step1: "从控制面板打开Windows Defender防火墙"
-          step2: "点击左侧的高级设置"
-          step3: "在左侧面板中，点击入站规则"
-          step4: "在右侧面板中，点击新建规则..."
-          step5: "选择端口并点击下一步"
-          step6: "选择TCP并在特定本地端口字段中输入44040"
-          step7: "选择允许连接并点击下一步"
-          step8: "勾选所有配置文件（域、专用、公用）并点击下一步"
-          step9: "输入名称如WHPH同步端口44040并点击完成"
-          method_gui_title: "方法1：Windows防火墙图形界面"
-          method_command_title: "方法2：命令提示符"
-          step_open_defender: "打开Windows Defender防火墙→高级设置"
-          step_create_inbound_rule: '创建入站规则：入站规则→新建规则→端口→TCP→44040→允许→所有配置文件→名称："WHPH同步（入站）"'
-          step_create_outbound_rule: '创建出站规则：出站规则→新建规则→端口→TCP→44040→允许→所有配置文件→名称："WHPH同步（出站）"'
+          step1: 从控制面板打开Windows Defender防火墙
+          step2: 点击左侧的高级设置
+          step3: 在左侧面板中，点击入站规则
+          step4: 在右侧面板中，点击新建规则...
+          step5: 选择端口并点击下一步
+          step6: 选择TCP并在特定本地端口字段中输入44040
+          step7: 选择允许连接并点击下一步
+          step8: 勾选所有配置文件（域、专用、公用）并点击下一步
+          step9: 输入名称如WHPH同步端口44040并点击完成
+          method_gui_title: 方法1：Windows防火墙图形界面
+          method_command_title: 方法2：命令提示符
+          step_open_defender: 打开Windows Defender防火墙→高级设置
+          step_create_inbound_rule: 创建入站规则：入站规则→新建规则→端口→TCP→44040→允许→所有配置文件→名称："WHPH同步（入站）"
+          step_create_outbound_rule: 创建出站规则：出站规则→新建规则→端口→TCP→44040→允许→所有配置文件→名称："WHPH同步（出站）"
           alternative_command_prompt:
-            title: "替代方案：使用命令提示符"
+            title: 替代方案：使用命令提示符
             steps:
-              cmd_step1: "以管理员身份打开命令提示符"
-              cmd_step2: "添加防火墙规则："
-        step_open_command_prompt: "1. 以管理员身份打开命令提示符"
-        step_run_commands: "2. 运行这些命令："
-        step_open_terminal: "1. 打开终端"
-        step_run_command: "2. 运行此命令（需要sudo权限）："
-        step_click_confirmation: "3. 运行命令后，点击下面的确认按钮"
-      manual_configure_instruction: "手动配置防火墙规则以进行同步（需要管理员权限）："
+              cmd_step1: 以管理员身份打开命令提示符
+              cmd_step2: 添加防火墙规则：
+        step_open_command_prompt: 1. 以管理员身份打开命令提示符
+        step_run_commands: 2. 运行这些命令：
+        step_open_terminal: 1. 打开终端
+        step_run_command: 2. 运行此命令（需要sudo权限）：
+        step_click_confirmation: 3. 运行命令后，点击下面的确认按钮
+      manual_configure_instruction: 手动配置防火墙规则以进行同步（需要管理员权限）：
     startup:
       description: 要让应用与设备一起自动启动，需要自动启动权限。这确保即使在设备重启后提醒和通知也能正常工作。
       importance: 自动启动设置位置因设备制造商而异或可能不存在。
-      instructions: "说明："
+      instructions: 说明：
       steps:
-        step1: '按下"打开设置"按钮'
-        step2: '在打开的设置界面中找到"{appName}"应用'
-        step3: '启用"自动启动"、"自动运行"、"开机启动"或类似权限'
+        step1: 按下"打开设置"按钮
+        step2: 在打开的设置界面中找到"{appName}"应用
+        step3: 启用"自动启动"、"自动运行"、"开机启动"或类似权限
       title: 自动启动权限
     title: 权限
   startup:
@@ -179,7 +178,7 @@ settings:
       title: 创建备份
       description: 将所有数据导出到压缩的.whph备份文件
       in_progress: 正在创建备份，请稍候...
-      success: "备份创建成功。文件位置："
+      success: 备份创建成功。文件位置：
       error: 创建备份失败
       select_path: 选择备份保存位置
     import:
@@ -230,6 +229,18 @@ settings:
   advanced:
     title: 高级
     description: 高级设置和开发者工具
+    reset_database:
+      title: 重置数据库
+      description: 删除所有数据并重置应用程序
+      dialog:
+        title: 重置数据库
+        warning: 警告：此操作无法撤消。您的所有数据将被永久删除。
+        confirm_text: 滑动确认
+      restart_screen:
+        title: 正在重置数据库...
+        desktop_message: 应用程序将在{seconds}秒后重新启动。
+        mobile_message: 请手动重新启动应用程序以完成过程。
+        restart_now_button: 立即重新启动
   debug_logs:
     title: 调试日志
     description: 启用详细的文件日志记录以便故障排除和支持

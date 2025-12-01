@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: キャンセル
-
 settings:
   about:
     title: アプリについて
@@ -67,7 +66,7 @@ settings:
       instructions: "手順:"
       steps:
         step1: '"設定を開く"ボタンを押してください'
-        step2: '開いた使用アクセス設定画面で、リストから"{appName}"を見つけてください'
+        step2: 開いた使用アクセス設定画面で、リストから"{appName}"を見つけてください
         step3: '"{appName}"をタップしてください'
         step4: '"使用アクセスを許可"を有効にするか、スイッチをONにしてください'
       title: アプリ使用許可
@@ -78,9 +77,9 @@ settings:
       not_disabled: バッテリー最適化がまだ有効です。関連機能が正しく動作するように許可を提供してください。
       steps:
         step1: '"設定を開く"ボタンを押してください'
-        step2: '開いた設定画面で"{appName}"を見つけてください'
+        step2: 開いた設定画面で"{appName}"を見つけてください
         step3: '"{appName}"をタップしてください'
-        step4: '開いたページで"バックグラウンド使用を許可"が有効になっていることを確認してください'
+        step4: 開いたページで"バックグラウンド使用を許可"が有効になっていることを確認してください
         step5: '"バックグラウンド使用を許可"をタップしてください'
         step6: '"無制限"を選択してください'
       title: バッテリー最適化
@@ -92,7 +91,7 @@ settings:
           step2: アラーム・リマインダーに移動して許可を有効にしてください
           step3: 正確なアラーム許可を確認してください
         step1: '"設定を開く"ボタンを押してください'
-        step2: '開いた{appName}アプリのアラーム・リマインダーページで、"アラームとリマインダーの設定を許可"を有効にしてください'
+        step2: 開いた{appName}アプリのアラーム・リマインダーページで、"アラームとリマインダーの設定を許可"を有効にしてください
       title: 正確なアラーム許可
     fix_it: 修正する
     granted: 許可が付与されました
@@ -114,53 +113,57 @@ settings:
       title: ファイアウォール許可
       description: デバイス同期のために、WHPHが{platform}ファイアウォールのポート44040を介して通信できるようにします。
       dialog_description: WHPHは、同期のために他のデバイスが接続できるようにするためにファイアウォール許可が必要です。以下のコマンドに従って、{platform}ファイアウォールを設定してください。これらの手順はヘルプメニューにもあります。
-      dialog_info_text: "注：これらの手順はヘルプメニューにもあります。"
-      linux_manual_confirmation_button: "設定しました"
+      dialog_info_text: 注：これらの手順はヘルプメニューにもあります。
+      linux_manual_confirmation_button: 設定しました
       save_confirmation_error: ファイアウォール確認設定の保存に失敗しました
       rule_added_success: ファイアウォールルールが正常に追加されました
       rule_add_error: ファイアウォールルールの追加に失敗しました。手動で試してください。
-      add_rule_button: "ファイアウォールルールを追加"
-      windows_auto_description: "UAC許可リクエストでファイアウォールルールを自動的に追加するには、「ファイアウォールルールを追加」をクリックしてください。手動で追加する場合は、以下の手順に従ってください："
+      add_rule_button: ファイアウォールルールを追加
+      windows_auto_description: UAC許可リクエストでファイアウォールルールを自動的に追加するには、「ファイアウォールルールを追加」をクリックしてください。手動で追加する場合は、以下の手順に従ってください：
       instructions:
         linux:
-          step1: "ターミナルを開く"
-          step2: "ファイアウォールの状態を確認："
-          step3: "ファイアウォールルールを追加（UFWがアクティブの場合）："
-          step4: "ルールが追加されたことを確認："
-          method_terminal_title: "方法1：ターミナルコマンド"
+          step1: ターミナルを開く
+          step2: ファイアウォールの状態を確認：
+          step3: ファイアウォールルールを追加（UFWがアクティブの場合）：
+          step4: ルールが追加されたことを確認：
+          method_terminal_title: 方法1：ターミナルコマンド
         windows:
-          step1: "コントロールパネルからWindows Defenderファイアウォールを開く"
-          step2: "左側の詳細設定をクリック"
-          step3: "左側のペインで受信ルールをクリック"
-          step4: "右側のペインで新しいルール...をクリック"
-          step5: "ポートを選択して次へをクリック"
-          step6: "TCPを選択し、特定のローカルポートフィールドに44040を入力"
-          step7: "接続を許可を選択して次へをクリック"
-          step8: "すべてのプロファイル（ドメイン、プライベート、パブリック）をチェックして次へをクリック"
-          step9: "WHPH Sync Port 44040のような名前を入力して完了をクリック"
-          method_gui_title: "方法1：WindowsファイアウォールGUI"
-          method_command_title: "方法2：コマンドプロンプト"
-          step_open_defender: "Windows Defenderファイアウォール→詳細設定を開く"
-          step_create_inbound_rule: "受信ルールを作成：受信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH Sync（受信）」"
-          step_create_outbound_rule: "送信ルールを作成：送信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH Sync（送信）」"
+          step1: コントロールパネルからWindows Defenderファイアウォールを開く
+          step2: 左側の詳細設定をクリック
+          step3: 左側のペインで受信ルールをクリック
+          step4: 右側のペインで新しいルール...をクリック
+          step5: ポートを選択して次へをクリック
+          step6: TCPを選択し、特定のローカルポートフィールドに44040を入力
+          step7: 接続を許可を選択して次へをクリック
+          step8: すべてのプロファイル（ドメイン、プライベート、パブリック）をチェックして次へをクリック
+          step9: WHPH Sync Port 44040のような名前を入力して完了をクリック
+          method_gui_title: 方法1：WindowsファイアウォールGUI
+          method_command_title: 方法2：コマンドプロンプト
+          step_open_defender: Windows Defenderファイアウォール→詳細設定を開く
+          step_create_inbound_rule:
+            受信ルールを作成：受信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH
+            Sync（受信）」
+          step_create_outbound_rule:
+            送信ルールを作成：送信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH
+            Sync（送信）」
           alternative_command_prompt:
-            title: "代替：コマンドプロンプトを使用"
+            title: 代替：コマンドプロンプトを使用
             steps:
-              cmd_step1: "管理者としてコマンドプロンプトを開く"
-              cmd_step2: "ファイアウォールルールを追加："
-        step_open_command_prompt: "1. 管理者としてコマンドプロンプトを開く"
-        step_run_commands: "2. これらのコマンドを実行："
-        step_open_terminal: "1. ターミナルを開く"
-        step_run_command: "2. このコマンドを実行（sudo権限が必要）："
-        step_click_confirmation: "3. コマンドを実行した後、下の確認ボタンをクリック"
-      manual_configure_instruction: "同期用にファイアウォールルールを手動で設定（管理者権限が必要）："
+              cmd_step1: 管理者としてコマンドプロンプトを開く
+              cmd_step2: ファイアウォールルールを追加：
+        step_open_command_prompt: 1. 管理者としてコマンドプロンプトを開く
+        step_run_commands: 2. これらのコマンドを実行：
+        step_open_terminal: 1. ターミナルを開く
+        step_run_command: 2. このコマンドを実行（sudo権限が必要）：
+        step_click_confirmation: 3. コマンドを実行した後、下の確認ボタンをクリック
+      manual_configure_instruction: 同期用にファイアウォールルールを手動で設定（管理者権限が必要）：
     startup:
       description: アプリがデバイスと一緒に自動的に起動するには、自動起動許可が必要です。これにより、デバイス再起動後でもリマインダーと通知が正しく動作することが保証されます。
       importance: 自動起動設定の場所はデバイスメーカーによって異なるか、存在しない場合があります。
       instructions: "手順:"
       steps:
         step1: '"設定を開く"ボタンを押してください'
-        step2: '開いた設定画面で"{appName}"アプリを見つけてください'
+        step2: 開いた設定画面で"{appName}"アプリを見つけてください
         step3: '"自動起動"、"自動実行"、"起動時に開始"または類似の許可を有効にしてください'
       title: 自動起動許可
     title: 許可
@@ -230,6 +233,18 @@ settings:
   advanced:
     title: 詳細設定
     description: 詳細設定と開発者ツール
+    reset_database:
+      title: データベースをリセット
+      description: すべてのデータを削除してアプリケーションをリセット
+      dialog:
+        title: データベースをリセット
+        warning: 警告：この操作は元に戻せません。すべてのデータが永久に削除されます。
+        confirm_text: スワイプして確認
+      restart_screen:
+        title: データベースをリセット中...
+        desktop_message: アプリケーションは{seconds}秒後に再起動します。
+        mobile_message: プロセスを完了するために手動でアプリケーションを再起動してください。
+        restart_now_button: 今すぐ再起動
   debug_logs:
     title: デバッグログ
     description: トラブルシューティングとサポートのためにファイルへの詳細ログを有効にする

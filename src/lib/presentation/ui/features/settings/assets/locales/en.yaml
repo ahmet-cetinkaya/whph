@@ -220,6 +220,18 @@ settings:
   advanced:
     title: Advanced
     description: Advanced settings and developer tools
+    reset_database:
+      title: Reset Database
+      description: Delete all data and reset the application
+      dialog:
+        title: Reset Database
+        warning: "Warning: This action cannot be undone. All your data will be permanently deleted."
+        confirm_text: Swipe to confirm
+      restart_screen:
+        title: Resetting Database...
+        desktop_message: "The application will restart in {seconds} seconds."
+        mobile_message: "Please manually restart the application to complete the process."
+        restart_now_button: Restart Now
   debug_logs:
     title: Debug Logs
     description: Enable detailed logging to file for troubleshooting and support

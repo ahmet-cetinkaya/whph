@@ -252,4 +252,18 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String exportLogsSuccess = 'settings.debug_logs.export.success';
   static const String exportLogsNoLogsAvailable = 'settings.debug_logs.export.no_logs_available';
   static const String exportLogsFileNotExist = 'settings.debug_logs.export.file_not_exist';
+
+  // Reset Database
+  static const String resetDatabaseTitle = 'settings.advanced.reset_database.title';
+  static const String resetDatabaseDescription = 'settings.advanced.reset_database.description';
+  static const String resetDatabaseDialogTitle = 'settings.advanced.reset_database.dialog.title';
+  static const String resetDatabaseDialogWarning = 'settings.advanced.reset_database.dialog.warning';
+  static const String resetDatabaseDialogConfirmText = 'settings.advanced.reset_database.dialog.confirm_text';
+  static const String resetDatabaseRestartScreenTitle = 'settings.advanced.reset_database.restart_screen.title';
+  static const String resetDatabaseRestartScreenDesktopMessage =
+      'settings.advanced.reset_database.restart_screen.desktop_message';
+  static const String resetDatabaseRestartScreenMobileMessage =
+      'settings.advanced.reset_database.restart_screen.mobile_message';
+  static const String resetDatabaseRestartNowButton =
+      'settings.advanced.reset_database.restart_screen.restart_now_button';
 }

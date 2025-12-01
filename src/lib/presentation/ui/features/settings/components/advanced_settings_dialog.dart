@@ -6,6 +6,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/ui/features/settings/components/reset_database_settings.dart';
 
 class AdvancedSettingsDialog extends StatelessWidget {
   const AdvancedSettingsDialog({super.key});
@@ -45,6 +46,11 @@ class AdvancedSettingsDialog extends StatelessWidget {
 
                     // Debug Logs Settings
                     const DebugLogsSettings(),
+
+                    const Divider(),
+
+                    // Reset Database
+                    const ResetDatabaseSettings(),
                   ],
                 ),
               ),

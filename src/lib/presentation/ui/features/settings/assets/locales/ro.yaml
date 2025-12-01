@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: Anulare
-
 settings:
   about:
     title: Despre
@@ -11,10 +10,14 @@ settings:
     setting_not_found: Setarea nu a fost găsită
     version_mismatch: Versiunea nu a fost găsită
   export:
-    csv_description: Puteți folosi acest lucru pentru a vizualiza în Excel și aplicații similare.
+    csv_description:
+      Puteți folosi acest lucru pentru a vizualiza în Excel și aplicații
+      similare.
     error: Exportul a eșuat
     in_progress: Se exportă datele, vă rugăm să așteptați...
-    json_description: Exportați datele în format JSON lizibil pentru scopuri de dezvoltare și depanare.
+    json_description:
+      Exportați datele în format JSON lizibil pentru scopuri de dezvoltare
+      și depanare.
     select_directory: Selectați directorul de export
     select_path: Selectați locația de salvare
     select_type: Selectați formatul de export
@@ -27,7 +30,9 @@ settings:
     error: Importul a eșuat
     error.entity: Eroare în tip
     in_progress: Se importă datele, vă rugăm să așteptați...
-    migration_failed: Importul a eșuat. Asigurați-vă că aveți instalată cea mai recentă versiune a aplicației.
+    migration_failed:
+      Importul a eșuat. Asigurați-vă că aveți instalată cea mai recentă
+      versiune a aplicației.
     select_file: Selectați fișierul
     strategy:
       merge: Fuzionați cu Datele Existente
@@ -38,7 +43,9 @@ settings:
     unsupported_version: Versiune nesuportată
     version_mismatch: Versiunea nu a fost găsită
   import_export:
-    description: Exportați datele în diverse formate sau importați date din fișiere de backup
+    description:
+      Exportați datele în diverse formate sau importați date din fișiere
+      de backup
     select_action: Selectați acțiunea de import/export
     title: Import/Export
   language:
@@ -63,42 +70,62 @@ settings:
     some_sounds_enabled: Unele sunete activate
   permissions:
     app_usage:
-      description: Această aplicație are nevoie de permisiune pentru a accesa statisticile de utilizare a aplicației pentru a urmări cu precizie modelele de utilizare a aplicației.
+      description:
+        Această aplicație are nevoie de permisiune pentru a accesa statisticile
+        de utilizare a aplicației pentru a urmări cu precizie modelele de utilizare
+        a aplicației.
       instructions: "Instrucțiuni:"
       steps:
         step1: Apăsați butonul "Deschideți Setările"
-        step2: În ecranul de setări de acces la utilizare care se deschide, găsiți "{appName}" în listă
+        step2:
+          În ecranul de setări de acces la utilizare care se deschide, găsiți
+          "{appName}" în listă
         step3: Apăsați pe "{appName}"
-        step4: Activați "Permiteți accesul la utilizare" sau comutați comutatorul la DA
+        step4:
+          Activați "Permiteți accesul la utilizare" sau comutați comutatorul
+          la DA
       title: Permisiunea de Utilizare a Aplicației
     battery_optimization:
-      description: Pentru notificări de încredere, această aplicație trebuie exclusă din optimizarea bateriei. Fără aceasta, amintirile pot fi întârziate sau nu livrate deloc.
+      description:
+        Pentru notificări de încredere, această aplicație trebuie exclusă
+        din optimizarea bateriei. Fără aceasta, amintirile pot fi întârziate sau nu
+        livrate deloc.
       importance: Locația acestei setări poate varia în funcție de producătorul dispozitivului.
       instructions: "Instrucțiuni:"
-      not_disabled: Optimizarea bateriei este încă activată. Furnizați permisiunea pentru ca funcția relevantă să funcționeze corect.
+      not_disabled:
+        Optimizarea bateriei este încă activată. Furnizați permisiunea
+        pentru ca funcția relevantă să funcționeze corect.
       steps:
         step1: Apăsați butonul "Deschideți Setările"
         step2: În ecranul de setări care se deschide, găsiți "{appName}"
         step3: Apăsați pe "{appName}"
-        step4: Asigurați-vă că "Permiteți Utilizarea în Fundal" este activată pe pagina care se deschide
+        step4:
+          Asigurați-vă că "Permiteți Utilizarea în Fundal" este activată pe pagina
+          care se deschide
         step5: Apăsați pe "Permiteți Utilizarea în Fundal"
         step6: Selectați "Nelimitat"
       title: Optimizarea Bateriei
     exact_alarm:
-      description: Android 12+ necesită permisiune pentru a programa alarme exacte pentru ca amintirile să funcționeze corect.
+      description:
+        Android 12+ necesită permisiune pentru a programa alarme exacte
+        pentru ca amintirile să funcționeze corect.
       instructions: "Instrucțiuni:"
       steps:
         android12plus:
           step2: Mergeți la Alarme & amintiri și activați permisiunea
           step3: Confirmați permisiunea de alarmă exactă
         step1: Apăsați butonul "Deschideți Setările"
-        step2: 'Pe pagina Alarme & amintiri a aplicației {appName} deschisă, activați "Permiteți setarea alarmelor și amintirilor"'
+        step2:
+          Pe pagina Alarme & amintiri a aplicației {appName} deschisă, activați
+          "Permiteți setarea alarmelor și amintirilor"
       title: Permisiunea de Alarmă Exactă
     fix_it: Remediați
     granted: Permisiune acordată
     instructions: Instrucțiuni
     notification:
-      description: Permisiunea de notificare este necesară pentru a primi amintiri. Fără această permisiune, nu veți primi notificări.
+      description:
+        Permisiunea de notificare este necesară pentru a primi amintiri.
+        Fără această permisiune, nu veți primi notificări.
       instructions: "Instrucțiuni:"
       steps:
         android:
@@ -112,69 +139,104 @@ settings:
     open_terminal: Deschideți Terminalul
     firewall:
       title: Permisiunea Firewall-ului
-      description: Permiteți WHPH să comunice prin firewall-ul {platform} pe portul 44040 pentru sincronizarea dispozitivelor.
-      dialog_description: WHPH are nevoie de permisiunea firewall-ului pentru a permite altor dispozitive să se conecteze pentru sincronizare. Urmați comenzile de mai jos pentru a configura firewall-ul {platform}. De asemenea, puteți găsi acești pași în meniul de ajutor.
+      description:
+        Permiteți WHPH să comunice prin firewall-ul {platform} pe portul
+        44040 pentru sincronizarea dispozitivelor.
+      dialog_description:
+        WHPH are nevoie de permisiunea firewall-ului pentru a permite
+        altor dispozitive să se conecteze pentru sincronizare. Urmați comenzile de
+        mai jos pentru a configura firewall-ul {platform}. De asemenea, puteți găsi
+        acești pași în meniul de ajutor.
       dialog_info_text: "Notă: De asemenea, puteți găsi acești pași în meniul de ajutor."
-      linux_manual_confirmation_button: "Am configurat"
+      linux_manual_confirmation_button: Am configurat
       save_confirmation_error: Salvarea setării de confirmare a firewall-ului a eșuat
       rule_added_success: Regula de firewall a fost adăugată cu succes
       rule_add_error: Adăugarea regulii de firewall a eșuat. Încercați pașii manuali.
-      add_rule_button: "Adăugați o regulă de firewall"
-      windows_auto_description: "Faceți clic pe 'Adăugați o regulă de firewall' pentru a adăuga automat regula de firewall cu cerere de permisiune UAC. Dacă preferați să adăugați manual, urmați pașii de mai jos:"
+      add_rule_button: Adăugați o regulă de firewall
+      windows_auto_description: "Faceți clic pe 'Adăugați o regulă de firewall'
+        pentru a adăuga automat regula de firewall cu cerere de permisiune UAC. Dacă
+        preferați să adăugați manual, urmați pașii de mai jos:"
       instructions:
         linux:
-          step1: "Deschideți un terminal"
+          step1: Deschideți un terminal
           step2: "Verificați starea firewall-ului:"
           step3: "Adăugați o regulă de firewall (dacă UFW este activ):"
           step4: "Verificați dacă regula a fost adăugată:"
           method_terminal_title: "Metoda 1: Comandă terminal"
         windows:
-          step1: "Deschideți Firewall-ul Windows Defender din Panoul de Control"
-          step2: "Faceți clic pe Setări avansate în stânga"
-          step3: "În panoul din stânga, faceți clic pe Reguli de intrare"
-          step4: "În panoul din dreapta, faceți clic pe Regulă nouă..."
-          step5: "Selectați Port și faceți clic pe Următorul"
-          step6: "Selectați TCP și introduceți 44040 în câmpul pentru porturile locale specifice"
-          step7: "Selectați Permiteți conexiunea și faceți clic pe Următorul"
-          step8: "Bifați toate profilele (Domeniu, Privat, Public) și faceți clic pe Următorul"
-          step9: "Introduceți un nume precum WHPH Sync Port 44040 și faceți clic pe Finalizare"
+          step1: Deschideți Firewall-ul Windows Defender din Panoul de Control
+          step2: Faceți clic pe Setări avansate în stânga
+          step3: În panoul din stânga, faceți clic pe Reguli de intrare
+          step4: În panoul din dreapta, faceți clic pe Regulă nouă...
+          step5: Selectați Port și faceți clic pe Următorul
+          step6:
+            Selectați TCP și introduceți 44040 în câmpul pentru porturile locale
+            specifice
+          step7: Selectați Permiteți conexiunea și faceți clic pe Următorul
+          step8:
+            Bifați toate profilele (Domeniu, Privat, Public) și faceți clic pe
+            Următorul
+          step9:
+            Introduceți un nume precum WHPH Sync Port 44040 și faceți clic pe
+            Finalizare
           method_gui_title: "Metoda 1: Interfață grafică Windows Firewall"
           method_command_title: "Metoda 2: Prompt de comandă"
-          step_open_defender: "Deschideți Firewall-ul Windows Defender → Setări avansate"
-          step_create_inbound_rule: 'Creați regulă de intrare: Reguli de intrare → Regulă nouă → Port → TCP → 44040 → Permiteți → Toate profilele → Nume: "WHPH Sync (Intrare)"'
-          step_create_outbound_rule: 'Creați regulă de ieșire: Reguli de ieșire → Regulă nouă → Port → TCP → 44040 → Permiteți → Toate profilele → Nume: "WHPH Sync (Ieșire)"'
+          step_open_defender: Deschideți Firewall-ul Windows Defender → Setări avansate
+          step_create_inbound_rule:
+            'Creați regulă de intrare: Reguli de intrare →
+            Regulă nouă → Port → TCP → 44040 → Permiteți → Toate profilele → Nume:
+            "WHPH Sync (Intrare)"'
+          step_create_outbound_rule:
+            'Creați regulă de ieșire: Reguli de ieșire →
+            Regulă nouă → Port → TCP → 44040 → Permiteți → Toate profilele → Nume:
+            "WHPH Sync (Ieșire)"'
           alternative_command_prompt:
             title: "Alternativă: Utilizați Promptul de comandă"
             steps:
-              cmd_step1: "Deschideți Promptul de comandă ca Administrator"
+              cmd_step1: Deschideți Promptul de comandă ca Administrator
               cmd_step2: "Adăugați o regulă de firewall:"
-        step_open_command_prompt: "1. Deschideți Promptul de comandă ca Administrator"
+        step_open_command_prompt: 1. Deschideți Promptul de comandă ca Administrator
         step_run_commands: "2. Rulați aceste comenzi:"
-        step_open_terminal: "1. Deschideți un terminal"
+        step_open_terminal: 1. Deschideți un terminal
         step_run_command: "2. Rulați această comandă (necesită privilegii sudo):"
-        step_click_confirmation: "3. După rularea comenzii, faceți clic pe butonul de confirmare de mai jos"
-      manual_configure_instruction: "Configurați manual regulile de firewall pentru sincronizare (necesită privilegii de administrator):"
+        step_click_confirmation:
+          3. După rularea comenzii, faceți clic pe butonul
+          de confirmare de mai jos
+      manual_configure_instruction:
+        "Configurați manual regulile de firewall pentru
+        sincronizare (necesită privilegii de administrator):"
     startup:
-      description: Pentru ca aplicația să pornească automat cu dispozitivul, este necesară permisiunea de pornire automată. Acest lucru asigură că amintirile și notificările funcționează corect chiar după reporniri.
-      importance: Locația setării de pornire automată variază sau poate să nu fie prezentă în funcție de fabricantul dispozitivului.
+      description:
+        Pentru ca aplicația să pornească automat cu dispozitivul, este
+        necesară permisiunea de pornire automată. Acest lucru asigură că amintirile
+        și notificările funcționează corect chiar după reporniri.
+      importance:
+        Locația setării de pornire automată variază sau poate să nu fie
+        prezentă în funcție de fabricantul dispozitivului.
       instructions: "Instrucțiuni:"
       steps:
         step1: Apăsați butonul "Deschideți Setările"
-        step2: 'În ecranul de setări care se deschide, găsiți aplicația "{appName}"'
-        step3: 'Activați "Pornire automată", "Autorun", "Pornire la boot" sau permisiune similară'
+        step2: În ecranul de setări care se deschide, găsiți aplicația "{appName}"
+        step3:
+          Activați "Pornire automată", "Autorun", "Pornire la boot" sau permisiune
+          similară
       title: Permisiunea de Pornire Automată
     title: Permisiuni
   startup:
     disable_error: Eșec la dezactivarea setării de pornire
     enable_error: Eșec la activarea setării de pornire
-    subtitle: Apăsați pentru a deschide setările sistemului și a activa permisiunea de pornire automată pentru aplicație
+    subtitle:
+      Apăsați pentru a deschide setările sistemului și a activa permisiunea
+      de pornire automată pentru aplicație
     title: Pornire la Pornire
   sync_devices:
     title: Sincronizați Dispozitive
   title: Setări
   backup:
     title: Backup
-    description: Creați și restaurați backup-uri comprimate ale datelor aplicației folosind formatul securizat .whph
+    description:
+      Creați și restaurați backup-uri comprimate ale datelor aplicației
+      folosind formatul securizat .whph
     export:
       title: Creați Backup
       description: Exportați toate datele în fișier de backup .whph comprimat
@@ -212,16 +274,22 @@ settings:
         description: Urmați setările de temă ale sistemului
     dynamic_accent:
       title: Culoare Accent Dinamică
-      description: Dacă sistemul dvs. o suportă, culoarea primară se va adapta pe baza schemei de culori dinamice a sistemului
+      description:
+        Dacă sistemul dvs. o suportă, culoarea primară se va adapta pe
+        baza schemei de culori dinamice a sistemului
       feature: Dinamic
     custom_accent:
       title: Culoare Accent Personalizată
-      description: Alegeți o culoare accent personalizată pentru a personaliza aspectul aplicației
+      description:
+        Alegeți o culoare accent personalizată pentru a personaliza aspectul
+        aplicației
       feature: Personalizat
     error: Eșec la încărcarea setărilor de temă
   ui_density:
     title: Densitate
-    description: Ajustați dimensiunea textului și a elementelor de interfață pentru a îmbunătăți lizibilitatea pe ecrane cu DPI ridicat
+    description:
+      Ajustați dimensiunea textului și a elementelor de interfață pentru
+      a îmbunătăți lizibilitatea pe ecrane cu DPI ridicat
     compact: Compactă
     normal: Normală
     large: Mare
@@ -230,6 +298,20 @@ settings:
   advanced:
     title: Avansate
     description: Setări avansate și instrumente pentru dezvoltatori
+    reset_database:
+      title: Resetează Baza de Date
+      description: Șterge toate datele și resetează aplicația
+      dialog:
+        title: Resetează Baza de Date
+        warning:
+          "Avertisment: Această acțiune nu poate fi anulată. Toate datele dvs.
+          vor fi șterse permanent."
+        confirm_text: Glisați pentru a confirma
+      restart_screen:
+        title: Resetare Bază de Date...
+        desktop_message: Aplicația va reporni în {seconds} secunde.
+        mobile_message: Vă rugăm reporniți manual aplicația pentru a finaliza procesul.
+        restart_now_button: Repornește Acum
   debug_logs:
     title: Jurnale de Depanare
     description: Activați înregistrarea detaliată în fișier pentru depanare și suport
@@ -240,22 +322,35 @@ settings:
       description: Vizualizați și exportați jurnalele de depanare curente
     page:
       title: Jurnale de Depanare
-      description: Vizualizați intrările curente din jurnalul de depanare. Jurnalele sunt golite și rotite automat pentru a preveni utilizarea excesivă a discului.
+      description:
+        Vizualizați intrările curente din jurnalul de depanare. Jurnalele
+        sunt golite și rotite automat pentru a preveni utilizarea excesivă a discului.
       content: Conținutul jurnalului
       refresh: Reîmprospătați jurnalele
       copy: Copiați în clipboard
       save_as: Salvați ca fișier
       copied: Jurnalele de depanare au fost copiate în clipboard
       load_error: Eroare la încărcarea jurnalelor de depanare
-      not_enabled: Înregistrarea de depanare nu este activată. Activați-o în Setările avansate pentru a începe colectarea jurnalelor.
-      no_file: Nu s-a găsit niciun fișier jurnal de depanare. Jurnalele vor fi create după activarea înregistrării de depanare și generarea de intrări în jurnal de către aplicație.
-      empty: Fișierul jurnal de depanare este gol. Nu au fost înregistrate încă intrări în jurnal.
+      not_enabled:
+        Înregistrarea de depanare nu este activată. Activați-o în Setările
+        avansate pentru a începe colectarea jurnalelor.
+      no_file:
+        Nu s-a găsit niciun fișier jurnal de depanare. Jurnalele vor fi create
+        după activarea înregistrării de depanare și generarea de intrări în jurnal
+        de către aplicație.
+      empty:
+        Fișierul jurnal de depanare este gol. Nu au fost înregistrate încă intrări
+        în jurnal.
     export:
       dialog_title: Exportă Jurnalele de Depanare
       error: Eroare la exportul jurnalelor
       success: Fișierul jurnal a fost exportat cu succes
-      no_logs_available: Nu sunt disponibile jurnale pentru export. Generați mai întâi câteva jurnale.
-      file_not_exist: Fișierul jurnal nu există. Activați debug logging și generați jurnale.
+      no_logs_available:
+        Nu sunt disponibile jurnale pentru export. Generați mai întâi
+        câteva jurnale.
+      file_not_exist:
+        Fișierul jurnal nu există. Activați debug logging și generați
+        jurnale.
   task:
     title: Setări Sarcini
     preferences:
@@ -263,7 +358,9 @@ settings:
       description: Personalizați comportamentul sarcinilor și setările implicite
     default_estimated_time:
       title: Timp Estimat Implicit
-      description: Setți timpul estimat implicit pentru sarcini noi. Puteți dezactiva acest lucru pentru a evita estimările automate de timp.
+      description:
+        Setți timpul estimat implicit pentru sarcini noi. Puteți dezactiva
+        acest lucru pentru a evita estimările automate de timp.
       disabled: Dezactivat
       minutes: "{minutes} minute"
       load_error: Eroare la încărcarea timpului estimat implicit
