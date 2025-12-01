@@ -147,15 +147,11 @@ class SyncPaginationService implements ISyncPaginationService {
             if (response.responseData != null) {
               Logger.info('📨 Server response data received for ${config.name}');
 
-              // If callback is provided, process immediately and DO NOT store in pendingResponseData
-              if (onPageReceived != null) {
-                Logger.info('⚡ Processing ${config.name} response data immediately via callback');
-                await onPageReceived(response.responseData!);
-              } else {
-                // Legacy behavior: Store for later processing
-                Logger.info('🔍 Storing ${config.name} response data for later processing');
-                _pendingResponseData[config.name] = response.responseData!;
-              }
+              _processServerResponse(
+                entityType: config.name,
+                responseData: response.responseData!,
+                onPageReceived: onPageReceived,
+              );
 
               // Check if server has more pages to send for bidirectional sync
               final responseData = response.responseData!;
@@ -681,21 +677,13 @@ class SyncPaginationService implements ISyncPaginationService {
         if (response.responseData != null) {
           Logger.info('📨 Received additional $entityType server page $serverPage data');
 
-          if (onPageReceived != null) {
-            Logger.info('⚡ Processing additional $entityType page $serverPage immediately via callback');
-            await onPageReceived(response.responseData!);
-          } else {
-            // Store alongside existing data for this entity type
-            // The command handler will process all accumulated data together
-            final existingData = _pendingResponseData[entityType];
-            if (existingData != null) {
-              // We have multiple pages - the command handler will need to merge them
-              Logger.info('🔗 Accumulating additional server page data for $entityType');
-              _pendingResponseData['${entityType}_page_$serverPage'] = response.responseData!;
-            } else {
-              _pendingResponseData[entityType] = response.responseData!;
-            }
-          }
+          _processServerResponse(
+            entityType: entityType,
+            responseData: response.responseData!,
+            isAdditionalPage: true,
+            serverPage: serverPage,
+            onPageReceived: onPageReceived,
+          );
 
           // Check if this was the last page
           final hasMorePages = response.responseData!.hasMoreServerPages == true;
@@ -716,6 +704,38 @@ class SyncPaginationService implements ISyncPaginationService {
       } catch (e) {
         Logger.error('❌ Error requesting $entityType server page $serverPage: $e');
         break;
+      }
+    }
+  }
+
+  /// Processes server response data either immediately via callback or stores it for later processing
+  void _processServerResponse({
+    required String entityType,
+    required PaginatedSyncDataDto responseData,
+    bool isAdditionalPage = false,
+    int? serverPage,
+    Future<void> Function(PaginatedSyncDataDto pageData)? onPageReceived,
+  }) {
+    final dataDescription = isAdditionalPage ? 'additional $entityType page $serverPage' : entityType;
+    
+    if (onPageReceived != null) {
+      Logger.info('⚡ Processing $dataDescription immediately via callback');
+      onPageReceived(responseData);
+    } else {
+      Logger.info('🔍 Storing $dataDescription for later processing');
+      
+      if (isAdditionalPage) {
+        // For additional pages, store with page identifier if data already exists
+        final existingData = _pendingResponseData[entityType];
+        if (existingData != null) {
+          _pendingResponseData['${entityType}_page_$serverPage'] = responseData;
+          Logger.info('🔗 Accumulating additional server page data for $entityType');
+        } else {
+          _pendingResponseData[entityType] = responseData;
+        }
+      } else {
+        // For initial response, store directly under entity type
+        _pendingResponseData[entityType] = responseData;
       }
     }
   }

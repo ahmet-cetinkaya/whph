@@ -21,7 +21,6 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
   final _translationService = container.resolve<ITranslationService>();
 
   @override
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 

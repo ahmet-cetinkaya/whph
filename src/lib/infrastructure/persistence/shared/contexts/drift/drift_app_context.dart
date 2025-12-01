@@ -302,33 +302,19 @@ class AppDatabase extends _$AppDatabase {
       await close();
 
       final dbFolder = await _getApplicationDirectory();
-      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+      final dbPath = p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName);
 
-      if (await dbFile.exists()) {
-        await dbFile.delete();
-        debugPrint('✅ Database file deleted: ${dbFile.path}');
+      for (final suffix in ['', '-journal', '-wal', '-shm']) {
+        final file = File('$dbPath$suffix');
+        if (await file.exists()) {
+          try {
+            await file.delete();
+            debugPrint('✅ Database file deleted: ${file.path}');
+          } catch (e) {
+            debugPrint('ℹ️ Could not delete auxiliary DB file: ${file.path}, error: $e');
+          }
+        }
       }
-
-      // Also delete any journal/wal files
-      final journalFile = File('${dbFile.path}-journal');
-      if (await journalFile.exists()) {
-        await journalFile.delete();
-      }
-
-      final walFile = File('${dbFile.path}-wal');
-      if (await walFile.exists()) {
-        await walFile.delete();
-      }
-
-      final shmFile = File('${dbFile.path}-shm');
-      if (await shmFile.exists()) {
-        await shmFile.delete();
-      }
-
-      // Reset the instance to force re-initialization on next access
-      _instance = null;
-
-      debugPrint('✅ Database reset completed successfully');
     } catch (e) {
       debugPrint('❌ Failed to reset database: $e');
       throw StateError('Failed to reset database: $e');
@@ -850,7 +836,7 @@ class AppDatabase extends _$AppDatabase {
                 created_date INTEGER NOT NULL,
                 modified_date INTEGER NULL,
                 deleted_date INTEGER NULL,
-                habit_id TEXT NOT NULL,
+                habit_id TEXT NOT NULL REFERENCES habit_table(id) ON DELETE CASCADE,
                 duration INTEGER NOT NULL,
                 PRIMARY KEY (id)
               )
