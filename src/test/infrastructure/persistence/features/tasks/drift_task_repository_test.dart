@@ -23,7 +23,7 @@ void main() {
     });
 
     setUp(() async {
-      database = AppDatabase(NativeDatabase.memory());
+      database = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
       repository = DriftTaskRepository.withDatabase(database);
     });
 

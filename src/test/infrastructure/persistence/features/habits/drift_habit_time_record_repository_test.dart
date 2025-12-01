@@ -19,7 +19,7 @@ void main() {
 
     setUp(() async {
       // Create in-memory database for testing
-      database = AppDatabase(NativeDatabase.memory());
+      database = AppDatabase(DatabaseConnection(NativeDatabase.memory()));
     });
 
     tearDown(() async {

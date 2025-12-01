@@ -86,7 +86,7 @@ class AppDatabase extends _$AppDatabase {
   // Track whether the database is currently being reset
   static bool _isResetting = false;
 
-  AppDatabase(DatabaseConnection connection) : super(connection);
+  AppDatabase(super.connection);
 
   // Constructor for testing
   AppDatabase.withExecutor(super.executor) {
@@ -101,12 +101,10 @@ class AppDatabase extends _$AppDatabase {
 
   /// Singleton instance with dependency injection
   static AppDatabase instance([IContainer? container]) {
-    IContainer? connectionContainer = container;
     DatabaseConnection? connection;
     
     if (container != null) {
       _container = container;
-      connectionContainer = container;
     }
 
     // Return existing instance if available and not closed
@@ -150,14 +148,6 @@ class AppDatabase extends _$AppDatabase {
   
   /// Get list of current active operations
   static List<String> get currentActiveOperations => _activeOperations.keys.toList();
-
-  /// Initialize static properties for testing
-  static void _initializeForTesting() {
-    isTestMode = true;
-    _activeOperationCount = 0;
-    _activeOperations.clear();
-    _isResetting = false;
-  }
 
   /// Check if database is currently in use by attempting a simple query
   /// Enhanced version that tracks actual operations
@@ -577,8 +567,8 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  static LazyDatabase _openConnection() {
-    return LazyDatabase(() async {
+  static DatabaseConnection _openConnection() {
+    return DatabaseConnection(LazyDatabase(() async {
       late final File file;
       if (isTestMode) {
         file = File(p.join(testDirectory?.path ?? Directory.systemTemp.path, databaseName));
@@ -588,7 +578,7 @@ class AppDatabase extends _$AppDatabase {
         await file.parent.create(recursive: true);
       }
       return NativeDatabase.createInBackground(file);
-    });
+    }));
   }
 
   /// Gets the application directory using the injected application directory service

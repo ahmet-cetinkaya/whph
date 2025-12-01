@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
-import 'package:whph/core/application/features/sync/constants/sync_pagination_constants.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
@@ -34,13 +32,8 @@ class SyncPaginationService implements ISyncPaginationService {
   bool _isSyncCancelled = false;
 
   // Store response data from bidirectional sync for processing by command
-  // Using LinkedHashMap to preserve insertion order for consistent cleanup behavior
-  final Map<String, PaginatedSyncDataDto> _pendingResponseData = LinkedHashMap<String, PaginatedSyncDataDto>();
-
-  // Memory management tracking - using constants from SyncPaginationConstants
-  // Maximum items to store in memory and trigger cleanup threshold
-  static const int _maxPendingDataItems = SyncPaginationConstants.maxPendingDataItems;
-  static const int _cleanupThreshold = SyncPaginationConstants.cleanupThreshold;
+  // Using Map with default LinkedHashMap behavior for consistent insertion order
+  final _pendingResponseData = <String, PaginatedSyncDataDto>{};
 
   SyncPaginationService({
     required ISyncCommunicationService communicationService,
@@ -753,34 +746,6 @@ class SyncPaginationService implements ISyncPaginationService {
       Logger.info('🔍 Storing $entityType $pageType for later processing (key: $storageKey)');
       _pendingResponseData[storageKey] = responseData;
     }
-  }
-
-  /// Cleans up old pending data to prevent memory leaks
-  void _cleanupOldPendingData() {
-    if (_pendingResponseData.length <= _cleanupThreshold) return;
-
-    Logger.info('🧹 Cleaning up old pending sync data (${_pendingResponseData.length} items)');
-
-    // Remove paginated data first (additional pages), keeping main entity data
-    final keysToRemove = _pendingResponseData.keys.where((key) => key.contains('_page_')).toList();
-
-    for (final key in keysToRemove) {
-      _pendingResponseData.remove(key);
-    }
-
-    // If still over threshold, remove oldest entries by entity type
-    if (_pendingResponseData.length > _cleanupThreshold) {
-      final entityTypes = _pendingResponseData.keys
-          .where((key) => !key.contains('_page_'))
-          .take(SyncPaginationConstants.maxEntityTypesToRemoveOnCleanup) // Remove up to maxEntityTypesToRemoveOnCleanup entity types
-          .toList();
-
-      for (final entityType in entityTypes) {
-        _pendingResponseData.remove(entityType);
-      }
-    }
-
-    Logger.info('✅ Cleanup completed: ${_pendingResponseData.length} items remaining');
   }
 
   void dispose() {
