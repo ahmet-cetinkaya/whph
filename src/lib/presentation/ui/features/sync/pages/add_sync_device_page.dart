@@ -337,7 +337,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
             );
           } else {
             // Device exists but is soft-deleted - reactivate it
-            Logger.info('🔄 Reactivating soft-deleted sync device ${existingDevice!.id}');
+            Logger.info('Reactivating soft-deleted sync device ${existingDevice!.id}');
             final reactivateCommand = SaveSyncDeviceCommand(
               id: existingDevice.id,
               fromIP: device.ipAddress,

@@ -225,7 +225,7 @@ class DesktopReminderService implements IReminderService {
 
   /// Refresh all recurring reminders for the new week
   void _refreshAllRecurringReminders() {
-    Logger.debug('🔄 DesktopReminderService: Refreshing all recurring reminders for new week');
+    Logger.debug('DesktopReminderService: Refreshing all recurring reminders for new week');
 
     for (final config in _recurringReminders.values) {
       _scheduleReminderForCurrentWeek(
@@ -374,7 +374,7 @@ class DesktopReminderService implements IReminderService {
     }
 
     Logger.debug(
-        '🔔 DesktopReminderService: Cancelled ${keysToRemove.length} scheduled reminders and ${configKeysToRemove.length} recurring configurations');
+        ' DesktopReminderService: Cancelled ${keysToRemove.length} scheduled reminders and ${configKeysToRemove.length} recurring configurations');
   }
 
   @override
@@ -395,12 +395,12 @@ class DesktopReminderService implements IReminderService {
     _weeklyRefreshTimer?.cancel();
     _weeklyRefreshTimer = null;
 
-    Logger.debug('🔔 DesktopReminderService: Cancelled all reminders and cleared all configurations');
+    Logger.debug('DesktopReminderService: Cancelled all reminders and cleared all configurations');
   }
 
   @override
   Future<void> onBootCompleted() async {
-    Logger.debug('🔄 DesktopReminderService: Boot completed event received (not applicable for desktop)');
+    Logger.debug('DesktopReminderService: Boot completed event received (not applicable for desktop)');
     // Desktop platforms don't need special boot handling since timers are recreated on app start
   }
 }

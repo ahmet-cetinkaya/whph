@@ -83,7 +83,7 @@ class AppInitializationService {
         await _supportDialogService.checkAndShowSupportDialog(context);
       }
     } catch (e) {
-      Logger.error('Error checking support dialog: $e');
+      Logger.error('Error checking support dialog: $e', component: 'AppInitializationService');
     }
   }
 
@@ -100,7 +100,7 @@ class AppInitializationService {
         }
       });
     } catch (e) {
-      Logger.error('Error checking for updates: $e');
+      Logger.error('Error checking for updates: $e', component: 'AppInitializationService');
       _hasCheckedForUpdates = true; // Mark as checked even if failed to avoid repeated attempts
     }
   }

@@ -20,21 +20,21 @@ class SyncConflictResolutionService {
     if (localEntity is HabitRecord && remoteEntity is HabitRecord) {
       final localRecord = localEntity as HabitRecord;
       final remoteRecord = remoteEntity as HabitRecord;
-      Logger.debug('🔄 Resolving habit record conflict for ${localEntity.id}:');
+      Logger.debug('Resolving habit record conflict for ${localEntity.id}:');
       Logger.debug(
           '   Local: deleted=$localIsDeleted, timestamp=$localTimestamp, occurredAt=${localRecord.occurredAt}');
       Logger.debug(
           '   Remote: deleted=$remoteIsDeleted, timestamp=$remoteTimestamp, occurredAt=${remoteRecord.occurredAt}');
-      Logger.debug('   habitId: local=${localRecord.habitId}, remote=${remoteRecord.habitId}');
+      Logger.debug('habitId: local=${localRecord.habitId}, remote=${remoteRecord.habitId}');
 
       // Special handling for habit records with same occurredAt but different habitId (edge case)
       if (localRecord.occurredAt == remoteRecord.occurredAt && localRecord.habitId != remoteRecord.habitId) {
-        Logger.warning('⚠️ Habit record with same occurredAt but different habitId - potential data corruption');
+        Logger.warning('Habit record with same occurredAt but different habitId - potential data corruption');
       }
 
       // For habit records with same habitId and occurredAt, treat as same record regardless of modification date
       if (localRecord.habitId == remoteRecord.habitId && localRecord.occurredAt == remoteRecord.occurredAt) {
-        Logger.debug('   ✅ Same habit occurrence detected, using latest timestamp');
+        Logger.debug('Same habit occurrence detected, using latest timestamp');
 
         // If both have same deletion status, use timestamp-based resolution
         if (localIsDeleted == remoteIsDeleted) {

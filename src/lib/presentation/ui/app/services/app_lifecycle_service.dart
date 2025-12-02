@@ -45,7 +45,7 @@ class AppLifecycleService with WidgetsBindingObserver {
     if (!PlatformUtils.isMobile) return;
 
     _systemTrayService.destroy().catchError((error) {
-      Logger.error('Error cleaning up system tray: $error');
+      Logger.error('Error cleaning up system tray: $error', component: 'AppLifecycleService');
     });
   }
 
@@ -54,7 +54,7 @@ class AppLifecycleService with WidgetsBindingObserver {
     if (!PlatformUtils.isMobile) return;
 
     _systemTrayService.init().catchError((error) {
-      Logger.error('Error initializing system tray: $error');
+      Logger.error('Error initializing system tray: $error', component: 'AppLifecycleService');
     });
   }
 }

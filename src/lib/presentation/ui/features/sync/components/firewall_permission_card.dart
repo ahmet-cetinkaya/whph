@@ -45,37 +45,37 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
   @override
   void initState() {
     super.initState();
-    Logger.info('🔒 [PERMISSION_CARD] initState() called');
+    Logger.info('[PERMISSION_CARD] initState() called');
     _initializeSetupService();
     // Start with checking state to prevent showing error state before check completes
     _isCheckingFirewallPermission = true;
-    Logger.debug('🔒 [PERMISSION_CARD] Initial state set - checking firewall permission');
+    Logger.debug('[PERMISSION_CARD] Initial state set - checking firewall permission');
     _initializeAsync();
   }
 
   /// Initialize async operations
   Future<void> _initializeAsync() async {
-    Logger.info('🔒 [PERMISSION_CARD] _initializeAsync() starting...');
-    Logger.debug('🔒 [PERMISSION_CARD] Step 1: Loading manual confirmation...');
+    Logger.info('[PERMISSION_CARD] _initializeAsync() starting...');
+    Logger.debug('[PERMISSION_CARD] Step 1: Loading manual confirmation...');
     await _loadManualConfirmation();
-    Logger.debug('🔒 [PERMISSION_CARD] Step 2: Checking firewall permission...');
+    Logger.debug('[PERMISSION_CARD] Step 2: Checking firewall permission...');
     await _checkFirewallPermission();
-    Logger.info('🔒 [PERMISSION_CARD] _initializeAsync() completed');
+    Logger.info('[PERMISSION_CARD] _initializeAsync() completed');
   }
 
   /// Initialize setup service for firewall operations (desktop only)
   void _initializeSetupService() {
-    Logger.debug('🔒 [PERMISSION_CARD] _initializeSetupService() called');
+    Logger.debug('[PERMISSION_CARD] _initializeSetupService() called');
     if (!PlatformUtils.isDesktop) {
-      Logger.debug('🔒 [PERMISSION_CARD] Not a desktop platform - skipping setup service initialization');
+      Logger.debug('[PERMISSION_CARD] Not a desktop platform - skipping setup service initialization');
       return;
     }
 
     try {
       _setupService = container.resolve<ISetupService>();
-      Logger.info('✅ [PERMISSION_CARD] Setup service initialized: ${_setupService.runtimeType}');
+      Logger.info('[PERMISSION_CARD] Setup service initialized: ${_setupService.runtimeType}');
     } catch (e) {
-      Logger.warning('⚠️ [PERMISSION_CARD] Setup service not available: $e');
+      Logger.warning('[PERMISSION_CARD] Setup service not available: $e');
     }
   }
 
@@ -200,11 +200,11 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
   /// Check if firewall rules are properly configured for sync
   Future<void> _checkFirewallPermission() async {
-    Logger.debug('🔒 [PERMISSION_CARD] _checkFirewallPermission() called');
-    Logger.debug('🔒 [PERMISSION_CARD] isDesktop: ${PlatformUtils.isDesktop}, setupService: ${_setupService != null}');
+    Logger.debug('[PERMISSION_CARD] _checkFirewallPermission() called');
+    Logger.debug('[PERMISSION_CARD] isDesktop: ${PlatformUtils.isDesktop}, setupService: ${_setupService != null}');
 
     if (!PlatformUtils.isDesktop || _setupService == null) {
-      Logger.debug('🔒 [PERMISSION_CARD] Skipping firewall check - not desktop or no setup service');
+      Logger.debug('[PERMISSION_CARD] Skipping firewall check - not desktop or no setup service');
       return;
     }
 
@@ -213,7 +213,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
       _isVerifyingPermission = false; // Reset verification state during regular check
     });
 
-    Logger.info('🔒 [PERMISSION_CARD] Starting firewall permission check...');
+    Logger.info('[PERMISSION_CARD] Starting firewall permission check...');
 
     try {
       // Check if both inbound and outbound firewall rules exist for the sync port
@@ -221,22 +221,22 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
       final inboundRuleName = 'WHPH Sync Port $port (Inbound)';
       final outboundRuleName = 'WHPH Sync Port $port (Outbound)';
 
-      Logger.debug('🔒 [PERMISSION_CARD] WebSocket port: $port');
-      Logger.debug('🔒 [PERMISSION_CARD] Checking rules:');
-      Logger.debug('🔒 [PERMISSION_CARD]   - Inbound: $inboundRuleName');
-      Logger.debug('🔒 [PERMISSION_CARD]   - Outbound: $outboundRuleName');
+      Logger.debug('[PERMISSION_CARD] WebSocket port: $port');
+      Logger.debug('[PERMISSION_CARD] Checking rules:');
+      Logger.debug('[PERMISSION_CARD] - Inbound: $inboundRuleName');
+      Logger.debug('[PERMISSION_CARD] - Outbound: $outboundRuleName');
 
-      Logger.info('🔒 [PERMISSION_CARD] Querying inbound firewall rule...');
+      Logger.info('[PERMISSION_CARD] Querying inbound firewall rule...');
       final inboundRuleExists = await _setupService!.checkFirewallRule(ruleName: inboundRuleName);
-      Logger.info('🔒 [PERMISSION_CARD] Inbound rule exists: $inboundRuleExists');
+      Logger.info('[PERMISSION_CARD] Inbound rule exists: $inboundRuleExists');
 
-      Logger.info('🔒 [PERMISSION_CARD] Querying outbound firewall rule...');
+      Logger.info('[PERMISSION_CARD] Querying outbound firewall rule...');
       final outboundRuleExists = await _setupService!.checkFirewallRule(ruleName: outboundRuleName);
-      Logger.info('🔒 [PERMISSION_CARD] Outbound rule exists: $outboundRuleExists');
+      Logger.info('[PERMISSION_CARD] Outbound rule exists: $outboundRuleExists');
 
       // For P2P sync, we need both inbound and outbound rules
       final bothRulesExist = inboundRuleExists && outboundRuleExists;
-      Logger.info('🔒 [PERMISSION_CARD] Both rules exist: $bothRulesExist');
+      Logger.info('[PERMISSION_CARD] Both rules exist: $bothRulesExist');
 
       if (mounted) {
         setState(() {
@@ -247,11 +247,11 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
           // Hide card immediately if both rules exist (meaning firewall rules already configured)
           if (bothRulesExist) {
             _shouldHideCard = true;
-            Logger.info('✅ [PERMISSION_CARD] Firewall rules detected - HIDING CARD');
+            Logger.info('[PERMISSION_CARD] Firewall rules detected - HIDING CARD');
           } else {
-            Logger.info('⚠️ [PERMISSION_CARD] Firewall rules NOT complete - SHOWING CARD');
-            if (!inboundRuleExists) Logger.info('⚠️ [PERMISSION_CARD]   Missing: Inbound rule');
-            if (!outboundRuleExists) Logger.info('⚠️ [PERMISSION_CARD]   Missing: Outbound rule');
+            Logger.info('[PERMISSION_CARD] Firewall rules NOT complete - SHOWING CARD');
+            if (!inboundRuleExists) Logger.info('[PERMISSION_CARD] Missing: Inbound rule');
+            if (!outboundRuleExists) Logger.info('[PERMISSION_CARD] Missing: Outbound rule');
           }
         });
 
@@ -260,9 +260,9 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
       }
 
       Logger.info(
-          '✅ [PERMISSION_CARD] Firewall permission check completed: inbound=$inboundRuleExists, outbound=$outboundRuleExists, both=$bothRulesExist, granted=$_isFirewallPermissionGranted, hideCard=$_shouldHideCard');
+          '[PERMISSION_CARD] Firewall permission check completed: inbound=$inboundRuleExists, outbound=$outboundRuleExists, both=$bothRulesExist, granted=$_isFirewallPermissionGranted, hideCard=$_shouldHideCard');
     } catch (e) {
-      Logger.error('❌ [PERMISSION_CARD] Failed to check firewall permission: $e');
+      Logger.error('[PERMISSION_CARD] Failed to check firewall permission: $e');
       if (mounted) {
         setState(() {
           // In case of error, still consider manual confirmation
@@ -319,8 +319,8 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     final outboundRuleName = 'WHPH Sync Port $port (Outbound)';
 
     Logger.debug('✔️ [PERMISSION_CARD] Validating rules:');
-    Logger.debug('✔️ [PERMISSION_CARD]   - Inbound: $inboundRuleName');
-    Logger.debug('✔️ [PERMISSION_CARD]   - Outbound: $outboundRuleName');
+    Logger.debug('✔️ [PERMISSION_CARD] - Inbound: $inboundRuleName');
+    Logger.debug('✔️ [PERMISSION_CARD] - Outbound: $outboundRuleName');
 
     // Sometimes firewall rules take a moment to be fully applied by the system
     // So we'll try multiple times with a delay
@@ -339,11 +339,11 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
       Logger.info('✔️ [PERMISSION_CARD] Checking inbound rule...');
       inboundRuleExists = await _setupService!.checkFirewallRule(ruleName: inboundRuleName);
-      Logger.info('✔️ [PERMISSION_CARD]   Inbound exists: $inboundRuleExists');
+      Logger.info('✔️ [PERMISSION_CARD] Inbound exists: $inboundRuleExists');
 
       Logger.info('✔️ [PERMISSION_CARD] Checking outbound rule...');
       outboundRuleExists = await _setupService!.checkFirewallRule(ruleName: outboundRuleName);
-      Logger.info('✔️ [PERMISSION_CARD]   Outbound exists: $outboundRuleExists');
+      Logger.info('✔️ [PERMISSION_CARD] Outbound exists: $outboundRuleExists');
 
       bothRulesExist = inboundRuleExists && outboundRuleExists;
 
@@ -352,11 +352,11 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
       if (bothRulesExist) {
         // Both rules exist, we can stop checking
-        Logger.info('✅ [PERMISSION_CARD] Both rules found - validation successful!');
+        Logger.info('[PERMISSION_CARD] Both rules found - validation successful!');
         break;
       } else {
         if (attempts < maxAttempts) {
-          Logger.debug('⏳ [PERMISSION_CARD] Waiting ${delayBetweenAttempts.inMilliseconds}ms before next attempt...');
+          Logger.debug('[PERMISSION_CARD] Waiting ${delayBetweenAttempts.inMilliseconds}ms before next attempt...');
           await Future.delayed(delayBetweenAttempts);
         }
       }
@@ -376,7 +376,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
             if (mounted) {
               setState(() {
                 _shouldHideCard = true;
-                Logger.info('✅ [PERMISSION_CARD] Hiding card (manual confirmation)');
+                Logger.info('[PERMISSION_CARD] Hiding card (manual confirmation)');
               });
             }
           });
@@ -384,7 +384,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
           // This case is when both rules exist after verification
           // Hide the card immediately since rules already existed
           _shouldHideCard = true;
-          Logger.info('✅ [PERMISSION_CARD] Hiding card immediately (both rules detected)');
+          Logger.info('[PERMISSION_CARD] Hiding card immediately (both rules detected)');
         }
       });
 
@@ -393,7 +393,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
     }
 
     Logger.info(
-        '✅ [PERMISSION_CARD] Firewall configuration validation completed after $attempts attempts: inbound=$inboundRuleExists, outbound=$outboundRuleExists, both=$bothRulesExist');
+        '[PERMISSION_CARD] Firewall configuration validation completed after $attempts attempts: inbound=$inboundRuleExists, outbound=$outboundRuleExists, both=$bothRulesExist');
   }
 
   /// Get platform name for display
@@ -461,38 +461,38 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
   /// Automatic firewall rule addition for Windows
   Future<bool> _onAutomaticFirewallRuleAddition() async {
-    Logger.info('🔧 [PERMISSION_CARD] _onAutomaticFirewallRuleAddition() called');
+    Logger.info('[PERMISSION_CARD] _onAutomaticFirewallRuleAddition() called');
     final isWindows = Platform.isWindows;
-    Logger.debug('🔧 [PERMISSION_CARD] isWindows: $isWindows, setupService: ${_setupService != null}');
+    Logger.debug('[PERMISSION_CARD] isWindows: $isWindows, setupService: ${_setupService != null}');
 
     if (!isWindows || _setupService == null) {
-      Logger.warning('⚠️ [PERMISSION_CARD] Skipping firewall rule addition - not Windows or no setup service');
+      Logger.warning('[PERMISSION_CARD] Skipping firewall rule addition - not Windows or no setup service');
       return false;
     }
 
     try {
-      Logger.info('🔧 [PERMISSION_CARD] Starting automatic Windows firewall rule addition');
-      Logger.debug('🔧 [PERMISSION_CARD] Port: $webSocketPort');
-      Logger.debug('🔧 [PERMISSION_CARD] Executable: ${Platform.resolvedExecutable}');
+      Logger.info('[PERMISSION_CARD] Starting automatic Windows firewall rule addition');
+      Logger.debug('[PERMISSION_CARD] Port: $webSocketPort');
+      Logger.debug('[PERMISSION_CARD] Executable: ${Platform.resolvedExecutable}');
 
       // Add both inbound and outbound firewall rules for P2P sync in a single operation
       // Inbound: allow other devices to connect to this device (server mode)
       // Outbound: allow this device to connect to other devices (client mode)
-      Logger.info('🔧 [PERMISSION_CARD] Calling setupService.addFirewallRules()...');
+      Logger.info('[PERMISSION_CARD] Calling setupService.addFirewallRules()...');
       await _setupService!.addFirewallRules(
         ruleNamePrefix: 'WHPH Sync Port $webSocketPort',
         appPath: Platform.resolvedExecutable,
         port: webSocketPort.toString(),
         protocol: 'TCP',
       );
-      Logger.info('✅ [PERMISSION_CARD] Firewall rules added successfully');
+      Logger.info('[PERMISSION_CARD] Firewall rules added successfully');
 
       // After successful addition, initiate permission verification process
-      Logger.info('🔧 [PERMISSION_CARD] Initiating permission verification...');
+      Logger.info('[PERMISSION_CARD] Initiating permission verification...');
       await _initiatePermissionVerification();
-      Logger.info('✅ [PERMISSION_CARD] Permission verification completed');
+      Logger.info('[PERMISSION_CARD] Permission verification completed');
 
-      Logger.info('✅ [PERMISSION_CARD] Automatic Windows firewall rule addition completed successfully');
+      Logger.info('[PERMISSION_CARD] Automatic Windows firewall rule addition completed successfully');
 
       if (mounted) {
         OverlayNotificationHelper.showSuccess(
@@ -503,7 +503,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
 
       return true; // Success
     } catch (e) {
-      Logger.error('❌ [PERMISSION_CARD] Failed to add Windows firewall rule automatically: $e');
+      Logger.error('[PERMISSION_CARD] Failed to add Windows firewall rule automatically: $e');
 
       if (mounted) {
         OverlayNotificationHelper.showError(

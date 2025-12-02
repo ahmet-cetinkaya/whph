@@ -19,7 +19,7 @@ class SyncValidationService implements ISyncValidationService {
   @override
   Future<void> validateVersion(String remoteVersion) async {
     if (remoteVersion != AppInfo.version) {
-      Logger.error('🚫 Version mismatch detected: local=${AppInfo.version}, remote=$remoteVersion');
+      Logger.error('Version mismatch detected: local=${AppInfo.version}, remote=$remoteVersion');
       throw SyncValidationException(
         'Version mismatch detected: local=${AppInfo.version}, remote=$remoteVersion',
         code: SyncTranslationKeys.versionMismatchError,
@@ -29,7 +29,7 @@ class SyncValidationService implements ISyncValidationService {
         },
       );
     }
-    Logger.debug('✅ Version validation passed: $remoteVersion');
+    Logger.debug('Version validation passed: $remoteVersion');
   }
 
   @override
@@ -45,14 +45,14 @@ class SyncValidationService implements ISyncValidationService {
     final deviceIdMatches = remoteDevice.fromDeviceId == localDeviceID || remoteDevice.toDeviceId == localDeviceID;
 
     if (isFromDevice || isToDevice || deviceIdMatches) {
-      Logger.debug('✅ Device validation passed');
+      Logger.debug('Device validation passed');
       return;
     }
 
-    Logger.error('❌ Device validation failed:');
-    Logger.error('   Local: IP=$localDeviceIP, ID=$localDeviceID');
-    Logger.error('   Remote: fromIP=${remoteDevice.fromIp}, fromID=${remoteDevice.fromDeviceId}');
-    Logger.error('   Remote: toIP=${remoteDevice.toIp}, toID=${remoteDevice.toDeviceId}');
+    Logger.error('Device validation failed:');
+    Logger.error('Local: IP=$localDeviceIP, ID=$localDeviceID');
+    Logger.error('Remote: fromIP=${remoteDevice.fromIp}, fromID=${remoteDevice.fromDeviceId}');
+    Logger.error('Remote: toIP=${remoteDevice.toIp}, toID=${remoteDevice.toDeviceId}');
 
     throw SyncValidationException(
       'Device ID mismatch: This device is not part of the sync relationship',
@@ -65,26 +65,26 @@ class SyncValidationService implements ISyncValidationService {
     final localIsDebug = _isDeviceInDebugMode();
     final remoteIsDebug = dto.isDebugMode;
 
-    Logger.debug('🔍 Environment mode validation:');
-    Logger.debug('   Local device debug mode: $localIsDebug (kDebugMode: $kDebugMode)');
-    Logger.debug('   Remote device debug mode: $remoteIsDebug');
-    Logger.debug('   Local kReleaseMode: $kReleaseMode, kProfileMode: $kProfileMode');
+    Logger.debug('Environment mode validation:');
+    Logger.debug('Local device debug mode: $localIsDebug (kDebugMode: $kDebugMode)');
+    Logger.debug('Remote device debug mode: $remoteIsDebug');
+    Logger.debug('Local kReleaseMode: $kReleaseMode, kProfileMode: $kProfileMode');
 
     if (localIsDebug != remoteIsDebug) {
       final localMode = localIsDebug ? 'debug' : 'production';
       final remoteMode = remoteIsDebug ? 'debug' : 'production';
 
-      Logger.error('🚫 Environment mode mismatch detected:');
-      Logger.error('   Local device: $localMode mode');
-      Logger.error('   Remote device: $remoteMode mode');
+      Logger.error('Environment mode mismatch detected:');
+      Logger.error('Local device: $localMode mode');
+      Logger.error('Remote device: $remoteMode mode');
       Logger.error('');
-      Logger.error('🔒 SECURITY: Sync between debug and production modes is not allowed');
-      Logger.error('📝 This prevents accidental data mixing between development and production environments');
+      Logger.error('SECURITY: Sync between debug and production modes is not allowed');
+      Logger.error('This prevents accidental data mixing between development and production environments');
       Logger.error('');
-      Logger.error('💡 If both devices should be in debug mode:');
-      Logger.error('   - Ensure both are running from IDEs like VSCode in debug mode');
-      Logger.error('   - Check that both use the same Flutter build configuration');
-      Logger.error('   - Restart both applications if build mode detection seems incorrect');
+      Logger.error('If both devices should be in debug mode:');
+      Logger.error('- Ensure both are running from IDEs like VSCode in debug mode');
+      Logger.error('- Check that both use the same Flutter build configuration');
+      Logger.error('- Restart both applications if build mode detection seems incorrect');
 
       throw SyncValidationException(
         'Environment mode mismatch: local=$localMode, remote=$remoteMode. '
@@ -94,7 +94,7 @@ class SyncValidationService implements ISyncValidationService {
     }
 
     final mode = localIsDebug ? 'debug' : 'production';
-    Logger.debug('✅ Environment mode validation passed: both devices in $mode mode');
+    Logger.debug('Environment mode validation passed: both devices in $mode mode');
   }
 
   @override
@@ -102,85 +102,85 @@ class SyncValidationService implements ISyncValidationService {
     try {
       // Basic integrity checks
       if (dto.appVersion.isEmpty) {
-        Logger.warning('⚠️ Sync data integrity check failed: empty app version');
+        Logger.warning('Sync data integrity check failed: empty app version');
         return false;
       }
 
       if (dto.entityType.isEmpty) {
-        Logger.warning('⚠️ Sync data integrity check failed: empty entity type');
+        Logger.warning('Sync data integrity check failed: empty entity type');
         return false;
       }
 
       if (dto.pageIndex < 0) {
-        Logger.warning('⚠️ Sync data integrity check failed: negative page index');
+        Logger.warning('Sync data integrity check failed: negative page index');
         return false;
       }
 
       if (dto.pageSize <= 0) {
-        Logger.warning('⚠️ Sync data integrity check failed: invalid page size');
+        Logger.warning('Sync data integrity check failed: invalid page size');
         return false;
       }
 
       if (dto.totalPages < 0) {
-        Logger.warning('⚠️ Sync data integrity check failed: negative total pages');
+        Logger.warning('Sync data integrity check failed: negative total pages');
         return false;
       }
 
       if (dto.totalItems < 0) {
-        Logger.warning('⚠️ Sync data integrity check failed: negative total items');
+        Logger.warning('Sync data integrity check failed: negative total items');
         return false;
       }
 
       // Habit-specific validation
       if (dto.entityType == 'Habit' && dto.habitsSyncData != null) {
         final habitData = dto.habitsSyncData!;
-        Logger.debug('🏠 Validating Habit sync data: ${habitData.data.getTotalItemCount()} items');
+        Logger.debug('Validating Habit sync data: ${habitData.data.getTotalItemCount()} items');
 
         final totalHabits =
             habitData.data.createSync.length + habitData.data.updateSync.length + habitData.data.deleteSync.length;
 
         if (totalHabits != dto.totalItems && dto.totalItems > 0) {
-          Logger.warning('⚠️ Habit sync data count mismatch: expected ${dto.totalItems}, found $totalHabits');
+          Logger.warning('Habit sync data count mismatch: expected ${dto.totalItems}, found $totalHabits');
         }
       }
 
       if (dto.entityType == 'HabitRecord' && dto.habitRecordsSyncData != null) {
         final habitRecordData = dto.habitRecordsSyncData!;
-        Logger.debug('📝 Validating HabitRecord sync data: ${habitRecordData.data.getTotalItemCount()} items');
+        Logger.debug('Validating HabitRecord sync data: ${habitRecordData.data.getTotalItemCount()} items');
 
         final totalRecords = habitRecordData.data.createSync.length +
             habitRecordData.data.updateSync.length +
             habitRecordData.data.deleteSync.length;
 
         if (totalRecords != dto.totalItems && dto.totalItems > 0) {
-          Logger.warning('⚠️ HabitRecord sync data count mismatch: expected ${dto.totalItems}, found $totalRecords');
+          Logger.warning('HabitRecord sync data count mismatch: expected ${dto.totalItems}, found $totalRecords');
         }
 
         // Validate habit record date consistency
         for (final record in habitRecordData.data.createSync) {
           if (record.habitId.isEmpty) {
-            Logger.warning('⚠️ HabitRecord ${record.id} has empty habitId - this may cause sync issues');
+            Logger.warning('HabitRecord ${record.id} has empty habitId - this may cause sync issues');
           }
         }
       }
 
       if (dto.entityType == 'HabitTag' && dto.habitTagsSyncData != null) {
         final habitTagData = dto.habitTagsSyncData!;
-        Logger.debug('🏷️ Validating HabitTag sync data: ${habitTagData.data.getTotalItemCount()} items');
+        Logger.debug('Validating HabitTag sync data: ${habitTagData.data.getTotalItemCount()} items');
 
         final totalTags = habitTagData.data.createSync.length +
             habitTagData.data.updateSync.length +
             habitTagData.data.deleteSync.length;
 
         if (totalTags != dto.totalItems && dto.totalItems > 0) {
-          Logger.warning('⚠️ HabitTag sync data count mismatch: expected ${dto.totalItems}, found $totalTags');
+          Logger.warning('HabitTag sync data count mismatch: expected ${dto.totalItems}, found $totalTags');
         }
       }
 
-      Logger.debug('✅ Sync data integrity validation passed');
+      Logger.debug('Sync data integrity validation passed');
       return true;
     } catch (e) {
-      Logger.error('❌ Sync data integrity validation failed: $e');
+      Logger.error('Sync data integrity validation failed: $e');
       return false;
     }
   }
@@ -206,9 +206,9 @@ class SyncValidationService implements ISyncValidationService {
         );
       }
 
-      Logger.debug('✅ Sync prerequisites validation passed');
+      Logger.debug('Sync prerequisites validation passed');
     } catch (e) {
-      Logger.error('❌ Sync prerequisites validation failed: $e');
+      Logger.error('Sync prerequisites validation failed: $e');
       if (e is SyncValidationException) {
         rethrow;
       }
@@ -223,7 +223,7 @@ class SyncValidationService implements ISyncValidationService {
   bool _isDeviceInDebugMode() {
     // Use Flutter's kDebugMode constant for reliable detection
     final isDebug = kDebugMode;
-    Logger.debug('🔍 Debug mode detection: $isDebug (kDebugMode: $kDebugMode)');
+    Logger.debug('Debug mode detection: $isDebug (kDebugMode: $kDebugMode)');
     return isDebug;
   }
 }

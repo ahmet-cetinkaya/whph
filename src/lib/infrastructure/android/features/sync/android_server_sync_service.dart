@@ -33,29 +33,29 @@ class AndroidServerSyncService extends AndroidSyncService {
 
   @override
   void updateSyncStatus(SyncStatus status) {
-    Logger.info('📡 AndroidServerSyncService: updateSyncStatus called with: $status');
+    Logger.info('AndroidServerSyncService: updateSyncStatus called with: $status');
     super.updateSyncStatus(status);
 
     // Also update the main ISyncService instance if it's different
     try {
       final mainSyncService = container.resolve<ISyncService>();
       if (mainSyncService != this) {
-        Logger.info('📡 AndroidServerSyncService: Also updating main ISyncService instance');
+        Logger.info('AndroidServerSyncService: Also updating main ISyncService instance');
         mainSyncService.updateSyncStatus(status);
       } else {
-        Logger.info('📡 AndroidServerSyncService: Same instance as ISyncService');
+        Logger.info('AndroidServerSyncService: Same instance as ISyncService');
       }
     } catch (e) {
-      Logger.error('📡 AndroidServerSyncService: Failed to resolve main ISyncService: $e');
+      Logger.error('AndroidServerSyncService: Failed to resolve main ISyncService: $e');
     }
 
-    Logger.info('📡 AndroidServerSyncService: updateSyncStatus completed');
+    Logger.info('AndroidServerSyncService: updateSyncStatus completed');
   }
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {
     try {
-      Logger.info('🚀 Attempting to start mobile WebSocket server...');
+      Logger.info('Attempting to start mobile WebSocket server...');
 
       _server = await HttpServer.bind(
         InternetAddress.anyIPv4,
@@ -67,12 +67,12 @@ class AndroidServerSyncService extends AndroidSyncService {
       _startServerKeepAlive();
       _handleServerConnections();
 
-      Logger.info('✅ Mobile WebSocket server started on port $webSocketPort');
-      Logger.info('🌐 Mobile server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
-      Logger.info('📱 Ready to receive sync requests from other mobile devices');
+      Logger.info('Mobile WebSocket server started on port $webSocketPort');
+      Logger.info('Mobile server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
+      Logger.info('Ready to receive sync requests from other mobile devices');
 
       // Notify that server is ready (but not syncing yet)
-      Logger.info('📡 Android server: Notifying server ready status');
+      Logger.info('Android server: Notifying server ready status');
       updateSyncStatus(SyncStatus(
         state: SyncState.idle,
         isManual: false,
@@ -81,7 +81,7 @@ class AndroidServerSyncService extends AndroidSyncService {
 
       return true;
     } catch (e) {
-      Logger.warning('❌ Failed to start mobile server: $e');
+      Logger.warning('Failed to start mobile server: $e');
       _isServerMode = false;
       return false;
     }
@@ -97,20 +97,20 @@ class AndroidServerSyncService extends AndroidSyncService {
           _activeConnections.add(ws);
 
           Logger.info(
-              '📱 Mobile server: Client connected from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
+              'Mobile server: Client connected from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
 
           ws.listen(
             (data) async {
-              Logger.debug('📨 Mobile server received message: $data');
+              Logger.debug('Mobile server received message: $data');
               await _handleWebSocketMessage(data.toString(), ws);
             },
             onError: (e) {
-              Logger.error('❌ Mobile server connection error: $e');
+              Logger.error('Mobile server connection error: $e');
               _activeConnections.remove(ws);
               ws.close();
             },
             onDone: () {
-              Logger.debug('🔚 Mobile server: Client disconnected');
+              Logger.debug('Mobile server: Client disconnected');
               _activeConnections.remove(ws);
             },
             cancelOnError: true,
@@ -124,7 +124,7 @@ class AndroidServerSyncService extends AndroidSyncService {
             ..close();
         }
       } catch (e) {
-        Logger.error('⚠️ Mobile server request handling error: $e');
+        Logger.error('Mobile server request handling error: $e');
         req.response.statusCode = HttpStatus.internalServerError;
         await req.response.close();
       }
@@ -142,7 +142,7 @@ class AndroidServerSyncService extends AndroidSyncService {
 
       switch (parsedMessage.type) {
         case 'device_info':
-          Logger.info('🤝 Mobile server handling device_info handshake request');
+          Logger.info('Mobile server handling device_info handshake request');
           try {
             final localDeviceId = await _deviceIdService.getDeviceId();
             final androidInfo = await _deviceInfoPlugin.androidInfo;
@@ -179,13 +179,13 @@ class AndroidServerSyncService extends AndroidSyncService {
             );
 
             socket.add(JsonMapper.serialize(responseMessage));
-            Logger.info('✅ Mobile server sent device_info_response: $deviceName ($localDeviceId)');
+            Logger.info('Mobile server sent device_info_response: $deviceName ($localDeviceId)');
 
             // Close after handshake response
             await Future.delayed(const Duration(milliseconds: 100));
             await socket.close();
           } catch (e) {
-            Logger.error('❌ Failed to prepare device_info response: $e');
+            Logger.error('Failed to prepare device_info response: $e');
             final errorData = {
               'success': false,
               'error': 'Failed to prepare device information: ${e.toString()}',
@@ -210,7 +210,7 @@ class AndroidServerSyncService extends AndroidSyncService {
           break;
 
         case 'sync':
-          Logger.warning('⚠️ Legacy sync endpoint called on mobile server - this is deprecated');
+          Logger.warning('Legacy sync endpoint called on mobile server - this is deprecated');
           WebSocketMessage deprecationMessage = WebSocketMessage(type: 'sync_deprecated', data: {
             'success': false,
             'message': 'Legacy sync is deprecated. Please use paginated_sync endpoint.',
@@ -222,18 +222,18 @@ class AndroidServerSyncService extends AndroidSyncService {
           break;
 
         case 'paginated_sync':
-          Logger.info('🔄 Mobile server processing paginated sync request...');
+          Logger.info('Mobile server processing paginated sync request...');
 
           // Update sync status to syncing when server starts processing
-          Logger.info('📡 Android server: Updating sync status to SYNCING');
+          Logger.info('Android server: Updating sync status to SYNCING');
           final syncingStatus = SyncStatus(
             state: SyncState.syncing,
             isManual: false,
             lastSyncTime: DateTime.now(),
           );
-          Logger.info('📡 Android server: Created sync status: $syncingStatus');
+          Logger.info('Android server: Created sync status: $syncingStatus');
           updateSyncStatus(syncingStatus);
-          Logger.info('📡 Android server: Sync status update sent to stream');
+          Logger.info('Android server: Sync status update sent to stream');
 
           final paginatedSyncData = parsedMessage.data;
           if (paginatedSyncData == null) {
@@ -241,13 +241,13 @@ class AndroidServerSyncService extends AndroidSyncService {
           }
 
           Logger.debug(
-              '📊 Mobile server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
+              'Mobile server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
 
           try {
             final command =
                 PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
             final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
-            Logger.info('✅ Mobile server paginated sync processing completed successfully');
+            Logger.info('Mobile server paginated sync processing completed successfully');
 
             WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
               'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
@@ -257,7 +257,7 @@ class AndroidServerSyncService extends AndroidSyncService {
               'server_type': 'mobile'
             });
             socket.add(JsonMapper.serialize(responseMessage));
-            Logger.info('📤 Mobile server paginated sync response sent to client');
+            Logger.info('Mobile server paginated sync response sent to client');
 
             // Update sync status to completed after successful processing
             updateSyncStatus(SyncStatus(
@@ -332,16 +332,16 @@ class AndroidServerSyncService extends AndroidSyncService {
   void _startServerKeepAlive() {
     _serverKeepAlive = Timer.periodic(const Duration(minutes: 2), (_) {
       if (_server != null && _isServerMode) {
-        Logger.debug('📱 Mobile server heartbeat - Active connections: ${_activeConnections.length}');
+        Logger.debug('Mobile server heartbeat - Active connections: ${_activeConnections.length}');
 
         // Clean up closed connections
         _activeConnections.removeWhere((ws) => ws.readyState == WebSocket.closed);
 
         // Log server health for debugging
         if (_activeConnections.isEmpty) {
-          Logger.debug('📱 Mobile server running in background, waiting for connections...');
+          Logger.debug('Mobile server running in background, waiting for connections...');
         } else {
-          Logger.debug('📱 Mobile server actively serving ${_activeConnections.length} client(s)');
+          Logger.debug('Mobile server actively serving ${_activeConnections.length} client(s)');
         }
       }
     });
@@ -355,7 +355,7 @@ class AndroidServerSyncService extends AndroidSyncService {
 
   Future<void> stopServer() async {
     if (_isServerMode) {
-      Logger.info('🛑 Stopping mobile WebSocket server...');
+      Logger.info('Stopping mobile WebSocket server...');
 
       _serverKeepAlive?.cancel();
       _serverKeepAlive = null;
@@ -375,7 +375,7 @@ class AndroidServerSyncService extends AndroidSyncService {
       _server = null;
       _isServerMode = false;
 
-      Logger.info('✅ Mobile WebSocket server stopped');
+      Logger.info('Mobile WebSocket server stopped');
     }
   }
 

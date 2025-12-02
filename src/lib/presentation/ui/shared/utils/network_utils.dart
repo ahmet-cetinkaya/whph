@@ -30,7 +30,7 @@ class NetworkUtils {
 
   static Future<bool> testWebSocketConnection(String host, {Duration? timeout}) async {
     try {
-      Logger.debug('🔍 Testing WebSocket connectivity to $host:$webSocketPort...');
+      Logger.debug('Testing WebSocket connectivity to $host:$webSocketPort...');
       final wsUrl = 'ws://$host:$webSocketPort';
       final ws = await WebSocket.connect(wsUrl).timeout(const Duration(seconds: 5));
 
@@ -48,15 +48,15 @@ class NetworkUtils {
               onTimeout: (_) => throw TimeoutException('No response received'),
             )
             .first;
-        Logger.debug('✅ WebSocket connectivity test passed for $host:$webSocketPort');
+        Logger.debug('WebSocket connectivity test passed for $host:$webSocketPort');
       } catch (e) {
-        Logger.debug('⚠️ Test message failed: $e');
+        Logger.debug('Test message failed: $e');
       }
 
       await ws.close();
       return true;
     } catch (e) {
-      Logger.debug('❌ WebSocket connection failed to $host:$webSocketPort: $e');
+      Logger.debug('WebSocket connection failed to $host:$webSocketPort: $e');
       return false;
     }
   }
@@ -64,13 +64,13 @@ class NetworkUtils {
   /// Test network connectivity with simple socket connection
   static Future<bool> testPortConnectivity(String host, {int port = webSocketPort}) async {
     try {
-      Logger.debug('🔍 Testing port connectivity to $host:$port...');
+      Logger.debug('Testing port connectivity to $host:$port...');
       final socket = await Socket.connect(host, port, timeout: const Duration(seconds: 3));
       await socket.close();
-      Logger.debug('✅ Port connectivity test passed for $host:$port');
+      Logger.debug('Port connectivity test passed for $host:$port');
       return true;
     } catch (e) {
-      Logger.debug('❌ Port connectivity failed to $host:$port: $e');
+      Logger.debug('Port connectivity failed to $host:$port: $e');
       return false;
     }
   }

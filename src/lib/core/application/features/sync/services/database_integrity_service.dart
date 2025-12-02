@@ -20,24 +20,24 @@ class DatabaseIntegrityService {
 
   /// Automatically fix common integrity issues
   Future<void> fixIntegrityIssues() async {
-    Logger.info('🔧 Starting database integrity fixes...');
+    Logger.info('Starting database integrity fixes...');
 
     await _fixDuplicateIds();
     await _cleanupOrphanedReferences();
     await _fixSyncStateIssues();
 
-    Logger.info('✅ Database integrity fixes completed');
+    Logger.info('Database integrity fixes completed');
   }
 
   /// Fix only critical integrity issues (not ancient devices)
   Future<void> fixCriticalIntegrityIssues() async {
-    Logger.info('🔧 Starting critical database integrity fixes...');
+    Logger.info('Starting critical database integrity fixes...');
 
     await _fixDuplicateIds();
     await _cleanupOrphanedReferences();
     // Skip _fixSyncStateIssues() as it includes ancient device cleanup
 
-    Logger.info('✅ Critical database integrity fixes completed');
+    Logger.info('Critical database integrity fixes completed');
   }
 
   Future<void> _checkDuplicateIds(DatabaseIntegrityReport report) async {
@@ -103,7 +103,7 @@ class DatabaseIntegrityService {
   }
 
   Future<void> _checkSyncStateConsistency(DatabaseIntegrityReport report) async {
-    Logger.debug('🔍 Checking sync state consistency...');
+    Logger.debug('Checking sync state consistency...');
 
     try {
       // Check for sync devices with invalid IP addresses
@@ -149,7 +149,7 @@ class DatabaseIntegrityService {
         final oldestDate = oldSyncDevices.data['oldest_date'] as String?;
         final newestDate = oldSyncDevices.data['newest_date'] as String?;
 
-        Logger.debug('📅 Sync device date analysis: count=$totalCount, oldest=$oldestDate, newest=$newestDate');
+        Logger.debug('Sync device date analysis: count=$totalCount, oldest=$oldestDate, newest=$newestDate');
 
         // Check for devices older than 5 years
         // First, get accurate count
@@ -179,7 +179,7 @@ class DatabaseIntegrityService {
             for (final device in ancientDeviceSamples) {
               final deviceId = device.data['id'] as String?;
               final createdDate = device.data['created_date'] as String?;
-              Logger.warning('  - Device ID: $deviceId, Created: $createdDate');
+              Logger.warning('- Device ID: $deviceId, Created: $createdDate');
             }
           }
         }
@@ -201,9 +201,9 @@ class DatabaseIntegrityService {
         }
       }
 
-      Logger.debug('✅ Sync state consistency check completed');
+      Logger.debug('Sync state consistency check completed');
     } catch (e) {
-      Logger.warning('⚠️ Error during sync state consistency check: $e');
+      Logger.warning('Error during sync state consistency check: $e');
       // Don't let sync state check failures prevent other integrity checks
     }
   }
@@ -219,7 +219,7 @@ class DatabaseIntegrityService {
     ];
 
     for (final tableName in tables) {
-      Logger.info('🔧 Fixing duplicates in $tableName...');
+      Logger.info('Fixing duplicates in $tableName...');
 
       // Keep the most recent record for each ID, soft-delete the rest
       await _database.customStatement('''
@@ -236,7 +236,7 @@ class DatabaseIntegrityService {
   }
 
   Future<void> _cleanupOrphanedReferences() async {
-    Logger.info('🔧 Cleaning up orphaned references...');
+    Logger.info('Cleaning up orphaned references...');
 
     // Soft-delete task_tags that reference deleted tags
     await _database.customStatement('''
@@ -258,7 +258,7 @@ class DatabaseIntegrityService {
   }
 
   Future<void> _fixSyncStateIssues() async {
-    Logger.info('🔧 Fixing sync state issues...');
+    Logger.info('Fixing sync state issues...');
 
     try {
       // Fix sync devices with invalid IP addresses by setting them to localhost
@@ -275,7 +275,7 @@ class DatabaseIntegrityService {
         WHERE deleted_date IS NULL
         AND (from_ip IS NULL OR from_ip = '' OR to_ip IS NULL OR to_ip = '')
       ''');
-      Logger.debug('🔧 Fixed invalid IP addresses in sync devices');
+      Logger.debug('Fixed invalid IP addresses in sync devices');
 
       // Soft-delete duplicate sync devices, keeping the most recent one
       await _database.customStatement('''
@@ -288,7 +288,7 @@ class DatabaseIntegrityService {
           GROUP BY from_device_id, to_device_id
         ) AND deleted_date IS NULL
       ''');
-      Logger.debug('🔧 Soft-deleted duplicate sync device records');
+      Logger.debug('Soft-deleted duplicate sync device records');
 
       // Fix sync devices with invalid device IDs by setting them to default values
       await _database.customStatement('''
@@ -304,7 +304,7 @@ class DatabaseIntegrityService {
         WHERE deleted_date IS NULL
         AND (from_device_id IS NULL OR from_device_id = '' OR to_device_id IS NULL OR to_device_id = '')
       ''');
-      Logger.debug('🔧 Fixed invalid device IDs in sync devices');
+      Logger.debug('Fixed invalid device IDs in sync devices');
 
       // Soft-delete extremely old sync devices (older than 5 years)
       await _database.customStatement('''
@@ -313,11 +313,11 @@ class DatabaseIntegrityService {
         WHERE deleted_date IS NULL
         AND created_date < datetime('now', '-5 years')
       ''');
-      Logger.debug('🔧 Soft-deleted ancient sync device records (older than 5 years)');
+      Logger.debug('Soft-deleted ancient sync device records (older than 5 years)');
 
-      Logger.info('✅ Sync state issues fixed');
+      Logger.info('Sync state issues fixed');
     } catch (e) {
-      Logger.error('❌ Error fixing sync state issues: $e');
+      Logger.error('Error fixing sync state issues: $e');
       // Don't rethrow - sync state fix failures shouldn't prevent app startup
     }
   }
@@ -337,30 +337,30 @@ class DatabaseIntegrityReport {
 
   @override
   String toString() {
-    if (!hasIssues) return 'Database integrity: ✅ No issues found';
+    if (!hasIssues) return 'Database integrity: No issues found';
 
     final buffer = StringBuffer('Database integrity issues found:\n');
 
     if (duplicateIds.isNotEmpty) {
-      buffer.writeln('🔄 Duplicate IDs:');
+      buffer.writeln('Duplicate IDs:');
       duplicateIds.forEach((table, count) {
         buffer.writeln('  - $table: $count duplicates');
       });
     }
 
     if (orphanedReferences.isNotEmpty) {
-      buffer.writeln('🔗 Orphaned references:');
+      buffer.writeln('Orphaned references:');
       orphanedReferences.forEach((type, count) {
         buffer.writeln('  - $type: $count orphaned');
       });
     }
 
     if (softDeleteInconsistencies > 0) {
-      buffer.writeln('❌ Soft-delete inconsistencies: $softDeleteInconsistencies');
+      buffer.writeln('Soft-delete inconsistencies: $softDeleteInconsistencies');
     }
 
     if (syncStateIssues.isNotEmpty) {
-      buffer.writeln('🔄 Sync state issues:');
+      buffer.writeln('Sync state issues:');
       syncStateIssues.forEach((type, count) {
         buffer.writeln('  - $type: $count issues');
       });

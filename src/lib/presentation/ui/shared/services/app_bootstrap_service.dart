@@ -128,7 +128,7 @@ class AppBootstrapService {
       final integrityReport = await databaseIntegrityService.validateIntegrity();
 
       if (integrityReport.hasIssues) {
-        Logger.warning('⚠️ Database integrity issues detected during startup:');
+        Logger.warning('Database integrity issues detected during startup:');
         Logger.warning(integrityReport.toString());
 
         // Only attempt automatic fixes for critical issues that could cause crashes
@@ -136,31 +136,31 @@ class AppBootstrapService {
         if (integrityReport.duplicateIds.isNotEmpty ||
             integrityReport.orphanedReferences.isNotEmpty ||
             integrityReport.softDeleteInconsistencies > 0) {
-          Logger.info('🔧 Attempting to fix critical database integrity issues automatically...');
+          Logger.info('Attempting to fix critical database integrity issues automatically...');
           await databaseIntegrityService.fixCriticalIntegrityIssues();
 
           // Re-validate after fixes
           final postFixReport = await databaseIntegrityService.validateIntegrity();
           if (postFixReport.hasIssues) {
-            Logger.warning('⚠️ Some database integrity issues remain after automatic fixes:');
+            Logger.warning('Some database integrity issues remain after automatic fixes:');
             Logger.warning(postFixReport.toString());
           } else {
-            Logger.info('✅ All critical database integrity issues have been resolved automatically');
+            Logger.info('All critical database integrity issues have been resolved automatically');
           }
         } else {
           Logger.info(
               'ℹ️ Only non-critical sync state issues detected - skipping automatic fixes to preserve recently added devices');
         }
       } else {
-        Logger.debug('✅ Database integrity check passed - no issues detected');
+        Logger.debug('Database integrity check passed - no issues detected');
       }
 
       // Clear any stale sync state that could cause crashes
       await _clearStaleSyncState(container);
 
-      Logger.debug('✅ Sync state and database integrity validation completed');
+      Logger.debug('Sync state and database integrity validation completed');
     } catch (e) {
-      Logger.error('❌ Error during sync state validation: $e');
+      Logger.error('Error during sync state validation: $e');
       // Don't rethrow - sync validation failures shouldn't prevent app startup
       // But log the error prominently for debugging
     }
@@ -178,9 +178,9 @@ class AppBootstrapService {
           final syncPaginationService = container.resolve<ISyncPaginationService>();
           syncPaginationService.resetProgress();
           syncPaginationService.clearPendingResponseData();
-          Logger.debug('🧹 Sync pagination service state cleared');
+          Logger.debug('Sync pagination service state cleared');
         } catch (e) {
-          Logger.debug('⚠️ Sync pagination service not available or already reset: $e');
+          Logger.debug('Sync pagination service not available or already reset: $e');
         }
 
         // Ensure desktop sync service is in a clean state
@@ -189,17 +189,17 @@ class AppBootstrapService {
           // The service should already be clean at startup, but ensure no lingering operations
           if (desktopSyncService.isModeSwitching) {
             Logger.warning(
-                '⚠️ Desktop sync service was in mode-switching state at startup - this indicates a crash or interruption during the previous session. Current mode: ${desktopSyncService.currentMode.name}');
+                'Desktop sync service was in mode-switching state at startup - this indicates a crash or interruption during the previous session. Current mode: ${desktopSyncService.currentMode.name}');
           }
-          Logger.debug('🧹 Desktop sync service state verified');
+          Logger.debug('Desktop sync service state verified');
         } catch (e) {
-          Logger.debug('⚠️ Desktop sync service not available: $e');
+          Logger.debug('Desktop sync service not available: $e');
         }
       }
 
-      Logger.debug('✅ Stale sync state cleared successfully');
+      Logger.debug('Stale sync state cleared successfully');
     } catch (e) {
-      Logger.warning('⚠️ Error clearing stale sync state: $e');
+      Logger.warning('Error clearing stale sync state: $e');
       // Don't rethrow - this is a defensive cleanup operation
     }
   }

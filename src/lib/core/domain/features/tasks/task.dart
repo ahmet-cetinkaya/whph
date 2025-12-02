@@ -237,7 +237,7 @@ class Task extends BaseEntity<String> {
     try {
       return values.firstWhere((e) => e.toString() == value);
     } catch (e) {
-      Logger.warning('⚠️ Task.fromJson: Invalid $enumName value "$value", defaulting to $defaultValue');
+      Logger.warning('Task.fromJson: Invalid $enumName value "$value", defaulting to $defaultValue');
       return defaultValue;
     }
   }
@@ -282,7 +282,7 @@ class Task extends BaseEntity<String> {
         plannedDateReminderCustomOffset = plannedOffsetValue.toInt();
         if (!ReminderOffsets.isValidCustomOffset(plannedDateReminderCustomOffset)) {
           Logger.warning(
-              '⚠️ Task.fromJson: Invalid plannedDateReminderCustomOffset value "$plannedDateReminderCustomOffset", ignoring value');
+              'Task.fromJson: Invalid plannedDateReminderCustomOffset value "$plannedDateReminderCustomOffset", ignoring value');
           plannedDateReminderCustomOffset = null;
         }
       }
@@ -293,7 +293,7 @@ class Task extends BaseEntity<String> {
         deadlineDateReminderCustomOffset = deadlineOffsetValue.toInt();
         if (!ReminderOffsets.isValidCustomOffset(deadlineDateReminderCustomOffset)) {
           Logger.warning(
-              '⚠️ Task.fromJson: Invalid deadlineDateReminderCustomOffset value "$deadlineDateReminderCustomOffset", ignoring value');
+              'Task.fromJson: Invalid deadlineDateReminderCustomOffset value "$deadlineDateReminderCustomOffset", ignoring value');
           deadlineDateReminderCustomOffset = null;
         }
       }
@@ -354,9 +354,9 @@ class Task extends BaseEntity<String> {
         recurrenceParentId: json['recurrenceParentId'] as String?,
       );
     } catch (e, stackTrace) {
-      Logger.error('❌ CRITICAL ERROR in Task.fromJson: $e');
-      Logger.error('❌ JSON data keys: ${json.keys.toList()}');
-      Logger.error('❌ Stack trace: $stackTrace');
+      Logger.error('CRITICAL ERROR in Task.fromJson: $e');
+      Logger.error('JSON data keys: ${json.keys.toList()}');
+      Logger.error('Stack trace: $stackTrace');
       rethrow;
     }
   }

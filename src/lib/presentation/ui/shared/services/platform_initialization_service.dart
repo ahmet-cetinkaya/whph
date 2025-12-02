@@ -204,9 +204,9 @@ class PlatformInitializationService {
       final success = await serverSyncService.startAsServer();
 
       if (success) {
-        Logger.info('✅ PlatformInitializationService: Android server mode started successfully for background sync');
+        Logger.info('PlatformInitializationService: Android server mode started successfully for background sync');
       } else {
-        Logger.warning('❌ PlatformInitializationService: Failed to start Android server mode');
+        Logger.warning('PlatformInitializationService: Failed to start Android server mode');
       }
     } catch (e) {
       Logger.error('PlatformInitializationService: Error initializing Android server mode: $e');

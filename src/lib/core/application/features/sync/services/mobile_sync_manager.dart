@@ -15,26 +15,26 @@ class MobileSyncManager {
     try {
       final localDeviceId = await _deviceIdService.getDeviceId();
 
-      Logger.debug('🤝 Negotiating sync role:');
-      Logger.debug('   Local device ID: $localDeviceId');
-      Logger.debug('   Remote device ID: ${remoteDevice.deviceId}');
+      Logger.debug('Negotiating sync role:');
+      Logger.debug('Local device ID: $localDeviceId');
+      Logger.debug('Remote device ID: ${remoteDevice.deviceId}');
 
       // Use string comparison to determine role
       final comparison = localDeviceId.compareTo(remoteDevice.deviceId);
 
       if (comparison < 0) {
-        Logger.info('📱 Local device selected as SERVER (ID comparison: $comparison)');
+        Logger.info('Local device selected as SERVER (ID comparison: $comparison)');
         return SyncRole.server;
       } else if (comparison > 0) {
-        Logger.info('📱 Local device selected as CLIENT (ID comparison: $comparison)');
+        Logger.info('Local device selected as CLIENT (ID comparison: $comparison)');
         return SyncRole.client;
       } else {
         // Identical device IDs (unlikely but possible in testing)
-        Logger.warning('⚠️ Identical device IDs detected, falling back to client mode');
+        Logger.warning('Identical device IDs detected, falling back to client mode');
         return SyncRole.client;
       }
     } catch (e) {
-      Logger.error('❌ Error during role negotiation: $e');
+      Logger.error('Error during role negotiation: $e');
       // Default to client mode on error
       return SyncRole.client;
     }
@@ -43,18 +43,18 @@ class MobileSyncManager {
   /// Attempt to start a mobile device as sync server
   Future<bool> tryStartAsServer(AndroidServerSyncService serverService) async {
     try {
-      Logger.info('🚀 Attempting to start mobile device as sync server...');
+      Logger.info('Attempting to start mobile device as sync server...');
 
       final success = await serverService.startAsServer();
 
       if (success) {
-        Logger.info('✅ Mobile device successfully started as sync server');
-        Logger.info('🌐 Server is listening on port 44040');
-        Logger.info('📱 Ready to accept connections from other devices');
+        Logger.info('Mobile device successfully started as sync server');
+        Logger.info('Server is listening on port 44040');
+        Logger.info('Ready to accept connections from other devices');
         return true;
       } else {
-        Logger.warning('❌ Failed to start mobile device as sync server');
-        Logger.info('📱 Device will operate in client mode instead');
+        Logger.warning('Failed to start mobile device as sync server');
+        Logger.info('Device will operate in client mode instead');
         return false;
       }
     } catch (e) {

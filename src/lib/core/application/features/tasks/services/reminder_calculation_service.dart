@@ -19,7 +19,7 @@ class ReminderCalculationService extends IReminderCalculationService {
     }
 
     if (!validateReminderSettings(reminderTime: reminderTime, customOffset: customOffset)) {
-      Logger.warning('⚠️ ReminderCalculationService: Invalid reminder settings provided');
+      Logger.warning('ReminderCalculationService: Invalid reminder settings provided');
       return null;
     }
 
@@ -44,14 +44,14 @@ class ReminderCalculationService extends IReminderCalculationService {
           if (customOffset != null) {
             return baseDate.subtract(Duration(minutes: customOffset));
           }
-          Logger.warning('⚠️ ReminderCalculationService: Custom reminder time requires offset');
+          Logger.warning('ReminderCalculationService: Custom reminder time requires offset');
           return null;
 
         case ReminderTime.none:
           return null;
       }
     } catch (e) {
-      Logger.error('❌ ReminderCalculationService: Error calculating reminder datetime: $e');
+      Logger.error('ReminderCalculationService: Error calculating reminder datetime: $e');
       return null;
     }
   }
@@ -144,7 +144,7 @@ class ReminderCalculationService extends IReminderCalculationService {
             : task.deadlineDateReminderCustomOffset,
       );
     } catch (e) {
-      Logger.error('❌ ReminderCalculationService: Error getting next reminder occurrence: $e');
+      Logger.error('ReminderCalculationService: Error getting next reminder occurrence: $e');
       return null;
     }
   }
@@ -183,7 +183,7 @@ class ReminderCalculationService extends IReminderCalculationService {
       final timeDifference = nextReminder.difference(currentTime).abs();
       return timeDifference.inMinutes <= 1;
     } catch (e) {
-      Logger.error('❌ ReminderCalculationService: Error checking if reminder should trigger: $e');
+      Logger.error('ReminderCalculationService: Error checking if reminder should trigger: $e');
       return false;
     }
   }

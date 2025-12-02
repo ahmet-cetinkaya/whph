@@ -14,7 +14,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
   static const int _websocketPort = 44040;
 
   SyncCommunicationService() {
-    Logger.info('🚀 SyncCommunicationService initialized with ENHANCED Task serialization debugging');
+    Logger.info('SyncCommunicationService initialized with ENHANCED Task serialization debugging');
   }
 
   @override
@@ -24,8 +24,8 @@ class SyncCommunicationService implements ISyncCommunicationService {
     final startTime = DateTime.now();
     int attempt = 0;
 
-    Logger.info('📡 Starting paginated sync transmission to $ipAddress:$_websocketPort');
-    Logger.debug('🔍 Sending: entity=$entityType, page=$pageIndex');
+    Logger.info('Starting paginated sync transmission to $ipAddress:$_websocketPort');
+    Logger.debug('Sending: entity=$entityType, page=$pageIndex');
 
     while (attempt < _maxRetries) {
       WebSocket? socket;
@@ -51,15 +51,15 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
         // Convert DTO to JSON with yielding
         final startJsonTime = DateTime.now();
-        Logger.debug('🔄 Converting DTO to JSON for transmission');
+        Logger.debug('Converting DTO to JSON for transmission');
         await _yieldToUIThread();
 
         final dtoJson = await convertDtoToJson(dto);
         final jsonTime = DateTime.now().difference(startJsonTime).inMilliseconds;
-        Logger.debug('✅ DTO to JSON conversion completed in ${jsonTime}ms');
+        Logger.debug('DTO to JSON conversion completed in ${jsonTime}ms');
 
         await _yieldToUIThread();
-        Logger.debug('🔄 Serializing WebSocket message');
+        Logger.debug('Serializing WebSocket message');
 
         final message = WebSocketMessage(type: 'paginated_sync', data: dtoJson);
         final serializedMessage = await serializeMessage(message);
@@ -68,12 +68,12 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
         // Validate message integrity before sending
         if (!_validateMessageIntegrity(dtoJson, entityType)) {
-          Logger.error('❌ Pre-transmission validation failed');
+          Logger.error('Pre-transmission validation failed');
           throw Exception('Pre-transmission validation failed');
         }
 
         final transmissionStartTime = DateTime.now();
-        Logger.debug('🔄 Sending message via WebSocket (${serializedMessage.length} bytes)');
+        Logger.debug('Sending message via WebSocket (${serializedMessage.length} bytes)');
 
         socket.add(serializedMessage);
 
@@ -82,13 +82,13 @@ class SyncCommunicationService implements ISyncCommunicationService {
           try {
             final responseTime = DateTime.now().difference(transmissionStartTime).inMilliseconds;
             Logger.debug(
-                '📨 Received WebSocket response (${message.toString().length} bytes) - Response time: ${responseTime}ms');
+                'Received WebSocket response (${message.toString().length} bytes) - Response time: ${responseTime}ms');
             await _yieldToUIThread();
 
             final receivedMessage = await _deserializeMessage(message);
 
             if (receivedMessage == null) {
-              Logger.error('❌ Failed to deserialize WebSocket message');
+              Logger.error('Failed to deserialize WebSocket message');
               completer.complete(SyncCommunicationResponse(
                 success: false,
                 isComplete: true,
@@ -104,7 +104,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
               timeoutTimer.cancel();
 
               if (receivedMessage.data is! Map<String, dynamic>) {
-                Logger.error('❌ Invalid response data structure');
+                Logger.error('Invalid response data structure');
                 completer.complete(SyncCommunicationResponse(
                   success: false,
                   isComplete: true,
@@ -119,9 +119,9 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
               if (success) {
                 final totalTime = DateTime.now().difference(startTime).inMilliseconds;
-                Logger.info('✅ Paginated sync transmission successful (${totalTime}ms total)');
+                Logger.info('Paginated sync transmission successful (${totalTime}ms total)');
                 if (!isComplete) {
-                  Logger.info('🔄 Server indicates bidirectional sync needed (isComplete: false)');
+                  Logger.info('Server indicates bidirectional sync needed (isComplete: false)');
                 }
 
                 // Extract response data if available
@@ -130,9 +130,9 @@ class SyncCommunicationService implements ISyncCommunicationService {
                 if (paginatedSyncDataDto != null) {
                   try {
                     serverResponseData = PaginatedSyncDataDto.fromJson(paginatedSyncDataDto as Map<String, dynamic>);
-                    Logger.info('📨 Received server response data with ${serverResponseData.entityType} entities');
+                    Logger.info('Received server response data with ${serverResponseData.entityType} entities');
                   } catch (e) {
-                    Logger.error('❌ Failed to parse server response data: $e');
+                    Logger.error('Failed to parse server response data: $e');
                   }
                 }
 
@@ -143,7 +143,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
                 ));
               } else {
                 final error = responseData['error'] as String? ?? 'Unknown error';
-                Logger.error('❌ Server reported sync failure: $error');
+                Logger.error('Server reported sync failure: $error');
                 completer.complete(SyncCommunicationResponse(
                   success: false,
                   isComplete: true, // Doesn't matter if failed
@@ -154,7 +154,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
             } else if (receivedMessage.type == 'error') {
               timeoutTimer.cancel();
               final error = receivedMessage.data?['message'] ?? 'Unknown error';
-              Logger.error('❌ Server error during sync: $error');
+              Logger.error('Server error during sync: $error');
               completer.complete(SyncCommunicationResponse(
                 success: false,
                 isComplete: true,
@@ -163,7 +163,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
               break;
             }
           } catch (e) {
-            Logger.error('❌ Error processing WebSocket response: $e');
+            Logger.error('Error processing WebSocket response: $e');
             completer.complete(SyncCommunicationResponse(
               success: false,
               isComplete: true,
@@ -177,12 +177,12 @@ class SyncCommunicationService implements ISyncCommunicationService {
       } catch (e) {
         attempt++;
         final totalTime = DateTime.now().difference(startTime).inMilliseconds;
-        Logger.warning('⚠️ WebSocket attempt $attempt failed after ${totalTime}ms: $e');
+        Logger.warning('WebSocket attempt $attempt failed after ${totalTime}ms: $e');
 
         await socket?.close();
 
         if (attempt >= _maxRetries) {
-          Logger.error('❌ All WebSocket attempts failed. Final error: $e');
+          Logger.error('All WebSocket attempts failed. Final error: $e');
           return SyncCommunicationResponse(
             success: false,
             isComplete: true,
@@ -192,7 +192,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
         if (attempt < _maxRetries) {
           final backoffDelay = Duration(seconds: attempt * 2);
-          Logger.debug('⏳ Waiting ${backoffDelay.inSeconds}s before retry...');
+          Logger.debug('Waiting ${backoffDelay.inSeconds}s before retry...');
           await Future.delayed(backoffDelay);
         }
       }
@@ -212,7 +212,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
       final totalItems = _estimateDataSize(dto);
 
       if (totalItems > 100) {
-        Logger.debug('🧵 Using isolate for DTO to JSON conversion ($totalItems items)');
+        Logger.debug('Using isolate for DTO to JSON conversion ($totalItems items)');
         try {
           // Use isolate for large datasets
           final isolateData = <String, dynamic>{
@@ -239,7 +239,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
           return await compute(_convertDtoToJsonInIsolate, isolateData);
         } catch (e) {
-          Logger.warning('⚠️ Isolate conversion failed, using main thread with chunking: $e');
+          Logger.warning('Isolate conversion failed, using main thread with chunking: $e');
           return await _convertDtoToJsonWithChunking(dto);
         }
       } else {
@@ -247,11 +247,11 @@ class SyncCommunicationService implements ISyncCommunicationService {
         return await _convertDtoToJsonWithChunking(dto);
       }
     } catch (e, stackTrace) {
-      Logger.error('❌ DTO to JSON conversion failed: $e');
-      Logger.error('❌ Stack trace: $stackTrace');
+      Logger.error('DTO to JSON conversion failed: $e');
+      Logger.error('Stack trace: $stackTrace');
 
       if (dto.entityType == 'Task' || dto.tasksSyncData != null) {
-        Logger.error('🎯 CRITICAL: Task DTO conversion failed - this is the root cause!');
+        Logger.error('CRITICAL: Task DTO conversion failed - this is the root cause!');
       }
 
       rethrow;
@@ -260,7 +260,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
   @override
   Future<String> serializeMessage(WebSocketMessage message) async {
-    Logger.debug('🔄 Starting WebSocket message serialization');
+    Logger.debug('Starting WebSocket message serialization');
     await _yieldToUIThread();
 
     try {
@@ -270,14 +270,14 @@ class SyncCommunicationService implements ISyncCommunicationService {
         final estimatedSize = _estimateJsonDataSize(messageData);
 
         if (estimatedSize > 200) {
-          Logger.debug('🧵 Using isolate for large WebSocket message serialization ($estimatedSize items)');
+          Logger.debug('Using isolate for large WebSocket message serialization ($estimatedSize items)');
           try {
             return await compute(_serializeMessageInIsolate, {
               'type': message.type,
               'data': messageData,
             });
           } catch (e) {
-            Logger.warning('⚠️ Isolate serialization failed, using main thread: $e');
+            Logger.warning('Isolate serialization failed, using main thread: $e');
           }
         }
       }
@@ -288,10 +288,10 @@ class SyncCommunicationService implements ISyncCommunicationService {
       // Use standard JSON serialization
       final result = json.encode(message.toJson());
 
-      Logger.debug('✅ WebSocket message serialization completed');
+      Logger.debug('WebSocket message serialization completed');
       return result;
     } catch (e) {
-      Logger.error('❌ WebSocket message serialization failed: $e');
+      Logger.error('WebSocket message serialization failed: $e');
       rethrow;
     }
   }
@@ -303,7 +303,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
       await socket.close();
       return true;
     } catch (e) {
-      Logger.debug('🔍 Device $ipAddress is not reachable: $e');
+      Logger.debug('Device $ipAddress is not reachable: $e');
       return false;
     }
   }
@@ -315,19 +315,19 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
   @override
   Future<bool> handleConnectionError(String ipAddress, Exception error) async {
-    Logger.warning('⚠️ WebSocket connection error to $ipAddress: $error');
+    Logger.warning('WebSocket connection error to $ipAddress: $error');
 
     // Basic retry logic with exponential backoff
     for (int i = 0; i < 3; i++) {
       await Future.delayed(Duration(seconds: (i + 1) * 2));
 
       if (await isDeviceReachable(ipAddress)) {
-        Logger.info('✅ Connection to $ipAddress recovered after ${i + 1} retries');
+        Logger.info('Connection to $ipAddress recovered after ${i + 1} retries');
         return true;
       }
     }
 
-    Logger.error('❌ Failed to recover connection to $ipAddress after 3 retries');
+    Logger.error('Failed to recover connection to $ipAddress after 3 retries');
     return false;
   }
 
@@ -417,7 +417,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
   }
 
   Future<Map<String, dynamic>> _convertDtoToJsonWithChunking(PaginatedSyncDataDto dto) async {
-    Logger.debug('🔄 Converting DTO to JSON with chunked processing');
+    Logger.debug('Converting DTO to JSON with chunked processing');
 
     final result = <String, dynamic>{};
 
@@ -444,7 +444,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
     // Add entity-specific data with yielding
     await _addEntityDataWithYielding(result, dto);
 
-    Logger.debug('✅ DTO to JSON chunked conversion completed');
+    Logger.debug('DTO to JSON chunked conversion completed');
     return result;
   }
 
@@ -457,60 +457,60 @@ class SyncCommunicationService implements ISyncCommunicationService {
     if (dto.habitsSyncData != null) {
       await _yieldToUIThread();
       final itemCount = dto.habitsSyncData!.data.getTotalItemCount();
-      Logger.debug('📤 Serializing Habit data with $itemCount items');
+      Logger.debug('Serializing Habit data with $itemCount items');
       result['habitsSyncData'] = dto.habitsSyncData!.toJson();
-      Logger.debug('📤 Habit data serialized successfully');
+      Logger.debug('Habit data serialized successfully');
     } else {
-      Logger.debug('📤 No Habit data to serialize for entityType: ${dto.entityType}');
+      Logger.debug('No Habit data to serialize for entityType: ${dto.entityType}');
     }
 
     if (dto.tasksSyncData != null) {
       await _yieldToUIThread();
       final itemCount = dto.tasksSyncData!.data.getTotalItemCount();
-      Logger.debug('📤 Serializing Task data with $itemCount items');
+      Logger.debug('Serializing Task data with $itemCount items');
 
       try {
         // Add detailed debugging for Task serialization
         final syncData = dto.tasksSyncData!.data;
         Logger.debug(
-            '📤 Task data details: creates=${syncData.createSync.length}, updates=${syncData.updateSync.length}, deletes=${syncData.deleteSync.length}');
+            'Task data details: creates=${syncData.createSync.length}, updates=${syncData.updateSync.length}, deletes=${syncData.deleteSync.length}');
 
         // Test serialization of individual Task items first
         if (syncData.createSync.isNotEmpty) {
-          Logger.debug('📤 Testing createSync[0] serialization...');
+          Logger.debug('Testing createSync[0] serialization...');
           final firstTask = syncData.createSync.first;
-          Logger.debug('📤 First Task ID: ${firstTask.id}, Title: "${firstTask.title}"');
+          Logger.debug('First Task ID: ${firstTask.id}, Title: "${firstTask.title}"');
           try {
             final taskJson = firstTask.toJson();
-            Logger.debug('📤 First Task serialized successfully: ${taskJson.keys.join(', ')}');
+            Logger.debug('First Task serialized successfully: ${taskJson.keys.join(', ')}');
           } catch (taskError) {
-            Logger.error('❌ Failed to serialize first Task: $taskError');
+            Logger.error('Failed to serialize first Task: $taskError');
             Logger.error(
-                '❌ Task details - Priority: ${firstTask.priority}, ReminderTime: ${firstTask.plannedDateReminderTime}, RecurrenceType: ${firstTask.recurrenceType}');
+                'Task details - Priority: ${firstTask.priority}, ReminderTime: ${firstTask.plannedDateReminderTime}, RecurrenceType: ${firstTask.recurrenceType}');
           }
         }
 
         if (syncData.updateSync.isNotEmpty) {
-          Logger.debug('📤 Testing updateSync[0] serialization...');
+          Logger.debug('Testing updateSync[0] serialization...');
           final firstUpdateTask = syncData.updateSync.first;
-          Logger.debug('📤 First Update Task ID: ${firstUpdateTask.id}, Title: "${firstUpdateTask.title}"');
+          Logger.debug('First Update Task ID: ${firstUpdateTask.id}, Title: "${firstUpdateTask.title}"');
           try {
             final taskJson = firstUpdateTask.toJson();
-            Logger.debug('📤 First Update Task serialized successfully: ${taskJson.keys.join(', ')}');
+            Logger.debug('First Update Task serialized successfully: ${taskJson.keys.join(', ')}');
           } catch (taskError) {
-            Logger.error('❌ Failed to serialize first Update Task: $taskError');
+            Logger.error('Failed to serialize first Update Task: $taskError');
             Logger.error(
-                '❌ Task details - Priority: ${firstUpdateTask.priority}, ReminderTime: ${firstUpdateTask.plannedDateReminderTime}, RecurrenceType: ${firstUpdateTask.recurrenceType}');
+                'Task details - Priority: ${firstUpdateTask.priority}, ReminderTime: ${firstUpdateTask.plannedDateReminderTime}, RecurrenceType: ${firstUpdateTask.recurrenceType}');
           }
         }
 
         // Now attempt full tasksSyncData serialization
-        Logger.debug('📤 Attempting full tasksSyncData serialization...');
+        Logger.debug('Attempting full tasksSyncData serialization...');
         result['tasksSyncData'] = dto.tasksSyncData!.toJson();
-        Logger.debug('📤 ✅ Task data serialized successfully');
+        Logger.debug('Task data serialized successfully');
       } catch (e, stackTrace) {
-        Logger.error('❌ CRITICAL ERROR: Task data serialization failed: $e');
-        Logger.error('❌ Stack trace: $stackTrace');
+        Logger.error('CRITICAL ERROR: Task data serialization failed: $e');
+        Logger.error('Stack trace: $stackTrace');
 
         // Try to provide fallback data
         result['tasksSyncData'] = {
@@ -522,10 +522,10 @@ class SyncCommunicationService implements ISyncCommunicationService {
           'isLastPage': dto.tasksSyncData!.isLastPage,
           'entityType': dto.tasksSyncData!.entityType
         };
-        Logger.warning('⚠️ Using fallback empty Task data due to serialization error');
+        Logger.warning('Using fallback empty Task data due to serialization error');
       }
     } else {
-      Logger.debug('📤 No Task data to serialize for entityType: ${dto.entityType}');
+      Logger.debug('No Task data to serialize for entityType: ${dto.entityType}');
     }
 
     if (dto.appUsageTagsSyncData != null) {
@@ -619,10 +619,10 @@ class SyncCommunicationService implements ISyncCommunicationService {
       if (!data.containsKey('entityType')) return false;
       if (data['entityType'] != entityType) return false;
 
-      Logger.debug('✅ Message integrity validation passed');
+      Logger.debug('Message integrity validation passed');
       return true;
     } catch (e) {
-      Logger.error('❌ Message integrity validation failed: $e');
+      Logger.error('Message integrity validation failed: $e');
       return false;
     }
   }
@@ -639,7 +639,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
         data: messageMap['data'],
       );
     } catch (e) {
-      Logger.error('❌ Failed to deserialize WebSocket message: $e');
+      Logger.error('Failed to deserialize WebSocket message: $e');
       return null;
     }
   }
@@ -676,7 +676,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
       return result;
     } catch (e) {
       // Log error details and rethrow for proper error handling
-      Logger.error('❌ Isolate DTO conversion failed: $e');
+      Logger.error('Isolate DTO conversion failed: $e');
       rethrow;
     }
   }

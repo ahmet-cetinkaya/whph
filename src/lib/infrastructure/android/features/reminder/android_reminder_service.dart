@@ -92,11 +92,11 @@ class AndroidReminderService implements IReminderService {
     final int delaySeconds = (delayMillis / 1000).round();
 
     // Log the scheduling details for debugging timezone issues
-    Logger.debug('📅 Scheduling notification: $id');
-    Logger.debug('  - Original scheduled date: $scheduledDate');
-    Logger.debug('  - Local scheduled date: $localScheduledDate');
-    Logger.debug('  - Current time: $now');
-    Logger.debug('  - Delay: ${delaySeconds}s (${delayMillis}ms)');
+    Logger.debug('Scheduling notification: $id');
+    Logger.debug('- Original scheduled date: $scheduledDate');
+    Logger.debug('- Local scheduled date: $localScheduledDate');
+    Logger.debug('- Current time: $now');
+    Logger.debug('- Delay: ${delaySeconds}s (${delayMillis}ms)');
 
     // Validate delay is reasonable
     if (delaySeconds <= 0) {
@@ -127,7 +127,7 @@ class AndroidReminderService implements IReminderService {
         Logger.error('AndroidReminderService: Failed to schedule notification: $id');
       } else {
         Logger.debug(
-            '✅ Successfully scheduled notification: $id for ${DateTime.now().add(Duration(seconds: delaySeconds))}');
+            'Successfully scheduled notification: $id for ${DateTime.now().add(Duration(seconds: delaySeconds))}');
       }
     } catch (e) {
       Logger.error('AndroidReminderService: Error scheduling reminder $id: $e');

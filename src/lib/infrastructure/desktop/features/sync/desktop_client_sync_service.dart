@@ -32,7 +32,7 @@ class DesktopClientSyncService extends SyncService {
   /// Connect to a WHPH server as client
   Future<bool> connectToServer(String serverAddress, int serverPort) async {
     try {
-      Logger.info('🔌 Connecting to server at $serverAddress:$serverPort');
+      Logger.info('Connecting to server at $serverAddress:$serverPort');
 
       // Clean up any existing connection
       await _cleanupConnection();
@@ -49,14 +49,14 @@ class DesktopClientSyncService extends SyncService {
           await _handleServerMessage(message, completer);
         },
         onError: (error) {
-          Logger.error('❌ Client connection error: $error');
+          Logger.error('Client connection error: $error');
           if (!completer.isCompleted) {
             completer.complete(false);
           }
           _handleConnectionError();
         },
         onDone: () {
-          Logger.info('🔚 Server connection closed');
+          Logger.info('Server connection closed');
           if (!completer.isCompleted) {
             completer.complete(false);
           }
@@ -82,18 +82,18 @@ class DesktopClientSyncService extends SyncService {
         _isConnected = true;
 
         _startHeartbeat();
-        Logger.info('✅ Successfully connected to server $serverAddress:$serverPort');
+        Logger.info('Successfully connected to server $serverAddress:$serverPort');
 
         // Start periodic sync
         await startSync();
       } else {
         await _cleanupConnection();
-        Logger.warning('❌ Failed to connect to server');
+        Logger.warning('Failed to connect to server');
       }
 
       return connected;
     } catch (e) {
-      Logger.error('❌ Connection failed: $e');
+      Logger.error('Connection failed: $e');
       await _cleanupConnection();
       return false;
     }
@@ -101,9 +101,9 @@ class DesktopClientSyncService extends SyncService {
 
   /// Disconnect from current server
   Future<void> disconnectFromServer() async {
-    Logger.info('🔌 Disconnecting from server');
+    Logger.info('Disconnecting from server');
     await _cleanupConnection();
-    Logger.info('✅ Disconnected from server');
+    Logger.info('Disconnected from server');
   }
 
   /// Check if connected to server
@@ -121,7 +121,7 @@ class DesktopClientSyncService extends SyncService {
   @override
   Future<void> startSync() async {
     if (!_isConnected) {
-      Logger.warning('⚠️ Cannot start sync - not connected to server');
+      Logger.warning('Cannot start sync - not connected to server');
       return;
     }
 
@@ -153,16 +153,16 @@ class DesktopClientSyncService extends SyncService {
   @override
   Future<void> runSync({bool isManual = false}) async {
     if (!_isConnected) {
-      Logger.warning('⚠️ Cannot sync - not connected to server');
+      Logger.warning('Cannot sync - not connected to server');
       return;
     }
 
     try {
-      Logger.info('🔄 Starting client sync with server');
+      Logger.info('Starting client sync with server');
       await runPaginatedSync(isManual: isManual);
-      Logger.info('✅ Client sync completed successfully');
+      Logger.info('Client sync completed successfully');
     } catch (e) {
-      Logger.error('❌ Client sync failed: $e');
+      Logger.error('Client sync failed: $e');
       rethrow;
     }
   }
@@ -174,7 +174,7 @@ class DesktopClientSyncService extends SyncService {
     }
 
     try {
-      Logger.info('🔄 Starting client paginated sync over persistent connection');
+      Logger.info('Starting client paginated sync over persistent connection');
 
       // Update sync status to syncing
       updateSyncStatus(SyncStatus(
@@ -186,9 +186,9 @@ class DesktopClientSyncService extends SyncService {
       // Use persistent connection for sync instead of creating new connections
       await _performPaginatedSyncOverPersistentConnection();
 
-      Logger.info('✅ Client paginated sync completed');
+      Logger.info('Client paginated sync completed');
     } catch (e) {
-      Logger.error('❌ Client paginated sync failed: $e');
+      Logger.error('Client paginated sync failed: $e');
       rethrow;
     }
   }
@@ -207,7 +207,7 @@ class DesktopClientSyncService extends SyncService {
       },
     );
 
-    _sendMessage(syncRequest, '📤 Sent paginated sync start request over persistent connection');
+    _sendMessage(syncRequest, 'Sent paginated sync start request over persistent connection');
 
     // The sync process will continue through the WebSocket message handler
     // which will handle paginated_sync_response messages from the server
@@ -228,13 +228,13 @@ class DesktopClientSyncService extends SyncService {
       },
     );
 
-    _sendMessage(handshake, '📤 Sent client handshake request');
+    _sendMessage(handshake, 'Sent client handshake request');
   }
 
   Future<void> _handleServerMessage(dynamic message, Completer<bool>? connectionCompleter) async {
     try {
       final messageStr = message.toString();
-      Logger.debug('📨 Received server message: $messageStr');
+      Logger.debug('Received server message: $messageStr');
 
       final response = JsonMapper.deserialize<WebSocketMessage>(messageStr);
       if (response == null) return;
@@ -244,23 +244,23 @@ class DesktopClientSyncService extends SyncService {
           final data = response.data as Map<String, dynamic>;
           if (data['success'] == true) {
             _connectedServerId = data['serverId'] as String?;
-            Logger.info('✅ Client connected to server: ${data['serverName']}');
+            Logger.info('Client connected to server: ${data['serverName']}');
             connectionCompleter?.complete(true);
           } else {
-            Logger.warning('❌ Server rejected client connection: ${data['message']}');
+            Logger.warning('Server rejected client connection: ${data['message']}');
             connectionCompleter?.complete(false);
           }
           break;
 
         case 'test_response':
-          Logger.debug('📨 Received server test response');
+          Logger.debug('Received server test response');
           break;
 
         case 'paginated_sync_started':
-          Logger.info('🤝 Server acknowledged sync start');
+          Logger.info('Server acknowledged sync start');
           final data = response.data as Map<String, dynamic>;
           if (data['success'] == true) {
-            Logger.debug('✅ Paginated sync session established with server');
+            Logger.debug('Paginated sync session established with server');
             // Initiate the actual data exchange by requesting the first data page
             final firstDataRequest = WebSocketMessage(
               type: 'paginated_sync_request',
@@ -271,24 +271,24 @@ class DesktopClientSyncService extends SyncService {
                 'clientId': await _deviceIdService.getDeviceId(),
               },
             );
-            _sendMessage(firstDataRequest, '📤 Sent first data page request to server');
+            _sendMessage(firstDataRequest, 'Sent first data page request to server');
           }
           break;
 
         case 'paginated_sync':
-          Logger.debug('📨 Received paginated sync data from server');
+          Logger.debug('Received paginated sync data from server');
           final data = response.data as Map<String, dynamic>;
           if (data['success'] == true && data['paginatedSyncDataDto'] != null) {
             try {
               final dto = PaginatedSyncDataDto.fromJson(data['paginatedSyncDataDto'] as Map<String, dynamic>);
               Logger.info(
-                  '🔄 Processing sync data from server: ${dto.entityType} (page ${dto.pageIndex + 1}/${dto.totalPages})');
+                  'Processing sync data from server: ${dto.entityType} (page ${dto.pageIndex + 1}/${dto.totalPages})');
 
               // Process the data from the server
               final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
               final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
-              Logger.info('✅ Successfully processed sync data from server');
+              Logger.info('Successfully processed sync data from server');
 
               // Continue with next page if available, or send client's data for bidirectional sync
               if (!dto.isLastPage) {
@@ -303,7 +303,7 @@ class DesktopClientSyncService extends SyncService {
                   },
                 );
                 _sendMessage(nextPageRequest,
-                    '📤 Requested next page ${dto.pageIndex + 1} from server for entity ${dto.entityType}');
+                    'Requested next page ${dto.pageIndex + 1} from server for entity ${dto.entityType}');
               } else if (response.paginatedSyncDataDto != null) {
                 // Send client's data back to the server for bidirectional sync
                 final responseMessage = WebSocketMessage(
@@ -311,38 +311,38 @@ class DesktopClientSyncService extends SyncService {
                   data: response.paginatedSyncDataDto!.toJson(),
                 );
                 _sendMessage(responseMessage,
-                    '📤 Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
+                    'Sent paginated sync data back to server for entity ${response.paginatedSyncDataDto!.entityType}');
               }
             } catch (e) {
-              Logger.error('❌ Failed to process paginated_sync data: $e');
+              Logger.error('Failed to process paginated_sync data: $e');
             }
           } else {
-            Logger.warning('⚠️ Received paginated_sync with no data or failed status');
+            Logger.warning('Received paginated_sync with no data or failed status');
           }
           break;
 
         case 'paginated_sync_complete':
-          Logger.debug('📨 Received final sync completion from server');
+          Logger.debug('Received final sync completion from server');
           final data = response.data as Map<String, dynamic>;
           if (data['success'] == true && data['paginatedSyncDataDto'] != null) {
             try {
               final dto = PaginatedSyncDataDto.fromJson(data['paginatedSyncDataDto'] as Map<String, dynamic>);
-              Logger.info('🔄 Processing final sync data from server: ${dto.entityType}');
+              Logger.info('Processing final sync data from server: ${dto.entityType}');
 
               // Process the final data from the server
               final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
               await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
-              Logger.info('✅ Successfully processed final sync data from server');
+              Logger.info('Successfully processed final sync data from server');
             } catch (e) {
-              Logger.error('❌ Failed to process paginated_sync_complete data: $e');
+              Logger.error('Failed to process paginated_sync_complete data: $e');
             }
           }
 
           // Check if we need to send more data from the client side for bidirectional sync
           if (data['isComplete'] == false) {
             // Server indicates it's not complete, we might need to send more client data
-            Logger.debug('🔄 Server indicates sync not complete, preparing client data');
+            Logger.debug('Server indicates sync not complete, preparing client data');
             // In a proper implementation, we would trigger sending client data here
             // For now, we'll just update the status but leave the connection open for further messages
           } else {
@@ -356,14 +356,14 @@ class DesktopClientSyncService extends SyncService {
 
         case 'error':
           final data = response.data as Map<String, dynamic>;
-          Logger.error('❌ Server error: ${data['message']}');
+          Logger.error('Server error: ${data['message']}');
           break;
 
         default:
-          Logger.debug('📨 Unhandled message type: ${response.type}');
+          Logger.debug('Unhandled message type: ${response.type}');
       }
     } catch (e) {
-      Logger.error('❌ Error handling server message: $e');
+      Logger.error('Error handling server message: $e');
     }
   }
 
@@ -379,9 +379,9 @@ class DesktopClientSyncService extends SyncService {
               'clientId': await _deviceIdService.getDeviceId(),
             },
           );
-          _sendMessage(heartbeat, '💓 Sent heartbeat to server');
+          _sendMessage(heartbeat, ' Sent heartbeat to server');
         } catch (e) {
-          Logger.error('❌ Failed to send heartbeat: $e');
+          Logger.error('Failed to send heartbeat: $e');
           _handleConnectionError();
         }
       }
@@ -389,14 +389,14 @@ class DesktopClientSyncService extends SyncService {
   }
 
   void _handleConnectionError() {
-    Logger.warning('⚠️ Connection error detected');
+    Logger.warning('Connection error detected');
     _isConnected = false;
     // Implement reconnection logic based on settings
     _attemptReconnection();
   }
 
   void _handleConnectionClosed() {
-    Logger.info('🔚 Connection closed');
+    Logger.info('Connection closed');
     _isConnected = false;
     // Implement reconnection logic based on settings
     _attemptReconnection();
@@ -445,13 +445,13 @@ class DesktopClientSyncService extends SyncService {
   void _attemptReconnection() {
     // Implement reconnection logic based on settings
     if (_connectedServerAddress != null && _connectedServerPort != null) {
-      Logger.info('🔄 Attempting reconnection to server $_connectedServerAddress:$_connectedServerPort');
+      Logger.info('Attempting reconnection to server $_connectedServerAddress:$_connectedServerPort');
       // Add a delay before attempting reconnection
       Future.delayed(const Duration(seconds: 5), () {
         connectToServer(_connectedServerAddress!, _connectedServerPort!);
       });
     } else {
-      Logger.warning('⚠️ Cannot attempt reconnection - no server address/port stored');
+      Logger.warning('Cannot attempt reconnection - no server address/port stored');
     }
   }
 }

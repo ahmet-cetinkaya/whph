@@ -130,7 +130,7 @@ class SyncService implements ISyncService {
         // Reset the attempt count on successful sync
         _reconnectAttempts = 0;
 
-        Logger.info('✅ Paginated sync completed successfully');
+        Logger.info('Paginated sync completed successfully');
 
         // Validate database integrity after sync
         final postIntegrityReport = await integrityService.validateIntegrity();
@@ -140,9 +140,9 @@ class SyncService implements ISyncService {
 
           // Auto-fix issues after sync
           await integrityService.fixIntegrityIssues();
-          Logger.info('✅ Post-sync integrity issues fixed');
+          Logger.info('Post-sync integrity issues fixed');
         } else {
-          Logger.debug('✅ Database integrity validated after sync');
+          Logger.debug('Database integrity validated after sync');
         }
 
         // Update sync status to completed
@@ -165,9 +165,9 @@ class SyncService implements ISyncService {
             ? response.errorMessages.first
             : 'sync.errors.sync_failed';
 
-        Logger.error('❌ Paginated sync failed: $errorKey (${response.errorMessages.length} total errors)');
+        Logger.error('Paginated sync failed: $errorKey (${response.errorMessages.length} total errors)');
         if (response.errorMessages.length > 1) {
-          Logger.error('   Additional errors: ${response.errorMessages.skip(1).join(", ")}');
+          Logger.error('Additional errors: ${response.errorMessages.skip(1).join(", ")}');
         }
 
         // Update sync status to error with translation key and params

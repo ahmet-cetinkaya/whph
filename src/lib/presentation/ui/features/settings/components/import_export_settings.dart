@@ -467,7 +467,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           OverlayNotificationHelper.hideNotification();
           OverlayNotificationHelper.showSuccess(
             context: context,
-            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n📁 $savedPath',
+            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n $savedPath',
             duration: const Duration(seconds: 6),
           );
 

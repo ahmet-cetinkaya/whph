@@ -321,10 +321,10 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
       final appName = appData['appName'] as String;
       final seconds = appData['usageTimeSeconds'] as int;
       final minutes = (seconds / 60).toStringAsFixed(1);
-      Logger.info('  • $appName: ${minutes}m (${seconds}s)');
+      Logger.info('• $appName: ${minutes}m (${seconds}s)');
     }
     if (newSorted.length > 10) {
-      Logger.info('  • ... and ${newSorted.length - 10} more apps');
+      Logger.info('• ... and ${newSorted.length - 10} more apps');
     }
     Logger.info('');
 

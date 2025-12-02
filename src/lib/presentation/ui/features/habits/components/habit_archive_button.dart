@@ -131,7 +131,7 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
 
             if (kDebugMode) {
               Logger.debug(
-                '🔔 HabitArchiveButton: Habit ${newStatus ? "archived" : "unarchived"} successfully: ${widget.habitId}',
+                ' HabitArchiveButton: Habit ${newStatus ? "archived" : "unarchived"} successfully: ${widget.habitId}',
               );
             }
           },

@@ -221,31 +221,24 @@ exit
     String protocol = 'TCP',
   }) async {
     try {
-      Logger.info('🔧 [FIREWALL] Starting batch Windows firewall rule addition for port $port/$protocol');
-      Logger.debug('🔧 [FIREWALL] Rule prefix: $ruleNamePrefix');
-      Logger.debug('🔧 [FIREWALL] App path: $appPath');
+      Logger.info('Starting Windows firewall rule addition for port $port/$protocol', component: 'WindowsSetupService');
 
       // Check if rules already exist
       final inboundRuleName = '$ruleNamePrefix (Inbound)';
       final outboundRuleName = '$ruleNamePrefix (Outbound)';
 
-      Logger.debug('🔍 [FIREWALL] Checking if inbound rule exists: $inboundRuleName');
       final inboundExists = await checkFirewallRule(ruleName: inboundRuleName);
-      Logger.info('🔍 [FIREWALL] Inbound rule exists: $inboundExists');
-
-      Logger.debug('🔍 [FIREWALL] Checking if outbound rule exists: $outboundRuleName');
       final outboundExists = await checkFirewallRule(ruleName: outboundRuleName);
-      Logger.info('🔍 [FIREWALL] Outbound rule exists: $outboundExists');
 
       if (inboundExists && outboundExists) {
-        Logger.info('✅ [FIREWALL] Both inbound and outbound firewall rules already exist - skipping addition');
+        Logger.info('Both inbound and outbound firewall rules already exist - skipping addition',
+            component: 'WindowsSetupService');
         return;
       }
 
       // Check if running as admin
-      Logger.debug('🔐 [FIREWALL] Checking if running as administrator...');
       final isAdmin = await _isRunningAsAdmin();
-      Logger.info('🔐 [FIREWALL] Running as administrator: $isAdmin');
+      Logger.info('Running as administrator: $isAdmin', component: 'WindowsSetupService');
 
       // Build netsh commands for both rules
       final commands = <String>[];
@@ -254,82 +247,74 @@ exit
         final inboundCmd =
             'netsh advfirewall firewall add rule name="$inboundRuleName" dir=in action=allow program="$appPath" protocol=$protocol localport=$port';
         commands.add(inboundCmd);
-        Logger.debug('🔧 [FIREWALL] Will add inbound rule: $inboundRuleName');
       }
 
       if (!outboundExists) {
         final outboundCmd =
             'netsh advfirewall firewall add rule name="$outboundRuleName" dir=out action=allow program="$appPath" protocol=$protocol localport=$port';
         commands.add(outboundCmd);
-        Logger.debug('🔧 [FIREWALL] Will add outbound rule: $outboundRuleName');
       }
 
       if (commands.isEmpty) {
-        Logger.info('✅ [FIREWALL] No new firewall rules needed');
+        Logger.info('No new firewall rules needed', component: 'WindowsSetupService');
         return;
       }
 
-      Logger.info('🔧 [FIREWALL] Total rules to add: ${commands.length}');
-      commands.asMap().forEach((index, cmd) {
-        Logger.debug('🔧 [FIREWALL] Command ${index + 1}: $cmd');
-      });
+      Logger.info('Adding ${commands.length} firewall rules', component: 'WindowsSetupService');
 
       ProcessResult result;
 
       if (isAdmin) {
-        // If already running as admin, execute commands directly
-        Logger.info(
-            '🔧 [FIREWALL] Executing netsh commands directly with admin privileges (${commands.length} commands)');
-        for (final command in commands) {
-          // Using `/c` with `cmd.exe` allows the shell to handle parsing the command string correctly.
-          Logger.debug('🔧 [FIREWALL] Executing command with cmd /c');
-          final cmdResult = await Process.run('cmd', ['/c', command], runInShell: true);
-          Logger.debug('🔧 [FIREWALL] Command result exitCode: ${cmdResult.exitCode}');
-          if (cmdResult.exitCode != 0) {
-            Logger.error('❌ [FIREWALL] Command failed - stderr: ${cmdResult.stderr}');
-            throw Exception('Failed to execute: $command, stderr: ${cmdResult.stderr}');
+        // Running as admin - execute commands directly
+        Logger.info('Executing netsh commands directly with admin privileges', component: 'WindowsSetupService');
+        for (final cmd in commands) {
+          result = await Process.run('cmd', ['/c', cmd], runInShell: true);
+          if (result.exitCode != 0) {
+            throw WindowsFirewallRuleException(
+              'Failed to add firewall rule: ${result.stderr}',
+              netshExitCode: result.exitCode,
+              netshStderr: result.stderr,
+              netshStdout: result.stdout,
+            );
           }
-          Logger.info('✅ [FIREWALL] Command executed successfully');
         }
+        Logger.info('Firewall rules added successfully', component: 'WindowsSetupService');
         result = ProcessResult(0, 0, '', ''); // Success
       } else {
         // Request elevation using a single PowerShell session for all commands to avoid multiple UAC prompts
-        Logger.info('🔧 [FIREWALL] Requesting single elevation to run ${commands.length} netsh commands');
+        Logger.info('Requesting single elevation to run ${commands.length} netsh commands',
+            component: 'WindowsSetupService');
         result = await _runMultipleCommandsWithElevatedPrivileges(commands);
       }
 
-      Logger.debug('🔧 [FIREWALL] Batch netsh commands result - exitCode: ${result.exitCode}');
-      Logger.debug('🔧 [FIREWALL] Netsh stdout: "${result.stdout}"');
-      Logger.debug('🔧 [FIREWALL] Netsh stderr: "${result.stderr}"');
-
+      Logger.debug('Batch netsh commands result - exitCode: ${result.exitCode}', component: 'WindowsSetupService');
       if (result.exitCode != 0) {
-        final stderr = result.stderr.toString().trim();
         final stdout = result.stdout.toString().trim();
+        final stderr = result.stderr.toString().trim();
 
-        final error =
-            'WindowsFirewallRuleError: Failed to add Windows Firewall rules for port $port/$protocol. Netsh error: $stderr';
-
-        Logger.error('❌ [FIREWALL] $error');
-        Logger.error('❌ [FIREWALL] Netsh stdout: $stdout');
+        if (stdout.isNotEmpty) {
+          Logger.error('Netsh stdout: $stdout', component: 'WindowsSetupService');
+        }
+        if (stderr.isNotEmpty) {
+          Logger.error('Netsh stderr: $stderr', component: 'WindowsSetupService');
+        }
 
         throw WindowsFirewallRuleException(
-          error,
-          invalidValue: '$port/$protocol',
+          'Windows firewall rules creation failed: ${result.exitCode}',
           netshExitCode: result.exitCode,
           netshStderr: stderr,
           netshStdout: stdout,
         );
+      } else {
+        Logger.info('Windows firewall rules created successfully', component: 'WindowsSetupService');
       }
-
-      Logger.info(
-          '✅ [FIREWALL] Successfully added Windows firewall rules for port $port/$protocol (${commands.length} rules added)');
     } catch (e) {
       if (e is WindowsFirewallRuleException) {
-        Logger.error('❌ [FIREWALL] Windows firewall rules creation failed: ${e.message}');
+        Logger.error('Windows firewall rules creation failed: ${e.message}', component: 'WindowsSetupService');
         rethrow;
       } else {
         final error = 'WindowsFirewallRuleError: Unexpected error while adding firewall rules: $e';
-        Logger.error('❌ [FIREWALL] $error');
+        Logger.error('Unexpected error while adding firewall rules: $e', component: 'WindowsSetupService');
         throw WindowsFirewallRuleException(error, invalidValue: port);
       }
     }
@@ -433,7 +418,7 @@ try {
 
       return ProcessResult(0, exitCode, stdout, stderr);
     } catch (e) {
-      Logger.error('Failed to run elevated commands: $e');
+      Logger.error('Failed to run elevated commands: $e', component: 'WindowsSetupService');
 
       // Clean up temporary files in case of error
       if (await tempBatchFile.exists()) {
@@ -601,66 +586,53 @@ try {
   @override
   Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
     try {
-      Logger.debug('🔍 [FIREWALL] Checking Windows firewall rule: $ruleName (protocol: $protocol)');
+      Logger.debug('Checking Windows firewall rule: $ruleName (protocol: $protocol)', component: 'WindowsSetupService');
 
       // First, try using netsh as primary method (more reliable for exact name matching)
-      Logger.debug('🔍 [FIREWALL] Attempting netsh check for rule: $ruleName');
       final result = await Process.run(
         'netsh',
         ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
         runInShell: true,
       );
 
-      Logger.debug('🔍 [FIREWALL] Netsh result - exitCode: ${result.exitCode}');
-      Logger.debug('🔍 [FIREWALL] Netsh stdout: "${result.stdout}"');
-      Logger.debug('🔍 [FIREWALL] Netsh stderr: "${result.stderr}"');
-
       final output = result.stdout.toString();
-      // ignore: unused_local_variable
-      final errorOutput = result.stderr.toString().trim();
       final exitCode = result.exitCode;
 
       // For netsh, if the rule exists, the output should contain the rule name and exit code is 0
       // If it doesn't exist, it shows an error or no output
       final ruleExists = output.contains(ruleName) && exitCode == 0;
 
-      Logger.info(
-          '✅ [FIREWALL] Firewall rule "$ruleName" exists: $ruleExists (exitCode: $exitCode, contains ruleName: ${output.contains(ruleName)})');
+      Logger.info('Firewall rule "$ruleName" exists: $ruleExists', component: 'WindowsSetupService');
 
       if (ruleExists) {
         return true;
       }
 
       // If netsh didn't find it, try PowerShell as fallback
-      Logger.debug('🔍 [FIREWALL] Netsh did not find rule, attempting PowerShell fallback');
-      try {
-        final psCommand =
-            'try { \$rule = Get-NetFirewallRule -Name "$ruleName" -ErrorAction Stop; Write-Output \$rule.Name } catch { Write-Output "" }';
+      Logger.debug('Netsh did not find rule, attempting PowerShell fallback', component: 'WindowsSetupService');
 
-        Logger.debug('🔍 [FIREWALL] Executing PowerShell: Get-NetFirewallRule -Name "$ruleName"');
+      try {
+        Logger.debug('Executing PowerShell: Get-NetFirewallRule -Name "$ruleName"', component: 'WindowsSetupService');
         final psResult = await Process.run(
           'powershell',
-          ['-Command', psCommand],
+          ['-Command', 'Get-NetFirewallRule -Name "$ruleName"'],
           runInShell: true,
         );
 
-        Logger.debug('🔍 [FIREWALL] PowerShell result - exitCode: ${psResult.exitCode}');
-        Logger.debug('🔍 [FIREWALL] PowerShell stdout: "${psResult.stdout}"');
-        Logger.debug('🔍 [FIREWALL] PowerShell stderr: "${psResult.stderr}"');
-
         final psOutput = psResult.stdout.toString().trim();
-        final psRuleExists = psOutput == ruleName;
+        final psRuleExists = psOutput.isNotEmpty && !psOutput.toLowerCase().contains('no such');
 
-        Logger.info(
-            '✅ [FIREWALL] Firewall rule "$ruleName" exists (PowerShell fallback): $psRuleExists (output: "$psOutput")');
+        if (psRuleExists) {
+          Logger.info('Firewall rule "$ruleName" exists (PowerShell fallback)', component: 'WindowsSetupService');
+        }
 
         return psRuleExists;
       } catch (psError) {
-        Logger.warning('⚠️ [FIREWALL] PowerShell fallback also failed: $psError');
+        Logger.warning('PowerShell fallback also failed: $psError', component: 'WindowsSetupService');
         return false;
       }
     } catch (e) {
-      Logger.error('❌ [FIREWALL] Failed to check firewall rule: $e');
+      Logger.error('Failed to check firewall rule: $e', component: 'WindowsSetupService');
       return false;
     }
   }
