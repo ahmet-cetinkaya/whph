@@ -252,4 +252,33 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String exportLogsSuccess = 'settings.debug_logs.export.success';
   static const String exportLogsNoLogsAvailable = 'settings.debug_logs.export.no_logs_available';
   static const String exportLogsFileNotExist = 'settings.debug_logs.export.file_not_exist';
+
+  // Reset Database
+  static const String resetDatabaseTitle = 'settings.advanced.reset_database.title';
+  static const String resetDatabaseDescription = 'settings.advanced.reset_database.description';
+  static const String resetDatabaseDialogTitle = 'settings.advanced.reset_database.dialog.title';
+  static const String resetDatabaseDialogWarning = 'settings.advanced.reset_database.dialog.warning';
+  static const String resetDatabaseDialogConfirmText = 'settings.advanced.reset_database.dialog.confirm_text';
+  static const String resetDatabaseDialogResetting = 'settings.advanced.reset_database.dialog.resetting';
+  static const String resetDatabaseErrorTitle = 'settings.advanced.reset_database.error.title';
+  static const String resetDatabaseErrorMessage = 'settings.advanced.reset_database.error.message';
+  static const String resetDatabaseErrorHelpText = 'settings.advanced.reset_database.error.help_text';
+  static const String resetDatabaseErrorPermissionDenied = 'settings.advanced.reset_database.error.permission_denied';
+  static const String resetDatabaseErrorDiskFull = 'settings.advanced.reset_database.error.disk_full';
+  static const String resetDatabaseErrorFileNotFound = 'settings.advanced.reset_database.error.file_not_found';
+  static const String resetDatabaseErrorFileAccess = 'settings.advanced.reset_database.error.file_access';
+  static const String resetDatabaseErrorSqlite = 'settings.advanced.reset_database.error.sqlite';
+  static const String resetDatabaseErrorDatabaseLocked = 'settings.advanced.reset_database.error.database_locked';
+  static const String resetDatabaseErrorStateError = 'settings.advanced.reset_database.error.state_error';
+  static const String resetDatabaseErrorTimeout = 'settings.advanced.reset_database.error.timeout';
+  static const String resetDatabaseErrorCancel = 'settings.advanced.reset_database.error.cancel';
+  static const String resetDatabaseErrorRetry = 'settings.advanced.reset_database.error.retry';
+  static const String resetDatabaseRestartScreenCompletedTitle =
+      'settings.advanced.reset_database.restart_screen.completed_title';
+  static const String resetDatabaseRestartScreenDesktopMessage =
+      'settings.advanced.reset_database.restart_screen.desktop_message';
+  static const String resetDatabaseRestartScreenMobileMessage =
+      'settings.advanced.reset_database.restart_screen.mobile_message';
+  static const String resetDatabaseRestartNowButton =
+      'settings.advanced.reset_database.restart_screen.restart_now_button';
 }

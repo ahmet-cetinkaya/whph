@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: Annuller
-
 settings:
   about:
     title: Om
@@ -27,7 +26,9 @@ settings:
     error: Import mislykkedes
     error.entity: Fejl i type
     in_progress: Importerer data, vent venligst...
-    migration_failed: Import mislykkedes. Sørg for at du har installeret den seneste version af appen.
+    migration_failed:
+      Import mislykkedes. Sørg for at du har installeret den seneste
+      version af appen.
     select_file: Vælg fil
     strategy:
       merge: Flet med eksisterende data
@@ -38,7 +39,9 @@ settings:
     unsupported_version: Uunderstøttet version
     version_mismatch: Version ikke fundet
   import_export:
-    description: Eksportér dine data i forskellige formater eller importér data fra backup-filer
+    description:
+      Eksportér dine data i forskellige formater eller importér data fra
+      backup-filer
     select_action: Vælg import/eksport handling
     title: Import/Eksport
   language:
@@ -63,7 +66,9 @@ settings:
     some_sounds_enabled: Nogle lyde aktiveret
   permissions:
     app_usage:
-      description: Denne app har brug for tilladelse til at få adgang til app-brugsstatistik for at spore dine app-brugsmønstre præcist.
+      description:
+        Denne app har brug for tilladelse til at få adgang til app-brugsstatistik
+        for at spore dine app-brugsmønstre præcist.
       instructions: "Instruktioner:"
       steps:
         step1: Tryk på knappen "Åbn Indstilling"
@@ -72,10 +77,14 @@ settings:
         step4: Aktivér "Tillad brugsadgang" eller skift bryderen til TÆNDT
       title: App-brugstilladelse
     battery_optimization:
-      description: For pålidelige notifikationer skal denne app udelukkes fra batterioptimering. Uden dette kan påmindelser forsinkes eller ikke leveres overhovedet.
+      description:
+        For pålidelige notifikationer skal denne app udelukkes fra batterioptimering.
+        Uden dette kan påmindelser forsinkes eller ikke leveres overhovedet.
       importance: Placeringen af denne indstilling kan variere afhængigt af din enhedsproducent.
       instructions: "Instruktioner:"
-      not_disabled: Batterioptimering er stadig aktiveret. Giv tilladelse for at den relevante funktion virker korrekt.
+      not_disabled:
+        Batterioptimering er stadig aktiveret. Giv tilladelse for at den
+        relevante funktion virker korrekt.
       steps:
         step1: Tryk på knappen "Åbn Indstilling"
         step2: På indstillingsskærmen, der åbnes, find "{appName}"
@@ -85,20 +94,26 @@ settings:
         step6: Vælg "Ubegrænset"
       title: Batterioptimering
     exact_alarm:
-      description: Android 12+ kræver tilladelse til at planlægge præcise alarmer for at påmindelser fungerer korrekt.
+      description:
+        Android 12+ kræver tilladelse til at planlægge præcise alarmer
+        for at påmindelser fungerer korrekt.
       instructions: "Instruktioner:"
       steps:
         android12plus:
           step2: Gå til Alarmer & påmindelser og aktivér tilladelse
           step3: Bekræft præcis alarmtilladelse
         step1: Tryk på knappen "Åbn Indstilling"
-        step2: 'På den åbnede {appName} apps Alarmer & påmindelser side, aktivér "Tillad indstilling af alarmer og påmindelser"'
+        step2:
+          På den åbnede {appName} apps Alarmer & påmindelser side, aktivér "Tillad
+          indstilling af alarmer og påmindelser"
       title: Præcis alarmtilladelse
     fix_it: Rett det
     granted: Tilladelse givet
     instructions: Instruktioner
     notification:
-      description: Notifikationstilladelse kræves for at modtage påmindelser. Uden denne tilladelse modtager du ingen notifikationer.
+      description:
+        Notifikationstilladelse kræves for at modtage påmindelser. Uden
+        denne tilladelse modtager du ingen notifikationer.
       instructions: "Instruktioner:"
       steps:
         android:
@@ -112,69 +127,97 @@ settings:
     open_terminal: Åbn Terminal
     firewall:
       title: Firewall-tilladelse
-      description: Tillad WHPH at kommunikere gennem {platform} firewall på port 44040 til enhedssynkronisering.
-      dialog_description: WHPH har brug for firewall-tilladelse for at tillade andre enheder at oprette forbindelse til synkronisering. Følg kommandoerne nedenfor for at konfigurere din {platform} firewall. Du kan også finde disse trin i hjælpemenuen.
+      description:
+        Tillad WHPH at kommunikere gennem {platform} firewall på port 44040
+        til enhedssynkronisering.
+      dialog_description:
+        WHPH har brug for firewall-tilladelse for at tillade andre
+        enheder at oprette forbindelse til synkronisering. Følg kommandoerne nedenfor
+        for at konfigurere din {platform} firewall. Du kan også finde disse trin i
+        hjælpemenuen.
       dialog_info_text: "Bemærk: Du kan også finde disse trin i hjælpemenuen."
-      linux_manual_confirmation_button: "Jeg har konfigureret"
+      linux_manual_confirmation_button: Jeg har konfigureret
       save_confirmation_error: Kunne ikke gemme firewall-bekræftelsesindstilling
       rule_added_success: Firewall-regel tilføjet succesfuldt
       rule_add_error: Kunne ikke tilføje firewall-regel. Prøv manuelle trin.
-      add_rule_button: "Tilføj firewall-regel"
-      windows_auto_description: "Klik på 'Tilføj firewall-regel' for automatisk at tilføje firewall-reglen med UAC-tilladelsesanmodning. Hvis du foretrækker at tilføje manuelt, følg trinnene nedenfor:"
+      add_rule_button: Tilføj firewall-regel
+      windows_auto_description: "Klik på 'Tilføj firewall-regel' for automatisk
+        at tilføje firewall-reglen med UAC-tilladelsesanmodning. Hvis du foretrækker
+        at tilføje manuelt, følg trinnene nedenfor:"
       instructions:
         linux:
-          step1: "Åbn en terminal"
+          step1: Åbn en terminal
           step2: "Tjek firewall-status:"
           step3: "Tilføj firewall-regel (hvis UFW er aktiv):"
           step4: "Bekræft at reglen blev tilføjet:"
           method_terminal_title: "Metode 1: Terminalkommando"
         windows:
-          step1: "Åbn Windows Defender Firewall fra Kontrolpanel"
-          step2: "Klik på Avancerede indstillinger til venstre"
-          step3: "I venstre rude, klik på Indgående regler"
-          step4: "I højre rude, klik på Ny regel..."
-          step5: "Vælg Port og klik på Næste"
-          step6: "Vælg TCP og indtast 44040 i feltet til specifikke lokale porte"
-          step7: "Vælg Tillad forbindelsen og klik på Næste"
-          step8: "Marker alle profiler (Domæne, Privat, Offentlig) og klik på Næste"
-          step9: "Indtast et navn som WHPH Sync Port 44040 og klik på Afslut"
+          step1: Åbn Windows Defender Firewall fra Kontrolpanel
+          step2: Klik på Avancerede indstillinger til venstre
+          step3: I venstre rude, klik på Indgående regler
+          step4: I højre rude, klik på Ny regel...
+          step5: Vælg Port og klik på Næste
+          step6: Vælg TCP og indtast 44040 i feltet til specifikke lokale porte
+          step7: Vælg Tillad forbindelsen og klik på Næste
+          step8: Marker alle profiler (Domæne, Privat, Offentlig) og klik på Næste
+          step9: Indtast et navn som WHPH Sync Port 44040 og klik på Afslut
           method_gui_title: "Metode 1: Windows Firewall GUI"
           method_command_title: "Metode 2: Kommandoprompt"
-          step_open_defender: "Åbn Windows Defender Firewall → Avancerede indstillinger"
-          step_create_inbound_rule: 'Opret indgående regel: Indgående regler → Ny regel → Port → TCP → 44040 → Tillad → Alle profiler → Navn: "WHPH Sync (Indgående)"'
-          step_create_outbound_rule: 'Opret udgående regel: Udgående regler → Ny regel → Port → TCP → 44040 → Tillad → Alle profiler → Navn: "WHPH Sync (Udgående)"'
+          step_open_defender: Åbn Windows Defender Firewall → Avancerede indstillinger
+          step_create_inbound_rule:
+            'Opret indgående regel: Indgående regler → Ny
+            regel → Port → TCP → 44040 → Tillad → Alle profiler → Navn: "WHPH Sync
+            (Indgående)"'
+          step_create_outbound_rule:
+            'Opret udgående regel: Udgående regler → Ny regel
+            → Port → TCP → 44040 → Tillad → Alle profiler → Navn: "WHPH Sync (Udgående)"'
           alternative_command_prompt:
             title: "Alternativ: Brug kommandoprompt"
             steps:
-              cmd_step1: "Åbn kommandoprompt som administrator"
+              cmd_step1: Åbn kommandoprompt som administrator
               cmd_step2: "Tilføj firewall-regel:"
-        step_open_command_prompt: "1. Åbn kommandoprompt som administrator"
+        step_open_command_prompt: 1. Åbn kommandoprompt som administrator
         step_run_commands: "2. Kør disse kommandoer:"
-        step_open_terminal: "1. Åbn en terminal"
+        step_open_terminal: 1. Åbn en terminal
         step_run_command: "2. Kør denne kommando (kræver sudo-rettigheder):"
-        step_click_confirmation: "3. Efter kørsel af kommandoen, klik på bekræftelsesknappen nedenfor"
-      manual_configure_instruction: "Konfigurer firewall-regler manuelt til synkronisering (kræver administratorrettigheder):"
+        step_click_confirmation:
+          3. Efter kørsel af kommandoen, klik på bekræftelsesknappen
+          nedenfor
+      manual_configure_instruction:
+        "Konfigurer firewall-regler manuelt til synkronisering
+        (kræver administratorrettigheder):"
     startup:
-      description: For at appen starter automatisk med din enhed kræves auto-start tilladelse. Dette sikrer at påmindelser og notifikationer fungerer korrekt selv efter enhedsgenstart.
-      importance: Placeringen af auto-start indstilling varierer eller kan mangle afhængigt af enhedsproducent.
+      description:
+        For at appen starter automatisk med din enhed kræves auto-start
+        tilladelse. Dette sikrer at påmindelser og notifikationer fungerer korrekt
+        selv efter enhedsgenstart.
+      importance:
+        Placeringen af auto-start indstilling varierer eller kan mangle
+        afhængigt af enhedsproducent.
       instructions: "Instruktioner:"
       steps:
         step1: Tryk på knappen "Åbn Indstilling"
-        step2: 'På indstillingsskærmen, der åbnes, find "{appName}" app'
-        step3: 'Aktivér "Auto-start", "Autorun", "Start ved opstart" eller lignende tilladelse'
+        step2: På indstillingsskærmen, der åbnes, find "{appName}" app
+        step3:
+          Aktivér "Auto-start", "Autorun", "Start ved opstart" eller lignende
+          tilladelse
       title: Auto-start tilladelse
     title: Tilladelser
   startup:
     disable_error: Kunne ikke deaktivere startindstilling
     enable_error: Kunne ikke aktivere startindstilling
-    subtitle: Tryk for at åbne systemindstillinger og aktivere auto-start tilladelse for appen
+    subtitle:
+      Tryk for at åbne systemindstillinger og aktivere auto-start tilladelse
+      for appen
     title: Start ved opstart
   sync_devices:
     title: Synkroniser enheder
   title: Indstillinger
   backup:
     title: Backup
-    description: Opret og gendan komprimerede backups af dine applikationsdata ved hjælp af det sikre .whph format
+    description:
+      Opret og gendan komprimerede backups af dine applikationsdata ved
+      hjælp af det sikre .whph format
     export:
       title: Opret backup
       description: Eksportér alle dine data til en komprimeret .whph backup-fil
@@ -212,16 +255,22 @@ settings:
         description: Følg systemtema-indstillinger
     dynamic_accent:
       title: Dynamisk accentfarve
-      description: Hvis dit system understøtter det, vil primærfarven tilpasse sig baseret på systemets dynamiske farveskema
+      description:
+        Hvis dit system understøtter det, vil primærfarven tilpasse sig
+        baseret på systemets dynamiske farveskema
       feature: Dynamisk
     custom_accent:
       title: Brugerdefineret accentfarve
-      description: Vælg en brugerdefineret accentfarve for at personliggøre dit apps udseende
+      description:
+        Vælg en brugerdefineret accentfarve for at personliggøre dit apps
+        udseende
       feature: Brugerdefineret
     error: Kunne ikke indlæse temaindstillinger
   ui_density:
     title: Tæthed
-    description: Juster størrelsen på tekst og UI-elementer for at forbedre læsbarheden på skærme med høj DPI
+    description:
+      Juster størrelsen på tekst og UI-elementer for at forbedre læsbarheden
+      på skærme med høj DPI
     compact: Kompakt
     normal: Normal
     large: Stor
@@ -230,6 +279,45 @@ settings:
   advanced:
     title: Avanceret
     description: Avancerede indstillinger og udviklerværktøjer
+    reset_database:
+      title: Nulstil Database
+      description: Slet alle data og nulstil applikationen
+      dialog:
+        title: Nulstil Database
+        warning:
+          "Advarsel: Denne handling kan ikke fortrydes. Alle dine data bliver
+          slettet permanent."
+        confirm_text: Stryg for at bekræfte
+        resetting: Nulstiller database...
+      restart_screen:
+        completed_title: Databasen er blevet nulstillet med succes
+        desktop_message: Applikationen genstarter om {seconds} sekunder.
+        mobile_message: Genstart venligst applikationen manuelt for at fuldføre processen.
+        restart_now_button: Genstart Nu
+      error:
+        title: Nulstilling mislykkedes
+        message:
+          Kunne ikke nulstille databasen. Prøv igen eller kontakt support hvis
+          problemet fortsætter.
+        cancel: Annuller
+        retry: Prøv igen
+        help_text:
+          Hvis problemet fortsætter, så prøv at genstarte applikationen eller
+          tjek, om du har tilstrækkelig lagerplads og tilladelser.
+        permission_denied:
+          Adgang nægtet. Tjek venligst om applikationen har adgang
+          til at skrive til lager.
+        disk_full:
+          Ingen plads tilbage på enhed. Frigør venligst lagerplads og prøv
+          igen.
+        file_not_found: Databasefil ikke fundet. Dette forventes ved en ny installation.
+        file_access: Filadgangsfejl
+        sqlite: Databasefejl
+        database_locked: Database er låst. Luk venligst andre instanser af applikationen.
+        state_error:
+          Programtilstandsfejl. Genstart venligst applikationen og prøv
+          igen.
+        timeout: Operationen timed out. Prøv venligst igen.
   debug_logs:
     title: Debug-logfiler
     description: Aktiver detaljeret logføring til fil for fejlfinding og support
@@ -240,22 +328,32 @@ settings:
       description: Vis og eksporter aktuelle debug-logfiler
     page:
       title: Debug-logfiler
-      description: Vis aktuelle debug-logposter. Logfiler renses og roteres automatisk for at forhindre overdreven diskbrug.
+      description:
+        Vis aktuelle debug-logposter. Logfiler renses og roteres automatisk
+        for at forhindre overdreven diskbrug.
       content: Logindhold
       refresh: Opdater logfiler
       copy: Kopier til udklipsholder
       save_as: Gem som fil
       copied: Debug-logfiler kopieret til udklipsholder
       load_error: Fejl ved indlæsning af debug-logfiler
-      not_enabled: Debug-logføring er ikke aktiveret. Aktiver det i Avancerede indstillinger for at begynde at indsamle logfiler.
-      no_file: Ingen debug-logfil fundet. Logfiler vil blive oprettet efter aktivering af debug-logføring og appen genererer logposter.
+      not_enabled:
+        Debug-logføring er ikke aktiveret. Aktiver det i Avancerede indstillinger
+        for at begynde at indsamle logfiler.
+      no_file:
+        Ingen debug-logfil fundet. Logfiler vil blive oprettet efter aktivering
+        af debug-logføring og appen genererer logposter.
       empty: Debug-logfil er tom. Der er endnu ikke registreret nogen logposter.
     export:
       dialog_title: Eksporter debug-logfiler
       error: Fejl ved eksport af logfiler
       success: Logfil eksporteret succesfuldt
-      no_logs_available: Ingen logfiler tilgængelige til eksport. Generer nogle logfiler først.
-      file_not_exist: Logfil eksisterer ikke. Aktiver debug-logning og generer nogle logfiler.
+      no_logs_available:
+        Ingen logfiler tilgængelige til eksport. Generer nogle logfiler
+        først.
+      file_not_exist:
+        Logfil eksisterer ikke. Aktiver debug-logning og generer nogle
+        logfiler.
   task:
     title: Opgaveindstillinger
     preferences:
@@ -263,7 +361,9 @@ settings:
       description: Tilpas opførsel og standardindstillinger for opgaver
     default_estimated_time:
       title: Standard estimeret tid
-      description: Indstil standard estimeret tid for nye opgaver. Du kan deaktivere dette for at undgå automatiske tids estimater.
+      description:
+        Indstil standard estimeret tid for nye opgaver. Du kan deaktivere
+        dette for at undgå automatiske tids estimater.
       disabled: Deaktiveret
       minutes: "{minutes} minutter"
       load_error: Fejl ved indlæsning af standard estimeret tid

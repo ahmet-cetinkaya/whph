@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: Anuluj
-
 settings:
   about:
     title: O aplikacji
@@ -14,7 +13,9 @@ settings:
     csv_description: Możesz użyć tego do przeglądania w Excelu i podobnych aplikacjach.
     error: Eksport nie powiódł się
     in_progress: Eksportowanie danych, proszę czekać...
-    json_description: Eksportuj dane w czytelnym formacie JSON do celów rozwoju i debugowania.
+    json_description:
+      Eksportuj dane w czytelnym formacie JSON do celów rozwoju i
+      debugowania.
     select_directory: Wybierz katalog eksportu
     select_path: Wybierz lokalizację zapisu
     select_type: Wybierz format eksportu
@@ -27,7 +28,9 @@ settings:
     error: Import nie powiódł się
     error.entity: Błąd w typie
     in_progress: Importowanie danych, proszę czekać...
-    migration_failed: Import nie powiódł się. Upewnij się, że masz zainstalowaną najnowszą wersję aplikacji.
+    migration_failed:
+      Import nie powiódł się. Upewnij się, że masz zainstalowaną najnowszą
+      wersję aplikacji.
     select_file: Wybierz plik
     strategy:
       merge: Połącz z istniejącymi danymi
@@ -38,7 +41,9 @@ settings:
     unsupported_version: Nieobsługiwana wersja
     version_mismatch: Nie znaleziono wersji
   import_export:
-    description: Eksportuj swoje dane w różnych formatach lub importuj dane z plików kopii zapasowej
+    description:
+      Eksportuj swoje dane w różnych formatach lub importuj dane z plików
+      kopii zapasowej
     select_action: Wybierz akcję importu/eksportu
     title: Import/Eksport
   language:
@@ -63,42 +68,61 @@ settings:
     some_sounds_enabled: Niektóre dźwięki włączone
   permissions:
     app_usage:
-      description: Ta aplikacja potrzebuje uprawnień do dostępu do statystyk użycia aplikacji, aby dokładnie śledzić wzorce użycia aplikacji.
+      description:
+        Ta aplikacja potrzebuje uprawnień do dostępu do statystyk użycia
+        aplikacji, aby dokładnie śledzić wzorce użycia aplikacji.
       instructions: "Instrukcje:"
       steps:
         step1: Naciśnij przycisk "Otwórz ustawienia"
-        step2: Na ekranie ustawień dostępu do użycia, który się otworzy, znajdź "{appName}" na liście
+        step2:
+          Na ekranie ustawień dostępu do użycia, który się otworzy, znajdź "{appName}"
+          na liście
         step3: Dotknij "{appName}"
         step4: Włącz "Zezwól na dostęp do użycia" lub przełącz przełącznik na WŁĄCZONY
       title: Uprawnienie użycia aplikacji
     battery_optimization:
-      description: Dla niezawodnych powiadomień ta aplikacja musi być wyłączona z optymalizacji baterii. Bez tego przypomnienia mogą być opóźnione lub w ogóle nie dostarczane.
-      importance: Lokalizacja tego ustawienia może się różnić w zależności od producenta urządzenia.
+      description:
+        Dla niezawodnych powiadomień ta aplikacja musi być wyłączona z
+        optymalizacji baterii. Bez tego przypomnienia mogą być opóźnione lub w ogóle
+        nie dostarczane.
+      importance:
+        Lokalizacja tego ustawienia może się różnić w zależności od producenta
+        urządzenia.
       instructions: "Instrukcje:"
-      not_disabled: Optymalizacja baterii jest nadal włączona. Udziel uprawnień, aby odpowiednia funkcja działała poprawnie.
+      not_disabled:
+        Optymalizacja baterii jest nadal włączona. Udziel uprawnień, aby
+        odpowiednia funkcja działała poprawnie.
       steps:
         step1: Naciśnij przycisk "Otwórz ustawienia"
         step2: Na ekranie ustawień, który się otworzy, znajdź "{appName}"
         step3: Dotknij "{appName}"
-        step4: Upewnij się, że "Zezwól na użycie w tle" jest włączone na stronie, która się otworzy
+        step4:
+          Upewnij się, że "Zezwól na użycie w tle" jest włączone na stronie,
+          która się otworzy
         step5: Dotknij "Zezwól na użycie w tle"
         step6: Wybierz "Nieograniczone"
       title: Optymalizacja baterii
     exact_alarm:
-      description: Android 12+ wymaga uprawnień do planowania dokładnych alarmów, aby przypomnienia działały prawidłowo.
+      description:
+        Android 12+ wymaga uprawnień do planowania dokładnych alarmów,
+        aby przypomnienia działały prawidłowo.
       instructions: "Instrukcje:"
       steps:
         android12plus:
           step2: Przejdź do Alarmy i przypomnienia i włącz uprawnienie
           step3: Potwierdź uprawnienie dokładnego alarmu
         step1: Naciśnij przycisk "Otwórz ustawienia"
-        step2: 'Na otwartej stronie Alarmy i przypomnienia aplikacji {appName}, włącz "Zezwól na ustawianie alarmów i przypomnień"'
+        step2:
+          Na otwartej stronie Alarmy i przypomnienia aplikacji {appName}, włącz
+          "Zezwól na ustawianie alarmów i przypomnień"
       title: Uprawnienie dokładnego alarmu
     fix_it: Napraw to
     granted: Uprawnienie przyznane
     instructions: Instrukcje
     notification:
-      description: Uprawnienie do powiadomień jest wymagane do otrzymywania przypomnień. Bez tego uprawnienia nie będziesz otrzymywać żadnych powiadomień.
+      description:
+        Uprawnienie do powiadomień jest wymagane do otrzymywania przypomnień.
+        Bez tego uprawnienia nie będziesz otrzymywać żadnych powiadomień.
       instructions: "Instrukcje:"
       steps:
         android:
@@ -112,72 +136,112 @@ settings:
     open_terminal: Otwórz terminal
     firewall:
       title: Uprawnienie zapory sieciowej
-      description: Zezwól WHPH na komunikację przez zaporę sieciową {platform} na porcie 44040 dla synchronizacji urządzeń.
-      dialog_description: WHPH potrzebuje uprawnień zapory sieciowej, aby umożliwić innym urządzeniom łączenie się do synchronizacji. Postępuj zgodnie z poniższymi poleceniami, aby skonfigurować zaporę sieciową {platform}. Możesz również znaleźć te kroki w menu pomocy.
+      description:
+        Zezwól WHPH na komunikację przez zaporę sieciową {platform} na
+        porcie 44040 dla synchronizacji urządzeń.
+      dialog_description:
+        WHPH potrzebuje uprawnień zapory sieciowej, aby umożliwić
+        innym urządzeniom łączenie się do synchronizacji. Postępuj zgodnie z poniższymi
+        poleceniami, aby skonfigurować zaporę sieciową {platform}. Możesz również
+        znaleźć te kroki w menu pomocy.
       dialog_info_text: "Uwaga: Możesz również znaleźć te kroki w menu pomocy."
-      linux_manual_confirmation_button: "Skonfigurowałem"
-      save_confirmation_error: Nie udało się zapisać ustawienia potwierdzenia zapory sieciowej
+      linux_manual_confirmation_button: Skonfigurowałem
+      save_confirmation_error:
+        Nie udało się zapisać ustawienia potwierdzenia zapory
+        sieciowej
       rule_added_success: Reguła zapory sieciowej dodana pomyślnie
-      rule_add_error: Nie udało się dodać reguły zapory sieciowej. Spróbuj wykonać kroki ręcznie.
-      add_rule_button: "Dodaj regułę zapory sieciowej"
-      windows_auto_description: "Kliknij 'Dodaj regułę zapory sieciowej', aby automatycznie dodać regułę zapory sieciowej z żądaniem uprawnień UAC. Jeśli wolisz dodać ręcznie, postępuj zgodnie z poniższymi krokami:"
+      rule_add_error:
+        Nie udało się dodać reguły zapory sieciowej. Spróbuj wykonać
+        kroki ręcznie.
+      add_rule_button: Dodaj regułę zapory sieciowej
+      windows_auto_description:
+        "Kliknij 'Dodaj regułę zapory sieciowej', aby automatycznie
+        dodać regułę zapory sieciowej z żądaniem uprawnień UAC. Jeśli wolisz dodać
+        ręcznie, postępuj zgodnie z poniższymi krokami:"
       instructions:
         linux:
-          step1: "Otwórz terminal"
+          step1: Otwórz terminal
           step2: "Sprawdź stan zapory sieciowej:"
           step3: "Dodaj regułę zapory sieciowej (jeśli UFW jest aktywny):"
           step4: "Sprawdź, czy reguła została dodana:"
           method_terminal_title: "Metoda 1: Polecenie terminala"
         windows:
-          step1: "Otwórz Zaporę systemu Windows Defender z Panelu sterowania"
-          step2: "Kliknij Ustawienia zaawansowane po lewej stronie"
-          step3: "W lewym panelu kliknij Reguły ruchu przychodzącego"
-          step4: "W prawym panelu kliknij Nowa reguła..."
-          step5: "Wybierz Port i kliknij Dalej"
-          step6: "Wybierz TCP i wprowadź 44040 w polu określonych portów lokalnych"
-          step7: "Wybierz Zezwól na połączenie i kliknij Dalej"
-          step8: "Zaznacz wszystkie profile (Domena, Prywatny, Publiczny) i kliknij Dalej"
-          step9: "Wprowadź nazwę, np. WHPH Sync Port 44040 i kliknij Zakończ"
+          step1: Otwórz Zaporę systemu Windows Defender z Panelu sterowania
+          step2: Kliknij Ustawienia zaawansowane po lewej stronie
+          step3: W lewym panelu kliknij Reguły ruchu przychodzącego
+          step4: W prawym panelu kliknij Nowa reguła...
+          step5: Wybierz Port i kliknij Dalej
+          step6: Wybierz TCP i wprowadź 44040 w polu określonych portów lokalnych
+          step7: Wybierz Zezwól na połączenie i kliknij Dalej
+          step8:
+            Zaznacz wszystkie profile (Domena, Prywatny, Publiczny) i kliknij
+            Dalej
+          step9: Wprowadź nazwę, np. WHPH Sync Port 44040 i kliknij Zakończ
           method_gui_title: "Metoda 1: Interfejs graficzny Zapory systemu Windows"
           method_command_title: "Metoda 2: Wiersz poleceń"
-          step_open_defender: "Otwórz Zaporę systemu Windows Defender → Ustawienia zaawansowane"
-          step_create_inbound_rule: 'Utwórz regułę ruchu przychodzącego: Reguły ruchu przychodzącego → Nowa reguła → Port → TCP → 44040 → Zezwól → Wszystkie profile → Nazwa: "WHPH Sync (Przychodzący)"'
-          step_create_outbound_rule: 'Utwórz regułę ruchu wychodzącego: Reguły ruchu wychodzącego → Nowa reguła → Port → TCP → 44040 → Zezwól → Wszystkie profile → Nazwa: "WHPH Sync (Wychodzący)"'
+          step_open_defender:
+            Otwórz Zaporę systemu Windows Defender → Ustawienia
+            zaawansowane
+          step_create_inbound_rule:
+            'Utwórz regułę ruchu przychodzącego: Reguły ruchu
+            przychodzącego → Nowa reguła → Port → TCP → 44040 → Zezwól → Wszystkie
+            profile → Nazwa: "WHPH Sync (Przychodzący)"'
+          step_create_outbound_rule:
+            'Utwórz regułę ruchu wychodzącego: Reguły ruchu
+            wychodzącego → Nowa reguła → Port → TCP → 44040 → Zezwól → Wszystkie profile
+            → Nazwa: "WHPH Sync (Wychodzący)"'
           alternative_command_prompt:
             title: "Alternatywa: Użyj wiersza poleceń"
             steps:
-              cmd_step1: "Otwórz wiersz poleceń jako administrator"
+              cmd_step1: Otwórz wiersz poleceń jako administrator
               cmd_step2: "Dodaj regułę zapory sieciowej:"
-        step_open_command_prompt: "1. Otwórz wiersz poleceń jako administrator"
+        step_open_command_prompt: 1. Otwórz wiersz poleceń jako administrator
         step_run_commands: "2. Uruchom te polecenia:"
-        step_open_terminal: "1. Otwórz terminal"
+        step_open_terminal: 1. Otwórz terminal
         step_run_command: "2. Uruchom to polecenie (wymaga uprawnień sudo):"
-        step_click_confirmation: "3. Po uruchomieniu polecenia kliknij przycisk potwierdzenia poniżej"
-      manual_configure_instruction: "Ręcznie skonfiguruj reguły zapory sieciowej do synchronizacji (wymaga uprawnień administratora):"
+        step_click_confirmation:
+          3. Po uruchomieniu polecenia kliknij przycisk potwierdzenia
+          poniżej
+      manual_configure_instruction:
+        "Ręcznie skonfiguruj reguły zapory sieciowej do
+        synchronizacji (wymaga uprawnień administratora):"
     startup:
-      description: Aby aplikacja uruchamiała się automatycznie z urządzeniem, wymagane jest uprawnienie automatycznego uruchamiania. To zapewnia, że przypomnienia i powiadomienia działają prawidłowo nawet po ponownym uruchomieniu urządzenia.
-      importance: Lokalizacja ustawienia automatycznego uruchamiania różni się lub może nie być obecna w zależności od producenta urządzenia.
+      description:
+        Aby aplikacja uruchamiała się automatycznie z urządzeniem, wymagane
+        jest uprawnienie automatycznego uruchamiania. To zapewnia, że przypomnienia
+        i powiadomienia działają prawidłowo nawet po ponownym uruchomieniu urządzenia.
+      importance:
+        Lokalizacja ustawienia automatycznego uruchamiania różni się lub
+        może nie być obecna w zależności od producenta urządzenia.
       instructions: "Instrukcje:"
       steps:
         step1: Naciśnij przycisk "Otwórz ustawienia"
-        step2: 'Na ekranie ustawień, który się otworzy, znajdź aplikację "{appName}"'
-        step3: 'Włącz "Automatyczne uruchamianie", "Autorun", "Uruchom przy starcie" lub podobne uprawnienie'
+        step2: Na ekranie ustawień, który się otworzy, znajdź aplikację "{appName}"
+        step3:
+          Włącz "Automatyczne uruchamianie", "Autorun", "Uruchom przy starcie"
+          lub podobne uprawnienie
       title: Uprawnienie automatycznego uruchamiania
     title: Uprawnienia
   startup:
     disable_error: Nie udało się wyłączyć ustawienia uruchamiania
     enable_error: Nie udało się włączyć ustawienia uruchamiania
-    subtitle: Dotknij, aby otworzyć ustawienia systemowe i włączyć uprawnienie automatycznego uruchamiania dla aplikacji
+    subtitle:
+      Dotknij, aby otworzyć ustawienia systemowe i włączyć uprawnienie automatycznego
+      uruchamiania dla aplikacji
     title: Uruchom przy starcie
   sync_devices:
     title: Synchronizuj urządzenia
   title: Ustawienia
   backup:
     title: Kopia zapasowa
-    description: Twórz i przywracaj skompresowane kopie zapasowe danych aplikacji używając bezpiecznego formatu .whph
+    description:
+      Twórz i przywracaj skompresowane kopie zapasowe danych aplikacji
+      używając bezpiecznego formatu .whph
     export:
       title: Utwórz kopię zapasową
-      description: Eksportuj wszystkie swoje dane do skompresowanego pliku kopii zapasowej .whph
+      description:
+        Eksportuj wszystkie swoje dane do skompresowanego pliku kopii zapasowej
+        .whph
       in_progress: Tworzenie kopii zapasowej, proszę czekać...
       success: "Kopia zapasowa utworzona pomyślnie. Lokalizacja pliku:"
       error: Nie udało się utworzyć kopii zapasowej
@@ -199,7 +263,9 @@ settings:
     invalid_format: Nieprawidłowy format pliku kopii zapasowej
     invalid_format_error: Nieprawidłowy format pliku kopii zapasowej
     corrupted: Plik kopii zapasowej jest uszkodzony
-    export_description: Utwórz skompresowany plik kopii zapasowej zawierający wszystkie twoje dane
+    export_description:
+      Utwórz skompresowany plik kopii zapasowej zawierający wszystkie
+      twoje dane
   theme:
     title: Motyw
     description: Dostosuj wygląd WHPH
@@ -212,17 +278,22 @@ settings:
         description: Podążaj za ustawieniami motywu systemu
     dynamic_accent:
       title: Dynamiczny kolor akcentu
-      description: Jeśli twój system to obsługuje, kolor główny będzie się dostosowywać na podstawie dynamicznego schematu kolorów systemu
+      description:
+        Jeśli twój system to obsługuje, kolor główny będzie się dostosowywać
+        na podstawie dynamicznego schematu kolorów systemu
       feature: Dynamiczny
     custom_accent:
       title: Niestandardowy kolor akcentu
-      description: Wybierz niestandardowy kolor akcentu, aby spersonalizować wygląd aplikacji
+      description:
+        Wybierz niestandardowy kolor akcentu, aby spersonalizować wygląd
+        aplikacji
       feature: Niestandardowy
     error: Nie udało się załadować ustawień motywu
-
   ui_density:
     title: Gęstość
-    description: Dostosuj rozmiar tekstu i elementów interfejsu, aby poprawić czytelność na wyświetlaczach o wysokim DPI
+    description:
+      Dostosuj rozmiar tekstu i elementów interfejsu, aby poprawić czytelność
+      na wyświetlaczach o wysokim DPI
     compact: Zwarta
     normal: Normalna
     large: Duża
@@ -231,9 +302,52 @@ settings:
   advanced:
     title: Zaawansowane
     description: Zaawansowane ustawienia i narzędzia programistyczne
+    reset_database:
+      title: Zresetuj Bazę Danych
+      description: Usuń wszystkie dane i zresetuj aplikację
+      dialog:
+        title: Zresetuj Bazę Danych
+        warning:
+          "Ostrzeżenie: Ta czynność nie może zostać cofnięta. Wszystkie Twoje
+          dane zostaną trwale usunięte."
+        confirm_text: Przesuń, aby potwierdzić
+        resetting: Resetowanie bazy danych...
+      restart_screen:
+        completed_title: Baza danych została pomyślnie zresetowana
+        desktop_message: Aplikacja uruchomi się ponownie za {seconds} sekund.
+        mobile_message:
+          Proszę ręcznie uruchomić aplikację ponownie, aby ukończyć
+          proces.
+        restart_now_button: Uruchom Ponownie Teraz
+      error:
+        title: Resetowanie nie powiodło się
+        message:
+          Nie udało się zresetować bazy danych. Spróbuj ponownie lub skontaktuj
+          się z pomocą techniczną, jeśli problem będzie się powtarzał.
+        cancel: Anuluj
+        retry: Spróbuj ponownie
+        help_text:
+          Jeśli problem nadal występuje, spróbuj ponownie uruchomić aplikację
+          lub sprawdź, czy masz wystarczającą ilość miejsca i uprawnień.
+        permission_denied:
+          Odmowa dostępu. Sprawdź, czy aplikacja ma dostęp do zapisu
+          w pamięci.
+        disk_full:
+          Brak miejsca na urządzeniu. Zwolnij miejsce w pamięci i spróbuj
+          ponownie.
+        file_not_found:
+          Nie znaleziono pliku bazy danych. Jest to oczekiwane przy
+          nowej instalacji.
+        file_access: Błąd dostępu do pliku
+        sqlite: Błąd bazy danych
+        database_locked: Baza danych jest zablokowana. Zamknij inne instancje aplikacji.
+        state_error: Błąd stanu aplikacji. Uruchom ponownie aplikację i spróbuj ponownie.
+        timeout: Operacja przekroczyła czas oczekiwania. Spróbuj ponownie.
   debug_logs:
     title: Dzienniki debugowania
-    description: Włącz szczegółowe logowanie do pliku w celu rozwiązywania problemów i wsparcia
+    description:
+      Włącz szczegółowe logowanie do pliku w celu rozwiązywania problemów
+      i wsparcia
     load_settings_error: Błąd ładowania ustawień dzienników debugowania
     update_settings_error: Błąd aktualizacji ustawień dzienników debugowania
     view:
@@ -241,16 +355,25 @@ settings:
       description: Wyświetl i eksportuj bieżące dzienniki debugowania
     page:
       title: Dzienniki debugowania
-      description: Wyświetl bieżące wpisy dziennika debugowania. Dzienniki są automatycznie czyszczone i rotowane, aby zapobiec nadmiernemu użyciu dysku.
+      description:
+        Wyświetl bieżące wpisy dziennika debugowania. Dzienniki są automatycznie
+        czyszczone i rotowane, aby zapobiec nadmiernemu użyciu dysku.
       content: Zawartość dziennika
       refresh: Odśwież dzienniki
       copy: Kopiuj do schowka
       save_as: Zapisz jako plik
       copied: Dzienniki debugowania skopiowane do schowka
       load_error: Błąd ładowania dzienników debugowania
-      not_enabled: Logowanie debugowania nie jest włączone. Włącz je w Ustawieniach zaawansowanych, aby rozpocząć zbieranie dzienników.
-      no_file: Nie znaleziono pliku dziennika debugowania. Dzienniki zostaną utworzone po włączeniu logowania debugowania i wygenerowaniu wpisów dziennika przez aplikację.
-      empty: Plik dziennika debugowania jest pusty. Nie zostały jeszcze zapisane żadne wpisy dziennika.
+      not_enabled:
+        Logowanie debugowania nie jest włączone. Włącz je w Ustawieniach
+        zaawansowanych, aby rozpocząć zbieranie dzienników.
+      no_file:
+        Nie znaleziono pliku dziennika debugowania. Dzienniki zostaną utworzone
+        po włączeniu logowania debugowania i wygenerowaniu wpisów dziennika przez
+        aplikację.
+      empty:
+        Plik dziennika debugowania jest pusty. Nie zostały jeszcze zapisane żadne
+        wpisy dziennika.
     export:
       dialog_title: Eksportuj dzienniki debugowania
       error: Błąd eksportu dzienników
@@ -264,7 +387,9 @@ settings:
       description: Dostosuj zachowanie zadań i ustawienia domyślne
     default_estimated_time:
       title: Domyślny szacowany czas
-      description: Ustaw domyślny szacowany czas dla nowych zadań. Możesz to wyłączyć, aby uniknąć automatycznych szacunków czasu.
+      description:
+        Ustaw domyślny szacowany czas dla nowych zadań. Możesz to wyłączyć,
+        aby uniknąć automatycznych szacunków czasu.
       disabled: Wyłączone
       minutes: "{minutes} minut"
       load_error: Błąd ładowania domyślnego szacowanego czasu

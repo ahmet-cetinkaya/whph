@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: Zrušit
-
 settings:
   about:
     title: O aplikaci
@@ -11,7 +10,9 @@ settings:
     setting_not_found: Nastavení nenalezeno
     version_mismatch: Verze nenalezena
   export:
-    csv_description: Tento formát můžete použít pro zobrazení v Excelu a podobných aplikacích.
+    csv_description:
+      Tento formát můžete použít pro zobrazení v Excelu a podobných
+      aplikacích.
     error: Export selhal
     in_progress: Exportování dat, prosím čekejte...
     json_description: Export dat ve čitelném formátu JSON pro účely vývoje a ladění.
@@ -27,7 +28,9 @@ settings:
     error: Import selhal
     error.entity: Chyba v typu
     in_progress: Importování dat, prosím čekejte...
-    migration_failed: Import selhal. Ujistěte se, že máte nainstalovanou nejnovější verzi aplikace.
+    migration_failed:
+      Import selhal. Ujistěte se, že máte nainstalovanou nejnovější
+      verzi aplikace.
     select_file: Vyberte soubor
     strategy:
       merge: Sloučit s existujícími daty
@@ -38,7 +41,9 @@ settings:
     unsupported_version: Nepodporovaná verze
     version_mismatch: Verze nenalezena
   import_export:
-    description: Exportujte svá data v různých formátech nebo importujte data z záložních souborů
+    description:
+      Exportujte svá data v různých formátech nebo importujte data z záložních
+      souborů
     select_action: Vyberte akci import/export
     title: Import/Export
   language:
@@ -63,7 +68,9 @@ settings:
     some_sounds_enabled: Některé zvuky povoleny
   permissions:
     app_usage:
-      description: Tato aplikace potřebuje oprávnění k přístupu k statistikám používání aplikací pro přesné sledování vzorců používání aplikací.
+      description:
+        Tato aplikace potřebuje oprávnění k přístupu k statistikám používání
+        aplikací pro přesné sledování vzorců používání aplikací.
       instructions: "Instrukce:"
       steps:
         step1: Stiskněte tlačítko "Otevřít nastavení"
@@ -72,10 +79,16 @@ settings:
         step4: Zapněte "Povolit přístup k použití" nebo přepněte přepínač na ZAPNUTO
       title: Oprávnění k použití aplikace
     battery_optimization:
-      description: Pro spolehlivé notifikace musí být tato aplikace vyloučena z optimalizace baterie. Bez toho mohou být připomínky zpožděny nebo nedoručeny vůbec.
-      importance: Umístění tohoto nastavení se může lišit v závislosti na výrobci zařízení.
+      description:
+        Pro spolehlivé notifikace musí být tato aplikace vyloučena z optimalizace
+        baterie. Bez toho mohou být připomínky zpožděny nebo nedoručeny vůbec.
+      importance:
+        Umístění tohoto nastavení se může lišit v závislosti na výrobci
+        zařízení.
       instructions: "Instrukce:"
-      not_disabled: Optimalizace baterie je stále zapnuta. Poskytněte oprávnění pro správné fungování příslušné funkce.
+      not_disabled:
+        Optimalizace baterie je stále zapnuta. Poskytněte oprávnění pro
+        správné fungování příslušné funkce.
       steps:
         step1: Stiskněte tlačítko "Otevřít nastavení"
         step2: V otevřené obrazovce nastavení najděte "{appName}"
@@ -85,20 +98,26 @@ settings:
         step6: Vyberte "Neomezené"
       title: Optimalizace baterie
     exact_alarm:
-      description: Android 12+ vyžaduje oprávnění k plánování přesných alarmů pro správné fungování připomínek.
+      description:
+        Android 12+ vyžaduje oprávnění k plánování přesných alarmů pro
+        správné fungování připomínek.
       instructions: "Instrukce:"
       steps:
         android12plus:
           step2: Přejděte na Alarmy a připomínky a zapněte oprávnění
           step3: Potvrďte oprávnění přesného alarmu
         step1: Stiskněte tlačítko "Otevřít nastavení"
-        step2: 'Na stránce Alarmy a připomínky otevřené aplikace {appName} zapněte "Povolit nastavení alarmů a připomínek"'
+        step2:
+          Na stránce Alarmy a připomínky otevřené aplikace {appName} zapněte
+          "Povolit nastavení alarmů a připomínek"
       title: Oprávnění přesného alarmu
     fix_it: Opravte to
     granted: Oprávnění uděleno
     instructions: Instrukce
     notification:
-      description: Oprávnění k notifikacím je vyžadováno pro přijímání připomínek. Bez tohoto oprávnění nebudete dostávat žádné notifikace.
+      description:
+        Oprávnění k notifikacím je vyžadováno pro přijímání připomínek.
+        Bez tohoto oprávnění nebudete dostávat žádné notifikace.
       instructions: "Instrukce:"
       steps:
         android:
@@ -112,69 +131,101 @@ settings:
     open_terminal: Otevřít terminál
     firewall:
       title: Oprávnění firewallu
-      description: Povolte aplikaci WHPH komunikovat přes firewall systému {platform} na portu 44040 pro synchronizaci zařízení.
-      dialog_description: Aplikace WHPH potřebuje oprávnění firewallu, aby umožnila připojení jiných zařízení pro synchronizaci. Podle níže uvedených příkazů nakonfigurujte firewall systému {platform}. Tyto kroky můžete také najít v nabídce nápovědy.
+      description:
+        Povolte aplikaci WHPH komunikovat přes firewall systému {platform}
+        na portu 44040 pro synchronizaci zařízení.
+      dialog_description:
+        Aplikace WHPH potřebuje oprávnění firewallu, aby umožnila
+        připojení jiných zařízení pro synchronizaci. Podle níže uvedených příkazů
+        nakonfigurujte firewall systému {platform}. Tyto kroky můžete také najít v
+        nabídce nápovědy.
       dialog_info_text: "Poznámka: Tyto kroky můžete také najít v nabídce nápovědy."
-      linux_manual_confirmation_button: "Nakonfigurováno"
+      linux_manual_confirmation_button: Nakonfigurováno
       save_confirmation_error: Nepodařilo se uložit nastavení potvrzení firewallu
       rule_added_success: Pravidlo firewallu bylo úspěšně přidáno
       rule_add_error: Nepodařilo se přidat pravidlo firewallu. Zkuste ruční kroky.
-      add_rule_button: "Přidat pravidlo firewallu"
-      windows_auto_description: "Kliknutím na 'Přidat pravidlo firewallu' automaticky přidáte pravidlo firewallu s požadavkem na oprávnění UAC. Pokud dáváte přednost ručnímu přidání, postupujte podle níže uvedených kroků:"
+      add_rule_button: Přidat pravidlo firewallu
+      windows_auto_description:
+        "Kliknutím na 'Přidat pravidlo firewallu' automaticky
+        přidáte pravidlo firewallu s požadavkem na oprávnění UAC. Pokud dáváte přednost
+        ručnímu přidání, postupujte podle níže uvedených kroků:"
       instructions:
         linux:
-          step1: "Otevřete terminál"
+          step1: Otevřete terminál
           step2: "Zkontrolujte stav firewallu:"
           step3: "Přidejte pravidlo firewallu (pokud je aktivní UFW):"
           step4: "Ověřte, že bylo pravidlo přidáno:"
           method_terminal_title: "Metoda 1: Terminálový příkaz"
         windows:
-          step1: "Otevřete bránu Windows Defender Firewall z Ovládacích panelů"
-          step2: "Klikněte na Pokročilé nastavení vlevo"
-          step3: "V levém podokně klikněte na Příchozí pravidla"
-          step4: "V pravém podokně klikněte na Nové pravidlo..."
-          step5: "Vyberte Port a klikněte na Další"
-          step6: "Vyberte TCP a zadejte 44040 do pole pro konkrétní místní porty"
-          step7: "Vyberte Povolit připojení a klikněte na Další"
-          step8: "Zaškrtněte všechny profily (Doména, Soukromý, Veřejný) a klikněte na Další"
-          step9: "Zadejte název jako WHPH Sync Port 44040 a klikněte na Dokončit"
+          step1: Otevřete bránu Windows Defender Firewall z Ovládacích panelů
+          step2: Klikněte na Pokročilé nastavení vlevo
+          step3: V levém podokně klikněte na Příchozí pravidla
+          step4: V pravém podokně klikněte na Nové pravidlo...
+          step5: Vyberte Port a klikněte na Další
+          step6: Vyberte TCP a zadejte 44040 do pole pro konkrétní místní porty
+          step7: Vyberte Povolit připojení a klikněte na Další
+          step8:
+            Zaškrtněte všechny profily (Doména, Soukromý, Veřejný) a klikněte
+            na Další
+          step9: Zadejte název jako WHPH Sync Port 44040 a klikněte na Dokončit
           method_gui_title: "Metoda 1: Grafické rozhraní Windows Firewallu"
           method_command_title: "Metoda 2: Příkazový řádek"
-          step_open_defender: "Otevřete bránu Windows Defender Firewall → Pokročilé nastavení"
-          step_create_inbound_rule: 'Vytvořte příchozí pravidlo: Příchozí pravidla → Nové pravidlo → Port → TCP → 44040 → Povolit → Všechny profily → Název: "WHPH Sync (Příchozí)"'
-          step_create_outbound_rule: 'Vytvořte odchozí pravidlo: Odchozí pravidla → Nové pravidlo → Port → TCP → 44040 → Povolit → Všechny profily → Název: "WHPH Sync (Odchozí)"'
+          step_open_defender:
+            Otevřete bránu Windows Defender Firewall → Pokročilé
+            nastavení
+          step_create_inbound_rule:
+            'Vytvořte příchozí pravidlo: Příchozí pravidla
+            → Nové pravidlo → Port → TCP → 44040 → Povolit → Všechny profily → Název:
+            "WHPH Sync (Příchozí)"'
+          step_create_outbound_rule:
+            'Vytvořte odchozí pravidlo: Odchozí pravidla
+            → Nové pravidlo → Port → TCP → 44040 → Povolit → Všechny profily → Název:
+            "WHPH Sync (Odchozí)"'
           alternative_command_prompt:
             title: "Alternativa: Použijte příkazový řádek"
             steps:
-              cmd_step1: "Otevřete příkazový řádek jako správce"
+              cmd_step1: Otevřete příkazový řádek jako správce
               cmd_step2: "Přidejte pravidlo firewallu:"
-        step_open_command_prompt: "1. Otevřete příkazový řádek jako správce"
+        step_open_command_prompt: 1. Otevřete příkazový řádek jako správce
         step_run_commands: "2. Spusťte tyto příkazy:"
-        step_open_terminal: "1. Otevřete terminál"
+        step_open_terminal: 1. Otevřete terminál
         step_run_command: "2. Spusťte tento příkaz (vyžaduje oprávnění sudo):"
-        step_click_confirmation: "3. Po spuštění příkazu klikněte na tlačítko potvrzení níže"
-      manual_configure_instruction: "Ručně nakonfigurujte pravidla firewallu pro synchronizaci (vyžaduje oprávnění správce):"
+        step_click_confirmation:
+          3. Po spuštění příkazu klikněte na tlačítko potvrzení
+          níže
+      manual_configure_instruction:
+        "Ručně nakonfigurujte pravidla firewallu pro synchronizaci
+        (vyžaduje oprávnění správce):"
     startup:
-      description: Pro automatické spuštění aplikace s vaším zařízením je vyžadováno oprávnění auto-start. To zajišťuje, že připomínky a notifikace fungují správně i po restartu zařízení.
-      importance: Umístění nastavení auto-start se liší nebo nemusí být přítomno podle výrobce zařízení.
+      description:
+        Pro automatické spuštění aplikace s vaším zařízením je vyžadováno
+        oprávnění auto-start. To zajišťuje, že připomínky a notifikace fungují správně
+        i po restartu zařízení.
+      importance:
+        Umístění nastavení auto-start se liší nebo nemusí být přítomno podle
+        výrobce zařízení.
       instructions: "Instrukce:"
       steps:
         step1: Stiskněte tlačítko "Otevřít nastavení"
-        step2: 'V otevřené obrazovce nastavení najděte aplikaci "{appName}"'
-        step3: 'Zapněte "Auto-start", "Autorun", "Start at boot" nebo podobné oprávnění'
+        step2: V otevřené obrazovce nastavení najděte aplikaci "{appName}"
+        step3: Zapněte "Auto-start", "Autorun", "Start at boot" nebo podobné oprávnění
       title: Oprávnění auto-start
     title: Oprávnění
   startup:
     disable_error: Selhání vypnutí nastavení startup
     enable_error: Selhání zapnutí nastavení startup
-    subtitle: Klepněte pro otevření systémových nastavení a zapnutí oprávnění auto-start pro aplikaci
+    subtitle:
+      Klepněte pro otevření systémových nastavení a zapnutí oprávnění auto-start
+      pro aplikaci
     title: Start at Startup
   sync_devices:
     title: Synchronizovat zařízení
   title: Nastavení
   backup:
     title: Záloha
-    description: Vytvořte a obnovte komprimované zálohy dat vaší aplikace pomocí bezpečného formátu .whph
+    description:
+      Vytvořte a obnovte komprimované zálohy dat vaší aplikace pomocí bezpečného
+      formátu .whph
     export:
       title: Vytvořit zálohu
       description: Exportujte všechna vaše data do komprimovaného souboru zálohy .whph
@@ -199,7 +250,9 @@ settings:
     invalid_format: Neplatný formát souboru zálohy
     invalid_format_error: Neplatný formát souboru zálohy
     corrupted: Soubor zálohy je poškozený nebo zkažený
-    export_description: Vytvořte komprimovaný soubor zálohy obsahující všechna vaše data
+    export_description:
+      Vytvořte komprimovaný soubor zálohy obsahující všechna vaše
+      data
   theme:
     title: Téma
     description: Přizpůsobte vzhled WHPH
@@ -212,7 +265,9 @@ settings:
         description: Sledujte systémová nastavení tématu
     dynamic_accent:
       title: Dynamická barva akcentu
-      description: Pokud váš systém to podporuje, primární barva se přizpůsobí na základě dynamické barevné schématu systému
+      description:
+        Pokud váš systém to podporuje, primární barva se přizpůsobí na
+        základě dynamické barevné schématu systému
       feature: Dynamické
     custom_accent:
       title: Vlastní barva akcentu
@@ -221,7 +276,9 @@ settings:
     error: Selhání načtení nastavení tématu
   ui_density:
     title: Hustota
-    description: Upravte velikost textu a prvků rozhraní pro lepší čitelnost na displejích s vysokým DPI
+    description:
+      Upravte velikost textu a prvků rozhraní pro lepší čitelnost na displejích
+      s vysokým DPI
     compact: Kompaktní
     normal: Normální
     large: Velká
@@ -230,6 +287,45 @@ settings:
   advanced:
     title: Pokročilé
     description: Pokročilé nastavení a vývojářské nástroje
+    reset_database:
+      title: Resetovat databázi
+      description: Smazat všechna data a resetovat aplikaci
+      dialog:
+        title: Resetovat databázi
+        warning:
+          "Upozornění: Tuto akci nelze vrátit zpět. Všechna vaše data budou
+          trvale smazána."
+        confirm_text: Potvrďte potažením
+        resetting: Resetování databáze...
+      restart_screen:
+        completed_title: Databáze byla úspěšně resetována
+        desktop_message: Aplikace se restartuje za {seconds} sekund.
+        mobile_message: Pro dokončení procesu prosím ručně restartujte aplikaci.
+        restart_now_button: Restartovat nyní
+      error:
+        title: Resetování selhalo
+        message:
+          Nepodařilo se resetovat databázi. Zkuste to znovu nebo kontaktujte
+          podporu, pokud problém přetrvává.
+        cancel: Zrušit
+        retry: Zkusit znovu
+        help_text:
+          Pokud problém přetrvává, zkuste restartovat aplikaci nebo zkontrolujte,
+          zda máte dostatek úložného prostoru a oprávnění.
+        permission_denied:
+          Přístup odepřen. Zkontrolujte, zda má aplikace přístup
+          pro zápis do úložiště.
+        disk_full:
+          Na zařízení nezbylo volné místo. Uvolněte prosím místo v úložišti
+          a zkuste to znovu.
+        file_not_found: Soubor databáze nebyl nalezen. To je očekáváno u čisté instalace.
+        file_access: Chyba přístupu k souboru
+        sqlite: Chyba databáze
+        database_locked: Databáze je uzamčena. Zavřete prosím další instance aplikace.
+        state_error:
+          Chyba stavu aplikace. Restartujte prosím aplikaci a zkuste to
+          znovu.
+        timeout: Operace vypršela. Zkuste to prosím znovu.
   debug_logs:
     title: Protokoly ladění
     description: Povolit podrobné protokolování do souboru pro řešení problémů a podporu
@@ -240,22 +336,34 @@ settings:
       description: Zobrazit a exportovat aktuální protokoly ladění
     page:
       title: Protokoly ladění
-      description: Zobrazit aktuální záznamy protokolu ladění. Protokoly se automaticky čistí a rotují, aby se zabránilo nadměrnému využití disku.
+      description:
+        Zobrazit aktuální záznamy protokolu ladění. Protokoly se automaticky
+        čistí a rotují, aby se zabránilo nadměrnému využití disku.
       content: Obsah protokolu
       refresh: Obnovit protokoly
       copy: Kopírovat do schránky
       save_as: Uložit jako soubor
       copied: Protokoly ladění zkopírovány do schránky
       load_error: Chyba při načítání protokolů ladění
-      not_enabled: Protokolování ladění není povoleno. Povolte jej v pokročilých nastaveních pro zahájení shromažďování protokolů.
-      no_file: Soubor protokolu ladění nebyl nalezen. Protokoly budou vytvořeny po povolení protokolování ladění a generování záznamů protokolu aplikací.
-      empty: Soubor protokolu ladění je prázdný. Dosud nebyly zaznamenány žádné záznamy protokolu.
+      not_enabled:
+        Protokolování ladění není povoleno. Povolte jej v pokročilých nastaveních
+        pro zahájení shromažďování protokolů.
+      no_file:
+        Soubor protokolu ladění nebyl nalezen. Protokoly budou vytvořeny po
+        povolení protokolování ladění a generování záznamů protokolu aplikací.
+      empty:
+        Soubor protokolu ladění je prázdný. Dosud nebyly zaznamenány žádné záznamy
+        protokolu.
     export:
       dialog_title: Export protokolů ladění
       error: Chyba při exportu protokolů
       success: Soubor protokolu byl úspěšně exportován
-      no_logs_available: Žádné protokoly nejsou k dispozici pro export. Nejprve vygenerujte nějaké protokoly.
-      file_not_exist: Soubor protokolu neexistuje. Povolte protokolování ladění a nejprve vygenerujte nějaké protokoly.
+      no_logs_available:
+        Žádné protokoly nejsou k dispozici pro export. Nejprve vygenerujte
+        nějaké protokoly.
+      file_not_exist:
+        Soubor protokolu neexistuje. Povolte protokolování ladění a
+        nejprve vygenerujte nějaké protokoly.
   task:
     title: Nastavení úkolů
     preferences:
@@ -263,7 +371,9 @@ settings:
       description: Přizpůsobte chování úkolů a výchozí nastavení
     default_estimated_time:
       title: Výchozí odhadovaný čas
-      description: Nastavte výchozí odhadovaný čas pro nové úkoly. Můžete to zakázat, abyste se vyhnuli automatickým odhadům času.
+      description:
+        Nastavte výchozí odhadovaný čas pro nové úkoly. Můžete to zakázat,
+        abyste se vyhnuli automatickým odhadům času.
       disabled: Zakázáno
       minutes: "{minutes} minut"
       load_error: Chyba při načítání výchozího odhadovaného času

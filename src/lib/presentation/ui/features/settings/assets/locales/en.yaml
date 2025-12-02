@@ -220,6 +220,33 @@ settings:
   advanced:
     title: Advanced
     description: Advanced settings and developer tools
+    reset_database:
+      title: Reset Database
+      description: Delete all data and reset the application
+      dialog:
+        title: Reset Database
+        warning: "Warning: This action cannot be undone. All your data will be permanently deleted."
+        confirm_text: Swipe to confirm
+        resetting: Resetting database...
+      error:
+        title: Reset Failed
+        message: "Failed to reset database. Please try again or contact support if the issue persists."
+        help_text: "If the problem persists, try restarting the application or check if you have sufficient storage space and permissions."
+        permission_denied: "Permission denied. Please check if the application has access to write to storage."
+        disk_full: "No space left on device. Please free up storage space and try again."
+        file_not_found: "Database file not found. This is expected for a fresh installation."
+        file_access: "File access error"
+        sqlite: "Database error"
+        database_locked: "Database is locked. Please close any other instances of the application."
+        state_error: "Application state error. Please restart the application and try again."
+        timeout: "Operation timed out. Please try again."
+        cancel: Cancel
+        retry: Retry
+      restart_screen:
+        completed_title: Database has been reset successfully
+        desktop_message: "The application will restart in {seconds} seconds."
+        mobile_message: "Please manually restart the application to complete the process."
+        restart_now_button: Restart Now
   debug_logs:
     title: Debug Logs
     description: Enable detailed logging to file for troubleshooting and support

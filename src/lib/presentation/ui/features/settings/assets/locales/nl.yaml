@@ -1,7 +1,6 @@
 common:
   buttons:
     cancel: Annuleren
-
 settings:
   about:
     title: Over
@@ -11,10 +10,14 @@ settings:
     setting_not_found: Instelling niet gevonden
     version_mismatch: Versie niet gevonden
   export:
-    csv_description: U kunt dit gebruiken om te bekijken in Excel en vergelijkbare applicaties.
+    csv_description:
+      U kunt dit gebruiken om te bekijken in Excel en vergelijkbare
+      applicaties.
     error: Export mislukt
     in_progress: Data exporteren, even geduld...
-    json_description: Exporteer data in leesbaar JSON-formaat voor ontwikkelings- en debug-doeleinden.
+    json_description:
+      Exporteer data in leesbaar JSON-formaat voor ontwikkelings-
+      en debug-doeleinden.
     select_directory: Selecteer exportmap
     select_path: Selecteer opslaglocatie
     select_type: Selecteer exportformaat
@@ -27,7 +30,9 @@ settings:
     error: Import mislukt
     error.entity: Fout in type
     in_progress: Data importeren, even geduld...
-    migration_failed: Import mislukt. Zorg ervoor dat u de nieuwste versie van de app hebt geïnstalleerd.
+    migration_failed:
+      Import mislukt. Zorg ervoor dat u de nieuwste versie van de
+      app hebt geïnstalleerd.
     select_file: Selecteer bestand
     strategy:
       merge: Samenvoegen met bestaande data
@@ -38,7 +43,9 @@ settings:
     unsupported_version: Niet-ondersteunde versie
     version_mismatch: Versie niet gevonden
   import_export:
-    description: Exporteer uw data in verschillende formaten of importeer data uit back-upbestanden
+    description:
+      Exporteer uw data in verschillende formaten of importeer data uit
+      back-upbestanden
     select_action: Selecteer import/export-actie
     title: Import/Export
   language:
@@ -63,42 +70,61 @@ settings:
     some_sounds_enabled: Sommige geluiden ingeschakeld
   permissions:
     app_usage:
-      description: Deze app heeft toestemming nodig om toegang te krijgen tot app-gebruiksstatistieken om uw app-gebruikspatronen nauwkeurig te volgen.
+      description:
+        Deze app heeft toestemming nodig om toegang te krijgen tot app-gebruiksstatistieken
+        om uw app-gebruikspatronen nauwkeurig te volgen.
       instructions: "Instructies:"
       steps:
         step1: Druk op de knop "Instellingen openen"
-        step2: Op het gebruikstoegangsconfiguratiescherm dat opent, vind "{appName}" in de lijst
+        step2:
+          Op het gebruikstoegangsconfiguratiescherm dat opent, vind "{appName}"
+          in de lijst
         step3: Tik op "{appName}"
         step4: Schakel "Gebruikstoegang toestaan" in of zet de schakelaar op AAN
       title: App-gebruikspermission
     battery_optimization:
-      description: Voor betrouwbare notificaties moet deze app worden uitgesloten van batterijoptimalisatie. Zonder dit kunnen herinneringen vertraagd of niet bezorgd worden.
-      importance: De locatie van deze instelling kan variëren afhankelijk van de fabrikant van uw apparaat.
+      description:
+        Voor betrouwbare notificaties moet deze app worden uitgesloten
+        van batterijoptimalisatie. Zonder dit kunnen herinneringen vertraagd of niet
+        bezorgd worden.
+      importance:
+        De locatie van deze instelling kan variëren afhankelijk van de fabrikant
+        van uw apparaat.
       instructions: "Instructies:"
-      not_disabled: Batterijoptimalisatie is nog steeds ingeschakeld. Geef toestemming zodat de relevante functie correct werkt.
+      not_disabled:
+        Batterijoptimalisatie is nog steeds ingeschakeld. Geef toestemming
+        zodat de relevante functie correct werkt.
       steps:
         step1: Druk op de knop "Instellingen openen"
         step2: Op het instellingencherm dat opent, vind "{appName}"
         step3: Tik op "{appName}"
-        step4: Zorg ervoor dat "Achtergrondgebruik toestaan" is ingeschakeld op de pagina die opent
+        step4:
+          Zorg ervoor dat "Achtergrondgebruik toestaan" is ingeschakeld op de
+          pagina die opent
         step5: Tik op "Achtergrondgebruik toestaan"
         step6: Selecteer "Onbeperkt"
       title: Batterijoptimalisatie
     exact_alarm:
-      description: Android 12+ vereist toestemming om exacte alarmen in te plannen zodat herinneringen correct werken.
+      description:
+        Android 12+ vereist toestemming om exacte alarmen in te plannen
+        zodat herinneringen correct werken.
       instructions: "Instructies:"
       steps:
         android12plus:
           step2: Ga naar Alarmen & herinneringen en schakel toestemming in
           step3: Bevestig exacte alarmtoestemming
         step1: Druk op de knop "Instellingen openen"
-        step2: 'Op de Alarmen & herinneringen-pagina van de geopende {appName}-app, schakel "Toestaan van alarmen en herinneringen instellen" in'
+        step2:
+          Op de Alarmen & herinneringen-pagina van de geopende {appName}-app,
+          schakel "Toestaan van alarmen en herinneringen instellen" in
       title: Exacte alarmtoestemming
     fix_it: Herstel het
     granted: Toestemming verleend
     instructions: Instructies
     notification:
-      description: Notificatietoestemming is vereist om herinneringen te ontvangen. Zonder deze toestemming ontvangt u geen notificaties.
+      description:
+        Notificatietoestemming is vereist om herinneringen te ontvangen.
+        Zonder deze toestemming ontvangt u geen notificaties.
       instructions: "Instructies:"
       steps:
         android:
@@ -112,69 +138,103 @@ settings:
     open_terminal: Terminal openen
     firewall:
       title: Firewall-toestemming
-      description: Sta WHPH toe om te communiceren via de {platform} firewall op poort 44040 voor apparaatsynchronisatie.
-      dialog_description: WHPH heeft firewall-toestemming nodig om andere apparaten verbinding te laten maken voor synchronisatie. Volg de onderstaande commando's om je {platform} firewall te configureren. Je kunt deze stappen ook vinden in het helpmenu.
+      description:
+        Sta WHPH toe om te communiceren via de {platform} firewall op poort
+        44040 voor apparaatsynchronisatie.
+      dialog_description:
+        WHPH heeft firewall-toestemming nodig om andere apparaten
+        verbinding te laten maken voor synchronisatie. Volg de onderstaande commando's
+        om je {platform} firewall te configureren. Je kunt deze stappen ook vinden
+        in het helpmenu.
       dialog_info_text: "Opmerking: Je kunt deze stappen ook vinden in het helpmenu."
-      linux_manual_confirmation_button: "Ik heb geconfigureerd"
+      linux_manual_confirmation_button: Ik heb geconfigureerd
       save_confirmation_error: Opslaan van firewall-bevestigingsinstelling mislukt
       rule_added_success: Firewall-regel succesvol toegevoegd
-      rule_add_error: Toevoegen van firewall-regel mislukt. Probeer de handmatige stappen.
-      add_rule_button: "Firewall-regel toevoegen"
-      windows_auto_description: "Klik op 'Firewall-regel toevoegen' om automatisch de firewall-regel toe te voegen met UAC-toestemmingsverzoek. Als je liever handmatig toevoegt, volg dan de onderstaande stappen:"
+      rule_add_error:
+        Toevoegen van firewall-regel mislukt. Probeer de handmatige
+        stappen.
+      add_rule_button: Firewall-regel toevoegen
+      windows_auto_description:
+        "Klik op 'Firewall-regel toevoegen' om automatisch
+        de firewall-regel toe te voegen met UAC-toestemmingsverzoek. Als je liever
+        handmatig toevoegt, volg dan de onderstaande stappen:"
       instructions:
         linux:
-          step1: "Open een terminal"
+          step1: Open een terminal
           step2: "Controleer firewall-status:"
           step3: "Voeg firewall-regel toe (als UFW actief is):"
           step4: "Controleer of regel is toegevoegd:"
           method_terminal_title: "Methode 1: Terminalopdracht"
         windows:
-          step1: "Open Windows Defender Firewall vanuit Configuratiescherm"
-          step2: "Klik op Geavanceerde instellingen aan de linkerkant"
-          step3: "Klik in het linkerdeelvenster op Inkomende regels"
-          step4: "Klik in het rechterdeelvenster op Nieuwe regel..."
-          step5: "Selecteer Poort en klik op Volgende"
-          step6: "Selecteer TCP en voer 44040 in het veld voor specifieke lokale poorten in"
-          step7: "Selecteer Verbinding toestaan en klik op Volgende"
-          step8: "Vink alle profielen aan (Domein, Privé, Openbaar) en klik op Volgende"
-          step9: "Voer een naam in zoals WHPH Sync Poort 44040 en klik op Voltooien"
+          step1: Open Windows Defender Firewall vanuit Configuratiescherm
+          step2: Klik op Geavanceerde instellingen aan de linkerkant
+          step3: Klik in het linkerdeelvenster op Inkomende regels
+          step4: Klik in het rechterdeelvenster op Nieuwe regel...
+          step5: Selecteer Poort en klik op Volgende
+          step6:
+            Selecteer TCP en voer 44040 in het veld voor specifieke lokale poorten
+            in
+          step7: Selecteer Verbinding toestaan en klik op Volgende
+          step8: Vink alle profielen aan (Domein, Privé, Openbaar) en klik op Volgende
+          step9: Voer een naam in zoals WHPH Sync Poort 44040 en klik op Voltooien
           method_gui_title: "Methode 1: Windows Firewall GUI"
           method_command_title: "Methode 2: Opdrachtprompt"
-          step_open_defender: "Open Windows Defender Firewall → Geavanceerde instellingen"
-          step_create_inbound_rule: 'Maak inkomende regel: Inkomende regels → Nieuwe regel → Poort → TCP → 44040 → Toestaan → Alle profielen → Naam: "WHPH Sync (Inkomend)"'
-          step_create_outbound_rule: 'Maak uitgaande regel: Uitgaande regels → Nieuwe regel → Poort → TCP → 44040 → Toestaan → Alle profielen → Naam: "WHPH Sync (Uitgaand)"'
+          step_open_defender: Open Windows Defender Firewall → Geavanceerde instellingen
+          step_create_inbound_rule:
+            'Maak inkomende regel: Inkomende regels → Nieuwe
+            regel → Poort → TCP → 44040 → Toestaan → Alle profielen → Naam: "WHPH
+            Sync (Inkomend)"'
+          step_create_outbound_rule:
+            'Maak uitgaande regel: Uitgaande regels → Nieuwe
+            regel → Poort → TCP → 44040 → Toestaan → Alle profielen → Naam: "WHPH
+            Sync (Uitgaand)"'
           alternative_command_prompt:
             title: "Alternatief: Gebruik opdrachtprompt"
             steps:
-              cmd_step1: "Open opdrachtprompt als administrator"
+              cmd_step1: Open opdrachtprompt als administrator
               cmd_step2: "Voeg firewall-regel toe:"
-        step_open_command_prompt: "1. Open opdrachtprompt als administrator"
+        step_open_command_prompt: 1. Open opdrachtprompt als administrator
         step_run_commands: "2. Voer deze opdrachten uit:"
-        step_open_terminal: "1. Open een terminal"
+        step_open_terminal: 1. Open een terminal
         step_run_command: "2. Voer deze opdracht uit (vereist sudo-rechten):"
-        step_click_confirmation: "3. Na het uitvoeren van de opdracht, klik op de bevestigingsknop hieronder"
-      manual_configure_instruction: "Configureer firewall-regels handmatig voor synchronisatie (vereist administratorrechten):"
+        step_click_confirmation:
+          3. Na het uitvoeren van de opdracht, klik op de bevestigingsknop
+          hieronder
+      manual_configure_instruction:
+        "Configureer firewall-regels handmatig voor synchronisatie
+        (vereist administratorrechten):"
     startup:
-      description: Voor de app om automatisch te starten met uw apparaat is auto-start toestemming vereist. Dit zorgt ervoor dat herinneringen en notificaties correct werken zelfs na herstarts van het apparaat.
-      importance: De locatie van de auto-start instelling varieert of kan ontbreken afhankelijk van de fabrikant van het apparaat.
+      description:
+        Voor de app om automatisch te starten met uw apparaat is auto-start
+        toestemming vereist. Dit zorgt ervoor dat herinneringen en notificaties correct
+        werken zelfs na herstarts van het apparaat.
+      importance:
+        De locatie van de auto-start instelling varieert of kan ontbreken
+        afhankelijk van de fabrikant van het apparaat.
       instructions: "Instructies:"
       steps:
         step1: Druk op de knop "Instellingen openen"
-        step2: 'Op het instellingencherm dat opent, vind "{appName}" app'
-        step3: 'Schakel "Auto-start", "Autorun", "Start bij opstarten" of vergelijkbare toestemming in'
+        step2: Op het instellingencherm dat opent, vind "{appName}" app
+        step3:
+          Schakel "Auto-start", "Autorun", "Start bij opstarten" of vergelijkbare
+          toestemming in
       title: Auto-start toestemming
     title: Toestemmingen
   startup:
     disable_error: Startinstelling uitschakelen mislukt
     enable_error: Startinstelling inschakelen mislukt
-    subtitle: Tik om systeeminstellingen te openen en auto-start toestemming voor de app in te schakelen
+    subtitle:
+      Tik om systeeminstellingen te openen en auto-start toestemming voor
+      de app in te schakelen
     title: Start bij opstarten
   sync_devices:
     title: Apparaten synchroniseren
   title: Instellingen
   backup:
     title: Back-up
-    description: Maak en herstel gecomprimeerde back-ups van uw applicatiedata met het veilige .whph-formaat
+    description:
+      Maak en herstel gecomprimeerde back-ups van uw applicatiedata met
+      het veilige .whph-formaat
     export:
       title: Back-up maken
       description: Exporteer al uw data naar een gecomprimeerd .whph back-upbestand
@@ -212,16 +272,22 @@ settings:
         description: Volg systeemaanpassingen
     dynamic_accent:
       title: Dynamische accentkleur
-      description: Als uw systeem het ondersteunt, past de primaire kleur zich aan op basis van het dynamische kleurenschema van het systeem
+      description:
+        Als uw systeem het ondersteunt, past de primaire kleur zich aan
+        op basis van het dynamische kleurenschema van het systeem
       feature: Dynamisch
     custom_accent:
       title: Aangepaste accentkleur
-      description: Kies een aangepaste accentkleur om het uiterlijk van uw app te personaliseren
+      description:
+        Kies een aangepaste accentkleur om het uiterlijk van uw app te
+        personaliseren
       feature: Aangepast
     error: Thema-instellingen laden mislukt
   ui_density:
     title: Dichtheid
-    description: Pas de grootte van tekst en UI-elementen aan om de leesbaarheid op schermen met hoge DPI te verbeteren
+    description:
+      Pas de grootte van tekst en UI-elementen aan om de leesbaarheid op
+      schermen met hoge DPI te verbeteren
     compact: Compact
     normal: Normaal
     large: Groot
@@ -230,9 +296,52 @@ settings:
   advanced:
     title: Geavanceerd
     description: Geavanceerde instellingen en ontwikkelaarstools
+    reset_database:
+      title: Database Resetten
+      description: Verwijder alle data en reset de applicatie
+      dialog:
+        title: Database Resetten
+        warning:
+          "Waarschuwing: Deze actie kan niet ongedaan worden gemaakt. Al uw
+          data wordt permanent verwijderd."
+        confirm_text: Swipe om te bevestigen
+        resetting: Database resetten...
+      restart_screen:
+        completed_title: Database is succesvol gereset
+        desktop_message: De applicatie herstart over {seconds} seconden.
+        mobile_message: Herstart de applicatie handmatig om het proces te voltooien.
+        restart_now_button: Nu Herstarten
+      error:
+        title: Reset mislukt
+        message:
+          Kon database niet resetten. Probeer opnieuw of neem contact op met
+          support als het probleem aanhoudt.
+        cancel: Annuleren
+        retry: Opnieuw proberen
+        help_text:
+          Als het probleem aanhoudt, probeer dan de applicatie opnieuw te
+          starten of controleer of u voldoende opslagruimte en machtigingen heeft.
+        permission_denied:
+          Toegang geweigerd. Controleer of de applicatie toegang
+          heeft om naar de opslag te schrijven.
+        disk_full:
+          Geen ruimte meer op apparaat. Maak opslagruimte vrij en probeer
+          het opnieuw.
+        file_not_found:
+          Databasebestand niet gevonden. Dit is verwacht bij een nieuwe
+          installatie.
+        file_access: Bestandstoegangsfout
+        sqlite: Databasefout
+        database_locked: Database is vergrendeld. Sluit andere instanties van de applicatie.
+        state_error:
+          Applicatiestatusfout. Start de applicatie opnieuw en probeer
+          het opnieuw.
+        timeout: Operatie timeout. Probeer het opnieuw.
   debug_logs:
     title: Debug-logs
-    description: Gedetailleerde logging naar bestand inschakelen voor probleemoplossing en ondersteuning
+    description:
+      Gedetailleerde logging naar bestand inschakelen voor probleemoplossing
+      en ondersteuning
     load_settings_error: Fout bij laden van debug-log instellingen
     update_settings_error: Fout bij bijwerken van debug-log instellingen
     view:
@@ -240,22 +349,32 @@ settings:
       description: Huidige debug-logs bekijken en exporteren
     page:
       title: Debug-logs
-      description: Huidige debug-logvermeldingen bekijken. Logs worden automatisch geleegd en geroteerd om overmatig schijfgebruik te voorkomen.
+      description:
+        Huidige debug-logvermeldingen bekijken. Logs worden automatisch
+        geleegd en geroteerd om overmatig schijfgebruik te voorkomen.
       content: Loginhoud
       refresh: Logs vernieuwen
       copy: Kopiëren naar klembord
       save_as: Opslaan als bestand
       copied: Debug-logs gekopieerd naar klembord
       load_error: Fout bij laden van debug-logs
-      not_enabled: Debug-logging is niet ingeschakeld. Schakel het in bij Geavanceerde instellingen om logs te verzamelen.
-      no_file: Geen debug-logbestand gevonden. Logs worden aangemaakt nadat debug-logging is ingeschakeld en de app logvermeldingen genereert.
+      not_enabled:
+        Debug-logging is niet ingeschakeld. Schakel het in bij Geavanceerde
+        instellingen om logs te verzamelen.
+      no_file:
+        Geen debug-logbestand gevonden. Logs worden aangemaakt nadat debug-logging
+        is ingeschakeld en de app logvermeldingen genereert.
       empty: Debug-logbestand is leeg. Er zijn nog geen logvermeldingen opgenomen.
     export:
       dialog_title: Debug-logs exporteren
       error: Fout bij het exporteren van logs
       success: Logbestand succesvol geëxporteerd
-      no_logs_available: Geen logs beschikbaar om te exporteren. Genereer eerst enkele logs.
-      file_not_exist: Logbestand bestaat niet. Schakel debug logging in en genereer logs.
+      no_logs_available:
+        Geen logs beschikbaar om te exporteren. Genereer eerst enkele
+        logs.
+      file_not_exist:
+        Logbestand bestaat niet. Schakel debug logging in en genereer
+        logs.
   task:
     title: Taakinstellingen
     preferences:
@@ -263,7 +382,9 @@ settings:
       description: Pas taakgedrag en standaardinstellingen aan
     default_estimated_time:
       title: Standaard geschatte tijd
-      description: Stel de standaard geschatte tijd in voor nieuwe taken. U kunt dit uitschakelen om automatische tijdschattingen te vermijden.
+      description:
+        Stel de standaard geschatte tijd in voor nieuwe taken. U kunt dit
+        uitschakelen om automatische tijdschattingen te vermijden.
       disabled: Uitgeschakeld
       minutes: "{minutes} minuten"
       load_error: Fout bij laden standaard geschatte tijd
