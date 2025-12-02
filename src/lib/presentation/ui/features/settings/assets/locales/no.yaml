@@ -348,6 +348,7 @@ settings:
       empty:
         Feilsøkingsloggfil er tom. Ingen loggoppføringer har blitt registrert
         ennå.
+      toggle_auto_scroll: Bytt automatisk rulling
     export:
       dialog_title: Eksporter feilsøkingslogger
       error: Feil ved eksport av logger

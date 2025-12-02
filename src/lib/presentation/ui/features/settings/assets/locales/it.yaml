@@ -367,6 +367,7 @@ settings:
       empty:
         Il file di log di debug è vuoto. Non sono ancora state registrate voci
         di log.
+      toggle_auto_scroll: Attiva/disattiva scorrimento automatico
     export:
       dialog_title: Esporta log di debug
       error: Errore nell'esportazione dei log

@@ -241,6 +241,7 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String debugLogsCopy = 'settings.debug_logs.page.copy';
   static const String debugLogsSaveAs = 'settings.debug_logs.page.save_as';
   static const String debugLogsCopied = 'settings.debug_logs.page.copied';
+  static const String debugLogsToggleAutoScroll = 'settings.debug_logs.page.toggle_auto_scroll';
   static const String debugLogsLoadError = 'settings.debug_logs.page.load_error';
   static const String debugLogsNotEnabled = 'settings.debug_logs.page.not_enabled';
   static const String debugLogsNoFile = 'settings.debug_logs.page.no_file';

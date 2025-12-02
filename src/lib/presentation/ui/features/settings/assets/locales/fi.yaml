@@ -353,6 +353,7 @@ settings:
         Virheenkorjauslokitiedostoa ei löytynyt. Lokit luodaan virheenkorjauslokituksen
         käyttöönoton ja sovelluksen lokimerkintöjen luomisen jälkeen.
       empty: Virheenkorjauslokitiedosto on tyhjä. Lokimerkintöjä ei ole vielä tallennettu.
+      toggle_auto_scroll: Vaihda automaattinen vieritys
     export:
       dialog_title: Vie virheenkorjauslokit
       error: Virhe lokien viemisessä

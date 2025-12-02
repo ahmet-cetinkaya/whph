@@ -382,6 +382,7 @@ settings:
       empty:
         El archivo de registro de depuración está vacío. Aún no se han registrado
         entradas de registro.
+      toggle_auto_scroll: Alternar desplazamiento automático
     export:
       dialog_title: Exportar registros de depuración
       error: Error al exportar registros

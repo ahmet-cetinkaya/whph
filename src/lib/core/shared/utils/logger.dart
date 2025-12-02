@@ -22,6 +22,13 @@ import 'package:whph/core/application/shared/services/abstraction/i_logger_servi
 /// Logger.warning('Warning message');
 /// Logger.error('Error message');
 /// Logger.fatal('Fatal error message');
+///
+/// // With component identification:
+/// Logger.debug('Debug message', component: 'ComponentName');
+/// Logger.info('Info message', component: 'SyncService');
+/// Logger.warning('Warning message', component: 'DatabaseService');
+/// Logger.error('Error message', component: 'ApiService', error: exception, stackTrace: stackTrace);
+/// Logger.fatal('Fatal error message', component: 'AppInitialization');
 /// ```
 class Logger {
   Logger._(); // Private constructor to prevent instantiation
@@ -54,56 +61,74 @@ class Logger {
     }
   }
 
+  /// Formats a log message with component identification and standard structure
+  static String _formatMessage(String message, String? component) {
+    if (component != null && component.isNotEmpty) {
+      return '[$component] $message';
+    }
+    return message;
+  }
+
   /// Safely logs a message, falling back to debugPrint if logger is not available
-  static void _safeLog(String level, String message) {
+  static void _safeLog(String level, String message, {String? component, Object? error, StackTrace? stackTrace}) {
+    final formattedMessage = _formatMessage(message, component);
     final logger = _instance;
+
     if (logger != null) {
       switch (level) {
         case 'debug':
-          logger.debug(message);
+          logger.debug(formattedMessage, error, stackTrace);
           break;
         case 'info':
-          logger.info(message);
+          logger.info(formattedMessage, error, stackTrace);
           break;
         case 'warning':
-          logger.warning(message);
+          logger.warning(formattedMessage, error, stackTrace);
           break;
         case 'error':
-          logger.error(message);
+          logger.error(formattedMessage, error, stackTrace);
           break;
         case 'fatal':
-          logger.fatal(message);
+          logger.fatal(formattedMessage, error, stackTrace);
           break;
       }
     } else if (kDebugMode) {
       // Fallback to debugPrint in debug mode when logger is not available
-      debugPrint('[$level] $message');
+      // Include component in fallback logging as well
+      final componentPrefix = component != null && component.isNotEmpty ? '[$component] ' : '';
+      debugPrint('[$level] $componentPrefix$message');
+      if (error != null) {
+        debugPrint('Error: $error');
+      }
+      if (stackTrace != null) {
+        debugPrint('Stack trace: $stackTrace');
+      }
     }
     // In release mode, ignore logs when logger is not available
   }
 
-  /// Logs a debug message
-  static void debug(String message) {
-    _safeLog('debug', message);
+  /// Logs a debug message with optional component identification
+  static void debug(String message, {String? component, Object? error, StackTrace? stackTrace}) {
+    _safeLog('debug', message, component: component, error: error, stackTrace: stackTrace);
   }
 
-  /// Logs an info message
-  static void info(String message) {
-    _safeLog('info', message);
+  /// Logs an info message with optional component identification
+  static void info(String message, {String? component, Object? error, StackTrace? stackTrace}) {
+    _safeLog('info', message, component: component, error: error, stackTrace: stackTrace);
   }
 
-  /// Logs a warning message
-  static void warning(String message) {
-    _safeLog('warning', message);
+  /// Logs a warning message with optional component identification
+  static void warning(String message, {String? component, Object? error, StackTrace? stackTrace}) {
+    _safeLog('warning', message, component: component, error: error, stackTrace: stackTrace);
   }
 
-  /// Logs an error message
-  static void error(String message) {
-    _safeLog('error', message);
+  /// Logs an error message with optional component identification
+  static void error(String message, {String? component, Object? error, StackTrace? stackTrace}) {
+    _safeLog('error', message, component: component, error: error, stackTrace: stackTrace);
   }
 
-  /// Logs a fatal error message
-  static void fatal(String message) {
-    _safeLog('fatal', message);
+  /// Logs a fatal error message with optional component identification
+  static void fatal(String message, {String? component, Object? error, StackTrace? stackTrace}) {
+    _safeLog('fatal', message, component: component, error: error, stackTrace: stackTrace);
   }
 }

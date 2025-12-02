@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:file_saver/file_saver.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:path/path.dart' as path;
 import 'package:whph/core/application/shared/services/abstraction/i_log_export_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -38,8 +38,6 @@ class LogExportService implements ILogExportService {
         return await _exportOnDesktop(logFile);
       } else if (PlatformUtils.isMobile) {
         return await _exportOnMobile(logFile);
-      } else if (PlatformUtils.isWeb) {
-        return await _exportOnWeb(logFile);
       } else {
         throw Exception("Unsupported platform for log export");
       }
@@ -75,49 +73,25 @@ class LogExportService implements ILogExportService {
     }
   }
 
-  /// Export log file on mobile platforms using file saver
+  /// Export log file on mobile platforms using share sheet
   Future<String?> _exportOnMobile(File logFile) async {
     try {
-      final suggestedName = _generateSuggestedFileName(logFile.path);
-      final fileExtension = path.extension(logFile.path);
+      // Use share_plus to share the file directly
+      // This avoids reading the entire file into memory which causes crashes with large logs
+      final xFile = XFile(logFile.path);
 
-      // Read file content
-      final fileContent = await logFile.readAsBytes();
-
-      // Save file to Downloads directory
-      final savedPath = await FileSaver.instance.saveAs(
-        name: suggestedName,
-        bytes: fileContent,
-        ext: fileExtension.replaceFirst('.', ''),
-        mimeType: MimeType.text,
+      // We don't get a result path back from share, but we know the operation was initiated
+      // The share sheet will handle the rest
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [xFile],
+          text: 'Debug Logs',
+        ),
       );
 
-      return savedPath;
+      return "Shared via system dialog";
     } catch (e) {
       throw Exception("Failed to export log file on mobile: $e");
-    }
-  }
-
-  /// Export log file on web platform using file saver
-  Future<String?> _exportOnWeb(File logFile) async {
-    try {
-      final suggestedName = _generateSuggestedFileName(logFile.path);
-      final fileExtension = path.extension(logFile.path);
-
-      // Read file content
-      final fileContent = await logFile.readAsBytes();
-
-      // Trigger browser download using FileSaver
-      final savedPath = await FileSaver.instance.saveAs(
-        name: suggestedName,
-        bytes: fileContent,
-        ext: fileExtension.replaceFirst('.', ''),
-        mimeType: MimeType.text,
-      );
-
-      return savedPath ?? suggestedName; // Return filename if path not available on web
-    } catch (e) {
-      throw Exception("Failed to export log file on web: $e");
     }
   }
 }

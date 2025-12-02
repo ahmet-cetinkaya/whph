@@ -392,6 +392,7 @@ settings:
       empty:
         Le fichier de journal de débogage est vide. Aucune entrée de journal
         n'a encore été enregistrée.
+      toggle_auto_scroll: Basculer le défilement automatique
     export:
       dialog_title: Exporter les journaux de débogage
       error: Erreur lors de l'exportation des journaux

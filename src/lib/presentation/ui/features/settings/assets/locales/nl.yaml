@@ -365,6 +365,7 @@ settings:
         Geen debug-logbestand gevonden. Logs worden aangemaakt nadat debug-logging
         is ingeschakeld en de app logvermeldingen genereert.
       empty: Debug-logbestand is leeg. Er zijn nog geen logvermeldingen opgenomen.
+      toggle_auto_scroll: Automatisch scrollen in-/uitschakelen
     export:
       dialog_title: Debug-logs exporteren
       error: Fout bij het exporteren van logs

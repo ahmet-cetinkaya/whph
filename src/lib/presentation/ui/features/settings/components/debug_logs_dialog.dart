@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart';
@@ -24,18 +25,55 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
 
+  final ScrollController _scrollController = ScrollController();
+  StreamSubscription<String>? _logSubscription;
+
   String _logContent = '';
   bool _isLoading = true;
   bool _isExporting = false;
   String? _logFilePath;
+  bool _autoScroll = true;
 
   @override
   void initState() {
     super.initState();
-    _loadLogContent();
+    _loadInitialLogs();
+    _subscribeToLogs();
   }
 
-  Future<void> _loadLogContent() async {
+  @override
+  void dispose() {
+    _logSubscription?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _subscribeToLogs() {
+    _logSubscription = _loggerService.logStream.listen((logEntry) {
+      if (mounted) {
+        setState(() {
+          _logContent += logEntry;
+        });
+        if (_autoScroll) {
+          _scrollToBottom();
+        }
+      }
+    });
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  Future<void> _loadInitialLogs() async {
     await AsyncErrorHandler.executeWithLoading(
       context: context,
       setLoading: (isLoading) => setState(() {
@@ -49,30 +87,24 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
         // Always flush current logs before reading
         await _loggerService.flush();
 
-        // Try to read debug logs from file first, then fallback to memory logs
         if (logFilePath != null) {
           final logFile = File(logFilePath);
           if (await logFile.exists()) {
             try {
               _logContent = await logFile.readAsString();
             } catch (e) {
-              _logContent = 'Error reading log file: $e';
+              _logContent = 'Error reading log file: $e\n';
             }
           } else {
-            _logContent = _translationService.translate(SettingsTranslationKeys.debugLogsNoFile);
+            _logContent = '${_translationService.translate(SettingsTranslationKeys.debugLogsNoFile)}\n';
           }
         } else {
-          _logContent = _translationService.translate(SettingsTranslationKeys.debugLogsNotEnabled);
+          _logContent = '${_translationService.translate(SettingsTranslationKeys.debugLogsNotEnabled)}\n';
         }
 
-        // If file is empty or debug logging is disabled, fallback to memory logs
-        if (_logContent.trim().isEmpty || logFilePath == null) {
-          final memoryLogs = _loggerService.getMemoryLogs();
-          if (memoryLogs.isNotEmpty) {
-            _logContent = memoryLogs;
-          } else if (_logContent.trim().isEmpty) {
-            _logContent = _translationService.translate(SettingsTranslationKeys.debugLogsEmpty);
-          }
+        // Scroll to bottom after loading initial logs
+        if (_autoScroll) {
+          _scrollToBottom();
         }
 
         return true;
@@ -81,7 +113,10 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
   }
 
   Future<void> _refreshLogs() async {
-    await _loadLogContent();
+    setState(() {
+      _logContent = '';
+    });
+    await _loadInitialLogs();
   }
 
   Future<void> _saveAsFile() async {
@@ -100,7 +135,6 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
         String? exportedPath;
 
         if (_logFilePath != null) {
-          // Debug logs are stored in file, export directly from file
           final logFile = File(_logFilePath!);
           if (await logFile.exists()) {
             exportedPath = await _logExportService.exportLogFile(_logFilePath!);
@@ -108,27 +142,7 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
             throw Exception(_translationService.translate(SettingsTranslationKeys.exportLogsFileNotExist));
           }
         } else {
-          // Debug logging is disabled, export memory logs
-          final memoryLogs = _loggerService.getMemoryLogs();
-          if (memoryLogs.isEmpty) {
-            throw Exception(_translationService.translate(SettingsTranslationKeys.exportLogsNoLogsAvailable));
-          }
-
-          // Create a temporary file with memory logs
-          final tempDir = Directory.systemTemp;
-          final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
-          final tempLogFile = File('${tempDir.path}/whph_memory_logs_$timestamp.log');
-
-          await tempLogFile.writeAsString(memoryLogs);
-
-          try {
-            exportedPath = await _logExportService.exportLogFile(tempLogFile.path);
-          } finally {
-            // Clean up temporary file
-            if (await tempLogFile.exists()) {
-              await tempLogFile.delete();
-            }
-          }
+          throw Exception(_translationService.translate(SettingsTranslationKeys.exportLogsNoLogsAvailable));
         }
 
         if (exportedPath != null && mounted) {
@@ -173,6 +187,19 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
             ),
             elevation: 0,
             actions: [
+              // Auto-scroll toggle
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _autoScroll = !_autoScroll;
+                  });
+                  if (_autoScroll) {
+                    _scrollToBottom();
+                  }
+                },
+                icon: Icon(_autoScroll ? Icons.vertical_align_bottom : Icons.vertical_align_center_outlined),
+                tooltip: _translationService.translate(SettingsTranslationKeys.debugLogsToggleAutoScroll),
+              ),
               // Refresh button
               IconButton(
                 onPressed: _isLoading ? null : _refreshLogs,
@@ -251,6 +278,7 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
                                       ),
                                     ),
                                     child: SingleChildScrollView(
+                                      controller: _scrollController,
                                       padding: const EdgeInsets.all(AppTheme.sizeSmall),
                                       child: SelectableText(
                                         _logContent,

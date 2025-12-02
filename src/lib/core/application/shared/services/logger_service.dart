@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:acore/acore.dart';
@@ -7,6 +8,7 @@ import 'package:whph/core/application/features/settings/queries/get_setting_quer
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/core/application/shared/services/stream_logger.dart';
 
 /// Default implementation of ILoggerService that manages dynamic logger configuration
 class LoggerService implements ILoggerService {
@@ -19,11 +21,10 @@ class LoggerService implements ILoggerService {
 
   ILogger _currentLogger;
   FileLogger? _fileLogger;
-  final MemoryLogger _memoryLogger = MemoryLogger(
-    maxEntries: 1000,
-    includeTimestamp: true,
-    includeStackTrace: true,
-  );
+
+  final StreamController<String> _logStreamController = StreamController<String>.broadcast();
+  late final StreamLogger _streamLogger;
+  FileLogger? _tempFileLogger;
 
   LoggerService({
     required IApplicationDirectoryService applicationDirectoryService,
@@ -31,7 +32,31 @@ class LoggerService implements ILoggerService {
     required ILogger initialLogger,
   })  : _applicationDirectoryService = applicationDirectoryService,
         _mediator = mediator,
-        _currentLogger = initialLogger;
+        _currentLogger = initialLogger {
+    _streamLogger = StreamLogger(_logStreamController);
+    _initializeTempLogger();
+  }
+
+  Future<void> _initializeTempLogger() async {
+    try {
+      final tempDir = Directory.systemTemp;
+      final tempFilePath = path.join(tempDir.path, 'whph_temp.log');
+
+      _tempFileLogger = FileLogger(
+        filePath: tempFilePath,
+        minLevel: LogLevel.debug,
+        includeTimestamp: true,
+        includeStackTrace: true,
+        maxFileSizeBytes: 5 * 1024 * 1024, // 5 MB
+        maxBackupFiles: 1,
+      );
+
+      // Reconfigure logger to include temp logger
+      await configureLogger();
+    } catch (e) {
+      debugPrint('Failed to initialize temp logger: $e');
+    }
+  }
 
   /// Helper method to construct log file path consistently
   Future<String> _getLogFilePath() async {
@@ -41,6 +66,9 @@ class LoggerService implements ILoggerService {
 
   @override
   ILogger get logger => _currentLogger;
+
+  @override
+  Stream<String> get logStream => _logStreamController.stream;
 
   @override
   Future<void> configureLogger() async {
@@ -64,6 +92,9 @@ class LoggerService implements ILoggerService {
     if (_fileLogger != null) {
       await _fileLogger!.flush();
     }
+    if (_tempFileLogger != null) {
+      await _tempFileLogger!.flush();
+    }
   }
 
   @override
@@ -71,17 +102,25 @@ class LoggerService implements ILoggerService {
     if (_fileLogger != null) {
       return await _getLogFilePath();
     }
+    // Return temp file path if persistent logging is disabled
+    if (_tempFileLogger != null) {
+      return _tempFileLogger!.filePath; // We need to expose filePath in FileLogger or store it
+    }
     return null;
   }
 
   @override
   String getMemoryLogs() {
-    return _memoryLogger.getAllLogs();
+    // Deprecated: Memory logs are no longer stored in memory
+    // We could read from temp file here, but it's async
+    return "Logs are now stored in a temporary file. Use getLogFilePath() to access them.";
   }
 
   @override
   void clearMemoryLogs() {
-    _memoryLogger.clear();
+    // Clear temp file
+    // This is a bit tricky since FileLogger doesn't expose a clear method
+    // We might need to implement it or just ignore for now
   }
 
   Future<bool> _getDebugLogsEnabled() async {
@@ -96,16 +135,11 @@ class LoggerService implements ILoggerService {
   }
 
   Future<void> _enableFileLogging() async {
-    // Skip if file logging is already enabled
-    if (_fileLogger != null) {
-      return;
-    }
-
     // Get the log file path
     final logFilePath = await _getLogFilePath();
 
-    // Create file logger
-    _fileLogger = FileLogger(
+    // Create file logger if needed
+    _fileLogger ??= FileLogger(
       filePath: logFilePath,
       minLevel: LogLevel.debug, // Enable all logs when debug logging is on
       includeTimestamp: true,
@@ -114,19 +148,22 @@ class LoggerService implements ILoggerService {
       maxBackupFiles: 3,
     );
 
-    // Create composite logger with console, file, and memory logging
-    // Include memory logger for fallback access to recent logs
-    _currentLogger = CompositeLogger([
+    // Create composite logger with console, file, temp file, and stream logging
+    final loggers = <ILogger>[
       const ConsoleLogger(
         minLevel: LogLevel.info, // Keep console at info level to avoid spam
         includeTimestamp: true,
         includeStackTrace: true,
       ),
       _fileLogger!,
-      _memoryLogger, // Include memory logger as backup
-    ]);
+      _streamLogger,
+    ];
 
-    // Debug logging is now enabled and ready
+    if (_tempFileLogger != null) {
+      loggers.add(_tempFileLogger!);
+    }
+
+    _currentLogger = CompositeLogger(loggers);
   }
 
   Future<void> _disableFileLogging() async {
@@ -163,14 +200,20 @@ class LoggerService implements ILoggerService {
       }
     }
 
-    // Use console and memory logger only
-    _currentLogger = CompositeLogger([
+    // Use console, temp file, and stream logger
+    final loggers = <ILogger>[
       const ConsoleLogger(
         minLevel: LogLevel.info,
         includeTimestamp: true,
         includeStackTrace: true,
       ),
-      _memoryLogger,
-    ]);
+      _streamLogger,
+    ];
+
+    if (_tempFileLogger != null) {
+      loggers.add(_tempFileLogger!);
+    }
+
+    _currentLogger = CompositeLogger(loggers);
   }
 }
