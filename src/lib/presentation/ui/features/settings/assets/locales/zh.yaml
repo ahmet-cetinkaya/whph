@@ -247,6 +247,15 @@ settings:
         message: 无法重置数据库。请重试或如果问题仍然存在，请联系支持。
         cancel: 取消
         retry: 重试
+        help_text: 如果问题仍然存在，请尝试重新启动应用程序或检查您是否有足够的存储空间和权限。
+        permission_denied: 权限被拒绝。请检查应用程序是否有写入存储的访问权限。
+        disk_full: 设备空间不足。请释放存储空间并重试。
+        file_not_found: 数据库文件未找到。这是新安装时的预期情况。
+        file_access: 文件访问错误
+        sqlite: 数据库错误
+        database_locked: 数据库已锁定。请关闭应用程序的其他实例。
+        state_error: 应用程序状态错误。请重新启动应用程序并重试。
+        timeout: 操作超时。请重试。
   debug_logs:
     title: 调试日志
     description: 启用详细的文件日志记录以便故障排除和支持

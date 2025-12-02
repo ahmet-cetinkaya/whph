@@ -314,6 +314,23 @@ settings:
           ederse destek ile iletişime geçin.
         cancel: İptal
         retry: Tekrar Dene
+        help_text:
+          Sorun devam ederse, uygulamayı yeniden başlatmayı veya yeterli
+          depolama alanına ve izinlere sahip olup olmadığınızı kontrol edin.
+        permission_denied:
+          İzin reddedildi. Uygulamanın depolama alanına yazma erişimi
+          olup olmadığını kontrol edin.
+        disk_full: Cihazda alan kalmadı. Lütfen depolama alanı açın ve tekrar deneyin.
+        file_not_found: Veritabanı dosyası bulunamadı. Bu yeni bir kurulumda beklenmektedir.
+        file_access: Dosya erişim hatası
+        sqlite: Veritabanı hatası
+        database_locked:
+          Veritabanı kilitli. Lütfen uygulamanın diğer örneklerini
+          kapatın.
+        state_error:
+          Uygulama durumu hatası. Lütfen uygulamayı yeniden başlatın ve
+          tekrar deneyin.
+        timeout: İşlem zaman aşımına uğradı. Lütfen tekrar deneyin.
   debug_logs:
     title: Hata Ayıklama Günlükleri
     description: Sorun giderme ve destek için ayrıntılı günlük kaydını etkinleştir

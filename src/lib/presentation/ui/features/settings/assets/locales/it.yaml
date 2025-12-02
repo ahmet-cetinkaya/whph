@@ -316,6 +316,25 @@ settings:
           se il problema persiste.
         cancel: Annulla
         retry: Riprova
+        help_text:
+          Se il problema persiste, provare a riavviare l'applicazione o verificare
+          di avere spazio di archiviazione e permessi sufficienti.
+        permission_denied:
+          Autorizzazione negata. Verificare se l'applicazione ha
+          accesso in scrittura all'archiviazione.
+        disk_full:
+          Spazio insufficiente sul dispositivo. Liberare spazio di archiviazione
+          e riprovare.
+        file_not_found:
+          File database non trovato. Ciò è previsto per un'installazione
+          nuova.
+        file_access: Errore di accesso al file
+        sqlite: Errore del database
+        database_locked: Database bloccato. Chiudere le altre istanze dell'applicazione.
+        state_error:
+          Errore di stato dell'applicazione. Riavviare l'applicazione e
+          riprovare.
+        timeout: Operazione scaduta. Riprovare.
   debug_logs:
     title: Log di debug
     description:

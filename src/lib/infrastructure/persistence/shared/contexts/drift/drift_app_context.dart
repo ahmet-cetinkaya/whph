@@ -289,7 +289,11 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Resets the database by closing the connection and deleting the database file.
+  /// Creates an automatic backup before deletion for recovery purposes.
   Future<void> resetDatabase() async {
+    // Create automatic backup before reset for safety
+    final backupFile = await _createPreResetBackup();
+
     // Close the connection
     await close();
     _instance = null;
@@ -301,10 +305,138 @@ class AppDatabase extends _$AppDatabase {
       if (await dbFile.exists()) {
         await dbFile.delete();
         Logger.info('Database deleted successfully');
+
+        if (backupFile != null) {
+          Logger.info('Pre-reset backup created: ${backupFile.path}');
+        }
+      } else {
+        Logger.info('Database file does not exist - treating as fresh reset');
       }
     } catch (e) {
       Logger.error('Error deleting database: $e');
+
+      // If database deletion fails, try to restore from backup if it was created
+      if (backupFile != null && await backupFile.exists()) {
+        try {
+          final dbFolder = await _getApplicationDirectory();
+          final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+          await backupFile.copy(dbFile.path);
+          Logger.info('Database restored from pre-reset backup due to deletion failure');
+        } catch (restoreError) {
+          Logger.error('Failed to restore database from backup: $restoreError');
+        }
+      }
+
       rethrow;
+    }
+  }
+
+  /// Creates an automatic backup before database reset for recovery purposes.
+  /// This backup is kept for 7 days for emergency recovery.
+  Future<File?> _createPreResetBackup() async {
+    try {
+      final dbFolder = await _getApplicationDirectory();
+      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+
+      if (!await dbFile.exists()) {
+        Logger.info('No database file exists - no backup needed for fresh reset');
+        return null;
+      }
+
+      // Create backup directory if it doesn't exist
+      final backupFolder = Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
+      if (!await backupFolder.exists()) {
+        await backupFolder.create(recursive: true);
+      }
+
+      // Generate backup filename with timestamp
+      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+      final backupFileName = 'pre_reset_${timestamp}_$databaseName';
+      final backupFile = File(p.join(backupFolder.path, backupFileName));
+
+      // Copy database file to backup location
+      await dbFile.copy(backupFile.path);
+
+      // Clean up old pre-reset backups (keep only last 7 days)
+      await _cleanupOldPreResetBackups(backupFolder);
+
+      Logger.info('Pre-reset backup created: ${backupFile.path}');
+      return backupFile;
+    } catch (e) {
+      Logger.warning('Failed to create pre-reset backup: $e');
+      // Don't fail the reset if backup creation fails
+      return null;
+    }
+  }
+
+  /// Cleans up old pre-reset backups older than 7 days.
+  Future<void> _cleanupOldPreResetBackups(Directory backupFolder) async {
+    try {
+      final files = await backupFolder.list().toList();
+      final cutoffDate = DateTime.now().subtract(const Duration(days: 7));
+
+      for (final file in files) {
+        if (file is File && file.path.contains('pre_reset_')) {
+          final stat = await file.stat();
+          if (stat.modified.isBefore(cutoffDate)) {
+            await file.delete();
+            Logger.info('Deleted old pre-reset backup: ${file.path}');
+          }
+        }
+      }
+    } catch (e) {
+      Logger.warning('Failed to cleanup old pre-reset backups: $e');
+      // Don't fail if cleanup fails
+    }
+  }
+
+  /// Lists available pre-reset backups for recovery purposes.
+  Future<List<File>> listPreResetBackups() async {
+    try {
+      final dbFolder = await _getApplicationDirectory();
+      final backupFolder = Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
+
+      if (!await backupFolder.exists()) {
+        return [];
+      }
+
+      final files = await backupFolder.list().toList();
+      final backupFiles = <File>[];
+
+      for (final file in files) {
+        if (file is File && file.path.contains('pre_reset_')) {
+          backupFiles.add(file);
+        }
+      }
+
+      // Sort by creation time (newest first)
+      backupFiles.sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+
+      return backupFiles;
+    } catch (e) {
+      Logger.error('Error listing pre-reset backups: $e');
+      return [];
+    }
+  }
+
+  /// Restores database from a pre-reset backup file.
+  Future<bool> restoreFromPreResetBackup(File backupFile) async {
+    try {
+      // Close current database connection
+      await close();
+      _instance = null;
+
+      final dbFolder = await _getApplicationDirectory();
+      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+
+      // Restore from backup
+      await backupFile.copy(dbFile.path);
+
+      Logger.info('Database restored from pre-reset backup: ${backupFile.path}');
+      return true;
+    } catch (e) {
+      Logger.error('Failed to restore from pre-reset backup: $e');
+      return false;
     }
   }
 

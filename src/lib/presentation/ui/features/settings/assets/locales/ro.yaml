@@ -320,6 +320,25 @@ settings:
           suportul dacă problema persistă.
         cancel: Anulează
         retry: Reîncearcă
+        help_text:
+          Dacă problema persistă, încercați să reporniți aplicația sau verificați
+          dacă aveți suficient spațiu de stocare și permisiuni.
+        permission_denied:
+          Permisiune refuzată. Verificați dacă aplicația are acces
+          de scriere la stocare.
+        disk_full:
+          Spatiu insuficient pe dispozitiv. Eliberați spațiu de stocare și
+          încercați din nou.
+        file_not_found:
+          Fișier baze de date nu a fost găsit. Acest lucru este așteptat
+          la o instalare nouă.
+        file_access: Eroare de acces la fișier
+        sqlite: Eroare bază de date
+        database_locked: Baza de date este blocată. Închideți alte instanțe ale aplicației.
+        state_error:
+          Eroare de stare a aplicației. Reporniți aplicația și încercați
+          din nou.
+        timeout: Operațiunea a expirat. Încercați din nou.
   debug_logs:
     title: Jurnale de Depanare
     description: Activați înregistrarea detaliată în fișier pentru depanare și suport

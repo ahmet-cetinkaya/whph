@@ -326,6 +326,23 @@ settings:
           się z pomocą techniczną, jeśli problem będzie się powtarzał.
         cancel: Anuluj
         retry: Spróbuj ponownie
+        help_text:
+          Jeśli problem nadal występuje, spróbuj ponownie uruchomić aplikację
+          lub sprawdź, czy masz wystarczającą ilość miejsca i uprawnień.
+        permission_denied:
+          Odmowa dostępu. Sprawdź, czy aplikacja ma dostęp do zapisu
+          w pamięci.
+        disk_full:
+          Brak miejsca na urządzeniu. Zwolnij miejsce w pamięci i spróbuj
+          ponownie.
+        file_not_found:
+          Nie znaleziono pliku bazy danych. Jest to oczekiwane przy
+          nowej instalacji.
+        file_access: Błąd dostępu do pliku
+        sqlite: Błąd bazy danych
+        database_locked: Baza danych jest zablokowana. Zamknij inne instancje aplikacji.
+        state_error: Błąd stanu aplikacji. Uruchom ponownie aplikację i spróbuj ponownie.
+        timeout: Operacja przekroczyła czas oczekiwania. Spróbuj ponownie.
   debug_logs:
     title: Dzienniki debugowania
     description:

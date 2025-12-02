@@ -316,6 +316,25 @@ settings:
           obrnite na podporo, če se problem nadaljuje.
         cancel: Prekliči
         retry: Poskusi znova
+        help_text:
+          Če se problem nadaljuje, poskusite znova zagnati aplikacijo ali
+          preverite, ali imate dovolj prostora za shranjevanje in dovoljenj.
+        permission_denied:
+          Dostop zavrnjen. Preverite, ali ima aplikacija dostop do
+          pisanja v shrambo.
+        disk_full:
+          Na napravi ni prostora. Sprostite prostor za shranjevanje in poskusite
+          znova.
+        file_not_found:
+          Datoteke baze podatkov ni mogoče najti. To je pričakovano
+          pri novi namestitvi.
+        file_access: Napaka pri dostopu do datoteke
+        sqlite: Napaka baze podatkov
+        database_locked: Baza podatkov je zaklenjena. Zaprite druge instance aplikacije.
+        state_error:
+          Napaka stanja aplikacije. Znova zaženite aplikacijo in poskusite
+          znova.
+        timeout: Operacija je potekla. Poskusite znova.
   debug_logs:
     title: Dnevniki razhroščevanja
     description:

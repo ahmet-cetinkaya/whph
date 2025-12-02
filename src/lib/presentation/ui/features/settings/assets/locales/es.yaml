@@ -330,6 +330,27 @@ settings:
           con soporte si el problema persiste.
         cancel: Cancelar
         retry: Reintentar
+        help_text:
+          Si el problema persiste, intente reiniciar la aplicación o verifique
+          si tiene suficiente espacio de almacenamiento y permisos.
+        permission_denied:
+          Permiso denegado. Verifique si la aplicación tiene acceso
+          para escribir en el almacenamiento.
+        disk_full:
+          No queda espacio en el dispositivo. Libere espacio de almacenamiento
+          e inténtelo de nuevo.
+        file_not_found:
+          Archivo de base de datos no encontrado. Esto es esperado en
+          una instalación nueva.
+        file_access: Error de acceso a archivo
+        sqlite: Error de base de datos
+        database_locked:
+          La base de datos está bloqueada. Cierre otras instancias
+          de la aplicación.
+        state_error:
+          Error de estado de la aplicación. Reinicie la aplicación e inténtelo
+          de nuevo.
+        timeout: Operación agotada. Inténtelo de nuevo.
   debug_logs:
     title: Registros de depuración
     description:

@@ -334,6 +334,28 @@ settings:
           ou contacter le support si le problème persiste.
         cancel: Annuler
         retry: Réessayer
+        help_text:
+          Si le problème persiste, essayez de redémarrer l'application ou
+          vérifiez si vous disposez de suffisamment d'espace de stockage et des autorisations
+          nécessaires.
+        permission_denied:
+          Autorisation refusée. Veuillez vérifier si l'application
+          a accès en écriture au stockage.
+        disk_full:
+          Espace disque insuffisant sur l'appareil. Veuillez libérer de l'espace
+          de stockage et réessayer.
+        file_not_found:
+          Fichier de base de données introuvable. Ceci est attendu pour
+          une nouvelle installation.
+        file_access: Erreur d'accès au fichier
+        sqlite: Erreur de base de données
+        database_locked:
+          La base de données est verrouillée. Veuillez fermer les autres
+          instances de l'application.
+        state_error:
+          Erreur d'état de l'application. Veuillez redémarrer l'application
+          et réessayer.
+        timeout: Opération expirée. Veuillez réessayer.
   debug_logs:
     title: Journaux de débogage
     description:

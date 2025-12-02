@@ -318,6 +318,25 @@ settings:
           support als het probleem aanhoudt.
         cancel: Annuleren
         retry: Opnieuw proberen
+        help_text:
+          Als het probleem aanhoudt, probeer dan de applicatie opnieuw te
+          starten of controleer of u voldoende opslagruimte en machtigingen heeft.
+        permission_denied:
+          Toegang geweigerd. Controleer of de applicatie toegang
+          heeft om naar de opslag te schrijven.
+        disk_full:
+          Geen ruimte meer op apparaat. Maak opslagruimte vrij en probeer
+          het opnieuw.
+        file_not_found:
+          Databasebestand niet gevonden. Dit is verwacht bij een nieuwe
+          installatie.
+        file_access: Bestandstoegangsfout
+        sqlite: Databasefout
+        database_locked: Database is vergrendeld. Sluit andere instanties van de applicatie.
+        state_error:
+          Applicatiestatusfout. Start de applicatie opnieuw en probeer
+          het opnieuw.
+        timeout: Operatie timeout. Probeer het opnieuw.
   debug_logs:
     title: Debug-logs
     description:

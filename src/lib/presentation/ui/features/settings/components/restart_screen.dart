@@ -42,29 +42,142 @@ class _RestartScreenState extends State<RestartScreen> {
   }
 
   Future<void> _restartApp() async {
-    if (PlatformUtils.isDesktop) {
-      try {
-        final executable = Platform.resolvedExecutable;
-        final args = Platform.executableArguments.join(' ');
+    if (!PlatformUtils.isDesktop) {
+      exit(0);
+    }
 
-        if (Platform.isWindows) {
-          await Process.start(
-            'cmd',
-            ['/c', 'timeout /t 1 & start "" "$executable" $args'],
-            mode: ProcessStartMode.detached,
-          );
-        } else if (Platform.isLinux || Platform.isMacOS) {
-          await Process.start(
-            'sh',
-            ['-c', 'sleep 1; "$executable" $args &'],
-            mode: ProcessStartMode.detached,
-          );
-        }
-      } catch (e) {
-        Logger.error('Failed to restart app: $e');
+    try {
+      final executable = Platform.resolvedExecutable;
+      final args = Platform.executableArguments;
+
+      Logger.info('Restarting application: $executable $args');
+
+      if (Platform.isWindows) {
+        await _restartWindows(executable, args);
+      } else if (Platform.isLinux) {
+        await _restartLinux(executable, args);
+      } else if (Platform.isMacOS) {
+        await _restartMacOS(executable, args);
+      }
+
+      // Give the new process time to start before exiting
+      await Future.delayed(const Duration(milliseconds: 500));
+      exit(0);
+    } catch (e, stackTrace) {
+      Logger.error('Unexpected error during restart: $e\nStack trace: $stackTrace');
+      _showManualRestartFallback();
+      exit(1);
+    }
+  }
+
+  Future<bool> _restartWindows(String executable, List<String> args) async {
+    try {
+      // Method 1: Use PowerShell for more reliable restart
+      await Process.start(
+        'powershell',
+        [
+          '-Command',
+          'Start-Process',
+          '-FilePath',
+          executable,
+          if (args.isNotEmpty) ...['-ArgumentList', ...args],
+          '-NoNewWindow'
+        ],
+        mode: ProcessStartMode.detached,
+      );
+
+      // Wait briefly to ensure process starts
+      await Future.delayed(const Duration(milliseconds: 1000));
+      return true;
+    } catch (e) {
+      Logger.warning('PowerShell restart failed, trying cmd method: $e');
+
+      try {
+        // Fallback to cmd method
+        await Process.start(
+          'cmd',
+          [
+            '/c',
+            'timeout /t 2 /nobreak > nul 2>&1 && start "" /B "$executable" ${args.map((arg) => '"$arg"').join(' ')}'
+          ],
+          mode: ProcessStartMode.detached,
+        );
+
+        return true; // Assume success if no immediate exception
+      } catch (e2) {
+        Logger.error('Both restart methods failed: $e2');
+        return false;
       }
     }
-    exit(0);
+  }
+
+  Future<bool> _restartLinux(String executable, List<String> args) async {
+    try {
+      // Method 1: Use nohup for reliable background process
+      final command = 'nohup "$executable" ${args.map((arg) => '"$arg"').join(' ')} > /dev/null 2>&1 &';
+      await Process.start(
+        'bash',
+        ['-c', command],
+        mode: ProcessStartMode.detached,
+      );
+
+      // Wait briefly to ensure process starts
+      await Future.delayed(const Duration(milliseconds: 500));
+      return true;
+    } catch (e) {
+      Logger.warning('nohup restart failed, trying shell method: $e');
+
+      try {
+        // Fallback method
+        await Process.start(
+          'sh',
+          ['-c', 'sleep 1 && "$executable" ${args.map((arg) => '"$arg"').join(' ')} &'],
+          mode: ProcessStartMode.detached,
+        );
+
+        return true; // Assume success if no immediate exception
+      } catch (e2) {
+        Logger.error('Both Linux restart methods failed: $e2');
+        return false;
+      }
+    }
+  }
+
+  Future<bool> _restartMacOS(String executable, List<String> args) async {
+    try {
+      // Use open command for macOS apps
+      await Process.start(
+        'open',
+        ['-n', '-a', executable, if (args.isNotEmpty) ...args],
+        mode: ProcessStartMode.detached,
+      );
+
+      // Wait briefly to ensure process starts
+      await Future.delayed(const Duration(milliseconds: 1000));
+      return true;
+    } catch (e) {
+      Logger.warning('open command failed, trying shell method: $e');
+
+      try {
+        // Fallback method
+        await Process.start(
+          'sh',
+          ['-c', 'sleep 1 && "$executable" ${args.map((arg) => '"$arg"').join(' ')} &'],
+          mode: ProcessStartMode.detached,
+        );
+
+        return true; // Assume success if no immediate exception
+      } catch (e2) {
+        Logger.error('Both macOS restart methods failed: $e2');
+        return false;
+      }
+    }
+  }
+
+  void _showManualRestartFallback() {
+    // This method would show a manual restart instruction
+    // For now, it just logs the instruction since we're in a terminal state
+    Logger.warning('Please restart the application manually');
   }
 
   @override

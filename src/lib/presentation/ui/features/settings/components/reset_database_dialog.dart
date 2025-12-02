@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/restart_screen.dart';
@@ -46,8 +49,37 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
     }
   }
 
+  String _getUserFriendlyErrorMessage(dynamic error) {
+    final translationService = container.resolve<ITranslationService>();
+
+    // Log the actual error for debugging
+    Logger.error('Database reset failed: ${error.toString()}');
+
+    if (error is FileSystemException) {
+      if (error.osError?.errorCode == 13 || error.message.contains('Permission denied')) {
+        return translationService.translate(SettingsTranslationKeys.resetDatabaseErrorPermissionDenied);
+      } else if (error.osError?.errorCode == 28 || error.message.contains('No space left')) {
+        return translationService.translate(SettingsTranslationKeys.resetDatabaseErrorDiskFull);
+      } else if (error.message.contains('Database file not found')) {
+        return translationService.translate(SettingsTranslationKeys.resetDatabaseErrorFileNotFound);
+      }
+      return '${translationService.translate(SettingsTranslationKeys.resetDatabaseErrorFileAccess)}: ${error.message}';
+    } else if (error.toString().contains('database is locked')) {
+      return translationService.translate(SettingsTranslationKeys.resetDatabaseErrorDatabaseLocked);
+    } else if (error.toString().contains('Sqlite') || error.toString().contains('SQL')) {
+      return '${translationService.translate(SettingsTranslationKeys.resetDatabaseErrorSqlite)}: ${error.toString()}';
+    } else if (error is StateError) {
+      return translationService.translate(SettingsTranslationKeys.resetDatabaseErrorStateError);
+    } else if (error.toString().contains('timeout') || error.toString().contains('Timeout')) {
+      return translationService.translate(SettingsTranslationKeys.resetDatabaseErrorTimeout);
+    } else {
+      return '${translationService.translate(SettingsTranslationKeys.resetDatabaseErrorMessage)}: ${error.toString()}';
+    }
+  }
+
   void _showErrorDialog(BuildContext context, dynamic error) {
     final translationService = container.resolve<ITranslationService>();
+    final userMessage = _getUserFriendlyErrorMessage(error);
 
     showDialog(
       context: context,
@@ -55,8 +87,19 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
         title: Text(
           translationService.translate(SettingsTranslationKeys.resetDatabaseErrorTitle),
         ),
-        content: Text(
-          translationService.translate(SettingsTranslationKeys.resetDatabaseErrorMessage),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(userMessage),
+            const SizedBox(height: 16),
+            Text(
+              translationService.translate(SettingsTranslationKeys.resetDatabaseErrorHelpText),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+            ),
+          ],
         ),
         actions: [
           TextButton(

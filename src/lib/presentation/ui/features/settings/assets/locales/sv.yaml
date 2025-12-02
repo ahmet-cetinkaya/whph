@@ -311,6 +311,21 @@ settings:
           om problemet kvarstår.
         cancel: Avbryt
         retry: Försök igen
+        help_text:
+          Om problemet kvarstår, försök starta om applikationen eller kontrollera
+          om du har tillräckligt med lagringsutrymme och behörigheter.
+        permission_denied:
+          Åtkomst nekad. Kontrollera om applikationen har skrivåtkomst
+          till lagring.
+        disk_full:
+          Inget utrymme kvar på enheten. Frigör lagringsutrymme och försök
+          igen.
+        file_not_found: Databasfil hittades inte. Detta förväntas vid en ny installation.
+        file_access: Filåtkomstfel
+        sqlite: Databasfel
+        database_locked: Databasen är låst. Stäng andra instanser av applikationen.
+        state_error: Programtillståndsfel. Starta om applikationen och försök igen.
+        timeout: Operationen tog för lång tid. Försök igen.
   debug_logs:
     title: Felsökningsloggar
     description: Aktivera detaljerad loggning till fil för felsökning och support

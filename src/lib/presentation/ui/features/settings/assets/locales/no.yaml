@@ -305,6 +305,21 @@ settings:
           hvis problemet vedvarer.
         cancel: Avbryt
         retry: Prøv igjen
+        help_text:
+          Hvis problemet vedvarer, prøv å starte applikasjonen på nytt eller
+          sjekk om du har nok lagringsplass og tillatelser.
+        permission_denied:
+          Tilgang nektet. Sjekk om applikasjonen har tilgang til
+          å skrive til lagring.
+        disk_full: Ikke mer plass på enheten. Frigjør lagringsplass og prøv igjen.
+        file_not_found: Databasefil ikke funnet. Dette er forventet ved en ny installasjon.
+        file_access: Filtilgangsfeil
+        sqlite: Databasefeil
+        database_locked: Database er låst. Lukk andre instanser av applikasjonen.
+        state_error:
+          Applikasjonstilstandsfeil. Start applikasjonen på nytt og prøv
+          igjen.
+        timeout: Operasjonen tok for lang tid. Prøv igjen.
   debug_logs:
     title: Feilsøkingslogger
     description: Aktiver detaljert logging til fil for feilsøking og støtte

@@ -231,6 +231,15 @@ settings:
       error:
         title: Reset Failed
         message: "Failed to reset database. Please try again or contact support if the issue persists."
+        help_text: "If the problem persists, try restarting the application or check if you have sufficient storage space and permissions."
+        permission_denied: "Permission denied. Please check if the application has access to write to storage."
+        disk_full: "No space left on device. Please free up storage space and try again."
+        file_not_found: "Database file not found. This is expected for a fresh installation."
+        file_access: "File access error"
+        sqlite: "Database error"
+        database_locked: "Database is locked. Please close any other instances of the application."
+        state_error: "Application state error. Please restart the application and try again."
+        timeout: "Operation timed out. Please try again."
         cancel: Cancel
         retry: Retry
       restart_screen:

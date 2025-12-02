@@ -301,6 +301,23 @@ settings:
           problemet fortsætter.
         cancel: Annuller
         retry: Prøv igen
+        help_text:
+          Hvis problemet fortsætter, så prøv at genstarte applikationen eller
+          tjek, om du har tilstrækkelig lagerplads og tilladelser.
+        permission_denied:
+          Adgang nægtet. Tjek venligst om applikationen har adgang
+          til at skrive til lager.
+        disk_full:
+          Ingen plads tilbage på enhed. Frigør venligst lagerplads og prøv
+          igen.
+        file_not_found: Databasefil ikke fundet. Dette forventes ved en ny installation.
+        file_access: Filadgangsfejl
+        sqlite: Databasefejl
+        database_locked: Database er låst. Luk venligst andre instanser af applikationen.
+        state_error:
+          Programtilstandsfejl. Genstart venligst applikationen og prøv
+          igen.
+        timeout: Operationen timed out. Prøv venligst igen.
   debug_logs:
     title: Debug-logfiler
     description: Aktiver detaljeret logføring til fil for fejlfinding og support

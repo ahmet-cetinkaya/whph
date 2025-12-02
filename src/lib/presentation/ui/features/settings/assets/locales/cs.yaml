@@ -309,6 +309,23 @@ settings:
           podporu, pokud problém přetrvává.
         cancel: Zrušit
         retry: Zkusit znovu
+        help_text:
+          Pokud problém přetrvává, zkuste restartovat aplikaci nebo zkontrolujte,
+          zda máte dostatek úložného prostoru a oprávnění.
+        permission_denied:
+          Přístup odepřen. Zkontrolujte, zda má aplikace přístup
+          pro zápis do úložiště.
+        disk_full:
+          Na zařízení nezbylo volné místo. Uvolněte prosím místo v úložišti
+          a zkuste to znovu.
+        file_not_found: Soubor databáze nebyl nalezen. To je očekáváno u čisté instalace.
+        file_access: Chyba přístupu k souboru
+        sqlite: Chyba databáze
+        database_locked: Databáze je uzamčena. Zavřete prosím další instance aplikace.
+        state_error:
+          Chyba stavu aplikace. Restartujte prosím aplikaci a zkuste to
+          znovu.
+        timeout: Operace vypršela. Zkuste to prosím znovu.
   debug_logs:
     title: Protokoly ladění
     description: Povolit podrobné protokolování do souboru pro řešení problémů a podporu

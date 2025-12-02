@@ -332,6 +332,28 @@ settings:
           besteht.
         cancel: Abbrechen
         retry: Wiederholen
+        help_text:
+          Wenn das Problem weiterhin besteht, versuchen Sie bitte, die Anwendung
+          neu zu starten oder überprüfen Sie, ob Sie genügend Speicherplatz und Berechtigungen
+          haben.
+        permission_denied:
+          Zugriff verweigert. Bitte prüfen Sie, ob die Anwendung
+          Schreibzugriff auf den Speicher hat.
+        disk_full:
+          Kein Speicherplatz mehr auf dem Gerät. Bitte Speicherplatz freigeben
+          und erneut versuchen.
+        file_not_found:
+          Datenbankdatei nicht gefunden. Dies ist bei einer Neuinstallation
+          erwartet.
+        file_access: Dateizugriffsfehler
+        sqlite: Datenbankfehler
+        database_locked:
+          Datenbank ist gesperrt. Bitte schließen Sie andere Instanzen
+          der Anwendung.
+        state_error:
+          Anwendungsstatusfehler. Bitte starten Sie die Anwendung neu und
+          versuchen Sie es erneut.
+        timeout: Operation abgelaufen. Bitte versuchen Sie es erneut.
   debug_logs:
     title: Debug-Protokolle
     description: Detaillierte Protokollierung für Fehlerbehebung und Support aktivieren
