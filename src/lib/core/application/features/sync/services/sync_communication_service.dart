@@ -247,8 +247,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
         return await _convertDtoToJsonWithChunking(dto);
       }
     } catch (e, stackTrace) {
-      Logger.error('DTO to JSON conversion failed: $e');
-      Logger.error('Stack trace: $stackTrace');
+      Logger.error('DTO to JSON conversion failed', error: e, stackTrace: stackTrace);
 
       if (dto.entityType == 'Task' || dto.tasksSyncData != null) {
         Logger.error('CRITICAL: Task DTO conversion failed - this is the root cause!');
@@ -509,8 +508,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
         result['tasksSyncData'] = dto.tasksSyncData!.toJson();
         Logger.debug('Task data serialized successfully');
       } catch (e, stackTrace) {
-        Logger.error('CRITICAL ERROR: Task data serialization failed: $e');
-        Logger.error('Stack trace: $stackTrace');
+        Logger.error('CRITICAL ERROR: Task data serialization failed', error: e, stackTrace: stackTrace);
 
         // Try to provide fallback data
         result['tasksSyncData'] = {

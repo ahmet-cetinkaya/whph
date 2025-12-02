@@ -354,9 +354,8 @@ class Task extends BaseEntity<String> {
         recurrenceParentId: json['recurrenceParentId'] as String?,
       );
     } catch (e, stackTrace) {
-      Logger.error('CRITICAL ERROR in Task.fromJson: $e');
-      Logger.error('JSON data keys: ${json.keys.toList()}');
-      Logger.error('Stack trace: $stackTrace');
+      Logger.error('CRITICAL ERROR in Task.fromJson. JSON data keys: ${json.keys.toList()}',
+          error: e, stackTrace: stackTrace);
       rethrow;
     }
   }

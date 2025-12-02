@@ -619,8 +619,7 @@ try {
           runInShell: true,
         );
 
-        final psOutput = psResult.stdout.toString().trim();
-        final psRuleExists = psOutput.isNotEmpty && !psOutput.toLowerCase().contains('no such');
+        final psRuleExists = psResult.exitCode == 0;
 
         if (psRuleExists) {
           Logger.info('Firewall rule "$ruleName" exists (PowerShell fallback)', component: 'WindowsSetupService');

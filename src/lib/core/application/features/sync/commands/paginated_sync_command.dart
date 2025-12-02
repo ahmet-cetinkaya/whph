@@ -182,8 +182,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         return await _initiateOutgoingSync(request.targetDeviceId);
       }
     } catch (e, stackTrace) {
-      Logger.error('CRITICAL: Paginated sync operation failed: $e');
-      Logger.error('Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Paginated sync operation failed', error: e, stackTrace: stackTrace);
 
       final String errorKey;
       final Map<String, String>? errorParams;
@@ -484,8 +483,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             allDevicesSynced = false;
           }
         } catch (e, stackTrace) {
-          Logger.error('CRITICAL: Exception during sync with device ${syncDevice.id}: $e');
-          Logger.error('Stack trace: $stackTrace');
+          Logger.error('CRITICAL: Exception during sync with device ${syncDevice.id}',
+              error: e, stackTrace: stackTrace);
           allDevicesSynced = false;
         }
       }
@@ -568,8 +567,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         errorMessages: !allDevicesSynced ? [SyncTranslationKeys.someDevicesFailedToSyncError] : [],
       );
     } catch (e, stackTrace) {
-      Logger.error('CRITICAL: Failed to initiate outgoing sync: $e');
-      Logger.error('Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Failed to initiate outgoing sync', error: e, stackTrace: stackTrace);
       final String errorKey;
       final Map<String, String>? errorParams;
       if (e is SyncValidationException) {
@@ -688,8 +686,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
           Logger.info('Successfully synced ${config.name} with device ${syncDevice.id}');
         } catch (e, stackTrace) {
-          Logger.error('CRITICAL: Exception during ${config.name} sync with device ${syncDevice.id}: $e');
-          Logger.error('Stack trace: $stackTrace');
+          Logger.error('CRITICAL: Exception during ${config.name} sync with device ${syncDevice.id}',
+              error: e, stackTrace: stackTrace);
 
           final String errorKey;
           if (e is SyncValidationException) {
@@ -923,8 +921,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
       return true;
     } catch (e, stackTrace) {
-      Logger.error('CRITICAL: Exception in _syncWithDevice for ${syncDevice.id}: $e');
-      Logger.error('Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Exception in _syncWithDevice for ${syncDevice.id}', error: e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -1356,8 +1353,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
       Logger.info('Sync device consistency sync completed');
     } catch (e, stackTrace) {
-      Logger.error('CRITICAL: Failed to sync updated sync devices back to server: $e');
-      Logger.error('Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Failed to sync updated sync devices back to server', error: e, stackTrace: stackTrace);
     }
   }
 
