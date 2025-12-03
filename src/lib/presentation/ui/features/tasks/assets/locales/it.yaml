@@ -19,9 +19,6 @@ tasks:
       tomorrow: Domani
       weekend: Weekend
       next_weekday: Prossimo giorno feriale
-  date_selection:
-    deadline_date_title: Seleziona data di scadenza
-    planned_date_title: Seleziona data pianificata
   delete:
     error: Errore imprevisto durante l'eliminazione dell'attività.
     message: Sei sicuro di voler eliminare questa attività?

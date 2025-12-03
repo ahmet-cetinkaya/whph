@@ -19,9 +19,6 @@ tasks:
       tomorrow: Завтра
       weekend: Вихідні
       next_weekday: Наступний робочий день
-  date_selection:
-    deadline_date_title: Вибрати дату дедлайну
-    planned_date_title: Вибрати заплановану дату
   delete:
     error: Сталася неочікувана помилка під час видалення завдання.
     message: Ви впевнені, що хочете видалити це завдання?

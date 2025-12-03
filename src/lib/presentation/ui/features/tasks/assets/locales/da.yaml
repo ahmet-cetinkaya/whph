@@ -19,9 +19,6 @@ tasks:
       tomorrow: I morgen
       weekend: Weekend
       next_weekday: Næste hverdag
-  date_selection:
-    deadline_date_title: Vælg fristdato
-    planned_date_title: Vælg planlagt dato
   delete:
     error: Uventet fejl opstod under sletning af opgave.
     message: Er du sikker på, at du vil slette denne opgave?

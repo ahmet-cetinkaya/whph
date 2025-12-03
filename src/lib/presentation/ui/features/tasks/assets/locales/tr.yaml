@@ -20,9 +20,6 @@ tasks:
       tomorrow: Yarın
       weekend: Hafta Sonu
       next_weekday: Gelecek Haftaiçi
-  date_selection:
-    deadline_date_title: Son tarihi seçin
-    planned_date_title: Planlanan tarihi seçin
   delete:
     error: Görev silinirken beklenmedik bir hata oluştu.
     message: Bu görevi silmek istediğinize emin misiniz?

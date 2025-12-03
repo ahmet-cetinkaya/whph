@@ -19,9 +19,6 @@ tasks:
       tomorrow: Jutri
       weekend: Konec tedna
       next_weekday: Naslednji delovni dan
-  date_selection:
-    deadline_date_title: Izberi rok
-    planned_date_title: Izberi načrtovan datum
   delete:
     error: Nepričakovana napaka pri brisanju naloge.
     message: Ste prepričani, da želite izbrisati to nalogo?

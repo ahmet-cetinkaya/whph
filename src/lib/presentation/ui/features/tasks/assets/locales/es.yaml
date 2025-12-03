@@ -19,9 +19,6 @@ tasks:
       tomorrow: Mañana
       weekend: Fin de semana
       next_weekday: Próximo día laboral
-  date_selection:
-    deadline_date_title: Seleccionar fecha límite
-    planned_date_title: Seleccionar fecha planificada
   delete:
     error: Error inesperado al eliminar la tarea.
     message: ¿Estás seguro de que quieres eliminar esta tarea?

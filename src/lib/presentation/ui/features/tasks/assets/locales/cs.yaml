@@ -19,9 +19,6 @@ tasks:
       tomorrow: Zítra
       weekend: Víkend
       next_weekday: Příští pracovní den
-  date_selection:
-    deadline_date_title: Vyberte datum splatnosti
-    planned_date_title: Vyberte plánované datum
   delete:
     error: Neočekávaná chyba při mazání úkolu.
     message: Jste si jisti, že chcete smazat tento úkol?

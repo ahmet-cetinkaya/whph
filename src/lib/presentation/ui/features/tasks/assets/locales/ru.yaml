@@ -19,9 +19,6 @@ tasks:
       tomorrow: Завтра
       weekend: Выходные
       next_weekday: Следующий рабочий день
-  date_selection:
-    deadline_date_title: Установить срок
-    planned_date_title: Выбрать запланированную дату
   delete:
     error: Неожиданная ошибка при удалении задачи.
     message: Вы уверены, что хотите удалить эту задачу?

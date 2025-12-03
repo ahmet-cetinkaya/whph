@@ -19,9 +19,6 @@ tasks:
       tomorrow: Imorgon
       weekend: Helg
       next_weekday: Nästa vardag
-  date_selection:
-    deadline_date_title: Välj förfallodatum
-    planned_date_title: Välj planerat datum
   delete:
     error: Oväntat fel uppstod vid borttagning av uppgift.
     message: Är du säker på att du vill ta bort denna uppgift?

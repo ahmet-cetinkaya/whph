@@ -19,9 +19,6 @@ tasks:
       tomorrow: Jutro
       weekend: Weekend
       next_weekday: Następny dzień roboczy
-  date_selection:
-    deadline_date_title: Wybierz datę terminu
-    planned_date_title: Wybierz planowaną datę
   delete:
     error: Wystąpił nieoczekiwany błąd podczas usuwania zadania.
     message: Czy na pewno chcesz usunąć to zadanie?

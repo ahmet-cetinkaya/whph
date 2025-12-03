@@ -19,9 +19,6 @@ tasks:
       tomorrow: Huomenna
       weekend: Viikonloppu
       next_weekday: Seuraava arkipäivä
-  date_selection:
-    deadline_date_title: Valitse eräpäivä
-    planned_date_title: Valitse suunniteltu päivä
   delete:
     error: Odottamaton virhe poistaessa tehtävää.
     message: Oletko varma että haluat poistaa tämän tehtävän?

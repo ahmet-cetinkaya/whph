@@ -19,9 +19,6 @@ tasks:
       tomorrow: Demain
       weekend: Week-end
       next_weekday: Prochain jour ouvrable
-  date_selection:
-    deadline_date_title: Sélectionner la date d'échéance
-    planned_date_title: Sélectionner la date prévue
   delete:
     error: Erreur inattendue lors de la suppression de la tâche.
     message: Êtes-vous sûr de vouloir supprimer cette tâche ?

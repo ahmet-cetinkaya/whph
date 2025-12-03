@@ -12,7 +12,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:acore/utils/dialog_size.dart';
-import 'package:acore/utils/platform_utils.dart';
+
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
@@ -444,7 +444,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       config: TaskDatePickerConfig(
         initialDate: _plannedDate,
         initialReminderTime: _plannedDateReminderTime,
-        titleText: _translationService.translate(TaskTranslationKeys.selectPlannedDateTitle),
+        titleText: _translationService.translate(TaskTranslationKeys.plannedDateLabel),
         showTime: true,
         showQuickRanges: true,
         useResponsiveDesign: true,
@@ -477,7 +477,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       config: TaskDatePickerConfig(
         initialDate: _deadlineDate,
         initialReminderTime: _deadlineDateReminderTime,
-        titleText: _translationService.translate(TaskTranslationKeys.selectDeadlineDateTitle),
+        titleText: _translationService.translate(TaskTranslationKeys.deadlineDateLabel),
         showTime: true,
         showQuickRanges: true,
         useResponsiveDesign: true,
@@ -520,7 +520,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: PlatformUtils.isDesktop ? DialogSize.medium : DialogSize.large,
+      size: DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           return PrioritySelectionDialog(
@@ -569,7 +569,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           final theme = Theme.of(context);
@@ -668,7 +668,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: PlatformUtils.isDesktop ? DialogSize.medium : DialogSize.large,
+      size: DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           return LockSettingsDialogContent(

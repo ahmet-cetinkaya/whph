@@ -19,9 +19,6 @@ tasks:
       tomorrow: 내일
       weekend: 주말
       next_weekday: 다음 평일
-  date_selection:
-    deadline_date_title: 마감일 선택
-    planned_date_title: 계획일 선택
   delete:
     error: 작업 삭제 중 예상치 못한 오류가 발생했습니다.
     message: 이 작업을 삭제하시겠습니까?

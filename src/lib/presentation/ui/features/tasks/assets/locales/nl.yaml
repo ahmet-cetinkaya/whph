@@ -19,9 +19,6 @@ tasks:
       tomorrow: Morgen
       weekend: Weekend
       next_weekday: Volgende werkdag
-  date_selection:
-    deadline_date_title: Selecteer deadline datum
-    planned_date_title: Selecteer geplande datum
   delete:
     error: Onverwachte fout opgetreden bij het verwijderen van taak.
     message: Weet je zeker dat je deze taak wilt verwijderen?

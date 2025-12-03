@@ -192,9 +192,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.showLogo) ...[
-                  // Add left spacing for mobile view
                   if (AppThemeHelper.isSmallScreen(context)) const SizedBox(width: AppTheme.sizeSmall),
-                  // Existing spacing for larger screens
                   if (!AppThemeHelper.isSmallScreen(context)) const SizedBox(width: AppTheme.sizeLarge),
                   const AppLogo(width: 32, height: 32),
                   const SizedBox(width: AppTheme.size2XSmall),
@@ -210,9 +208,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         titleSpacing: 0,
         actions: widget.appBarActions,
       ),
-      // Add bottom navigation bar for mobile devices
       bottomNavigationBar: _shouldShowBottomNavBar() ? _buildBottomNavigationBar() : null,
-      // Add floating action button only on mobile devices
       floatingActionButton: _shouldShowFloatingActionButton() ? widget.floatingActionButton : null,
       body: Row(
         children: [
@@ -372,10 +368,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
           _onClickNavItem(mainNavItems[index]);
         }
       },
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: _themeService.primaryColor,
-      unselectedItemColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-      elevation: 8,
       items: [
         ...mainNavItems.map(
           (navItem) => BottomNavigationBarItem(
@@ -383,7 +375,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             label: translationService.translate(navItem.titleKey),
           ),
         ),
-        // Add the "More" button if needed
         if (needsMoreButton)
           BottomNavigationBarItem(
             icon: Icon(moreNavItem.icon),
@@ -481,7 +472,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         ),
         tileColor: isActive ? _themeService.primaryColor.withValues(alpha: 0.1) : null,
         onTap: () {
-          Navigator.pop(context); // Close bottom sheet
+          Navigator.pop(context);
           _onClickNavItem(item);
         },
       ),

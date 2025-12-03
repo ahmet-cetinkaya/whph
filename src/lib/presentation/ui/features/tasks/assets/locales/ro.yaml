@@ -19,9 +19,6 @@ tasks:
       tomorrow: Mâine
       weekend: Weekend
       next_weekday: Următoarea zi lucrătoare
-  date_selection:
-    deadline_date_title: Selectează data limită
-    planned_date_title: Selectează data planificată
   delete:
     error: Eroare neașteptată la ștergerea sarcinii.
     message: Ești sigur că vrei să ștergi această sarcină?

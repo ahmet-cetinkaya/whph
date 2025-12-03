@@ -19,9 +19,7 @@ tasks:
       tomorrow: Tomorrow
       weekend: Weekend
       next_weekday: Next Weekday
-  date_selection:
-    deadline_date_title: Select deadline date
-    planned_date_title: Select planned date
+
   delete:
     error: Unexpected error occurred while deleting task.
     message: Are you sure you want to delete this task?

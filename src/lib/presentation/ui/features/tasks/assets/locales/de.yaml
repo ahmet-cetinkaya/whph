@@ -19,9 +19,6 @@ tasks:
       tomorrow: Morgen
       weekend: Wochenende
       next_weekday: Nächster Arbeitstag
-  date_selection:
-    deadline_date_title: Fälligkeitsdatum auswählen
-    planned_date_title: Geplantes Datum auswählen
   delete:
     error: Unerwarteter Fehler beim Löschen der Aufgabe.
     message: Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?

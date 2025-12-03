@@ -19,9 +19,6 @@ tasks:
       tomorrow: 明日
       weekend: 週末
       next_weekday: 次の平日
-  date_selection:
-    deadline_date_title: 期限日を選択
-    planned_date_title: 予定日を選択
   delete:
     error: タスクの削除中に予期しないエラーが発生しました。
     message: このタスクを削除してもよろしいですか？

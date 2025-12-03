@@ -105,8 +105,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   static const String keyParentTask = 'parentTask';
   static const String keyTimer = 'timer';
 
-  late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
-
   @override
   void initState() {
     super.initState();
@@ -325,21 +323,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           }
 
           widget.onCompletedChanged?.call(response.isCompleted);
-          _priorityOptions = [
-            DropdownOption(label: _translationService.translate(TaskTranslationKeys.priorityNone), value: null),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityUrgentImportant),
-                value: EisenhowerPriority.urgentImportant),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityNotUrgentImportant),
-                value: EisenhowerPriority.notUrgentImportant),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityUrgentNotImportant),
-                value: EisenhowerPriority.urgentNotImportant),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportant),
-                value: EisenhowerPriority.notUrgentNotImportant),
-          ];
 
           // Only update planned date if it's different
           final plannedDateText = _task!.plannedDate != null
@@ -430,9 +413,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _showTimeLoggingDialog() async {
     if (_task == null) return;
 
-    final result = await showDialog<bool>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => TimeLoggingDialog(
+      size: DialogSize.large,
+      child: TimeLoggingDialog(
         entityId: _task!.id,
         onCancel: () {
           // Handle cancel if needed
@@ -1056,7 +1040,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: PrioritySelectField(
             value: _task!.priority,
-            options: _priorityOptions,
             onChanged: _onPriorityChanged,
           ),
         ),
@@ -1388,7 +1371,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.max,
       child: TaskDetailsPage(
         taskId: _task!.parentTask!.id,
         hideSidebar: true,

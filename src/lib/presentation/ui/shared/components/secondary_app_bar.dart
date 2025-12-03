@@ -8,7 +8,6 @@ class SecondaryAppBar extends AppBar {
     super.actions,
     super.actionsIconTheme,
     super.automaticallyImplyLeading,
-    super.backgroundColor,
     super.bottom,
     super.bottomOpacity,
     super.centerTitle,
