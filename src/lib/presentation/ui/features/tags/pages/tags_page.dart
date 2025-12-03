@@ -95,7 +95,7 @@ class _TagsPageState extends State<TagsPage> {
       child: TagDetailsPage(
         tagId: id,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

@@ -271,7 +271,7 @@ class NotesListState extends State<NotesList> {
       child: NoteDetailsPage(
         noteId: id,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
     _refresh();
   }

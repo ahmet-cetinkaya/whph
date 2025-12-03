@@ -241,7 +241,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         taskId: taskId,
         hideSidebar: true,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 
@@ -252,7 +252,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       child: HabitDetailsPage(
         habitId: id,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

@@ -97,7 +97,7 @@ class _HabitsPageState extends State<HabitsPage> {
       child: HabitDetailsPage(
         habitId: habitId,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 
