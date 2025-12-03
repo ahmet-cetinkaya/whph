@@ -485,7 +485,7 @@ class _AppTimerState extends State<AppTimer> {
     if (mounted) {
       await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
-        size: DialogSize.medium,
+        size: DialogSize.large,
         child: TimerSettingsDialog(
           initialTimerMode: _timerMode,
           initialWorkDuration: _workDuration,

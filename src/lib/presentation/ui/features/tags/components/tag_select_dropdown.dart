@@ -208,6 +208,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Scaffold(
@@ -409,7 +410,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: TagDetailsPage(tagId: tagId),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

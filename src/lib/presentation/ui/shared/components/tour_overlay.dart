@@ -494,7 +494,7 @@ class TourStepOverlay extends StatelessWidget {
                     child: OutlinedButton.icon(
                       onPressed: () async => await onSkip(),
                       icon: const Icon(Icons.close, size: 18),
-                      label: const Text('Skip Tour'),
+                      label: Text(translationService.translate(SharedTranslationKeys.skipTour)),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppTheme.sizeMedium,

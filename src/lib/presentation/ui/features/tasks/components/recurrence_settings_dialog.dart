@@ -68,7 +68,6 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         title: Text(
           _translationService.translate(TaskTranslationKeys.recurrenceLabel),

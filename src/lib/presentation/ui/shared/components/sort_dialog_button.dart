@@ -58,7 +58,7 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
           translationService: _translationService,
           onClose: widget.onDialogClose,
         ),
-        size: DialogSize.medium);
+        size: DialogSize.large);
   }
 
   @override
@@ -207,8 +207,8 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
       appBar: AppBar(
         title: Text(widget.translationService.translate(SharedTranslationKeys.sort)),
         leading: IconButton(
-          icon: const Icon(Icons.close),
-          tooltip: widget.translationService.translate(SharedTranslationKeys.closeButton),
+          icon: const Icon(Icons.arrow_back),
+          tooltip: widget.translationService.translate(SharedTranslationKeys.backButton),
           onPressed: () {
             widget.onClose?.call();
             Navigator.of(context).pop();

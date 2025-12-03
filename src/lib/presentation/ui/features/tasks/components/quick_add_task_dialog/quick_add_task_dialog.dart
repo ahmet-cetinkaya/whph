@@ -31,7 +31,7 @@ import 'builders/estimated_time_dialog_content.dart';
 import 'builders/description_dialog_content.dart';
 
 // New extracted dialog components
-import 'dialogs/priority_selection_dialog_content.dart';
+import '../dialogs/priority_selection_dialog.dart';
 import 'dialogs/lock_settings_dialog_content.dart';
 import 'dialogs/clear_fields_confirmation_dialog.dart';
 import 'models/lock_settings_state.dart';
@@ -523,7 +523,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       size: PlatformUtils.isDesktop ? DialogSize.medium : DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
-          return PrioritySelectionDialogContent(
+          return PrioritySelectionDialog(
             selectedPriority: tempPriority,
             onPrioritySelected: (EisenhowerPriority? priority) {
               setDialogState(() => tempPriority = priority);

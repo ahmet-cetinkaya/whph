@@ -367,7 +367,7 @@ class TaskDatePickerDialog {
     return await ResponsiveDialogHelper.showResponsiveDialog<ReminderSelectionResult>(
       context: context,
       child: child,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       isScrollable: true,
       isDismissible: true,
       enableDrag: true,

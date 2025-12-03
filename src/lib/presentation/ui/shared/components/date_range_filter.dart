@@ -1,7 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart' hide DatePickerDialog;
 import 'package:acore/acore.dart'
-    show DatePickerConfig, DateSelectionMode, QuickDateRange, DatePickerDialog, DateTimePickerTranslationKey;
+    show
+        DatePickerConfig,
+        DateSelectionMode,
+        QuickDateRange,
+        DatePickerDialog,
+        DateTimePickerTranslationKey,
+        DialogSize;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -362,9 +368,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       },
       actionButtonRadius: AppTheme.containerBorderRadius,
       allowNullConfirm: true,
+      dialogSize: DialogSize.large,
     );
 
-    final result = await DatePickerDialog.show(
+    final result = await DatePickerDialog.showResponsive(
       context: context,
       config: config,
     );
