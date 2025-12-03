@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper;
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, MarkdownEditor;
 import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
-import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
@@ -903,10 +902,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 DetailTableRowData(
                   label: _translationService.translate(HabitTranslationKeys.descriptionLabel),
                   icon: HabitUiConstants.descriptionIcon,
-                  widget: MarkdownEditor(
+                  widget: MarkdownEditor.simple(
                     controller: _descriptionController,
                     onChanged: _onDescriptionChanged,
                     height: 250,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
                   ),
                   removePadding: true,
                 ),

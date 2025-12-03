@@ -1,6 +1,8 @@
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as application;
 import 'package:acore/acore.dart' show DateTimePickerTranslationKey;
 import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:acore/components/markdown_editor/config/markdown_editor_translation_keys.dart';
 
 class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String saveButton = 'shared.buttons.save';
@@ -570,5 +572,30 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
       case NumericInputTranslationKey.atMaximumValue:
         return SharedTranslationKeys.numericInputAtMaximumValue;
     }
+  }
+
+  /// Maps markdown editor translation keys using the app's translation service
+  static Map<String, String> mapMarkdownTranslations(ITranslationService translationService) {
+    return {
+      MarkdownEditorTranslationKeys.hintText: translationService.translate(markdownEditorHint),
+      MarkdownEditorTranslationKeys.editTooltip: translationService.translate(markdownEditorEditTooltip),
+      MarkdownEditorTranslationKeys.previewTooltip: translationService.translate(markdownEditorPreviewTooltip),
+      MarkdownEditorTranslationKeys.boldTooltip: translationService.translate(markdownEditorBoldTooltip),
+      MarkdownEditorTranslationKeys.italicTooltip: translationService.translate(markdownEditorItalicTooltip),
+      MarkdownEditorTranslationKeys.linkTooltip: translationService.translate(markdownEditorLinkTooltip),
+      MarkdownEditorTranslationKeys.imageTooltip: translationService.translate(markdownEditorImageTooltip),
+      MarkdownEditorTranslationKeys.headingTooltip: translationService.translate(markdownEditorHeadingTooltip),
+      MarkdownEditorTranslationKeys.checkboxTooltip: translationService.translate(markdownEditorCheckboxTooltip),
+      MarkdownEditorTranslationKeys.codeTooltip: translationService.translate(markdownEditorCodeTooltip),
+      MarkdownEditorTranslationKeys.bulletedListTooltip:
+          translationService.translate(markdownEditorBulletedListTooltip),
+      MarkdownEditorTranslationKeys.numberedListTooltip:
+          translationService.translate(markdownEditorNumberedListTooltip),
+      MarkdownEditorTranslationKeys.quoteTooltip: translationService.translate(markdownEditorQuoteTooltip),
+      MarkdownEditorTranslationKeys.horizontalRuleTooltip:
+          translationService.translate(markdownEditorHorizontalRuleTooltip),
+      MarkdownEditorTranslationKeys.strikethroughTooltip:
+          translationService.translate(markdownEditorStrikethroughTooltip),
+    };
   }
 }

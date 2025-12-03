@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
+import 'package:acore/acore.dart' show MarkdownEditor;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -87,7 +87,7 @@ class _DescriptionDialogContentState extends State<DescriptionDialogContent> {
         border: Border.all(color: widget.theme.colorScheme.outline.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: MarkdownEditor(
+      child: MarkdownEditor.simple(
         controller: _controller,
         hintText: widget.translationService.translate('tasks.details.description.hint'),
         style: widget.theme.textTheme.bodySmall?.copyWith(
@@ -95,6 +95,7 @@ class _DescriptionDialogContentState extends State<DescriptionDialogContent> {
         ),
         toolbarBackground: widget.theme.colorScheme.surface,
         onChanged: widget.onChanged,
+        translations: SharedTranslationKeys.mapMarkdownTranslations(widget.translationService),
       ),
     );
   }

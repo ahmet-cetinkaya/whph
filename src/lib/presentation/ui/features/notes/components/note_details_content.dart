@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
+import 'package:acore/acore.dart' show MarkdownEditor;
 import 'package:whph/core/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/remove_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
@@ -404,11 +404,12 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
           // Note Content (always visible)
           const SizedBox(height: AppTheme.size2XSmall),
-          MarkdownEditor(
+          MarkdownEditor.simple(
             controller: _contentController,
             onChanged: _onContentChanged,
             style: theme.textTheme.bodyMedium,
             height: 400,
+            translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
           ),
         ],
       ),

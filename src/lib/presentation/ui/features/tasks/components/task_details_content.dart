@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
+import 'package:acore/acore.dart' show MarkdownEditor;
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
@@ -1246,10 +1246,12 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           DetailTableRowData(
             label: _translationService.translate(TaskTranslationKeys.descriptionLabel),
             icon: TaskUiConstants.descriptionIcon,
-            widget: MarkdownEditor(
+            widget: MarkdownEditor.simple(
               controller: _descriptionController,
               onChanged: _onDescriptionChanged,
               height: 250,
+              style: Theme.of(context).textTheme.bodyMedium,
+              translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
             ),
             removePadding: true,
           ),
