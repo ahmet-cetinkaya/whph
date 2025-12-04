@@ -600,39 +600,41 @@ class _AppTimerState extends State<AppTimer> {
                 ),
               ),
             ),
+
           // Timer Content
-          Padding(
-            padding: EdgeInsets.all(spacing),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!_isRunning && !_isAlarmPlaying)
-                  IconButton(
-                    iconSize: buttonSize * 0.6,
-                    icon: Icon(SharedUiConstants.settingsIcon),
-                    onPressed: _showSettingsModal,
-                  ),
-                if (!_isRunning && !_isAlarmPlaying) SizedBox(width: spacing),
-                // Text area for the timer display
-                AnimatedDefaultTextStyle(
-                  duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
-                  style: widget.isMiniLayout
-                      ? AppTheme.bodyMedium
-                      : (_isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium),
-                  child: Text(
-                    _getDisplayTime(),
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(width: spacing),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: spacing,
+            children: [
+              // Settings button
+              if (!_isRunning && !_isAlarmPlaying)
                 IconButton(
-                  iconSize: buttonSize * 0.7,
-                  icon: Icon(_getButtonIcon()),
-                  onPressed: _getButtonAction(),
+                  iconSize: buttonSize,
+                  icon: Icon(SharedUiConstants.settingsIcon),
+                  onPressed: _showSettingsModal,
                 ),
-              ],
-            ),
+
+              // Text area for the timer display
+              AnimatedDefaultTextStyle(
+                textAlign: TextAlign.center,
+                duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
+                style: widget.isMiniLayout
+                    ? AppTheme.bodyMedium
+                    : (_isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium),
+                child: Text(
+                  _getDisplayTime(),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              // Main action button
+              IconButton(
+                iconSize: buttonSize,
+                icon: Icon(_getButtonIcon()),
+                onPressed: _getButtonAction(),
+              ),
+            ],
           ),
         ],
       ),

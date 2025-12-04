@@ -115,17 +115,17 @@ habits:
     toggling_archive: Arkistointitilan vaihto epäonnistui
   goals:
     current_goal: Tavoite
-    days_unit: päivää
+    days_unit: Päivää tässä jaksossa
     description: |
       Haluatko harjoitella tapaasi tiettyllä taajuudella sen sijaan
       että joka päivä? Aseta sitten mukautettu tavoite.
     enable: Ota käyttöön mukautetut tavoitteet
     goal: Mukautettu Tavoite
     goal_format: "{count} kertaa {dayCount} päivässä"
-    period_days: Jakson päivät
+    period_days: Jakson kesto
     settings: Mukautetun Tavoitteen Asetukset
-    target_frequency: Jakson taajuus
-    times_unit: kerta jaksossa
+    target_frequency: Kohdetaajuus
+    times_unit: Tapa suorittaa tässä jaksossa
   list:
     all_habits_done: Kaikki tavat suoritettu!
     no_habits_found: Ei tapoja

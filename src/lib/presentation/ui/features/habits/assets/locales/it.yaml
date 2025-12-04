@@ -116,17 +116,17 @@ habits:
     toggling_archive: Impossibile cambiare stato archivio
   goals:
     current_goal: Obiettivo
-    days_unit: giorni
+    days_unit: Giorni in questo periodo
     description:
       Vuoi praticare l'abitudine con una frequenza specifica piuttosto
       che ogni giorno? Allora imposta un obiettivo personalizzato.
     enable: Abilita obiettivi personalizzati
     goal: Obiettivo personalizzato
     goal_format: "{count} volte in {dayCount} giorni"
-    period_days: Giorni periodo
+    period_days: Durata del periodo
     settings: Impostazioni obiettivo personalizzato
-    target_frequency: Frequenza del periodo
-    times_unit: volte per periodo
+    target_frequency: Frequenza obiettivo
+    times_unit: Volte da completare in questo periodo
   list:
     all_habits_done: Tutte le abitudini completate!
     no_habits_found: Nessuna abitudine

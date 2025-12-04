@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/components/numeric_input/numeric_input.dart';
-import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
+import 'package:acore/acore.dart' hide Container;
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
@@ -12,6 +11,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class TimerSettingsDialog extends StatefulWidget {
   final TimerMode initialTimerMode;
@@ -267,6 +267,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
       appBar: AppBar(
         title: Text(
           _translationService.translate(TaskTranslationKeys.pomodoroSettingsLabel),
+          style: AppTheme.headlineSmall,
         ),
         elevation: 0,
         leading: IconButton(
@@ -275,9 +276,11 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
         ),
         automaticallyImplyLeading: false,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
-        child: _buildSettingsContent(),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: _buildSettingsContent(),
+        ),
       ),
     );
   }
@@ -285,108 +288,145 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
   Widget _buildSettingsContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
       children: [
         // Timer Mode Selection
         _buildTimerModeRow(),
-        // Only show duration settings for modes that need them
-        if (_timerMode != TimerMode.stopwatch) ...[
-          Text(
-            _translationService.translate(TaskTranslationKeys.pomodoroTimerSettingsLabel),
-            style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+
+        const SizedBox(height: AppTheme.sizeLarge),
+
+        // Animated Settings Section
+        AnimatedCrossFade(
+          firstChild: const SizedBox.shrink(),
+          secondChild: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Duration Settings
+              if (_timerMode != TimerMode.stopwatch) ...[
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                  child: Text(
+                    _translationService.translate(TaskTranslationKeys.pomodoroTimerSettingsLabel),
+                    style: AppTheme.labelLarge,
+                  ),
+                ),
+                _buildSettingRow(
+                  _translationService.translate(TaskTranslationKeys.pomodoroWorkLabel),
+                  _workDuration,
+                  Icons.work,
+                  (newValue) {
+                    if (!mounted) return;
+                    setState(() {
+                      _workDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
+                    });
+                    _debouncedSaveIntSetting(SettingKeys.workTime, _workDuration);
+                  },
+                  valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+                ),
+              ],
+
+              // Pomodoro Specific Settings
+              if (_timerMode == TimerMode.pomodoro) ...[
+                const SizedBox(height: AppTheme.sizeMedium),
+                _buildSettingRow(
+                  _translationService.translate(TaskTranslationKeys.pomodoroBreakLabel),
+                  _breakDuration,
+                  Icons.coffee,
+                  (newValue) {
+                    if (!mounted) return;
+                    setState(() {
+                      _breakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
+                    });
+                    _debouncedSaveIntSetting(SettingKeys.breakTime, _breakDuration);
+                  },
+                  valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+                ),
+                const SizedBox(height: AppTheme.sizeMedium),
+                _buildSettingRow(
+                  _translationService.translate(TaskTranslationKeys.pomodoroLongBreakLabel),
+                  _longBreakDuration,
+                  Icons.weekend,
+                  (newValue) {
+                    if (!mounted) return;
+                    setState(() {
+                      _longBreakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
+                    });
+                    _debouncedSaveIntSetting(SettingKeys.longBreakTime, _longBreakDuration);
+                  },
+                  valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
+                ),
+                const SizedBox(height: AppTheme.sizeMedium),
+                _buildSettingRow(
+                  _translationService.translate(TaskTranslationKeys.pomodoroSessionsCountLabel),
+                  _sessionsCount,
+                  Icons.repeat,
+                  (newValue) {
+                    if (!mounted) return;
+                    setState(() {
+                      _sessionsCount = newValue.clamp(1, 10);
+                    });
+                    _debouncedSaveIntSetting(SettingKeys.sessionsBeforeLongBreak, _sessionsCount);
+                  },
+                  step: 1,
+                  minValue: 1,
+                  maxValue: 10,
+                ),
+
+                const SizedBox(height: AppTheme.sizeXLarge),
+
+                // Auto Start Settings
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                  child: Text(
+                    _translationService.translate(TaskTranslationKeys.pomodoroAutoStartSectionLabel),
+                    style: AppTheme.labelLarge,
+                  ),
+                ),
+                _buildSwitchSettingRow(
+                  _translationService.translate(TaskTranslationKeys.pomodoroAutoStartBreakLabel),
+                  _autoStartBreak,
+                  Icons.play_arrow_rounded,
+                  (value) {
+                    if (!mounted) return;
+                    setState(() {
+                      _autoStartBreak = value;
+                    });
+                    _debouncedSaveBoolSetting(SettingKeys.autoStartBreak, value);
+                  },
+                ),
+                const SizedBox(height: AppTheme.sizeMedium),
+                _buildSwitchSettingRow(
+                  _translationService.translate(TaskTranslationKeys.pomodoroAutoStartWorkLabel),
+                  _autoStartWork,
+                  Icons.work_history_rounded,
+                  (value) {
+                    if (!mounted) return;
+                    setState(() {
+                      _autoStartWork = value;
+                    });
+                    _debouncedSaveBoolSetting(SettingKeys.autoStartWork, value);
+                  },
+                ),
+              ],
+            ],
           ),
-          _buildSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroWorkLabel),
-            _workDuration,
-            (newValue) {
-              if (!mounted) return;
-              setState(() {
-                _workDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
-              });
-              _debouncedSaveIntSetting(SettingKeys.workTime, _workDuration);
-            },
-            valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
-          ),
-        ],
-        // Only show Pomodoro-specific settings in Pomodoro mode
-        if (_timerMode == TimerMode.pomodoro) ...[
-          _buildSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroBreakLabel),
-            _breakDuration,
-            (newValue) {
-              if (!mounted) return;
-              setState(() {
-                _breakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
-              });
-              _debouncedSaveIntSetting(SettingKeys.breakTime, _breakDuration);
-            },
-            valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
-          ),
-          _buildSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroLongBreakLabel),
-            _longBreakDuration,
-            (newValue) {
-              if (!mounted) return;
-              setState(() {
-                _longBreakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
-              });
-              _debouncedSaveIntSetting(SettingKeys.longBreakTime, _longBreakDuration);
-            },
-            valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
-          ),
-          _buildSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroSessionsCountLabel),
-            _sessionsCount,
-            (newValue) {
-              if (!mounted) return;
-              setState(() {
-                _sessionsCount = newValue.clamp(1, 10);
-              });
-              _debouncedSaveIntSetting(SettingKeys.sessionsBeforeLongBreak, _sessionsCount);
-            },
-            step: 1,
-            minValue: 1,
-            maxValue: 10,
-          ),
-          // Only show auto-start settings in Pomodoro mode
-          const SizedBox(height: 24),
-          Text(
-            _translationService.translate(TaskTranslationKeys.pomodoroAutoStartSectionLabel),
-            style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
-          ),
-          const SizedBox(height: 8),
-          _buildSwitchSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroAutoStartBreakLabel),
-            _autoStartBreak,
-            (value) {
-              if (!mounted) return;
-              setState(() {
-                _autoStartBreak = value;
-              });
-              _debouncedSaveBoolSetting(SettingKeys.autoStartBreak, value);
-            },
-          ),
-          _buildSwitchSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroAutoStartWorkLabel),
-            _autoStartWork,
-            (value) {
-              if (!mounted) return;
-              setState(() {
-                _autoStartWork = value;
-              });
-              _debouncedSaveBoolSetting(SettingKeys.autoStartWork, value);
-            },
-          ),
-        ],
-        const SizedBox(height: 24),
-        Text(
-          _translationService.translate(TaskTranslationKeys.pomodoroTickingSoundSectionLabel),
-          style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+          crossFadeState: _timerMode != TimerMode.stopwatch ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 300),
         ),
-        const SizedBox(height: 8),
+
+        const SizedBox(height: AppTheme.sizeXLarge),
+
+        // Sound Settings
+        Padding(
+          padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+          child: Text(
+            _translationService.translate(TaskTranslationKeys.pomodoroTickingSoundSectionLabel),
+            style: AppTheme.labelLarge,
+          ),
+        ),
         _buildSwitchSettingRow(
           _translationService.translate(TaskTranslationKeys.pomodoroTickingSoundLabel),
           _tickingEnabled,
+          Icons.volume_up,
           (value) {
             if (!mounted) return;
             setState(() {
@@ -395,45 +435,64 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
             _debouncedSaveBoolSetting(SettingKeys.tickingEnabled, value);
           },
         ),
-        if (_tickingEnabled) ...[
-          _buildSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroTickingVolumeLabel),
-            _tickingVolume,
-            (newValue) {
-              if (!mounted) return;
-              setState(() {
-                _tickingVolume = newValue.clamp(5, 100);
-              });
-              _debouncedSaveIntSetting(SettingKeys.tickingVolume, _tickingVolume);
-            },
-            step: 5,
-            minValue: 5,
-            maxValue: 100,
+
+        // Animated Sound Details
+        AnimatedCrossFade(
+          firstChild: const SizedBox.shrink(),
+          secondChild: Column(
+            children: [
+              const SizedBox(height: AppTheme.sizeMedium),
+              _buildSettingRow(
+                _translationService.translate(TaskTranslationKeys.pomodoroTickingVolumeLabel),
+                _tickingVolume,
+                Icons.volume_down,
+                (newValue) {
+                  if (!mounted) return;
+                  setState(() {
+                    _tickingVolume = newValue.clamp(5, 100);
+                  });
+                  _debouncedSaveIntSetting(SettingKeys.tickingVolume, _tickingVolume);
+                },
+                step: 5,
+                minValue: 5,
+                maxValue: 100,
+              ),
+              const SizedBox(height: AppTheme.sizeMedium),
+              _buildSettingRow(
+                _translationService.translate(TaskTranslationKeys.pomodoroTickingSpeedLabel),
+                _tickingSpeed,
+                Icons.speed,
+                (newValue) {
+                  if (!mounted) return;
+                  setState(() {
+                    _tickingSpeed = newValue.clamp(1, 5);
+                  });
+                  _debouncedSaveIntSetting(SettingKeys.tickingSpeed, _tickingSpeed);
+                },
+                step: 1,
+                minValue: 1,
+                maxValue: 5,
+              ),
+            ],
           ),
-          _buildSettingRow(
-            _translationService.translate(TaskTranslationKeys.pomodoroTickingSpeedLabel),
-            _tickingSpeed,
-            (newValue) {
-              if (!mounted) return;
-              setState(() {
-                _tickingSpeed = newValue.clamp(1, 5);
-              });
-              _debouncedSaveIntSetting(SettingKeys.tickingSpeed, _tickingSpeed);
-            },
-            step: 1,
-            minValue: 1,
-            maxValue: 5,
-          ),
-        ],
-        const SizedBox(height: 24),
-        Text(
-          _translationService.translate(TaskTranslationKeys.pomodoroKeepScreenAwakeSectionLabel),
-          style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+          crossFadeState: _tickingEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 300),
         ),
-        const SizedBox(height: 8),
+
+        const SizedBox(height: AppTheme.sizeXLarge),
+
+        // Screen Awake Setting
+        Padding(
+          padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+          child: Text(
+            _translationService.translate(TaskTranslationKeys.pomodoroKeepScreenAwakeSectionLabel),
+            style: AppTheme.labelLarge,
+          ),
+        ),
         _buildSwitchSettingRow(
           _translationService.translate(TaskTranslationKeys.pomodoroKeepScreenAwakeLabel),
           _keepScreenAwake,
+          Icons.screen_lock_portrait,
           (value) {
             if (!mounted) return;
             setState(() {
@@ -442,6 +501,9 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
             _debouncedSaveBoolSetting(SettingKeys.keepScreenAwake, value);
           },
         ),
+
+        // Bottom padding for scrolling
+        const SizedBox(height: AppTheme.sizeXLarge),
       ],
     );
   }
@@ -469,63 +531,77 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
       }
     }
 
-    return Column(
-      children: [
-        Row(
-          children: TimerMode.values.map((mode) {
-            final isSelected = _timerMode == mode;
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (mode != _timerMode) {
-                      setState(() {
-                        _timerMode = mode;
-                      });
-                      await _saveTimerModeSetting(mode);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
-                    foregroundColor:
-                        isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                    minimumSize: const Size(0, 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppTheme.surface1,
+        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+      ),
+      child: Row(
+        children: TimerMode.values.map((mode) {
+          final isSelected = _timerMode == mode;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () async {
+                if (mode != _timerMode) {
+                  setState(() {
+                    _timerMode = mode;
+                  });
+                  await _saveTimerModeSetting(mode);
+                }
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius - 4),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          )
+                        ]
+                      : [],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      getTimerModeIcon(mode),
+                      size: 20,
+                      color: isSelected
+                          ? ColorContrastHelper.getContrastingTextColor(Theme.of(context).colorScheme.primary)
+                          : AppTheme.secondaryTextColor,
                     ),
-                    elevation: isSelected ? 2 : 0,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        getTimerModeIcon(mode),
-                        size: 16,
+                    const SizedBox(height: 4),
+                    Text(
+                      getTimerModeDisplay(mode),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected
+                            ? ColorContrastHelper.getContrastingTextColor(Theme.of(context).colorScheme.primary)
+                            : AppTheme.secondaryTextColor,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        getTimerModeDisplay(mode),
-                        style: const TextStyle(fontSize: 10),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 16),
-      ],
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
   Widget _buildSettingRow(
     String label,
     int value,
+    IconData icon,
     Function(int) onValueChanged, {
     int? minValue,
     int? maxValue,
@@ -535,63 +611,62 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
     final min = minValue ?? _minTimerValue;
     final max = maxValue ?? _maxTimerValue;
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 2,
-              child: Text(
-                label,
-                style: AppTheme.bodyMedium,
-              ),
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.sizeLarge),
+      decoration: BoxDecoration(
+        color: AppTheme.surface1,
+        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+      ),
+      child: Row(
+        children: [
+          StyledIcon(icon, isActive: true),
+          const SizedBox(width: AppTheme.sizeLarge),
+          Expanded(
+            child: Text(
+              label,
+              style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.w500),
             ),
-            Expanded(
-              flex: 3,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: NumericInput(
-                  initialValue: value,
-                  onValueChanged: onValueChanged,
-                  minValue: min,
-                  maxValue: max,
-                  incrementValue: step,
-                  decrementValue: step,
-                  valueSuffix: valueSuffix,
-                  iconSize: 18,
-                  translations: _getNumericInputTranslations(),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-      ],
+          ),
+          NumericInput(
+            initialValue: value,
+            onValueChanged: onValueChanged,
+            minValue: min,
+            maxValue: max,
+            incrementValue: step,
+            decrementValue: step,
+            valueSuffix: valueSuffix,
+            iconSize: 20,
+            translations: _getNumericInputTranslations(),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildSwitchSettingRow(String label, bool value, Function(bool) onChanged) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: AppTheme.bodyMedium,
-              ),
-            ),
-            Switch(
-              value: value,
-              onChanged: onChanged,
-            ),
-          ],
+  Widget _buildSwitchSettingRow(
+    String label,
+    bool value,
+    IconData icon,
+    Function(bool) onChanged,
+  ) {
+    return Card(
+      elevation: 0,
+      color: AppTheme.surface1,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+      child: SwitchListTile.adaptive(
+        value: value,
+        onChanged: onChanged,
+        title: Text(
+          label,
+          style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 8),
-      ],
+        secondary: StyledIcon(
+          icon,
+          isActive: value,
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge, vertical: 4),
+      ),
     );
   }
 }

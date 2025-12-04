@@ -115,17 +115,17 @@ habits:
     toggling_archive: Falha ao alternar status de arquivamento
   goals:
     current_goal: Meta
-    days_unit: dias
+    days_unit: Dias neste período
     description: |
       Você quer praticar o hábito com uma frequência específica em vez de
       todo dia? Então defina uma meta personalizada.
     enable: Ativar Metas Personalizadas
     goal: Meta Personalizada
     goal_format: "{count} vezes em {dayCount} dias"
-    period_days: Dias do Período
+    period_days: Duração do Período
     settings: Configurações de Meta Personalizada
-    target_frequency: Frequência do Período
-    times_unit: vezes por período
+    target_frequency: Frequência Alvo
+    times_unit: Vezes a concluir neste período
   list:
     all_habits_done: Todos os hábitos concluídos!
     no_habits_found: Nenhum hábito

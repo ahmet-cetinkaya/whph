@@ -116,14 +116,14 @@ habits:
   goals:
     goal: Mål
     target_frequency: Målfrekvens
-    period_days: Perioddagar
+    period_days: Periodlängd
     enable: Aktivera
     goal_format: Målfomat
     settings: Inställningar
     current_goal: Nuvarande mål
     description: Beskrivning
-    times_unit: gånger
-    days_unit: dagar
+    times_unit: Gånger att slutföra i denna period
+    days_unit: Dagar i denna period
   list:
     no_habits_found: Inga vanor hittades
     all_habits_done: Alla vanor slutförda!

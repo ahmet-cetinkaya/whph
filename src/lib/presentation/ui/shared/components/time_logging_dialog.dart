@@ -7,6 +7,8 @@ import 'package:whph/main.dart';
 import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
 import 'package:acore/components/numeric_input/numeric_input.dart';
 import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 // Event class for time logging
 class TimeLoggingSubmittedEvent {
@@ -173,9 +175,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
       appBar: AppBar(
         title: Text(
           _getTranslation(SharedTranslationKeys.timeLoggingDialogTitle),
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTheme.headlineSmall,
         ),
         centerTitle: false,
         elevation: 0,
@@ -190,13 +190,6 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
         actions: [
           TextButton(
             onPressed: _isLoading || !_isValidInput() ? null : _logTime,
-            style: TextButton.styleFrom(
-              foregroundColor: theme.colorScheme.primary,
-              textStyle: theme.textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-            ),
             child: _isLoading
                 ? SizedBox(
                     height: 20,
@@ -206,7 +199,10 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                       color: theme.colorScheme.primary,
                     ),
                   )
-                : Text(_getTranslation(SharedTranslationKeys.doneButton)),
+                : Text(
+                    _getTranslation(SharedTranslationKeys.doneButton),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
           ),
         ],
       ),
@@ -214,234 +210,145 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppTheme.sizeLarge),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Mode selection
-              // Mobile-friendly toggle buttons
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isMobile = constraints.maxWidth < 600;
+              // Mode Selection
+              Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.surface1,
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                ),
+                padding: const EdgeInsets.all(4),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildModeButton(
+                        context: context,
+                        mode: LoggingMode.addTime,
+                        icon: Icons.add_circle_outline,
+                        label: _getTranslation(SharedTranslationKeys.timeLoggingAddTime),
+                      ),
+                    ),
+                    Expanded(
+                      child: _buildModeButton(
+                        context: context,
+                        mode: LoggingMode.setTotalForDay,
+                        icon: Icons.equalizer,
+                        label: _getTranslation(SharedTranslationKeys.timeLoggingSetTotal),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-                  if (isMobile) {
-                    return Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _selectedMode = LoggingMode.addTime;
-                              });
-                            },
-                            icon: const Icon(Icons.add, size: 18),
-                            label: Text(_getTranslation(SharedTranslationKeys.timeLoggingAddTime)),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: _selectedMode == LoggingMode.addTime
-                                  ? Theme.of(context).colorScheme.primaryContainer
-                                  : null,
-                              foregroundColor: _selectedMode == LoggingMode.addTime
-                                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                                  : null,
-                              side: BorderSide(
-                                color: _selectedMode == LoggingMode.addTime
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.outline,
-                                width: _selectedMode == LoggingMode.addTime ? 2 : 1,
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppTheme.sizeSmall),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _selectedMode = LoggingMode.setTotalForDay;
-                              });
-                            },
-                            icon: const Icon(Icons.equalizer, size: 18),
-                            label: Text(_getTranslation(SharedTranslationKeys.timeLoggingSetTotal)),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: _selectedMode == LoggingMode.setTotalForDay
-                                  ? Theme.of(context).colorScheme.primaryContainer
-                                  : null,
-                              foregroundColor: _selectedMode == LoggingMode.setTotalForDay
-                                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                                  : null,
-                              side: BorderSide(
-                                color: _selectedMode == LoggingMode.setTotalForDay
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.outline,
-                                width: _selectedMode == LoggingMode.setTotalForDay ? 2 : 1,
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _selectedMode = LoggingMode.addTime;
-                              });
-                            },
-                            icon: const Icon(Icons.add, size: 18),
-                            label: Text(_getTranslation(SharedTranslationKeys.timeLoggingAddTime)),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: _selectedMode == LoggingMode.addTime
-                                  ? Theme.of(context).colorScheme.primaryContainer
-                                  : null,
-                              foregroundColor: _selectedMode == LoggingMode.addTime
-                                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                                  : null,
-                              side: BorderSide(
-                                color: _selectedMode == LoggingMode.addTime
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.outline,
-                                width: _selectedMode == LoggingMode.addTime ? 2 : 1,
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AppTheme.sizeSmall),
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                _selectedMode = LoggingMode.setTotalForDay;
-                              });
-                            },
-                            icon: const Icon(Icons.equalizer, size: 18),
-                            label: Text(_getTranslation(SharedTranslationKeys.timeLoggingSetTotal)),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: _selectedMode == LoggingMode.setTotalForDay
-                                  ? Theme.of(context).colorScheme.primaryContainer
-                                  : null,
-                              foregroundColor: _selectedMode == LoggingMode.setTotalForDay
-                                  ? Theme.of(context).colorScheme.onPrimaryContainer
-                                  : null,
-                              side: BorderSide(
-                                color: _selectedMode == LoggingMode.setTotalForDay
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.outline,
-                                width: _selectedMode == LoggingMode.setTotalForDay ? 2 : 1,
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: AppTheme.sizeLarge),
+              const SizedBox(height: AppTheme.sizeXLarge),
 
-              // Date selection
-              Text(
-                _getTranslation(SharedTranslationKeys.date),
-                style: AppTheme.bodyLarge,
+              // Date Selection
+              Padding(
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                child: Text(
+                  _getTranslation(SharedTranslationKeys.date),
+                  style: AppTheme.labelLarge,
+                ),
               ),
-              const SizedBox(height: AppTheme.sizeSmall),
-              DateTimePickerField(
-                controller: _dateController,
-                onConfirm: _onDateSelected,
-                minDateTime: DateTime.now().subtract(const Duration(days: 30)),
-                maxDateTime: DateTime.now(),
-                initialValue: _selectedDate,
-                translateKey: (key) => _getTranslation(SharedTranslationKeys.mapDateTimePickerKey(key)),
+              Container(
+                padding: const EdgeInsets.all(AppTheme.sizeLarge),
+                decoration: BoxDecoration(
+                  color: AppTheme.surface1,
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                ),
+                child: Row(
+                  children: [
+                    StyledIcon(Icons.calendar_today, isActive: true),
+                    const SizedBox(width: AppTheme.sizeLarge),
+                    Expanded(
+                      child: DateTimePickerField(
+                        controller: _dateController,
+                        onConfirm: _onDateSelected,
+                        minDateTime: DateTime.now().subtract(const Duration(days: 30)),
+                        maxDateTime: DateTime.now(),
+                        initialValue: _selectedDate,
+                        translateKey: (key) => _getTranslation(SharedTranslationKeys.mapDateTimePickerKey(key)),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: AppTheme.sizeLarge),
 
-              // Time input
-              Text(
-                _selectedMode == LoggingMode.addTime
-                    ? _getTranslation(SharedTranslationKeys.timeLoggingDuration)
-                    : _getTranslation(SharedTranslationKeys.timeLoggingTotalTime),
-                style: AppTheme.bodyLarge,
+              const SizedBox(height: AppTheme.sizeXLarge),
+
+              // Time Input
+              Padding(
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                child: Text(
+                  _selectedMode == LoggingMode.addTime
+                      ? _getTranslation(SharedTranslationKeys.timeLoggingDuration)
+                      : _getTranslation(SharedTranslationKeys.timeLoggingTotalTime),
+                  style: AppTheme.labelLarge,
+                ),
               ),
-              const SizedBox(height: AppTheme.sizeSmall),
-              Center(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final isMobile = constraints.maxWidth < 600;
-                    if (isMobile) {
-                      return Column(
-                        children: [
-                          NumericInput(
-                            initialValue: 0,
-                            minValue: 0,
-                            onValueChanged: _onHoursChanged,
-                            valueSuffix: _getTranslation(SharedTranslationKeys.hours),
-                            translations: _getNumericInputTranslations(),
-                            style: NumericInputStyle.contained,
-                          ),
-                          const SizedBox(height: AppTheme.sizeMedium),
-                          NumericInput(
-                            initialValue: 0,
-                            minValue: 0,
-                            maxValue: 59,
-                            decrementValue: 5,
-                            incrementValue: 5,
-                            onValueChanged: _onMinutesChanged,
-                            valueSuffix: _getTranslation(SharedTranslationKeys.minutes),
-                            translations: _getNumericInputTranslations(),
-                            style: NumericInputStyle.contained,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          NumericInput(
-                            initialValue: 0,
-                            minValue: 0,
-                            onValueChanged: _onHoursChanged,
-                            valueSuffix: _getTranslation(SharedTranslationKeys.hours),
-                            translations: _getNumericInputTranslations(),
-                            style: NumericInputStyle.contained,
-                          ),
-                          const SizedBox(width: AppTheme.sizeMedium),
-                          NumericInput(
-                            initialValue: 0,
-                            minValue: 0,
-                            maxValue: 59,
-                            decrementValue: 5,
-                            incrementValue: 5,
-                            onValueChanged: _onMinutesChanged,
-                            valueSuffix: _getTranslation(SharedTranslationKeys.minutes),
-                            translations: _getNumericInputTranslations(),
-                            style: NumericInputStyle.contained,
-                          ),
-                        ],
-                      );
-                    }
-                  },
+
+              Container(
+                padding: const EdgeInsets.all(AppTheme.sizeLarge),
+                decoration: BoxDecoration(
+                  color: AppTheme.surface1,
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                ),
+                child: Row(
+                  children: [
+                    StyledIcon(Icons.access_time_filled, isActive: true),
+                    const SizedBox(width: AppTheme.sizeLarge),
+                    Expanded(
+                      child: AppThemeHelper.isSmallScreen(context)
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildHourInput(),
+                                const SizedBox(height: AppTheme.sizeSmall),
+                                _buildMinuteInput(),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                _buildHourInput(),
+                                const SizedBox(width: AppTheme.sizeSmall),
+                                _buildMinuteInput(),
+                              ],
+                            ),
+                    ),
+                  ],
                 ),
               ),
 
               if (_errorMessage != null) ...[
                 const SizedBox(height: AppTheme.sizeMedium),
-                Container(
-                  padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.errorContainer,
-                    borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                  ),
-                  child: Text(
-                    _errorMessage!,
-                    style: AppTheme.bodySmall.copyWith(
-                      color: Theme.of(context).colorScheme.onErrorContainer,
+                AnimatedOpacity(
+                  opacity: _errorMessage != null ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: Container(
+                    padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline, color: theme.colorScheme.onErrorContainer),
+                        const SizedBox(width: AppTheme.sizeSmall),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: AppTheme.bodySmall.copyWith(
+                              color: theme.colorScheme.onErrorContainer,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -450,6 +357,75 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildModeButton({
+    required BuildContext context,
+    required LoggingMode mode,
+    required IconData icon,
+    required String label,
+  }) {
+    final isSelected = _selectedMode == mode;
+    final theme = Theme.of(context);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedMode = mode;
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius - 4),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor.withValues(alpha: 0.7),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor.withValues(alpha: 0.7),
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHourInput() {
+    return NumericInput(
+      initialValue: 0,
+      minValue: 0,
+      onValueChanged: _onHoursChanged,
+      valueSuffix: _getTranslation(SharedTranslationKeys.hours),
+      translations: _getNumericInputTranslations(),
+      style: NumericInputStyle.contained,
+    );
+  }
+
+  Widget _buildMinuteInput() {
+    return NumericInput(
+      initialValue: 0,
+      minValue: 0,
+      maxValue: 59,
+      decrementValue: 5,
+      incrementValue: 5,
+      onValueChanged: _onMinutesChanged,
+      valueSuffix: _getTranslation(SharedTranslationKeys.minutes),
+      translations: _getNumericInputTranslations(),
+      style: NumericInputStyle.contained,
     );
   }
 }

@@ -119,17 +119,17 @@ habits:
     toggling_archive: Arşiv durumu değiştirilemedi
   goals:
     current_goal: Hedef
-    days_unit: gün
+    days_unit: Bu dönemdeki günler
     description:
       Her gün dışında, belirli ölçüde mi alışkanlığı uygulamak istiyorsunuz?
       O zaman özel hedef ayarlayın.
     enable: Özel Hedefleri Etkinleştir
     goal: Özel Hedef
     goal_format: "{count} kez {dayCount} gün içinde"
-    period_days: Periyot Günleri
+    period_days: Dönem Süresi
     settings: Özel Hedef Ayarları
     target_frequency: Hedef Sıklığı
-    times_unit: kez
+    times_unit: Bu dönemde tamamlanacak kez
   list:
     all_habits_done: Tüm alışkanlıklar tamamlandı!
     no_habits_found: Alışkanlık yok

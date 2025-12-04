@@ -114,17 +114,17 @@ habits:
     toggling_archive: Не вдалося перемкнути статус архіву
   goals:
     current_goal: Ціль
-    days_unit: днів
+    days_unit: Дні в цьому періоді
     description:
       Чи хочете ви практикувати звичку з певною частотою замість щодня?
       Тоді встановіть користувацьку ціль.
     enable: Увімкнути користувацькі цілі
     goal: Користувацька ціль
     goal_format: "{count} разів за {dayCount} днів"
-    period_days: Дні періоду
+    period_days: Тривалість періоду
     settings: Налаштування користувацької цілі
     target_frequency: Частота періоду
-    times_unit: разів на період
+    times_unit: Рази для завершення в цьому періоді
   list:
     all_habits_done: Всі звички виконані!
     no_habits_found: Немає звичок

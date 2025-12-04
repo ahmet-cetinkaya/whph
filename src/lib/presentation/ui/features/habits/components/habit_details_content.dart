@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, MarkdownEditor;
+import 'package:acore/acore.dart' show NumericInput, DateTimeHelper, MarkdownEditor, ResponsiveDialogHelper, DialogSize;
 import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
@@ -907,6 +907,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     onChanged: _onDescriptionChanged,
                     height: 250,
                     style: Theme.of(context).textTheme.bodyMedium,
+                    hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
                     translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
                   ),
                   removePadding: true,
@@ -1084,9 +1085,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     if (isArchived) return; // Don't open dialog for archived habits
 
-    final result = await showDialog<HabitReminderSettingsResult>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitReminderSettingsResult>(
       context: context,
-      builder: (context) => HabitReminderSettingsDialog(
+      size: DialogSize.medium,
+      child: HabitReminderSettingsDialog(
         hasReminder: _habit!.hasReminder,
         reminderTime: _habit!.getReminderTimeOfDay(),
         reminderDays: _habit!.getReminderDaysAsList(),
@@ -1156,9 +1158,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           onTap: isArchived
               ? null
               : () async {
-                  final result = await showDialog<HabitGoalResult>(
+                  final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitGoalResult>(
                     context: context,
-                    builder: (context) => HabitGoalDialog(
+                    size: DialogSize.large,
+                    child: HabitGoalDialog(
                       hasGoal: _habit!.hasGoal,
                       targetFrequency: _habit!.targetFrequency,
                       periodDays: _habit!.hasGoal ? _habit!.periodDays : 1,
@@ -1364,10 +1367,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   // Show habit time logging dialog
+  // Show habit time logging dialog
   Future<void> _showHabitTimeLoggingDialog() async {
-    final result = await showDialog<bool>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => TimeLoggingDialog(
+      size: DialogSize.medium,
+      child: TimeLoggingDialog(
         entityId: widget.habitId,
         onCancel: () {
           // Handle cancel if needed

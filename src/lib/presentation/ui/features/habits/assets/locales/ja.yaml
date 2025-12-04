@@ -114,15 +114,15 @@ habits:
     toggling_archive: アーカイブ状況の切り替えに失敗しました
   goals:
     current_goal: 目標
-    days_unit: 日
+    days_unit: この期間の日数
     description: 毎日ではなく特定の頻度で習慣を実践したいですか？カスタム目標を設定してください。
     enable: カスタム目標を有効にする
     goal: カスタム目標
     goal_format: "{dayCount}日間で{count}回"
-    period_days: 期間日数
+    period_days: 期間の長さ
     settings: カスタム目標設定
-    target_frequency: 期間頻度
-    times_unit: 期間あたりの回数
+    target_frequency: 目標頻度
+    times_unit: この期間に完了する回数
   list:
     all_habits_done: すべての習慣が完了しました！
     no_habits_found: 習慣がありません
