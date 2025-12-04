@@ -1,10 +1,9 @@
+import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
-import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/shared/components/color_picker.dart';
-import 'package:whph/presentation/ui/shared/components/color_preview.dart';
+
+import 'package:whph/presentation/ui/shared/components/color_picker/color_picker_dialog.dart';
+import 'package:whph/presentation/ui/shared/components/color_picker/color_preview.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 class ColorField extends StatefulWidget {
   final Color? initialColor;
@@ -30,7 +29,6 @@ class ColorField extends StatefulWidget {
 
 class _ColorFieldState extends State<ColorField> {
   late Color _selectedColor;
-  final _translationService = container.resolve<ITranslationService>();
 
   @override
   void initState() {
@@ -47,41 +45,10 @@ class _ColorFieldState extends State<ColorField> {
   }
 
   Future<void> _onColorSelectionOpen() async {
-    Color tempColor = _selectedColor;
-    final theme = Theme.of(context);
-
-    final selectedColor = await showDialog<Color>(
+    final selectedColor = await ResponsiveDialogHelper.showResponsiveDialog<Color>(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(
-          _translationService.translate(SharedTranslationKeys.selectColorTitle),
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-        content: SizedBox(
-          width: 500,
-          height: 400,
-          child: ColorPicker(
-            pickerColor: _selectedColor,
-            onChangeColor: (color) {
-              tempColor = color;
-            },
-          ),
-        ),
-        contentPadding:
-            const EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeLarge),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(tempColor),
-            child: Text(_translationService.translate(SharedTranslationKeys.confirmSelection)),
-          ),
-        ],
-      ),
+      isScrollable: false,
+      child: ColorPickerDialog(initialColor: _selectedColor),
     );
 
     if (selectedColor != null && mounted) {

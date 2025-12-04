@@ -9,7 +9,7 @@ import 'package:whph/core/application/features/app_usages/queries/get_app_usage_
 import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
-import 'package:whph/presentation/ui/shared/components/color_field.dart';
+import 'package:whph/presentation/ui/shared/components/color_picker/color_field.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';

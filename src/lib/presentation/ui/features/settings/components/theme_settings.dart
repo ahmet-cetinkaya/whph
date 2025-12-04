@@ -7,7 +7,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/components/color_picker.dart';
+import 'package:whph/presentation/ui/shared/components/color_picker/color_picker.dart';
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart';
 import 'package:whph/core/shared/utils/logger.dart';
@@ -571,6 +571,7 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                               _updateTheme();
                               await widget.onSaveCustomAccentColor(color);
                             },
+                            translationService: _translationService,
                           ),
                         ),
                       ),
