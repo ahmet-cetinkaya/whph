@@ -341,6 +341,9 @@ tasks:
     weekly: Wekelijks
     yearSuffix: jaar(en)
     yearly: Jaarlijks
+    weeks_plural: weken
+    months_plural: maanden
+    years_plural: jaren
   reminder:
     atTime: Op het geplande tijdstip
     deadlineReminderLabel: Deadline Herinnering

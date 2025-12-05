@@ -332,6 +332,9 @@ tasks:
     weekly: Weekly
     yearSuffix: year(s)
     yearly: Yearly
+    weeks_plural: weeks
+    months_plural: months
+    years_plural: years
   reminder:
     at_time: At the scheduled time
     atTime: At the scheduled time

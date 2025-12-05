@@ -349,6 +349,9 @@ tasks:
     weekly: Εβδομαδιαία
     yearSuffix: χρόνο(υς)
     yearly: Ετήσια
+    weeks_plural: εβδομάδες
+    months_plural: μήνες
+    years_plural: έτη
   reminder:
     atTime: Στη προγραμματισμένη ώρα
     deadlineReminderLabel: Υπενθύμιση Προθεσμίας

@@ -423,6 +423,9 @@ tasks:
     weekly: Wöchentlich
     yearSuffix: Jahr(e)
     yearly: Jährlich
+    weeks_plural: Wochen
+    months_plural: Monate
+    years_plural: Jahre
   reminder:
     atTime: Zur geplanten Zeit
     deadlineReminderLabel: Fristerinnerung

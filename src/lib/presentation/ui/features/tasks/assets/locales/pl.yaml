@@ -419,6 +419,9 @@ tasks:
     weekly: Tygodniowo
     yearSuffix: rok/lata
     yearly: Rocznie
+    weeks_plural: tygodnie
+    months_plural: miesiące
+    years_plural: lata
   reminder:
     atTime: O zaplanowanej godzinie
     deadlineReminderLabel: Przypomnienie o terminie

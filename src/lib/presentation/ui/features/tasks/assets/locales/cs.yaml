@@ -419,6 +419,9 @@ tasks:
     weekly: Týdně
     yearSuffix: rok(y)
     yearly: Ročně
+    weeks_plural: týdny
+    months_plural: měsíce
+    years_plural: roky
   reminder:
     atTime: V plánovaném čase
     deadlineReminderLabel: Připomínka splatnosti

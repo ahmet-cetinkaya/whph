@@ -379,6 +379,9 @@ tasks:
     weekly: 每周
     yearSuffix: 年
     yearly: 每年
+    weeks_plural: 周
+    months_plural: 个月
+    years_plural: 年
   reminder:
     atTime: 在预定时间
     deadlineReminderLabel: 截止日期提醒

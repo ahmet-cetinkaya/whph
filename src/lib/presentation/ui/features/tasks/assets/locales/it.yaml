@@ -423,6 +423,9 @@ tasks:
     weekly: Settimanale
     yearSuffix: anno/i
     yearly: Annuale
+    weeks_plural: settimane
+    months_plural: mesi
+    years_plural: anni
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza

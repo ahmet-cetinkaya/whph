@@ -338,6 +338,9 @@ tasks:
     weekly: Tedensko
     yearSuffix: leto(a)
     yearly: Letno
+    weeks_plural: tedni
+    months_plural: meseci
+    years_plural: leta
   reminder:
     atTime: Ob načrtovanem času
     deadlineReminderLabel: Opomnik Rok

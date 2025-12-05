@@ -342,6 +342,9 @@ tasks:
     weekly: Semanal
     yearSuffix: ano(s)
     yearly: Anual
+    weeks_plural: semanas
+    months_plural: meses
+    years_plural: anos
   reminder:
     atTime: No horário agendado
     deadlineReminderLabel: Lembrete de Prazo

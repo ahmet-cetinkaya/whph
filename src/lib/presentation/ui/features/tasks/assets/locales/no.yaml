@@ -339,6 +339,9 @@ tasks:
     weekly: Ukentlig
     yearSuffix: år
     yearly: Årlig
+    weeks_plural: uker
+    months_plural: måneder
+    years_plural: år
   reminder:
     atTime: På planlagt tid
     deadlineReminderLabel: Frist Påminnelse

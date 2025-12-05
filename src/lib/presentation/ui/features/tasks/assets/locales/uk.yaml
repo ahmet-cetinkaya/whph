@@ -420,6 +420,9 @@ tasks:
     weekly: Щотижня
     yearSuffix: рік(и)
     yearly: Щорічно
+    weeks_plural: тижні
+    months_plural: місяці
+    years_plural: роки
   reminder:
     atTime: О запланованому часі
     deadlineReminderLabel: Нагадування про дедлайн

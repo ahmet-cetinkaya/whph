@@ -336,6 +336,9 @@ tasks:
     weekly: Viikoittain
     yearSuffix: vuosi/vuotta
     yearly: Vuosittain
+    weeks_plural: viikot
+    months_plural: kuukaudet
+    years_plural: vuodet
   reminder:
     atTime: Aikataulun mukaisesti
     deadlineReminderLabel: Eräpäivä Muistutus

@@ -380,6 +380,9 @@ tasks:
     weekly: 毎週
     yearSuffix: 年
     yearly: 毎年
+    weeks_plural: 週間
+    months_plural: ヶ月間
+    years_plural: 年間
   reminder:
     atTime: 予定時刻に
     deadlineReminderLabel: 期限リマインダー
