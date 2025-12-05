@@ -195,6 +195,7 @@ shared:
   messages:
     confirm_delete: Är du säker på att du vill ta bort detta objekt?
     no_items_found: Inga objekt
+    loading: Laddar...
   nav:
     items:
       app_usages: Appanvändning
@@ -244,6 +245,7 @@ shared:
     remove_criteria: Ta bort kriterium
     reset_to_default: Återställ till standard
     sort: Sortera
+    criteria: Sorteringskriterier
   statistics:
     daily_usage:
       description: Visar total användningstid per veckodag
@@ -251,6 +253,11 @@ shared:
     hourly_usage:
       description: Visar total användningstid per timme på dagen
       title: Timvis användning
+    total_usage_label: Total användning
+    average_daily_label: Genomsnittlig daglig
+    peak_hour_label: Toppimme
+    select_date_range_message: Välj datumintervall för att filtrera statistik
+    select_date_range_description: Välj ett anpassat datumintervall för att visa användningsstatistik
   time:
     not_set: Inte inställd
     minutes: minuter

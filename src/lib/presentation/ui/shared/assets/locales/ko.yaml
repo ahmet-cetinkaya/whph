@@ -190,6 +190,7 @@ shared:
   messages:
     confirm_delete: 이 항목을 삭제하시겠습니까?
     no_items_found: 항목 없음
+    loading: 로딩 중...
   nav:
     items:
       app_usages: 앱 사용량
@@ -239,6 +240,7 @@ shared:
     remove_criteria: 조건 제거
     reset_to_default: 기본값으로 재설정
     sort: 정렬
+    criteria: 정렬 기준
   statistics:
     daily_usage:
       description: 요일별 총 사용 시간을 표시
@@ -246,6 +248,11 @@ shared:
     hourly_usage:
       description: 시간대별 총 사용 시간을 표시
       title: 시간별 사용량
+    total_usage_label: 총 사용 시간
+    average_daily_label: 일일 평균
+    peak_hour_label: 최대 시간
+    select_date_range_message: 통계를 필터링할 날짜 범위 선택
+    select_date_range_description: 사용 통계를 보려면 사용자 지정 날짜 범위 선택
   time:
     not_set: 설정되지 않음
     minutes: 분

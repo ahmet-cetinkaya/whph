@@ -137,18 +137,11 @@ class AppUsageIgnoreRuleFormState extends State<AppUsageIgnoreRuleForm> {
                           : null,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: IconButton(
-                      visualDensity: VisualDensity.compact,
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 32),
-                      icon: Icon(SharedUiConstants.helpIcon, size: AppTheme.iconSizeSmall),
-                      tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
-                      onPressed: _showRegexHelp,
-                    ),
+                  IconButton(
+                    icon: Icon(SharedUiConstants.helpIcon),
+                    iconSize: AppTheme.iconSizeSmall,
+                    onPressed: _showRegexHelp,
+                    tooltip: _translationService.translate(AppUsageTranslationKeys.patternFieldHelpTooltip),
                   ),
                 ],
               ),

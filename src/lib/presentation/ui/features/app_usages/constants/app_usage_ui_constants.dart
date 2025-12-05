@@ -10,6 +10,7 @@ class AppUsageUiConstants {
   static const IconData patternIcon = Icons.pattern;
   static const IconData saveIcon = Icons.save;
   static const IconData checkIcon = Icons.check;
+  static const IconData statisticsIcon = Icons.analytics;
 
   // Styles
   static const EdgeInsets cardPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);

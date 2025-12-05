@@ -7,6 +7,7 @@ class AppUsageTimeRecordWithDetails {
   final String? color;
   final String? deviceName;
   final int duration;
+  final int? compareDuration;
   final List<AppUsageTagListItem> tags;
 
   AppUsageTimeRecordWithDetails({
@@ -16,6 +17,7 @@ class AppUsageTimeRecordWithDetails {
     this.color,
     this.deviceName,
     required this.duration,
+    this.compareDuration,
     this.tags = const [],
   });
 }

@@ -21,6 +21,7 @@ class FilterContext {
   final DateTime? filterStartDate;
   final DateTime? filterEndDate;
   final List<String>? filterByDevices;
+  final bool showComparison;
 
   const FilterContext({
     this.filterByTags,
@@ -28,11 +29,12 @@ class FilterContext {
     this.filterStartDate,
     this.filterEndDate,
     this.filterByDevices,
+    this.showComparison = false,
   });
 
   @override
   String toString() =>
-      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices)';
+      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices, showComparison: $showComparison)';
 }
 
 class AppUsageList extends StatefulWidget {
@@ -44,6 +46,7 @@ class AppUsageList extends StatefulWidget {
   final DateTime? filterStartDate;
   final DateTime? filterEndDate;
   final List<String>? filterByDevices;
+  final bool showComparison;
 
   const AppUsageList({
     super.key,
@@ -55,6 +58,7 @@ class AppUsageList extends StatefulWidget {
     this.filterStartDate,
     this.filterEndDate,
     this.filterByDevices,
+    this.showComparison = false,
   });
 
   @override
@@ -105,6 +109,7 @@ class AppUsageListState extends State<AppUsageList> {
         filterStartDate: widget.filterStartDate,
         filterEndDate: widget.filterEndDate,
         filterByDevices: widget.filterByDevices,
+        showComparison: widget.showComparison,
       );
 
   bool _filtersChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -113,7 +118,8 @@ class AppUsageListState extends State<AppUsageList> {
       'showNoTagsFilter': oldFilters.showNoTagsFilter,
       'startDate': oldFilters.filterStartDate,
       'endDate': oldFilters.filterEndDate,
-      'filterByDevices': oldFilters.filterByDevices
+      'filterByDevices': oldFilters.filterByDevices,
+      'showComparison': oldFilters.showComparison,
     };
 
     final newMap = {
@@ -121,7 +127,8 @@ class AppUsageListState extends State<AppUsageList> {
       'showNoTagsFilter': newFilters.showNoTagsFilter,
       'startDate': newFilters.filterStartDate,
       'endDate': newFilters.filterEndDate,
-      'filterByDevices': newFilters.filterByDevices
+      'filterByDevices': newFilters.filterByDevices,
+      'showComparison': newFilters.showComparison,
     };
 
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
@@ -170,6 +177,13 @@ class AppUsageListState extends State<AppUsageList> {
             : null,
         endDate:
             _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
+        compareStartDate: _currentFilters.showComparison && _currentFilters.filterStartDate != null
+            ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!
+                .subtract(_currentFilters.filterEndDate!.difference(_currentFilters.filterStartDate!)))
+            : null,
+        compareEndDate: _currentFilters.showComparison && _currentFilters.filterEndDate != null
+            ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
+            : null,
         filterByDevices: _currentFilters.filterByDevices);
 
     await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(
@@ -247,6 +261,8 @@ class AppUsageListState extends State<AppUsageList> {
     }
 
     final maxDuration = _appUsageList?.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
+    final maxCompareDuration =
+        _appUsageList?.items.map((e) => (e.compareDuration ?? 0).toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
     return ListView.separated(
       controller: _scrollController,
@@ -270,6 +286,7 @@ class AppUsageListState extends State<AppUsageList> {
         return AppUsageCard(
           appUsage: appUsage,
           maxDurationInListing: maxDuration!,
+          maxCompareDurationInListing: maxCompareDuration,
           onTap: () => widget.onOpenDetails?.call(appUsage.id),
         );
       },

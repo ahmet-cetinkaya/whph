@@ -3,19 +3,23 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 
 class BarChart extends StatelessWidget {
+  final String title;
   final double value;
   final double maxValue;
   final Color? barColor;
   final String? unit;
   final Widget? additionalWidget;
   final VoidCallback? onTap;
-  final String title;
-  final String Function(double value)? formatValue;
+  final String Function(double)? formatValue;
+  final double? compareValue;
+  final double? compareMaxValue;
 
   const BarChart({
     super.key,
     required this.value,
     required this.maxValue,
+    this.compareValue,
+    this.compareMaxValue,
     this.barColor,
     this.unit,
     this.additionalWidget,
@@ -27,6 +31,9 @@ class BarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color finalBarColor = barColor ?? AppThemeHelper.getRandomChartColor();
+    if (compareValue != null) {
+      finalBarColor = finalBarColor.withValues(alpha: 0.5);
+    }
 
     // Calculate bar width safely
     final screenWidth = MediaQuery.sizeOf(context).width;
@@ -38,6 +45,14 @@ class BarChart extends StatelessWidget {
     final ratio = (value / safeMaxValue).clamp(0.0, 1.0);
     final barWidth = baseWidth * ratio;
 
+    // Calculate comparison bar width
+    double? compareBarWidth;
+    if (compareValue != null && compareMaxValue != null) {
+      final safeCompareMaxValue = compareMaxValue! > 0 ? compareMaxValue! : 1.0;
+      final compareRatio = (compareValue! / safeCompareMaxValue).clamp(0.0, 1.0);
+      compareBarWidth = baseWidth * compareRatio;
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: ListTile(
@@ -46,7 +61,23 @@ class BarChart extends StatelessWidget {
           alignment: Alignment.centerLeft,
           children: <Widget>[
             Stack(
+              alignment: Alignment.centerLeft,
               children: [
+                // Comparison Bar (Background)
+                if (compareBarWidth != null)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.disabledColor.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: compareBarWidth.isFinite ? compareBarWidth : 0,
+                      maxWidth: compareBarWidth.isFinite ? compareBarWidth : 0,
+                      minHeight: 40,
+                      maxHeight: 40,
+                    ),
+                  ),
+                // Main Bar
                 Container(
                   decoration: BoxDecoration(
                     color: finalBarColor,

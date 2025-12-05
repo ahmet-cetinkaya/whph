@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -151,6 +152,7 @@ class _DeviceSelectDropdownState extends State<DeviceSelectDropdown> {
 
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           final filteredDevices = _availableDevices.where((device) {

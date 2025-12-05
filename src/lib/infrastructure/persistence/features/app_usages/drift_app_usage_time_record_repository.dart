@@ -89,6 +89,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     bool showNoTagsFilter = false,
     DateTime? startDate,
     DateTime? endDate,
+    DateTime? compareStartDate,
+    DateTime? compareEndDate,
     String? searchByProcessName,
     List<String>? filterByDevices,
   }) async {
@@ -283,6 +285,33 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
     // Convert to list - no need for additional pagination since SQL already handles it
     final allResults = appUsageMap.values.toList();
+
+    // Fetch comparison data if needed
+    if (compareStartDate != null && compareEndDate != null && allResults.isNotEmpty) {
+      final appUsageIds = allResults.map((e) => e.id).toList();
+      final comparisonDurations = await getAppUsageDurations(
+        appUsageIds: appUsageIds,
+        startDate: compareStartDate,
+        endDate: compareEndDate,
+      );
+
+      // Merge comparison durations
+      for (var i = 0; i < allResults.length; i++) {
+        final item = allResults[i];
+        if (comparisonDurations.containsKey(item.id)) {
+          allResults[i] = AppUsageTimeRecordWithDetails(
+            id: item.id,
+            name: item.name,
+            displayName: item.displayName,
+            color: item.color,
+            deviceName: item.deviceName,
+            duration: item.duration,
+            compareDuration: comparisonDurations[item.id],
+            tags: item.tags,
+          );
+        }
+      }
+    }
 
     return PaginatedList<AppUsageTimeRecordWithDetails>(
       items: allResults,

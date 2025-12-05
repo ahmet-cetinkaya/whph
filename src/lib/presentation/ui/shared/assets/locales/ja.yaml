@@ -190,6 +190,7 @@ shared:
   messages:
     confirm_delete: このアイテムを削除してもよろしいですか？
     no_items_found: アイテムがありません
+    loading: 読み込み中...
   nav:
     items:
       app_usages: アプリ使用状況
@@ -239,6 +240,7 @@ shared:
     remove_criteria: 条件を削除
     reset_to_default: デフォルトにリセット
     sort: ソート
+    criteria: 並べ替え条件
   statistics:
     daily_usage:
       description: 曜日ごとの総使用時間を表示
@@ -246,6 +248,11 @@ shared:
     hourly_usage:
       description: 時間帯ごとの総使用時間を表示
       title: 時間別使用状況
+    total_usage_label: 総使用時間
+    average_daily_label: 1日平均
+    peak_hour_label: ピーク時間
+    select_date_range_message: 統計をフィルタリングする日付範囲を選択
+    select_date_range_description: 使用統計を表示するための日付範囲を選択
   time:
     not_set: 未設定
     minutes: 分

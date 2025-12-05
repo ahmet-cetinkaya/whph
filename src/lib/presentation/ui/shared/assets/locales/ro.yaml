@@ -201,6 +201,7 @@ shared:
   messages:
     confirm_delete: Ești sigur că vrei să ștergi acest element?
     no_items_found: Niciun element
+    loading: Se încarcă...
   nav:
     items:
       app_usages: Utilizarea aplicațiilor
@@ -250,6 +251,7 @@ shared:
     remove_criteria: Elimină criteriul
     reset_to_default: Resetează la implicit
     sort: Sortează
+    criteria: Criterii de sortare
   statistics:
     daily_usage:
       description: Arată timpul total de utilizare pe zi a săptămânii
@@ -257,6 +259,13 @@ shared:
     hourly_usage:
       description: Arată timpul total de utilizare pe oră din zi
       title: Utilizare pe ore
+    total_usage_label: Utilizare totală
+    average_daily_label: Medie zilnică
+    peak_hour_label: Oră de vârf
+    select_date_range_message: Selectați intervalul de date pentru a filtra statisticile
+    select_date_range_description:
+      Alegeți un interval de date personalizat pentru
+      a vizualiza statisticile de utilizare
   time:
     not_set: Nu este setat
     minutes: minute

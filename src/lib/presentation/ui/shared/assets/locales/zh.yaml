@@ -189,6 +189,7 @@ shared:
   messages:
     confirm_delete: 您确定要删除此项目吗？
     no_items_found: 没有项目
+    loading: 加载中...
   nav:
     items:
       app_usages: 应用使用情况
@@ -238,6 +239,7 @@ shared:
     remove_criteria: 移除条件
     reset_to_default: 重置为默认
     sort: 排序
+    criteria: 排序条件
   statistics:
     daily_usage:
       description: 显示每周各天的总使用时间
@@ -245,6 +247,11 @@ shared:
     hourly_usage:
       description: 显示每天各小时的总使用时间
       title: 每小时使用情况
+    total_usage_label: 总使用时间
+    average_daily_label: 日平均
+    peak_hour_label: 高峰时段
+    select_date_range_message: 选择日期范围以过滤统计信息
+    select_date_range_description: 选择自定义日期范围以查看使用统计
   time:
     not_set: 未设置
     minutes: 分钟

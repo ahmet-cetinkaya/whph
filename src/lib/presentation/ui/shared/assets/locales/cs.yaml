@@ -195,6 +195,7 @@ shared:
   messages:
     confirm_delete: Opravdu chcete smazat tuto položku?
     no_items_found: Žádné položky
+    loading: Načítání...
   nav:
     items:
       app_usages: Využití aplikací
@@ -244,6 +245,7 @@ shared:
     remove_criteria: Odstranit kritérium
     reset_to_default: Obnovit na výchozí
     sort: Řadit
+    criteria: Kritéria řazení
   statistics:
     daily_usage:
       description: Zobrazuje celkový čas využití za den v týdnu
@@ -251,6 +253,13 @@ shared:
     hourly_usage:
       description: Zobrazuje celkový čas využití za hodinu dne
       title: Hodinové využití
+    total_usage_label: Celkové využití
+    average_daily_label: Průměr denně
+    peak_hour_label: Špičková hodina
+    select_date_range_message: Vyberte rozsah dat pro filtrování statistik
+    select_date_range_description:
+      Zvolte vlastní rozsah dat pro zobrazení statistik
+      využití
   time:
     not_set: Nenastaveno
     minutes: minuty
