@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 
 class TimerSettingsDialog extends StatefulWidget {
   final TimerMode initialTimerMode;
@@ -531,70 +532,23 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
       }
     }
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: AppTheme.surface1,
-        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-      ),
-      child: Row(
-        children: TimerMode.values.map((mode) {
-          final isSelected = _timerMode == mode;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () async {
-                if (mode != _timerMode) {
-                  setState(() {
-                    _timerMode = mode;
-                  });
-                  await _saveTimerModeSetting(mode);
-                }
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius - 4),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          )
-                        ]
-                      : [],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      getTimerModeIcon(mode),
-                      size: 20,
-                      color: isSelected
-                          ? ColorContrastHelper.getContrastingTextColor(Theme.of(context).colorScheme.primary)
-                          : AppTheme.secondaryTextColor,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      getTimerModeDisplay(mode),
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        color: isSelected
-                            ? ColorContrastHelper.getContrastingTextColor(Theme.of(context).colorScheme.primary)
-                            : AppTheme.secondaryTextColor,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
+    return CustomTabBar(
+      selectedIndex: TimerMode.values.indexOf(_timerMode),
+      onTap: (index) async {
+        final mode = TimerMode.values[index];
+        if (mode != _timerMode) {
+          setState(() {
+            _timerMode = mode;
+          });
+          await _saveTimerModeSetting(mode);
+        }
+      },
+      items: TimerMode.values.map((mode) {
+        return CustomTabItem(
+          icon: getTimerModeIcon(mode),
+          label: getTimerModeDisplay(mode),
+        );
+      }).toList(),
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:acore/components/numeric_input/numeric_input.dart';
 import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 
 // Event class for time logging
 class TimeLoggingSubmittedEvent {
@@ -285,32 +286,23 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Mode Selection
-              Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.surface1,
-                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                ),
-                padding: const EdgeInsets.all(4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildModeButton(
-                        context: context,
-                        mode: LoggingMode.addTime,
-                        icon: Icons.add_circle_outline,
-                        label: _getTranslation(SharedTranslationKeys.timeLoggingAddTime),
-                      ),
-                    ),
-                    Expanded(
-                      child: _buildModeButton(
-                        context: context,
-                        mode: LoggingMode.setTotalForDay,
-                        icon: Icons.equalizer,
-                        label: _getTranslation(SharedTranslationKeys.timeLoggingSetTotal),
-                      ),
-                    ),
-                  ],
-                ),
+              CustomTabBar(
+                selectedIndex: _selectedMode == LoggingMode.addTime ? 0 : 1,
+                onTap: (index) {
+                  setState(() {
+                    _selectedMode = index == 0 ? LoggingMode.addTime : LoggingMode.setTotalForDay;
+                  });
+                },
+                items: [
+                  CustomTabItem(
+                    icon: Icons.add_circle_outline,
+                    label: _getTranslation(SharedTranslationKeys.timeLoggingAddTime),
+                  ),
+                  CustomTabItem(
+                    icon: Icons.equalizer,
+                    label: _getTranslation(SharedTranslationKeys.timeLoggingSetTotal),
+                  ),
+                ],
               ),
 
               const SizedBox(height: AppTheme.sizeXLarge),
@@ -378,50 +370,6 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               ],
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildModeButton({
-    required BuildContext context,
-    required LoggingMode mode,
-    required IconData icon,
-    required String label,
-  }) {
-    final isSelected = _selectedMode == mode;
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedMode = mode;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? theme.colorScheme.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius - 4),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor.withValues(alpha: 0.7),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor.withValues(alpha: 0.7),
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              ),
-            ),
-          ],
         ),
       ),
     );

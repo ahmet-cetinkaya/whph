@@ -10,6 +10,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 
 class AppUsageRulesPage extends StatefulWidget {
   static const String route = '/app-usages/rules';
@@ -38,53 +39,6 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  Widget _buildTabButton({
-    required BuildContext context,
-    required int index,
-    required IconData icon,
-    required String label,
-  }) {
-    final isSelected = _tabController.index == index;
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _tabController.animateTo(index);
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? theme.colorScheme.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius - 4),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor.withValues(alpha: 0.7),
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor.withValues(alpha: 0.7),
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildFormSection({
@@ -161,32 +115,23 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
         child: Column(
           children: [
             // Tab Selection
-            Container(
-              decoration: BoxDecoration(
-                color: AppTheme.surface1,
-                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-              ),
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildTabButton(
-                      context: context,
-                      index: 0,
-                      icon: Icons.local_offer,
-                      label: _translationService.translate(AppUsageTranslationKeys.tagRules),
-                    ),
-                  ),
-                  Expanded(
-                    child: _buildTabButton(
-                      context: context,
-                      index: 1,
-                      icon: Icons.block,
-                      label: _translationService.translate(AppUsageTranslationKeys.ignoreRules),
-                    ),
-                  ),
-                ],
-              ),
+            CustomTabBar(
+              selectedIndex: _tabController.index,
+              onTap: (index) {
+                setState(() {
+                  _tabController.animateTo(index);
+                });
+              },
+              items: [
+                CustomTabItem(
+                  icon: Icons.local_offer,
+                  label: _translationService.translate(AppUsageTranslationKeys.tagRules),
+                ),
+                CustomTabItem(
+                  icon: Icons.block,
+                  label: _translationService.translate(AppUsageTranslationKeys.ignoreRules),
+                ),
+              ],
             ),
             const SizedBox(height: AppTheme.sizeXLarge),
             Expanded(
