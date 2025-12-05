@@ -7,7 +7,7 @@ import 'package:whph/main.dart';
 import 'package:acore/components/date_time_picker/date_time_picker_field.dart';
 import 'package:acore/components/numeric_input/numeric_input.dart';
 import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 // Event class for time logging
@@ -43,11 +43,13 @@ class TimeLoggingDialog extends StatefulWidget {
   State<TimeLoggingDialog> createState() => _TimeLoggingDialogState();
 }
 
+enum TimeUnit { minutes, hours }
+
 class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
   final _translationService = container.resolve<ITranslationService>();
 
-  int _hours = 0;
-  int _minutes = 0;
+  int _durationValue = 0;
+  TimeUnit _selectedUnit = TimeUnit.minutes;
   final _dateController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
@@ -79,24 +81,29 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
   }
 
   int _getDurationInSeconds() {
-    return (_hours * 3600) + (_minutes * 60);
+    if (_selectedUnit == TimeUnit.hours) {
+      return _durationValue * 3600;
+    }
+    return _durationValue * 60;
   }
 
-  void _onHoursChanged(int value) {
+  void _onDurationChanged(int value) {
     setState(() {
-      _hours = value;
+      _durationValue = value;
     });
   }
 
-  void _onMinutesChanged(int value) {
-    setState(() {
-      _minutes = value;
-    });
+  void _onUnitChanged(TimeUnit? unit) {
+    if (unit != null) {
+      setState(() {
+        _selectedUnit = unit;
+      });
+    }
   }
 
   bool _isValidInput() {
     final isZeroAllowed = _selectedMode == LoggingMode.setTotalForDay;
-    return _hours >= 0 && _minutes >= 0 && _minutes < 60 && (isZeroAllowed || (_hours > 0 || _minutes > 0));
+    return _durationValue >= 0 && (isZeroAllowed || _durationValue > 0);
   }
 
   Future<void> _logTime() async {
@@ -167,6 +174,70 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
         );
   }
 
+  Widget _buildSection({
+    required String label,
+    required IconData icon,
+    required Widget content,
+    bool isActive = true,
+  }) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          decoration: BoxDecoration(
+            color: AppTheme.surface1,
+            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isSmallScreen = constraints.maxWidth < 350;
+
+              if (isSmallScreen) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        StyledIcon(icon, isActive: isActive),
+                        const SizedBox(width: AppTheme.sizeLarge),
+                        Expanded(
+                          child: Text(
+                            label,
+                            style: AppTheme.labelLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppTheme.sizeLarge),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: content,
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  StyledIcon(icon, isActive: isActive),
+                  const SizedBox(width: AppTheme.sizeLarge),
+                  Text(
+                    label,
+                    style: AppTheme.labelLarge,
+                  ),
+                  const Spacer(),
+                  content,
+                ],
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: AppTheme.sizeLarge),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -204,6 +275,7 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
           ),
+          const SizedBox(width: AppTheme.sizeLarge), // Add proper trailing spacing
         ],
       ),
       body: SafeArea(
@@ -244,84 +316,35 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
               const SizedBox(height: AppTheme.sizeXLarge),
 
               // Date Selection
-              Padding(
-                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
-                child: Text(
-                  _getTranslation(SharedTranslationKeys.date),
-                  style: AppTheme.labelLarge,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(AppTheme.sizeLarge),
-                decoration: BoxDecoration(
-                  color: AppTheme.surface1,
-                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                ),
-                child: Row(
-                  children: [
-                    StyledIcon(Icons.calendar_today, isActive: true),
-                    const SizedBox(width: AppTheme.sizeLarge),
-                    Expanded(
-                      child: DateTimePickerField(
-                        controller: _dateController,
-                        onConfirm: _onDateSelected,
-                        minDateTime: DateTime.now().subtract(const Duration(days: 30)),
-                        maxDateTime: DateTime.now(),
-                        initialValue: _selectedDate,
-                        translateKey: (key) => _getTranslation(SharedTranslationKeys.mapDateTimePickerKey(key)),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
+              _buildSection(
+                label: _getTranslation(SharedTranslationKeys.date),
+                icon: Icons.calendar_today,
+                content: IntrinsicWidth(
+                  child: DateTimePickerField(
+                    controller: _dateController,
+                    onConfirm: _onDateSelected,
+                    minDateTime: DateTime.now().subtract(const Duration(days: 30)),
+                    maxDateTime: DateTime.now(),
+                    initialValue: _selectedDate,
+                    translateKey: (key) => _getTranslation(SharedTranslationKeys.mapDateTimePickerKey(key)),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
                     ),
-                  ],
+                  ),
                 ),
               ),
 
               const SizedBox(height: AppTheme.sizeXLarge),
 
               // Time Input
-              Padding(
-                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
-                child: Text(
-                  _selectedMode == LoggingMode.addTime
-                      ? _getTranslation(SharedTranslationKeys.timeLoggingDuration)
-                      : _getTranslation(SharedTranslationKeys.timeLoggingTotalTime),
-                  style: AppTheme.labelLarge,
-                ),
-              ),
-
-              Container(
-                padding: const EdgeInsets.all(AppTheme.sizeLarge),
-                decoration: BoxDecoration(
-                  color: AppTheme.surface1,
-                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                ),
-                child: Row(
-                  children: [
-                    StyledIcon(Icons.access_time_filled, isActive: true),
-                    const SizedBox(width: AppTheme.sizeLarge),
-                    Expanded(
-                      child: AppThemeHelper.isSmallScreen(context)
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildHourInput(),
-                                const SizedBox(height: AppTheme.sizeSmall),
-                                _buildMinuteInput(),
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                _buildHourInput(),
-                                const SizedBox(width: AppTheme.sizeSmall),
-                                _buildMinuteInput(),
-                              ],
-                            ),
-                    ),
-                  ],
+              _buildSection(
+                label: _selectedMode == LoggingMode.addTime
+                    ? _getTranslation(SharedTranslationKeys.timeLoggingDuration)
+                    : _getTranslation(SharedTranslationKeys.timeLoggingTotalTime),
+                icon: Icons.access_time_filled,
+                content: IntrinsicWidth(
+                  child: _buildDurationInput(),
                 ),
               ),
 
@@ -404,28 +427,39 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
     );
   }
 
-  Widget _buildHourInput() {
-    return NumericInput(
-      initialValue: 0,
-      minValue: 0,
-      onValueChanged: _onHoursChanged,
-      valueSuffix: _getTranslation(SharedTranslationKeys.hours),
-      translations: _getNumericInputTranslations(),
-      style: NumericInputStyle.contained,
-    );
-  }
-
-  Widget _buildMinuteInput() {
-    return NumericInput(
-      initialValue: 0,
-      minValue: 0,
-      maxValue: 59,
-      decrementValue: 5,
-      incrementValue: 5,
-      onValueChanged: _onMinutesChanged,
-      valueSuffix: _getTranslation(SharedTranslationKeys.minutes),
-      translations: _getNumericInputTranslations(),
-      style: NumericInputStyle.contained,
+  Widget _buildDurationInput() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(
+          child: NumericInput(
+            initialValue: 0,
+            minValue: 0,
+            incrementValue: 1,
+            decrementValue: 1,
+            onValueChanged: _onDurationChanged,
+            translations: _getNumericInputTranslations(),
+            style: NumericInputStyle.contained,
+          ),
+        ),
+        const SizedBox(width: AppTheme.sizeSmall),
+        DropdownButton<TimeUnit>(
+          value: _selectedUnit,
+          underline: const SizedBox(),
+          icon: const Icon(Icons.arrow_drop_down),
+          onChanged: _onUnitChanged,
+          items: TimeUnit.values.map((TimeUnit unit) {
+            return DropdownMenuItem<TimeUnit>(
+              value: unit,
+              child: Text(
+                unit == TimeUnit.minutes
+                    ? _getTranslation(SharedTranslationKeys.minutes)
+                    : _getTranslation(SharedTranslationKeys.hours),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

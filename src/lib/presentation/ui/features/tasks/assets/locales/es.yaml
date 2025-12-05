@@ -435,6 +435,8 @@ tasks:
     custom: Personalizado
     custom_title: Recordatorio personalizado
     before_suffix: antes
+    time: Hora
+    unit: Unidad
   task_details: Detalles de la tarea
   title: Tareas
   tooltips:

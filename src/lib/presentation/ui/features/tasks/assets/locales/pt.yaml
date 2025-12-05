@@ -355,6 +355,8 @@ tasks:
     custom: Personalizado
     custom_title: Lembrete personalizado
     before_suffix: antes
+    time: Hora
+    unit: Unidade
   task_details: Detalhes da Tarefa
   time_logging:
     add_time: Adicionar Tempo

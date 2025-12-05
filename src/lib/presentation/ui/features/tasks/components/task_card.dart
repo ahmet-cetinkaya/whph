@@ -29,6 +29,7 @@ class TaskCard extends StatelessWidget {
   final bool showSubTasks;
   final bool showScheduleButton;
   final bool isDense;
+  final bool isCustomOrder;
 
   final VoidCallback onOpenDetails;
   final VoidCallback? onCompleted;
@@ -45,6 +46,7 @@ class TaskCard extends StatelessWidget {
     this.showSubTasks = false,
     this.showScheduleButton = true,
     this.isDense = false,
+    this.isCustomOrder = false,
   });
 
   Future<void> _handleSchedule(DateTime date) async {
@@ -97,7 +99,10 @@ class TaskCard extends StatelessWidget {
               children: _buildSubTasks(context),
             )
           : null,
-      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      contentPadding: EdgeInsets.only(
+        left: AppTheme.sizeMedium,
+        right: isCustomOrder ? AppTheme.sizeSmall : 0,
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

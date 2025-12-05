@@ -349,6 +349,8 @@ tasks:
     custom: Mukautettu
     custom_title: Mukautettu muistutus
     before_suffix: ennen
+    time: Aika
+    unit: Yksikkö
   task_details: Tehtävän Tiedot
   time_logging:
     add_time: Lisää Aika

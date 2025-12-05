@@ -352,6 +352,8 @@ tasks:
     custom: Egendefinert
     custom_title: Egendefinert påminnelse
     before_suffix: før
+    time: Tid
+    unit: Enhet
   task_details: Oppgavedetaljer
   time_logging:
     add_time: Legg Til Tid

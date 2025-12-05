@@ -434,6 +434,8 @@ tasks:
     custom: Пользовательский
     custom_title: Пользовательское напоминание
     before_suffix: до
+    time: Время
+    unit: Единица
   task_details: Детали задачи
   title: Задачи
   tooltips:

@@ -432,6 +432,8 @@ tasks:
     custom: Własne
     custom_title: Własne przypomnienie
     before_suffix: przed
+    time: Czas
+    unit: Jednostka
   task_details: Szczegóły zadania
   title: Zadania
   tooltips:

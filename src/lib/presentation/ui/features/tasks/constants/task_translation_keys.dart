@@ -183,6 +183,8 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String hours = 'shared.time.hours';
   static const String days = 'shared.time.days';
   static const String weeks = 'shared.time.weeks';
+  static const String reminderTime = 'tasks.reminder.time';
+  static const String reminderUnit = 'tasks.reminder.unit';
 
   // Recurrence Types and Labels
   static const String recurrenceLabel = 'tasks.recurrence.label';
@@ -199,6 +201,9 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String recurrenceIntervalSuffixWeeks = 'tasks.recurrence.interval.suffix.weeks';
   static const String recurrenceIntervalSuffixMonths = 'tasks.recurrence.interval.suffix.months';
   static const String recurrenceIntervalSuffixYears = 'tasks.recurrence.interval.suffix.years';
+  static const String recurrenceWeeksPlural = 'tasks.recurrence.weeks_plural';
+  static const String recurrenceMonthsPlural = 'tasks.recurrence.months_plural';
+  static const String recurrenceYearsPlural = 'tasks.recurrence.years_plural';
   static const String recurrenceWeekDaysLabel = 'tasks.recurrence.weekDays';
   static const String recurrenceRangeLabel = 'tasks.recurrence.range';
   static const String recurrenceStartLabel = 'tasks.recurrence.startDate';

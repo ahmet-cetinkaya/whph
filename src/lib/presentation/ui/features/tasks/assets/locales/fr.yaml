@@ -440,6 +440,8 @@ tasks:
     custom: Personnalisé
     custom_title: Rappel personnalisé
     before_suffix: avant
+    time: Heure
+    unit: Unité
   task_details: Détails de la tâche
   title: Tâches
   tooltips:

@@ -392,6 +392,8 @@ tasks:
     custom: 自定义
     custom_title: 自定义提醒
     before_suffix: 前
+    time: 时间
+    unit: 单位
   task_details: 任务详情
   title: 任务
   tooltips:

@@ -362,6 +362,8 @@ tasks:
     custom: Προσαρμοσμένο
     custom_title: Προσαρμοσμένη υπενθύμιση
     before_suffix: πριν
+    time: Ώρα
+    unit: Μονάδα
   task_details: Λεπτομέρειες Εργασίας
   time_logging:
     add_time: Προσθήκη Χρόνου

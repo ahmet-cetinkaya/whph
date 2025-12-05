@@ -396,6 +396,8 @@ tasks:
     custom: Özel
     custom_title: Özel Hatırlatıcı
     before_suffix: önce
+    time: Zaman
+    unit: Birim
   task_details: Görev Detayları
   title: Görevler
   tooltips:

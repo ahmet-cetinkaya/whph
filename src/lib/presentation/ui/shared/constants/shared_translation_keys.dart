@@ -106,6 +106,12 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String dailyUsageDescription = 'shared.statistics.daily_usage.description';
   static const String hourlyUsage = 'shared.statistics.hourly_usage.title';
   static const String hourlyUsageDescription = 'shared.statistics.hourly_usage.description';
+  static const String totalUsageLabel = 'shared.statistics.total_usage_label';
+  static const String averageDailyLabel = 'shared.statistics.average_daily_label';
+  static const String peakHourLabel = 'shared.statistics.peak_hour_label';
+  static const String selectDateRangeMessage = 'shared.statistics.select_date_range_message';
+  static const String selectDateRangeDescription = 'shared.statistics.select_date_range_description';
+  static const String loadingMessage = 'shared.messages.loading';
 
   // Editor
   static const String markdownEditorHint = 'shared.editor.markdown.hint';
@@ -208,6 +214,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String sort = 'shared.sort.sort';
   static const String enableReorderingTooltip = 'shared.sort.enable_reordering_tooltip';
   static const String disableReorderingTooltip = 'shared.sort.disable_reordering_tooltip';
+  static const String sortCriteria = 'shared.sort.criteria';
 
   // Data
   static const String createdDateLabel = 'shared.data.created_date_label';

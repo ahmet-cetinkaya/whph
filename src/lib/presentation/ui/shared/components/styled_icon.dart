@@ -4,10 +4,12 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 class StyledIcon extends StatelessWidget {
   final IconData icon;
   final bool isActive;
+  final double? size;
 
   const StyledIcon(
     this.icon, {
     required this.isActive,
+    this.size,
     super.key,
   });
 
@@ -22,6 +24,7 @@ class StyledIcon extends StatelessWidget {
       ),
       child: Icon(
         icon,
+        size: size,
         color: isActive ? theme.colorScheme.primary : AppTheme.textColor.withValues(alpha: 0.5),
       ),
     );

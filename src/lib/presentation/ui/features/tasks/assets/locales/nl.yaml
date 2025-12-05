@@ -354,6 +354,8 @@ tasks:
     custom: Aangepast
     custom_title: Aangepaste herinnering
     before_suffix: voor
+    time: Tijd
+    unit: Eenheid
   task_details: Taakdetails
   time_logging:
     add_time: Tijd Toevoegen

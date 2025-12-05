@@ -358,6 +358,8 @@ tasks:
     custom: Personalizat
     custom_title: Memento personalizat
     before_suffix: înainte
+    time: Timp
+    unit: Unitate
   task_details: Detalii Sarcină
   time_logging:
     add_time: Adaugă Timp

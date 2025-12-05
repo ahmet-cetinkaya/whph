@@ -450,6 +450,8 @@ class TaskListState extends State<TaskList> {
                       ? () => widget.onScheduleTask!(task, DateTime.now())
                       : null,
                   isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                  isCustomOrder:
+                      widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
                 ),
               ),
             ))

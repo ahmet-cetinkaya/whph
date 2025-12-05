@@ -434,6 +434,8 @@ tasks:
     custom: Brugerdefineret
     custom_title: Brugerdefineret påmindelse
     before_suffix: før
+    time: Tid
+    unit: Enhed
   task_details: Opgavedetaljer
   title: Opgaver
   tooltips:

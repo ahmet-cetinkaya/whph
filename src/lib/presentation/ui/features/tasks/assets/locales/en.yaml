@@ -19,7 +19,6 @@ tasks:
       tomorrow: Tomorrow
       weekend: Weekend
       next_weekday: Next Weekday
-
   delete:
     error: Unexpected error occurred while deleting task.
     message: Are you sure you want to delete this task?
@@ -326,7 +325,7 @@ tasks:
       everyDay: every day
       occurrences: occurrences
       true: "on"
-      starts: starts
+      starts: Starts
       "on": "on"
     weekDays: Days of week
     weekSuffix: week(s)
@@ -353,6 +352,8 @@ tasks:
     custom: Custom
     custom_title: Custom Reminder
     before_suffix: before
+    time: Time
+    unit: Unit
   task_details: Task Details
   time_logging:
     add_time: Add Time

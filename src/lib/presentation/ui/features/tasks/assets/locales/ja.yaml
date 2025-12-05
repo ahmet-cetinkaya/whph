@@ -393,6 +393,8 @@ tasks:
     custom: カスタム
     custom_title: カスタムリマインダー
     before_suffix: 前
+    time: 時間
+    unit: 単位
   task_details: タスクの詳細
   title: タスク
   tooltips:

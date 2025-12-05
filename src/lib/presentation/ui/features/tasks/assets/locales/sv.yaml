@@ -350,6 +350,8 @@ tasks:
     custom: Anpassad
     custom_title: Anpassad påminnelse
     before_suffix: innan
+    time: Tid
+    unit: Enhet
   task_details: Uppgiftsdetaljer
   time_logging:
     add_time: Lägg Till Tid

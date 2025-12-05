@@ -400,6 +400,8 @@ tasks:
     custom: 사용자 정의
     custom_title: 사용자 정의 알림
     before_suffix: 전
+    time: 시간
+    unit: 단위
   task_details: 작업 세부 정보
   title: 작업
   tooltips:

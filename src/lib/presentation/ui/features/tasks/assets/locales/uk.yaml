@@ -433,6 +433,8 @@ tasks:
     custom: Налаштований
     custom_title: Налаштоване нагадування
     before_suffix: до
+    time: Час
+    unit: Одиниця
   task_details: Деталі завдання
   title: Завдання
   tooltips:

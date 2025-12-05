@@ -415,7 +415,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.medium,
       child: TimeLoggingDialog(
         entityId: _task!.id,
         onCancel: () {
@@ -1234,6 +1234,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
               onChanged: _onDescriptionChanged,
               height: 250,
               style: Theme.of(context).textTheme.bodyMedium,
+              hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
               translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
             ),
             removePadding: true,

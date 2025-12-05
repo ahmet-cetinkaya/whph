@@ -122,12 +122,19 @@ class DetailTable extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          data.icon,
-          size: AppTheme.iconSizeSmall,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+        Container(
+          padding: const EdgeInsets.all(AppTheme.sizeSmall),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+          ),
+          child: Icon(
+            data.icon,
+            size: AppTheme.iconSizeSmall,
+            color: theme.colorScheme.primary,
+          ),
         ),
-        const SizedBox(width: AppTheme.size2XSmall),
+        const SizedBox(width: AppTheme.sizeSmall),
         Flexible(
           child: Row(
             mainAxisSize: MainAxisSize.min,

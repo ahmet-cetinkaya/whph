@@ -436,6 +436,8 @@ tasks:
     custom: Personalizzato
     custom_title: Promemoria personalizzato
     before_suffix: prima
+    time: Ora
+    unit: Unità
   task_details: Dettagli attività
   title: Attività
   tooltips:

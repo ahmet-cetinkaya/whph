@@ -432,6 +432,8 @@ tasks:
     custom: Vlastní
     custom_title: Vlastní připomenutí
     before_suffix: před
+    time: Čas
+    unit: Jednotka
   task_details: Detaily úkolu
   title: Úkoly
   tooltips:

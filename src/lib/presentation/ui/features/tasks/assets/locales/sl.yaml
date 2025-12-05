@@ -351,6 +351,8 @@ tasks:
     custom: Po meri
     custom_title: Prilagojeno opomnik
     before_suffix: pred
+    time: Čas
+    unit: Enota
   task_details: Podrobnosti Naloge
   time_logging:
     add_time: Dodaj Čas
