@@ -469,6 +469,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
         ),
         iconTheme: IconThemeData(color: textColor),
         actionsIconTheme: IconThemeData(color: textColor),
+        actionsPadding: EdgeInsets.only(right: 16.0 * densityMultiplier),
       ),
       listTileTheme: ListTileThemeData(
         tileColor: Colors.transparent,

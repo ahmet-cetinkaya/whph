@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/components/color_picker/color_picker.dart';
-import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
@@ -44,7 +43,6 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
             onPressed: () => Navigator.of(context).pop(_selectedColor),
             child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
           ),
-          const SizedBox(width: AppTheme.sizeLarge), // Add proper trailing spacing
         ],
       ),
       body: ColorPicker(

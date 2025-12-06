@@ -276,7 +276,6 @@ class _TimeLoggingDialogState extends State<TimeLoggingDialog> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
           ),
-          const SizedBox(width: AppTheme.sizeLarge), // Add proper trailing spacing
         ],
       ),
       body: SafeArea(

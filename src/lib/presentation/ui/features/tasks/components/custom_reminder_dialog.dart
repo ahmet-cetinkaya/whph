@@ -161,7 +161,6 @@ class _CustomReminderDialogState extends State<CustomReminderDialog> {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(width: AppTheme.sizeLarge), // Add proper trailing spacing
         ],
         elevation: 0,
       ),
