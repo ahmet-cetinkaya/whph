@@ -163,58 +163,69 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   Widget build(BuildContext context) {
     final primaryColor = widget.color ?? Theme.of(context).colorScheme.primary;
     final borderColor = widget.color ?? AppTheme.borderColor;
+    const double hoverSize = AppTheme.buttonSizeMedium;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => _toggleCompleteTask(context),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeSmall),
-        child: SizedBox(
-          width: widget.size,
-          height: widget.size,
-          child: Stack(
-            children: [
-              // Background circle
-              Container(
-                width: widget.size,
-                height: widget.size,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: borderColor,
-                    width: 2,
-                  ),
-                  color: _isCompleted ? primaryColor : Colors.transparent,
+    return SizedBox(
+      width: hoverSize,
+      height: hoverSize,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: widget.size,
+            height: widget.size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: borderColor,
+                width: 2,
+              ),
+              color: _isCompleted ? primaryColor : Colors.transparent,
+            ),
+          ),
+
+          Material(
+            color: Colors.transparent,
+            child: InkResponse(
+              onTap: () => _toggleCompleteTask(context),
+              containedInkWell: false,
+              highlightShape: BoxShape.circle,
+              radius: hoverSize / 2,
+              child: SizedBox(
+                width: hoverSize,
+                height: hoverSize,
+                child: Center(
+                  child: !_isCompleted && widget.subTasksCompletionPercentage > 0
+                      ? SizedBox(
+                          width: widget.size,
+                          height: widget.size,
+                          child: CircularProgressIndicator(
+                            value: widget.subTasksCompletionPercentage / 100,
+                            strokeWidth: AppTheme.sizeXSmall,
+                            backgroundColor: Colors.transparent,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              primaryColor.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        )
+                      : null,
                 ),
               ),
-
-              // Progress ring for subtasks (only show if not completed and has subtask progress)
-              if (!_isCompleted && widget.subTasksCompletionPercentage > 0)
-                SizedBox(
-                  width: widget.size,
-                  height: widget.size,
-                  child: CircularProgressIndicator(
-                    value: widget.subTasksCompletionPercentage / 100,
-                    strokeWidth: AppTheme.sizeXSmall,
-                    backgroundColor: Colors.transparent,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      primaryColor.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ),
-
-              // Checkmark icon when completed
-              if (_isCompleted)
-                Center(
-                  child: Icon(
-                    Icons.check,
-                    size: widget.size * 0.7,
-                    color: AppTheme.surface1,
-                  ),
-                ),
-            ],
+            ),
           ),
-        ),
+
+          if (_isCompleted)
+            IgnorePointer(
+              child: Center(
+                child: Icon(
+                  Icons.check,
+                  size: widget.size * 0.7,
+                  color: AppTheme.surface1,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
