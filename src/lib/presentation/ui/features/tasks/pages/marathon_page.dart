@@ -55,7 +55,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   bool _isDimmed = false;
   Timer? _dimmingTimer;
   static const Duration _dimmingDelay = Duration(seconds: 5); // Time before dimming starts
-  static const double _dimmingOpacity = 0.15; // Opacity value when dimmed
+  static const double _dimmingOpacity = 0;
 
   void _closeDialog() {
     Navigator.pop(context);
@@ -407,7 +407,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.close),
+                                    icon: const Icon(Icons.arrow_back),
                                     onPressed: _closeDialog,
                                     tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                                   ),

@@ -558,9 +558,7 @@ class _AppTimerState extends State<AppTimer> {
 
     // Calculate responsive sizes with running state multiplier
     final double multiplier = widget.isMiniLayout ? 1.0 : (!_isRunning && !_isAlarmPlaying ? 1.0 : 2.0);
-    final double baseButtonSize = widget.isMiniLayout
-        ? AppTheme.iconSizeSmall
-        : (screenWidth < 600 ? AppTheme.iconSizeLarge : AppTheme.iconSizeXLarge);
+    final double baseButtonSize = widget.isMiniLayout ? AppTheme.iconSizeSmall : AppTheme.iconSizeLarge;
     final double baseSpacing =
         widget.isMiniLayout ? AppTheme.size2XSmall : (screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge);
     final double buttonSize = baseButtonSize * multiplier;
@@ -602,39 +600,42 @@ class _AppTimerState extends State<AppTimer> {
             ),
 
           // Timer Content
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: spacing,
-            children: [
-              // Settings button
-              if (!_isRunning && !_isAlarmPlaying)
+          Padding(
+            padding: widget.isMiniLayout ? EdgeInsets.zero : const EdgeInsets.all(AppTheme.sizeMedium),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: spacing,
+              children: [
+                // Settings button
+                if (!_isRunning && !_isAlarmPlaying)
+                  IconButton(
+                    iconSize: buttonSize,
+                    icon: Icon(SharedUiConstants.settingsIcon),
+                    onPressed: _showSettingsModal,
+                  ),
+
+                // Text area for the timer display
+                AnimatedDefaultTextStyle(
+                  textAlign: TextAlign.center,
+                  duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
+                  style: widget.isMiniLayout
+                      ? AppTheme.bodyMedium
+                      : (_isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium),
+                  child: Text(
+                    _getDisplayTime(),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+                // Main action button
                 IconButton(
                   iconSize: buttonSize,
-                  icon: Icon(SharedUiConstants.settingsIcon),
-                  onPressed: _showSettingsModal,
+                  icon: Icon(_getButtonIcon()),
+                  onPressed: _getButtonAction(),
                 ),
-
-              // Text area for the timer display
-              AnimatedDefaultTextStyle(
-                textAlign: TextAlign.center,
-                duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
-                style: widget.isMiniLayout
-                    ? AppTheme.bodyMedium
-                    : (_isRunning || _isAlarmPlaying ? AppTheme.displayLarge : AppTheme.headlineMedium),
-                child: Text(
-                  _getDisplayTime(),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              // Main action button
-              IconButton(
-                iconSize: buttonSize,
-                icon: Icon(_getButtonIcon()),
-                onPressed: _getButtonAction(),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
