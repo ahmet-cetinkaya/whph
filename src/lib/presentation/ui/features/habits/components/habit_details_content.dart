@@ -36,6 +36,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class HabitDetailsContent extends StatefulWidget {
   final String habitId;
@@ -1217,20 +1218,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   Widget _buildRecordsHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: _buildSectionHeader(
-          HabitUiConstants.recordIcon, _translationService.translate(HabitTranslationKeys.recordsLabel)),
-    );
-  }
-
-  Widget _buildSectionHeader(IconData icon, String title) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Icon(icon),
-        ),
-        Text(title, style: AppTheme.bodyLarge),
-      ],
+      child: SectionHeader(
+          title: _translationService.translate(HabitTranslationKeys.recordsLabel), padding: EdgeInsets.zero),
     );
   }
 

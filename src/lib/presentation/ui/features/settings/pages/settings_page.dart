@@ -16,6 +16,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/components/import_export_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/advanced_settings_tile.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class SettingsPage extends StatefulWidget {
   static const String route = '/settings';
@@ -90,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // General Section
-                  _buildSectionHeader(context, translationService.translate(SettingsTranslationKeys.sectionGeneral)),
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionGeneral)),
                   const SizedBox(height: AppTheme.sizeSmall),
                   Column(
                     spacing: AppTheme.sizeSmall,
@@ -103,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: AppTheme.sizeLarge),
 
                   // Appearance Section
-                  _buildSectionHeader(context, translationService.translate(SettingsTranslationKeys.sectionAppearance)),
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAppearance)),
                   const SizedBox(height: AppTheme.sizeSmall),
                   Column(
                     spacing: AppTheme.sizeSmall,
@@ -115,14 +116,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: AppTheme.sizeLarge),
 
                   // Notifications Section
-                  _buildSectionHeader(
-                      context, translationService.translate(SettingsTranslationKeys.sectionNotifications)),
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionNotifications)),
                   const SizedBox(height: AppTheme.sizeSmall),
                   NotificationSettings(onLoaded: _onNotificationLoaded),
                   const SizedBox(height: AppTheme.sizeLarge),
 
                   // Data & Sync Section
-                  _buildSectionHeader(context, translationService.translate(SettingsTranslationKeys.sectionDataSync)),
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionDataSync)),
                   const SizedBox(height: AppTheme.sizeSmall),
                   Column(
                     spacing: AppTheme.sizeSmall,
@@ -134,13 +134,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: AppTheme.sizeLarge),
 
                   // Advanced Section
-                  _buildSectionHeader(context, translationService.translate(SettingsTranslationKeys.sectionAdvanced)),
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAdvanced)),
                   const SizedBox(height: AppTheme.sizeSmall),
                   const AdvancedSettingsTile(),
                   const SizedBox(height: AppTheme.sizeLarge),
 
                   // About Section
-                  _buildSectionHeader(context, translationService.translate(SettingsTranslationKeys.sectionAbout)),
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAbout)),
                   const SizedBox(height: AppTheme.sizeSmall),
                   AboutTile(),
                   const SizedBox(height: AppTheme.sizeXLarge),
@@ -149,19 +149,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
       ),
     );
   }

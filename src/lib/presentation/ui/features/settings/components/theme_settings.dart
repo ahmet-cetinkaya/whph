@@ -13,6 +13,7 @@ import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 import 'package:acore/acore.dart' hide Container;
 
 class ThemeSettings extends StatefulWidget {
@@ -294,24 +295,6 @@ class _ThemeDialogState extends State<_ThemeDialog> {
     widget.onThemeChanged(_themeMode, _dynamicAccentColor, _customAccentColor, _customAccentColorValue, _uiDensity);
   }
 
-  Widget _buildSectionHeader(String title, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: AppTheme.sizeSmall),
-          Expanded(
-            child: Text(
-              title,
-              style: AppTheme.labelLarge,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSelectableContainer({
     required bool isSelected,
     required VoidCallback onTap,
@@ -467,9 +450,10 @@ class _ThemeDialogState extends State<_ThemeDialog> {
               const SizedBox(height: AppTheme.sizeXLarge),
 
               // Theme Mode Selection
-              _buildSectionHeader(
-                _translationService.translate(SettingsTranslationKeys.themeModeTitle),
-                Icons.brightness_6,
+              SectionHeader(
+                title: _translationService.translate(SettingsTranslationKeys.themeModeTitle),
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                titleStyle: AppTheme.labelLarge,
               ),
               Row(
                 children: [
@@ -505,9 +489,10 @@ class _ThemeDialogState extends State<_ThemeDialog> {
               const SizedBox(height: AppTheme.sizeXLarge),
 
               // Accent Color Section
-              _buildSectionHeader(
-                _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
-                Icons.color_lens,
+              SectionHeader(
+                title: _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                titleStyle: AppTheme.labelLarge,
               ),
 
               Container(
@@ -609,9 +594,10 @@ class _ThemeDialogState extends State<_ThemeDialog> {
               const SizedBox(height: AppTheme.sizeXLarge),
 
               // UI Density
-              _buildSectionHeader(
-                _translationService.translate(SettingsTranslationKeys.uiDensityTitle),
-                Icons.aspect_ratio,
+              SectionHeader(
+                title: _translationService.translate(SettingsTranslationKeys.uiDensityTitle),
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                titleStyle: AppTheme.labelLarge,
               ),
 
               Container(

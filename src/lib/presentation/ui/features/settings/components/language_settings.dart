@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/features/settings/pages/settings_page.dart'
 import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class LanguageSettings extends StatelessWidget {
   LanguageSettings({super.key}) : _translationService = container.resolve<ITranslationService>();
@@ -153,24 +154,6 @@ class _LanguageDialog extends StatelessWidget {
     Navigator.of(context).pushReplacementNamed(SettingsPage.route);
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: AppTheme.sizeMedium,
-        right: AppTheme.sizeMedium,
-        top: AppTheme.sizeLarge,
-        bottom: AppTheme.sizeSmall,
-      ),
-      child: Text(
-        title,
-        style: AppTheme.bodyMedium.copyWith(
-          fontWeight: FontWeight.bold,
-          color: Colors.grey[600],
-        ),
-      ),
-    );
-  }
-
   Widget _buildLanguageTile(BuildContext context, _LanguageOption language) {
     final isSelected = _translationService.getCurrentLanguage(context) == language.code;
 
@@ -236,7 +219,14 @@ class _LanguageDialog extends StatelessWidget {
 
           // Language sections
           for (final section in _languageSections) ...[
-            _buildSectionHeader(section.title),
+            SectionHeader(
+              title: section.title,
+              padding: const EdgeInsets.only(
+                left: AppTheme.sizeLarge,
+                top: AppTheme.sizeLarge,
+                bottom: AppTheme.sizeSmall,
+              ),
+            ),
             for (final language in section.languages) _buildLanguageTile(context, language),
           ],
 

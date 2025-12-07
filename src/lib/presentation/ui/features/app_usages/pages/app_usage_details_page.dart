@@ -3,12 +3,12 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_delete_button.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_details_content.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_statistics_view.dart';
-import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';
@@ -117,17 +117,10 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
                 const SizedBox(height: 24),
 
                 // App Usage Statistics Section
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Icon(AppUsageUiConstants.statisticsIcon),
-                    ),
-                    Text(
-                      _translationService.translate(SharedTranslationKeys.statisticsLabel),
-                      style: AppTheme.bodyLarge,
-                    ),
-                  ],
+                SectionHeader(
+                  title: _translationService.translate(SharedTranslationKeys.statisticsLabel),
+                  padding: EdgeInsets.zero,
+                  titleStyle: AppTheme.bodyLarge,
                 ),
                 const SizedBox(height: 16),
 

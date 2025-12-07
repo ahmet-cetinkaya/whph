@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart' show DateTimeHelper;
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class HabitStatisticsView extends StatefulWidget {
   final String habitId;
@@ -135,18 +136,6 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     );
   }
 
-  Widget _buildSectionHeader() {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Icon(HabitUiConstants.statisticsIcon),
-        ),
-        Text(_translationService.translate(HabitTranslationKeys.statisticsLabel), style: AppTheme.bodyLarge),
-      ],
-    );
-  }
-
   Widget _buildStatusBanner() {
     final firstRecordDate = _habitRecords!.items.isNotEmpty
         ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
@@ -195,7 +184,10 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(),
+        SectionHeader(
+          title: _translationService.translate(HabitTranslationKeys.statisticsLabel),
+          padding: EdgeInsets.zero,
+        ),
         const SizedBox(height: AppTheme.sizeSmall),
         if (_habit!.archivedDate != null) ...[
           _buildStatusBanner(),
