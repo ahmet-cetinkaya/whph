@@ -52,7 +52,6 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
           final response = await _mediator.send(query) as GetSettingQueryResponse?;
           _isEnabled = response?.getValue<bool>() ?? false;
         } catch (e) {
-          // Setting doesn't exist yet, use default (false)
           _isEnabled = false;
         }
         return true;

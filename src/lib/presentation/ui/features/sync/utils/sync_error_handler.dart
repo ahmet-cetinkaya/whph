@@ -3,8 +3,6 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 class SyncErrorHandler {
-  // static final _translationService = container.resolve<ITranslationService>();
-
   static void showSyncError({
     required BuildContext context,
     required ITranslationService translationService,
