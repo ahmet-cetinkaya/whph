@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tasks/queries/get_list_tasks_quer
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/ui/features/calendar/components/today_page_list_options.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart.dart';
@@ -82,6 +83,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   static const String _habitFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
   SortConfig<HabitSortFields> _habitSortConfig = HabitDefaults.sorting;
   bool _habitForceOriginalLayout = false;
+  HabitListStyle _habitListStyle = HabitDefaults.defaultListStyle;
 
   // Time chart options state
   static const String _timeChartOptionsSettingKeySuffix = 'TODAY_PAGE';
@@ -215,6 +217,14 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     if (mounted) {
       setState(() {
         _habitSortConfig = newConfig;
+      });
+    }
+  }
+
+  void _onHabitListStyleChange(HabitListStyle style) {
+    if (mounted) {
+      setState(() {
+        _habitListStyle = style;
       });
     }
   }
@@ -395,6 +405,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           },
                           onSortChange: _onHabitSortConfigChange,
                           onLayoutToggleChange: _onHabitLayoutToggleChange,
+                          onHabitListStyleChange: _onHabitListStyleChange,
+                          habitListStyle: _habitListStyle,
+                          showViewStyleOption: true,
+                          showOnlyTodayStyles: true,
                           showTagFilter: false,
                           showArchiveFilter: false,
                           showSortButton: true,
@@ -408,7 +422,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       HabitsList(
                         key: _habitsListKey,
                         pageSize: 5,
-                        mini: true,
+                        style: _habitListStyle,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                         filterNoTags: _showNoTagsFilter,
                         // Only show habits not completed today
@@ -536,16 +550,18 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     SectionHeader(
                       title: _translationService.translate(TagTranslationKeys.timeDistribution),
                       padding: EdgeInsets.zero,
-                      trailing: TagTimeChartOptions(
-                        settingKeyVariantSuffix: _timeChartOptionsSettingKeySuffix,
-                        onSettingsLoaded: _onTimeChartOptionsLoaded,
-                        selectedCategories: _selectedCategories,
-                        onCategoriesChanged: (categories) {
-                          setState(() {
-                            _selectedCategories = categories;
-                          });
-                        },
-                        showDateFilter: false,
+                      trailing: Expanded(
+                        child: TagTimeChartOptions(
+                          settingKeyVariantSuffix: _timeChartOptionsSettingKeySuffix,
+                          onSettingsLoaded: _onTimeChartOptionsLoaded,
+                          selectedCategories: _selectedCategories,
+                          onCategoriesChanged: (categories) {
+                            setState(() {
+                              _selectedCategories = categories;
+                            });
+                          },
+                          showDateFilter: false,
+                        ),
                       ),
                     ),
 
