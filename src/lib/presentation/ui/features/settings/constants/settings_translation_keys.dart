@@ -23,6 +23,7 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String soundsDisabled = 'settings.sound.sounds_disabled';
   static const String allSoundsEnabled = 'settings.sound.all_sounds_enabled';
   static const String someSoundsEnabled = 'settings.sound.some_sounds_enabled';
+  static const String soundSettings = 'settings.sound.settings';
 
   // Startup Settings
   static const String startupTitle = 'settings.startup.title';
@@ -252,4 +253,12 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String exportLogsSuccess = 'settings.debug_logs.export.success';
   static const String exportLogsNoLogsAvailable = 'settings.debug_logs.export.no_logs_available';
   static const String exportLogsFileNotExist = 'settings.debug_logs.export.file_not_exist';
+
+  // Section Headers
+  static const String sectionGeneral = 'settings.section.general';
+  static const String sectionAppearance = 'settings.section.appearance';
+  static const String sectionNotifications = 'settings.section.notifications';
+  static const String sectionDataSync = 'settings.section.data_sync';
+  static const String sectionAdvanced = 'settings.section.advanced';
+  static const String sectionAbout = 'settings.section.about';
 }

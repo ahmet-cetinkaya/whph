@@ -23,6 +23,9 @@ void main() {
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
 
+      // Reset the singleton instance to ensure test isolation
+      AppDatabase.resetInstance();
+
       // Create a test container
       container = Container();
 
@@ -35,7 +38,7 @@ void main() {
       // Initialize Logger with all services registered
       Logger.initialize(container);
 
-      // Initialize database for testing
+      // Initialize database for testing with a fresh instance
       database = AppDatabase.instance(container);
 
       // Initialize integrity service with real database
@@ -43,7 +46,8 @@ void main() {
     });
 
     tearDownAll(() async {
-      // Database cleanup is handled by the singleton pattern
+      // Clean up database instance to ensure test isolation
+      AppDatabase.resetInstance();
     });
 
     test('should validate database integrity without crashes', () async {

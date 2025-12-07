@@ -6,6 +6,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/pages/settings_page.dart';
 import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
+import 'package:whph/presentation/ui/shared/components/information_card.dart';
 
 class LanguageSettings extends StatelessWidget {
   LanguageSettings({super.key}) : _translationService = container.resolve<ITranslationService>();
@@ -16,21 +18,48 @@ class LanguageSettings extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: _LanguageDialog(),
-      size: DialogSize.medium,
+      size: DialogSize.large,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.language),
-        title: Text(
-          _translationService.translate(SettingsTranslationKeys.languageTitle),
-          style: AppTheme.bodyMedium,
+    final currentLanguageCode = _translationService.getCurrentLanguage(context);
+    return SettingsMenuTile(
+      icon: Icons.language,
+      title: _translationService.translate(SettingsTranslationKeys.languageTitle),
+      subtitle: currentLanguageCode,
+      onTap: () => _showLanguageDialog(context),
+    );
+  }
+}
+
+class _StyledLanguageCode extends StatelessWidget {
+  final String languageCode;
+  final bool isActive;
+
+  const _StyledLanguageCode({
+    required this.languageCode,
+    required this.isActive,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: 40, // Match StyledIcon size (24 + 8*2 padding = 40)
+      height: 40,
+      decoration: BoxDecoration(
+        color: isActive ? theme.colorScheme.primary.withValues(alpha: 0.1) : AppTheme.surface2,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        languageCode.toUpperCase(),
+        style: AppTheme.labelLarge.copyWith(
+          color: isActive ? theme.colorScheme.primary : AppTheme.textColor.withValues(alpha: 0.5),
+          fontWeight: FontWeight.bold,
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: AppTheme.fontSizeLarge),
-        onTap: () => _showLanguageDialog(context),
       ),
     );
   }
@@ -152,9 +181,9 @@ class _LanguageDialog extends StatelessWidget {
       ),
       elevation: isSelected ? 4 : 1,
       child: ListTile(
-        leading: Icon(
-          Icons.language,
-          color: isSelected ? Theme.of(context).primaryColor : null,
+        leading: _StyledLanguageCode(
+          languageCode: language.code,
+          isActive: isSelected,
         ),
         title: Text(
           language.displayName,
@@ -173,7 +202,10 @@ class _LanguageDialog extends StatelessWidget {
                 Icons.check_circle,
                 color: Theme.of(context).primaryColor,
               )
-            : const Icon(Icons.arrow_forward_ios, size: 16),
+            : Icon(
+                Icons.radio_button_unchecked,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              ),
         onTap: () => _changeLanguage(context, language.code),
       ),
     );
@@ -195,29 +227,10 @@ class _LanguageDialog extends StatelessWidget {
           // Language count info
           Padding(
             padding: const EdgeInsets.all(AppTheme.sizeMedium),
-            child: Card(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    const SizedBox(width: AppTheme.sizeSmall),
-                    Expanded(
-                      child: Text(
-                        '22 languages available',
-                        style: AppTheme.bodySmall.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            child: InformationCard.themed(
+              context: context,
+              icon: Icons.info_outline,
+              text: '22 languages available',
             ),
           ),
 

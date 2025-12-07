@@ -3,8 +3,12 @@ sync:
     mode_title: Mod sincronizare desktop
     client_mode_start: Conectați-vă ca client
     client_mode_stop: Schimbați la modul server
-    client_mode_description: Conectați-vă la serverul unui alt dispozitiv pentru a sincroniza datele
-    server_mode_description: Permiteți altor dispozitive să se conecteze și să se sincronizeze cu acest dispozitiv
+    client_mode_description:
+      Conectați-vă la serverul unui alt dispozitiv pentru a
+      sincroniza datele
+    server_mode_description:
+      Permiteți altor dispozitive să se conecteze și să se
+      sincronizeze cu acest dispozitiv
     sync_mode_start: Porniți modul client
     sync_mode_stop: Opriți modul client
     sync_mode_start_menu: Porniți modul client
@@ -12,6 +16,7 @@ sync:
     client_mode_starting: Pornire modul client...
     client_mode_started: Modul client pornit
     client_mode_stopped: Revenit la modul server
+    sync_mode_toggle_error: Eșec la comutarea modului de sincronizare
   devices:
     errors:
       loading: Eroare la încărcarea dispozitivelor de sincronizare
@@ -19,96 +24,173 @@ sync:
       sync_failed: Eroare la sincronizarea dispozitivelor
     from_label: De la
     help:
-      content: |
-        🔄 **Ce este Sync?**
+      content: '🔄 **Ce este Sync?**
 
-        Sync menține obiceiurile, sarcinile, notele și datele tale actualizate pe dispozitive (telefoane, tablete, laptopuri, desktopuri) în aceeași rețea Wi-Fi. Fără cloud sau internet — datele rămân private și locale.
 
-        Este simplu de utilizat: Configurează o dată, iar modificările se sincronizează automat sau la cerere. Treci seamless între dispozitive, cum ar fi să începi pe telefon și să termini pe PC.
+        Sync menține obiceiurile, sarcinile, notele și datele tale actualizate pe
+        dispozitive (telefoane, tablete, laptopuri, desktopuri) în aceeași rețea Wi-Fi.
+        Fără cloud sau internet — datele rămân private și locale.
+
+
+        Este simplu de utilizat: Configurează o dată, iar modificările se sincronizează
+        automat sau la cerere. Treci seamless între dispozitive, cum ar fi să începi
+        pe telefon și să termini pe PC.
+
 
         ## 🔗 **Moduri Sync**
 
-        Toate dispozitivele suportă moduri client sau server pentru sincronizare flexibilă. Serverul conduce (împărtășește date), clienții se alătură și schimbă. Ai nevoie de cel puțin un server.
 
-        - **Mod client:** Se conectează la un server pentru sincronizare. Ideal pentru alăturarea la grupuri prin QR sau introducere manuală.
+        Toate dispozitivele suportă moduri client sau server pentru sincronizare flexibilă.
+        Serverul conduce (împărtășește date), clienții se alătură și schimbă. Ai nevoie
+        de cel puțin un server.
+
+
+        - **Mod client:** Se conectează la un server pentru sincronizare. Ideal pentru
+        alăturarea la grupuri prin QR sau introducere manuală.
+
         - **Mod server:** Acționează ca hub; arată QR sau șir pentru alții să se conecteze.
 
-        **Note platformă:**
-        - **Mobil:** Schimbă prin iconul hotspot Wi-Fi. Server pentru hub-uri portabile.
-        - **Desktop (Implicit: Server):** Schimbă în setările Sync. Client pentru laptopuri care se sincronizează cu PC-urile principale.
 
-        **Exemple:** Mobil-la-mobil (un server), desktop-la-mobil (oricare), desktop-la-desktop (un server, un client).
+        **Note platformă:**
+
+        - **Mobil:** Schimbă prin iconul hotspot Wi-Fi. Server pentru hub-uri portabile.
+
+        - **Desktop (Implicit: Server):** Schimbă în setările Sync. Client pentru
+        laptopuri care se sincronizează cu PC-urile principale.
+
+
+        **Exemple:** Mobil-la-mobil (un server), desktop-la-mobil (oricare), desktop-la-desktop
+        (un server, un client).
+
 
         Schimbă modurile în setările Sync; aplicația își amintește alegerea ta.
 
+
         ## 🛠️ **Activarea Sync**
+
 
         Dispozitivele trebuie să împărtășească Wi-Fi; ține WHPH deschis.
 
+
         ### **Configurare cu cod QR**
+
         1. Server: Pornește modul server în Sync — apare QR.
+
         2. Client: „Adaugă dispozitiv” > Scanează QR.
+
         3. Se conectează și sincronizează automat.
+
 
         Suportă toate combinațiile.
 
+
         ### **Șir de conexiune**
+
         1. Server: Copiază șirul (ex. „whph://IP:44040?...”) din Sync.
+
         2. Client: „Adaugă dispozitiv” > Manual > Lipește șirul > Conectează.
+
 
         Nu necesită cameră.
 
-        ### **Introducere manuală**
-        1. Server: Notează IP/port (implicit 44040) din Info conexiune.
-        2. Client: „Adaugă dispozitiv” > Manual > Introdu IP, port, nume > Test > Conectează.
 
-        **Clienți desktop:** Schimbă mai întâi la modul client, apoi conectează. Sincronizează automat; schimbă înapoi oricând.
+        ### **Introducere manuală**
+
+        1. Server: Notează IP/port (implicit 44040) din Info conexiune.
+
+        2. Client: „Adaugă dispozitiv” > Manual > Introdu IP, port, nume > Test >
+        Conectează.
+
+
+        **Clienți desktop:** Schimbă mai întâi la modul client, apoi conectează. Sincronizează
+        automat; schimbă înapoi oricând.
+
 
         Activează reconectare automată în setări pentru fiabilitate.
 
+
         ## 📋 **Gestionarea dispozitivelor**
 
-        - **Vizualizează:** Vezi dispozitivele, timpi de sync, status în setările Sync.
+
+        - **Vizualizează:** Vezi dispozitivele, timpi de sync, status în setările
+        Sync.
+
         - **Sync manual:** Apasă buton per dispozitiv.
+
         - **Elimină:** Selectează și elimină pentru a opri sync.
+
 
         ## 🔧 **Depanare**
 
+
         **Probleme de conexiune:**
+
         1. Aceeași Wi-Fi? Fără VPN-uri.
+
         2. Repornește aplicația.
+
         3. Verifică modul server.
+
         4. Testează fără firewall.
 
+
         **Fără dispozitive?**
+
         - Wi-Fi stabil, fără proxy.
+
         - Reîmprospătează scanarea.
+
         - Folosește IP manual.
 
+
         **Sync eșuează/Timeout-uri:**
+
         1. Sync manual.
+
         2. Potrivește versiuni aplicație.
+
         3. Așteaptă date mari.
+
 
         **Firewall (Port 44040):**
 
-        Dacă conexiunile nu funcționează, firewall-ul computerului tău poate bloca semnalul de sync. Deschide portul 44040 pentru a permite dispozitivelor să comunice local — este sigur pentru rețeaua ta de acasă.
+
+        Dacă conexiunile nu funcționează, firewall-ul computerului tău poate bloca
+        semnalul de sync. Deschide portul 44040 pentru a permite dispozitivelor să
+        comunice local — este sigur pentru rețeaua ta de acasă.
+
 
         **Windows (GUI):**
+
         1. Deschide Defender Firewall > Avansat > Reguli inbound > Regula nouă.
-        2. Port > TCP > 44040 > Permite > Toate profilele > Numește „WHPH Sync” > Finalizează.
+
+        2. Port > TCP > 44040 > Permite > Toate profilele > Numește „WHPH Sync” >
+        Finalizează.
+
 
         **Windows (Admin CMD):**
+
         ```
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
+        localport=44040
+
         ```
+
 
         **Linux (UFW):**
-        ```
-        sudo ufw allow 44040/tcp && sudo ufw reload
+
         ```
 
-        Sfaturi: Repornește routerul, folosește rețele private. Re-parează la erori „nu găsit”.
+        sudo ufw allow 44040/tcp && sudo ufw reload
+
+        ```
+
+
+        Sfaturi: Repornește routerul, folosește rețele private. Re-parează la erori
+        „nu găsit”.
+
+        '
       title: Ajutor sincronizare dispozitive
     last_sync_label: Ultima sincronizare
     no_devices_found: Niciun dispozitiv sincronizat
@@ -116,18 +198,29 @@ sync:
     title: Dispozitive de sincronizare
     to_label: Către
     unnamed_device: Dispozitiv fără nume
+    never_synced: Niciodată sincronizat
+    remove_device: Eliminare dispozitiv
   error:
     scan: Eroare la scanare
   errors:
-    connection_failed: |
-      Conexiune eșuată. Asigurați-vă:
+    connection_failed: "Conexiune eșuată. Asigurați-vă:
+
 
       1. Ambele dispozitive sunt în aceeași rețea Wi-Fi
+
       2. Ambele aplicații sunt deschise și rulează
+
       3. Firewall-ul desktop permite portul 44040 (verificați setările de sincronizare)
+
       4. Niciun VPN sau proxy nu interferează cu rețeaua locală
-    device_mismatch: Eroare de sincronizare. Dispozitivul care încearcă să se sincronizeze nu este corect împerecheat cu acest dispozitiv.
-    environment_mismatch: Sincronizarea nu poate continua între build-urile de debug și producție.
+
+      "
+    device_mismatch:
+      Eroare de sincronizare. Dispozitivul care încearcă să se sincronizeze
+      nu este corect împerecheat cu acest dispozitiv.
+    environment_mismatch:
+      Sincronizarea nu poate continua între build-urile de debug
+      și producție.
     device_not_found: Dispozitiv de sincronizare negăsit
     ip_address: Nu se poate obține adresa IP locală
     parse_message: Nu se poate analiza mesajul scanat
@@ -136,52 +229,80 @@ sync:
     scan: Eroare la scanare
     sync_failed: Sincronizarea a eșuat. Încercați din nou.
     sync_timeout: Timeout sincronizare
-    version_mismatch: "Incompatibilitate de versiune. Versiune locală: {currentVersion}, Versiune la distanță: {remoteVersion}. Actualizați ambele aplicații la aceeași versiune."
+    version_mismatch:
+      "Incompatibilitate de versiune. Versiune locală: {currentVersion},
+      Versiune la distanță: {remoteVersion}. Actualizați ambele aplicații la aceeași
+      versiune."
     local_ip_error: Nu se poate determina adresa IP locală
     device_already_paired: Acest dispozitiv este deja împerecheat
     no_active_interfaces: Nu s-au găsit interfețe de rețea active
     device_discovery_failed: "Eșec la pornirea descoperirii dispozitivelor: {error}"
-    no_server_configured: Niciun server configurat. Adăugați mai întâi un dispozitiv de sincronizare sau utilizați conexiune manuală pentru a configura o conexiune server.
-    device_id_unavailable: ID-ul dispozitivului nu este disponibil. Nu se poate continua sincronizarea.
-    local_ip_unavailable: Adresa IP locală nu este disponibilă. Verificați conexiunea la rețea.
-    prerequisites_failed: Validarea prerechizitelor de sincronizare a eșuat. Verificați setările de rețea.
-    critical_sync_operation_failed: Operațiunea critică de sincronizare a eșuat. Vă rugăm să încercați din nou.
+    no_server_configured:
+      Niciun server configurat. Adăugați mai întâi un dispozitiv
+      de sincronizare sau utilizați conexiune manuală pentru a configura o conexiune
+      server.
+    device_id_unavailable:
+      ID-ul dispozitivului nu este disponibil. Nu se poate continua
+      sincronizarea.
+    local_ip_unavailable:
+      Adresa IP locală nu este disponibilă. Verificați conexiunea
+      la rețea.
+    prerequisites_failed:
+      Validarea prerechizitelor de sincronizare a eșuat. Verificați
+      setările de rețea.
+    critical_sync_operation_failed:
+      Operațiunea critică de sincronizare a eșuat. Vă
+      rugăm să încercați din nou.
     initiate_outgoing_sync_failed: Inițierea sincronizării cu dispozitivele a eșuat.
     processing_incoming_data: Eroare la procesarea datelor de sincronizare primite.
     checking_local_data: Eroare la verificarea datelor locale pentru sincronizare.
     sync_with_device_failed: Sincronizarea cu dispozitivul a eșuat.
     sync_with_device_exception: A apărut o excepție în timpul sincronizării dispozitivului.
-    process_accumulated_response_data: Procesarea datelor acumulate de răspuns a sincronizării a eșuat.
+    process_accumulated_response_data:
+      Procesarea datelor acumulate de răspuns a sincronizării
+      a eșuat.
     process_response_data: Procesarea datelor de răspuns a sincronizării a eșuat.
-    some_devices_failed_to_sync: Unele dispozitive nu au reușit să se sincronizeze. Vă rugăm să încercați din nou.
+    some_devices_failed_to_sync:
+      Unele dispozitive nu au reușit să se sincronizeze.
+      Vă rugăm să încercați din nou.
   messages:
     device_already_paired: Acest dispozitiv este deja împerecheat
     sync_completed: Sincronizare completată cu succes
     sync_in_progress: Sincronizare în curs...
     testing_connection: Testare conexiune...
-    device_added_success: "Sincronizarea cu {deviceName} a fost adăugată cu succes"
+    device_added_success: Sincronizarea cu {deviceName} a fost adăugată cu succes
   qr_code:
     close_button: Închide
     dialog_title: Scanați codul QR pentru sincronizare
     title: Arătați codul QR
-    description: Alte dispozitive pot scana acest cod QR pentru a se conecta și sincroniza cu acest dispozitiv.
+    description:
+      Alte dispozitive pot scana acest cod QR pentru a se conecta și sincroniza
+      cu acest dispozitiv.
     connection_string_title: Șir de conexiune
-    connection_string_description: Alternativ, puteți partaja acest șir de conexiune pentru a conecta dispozitivele manual.
+    connection_string_description:
+      Alternativ, puteți partaja acest șir de conexiune
+      pentru a conecta dispozitivele manual.
     connection_string_copied: Șirul de conexiune a fost copiat în clipboard
   connect_info:
     dialog_title: Informații conexiune dispozitiv
     menu_title: Informații conexiune
     qr_title: Cod QR
-    qr_description: Alte dispozitive pot scana acest cod QR pentru a se conecta și sincroniza cu acest dispozitiv.
+    qr_description:
+      Alte dispozitive pot scana acest cod QR pentru a se conecta și
+      sincroniza cu acest dispozitiv.
     connection_string_title: Șir de conexiune
-    connection_string_description: Alternativ, puteți partaja acest șir de conexiune pentru a conecta dispozitivele manual.
+    connection_string_description:
+      Alternativ, puteți partaja acest șir de conexiune
+      pentru a conecta dispozitivele manual.
     connection_string_copied: Șirul de conexiune a fost copiat în clipboard
     unknown_ip: IP necunoscut
     error_loading_connection_info: Eroare la încărcarea informațiilor de conexiune
     retry: Reîncercați
     manual_connection_tab: Conexiune manuală
     server_details_title: Detalii server
-    server_details_description: Utilizați aceste detalii server pentru a vă conecta manual de pe un alt dispozitiv.
+    server_details_description:
+      Utilizați aceste detalii server pentru a vă conecta
+      manual de pe un alt dispozitiv.
     connection_string_title_alt: Șir de conexiune
     copy: Copiați
   scanner:
@@ -198,6 +319,8 @@ sync:
     stop_menu: Oprire mod server
     error: Eroare
     device_became_server: Acest dispozitiv este acum serverul de sincronizare
+    mode_title: Mod server
+    mode_inactive: Server inactiv
   manual:
     connection: Conexiune manuală
     ip_address: Adresă IP
@@ -220,25 +343,38 @@ sync:
     connection_string_label: Șir de conexiune
     test_connection: Testați conexiunea
     enter_server_details: Introduceți detaliile conexiunii serverului manual
-    connection_timeout: Timeout conexiune. Verificați adresa serverului și încercați din nou.
+    connection_timeout:
+      Timeout conexiune. Verificați adresa serverului și încercați
+      din nou.
     connection_test_successful: Test conexiune reușit!
-    connection_test_timeout: Timeout test conexiune. Verificați adresa serverului și încercați din nou.
-    connection_test_failed_no_response: Test conexiune eșuat - fără răspuns de la server
+    connection_test_timeout:
+      Timeout test conexiune. Verificați adresa serverului
+      și încercați din nou.
+    connection_test_failed_no_response:
+      Test conexiune eșuat - fără răspuns de la
+      server
     connection_test_failed_generic: "Test conexiune eșuat: {0}"
-    connection_string_instruction: Lipește aici șirul de conexiune furnizat de dispozitivul server pentru conexiune manuală.
+    connection_string_instruction:
+      Lipește aici șirul de conexiune furnizat de dispozitivul
+      server pentru conexiune manuală.
   add:
     device: Adăugați dispozitiv
     device_tooltip: Adăugați un nou dispozitiv
     sync_device: Adăugați dispozitiv de sincronizare
     sync_device_title: Adăugați dispozitiv de sincronizare
-    sync_device_description: Descoperiți dispozitivele din apropiere sau conectați manual pentru a sincroniza datele între dispozitive.
+    sync_device_description:
+      Descoperiți dispozitivele din apropiere sau conectați
+      manual pentru a sincroniza datele între dispozitive.
     scanning_for_devices: Scănați dispozitivele din apropiere...
     no_nearby_devices: Nu s-au găsit dispozitive în apropiere
-    no_nearby_devices_hint: Asigurați-vă că ambele dispozitive sunt în aceeași rețea Wi-Fi și au WHPH rulând.
-    alternative_methods_hint: Nu puteți găsi dispozitivul? Încercați aceste metode alternative pentru a vă conecta.
+    no_nearby_devices_hint:
+      Asigurați-vă că ambele dispozitive sunt în aceeași rețea
+      Wi-Fi și au WHPH rulând.
+    alternative_methods_hint:
+      Nu puteți găsi dispozitivul? Încercați aceste metode
+      alternative pentru a vă conecta.
     scan_qr_code: Scanați codul QR
     refresh_scan: Reîmprospătați scanarea
-    last_seen: "Văzut ultima dată la {time}"
+    last_seen: Văzut ultima dată la {time}
     already_added: Deja adăugat
-
   multi_interface_connection: Conexiune multi-interfață

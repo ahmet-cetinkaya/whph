@@ -10,6 +10,7 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 
 class NotificationSettings extends StatefulWidget {
   final VoidCallback? onLoaded;
@@ -97,31 +98,21 @@ class _NotificationSettingsState extends State<NotificationSettings> {
       builder: (context, snapshot) {
         final theme = Theme.of(context);
 
-        return Card(
-          child: ListTile(
-            leading: Icon(
-              Icons.notifications,
-              color: theme.colorScheme.onSurface,
-            ),
-            title: Text(
-              _translationService.translate(SettingsTranslationKeys.notificationsTitle),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            trailing: _isLoading || _isUpdating
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Switch(
-                    value: _isEnabled,
-                    onChanged: _toggleNotifications,
-                    activeColor: theme.colorScheme.primary,
-                  ),
-            onTap: () => _isLoading || _isUpdating ? null : _toggleNotifications(!_isEnabled),
-          ),
+        return SettingsMenuTile(
+          icon: Icons.notifications,
+          title: _translationService.translate(SettingsTranslationKeys.notificationsTitle),
+          trailing: _isLoading || _isUpdating
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : Switch(
+                  value: _isEnabled,
+                  onChanged: _toggleNotifications,
+                  activeColor: theme.colorScheme.primary,
+                ),
+          onTap: () => _isLoading || _isUpdating ? null : _toggleNotifications(!_isEnabled),
         );
       },
     );

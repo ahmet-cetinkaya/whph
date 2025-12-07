@@ -17,6 +17,8 @@
 *QWEN.md
 openspec/
 .serena/
+PROJECT_INDEX.md
+PROJECT_INDEX.json
 
 # FVM Version Cache
 .fvm/

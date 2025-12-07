@@ -25,6 +25,7 @@ class AdvancedSettingsDialog extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               translationService.translate(SettingsTranslationKeys.advancedSettingsTitle),
+              style: AppTheme.headlineSmall,
             ),
             elevation: 0,
             actions: const [
@@ -33,21 +34,16 @@ class AdvancedSettingsDialog extends StatelessWidget {
           ),
           body: Container(
             color: theme.scaffoldBackgroundColor,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8.0,
-                  children: [
-                    // Tasks Settings
-                    const TasksTile(),
+            child: ListView(
+              padding: const EdgeInsets.all(AppTheme.sizeLarge),
+              children: const [
+                // Tasks Settings
+                TasksTile(),
+                SizedBox(height: AppTheme.sizeMedium),
 
-                    // Debug Logs Settings
-                    const DebugLogsSettings(),
-                  ],
-                ),
-              ),
+                // Debug Logs Settings
+                DebugLogsSettings(),
+              ],
             ),
           ),
         );

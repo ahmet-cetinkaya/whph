@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class TaskSettings extends StatefulWidget {
   final VoidCallback? onLoaded;
@@ -182,7 +183,9 @@ class _TaskSettingsState extends State<TaskSettings> {
     }
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
+      elevation: 0,
+      color: AppTheme.surface1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
@@ -191,15 +194,14 @@ class _TaskSettingsState extends State<TaskSettings> {
             // Title
             Row(
               children: [
-                Icon(
+                StyledIcon(
                   Icons.timer_outlined,
-                  color: theme.colorScheme.primary,
-                  size: 20,
+                  isActive: true,
                 ),
                 const SizedBox(width: AppTheme.sizeSmall),
                 Text(
                   _translationService.translate(SettingsTranslationKeys.taskSettingsTitle),
-                  style: theme.textTheme.titleMedium,
+                  style: AppTheme.headlineSmall.copyWith(fontSize: 18),
                 ),
               ],
             ),
@@ -218,14 +220,12 @@ class _TaskSettingsState extends State<TaskSettings> {
                         children: [
                           Text(
                             _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeTitle),
-                            style: theme.textTheme.titleSmall,
+                            style: AppTheme.labelLarge,
                           ),
                           const SizedBox(height: AppTheme.sizeSmall),
                           Text(
                             _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeDescription),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                            ),
+                            style: AppTheme.bodySmall,
                           ),
                         ],
                       ),

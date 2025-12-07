@@ -6,96 +6,170 @@ sync:
       sync_failed: Fejl ved synkronisering af enheder
     from_label: Fra
     help:
-      content: |
-        🔄 **Hvad er Sync?**
+      content: '🔄 **Hvad er Sync?**
 
-        Sync holder dine vaner, opgaver, noter og data opdateret på tværs af enheder (telefoner, tablets, laptops, desktops) på samme Wi-Fi. Ingen cloud eller internet — data forbliver private og lokale.
 
-        Det er enkelt at bruge: Opsæt det én gang, og ændringer synkroniseres automatisk eller på forespørgsel. Skift mellem enheder sømløst, som at starte på din telefon og afslutte på din PC.
+        Sync holder dine vaner, opgaver, noter og data opdateret på tværs af enheder
+        (telefoner, tablets, laptops, desktops) på samme Wi-Fi. Ingen cloud eller
+        internet — data forbliver private og lokale.
+
+
+        Det er enkelt at bruge: Opsæt det én gang, og ændringer synkroniseres automatisk
+        eller på forespørgsel. Skift mellem enheder sømløst, som at starte på din
+        telefon og afslutte på din PC.
+
 
         ## 🔗 **Sync-tilstande**
 
-        Alle enheder understøtter Klient- eller Server-tilstande for fleksibel synkronisering. Server leder (deler data), Klienter tilslutter og udveksler. Du har brug for mindst én Server.
 
-        - **Klient-tilstand:** Tilslutter til en Server for at synkronisere. Ideel til at tilslutte grupper via QR eller manuel input.
-        - **Server-tilstand:** Fungerer som hub; viser QR eller streng for andre at tilslutte.
+        Alle enheder understøtter Klient- eller Server-tilstande for fleksibel synkronisering.
+        Server leder (deler data), Klienter tilslutter og udveksler. Du har brug for
+        mindst én Server.
+
+
+        - **Klient-tilstand:** Tilslutter til en Server for at synkronisere. Ideel
+        til at tilslutte grupper via QR eller manuel input.
+
+        - **Server-tilstand:** Fungerer som hub; viser QR eller streng for andre at
+        tilslutte.
+
 
         **Platform-bemærkninger:**
-        - **Mobil:** Skift via Wi-Fi hotspot-ikonet. Server for bærbare hubs.
-        - **Desktop (Standard: Server):** Skift i Sync-indstillinger. Klient for laptops, der synkroniserer til hoved-PC'er.
 
-        **Eksempler:** Mobil-til-mobil (én Server), desktop-til-mobil (begge veje), desktop-til-desktop (én Server, én Klient).
+        - **Mobil:** Skift via Wi-Fi hotspot-ikonet. Server for bærbare hubs.
+
+        - **Desktop (Standard: Server):** Skift i Sync-indstillinger. Klient for laptops,
+        der synkroniserer til hoved-PC''er.
+
+
+        **Eksempler:** Mobil-til-mobil (én Server), desktop-til-mobil (begge veje),
+        desktop-til-desktop (én Server, én Klient).
+
 
         Skift tilstande i Sync-indstillinger; appen husker dit valg.
 
+
         ## 🛠️ **Aktivering af Sync**
+
 
         Enheder skal dele Wi-Fi; hold WHPH åben.
 
+
         ### **QR-kode-opsætning**
+
         1. Server: Start Server-tilstand i Sync — QR vises.
+
         2. Klient: "Tilføj enhed" > Scan QR.
+
         3. Auto-forbinder og synkroniserer.
+
 
         Understøtter alle kombinationer.
 
+
         ### **Forbindelsesstreng**
+
         1. Server: Kopier streng (f.eks. "whph://IP:44040?...") fra Sync.
+
         2. Klient: "Tilføj enhed" > Manuel > Indsæt streng > Tilslut.
+
 
         Ingen kamera kræves.
 
+
         ### **Manuel indtastning**
+
         1. Server: Notér IP/port (standard 44040) fra Forbindelsesinfo.
+
         2. Klient: "Tilføj enhed" > Manuel > Indtast IP, port, navn > Test > Tilslut.
 
-        **Desktop-klienter:** Skift til Klient-tilstand først, derefter tilslut. Auto-synkroniserer; skift tilbage når som helst.
+
+        **Desktop-klienter:** Skift til Klient-tilstand først, derefter tilslut. Auto-synkroniserer;
+        skift tilbage når som helst.
+
 
         Aktivér auto-genforbindelse i indstillinger for pålidelighed.
 
+
         ## 📋 **Håndtering af enheder**
 
+
         - **Vis:** Se enheder, synkroniseringstider, status i Sync-indstillinger.
+
         - **Manuel Sync:** Tryk knap pr. enhed.
+
         - **Fjern:** Vælg og fjern for at stoppe synkronisering.
+
 
         ## 🔧 **Fejlfinding**
 
+
         **Forbindelsesproblemer:**
-        1. Samme Wi-Fi? Ingen VPN'er.
+
+        1. Samme Wi-Fi? Ingen VPN''er.
+
         2. Genstart app.
+
         3. Bekræft Server-tilstand.
+
         4. Test uden firewall.
 
+
         **Ingen enheder?**
+
         - Stabil Wi-Fi, ingen proxies.
+
         - Opdater scan.
+
         - Brug manuel IP.
 
+
         **Sync fejler/timeouts:**
+
         1. Manuel sync.
+
         2. Match app-versioner.
+
         3. Vent på store data.
+
 
         **Firewall (Port 44040):**
 
-        Hvis forbindelser ikke virker, kan din computers firewall blokere sync-signalet. Åbn port 44040 for at lade enheder kommunikere lokalt — det er sikkert for dit hjemmenetværk.
+
+        Hvis forbindelser ikke virker, kan din computers firewall blokere sync-signalet.
+        Åbn port 44040 for at lade enheder kommunikere lokalt — det er sikkert for
+        dit hjemmenetværk.
+
 
         **Windows (GUI):**
+
         1. Åbn Defender Firewall > Avanceret > Indgående regler > Ny regel.
+
         2. Port > TCP > 44040 > Tillad > Alle profiler > Navn "WHPH Sync" > Færdig.
 
+
         **Windows (Admin CMD):**
+
         ```
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
+        localport=44040
+
         ```
+
 
         **Linux (UFW):**
-        ```
-        sudo ufw allow 44040/tcp && sudo ufw reload
+
         ```
 
+        sudo ufw allow 44040/tcp && sudo ufw reload
+
+        ```
+
+
         Tips: Genstart router, brug private netværk. Gen-par ved "ikke fundet" fejl.
+
+        '
       title: Hjælp til enhedssynkronisering
     last_sync_label: Sidste synkronisering
     no_devices_found: Ingen synkroniserede enheder
@@ -103,16 +177,24 @@ sync:
     title: Synkroniser enheder
     to_label: Til
     unnamed_device: Unavngiven enhed
+    never_synced: Aldrig synkroniseret
+    remove_device: Fjern enhed
   error:
     scan: Scanning fejlede
   errors:
-    connection_failed: |
-      Forbindelse mislykkedes. Sørg for:
+    connection_failed: "Forbindelse mislykkedes. Sørg for:
+
 
       1. Begge enheder er på samme netværk
+
       2. Begge apps er åbne og kører
+
       3. Ingen firewall blokerer forbindelsen
-    device_mismatch: Synkroniseringsfejl. Enheden, der forsøger at synkronisere, er ikke korrekt parret med denne enhed.
+
+      "
+    device_mismatch:
+      Synkroniseringsfejl. Enheden, der forsøger at synkronisere, er
+      ikke korrekt parret med denne enhed.
     environment_mismatch: Synkronisering kan ikke fortsætte mellem debug- og produktionsbuilds.
     device_not_found: Synkroniseringsenhed ikke fundet
     ip_address: Kan ikke hente lokal IP-adresse
@@ -122,16 +204,26 @@ sync:
     scan: Scanning fejlede
     sync_failed: Synkronisering mislykkedes. Prøv igen.
     sync_timeout: Synkroniseringstimeout
-    version_mismatch: "Versionsuoverensstemmelse. Lokal version: {currentVersion}, Fjern version: {remoteVersion}. Opdater begge applikationer til samme version."
+    version_mismatch:
+      "Versionsuoverensstemmelse. Lokal version: {currentVersion},
+      Fjern version: {remoteVersion}. Opdater begge applikationer til samme version."
     local_ip_error: Lokal IP-fejl
     device_already_paired: Enhed allerede parret
     no_active_interfaces: Ingen aktive netværksgrænseflader
     device_discovery_failed: Enhedsopdagelse mislykkedes
-    no_server_configured: Ingen server konfigureret. Tilføj først en synkroniseringsenhed eller brug manuel forbindelse til at opsætte serverforbindelse.
-    device_id_unavailable: Enheds-ID er ikke tilgængeligt. Kan ikke fortsætte med synkronisering.
+    no_server_configured:
+      Ingen server konfigureret. Tilføj først en synkroniseringsenhed
+      eller brug manuel forbindelse til at opsætte serverforbindelse.
+    device_id_unavailable:
+      Enheds-ID er ikke tilgængeligt. Kan ikke fortsætte med
+      synkronisering.
     local_ip_unavailable: Lokal IP-adresse er ikke tilgængelig. Kontroller netværksforbindelsen.
-    prerequisites_failed: Validering af synkroniseringsforudsætninger mislykkedes. Kontroller dine netværksindstillinger.
-    critical_sync_operation_failed: Kritisk synkroniseringsoperation mislykkedes. Prøv venligst igen.
+    prerequisites_failed:
+      Validering af synkroniseringsforudsætninger mislykkedes.
+      Kontroller dine netværksindstillinger.
+    critical_sync_operation_failed:
+      Kritisk synkroniseringsoperation mislykkedes.
+      Prøv venligst igen.
     initiate_outgoing_sync_failed: Kunne ikke starte synkronisering med enheder.
     processing_incoming_data: Fejl under behandling af indgående synkroniseringsdata.
     checking_local_data: Fejl under kontrol af lokale data til synkronisering.
@@ -139,7 +231,9 @@ sync:
     sync_with_device_exception: Undtagelse opstod under enhedssynkronisering.
     process_accumulated_response_data: Kunne ikke behandle akkumulerede synkroniseringsresponsdata.
     process_response_data: Kunne ikke behandle synkroniseringsresponsdata.
-    some_devices_failed_to_sync: Nogle enheder kunne ikke synkroniseres. Prøv venligst igen.
+    some_devices_failed_to_sync:
+      Nogle enheder kunne ikke synkroniseres. Prøv venligst
+      igen.
   messages:
     device_already_paired: Denne enhed er allerede parret
     sync_completed: Synkronisering fuldført succesfuldt
@@ -150,9 +244,13 @@ sync:
     close_button: Luk
     dialog_title: Scan QR-kode for at synkronisere
     title: QR-kode
-    description: Andre enheder kan scanne denne QR-kode for at forbinde og synkronisere med denne enhed.
+    description:
+      Andre enheder kan scanne denne QR-kode for at forbinde og synkronisere
+      med denne enhed.
     connection_string_title: Forbindelsesstreng
-    connection_string_description: Alternativt kan du dele denne forbindelsesstreng for at forbinde enheder manuelt.
+    connection_string_description:
+      Alternativt kan du dele denne forbindelsesstreng
+      for at forbinde enheder manuelt.
     connection_string_copied: Forbindelsesstreng kopieret til udklipsholder
   scanner:
     title: Scan QR-kode
@@ -168,6 +266,8 @@ sync:
     device_became_server: Denne enhed er nu synkroniserings-serveren
     start_menu: Start server
     stop_menu: Stop server
+    mode_title: Servertilstand
+    mode_inactive: Server inaktiv
   manual:
     connection: Manuel forbindelse
     ip_address: IP-adresse
@@ -192,10 +292,16 @@ sync:
     enter_server_details: Indtast serverforbindelsesdetaljer manuelt
     connection_timeout: Forbindelse timeout. Tjek serveradressen og prøv igen.
     connection_test_successful: Forbindelsetest succesfuld!
-    connection_test_timeout: Forbindelsetest timeout. Tjek serveradressen og prøv igen.
-    connection_test_failed_no_response: Forbindelsetest mislykkedes - ingen svar fra server
+    connection_test_timeout:
+      Forbindelsetest timeout. Tjek serveradressen og prøv
+      igen.
+    connection_test_failed_no_response:
+      Forbindelsetest mislykkedes - ingen svar fra
+      server
     connection_test_failed_generic: "Forbindelsetest mislykkedes: {0}"
-    connection_string_instruction: Indsæt forbindelsesstrengen leveret af serverenheden her for manuel forbindelse.
+    connection_string_instruction:
+      Indsæt forbindelsesstrengen leveret af serverenheden
+      her for manuel forbindelse.
   add:
     device: Tilføj enhed
     device_tooltip: Tilføj en ny enhed
@@ -210,16 +316,21 @@ sync:
     refresh_scan: Opdater scan
     last_seen: Sidst set
     already_added: Allerede tilføjet
-
   connect_info:
     dialog_title: Enhedsforbindelsesinformation
     menu_title: Forbindelsesinfo
     qr_title: QR-kode
-    qr_description: Andre enheder kan scanne denne QR-kode for at forbinde og synkronisere med denne enhed.
+    qr_description:
+      Andre enheder kan scanne denne QR-kode for at forbinde og synkronisere
+      med denne enhed.
     connection_string_title: Forbindelsesstreng
-    connection_string_description: Alternativt kan du dele denne forbindelsesstreng for at forbinde enheder manuelt.
+    connection_string_description:
+      Alternativt kan du dele denne forbindelsesstreng
+      for at forbinde enheder manuelt.
     connection_string_copied: Forbindelsesstreng kopieret til udklipsholder
-    server_details_description: Brug disse serverdetaljer til at forbinde manuelt fra en anden enhed.
+    server_details_description:
+      Brug disse serverdetaljer til at forbinde manuelt
+      fra en anden enhed.
     unknown_ip: Ukendt IP
     error_loading_connection_info: Fejl ved indlæsning af forbindelsesinfo
     retry: Prøv igen
@@ -227,13 +338,16 @@ sync:
     server_details_title: Serverdetaljer
     connection_string_title_alt: Forbindelsesstreng
     copy: Kopier
-
   desktop:
     mode_title: Desktop Synkroniseringsmode
     client_mode_start: Forbind som klient
     client_mode_stop: Skift til servermode
-    client_mode_description: Forbind til en anden enheds server for at synkronisere data
-    server_mode_description: Tillad andre enheder at forbinde og synkronisere med denne enhed
+    client_mode_description:
+      Forbind til en anden enheds server for at synkronisere
+      data
+    server_mode_description:
+      Tillad andre enheder at forbinde og synkronisere med
+      denne enhed
     sync_mode_start: Start klientmode
     sync_mode_stop: Stop klientmode
     sync_mode_start_menu: Start klientmode
@@ -241,5 +355,5 @@ sync:
     client_mode_starting: Starter klientmode...
     client_mode_started: Klientmode startet
     client_mode_stopped: Skiftet tilbage til servermode
-
+    sync_mode_toggle_error: Kunne ikke skifte synkroniseringstilstand
   multi_interface_connection: Multi-interface forbindelse

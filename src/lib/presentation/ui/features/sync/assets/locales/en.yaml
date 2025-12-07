@@ -12,6 +12,7 @@ sync:
     client_mode_starting: Starting client mode...
     client_mode_started: Client mode started
     client_mode_stopped: Switched back to server mode
+    sync_mode_toggle_error: Failed to toggle sync mode
   devices:
     errors:
       loading: Failed to load sync devices
@@ -19,96 +20,168 @@ sync:
       sync_failed: Failed to sync devices
     from_label: From
     help:
-      content: |
-        🔄 **What is Sync?**
+      content: '🔄 **What is Sync?**
 
-        Sync keeps your habits, tasks, notes, and data updated across devices (phones, tablets, laptops, desktops) on the same Wi-Fi. No cloud or internet—data stays private and local.
 
-        It's simple to use: Set it up once, and changes sync automatically or on demand. Switch devices seamlessly, like starting on your phone and finishing on your PC.
+        Sync keeps your habits, tasks, notes, and data updated across devices (phones,
+        tablets, laptops, desktops) on the same Wi-Fi. No cloud or internet—data stays
+        private and local.
+
+
+        It''s simple to use: Set it up once, and changes sync automatically or on
+        demand. Switch devices seamlessly, like starting on your phone and finishing
+        on your PC.
+
 
         ## 🔗 **Sync Modes**
 
-        All devices support Client or Server modes for flexible syncing. Server leads (shares data), Clients join and exchange. Need at least one Server.
 
-        - **Client Mode:** Connects to a Server to sync. Ideal for joining groups via QR or manual input.
+        All devices support Client or Server modes for flexible syncing. Server leads
+        (shares data), Clients join and exchange. Need at least one Server.
+
+
+        - **Client Mode:** Connects to a Server to sync. Ideal for joining groups
+        via QR or manual input.
+
         - **Server Mode:** Acts as hub; shows QR or string for others to connect.
 
-        **Platform Notes:**
-        - **Mobile:** Toggle via Wi-Fi hotspot icon. Server for portable hubs.
-        - **Desktop (Default: Server):** Switch in Sync settings. Client for laptops syncing to main PCs.
 
-        **Examples:** Mobile-to-mobile (one Server), desktop-to-mobile (either way), desktop-to-desktop (one Server, one Client).
+        **Platform Notes:**
+
+        - **Mobile:** Toggle via Wi-Fi hotspot icon. Server for portable hubs.
+
+        - **Desktop (Default: Server):** Switch in Sync settings. Client for laptops
+        syncing to main PCs.
+
+
+        **Examples:** Mobile-to-mobile (one Server), desktop-to-mobile (either way),
+        desktop-to-desktop (one Server, one Client).
+
 
         Switch modes in Sync settings; app remembers your choice.
 
+
         ## 🛠️ **Enabling Sync**
+
 
         Devices must share Wi-Fi; keep WHPH open.
 
+
         ### **QR Code Setup**
+
         1. Server: Start Server mode in Sync—QR appears.
+
         2. Client: "Add Device" > Scan QR.
+
         3. Auto-connects and syncs.
+
 
         Supports all combinations.
 
+
         ### **Connection String**
+
         1. Server: Copy string (e.g., "whph://IP:44040?...") from Sync.
+
         2. Client: "Add Device" > Manual > Paste string > Connect.
+
 
         No camera required.
 
+
         ### **Manual Entry**
+
         1. Server: Note IP/port (default 44040) from Connection Info.
+
         2. Client: "Add Device" > Manual > Enter IP, port, name > Test > Connect.
 
-        **Desktop Clients:** Switch to Client mode first, then connect. Auto-syncs; switch back anytime.
+
+        **Desktop Clients:** Switch to Client mode first, then connect. Auto-syncs;
+        switch back anytime.
+
 
         Enable auto-reconnect in settings for reliability.
 
+
         ## 📋 **Managing Devices**
 
+
         - **View:** See devices, sync times, status in Sync settings.
+
         - **Manual Sync:** Tap button per device.
+
         - **Remove:** Select and remove to stop syncing.
+
 
         ## 🔧 **Troubleshooting**
 
+
         **Connection Issues:**
+
         1. Same Wi-Fi? No VPNs.
+
         2. Restart app.
+
         3. Verify Server mode.
+
         4. Test without firewall.
 
+
         **No Devices?**
+
         - Stable Wi-Fi, no proxies.
+
         - Refresh scan.
+
         - Use manual IP.
 
+
         **Sync Fails/Timeouts:**
+
         1. Manual sync.
+
         2. Match app versions.
+
         3. Wait for large data.
+
 
         **Firewall (Port 44040):**
 
-        If connections aren't working, your computer's firewall might be blocking the sync signal. Open port 44040 to let devices communicate locally—it's safe for your home network.
+
+        If connections aren''t working, your computer''s firewall might be blocking
+        the sync signal. Open port 44040 to let devices communicate locally—it''s
+        safe for your home network.
+
 
         **Windows (GUI):**
+
         1. Open Defender Firewall > Advanced > Inbound Rules > New Rule.
+
         2. Port > TCP > 44040 > Allow > All profiles > Name "WHPH Sync" > Finish.
 
+
         **Windows (Admin CMD):**
+
         ```
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
+        localport=44040
+
         ```
+
 
         **Linux (UFW):**
-        ```
-        sudo ufw allow 44040/tcp && sudo ufw reload
+
         ```
 
+        sudo ufw allow 44040/tcp && sudo ufw reload
+
+        ```
+
+
         Tips: Restart router, use private networks. Re-pair if "not found" errors.
+
+        '
       title: Device Synchronization Help
     last_sync_label: Last Sync
     no_devices_found: No synced devices
@@ -116,16 +189,23 @@ sync:
     title: Sync Devices
     to_label: To
     unnamed_device: Unnamed Device
+    never_synced: Never synced
+    remove_device: Remove Device
   error:
     scan: Failed to scan
   errors:
-    connection_failed: |
-      Connection failed. Please ensure:
+    connection_failed: "Connection failed. Please ensure:
+
 
       1. Both devices are on the same Wi-Fi network
+
       2. Both apps are open and running
+
       3. Desktop firewall allows port 44040 (check sync settings)
+
       4. No VPN or proxy interfering with local network
+
+      "
     device_mismatch: Sync error. Device not properly paired.
     environment_mismatch: Sync cannot proceed between debug and production builds.
     device_not_found: Sync device not found
@@ -136,22 +216,30 @@ sync:
     scan: Failed to scan
     sync_failed: Synchronization failed. Please try again.
     sync_timeout: Sync timeout
-    version_mismatch: "Version mismatch. Local: {currentVersion}, Remote: {remoteVersion}. Update both apps."
+    version_mismatch:
+      "Version mismatch. Local: {currentVersion}, Remote: {remoteVersion}.
+      Update both apps."
     local_ip_error: Unable to determine local IP address
     device_already_paired: This device is already paired
     no_active_interfaces: No active network interfaces found
     device_discovery_failed: "Failed to start device discovery: {error}"
-    no_server_configured: No server configured. Please add a sync device first or use manual connection to set up a server connection.
+    no_server_configured:
+      No server configured. Please add a sync device first or
+      use manual connection to set up a server connection.
     device_id_unavailable: Device ID is not available. Cannot proceed with sync.
     local_ip_unavailable: Local IP address is not available. Check network connection.
-    prerequisites_failed: Sync prerequisites validation failed. Please check your network settings.
+    prerequisites_failed:
+      Sync prerequisites validation failed. Please check your
+      network settings.
     critical_sync_operation_failed: Critical sync operation failed. Please try again.
     initiate_outgoing_sync_failed: Failed to initiate sync with devices.
     processing_incoming_data: Error processing incoming sync data.
     checking_local_data: Error checking local data for synchronization.
     sync_with_device_failed: Failed to sync with device.
     sync_with_device_exception: Exception occurred during device synchronization.
-    process_accumulated_response_data: Failed to process accumulated sync response data.
+    process_accumulated_response_data:
+      Failed to process accumulated sync response
+      data.
     process_response_data: Failed to process sync response data.
     some_devices_failed_to_sync: Some devices failed to sync. Please try again.
   messages:
@@ -164,24 +252,34 @@ sync:
     close_button: Close
     dialog_title: Scan QR Code to Sync
     title: Show QR Code
-    description: Other devices can scan this QR code to connect and sync with this device.
+    description:
+      Other devices can scan this QR code to connect and sync with this
+      device.
     connection_string_title: Connection String
-    connection_string_description: Alternatively, you can share this connection string to connect devices manually.
+    connection_string_description:
+      Alternatively, you can share this connection string
+      to connect devices manually.
     connection_string_copied: Connection string copied to clipboard
   connect_info:
     dialog_title: Device Connection Information
     menu_title: Connection Info
     qr_title: QR Code
-    qr_description: Other devices can scan this QR code to connect and sync with this device.
+    qr_description:
+      Other devices can scan this QR code to connect and sync with this
+      device.
     connection_string_title: Connection String
-    connection_string_description: Alternatively, you can share this connection string to connect devices manually.
+    connection_string_description:
+      Alternatively, you can share this connection string
+      to connect devices manually.
     connection_string_copied: Connection string copied to clipboard
     unknown_ip: Unknown IP
     error_loading_connection_info: Error loading connection info
     retry: Retry
     manual_connection_tab: Manual Connection
     server_details_title: Server Details
-    server_details_description: Use these server details to connect manually from another device.
+    server_details_description:
+      Use these server details to connect manually from
+      another device.
     connection_string_title_alt: Connection String
     copy: Copy
   scanner:
@@ -198,6 +296,8 @@ sync:
     stop_menu: Stop Server Mode
     error: Error
     device_became_server: This device is now the sync server
+    mode_title: Server Mode
+    mode_inactive: Server Inactive
   manual:
     connection: Manual Connection
     ip_address: IP Address
@@ -220,25 +320,38 @@ sync:
     connection_string_label: Connection String
     test_connection: Test Connection
     enter_server_details: Enter server connection details manually
-    connection_timeout: Connection timeout. Please check the server address and try again.
+    connection_timeout:
+      Connection timeout. Please check the server address and try
+      again.
     connection_test_successful: Connection test successful!
-    connection_test_timeout: Connection test timeout. Please check the server address and try again.
-    connection_test_failed_no_response: Connection test failed - no response from server
+    connection_test_timeout:
+      Connection test timeout. Please check the server address
+      and try again.
+    connection_test_failed_no_response:
+      Connection test failed - no response from
+      server
     connection_test_failed_generic: "Connection test failed: {0}"
-    connection_string_instruction: Paste the connection string provided by the server device here to connect manually.
+    connection_string_instruction:
+      Paste the connection string provided by the server
+      device here to connect manually.
   add:
     device: Add Device
     device_tooltip: Add new device
     sync_device: Add Sync Device
     sync_device_title: Add Sync Device
-    sync_device_description: Discover nearby devices or manually connect to sync your data across devices.
+    sync_device_description:
+      Discover nearby devices or manually connect to sync your
+      data across devices.
     scanning_for_devices: Scanning for nearby devices...
     no_nearby_devices: No nearby devices found
-    no_nearby_devices_hint: Make sure both devices are on the same Wi-Fi network and have WHPH running.
-    alternative_methods_hint: Can't find your device? Try these alternative methods to connect.
+    no_nearby_devices_hint:
+      Make sure both devices are on the same Wi-Fi network and
+      have WHPH running.
+    alternative_methods_hint:
+      Can't find your device? Try these alternative methods
+      to connect.
     scan_qr_code: Scan QR Code
     refresh_scan: Refresh Scan
-    last_seen: "Last seen at {time}"
+    last_seen: Last seen at {time}
     already_added: Already added
-
   multi_interface_connection: Multi-interface connection

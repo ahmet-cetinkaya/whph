@@ -16,7 +16,7 @@ class AboutTile extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: AboutPage(),
-      size: DialogSize.medium,
+      size: DialogSize.large,
     );
   }
 

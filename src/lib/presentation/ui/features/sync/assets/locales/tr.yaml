@@ -6,96 +6,174 @@ sync:
       sync_failed: Cihazlar senkronize edilirken hata oluştu
     from_label: Kimden
     help:
-      content: |
-        🔄 **Sync Nedir?**
+      content: '🔄 **Sync Nedir?**
 
-        Sync, alışkanlıklarınızı, görevlerinizi, notlarınızı ve verilerinizi aynı Wi-Fi üzerinden cihazlar (telefonlar, tabletler, dizüstüler, masaüstler) arasında güncel tutar. Bulut veya internet yok—veri özel ve yerel kalır.
 
-        Kullanımı basit: Bir kez kurun, değişiklikler otomatik veya isteğe bağlı olarak senkronize olur. Cihazlar arasında sorunsuz geçiş yapın, telefonunuzda başlayıp PC'nizde bitirin gibi.
+        Sync, alışkanlıklarınızı, görevlerinizi, notlarınızı ve verilerinizi aynı
+        Wi-Fi üzerinden cihazlar (telefonlar, tabletler, dizüstüler, masaüstler) arasında
+        güncel tutar. Bulut veya internet yok—veri özel ve yerel kalır.
+
+
+        Kullanımı basit: Bir kez kurun, değişiklikler otomatik veya isteğe bağlı olarak
+        senkronize olur. Cihazlar arasında sorunsuz geçiş yapın, telefonunuzda başlayıp
+        PC''nizde bitirin gibi.
+
 
         ## 🔗 **Sync Modları**
 
-        Tüm cihazlar esnek senkronizasyon için İstemci veya Sunucu modlarını destekler. Sunucu liderlik eder (veri paylaşır), İstemciler katılır ve değiş tokuş eder. En az bir Sunucuya ihtiyaç var.
 
-        - **İstemci Modu:** Senkronize olmak için Sunucuya bağlanır. QR veya manuel giriş ile gruplara katılmak için ideal.
-        - **Sunucu Modu:** Hub olarak davranır; başkalarının bağlanması için QR veya dize gösterir.
+        Tüm cihazlar esnek senkronizasyon için İstemci veya Sunucu modlarını destekler.
+        Sunucu liderlik eder (veri paylaşır), İstemciler katılır ve değiş tokuş eder.
+        En az bir Sunucuya ihtiyaç var.
+
+
+        - **İstemci Modu:** Senkronize olmak için Sunucuya bağlanır. QR veya manuel
+        giriş ile gruplara katılmak için ideal.
+
+        - **Sunucu Modu:** Hub olarak davranır; başkalarının bağlanması için QR veya
+        dize gösterir.
+
 
         **Platform Notları:**
-        - **Mobil:** Wi-Fi hotspot simgesi ile değiştirin. Taşınabilir hub'lar için Sunucu.
-        - **Masaüstü (Varsayılan: Sunucu):** Sync ayarlarında değiştirin. Ana PC'lere senkronize eden dizüstüler için İstemci.
 
-        **Örnekler:** Mobil-mobil (bir Sunucu), masaüstü-mobil (her iki şekilde), masaüstü-masaüstü (bir Sunucu, bir İstemci).
+        - **Mobil:** Wi-Fi hotspot simgesi ile değiştirin. Taşınabilir hub''lar için
+        Sunucu.
+
+        - **Masaüstü (Varsayılan: Sunucu):** Sync ayarlarında değiştirin. Ana PC''lere
+        senkronize eden dizüstüler için İstemci.
+
+
+        **Örnekler:** Mobil-mobil (bir Sunucu), masaüstü-mobil (her iki şekilde),
+        masaüstü-masaüstü (bir Sunucu, bir İstemci).
+
 
         Sync ayarlarında modları değiştirin; uygulama tercihinizi hatırlar.
 
-        ## 🛠️ **Sync'i Etkinleştirme**
 
-        Cihazlar Wi-Fi paylaşmalı; WHPH'yi açık tutun.
+        ## 🛠️ **Sync''i Etkinleştirme**
+
+
+        Cihazlar Wi-Fi paylaşmalı; WHPH''yi açık tutun.
+
 
         ### **QR Kod Kurulumu**
-        1. Sunucu: Sync'te Sunucu modunu başlatın—QR görünür.
+
+        1. Sunucu: Sync''te Sunucu modunu başlatın—QR görünür.
+
         2. İstemci: "Cihaz Ekle" > QR Tara.
+
         3. Otomatik bağlanır ve senkronize olur.
+
 
         Tüm kombinasyonları destekler.
 
+
         ### **Bağlantı Dizesi**
-        1. Sunucu: Sync'ten dizeyi kopyalayın (ör. "whph://IP:44040?...").
+
+        1. Sunucu: Sync''ten dizeyi kopyalayın (ör. "whph://IP:44040?...").
+
         2. İstemci: "Cihaz Ekle" > Manuel > Diziyi Yapıştır > Bağlan.
+
 
         Kamera gerekmez.
 
+
         ### **Manuel Giriş**
-        1. Sunucu: Bağlantı Bilgisi'nden IP/port'u not edin (varsayılan 44040).
+
+        1. Sunucu: Bağlantı Bilgisi''nden IP/port''u not edin (varsayılan 44040).
+
         2. İstemci: "Cihaz Ekle" > Manuel > IP, port, isim girin > Test > Bağlan.
 
-        **Masaüstü İstemciler:** Önce İstemci moduna geçin, sonra bağlanın. Otomatik senkronize olur; istediğiniz zaman geri dönün.
 
-        Güvenilirlik için ayarlar'da otomatik yeniden bağlanmayı etkinleştirin.
+        **Masaüstü İstemciler:** Önce İstemci moduna geçin, sonra bağlanın. Otomatik
+        senkronize olur; istediğiniz zaman geri dönün.
+
+
+        Güvenilirlik için ayarlar''da otomatik yeniden bağlanmayı etkinleştirin.
+
 
         ## 📋 **Cihazları Yönetme**
 
-        - **Görüntüle:** Sync ayarlarında cihazları, senkronizasyon zamanlarını, durumu görün.
+
+        - **Görüntüle:** Sync ayarlarında cihazları, senkronizasyon zamanlarını, durumu
+        görün.
+
         - **Manuel Sync:** Cihaz başına butona dokunun.
+
         - **Kaldır:** Senkronizasyonu durdurmak için seçin ve kaldırın.
+
 
         ## 🔧 **Sorun Giderme**
 
+
         **Bağlantı Sorunları:**
+
         1. Aynı Wi-Fi? VPN yok.
+
         2. Uygulamayı yeniden başlatın.
+
         3. Sunucu modunu doğrulayın.
+
         4. Firewall olmadan test edin.
 
+
         **Cihaz Yok?**
+
         - Kararlı Wi-Fi, proxy yok.
+
         - Tarama yenileyin.
+
         - Manuel IP kullanın.
 
+
         **Sync Başarısız/Zaman Aşımı:**
+
         1. Manuel sync.
+
         2. Uygulama sürümlerini eşleştirin.
+
         3. Büyük veriler için bekleyin.
+
 
         **Firewall (Port 44040):**
 
-        Bağlantılar çalışmıyorsa, bilgisayarınızın firewall'ı senkronizasyon sinyalini engelliyor olabilir. Cihazların yerel olarak iletişim kurması için port 44040'ı açın—ev ağınız için güvenlidir.
+
+        Bağlantılar çalışmıyorsa, bilgisayarınızın firewall''ı senkronizasyon sinyalini
+        engelliyor olabilir. Cihazların yerel olarak iletişim kurması için port 44040''ı
+        açın—ev ağınız için güvenlidir.
+
 
         **Windows (GUI):**
+
         1. Defender Firewall > Gelişmiş > Gelen Kurallar > Yeni Kural.
-        2. Port > TCP > 44040 > İzin Ver > Tüm profiller > "WHPH Sync" adlandır > Bitir.
+
+        2. Port > TCP > 44040 > İzin Ver > Tüm profiller > "WHPH Sync" adlandır >
+        Bitir.
+
 
         **Windows (Admin CMD):**
+
         ```
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
+        localport=44040
+
         ```
+
 
         **Linux (UFW):**
-        ```
-        sudo ufw allow 44040/tcp && sudo ufw reload
+
         ```
 
-        İpuçları: Yönlendiriciyi yeniden başlatın, özel ağlar kullanın. "bulunamadı" hatalarında yeniden eşleştirin.
+        sudo ufw allow 44040/tcp && sudo ufw reload
+
+        ```
+
+
+        İpuçları: Yönlendiriciyi yeniden başlatın, özel ağlar kullanın. "bulunamadı"
+        hatalarında yeniden eşleştirin.
+
+        '
       title: Cihaz Senkronizasyonu Yardımı
     last_sync_label: Son Senkronizasyon
     no_devices_found: Senkronize edilmiş cihaz yok
@@ -103,17 +181,27 @@ sync:
     title: Senkronizasyon Cihazları
     to_label: Kime
     unnamed_device: İsimsiz Cihaz
+    never_synced: Hiç senkronize edilmedi
+    remove_device: Cihazı Kaldır
   error:
     scan: Tarama hatası
   errors:
-    connection_failed: |
-      Bağlantı başarısız. Lütfen şunu sağlayın:
+    connection_failed: "Bağlantı başarısız. Lütfen şunu sağlayın:
+
 
       1. Her iki cihaz da aynı ağda
+
       2. Her iki uygulama da açık ve çalışıyor
+
       3. Hiçbir firewall bağlantıyı engellemiyor
-    device_mismatch: Senkronizasyon hatası. Senkronize etmeye çalışan cihaz bu cihazla düzgün eşleştirilmemiş.
-    environment_mismatch: Debug ve üretim buildleri arasında senkronizasyon devam edemez.
+
+      "
+    device_mismatch:
+      Senkronizasyon hatası. Senkronize etmeye çalışan cihaz bu cihazla
+      düzgün eşleştirilmemiş.
+    environment_mismatch:
+      Debug ve üretim buildleri arasında senkronizasyon devam
+      edemez.
     device_not_found: Senkronizasyon cihazı bulunamadı
     ip_address: Yerel IP adresi alınamadı
     parse_message: Tarama mesajı ayrıştırılamadı
@@ -122,24 +210,40 @@ sync:
     scan: Tarama hatası
     sync_failed: Senkronizasyon başarısız. Lütfen tekrar deneyin.
     sync_timeout: Senkronizasyon zaman aşımı
-    version_mismatch: "Versiyon uyuşmazlığı. Yerel versiyon: {currentVersion}, Uzaktan versiyon: {remoteVersion}. Lütfen her iki uygulamayı da aynı versiyona güncelleyin."
+    version_mismatch:
+      "Versiyon uyuşmazlığı. Yerel versiyon: {currentVersion}, Uzaktan
+      versiyon: {remoteVersion}. Lütfen her iki uygulamayı da aynı versiyona güncelleyin."
     local_ip_error: Yerel IP hatası
     device_already_paired: Cihaz zaten eşleştirilmiş
     no_active_interfaces: Aktif ağ arabirimi yok
     device_discovery_failed: Cihaz keşfi başarısız
-    no_server_configured: Yapılandırılmış sunucu yok. Lütfen önce bir senkronizasyon cihazı ekleyin veya manuel bağlantıyı kullanarak sunucu bağlantısını kurun.
-    device_id_unavailable: Cihaz kimliği kullanılamıyor. Senkronizasyon işlemine devam edilemiyor.
-    local_ip_unavailable: Yerel IP adresi kullanılamıyor. Ağ bağlantısını kontrol edin.
-    prerequisites_failed: Senkronizasyon önkoşulları doğrulaması başarısız oldu. Lütfen ağ ayarlarınızı kontrol edin.
-    critical_sync_operation_failed: Kritik senkronizasyon işlemi başarısız oldu. Lütfen tekrar deneyin.
+    no_server_configured:
+      Yapılandırılmış sunucu yok. Lütfen önce bir senkronizasyon
+      cihazı ekleyin veya manuel bağlantıyı kullanarak sunucu bağlantısını kurun.
+    device_id_unavailable:
+      Cihaz kimliği kullanılamıyor. Senkronizasyon işlemine devam
+      edilemiyor.
+    local_ip_unavailable:
+      Yerel IP adresi kullanılamıyor. Ağ bağlantısını kontrol
+      edin.
+    prerequisites_failed:
+      Senkronizasyon önkoşulları doğrulaması başarısız oldu. Lütfen
+      ağ ayarlarınızı kontrol edin.
+    critical_sync_operation_failed:
+      Kritik senkronizasyon işlemi başarısız oldu. Lütfen
+      tekrar deneyin.
     initiate_outgoing_sync_failed: Cihazlarla senkronizasyon başlatılamadı.
     processing_incoming_data: Gelen senkronizasyon verileri işlenirken hata oluştu.
-    checking_local_data: Senkronizasyon için yerel verilerin kontrol edilmesi sırasında hata oluştu.
+    checking_local_data:
+      Senkronizasyon için yerel verilerin kontrol edilmesi sırasında
+      hata oluştu.
     sync_with_device_failed: Cihazla senkronizasyon başarısız oldu.
     sync_with_device_exception: Cihaz senkronizasyonu sırasında bir istisna oluştu.
     process_accumulated_response_data: Birikmiş senkronizasyon yanıt verileri işlenemedi.
     process_response_data: Senkronizasyon yanıt verileri işlenemedi.
-    some_devices_failed_to_sync: Bazı cihazlar senkronize edilemedi. Lütfen tekrar deneyin.
+    some_devices_failed_to_sync:
+      Bazı cihazlar senkronize edilemedi. Lütfen tekrar
+      deneyin.
   messages:
     device_already_paired: Bu cihaz zaten eşleştirilmiş
     sync_completed: Senkronizasyon başarıyla tamamlandı
@@ -150,9 +254,13 @@ sync:
     close_button: Kapat
     dialog_title: Senkronize etmek için QR kodunu tarayın
     title: QR Kodu
-    description: Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize olabilir.
+    description:
+      Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize
+      olabilir.
     connection_string_title: Bağlantı Dizesi
-    connection_string_description: Alternatif olarak, cihazları manuel olarak bağlamak için bu bağlantı dizesini paylaşabilirsiniz.
+    connection_string_description:
+      Alternatif olarak, cihazları manuel olarak bağlamak
+      için bu bağlantı dizesini paylaşabilirsiniz.
     connection_string_copied: Bağlantı dizesi panoya kopyalandı
   scanner:
     title: QR Kodu Tarayın
@@ -161,13 +269,17 @@ sync:
     starting: Sunucu modu başlatılıyor...
     active: Sunucu modu aktif - Diğer cihazlara QR kodu göster
     stopped: Sunucu modu durduruldu - Cihaz şimdi istemci modunda
-    start_failed: Sunucu modu başlatılamadı - Port 44040'ın mevcut olup olmadığını kontrol edin
+    start_failed:
+      Sunucu modu başlatılamadı - Port 44040'ın mevcut olup olmadığını
+      kontrol edin
     start_tooltip: Sunucu Modunu Başlat
     stop_tooltip: Sunucu Modunu Durdur
     error: Hata
     device_became_server: Bu cihaz şimdi senkronizasyon sunucusu
     start_menu: Sunucuyu Başlat
     stop_menu: Sunucuyu Durdur
+    mode_title: Sunucu Modu
+    mode_inactive: Sunucu Hızlı Erişim
   manual:
     connection: Manuel Bağlantı
     ip_address: IP Adresi
@@ -190,12 +302,20 @@ sync:
     connection_string_label: Bağlantı Dizesi
     test_connection: Bağlantıyı Test Et
     enter_server_details: Sunucu bağlantı detaylarını manuel olarak girin
-    connection_timeout: Bağlantı zaman aşımı. Lütfen sunucu adresini kontrol edin ve tekrar deneyin.
+    connection_timeout:
+      Bağlantı zaman aşımı. Lütfen sunucu adresini kontrol edin
+      ve tekrar deneyin.
     connection_test_successful: Bağlantı testi başarılı!
-    connection_test_timeout: Bağlantı testi zaman aşımı. Lütfen sunucu adresini kontrol edin ve tekrar deneyin.
-    connection_test_failed_no_response: Bağlantı testi başarısız - sunucudan yanıt yok
+    connection_test_timeout:
+      Bağlantı testi zaman aşımı. Lütfen sunucu adresini kontrol
+      edin ve tekrar deneyin.
+    connection_test_failed_no_response:
+      Bağlantı testi başarısız - sunucudan yanıt
+      yok
     connection_test_failed_generic: "Bağlantı testi başarısız: {0}"
-    connection_string_instruction: Manuel bağlantı için sunucu cihaz tarafından sağlanan bağlantı dizesini buraya yapıştırın.
+    connection_string_instruction:
+      Manuel bağlantı için sunucu cihaz tarafından sağlanan
+      bağlantı dizesini buraya yapıştırın.
   add:
     device: Cihaz Ekle
     device_tooltip: Yeni cihaz ekle
@@ -210,16 +330,21 @@ sync:
     refresh_scan: Tarama Yenile
     last_seen: Son görülme
     already_added: Zaten eklendi
-
   connect_info:
     dialog_title: Cihaz Bağlantı Bilgileri
     menu_title: Bağlantı Bilgisi
     qr_title: QR Kodu
-    qr_description: Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize olabilir.
+    qr_description:
+      Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize
+      olabilir.
     connection_string_title: Bağlantı Dizesi
-    connection_string_description: Alternatif olarak, cihazları manuel olarak bağlamak için bu bağlantı dizesini paylaşabilirsiniz.
+    connection_string_description:
+      Alternatif olarak, cihazları manuel olarak bağlamak
+      için bu bağlantı dizesini paylaşabilirsiniz.
     connection_string_copied: Bağlantı dizesi panoya kopyalandı
-    server_details_description: Başka bir cihazdan manuel bağlantı için bu sunucu detaylarını kullanın.
+    server_details_description:
+      Başka bir cihazdan manuel bağlantı için bu sunucu
+      detaylarını kullanın.
     unknown_ip: Bilinmeyen IP
     error_loading_connection_info: Bağlantı bilgisi yüklenirken hata
     retry: Tekrar Dene
@@ -227,13 +352,16 @@ sync:
     server_details_title: Sunucu Detayları
     connection_string_title_alt: Bağlantı Dizesi
     copy: Kopyala
-
   desktop:
     mode_title: Masaüstü Senkronizasyon Modu
     client_mode_start: İstemci Olarak Bağlan
     client_mode_stop: Sunucu Moduna Geç
-    client_mode_description: Veri senkronize etmek için başka bir cihazın sunucusuna bağlanın
-    server_mode_description: Diğer cihazların bu cihaza bağlanıp senkronize etmesine izin verin
+    client_mode_description:
+      Veri senkronize etmek için başka bir cihazın sunucusuna
+      bağlanın
+    server_mode_description:
+      Diğer cihazların bu cihaza bağlanıp senkronize etmesine
+      izin verin
     sync_mode_start: İstemci Modunu Başlat
     sync_mode_stop: İstemci Modunu Durdur
     sync_mode_start_menu: İstemci Modunu Başlat
@@ -241,5 +369,5 @@ sync:
     client_mode_starting: İstemci modu başlatılıyor...
     client_mode_started: İstemci modu başlatıldı
     client_mode_stopped: Sunucu moduna geri dönüldü
-
+    sync_mode_toggle_error: Senkronizasyon modu değiştirilemedi
   multi_interface_connection: Çoklu arabirim bağlantısı
