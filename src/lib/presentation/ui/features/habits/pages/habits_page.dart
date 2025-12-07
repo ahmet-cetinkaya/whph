@@ -6,6 +6,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_add_button.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
 import 'package:whph/presentation/ui/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
@@ -90,6 +91,7 @@ class _HabitsPageState extends State<HabitsPage> {
   String? _handledHabitId;
   bool _isHabitListVisible = false;
   bool _isHabitDataLoaded = false;
+  final HabitListStyle _habitListStyle = HabitListStyle.calendar;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -310,6 +312,7 @@ class _HabitsPageState extends State<HabitsPage> {
                     filterByArchived: _filterByArchived,
                     sortConfig: _sortConfig,
                     forceOriginalLayout: _forceOriginalLayout,
+                    habitListStyle: _habitListStyle,
                     onTagFilterChange: _onFilterTagsSelect,
                     onArchiveFilterChange: _onToggleArchived,
                     onSearchChange: _onSearchChange,
@@ -325,6 +328,7 @@ class _HabitsPageState extends State<HabitsPage> {
 
                 // Calendar
                 if (_isHabitListVisible &&
+                    _habitListStyle == HabitListStyle.calendar &&
                     AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
                     !_filterByArchived)
                   SizedBox(
@@ -349,6 +353,7 @@ class _HabitsPageState extends State<HabitsPage> {
               Expanded(
                 child: HabitsList(
                   key: _habitsListKey,
+                  style: _habitListStyle,
                   dateRange: daysToShow,
                   filterByTags: _selectedFilterTags,
                   filterNoTags: _showNoTagsFilter,

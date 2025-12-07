@@ -4,7 +4,11 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
+
 class HabitDefaults {
+  static const HabitListStyle defaultListStyle = HabitListStyle.todayGrid;
+
   static const SortConfig<HabitSortFields> sorting = SortConfig<HabitSortFields>(
     orderOptions: [
       SortOptionWithTranslationKey(

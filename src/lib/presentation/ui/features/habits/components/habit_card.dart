@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
+
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+
 import 'package:acore/acore.dart' as acore;
+
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
@@ -18,11 +21,12 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 
 class HabitCard extends StatefulWidget {
   final HabitListItem habit;
   final VoidCallback onOpenDetails;
-  final bool isMiniLayout;
+  final HabitListStyle style;
   final bool isDateLabelShowing;
   final int dateRange;
   final bool isDense;
@@ -33,7 +37,7 @@ class HabitCard extends StatefulWidget {
     super.key,
     required this.habit,
     required this.onOpenDetails,
-    this.isMiniLayout = false,
+    this.style = HabitListStyle.todayGrid,
     this.isDateLabelShowing = true,
     this.dateRange = 7,
     this.isDense = false,
@@ -97,7 +101,7 @@ class _HabitCardState extends State<HabitCard> {
         final endDate = widget.habit.archivedDate ?? DateTime.now();
         // Calculate appropriate page size to handle multiple daily occurrences
         final dailyTarget = widget.habit.hasGoal ? (widget.habit.dailyTarget ?? 1) : 1;
-        final daysToShow = widget.isMiniLayout ? 1 : widget.dateRange;
+        final daysToShow = widget.style == HabitListStyle.calendar ? widget.dateRange : 1;
 
         // For period-based habits, we need to fetch enough data to calculate period completion
         // This ensures we have data for the full period window that might affect the displayed days
@@ -216,11 +220,15 @@ class _HabitCardState extends State<HabitCard> {
 
   @override
   Widget build(BuildContext context) {
-    final isCompactView = widget.isMiniLayout ||
-        (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall));
+    final isCompactView =
+        widget.style != HabitListStyle.calendar || AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall);
+
+    final isTodayList = widget.style == HabitListStyle.todayList;
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 60), // Ensure minimum height to prevent shrinking
+      constraints: BoxConstraints(
+        minHeight: widget.style == HabitListStyle.todayGrid ? 0 : 60,
+      ), // Ensure minimum height to prevent shrinking, except for grid
       child: ListTile(
         visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
         tileColor: AppTheme.surface1,
@@ -228,21 +236,41 @@ class _HabitCardState extends State<HabitCard> {
           borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
         ),
         contentPadding: EdgeInsets.only(
-          left: isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium,
-          right: isCompactView ? AppTheme.sizeSmall : (widget.isMiniLayout ? AppTheme.sizeMedium : 0),
+          left: (isTodayList || widget.style == HabitListStyle.todayGrid)
+              ? AppTheme.sizeMedium
+              : (isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium),
+          right:
+              isCompactView ? AppTheme.sizeSmall : (widget.style == HabitListStyle.calendar ? AppTheme.sizeMedium : 0),
         ),
         onTap: widget.onOpenDetails,
         dense: widget.isDense,
-        leading: _buildLeading(isCompactView),
-        title: _buildTitle(),
-        subtitle: _buildSubtitle(),
-        trailing: _buildTrailing(isCompactView),
+        leading: isTodayList ? _buildCheckbox(context) : _buildLeading(isCompactView),
+        title: (isTodayList || widget.style == HabitListStyle.todayGrid) ? _buildTitleAndMetadata() : _buildTitle(),
+        subtitle: (isTodayList || widget.style == HabitListStyle.todayGrid) ? null : _buildSubtitle(),
+        trailing: isTodayList ? _buildTrailingForList() : _buildTrailing(isCompactView),
       ),
     );
   }
 
+  Widget? _buildTrailingForList() {
+    // Only show drag handle if enabled and index is present
+    if (widget.showDragHandle && widget.dragIndex != null) {
+      return Padding(
+        padding: const EdgeInsets.only(left: AppTheme.size2XSmall),
+        child: ReorderableDragStartListener(
+          index: widget.dragIndex!,
+          child: const Icon(Icons.drag_handle, color: Colors.grey),
+        ),
+      );
+    }
+
+    return null;
+  }
+
   // Helper method to build the leading widget (habit icon)
-  Widget _buildLeading(bool isCompactView) {
+  Widget? _buildLeading(bool isCompactView) {
+    if (widget.style == HabitListStyle.todayGrid) return null;
+
     return Icon(
       HabitUiConstants.habitIcon,
       size: widget.isDense
@@ -253,22 +281,56 @@ class _HabitCardState extends State<HabitCard> {
     );
   }
 
-  // Helper method to build the title widget (habit name)
-  Widget _buildTitle() {
-    final displayName =
-        widget.habit.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.habit.name;
+  Widget _buildTitleAndMetadata() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          widget.habit.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.habit.name,
+          style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (widget.isDense) const SizedBox(height: 1) else const SizedBox(height: 2),
+        _buildMetadataRow(),
+      ],
+    );
+  }
 
+  Widget _buildMetadataRow() {
+    final spacing = widget.isDense ? 4.0 : 8.0;
+
+    return Wrap(
+      spacing: spacing,
+      runSpacing: spacing / 2,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        // Tags section
+        if (widget.habit.tags.isNotEmpty) _buildTagsWidget(mini: true),
+
+        // Estimated Time
+        if (widget.habit.estimatedTime != null || widget.habit.actualTime != null) _buildEstimatedTimeWidget(),
+      ],
+    );
+  }
+
+  // Helper method to build title
+  Widget _buildTitle() {
     return Text(
-      displayName,
+      widget.habit.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.habit.name,
       style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
-      overflow: TextOverflow.ellipsis,
       maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
   // Helper method to build the subtitle widget (tags and metadata)
   Widget? _buildSubtitle() {
-    if (widget.isMiniLayout) {
+    if (widget.style == HabitListStyle.todayGrid) {
       return null;
     }
 
@@ -286,6 +348,8 @@ class _HabitCardState extends State<HabitCard> {
           runSpacing: AppTheme.sizeSmall / 2,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
+            // For TodayList, we might want tags to start on a new line or consistent alignment?
+            // Wrapped is fine.
             if (widget.habit.tags.isNotEmpty) _buildTagsWidget(),
             if (timeToDisplay != null) _buildEstimatedTimeWidget(),
           ],
@@ -456,7 +520,7 @@ class _HabitCardState extends State<HabitCard> {
     final timeToDisplay = widget.habit.actualTime ?? widget.habit.estimatedTime;
     final isActualTime = widget.habit.actualTime != null;
 
-    if (timeToDisplay == null || widget.isMiniLayout) {
+    if (timeToDisplay == null || widget.style == HabitListStyle.todayGrid) {
       return const SizedBox.shrink();
     }
 
@@ -479,9 +543,9 @@ class _HabitCardState extends State<HabitCard> {
   }
 
   // Helper method to build tags widget
-  Widget _buildTagsWidget() {
+  Widget _buildTagsWidget({bool mini = false}) {
     final items = TagDisplayUtils.objectsToDisplayItems(widget.habit.tags, _translationService);
-    return TagListWidget(items: items);
+    return TagListWidget(items: items, mini: mini);
   }
 
   String _getReminderTooltip() {
@@ -723,8 +787,8 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildCheckbox(BuildContext context) {
     if (_habitRecords == null) {
       return const SizedBox(
-        width: AppTheme.buttonSizeSmall,
-        height: AppTheme.buttonSizeSmall,
+        width: AppTheme.buttonSizeMedium,
+        height: AppTheme.buttonSizeMedium,
       );
     }
 
@@ -734,15 +798,20 @@ class _HabitCardState extends State<HabitCard> {
     final todayCount = _countRecordsForDate(today);
     final hasCustomGoals = widget.habit.hasGoal;
     final dailyTarget = hasCustomGoals ? (widget.habit.dailyTarget ?? 1) : 1;
-    final isCompactView = widget.isMiniLayout ||
-        (widget.isMiniLayout == false && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall));
+    final isCompactView =
+        widget.style != HabitListStyle.calendar || AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall);
+
+    // Increase touch target sizes to match TaskCard (approx 36-40px)
+    final double buttonSize = isCompactView ? AppTheme.buttonSizeMedium : AppTheme.buttonSizeLarge;
+    final double iconSize = isCompactView ? AppTheme.iconSizeMedium : AppTheme.iconSizeLarge;
 
     // For habits with custom goals and dailyTarget > 1, show completion badge
     if (hasCustomGoals && dailyTarget > 1) {
       final isComplete = todayCount >= dailyTarget;
+      // Dimensions increased for better touch target
       return SizedBox(
-        width: isCompactView ? 32 : 40,
-        height: isCompactView ? 24 : 30,
+        width: isCompactView ? 36 : 44,
+        height: isCompactView ? 36 : 44,
         child: InkWell(
           onTap: isDisabled ? null : _onCheckboxTap,
           borderRadius: BorderRadius.circular(12),
@@ -760,7 +829,7 @@ class _HabitCardState extends State<HabitCard> {
                           : todayCount > 0
                               ? Icons.add
                               : Icons.close,
-                  size: isCompactView ? 14 : 16,
+                  size: iconSize,
                   color: isDisabled
                       ? AppTheme.textColor.withValues(alpha: 0.3)
                       : isComplete
@@ -772,8 +841,8 @@ class _HabitCardState extends State<HabitCard> {
                 // Count badge in bottom right
                 if (todayCount > 0)
                   Positioned(
-                    bottom: 1,
-                    right: 1,
+                    bottom: 0,
+                    right: 0,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                       decoration: BoxDecoration(
@@ -789,7 +858,7 @@ class _HabitCardState extends State<HabitCard> {
                       child: Text(
                         '$todayCount',
                         style: TextStyle(
-                          fontSize: isCompactView ? 8 : 9,
+                          fontSize: isCompactView ? 9 : 10,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -806,13 +875,11 @@ class _HabitCardState extends State<HabitCard> {
     // For habits without custom goals, show traditional icon
     return IconButton(
       padding: EdgeInsets.zero,
-      constraints: BoxConstraints(
-          minWidth: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall,
-          minHeight: isCompactView ? AppTheme.buttonSizeXSmall : AppTheme.buttonSizeSmall),
+      constraints: BoxConstraints(minWidth: buttonSize, minHeight: buttonSize),
       onPressed: isDisabled ? null : _onCheckboxTap,
       icon: Icon(
         hasRecordToday ? Icons.link : Icons.close,
-        size: isCompactView ? AppTheme.fontSizeMedium : AppTheme.fontSizeLarge,
+        size: iconSize,
         color: isDisabled
             ? AppTheme.textColor.withValues(alpha: 0.3)
             : hasRecordToday

@@ -2,6 +2,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 
 /// Model for storing habit filter and sort settings
 class HabitListOptionSettings {
@@ -23,6 +24,9 @@ class HabitListOptionSettings {
   /// Whether to force the original layout even with custom sort
   final bool forceOriginalLayout;
 
+  /// The list style preference
+  final HabitListStyle habitListStyle;
+
   /// Default constructor
   HabitListOptionSettings({
     this.selectedTagIds,
@@ -31,6 +35,7 @@ class HabitListOptionSettings {
     this.search,
     this.sortConfig,
     this.forceOriginalLayout = false,
+    this.habitListStyle = HabitListStyle.todayGrid,
   });
 
   /// Create settings from a JSON map
@@ -64,6 +69,12 @@ class HabitListOptionSettings {
       search: json['search'] as String?,
       sortConfig: sortConfig,
       forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
+      habitListStyle: json['habitListStyle'] != null
+          ? HabitListStyle.values.firstWhere(
+              (e) => e.toString() == json['habitListStyle'],
+              orElse: () => HabitListStyle.todayGrid,
+            )
+          : HabitListStyle.todayGrid,
     );
   }
 
@@ -74,6 +85,7 @@ class HabitListOptionSettings {
       'filterByArchived': filterByArchived,
       'search': search, // Always include search, even if null
       'forceOriginalLayout': forceOriginalLayout,
+      'habitListStyle': habitListStyle.toString(),
     };
 
     if (selectedTagIds != null) {

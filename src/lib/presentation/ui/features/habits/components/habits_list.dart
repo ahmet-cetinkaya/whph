@@ -1,27 +1,29 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
+import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
+import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
-import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
-import 'package:acore/acore.dart' hide Container;
 
 class HabitsList extends StatefulWidget {
   final int pageSize;
-  final bool mini;
+  final HabitListStyle style;
   final int dateRange;
   final List<String>? filterByTags;
   final bool filterNoTags;
@@ -43,7 +45,7 @@ class HabitsList extends StatefulWidget {
   const HabitsList({
     super.key,
     this.pageSize = 10,
-    this.mini = false,
+    this.style = HabitListStyle.todayGrid,
     this.dateRange = 7,
     this.filterByTags,
     this.filterNoTags = false,
@@ -138,7 +140,7 @@ class HabitsListState extends State<HabitsList> {
   }
 
   FilterContext _captureCurrentFilters() => FilterContext(
-        mini: widget.mini,
+        style: widget.style,
         dateRange: widget.dateRange,
         filterByTags: widget.filterByTags,
         filterNoTags: widget.filterNoTags,
@@ -150,7 +152,7 @@ class HabitsListState extends State<HabitsList> {
 
   bool _isFilterChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
     final oldMap = {
-      'mini': oldFilters.mini,
+      'style': oldFilters.style,
       'dateRange': oldFilters.dateRange,
       'filterNoTags': oldFilters.filterNoTags,
       'filterByTags': oldFilters.filterByTags,
@@ -160,7 +162,7 @@ class HabitsListState extends State<HabitsList> {
     };
 
     final newMap = {
-      'mini': newFilters.mini,
+      'style': newFilters.style,
       'dateRange': newFilters.dateRange,
       'filterNoTags': newFilters.filterNoTags,
       'filterByTags': newFilters.filterByTags,
@@ -225,7 +227,7 @@ class HabitsListState extends State<HabitsList> {
           pageSize: isRefresh && (_habitList?.items.length ?? 0) > widget.pageSize
               ? _habitList?.items.length ?? widget.pageSize
               : widget.pageSize,
-          excludeCompleted: _currentFilters.mini,
+          excludeCompleted: _currentFilters.style != HabitListStyle.calendar,
           filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
           filterByArchived: _currentFilters.filterByArchived,
@@ -282,10 +284,10 @@ class HabitsListState extends State<HabitsList> {
       );
     }
 
-    return widget.mini ? _buildMiniCardList() : _buildColumnList();
+    return widget.style == HabitListStyle.todayGrid ? _buildGridList() : _buildColumnList();
   }
 
-  Widget _buildMiniCardList() {
+  Widget _buildGridList() {
     if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
       // Use ReorderableListView for drag-and-drop in mini layout
       return ReorderableListView(
@@ -307,7 +309,7 @@ class HabitsListState extends State<HabitsList> {
               padding: const EdgeInsets.all(AppTheme.size4XSmall),
               child: HabitCard(
                 habit: habit,
-                isMiniLayout: true,
+                style: widget.style,
                 dateRange: widget.dateRange,
                 onOpenDetails: () => widget.onClickHabit(habit),
                 isDense: true,
@@ -339,7 +341,7 @@ class HabitsListState extends State<HabitsList> {
           maxCrossAxisExtent: 300.0,
           crossAxisSpacing: AppTheme.size3XSmall,
           mainAxisSpacing: AppTheme.size3XSmall,
-          mainAxisExtent: 40.0,
+          mainAxisExtent: 42,
         ),
         itemCount: totalItemCount,
         itemBuilder: (context, index) {
@@ -362,7 +364,7 @@ class HabitsListState extends State<HabitsList> {
               child: HabitCard(
                 key: ValueKey(habit.id),
                 habit: habit,
-                isMiniLayout: true,
+                style: widget.style,
                 dateRange: widget.dateRange,
                 onOpenDetails: () => widget.onClickHabit(habit),
                 isDense: true,
@@ -384,7 +386,7 @@ class HabitsListState extends State<HabitsList> {
         child: HabitCard(
           habit: habit,
           onOpenDetails: () => widget.onClickHabit(habit),
-          isMiniLayout: false,
+          style: widget.style,
           dateRange: widget.dateRange,
           isDateLabelShowing: false,
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
@@ -600,7 +602,7 @@ class HabitsListState extends State<HabitsList> {
 }
 
 class FilterContext {
-  final bool mini;
+  final HabitListStyle style;
   final int dateRange;
   final List<String>? filterByTags;
   final bool filterNoTags;
@@ -610,7 +612,7 @@ class FilterContext {
   final DateTime? excludeCompletedForDate;
 
   FilterContext({
-    required this.mini,
+    required this.style,
     required this.dateRange,
     required this.filterByTags,
     required this.filterNoTags,
