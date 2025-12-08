@@ -129,6 +129,7 @@ class _StartupSettingsState extends State<StartupSettings> {
                       activeColor: theme.colorScheme.primary,
                     ),
           onTap: () => _toggleStartupSetting(!_isEnabled),
+          isActive: true,
         );
       },
     );

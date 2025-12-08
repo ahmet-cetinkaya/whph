@@ -26,6 +26,7 @@ class AboutTile extends StatelessWidget {
       icon: Icons.info,
       title: _translationService.translate(SettingsTranslationKeys.aboutTitle),
       onTap: () => _showAboutModal(context),
+      isActive: true,
     );
   }
 }

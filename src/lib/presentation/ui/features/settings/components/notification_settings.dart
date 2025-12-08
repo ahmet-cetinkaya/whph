@@ -113,6 +113,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
                   activeColor: theme.colorScheme.primary,
                 ),
           onTap: () => _isLoading || _isUpdating ? null : _toggleNotifications(!_isEnabled),
+          isActive: true,
         );
       },
     );

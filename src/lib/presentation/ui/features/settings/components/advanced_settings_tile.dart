@@ -32,6 +32,7 @@ class AdvancedSettingsTile extends StatelessWidget {
           title: translationService.translate(SettingsTranslationKeys.advancedSettingsTitle),
           subtitle: translationService.translate(SettingsTranslationKeys.advancedSettingsDescription),
           onTap: () => _showAdvancedSettings(context),
+          isActive: true,
         );
       },
     );

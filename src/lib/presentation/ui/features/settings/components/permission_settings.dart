@@ -30,6 +30,7 @@ class PermissionSettings extends StatelessWidget {
       icon: Icons.security,
       title: _translationService.translate(SettingsTranslationKeys.permissionsTitle),
       onTap: () => _showPermissionsModal(context),
+      isActive: true,
     );
   }
 }

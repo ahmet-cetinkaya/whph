@@ -41,6 +41,7 @@ class ImportExportSettings extends StatelessWidget {
           icon: Icons.import_export,
           title: translationService.translate(SettingsTranslationKeys.importExportTitle),
           onTap: () => _showImportExportDialog(context),
+          isActive: true,
         );
       },
     );

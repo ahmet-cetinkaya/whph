@@ -172,6 +172,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
             )
           : null,
       onTap: _isLoading ? () {} : _showThemeModal,
+      isActive: true,
     );
   }
 }

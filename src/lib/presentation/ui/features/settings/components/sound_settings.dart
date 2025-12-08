@@ -281,6 +281,7 @@ class _SoundSettingsState extends State<SoundSettings> {
                 )
               : null,
           onTap: _isLoading ? () {} : _showSoundModal,
+          isActive: true,
         );
       },
     );

@@ -31,6 +31,7 @@ class LanguageSettings extends StatelessWidget {
       title: _translationService.translate(SettingsTranslationKeys.languageTitle),
       subtitle: currentLanguageCode,
       onTap: () => _showLanguageDialog(context),
+      isActive: true,
     );
   }
 }
