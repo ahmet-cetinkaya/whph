@@ -184,7 +184,6 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
               color: _isCompleted ? primaryColor : Colors.transparent,
             ),
           ),
-
           Material(
             color: Colors.transparent,
             child: InkResponse(
@@ -214,7 +213,6 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
               ),
             ),
           ),
-
           if (_isCompleted)
             IgnorePointer(
               child: Center(

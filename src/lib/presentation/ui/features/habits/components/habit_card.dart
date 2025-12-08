@@ -244,7 +244,7 @@ class _HabitCardState extends State<HabitCard> {
         ),
         onTap: widget.onOpenDetails,
         dense: widget.isDense,
-        leading: isTodayList ? _buildCheckbox(context) : _buildLeading(isCompactView),
+        leading: isTodayList ? _buildCheckbox(context) : null,
         title: (isTodayList || widget.style == HabitListStyle.todayGrid) ? _buildTitleAndMetadata() : _buildTitle(),
         subtitle: (isTodayList || widget.style == HabitListStyle.todayGrid) ? null : _buildSubtitle(),
         trailing: isTodayList ? _buildTrailingForList() : _buildTrailing(isCompactView),
@@ -265,20 +265,6 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     return null;
-  }
-
-  // Helper method to build the leading widget (habit icon)
-  Widget? _buildLeading(bool isCompactView) {
-    if (widget.style == HabitListStyle.todayGrid) return null;
-
-    return Icon(
-      HabitUiConstants.habitIcon,
-      size: widget.isDense
-          ? AppTheme.iconSizeSmall
-          : isCompactView
-              ? AppTheme.iconSizeSmall // Smaller icon in compact view (16.0 instead of 20.0)
-              : AppTheme.fontSizeXLarge,
-    );
   }
 
   Widget _buildTitleAndMetadata() {
@@ -322,7 +308,9 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildTitle() {
     return Text(
       widget.habit.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.habit.name,
-      style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
+      style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+        fontWeight: FontWeight.bold,
+      ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );

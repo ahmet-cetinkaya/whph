@@ -41,14 +41,11 @@ class _NoteCardState extends State<NoteCard> {
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
       onTap: widget.onOpenDetails,
-      leading: Icon(
-        NoteUiConstants.noteIcon,
-        size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-      ),
       title: Text(
         widget.note.title.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.note.title,
-        style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
+        style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+          fontWeight: FontWeight.bold,
+        ),
         overflow: TextOverflow.ellipsis,
         maxLines: widget.isDense ? 1 : 2,
       ),
