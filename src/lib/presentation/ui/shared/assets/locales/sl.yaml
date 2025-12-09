@@ -195,6 +195,7 @@ shared:
   messages:
     confirm_delete: Ali ste prepričani, da želite izbrisati ta element?
     no_items_found: Ni elementov
+    loading: Nalaganje...
   nav:
     items:
       app_usages: Uporaba aplikacij
@@ -244,6 +245,7 @@ shared:
     remove_criteria: Odstrani kriterij
     reset_to_default: Ponastavi na privzeto
     sort: Razvrsti
+    criteria: Kriteriji razvrščanja
   statistics:
     daily_usage:
       description: Prikazuje skupni čas uporabe na dan v tednu
@@ -251,6 +253,13 @@ shared:
     hourly_usage:
       description: Prikazuje skupni čas uporabe na uro v dnevu
       title: Urna uporaba
+    total_usage_label: Skupna uporaba
+    average_daily_label: Povprečno dnevno
+    peak_hour_label: Vrh ure
+    select_date_range_message: Izberite datumski razpon za filtriranje statistik
+    select_date_range_description:
+      Izberite datumski razpon po meri za ogled statistik
+      uporabe
   time:
     not_set: Ni nastavljeno
     minutes: minute

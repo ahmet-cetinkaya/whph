@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 import 'package:whph/core/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
@@ -25,8 +25,9 @@ import 'package:whph/presentation/ui/features/sync/components/firewall_permissio
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
-import 'package:whph/presentation/ui/features/sync/components/manual_connection_dialog.dart';
+
 import 'package:whph/presentation/ui/features/sync/utils/sync_error_handler.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class SyncDevicesPage extends StatefulWidget {
   static const route = '/sync-devices';
@@ -705,8 +706,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    // Use a standard Scaffold instead of ResponsiveScaffoldLayout
-    // This makes the page more compatible when displayed in dialogs/bottom sheets
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -718,21 +717,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
               padding: const EdgeInsets.only(right: 8.0),
               child: _buildSyncStatusIndicator(),
             ),
-          ] else if (_isServerMode) ...[
-            // Debug: Show when server mode is active but sync is not active
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(
-                Icons.wifi_tethering,
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
-                size: 20,
-              ),
-            ),
           ],
 
           // Sync button - behavior depends on mode
-          // Client mode: clickable sync button with animation during sync
-          // Server mode: non-clickable icon that only shows animation during actual sync activity
           if (!_isServerMode && (list?.items.isNotEmpty ?? false))
             IconButton(
               onPressed: _currentSyncStatus.isSyncing ? null : _sync,
@@ -806,11 +793,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
             onMenuItemSelected: (value) {
               switch (value) {
                 case 'toggle_server':
-                  // Toggle server mode
                   _toggleServerMode();
                   break;
                 case 'toggle_client':
-                  // Toggle desktop sync mode
                   _toggleDesktopSyncMode();
                   break;
               }
@@ -818,38 +803,103 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           ),
         ],
       ),
-      body: Column(
-        children: [
+      body: CustomScrollView(
+        slivers: [
           // Firewall permission card (desktop only)
-          FirewallPermissionCard(
-            onPermissionChanged: _onFirewallPermissionChanged,
+          SliverToBoxAdapter(
+            child: FirewallPermissionCard(
+              onPermissionChanged: _onFirewallPermissionChanged,
+            ),
           ),
 
-          // Device list content
-          Expanded(
-            child: list == null || list!.items.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: IconOverlay(
-                      icon: Icons.devices_other,
-                      message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
-                    ),
-                  )
-                : ListView.separated(
-                    itemCount: list!.items.length,
-                    padding: EdgeInsets.all(AppTheme.sizeSmall),
-                    itemBuilder: (context, index) {
-                      return SyncDeviceListItemWidget(
+          // Server Mode Toggle (Android only)
+          if (Platform.isAndroid)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppTheme.sizeLarge,
+                  AppTheme.sizeLarge,
+                  AppTheme.sizeLarge,
+                  0,
+                ),
+                child: _buildServerModeToggle(),
+              ),
+            ),
+
+          // Device List
+          if (list == null || list!.items.isEmpty)
+            SliverFillRemaining(
+              child: _buildEmptyState(),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.all(AppTheme.sizeLarge),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                      child: SyncDeviceListItemWidget(
                         key: ValueKey(list!.items[index].id),
                         item: list!.items[index],
                         onRemove: _removeDevice,
                         isBeingSynced:
                             _currentSyncStatus.isSyncing && _currentSyncStatus.currentDeviceId == list!.items[index].id,
-                      );
-                    },
-                    separatorBuilder: (context, index) => const SizedBox(height: AppTheme.sizeSmall),
-                  ),
+                      ),
+                    );
+                  },
+                  childCount: list!.items.length,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServerModeToggle() {
+    return Card(
+      elevation: 0,
+      color: AppTheme.surface1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+      child: SwitchListTile.adaptive(
+        value: _isServerMode,
+        onChanged: (_) => _toggleServerMode(),
+        title: Text(
+          _translationService.translate(SyncTranslationKeys.serverModeTitle),
+          style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          _isServerMode
+              ? _translationService.translate(SyncTranslationKeys.serverModeActive)
+              : _translationService.translate(SyncTranslationKeys.serverModeInactive),
+          style: AppTheme.bodySmall,
+        ),
+        secondary: StyledIcon(
+          _isServerMode ? Icons.wifi_tethering : Icons.wifi_tethering_off,
+          isActive: _isServerMode,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconOverlay(
+            icon: Icons.devices_other,
+            message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
           ),
+          if (!_isServerMode) ...[
+            const SizedBox(height: AppTheme.sizeLarge),
+            ElevatedButton.icon(
+              onPressed: _showAddDevicePage,
+              icon: const Icon(Icons.add),
+              label: Text(_translationService.translate(SyncTranslationKeys.addDeviceTooltip)),
+            ),
+          ],
         ],
       ),
     );
@@ -882,7 +932,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         });
 
         if (mounted) {
-          OverlayNotificationHelper.showInfo(
+          OverlayNotificationHelper.showSuccess(
             context: context,
             message: _translationService.translate(SyncTranslationKeys.desktopClientModeStopped),
             duration: const Duration(seconds: 3),
@@ -916,52 +966,13 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
           Logger.warning('Could not load saved server settings: $e');
         }
 
-        // If no saved server settings, show manual connection dialog to configure server
+        // If no saved server settings, we still switch to client mode
+        // The user can configure the server connection later or via auto-discovery
         if (serverAddress == null || serverAddress.isEmpty) {
-          if (mounted) {
-            OverlayNotificationHelper.hideNotification();
-
-            // Show manual connection dialog instead of just an error
-            final shouldConnect = await _showManualConnectionDialog();
-            if (!shouldConnect) {
-              if (mounted) {
-                OverlayNotificationHelper.showInfo(
-                  context: context,
-                  message: _translationService.translate(SyncTranslationKeys.cancel), // Use existing translation
-                  duration: const Duration(seconds: 3),
-                );
-              }
-              return;
-            }
-
-            // If connection was successful, get the newly saved settings
-            try {
-              final addressSetting = await _settingRepository.getByKey(_desktopServerAddressSettingKey);
-              final portSetting = await _settingRepository.getByKey(_desktopServerPortSettingKey);
-
-              if (addressSetting != null && portSetting != null) {
-                serverAddress = addressSetting.value;
-                serverPort = int.tryParse(portSetting.value) ?? 44040;
-              } else {
-                if (mounted) {
-                  OverlayNotificationHelper.showError(
-                    context: context,
-                    message: _translationService.translate(SyncTranslationKeys.noServerConfiguredError),
-                    duration: const Duration(seconds: 5),
-                  );
-                }
-                return;
-              }
-            } catch (e) {
-              Logger.error('Failed to load server settings after configuration: $e');
-              return;
-            }
-          } else {
-            return;
-          }
+          Logger.info('No saved server settings found - proceeding to client mode anyway');
         }
 
-        await _desktopSyncService!.switchToClientMode(serverAddress, serverPort);
+        await _desktopSyncService!.switchToMode(DesktopSyncMode.client);
 
         // Save client mode preference
         await _saveDesktopSyncModePreference(DesktopSyncMode.client,
@@ -973,7 +984,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         });
 
         if (mounted) {
-          OverlayNotificationHelper.hideNotification();
           OverlayNotificationHelper.showSuccess(
             context: context,
             message: _translationService.translate(SyncTranslationKeys.desktopClientModeStarted),
@@ -982,14 +992,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         }
       }
     } catch (e) {
-      Logger.error('Failed to toggle desktop sync mode: $e');
-
-      // Hide loading and show error
+      Logger.error('Error toggling desktop sync mode: $e');
       if (mounted) {
-        OverlayNotificationHelper.hideNotification();
         OverlayNotificationHelper.showError(
           context: context,
-          message: 'Failed to switch sync mode: $e',
+          message: _translationService.translate(SyncTranslationKeys.desktopSyncModeToggleError),
           duration: const Duration(seconds: 5),
         );
       }
@@ -1035,41 +1042,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     } catch (e) {
       Logger.error('Failed to load desktop sync mode preference: $e');
     }
-  }
-
-  /// Show manual connection dialog for configuring desktop client mode
-  Future<bool> _showManualConnectionDialog() async {
-    final result = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => ManualConnectionDialog(
-        onConnect: (deviceInfo) async {
-          // Save the connection details to settings for desktop client mode
-          try {
-            await _mediator.send(SaveSettingCommand(
-              key: _desktopServerAddressSettingKey,
-              value: deviceInfo.ipAddress,
-              valueType: SettingValueType.string,
-            ));
-
-            await _mediator.send(SaveSettingCommand(
-              key: _desktopServerPortSettingKey,
-              value: deviceInfo.port.toString(),
-              valueType: SettingValueType.int,
-            ));
-
-            Logger.info('✅ Saved server connection details: ${deviceInfo.ipAddress}:${deviceInfo.port}');
-          } catch (e) {
-            Logger.error('Failed to save connection details: $e');
-          }
-        },
-        onCancel: () {
-          Logger.info('Manual connection dialog cancelled');
-        },
-      ),
-    );
-
-    return result == true;
   }
 
   /// Save desktop sync mode preference to settings
@@ -1131,6 +1103,9 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
       duration: const Duration(seconds: 1),
       vsync: this,
     );
+    if (widget.isBeingSynced) {
+      _rotationController.repeat();
+    }
   }
 
   @override
@@ -1150,181 +1125,131 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
     super.dispose();
   }
 
-  String _getFirstDeviceName() {
-    // Extract first device name from the existing name format
+  String _getDeviceName() {
     if (widget.item.name != null) {
       final name = widget.item.name!;
-      // Handle all formats: "A - B", "A ↔ B", and "A > B"
-      if (name.contains(' - ')) {
-        final parts = name.split(' - ');
-        return parts.isNotEmpty ? parts[0].trim() : _translationService.translate(SyncTranslationKeys.unnamedDevice);
-      } else if (name.contains(' ↔ ')) {
-        final parts = name.split(' ↔ ');
-        return parts.isNotEmpty ? parts[0].trim() : _translationService.translate(SyncTranslationKeys.unnamedDevice);
-      } else if (name.contains(' > ')) {
-        final parts = name.split(' > ');
-        return parts.isNotEmpty ? parts[0].trim() : _translationService.translate(SyncTranslationKeys.unnamedDevice);
+      // Try to extract the partner name if it's in "Local ↔ Remote" format
+      if (name.contains(' ↔ ')) {
+        // We usually want to show the OTHER device's name
+        // But we don't know which one is "other" without context.
+        // Assuming the format is "Remote ↔ Local" or similar.
+        // For now, let's just return the full name but formatted nicely
+        return name.replaceAll(' ↔ ', ' ⇌ ');
       }
-      // If no separator found, return the whole name
       return name;
     }
     return _translationService.translate(SyncTranslationKeys.unnamedDevice);
   }
 
-  String _getPartnerDeviceName() {
-    const String unknownDeviceName = '?';
-    // Extract partner device name from the existing name format
-    if (widget.item.name != null) {
-      final name = widget.item.name!;
-      // Handle all formats: "A - B", "A ↔ B", and "A > B"
-      if (name.contains(' - ')) {
-        final parts = name.split(' - ');
-        return parts.length > 1 ? parts[1].trim() : unknownDeviceName;
-      } else if (name.contains(' ↔ ')) {
-        final parts = name.split(' ↔ ');
-        return parts.length > 1 ? parts[1].trim() : unknownDeviceName;
-      } else if (name.contains(' > ')) {
-        final parts = name.split(' > ');
-        return parts.length > 1 ? parts[1].trim() : unknownDeviceName;
-      }
-      // If no separator found, assume it's a single device name
-      return unknownDeviceName;
-    }
-    return unknownDeviceName;
-  }
-
-  Widget _buildDeviceInfoRow() {
-    // Enhanced device info to show connection details
-    final fromIP = widget.item.fromIP;
-    final toIP = widget.item.toIP;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.sync_alt, size: AppTheme.iconSizeSmall, color: Theme.of(context).primaryColor),
-            SizedBox(width: AppTheme.sizeXSmall),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Text(
-                  '$fromIP ↔ $toIP',
-                  style: AppTheme.labelSmall.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        // Show additional connection info if available
-        if (fromIP.contains(',') || toIP.contains(',')) ...[
-          const SizedBox(height: 2),
-          Row(
-            children: [
-              Icon(Icons.network_check,
-                  size: AppTheme.iconSizeXSmall,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
-              SizedBox(width: AppTheme.sizeXSmall),
-              Expanded(
-                child: Text(
-                  'Multi-interface connection',
-                  style: AppTheme.labelXSmall.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isSyncing = widget.isBeingSynced;
+
     return Card(
-      child: Stack(
-        children: [
-          ListTile(
-            title: RichText(
-              text: TextSpan(
-                style: Theme.of(context).textTheme.titleMedium,
-                children: [
-                  TextSpan(text: _getFirstDeviceName()),
-                  TextSpan(
-                    text: ' - ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(text: _getPartnerDeviceName()),
-                ],
+      elevation: 0,
+      color: AppTheme.surface1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+      margin: EdgeInsets.zero,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+        onTap: () {
+          // Future: Show details
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.sizeMedium),
+          child: Row(
+            children: [
+              // Device Icon
+              StyledIcon(
+                Icons.devices, // Default icon since platform is not available in SyncDeviceListItem
+                isActive: isSyncing,
               ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Unified device info display
-                _buildDeviceInfoRow(),
-                SizedBox(height: AppTheme.sizeXSmall),
-                Row(
+
+              const SizedBox(width: AppTheme.sizeMedium),
+
+              // Device Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.access_time,
-                      size: AppTheme.iconSizeSmall,
-                      color: Theme.of(context).colorScheme.primary,
+                    Text(
+                      _getDeviceName(),
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(width: AppTheme.sizeXSmall),
-                    Expanded(
-                      child: Text(
-                        widget.item.lastSyncDate != null
-                            ? DateTimeHelper.formatDateTimeMedium(widget.item.lastSyncDate,
-                                locale: Localizations.localeOf(context))
-                            : '-',
-                        style: AppTheme.labelSmall.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.wifi,
+                          size: 12,
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
-                      ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            '${widget.item.fromIP} ↔ ${widget.item.toIP}',
+                            style: AppTheme.bodySmall.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontFamily: 'monospace',
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 12,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.item.lastSyncDate != null
+                              ? DateTimeHelper.formatDateTimeMedium(widget.item.lastSyncDate,
+                                  locale: Localizations.localeOf(context))
+                              : _translationService.translate(SyncTranslationKeys.neverSynced),
+                          style: AppTheme.bodySmall.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () => widget.onRemove(widget.item.id),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          // Animated sync icon overlay in top-right corner
-          if (widget.isBeingSynced)
-            Positioned(
-              top: 8,
-              right: 8,
-              child: AnimatedBuilder(
-                animation: _rotationController,
-                builder: (context, child) {
-                  return Transform.rotate(
-                    angle: _rotationController.value * 2 * 3.14159,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerLowest,
-                        shape: BoxShape.circle,
-                      ),
+              ),
+
+              const SizedBox(width: AppTheme.sizeSmall),
+
+              // Actions
+              if (isSyncing)
+                AnimatedBuilder(
+                  animation: _rotationController,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: _rotationController.value * 2 * 3.14159,
                       child: Icon(
                         Icons.sync,
-                        size: AppTheme.iconSizeSmall,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: theme.colorScheme.primary,
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
-        ],
+                    );
+                  },
+                )
+              else
+                IconButton(
+                  icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
+                  onPressed: () => widget.onRemove(widget.item.id),
+                  tooltip: _translationService.translate(SyncTranslationKeys.removeDevice),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

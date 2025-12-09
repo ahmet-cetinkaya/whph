@@ -114,15 +114,15 @@ habits:
     toggling_archive: 보관 상태 전환에 실패했습니다
   goals:
     current_goal: 목표
-    days_unit: 일
+    days_unit: 이 기간의 일수
     description: 매일이 아닌 특정 빈도로 습관을 실천하고 싶으신가요? 사용자 정의 목표를 설정하세요.
     enable: 사용자 정의 목표 활성화
     goal: 사용자 정의 목표
     goal_format: "{dayCount}일 동안 {count}회"
-    period_days: 기간 일수
+    period_days: 기간 길이
     settings: 사용자 정의 목표 설정
-    target_frequency: 기간 빈도
-    times_unit: 기간당 횟수
+    target_frequency: 목표 빈도
+    times_unit: 이 기간에 완료할 횟수
   list:
     all_habits_done: 모든 습관이 완료되었습니다!
     no_habits_found: 습관 없음
@@ -225,3 +225,10 @@ habits:
     filter_search:
       title: 필터 및 검색
       description: 태그, 검색어 또는 보관 상태로 특정 습관을 찾으세요. 습관을 효율적으로 정리하고 관리하여 중요한 것에 집중하세요.
+  list_options:
+    view_style_tooltip: 보기 스타일 변경
+  accessibility:
+    details_hint: 습관 세부정보 보기
+    open_details_hint: 습관 세부정보 열기
+    complete_habit_hint: 습관 완료
+    completion_status_hint: 습관 완료 상태

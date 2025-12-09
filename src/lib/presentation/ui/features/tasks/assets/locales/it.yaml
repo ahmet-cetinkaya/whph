@@ -19,9 +19,6 @@ tasks:
       tomorrow: Domani
       weekend: Weekend
       next_weekday: Prossimo giorno feriale
-  date_selection:
-    deadline_date_title: Seleziona data di scadenza
-    planned_date_title: Seleziona data pianificata
   delete:
     error: Errore imprevisto durante l'eliminazione dell'attività.
     message: Sei sicuro di voler eliminare questa attività?
@@ -426,6 +423,9 @@ tasks:
     weekly: Settimanale
     yearSuffix: anno/i
     yearly: Annuale
+    weeks_plural: settimane
+    months_plural: mesi
+    years_plural: anni
   reminder:
     atTime: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza
@@ -439,6 +439,8 @@ tasks:
     custom: Personalizzato
     custom_title: Promemoria personalizzato
     before_suffix: prima
+    time: Ora
+    unit: Unità
   task_details: Dettagli attività
   title: Attività
   tooltips:

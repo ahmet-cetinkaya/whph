@@ -19,6 +19,9 @@ class AppUsageFilterSettings {
   /// Selected device names for filtering
   final List<String>? devices;
 
+  /// Flag to indicate if comparison with previous period should be shown
+  final bool showComparison;
+
   /// Default constructor
   AppUsageFilterSettings({
     this.tags,
@@ -27,6 +30,7 @@ class AppUsageFilterSettings {
     this.startDate,
     this.endDate,
     this.devices,
+    this.showComparison = false,
   });
 
   /// Create settings from a JSON map
@@ -65,6 +69,7 @@ class AppUsageFilterSettings {
       startDate: startDate,
       endDate: endDate,
       devices: json['devices'] != null ? List<String>.from(json['devices'] as List<dynamic>) : null,
+      showComparison: json['showComparison'] as bool? ?? false,
     );
   }
 
@@ -93,6 +98,8 @@ class AppUsageFilterSettings {
       json['devices'] = devices;
     }
 
+    json['showComparison'] = showComparison;
+
     return json;
   }
 
@@ -104,6 +111,7 @@ class AppUsageFilterSettings {
     DateTime? startDate,
     DateTime? endDate,
     List<String>? devices,
+    bool? showComparison,
   }) {
     return AppUsageFilterSettings(
       tags: tags ?? this.tags,
@@ -112,6 +120,7 @@ class AppUsageFilterSettings {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       devices: devices ?? this.devices,
+      showComparison: showComparison ?? this.showComparison,
     );
   }
 }

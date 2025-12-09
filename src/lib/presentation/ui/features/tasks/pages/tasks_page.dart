@@ -144,7 +144,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         taskId: taskId,
         hideSidebar: true,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

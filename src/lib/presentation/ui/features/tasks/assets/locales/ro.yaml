@@ -19,9 +19,6 @@ tasks:
       tomorrow: Mâine
       weekend: Weekend
       next_weekday: Următoarea zi lucrătoare
-  date_selection:
-    deadline_date_title: Selectează data limită
-    planned_date_title: Selectează data planificată
   delete:
     error: Eroare neașteptată la ștergerea sarcinii.
     message: Ești sigur că vrei să ștergi această sarcină?
@@ -348,6 +345,9 @@ tasks:
     weekly: Saptămânal
     yearSuffix: an(i)
     yearly: Anual
+    weeks_plural: săptămâni
+    months_plural: luni
+    years_plural: ani
   reminder:
     atTime: La ora programată
     deadlineReminderLabel: Amintire Termen Limită
@@ -361,6 +361,8 @@ tasks:
     custom: Personalizat
     custom_title: Memento personalizat
     before_suffix: înainte
+    time: Timp
+    unit: Unitate
   task_details: Detalii Sarcină
   time_logging:
     add_time: Adaugă Timp

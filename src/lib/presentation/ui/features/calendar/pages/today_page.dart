@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tasks/queries/get_list_tasks_quer
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/ui/features/calendar/components/today_page_list_options.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart.dart';
@@ -35,6 +36,7 @@ import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart'
 import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/features/calendar/constants/calendar_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -81,6 +83,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   static const String _habitFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
   SortConfig<HabitSortFields> _habitSortConfig = HabitDefaults.sorting;
   bool _habitForceOriginalLayout = false;
+  HabitListStyle _habitListStyle = HabitDefaults.defaultListStyle;
 
   // Time chart options state
   static const String _timeChartOptionsSettingKeySuffix = 'TODAY_PAGE';
@@ -218,6 +221,14 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     }
   }
 
+  void _onHabitListStyleChange(HabitListStyle style) {
+    if (mounted) {
+      setState(() {
+        _habitListStyle = style;
+      });
+    }
+  }
+
   void _onHabitLayoutToggleChange(bool forceOriginalLayout) {
     if (mounted) {
       setState(() {
@@ -241,7 +252,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         taskId: taskId,
         hideSidebar: true,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 
@@ -252,7 +263,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       child: HabitDetailsPage(
         habitId: id,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 
@@ -375,37 +386,34 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Habits title and options
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Habits title
-                        Text(
-                          _translationService.translate(CalendarTranslationKeys.habitsTitle),
-                          style: Theme.of(context).textTheme.titleSmall,
+                    SectionHeader(
+                      title: _translationService.translate(CalendarTranslationKeys.habitsTitle),
+                      padding: EdgeInsets.zero,
+                      trailing: Expanded(
+                        child: HabitListOptions(
+                          settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
+                          onSettingsLoaded: _onHabitListOptionSettingsLoaded,
+                          selectedTagIds: _selectedTagFilter,
+                          showNoTagsFilter: _showNoTagsFilter,
+                          sortConfig: _habitSortConfig,
+                          forceOriginalLayout: _habitForceOriginalLayout,
+                          onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
+                            setState(() {
+                              _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                              _showNoTagsFilter = isNoneSelected;
+                            });
+                          },
+                          onSortChange: _onHabitSortConfigChange,
+                          onLayoutToggleChange: _onHabitLayoutToggleChange,
+                          onHabitListStyleChange: _onHabitListStyleChange,
+                          habitListStyle: _habitListStyle,
+                          showViewStyleOption: true,
+                          showOnlyTodayStyles: true,
+                          showTagFilter: false,
+                          showArchiveFilter: false,
+                          showSortButton: true,
                         ),
-                        // Habit filters
-                        Expanded(
-                          child: HabitListOptions(
-                            settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
-                            onSettingsLoaded: _onHabitListOptionSettingsLoaded,
-                            selectedTagIds: _selectedTagFilter,
-                            showNoTagsFilter: _showNoTagsFilter,
-                            sortConfig: _habitSortConfig,
-                            forceOriginalLayout: _habitForceOriginalLayout,
-                            onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
-                              setState(() {
-                                _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                                _showNoTagsFilter = isNoneSelected;
-                              });
-                            },
-                            onSortChange: _onHabitSortConfigChange,
-                            onLayoutToggleChange: _onHabitLayoutToggleChange,
-                            showTagFilter: false,
-                            showArchiveFilter: false,
-                            showSortButton: true,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                     const SizedBox(height: AppTheme.sizeSmall),
 
@@ -414,7 +422,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       HabitsList(
                         key: _habitsListKey,
                         pageSize: 5,
-                        mini: true,
+                        style: _habitListStyle,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                         filterNoTags: _showNoTagsFilter,
                         // Only show habits not completed today
@@ -444,67 +452,59 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Tasks title and options
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Task title
-                        Text(
-                          _translationService.translate(CalendarTranslationKeys.tasksTitle),
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-
-                        // Task filters and add button
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              // Task filters
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
-                                  child: TaskListOptions(
-                                    settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
-                                    onSettingsLoaded: _onTaskListOptionSettingsLoaded,
-                                    onSearchChange: (query) {
-                                      setState(() {
-                                        _taskSearchQuery = query;
-                                      });
-                                    },
-                                    showCompletedTasks: _showCompletedTasks,
-                                    onCompletedTasksToggle: (showCompleted) {
-                                      setState(() {
-                                        _showCompletedTasks = showCompleted;
-                                      });
-                                    },
-                                    showSubTasks: _showSubTasks,
-                                    onSubTasksToggle: (showSubTasks) {
-                                      setState(() {
-                                        _showSubTasks = showSubTasks;
-                                      });
-                                    },
-                                    sortConfig: _taskSortConfig,
-                                    forceOriginalLayout: _taskForceOriginalLayout,
-                                    onSortChange: _onSortConfigChange,
-                                    onLayoutToggleChange: _onTaskLayoutToggleChange,
-                                    hasItems: true,
-                                    showDateFilter: false,
-                                    showTagFilter: false,
-                                    showSubTasksToggle: true,
-                                  ),
+                    SectionHeader(
+                      title: _translationService.translate(CalendarTranslationKeys.tasksTitle),
+                      padding: EdgeInsets.zero,
+                      trailing: Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            // Task filters
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+                                child: TaskListOptions(
+                                  settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                                  onSettingsLoaded: _onTaskListOptionSettingsLoaded,
+                                  onSearchChange: (query) {
+                                    setState(() {
+                                      _taskSearchQuery = query;
+                                    });
+                                  },
+                                  showCompletedTasks: _showCompletedTasks,
+                                  onCompletedTasksToggle: (showCompleted) {
+                                    setState(() {
+                                      _showCompletedTasks = showCompleted;
+                                    });
+                                  },
+                                  showSubTasks: _showSubTasks,
+                                  onSubTasksToggle: (showSubTasks) {
+                                    setState(() {
+                                      _showSubTasks = showSubTasks;
+                                    });
+                                  },
+                                  sortConfig: _taskSortConfig,
+                                  forceOriginalLayout: _taskForceOriginalLayout,
+                                  onSortChange: _onSortConfigChange,
+                                  onLayoutToggleChange: _onTaskLayoutToggleChange,
+                                  hasItems: true,
+                                  showDateFilter: false,
+                                  showTagFilter: false,
+                                  showSubTasksToggle: true,
                                 ),
                               ),
+                            ),
 
-                              // Add button
-                              TaskAddButton(
-                                initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
-                                initialPlannedDate: DateTime.now(),
-                                initialTitle: _taskSearchQuery,
-                                initialCompleted: _showCompletedTasks,
-                              ),
-                            ],
-                          ),
+                            // Add button
+                            TaskAddButton(
+                              initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
+                              initialPlannedDate: DateTime.now(),
+                              initialTitle: _taskSearchQuery,
+                              initialCompleted: _showCompletedTasks,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
 
                     // Tasks list
@@ -547,17 +547,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Times title and options
-                    Row(
-                      children: [
-                        // Times title
-                        Text(
-                          _translationService.translate(TagTranslationKeys.timeDistribution),
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                        const SizedBox(width: AppTheme.sizeSmall),
-
-                        // Time chart filters
-                        TagTimeChartOptions(
+                    SectionHeader(
+                      title: _translationService.translate(TagTranslationKeys.timeDistribution),
+                      padding: EdgeInsets.zero,
+                      trailing: Expanded(
+                        child: TagTimeChartOptions(
                           settingKeyVariantSuffix: _timeChartOptionsSettingKeySuffix,
                           onSettingsLoaded: _onTimeChartOptionsLoaded,
                           selectedCategories: _selectedCategories,
@@ -568,7 +562,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           },
                           showDateFilter: false,
                         ),
-                      ],
+                      ),
                     ),
 
                     // Time chart

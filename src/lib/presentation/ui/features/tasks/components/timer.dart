@@ -485,7 +485,7 @@ class _AppTimerState extends State<AppTimer> {
     if (mounted) {
       await ResponsiveDialogHelper.showResponsiveDialog(
         context: context,
-        size: DialogSize.medium,
+        size: DialogSize.large,
         child: TimerSettingsDialog(
           initialTimerMode: _timerMode,
           initialWorkDuration: _workDuration,
@@ -558,9 +558,7 @@ class _AppTimerState extends State<AppTimer> {
 
     // Calculate responsive sizes with running state multiplier
     final double multiplier = widget.isMiniLayout ? 1.0 : (!_isRunning && !_isAlarmPlaying ? 1.0 : 2.0);
-    final double baseButtonSize = widget.isMiniLayout
-        ? AppTheme.iconSizeSmall
-        : (screenWidth < 600 ? AppTheme.iconSizeLarge : AppTheme.iconSizeXLarge);
+    final double baseButtonSize = widget.isMiniLayout ? AppTheme.iconSizeSmall : AppTheme.iconSizeLarge;
     final double baseSpacing =
         widget.isMiniLayout ? AppTheme.size2XSmall : (screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge);
     final double buttonSize = baseButtonSize * multiplier;
@@ -600,21 +598,25 @@ class _AppTimerState extends State<AppTimer> {
                 ),
               ),
             ),
+
           // Timer Content
           Padding(
-            padding: EdgeInsets.all(spacing),
+            padding: widget.isMiniLayout ? EdgeInsets.zero : const EdgeInsets.all(AppTheme.sizeMedium),
             child: Row(
               mainAxisSize: MainAxisSize.min,
+              spacing: spacing,
               children: [
+                // Settings button
                 if (!_isRunning && !_isAlarmPlaying)
                   IconButton(
-                    iconSize: buttonSize * 0.6,
+                    iconSize: buttonSize,
                     icon: Icon(SharedUiConstants.settingsIcon),
                     onPressed: _showSettingsModal,
                   ),
-                if (!_isRunning && !_isAlarmPlaying) SizedBox(width: spacing),
+
                 // Text area for the timer display
                 AnimatedDefaultTextStyle(
+                  textAlign: TextAlign.center,
                   duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
                   style: widget.isMiniLayout
                       ? AppTheme.bodyMedium
@@ -625,9 +627,10 @@ class _AppTimerState extends State<AppTimer> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(width: spacing),
+
+                // Main action button
                 IconButton(
-                  iconSize: buttonSize * 0.7,
+                  iconSize: buttonSize,
                   icon: Icon(_getButtonIcon()),
                   onPressed: _getButtonAction(),
                 ),

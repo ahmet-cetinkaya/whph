@@ -31,6 +31,7 @@ class SettingKeys {
   static const String tagTimeChartOptionsSettings = 'TAG_TIME_CHART_OPTIONS_SETTINGS';
   static const String todayPageListOptionsSettings = 'TODAY_PAGE_LIST_OPTIONS_SETTINGS';
   static const String appUsagesFilterSettings = 'APP_USAGES_FILTER_SETTINGS';
+  static const String appUsageStatisticsFilterSettings = 'APP_USAGE_STATISTICS_FILTER_SETTINGS';
 
   // App Usage Collection (Only for Android)
   static const String appUsageLastCollectionTimestamp = 'APP_USAGE_LAST_COLLECTION_TIMESTAMP';

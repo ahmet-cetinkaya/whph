@@ -19,9 +19,6 @@ tasks:
       tomorrow: 明天
       weekend: 周末
       next_weekday: 下一个工作日
-  date_selection:
-    deadline_date_title: 选择截止日期
-    planned_date_title: 选择计划日期
   delete:
     error: 删除任务时发生意外错误。
     message: 您确定要删除此任务吗？
@@ -382,6 +379,9 @@ tasks:
     weekly: 每周
     yearSuffix: 年
     yearly: 每年
+    weeks_plural: 周
+    months_plural: 个月
+    years_plural: 年
   reminder:
     atTime: 在预定时间
     deadlineReminderLabel: 截止日期提醒
@@ -395,6 +395,8 @@ tasks:
     custom: 自定义
     custom_title: 自定义提醒
     before_suffix: 前
+    time: 时间
+    unit: 单位
   task_details: 任务详情
   title: 任务
   tooltips:

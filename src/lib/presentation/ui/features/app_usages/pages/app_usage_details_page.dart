@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';
@@ -116,9 +117,10 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
                 const SizedBox(height: 24),
 
                 // App Usage Statistics Section
-                Text(
-                  _translationService.translate(SharedTranslationKeys.statisticsLabel),
-                  style: Theme.of(context).textTheme.titleLarge,
+                SectionHeader(
+                  title: _translationService.translate(SharedTranslationKeys.statisticsLabel),
+                  padding: EdgeInsets.zero,
+                  titleStyle: AppTheme.bodyLarge,
                 ),
                 const SizedBox(height: 16),
 

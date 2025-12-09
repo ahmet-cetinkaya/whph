@@ -115,15 +115,15 @@ habits:
     toggling_archive: Mislykkedes at skifte arkivstatus
   goals:
     current_goal: Mål
-    days_unit: dage
+    days_unit: Dage i denne periode
     description: Vil du øve vanen med en specifik frekvens frem for hver dag? Så indstil et brugerdefineret mål.
     enable: Aktivér brugerdefinerede mål
     goal: Brugerdefineret mål
     goal_format: "{count} gange i {dayCount} dage"
-    period_days: Periode dage
+    period_days: Periode varighed
     settings: Indstillinger for brugerdefineret mål
-    target_frequency: Periode frekvens
-    times_unit: gange pr. periode
+    target_frequency: Mål frekvens
+    times_unit: Gange at gennemføre i denne periode
   list:
     all_habits_done: Alle vaner fuldført!
     no_habits_found: Ingen vaner
@@ -244,3 +244,10 @@ habits:
     filter_search:
       title: Filter & søg
       description: Find specifikke vaner ved hjælp af tags, søgeord eller filtrér efter arkiveringsstatus. Organisér og håndtér dine vaner effektivt for at forblive fokuseret på det, der betyder noget.
+  list_options:
+    view_style_tooltip: Skift visningstil
+  accessibility:
+    details_hint: Se vanedets detaljer
+    open_details_hint: Åbn vanedetaljer
+    complete_habit_hint: Fuldfør vane
+    completion_status_hint: Fuldførelsesstatus for vane

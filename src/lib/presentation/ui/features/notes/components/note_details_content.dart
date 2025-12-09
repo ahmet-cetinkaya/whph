@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
+import 'package:acore/acore.dart' show MarkdownEditor;
 import 'package:whph/core/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/remove_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
@@ -363,6 +363,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppTheme.size2XSmall,
         children: [
           // Note Title (always visible)
           TextFormField(
@@ -377,7 +378,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             ),
             style: theme.textTheme.bodyLarge,
           ),
-          const SizedBox(height: AppTheme.size2XSmall),
 
           // Optional fields (Tags)
           if (_isFieldVisible(keyTags)) ...[
@@ -385,12 +385,10 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
               rowData: [_buildTagsSection()],
               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
-            const SizedBox(height: AppTheme.size2XSmall),
           ],
 
           // Optional field chips at the bottom
           if (availableChipFields.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.sizeSmall),
             Wrap(
               spacing: 4,
               runSpacing: 2,
@@ -399,16 +397,14 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             const SizedBox(height: AppTheme.size2XSmall),
           ],
 
-          // Divider
-          Divider(thickness: 1, color: theme.dividerColor),
-
           // Note Content (always visible)
-          const SizedBox(height: AppTheme.size2XSmall),
-          MarkdownEditor(
+          MarkdownEditor.simple(
             controller: _contentController,
             onChanged: _onContentChanged,
             style: theme.textTheme.bodyMedium,
             height: 400,
+            hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
+            translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
           ),
         ],
       ),

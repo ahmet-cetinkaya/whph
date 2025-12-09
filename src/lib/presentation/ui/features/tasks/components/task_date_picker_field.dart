@@ -150,9 +150,9 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
       // Determine title based on the reminder label prefix
       String titleText;
       if (widget.reminderLabelPrefix.contains('planned')) {
-        titleText = widget.translationService.translate(TaskTranslationKeys.selectPlannedDateTitle);
+        titleText = widget.translationService.translate(TaskTranslationKeys.plannedDateLabel);
       } else if (widget.reminderLabelPrefix.contains('deadline')) {
-        titleText = widget.translationService.translate(TaskTranslationKeys.selectDeadlineDateTitle);
+        titleText = widget.translationService.translate(TaskTranslationKeys.deadlineDateLabel);
       } else {
         titleText = widget.hintText.isNotEmpty ? widget.hintText : 'Select Date';
       }

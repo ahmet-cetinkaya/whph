@@ -64,6 +64,7 @@ settings:
     sounds_disabled: Lyde deaktiveret
     all_sounds_enabled: Alle lyde aktiveret
     some_sounds_enabled: Nogle lyde aktiveret
+    settings: Lydindstillinger
   permissions:
     app_usage:
       description:
@@ -369,3 +370,10 @@ settings:
       load_error: Fejl ved indlæsning af standard estimeret tid
       save_error: Fejl ved gemning af standard estimeret tid
       key_not_found: Standard estimeret tid nøgle ikke fundet
+  section:
+    general: Generelt
+    appearance: Udseende
+    notifications: Notifikationer
+    data_sync: Data og synkronisering
+    advanced: Avanceret
+    about: Om

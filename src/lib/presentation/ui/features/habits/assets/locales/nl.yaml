@@ -115,17 +115,17 @@ habits:
     toggling_archive: Schakelen archief status mislukt
   goals:
     current_goal: Doel
-    days_unit: dagen
+    days_unit: Dagen in deze periode
     description: |
       Wil je de gewoonte oefenen met een specifieke frequentie in plaats van
       elke dag? Stel dan een aangepast doel in.
     enable: Inschakelen Aangepaste Doelen
     goal: Aangepast Doel
     goal_format: "{count} keer in {dayCount} dagen"
-    period_days: Periode Dagen
+    period_days: Periode Duur
     settings: Aangepast Doel Instellingen
-    target_frequency: Frequentie Periode
-    times_unit: keer per periode
+    target_frequency: Doel Frequentie
+    times_unit: Keren om te voltooien in deze periode
   list:
     all_habits_done: Alle gewoontes voltooid!
     no_habits_found: Geen gewoontes
@@ -246,3 +246,10 @@ habits:
     filter_search:
       title: Filteren & Zoeken
       description: Vind specifieke gewoontes met tags, zoektermen of filter op gearchiveerde status. Organiseer en beheer je gewoontes efficiënt om gefocust te blijven op wat er toe doet.
+  list_options:
+    view_style_tooltip: Weergavestijl wijzigen
+  accessibility:
+    details_hint: Gewoontedetails bekijken
+    open_details_hint: Gewoontedetails openen
+    complete_habit_hint: Gewoonte voltooien
+    completion_status_hint: Gewoonte completion status

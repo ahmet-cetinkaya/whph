@@ -19,9 +19,6 @@ tasks:
       tomorrow: Imorgon
       weekend: Helg
       next_weekday: Nästa vardag
-  date_selection:
-    deadline_date_title: Välj förfallodatum
-    planned_date_title: Välj planerat datum
   delete:
     error: Oväntat fel uppstod vid borttagning av uppgift.
     message: Är du säker på att du vill ta bort denna uppgift?
@@ -340,6 +337,9 @@ tasks:
     weekly: Veckovis
     yearSuffix: år
     yearly: Årligen
+    weeks_plural: veckor
+    months_plural: månader
+    years_plural: år
   reminder:
     atTime: Vid schemalagd tid
     deadlineReminderLabel: Deadline Påminnelse
@@ -353,6 +353,8 @@ tasks:
     custom: Anpassad
     custom_title: Anpassad påminnelse
     before_suffix: innan
+    time: Tid
+    unit: Enhet
   task_details: Uppgiftsdetaljer
   time_logging:
     add_time: Lägg Till Tid

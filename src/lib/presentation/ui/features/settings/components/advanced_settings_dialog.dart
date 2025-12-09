@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/settings/components/debug_logs_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/tasks_tile.dart';
+import 'package:whph/presentation/ui/features/settings/components/reset_database_settings.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
-import 'package:whph/presentation/ui/features/settings/components/reset_database_settings.dart';
 
 class AdvancedSettingsDialog extends StatelessWidget {
   const AdvancedSettingsDialog({super.key});
@@ -26,6 +26,7 @@ class AdvancedSettingsDialog extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               translationService.translate(SettingsTranslationKeys.advancedSettingsTitle),
+              style: AppTheme.headlineSmall,
             ),
             elevation: 0,
             actions: const [
@@ -34,26 +35,21 @@ class AdvancedSettingsDialog extends StatelessWidget {
           ),
           body: Container(
             color: theme.scaffoldBackgroundColor,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8.0,
-                  children: [
-                    // Tasks Settings
-                    const TasksTile(),
+            child: ListView(
+              padding: const EdgeInsets.all(AppTheme.sizeLarge),
+              children: const [
+                // Tasks Settings
+                TasksTile(),
+                SizedBox(height: AppTheme.sizeMedium),
 
-                    // Debug Logs Settings
-                    const DebugLogsSettings(),
+                // Debug Logs Settings
+                DebugLogsSettings(),
 
-                    const Divider(),
+                Divider(),
 
-                    // Reset Database
-                    const ResetDatabaseSettings(),
-                  ],
-                ),
-              ),
+                // Reset Database
+                ResetDatabaseSettings(),
+              ],
             ),
           ),
         );

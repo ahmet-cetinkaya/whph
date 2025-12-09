@@ -26,6 +26,7 @@ class SyncDevicesTile extends StatelessWidget {
       icon: Icons.sync,
       title: _translationService.translate(SettingsTranslationKeys.syncDevicesTitle),
       onTap: () => _showSyncDevicesModal(context),
+      isActive: true,
     );
   }
 }

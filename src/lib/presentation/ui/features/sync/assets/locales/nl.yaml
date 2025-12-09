@@ -6,96 +6,172 @@ sync:
       sync_failed: Fout bij synchroniseren van apparaten
     from_label: Van
     help:
-      content: |
-        🔄 **Wat is Sync?**
+      content: '🔄 **Wat is Sync?**
 
-        Sync houdt je gewoonten, taken, notities en data up-to-date op alle apparaten (telefoons, tablets, laptops, desktops) in hetzelfde Wi-Fi-netwerk. Geen cloud of internet — data blijven privé en lokaal.
 
-        Het is eenvoudig te gebruiken: Stel het één keer in, en wijzigingen synchroniseren automatisch of op verzoek. Schakel naadloos tussen apparaten, zoals beginnen op je telefoon en afmaken op je PC.
+        Sync houdt je gewoonten, taken, notities en data up-to-date op alle apparaten
+        (telefoons, tablets, laptops, desktops) in hetzelfde Wi-Fi-netwerk. Geen cloud
+        of internet — data blijven privé en lokaal.
+
+
+        Het is eenvoudig te gebruiken: Stel het één keer in, en wijzigingen synchroniseren
+        automatisch of op verzoek. Schakel naadloos tussen apparaten, zoals beginnen
+        op je telefoon en afmaken op je PC.
+
 
         ## 🔗 **Sync-modi**
 
-        Alle apparaten ondersteunen Client- of Server-modi voor flexibele synchronisatie. Server leidt (deelt data), Clients sluiten aan en wisselen uit. Je hebt minstens één Server nodig.
 
-        - **Client-modus:** Verbindt met een Server om te synchroniseren. Ideaal voor het aansluiten bij groepen via QR of handmatige invoer.
-        - **Server-modus:** Fungeert als hub; toont QR of string voor anderen om aan te sluiten.
+        Alle apparaten ondersteunen Client- of Server-modi voor flexibele synchronisatie.
+        Server leidt (deelt data), Clients sluiten aan en wisselen uit. Je hebt minstens
+        één Server nodig.
+
+
+        - **Client-modus:** Verbindt met een Server om te synchroniseren. Ideaal voor
+        het aansluiten bij groepen via QR of handmatige invoer.
+
+        - **Server-modus:** Fungeert als hub; toont QR of string voor anderen om aan
+        te sluiten.
+
 
         **Platform-opmerkingen:**
-        - **Mobiel:** Schakel via Wi-Fi-hotspot-icoon. Server voor draagbare hubs.
-        - **Desktop (Standaard: Server):** Schakel in Sync-instellingen. Client voor laptops die synchroniseren met hoofd-PC's.
 
-        **Voorbeelden:** Mobiel-naar-mobiel (één Server), desktop-naar-mobiel (beide kanten op), desktop-naar-desktop (één Server, één Client).
+        - **Mobiel:** Schakel via Wi-Fi-hotspot-icoon. Server voor draagbare hubs.
+
+        - **Desktop (Standaard: Server):** Schakel in Sync-instellingen. Client voor
+        laptops die synchroniseren met hoofd-PC''s.
+
+
+        **Voorbeelden:** Mobiel-naar-mobiel (één Server), desktop-naar-mobiel (beide
+        kanten op), desktop-naar-desktop (één Server, één Client).
+
 
         Schakel modi in Sync-instellingen; de app onthoudt je keuze.
 
+
         ## 🛠️ **Sync inschakelen**
+
 
         Apparaten moeten Wi-Fi delen; houd WHPH open.
 
+
         ### **QR-code-setup**
+
         1. Server: Start Server-modus in Sync — QR verschijnt.
+
         2. Client: "Apparaat toevoegen" > Scan QR.
+
         3. Verbindt en synchroniseert automatisch.
+
 
         Ondersteunt alle combinaties.
 
+
         ### **Verbindingsstring**
+
         1. Server: Kopieer string (bijv. "whph://IP:44040?...") uit Sync.
+
         2. Client: "Apparaat toevoegen" > Handmatig > Plak string > Verbind.
+
 
         Geen camera vereist.
 
-        ### **Handmatige invoer**
-        1. Server: Noteer IP/poort (standaard 44040) uit Verbindingsinfo.
-        2. Client: "Apparaat toevoegen" > Handmatig > Voer IP, poort, naam in > Test > Verbind.
 
-        **Desktop-clients:** Schakel eerst naar Client-modus, dan verbinden. Synchroniseert automatisch; schakel terug wanneer je wilt.
+        ### **Handmatige invoer**
+
+        1. Server: Noteer IP/poort (standaard 44040) uit Verbindingsinfo.
+
+        2. Client: "Apparaat toevoegen" > Handmatig > Voer IP, poort, naam in > Test
+        > Verbind.
+
+
+        **Desktop-clients:** Schakel eerst naar Client-modus, dan verbinden. Synchroniseert
+        automatisch; schakel terug wanneer je wilt.
+
 
         Schakel auto-herverbinding in in instellingen voor betrouwbaarheid.
 
+
         ## 📋 **Apparaten beheren**
 
+
         - **Bekijk:** Zie apparaten, sync-tijden, status in Sync-instellingen.
+
         - **Handmatige Sync:** Tik knop per apparaat.
+
         - **Verwijder:** Selecteer en verwijder om synchronisatie te stoppen.
+
 
         ## 🔧 **Probleemoplossing**
 
+
         **Verbindingsproblemen:**
-        1. Zelfde Wi-Fi? Geen VPN's.
+
+        1. Zelfde Wi-Fi? Geen VPN''s.
+
         2. Herstart app.
+
         3. Bevestig Server-modus.
+
         4. Test zonder firewall.
 
+
         **Geen apparaten?**
+
         - Stabiele Wi-Fi, geen proxies.
+
         - Vernieuw scan.
+
         - Gebruik handmatige IP.
 
+
         **Sync mislukt/time-outs:**
+
         1. Handmatige sync.
+
         2. Match app-versies.
+
         3. Wacht op grote data.
+
 
         **Firewall (Poort 44040):**
 
-        Als verbindingen niet werken, blokkeert de firewall van je computer mogelijk het sync-signaal. Open poort 44040 om apparaten lokaal te laten communiceren — het is veilig voor je thuisnetwerk.
+
+        Als verbindingen niet werken, blokkeert de firewall van je computer mogelijk
+        het sync-signaal. Open poort 44040 om apparaten lokaal te laten communiceren
+        — het is veilig voor je thuisnetwerk.
+
 
         **Windows (GUI):**
+
         1. Open Defender Firewall > Geavanceerd > Inkomende regels > Nieuwe regel.
+
         2. Poort > TCP > 44040 > Toestaan > Alle profielen > Naam "WHPH Sync" > Voltooien.
 
+
         **Windows (Admin CMD):**
+
         ```
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
+        localport=44040
+
         ```
+
 
         **Linux (UFW):**
-        ```
-        sudo ufw allow 44040/tcp && sudo ufw reload
+
         ```
 
-        Tips: Herstart router, gebruik privé-netwerken. Her-pair bij "niet gevonden" fouten.
+        sudo ufw allow 44040/tcp && sudo ufw reload
+
+        ```
+
+
+        Tips: Herstart router, gebruik privé-netwerken. Her-pair bij "niet gevonden"
+        fouten.
+
+        '
       title: Hulp bij apparaat-synchronisatie
     last_sync_label: Laatste synchronisatie
     no_devices_found: Geen gesynchroniseerde apparaten
@@ -103,16 +179,24 @@ sync:
     title: Sync-apparaten
     to_label: Naar
     unnamed_device: Naamloos apparaat
+    never_synced: Nooit gesynchroniseerd
+    remove_device: Apparaat verwijderen
   error:
     scan: Scan mislukt
   errors:
-    connection_failed: |
-      Verbinding mislukt. Zorg ervoor:
+    connection_failed: "Verbinding mislukt. Zorg ervoor:
+
 
       1. Beide apparaten zijn op hetzelfde netwerk
+
       2. Beide apps zijn open en draaien
+
       3. Geen firewall blokkeert de verbinding
-    device_mismatch: Sync-fout. Het apparaat dat probeert te synchroniseren is niet correct gepaart met dit apparaat.
+
+      "
+    device_mismatch:
+      Sync-fout. Het apparaat dat probeert te synchroniseren is niet
+      correct gepaart met dit apparaat.
     environment_mismatch: Synchronisatie kan niet doorgaan tussen debug- en productiebuilds.
     device_not_found: Sync-apparaat niet gevonden
     ip_address: Kan lokale IP-adres niet ophalen
@@ -122,24 +206,38 @@ sync:
     scan: Scan mislukt
     sync_failed: Synchronisatie mislukt. Probeer het opnieuw.
     sync_timeout: Sync-timeout
-    version_mismatch: "Versie-mismatch. Lokale versie: {currentVersion}, Remote versie: {remoteVersion}. Update beide apps naar dezelfde versie."
+    version_mismatch:
+      "Versie-mismatch. Lokale versie: {currentVersion}, Remote versie:
+      {remoteVersion}. Update beide apps naar dezelfde versie."
     local_ip_error: Lokale IP-fout
     device_already_paired: Apparaat al gepaart
     no_active_interfaces: Geen actieve netwerkinterfaces
     device_discovery_failed: Apparaatontdekking mislukt
-    no_server_configured: Geen server geconfigureerd. Voeg eerst een sync-apparaat toe of gebruik handmatige verbinding om een serververbinding in te stellen.
-    device_id_unavailable: Apparaat-ID is niet beschikbaar. Kan synchronisatie niet voortzetten.
+    no_server_configured:
+      Geen server geconfigureerd. Voeg eerst een sync-apparaat
+      toe of gebruik handmatige verbinding om een serververbinding in te stellen.
+    device_id_unavailable:
+      Apparaat-ID is niet beschikbaar. Kan synchronisatie niet
+      voortzetten.
     local_ip_unavailable: Lokaal IP-adres is niet beschikbaar. Controleer netwerkverbinding.
-    prerequisites_failed: Validatie van synchronisatie-vereisten mislukt. Controleer uw netwerkinstellingen.
-    critical_sync_operation_failed: Kritieke synchronisatiebewerking mislukt. Probeer het opnieuw.
+    prerequisites_failed:
+      Validatie van synchronisatie-vereisten mislukt. Controleer
+      uw netwerkinstellingen.
+    critical_sync_operation_failed:
+      Kritieke synchronisatiebewerking mislukt. Probeer
+      het opnieuw.
     initiate_outgoing_sync_failed: Starten van synchronisatie met apparaten mislukt.
     processing_incoming_data: Fout bij verwerken van inkomende synchronisatiegegevens.
     checking_local_data: Fout bij controleren van lokale gegevens voor synchronisatie.
     sync_with_device_failed: Synchronisatie met apparaat mislukt.
     sync_with_device_exception: Uitzondering opgetreden tijdens apparaatsynchronisatie.
-    process_accumulated_response_data: Verwerken van opgeklaarde synchronisatie-antwoordgegevens mislukt.
+    process_accumulated_response_data:
+      Verwerken van opgeklaarde synchronisatie-antwoordgegevens
+      mislukt.
     process_response_data: Verwerken van synchronisatie-antwoordgegevens mislukt.
-    some_devices_failed_to_sync: Synchronisatie van sommige apparaten is mislukt. Probeer het opnieuw.
+    some_devices_failed_to_sync:
+      Synchronisatie van sommige apparaten is mislukt.
+      Probeer het opnieuw.
   messages:
     device_already_paired: Dit apparaat is al gepaart
     sync_completed: Synchronisatie succesvol voltooid
@@ -150,9 +248,13 @@ sync:
     close_button: Sluiten
     dialog_title: Scan QR-code om te synchroniseren
     title: QR-code
-    description: Andere apparaten kunnen deze QR-code scannen om te verbinden en te synchroniseren met dit apparaat.
+    description:
+      Andere apparaten kunnen deze QR-code scannen om te verbinden en te
+      synchroniseren met dit apparaat.
     connection_string_title: Verbindingsreeks
-    connection_string_description: Alternatief kunt u deze verbindingsreeks delen om apparaten handmatig te verbinden.
+    connection_string_description:
+      Alternatief kunt u deze verbindingsreeks delen
+      om apparaten handmatig te verbinden.
     connection_string_copied: Verbindingsreeks gekopieerd naar klembord
   scanner:
     title: Scan QR-code
@@ -161,13 +263,17 @@ sync:
     starting: Server-modus starten...
     active: Server-modus actief - Toon QR-code aan andere apparaten
     stopped: Server-modus gestopt - Apparaat is nu in client-modus
-    start_failed: Starten van server-modus mislukt - Controleer of poort 44040 beschikbaar is
+    start_failed:
+      Starten van server-modus mislukt - Controleer of poort 44040 beschikbaar
+      is
     start_tooltip: Start server-modus
     stop_tooltip: Stop server-modus
     error: Fout
     device_became_server: Dit apparaat is nu de sync-server
     start_menu: Server starten
     stop_menu: Server stoppen
+    mode_title: Servermodus
+    mode_inactive: Server inactief
   manual:
     connection: Handmatige verbinding
     ip_address: IP-adres
@@ -190,12 +296,20 @@ sync:
     connection_string_label: Verbindingsreeks
     test_connection: Test verbinding
     enter_server_details: Voer serververbindingdetails handmatig in
-    connection_timeout: Verbindingstimeout. Controleer het serveradres en probeer het opnieuw.
+    connection_timeout:
+      Verbindingstimeout. Controleer het serveradres en probeer
+      het opnieuw.
     connection_test_successful: Verbindingstest succesvol!
-    connection_test_timeout: Verbindingstest timeout. Controleer het serveradres en probeer het opnieuw.
-    connection_test_failed_no_response: Verbindingstest mislukt - geen reactie van server
+    connection_test_timeout:
+      Verbindingstest timeout. Controleer het serveradres en
+      probeer het opnieuw.
+    connection_test_failed_no_response:
+      Verbindingstest mislukt - geen reactie van
+      server
     connection_test_failed_generic: "Verbindingstest mislukt: {0}"
-    connection_string_instruction: Plak hier de verbindingsreeks die is verstrekt door het serverapparaat om handmatig te verbinden.
+    connection_string_instruction:
+      Plak hier de verbindingsreeks die is verstrekt
+      door het serverapparaat om handmatig te verbinden.
   add:
     device: Apparaat toevoegen
     device_tooltip: Nieuw apparaat toevoegen
@@ -210,16 +324,21 @@ sync:
     refresh_scan: Scan vernieuwen
     last_seen: Laatst gezien
     already_added: Al toegevoegd
-
   connect_info:
     dialog_title: Apparaatverbindinginformatie
     menu_title: Verbindingsinfo
     qr_title: QR-code
-    qr_description: Andere apparaten kunnen deze QR-code scannen om te verbinden en te synchroniseren met dit apparaat.
+    qr_description:
+      Andere apparaten kunnen deze QR-code scannen om te verbinden en
+      te synchroniseren met dit apparaat.
     connection_string_title: Verbindingsreeks
-    connection_string_description: Alternatief kunt u deze verbindingsreeks delen om apparaten handmatig te verbinden.
+    connection_string_description:
+      Alternatief kunt u deze verbindingsreeks delen
+      om apparaten handmatig te verbinden.
     connection_string_copied: Verbindingsreeks gekopieerd naar klembord
-    server_details_description: Gebruik deze serverdetails om handmatig te verbinden vanaf een ander apparaat.
+    server_details_description:
+      Gebruik deze serverdetails om handmatig te verbinden
+      vanaf een ander apparaat.
     unknown_ip: Onbekende IP
     error_loading_connection_info: Fout bij laden van verbindingsinfo
     retry: Opnieuw proberen
@@ -227,13 +346,16 @@ sync:
     server_details_title: Serverdetails
     connection_string_title_alt: Verbindingsreeks
     copy: Kopiëren
-
   desktop:
     mode_title: Desktop Sync Modus
     client_mode_start: Verbinden als Client
     client_mode_stop: Schakel naar Server Modus
-    client_mode_description: Verbind met de server van een ander apparaat om gegevens te synchroniseren
-    server_mode_description: Laat andere apparaten verbinden en synchroniseren met dit apparaat
+    client_mode_description:
+      Verbind met de server van een ander apparaat om gegevens
+      te synchroniseren
+    server_mode_description:
+      Laat andere apparaten verbinden en synchroniseren met
+      dit apparaat
     sync_mode_start: Start Client Modus
     sync_mode_stop: Stop Client Modus
     sync_mode_start_menu: Start Client Modus
@@ -241,5 +363,5 @@ sync:
     client_mode_starting: Start client modus...
     client_mode_started: Client modus gestart
     client_mode_stopped: Teruggeschakeld naar server modus
-
+    sync_mode_toggle_error: Kan synchrone modus niet omschakelen
   multi_interface_connection: Multi-interface verbinding

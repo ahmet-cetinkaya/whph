@@ -64,6 +64,7 @@ settings:
     sounds_disabled: Äänet pois käytöstä
     all_sounds_enabled: Kaikki äänet käytössä
     some_sounds_enabled: Osa äänistä käytössä
+    settings: Ääniasetukset
   permissions:
     app_usage:
       description:
@@ -376,3 +377,10 @@ settings:
       load_error: Virhe oletusarvioidun ajan lataamisessa
       save_error: Virhe oletusarvioidun ajan tallentamisessa
       key_not_found: Oletusarvioidun ajan avainta ei löytynyt
+  section:
+    general: Yleinen
+    appearance: Ulkoasu
+    notifications: Ilmoitukset
+    data_sync: Tiedot & synkronointi
+    advanced: Lisäasetukset
+    about: Tietoja

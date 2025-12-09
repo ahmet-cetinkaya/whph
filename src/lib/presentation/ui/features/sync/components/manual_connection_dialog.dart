@@ -7,6 +7,7 @@ import 'package:whph/presentation/ui/features/sync/constants/sync_translation_ke
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
+import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 import 'package:whph/main.dart';
 
 /// Dialog for manual connection to a WHPH server as client
@@ -37,6 +38,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
   final _handshakeService = container.resolve<DeviceHandshakeService>();
 
   late TabController _tabController;
+  int _selectedTabIndex = 0;
 
   bool _isConnecting = false;
   String? _errorMessage;
@@ -45,6 +47,12 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      setState(() {
+        _selectedTabIndex = _tabController.index;
+      });
+    });
   }
 
   @override
@@ -58,57 +66,13 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
 
   @override
   Widget build(BuildContext context) {
-    final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
-
-    return AlertDialog(
-      title: Text(
-        _translationService.translate(SyncTranslationKeys.manualConnection),
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      content: SizedBox(
-        width: 400,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Tab bar
-              TabBar(
-                controller: _tabController,
-                tabs: [
-                  Tab(
-                    icon: const Icon(Icons.link),
-                    text: _translationService.translate(SyncTranslationKeys.connectionStringTab),
-                  ),
-                  Tab(
-                    icon: const Icon(Icons.settings_input_antenna),
-                    text: _translationService.translate(SyncTranslationKeys.manualEntryTab),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: AppTheme.sizeMedium),
-
-              // Tab content - adjust height based on keyboard visibility
-              SizedBox(
-                height: keyboardVisible ? 180 : 250,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildConnectionStringTab(),
-                    _buildManualEntryTab(),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_translationService.translate(SyncTranslationKeys.manualConnection)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             if (_isConnecting) {
-              // Cancel the ongoing connection attempt
               setState(() {
                 _isCancelled = true;
                 _isConnecting = false;
@@ -118,19 +82,58 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
             widget.onCancel?.call();
             Navigator.of(context).pop();
           },
-          child: Text(_translationService.translate(SyncTranslationKeys.cancel)),
         ),
-        ElevatedButton(
-          onPressed: _isConnecting ? null : _attemptConnection,
-          child: _isConnecting
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(_translationService.translate(SyncTranslationKeys.connect)),
-        ),
-      ],
+        actions: [
+          TextButton(
+            onPressed: _isConnecting ? null : _attemptConnection,
+            child: _isConnecting
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(
+                    _translationService.translate(SyncTranslationKeys.connect),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+            child: CustomTabBar(
+              items: [
+                CustomTabItem(
+                  icon: Icons.link,
+                  label: _translationService.translate(SyncTranslationKeys.connectionStringTab),
+                ),
+                CustomTabItem(
+                  icon: Icons.settings_input_antenna,
+                  label: _translationService.translate(SyncTranslationKeys.manualEntryTab),
+                ),
+              ],
+              selectedIndex: _selectedTabIndex,
+              onTap: (index) {
+                setState(() {
+                  _selectedTabIndex = index;
+                  _tabController.animateTo(index);
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildConnectionStringTab(),
+                _buildManualEntryTab(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -197,10 +200,10 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
 
   Widget _buildConnectionStringTab() {
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.sizeMedium),
       child: Form(
         key: _connectionStringFormKey,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
@@ -287,10 +290,10 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
 
   Widget _buildManualEntryTab() {
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.sizeMedium),
       child: Form(
         key: _manualEntryFormKey,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(

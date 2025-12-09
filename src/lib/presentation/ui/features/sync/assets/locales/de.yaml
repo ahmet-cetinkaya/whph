@@ -6,96 +6,171 @@ sync:
       sync_failed: Fehler beim Synchronisieren der Geräte
     from_label: Von
     help:
-      content: |
-        🔄 **Was ist Sync?**
+      content: '🔄 **Was ist Sync?**
 
-        Sync hält Ihre Gewohnheiten, Aufgaben, Notizen und Daten auf dem gleichen Wi-Fi über Geräte (Handys, Tablets, Laptops, Desktops) aktuell. Kein Cloud oder Internet — Daten bleiben privat und lokal.
 
-        Es ist einfach zu bedienen: Richten Sie es einmal ein, und Änderungen synchronisieren automatisch oder auf Abruf. Wechseln Sie nahtlos zwischen Geräten, wie Sie auf dem Handy anfangen und am PC beenden.
+        Sync hält Ihre Gewohnheiten, Aufgaben, Notizen und Daten auf dem gleichen
+        Wi-Fi über Geräte (Handys, Tablets, Laptops, Desktops) aktuell. Kein Cloud
+        oder Internet — Daten bleiben privat und lokal.
+
+
+        Es ist einfach zu bedienen: Richten Sie es einmal ein, und Änderungen synchronisieren
+        automatisch oder auf Abruf. Wechseln Sie nahtlos zwischen Geräten, wie Sie
+        auf dem Handy anfangen und am PC beenden.
+
 
         ## 🔗 **Sync-Modi**
 
-        Alle Geräte unterstützen Client- oder Server-Modi für flexible Synchronisation. Server leitet (teilt Daten), Clients schließen sich an und tauschen aus. Mindestens ein Server erforderlich.
 
-        - **Client-Modus:** Verbinde mit einem Server zum Synchronisieren. Ideal zum Beitreten von Gruppen via QR oder manueller Eingabe.
+        Alle Geräte unterstützen Client- oder Server-Modi für flexible Synchronisation.
+        Server leitet (teilt Daten), Clients schließen sich an und tauschen aus. Mindestens
+        ein Server erforderlich.
+
+
+        - **Client-Modus:** Verbinde mit einem Server zum Synchronisieren. Ideal zum
+        Beitreten von Gruppen via QR oder manueller Eingabe.
+
         - **Server-Modus:** Wirkt als Hub; zeigt QR oder String für andere zum Verbinden.
 
-        **Plattform-Hinweise:**
-        - **Mobile:** Umschalten über Wi-Fi-Hotspot-Symbol. Server für tragbare Hubs.
-        - **Desktop (Standard: Server):** In Sync-Einstellungen wechseln. Client für Laptops, die zu Haupt-PCs synchronisieren.
 
-        **Beispiele:** Mobile-zu-Mobile (ein Server), Desktop-zu-Mobile (in beide Richtungen), Desktop-zu-Desktop (ein Server, ein Client).
+        **Plattform-Hinweise:**
+
+        - **Mobile:** Umschalten über Wi-Fi-Hotspot-Symbol. Server für tragbare Hubs.
+
+        - **Desktop (Standard: Server):** In Sync-Einstellungen wechseln. Client für
+        Laptops, die zu Haupt-PCs synchronisieren.
+
+
+        **Beispiele:** Mobile-zu-Mobile (ein Server), Desktop-zu-Mobile (in beide
+        Richtungen), Desktop-zu-Desktop (ein Server, ein Client).
+
 
         Modi in Sync-Einstellungen wechseln; App merkt sich Ihre Wahl.
 
+
         ## 🛠️ **Sync aktivieren**
+
 
         Geräte müssen Wi-Fi teilen; WHPH offen halten.
 
+
         ### **QR-Code-Einrichtung**
+
         1. Server: Server-Modus in Sync starten — QR erscheint.
+
         2. Client: "Gerät hinzufügen" > QR scannen.
+
         3. Verbinde automatisch und synchronisiere.
+
 
         Unterstützt alle Kombinationen.
 
+
         ### **Verbindungs-String**
+
         1. Server: String kopieren (z.B. "whph://IP:44040?...") aus Sync.
+
         2. Client: "Gerät hinzufügen" > Manuell > String einfügen > Verbinden.
+
 
         Keine Kamera erforderlich.
 
-        ### **Manuelle Eingabe**
-        1. Server: IP/Port (Standard 44040) aus Verbindungsinfo notieren.
-        2. Client: "Gerät hinzufügen" > Manuell > IP, Port, Name eingeben > Testen > Verbinden.
 
-        **Desktop-Clients:** Zuerst zu Client-Modus wechseln, dann verbinden. Automatische Synchronisation; jederzeit zurückwechseln.
+        ### **Manuelle Eingabe**
+
+        1. Server: IP/Port (Standard 44040) aus Verbindungsinfo notieren.
+
+        2. Client: "Gerät hinzufügen" > Manuell > IP, Port, Name eingeben > Testen
+        > Verbinden.
+
+
+        **Desktop-Clients:** Zuerst zu Client-Modus wechseln, dann verbinden. Automatische
+        Synchronisation; jederzeit zurückwechseln.
+
 
         Für Zuverlässigkeit Auto-Reconnect in Einstellungen aktivieren.
 
+
         ## 📋 **Geräte verwalten**
 
+
         - **Anzeigen:** Geräte, Sync-Zeiten, Status in Sync-Einstellungen sehen.
+
         - **Manuelle Sync:** Button pro Gerät drücken.
+
         - **Entfernen:** Auswählen und entfernen, um Sync zu stoppen.
+
 
         ## 🔧 **Fehlerbehebung**
 
+
         **Verbindungsprobleme:**
+
         1. Gleiches Wi-Fi? Kein VPN.
+
         2. App neu starten.
+
         3. Server-Modus überprüfen.
+
         4. Ohne Firewall testen.
 
+
         **Keine Geräte?**
+
         - Stabiles Wi-Fi, keine Proxies.
+
         - Scan aktualisieren.
+
         - Manuelles IP verwenden.
 
+
         **Sync-Fehler/Timeouts:**
+
         1. Manuelle Sync.
+
         2. App-Versionen abgleichen.
+
         3. Für große Daten warten.
+
 
         **Firewall (Port 44040):**
 
-        Wenn Verbindungen nicht funktionieren, blockiert möglicherweise Ihre Computer-Firewall das Sync-Signal. Öffnen Sie Port 44040, damit Geräte lokal kommunizieren — sicher für Ihr Heimnetzwerk.
+
+        Wenn Verbindungen nicht funktionieren, blockiert möglicherweise Ihre Computer-Firewall
+        das Sync-Signal. Öffnen Sie Port 44040, damit Geräte lokal kommunizieren —
+        sicher für Ihr Heimnetzwerk.
+
 
         **Windows (GUI):**
+
         1. Defender Firewall öffnen > Erweitert > Eingehende Regeln > Neue Regel.
+
         2. Port > TCP > 44040 > Erlauben > Alle Profile > "WHPH Sync" nennen > Fertig.
 
+
         **Windows (Admin CMD):**
+
         ```
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
+        localport=44040
+
         ```
+
 
         **Linux (UFW):**
-        ```
-        sudo ufw allow 44040/tcp && sudo ufw reload
+
         ```
 
-        Tipps: Router neu starten, private Netzwerke nutzen. Bei "nicht gefunden"-Fehlern neu pairen.
+        sudo ufw allow 44040/tcp && sudo ufw reload
+
+        ```
+
+
+        Tipps: Router neu starten, private Netzwerke nutzen. Bei "nicht gefunden"-Fehlern
+        neu pairen.
+
+        '
       title: Hilfe zur Gerätesynchronisation
     last_sync_label: Letzte Synchronisation
     no_devices_found: Keine synchronisierten Geräte
@@ -103,17 +178,27 @@ sync:
     title: Synchronisierte Geräte
     to_label: Zu
     unnamed_device: Unbenanntes Gerät
+    never_synced: Nie synchronisiert
+    remove_device: Gerät entfernen
   error:
     scan: Scan fehlgeschlagen
   errors:
-    connection_failed: |
-      Verbindung fehlgeschlagen. Bitte stellen Sie sicher:
+    connection_failed: "Verbindung fehlgeschlagen. Bitte stellen Sie sicher:
+
 
       1. Beide Geräte sind im selben Netzwerk
+
       2. Beide Apps sind geöffnet und laufen
+
       3. Kein Firewall blockiert die Verbindung
-    device_mismatch: Synchronisationsfehler. Das Gerät, das synchronisieren möchte, ist nicht korrekt mit diesem Gerät gepaart.
-    environment_mismatch: Die Synchronisation kann nicht zwischen Debug- und Produktions-Builds fortgesetzt werden.
+
+      "
+    device_mismatch:
+      Synchronisationsfehler. Das Gerät, das synchronisieren möchte,
+      ist nicht korrekt mit diesem Gerät gepaart.
+    environment_mismatch:
+      Die Synchronisation kann nicht zwischen Debug- und Produktions-Builds
+      fortgesetzt werden.
     device_not_found: Synchronisierungsgerät nicht gefunden
     ip_address: Lokale IP-Adresse kann nicht abgerufen werden
     parse_message: Gescannte Nachricht kann nicht geparst werden
@@ -122,24 +207,41 @@ sync:
     scan: Scan fehlgeschlagen
     sync_failed: Synchronisation fehlgeschlagen. Bitte versuchen Sie es erneut.
     sync_timeout: Synchronisations-Timeout
-    version_mismatch: "Versionskonflikt. Lokale Version: {currentVersion}, Remote-Version: {remoteVersion}. Bitte aktualisieren Sie beide Anwendungen auf die gleiche Version."
+    version_mismatch:
+      "Versionskonflikt. Lokale Version: {currentVersion}, Remote-Version:
+      {remoteVersion}. Bitte aktualisieren Sie beide Anwendungen auf die gleiche Version."
     local_ip_error: Lokaler IP-Fehler
     device_already_paired: Gerät bereits gepaart
     no_active_interfaces: Keine aktiven Netzwerkschnittstellen
     device_discovery_failed: Geräteerkennung fehlgeschlagen
-    no_server_configured: Kein Server konfiguriert. Fügen Sie zuerst ein Synchronisierungsgerät hinzu oder verwenden Sie eine manuelle Verbindung, um eine Serververbindung einzurichten.
-    device_id_unavailable: Geräte-ID ist nicht verfügbar. Synchronisierung kann nicht fortgesetzt werden.
-    local_ip_unavailable: Lokale IP-Adresse ist nicht verfügbar. Netzwerkverbindung prüfen.
-    prerequisites_failed: Validierung der Synchronisierungs-Voraussetzungen fehlgeschlagen. Bitte überprüfen Sie Ihre Netzwerkeinstellungen.
-    critical_sync_operation_failed: Kritischer Synchronisationsvorgang fehlgeschlagen. Bitte versuchen Sie es erneut.
+    no_server_configured:
+      Kein Server konfiguriert. Fügen Sie zuerst ein Synchronisierungsgerät
+      hinzu oder verwenden Sie eine manuelle Verbindung, um eine Serververbindung
+      einzurichten.
+    device_id_unavailable:
+      Geräte-ID ist nicht verfügbar. Synchronisierung kann nicht
+      fortgesetzt werden.
+    local_ip_unavailable:
+      Lokale IP-Adresse ist nicht verfügbar. Netzwerkverbindung
+      prüfen.
+    prerequisites_failed:
+      Validierung der Synchronisierungs-Voraussetzungen fehlgeschlagen.
+      Bitte überprüfen Sie Ihre Netzwerkeinstellungen.
+    critical_sync_operation_failed:
+      Kritischer Synchronisationsvorgang fehlgeschlagen.
+      Bitte versuchen Sie es erneut.
     initiate_outgoing_sync_failed: Initiierung der Synchronisierung mit Geräten fehlgeschlagen.
     processing_incoming_data: Fehler bei der Verarbeitung eingehender Synchronisationsdaten.
     checking_local_data: Fehler beim Prüfen lokaler Daten für die Synchronisierung.
     sync_with_device_failed: Synchronisierung mit Gerät fehlgeschlagen.
     sync_with_device_exception: Ausnahme trat während der Gerätesynchronisierung auf.
-    process_accumulated_response_data: Verarbeitung der akkumulierten Synchronisationsantwortdaten fehlgeschlagen.
+    process_accumulated_response_data:
+      Verarbeitung der akkumulierten Synchronisationsantwortdaten
+      fehlgeschlagen.
     process_response_data: Verarbeitung der Synchronisationsantwortdaten fehlgeschlagen.
-    some_devices_failed_to_sync: Einige Geräte konnten nicht synchronisiert werden. Bitte versuchen Sie es erneut.
+    some_devices_failed_to_sync:
+      Einige Geräte konnten nicht synchronisiert werden.
+      Bitte versuchen Sie es erneut.
   messages:
     device_already_paired: Dieses Gerät ist bereits gepaart
     sync_completed: Synchronisation erfolgreich abgeschlossen
@@ -150,9 +252,13 @@ sync:
     close_button: Schließen
     dialog_title: QR-Code zum Synchronisieren scannen
     title: QR-Code
-    description: Andere Geräte können diesen QR-Code scannen, um sich zu verbinden und mit diesem Gerät zu synchronisieren.
+    description:
+      Andere Geräte können diesen QR-Code scannen, um sich zu verbinden
+      und mit diesem Gerät zu synchronisieren.
     connection_string_title: Verbindungszeichenfolge
-    connection_string_description: Alternativ können Sie diese Verbindungszeichenfolge teilen, um Geräte manuell zu verbinden.
+    connection_string_description:
+      Alternativ können Sie diese Verbindungszeichenfolge
+      teilen, um Geräte manuell zu verbinden.
     connection_string_copied: Verbindungszeichenfolge in die Zwischenablage kopiert
   scanner:
     title: QR-Code scannen
@@ -161,13 +267,17 @@ sync:
     starting: Server-Modus wird gestartet...
     active: Server-Modus aktiv - QR-Code anderen Geräten zeigen
     stopped: Server-Modus gestoppt - Gerät ist jetzt im Client-Modus
-    start_failed: Start des Server-Modus fehlgeschlagen - Überprüfen Sie, ob Port 44040 verfügbar ist
+    start_failed:
+      Start des Server-Modus fehlgeschlagen - Überprüfen Sie, ob Port
+      44040 verfügbar ist
     start_tooltip: Server-Modus starten
     stop_tooltip: Server-Modus stoppen
     error: Fehler
     device_became_server: Dieses Gerät ist jetzt der Synchronisationsserver
     start_menu: Server starten
     stop_menu: Server stoppen
+    mode_title: Server-Modus
+    mode_inactive: Server inaktiv
   manual:
     connection: Manuelle Verbindung
     ip_address: IP-Adresse
@@ -190,12 +300,20 @@ sync:
     connection_string_label: Verbindungszeichenfolge
     test_connection: Verbindung testen
     enter_server_details: Serververbindungsdetails manuell eingeben
-    connection_timeout: Verbindungs-Timeout. Überprüfen Sie die Serveradresse und versuchen Sie es erneut.
+    connection_timeout:
+      Verbindungs-Timeout. Überprüfen Sie die Serveradresse und
+      versuchen Sie es erneut.
     connection_test_successful: Verbindungs-Test erfolgreich!
-    connection_test_timeout: Verbindungs-Test-Timeout. Überprüfen Sie die Serveradresse und versuchen Sie es erneut.
-    connection_test_failed_no_response: Verbindungs-Test fehlgeschlagen - Keine Antwort vom Server
+    connection_test_timeout:
+      Verbindungs-Test-Timeout. Überprüfen Sie die Serveradresse
+      und versuchen Sie es erneut.
+    connection_test_failed_no_response:
+      Verbindungs-Test fehlgeschlagen - Keine Antwort
+      vom Server
     connection_test_failed_generic: "Verbindungs-Test fehlgeschlagen: {0}"
-    connection_string_instruction: Fügen Sie die Verbindungszeichenfolge ein, die vom Servergerät bereitgestellt wurde, um manuell zu verbinden.
+    connection_string_instruction:
+      Fügen Sie die Verbindungszeichenfolge ein, die
+      vom Servergerät bereitgestellt wurde, um manuell zu verbinden.
   add:
     device: Gerät hinzufügen
     device_tooltip: Neues Gerät hinzufügen
@@ -210,16 +328,21 @@ sync:
     refresh_scan: Scan aktualisieren
     last_seen: Zuletzt gesehen
     already_added: Bereits hinzugefügt
-
   connect_info:
     dialog_title: Geräteverbindungsdaten
     menu_title: Verbindungsinfo
     qr_title: QR-Code
-    qr_description: Andere Geräte können diesen QR-Code scannen, um sich zu verbinden und mit diesem Gerät zu synchronisieren.
+    qr_description:
+      Andere Geräte können diesen QR-Code scannen, um sich zu verbinden
+      und mit diesem Gerät zu synchronisieren.
     connection_string_title: Verbindungszeichenfolge
-    connection_string_description: Alternativ können Sie diese Verbindungszeichenfolge teilen, um Geräte manuell zu verbinden.
+    connection_string_description:
+      Alternativ können Sie diese Verbindungszeichenfolge
+      teilen, um Geräte manuell zu verbinden.
     connection_string_copied: Verbindungszeichenfolge in die Zwischenablage kopiert
-    server_details_description: Verwenden Sie diese Serverdetails, um manuell von einem anderen Gerät zu verbinden.
+    server_details_description:
+      Verwenden Sie diese Serverdetails, um manuell von
+      einem anderen Gerät zu verbinden.
     unknown_ip: Unbekannte IP
     error_loading_connection_info: Fehler beim Laden der Verbindungsdaten
     retry: Erneut versuchen
@@ -227,13 +350,16 @@ sync:
     server_details_title: Serverdetails
     connection_string_title_alt: Verbindungszeichenfolge
     copy: Kopieren
-
   desktop:
     mode_title: Desktop-Synchronisierungsmodus
     client_mode_start: Als Client verbinden
     client_mode_stop: Zum Server-Modus wechseln
-    client_mode_description: Verbinden Sie sich mit dem Server eines anderen Geräts, um Daten zu synchronisieren
-    server_mode_description: Erlauben Sie anderen Geräten, sich zu verbinden und mit diesem Gerät zu synchronisieren
+    client_mode_description:
+      Verbinden Sie sich mit dem Server eines anderen Geräts,
+      um Daten zu synchronisieren
+    server_mode_description:
+      Erlauben Sie anderen Geräten, sich zu verbinden und mit
+      diesem Gerät zu synchronisieren
     sync_mode_start: Client-Modus starten
     sync_mode_stop: Client-Modus stoppen
     sync_mode_start_menu: Client-Modus starten
@@ -241,5 +367,5 @@ sync:
     client_mode_starting: Client-Modus wird gestartet...
     client_mode_started: Client-Modus gestartet
     client_mode_stopped: Zurück zum Server-Modus gewechselt
-
+    sync_mode_toggle_error: Sync-Modus konnte nicht umgeschaltet werden
   multi_interface_connection: Multi-Interface-Verbindung

@@ -116,6 +116,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String desktopClientModeStarting = 'sync.desktop.client_mode_starting';
   static const String desktopClientModeStarted = 'sync.desktop.client_mode_started';
   static const String desktopClientModeStopped = 'sync.desktop.client_mode_stopped';
+  static const String desktopSyncModeToggleError = 'sync.desktop.sync_mode_toggle_error';
 
   // Error Messages
   static const String noActiveInterfacesError = 'sync.errors.no_active_interfaces';
@@ -151,4 +152,10 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
 
   // Manual connection string instruction
   static const String manualConnectionStringInstruction = 'sync.manual.connection_string_instruction';
+
+  // Missing keys
+  static const String serverModeTitle = 'sync.server.mode_title';
+  static const String serverModeInactive = 'sync.server.mode_inactive';
+  static const String neverSynced = 'sync.devices.never_synced';
+  static const String removeDevice = 'sync.devices.remove_device';
 }

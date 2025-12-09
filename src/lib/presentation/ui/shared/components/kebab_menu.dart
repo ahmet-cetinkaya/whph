@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:whph/corePackages/acore/lib/acore.dart';
 import 'package:whph/presentation/ui/shared/components/help_dialog.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 
 /// A reusable kebab menu (three vertical dots) component that can integrate help functionality
 /// and can be extended with additional menu items.
@@ -67,15 +67,18 @@ class KebabMenu extends StatelessWidget {
             if (_shouldShowHelp) {
               ResponsiveDialogHelper.showResponsiveDialog<String>(
                   context: context,
+                  size: DialogSize.large,
                   child: HelpDialog(
                     titleKey: helpTitleKey!,
                     markdownContentKey: helpMarkdownContentKey!,
                     onStartTour: onStartTour,
-                  )).then((result) {
-                if (result == 'start_tour' && onStartTour != null) {
-                  onStartTour!();
-                }
-              });
+                  )).then(
+                (result) {
+                  if (result == 'start_tour' && onStartTour != null) {
+                    onStartTour!();
+                  }
+                },
+              );
             }
             break;
           default:

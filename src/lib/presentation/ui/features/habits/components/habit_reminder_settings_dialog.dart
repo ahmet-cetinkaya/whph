@@ -4,6 +4,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:acore/acore.dart' hide Container;
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class HabitReminderSettingsResult {
   final bool hasReminder;
@@ -103,7 +104,7 @@ class _HabitReminderSettingsDialogState extends State<HabitReminderSettingsDialo
 
   String _getReminderDescription() {
     if (!_hasReminder) {
-      return widget.translationService.translate(HabitTranslationKeys.enableReminders);
+      return widget.translationService.translate(HabitTranslationKeys.noReminder);
     }
 
     String description = "";
@@ -116,9 +117,8 @@ class _HabitReminderSettingsDialogState extends State<HabitReminderSettingsDialo
 
     // Add days information
     if (_reminderDays.isNotEmpty && _reminderDays.length < 7) {
-      final weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
       final dayNames = _reminderDays.map((dayNum) {
-        return widget.translationService.translate('datetime.weekday.${weekDays[dayNum - 1]}.short');
+        return widget.translationService.translate(SharedTranslationKeys.getWeekDayTranslationKey(dayNum, short: true));
       }).join(', ');
       description += description.isNotEmpty ? ', $dayNames' : dayNames;
     } else if (_reminderDays.length == 7) {
@@ -143,112 +143,227 @@ class _HabitReminderSettingsDialogState extends State<HabitReminderSettingsDialo
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.translationService.translate(HabitTranslationKeys.reminderSettings)),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Switch(
-                value: _hasReminder,
-                onChanged: _toggleReminder,
-              ),
-              title: Text(widget.translationService.translate(HabitTranslationKeys.reminderSettings)),
-              subtitle: Text(
-                _getReminderDescription(),
-                style: AppTheme.bodySmall,
-              ),
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.translationService.translate(HabitTranslationKeys.reminderSettings),
+          style: AppTheme.headlineSmall,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: _cancelDialog,
+          tooltip: widget.translationService.translate(SharedTranslationKeys.cancelButton),
+        ),
+        actions: [
+          TextButton(
+            onPressed: _confirmDialog,
+            child: Text(
+              widget.translationService.translate(SharedTranslationKeys.doneButton),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            if (_hasReminder) ...[
-              const SizedBox(height: 16),
-
-              // Time Section
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.access_time),
-                title: Text(widget.translationService.translate(HabitTranslationKeys.reminderTime)),
-                subtitle: Text(
-                  _reminderTime != null
-                      ? '${_reminderTime!.hour.toString().padLeft(2, '0')}:${_reminderTime!.minute.toString().padLeft(2, '0')}'
-                      : widget.translationService.translate(SharedTranslationKeys.addButton),
-                  style: AppTheme.bodySmall,
-                ),
-                trailing: TextButton(
-                  onPressed: () => _selectTime(context),
-                  child: Text(widget.translationService.translate(SharedTranslationKeys.change)),
+          ),
+        ],
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Main Toggle Card
+              Card(
+                elevation: 0,
+                color: AppTheme.surface1,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                child: SwitchListTile.adaptive(
+                  value: _hasReminder,
+                  onChanged: _toggleReminder,
+                  title: Text(
+                    widget.translationService.translate(HabitTranslationKeys.reminderSettings),
+                    style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    _getReminderDescription(),
+                    style: AppTheme.bodySmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  secondary: StyledIcon(
+                    _hasReminder ? Icons.notifications_active : Icons.notifications_off,
+                    isActive: _hasReminder,
+                  ),
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTheme.sizeLarge),
 
-              // Days Section
-              Text(
-                widget.translationService.translate(HabitTranslationKeys.reminderDays),
-                style: AppTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(7, (index) {
-                  final day = index + 1; // 1-7 (Monday-Sunday)
-                  final isSelected = _reminderDays.contains(day);
-
-                  return InkWell(
-                    onTap: () => _toggleDay(day),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade200,
+              // Animated Settings Section
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Time Selection
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                      child: Text(
+                        widget.translationService.translate(HabitTranslationKeys.reminderTime),
+                        style: AppTheme.labelLarge,
                       ),
-                      child: Center(
-                        child: Text(
-                          _getDayName(day).substring(0, 1),
-                          style: TextStyle(
-                            color: isSelected
-                                ? ColorContrastHelper.getContrastingTextColor(Theme.of(context).colorScheme.primary)
-                                : Theme.of(context).colorScheme.onSurface,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
+                    ),
+
+                    InkWell(
+                      onTap: () => _selectTime(context),
+                      borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                      child: Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge, vertical: AppTheme.sizeLarge),
+                        decoration: BoxDecoration(
+                          color: AppTheme.surface1,
+                          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                        ),
+                        child: Row(
+                          children: [
+                            StyledIcon(Icons.access_time_filled, isActive: true),
+                            const SizedBox(width: AppTheme.sizeLarge),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _reminderTime != null
+                                        ? '${_reminderTime!.hour.toString().padLeft(2, '0')}:${_reminderTime!.minute.toString().padLeft(2, '0')}'
+                                        : widget.translationService.translate(SharedTranslationKeys.notSetTime),
+                                    style: AppTheme.headlineLarge.copyWith(fontSize: 32),
+                                  ),
+                                  Text(
+                                    widget.translationService
+                                        .translate(SharedTranslationKeys.dateTimePickerSelectTimeTitle),
+                                    style: AppTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(Icons.edit, color: AppTheme.textColor.withValues(alpha: 0.5)),
+                          ],
                         ),
                       ),
                     ),
-                  );
-                }),
-              ),
 
-              // Warning message for no days selected
-              if (_reminderDays.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    widget.translationService.translate(HabitTranslationKeys.selectDaysWarning),
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                      fontSize: 12,
+                    const SizedBox(height: AppTheme.sizeXLarge),
+
+                    // Days Selection
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                      child: Text(
+                        widget.translationService.translate(HabitTranslationKeys.reminderDays),
+                        style: AppTheme.labelLarge,
+                      ),
                     ),
-                  ),
+
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                      decoration: BoxDecoration(
+                        color: AppTheme.surface1,
+                        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          StyledIcon(Icons.calendar_month, isActive: true),
+                          const SizedBox(width: AppTheme.sizeLarge),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Wrap(
+                                  spacing: AppTheme.sizeSmall,
+                                  runSpacing: AppTheme.sizeSmall,
+                                  alignment: WrapAlignment.start,
+                                  children: List.generate(7, (index) {
+                                    final day = index + 1;
+                                    final isSelected = _reminderDays.contains(day);
+                                    return _buildDaySelector(context, day, isSelected);
+                                  }),
+                                ),
+                                if (_reminderDays.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: AppTheme.sizeMedium),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.warning_amber_rounded, size: 16, color: theme.colorScheme.error),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          widget.translationService.translate(HabitTranslationKeys.selectDaysWarning),
+                                          style: AppTheme.bodySmall.copyWith(color: theme.colorScheme.error),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
+                crossFadeState: _hasReminder ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 300),
+              ),
             ],
-          ],
+          ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _cancelDialog,
-          child: Text(widget.translationService.translate(SharedTranslationKeys.cancelButton)),
+    );
+  }
+
+  Widget _buildDaySelector(BuildContext context, int day, bool isSelected) {
+    final theme = Theme.of(context);
+    final dayName = _getDayName(day);
+
+    return Semantics(
+      label: widget.translationService.translate(SharedTranslationKeys.getWeekDayTranslationKey(day)),
+      selected: isSelected,
+      button: true,
+      child: InkWell(
+        onTap: () => _toggleDay(day),
+        borderRadius: BorderRadius.circular(25),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isSelected ? theme.colorScheme.primary : AppTheme.surface2,
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2))
+                  ]
+                : [],
+          ),
+          child: Center(
+            child: Text(
+              dayName.substring(0, 1),
+              style: TextStyle(
+                color: isSelected
+                    ? ColorContrastHelper.getContrastingTextColor(theme.colorScheme.primary)
+                    : AppTheme.textColor,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
         ),
-        FilledButton(
-          onPressed: _confirmDialog,
-          child: Text(widget.translationService.translate(SharedTranslationKeys.doneButton)),
-        ),
-      ],
+      ),
     );
   }
 }

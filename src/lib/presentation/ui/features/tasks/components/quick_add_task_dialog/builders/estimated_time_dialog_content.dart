@@ -6,6 +6,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 /// Dialog content component for selecting estimated time
 /// Provides quick selection chips and custom time input with enhanced UI
@@ -30,23 +31,23 @@ class EstimatedTimeDialogContent extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text(translationService.translate(SharedTranslationKeys.timeDisplayEstimated)),
+        title: Text(
+          translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
+          style: AppTheme.headlineSmall,
+        ),
         automaticallyImplyLeading: true,
         actions: [
-          if (selectedTime > 0)
-            IconButton(
-              onPressed: () => onTimeSelected(0),
-              icon: const Icon(Icons.clear),
-              tooltip: translationService.translate(SharedTranslationKeys.clearButton),
-            ),
           TextButton(
             onPressed: () {
               onConfirm?.call();
               Navigator.of(context).pop();
             },
-            child: Text(translationService.translate(SharedTranslationKeys.doneButton)),
+            child: Text(
+              translationService.translate(SharedTranslationKeys.doneButton),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
+          const SizedBox(width: AppTheme.sizeLarge),
         ],
       ),
       body: GestureDetector(
@@ -62,13 +63,13 @@ class EstimatedTimeDialogContent extends StatelessWidget {
 
                 const SizedBox(height: AppTheme.sizeLarge),
 
-                // Quick time selection chips
-                _buildQuickTimeChips(),
+                // Custom time input section
+                _buildCustomTimeSection(),
 
                 const SizedBox(height: AppTheme.sizeLarge),
 
-                // Custom time input section
-                _buildCustomTimeSection(),
+                // Quick time selection chips
+                _buildQuickTimeChips(),
               ],
             ),
           ),
@@ -88,31 +89,45 @@ class EstimatedTimeDialogContent extends StatelessWidget {
 
   /// Builds the custom time input section with enhanced styling
   Widget _buildCustomTimeSection() {
-    return Center(
-      child: SizedBox(
-        width: 250,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeLarge),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+          child: Text(
+            translationService.translate(SharedTranslationKeys.custom),
+            style: AppTheme.labelLarge,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
+            color: AppTheme.surface1,
             borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-            border: Border.all(
-              color: theme.colorScheme.outline.withValues(alpha: 0.3),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.shadow.withValues(alpha: 0.1),
-                blurRadius: AppTheme.sizeSmall,
-                offset: const Offset(0, AppTheme.size2XSmall),
-              ),
-            ],
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(TaskUiConstants.estimatedTimeIcon),
-              const SizedBox(width: AppTheme.sizeSmall),
+              StyledIcon(
+                TaskUiConstants.estimatedTimeIcon,
+                isActive: true,
+              ),
+              const SizedBox(width: AppTheme.sizeLarge),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      translationService.translate(SharedTranslationKeys.timeLoggingDuration),
+                      style: AppTheme.labelLarge,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      translationService.translate(SharedTranslationKeys.minutes),
+                      style: AppTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
               acore.NumericInput(
                 value: selectedTime,
                 minValue: 0,
@@ -120,20 +135,21 @@ class EstimatedTimeDialogContent extends StatelessWidget {
                 incrementValue: 5,
                 decrementValue: 5,
                 onValueChanged: onTimeSelected,
-                valueSuffix: translationService.translate(SharedTranslationKeys.minutesShort),
+                valueSuffix: '', // Removed suffix as it's now in the description
                 iconSize: AppTheme.iconSizeMedium,
                 iconColor: theme.colorScheme.primary,
               ),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 
-  /// Builds the quick time selection chips with optimized layout
+  /// Builds the quick time selection list with optimized layout
   Widget _buildQuickTimeChips() {
     final quickTimeOptions = [
+      {'time': 0, 'label': translationService.translate(SharedTranslationKeys.notSetTime)},
       {'time': 5, 'label': '5 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
       {'time': 10, 'label': '10 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
       {'time': 15, 'label': '15 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
@@ -142,33 +158,57 @@ class EstimatedTimeDialogContent extends StatelessWidget {
       {'time': 60, 'label': '1 ${translationService.translate(SharedTranslationKeys.hoursShort)}'},
     ];
 
-    return Wrap(
-      spacing: AppTheme.sizeXSmall,
-      runSpacing: AppTheme.sizeXSmall,
+    return Column(
       children: quickTimeOptions.map((option) {
         final int time = option['time'] as int;
         final String label = option['label'] as String;
         final bool isSelected = selectedTime == time;
 
-        return FilterChip(
-          label: Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontSize: 12, // Slightly smaller font for better fit
-              color: acore.ColorContrastHelper.getContrastingTextColor(
-                isSelected ? theme.colorScheme.primaryContainer : theme.colorScheme.surface,
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+          child: InkWell(
+            onTap: () => onTimeSelected(time),
+            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.sizeLarge,
+                vertical: AppTheme.sizeMedium,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.12) : AppTheme.surface1,
+                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                border: Border.all(
+                  color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+                  width: 1.0,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  if (isSelected)
+                    StyledIcon(
+                      Icons.check_circle,
+                      isActive: true,
+                      size: AppTheme.iconSizeMedium,
+                    )
+                  else
+                    Icon(
+                      Icons.circle_outlined,
+                      color: theme.colorScheme.outline,
+                      size: AppTheme.iconSizeMedium,
+                    ),
+                ],
               ),
             ),
           ),
-          selected: isSelected,
-          onSelected: (_) => onTimeSelected(time),
-          backgroundColor: isSelected ? theme.colorScheme.primaryContainer : theme.colorScheme.surface,
-          selectedColor: theme.colorScheme.primaryContainer,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // More compact padding
-          checkmarkColor: acore.ColorContrastHelper.getContrastingTextColor(theme.colorScheme.primaryContainer),
-          side: BorderSide.none, // Remove border
-          pressElevation: AppTheme.size2XSmall,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // Reduce tap target size
         );
       }).toList(),
     );

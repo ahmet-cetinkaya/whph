@@ -116,14 +116,14 @@ habits:
   goals:
     goal: Mål
     target_frequency: Målfrekvens
-    period_days: Perioddagar
+    period_days: Periodlängd
     enable: Aktivera
     goal_format: Målfomat
     settings: Inställningar
     current_goal: Nuvarande mål
     description: Beskrivning
-    times_unit: gånger
-    days_unit: dagar
+    times_unit: Gånger att slutföra i denna period
+    days_unit: Dagar i denna period
   list:
     no_habits_found: Inga vanor hittades
     all_habits_done: Alla vanor slutförda!
@@ -174,3 +174,10 @@ habits:
     filter_search:
       title: Filter & Sök
       description: Hitta specifika vanor med taggar, söktermer eller filtrera efter arkiverad status. Organisera och hantera dina vanor effektivt för att förbli fokuserad på det som är viktigt.
+  list_options:
+    view_style_tooltip: Ändra visningsstil
+  accessibility:
+    details_hint: Visa vana detaljer
+    open_details_hint: Öppna vana detaljer
+    complete_habit_hint: Slutför vana
+    completion_status_hint: Vanans completion status

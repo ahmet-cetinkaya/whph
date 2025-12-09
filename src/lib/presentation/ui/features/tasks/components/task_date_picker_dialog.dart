@@ -7,6 +7,8 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tasks/components/custom_reminder_dialog.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 /// Configuration for TaskDatePickerDialog
 class TaskDatePickerConfig {
@@ -239,6 +241,7 @@ class TaskDatePickerDialog {
         },
         color: () => _getReminderColor(reminderNotifier.value),
         isPrimary: false,
+        listenable: reminderNotifier,
       ),
     ];
   }
@@ -311,63 +314,118 @@ class TaskDatePickerDialog {
     ITranslationService? translationService,
     int? currentCustomOffset,
   ) async {
+    final theme = Theme.of(context);
+
     final child = Scaffold(
       appBar: AppBar(
         title: Text(
           translationService?.translate(TaskTranslationKeys.reminderPlannedLabel) ?? 'Set Reminder',
-          style: Theme.of(context).textTheme.titleLarge,
+          style: AppTheme.headlineSmall,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
+          tooltip: translationService?.translate(SharedTranslationKeys.cancelButton),
         ),
+        elevation: 0,
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        children: ReminderTime.values.map((reminderTime) {
-          final isSelected = currentReminder == reminderTime;
-          return ListTile(
-            leading: Icon(
-              _getReminderIcon(reminderTime),
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
-            title: Text(
-              _getReminderLabel(reminderTime, translationService, currentCustomOffset),
-              style: TextStyle(
-                color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-            trailing: isSelected ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary) : null,
-            onTap: () async {
-              if (reminderTime == ReminderTime.custom) {
-                final customMinutes = await CustomReminderDialog.show(
-                  context,
-                  translationService!,
-                  initialMinutes: currentCustomOffset,
-                );
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                elevation: 0,
+                color: AppTheme.surface1,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                child: Column(
+                  children: ReminderTime.values.map((reminderTime) {
+                    final isSelected = currentReminder == reminderTime;
+                    final isLast = reminderTime == ReminderTime.values.last;
 
-                if (customMinutes != null && context.mounted) {
-                  Navigator.of(context).pop(ReminderSelectionResult(
-                    reminderTime: ReminderTime.custom,
-                    customOffset: customMinutes,
-                  ));
-                }
-              } else {
-                Navigator.of(context).pop(ReminderSelectionResult(reminderTime: reminderTime));
-              }
-            },
-          );
-        }).toList(),
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            if (reminderTime == ReminderTime.custom) {
+                              final customMinutes = await CustomReminderDialog.show(
+                                context,
+                                translationService!,
+                                initialMinutes: currentCustomOffset,
+                              );
+
+                              if (customMinutes != null && context.mounted) {
+                                Navigator.of(context).pop(ReminderSelectionResult(
+                                  reminderTime: ReminderTime.custom,
+                                  customOffset: customMinutes,
+                                ));
+                              }
+                            } else {
+                              Navigator.of(context).pop(ReminderSelectionResult(reminderTime: reminderTime));
+                            }
+                          },
+                          borderRadius: BorderRadius.vertical(
+                            top: reminderTime == ReminderTime.values.first
+                                ? const Radius.circular(AppTheme.containerBorderRadius)
+                                : Radius.zero,
+                            bottom: isLast ? const Radius.circular(AppTheme.containerBorderRadius) : Radius.zero,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.sizeMedium,
+                              vertical: AppTheme.sizeMedium,
+                            ),
+                            child: Row(
+                              children: [
+                                StyledIcon(
+                                  _getReminderIcon(reminderTime),
+                                  isActive: isSelected,
+                                ),
+                                const SizedBox(width: AppTheme.sizeMedium),
+                                Expanded(
+                                  child: Text(
+                                    _getReminderLabel(reminderTime, translationService, currentCustomOffset),
+                                    style: isSelected
+                                        ? AppTheme.bodyLarge.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: theme.colorScheme.primary,
+                                          )
+                                        : AppTheme.bodyLarge,
+                                  ),
+                                ),
+                                if (isSelected)
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: theme.colorScheme.primary,
+                                    size: 20,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (!isLast)
+                          Divider(
+                            height: 1,
+                            indent: AppTheme.sizeXLarge + AppTheme.sizeMedium * 2, // Icon size + padding
+                            endIndent: AppTheme.sizeMedium,
+                            color: AppTheme.surface2,
+                          ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
 
     return await ResponsiveDialogHelper.showResponsiveDialog<ReminderSelectionResult>(
       context: context,
       child: child,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       isScrollable: true,
       isDismissible: true,
       enableDrag: true,

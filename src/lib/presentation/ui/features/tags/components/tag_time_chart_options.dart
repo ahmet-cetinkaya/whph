@@ -275,7 +275,7 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
   Future<void> _showCategoryDialog() async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<Set<TagTimeCategory>>(
       context: context,
-      size: DialogSize.min,
+      size: DialogSize.medium,
       child: _CategorySelectionDialog(
         selectedCategories: _selectedCategories,
       ),
@@ -420,9 +420,25 @@ class _CategorySelectionDialogState extends State<_CategorySelectionDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return AlertDialog(
-      title: Text(_translationService.translate(TagTranslationKeys.selectCategory)),
-      content: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(_translationService.translate(TagTranslationKeys.selectCategory)),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: AppTheme.sizeSmall),
+            child: TextButton(
+              onPressed: () => Navigator.pop(context, _selectedCategories),
+              child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
+            ),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -430,50 +446,95 @@ class _CategorySelectionDialogState extends State<_CategorySelectionDialog> {
               final isSelected = _selectedCategories.contains(category) ||
                   (category == TagTimeCategory.all && _selectedCategories.isEmpty);
 
-              return ListTile(
-                leading: Icon(
-                  TagUiConstants.getTagTimeCategoryIcon(category),
-                  color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+              return Padding(
+                padding: const EdgeInsets.only(
+                  left: AppTheme.sizeLarge,
+                  right: AppTheme.sizeLarge,
+                  bottom: AppTheme.sizeSmall,
                 ),
-                title: Text(_translationService.translate(_getCategoryTranslationKey(category))),
-                selected: isSelected,
-                onTap: () {
-                  setState(() {
-                    if (category == TagTimeCategory.all) {
-                      _selectedCategories = {TagTimeCategory.all};
-                    } else {
-                      _selectedCategories.remove(TagTimeCategory.all);
-                      if (isSelected) {
-                        _selectedCategories.remove(category);
-                        if (_selectedCategories.isEmpty) {
-                          _selectedCategories.add(TagTimeCategory.all);
-                        }
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (category == TagTimeCategory.all) {
+                        _selectedCategories = {TagTimeCategory.all};
                       } else {
-                        _selectedCategories.add(category);
-                        // If all categories are selected, switch to "All"
-                        if (_selectedCategories.length == TagTimeCategory.values.length - 1) {
-                          // -1 for "All" itself
-                          _selectedCategories = {TagTimeCategory.all};
+                        _selectedCategories.remove(TagTimeCategory.all);
+                        if (isSelected) {
+                          _selectedCategories.remove(category);
+                          if (_selectedCategories.isEmpty) {
+                            _selectedCategories.add(TagTimeCategory.all);
+                          }
+                        } else {
+                          _selectedCategories.add(category);
+                          // If all categories are selected, switch to "All"
+                          if (_selectedCategories.length == TagTimeCategory.values.length - 1) {
+                            // -1 for "All" itself
+                            _selectedCategories = {TagTimeCategory.all};
+                          }
                         }
                       }
-                    }
-                  });
-                },
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                  child: Container(
+                    padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
+                          : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                      border: isSelected ? Border.all(color: theme.colorScheme.primary, width: 1) : null,
+                    ),
+                    child: Row(
+                      children: [
+                        // Styled Icon
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.surface,
+                          ),
+                          child: Icon(
+                            TagUiConstants.getTagTimeCategoryIcon(category),
+                            color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurfaceVariant,
+                            size: AppTheme.iconSizeMedium,
+                          ),
+                        ),
+                        const SizedBox(width: AppTheme.sizeMedium),
+                        // Text
+                        Expanded(
+                          child: Text(
+                            _translationService.translate(_getCategoryTranslationKey(category)),
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                              color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+                            ),
+                          ),
+                        ),
+                        // Check Icon
+                        if (isSelected)
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: theme.colorScheme.primary,
+                            ),
+                            child: Icon(
+                              Icons.check,
+                              size: 12,
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
               );
             }),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(_translationService.translate(SharedTranslationKeys.cancelButton)),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.pop(context, _selectedCategories),
-          child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
-        ),
-      ],
     );
   }
 }

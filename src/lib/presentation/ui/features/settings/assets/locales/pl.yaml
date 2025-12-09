@@ -66,6 +66,7 @@ settings:
     sounds_disabled: Dźwięki wyłączone
     all_sounds_enabled: Wszystkie dźwięki włączone
     some_sounds_enabled: Niektóre dźwięki włączone
+    settings: Ustawienia dźwięku
   permissions:
     app_usage:
       description:
@@ -395,3 +396,10 @@ settings:
       load_error: Błąd ładowania domyślnego szacowanego czasu
       save_error: Błąd zapisu domyślnego szacowanego czasu
       key_not_found: Klucz domyślnego szacowanego czasu nie znaleziony
+  section:
+    general: Ogólne
+    appearance: Wygląd
+    notifications: Powiadomienia
+    data_sync: Dane i synchronizacja
+    advanced: Zaawansowane
+    about: O aplikacji

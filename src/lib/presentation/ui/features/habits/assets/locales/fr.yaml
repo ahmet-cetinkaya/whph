@@ -118,17 +118,17 @@ habits:
     toggling_archive: Impossible de basculer le statut d'archivage
   goals:
     current_goal: Objectif
-    days_unit: jours
+    days_unit: Jours dans cette période
     description:
       Voulez-vous pratiquer l'habitude avec une fréquence spécifique plutôt
       que tous les jours ? Alors définissez un objectif personnalisé.
     enable: Activer les objectifs personnalisés
     goal: Objectif personnalisé
     goal_format: "{count} fois en {dayCount} jours"
-    period_days: Jours de période
+    period_days: Durée de la période
     settings: Paramètres d'objectif personnalisé
     target_frequency: Fréquence cible
-    times_unit: fois
+    times_unit: Fois à compléter dans cette période
   list:
     all_habits_done: Toutes les habitudes terminées !
     no_habits_found: Aucune habitude
@@ -231,3 +231,10 @@ habits:
     filter_search:
       title: Filtrer et rechercher
       description: Trouvez des habitudes spécifiques en utilisant des tags, des termes de recherche ou filtrez par statut archivé. Organisez et gérez efficacement vos habitudes pour rester concentré sur ce qui compte.
+  list_options:
+    view_style_tooltip: Changer le style d'affichage
+  accessibility:
+    details_hint: Voir les détails de l''habitude
+    open_details_hint: Ouvrir les détails de l''habitude
+    complete_habit_hint: Compléter l''habitude
+    completion_status_hint: Statut de completion de l''habitude

@@ -20,9 +20,6 @@ tasks:
       tomorrow: Yarın
       weekend: Hafta Sonu
       next_weekday: Gelecek Haftaiçi
-  date_selection:
-    deadline_date_title: Son tarihi seçin
-    planned_date_title: Planlanan tarihi seçin
   delete:
     error: Görev silinirken beklenmedik bir hata oluştu.
     message: Bu görevi silmek istediğinize emin misiniz?
@@ -386,6 +383,9 @@ tasks:
     weekly: Haftalık
     yearSuffix: yıl
     yearly: Yıllık
+    weeks_plural: haftalar
+    months_plural: aylar
+    years_plural: yıllar
   reminder:
     atTime: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı
@@ -399,6 +399,8 @@ tasks:
     custom: Özel
     custom_title: Özel Hatırlatıcı
     before_suffix: önce
+    time: Zaman
+    unit: Birim
   task_details: Görev Detayları
   title: Görevler
   tooltips:

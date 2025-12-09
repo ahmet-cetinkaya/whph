@@ -20,6 +20,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -297,23 +298,15 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               const SizedBox(height: AppTheme.sizeMedium),
 
               // Sub Tasks Header Section
-              Row(
-                children: [
-                  const Icon(Icons.list),
-                  const SizedBox(width: AppTheme.sizeSmall),
-                  Flexible(
-                    child: Text(
-                      _translationService.translate(TaskTranslationKeys.subTasksLabel),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: AppTheme.sizeSmall),
-                  if (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
-                    Text(
-                      '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                ],
+              SectionHeader(
+                title: _translationService.translate(TaskTranslationKeys.subTasksLabel),
+                padding: EdgeInsets.zero,
+                trailing: (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
+                    ? Text(
+                        '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      )
+                    : null,
               ),
 
               // Sub Tasks Filter and Add Button Section

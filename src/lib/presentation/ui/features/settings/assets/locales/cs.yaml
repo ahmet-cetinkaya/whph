@@ -66,6 +66,7 @@ settings:
     sounds_disabled: Zvuky zakázány
     all_sounds_enabled: Všechny zvuky povoleny
     some_sounds_enabled: Některé zvuky povoleny
+    settings: Nastavení zvuku
   permissions:
     app_usage:
       description:
@@ -379,3 +380,10 @@ settings:
       load_error: Chyba při načítání výchozího odhadovaného času
       save_error: Chyba při ukládání výchozího odhadovaného času
       key_not_found: Klíč výchozího odhadovaného času nebyl nalezen
+  section:
+    general: Obecné
+    appearance: Vzhled
+    notifications: Oznámení
+    data_sync: Data a synchronizace
+    advanced: Pokročilé
+    about: O aplikaci

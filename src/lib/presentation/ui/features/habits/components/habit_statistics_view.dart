@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart' show DateTimeHelper;
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class HabitStatisticsView extends StatefulWidget {
   final String habitId;
@@ -135,18 +136,6 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     );
   }
 
-  Widget _buildSectionHeader() {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Icon(HabitUiConstants.statisticsIcon),
-        ),
-        Text(_translationService.translate(HabitTranslationKeys.statisticsLabel), style: AppTheme.bodyLarge),
-      ],
-    );
-  }
-
   Widget _buildStatusBanner() {
     final firstRecordDate = _habitRecords!.items.isNotEmpty
         ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
@@ -195,7 +184,10 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(),
+        SectionHeader(
+          title: _translationService.translate(HabitTranslationKeys.statisticsLabel),
+          padding: EdgeInsets.zero,
+        ),
         const SizedBox(height: AppTheme.sizeSmall),
         if (_habit!.archivedDate != null) ...[
           _buildStatusBanner(),
@@ -322,98 +314,149 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   }
 
   Widget _buildScoreChart() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          _translationService.translate(HabitTranslationKeys.scoreTrends),
-          style: AppTheme.bodyLarge,
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 300,
-          child: Padding(
-            padding: EdgeInsets.all(AppTheme.sizeXLarge),
-            child: LineChart(
-              LineChartData(
-                gridData: FlGridData(show: false),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 50,
-                      getTitlesWidget: (value, meta) {
-                        return Text('${(value * 100).toInt()}%');
-                      },
-                    ),
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                  decoration: BoxDecoration(
+                    color: _themeService.primaryColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
                   ),
-                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < _habit!.statistics.monthlyScores.length) {
-                          final date = _habit!.statistics.monthlyScores[value.toInt()].key;
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              _translationService.translate(SharedTranslationKeys.getShortMonthKey(date.month)),
-                              style: AppTheme.bodySmall,
-                            ),
-                          );
-                        }
-                        return const Text('');
-                      },
-                    ),
+                  child: Icon(
+                    Icons.show_chart,
+                    size: AppTheme.iconSizeMedium,
+                    color: _themeService.primaryColor,
                   ),
                 ),
-                borderData: FlBorderData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: _habit!.statistics.monthlyScores
-                        .asMap()
-                        .entries
-                        .map((e) => FlSpot(e.key.toDouble(), double.parse(e.value.value.toStringAsFixed(2))))
-                        .toList(),
-                    isCurved: true,
-                    color: _themeService.primaryColor,
-                    barWidth: 3,
-                    isStrokeCapRound: true,
-                    dotData: FlDotData(show: true),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      color: _themeService.primaryColor.withAlpha((255 * 0.2).toInt()),
+                const SizedBox(width: AppTheme.sizeMedium),
+                Text(
+                  _translationService.translate(HabitTranslationKeys.scoreTrends),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.sizeXLarge),
+            SizedBox(
+              height: 300,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(show: false),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 50,
+                        getTitlesWidget: (value, meta) {
+                          return Text('${(value * 100).toInt()}%');
+                        },
+                      ),
+                    ),
+                    rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() >= 0 && value.toInt() < _habit!.statistics.monthlyScores.length) {
+                            final date = _habit!.statistics.monthlyScores[value.toInt()].key;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                _translationService.translate(SharedTranslationKeys.getShortMonthKey(date.month)),
+                                style: AppTheme.bodySmall,
+                              ),
+                            );
+                          }
+                          return const Text('');
+                        },
+                      ),
                     ),
                   ),
-                ],
-                minY: 0,
-                maxY: 1,
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: _habit!.statistics.monthlyScores
+                          .asMap()
+                          .entries
+                          .map((e) => FlSpot(e.key.toDouble(), double.parse(e.value.value.toStringAsFixed(2))))
+                          .toList(),
+                      isCurved: true,
+                      color: _themeService.primaryColor,
+                      barWidth: 3,
+                      isStrokeCapRound: true,
+                      dotData: FlDotData(show: true),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: _themeService.primaryColor.withAlpha((255 * 0.2).toInt()),
+                      ),
+                    ),
+                  ],
+                  minY: 0,
+                  maxY: 1,
+                ),
               ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   Widget _buildStreaksSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: Text(
-            _translationService.translate(HabitTranslationKeys.topStreaks),
-            style: AppTheme.bodyLarge,
-          ),
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.sizeLarge),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                  decoration: BoxDecoration(
+                    color: _themeService.primaryColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+                  ),
+                  child: Icon(
+                    Icons.emoji_events,
+                    size: AppTheme.iconSizeMedium,
+                    color: _themeService.primaryColor,
+                  ),
+                ),
+                const SizedBox(width: AppTheme.sizeMedium),
+                Text(
+                  _translationService.translate(HabitTranslationKeys.topStreaks),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.sizeXLarge),
+            if (_habit!.statistics.topStreaks.isNotEmpty) ...[
+              ..._buildStreakBars(),
+            ] else ...[
+              _buildNoStreaksMessage(),
+            ],
+          ],
         ),
-        if (_habit!.statistics.topStreaks.isNotEmpty) ...[
-          ..._buildStreakBars(),
-        ] else ...[
-          _buildNoStreaksMessage(),
-        ],
-      ],
+      ),
     );
   }
 

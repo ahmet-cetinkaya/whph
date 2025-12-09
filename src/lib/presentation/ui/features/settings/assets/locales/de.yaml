@@ -68,6 +68,7 @@ settings:
     sounds_disabled: Töne deaktiviert
     all_sounds_enabled: Alle Töne aktiviert
     some_sounds_enabled: Einige Töne aktiviert
+    settings: Sound-Einstellungen
   permissions:
     app_usage:
       description:
@@ -407,3 +408,10 @@ settings:
       load_error: Fehler beim Laden der Standard-Zeitschätzung
       save_error: Fehler beim Speichern der Standard-Zeitschätzung
       key_not_found: Standard-Zeitschätzung-Schlüssel nicht gefunden
+  section:
+    general: Allgemein
+    appearance: Erscheinungsbild
+    notifications: Benachrichtigungen
+    data_sync: Daten & Synchronisierung
+    advanced: Erweitert
+    about: Über

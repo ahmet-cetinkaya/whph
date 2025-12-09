@@ -114,15 +114,15 @@ habits:
     toggling_archive: 切换归档状态失败
   goals:
     current_goal: 目标
-    days_unit: 天
+    days_unit: 此期间的天数
     description: 您想以特定频率而不是每天练习习惯吗？那么设置自定义目标。
     enable: 启用自定义目标
     goal: 自定义目标
     goal_format: "{dayCount}天内{count}次"
-    period_days: 期间天数
+    period_days: 期间时长
     settings: 自定义目标设置
     target_frequency: 周期频率
-    times_unit: 每周期次数
+    times_unit: 此期间需完成的次数
   list:
     all_habits_done: 所有习惯已完成！
     no_habits_found: 没有习惯
@@ -225,3 +225,10 @@ habits:
     filter_search:
       title: 筛选和搜索
       description: 使用标签、搜索词或按归档状态筛选来查找特定习惯。有效地组织和管理您的习惯，以保持对重要事项的关注。
+  list_options:
+    view_style_tooltip: 更改视图样式
+  accessibility:
+    details_hint: 查看习惯详情
+    open_details_hint: 打开习惯详情
+    complete_habit_hint: 完成习惯
+    completion_status_hint: 习惯完成状态

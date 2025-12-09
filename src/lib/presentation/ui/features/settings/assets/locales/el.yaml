@@ -68,6 +68,7 @@ settings:
     sounds_disabled: Απενεργοποιημένοι ήχοι
     all_sounds_enabled: Όλοι οι ήχοι ενεργοί
     some_sounds_enabled: Μερικοί ήχοι ενεργοί
+    settings: Ρυθμίσεις ήχου
   permissions:
     app_usage:
       description:
@@ -416,3 +417,10 @@ settings:
       load_error: Σφάλμα φόρτωσης προεπιλεγμένου εκτιμώμενου χρόνου
       save_error: Σφάλμα αποθήκευσης προεπιλεγμένου εκτιμώμενου χρόνου
       key_not_found: Το κλειδί προεπιλεγμένου εκτιμώμενου χρόνου δεν βρέθηκε
+  section:
+    general: Γενικά
+    appearance: Εμφάνιση
+    notifications: Ειδοποιήσεις
+    data_sync: Δεδομένα & Συγχρονισμός
+    advanced: Προηγμένα
+    about: Σχετικά με

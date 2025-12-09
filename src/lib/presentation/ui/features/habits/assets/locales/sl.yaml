@@ -115,17 +115,17 @@ habits:
     toggling_archive: Napaka pri preklopu stanja arhiva
   goals:
     current_goal: Cilj
-    days_unit: dni
+    days_unit: Dni v tem obdobju
     description: |
       Želite vaditi navado z določeno frekvenco namesto
       vsak dan? Nato nastavite prilagojen cilj.
     enable: Omogoči Prilagojene Cilje
     goal: Prilagojen Cilj
     goal_format: "{count} krat v {dayCount} dneh"
-    period_days: Dnevi obdobja
+    period_days: Trajanje obdobja
     settings: Nastavitve prilagojenega cilja
-    target_frequency: Frekvenca obdobja
-    times_unit: krat na obdobje
+    target_frequency: Ciljna frekvenca
+    times_unit: Krat za dokončanje v tem obdobju
   list:
     all_habits_done: Vse navade dokončane!
     no_habits_found: Brez navad
@@ -246,3 +246,10 @@ habits:
     filter_search:
       title: Filter in Iskanje
       description: Poiščite določene navade z uporabo oznak, iskalnih izrazov ali filtrirajte po arhivskem statusu. Učinkovito organizirajte in upravljajte svoje navade, da ostanete usmerjeni na pomembno.
+  list_options:
+    view_style_tooltip: Spremeni slog prikaza
+  accessibility:
+    details_hint: Poglej podrobnosti navade
+    open_details_hint: Odpri podrobnosti navade
+    complete_habit_hint: Dokončaj navado
+    completion_status_hint: Status dokončanja navade

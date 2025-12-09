@@ -271,7 +271,7 @@ void main() {
         // Arrange
         final task = Task(
           id: 'task-1',
-          createdDate: DateTime.now().toUtc(),
+          createdDate: DateTime(2024, 1, 2).toUtc(), // Set reference date to match current date
           title: 'Days of Week Task',
           completedAt: null,
           recurrenceType: RecurrenceType.daysOfWeek,

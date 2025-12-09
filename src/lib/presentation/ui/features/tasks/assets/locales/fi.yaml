@@ -19,9 +19,6 @@ tasks:
       tomorrow: Huomenna
       weekend: Viikonloppu
       next_weekday: Seuraava arkipäivä
-  date_selection:
-    deadline_date_title: Valitse eräpäivä
-    planned_date_title: Valitse suunniteltu päivä
   delete:
     error: Odottamaton virhe poistaessa tehtävää.
     message: Oletko varma että haluat poistaa tämän tehtävän?
@@ -339,6 +336,9 @@ tasks:
     weekly: Viikoittain
     yearSuffix: vuosi/vuotta
     yearly: Vuosittain
+    weeks_plural: viikot
+    months_plural: kuukaudet
+    years_plural: vuodet
   reminder:
     atTime: Aikataulun mukaisesti
     deadlineReminderLabel: Eräpäivä Muistutus
@@ -352,6 +352,8 @@ tasks:
     custom: Mukautettu
     custom_title: Mukautettu muistutus
     before_suffix: ennen
+    time: Aika
+    unit: Yksikkö
   task_details: Tehtävän Tiedot
   time_logging:
     add_time: Lisää Aika

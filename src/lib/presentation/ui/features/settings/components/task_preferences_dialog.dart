@@ -25,6 +25,7 @@ class TaskPreferencesDialog extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               translationService.translate(SettingsTranslationKeys.taskSettingsTitle),
+              style: AppTheme.headlineSmall,
             ),
             elevation: 0,
             leading: IconButton(
@@ -39,18 +40,12 @@ class TaskPreferencesDialog extends StatelessWidget {
           ),
           body: Container(
             color: theme.scaffoldBackgroundColor,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8.0,
-                  children: [
-                    // Task Settings
-                    const TaskSettings(),
-                  ],
-                ),
-              ),
+            child: ListView(
+              padding: const EdgeInsets.all(AppTheme.sizeLarge),
+              children: const [
+                // Task Settings
+                TaskSettings(),
+              ],
             ),
           ),
         );

@@ -18,7 +18,7 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/color_field.dart';
+import 'package:whph/presentation/ui/shared/components/color_picker/color_field.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 
 class TagDetailsContent extends StatefulWidget {

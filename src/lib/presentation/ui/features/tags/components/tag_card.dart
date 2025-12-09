@@ -43,13 +43,6 @@ class _TagCardState extends State<TagCard> {
       contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
       dense: widget.isDense,
       onTap: widget.onOpenDetails,
-      leading: Icon(
-        TagUiConstants.tagIcon,
-        size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.fontSizeXLarge,
-        color: widget.tag.color != null
-            ? Color(int.parse('FF${widget.tag.color}', radix: 16))
-            : AppTheme.secondaryTextColor,
-      ),
       title: Text(
         widget.tag.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.tag.name,
         style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(

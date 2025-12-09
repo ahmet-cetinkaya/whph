@@ -11,6 +11,11 @@ class AppTheme {
     return _themeService!;
   }
 
+  @visibleForTesting
+  static void resetService() {
+    _themeService = null;
+  }
+
   // Dynamic Colors (get from theme service)
   static Color get primaryColor => _service.primaryColor;
   static Color get surface0 => _service.surface0;

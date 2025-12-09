@@ -118,17 +118,17 @@ habits:
     toggling_archive: Archivstatus konnte nicht geändert werden
   goals:
     current_goal: Ziel
-    days_unit: Tage
+    days_unit: Tage in diesem Zeitraum
     description:
       Möchten Sie die Gewohnheit mit einer bestimmten Häufigkeit anstatt
       täglich praktizieren? Dann setzen Sie ein benutzerdefiniertes Ziel.
     enable: Benutzerdefinierte Ziele aktivieren
     goal: Benutzerdefiniertes Ziel
     goal_format: "{count} mal in {dayCount} Tagen"
-    period_days: Zeitraumtage
+    period_days: Zeitraumdauer
     settings: Benutzerdefinierte Zieleinstellungen
-    target_frequency: Periodenfrequenz
-    times_unit: Mal pro Periode
+    target_frequency: Zielfrequenz
+    times_unit: Mal in diesem Zeitraum abschließen
   list:
     all_habits_done: Alle Gewohnheiten erledigt!
     no_habits_found: Keine Gewohnheiten
@@ -231,3 +231,10 @@ habits:
     filter_search:
       title: Filtern & Suchen
       description: Finden Sie spezifische Gewohnheiten mithilfe von Tags, Suchbegriffen oder Filtern nach Archivierungsstatus. Organisieren und verwalten Sie Ihre Gewohnheiten effizient, um sich auf das zu konzentrieren, was wichtig ist.
+  list_options:
+    view_style_tooltip: Ansichtsstil ändern
+  accessibility:
+    details_hint: Gewohnheitsdetails anzeigen
+    open_details_hint: Gewohnheitsdetails öffnen
+    complete_habit_hint: Gewohnheit abschließen
+    completion_status_hint: Abschlussstatus der Gewohnheit

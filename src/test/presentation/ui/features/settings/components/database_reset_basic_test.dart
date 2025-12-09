@@ -4,17 +4,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/presentation/ui/features/settings/components/reset_database_dialog.dart';
 import 'package:whph/presentation/ui/features/settings/components/restart_screen.dart';
+import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize container for tests
+  setUpAll(() {
+    try {
+      container = FakeContainer();
+    } catch (_) {
+      // Container might be already initialized in some test environments
+    }
+
+    // Register the service if the container is our fake
+    if (container is FakeContainer) {
+      (container as FakeContainer).register<ITranslationService>(FakeTranslationService());
+    }
+  });
 
   group('Database Reset Basic UI Tests', () {
     testWidgets('ResetDatabaseDialog renders without crashing', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const ResetDatabaseDialog(),
-          ),
+          home: const ResetDatabaseDialog(),
         ),
       );
 
@@ -27,24 +41,20 @@ void main() {
     testWidgets('RestartScreen renders without crashing', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const RestartScreen(),
-          ),
+          home: const RestartScreen(),
         ),
       );
 
       // Verify the restart screen renders
       expect(find.byType(RestartScreen), findsOneWidget);
       expect(find.byType(Scaffold), findsOneWidget);
-      expect(find.byType(Center), findsOneWidget);
+      expect(find.byType(Center), findsWidgets);
     });
 
     testWidgets('ResetDatabaseDialog has required components', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const ResetDatabaseDialog(),
-          ),
+          home: const ResetDatabaseDialog(),
         ),
       );
 
@@ -56,9 +66,7 @@ void main() {
     testWidgets('RestartScreen has success indicators', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: const RestartScreen(),
-          ),
+          home: const RestartScreen(),
         ),
       );
 
@@ -71,9 +79,7 @@ void main() {
       testWidgets('ResetDatabaseDialog handles disposal correctly', (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: const ResetDatabaseDialog(),
-            ),
+            home: const ResetDatabaseDialog(),
           ),
         );
 
@@ -87,9 +93,7 @@ void main() {
       testWidgets('RestartScreen handles timer disposal correctly', (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            home: Scaffold(
-              body: const RestartScreen(),
-            ),
+            home: const RestartScreen(),
           ),
         );
 
@@ -111,8 +115,8 @@ void main() {
             home: Scaffold(
               body: Column(
                 children: const [
-                  ResetDatabaseDialog(),
-                  RestartScreen(),
+                  Expanded(child: ResetDatabaseDialog()),
+                  Expanded(child: RestartScreen()),
                 ],
               ),
             ),
@@ -129,4 +133,31 @@ void main() {
       });
     });
   });
+}
+
+class FakeContainer implements IContainer {
+  final Map<Type, dynamic> _services = {};
+
+  void register<T>(T service) {
+    _services[T] = service;
+  }
+
+  @override
+  T resolve<T>() {
+    if (_services.containsKey(T)) {
+      return _services[T] as T;
+    }
+    throw Exception('Service of type $T not found in FakeContainer');
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class FakeTranslationService extends Fake implements ITranslationService {
+  @override
+  String translate(String key, {Map<String, String>? namedArgs}) => key;
+
+  @override
+  Widget wrapWithTranslations(Widget child) => child;
 }

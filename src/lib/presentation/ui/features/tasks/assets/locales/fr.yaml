@@ -19,9 +19,6 @@ tasks:
       tomorrow: Demain
       weekend: Week-end
       next_weekday: Prochain jour ouvrable
-  date_selection:
-    deadline_date_title: Sélectionner la date d'échéance
-    planned_date_title: Sélectionner la date prévue
   delete:
     error: Erreur inattendue lors de la suppression de la tâche.
     message: Êtes-vous sûr de vouloir supprimer cette tâche ?
@@ -430,6 +427,9 @@ tasks:
     weekly: Hebdomadaire
     yearSuffix: année(s)
     yearly: Annuel
+    weeks_plural: semaines
+    months_plural: mois
+    years_plural: années
   reminder:
     atTime: À l'heure prévue
     deadlineReminderLabel: Rappel d'échéance
@@ -443,6 +443,8 @@ tasks:
     custom: Personnalisé
     custom_title: Rappel personnalisé
     before_suffix: avant
+    time: Heure
+    unit: Unité
   task_details: Détails de la tâche
   title: Tâches
   tooltips:

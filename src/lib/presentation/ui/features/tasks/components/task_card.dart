@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
+import 'package:whph/presentation/ui/shared/utils/tag_display_utils.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/presentation/ui/features/tasks/components/schedule_button.dart';
@@ -29,6 +30,7 @@ class TaskCard extends StatelessWidget {
   final bool showSubTasks;
   final bool showScheduleButton;
   final bool isDense;
+  final bool isCustomOrder;
 
   final VoidCallback onOpenDetails;
   final VoidCallback? onCompleted;
@@ -45,6 +47,7 @@ class TaskCard extends StatelessWidget {
     this.showSubTasks = false,
     this.showScheduleButton = true,
     this.isDense = false,
+    this.isCustomOrder = false,
   });
 
   Future<void> _handleSchedule(DateTime date) async {
@@ -97,7 +100,10 @@ class TaskCard extends StatelessWidget {
               children: _buildSubTasks(context),
             )
           : null,
-      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      contentPadding: EdgeInsets.only(
+        left: AppTheme.sizeMedium,
+        right: isCustomOrder ? AppTheme.sizeSmall : 0,
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

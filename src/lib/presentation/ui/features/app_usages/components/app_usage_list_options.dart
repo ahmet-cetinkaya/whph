@@ -25,6 +25,7 @@ class AppUsageFilterState {
   final DateTime? startDate;
   final DateTime? endDate;
   final List<String>? devices;
+  final bool showComparison;
 
   const AppUsageFilterState({
     this.tags,
@@ -33,6 +34,7 @@ class AppUsageFilterState {
     this.startDate,
     this.endDate,
     this.devices,
+    this.showComparison = false,
   });
 
   AppUsageFilterState copyWith({
@@ -42,6 +44,7 @@ class AppUsageFilterState {
     DateTime? startDate,
     DateTime? endDate,
     List<String>? devices,
+    bool? showComparison,
   }) {
     return AppUsageFilterState(
       tags: tags ?? this.tags,
@@ -50,6 +53,7 @@ class AppUsageFilterState {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       devices: devices ?? this.devices,
+      showComparison: showComparison ?? this.showComparison,
     );
   }
 }
@@ -116,6 +120,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
         startDate: effectiveStart ?? settings.startDate,
         endDate: effectiveEnd ?? settings.endDate,
         devices: settings.devices,
+        showComparison: settings.showComparison,
       );
 
       if (mounted) {
@@ -147,6 +152,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
           startDate: _currentState.startDate,
           endDate: _currentState.endDate,
           devices: _currentState.devices,
+          showComparison: _currentState.showComparison,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -175,6 +181,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       startDate: _currentState.startDate,
       endDate: _currentState.endDate,
       devices: _currentState.devices,
+      showComparison: _currentState.showComparison,
     );
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -345,6 +352,23 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
             dateFilterSetting: _currentState.dateFilterSetting,
             onDateFilterChange: _handleDateChange,
             onDateFilterSettingChange: _handleDateSettingChange,
+          ),
+
+          // Comparison Toggle
+          IconButton(
+            icon: const Icon(Icons.compare_arrows),
+            color: _currentState.showComparison ? _themeService.primaryColor : Colors.grey,
+            tooltip: _translationService.translate(SharedTranslationKeys.compareWithPreviousLabel),
+            onPressed: () {
+              final newState = _currentState.copyWith(
+                showComparison: !_currentState.showComparison,
+              );
+              if (mounted) {
+                setState(() => _currentState = newState);
+              }
+              widget.onFiltersChanged(newState);
+              handleFilterChange();
+            },
           ),
 
           // Save Button

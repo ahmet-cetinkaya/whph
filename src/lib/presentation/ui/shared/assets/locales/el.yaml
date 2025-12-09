@@ -215,6 +215,7 @@ shared:
   messages:
     confirm_delete: Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το στοιχείο;
     no_items_found: Δεν βρέθηκαν στοιχεία
+    loading: Φόρτωση...
   nav:
     items:
       app_usages: Χρήση εφαρμογών
@@ -264,6 +265,7 @@ shared:
     remove_criteria: Αφαίρεση κριτηρίου
     reset_to_default: Επαναφορά στην προεπιλογή
     sort: Ταξινόμηση
+    criteria: Κριτήρια ταξινόμησης
   statistics:
     daily_usage:
       description: Εμφανίζει τον συνολικό χρόνο χρήσης ανά ημέρα της εβδομάδας
@@ -271,6 +273,13 @@ shared:
     hourly_usage:
       description: Εμφανίζει τον συνολικό χρόνο χρήσης ανά ώρα της ημέρας
       title: Ωριαία χρήση
+    total_usage_label: Συνολική χρήση
+    average_daily_label: Μέσο ημερήσιο
+    peak_hour_label: Ώρη αιχμής
+    select_date_range_message: Επιλέξτε εύρος ημερομηνιών για φιλτράρισμα στατιστικών
+    select_date_range_description:
+      Επιλέξτε προσαρμοσμένο εύρος ημερομηνιών για προβολή
+      στατιστικών χρήσης
   time:
     not_set: Δεν έχει οριστεί
     minutes: λεπτά

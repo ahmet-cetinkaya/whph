@@ -77,16 +77,53 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     return Center(
       child: SizedBox(
         width: 600,
-        child: Column(
-          children: [
-            _buildMonthNavigation(),
-            const SizedBox(height: 8.0),
-            _buildWeekdayLabels(),
-            const SizedBox(height: 4.0),
-            _buildMonthlyCalendar(),
-          ],
+        child: Card(
+          elevation: 1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
+            child: Column(
+              children: [
+                _buildHeader(),
+                const SizedBox(height: AppTheme.sizeLarge),
+                _buildMonthNavigation(),
+                const SizedBox(height: AppTheme.sizeMedium),
+                _buildWeekdayLabels(),
+                const SizedBox(height: AppTheme.sizeSmall),
+                _buildMonthlyCalendar(),
+              ],
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(AppTheme.sizeSmall),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+          ),
+          child: Icon(
+            Icons.calendar_month,
+            size: AppTheme.iconSizeMedium,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        const SizedBox(width: AppTheme.sizeMedium),
+        Text(
+          _translationService.translate(HabitTranslationKeys.recordsLabel),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ],
     );
   }
 
