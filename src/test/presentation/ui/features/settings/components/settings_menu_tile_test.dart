@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
+import 'package:whph/main.dart';
+import 'package:acore/acore.dart';
+import 'package:acore/dependency_injection/container.dart' as acore;
+import 'package:whph/infrastructure/persistence/persistence_container.dart';
+import 'package:whph/infrastructure/infrastructure_container.dart';
+import 'package:whph/core/application/application_container.dart';
+import 'package:whph/presentation/ui/ui_presentation_container.dart';
 
 void main() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+
+    // Initialize the global container with proper dependencies
+    container = acore.Container();
+
+    // Register all dependency injection modules
+    registerPersistence(container);
+    registerInfrastructure(container);
+    registerApplication(container);
+    registerUIPresentation(container);
+  });
+
   group('SettingsMenuTile Widget Tests', () {
     testWidgets('renders title and icon correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
