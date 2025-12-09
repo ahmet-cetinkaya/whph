@@ -1,5 +1,5 @@
 enum HabitListStyle {
-  todayGrid,
-  todayList,
+  grid,
+  list,
   calendar,
 }

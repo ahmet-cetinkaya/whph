@@ -26,6 +26,19 @@ class HabitUiConstants {
   static const double streakBarHeight = 24.0;
   static const double gridSpacing = 4.0;
 
+  // Calendar Layout Constants (Shared between HabitCard and HabitsPage)
+  static const double calendarPaddingMobile = 8.0;
+  static const double calendarPaddingDesktop = 12.0;
+  static const double calendarDaySpacing = 4.0;
+  static const double calendarTrailingSpacer = 2.0; // Between days and drag handle
+  static const double dragHandleSpacer = 8.0; // Between calendar and drag handle
+  static const double dragHandlePadding = 4.0; // Padding inside drag handle area
+  static const double dragHandleIconSize = 24.0; // Default material icon size
+
+  // Total width added by the drag handle section relative to the calendar
+  // Spacer(8) + Padding(right:4) + Icon(24) = 36.0
+  static double get dragHandleTotalWidth => dragHandleSpacer + dragHandlePadding + dragHandleIconSize;
+
   // Options
   static const int defaultEstimatedTime = 10;
   static const List<int> defaultEstimatedTimeOptions = [

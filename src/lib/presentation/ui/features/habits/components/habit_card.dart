@@ -37,7 +37,7 @@ class HabitCard extends StatefulWidget {
     super.key,
     required this.habit,
     required this.onOpenDetails,
-    this.style = HabitListStyle.todayGrid,
+    this.style = HabitListStyle.grid,
     this.isDateLabelShowing = true,
     this.dateRange = 7,
     this.isDense = false,
@@ -223,48 +223,93 @@ class _HabitCardState extends State<HabitCard> {
     final isCompactView =
         widget.style != HabitListStyle.calendar || AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall);
 
-    final isTodayList = widget.style == HabitListStyle.todayList;
+    final isList = widget.style == HabitListStyle.list;
+
+    final isMobileCalendar =
+        widget.style == HabitListStyle.calendar && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
+
+    if (isList) {
+      return _buildListLayout(context, isCompactView);
+    }
 
     return ConstrainedBox(
       constraints: BoxConstraints(
-        minHeight: widget.style == HabitListStyle.todayGrid ? 0 : 60,
+        minHeight: widget.style == HabitListStyle.grid ? 0 : 60,
       ), // Ensure minimum height to prevent shrinking, except for grid
       child: ListTile(
         visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
+        titleAlignment: ListTileTitleAlignment.center,
         tileColor: AppTheme.surface1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
         ),
         contentPadding: EdgeInsets.only(
-          left: (isTodayList || widget.style == HabitListStyle.todayGrid)
+          left: (widget.style == HabitListStyle.grid)
               ? AppTheme.sizeMedium
-              : (isCompactView ? AppTheme.sizeSmall : AppTheme.sizeMedium),
-          right:
-              isCompactView ? AppTheme.sizeSmall : (widget.style == HabitListStyle.calendar ? AppTheme.sizeMedium : 0),
+              : (isCompactView || isMobileCalendar
+                  ? HabitUiConstants.calendarPaddingMobile
+                  : HabitUiConstants.calendarPaddingDesktop),
+          right: isCompactView || isMobileCalendar
+              ? HabitUiConstants.calendarPaddingMobile
+              : (widget.style == HabitListStyle.calendar ? HabitUiConstants.calendarPaddingDesktop : 0),
         ),
         onTap: widget.onOpenDetails,
         dense: widget.isDense,
-        leading: isTodayList ? _buildCheckbox(context) : null,
-        title: (isTodayList || widget.style == HabitListStyle.todayGrid) ? _buildTitleAndMetadata() : _buildTitle(),
-        subtitle: (isTodayList || widget.style == HabitListStyle.todayGrid) ? null : _buildSubtitle(),
-        trailing: isTodayList ? _buildTrailingForList() : _buildTrailing(isCompactView),
+        leading: null,
+        title: (widget.style == HabitListStyle.grid) ? _buildTitleAndMetadata() : _buildTitle(),
+        subtitle: (widget.style == HabitListStyle.grid) ? null : _buildSubtitle(),
+        trailing: _buildTrailing(isCompactView),
+      ),
+    );
+  }
+
+  Widget _buildListLayout(BuildContext context, bool isCompactView) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 60),
+      child: Material(
+        color: AppTheme.surface1,
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+        child: InkWell(
+          onTap: widget.onOpenDetails,
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: AppTheme.sizeMedium,
+              right: isCompactView ? AppTheme.sizeSmall : 0,
+              top: AppTheme.sizeSmall,
+              bottom: AppTheme.sizeSmall,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: _buildTitleAndMetadata()),
+                const SizedBox(width: AppTheme.sizeSmall),
+                _buildTrailingForList()!,
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
   Widget? _buildTrailingForList() {
-    // Only show drag handle if enabled and index is present
-    if (widget.showDragHandle && widget.dragIndex != null) {
-      return Padding(
-        padding: const EdgeInsets.only(left: AppTheme.size2XSmall),
-        child: ReorderableDragStartListener(
-          index: widget.dragIndex!,
-          child: const Icon(Icons.drag_handle, color: Colors.grey),
-        ),
-      );
-    }
-
-    return null;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _buildCheckbox(context),
+        // Only show drag handle if enabled and index is present
+        if (widget.showDragHandle && widget.dragIndex != null)
+          Padding(
+            padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+            child: ReorderableDragStartListener(
+              index: widget.dragIndex!,
+              child: const Icon(Icons.drag_handle, color: Colors.grey),
+            ),
+          ),
+      ],
+    );
   }
 
   Widget _buildTitleAndMetadata() {
@@ -281,8 +326,10 @@ class _HabitCardState extends State<HabitCard> {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        if (widget.isDense) const SizedBox(height: 1) else const SizedBox(height: 2),
-        _buildMetadataRow(),
+        if (widget.style != HabitListStyle.grid) ...[
+          if (widget.isDense) const SizedBox(height: 1) else const SizedBox(height: 2),
+          _buildMetadataRow(),
+        ],
       ],
     );
   }
@@ -318,12 +365,12 @@ class _HabitCardState extends State<HabitCard> {
 
   // Helper method to build the subtitle widget (tags and metadata)
   Widget? _buildSubtitle() {
-    if (widget.style == HabitListStyle.todayGrid) {
+    if (widget.style == HabitListStyle.grid) {
       return null;
     }
 
     final timeToDisplay = widget.habit.actualTime ?? widget.habit.estimatedTime;
-    if (widget.habit.tags.isEmpty && timeToDisplay == null) {
+    if (widget.habit.tags.isEmpty && (timeToDisplay == null || timeToDisplay == 0)) {
       return null;
     }
 
@@ -413,15 +460,12 @@ class _HabitCardState extends State<HabitCard> {
       // Add calendar if not archived
       if (!widget.habit.isArchived()) {
         if (trailingWidgets.isNotEmpty) {
-          trailingWidgets.add(const SizedBox(width: AppTheme.sizeSmall));
+          trailingWidgets.add(const SizedBox(width: HabitUiConstants.dragHandleSpacer));
         }
         trailingWidgets.add(
           Padding(
-            padding: const EdgeInsets.only(right: AppTheme.size3XSmall),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: _buildCalendar(),
-            ),
+            padding: const EdgeInsets.only(right: HabitUiConstants.calendarTrailingSpacer),
+            child: _buildCalendar(),
           ),
         );
       }
@@ -429,13 +473,13 @@ class _HabitCardState extends State<HabitCard> {
       // Always add drag handle space when custom sort is enabled for consistent alignment
       if (widget.showDragHandle) {
         // Add spacing before drag handle/spacer area
-        trailingWidgets.add(const SizedBox(width: AppTheme.sizeSmall));
+        trailingWidgets.add(const SizedBox(width: HabitUiConstants.dragHandleSpacer));
 
         if (widget.dragIndex != null) {
           // Add actual drag handle
           trailingWidgets.add(
             Padding(
-              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
               child: SizedBox(
                 height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
                 child: Center(
@@ -451,7 +495,7 @@ class _HabitCardState extends State<HabitCard> {
           // Add spacer for alignment (archived habits, etc.)
           trailingWidgets.add(
             Padding(
-              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+              padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
               child: SizedBox(
                 width: AppTheme.iconSizeMedium,
                 height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
@@ -508,7 +552,7 @@ class _HabitCardState extends State<HabitCard> {
     final timeToDisplay = widget.habit.actualTime ?? widget.habit.estimatedTime;
     final isActualTime = widget.habit.actualTime != null;
 
-    if (timeToDisplay == null || widget.style == HabitListStyle.todayGrid) {
+    if (timeToDisplay == null || timeToDisplay == 0 || widget.style == HabitListStyle.grid) {
       return const SizedBox.shrink();
     }
 
@@ -568,15 +612,25 @@ class _HabitCardState extends State<HabitCard> {
     final referenceDate = widget.habit.archivedDate != null
         ? acore.DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)
         : DateTime.now();
+    // Generate days (Today, Yesterday, ...)
     final days = List.generate(
       widget.dateRange,
       (index) => referenceDate.subtract(Duration(days: index)),
     );
 
+    // Reverse to show Oldest -> Newest (Left -> Right) to match typical calendar flow
+    final orderedDays = days.reversed.toList();
+
+    final dayWidgets = <Widget>[];
+    for (int i = 0; i < orderedDays.length; i++) {
+      if (i > 0) dayWidgets.add(const SizedBox(width: HabitUiConstants.calendarDaySpacing));
+      dayWidgets.add(_buildCalendarDay(orderedDays[i], referenceDate));
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
-      children: days.map((date) => _buildCalendarDay(date, referenceDate)).toList(),
+      children: dayWidgets,
     );
   }
 
@@ -684,9 +738,19 @@ class _HabitCardState extends State<HabitCard> {
       iconColor = _getRecordStateColor(hasRecord, isDisabled);
     }
 
+    final isMobileCalendar =
+        widget.style == HabitListStyle.calendar && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
+    // If mobile calendar, we want LARGE icons/buttons, overriding isDense
+    final useLargeSize = !widget.isDense || isMobileCalendar;
+
+    // Day size should match HabitsPage header: 36.0 on Mobile, 46.0 (calendarDaySize) on Desktop
+    final double daySize = isMobileCalendar ? 36.0 : HabitUiConstants.calendarDaySize;
+
     return SizedBox(
-      width: HabitUiConstants.calendarDaySize,
-      height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+      width: daySize,
+      height: useLargeSize
+          ? daySize * 1.5
+          : (widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -729,13 +793,15 @@ class _HabitCardState extends State<HabitCard> {
                   padding: EdgeInsets.zero,
                   visualDensity: VisualDensity.standard,
                   constraints: BoxConstraints(
-                    minWidth: widget.isDense ? 24 : 32,
-                    minHeight: widget.isDense ? 24 : 32,
+                    minWidth: useLargeSize ? 36 : 24,
+                    minHeight: useLargeSize ? 36 : 24,
                   ),
                   onPressed: isDisabled ? null : () => _onCalendarDayTap(date),
                   icon: Icon(
                     icon,
-                    size: widget.isDense ? AppTheme.iconSizeSmall : HabitUiConstants.calendarIconSize,
+                    size: useLargeSize
+                        ? 24
+                        : (widget.isDense ? AppTheme.iconSizeSmall : HabitUiConstants.calendarIconSize),
                     color: iconColor,
                   ),
                 ),
@@ -757,7 +823,7 @@ class _HabitCardState extends State<HabitCard> {
                       child: Text(
                         '$dailyCompletionCount',
                         style: TextStyle(
-                          fontSize: widget.isDense ? 8 : 9,
+                          fontSize: useLargeSize ? 10 : (widget.isDense ? 8 : 9),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -786,20 +852,23 @@ class _HabitCardState extends State<HabitCard> {
     final todayCount = _countRecordsForDate(today);
     final hasCustomGoals = widget.habit.hasGoal;
     final dailyTarget = hasCustomGoals ? (widget.habit.dailyTarget ?? 1) : 1;
-    final isCompactView =
-        widget.style != HabitListStyle.calendar || AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenSmall);
+    final isMobileCalendar =
+        widget.style == HabitListStyle.calendar && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
+    final isCompactView = widget.style != HabitListStyle.calendar || isMobileCalendar;
 
     // Increase touch target sizes to match TaskCard (approx 36-40px)
-    final double buttonSize = isCompactView ? AppTheme.buttonSizeMedium : AppTheme.buttonSizeLarge;
-    final double iconSize = isCompactView ? AppTheme.iconSizeMedium : AppTheme.iconSizeLarge;
+    // For mobile calendar view, we want larger buttons despite being in compact layout
+    final useLargeSize = !isCompactView || isMobileCalendar;
+    final double buttonSize = useLargeSize ? 36.0 : AppTheme.buttonSizeMedium;
+    final double iconSize = useLargeSize ? 24.0 : AppTheme.iconSizeMedium;
 
     // For habits with custom goals and dailyTarget > 1, show completion badge
     if (hasCustomGoals && dailyTarget > 1) {
       final isComplete = todayCount >= dailyTarget;
       // Dimensions increased for better touch target
       return SizedBox(
-        width: isCompactView ? 36 : 44,
-        height: isCompactView ? 36 : 44,
+        width: useLargeSize ? 36 : 36,
+        height: useLargeSize ? 36 : 36,
         child: InkWell(
           onTap: isDisabled ? null : _onCheckboxTap,
           borderRadius: BorderRadius.circular(12),
@@ -846,7 +915,7 @@ class _HabitCardState extends State<HabitCard> {
                       child: Text(
                         '$todayCount',
                         style: TextStyle(
-                          fontSize: isCompactView ? 9 : 10,
+                          fontSize: useLargeSize ? 10 : 9,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -861,18 +930,22 @@ class _HabitCardState extends State<HabitCard> {
     }
 
     // For habits without custom goals, show traditional icon
-    return IconButton(
-      padding: EdgeInsets.zero,
-      constraints: BoxConstraints(minWidth: buttonSize, minHeight: buttonSize),
-      onPressed: isDisabled ? null : _onCheckboxTap,
-      icon: Icon(
-        hasRecordToday ? Icons.link : Icons.close,
-        size: iconSize,
-        color: isDisabled
-            ? AppTheme.textColor.withValues(alpha: 0.3)
-            : hasRecordToday
-                ? Colors.green
-                : Colors.red.withValues(alpha: 0.7),
+    return SizedBox(
+      width: buttonSize,
+      height: buttonSize,
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(minWidth: buttonSize, minHeight: buttonSize),
+        onPressed: isDisabled ? null : _onCheckboxTap,
+        icon: Icon(
+          hasRecordToday ? Icons.link : Icons.close,
+          size: iconSize,
+          color: isDisabled
+              ? AppTheme.textColor.withValues(alpha: 0.3)
+              : hasRecordToday
+                  ? Colors.green
+                  : Colors.red.withValues(alpha: 0.7),
+        ),
       ),
     );
   }

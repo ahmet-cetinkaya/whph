@@ -103,7 +103,7 @@ class HabitListOptions extends PersistentListOptionsBase {
     this.showLayoutToggle = true,
     this.forceOriginalLayout = false,
     this.onLayoutToggleChange,
-    this.habitListStyle = HabitListStyle.todayGrid,
+    this.habitListStyle = HabitListStyle.grid,
     this.onHabitListStyleChange,
     this.showViewStyleOption = false,
     this.showOnlyTodayStyles = false,
@@ -325,49 +325,18 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Style Selector
+                // Style Toggle Button
                 if (widget.showViewStyleOption && widget.onHabitListStyleChange != null)
-                  PopupMenuButton<HabitListStyle>(
+                  FilterIconButton(
+                    icon: _getIconForStyle(widget.habitListStyle),
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: primaryColor,
                     tooltip: _translationService.translate(HabitTranslationKeys.viewStyleTooltip),
-                    icon: Icon(
-                      _getIconForStyle(widget.habitListStyle),
-                      color: primaryColor,
-                      size: AppTheme.iconSizeMedium,
-                    ),
-                    onSelected: widget.onHabitListStyleChange!,
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry<HabitListStyle>>[
-                      PopupMenuItem<HabitListStyle>(
-                        value: HabitListStyle.todayList,
-                        child: Row(
-                          children: [
-                            Icon(Icons.view_list, color: AppTheme.textColor),
-                            const SizedBox(width: 8),
-                            Text(_translationService.translate(HabitTranslationKeys.viewStyleTodayList)),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<HabitListStyle>(
-                        value: HabitListStyle.todayGrid,
-                        child: Row(
-                          children: [
-                            Icon(Icons.grid_view, color: AppTheme.textColor),
-                            const SizedBox(width: 8),
-                            Text(_translationService.translate(HabitTranslationKeys.viewStyleTodayGrid)),
-                          ],
-                        ),
-                      ),
-                      if (!widget.showOnlyTodayStyles)
-                        PopupMenuItem<HabitListStyle>(
-                          value: HabitListStyle.calendar,
-                          child: Row(
-                            children: [
-                              Icon(Icons.calendar_month, color: AppTheme.textColor),
-                              const SizedBox(width: 8),
-                              Text(_translationService.translate(HabitTranslationKeys.viewStyleCalendar)),
-                            ],
-                          ),
-                        ),
-                    ],
+                    onPressed: () {
+                      final newStyle =
+                          widget.habitListStyle == HabitListStyle.grid ? HabitListStyle.list : HabitListStyle.grid;
+                      widget.onHabitListStyleChange!(newStyle);
+                    },
                   ),
 
                 // Filter by tags
@@ -513,9 +482,9 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
 
   IconData _getIconForStyle(HabitListStyle style) {
     switch (style) {
-      case HabitListStyle.todayGrid:
+      case HabitListStyle.grid:
         return Icons.grid_view;
-      case HabitListStyle.todayList:
+      case HabitListStyle.list:
         return Icons.view_list;
       case HabitListStyle.calendar:
         return Icons.calendar_month;

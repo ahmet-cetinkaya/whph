@@ -7,7 +7,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 
 class HabitDefaults {
-  static const HabitListStyle defaultListStyle = HabitListStyle.todayGrid;
+  static const HabitListStyle defaultListStyle = HabitListStyle.grid;
 
   static const SortConfig<HabitSortFields> sorting = SortConfig<HabitSortFields>(
     orderOptions: [

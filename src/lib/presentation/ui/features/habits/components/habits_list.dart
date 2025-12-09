@@ -45,7 +45,7 @@ class HabitsList extends StatefulWidget {
   const HabitsList({
     super.key,
     this.pageSize = 10,
-    this.style = HabitListStyle.todayGrid,
+    this.style = HabitListStyle.grid,
     this.dateRange = 7,
     this.filterByTags,
     this.filterNoTags = false,
@@ -284,7 +284,14 @@ class HabitsListState extends State<HabitsList> {
       );
     }
 
-    return widget.style == HabitListStyle.todayGrid ? _buildGridList() : _buildColumnList();
+    return Scrollbar(
+      controller: _scrollController,
+      thumbVisibility: true,
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: widget.style == HabitListStyle.grid ? _buildGridList() : _buildColumnList(),
+      ),
+    );
   }
 
   Widget _buildGridList() {
@@ -299,6 +306,7 @@ class HabitsListState extends State<HabitsList> {
           elevation: 2,
           child: child,
         ),
+        scrollController: widget.useParentScroll ? null : _scrollController,
         onReorder: _onReorder,
         children: [
           ..._habitList!.items.asMap().entries.map((entry) {
@@ -409,6 +417,7 @@ class HabitsListState extends State<HabitsList> {
           elevation: 2,
           child: child,
         ),
+        scrollController: widget.useParentScroll ? null : _scrollController,
         onReorder: _onReorder,
         children: [
           ..._buildHabitCards(),
@@ -427,6 +436,7 @@ class HabitsListState extends State<HabitsList> {
       final habitCards = _buildHabitCards();
       return ListView.builder(
         key: _pageStorageKey,
+        controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
         itemCount: habitCards.length + (_habitList!.hasNext ? 1 : 0),

@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/features/habits/components/habit_list_optio
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -36,9 +37,8 @@ class HabitsPage extends StatefulWidget {
 
 class _HabitsPageState extends State<HabitsPage> {
   // Calendar layout constants
-  static const double _calendarDayWidth = 46.0;
-  static const double _dragHandleWidth =
-      AppTheme.iconSizeMedium + AppTheme.sizeSmall + AppTheme.size2XSmall + AppTheme.size2XSmall;
+  // static const double _calendarDayWidth = 46.0; // Moved to dynamic calculation
+  static double get _dragHandleWidth => HabitUiConstants.dragHandleTotalWidth;
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
   final _themeService = container.resolve<IThemeService>();
@@ -166,12 +166,12 @@ class _HabitsPageState extends State<HabitsPage> {
     return _isHabitListVisible && _isHabitDataLoaded;
   }
 
-  Widget _buildCalendarDay(DateTime date, DateTime today) {
+  Widget _buildCalendarDay(DateTime date, DateTime today, double width) {
     final bool isToday = DateTimeHelper.isSameDay(date, today);
     final color = isToday ? _themeService.primaryColor : AppTheme.textColor;
 
     return SizedBox(
-      width: 46,
+      width: width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -230,18 +230,14 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
-  /// Calculate calendar header width based on days shown and reordering state
-  double _calculateCalendarHeaderWidth(int daysToShow) {
-    final baseWidth = daysToShow * _calendarDayWidth;
-    final baseSpacing = AppTheme.size3XSmall;
-    final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
-
-    return baseWidth + baseSpacing + dragHandleSpacing;
-  }
-
   /// Calculate calendar spacing width to align with habit cards
-  double _calculateCalendarSpacingWidth() {
-    final baseSpacing = AppTheme.size3XSmall;
+  double _calculateCalendarSpacingWidth(bool isCompactView) {
+    // Match HabitCard content padding + trailing padding + wrapper padding
+    final rightPadding =
+        isCompactView ? HabitUiConstants.calendarPaddingMobile : HabitUiConstants.calendarPaddingDesktop;
+    // Base spacing = Right Padding + Calendar Trailing Spacer (2.0) + Wrapper Padding (1.0)
+    // The wrapper padding (AppTheme.size4XSmall) accounts for the padding applied to HabitCard in HabitsList
+    final baseSpacing = HabitUiConstants.calendarTrailingSpacer + rightPadding + AppTheme.size4XSmall;
     final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
 
     return baseSpacing + dragHandleSpacing;
@@ -330,21 +326,37 @@ class _HabitsPageState extends State<HabitsPage> {
                 if (_isHabitListVisible &&
                     _habitListStyle == HabitListStyle.calendar &&
                     AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
-                    !_filterByArchived)
-                  SizedBox(
-                    key: _calendarKey,
-                    width: _calculateCalendarHeaderWidth(daysToShow),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ...lastDays.map((date) => _buildCalendarDay(date, today)),
-                        // Add spacing to match calendar right padding and drag handle width
-                        SizedBox(
-                          width: _calculateCalendarSpacingWidth(),
-                        ),
-                      ],
-                    ),
-                  ),
+                    !_filterByArchived) ...[
+                  Builder(builder: (context) {
+                    final isMobile = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
+                    // Use 36.0 for mobile to match HabitCard, 46.0 otherwise
+                    final daySize = isMobile ? 36.0 : HabitUiConstants.calendarDaySize;
+                    // Calculate spacing based on view compactness
+                    final spacing = _calculateCalendarSpacingWidth(isMobile);
+
+                    return SizedBox(
+                      key: _calendarKey,
+                      // width: _calculateCalendarHeaderWidth(daysToShow, daySize, spacing), // Removed to rely on intrinsic sizing
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ...lastDays.reversed.toList().asMap().entries.expand((entry) {
+                            final index = entry.key;
+                            final date = entry.value;
+                            return [
+                              if (index > 0) const SizedBox(width: HabitUiConstants.calendarDaySpacing),
+                              _buildCalendarDay(date, today, daySize),
+                            ];
+                          }),
+                          // Add spacing to match calendar right padding and drag handle width
+                          SizedBox(
+                            width: spacing,
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
               ],
             ),
 

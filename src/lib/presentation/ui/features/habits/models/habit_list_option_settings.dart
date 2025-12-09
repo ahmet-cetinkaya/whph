@@ -35,7 +35,7 @@ class HabitListOptionSettings {
     this.search,
     this.sortConfig,
     this.forceOriginalLayout = false,
-    this.habitListStyle = HabitListStyle.todayGrid,
+    this.habitListStyle = HabitListStyle.grid,
   });
 
   /// Create settings from a JSON map
@@ -72,9 +72,9 @@ class HabitListOptionSettings {
       habitListStyle: json['habitListStyle'] != null
           ? HabitListStyle.values.firstWhere(
               (e) => e.toString() == json['habitListStyle'],
-              orElse: () => HabitListStyle.todayGrid,
+              orElse: () => HabitListStyle.grid,
             )
-          : HabitListStyle.todayGrid,
+          : HabitListStyle.grid,
     );
   }
 
