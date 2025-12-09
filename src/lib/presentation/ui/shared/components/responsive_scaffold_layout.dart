@@ -409,6 +409,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       context: context,
       isDismissible: true,
       enableDrag: true,
+      backgroundColor: AppTheme.surface1,
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
