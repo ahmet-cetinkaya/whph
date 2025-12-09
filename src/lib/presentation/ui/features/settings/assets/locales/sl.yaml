@@ -295,6 +295,47 @@ settings:
   advanced:
     title: Napredno
     description: Napredne nastavitve in orodja za razvijalce
+    reset_database:
+      title: Ponastavi Zbirko Podatkov
+      description: Izbriši vse podatke in ponastavi aplikacijo
+      dialog:
+        title: Ponastavi Zbirko Podatkov
+        warning:
+          "Opozorilo: Tega dejanja ni mogoče razveljaviti. Vsi vaši podatki
+          bodo trajno izbrisani."
+        confirm_text: Povlecite za potrditev
+        resetting: Ponastavljanje zbirke podatkov...
+      restart_screen:
+        completed_title: Zbirka podatkov je bila uspešno ponastavljena
+        desktop_message: Aplikacija se bo ponovno zagnala v {seconds} sekundah.
+        mobile_message: Prosimo, ročno ponovno zaženite aplikacijo za dokončanje postopka.
+        restart_now_button: Ponovno Zaženi Zdaj
+      error:
+        title: Ponastavljanje ni uspelo
+        message:
+          Zbirke podatkov ni bilo mogoče ponastaviti. Poskusite znova ali se
+          obrnite na podporo, če se problem nadaljuje.
+        cancel: Prekliči
+        retry: Poskusi znova
+        help_text:
+          Če se problem nadaljuje, poskusite znova zagnati aplikacijo ali
+          preverite, ali imate dovolj prostora za shranjevanje in dovoljenj.
+        permission_denied:
+          Dostop zavrnjen. Preverite, ali ima aplikacija dostop do
+          pisanja v shrambo.
+        disk_full:
+          Na napravi ni prostora. Sprostite prostor za shranjevanje in poskusite
+          znova.
+        file_not_found:
+          Datoteke baze podatkov ni mogoče najti. To je pričakovano
+          pri novi namestitvi.
+        file_access: Napaka pri dostopu do datoteke
+        sqlite: Napaka baze podatkov
+        database_locked: Baza podatkov je zaklenjena. Zaprite druge instance aplikacije.
+        state_error:
+          Napaka stanja aplikacije. Znova zaženite aplikacijo in poskusite
+          znova.
+        timeout: Operacija je potekla. Poskusite znova.
   debug_logs:
     title: Dnevniki razhroščevanja
     description:

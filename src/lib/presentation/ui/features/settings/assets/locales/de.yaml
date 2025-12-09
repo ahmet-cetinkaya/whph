@@ -308,6 +308,53 @@ settings:
   advanced:
     title: Erweitert
     description: Erweiterte Einstellungen und Entwicklertools
+    reset_database:
+      title: Datenbank zurücksetzen
+      description: Alle Daten löschen und Anwendung zurücksetzen
+      dialog:
+        title: Datenbank zurücksetzen
+        warning:
+          "Warnung: Diese Aktion kann nicht rückgängig gemacht werden. Alle
+          Ihre Daten werden permanent gelöscht."
+        confirm_text: Wischen Sie zum Bestätigen
+        resetting: Datenbank wird zurückgesetzt...
+      restart_screen:
+        completed_title: Datenbank wurde erfolgreich zurückgesetzt
+        desktop_message: Die Anwendung wird in {seconds} Sekunden neu gestartet.
+        mobile_message:
+          Bitte starten Sie die Anwendung manuell neu, um den Vorgang
+          abzuschließen.
+        restart_now_button: Jetzt neu starten
+      error:
+        title: Zurücksetzen fehlgeschlagen
+        message:
+          Datenbank konnte nicht zurückgesetzt werden. Bitte versuchen Sie
+          es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin
+          besteht.
+        cancel: Abbrechen
+        retry: Wiederholen
+        help_text:
+          Wenn das Problem weiterhin besteht, versuchen Sie bitte, die Anwendung
+          neu zu starten oder überprüfen Sie, ob Sie genügend Speicherplatz und Berechtigungen
+          haben.
+        permission_denied:
+          Zugriff verweigert. Bitte prüfen Sie, ob die Anwendung
+          Schreibzugriff auf den Speicher hat.
+        disk_full:
+          Kein Speicherplatz mehr auf dem Gerät. Bitte Speicherplatz freigeben
+          und erneut versuchen.
+        file_not_found:
+          Datenbankdatei nicht gefunden. Dies ist bei einer Neuinstallation
+          erwartet.
+        file_access: Dateizugriffsfehler
+        sqlite: Datenbankfehler
+        database_locked:
+          Datenbank ist gesperrt. Bitte schließen Sie andere Instanzen
+          der Anwendung.
+        state_error:
+          Anwendungsstatusfehler. Bitte starten Sie die Anwendung neu und
+          versuchen Sie es erneut.
+        timeout: Operation abgelaufen. Bitte versuchen Sie es erneut.
   debug_logs:
     title: Debug-Protokolle
     description: Detaillierte Protokollierung für Fehlerbehebung und Support aktivieren

@@ -7,6 +7,7 @@ import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/shared/utils/logger.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
@@ -167,10 +168,10 @@ class AppDatabase extends _$AppDatabase {
         ));
 
         await dbFile.copy(backupFile.path);
-        debugPrint('Database backup created: ${backupFile.path}');
+        Logger.info('Database backup created: ${backupFile.path}');
       }
     } catch (e) {
-      debugPrint('Warning: Failed to create database backup: $e');
+      Logger.warning('Failed to create database backup: $e');
       // Don't fail migration if backup fails, but log it
     }
   }
@@ -193,7 +194,7 @@ class AppDatabase extends _$AppDatabase {
         throw StateError('No tables found in database after migration');
       }
 
-      debugPrint('Data integrity validation passed: ${tables.length} tables verified');
+      Logger.info('Data integrity validation passed: ${tables.length} tables verified');
     } catch (e) {
       throw StateError('Data integrity validation failed: $e');
     }
@@ -222,7 +223,7 @@ class AppDatabase extends _$AppDatabase {
       backupFiles.sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
       return backupFiles;
     } catch (e) {
-      debugPrint('Error listing backups: $e');
+      Logger.error('Error listing backups: $e');
       return [];
     }
   }
@@ -231,7 +232,7 @@ class AppDatabase extends _$AppDatabase {
   /// This should only be called manually in case of catastrophic migration failure
   Future<bool> restoreFromBackup({File? specificBackup}) async {
     if (isTestMode) {
-      debugPrint('Backup restoration not available in test mode');
+      Logger.warning('Backup restoration not available in test mode');
       return false;
     }
 
@@ -242,11 +243,11 @@ class AppDatabase extends _$AppDatabase {
       final backupFile = specificBackup ?? (await _listAvailableBackups()).firstOrNull;
 
       if (backupFile == null) {
-        debugPrint('No backup files found');
+        Logger.warning('No backup files found');
         return false;
       }
 
-      debugPrint('Restoring database from backup: ${backupFile.path}');
+      Logger.info('Restoring database from backup: ${backupFile.path}');
 
       // Close current database connection before restoration
       await close();
@@ -259,10 +260,10 @@ class AppDatabase extends _$AppDatabase {
       // Restore from backup
       await backupFile.copy(currentDbFile.path);
 
-      debugPrint('Database restored successfully from backup');
+      Logger.info('Database restored successfully from backup');
       return true;
     } catch (e) {
-      debugPrint('CRITICAL: Failed to restore from backup: $e');
+      Logger.error('CRITICAL: Failed to restore from backup: $e');
       return false;
     }
   }
@@ -284,14 +285,166 @@ class AppDatabase extends _$AppDatabase {
         ));
 
         await dbFile.copy(backupFile.path);
-        debugPrint('Manual database backup created: ${backupFile.path}');
+        Logger.info('Manual database backup created: ${backupFile.path}');
         return backupFile;
       }
 
       return null;
     } catch (e) {
-      debugPrint('Failed to create manual database backup: $e');
+      Logger.error('Failed to create manual database backup: $e');
       return null;
+    }
+  }
+
+  /// Resets the database by closing the connection and deleting the database file.
+  /// Creates an automatic backup before deletion for recovery purposes.
+  Future<void> resetDatabase() async {
+    // Create automatic backup before reset for safety
+    final backupFile = await _createPreResetBackup();
+
+    // Close the connection
+    await close();
+    _instance = null;
+
+    try {
+      final dbFolder = await _getApplicationDirectory();
+      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+
+      if (await dbFile.exists()) {
+        await dbFile.delete();
+        Logger.info('Database deleted successfully');
+
+        if (backupFile != null) {
+          Logger.info('Pre-reset backup created: ${backupFile.path}');
+        }
+      } else {
+        Logger.info('Database file does not exist - treating as fresh reset');
+      }
+    } catch (e) {
+      Logger.error('Error deleting database: $e');
+
+      // If database deletion fails, try to restore from backup if it was created
+      if (backupFile != null && await backupFile.exists()) {
+        try {
+          final dbFolder = await _getApplicationDirectory();
+          final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+          await backupFile.copy(dbFile.path);
+          Logger.info('Database restored from pre-reset backup due to deletion failure');
+        } catch (restoreError) {
+          Logger.error('Failed to restore database from backup: $restoreError');
+        }
+      }
+
+      rethrow;
+    }
+  }
+
+  /// Creates an automatic backup before database reset for recovery purposes.
+  /// This backup is kept for 7 days for emergency recovery.
+  Future<File?> _createPreResetBackup() async {
+    try {
+      final dbFolder = await _getApplicationDirectory();
+      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+
+      if (!await dbFile.exists()) {
+        Logger.info('No database file exists - no backup needed for fresh reset');
+        return null;
+      }
+
+      // Create backup directory if it doesn't exist
+      final backupFolder = Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
+      if (!await backupFolder.exists()) {
+        await backupFolder.create(recursive: true);
+      }
+
+      // Generate backup filename with timestamp
+      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+      final backupFileName = 'pre_reset_${timestamp}_$databaseName';
+      final backupFile = File(p.join(backupFolder.path, backupFileName));
+
+      // Copy database file to backup location
+      await dbFile.copy(backupFile.path);
+
+      // Clean up old pre-reset backups (keep only last 7 days)
+      await _cleanupOldPreResetBackups(backupFolder);
+
+      Logger.info('Pre-reset backup created: ${backupFile.path}');
+      return backupFile;
+    } catch (e) {
+      Logger.warning('Failed to create pre-reset backup: $e');
+      // Don't fail the reset if backup creation fails
+      return null;
+    }
+  }
+
+  /// Cleans up old pre-reset backups older than 7 days.
+  Future<void> _cleanupOldPreResetBackups(Directory backupFolder) async {
+    try {
+      final files = await backupFolder.list().toList();
+      final cutoffDate = DateTime.now().subtract(const Duration(days: 7));
+
+      for (final file in files) {
+        if (file is File && file.path.contains('pre_reset_')) {
+          final stat = await file.stat();
+          if (stat.modified.isBefore(cutoffDate)) {
+            await file.delete();
+            Logger.info('Deleted old pre-reset backup: ${file.path}');
+          }
+        }
+      }
+    } catch (e) {
+      Logger.warning('Failed to cleanup old pre-reset backups: $e');
+      // Don't fail if cleanup fails
+    }
+  }
+
+  /// Lists available pre-reset backups for recovery purposes.
+  Future<List<File>> listPreResetBackups() async {
+    try {
+      final dbFolder = await _getApplicationDirectory();
+      final backupFolder = Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
+
+      if (!await backupFolder.exists()) {
+        return [];
+      }
+
+      final files = await backupFolder.list().toList();
+      final backupFiles = <File>[];
+
+      for (final file in files) {
+        if (file is File && file.path.contains('pre_reset_')) {
+          backupFiles.add(file);
+        }
+      }
+
+      // Sort by creation time (newest first)
+      backupFiles.sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+
+      return backupFiles;
+    } catch (e) {
+      Logger.error('Error listing pre-reset backups: $e');
+      return [];
+    }
+  }
+
+  /// Restores database from a pre-reset backup file.
+  Future<bool> restoreFromPreResetBackup(File backupFile) async {
+    try {
+      // Close current database connection
+      await close();
+      _instance = null;
+
+      final dbFolder = await _getApplicationDirectory();
+      final dbFile = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+
+      // Restore from backup
+      await backupFile.copy(dbFile.path);
+
+      Logger.info('Database restored from pre-reset backup: ${backupFile.path}');
+      return true;
+    } catch (e) {
+      Logger.error('Failed to restore from pre-reset backup: $e');
+      return false;
     }
   }
 
@@ -300,12 +453,12 @@ class AppDatabase extends _$AppDatabase {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
         try {
-          debugPrint('Creating database schema version $schemaVersion');
+          Logger.info('Creating database schema version $schemaVersion');
           await m.createAll();
           await customStatement('PRAGMA foreign_keys = ON');
-          debugPrint('Database schema created successfully');
+          Logger.info('Database schema created successfully');
         } catch (e, stackTrace) {
-          debugPrint('Error creating database schema: $e\n$stackTrace');
+          Logger.error('Error creating database schema: $e\n$stackTrace');
           rethrow;
         }
       },
@@ -317,7 +470,7 @@ class AppDatabase extends _$AppDatabase {
             final dbDirectory = Directory(dbFolder.path);
             if (!await dbDirectory.exists()) {
               await dbDirectory.create(recursive: true);
-              debugPrint('Created database directory: ${dbDirectory.path}');
+              Logger.info('Created database directory: ${dbDirectory.path}');
             }
           }
 
@@ -329,18 +482,18 @@ class AppDatabase extends _$AppDatabase {
 
           // Log migration info
           if (details.hadUpgrade) {
-            debugPrint('Migration completed from v${details.versionBefore} to v${details.versionNow}');
+            Logger.info('Migration completed from v${details.versionBefore} to v${details.versionNow}');
           } else if (details.versionNow == schemaVersion) {
-            debugPrint('Database schema is current: v${details.versionNow}');
+            Logger.info('Database schema is current: v${details.versionNow}');
           }
         } catch (e, stackTrace) {
-          debugPrint('Error in beforeOpen: $e\n$stackTrace');
+          Logger.error('Error in beforeOpen: $e\n$stackTrace');
           rethrow;
         }
       },
       onUpgrade: (Migrator m, int from, int to) async {
         try {
-          debugPrint('Starting migration from version $from to $to');
+          Logger.info('Starting migration from version $from to $to');
 
           // Validate migration parameters
           _validateMigrationVersions(from, to);
@@ -465,7 +618,7 @@ class AppDatabase extends _$AppDatabase {
                     }
                   }
                 } catch (e) {
-                  debugPrint('Warning: Migration v7->v8 partial failure: $e');
+                  Logger.warning('Migration v7->v8 partial failure: $e');
                   // Continue migration even if this optional data migration fails
                 }
               },
@@ -661,10 +814,10 @@ class AppDatabase extends _$AppDatabase {
                   WHERE usage_date IS NULL
                 ''');
 
-                    debugPrint('Updated app_usage_time_record_table with usage_date from created_date');
+                    Logger.info('Updated app_usage_time_record_table with usage_date from created_date');
                   }
                 } catch (e) {
-                  debugPrint('Error in migration v20->v21: $e');
+                  Logger.error('Error in migration v20->v21: $e');
                   rethrow;
                 }
               },
@@ -708,7 +861,7 @@ class AppDatabase extends _$AppDatabase {
 
                   final duplicateCount = (duplicates?.data['count'] as int?) ?? 0;
                   if (duplicateCount > 0) {
-                    debugPrint('Found $duplicateCount duplicate task IDs, cleaning up...');
+                    Logger.warning('Found $duplicateCount duplicate task IDs, cleaning up...');
                   }
 
                   // Delete duplicate records (keep the first record for each ID)
@@ -760,13 +913,13 @@ class AppDatabase extends _$AppDatabase {
                   final copiedCount =
                       await customSelect('SELECT COUNT(*) as count FROM task_table_new').getSingleOrNull();
                   final insertCount = (copiedCount?.data['count'] as int?) ?? 0;
-                  debugPrint('Copied $insertCount task records to new table');
+                  Logger.info('Copied $insertCount task records to new table');
 
                   // Drop the old table and rename the new one
                   await customStatement('DROP TABLE task_table');
                   await customStatement('ALTER TABLE task_table_new RENAME TO task_table');
                 } catch (e) {
-                  debugPrint('Error in migration v22->v23: $e');
+                  Logger.error('Error in migration v22->v23: $e');
                   rethrow;
                 }
               },
@@ -866,12 +1019,12 @@ class AppDatabase extends _$AppDatabase {
               ''').getSingleOrNull();
 
                   final hasOrderColumn = (orderColumnExists?.data['count'] as int? ?? 0) > 0;
-                  debugPrint('habit_table has order column: $hasOrderColumn');
+                  Logger.debug('habit_table has order column: $hasOrderColumn');
 
                   // Count records before migration
                   final habitCount = await customSelect('SELECT COUNT(*) as count FROM habit_table').getSingleOrNull();
                   final totalHabits = (habitCount?.data['count'] as int?) ?? 0;
-                  debugPrint('Migrating $totalHabits habit records');
+                  Logger.info('Migrating $totalHabits habit records');
 
                   // Check for duplicate IDs before migration
                   final duplicatesResult = await customSelect('''
@@ -880,10 +1033,10 @@ class AppDatabase extends _$AppDatabase {
               ''').get();
 
                   if (duplicatesResult.isNotEmpty) {
-                    debugPrint('WARNING: Found ${duplicatesResult.length} duplicate IDs in habit_table');
+                    Logger.warning('Found ${duplicatesResult.length} duplicate IDs in habit_table');
                     // Log duplicate IDs for debugging
                     for (final dup in duplicatesResult) {
-                      debugPrint('Duplicate ID: ${dup.data['id']} (count: ${dup.data['count']})');
+                      Logger.debug('Duplicate ID: ${dup.data['id']} (count: ${dup.data['count']})');
                     }
                   }
 
@@ -975,7 +1128,7 @@ class AppDatabase extends _$AppDatabase {
 
                   if (restoredHabits < totalHabits) {
                     final removedDuplicates = totalHabits - restoredHabits;
-                    debugPrint('Successfully removed $removedDuplicates duplicate habit records during migration');
+                    Logger.info('Successfully removed $removedDuplicates duplicate habit records during migration');
                   }
 
                   await customStatement('DROP TABLE habit_table_backup;');
@@ -1024,7 +1177,7 @@ class AppDatabase extends _$AppDatabase {
                     final restoredRecords = (restoredRecordCount?.data['count'] as int?) ?? 0;
                     final orphanedRecords = totalRecords - restoredRecords;
                     if (orphanedRecords > 0) {
-                      debugPrint('Removed $orphanedRecords orphaned habit time records');
+                      Logger.info('Removed $orphanedRecords orphaned habit time records');
                     }
 
                     await customStatement('DROP TABLE habit_time_record_table_backup;');
@@ -1048,7 +1201,7 @@ class AppDatabase extends _$AppDatabase {
                   await customStatement(
                       'CREATE INDEX IF NOT EXISTS idx_habit_time_record_habit_date ON habit_time_record_table (habit_id, created_date);');
                 } catch (e) {
-                  debugPrint('Error in migration v25->v26: $e');
+                  Logger.error('Error in migration v25->v26: $e');
                   rethrow;
                 }
               },
@@ -1129,11 +1282,11 @@ class AppDatabase extends _$AppDatabase {
             // Validate data integrity after migration steps
             await _validateDataIntegrity();
 
-            debugPrint('Migration from v$from to v$to completed successfully');
+            Logger.info('Migration from v$from to v$to completed successfully');
           });
         } catch (e, stackTrace) {
-          debugPrint('CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
-          debugPrint('Transaction will be rolled back automatically');
+          Logger.error('CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
+          Logger.info('Transaction will be rolled back automatically');
           rethrow;
         }
       },

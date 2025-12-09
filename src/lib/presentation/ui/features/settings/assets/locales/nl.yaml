@@ -297,6 +297,47 @@ settings:
   advanced:
     title: Geavanceerd
     description: Geavanceerde instellingen en ontwikkelaarstools
+    reset_database:
+      title: Database Resetten
+      description: Verwijder alle data en reset de applicatie
+      dialog:
+        title: Database Resetten
+        warning:
+          "Waarschuwing: Deze actie kan niet ongedaan worden gemaakt. Al uw
+          data wordt permanent verwijderd."
+        confirm_text: Swipe om te bevestigen
+        resetting: Database resetten...
+      restart_screen:
+        completed_title: Database is succesvol gereset
+        desktop_message: De applicatie herstart over {seconds} seconden.
+        mobile_message: Herstart de applicatie handmatig om het proces te voltooien.
+        restart_now_button: Nu Herstarten
+      error:
+        title: Reset mislukt
+        message:
+          Kon database niet resetten. Probeer opnieuw of neem contact op met
+          support als het probleem aanhoudt.
+        cancel: Annuleren
+        retry: Opnieuw proberen
+        help_text:
+          Als het probleem aanhoudt, probeer dan de applicatie opnieuw te
+          starten of controleer of u voldoende opslagruimte en machtigingen heeft.
+        permission_denied:
+          Toegang geweigerd. Controleer of de applicatie toegang
+          heeft om naar de opslag te schrijven.
+        disk_full:
+          Geen ruimte meer op apparaat. Maak opslagruimte vrij en probeer
+          het opnieuw.
+        file_not_found:
+          Databasebestand niet gevonden. Dit is verwacht bij een nieuwe
+          installatie.
+        file_access: Bestandstoegangsfout
+        sqlite: Databasefout
+        database_locked: Database is vergrendeld. Sluit andere instanties van de applicatie.
+        state_error:
+          Applicatiestatusfout. Start de applicatie opnieuw en probeer
+          het opnieuw.
+        timeout: Operatie timeout. Probeer het opnieuw.
   debug_logs:
     title: Debug-logs
     description:

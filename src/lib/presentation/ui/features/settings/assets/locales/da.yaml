@@ -280,6 +280,45 @@ settings:
   advanced:
     title: Avanceret
     description: Avancerede indstillinger og udviklerværktøjer
+    reset_database:
+      title: Nulstil Database
+      description: Slet alle data og nulstil applikationen
+      dialog:
+        title: Nulstil Database
+        warning:
+          "Advarsel: Denne handling kan ikke fortrydes. Alle dine data bliver
+          slettet permanent."
+        confirm_text: Stryg for at bekræfte
+        resetting: Nulstiller database...
+      restart_screen:
+        completed_title: Databasen er blevet nulstillet med succes
+        desktop_message: Applikationen genstarter om {seconds} sekunder.
+        mobile_message: Genstart venligst applikationen manuelt for at fuldføre processen.
+        restart_now_button: Genstart Nu
+      error:
+        title: Nulstilling mislykkedes
+        message:
+          Kunne ikke nulstille databasen. Prøv igen eller kontakt support hvis
+          problemet fortsætter.
+        cancel: Annuller
+        retry: Prøv igen
+        help_text:
+          Hvis problemet fortsætter, så prøv at genstarte applikationen eller
+          tjek, om du har tilstrækkelig lagerplads og tilladelser.
+        permission_denied:
+          Adgang nægtet. Tjek venligst om applikationen har adgang
+          til at skrive til lager.
+        disk_full:
+          Ingen plads tilbage på enhed. Frigør venligst lagerplads og prøv
+          igen.
+        file_not_found: Databasefil ikke fundet. Dette forventes ved en ny installation.
+        file_access: Filadgangsfejl
+        sqlite: Databasefejl
+        database_locked: Database er låst. Luk venligst andre instanser af applikationen.
+        state_error:
+          Programtilstandsfejl. Genstart venligst applikationen og prøv
+          igen.
+        timeout: Operationen timed out. Prøv venligst igen.
   debug_logs:
     title: Debug-logfiler
     description: Aktiver detaljeret logføring til fil for fejlfinding og support

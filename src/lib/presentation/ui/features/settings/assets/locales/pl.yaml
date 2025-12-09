@@ -303,6 +303,47 @@ settings:
   advanced:
     title: Zaawansowane
     description: Zaawansowane ustawienia i narzędzia programistyczne
+    reset_database:
+      title: Zresetuj Bazę Danych
+      description: Usuń wszystkie dane i zresetuj aplikację
+      dialog:
+        title: Zresetuj Bazę Danych
+        warning:
+          "Ostrzeżenie: Ta czynność nie może zostać cofnięta. Wszystkie Twoje
+          dane zostaną trwale usunięte."
+        confirm_text: Przesuń, aby potwierdzić
+        resetting: Resetowanie bazy danych...
+      restart_screen:
+        completed_title: Baza danych została pomyślnie zresetowana
+        desktop_message: Aplikacja uruchomi się ponownie za {seconds} sekund.
+        mobile_message:
+          Proszę ręcznie uruchomić aplikację ponownie, aby ukończyć
+          proces.
+        restart_now_button: Uruchom Ponownie Teraz
+      error:
+        title: Resetowanie nie powiodło się
+        message:
+          Nie udało się zresetować bazy danych. Spróbuj ponownie lub skontaktuj
+          się z pomocą techniczną, jeśli problem będzie się powtarzał.
+        cancel: Anuluj
+        retry: Spróbuj ponownie
+        help_text:
+          Jeśli problem nadal występuje, spróbuj ponownie uruchomić aplikację
+          lub sprawdź, czy masz wystarczającą ilość miejsca i uprawnień.
+        permission_denied:
+          Odmowa dostępu. Sprawdź, czy aplikacja ma dostęp do zapisu
+          w pamięci.
+        disk_full:
+          Brak miejsca na urządzeniu. Zwolnij miejsce w pamięci i spróbuj
+          ponownie.
+        file_not_found:
+          Nie znaleziono pliku bazy danych. Jest to oczekiwane przy
+          nowej instalacji.
+        file_access: Błąd dostępu do pliku
+        sqlite: Błąd bazy danych
+        database_locked: Baza danych jest zablokowana. Zamknij inne instancje aplikacji.
+        state_error: Błąd stanu aplikacji. Uruchom ponownie aplikację i spróbuj ponownie.
+        timeout: Operacja przekroczyła czas oczekiwania. Spróbuj ponownie.
   debug_logs:
     title: Dzienniki debugowania
     description:

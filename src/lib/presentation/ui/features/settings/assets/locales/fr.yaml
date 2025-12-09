@@ -311,6 +311,52 @@ settings:
   advanced:
     title: Avancé
     description: Paramètres avancés et outils de développement
+    reset_database:
+      title: Réinitialiser la Base de Données
+      description: Supprimer toutes les données et réinitialiser l'application
+      dialog:
+        title: Réinitialiser la Base de Données
+        warning:
+          "Attention : Cette action ne peut pas être annulée. Toutes vos données
+          seront définitivement supprimées."
+        confirm_text: Faites glisser pour confirmer
+        resetting: Réinitialisation de la base de données...
+      restart_screen:
+        completed_title: La base de données a été réinitialisée avec succès
+        desktop_message: L'application redémarrera dans {seconds} secondes.
+        mobile_message:
+          Veuillez redémarrer manuellement l'application pour terminer
+          le processus.
+        restart_now_button: Redémarrer Maintenant
+      error:
+        title: Échec de la réinitialisation
+        message:
+          Impossible de réinitialiser la base de données. Veuillez réessayer
+          ou contacter le support si le problème persiste.
+        cancel: Annuler
+        retry: Réessayer
+        help_text:
+          Si le problème persiste, essayez de redémarrer l'application ou
+          vérifiez si vous disposez de suffisamment d'espace de stockage et des autorisations
+          nécessaires.
+        permission_denied:
+          Autorisation refusée. Veuillez vérifier si l'application
+          a accès en écriture au stockage.
+        disk_full:
+          Espace disque insuffisant sur l'appareil. Veuillez libérer de l'espace
+          de stockage et réessayer.
+        file_not_found:
+          Fichier de base de données introuvable. Ceci est attendu pour
+          une nouvelle installation.
+        file_access: Erreur d'accès au fichier
+        sqlite: Erreur de base de données
+        database_locked:
+          La base de données est verrouillée. Veuillez fermer les autres
+          instances de l'application.
+        state_error:
+          Erreur d'état de l'application. Veuillez redémarrer l'application
+          et réessayer.
+        timeout: Opération expirée. Veuillez réessayer.
   debug_logs:
     title: Journaux de débogage
     description:

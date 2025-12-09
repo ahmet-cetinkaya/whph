@@ -295,6 +295,47 @@ settings:
   advanced:
     title: Avanzate
     description: Impostazioni avanzate e strumenti per sviluppatori
+    reset_database:
+      title: Reimposta Database
+      description: Elimina tutti i dati e reimposta l'applicazione
+      dialog:
+        title: Reimposta Database
+        warning:
+          "Attenzione: Questa azione non può essere annullata. Tutti i tuoi
+          dati verranno eliminati permanentemente."
+        confirm_text: Scorri per confermare
+        resetting: Reimpostazione database in corso...
+      restart_screen:
+        completed_title: Il database è stato ripristinato con successo
+        desktop_message: L'applicazione si riavvierà tra {seconds} secondi.
+        mobile_message: Riavvia manualmente l'applicazione per completare il processo.
+        restart_now_button: Riavvia Ora
+      error:
+        title: Reimpostazione fallita
+        message:
+          Impossibile reimpostare il database. Riprovare o contattare il supporto
+          se il problema persiste.
+        cancel: Annulla
+        retry: Riprova
+        help_text:
+          Se il problema persiste, provare a riavviare l'applicazione o verificare
+          di avere spazio di archiviazione e permessi sufficienti.
+        permission_denied:
+          Autorizzazione negata. Verificare se l'applicazione ha
+          accesso in scrittura all'archiviazione.
+        disk_full:
+          Spazio insufficiente sul dispositivo. Liberare spazio di archiviazione
+          e riprovare.
+        file_not_found:
+          File database non trovato. Ciò è previsto per un'installazione
+          nuova.
+        file_access: Errore di accesso al file
+        sqlite: Errore del database
+        database_locked: Database bloccato. Chiudere le altre istanze dell'applicazione.
+        state_error:
+          Errore di stato dell'applicazione. Riavviare l'applicazione e
+          riprovare.
+        timeout: Operazione scaduta. Riprovare.
   debug_logs:
     title: Log di debug
     description:

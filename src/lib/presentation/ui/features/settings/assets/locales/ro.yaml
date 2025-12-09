@@ -299,6 +299,47 @@ settings:
   advanced:
     title: Avansate
     description: Setări avansate și instrumente pentru dezvoltatori
+    reset_database:
+      title: Resetează Baza de Date
+      description: Șterge toate datele și resetează aplicația
+      dialog:
+        title: Resetează Baza de Date
+        warning:
+          "Avertisment: Această acțiune nu poate fi anulată. Toate datele dvs.
+          vor fi șterse permanent."
+        confirm_text: Glisați pentru a confirma
+        resetting: Se resetează baza de date...
+      restart_screen:
+        completed_title: Baza de date a fost resetată cu succes
+        desktop_message: Aplicația va reporni în {seconds} secunde.
+        mobile_message: Vă rugăm reporniți manual aplicația pentru a finaliza procesul.
+        restart_now_button: Repornește Acum
+      error:
+        title: Resetare eșuată
+        message:
+          Nu s-a putut reseta baza de date. Încercați din nou sau contactați
+          suportul dacă problema persistă.
+        cancel: Anulează
+        retry: Reîncearcă
+        help_text:
+          Dacă problema persistă, încercați să reporniți aplicația sau verificați
+          dacă aveți suficient spațiu de stocare și permisiuni.
+        permission_denied:
+          Permisiune refuzată. Verificați dacă aplicația are acces
+          de scriere la stocare.
+        disk_full:
+          Spatiu insuficient pe dispozitiv. Eliberați spațiu de stocare și
+          încercați din nou.
+        file_not_found:
+          Fișier baze de date nu a fost găsit. Acest lucru este așteptat
+          la o instalare nouă.
+        file_access: Eroare de acces la fișier
+        sqlite: Eroare bază de date
+        database_locked: Baza de date este blocată. Închideți alte instanțe ale aplicației.
+        state_error:
+          Eroare de stare a aplicației. Reporniți aplicația și încercați
+          din nou.
+        timeout: Operațiunea a expirat. Încercați din nou.
   debug_logs:
     title: Jurnale de Depanare
     description: Activați înregistrarea detaliată în fișier pentru depanare și suport

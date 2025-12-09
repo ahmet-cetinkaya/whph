@@ -234,6 +234,33 @@ settings:
   advanced:
     title: 詳細設定
     description: 詳細設定と開発者ツール
+    reset_database:
+      title: データベースをリセット
+      description: すべてのデータを削除してアプリケーションをリセット
+      dialog:
+        title: データベースをリセット
+        warning: 警告：この操作は元に戻せません。すべてのデータが永久に削除されます。
+        confirm_text: スワイプして確認
+        resetting: データベースをリセット中...
+      restart_screen:
+        completed_title: データベースが正常にリセットされました
+        desktop_message: アプリケーションは{seconds}秒後に再起動します。
+        mobile_message: プロセスを完了するために手動でアプリケーションを再起動してください。
+        restart_now_button: 今すぐ再起動
+      error:
+        title: リセット失敗
+        message: データベースのリセットに失敗しました。問題が解決しない場合は、もう一度お試しいただくか、サポートにお問い合わせください。
+        cancel: キャンセル
+        retry: 再試行
+        help_text: 問題が続く場合は、アプリケーションを再起動するか、十分なストレージ容量と権限があるか確認してください。
+        permission_denied: アクセスが拒否されました。アプリケーションがストレージへの書き込みアクセス権を持っているか確認してください。
+        disk_full: デバイスの空き容量がありません。ストレージ容量を確保してから再度お試しください。
+        file_not_found: データベースファイルが見つかりません。これは新規インストールでは想定されています。
+        file_access: ファイルアクセスエラー
+        sqlite: データベースエラー
+        database_locked: データベースがロックされています。アプリケーションの他のインスタンスを閉じてください。
+        state_error: アプリケーション状態エラー。アプリケーションを再起動してから再度お試しください。
+        timeout: 操作がタイムアウトしました。再度お試しください。
   debug_logs:
     title: デバッグログ
     description: トラブルシューティングとサポートのためにファイルへの詳細ログを有効にする

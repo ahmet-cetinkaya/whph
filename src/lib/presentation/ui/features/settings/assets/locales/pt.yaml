@@ -296,6 +296,49 @@ settings:
   advanced:
     title: Avançado
     description: Configurações avançadas e ferramentas de desenvolvedor
+    reset_database:
+      title: Redefinir Banco de Dados
+      description: Excluir todos os dados e redefinir o aplicativo
+      dialog:
+        title: Redefinir Banco de Dados
+        warning:
+          "Aviso: Esta ação não pode ser desfeita. Todos os seus dados serão
+          permanentemente excluídos."
+        confirm_text: Deslize para confirmar
+        resetting: Redefinindo banco de dados...
+      restart_screen:
+        completed_title: Banco de dados redefinido com sucesso
+        desktop_message: O aplicativo será reiniciado em {seconds} segundos.
+        mobile_message:
+          Por favor reinicie manualmente o aplicativo para completar
+          o processo.
+        restart_now_button: Reiniciar Agora
+      error:
+        title: Redefinição falhou
+        message:
+          Não foi possível redefinir o banco de dados. Tente novamente ou contate
+          o suporte se o problema persistir.
+        cancel: Cancelar
+        retry: Tentar novamente
+        help_text:
+          Se o problema persistir, tente reiniciar o aplicativo ou verifique
+          se você tem espaço de armazenamento e permissões suficientes.
+        permission_denied:
+          Permissão negada. Verifique se o aplicativo tem acesso
+          de escrita ao armazenamento.
+        disk_full:
+          Sem espaço no dispositivo. Libere espaço de armazenamento e tente
+          novamente.
+        file_not_found:
+          Arquivo de banco de dados não encontrado. Isso é esperado
+          em uma instalação nova.
+        file_access: Erro de acesso ao arquivo
+        sqlite: Erro de banco de dados
+        database_locked:
+          Banco de dados está bloqueado. Feche outras instâncias do
+          aplicativo.
+        state_error: Erro de estado do aplicativo. Reinicie o aplicativo e tente novamente.
+        timeout: Operação expirou. Tente novamente.
   debug_logs:
     title: Logs de Depuração
     description:

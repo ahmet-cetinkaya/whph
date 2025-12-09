@@ -293,6 +293,45 @@ settings:
   advanced:
     title: Gelişmiş
     description: Gelişmiş ayarlar ve geliştirici araçları
+    reset_database:
+      title: Veritabanını Sıfırla
+      description: Tüm verileri sil ve uygulamayı sıfırla
+      dialog:
+        title: Veritabanını Sıfırla
+        warning: "Uyarı: Bu işlem geri alınamaz. Tüm verileriniz kalıcı olarak silinecektir."
+        confirm_text: Onaylamak için kaydırın
+        resetting: Veritabanı sıfırlanıyor...
+      restart_screen:
+        completed_title: Veritabanı başarıyla sıfırlandı
+        desktop_message: Uygulama {seconds} saniye içinde yeniden başlatılacak.
+        mobile_message:
+          İşlemi tamamlamak için lütfen uygulamayı manuel olarak yeniden
+          başlatın.
+        restart_now_button: Şimdi Yeniden Başlat
+      error:
+        title: Sıfırlama Başarısız
+        message:
+          Veritabanı sıfırlanamadı. Lütfen tekrar deneyin veya sorun devam
+          ederse destek ile iletişime geçin.
+        cancel: İptal
+        retry: Tekrar Dene
+        help_text:
+          Sorun devam ederse, uygulamayı yeniden başlatmayı veya yeterli
+          depolama alanına ve izinlere sahip olup olmadığınızı kontrol edin.
+        permission_denied:
+          İzin reddedildi. Uygulamanın depolama alanına yazma erişimi
+          olup olmadığını kontrol edin.
+        disk_full: Cihazda alan kalmadı. Lütfen depolama alanı açın ve tekrar deneyin.
+        file_not_found: Veritabanı dosyası bulunamadı. Bu yeni bir kurulumda beklenmektedir.
+        file_access: Dosya erişim hatası
+        sqlite: Veritabanı hatası
+        database_locked:
+          Veritabanı kilitli. Lütfen uygulamanın diğer örneklerini
+          kapatın.
+        state_error:
+          Uygulama durumu hatası. Lütfen uygulamayı yeniden başlatın ve
+          tekrar deneyin.
+        timeout: İşlem zaman aşımına uğradı. Lütfen tekrar deneyin.
   debug_logs:
     title: Hata Ayıklama Günlükleri
     description: Sorun giderme ve destek için ayrıntılı günlük kaydını etkinleştir
