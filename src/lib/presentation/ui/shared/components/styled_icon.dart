@@ -5,11 +5,13 @@ class StyledIcon extends StatelessWidget {
   final IconData icon;
   final bool isActive;
   final double? size;
+  final bool isRounded;
 
   const StyledIcon(
     this.icon, {
     required this.isActive,
     this.size,
+    this.isRounded = false,
     super.key,
   });
 
@@ -20,7 +22,8 @@ class StyledIcon extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: isActive ? theme.colorScheme.primary.withValues(alpha: 0.1) : AppTheme.surface2,
-        shape: BoxShape.circle,
+        shape: isRounded ? BoxShape.rectangle : BoxShape.circle,
+        borderRadius: isRounded ? BorderRadius.circular(AppTheme.sizeSmall) : null,
       ),
       child: Icon(
         icon,
