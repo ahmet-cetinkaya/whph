@@ -203,41 +203,51 @@ class _HabitCardState extends State<HabitCard> {
       return _buildListLayout(context, isCompactView);
     }
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: widget.style == HabitListStyle.grid ? 0 : 60,
-      ), // Ensure minimum height to prevent shrinking, except for grid
-      child: Semantics(
-        button: true,
-        label: '${widget.habit.name} ${_translationService.translate(HabitTranslationKeys.detailsHint)}',
-        hint: _translationService.translate(HabitTranslationKeys.openDetailsHint),
-        child: ListTile(
-          visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
-          titleAlignment: ListTileTitleAlignment.center,
-          tileColor: AppTheme.surface1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-          ),
-          contentPadding: EdgeInsets.only(
-            left: (widget.style == HabitListStyle.grid)
-                ? AppTheme.sizeMedium
-                : (isCompactView || isMobileCalendar
-                    ? HabitUiConstants.calendarPaddingMobile
-                    : HabitUiConstants.calendarPaddingDesktop),
-            right: isCompactView || isMobileCalendar
-                ? HabitUiConstants.calendarPaddingMobile
-                : (widget.style == HabitListStyle.calendar ? HabitUiConstants.calendarPaddingDesktop : 0),
-          ),
+    return Semantics(
+      button: true,
+      label: '${widget.habit.name} ${_translationService.translate(HabitTranslationKeys.detailsHint)}',
+      hint: _translationService.translate(HabitTranslationKeys.openDetailsHint),
+      child: Material(
+        color: AppTheme.surface1,
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+        child: InkWell(
           onTap: widget.onOpenDetails,
-          dense: widget.isDense,
-          leading: null,
-          title: HabitCardHeader(
-            habit: widget.habit,
-            isDense: widget.isDense,
-            style: widget.style,
-            translationService: _translationService,
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: (widget.style == HabitListStyle.grid)
+                  ? AppTheme.sizeMedium
+                  : (isCompactView || isMobileCalendar
+                      ? HabitUiConstants.calendarPaddingMobile
+                      : HabitUiConstants.calendarPaddingDesktop),
+              right: isCompactView || isMobileCalendar
+                  ? HabitUiConstants.calendarPaddingMobile
+                  : (widget.style == HabitListStyle.calendar ? HabitUiConstants.calendarPaddingDesktop : 0),
+              // Add vertical padding to ensure content doesn't touch edges if height is small
+              top: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
+              bottom: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: HabitCardHeader(
+                      habit: widget.habit,
+                      isDense: widget.isDense,
+                      style: widget.style,
+                      translationService: _translationService,
+                    ),
+                  ),
+                ),
+                if (_buildTrailing(isCompactView) != null) ...[
+                  const SizedBox(width: AppTheme.sizeSmall),
+                  _buildTrailing(isCompactView)!,
+                ],
+              ],
+            ),
           ),
-          trailing: _buildTrailing(isCompactView),
         ),
       ),
     );
@@ -361,6 +371,7 @@ class _HabitCardState extends State<HabitCard> {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: compactWidgets,
     );
   }
@@ -407,7 +418,7 @@ class _HabitCardState extends State<HabitCard> {
           Padding(
             padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
             child: SizedBox(
-              height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+              height: HabitUiConstants.calendarDaySize,
               child: Center(
                 child: ReorderableDragStartListener(
                   index: widget.dragIndex!,
@@ -424,7 +435,7 @@ class _HabitCardState extends State<HabitCard> {
             padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
             child: SizedBox(
               width: AppTheme.iconSizeMedium,
-              height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+              height: HabitUiConstants.calendarDaySize,
             ),
           ),
         );
@@ -435,14 +446,14 @@ class _HabitCardState extends State<HabitCard> {
         ? null
         : Row(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: trailingWidgets,
           );
   }
 
   Widget _buildReminderIcon() {
     return SizedBox(
-      height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+      height: HabitUiConstants.calendarDaySize,
       child: Center(
         child: Tooltip(
           message: _getReminderTooltip(),

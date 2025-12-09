@@ -134,14 +134,14 @@ class HabitCardCalendar extends StatelessWidget {
           iconColor = Colors.blue;
         } else {
           icon = HabitUiConstants.noRecordIcon;
-          iconColor = Colors.red.withValues(alpha: 0.7);
+          iconColor = Colors.red;
         }
       } else {
         // Period-based goal with daily target = 1
         if (isPeriodGoalMet && dailyCompletionCount == 0) {
           // Period goal is met and this day has no record - show satisfied state with link icon
           icon = HabitUiConstants.recordIcon;
-          iconColor = Colors.grey.withValues(alpha: 0.5);
+          iconColor = HabitUiConstants.skippedColor;
         } else if (hasRecord) {
           // This day has a record - show completed
           icon = HabitUiConstants.recordIcon;
@@ -180,9 +180,11 @@ class HabitCardCalendar extends StatelessWidget {
 
     return SizedBox(
       width: daySize,
-      height: useLargeSize
-          ? daySize * 1.5
-          : (isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2),
+      height: isDateLabelShowing
+          ? (useLargeSize
+              ? daySize * 1.5
+              : (isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2))
+          : daySize,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,

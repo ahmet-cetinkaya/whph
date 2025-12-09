@@ -6,6 +6,7 @@ import 'package:acore/acore.dart' as acore;
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 
 class HabitCheckbox extends StatelessWidget {
   final HabitListItem habit;
@@ -38,15 +39,12 @@ class HabitCheckbox extends StatelessWidget {
     final todayCount = _countRecordsForDate(today);
     final hasCustomGoals = habit.hasGoal;
     final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
-    final isMobileCalendar =
-        style == HabitListStyle.calendar && AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
-    final isCompactView = style != HabitListStyle.calendar || isMobileCalendar;
+    final isMobileCalendar = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
 
     // Increase touch target sizes to match TaskCard (approx 36-40px)
     // For mobile calendar view, we want larger buttons despite being in compact layout
-    final useLargeSize = !isCompactView || isMobileCalendar;
-    final double buttonSize = useLargeSize ? 36.0 : AppTheme.buttonSizeMedium;
-    final double iconSize = useLargeSize ? 24.0 : AppTheme.iconSizeMedium;
+    final double buttonSize = isMobileCalendar ? 36.0 : HabitUiConstants.calendarDaySize;
+    final double iconSize = AppTheme.iconSizeMedium;
 
     // For habits with custom goals and dailyTarget > 1, show completion badge
     if (hasCustomGoals && dailyTarget > 1) {
@@ -55,9 +53,11 @@ class HabitCheckbox extends StatelessWidget {
         dailyTarget: dailyTarget,
         isDisabled: isDisabled,
         onTap: onTap,
-        useLargeSize: useLargeSize,
+        useLargeSize: isMobileCalendar, // Use mobile calendar flag as proxy for large size preference
       );
     }
+
+    final isSkipped = !hasRecordToday && _isSkipped(today);
 
     // For habits without custom goals, show traditional icon
     return SizedBox(
@@ -68,13 +68,15 @@ class HabitCheckbox extends StatelessWidget {
         constraints: BoxConstraints(minWidth: buttonSize, minHeight: buttonSize),
         onPressed: isDisabled ? null : onTap,
         icon: Icon(
-          hasRecordToday ? Icons.link : Icons.close,
+          hasRecordToday || isSkipped ? HabitUiConstants.recordIcon : Icons.close,
           size: iconSize,
           color: isDisabled
               ? AppTheme.textColor.withValues(alpha: 0.3)
               : hasRecordToday
                   ? Colors.green
-                  : Colors.red.withValues(alpha: 0.7),
+                  : isSkipped
+                      ? HabitUiConstants.skippedColor
+                      : Colors.red,
         ),
       ),
     );
@@ -97,5 +99,49 @@ class HabitCheckbox extends StatelessWidget {
         .where((record) => acore.DateTimeHelper.isSameDay(
             acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
         .length;
+  }
+
+  bool _isSkipped(DateTime date) {
+    if (!habit.hasGoal || habit.periodDays <= 1) {
+      return false;
+    }
+
+    final targetFrequency = habit.targetFrequency;
+    final periodDays = habit.periodDays;
+    final dailyTarget = habit.dailyTarget ?? 1;
+
+    // Calculate start of period relative to the given date
+    // We look back (periodDays - 1) days to see if the goal is already met for the period ending on 'date'
+    final periodStartDate = date.subtract(Duration(days: periodDays - 1));
+
+    // Get all records within this window
+    final recordsInPeriod = habitRecords?.where((record) {
+          final recordDate = acore.DateTimeHelper.toLocalDateTime(record.occurredAt);
+          final compareDate = DateTime(recordDate.year, recordDate.month, recordDate.day);
+          final startDate = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
+          final endDate = DateTime(date.year, date.month, date.day);
+
+          return !compareDate.isBefore(startDate) && !compareDate.isAfter(endDate);
+        }).toList() ??
+        [];
+
+    // Group by date to check daily targets
+    final recordsByDate = <DateTime, int>{};
+    for (final record in recordsInPeriod) {
+      final recordDate = acore.DateTimeHelper.toLocalDateTime(record.occurredAt);
+      final dateKey = DateTime(recordDate.year, recordDate.month, recordDate.day);
+      recordsByDate[dateKey] = (recordsByDate[dateKey] ?? 0) + 1;
+    }
+
+    // Count days that met the daily target
+    int completedDaysInPeriod = 0;
+    for (final count in recordsByDate.values) {
+      if (count >= dailyTarget) {
+        completedDaysInPeriod++;
+      }
+    }
+
+    // If we've already met or exceeded the target frequency, this day is skippable/skipped
+    return completedDaysInPeriod >= targetFrequency;
   }
 }

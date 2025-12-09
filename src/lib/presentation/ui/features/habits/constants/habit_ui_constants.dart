@@ -17,6 +17,7 @@ class HabitUiConstants {
   // Colors
   static const Color completedColor = Colors.green;
   static const Color inCompletedColor = Colors.red;
+  static Color get skippedColor => Colors.grey.withValues(alpha: 0.5);
   static const Color estimatedTimeColor = Colors.blue;
 
   // Dimensions
