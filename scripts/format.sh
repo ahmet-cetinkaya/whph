@@ -51,11 +51,12 @@ trap cleanup EXIT
 
 # Single pass to collect all files - much faster than multiple find calls
 print_section "🔍 Scanning for files to format..."
-find . \( -name "*.dart" -not -name "*.g.dart" -not -name "*.mocks.dart" -not -name "*.log" \) \
+find . \( \
+    \( -name "*.dart" -not -name "*.g.dart" -not -name "*.mocks.dart" -not -name "*.log" \) \
     -o \( -name "*.json" \) \
     -o \( -name "*.yaml" -o -name "*.yml" \) \
     -o \( -name "*.md" \) \
-    "${EXCLUDES[@]}" | while IFS= read -r file; do
+    \) "${EXCLUDES[@]}" | while IFS= read -r file; do
     case "$file" in
     *.dart) echo "$file" >>"$DART_FILES_LIST" ;;
     *.json) echo "$file" >>"$JSON_FILES_LIST" ;;
@@ -72,13 +73,13 @@ if [[ $DART_COUNT -gt 0 ]]; then
 
     if command -v fvm &>/dev/null && [[ -f ".fvmrc" ]]; then
         print_info "🔧 Using FVM for Flutter formatting..."
-        xargs -a "$DART_FILES_LIST" fvm dart format -l 120 2>/dev/null || {
+        xargs -a "$DART_FILES_LIST" fvm dart format -l 120 || {
             print_warning "⚠️ FVM dart format failed, trying standard dart format..."
-            xargs -a "$DART_FILES_LIST" dart format -l 120 2>/dev/null || true
+            xargs -a "$DART_FILES_LIST" dart format -l 120 || true
         }
     else
         print_info "🔧 Using standard Dart formatting..."
-        xargs -a "$DART_FILES_LIST" dart format -l 120 2>/dev/null || true
+        xargs -a "$DART_FILES_LIST" dart format -l 120 || true
     fi
 else
     print_info "No Dart files found to format"
