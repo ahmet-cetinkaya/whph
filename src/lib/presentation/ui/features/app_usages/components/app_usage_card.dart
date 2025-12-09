@@ -6,6 +6,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
+import 'package:whph/presentation/ui/shared/utils/tag_display_utils.dart';
 import 'package:whph/main.dart';
 
 class AppUsageCard extends StatelessWidget {

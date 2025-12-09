@@ -6,6 +6,12 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 
+class _ColorPickerConstants {
+  static const double fixedPickerWidth = 260.0;
+  static const double maxPickerWidth = 600.0;
+  static const double pickerAreaHeightPercent = 0.7;
+}
+
 class ColorPicker extends StatelessWidget {
   final Color pickerColor;
   final ValueChanged<Color> onChangeColor;
@@ -95,12 +101,14 @@ class ColorPicker extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: LayoutBuilder(
                           builder: (context, constraints) {
-                            const fixedWidth = 260.0;
+                            const fixedWidth = _ColorPickerConstants.fixedPickerWidth;
                             final pickerWidth = constraints.maxWidth < fixedWidth ? constraints.maxWidth : fixedWidth;
 
                             return Center(
                               child: SizedBox(
-                                width: AppThemeHelper.isSmallScreen(context) ? pickerWidth : 600,
+                                width: AppThemeHelper.isSmallScreen(context)
+                                    ? pickerWidth
+                                    : _ColorPickerConstants.maxPickerWidth,
                                 child: flutter_colorpicker.ColorPicker(
                                   pickerColor: pickerColor,
                                   onColorChanged: onChangeColor,
@@ -109,7 +117,7 @@ class ColorPicker extends StatelessWidget {
                                   hexInputBar: true,
                                   colorPickerWidth: pickerWidth,
                                   pickerAreaBorderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                                  pickerAreaHeightPercent: 0.7,
+                                  pickerAreaHeightPercent: _ColorPickerConstants.pickerAreaHeightPercent,
                                   portraitOnly: AppThemeHelper.isSmallScreen(context),
                                 ),
                               ),

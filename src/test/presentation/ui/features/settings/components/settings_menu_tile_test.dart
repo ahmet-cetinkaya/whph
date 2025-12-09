@@ -1,26 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
-import 'package:whph/main.dart';
-import 'package:acore/acore.dart';
-import 'package:acore/dependency_injection/container.dart' as acore;
-import 'package:whph/infrastructure/persistence/persistence_container.dart';
-import 'package:whph/infrastructure/infrastructure_container.dart';
-import 'package:whph/core/application/application_container.dart';
-import 'package:whph/presentation/ui/ui_presentation_container.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
+import 'package:whph/main.dart' as app_main;
+import 'package:acore/acore.dart' hide Container;
+
+class MockThemeService extends Mock implements IThemeService {
+  @override
+  Color get primaryColor => Colors.blue;
+  @override
+  Color get textColor => Colors.black;
+  @override
+  Color get secondaryTextColor => Colors.grey;
+  @override
+  Color get surface2 => Colors.grey.shade200;
+  @override
+  domain.UiDensity get currentUiDensity => domain.UiDensity.normal;
+}
+
+class FakeContainer extends Fake implements IContainer {
+  IThemeService? themeService;
+
+  @override
+  T resolve<T>([String? name]) {
+    if (T == IThemeService) {
+      if (themeService == null) throw Exception('ThemeService not mocked');
+      return themeService as T;
+    }
+    throw UnimplementedError('FakeContainer.resolve($T)');
+  }
+}
 
 void main() {
-  setUpAll(() async {
-    TestWidgetsFlutterBinding.ensureInitialized();
+  late MockThemeService mockThemeService;
+  late FakeContainer fakeContainer;
 
-    // Initialize the global container with proper dependencies
-    container = acore.Container();
+  setUpAll(() {
+    fakeContainer = FakeContainer();
+    app_main.container = fakeContainer;
+  });
 
-    // Register all dependency injection modules
-    registerPersistence(container);
-    registerInfrastructure(container);
-    registerApplication(container);
-    registerUIPresentation(container);
+  setUp(() {
+    AppTheme.resetService();
+    mockThemeService = MockThemeService();
+    fakeContainer.themeService = mockThemeService;
   });
 
   group('SettingsMenuTile Widget Tests', () {

@@ -7,7 +7,7 @@ import 'package:whph/core/application/features/habits/queries/get_list_habits_qu
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/habits/components/habit_card.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
@@ -284,13 +284,19 @@ class HabitsListState extends State<HabitsList> {
       );
     }
 
+    final child = ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: widget.style == HabitListStyle.grid ? _buildGridList() : _buildColumnList(),
+    );
+
+    if (widget.useParentScroll) {
+      return child;
+    }
+
     return Scrollbar(
       controller: _scrollController,
       thumbVisibility: true,
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: widget.style == HabitListStyle.grid ? _buildGridList() : _buildColumnList(),
-      ),
+      child: child,
     );
   }
 
