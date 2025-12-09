@@ -246,3 +246,5 @@ habits:
     filter_search:
       title: Filter & Search
       description: Find specific habits using tags, search terms, or filter by archived status. Organize and manage your habits efficiently to stay focused on what matters.
+  list_options:
+    view_style_tooltip: Change view style

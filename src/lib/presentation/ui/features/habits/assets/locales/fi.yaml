@@ -246,3 +246,5 @@ habits:
     filter_search:
       title: Suodatin & Haku
       description: Etsi tiettyjä tapoja tunnisteiden, hakusanojen tai arkistointitilan perusteella. Järjestä ja hallitse tapojasi tehokkaasti pysyäksesi keskittyneenä olennaiseen.
+  list_options:
+    view_style_tooltip: Vaihda näkymän tyyliä

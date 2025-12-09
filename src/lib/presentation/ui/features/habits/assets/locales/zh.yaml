@@ -225,3 +225,5 @@ habits:
     filter_search:
       title: 筛选和搜索
       description: 使用标签、搜索词或按归档状态筛选来查找特定习惯。有效地组织和管理您的习惯，以保持对重要事项的关注。
+  list_options:
+    view_style_tooltip: 更改视图样式

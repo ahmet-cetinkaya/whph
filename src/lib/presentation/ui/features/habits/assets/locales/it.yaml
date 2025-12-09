@@ -229,3 +229,5 @@ habits:
     filter_search:
       title: Filtra e cerca
       description: Trova abitudini specifiche utilizzando tag, termini di ricerca o filtra per stato archiviato. Organizza e gestisci le tue abitudini in modo efficiente per rimanere concentrato su ciò che conta.
+  list_options:
+    view_style_tooltip: Cambia stile di visualizzazione

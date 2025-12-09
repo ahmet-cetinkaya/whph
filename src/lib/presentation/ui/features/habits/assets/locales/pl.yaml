@@ -229,3 +229,5 @@ habits:
     filter_search:
       title: Filtr i wyszukiwanie
       description: Znajdź konkretne nawyki przy użyciu tagów, fraz wyszukiwania lub filtrowania według statusu archiwum. Organizuj i zarządzaj swoimi nawykami efektywnie, aby pozostać skoncentrowanym na tym, co się liczy.
+  list_options:
+    view_style_tooltip: Zmień styl widoku

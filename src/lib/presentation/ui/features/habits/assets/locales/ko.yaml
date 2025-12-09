@@ -225,3 +225,5 @@ habits:
     filter_search:
       title: 필터 및 검색
       description: 태그, 검색어 또는 보관 상태로 특정 습관을 찾으세요. 습관을 효율적으로 정리하고 관리하여 중요한 것에 집중하세요.
+  list_options:
+    view_style_tooltip: 보기 스타일 변경

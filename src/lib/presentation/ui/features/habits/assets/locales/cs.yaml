@@ -244,3 +244,5 @@ habits:
     filter_search:
       title: Filtr a vyhledávání
       description: Najděte specifické návyky pomocí štítků, hledacích výrazů nebo filtrujte podle archivovaného stavu. Efektivně organizujte a spravujte své návyky, abyste zůstali zaměřeni na to, co je důležité.
+  list_options:
+    view_style_tooltip: Změnit styl zobrazení

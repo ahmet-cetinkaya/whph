@@ -201,3 +201,5 @@ habits:
   tags:
     add_tooltip: Adaugă etichetă
     select_tooltip: Selectați etichetă
+  list_options:
+    view_style_tooltip: Schimbă stilul vizualizării

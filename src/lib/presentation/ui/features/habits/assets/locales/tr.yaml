@@ -212,3 +212,5 @@ habits:
     filter_search:
       title: Filtreleme ve Arama
       description: Etiketleri, arama terimlerini kullanarak veya arşivlenmiş duruma göre belirli alışkanlıkları bulun. Alışkanlıklarınızı etkili bir şekilde organize edin ve yönetin, önemli olan şeye odaklanmaya devam edin.
+  list_options:
+    view_style_tooltip: Görünüm stilini değiştir

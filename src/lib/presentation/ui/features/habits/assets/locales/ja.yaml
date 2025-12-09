@@ -225,3 +225,5 @@ habits:
     filter_search:
       title: フィルターと検索
       description: タグ、検索語、またはアーカイブ状態で特定の習慣を見つけてください。習慣を効率的に整理・管理して、重要なことに集中しましょう。
+  list_options:
+    view_style_tooltip: 表示スタイルを変更

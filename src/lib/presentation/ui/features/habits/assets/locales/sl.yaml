@@ -246,3 +246,5 @@ habits:
     filter_search:
       title: Filter in Iskanje
       description: Poiščite določene navade z uporabo oznak, iskalnih izrazov ali filtrirajte po arhivskem statusu. Učinkovito organizirajte in upravljajte svoje navade, da ostanete usmerjeni na pomembno.
+  list_options:
+    view_style_tooltip: Spremeni slog prikaza

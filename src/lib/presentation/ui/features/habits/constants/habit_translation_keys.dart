@@ -138,7 +138,4 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
 
   // List Options
   static const String viewStyleTooltip = 'habits.list_options.view_style_tooltip';
-  static const String viewStyleTodayList = 'habits.list_options.view_style_today_list';
-  static const String viewStyleTodayGrid = 'habits.list_options.view_style_today_grid';
-  static const String viewStyleCalendar = 'habits.list_options.view_style_calendar';
 }

@@ -246,3 +246,5 @@ habits:
     filter_search:
       title: Filtro & Busca
       description: Encontre hábitos específicos usando tags, termos de busca ou filtre por status arquivado. Organize e gerencie seus hábitos com eficiência para manter o foco no que importa.
+  list_options:
+    view_style_tooltip: Alterar estilo de visualização

@@ -244,3 +244,5 @@ habits:
     filter_search:
       title: Filter & søg
       description: Find specifikke vaner ved hjælp af tags, søgeord eller filtrér efter arkiveringsstatus. Organisér og håndtér dine vaner effektivt for at forblive fokuseret på det, der betyder noget.
+  list_options:
+    view_style_tooltip: Skift visningstil

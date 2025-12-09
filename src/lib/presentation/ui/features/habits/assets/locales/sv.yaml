@@ -174,3 +174,5 @@ habits:
     filter_search:
       title: Filter & Sök
       description: Hitta specifika vanor med taggar, söktermer eller filtrera efter arkiverad status. Organisera och hantera dina vanor effektivt för att förbli fokuserad på det som är viktigt.
+  list_options:
+    view_style_tooltip: Ändra visningsstil
