@@ -312,171 +312,148 @@ class _HabitCardState extends State<HabitCard> {
   // Helper method to build the trailing widget (reminder icon, calendar, or checkbox)
   Widget? _buildTrailing(bool isCompactView) {
     if (isCompactView) {
-      // For compact view, show checkbox first, then drag handle
-      final compactWidgets = <Widget>[];
+      return _buildCompactTrailing();
+    }
+    return _buildStandardTrailing();
+  }
 
-      // Always add the checkbox first
-      compactWidgets.add(
-        HabitCheckbox(
-          habit: widget.habit,
-          habitRecords: _habitRecords?.items,
-          style: widget.style,
-          onTap: _onCheckboxTap,
-          archivedDate: _archivedDate,
+  Widget _buildCompactTrailing() {
+    final compactWidgets = <Widget>[];
+
+    // Always add the checkbox first
+    compactWidgets.add(
+      HabitCheckbox(
+        habit: widget.habit,
+        habitRecords: _habitRecords?.items,
+        style: widget.style,
+        onTap: _onCheckboxTap,
+        archivedDate: _archivedDate,
+      ),
+    );
+
+    // Add consistent spacing when custom sort is enabled (even for spacer alignment)
+    if (widget.showDragHandle) {
+      compactWidgets.add(const SizedBox(width: AppTheme.size3XSmall));
+
+      if (widget.dragIndex != null) {
+        // Add actual drag handle after checkbox
+        compactWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+            child: ReorderableDragStartListener(
+              index: widget.dragIndex!,
+              child: const Icon(Icons.drag_handle, color: Colors.grey),
+            ),
+          ),
+        );
+      } else {
+        // Add spacer for archived habits to maintain alignment
+        compactWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
+            child: SizedBox(
+              width: AppTheme.iconSizeMedium,
+            ),
+          ),
+        );
+      }
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: compactWidgets,
+    );
+  }
+
+  Widget? _buildStandardTrailing() {
+    // For full view, show reminder icon, calendar, and optionally drag handle
+    final trailingWidgets = <Widget>[];
+
+    // Add reminder icon if applicable
+    if (widget.habit.hasReminder && !widget.habit.isArchived()) {
+      trailingWidgets.add(_buildReminderIcon());
+    }
+
+    // Add calendar if not archived
+    if (!widget.habit.isArchived()) {
+      if (trailingWidgets.isNotEmpty) {
+        trailingWidgets.add(const SizedBox(width: HabitUiConstants.dragHandleSpacer));
+      }
+      trailingWidgets.add(
+        Padding(
+          padding: const EdgeInsets.only(right: HabitUiConstants.calendarTrailingSpacer),
+          child: HabitCardCalendar(
+            habit: widget.habit,
+            habitRecords: _habitRecords?.items,
+            dateRange: widget.dateRange,
+            isDense: widget.isDense,
+            isDateLabelShowing: widget.isDateLabelShowing,
+            onDayTap: _onCalendarDayTap,
+            themeService: _themeService,
+            archivedDate: _archivedDate,
+          ),
         ),
       );
+    }
 
-      // Add consistent spacing when custom sort is enabled (even for spacer alignment)
-      if (widget.showDragHandle) {
-        compactWidgets.add(const SizedBox(width: AppTheme.size3XSmall));
+    // Always add drag handle space when custom sort is enabled for consistent alignment
+    if (widget.showDragHandle) {
+      // Add spacing before drag handle/spacer area
+      trailingWidgets.add(const SizedBox(width: HabitUiConstants.dragHandleSpacer));
 
-        if (widget.dragIndex != null) {
-          // Add actual drag handle after checkbox
-          compactWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
-              child: ReorderableDragStartListener(
-                index: widget.dragIndex!,
-                child: const Icon(Icons.drag_handle, color: Colors.grey),
-              ),
-            ),
-          );
-        } else {
-          // Add spacer for archived habits to maintain alignment
-          compactWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
-              child: SizedBox(
-                width: AppTheme.iconSizeMedium,
-              ),
-            ),
-          );
-        }
-      }
-
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: compactWidgets,
-      );
-    } else {
-      // For full view, show reminder icon, calendar, and optionally drag handle
-      final List<Widget> trailingWidgets = [];
-
-      // Add reminder icon if applicable
-      if (widget.habit.hasReminder && !widget.habit.isArchived()) {
-        trailingWidgets.add(
-          SizedBox(
-            height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
-            child: Center(
-              child: Tooltip(
-                message: _getReminderTooltip(),
-                child: Icon(
-                  Icons.notifications,
-                  size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-
-      // Add calendar if not archived
-      if (!widget.habit.isArchived()) {
-        if (trailingWidgets.isNotEmpty) {
-          trailingWidgets.add(const SizedBox(width: HabitUiConstants.dragHandleSpacer));
-        }
+      if (widget.dragIndex != null) {
+        // Add actual drag handle
         trailingWidgets.add(
           Padding(
-            padding: const EdgeInsets.only(right: HabitUiConstants.calendarTrailingSpacer),
-            child: HabitCardCalendar(
-              habit: widget.habit,
-              habitRecords: _habitRecords?.items,
-              dateRange: widget.dateRange,
-              isDense: widget.isDense,
-              isDateLabelShowing: widget.isDateLabelShowing,
-              onDayTap: _onCalendarDayTap,
-              themeService: _themeService,
-              archivedDate: _archivedDate,
+            padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
+            child: SizedBox(
+              height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+              child: Center(
+                child: ReorderableDragStartListener(
+                  index: widget.dragIndex!,
+                  child: const Icon(Icons.drag_handle, color: Colors.grey),
+                ),
+              ),
+            ),
+          ),
+        );
+      } else {
+        // Add spacer for alignment (archived habits, etc.)
+        trailingWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
+            child: SizedBox(
+              width: AppTheme.iconSizeMedium,
+              height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
             ),
           ),
         );
       }
-
-      // Always add drag handle space when custom sort is enabled for consistent alignment
-      if (widget.showDragHandle) {
-        // Add spacing before drag handle/spacer area
-        trailingWidgets.add(const SizedBox(width: HabitUiConstants.dragHandleSpacer));
-
-        if (widget.dragIndex != null) {
-          // Add actual drag handle
-          trailingWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
-              child: SizedBox(
-                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
-                child: Center(
-                  child: ReorderableDragStartListener(
-                    index: widget.dragIndex!,
-                    child: const Icon(Icons.drag_handle, color: Colors.grey),
-                  ),
-                ),
-              ),
-            ),
-          );
-        } else {
-          // Add spacer for alignment (archived habits, etc.)
-          trailingWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(right: HabitUiConstants.dragHandlePadding),
-              child: SizedBox(
-                width: AppTheme.iconSizeMedium,
-                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
-              ),
-            ),
-          );
-        }
-      }
-
-      // If we have custom sort enabled but no other trailing widgets, still show the drag handle space
-      if (trailingWidgets.isEmpty && widget.showDragHandle) {
-        if (widget.dragIndex != null) {
-          trailingWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
-              child: SizedBox(
-                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
-                child: Center(
-                  child: ReorderableDragStartListener(
-                    index: widget.dragIndex!,
-                    child: const Icon(Icons.drag_handle, color: Colors.grey),
-                  ),
-                ),
-              ),
-            ),
-          );
-        } else {
-          // Add spacer for archived habits to maintain alignment
-          trailingWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(right: AppTheme.size2XSmall),
-              child: SizedBox(
-                width: AppTheme.iconSizeMedium,
-                height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
-              ),
-            ),
-          );
-        }
-      }
-
-      return trailingWidgets.isEmpty
-          ? null
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: trailingWidgets,
-            );
     }
+
+    return trailingWidgets.isEmpty
+        ? null
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: trailingWidgets,
+          );
+  }
+
+  Widget _buildReminderIcon() {
+    return SizedBox(
+      height: widget.isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2,
+      child: Center(
+        child: Tooltip(
+          message: _getReminderTooltip(),
+          child: Icon(
+            Icons.notifications,
+            size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      ),
+    );
   }
 
   String _getReminderTooltip() {
