@@ -248,3 +248,8 @@ habits:
       description: Vind specifieke gewoontes met tags, zoektermen of filter op gearchiveerde status. Organiseer en beheer je gewoontes efficiënt om gefocust te blijven op wat er toe doet.
   list_options:
     view_style_tooltip: Weergavestijl wijzigen
+  accessibility:
+    details_hint: Gewoontedetails bekijken
+    open_details_hint: Gewoontedetails openen
+    complete_habit_hint: Gewoonte voltooien
+    completion_status_hint: Gewoonte completion status

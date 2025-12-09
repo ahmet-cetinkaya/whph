@@ -248,3 +248,8 @@ habits:
       description: Finn spesifikke vaner ved hjelp av etiketter, søkeord eller filtrer etter arkivert status. Organiser og håndter vanene dine effektivt for å forbli fokusert på det som betyr noe.
   list_options:
     view_style_tooltip: Endre visningsstil
+  accessibility:
+    details_hint: Se vanedetaljer
+    open_details_hint: Åpne vanedetaljer
+    complete_habit_hint: Fullfør vane
+    completion_status_hint: Vanens completion status

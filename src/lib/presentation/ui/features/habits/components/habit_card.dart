@@ -58,6 +58,13 @@ class _HabitCardState extends State<HabitCard> {
   final _themeService = container.resolve<IThemeService>();
   GetListHabitRecordsQueryResponse? _habitRecords;
 
+  // Memoized values to prevent unnecessary recalculations
+  late final String _habitId = widget.habit.id;
+  late final bool _hasGoal = widget.habit.hasGoal;
+  late final int? _dailyTarget = widget.habit.dailyTarget;
+  late final int _periodDays = widget.habit.periodDays;
+  late final DateTime? _archivedDate = widget.habit.archivedDate;
+
   @override
   void initState() {
     super.initState();
@@ -84,11 +91,11 @@ class _HabitCardState extends State<HabitCard> {
   void _handleHabitRecordChange() {
     if (!mounted) return;
 
-    // Check if the event is for this specific habit
+    // Check if the event is for this specific habit using memoized ID
     final addedHabitId = _habitsService.onHabitRecordAdded.value;
     final removedHabitId = _habitsService.onHabitRecordRemoved.value;
 
-    if (addedHabitId == widget.habit.id || removedHabitId == widget.habit.id) {
+    if (addedHabitId == _habitId || removedHabitId == _habitId) {
       _refreshHabitRecords();
     }
   }
@@ -98,14 +105,14 @@ class _HabitCardState extends State<HabitCard> {
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
       operation: () async {
-        final endDate = widget.habit.archivedDate ?? DateTime.now();
+        final endDate = _archivedDate ?? DateTime.now();
         // Calculate appropriate page size to handle multiple daily occurrences
-        final dailyTarget = widget.habit.hasGoal ? (widget.habit.dailyTarget ?? 1) : 1;
+        final dailyTarget = _hasGoal ? (_dailyTarget ?? 1) : 1;
         final daysToShow = widget.style == HabitListStyle.calendar ? widget.dateRange : 1;
 
         // For period-based habits, we need to fetch enough data to calculate period completion
         // This ensures we have data for the full period window that might affect the displayed days
-        final periodDays = widget.habit.hasGoal ? widget.habit.periodDays : 1;
+        final periodDays = _periodDays;
         final daysToFetch = daysToShow + (periodDays > 1 ? periodDays - 1 : 0);
 
         final pageSize =
@@ -114,7 +121,7 @@ class _HabitCardState extends State<HabitCard> {
         final query = GetListHabitRecordsQuery(
           pageIndex: 0,
           pageSize: pageSize,
-          habitId: widget.habit.id,
+          habitId: _habitId,
           startDate: acore.DateTimeHelper.toUtcDateTime(endDate.subtract(Duration(days: daysToFetch))),
           endDate: acore.DateTimeHelper.toLocalDateTime(endDate),
         );
@@ -140,8 +147,7 @@ class _HabitCardState extends State<HabitCard> {
   // Helper method to check if a date is disabled for habit recording
   bool _isDateDisabled(DateTime date) {
     return date.isAfter(DateTime.now()) ||
-        (widget.habit.archivedDate != null &&
-            date.isAfter(acore.DateTimeHelper.toLocalDateTime(widget.habit.archivedDate!)));
+        (_archivedDate != null && date.isAfter(acore.DateTimeHelper.toLocalDateTime(_archivedDate)));
   }
 
   // Helper method to check if there's a record for a specific date
@@ -182,14 +188,14 @@ class _HabitCardState extends State<HabitCard> {
       errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
         final command = ToggleHabitCompletionCommand(
-          habitId: widget.habit.id,
+          habitId: _habitId,
           date: date,
           useIncrementalBehavior: false, // Calendar uses toggle behavior
         );
         await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
 
         await _refreshHabitRecords();
-        _habitsService.notifyHabitRecordAdded(widget.habit.id);
+        _habitsService.notifyHabitRecordAdded(_habitId);
         _timeDataService.notifyTimeDataChanged();
         _soundManagerService.playHabitCompletion();
       },
@@ -204,14 +210,14 @@ class _HabitCardState extends State<HabitCard> {
       operation: () async {
         final today = DateTime.now();
         final command = ToggleHabitCompletionCommand(
-          habitId: widget.habit.id,
+          habitId: _habitId,
           date: today,
           useIncrementalBehavior: true, // Checkbox uses incremental behavior
         );
         await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
 
         await _refreshHabitRecords();
-        _habitsService.notifyHabitRecordAdded(widget.habit.id);
+        _habitsService.notifyHabitRecordAdded(_habitId);
         _timeDataService.notifyTimeDataChanged();
         _soundManagerService.playHabitCompletion();
       },
@@ -236,29 +242,34 @@ class _HabitCardState extends State<HabitCard> {
       constraints: BoxConstraints(
         minHeight: widget.style == HabitListStyle.grid ? 0 : 60,
       ), // Ensure minimum height to prevent shrinking, except for grid
-      child: ListTile(
-        visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
-        titleAlignment: ListTileTitleAlignment.center,
-        tileColor: AppTheme.surface1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+      child: Semantics(
+        button: true,
+        label: '${widget.habit.name} ${_translationService.translate(HabitTranslationKeys.detailsHint)}',
+        hint: _translationService.translate(HabitTranslationKeys.openDetailsHint),
+        child: ListTile(
+          visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
+          titleAlignment: ListTileTitleAlignment.center,
+          tileColor: AppTheme.surface1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+          ),
+          contentPadding: EdgeInsets.only(
+            left: (widget.style == HabitListStyle.grid)
+                ? AppTheme.sizeMedium
+                : (isCompactView || isMobileCalendar
+                    ? HabitUiConstants.calendarPaddingMobile
+                    : HabitUiConstants.calendarPaddingDesktop),
+            right: isCompactView || isMobileCalendar
+                ? HabitUiConstants.calendarPaddingMobile
+                : (widget.style == HabitListStyle.calendar ? HabitUiConstants.calendarPaddingDesktop : 0),
+          ),
+          onTap: widget.onOpenDetails,
+          dense: widget.isDense,
+          leading: null,
+          title: (widget.style == HabitListStyle.grid) ? _buildTitleAndMetadata() : _buildTitle(),
+          subtitle: (widget.style == HabitListStyle.grid) ? null : _buildSubtitle(),
+          trailing: _buildTrailing(isCompactView),
         ),
-        contentPadding: EdgeInsets.only(
-          left: (widget.style == HabitListStyle.grid)
-              ? AppTheme.sizeMedium
-              : (isCompactView || isMobileCalendar
-                  ? HabitUiConstants.calendarPaddingMobile
-                  : HabitUiConstants.calendarPaddingDesktop),
-          right: isCompactView || isMobileCalendar
-              ? HabitUiConstants.calendarPaddingMobile
-              : (widget.style == HabitListStyle.calendar ? HabitUiConstants.calendarPaddingDesktop : 0),
-        ),
-        onTap: widget.onOpenDetails,
-        dense: widget.isDense,
-        leading: null,
-        title: (widget.style == HabitListStyle.grid) ? _buildTitleAndMetadata() : _buildTitle(),
-        subtitle: (widget.style == HabitListStyle.grid) ? null : _buildSubtitle(),
-        trailing: _buildTrailing(isCompactView),
       ),
     );
   }
@@ -266,26 +277,31 @@ class _HabitCardState extends State<HabitCard> {
   Widget _buildListLayout(BuildContext context, bool isCompactView) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 60),
-      child: Material(
-        color: AppTheme.surface1,
-        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-        child: InkWell(
-          onTap: widget.onOpenDetails,
+      child: Semantics(
+        button: true,
+        label: '${widget.habit.name} ${_translationService.translate(HabitTranslationKeys.detailsHint)}',
+        hint: _translationService.translate(HabitTranslationKeys.openDetailsHint),
+        child: Material(
+          color: AppTheme.surface1,
           borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: AppTheme.sizeMedium,
-              right: isCompactView ? AppTheme.sizeSmall : 0,
-              top: AppTheme.sizeSmall,
-              bottom: AppTheme.sizeSmall,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(child: _buildTitleAndMetadata()),
-                const SizedBox(width: AppTheme.sizeSmall),
-                _buildTrailingForList()!,
-              ],
+          child: InkWell(
+            onTap: widget.onOpenDetails,
+            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: AppTheme.sizeMedium,
+                right: isCompactView ? AppTheme.sizeSmall : 0,
+                top: AppTheme.sizeSmall,
+                bottom: AppTheme.sizeSmall,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(child: _buildTitleAndMetadata()),
+                  const SizedBox(width: AppTheme.sizeSmall),
+                  _buildTrailingForList()!,
+                ],
+              ),
             ),
           ),
         ),

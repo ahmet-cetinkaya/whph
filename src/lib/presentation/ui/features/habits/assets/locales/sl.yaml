@@ -248,3 +248,8 @@ habits:
       description: Poiščite določene navade z uporabo oznak, iskalnih izrazov ali filtrirajte po arhivskem statusu. Učinkovito organizirajte in upravljajte svoje navade, da ostanete usmerjeni na pomembno.
   list_options:
     view_style_tooltip: Spremeni slog prikaza
+  accessibility:
+    details_hint: Poglej podrobnosti navade
+    open_details_hint: Odpri podrobnosti navade
+    complete_habit_hint: Dokončaj navado
+    completion_status_hint: Status dokončanja navade

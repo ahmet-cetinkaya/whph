@@ -227,3 +227,8 @@ habits:
       description: 태그, 검색어 또는 보관 상태로 특정 습관을 찾으세요. 습관을 효율적으로 정리하고 관리하여 중요한 것에 집중하세요.
   list_options:
     view_style_tooltip: 보기 스타일 변경
+  accessibility:
+    details_hint: 습관 세부정보 보기
+    open_details_hint: 습관 세부정보 열기
+    complete_habit_hint: 습관 완료
+    completion_status_hint: 습관 완료 상태

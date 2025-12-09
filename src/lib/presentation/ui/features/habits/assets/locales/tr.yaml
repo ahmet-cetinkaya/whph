@@ -214,3 +214,8 @@ habits:
       description: Etiketleri, arama terimlerini kullanarak veya arşivlenmiş duruma göre belirli alışkanlıkları bulun. Alışkanlıklarınızı etkili bir şekilde organize edin ve yönetin, önemli olan şeye odaklanmaya devam edin.
   list_options:
     view_style_tooltip: Görünüm stilini değiştir
+  accessibility:
+    details_hint: Alışkanlık detaylarını görüntüle
+    open_details_hint: Alışkanlık detaylarını aç
+    complete_habit_hint: Alışkanlığı tamamla
+    completion_status_hint: Alışkanlık tamamlanma durumu

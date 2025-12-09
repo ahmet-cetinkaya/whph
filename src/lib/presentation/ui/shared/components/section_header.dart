@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
+/// A reusable section header component that provides a consistent
+/// look and feel for section headers throughout the application.
+///
+/// Features:
+/// - Optional icon with proper spacing
+/// - Customizable title style
+/// - Optional trailing widget (e.g., button, switch)
+/// - Optional tap handler for interactive headers
+/// - Configurable padding
+/// - Proper accessibility support
 class SectionHeader extends StatelessWidget {
+  /// The title text displayed in the header
   final String title;
+
+  /// Optional icon to display before the title
   final IconData? icon;
+
+  /// Optional widget to display on the right side (e.g., "See all" button)
   final Widget? trailing;
+
+  /// Optional callback when the header is tapped
   final VoidCallback? onTap;
+
+  /// Custom padding for the header. Defaults to horizontal small padding
   final EdgeInsetsGeometry? padding;
+
+  /// Custom text style for the title. Defaults to theme's titleSmall
   final TextStyle? titleStyle;
 
   const SectionHeader({

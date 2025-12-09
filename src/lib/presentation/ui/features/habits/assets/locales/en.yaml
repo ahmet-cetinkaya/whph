@@ -248,3 +248,8 @@ habits:
       description: Find specific habits using tags, search terms, or filter by archived status. Organize and manage your habits efficiently to stay focused on what matters.
   list_options:
     view_style_tooltip: Change view style
+  accessibility:
+    details_hint: View habit details
+    open_details_hint: Open habit details
+    complete_habit_hint: Complete habit
+    completion_status_hint: Habit completion status

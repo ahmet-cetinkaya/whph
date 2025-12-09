@@ -138,4 +138,10 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
 
   // List Options
   static const String viewStyleTooltip = 'habits.list_options.view_style_tooltip';
+
+  // Accessibility
+  static const String detailsHint = 'habits.accessibility.details_hint';
+  static const String openDetailsHint = 'habits.accessibility.open_details_hint';
+  static const String completeHabitHint = 'habits.accessibility.complete_habit_hint';
+  static const String completionStatusHint = 'habits.accessibility.completion_status_hint';
 }

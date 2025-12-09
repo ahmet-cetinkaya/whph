@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
+/// Represents a single tab item in the CustomTabBar
 class CustomTabItem {
+  /// The icon to display for this tab
   final IconData icon;
+
+  /// The label text for this tab
   final String label;
 
   const CustomTabItem({
@@ -11,9 +15,23 @@ class CustomTabItem {
   });
 }
 
+/// A custom tab bar component that provides a consistent
+/// tab switching interface across the application.
+///
+/// Features:
+/// - Icon and label tabs
+/// - Active/inactive state styling
+/// - Smooth selection transitions
+/// - Touch-friendly tap areas
+/// - Theme-aware colors
 class CustomTabBar extends StatelessWidget {
+  /// List of tabs to display
   final List<CustomTabItem> items;
+
+  /// Index of the currently selected tab
   final int selectedIndex;
+
+  /// Callback when a tab is tapped
   final ValueChanged<int> onTap;
 
   const CustomTabBar({

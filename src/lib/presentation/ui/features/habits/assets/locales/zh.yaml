@@ -227,3 +227,8 @@ habits:
       description: 使用标签、搜索词或按归档状态筛选来查找特定习惯。有效地组织和管理您的习惯，以保持对重要事项的关注。
   list_options:
     view_style_tooltip: 更改视图样式
+  accessibility:
+    details_hint: 查看习惯详情
+    open_details_hint: 打开习惯详情
+    complete_habit_hint: 完成习惯
+    completion_status_hint: 习惯完成状态

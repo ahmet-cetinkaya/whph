@@ -2,14 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
+/// A menu tile component designed for settings pages.
+///
+/// Provides a consistent look and feel for settings menu items with:
+/// - Icon or custom leading widget
+/// - Title and optional subtitle
+/// - Active/inactive state styling
+/// - Custom trailing widgets
+/// - Card-based design for better visual separation
 class SettingsMenuTile extends StatelessWidget {
+  /// Icon to display as the leading widget. Required if customLeading is not provided
   final IconData? icon;
+
+  /// The title text for the menu item
   final String title;
+
+  /// Callback when the tile is tapped
   final VoidCallback onTap;
+
+  /// Size for the icon. Defaults to 24.0
   final double? iconSize;
+
+  /// Optional subtitle text for additional context
   final String? subtitle;
+
+  /// Optional widget to display on the right side (defaults to chevron icon)
   final Widget? trailing;
+
+  /// Custom leading widget to use instead of an icon
   final Widget? customLeading;
+
+  /// Whether this menu item is currently active/selected
   final bool isActive;
 
   const SettingsMenuTile({

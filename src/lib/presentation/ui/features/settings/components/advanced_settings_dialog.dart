@@ -43,12 +43,12 @@ class AdvancedSettingsDialog extends StatelessWidget {
                 SizedBox(height: AppTheme.sizeMedium),
 
                 // Debug Logs Settings
-                const DebugLogsSettings(),
+                DebugLogsSettings(),
 
-                const Divider(),
+                Divider(),
 
                 // Reset Database
-                const ResetDatabaseSettings(),
+                ResetDatabaseSettings(),
               ],
             ),
           ),

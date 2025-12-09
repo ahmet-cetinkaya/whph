@@ -248,3 +248,8 @@ habits:
       description: Etsi tiettyjä tapoja tunnisteiden, hakusanojen tai arkistointitilan perusteella. Järjestä ja hallitse tapojasi tehokkaasti pysyäksesi keskittyneenä olennaiseen.
   list_options:
     view_style_tooltip: Vaihda näkymän tyyliä
+  accessibility:
+    details_hint: Näytä tavan tiedot
+    open_details_hint: Avaa tavan tiedot
+    complete_habit_hint: Tee tapa valmiiksi
+    completion_status_hint: Tavan completion status

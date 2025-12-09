@@ -176,3 +176,8 @@ habits:
       description: Hitta specifika vanor med taggar, söktermer eller filtrera efter arkiverad status. Organisera och hantera dina vanor effektivt för att förbli fokuserad på det som är viktigt.
   list_options:
     view_style_tooltip: Ändra visningsstil
+  accessibility:
+    details_hint: Visa vana detaljer
+    open_details_hint: Öppna vana detaljer
+    complete_habit_hint: Slutför vana
+    completion_status_hint: Vanans completion status

@@ -231,3 +231,8 @@ habits:
       description: Znajdź konkretne nawyki przy użyciu tagów, fraz wyszukiwania lub filtrowania według statusu archiwum. Organizuj i zarządzaj swoimi nawykami efektywnie, aby pozostać skoncentrowanym na tym, co się liczy.
   list_options:
     view_style_tooltip: Zmień styl widoku
+  accessibility:
+    details_hint: Pokaż szczegóły nawyku
+    open_details_hint: Otwórz szczegóły nawyku
+    complete_habit_hint: Ukończ nawyk
+    completion_status_hint: Status completion nawyku

@@ -233,3 +233,8 @@ habits:
       description: Trouvez des habitudes spécifiques en utilisant des tags, des termes de recherche ou filtrez par statut archivé. Organisez et gérez efficacement vos habitudes pour rester concentré sur ce qui compte.
   list_options:
     view_style_tooltip: Changer le style d'affichage
+  accessibility:
+    details_hint: Voir les détails de l''habitude
+    open_details_hint: Ouvrir les détails de l''habitude
+    complete_habit_hint: Compléter l''habitude
+    completion_status_hint: Statut de completion de l''habitude

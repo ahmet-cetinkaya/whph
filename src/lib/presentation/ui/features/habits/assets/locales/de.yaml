@@ -233,3 +233,8 @@ habits:
       description: Finden Sie spezifische Gewohnheiten mithilfe von Tags, Suchbegriffen oder Filtern nach Archivierungsstatus. Organisieren und verwalten Sie Ihre Gewohnheiten effizient, um sich auf das zu konzentrieren, was wichtig ist.
   list_options:
     view_style_tooltip: Ansichtsstil ändern
+  accessibility:
+    details_hint: Gewohnheitsdetails anzeigen
+    open_details_hint: Gewohnheitsdetails öffnen
+    complete_habit_hint: Gewohnheit abschließen
+    completion_status_hint: Abschlussstatus der Gewohnheit

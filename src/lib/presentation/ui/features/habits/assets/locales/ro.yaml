@@ -203,3 +203,8 @@ habits:
     select_tooltip: Selectați etichetă
   list_options:
     view_style_tooltip: Schimbă stilul vizualizării
+  accessibility:
+    details_hint: Vezi detalii obicei
+    open_details_hint: Deschide detalii obicei
+    complete_habit_hint: Completează obiceiul
+    completion_status_hint: Starea de completion a obiceiului

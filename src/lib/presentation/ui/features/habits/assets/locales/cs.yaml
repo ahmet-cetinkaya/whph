@@ -246,3 +246,8 @@ habits:
       description: Najděte specifické návyky pomocí štítků, hledacích výrazů nebo filtrujte podle archivovaného stavu. Efektivně organizujte a spravujte své návyky, abyste zůstali zaměřeni na to, co je důležité.
   list_options:
     view_style_tooltip: Změnit styl zobrazení
+  accessibility:
+    details_hint: Zobrazit podrobnosti o zvyku
+    open_details_hint: Otevřít podrobnosti zvyku
+    complete_habit_hint: Dokončit zvyk
+    completion_status_hint: Stav dokončení zvyku
