@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
-import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.dart';
+
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
