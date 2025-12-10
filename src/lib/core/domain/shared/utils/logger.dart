@@ -17,18 +17,18 @@ import 'package:whph/core/application/shared/services/abstraction/i_logger_servi
 /// Logger.initialize(container);
 ///
 /// // Then use throughout the app:
-/// Logger.debug('Debug message');
-/// Logger.info('Info message');
-/// Logger.warning('Warning message');
-/// Logger.error('Error message');
-/// Logger.fatal('Fatal error message');
+/// Logger.debug('Debug message', component: LogComponents.provides);
+/// Logger.info('Info message', component: LogComponents.provides);
+/// Logger.warning('Warning message', component: LogComponents.provides);
+/// Logger.error('Error message', component: LogComponents.provides);
+/// Logger.fatal('Fatal error message', component: LogComponents.Logger);
 ///
 /// // With component identification:
 /// Logger.debug('Debug message', component: 'ComponentName');
 /// Logger.info('Info message', component: 'SyncService');
 /// Logger.warning('Warning message', component: 'DatabaseService');
 /// Logger.error('Error message', component: 'ApiService', error: exception, stackTrace: stackTrace);
-/// Logger.fatal('Fatal error message', component: 'AppInitialization');
+/// Logger.fatal('Fatal error message', component: 'AppInitialization', component: LogComponents.provides);
 /// ```
 class Logger {
   Logger._(); // Private constructor to prevent instantiation
@@ -71,32 +71,32 @@ class Logger {
 
   /// Safely logs a message, falling back to debugPrint if logger is not available
   static void _safeLog(String level, String message, {String? component, Object? error, StackTrace? stackTrace}) {
-    final formattedMessage = _formatMessage(message, component);
     final logger = _instance;
 
     if (logger != null) {
+      // Pass the formatted message to the logger
       switch (level) {
         case 'debug':
-          logger.debug(formattedMessage, error, stackTrace);
+          logger.debug(_formatMessage(message, component), error, stackTrace);
           break;
         case 'info':
-          logger.info(formattedMessage, error, stackTrace);
+          logger.info(_formatMessage(message, component), error, stackTrace);
           break;
         case 'warning':
-          logger.warning(formattedMessage, error, stackTrace);
+          logger.warning(_formatMessage(message, component), error, stackTrace);
           break;
         case 'error':
-          logger.error(formattedMessage, error, stackTrace);
+          logger.error(_formatMessage(message, component), error, stackTrace);
           break;
         case 'fatal':
-          logger.fatal(formattedMessage, error, stackTrace);
+          logger.fatal(_formatMessage(message, component), error, stackTrace);
           break;
       }
     } else if (kDebugMode) {
       // Fallback to debugPrint in debug mode when logger is not available
       // Include component in fallback logging as well
-      final componentPrefix = component != null && component.isNotEmpty ? '[$component] ' : '';
-      debugPrint('[$level] $componentPrefix$message');
+      final formattedMessage = _formatMessage(message, component);
+      debugPrint('[$level] $formattedMessage');
       if (error != null) {
         debugPrint('Error: $error');
       }

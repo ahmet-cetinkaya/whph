@@ -1,6 +1,7 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 enum EisenhowerPriority {
   notUrgentNotImportant,
@@ -85,32 +86,6 @@ class Task extends BaseEntity<String> {
   // Convenience method to mark task as not completed
   void markNotCompleted() {
     completedAt = null;
-  }
-
-  /// Validates custom reminder offset for planned date
-  bool get isValidPlannedDateCustomOffset {
-    return ReminderOffsets.isValidCustomOffset(plannedDateReminderCustomOffset);
-  }
-
-  /// Validates custom reminder offset for deadline date
-  bool get isValidDeadlineDateCustomOffset {
-    return ReminderOffsets.isValidCustomOffset(deadlineDateReminderCustomOffset);
-  }
-
-  /// Gets a human-readable description for planned date reminder offset
-  String? get plannedDateReminderDescription {
-    if (plannedDateReminderTime == ReminderTime.custom && isValidPlannedDateCustomOffset) {
-      return ReminderOffsets.getOffsetDescription(plannedDateReminderCustomOffset!);
-    }
-    return null;
-  }
-
-  /// Gets a human-readable description for deadline date reminder offset
-  String? get deadlineDateReminderDescription {
-    if (deadlineDateReminderTime == ReminderTime.custom && isValidDeadlineDateCustomOffset) {
-      return ReminderOffsets.getOffsetDescription(deadlineDateReminderCustomOffset!);
-    }
-    return null;
   }
 
   Task({
@@ -237,7 +212,8 @@ class Task extends BaseEntity<String> {
     try {
       return values.firstWhere((e) => e.toString() == value);
     } catch (e) {
-      Logger.warning('Task.fromJson: Invalid $enumName value "$value", defaulting to $defaultValue');
+      Logger.warning('Invalid $enumName value "$value", defaulting to $defaultValue',
+          component: DomainLogComponents.task);
       return defaultValue;
     }
   }
@@ -282,7 +258,8 @@ class Task extends BaseEntity<String> {
         plannedDateReminderCustomOffset = plannedOffsetValue.toInt();
         if (!ReminderOffsets.isValidCustomOffset(plannedDateReminderCustomOffset)) {
           Logger.warning(
-              'Task.fromJson: Invalid plannedDateReminderCustomOffset value "$plannedDateReminderCustomOffset", ignoring value');
+              'Invalid plannedDateReminderCustomOffset value "$plannedDateReminderCustomOffset", ignoring value',
+              component: DomainLogComponents.task);
           plannedDateReminderCustomOffset = null;
         }
       }
@@ -293,7 +270,8 @@ class Task extends BaseEntity<String> {
         deadlineDateReminderCustomOffset = deadlineOffsetValue.toInt();
         if (!ReminderOffsets.isValidCustomOffset(deadlineDateReminderCustomOffset)) {
           Logger.warning(
-              'Task.fromJson: Invalid deadlineDateReminderCustomOffset value "$deadlineDateReminderCustomOffset", ignoring value');
+              'Invalid deadlineDateReminderCustomOffset value "$deadlineDateReminderCustomOffset", ignoring value',
+              component: DomainLogComponents.task);
           deadlineDateReminderCustomOffset = null;
         }
       }
@@ -355,7 +333,7 @@ class Task extends BaseEntity<String> {
       );
     } catch (e, stackTrace) {
       Logger.error('CRITICAL ERROR in Task.fromJson. JSON data keys: ${json.keys.toList()}',
-          error: e, stackTrace: stackTrace);
+          error: e, stackTrace: stackTrace, component: DomainLogComponents.task);
       rethrow;
     }
   }
@@ -376,19 +354,5 @@ class ReminderOffsets {
   /// Validates if a custom offset is within acceptable range
   static bool isValidCustomOffset(int? offset) {
     return offset != null && offset >= minCustomOffset && offset <= maxCustomOffset;
-  }
-
-  /// Gets a human-readable description for the offset
-  static String getOffsetDescription(int offset) {
-    if (offset == fiveMinutes) return '5 minutes';
-    if (offset == fifteenMinutes) return '15 minutes';
-    if (offset == oneHour) return '1 hour';
-    if (offset == oneDay) return '1 day';
-    if (offset == oneWeek) return '1 week';
-
-    if (offset < 60) return '$offset minutes';
-    if (offset < 1440) return '${(offset / 60).round()} hours';
-    if (offset < 10080) return '${(offset / 1440).round()} days';
-    return '${(offset / 10080).round()} weeks';
   }
 }
