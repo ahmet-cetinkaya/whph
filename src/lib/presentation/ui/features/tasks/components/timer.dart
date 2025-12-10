@@ -23,16 +23,18 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 
 class AppTimer extends StatefulWidget {
-  final Function(Duration)? onTick; // For UI updates only - receives current elapsed/remaining time
+  final Function(Duration)? onTick;
   final VoidCallback? onTimerStart;
-  final Function(Duration)? onTimerStop; // For data persistence - receives total elapsed duration
-  final bool isMiniLayout; // Use compact layout for detail tables
+  final Function(Duration)? onTimerStop;
+  final Function(Duration)? onWorkSessionComplete;
+  final bool isMiniLayout;
 
   const AppTimer({
     super.key,
     this.onTick,
     this.onTimerStart,
     this.onTimerStop,
+    this.onWorkSessionComplete,
     this.isMiniLayout = false,
   });
 
@@ -96,7 +98,7 @@ class _AppTimerState extends State<AppTimer> {
   bool _isAlarmPlaying = false;
   TimerMode _timerMode = TimerMode.pomodoro;
   Duration _elapsedTime = const Duration(); // For stopwatch mode
-  Duration _sessionTotalElapsed = const Duration(); // Total elapsed time for the entire session
+  Duration _sessionTotalElapsed = const Duration();
 
   int _getTotalDurationInSeconds() {
     if (_timerMode == TimerMode.normal) {
@@ -281,10 +283,8 @@ class _AppTimerState extends State<AppTimer> {
   void _startTimer() {
     if (_isRunning || _isAlarmPlaying) return;
 
-    // Reset session total elapsed time for new session
     _sessionTotalElapsed = const Duration();
 
-    // Call the onTimerStart callback if provided
     widget.onTimerStart?.call();
 
     if (mounted) {
@@ -295,7 +295,6 @@ class _AppTimerState extends State<AppTimer> {
       _updateSystemTrayTimer();
       if (_tickingEnabled) _startTicking();
 
-      // Enable wakelock if the setting is enabled
       if (_keepScreenAwake) {
         _wakelockService.enable();
       }
@@ -311,25 +310,18 @@ class _AppTimerState extends State<AppTimer> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
 
-      // Calculate the actual elapsed time increment for debug vs production
-      final elapsedIncrement = kDebugMode
-          ? const Duration(minutes: 1) // In debug mode, 1 minute of progress per second
-          : const Duration(seconds: 1); // In production, 1 second of progress per second
+      final elapsedIncrement = kDebugMode ? const Duration(minutes: 1) : const Duration(seconds: 1);
 
       setState(() {
         if (_timerMode == TimerMode.stopwatch) {
-          // Stopwatch mode: count up indefinitely
           _elapsedTime += elapsedIncrement;
         } else {
-          // Normal and Pomodoro modes: count down
           _remainingTime -= elapsedIncrement;
         }
       });
 
-      // Update session total elapsed time
       _sessionTotalElapsed += elapsedIncrement;
 
-      // Call onTick for UI updates (passes current elapsed/remaining time, not increments)
       if (widget.onTick != null) {
         final timeToDisplay = _timerMode == TimerMode.stopwatch ? _elapsedTime : _remainingTime;
         widget.onTick!(timeToDisplay);
@@ -386,37 +378,33 @@ class _AppTimerState extends State<AppTimer> {
 
       setState(() {
         _isRunning = false;
-        _isAlarmPlaying = false; // Reset alarm state
+        _isAlarmPlaying = false;
 
         if (_timerMode == TimerMode.stopwatch) {
-          _elapsedTime = const Duration(); // Reset stopwatch
+          _elapsedTime = const Duration();
         } else {
           if (_timerMode == TimerMode.pomodoro) {
             if (!_isWorking) {
-              // If in break mode, switch back to work mode
               _isWorking = true;
             }
-            _completedSessions = 0; // Reset completed sessions
-            _isLongBreak = false; // Reset long break flag
+            _completedSessions = 0;
+            _isLongBreak = false;
           }
 
           _remainingTime = Duration(
-            seconds: _getTimeInSeconds(_workDuration), // Always set to work duration
+            seconds: _getTimeInSeconds(_workDuration),
           );
         }
 
-        // Stop timer
         _timer.cancel();
 
-        _soundManagerService.stopAll(); // Stop any playing sounds
+        _soundManagerService.stopAll();
       });
 
       _resetSystemTrayIcon();
       _removeTimerMenuItems();
-      // Reset system tray title/body when stopping timer
       _resetSystemTrayToDefault();
 
-      // Call the onTimerStop callback with total elapsed duration for the session
       if (widget.onTimerStop != null) {
         widget.onTimerStop!(_sessionTotalElapsed);
       }
@@ -437,7 +425,6 @@ class _AppTimerState extends State<AppTimer> {
     _stopAlarm();
 
     if (_timerMode == TimerMode.stopwatch) {
-      // In stopwatch mode, just restart the timer
       setState(() {
         _elapsedTime = const Duration();
       });
@@ -446,7 +433,6 @@ class _AppTimerState extends State<AppTimer> {
     }
 
     if (_timerMode == TimerMode.normal) {
-      // In normal mode, just restart the timer
       setState(() {
         _remainingTime = Duration(seconds: _getTimeInSeconds(_workDuration));
       });
@@ -454,23 +440,24 @@ class _AppTimerState extends State<AppTimer> {
       return;
     }
 
-    // Pomodoro mode logic
+    if (_isWorking && _sessionTotalElapsed > Duration.zero) {
+      widget.onWorkSessionComplete?.call(_sessionTotalElapsed);
+    }
+
     setState(() {
       if (_isWorking) {
-        // Work session completed
         _completedSessions++;
         _isWorking = false;
         _isLongBreak = _completedSessions >= _sessionsCount;
 
         if (_isLongBreak) {
-          _completedSessions = 0; // Reset session count after long break
+          _completedSessions = 0;
         }
 
         _remainingTime = Duration(
           seconds: _getTimeInSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
         );
       } else {
-        // Break completed, start work
         _isWorking = true;
         _isLongBreak = false;
         _remainingTime = Duration(

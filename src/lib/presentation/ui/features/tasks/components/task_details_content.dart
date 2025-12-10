@@ -90,6 +90,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
+  Duration _timeSinceLastSave = Duration.zero;
 
   // Define optional field keys
   static const String keyTags = 'tags';
@@ -1400,22 +1401,39 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: AppTimer(
             isMiniLayout: true,
+            onTick: _handleTimerTick,
             onTimerStop: _onTaskTimerStop,
+            onWorkSessionComplete: _onTaskTimerStop,
           ),
         ),
       );
 
-  // Timer event handlers
-  void _onTaskTimerStop(Duration totalElapsed) {
+  void _handleTimerTick(Duration displayTime) {
+    _timeSinceLastSave += const Duration(seconds: 1);
+    if (_timeSinceLastSave.inSeconds >= 10) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  void _saveTaskTime(Duration elapsed) {
     if (!mounted) return;
     if (_task?.id == null) return;
+    if (elapsed.inSeconds <= 0) return;
 
-    // Only save if there's actual time elapsed
-    if (totalElapsed.inSeconds > 0) {
-      final command =
-          AddTaskTimeRecordCommand(duration: totalElapsed.inSeconds, taskId: _task!.id, customDateTime: DateTime.now());
-      _mediator.send(command);
-      _tasksService.notifyTaskUpdated(_task!.id);
+    final command = AddTaskTimeRecordCommand(
+      duration: elapsed.inSeconds,
+      taskId: _task!.id,
+      customDateTime: DateTime.now(),
+    );
+    _mediator.send(command);
+    _tasksService.notifyTaskUpdated(_task!.id);
+  }
+
+  void _onTaskTimerStop(Duration totalElapsed) {
+    if (_timeSinceLastSave.inSeconds > 0) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
     }
   }
 }
