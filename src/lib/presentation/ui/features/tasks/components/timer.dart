@@ -102,6 +102,7 @@ class _AppTimerState extends State<AppTimer> {
   TimerMode _timerMode = TimerMode.pomodoro;
   Duration _elapsedTime = const Duration(); // For stopwatch mode
   Duration _sessionTotalElapsed = const Duration();
+  Duration _currentWorkSessionElapsed = const Duration(); // Track current work session duration
 
   int _getTotalDurationInSeconds() {
     if (_timerMode == TimerMode.normal) {
@@ -287,6 +288,7 @@ class _AppTimerState extends State<AppTimer> {
     if (_isRunning || _isAlarmPlaying) return;
 
     _sessionTotalElapsed = const Duration();
+    _currentWorkSessionElapsed = const Duration();
 
     widget.onTimerStart?.call();
 
@@ -324,6 +326,11 @@ class _AppTimerState extends State<AppTimer> {
       });
 
       _sessionTotalElapsed += elapsedIncrement;
+
+      // Track current work session duration separately
+      if (_isWorking) {
+        _currentWorkSessionElapsed += elapsedIncrement;
+      }
 
       if (widget.onTick != null) {
         widget.onTick!(elapsedIncrement);
@@ -398,6 +405,8 @@ class _AppTimerState extends State<AppTimer> {
           );
         }
 
+        // Reset work session duration when timer stops
+        _currentWorkSessionElapsed = Duration.zero;
         _timer.cancel();
 
         _soundManagerService.stopAll();
@@ -442,8 +451,9 @@ class _AppTimerState extends State<AppTimer> {
       return;
     }
 
-    if (_isWorking && _sessionTotalElapsed > Duration.zero) {
-      widget.onWorkSessionComplete?.call(_sessionTotalElapsed);
+    // Pass the current work session duration when work completes
+    if (_isWorking && _currentWorkSessionElapsed > Duration.zero) {
+      widget.onWorkSessionComplete?.call(_currentWorkSessionElapsed);
     }
 
     setState(() {
@@ -459,12 +469,18 @@ class _AppTimerState extends State<AppTimer> {
         _remainingTime = Duration(
           seconds: _getTimeInSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
         );
+
+        // Reset work session duration when starting break
+        _currentWorkSessionElapsed = Duration.zero;
       } else {
         _isWorking = true;
         _isLongBreak = false;
         _remainingTime = Duration(
           seconds: _getTimeInSeconds(_workDuration),
         );
+
+        // Reset work session duration when starting new work session
+        _currentWorkSessionElapsed = Duration.zero;
       }
     });
     _startTimer();
