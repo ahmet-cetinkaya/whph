@@ -23,7 +23,10 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 
 class AppTimer extends StatefulWidget {
-  final Function(Duration)? onTick;
+  /// Callback invoked on each timer tick with the logical elapsed increment.
+  /// In debug mode, the increment is 1 minute per tick; in release, 1 second per tick.
+  /// Callers must use the elapsedIncrement parameter instead of assuming a fixed 1 second.
+  final void Function(Duration elapsedIncrement)? onTick;
   final VoidCallback? onTimerStart;
   final Function(Duration)? onTimerStop;
   final Function(Duration)? onWorkSessionComplete;
@@ -323,8 +326,7 @@ class _AppTimerState extends State<AppTimer> {
       _sessionTotalElapsed += elapsedIncrement;
 
       if (widget.onTick != null) {
-        final timeToDisplay = _timerMode == TimerMode.stopwatch ? _elapsedTime : _remainingTime;
-        widget.onTick!(timeToDisplay);
+        widget.onTick!(elapsedIncrement);
       }
       _updateSystemTrayTimer();
 

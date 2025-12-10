@@ -1403,14 +1403,15 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             isMiniLayout: true,
             onTick: _handleTimerTick,
             onTimerStop: _onTaskTimerStop,
-            onWorkSessionComplete: _onTaskTimerStop,
+            onWorkSessionComplete: _onTaskWorkSessionComplete,
           ),
         ),
       );
 
-  void _handleTimerTick(Duration displayTime) {
-    _timeSinceLastSave += const Duration(seconds: 1);
-    if (_timeSinceLastSave.inSeconds >= 10) {
+  void _handleTimerTick(Duration elapsedIncrement) {
+    // Use the elapsed increment provided by the timer
+    _timeSinceLastSave += elapsedIncrement;
+    if (_timeSinceLastSave.inSeconds >= TaskUiConstants.kPeriodicSaveIntervalSeconds) {
       _saveTaskTime(_timeSinceLastSave);
       _timeSinceLastSave = Duration.zero;
     }
@@ -1430,8 +1431,19 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _tasksService.notifyTaskUpdated(_task!.id);
   }
 
+  /// Called when a work session completes (e.g., Pomodoro work → break transition).
+  /// Flushes any accumulated elapsed time for the current task.
+  void _onTaskWorkSessionComplete(Duration totalElapsed) {
+    if (_timeSinceLastSave > Duration.zero) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  /// Called when the timer actually stops (user stops / session ends).
+  /// Flushes accumulated elapsed time for the current task.
   void _onTaskTimerStop(Duration totalElapsed) {
-    if (_timeSinceLastSave.inSeconds > 0) {
+    if (_timeSinceLastSave > Duration.zero) {
       _saveTaskTime(_timeSinceLastSave);
       _timeSinceLastSave = Duration.zero;
     }

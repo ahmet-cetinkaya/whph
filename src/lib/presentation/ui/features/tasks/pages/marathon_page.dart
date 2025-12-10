@@ -26,6 +26,7 @@ import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart'
 import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -130,9 +131,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     _startDimmingTimer();
   }
 
-  void _handleTimerTick(Duration displayTime) {
-    _timeSinceLastSave += const Duration(seconds: 1);
-    if (_timeSinceLastSave.inSeconds >= 10) {
+  void _handleTimerTick(Duration elapsedIncrement) {
+    // Use the elapsed increment provided by the timer
+    _timeSinceLastSave += elapsedIncrement;
+    if (_timeSinceLastSave.inSeconds >= TaskUiConstants.kPeriodicSaveIntervalSeconds) {
       _saveElapsedTime(_timeSinceLastSave);
       _timeSinceLastSave = Duration.zero;
     }
@@ -154,16 +156,35 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     );
   }
 
+  /// Called when a work session completes (e.g., Pomodoro work → break transition).
+  /// Flushes any accumulated elapsed time but intentionally does NOT stop dimming,
+  /// so the dimming persists into the break segment.
+  Future<void> _handleWorkSessionComplete(Duration totalElapsed) async {
+    if (_timeSinceLastSave > Duration.zero) {
+      await _saveElapsedTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  /// Called when the timer actually stops (user stops / session ends).
+  /// Flushes accumulated elapsed time and stops the dimming timer.
   Future<void> _handleTimerStop(Duration totalElapsed) async {
     _stopDimmingTimer();
 
-    if (_timeSinceLastSave.inSeconds > 0) {
+    if (_timeSinceLastSave > Duration.zero) {
       await _saveElapsedTime(_timeSinceLastSave);
       _timeSinceLastSave = Duration.zero;
     }
   }
 
   void _onSelectTask(TaskListItem task) async {
+    // Flush any pending elapsed time before switching tasks to ensure
+    // accumulated time is attributed to the correct task
+    if (_timeSinceLastSave > Duration.zero) {
+      await _saveElapsedTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+
     setState(() {
       _selectedTask = task;
     });
@@ -424,7 +445,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                 onTick: _handleTimerTick,
                                 onTimerStart: _onTimerStart,
                                 onTimerStop: _handleTimerStop,
-                                onWorkSessionComplete: _handleTimerStop,
+                                onWorkSessionComplete: _handleWorkSessionComplete,
                               ),
                             ),
                             AnimatedOpacity(

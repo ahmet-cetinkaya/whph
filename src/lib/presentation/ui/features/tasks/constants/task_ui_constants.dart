@@ -37,6 +37,9 @@ class TaskUiConstants {
   static const int defaultEstimatedTime = 10;
   static const List<int> defaultEstimatedTimeOptions = [defaultEstimatedTime, 30, 50, 90, 120];
 
+  // Timer auto-save interval
+  static const int kPeriodicSaveIntervalSeconds = 10;
+
   // Priority Colors & Tooltips
   static Color getPriorityColor(EisenhowerPriority? priority) {
     switch (priority) {
