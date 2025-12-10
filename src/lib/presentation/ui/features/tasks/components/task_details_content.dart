@@ -90,6 +90,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
+  Duration _timeSinceLastSave = Duration.zero;
 
   // Define optional field keys
   static const String keyTags = 'tags';
@@ -1400,22 +1401,51 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: AppTimer(
             isMiniLayout: true,
+            onTick: _handleTimerTick,
             onTimerStop: _onTaskTimerStop,
+            onWorkSessionComplete: _onTaskWorkSessionComplete,
           ),
         ),
       );
 
-  // Timer event handlers
-  void _onTaskTimerStop(Duration totalElapsed) {
+  void _handleTimerTick(Duration elapsedIncrement) {
+    // Use the elapsed increment provided by the timer
+    _timeSinceLastSave += elapsedIncrement;
+    if (_timeSinceLastSave.inSeconds >= TaskUiConstants.kPeriodicSaveIntervalSeconds) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  void _saveTaskTime(Duration elapsed) {
     if (!mounted) return;
     if (_task?.id == null) return;
+    if (elapsed.inSeconds <= 0) return;
 
-    // Only save if there's actual time elapsed
-    if (totalElapsed.inSeconds > 0) {
-      final command =
-          AddTaskTimeRecordCommand(duration: totalElapsed.inSeconds, taskId: _task!.id, customDateTime: DateTime.now());
-      _mediator.send(command);
-      _tasksService.notifyTaskUpdated(_task!.id);
+    final command = AddTaskTimeRecordCommand(
+      duration: elapsed.inSeconds,
+      taskId: _task!.id,
+      customDateTime: DateTime.now(),
+    );
+    _mediator.send(command);
+    _tasksService.notifyTaskUpdated(_task!.id);
+  }
+
+  /// Called when a work session completes (e.g., Pomodoro work → break transition).
+  /// Flushes any accumulated elapsed time for the current task.
+  void _onTaskWorkSessionComplete(Duration totalElapsed) {
+    if (_timeSinceLastSave > Duration.zero) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  /// Called when the timer actually stops (user stops / session ends).
+  /// Flushes accumulated elapsed time for the current task.
+  void _onTaskTimerStop(Duration totalElapsed) {
+    if (_timeSinceLastSave > Duration.zero) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
     }
   }
 }
