@@ -277,6 +277,7 @@ settings:
       not_enabled: 调试日志记录未启用。在高级设置中启用它以开始收集日志。
       no_file: 未找到调试日志文件。启用调试日志记录并且应用生成日志条目后将创建日志。
       empty: 调试日志文件为空。尚未记录任何日志条目。
+      toggle_auto_scroll: 切换自动滚动
     export:
       dialog_title: 导出调试日志
       error: 导出日志时出错

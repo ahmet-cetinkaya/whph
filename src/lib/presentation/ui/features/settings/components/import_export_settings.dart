@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/settings/commands/export_data_command.dart';
 import 'package:whph/core/application/features/settings/commands/import_data_command.dart';
 import 'package:whph/main.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
@@ -459,7 +459,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           OverlayNotificationHelper.hideNotification();
           OverlayNotificationHelper.showSuccess(
             context: context,
-            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n📁 $savedPath',
+            message: '${_translationService.translate(SettingsTranslationKeys.exportSuccess)}\n $savedPath',
             duration: const Duration(seconds: 6),
           );
 

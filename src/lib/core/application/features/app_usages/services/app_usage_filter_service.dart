@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/app_usages/constants/system_app_exclusions.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class AppUsageFilterService implements IAppUsageFilterService {
   final IAppUsageIgnoreRuleRepository _appUsageIgnoreRuleRepository;

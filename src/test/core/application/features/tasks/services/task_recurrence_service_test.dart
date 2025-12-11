@@ -3,6 +3,26 @@ import 'package:whph/core/application/features/tasks/services/task_recurrence_se
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 
+// Test logger that discards all log messages
+class TestLogger implements ILogger {
+  const TestLogger();
+
+  @override
+  void debug(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+
+  @override
+  void info(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+
+  @override
+  void warning(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+
+  @override
+  void error(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+
+  @override
+  void fatal(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+}
+
 void main() {
   group('TaskRecurrenceService Tests', () {
     late TaskRecurrenceService service;
@@ -921,32 +941,4 @@ void main() {
       });
     });
   });
-}
-
-// Test helper class
-class TestLogger implements ILogger {
-  @override
-  void debug(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
-
-  @override
-  void error(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
-
-  @override
-  void info(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
-
-  @override
-  void warning(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
-
-  @override
-  void fatal(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
 }

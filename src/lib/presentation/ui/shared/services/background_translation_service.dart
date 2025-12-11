@@ -6,7 +6,7 @@ import 'package:whph/core/application/features/settings/commands/save_setting_co
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service for handling background translation when EasyLocalization is not available
 class BackgroundTranslationService {

@@ -6,7 +6,7 @@ import 'package:whph/presentation/ui/features/settings/components/permission_car
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Component to display and manage notification permission settings
 class NotificationPermission extends StatefulWidget {

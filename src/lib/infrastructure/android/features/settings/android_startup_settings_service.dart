@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class AndroidStartupSettingsService implements IStartupSettingsService {
   final ISettingRepository _settingRepository;

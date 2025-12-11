@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:window_manager/window_manager.dart';

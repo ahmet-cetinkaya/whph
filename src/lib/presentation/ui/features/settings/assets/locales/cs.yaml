@@ -355,6 +355,7 @@ settings:
       empty:
         Soubor protokolu ladění je prázdný. Dosud nebyly zaznamenány žádné záznamy
         protokolu.
+      toggle_auto_scroll: Přepnout automatické posouvání
     export:
       dialog_title: Export protokolů ladění
       error: Chyba při exportu protokolů

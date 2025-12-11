@@ -353,6 +353,7 @@ settings:
         Ingen felsökningsloggfil hittades. Loggar kommer att skapas efter aktivering
         av felsökningsloggning och när appen genererar loggposter.
       empty: Felsökningsloggfilen är tom. Inga loggposter har registrerats ännu.
+      toggle_auto_scroll: Växla automatisk rullning
     export:
       dialog_title: Exportera felsökningsloggar
       error: Fel vid export av loggar

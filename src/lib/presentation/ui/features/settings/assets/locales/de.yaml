@@ -383,6 +383,7 @@ settings:
       empty:
         Debug-Protokolldatei ist leer. Es wurden noch keine Protokolleinträge
         aufgezeichnet.
+      toggle_auto_scroll: Automatisches Scrollen umschalten
     export:
       dialog_title: Debug-Protokolle exportieren
       error: Fehler beim Exportieren der Protokolle

@@ -10,44 +10,35 @@ import 'package:acore/acore.dart';
 
 import 'theme_service_test.mocks.dart';
 
+// Test logger that discards all log messages
 class TestLogger implements ILogger {
-  @override
-  void debug(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  const TestLogger();
 
   @override
-  void error(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void debug(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void info(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void info(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void warning(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void warning(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void fatal(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void error(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+
+  @override
+  void fatal(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 }
 
 @GenerateMocks([Mediator])
 void main() {
   late ThemeService themeService;
   late MockMediator mockMediator;
-  late TestLogger testLogger;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     mockMediator = MockMediator();
-    testLogger = TestLogger();
-    themeService = ThemeService(mediator: mockMediator, logger: testLogger);
+    themeService = ThemeService(mediator: mockMediator, logger: TestLogger());
   });
 
   tearDown(() async {

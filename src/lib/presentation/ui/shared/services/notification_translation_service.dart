@@ -1,6 +1,6 @@
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Enhanced translation service for notifications that ensures translations work in background contexts
 class NotificationTranslationService {

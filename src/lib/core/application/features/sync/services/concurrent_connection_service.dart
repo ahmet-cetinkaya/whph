@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/shared/utils/logger.dart';
-import 'package:whph/core/shared/utils/unawaited.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service for establishing concurrent connections to multiple IP addresses
 /// Implements intelligent connection logic with timeout handling and cancellation

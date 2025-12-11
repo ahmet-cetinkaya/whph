@@ -10,7 +10,7 @@ import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/windows/constants/windows_app_constants.dart';

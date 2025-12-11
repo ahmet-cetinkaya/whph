@@ -448,32 +448,28 @@ class MockMediator implements Mediator {
   Future<void> publish<E extends IDomainEvent>(E event) async {
     // For this test, we don't need to implement this
   }
+
+  Future<void> verifyTimes() async {
+    // For this test, we don't need to implement this
+  }
 }
 
-// Test helper class
+// Test logger that discards all log messages
 class TestLogger implements ILogger {
-  @override
-  void debug(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  const TestLogger();
 
   @override
-  void error(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void debug(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void info(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void info(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void warning(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void warning(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void fatal(String message, [Object? error, StackTrace? stackTrace]) {
-    // Do nothing in tests
-  }
+  void error(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+
+  @override
+  void fatal(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 }

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
@@ -41,7 +41,7 @@ class DesktopServerSyncService extends SyncService {
   /// Validates and cleans up any existing connection state
   /// This prevents stale connection data from previous app instances
   Future<void> _validateAndCleanConnectionState() async {
-    Logger.debug('🔍 Validating and cleaning up connection state...');
+    Logger.debug('Validating and cleaning up connection state...');
 
     try {
       // Clear any existing connection data that might be left from previous instances
@@ -56,22 +56,22 @@ class DesktopServerSyncService extends SyncService {
           connectionTimeCount > 0 ||
           connectionActivityCount > 0 ||
           ipConnectionCount > 0) {
-        Logger.warning('⚠️ Found stale connection data from previous instance:');
-        Logger.warning('   Active connections: $activeConnectionCount');
-        Logger.warning('   Connection IPs: $connectionIPCount');
-        Logger.warning('   Connection times: $connectionTimeCount');
-        Logger.warning('   Connection activities: $connectionActivityCount');
-        Logger.warning('   IP connection counts: $ipConnectionCount');
+        Logger.warning('Found stale connection data from previous instance:');
+        Logger.warning('Active connections: $activeConnectionCount');
+        Logger.warning('Connection IPs: $connectionIPCount');
+        Logger.warning('Connection times: $connectionTimeCount');
+        Logger.warning('Connection activities: $connectionActivityCount');
+        Logger.warning('IP connection counts: $ipConnectionCount');
 
         // Force cleanup of all stale connection data
         await _forceCleanupAllConnections();
 
-        Logger.info('🧹 Forced cleanup of stale connection data completed');
+        Logger.info('Forced cleanup of stale connection data completed');
       } else {
-        Logger.debug('✅ No stale connection data found');
+        Logger.debug('No stale connection data found');
       }
     } catch (e) {
-      Logger.error('❌ Error during connection state validation: $e');
+      Logger.error('Error during connection state validation: $e');
       // Force cleanup regardless of errors to ensure clean state
       await _forceCleanupAllConnections();
     }
@@ -99,18 +99,18 @@ class DesktopServerSyncService extends SyncService {
           await Future.wait(closeFutures).timeout(
             const Duration(seconds: 5),
             onTimeout: () {
-              Logger.warning('⚠️ Some connections took too long to close, proceeding with cleanup');
+              Logger.warning('Some connections took too long to close, proceeding with cleanup');
               return [];
             },
           );
         } catch (e) {
-          Logger.warning('⚠️ Error during connection closure: $e');
+          Logger.warning('Error during connection closure: $e');
         }
       }
 
-      Logger.debug('🧹 All connections closed successfully');
+      Logger.debug('All connections closed successfully');
     } catch (e) {
-      Logger.error('❌ Error during forced connection cleanup: $e');
+      Logger.error('Error during forced connection cleanup: $e');
     } finally {
       // Clear all tracking data regardless of success or failure
       _activeConnections.clear();
@@ -124,7 +124,7 @@ class DesktopServerSyncService extends SyncService {
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer() async {
     try {
-      Logger.info('🚀 Attempting to start desktop WebSocket server...');
+      Logger.info('Attempting to start desktop WebSocket server...');
 
       _server = await HttpServer.bind(
         InternetAddress.anyIPv4,
@@ -136,13 +136,13 @@ class DesktopServerSyncService extends SyncService {
       _startServerKeepAlive();
       _handleServerConnections();
 
-      Logger.info('✅ Desktop WebSocket server started on port $webSocketPort');
-      Logger.info('🌐 Desktop server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
-      Logger.info('🖥️ Ready to receive sync requests from mobile and desktop clients');
+      Logger.info('Desktop WebSocket server started on port $webSocketPort');
+      Logger.info('Desktop server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
+      Logger.info('Ready to receive sync requests from mobile and desktop clients');
 
       return true;
     } catch (e) {
-      Logger.warning('❌ Failed to start desktop server: $e');
+      Logger.warning('Failed to start desktop server: $e');
       _isServerMode = false;
       return false;
     }
@@ -159,14 +159,14 @@ class DesktopServerSyncService extends SyncService {
           // Check connection limits before accepting
           if (!_canAcceptNewConnection(clientIP)) {
             // Enhanced logging for connection rejections to aid diagnostics
-            Logger.warning('🚫 Connection rejected: limits exceeded from $clientIP\n'
-                '   📊 Current active connections: ${_activeConnections.length}/$maxConcurrentConnections\n'
-                '   📊 Connections from $clientIP: ${_ipConnectionCounts[clientIP] ?? 0}/$maxConnectionsPerIP');
+            Logger.warning('Connection rejected: limits exceeded from $clientIP\n'
+                '  Current active connections: ${_activeConnections.length}/$maxConcurrentConnections\n'
+                '  Connections from $clientIP: ${_ipConnectionCounts[clientIP] ?? 0}/$maxConnectionsPerIP');
 
             // Log current connection distribution for debugging
             if (_ipConnectionCounts.isNotEmpty) {
               final ipSummary = _ipConnectionCounts.entries.map((e) => '${e.key}:${e.value}').join(', ');
-              Logger.debug('   📊 Active connection IPs: $ipSummary');
+              Logger.debug('Active connection IPs: $ipSummary');
             }
 
             req.response
@@ -179,7 +179,7 @@ class DesktopServerSyncService extends SyncService {
 
           // Validate IP is from private network for security
           if (!_isPrivateIP(clientIP)) {
-            Logger.warning('🚫 Connection rejected: non-private IP $clientIP');
+            Logger.warning('Connection rejected: non-private IP $clientIP');
             req.response
               ..statusCode = HttpStatus.forbidden
               ..write('Only private network connections allowed')
@@ -198,20 +198,20 @@ class DesktopServerSyncService extends SyncService {
           _ipConnectionCounts[clientIP] = (_ipConnectionCounts[clientIP] ?? 0) + 1;
 
           Logger.info(
-              '🖥️ Desktop server: Client connected from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort} (${_activeConnections.length}/$maxConcurrentConnections)');
+              'Desktop server: Client connected from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort} (${_activeConnections.length}/$maxConcurrentConnections)');
 
           ws.listen(
             (data) async {
-              Logger.debug('📨 Desktop server received message: $data');
+              Logger.debug('Desktop server received message: $data');
               await _handleWebSocketMessage(data.toString(), ws);
             },
             onError: (e) {
-              Logger.error('❌ Desktop server connection error: $e');
+              Logger.error('Desktop server connection error: $e');
               _cleanupConnection(ws);
               ws.close();
             },
             onDone: () {
-              Logger.debug('🔚 Desktop server: Client disconnected');
+              Logger.debug('Desktop server: Client disconnected');
               _cleanupConnection(ws);
             },
             cancelOnError: true,
@@ -225,7 +225,7 @@ class DesktopServerSyncService extends SyncService {
             ..close();
         }
       } catch (e) {
-        Logger.error('⚠️ Desktop server request handling error: $e');
+        Logger.error('Desktop server request handling error: $e');
         req.response.statusCode = HttpStatus.internalServerError;
         await req.response.close();
       }
@@ -239,7 +239,7 @@ class DesktopServerSyncService extends SyncService {
 
       // Validate message size
       if (message.length > maxMessageSizeBytes) {
-        Logger.warning('🚫 Message rejected: size ${message.length} exceeds limit $maxMessageSizeBytes');
+        Logger.warning('Message rejected: size ${message.length} exceeds limit $maxMessageSizeBytes');
         _sendMessage(
             socket, WebSocketMessage(type: 'error', data: {'message': 'Message too large', 'server_type': 'desktop'}));
         return;
@@ -247,7 +247,7 @@ class DesktopServerSyncService extends SyncService {
 
       // Check connection timeout
       if (_isConnectionExpired(socket)) {
-        Logger.warning('🕒 Connection expired, closing socket');
+        Logger.warning('Connection expired, closing socket');
         await socket.close();
         return;
       }
@@ -258,7 +258,7 @@ class DesktopServerSyncService extends SyncService {
       try {
         parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
       } catch (e) {
-        Logger.warning('🚫 Invalid JSON message received: $e');
+        Logger.warning('Invalid JSON message received: $e');
         _sendMessage(socket,
             WebSocketMessage(type: 'error', data: {'message': 'Invalid JSON format', 'server_type': 'desktop'}));
         return;
@@ -270,7 +270,7 @@ class DesktopServerSyncService extends SyncService {
 
       // Validate message structure
       if (!_isValidWebSocketMessage(parsedMessage)) {
-        Logger.warning('🚫 Invalid message structure received');
+        Logger.warning('Invalid message structure received');
         _sendMessage(socket,
             WebSocketMessage(type: 'error', data: {'message': 'Invalid message structure', 'server_type': 'desktop'}));
         return;
@@ -304,7 +304,7 @@ class DesktopServerSyncService extends SyncService {
           break;
 
         case 'sync':
-          Logger.warning('⚠️ Legacy sync endpoint called on desktop server - this is deprecated');
+          Logger.warning('Legacy sync endpoint called on desktop server - this is deprecated');
           WebSocketMessage deprecationMessage = WebSocketMessage(type: 'sync_deprecated', data: {
             'success': false,
             'message': 'Legacy sync is deprecated. Please use paginated_sync endpoint.',
@@ -316,30 +316,30 @@ class DesktopServerSyncService extends SyncService {
           break;
 
         case 'paginated_sync_start':
-          Logger.info('🔄 Desktop server received paginated sync start request');
+          Logger.info('Desktop server received paginated sync start request');
           await _handlePaginatedSyncStart(parsedMessage, socket);
           break;
 
         case 'paginated_sync_request':
-          Logger.info('🔄 Desktop server received data page request');
+          Logger.info('Desktop server received data page request');
           await _handlePaginatedSyncRequest(parsedMessage, socket);
           break;
 
         case 'paginated_sync':
-          Logger.info('🔄 Desktop server processing paginated sync request...');
+          Logger.info('Desktop server processing paginated sync request...');
           final paginatedSyncData = parsedMessage.data;
           if (paginatedSyncData == null) {
             throw FormatException('Paginated sync message missing data');
           }
 
           Logger.debug(
-              '📊 Desktop server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
+              'Desktop server paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
 
           try {
             final command =
                 PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
             final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
-            Logger.info('✅ Desktop server paginated sync processing completed successfully');
+            Logger.info('Desktop server paginated sync processing completed successfully');
 
             // For paginated sync, send the data back as paginated_sync, not paginated_sync_complete
             WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync', data: {
@@ -349,7 +349,7 @@ class DesktopServerSyncService extends SyncService {
               'timestamp': DateTime.now().toIso8601String(),
               'server_type': 'desktop'
             });
-            _sendMessage(socket, responseMessage, '📤 Desktop server paginated sync response sent to client');
+            _sendMessage(socket, responseMessage, 'Desktop server paginated sync response sent to client');
 
             // Close connection immediately after successful response for paginated sync
             // This frees up connection slots for subsequent entity sync requests
@@ -417,7 +417,7 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      _sendMessage(socket, response, '📤 Sent device info response');
+      _sendMessage(socket, response, 'Sent device info response');
     } catch (e) {
       Logger.error('Failed to handle device info request: $e');
     }
@@ -429,7 +429,7 @@ class DesktopServerSyncService extends SyncService {
       final clientId = data['clientId'] as String?;
       final clientName = data['clientName'] as String?;
 
-      Logger.info('🔌 Client connecting: $clientName ($clientId)');
+      Logger.info('Client connecting: $clientName ($clientId)');
 
       final response = WebSocketMessage(
         type: 'client_connected',
@@ -443,7 +443,7 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      _sendMessage(socket, response, '✅ Client connected successfully: $clientName');
+      _sendMessage(socket, response, 'Client connected successfully: $clientName');
     } catch (e) {
       Logger.error('Failed to handle client connect: $e');
 
@@ -471,7 +471,7 @@ class DesktopServerSyncService extends SyncService {
       final clientId = data['clientId'] as String?;
       final serverId = data['serverId'] as String?;
 
-      Logger.info('🤝 Desktop server: Client ($clientId) initiated paginated sync with server ($serverId)');
+      Logger.info('Desktop server: Client ($clientId) initiated paginated sync with server ($serverId)');
 
       // Acknowledge the sync start and initiate the actual sync process
       final response = WebSocketMessage(
@@ -484,13 +484,13 @@ class DesktopServerSyncService extends SyncService {
         },
       );
 
-      _sendMessage(socket, response, '📤 Desktop server: Sent paginated_sync_started response');
+      _sendMessage(socket, response, 'Desktop server: Sent paginated_sync_started response');
 
       // Acknowledge the sync start but don't immediately push data
       // The client will request data pages as needed
-      Logger.info('🔄 Desktop server: Acknowledged sync start request from client');
+      Logger.info('Desktop server: Acknowledged sync start request from client');
     } catch (e, stackTrace) {
-      Logger.error('❌ Desktop server: Failed to handle paginated_sync_start: $e');
+      Logger.error('Desktop server: Failed to handle paginated_sync_start: $e');
       Logger.error('Stack trace: $stackTrace');
 
       final errorMessage = WebSocketMessage(
@@ -523,7 +523,7 @@ class DesktopServerSyncService extends SyncService {
         throw FormatException('Missing required fields: entityType, pageIndex, or clientId');
       }
 
-      Logger.info('📄 Desktop server: Client requested page $pageIndex of $entityType (size: $pageSize)');
+      Logger.info('Desktop server: Client requested page $pageIndex of $entityType (size: $pageSize)');
 
       // Create a paginated sync command to get the requested data
       // Get real IP addresses from the connection context
@@ -559,7 +559,7 @@ class DesktopServerSyncService extends SyncService {
       if (response.paginatedSyncDataDto != null) {
         final populatedData = response.paginatedSyncDataDto!.getPopulatedSyncData();
         final itemCount = populatedData?.data.getTotalItemCount() ?? 0;
-        Logger.info('✅ Desktop server: Found $itemCount items for page $pageIndex of $entityType');
+        Logger.info('Desktop server: Found $itemCount items for page $pageIndex of $entityType');
 
         final responseMessage = WebSocketMessage(
           type: 'paginated_sync',
@@ -571,9 +571,9 @@ class DesktopServerSyncService extends SyncService {
           },
         );
 
-        _sendMessage(socket, responseMessage, '📤 Desktop server: Sent page $pageIndex data to client');
+        _sendMessage(socket, responseMessage, 'Desktop server: Sent page $pageIndex data to client');
       } else {
-        Logger.info('📄 Desktop server: No data found for page $pageIndex of $entityType');
+        Logger.info('Desktop server: No data found for page $pageIndex of $entityType');
 
         final emptyResponseMessage = WebSocketMessage(
           type: 'paginated_sync_complete',
@@ -587,10 +587,10 @@ class DesktopServerSyncService extends SyncService {
           },
         );
 
-        _sendMessage(socket, emptyResponseMessage, '📤 Desktop server: Sent empty response for page $pageIndex');
+        _sendMessage(socket, emptyResponseMessage, 'Desktop server: Sent empty response for page $pageIndex');
       }
     } catch (e, stackTrace) {
-      Logger.error('❌ Desktop server: Failed to handle paginated_sync_request: $e');
+      Logger.error('Desktop server: Failed to handle paginated_sync_request: $e');
       Logger.error('Stack trace: $stackTrace');
 
       final errorMessage = WebSocketMessage(
@@ -608,7 +608,7 @@ class DesktopServerSyncService extends SyncService {
 
   Future<void> _handleHeartbeat(WebSocketMessage message, WebSocket socket) async {
     try {
-      Logger.debug('💓 Received heartbeat from client');
+      Logger.debug('Received heartbeat from client');
 
       final response = WebSocketMessage(
         type: 'heartbeat_response',
@@ -627,7 +627,7 @@ class DesktopServerSyncService extends SyncService {
   void _startServerKeepAlive() {
     _serverKeepAlive = Timer.periodic(const Duration(minutes: 2), (_) {
       if (_server != null && _isServerMode) {
-        Logger.debug('🖥️ Desktop server heartbeat - Active connections: ${_activeConnections.length}');
+        Logger.debug('Desktop server heartbeat - Active connections: ${_activeConnections.length}');
 
         // Proactively recycle idle connections to free slots
         _recycleIdleConnections();
@@ -637,7 +637,7 @@ class DesktopServerSyncService extends SyncService {
             _activeConnections.where((ws) => ws.readyState == WebSocket.closed || _isConnectionExpired(ws)).toList();
         for (final ws in closedConnections) {
           if (_isConnectionExpired(ws)) {
-            Logger.debug('🕒 Closing expired connection');
+            Logger.debug('Closing expired connection');
             ws.close();
           }
           _cleanupConnection(ws);
@@ -645,9 +645,9 @@ class DesktopServerSyncService extends SyncService {
 
         // Log server health for debugging
         if (_activeConnections.isEmpty) {
-          Logger.debug('🖥️ Desktop server running in background, waiting for connections...');
+          Logger.debug('Desktop server running in background, waiting for connections...');
         } else {
-          Logger.debug('🖥️ Desktop server actively serving ${_activeConnections.length} client(s)');
+          Logger.debug('Desktop server actively serving ${_activeConnections.length} client(s)');
         }
       }
     });
@@ -661,7 +661,7 @@ class DesktopServerSyncService extends SyncService {
 
   Future<void> stopServer() async {
     if (_isServerMode) {
-      Logger.info('🛑 Stopping desktop WebSocket server...');
+      Logger.info('Stopping desktop WebSocket server...');
 
       _serverKeepAlive?.cancel();
       _serverKeepAlive = null;
@@ -672,9 +672,9 @@ class DesktopServerSyncService extends SyncService {
       // Close the server
       try {
         await _server?.close();
-        Logger.debug('✅ Server socket closed successfully');
+        Logger.debug('Server socket closed successfully');
       } catch (e) {
-        Logger.warning('⚠️ Error closing server socket: $e');
+        Logger.warning('Error closing server socket: $e');
       }
       _server = null;
       _isServerMode = false;
@@ -682,7 +682,7 @@ class DesktopServerSyncService extends SyncService {
       // Final validation to ensure clean state
       await _validateCleanShutdown();
 
-      Logger.info('✅ Desktop WebSocket server stopped with enhanced cleanup');
+      Logger.info('Desktop WebSocket server stopped with enhanced cleanup');
     }
   }
 
@@ -691,11 +691,11 @@ class DesktopServerSyncService extends SyncService {
     final connectionsToClose = List<WebSocket>.from(_activeConnections);
 
     if (connectionsToClose.isEmpty) {
-      Logger.debug('📭 No active connections to close');
+      Logger.debug('No active connections to close');
       return;
     }
 
-    Logger.info('🔒 Force closing ${connectionsToClose.length} active connections...');
+    Logger.info('Force closing ${connectionsToClose.length} active connections...');
 
     // Close all connections concurrently with timeout
     final futures = connectionsToClose.map((ws) async {
@@ -704,13 +704,13 @@ class DesktopServerSyncService extends SyncService {
           await ws.close(1001, 'Server shutting down').timeout(
             const Duration(seconds: 3),
             onTimeout: () {
-              Logger.warning('⚠️ Connection close timeout, forcing closure');
+              Logger.warning('Connection close timeout, forcing closure');
               return ws.close();
             },
           );
         }
       } catch (e) {
-        Logger.warning('⚠️ Error closing connection: $e');
+        Logger.warning('Error closing connection: $e');
       } finally {
         // Always cleanup tracking data, even if close fails
         _cleanupConnection(ws);
@@ -722,18 +722,18 @@ class DesktopServerSyncService extends SyncService {
       await Future.wait(futures).timeout(
         const Duration(seconds: 5),
         onTimeout: () {
-          Logger.warning('⚠️ Some connections took too long to close, proceeding with cleanup');
+          Logger.warning('Some connections took too long to close, proceeding with cleanup');
           return []; // Return empty list to satisfy the Future.wait return type
         },
       );
     } catch (e) {
-      Logger.warning('⚠️ Error during connection closure: $e');
+      Logger.warning('Error during connection closure: $e');
     }
 
     // Force cleanup any remaining tracking data
     await _forceCleanupAllConnections();
 
-    Logger.debug('✅ All connections force-closed');
+    Logger.debug('All connections force-closed');
   }
 
   /// Validates that the server has shut down cleanly
@@ -750,21 +750,21 @@ class DesktopServerSyncService extends SyncService {
           remainingTimes > 0 ||
           remainingActivities > 0 ||
           remainingIPCounts > 0) {
-        Logger.warning('⚠️ Server shutdown validation found remaining tracking data:');
-        Logger.warning('   Connections: $remainingConnections');
-        Logger.warning('   IPs: $remainingIPs');
-        Logger.warning('   Times: $remainingTimes');
-        Logger.warning('   Activities: $remainingActivities');
-        Logger.warning('   IP counts: $remainingIPCounts');
+        Logger.warning('Server shutdown validation found remaining tracking data:');
+        Logger.warning('Connections: $remainingConnections');
+        Logger.warning('IPs: $remainingIPs');
+        Logger.warning('Times: $remainingTimes');
+        Logger.warning('Activities: $remainingActivities');
+        Logger.warning('IP counts: $remainingIPCounts');
 
         // Force cleanup one more time
         await _forceCleanupAllConnections();
-        Logger.info('🧹 Performed final cleanup after shutdown validation');
+        Logger.info('Performed final cleanup after shutdown validation');
       } else {
-        Logger.debug('✅ Server shutdown validation passed - clean state confirmed');
+        Logger.debug('Server shutdown validation passed - clean state confirmed');
       }
     } catch (e) {
-      Logger.error('❌ Error during shutdown validation: $e');
+      Logger.error('Error during shutdown validation: $e');
       // Ensure cleanup even if validation fails
       await _forceCleanupAllConnections();
     }
@@ -834,13 +834,13 @@ class DesktopServerSyncService extends SyncService {
   bool _canAcceptNewConnection(String clientIP) {
     // Validate input
     if (clientIP.isEmpty) {
-      Logger.warning('⚠️ Invalid empty client IP in connection check');
+      Logger.warning('Invalid empty client IP in connection check');
       return false;
     }
 
     // Check total connection limit
     if (_activeConnections.length >= maxConcurrentConnections) {
-      Logger.debug('🚫 Connection pool at capacity: ${_activeConnections.length}/$maxConcurrentConnections');
+      Logger.debug('Connection pool at capacity: ${_activeConnections.length}/$maxConcurrentConnections');
       return false;
     }
 
@@ -848,7 +848,7 @@ class DesktopServerSyncService extends SyncService {
     // Increased from 3 to 5 to accommodate paginated sync sequential requests
     final ipConnections = _ipConnectionCounts[clientIP] ?? 0;
     if (ipConnections >= maxConnectionsPerIP) {
-      Logger.debug('🚫 IP $clientIP at connection limit: $ipConnections/$maxConnectionsPerIP');
+      Logger.debug('IP $clientIP at connection limit: $ipConnections/$maxConnectionsPerIP');
       return false;
     }
 
@@ -933,7 +933,7 @@ class DesktopServerSyncService extends SyncService {
           final lastActivity = _connectionLastActivity[socket];
           if (lastActivity == null) {
             // Missing activity timestamp is suspicious - mark for cleanup
-            Logger.debug('🧹 Connection missing activity timestamp, marking for recycling');
+            Logger.debug('Connection missing activity timestamp, marking for recycling');
             connectionsToRecycle.add(socket);
             continue;
           }
@@ -944,18 +944,18 @@ class DesktopServerSyncService extends SyncService {
           // This is safe for paginated sync which completes quickly (<2s per entity)
           if (idleTime.inSeconds > connectionRecycleIdleSeconds) {
             Logger.debug(
-                '🧹 Recycling idle connection (idle: ${idleTime.inSeconds}s, threshold: ${connectionRecycleIdleSeconds}s)');
+                'Recycling idle connection (idle: ${idleTime.inSeconds}s, threshold: ${connectionRecycleIdleSeconds}s)');
             connectionsToRecycle.add(socket);
           }
         } catch (e) {
           // Defensive: Don't let error in one connection affect others
-          Logger.debug('⚠️ Error checking connection for recycling: $e');
+          Logger.debug('Error checking connection for recycling: $e');
         }
       }
 
       // Close and cleanup identified connections
       if (connectionsToRecycle.isNotEmpty) {
-        Logger.debug('🧹 Recycling ${connectionsToRecycle.length} idle connection(s)');
+        Logger.debug('Recycling ${connectionsToRecycle.length} idle connection(s)');
 
         for (final socket in connectionsToRecycle) {
           try {
@@ -963,14 +963,14 @@ class DesktopServerSyncService extends SyncService {
             _cleanupConnection(socket);
           } catch (e) {
             // Defensive: Ensure cleanup even if close fails
-            Logger.debug('⚠️ Error closing connection during recycling: $e');
+            Logger.debug('Error closing connection during recycling: $e');
             _cleanupConnection(socket); // Still cleanup tracking data
           }
         }
       }
     } catch (e) {
       // Outer defensive catch: Don't let recycling errors crash the server
-      Logger.warning('⚠️ Error during connection recycling: $e');
+      Logger.warning('Error during connection recycling: $e');
     }
   }
 
@@ -1025,12 +1025,12 @@ class DesktopServerSyncService extends SyncService {
           _ipConnectionCounts.remove(clientIP);
         } else {
           // Defensive: Log if count is already 0 or negative (shouldn't happen)
-          Logger.warning('⚠️ Attempted to decrement IP count for $clientIP but count was $currentCount');
+          Logger.warning('Attempted to decrement IP count for $clientIP but count was $currentCount');
         }
       }
     } catch (e) {
       // Defensive: Log error but don't throw - cleanup must always succeed
-      Logger.warning('⚠️ Error during connection cleanup: $e');
+      Logger.warning('Error during connection cleanup: $e');
     }
   }
 
@@ -1047,12 +1047,12 @@ class DesktopServerSyncService extends SyncService {
     try {
       // Validate socket state before attempting to close
       if (socket.readyState == WebSocket.closed || socket.readyState == WebSocket.closing) {
-        Logger.debug('🔒 Socket already closed or closing, skipping graceful close');
+        Logger.debug('Socket already closed or closing, skipping graceful close');
         _cleanupConnection(socket);
         return;
       }
 
-      Logger.debug('🔒 Closing socket gracefully: $reason (code: $code)');
+      Logger.debug('Closing socket gracefully: $reason (code: $code)');
 
       // WORKAROUND: Add brief delay to prevent race condition where close() is called
       // before the add() operation completes sending data over the wire.
@@ -1067,16 +1067,16 @@ class DesktopServerSyncService extends SyncService {
       await socket.close(code, reason).timeout(
         const Duration(seconds: 2),
         onTimeout: () {
-          Logger.warning('⚠️ Socket close timed out, forcing closure');
+          Logger.warning('Socket close timed out, forcing closure');
           // Force close if graceful close hangs
           return socket.close();
         },
       );
 
-      Logger.debug('✅ Socket closed successfully');
+      Logger.debug('Socket closed successfully');
     } catch (e) {
       // Defensive: Log but don't throw - connection cleanup must always succeed
-      Logger.warning('⚠️ Error during graceful socket close: $e');
+      Logger.warning('Error during graceful socket close: $e');
 
       // Attempt force close as fallback
       try {

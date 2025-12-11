@@ -10,7 +10,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_setup_servic
 import 'package:whph/presentation/ui/features/about/components/onboarding_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service responsible for handling app initialization tasks
 class AppInitializationService {
@@ -103,7 +103,7 @@ class AppInitializationService {
         await _supportDialogService.checkAndShowSupportDialog(context);
       }
     } catch (e) {
-      Logger.error('Error checking support dialog: $e');
+      Logger.error('Error checking support dialog: $e', component: 'AppInitializationService');
     }
   }
 
@@ -120,7 +120,7 @@ class AppInitializationService {
         }
       });
     } catch (e) {
-      Logger.error('Error checking for updates: $e');
+      Logger.error('Error checking for updates: $e', component: 'AppInitializationService');
       _hasCheckedForUpdates = true; // Mark as checked even if failed to avoid repeated attempts
     }
   }

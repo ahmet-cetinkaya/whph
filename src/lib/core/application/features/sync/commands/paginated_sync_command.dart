@@ -12,7 +12,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
@@ -109,7 +109,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     // Emit progress update
     _bidirectionalProgressController.add(progress);
 
-    Logger.debug('📊 Bidirectional progress updated: ${progress.statusDescription}');
+    Logger.debug('Bidirectional progress updated: ${progress.statusDescription}');
   }
 
   /// Calculate overall sync progress across all entities and devices
@@ -171,19 +171,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
   @override
   Future<PaginatedSyncCommandResponse> call(PaginatedSyncCommand request) async {
-    Logger.info('🔄 Starting paginated sync operation...');
+    Logger.info('Starting paginated sync operation...');
 
     try {
       if (request.paginatedSyncDataDto != null) {
-        Logger.info('📨 Handling incoming sync data');
+        Logger.info('Handling incoming sync data');
         return await _handleIncomingSync(request.paginatedSyncDataDto!);
       } else {
-        Logger.info('📤 Initiating outgoing sync');
+        Logger.info('Initiating outgoing sync');
         return await _initiateOutgoingSync(request.targetDeviceId);
       }
     } catch (e, stackTrace) {
-      Logger.error('❌ CRITICAL: Paginated sync operation failed: $e');
-      Logger.error('🔍 Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Paginated sync operation failed', error: e, stackTrace: stackTrace);
 
       final String errorKey;
       final Map<String, String>? errorParams;
@@ -192,7 +191,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
         errorParams = e.params;
         if (kDebugMode) {
-          Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: $errorParams');
+          Logger.debug('SyncValidationException caught! Code: ${e.code}, params: $errorParams');
         }
       } else {
         errorKey = SyncTranslationKeys.criticalSyncOperationFailedError;
@@ -211,19 +210,18 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   }
 
   Future<PaginatedSyncCommandResponse> _handleIncomingSync(PaginatedSyncDataDto dto) async {
-    Logger.info('📨 Processing incoming paginated sync data from remote device');
+    Logger.info('Processing incoming paginated sync data from remote device');
 
     Logger.info('DTO entity type: ${dto.entityType}');
     if (dto.entityType == 'SyncDevice') {
       Logger.info(
-          '🔍 SyncDevice DTO details: syncDevicesSyncData is ${dto.syncDevicesSyncData != null ? "not null" : "null"}');
+          'SyncDevice DTO details: syncDevicesSyncData is ${dto.syncDevicesSyncData != null ? "not null" : "null"}');
       if (dto.syncDevicesSyncData != null) {
         Logger.info(
-            '🔍 SyncDevice data: creates=${dto.syncDevicesSyncData!.data.createSync.length}, updates=${dto.syncDevicesSyncData!.data.updateSync.length}, deletes=${dto.syncDevicesSyncData!.data.deleteSync.length}');
-        Logger.info('🔍 SyncDevice total count: ${dto.syncDevicesSyncData!.data.getTotalItemCount()}');
+            'SyncDevice data: creates=${dto.syncDevicesSyncData!.data.createSync.length}, updates=${dto.syncDevicesSyncData!.data.updateSync.length}, deletes=${dto.syncDevicesSyncData!.data.deleteSync.length}');
+        Logger.info('SyncDevice total count: ${dto.syncDevicesSyncData!.data.getTotalItemCount()}');
       } else {
-        Logger.warning(
-            '⚠️ SyncDevice DTO is null but entity type is SyncDevice - this indicates a serialization issue');
+        Logger.warning('SyncDevice DTO is null but entity type is SyncDevice - this indicates a serialization issue');
       }
     }
 
@@ -270,9 +268,9 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         },
       ));
 
-      Logger.info('✅ Processed $processedCount items from incoming sync data (resolved $conflictsResolved conflicts)');
+      Logger.info('Processed $processedCount items from incoming sync data (resolved $conflictsResolved conflicts)');
     } catch (e) {
-      Logger.error('❌ Error processing incoming sync data: $e');
+      Logger.error('Error processing incoming sync data: $e');
 
       String errorKey;
       if (e is SyncValidationException) {
@@ -280,7 +278,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         if (processingErrors.isEmpty) {
           errorParams = e.params;
           if (kDebugMode) {
-            Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: $errorParams');
+            Logger.debug('SyncValidationException caught! Code: ${e.code}, params: $errorParams');
           }
         }
       } else {
@@ -306,7 +304,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     // For bidirectional sync, check if we have local data to send back
-    Logger.info('🔄 Checking for local data to send back for entity: ${dto.entityType}');
+    Logger.info('Checking for local data to send back for entity: ${dto.entityType}');
     bool hasMorePagesToSend = false;
     PaginatedSyncDataDto? responseDto;
 
@@ -318,7 +316,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         final syncDevice = dto.syncDevice;
         final lastSyncDate = syncDevice.lastSyncDate ?? DateTime(2000);
 
-        Logger.info('📤 Checking local ${dto.entityType} data count (page ${dto.pageIndex})');
+        Logger.info('Checking local ${dto.entityType} data count (page ${dto.pageIndex})');
 
         // For bidirectional sync, determine which server page to send
         // Use the requested server page from client, or get the next page to send
@@ -339,7 +337,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         );
 
         Logger.info(
-            '📊 Local ${dto.entityType} data check: ${localData.data.getTotalItemCount()} items, page $serverPageToSend/${localData.totalPages - 1}');
+            'Local ${dto.entityType} data check: ${localData.data.getTotalItemCount()} items, page $serverPageToSend/${localData.totalPages - 1}');
 
         if (localData.totalItems > 0 && localData.data.getTotalItemCount() > 0) {
           // Update the last sent page tracking
@@ -348,15 +346,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           // For bidirectional sync, check if server has more pages to send
           hasMorePagesToSend = serverPageToSend < localData.totalPages - 1;
 
-          Logger.info('✅ Local device has ${dto.entityType} data to send back');
+          Logger.info('Local device has ${dto.entityType} data to send back');
           Logger.info(
-              '📊 Local ${dto.entityType} pagination: total=${localData.totalItems} items, totalPages=${localData.totalPages}, sendingPage=$serverPageToSend, willComplete=${!hasMorePagesToSend}');
+              'Local ${dto.entityType} pagination: total=${localData.totalItems} items, totalPages=${localData.totalPages}, sendingPage=$serverPageToSend, willComplete=${!hasMorePagesToSend}');
           Logger.info(
-              '🔍 More pages to send: $hasMorePagesToSend (server page $serverPageToSend/${localData.totalPages - 1})');
+              'More pages to send: $hasMorePagesToSend (server page $serverPageToSend/${localData.totalPages - 1})');
 
           // Actually send the local data back to the client
           Logger.info(
-              '📤 Creating response DTO with local ${dto.entityType} data (${localData.data.getTotalItemCount()} items on page $serverPageToSend)');
+              'Creating response DTO with local ${dto.entityType} data (${localData.data.getTotalItemCount()} items on page $serverPageToSend)');
           responseDto = await _createBidirectionalResponseDto(
             syncDevice,
             localData,
@@ -367,7 +365,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           );
         } else {
           Logger.info(
-              '📋 No local ${dto.entityType} data to send back (page $serverPageToSend is empty or beyond total pages)');
+              'No local ${dto.entityType} data to send back (page $serverPageToSend is empty or beyond total pages)');
 
           // If we're out of pages, reset the tracking for this entity to indicate completion
           _paginationService.setLastSentServerPage(dto.syncDevice.id, dto.entityType, -1);
@@ -375,13 +373,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         }
       }
     } catch (e) {
-      Logger.error('❌ Error checking local data: $e');
+      Logger.error('Error checking local data: $e');
 
       final String errorKey;
       if (e is SyncValidationException) {
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
         if (kDebugMode) {
-          Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: ${e.params}');
+          Logger.debug('SyncValidationException caught! Code: ${e.code}, params: ${e.params}');
         }
       } else {
         errorKey = SyncTranslationKeys.checkingLocalDataError;
@@ -429,23 +427,23 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   }
 
   Future<PaginatedSyncCommandResponse> _initiateOutgoingSync(String? targetDeviceId) async {
-    Logger.info('📤 Initiating outgoing paginated sync');
-    Logger.info('🎯 Target device ID: $targetDeviceId');
+    Logger.info('Initiating outgoing paginated sync');
+    Logger.info('Target device ID: $targetDeviceId');
 
     try {
       // Get all devices to sync with
       Logger.info('Fetching sync devices from repository...');
       final allDevices = await _syncDeviceRepository.getAll();
-      Logger.info('📋 Found ${allDevices.length} sync devices in database');
+      Logger.info('Found ${allDevices.length} sync devices in database');
 
       for (int i = 0; i < allDevices.length; i++) {
         final device = allDevices[i];
         Logger.info(
-            '📅 Device $i LOADED FROM DATABASE with lastSyncDate=${device.lastSyncDate} (is null: ${device.lastSyncDate == null})');
+            'Device $i LOADED FROM DATABASE with lastSyncDate=${device.lastSyncDate} (is null: ${device.lastSyncDate == null})');
       }
 
       if (allDevices.isEmpty) {
-        Logger.warning('⚠️ No devices configured for sync');
+        Logger.warning('No devices configured for sync');
         return PaginatedSyncCommandResponse(
           isComplete: true,
           syncedDeviceCount: 0,
@@ -465,15 +463,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       DateTime? oldestLastSyncDate;
 
       // Sync with each device
-      Logger.info('🔄 Starting sync with ${allDevices.length} devices...');
+      Logger.info('Starting sync with ${allDevices.length} devices...');
       for (int i = 0; i < allDevices.length; i++) {
         final syncDevice = allDevices[i];
-        Logger.info('🔄 Syncing with device ${i + 1}/${allDevices.length}: ${syncDevice.id}');
+        Logger.info('Syncing with device ${i + 1}/${allDevices.length}: ${syncDevice.id}');
 
         try {
           final success = await _syncWithDevice(syncDevice);
           if (success) {
-            Logger.info('✅ Successfully synced with device ${syncDevice.id}');
+            Logger.info('Successfully synced with device ${syncDevice.id}');
             successfulDevices.add(syncDevice);
             oldestLastSyncDate = oldestLastSyncDate == null
                 ? syncDevice.lastSyncDate
@@ -481,12 +479,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                     ? syncDevice.lastSyncDate
                     : oldestLastSyncDate);
           } else {
-            Logger.error('❌ Failed to sync with device ${syncDevice.id} - this will prevent sync date updates');
+            Logger.error('Failed to sync with device ${syncDevice.id} - this will prevent sync date updates');
             allDevicesSynced = false;
           }
         } catch (e, stackTrace) {
-          Logger.error('❌ CRITICAL: Exception during sync with device ${syncDevice.id}: $e');
-          Logger.error('🔍 Stack trace: $stackTrace');
+          Logger.error('CRITICAL: Exception during sync with device ${syncDevice.id}',
+              error: e, stackTrace: stackTrace);
           allDevicesSynced = false;
         }
       }
@@ -496,7 +494,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
       // Update last sync date only if all devices synced successfully
       if (allDevicesSynced) {
-        Logger.info('📅 Updating last sync dates for ${successfulDevices.length} successful devices');
+        Logger.info('Updating last sync dates for ${successfulDevices.length} successful devices');
         final updatedSyncDevices = <SyncDevice>[];
 
         for (final syncDevice in successfulDevices) {
@@ -515,7 +513,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           if (verificationDevice != null) {
             if (verificationDevice.lastSyncDate == null) {
               Logger.warning(
-                  '⚠️ CRITICAL: Database update verification failed - lastSyncDate is still null after update!');
+                  'CRITICAL: Database update verification failed - lastSyncDate is still null after update!');
               // Retry the update once more to ensure it persists
               await _syncDeviceRepository.update(syncDevice);
               await Future.delayed(const Duration(milliseconds: 100));
@@ -523,13 +521,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               // Verify again after retry
               final retryVerification = await _syncDeviceRepository.getById(syncDevice.id);
               if (retryVerification != null && retryVerification.lastSyncDate != null) {
-                Logger.info('✅ Database update verification passed after retry - lastSyncDate properly persisted');
+                Logger.info('Database update verification passed after retry - lastSyncDate properly persisted');
               } else {
-                Logger.error('❌ Database update verification failed even after retry!');
+                Logger.error('Database update verification failed even after retry!');
               }
             }
           } else {
-            Logger.error('❌ CRITICAL: Could not re-read sync device ${syncDevice.id} from database for verification');
+            Logger.error('CRITICAL: Could not re-read sync device ${syncDevice.id} from database for verification');
           }
 
           updatedSyncDevices.add(syncDevice);
@@ -537,20 +535,20 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
         // Sync the updated sync device records back to the server for consistency
         if (updatedSyncDevices.isNotEmpty) {
-          Logger.info('🔄 Syncing updated sync device records back to server for consistency');
+          Logger.info('Syncing updated sync device records back to server for consistency');
           await _syncUpdatedSyncDevicesBackToServer(updatedSyncDevices);
         }
 
         // Additional verification: check that all devices now have proper lastSyncDate
         await _verifySyncDateUpdates(updatedSyncDevices);
       } else {
-        Logger.warning('⚠️ Not updating sync dates due to sync failures');
-        Logger.warning('🔍 allDevicesSynced=$allDevicesSynced, this means at least one device sync failed');
+        Logger.warning('Not updating sync dates due to sync failures');
+        Logger.warning('allDevicesSynced=$allDevicesSynced, this means at least one device sync failed');
 
         // Log which devices failed
         for (final device in allDevices) {
           final wasSuccessful = successfulDevices.contains(device);
-          Logger.warning('   Device ${device.id}: ${wasSuccessful ? "SUCCESS" : "FAILED"}');
+          Logger.warning('Device ${device.id}: ${wasSuccessful ? "SUCCESS" : "FAILED"}');
         }
       }
 
@@ -558,8 +556,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       await _logSyncDiagnostics(allDevices, successfulDevices);
 
       Logger.info(allDevicesSynced
-          ? '✅ Paginated sync operation completed successfully'
-          : '⚠️ Paginated sync operation completed with some failures');
+          ? 'Paginated sync operation completed successfully'
+          : 'Paginated sync operation completed with some failures');
 
       return PaginatedSyncCommandResponse(
         isComplete: allDevicesSynced,
@@ -569,15 +567,14 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         errorMessages: !allDevicesSynced ? [SyncTranslationKeys.someDevicesFailedToSyncError] : [],
       );
     } catch (e, stackTrace) {
-      Logger.error('❌ CRITICAL: Failed to initiate outgoing sync: $e');
-      Logger.error('🔍 Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Failed to initiate outgoing sync', error: e, stackTrace: stackTrace);
       final String errorKey;
       final Map<String, String>? errorParams;
       if (e is SyncValidationException) {
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
         errorParams = e.params;
         if (kDebugMode) {
-          Logger.info('🔍 DEBUG: SyncValidationException caught! Code: ${e.code}, params: $errorParams');
+          Logger.debug('SyncValidationException caught! Code: ${e.code}, params: $errorParams');
         }
       } else {
         errorKey = SyncTranslationKeys.initiateOutgoingSyncFailedError;
@@ -596,29 +593,29 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   }
 
   Future<bool> _syncWithDevice(SyncDevice syncDevice) async {
-    Logger.info('🔄 Starting sync with device ${syncDevice.id}');
-    Logger.info('📅 Last sync date: ${syncDevice.lastSyncDate}');
+    Logger.info('Starting sync with device ${syncDevice.id}');
+    Logger.info('Last sync date: ${syncDevice.lastSyncDate}');
 
     try {
       // Test connectivity first
       final targetIp = await _getTargetIp(syncDevice);
       if (targetIp.isEmpty) {
-        Logger.error('❌ Could not determine target IP for device ${syncDevice.id}');
+        Logger.error('Could not determine target IP for device ${syncDevice.id}');
         return false;
       }
 
-      Logger.info('📡 Testing connectivity to $targetIp for device ${syncDevice.id}...');
+      Logger.info('Testing connectivity to $targetIp for device ${syncDevice.id}...');
       final isReachable = await _communicationService.isDeviceReachable(targetIp);
       if (!isReachable) {
-        Logger.error('❌ Device ${syncDevice.id} is not reachable at $targetIp');
+        Logger.error('Device ${syncDevice.id} is not reachable at $targetIp');
         return false;
       }
 
-      Logger.info('✅ Device ${syncDevice.id} is reachable at $targetIp');
+      Logger.info('Device ${syncDevice.id} is reachable at $targetIp');
 
       // Sync each entity type with enhanced progress tracking
       final configs = _configurationService.getAllConfigurations();
-      Logger.info('🔄 Syncing ${configs.length} entity types with device ${syncDevice.id}');
+      Logger.info('Syncing ${configs.length} entity types with device ${syncDevice.id}');
 
       // Reset server pagination tracking for this device before starting sync
       for (final config in configs) {
@@ -627,7 +624,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
       for (int i = 0; i < configs.length; i++) {
         final config = configs[i];
-        Logger.info('🔄 Syncing entity ${i + 1}/${configs.length}: ${config.name} with device ${syncDevice.id}');
+        Logger.info('Syncing entity ${i + 1}/${configs.length}: ${config.name} with device ${syncDevice.id}');
 
         // Initialize progress tracking for this entity/device combination
         _updateBidirectionalProgress(BidirectionalSyncProgress.outgoingStart(
@@ -643,7 +640,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         try {
           final lastSyncDate = syncDevice.lastSyncDate ?? DateTime(2000);
           Logger.info(
-              '📅 Using last sync date: $lastSyncDate for ${config.name} (device lastSync: ${syncDevice.lastSyncDate})');
+              'Using last sync date: $lastSyncDate for ${config.name} (device lastSync: ${syncDevice.lastSyncDate})');
 
           // Check if we're using the fallback date
           if (syncDevice.lastSyncDate == null) {
@@ -659,7 +656,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           );
 
           if (!success) {
-            Logger.error('❌ Failed to sync ${config.name} with device ${syncDevice.id}');
+            Logger.error('Failed to sync ${config.name} with device ${syncDevice.id}');
 
             _updateBidirectionalProgress(_entityProgressMap['${config.name}_${syncDevice.id}']?.copyWith(
                   phase: SyncPhase.complete,
@@ -687,17 +684,17 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             },
           ));
 
-          Logger.info('✅ Successfully synced ${config.name} with device ${syncDevice.id}');
+          Logger.info('Successfully synced ${config.name} with device ${syncDevice.id}');
         } catch (e, stackTrace) {
-          Logger.error('❌ CRITICAL: Exception during ${config.name} sync with device ${syncDevice.id}: $e');
-          Logger.error('🔍 Stack trace: $stackTrace');
+          Logger.error('CRITICAL: Exception during ${config.name} sync with device ${syncDevice.id}',
+              error: e, stackTrace: stackTrace);
 
           final String errorKey;
           if (e is SyncValidationException) {
             errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
             if (kDebugMode) {
               Logger.info(
-                  '🔍 DEBUG: SyncValidationException caught during device sync! Code: ${e.code}, params: ${e.params}');
+                  'DEBUG: SyncValidationException caught during device sync! Code: ${e.code}, params: ${e.params}');
             }
           } else {
             errorKey = SyncTranslationKeys.syncWithDeviceExceptionError;
@@ -719,12 +716,12 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         }
       }
 
-      Logger.info('✅ Successfully synced all ${configs.length} entities with device ${syncDevice.id}');
+      Logger.info('Successfully synced all ${configs.length} entities with device ${syncDevice.id}');
 
       // Process any pending response data from bidirectional sync with enhanced progress tracking
       final pendingResponseData = _paginationService.getPendingResponseData();
       if (pendingResponseData.isNotEmpty) {
-        Logger.info('📨 Processing ${pendingResponseData.length} pending response DTOs from bidirectional sync');
+        Logger.info('Processing ${pendingResponseData.length} pending response DTOs from bidirectional sync');
 
         // Group paginated responses by entity type
         final groupedResponses = <String, List<PaginatedSyncDataDto>>{};
@@ -740,7 +737,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         }
 
         Logger.info(
-            '📨 Grouped ${pendingResponseData.length} DTOs into ${groupedResponses.length} entity types for processing');
+            'Grouped ${pendingResponseData.length} DTOs into ${groupedResponses.length} entity types for processing');
 
         int totalProcessedFromResponses = 0;
         int totalConflictsResolved = 0;
@@ -756,11 +753,11 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             return pageA.compareTo(pageB);
           });
 
-          Logger.info('📨 Processing ${responseDtos.length} pages of $entityType data');
+          Logger.info('Processing ${responseDtos.length} pages of $entityType data');
 
           // CRITICAL FIX: Accumulate all pages before processing
           if (responseDtos.length > 1) {
-            Logger.info('🔗 Accumulating ${responseDtos.length} pages for $entityType before processing');
+            Logger.info('Accumulating ${responseDtos.length} pages for $entityType before processing');
 
             // Create accumulated DTO by merging all pages
             final accumulatedDto = await _accumulateMultiplePages(responseDtos, entityType);
@@ -781,7 +778,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
             try {
               Logger.info(
-                  '📨 Processing accumulated $entityType data (${responseDtos.length} pages, ${accumulatedDto.totalItems} total items)');
+                  'Processing accumulated $entityType data (${responseDtos.length} pages, ${accumulatedDto.totalItems} total items)');
               final processedCount = await _processPaginatedSyncDto(accumulatedDto);
               totalProcessedFromResponses += processedCount;
 
@@ -804,16 +801,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
               ));
 
               Logger.info(
-                  '✅ Processed $processedCount accumulated items from $entityType response data (${responseDtos.length} pages)');
+                  'Processed $processedCount accumulated items from $entityType response data (${responseDtos.length} pages)');
             } catch (e) {
-              Logger.error('❌ Failed to process accumulated response data for $entityType: $e');
+              Logger.error('Failed to process accumulated response data for $entityType: $e');
 
               final String errorKey;
               if (e is SyncValidationException) {
                 errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
                 if (kDebugMode) {
                   Logger.info(
-                      '🔍 DEBUG: SyncValidationException in accumulated response processing! Code: ${e.code}, params: ${e.params}');
+                      'DEBUG: SyncValidationException in accumulated response processing! Code: ${e.code}, params: ${e.params}');
                 }
               } else {
                 errorKey = SyncTranslationKeys.processAccumulatedResponseDataError;
@@ -851,7 +848,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
               try {
                 Logger.info(
-                    '📨 Processing bidirectional response data for $entityType (server page ${responseDto.currentServerPage ?? 0}/${responseDto.totalServerPages ?? 0})');
+                    'Processing bidirectional response data for $entityType (server page ${responseDto.currentServerPage ?? 0}/${responseDto.totalServerPages ?? 0})');
                 final processedCount = await _processPaginatedSyncDto(responseDto);
                 totalProcessedFromResponses += processedCount;
 
@@ -873,16 +870,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
                 ));
 
                 Logger.info(
-                    '✅ Processed $processedCount items from $entityType response data (page ${responseDto.currentServerPage ?? 0})');
+                    'Processed $processedCount items from $entityType response data (page ${responseDto.currentServerPage ?? 0})');
               } catch (e) {
-                Logger.error('❌ Failed to process response data for $entityType: $e');
+                Logger.error('Failed to process response data for $entityType: $e');
 
                 final String errorKey;
                 if (e is SyncValidationException) {
                   errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
                   if (kDebugMode) {
                     Logger.info(
-                        '🔍 DEBUG: SyncValidationException in response data processing! Code: ${e.code}, params: ${e.params}');
+                        'DEBUG: SyncValidationException in response data processing! Code: ${e.code}, params: ${e.params}');
                   }
                 } else {
                   errorKey = SyncTranslationKeys.processResponseDataError;
@@ -903,16 +900,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             }
           }
 
-          Logger.info('✅ Processed all ${responseDtos.length} pages for $entityType');
+          Logger.info('Processed all ${responseDtos.length} pages for $entityType');
         }
 
-        Logger.info('✅ Total items processed from bidirectional responses: $totalProcessedFromResponses');
-        Logger.info('✅ Total conflicts resolved during bidirectional sync: $totalConflictsResolved');
+        Logger.info('Total items processed from bidirectional responses: $totalProcessedFromResponses');
+        Logger.info('Total conflicts resolved during bidirectional sync: $totalConflictsResolved');
         _paginationService.clearPendingResponseData();
 
         // Log overall sync progress
         final overallProgress = _calculateOverallProgress();
-        Logger.info('📊 Overall sync progress: ${overallProgress.overallProgress.toStringAsFixed(1)}% '
+        Logger.info('Overall sync progress: ${overallProgress.overallProgress.toStringAsFixed(1)}% '
             '(${overallProgress.completedEntities}/${overallProgress.totalEntities} entities, '
             '${overallProgress.totalItemsProcessed} items processed)');
       }
@@ -924,8 +921,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
       return true;
     } catch (e, stackTrace) {
-      Logger.error('❌ CRITICAL: Exception in _syncWithDevice for ${syncDevice.id}: $e');
-      Logger.error('🔍 Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Exception in _syncWithDevice for ${syncDevice.id}', error: e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -938,13 +934,13 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   Future<int> _processPaginatedSyncDto(PaginatedSyncDataDto dto) async {
     int totalProcessed = 0;
 
-    Logger.info('🔍 Processing DTO for ${dto.entityType} (${dto.totalItems} items)');
+    Logger.info('Processing DTO for ${dto.entityType} (${dto.totalItems} items)');
 
     // Process only the configuration that matches this DTO's entityType
     final config = _configurationService.getConfiguration(dto.entityType);
     if (config != null) {
       final syncData = config.getPaginatedSyncDataFromDto(dto);
-      Logger.info('🔍 Processing ${config.name} (matches DTO entityType: ${dto.entityType})');
+      Logger.info('Processing ${config.name} (matches DTO entityType: ${dto.entityType})');
       if (syncData != null) {
         final itemCount = syncData.data.getTotalItemCount();
         Logger.info('${config.name} sync data: $itemCount total items');
@@ -954,15 +950,15 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             config.repository,
           );
           totalProcessed += processedCount;
-          Logger.info('✅ Processed $processedCount ${config.name} items');
+          Logger.info('Processed $processedCount ${config.name} items');
         } else {
-          Logger.info('⏭️ Skipping ${config.name} - no items to process');
+          Logger.info('Skipping ${config.name} - no items to process');
         }
       } else {
-        Logger.info('⏭️ Skipping ${config.name} - no sync data found in DTO');
+        Logger.info('Skipping ${config.name} - no sync data found in DTO');
       }
     } else {
-      Logger.warning('⚠️ No configuration found for entity type: ${dto.entityType}');
+      Logger.warning('No configuration found for entity type: ${dto.entityType}');
     }
 
     return totalProcessed;
@@ -976,8 +972,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     int? totalServerPages,
     bool? hasMoreServerPages,
   }) async {
-    Logger.info(
-        '🔧 Creating bidirectional response DTO for $entityType with ${localData.data.getTotalItemCount()} items');
+    Logger.info('Creating bidirectional response DTO for $entityType with ${localData.data.getTotalItemCount()} items');
 
     // Create the response DTO with the actual local data based on entity type
     switch (entityType) {
@@ -1280,7 +1275,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
         );
 
       default:
-        Logger.warning('⚠️ Unknown entity type for bidirectional sync: $entityType');
+        Logger.warning('Unknown entity type for bidirectional sync: $entityType');
         return PaginatedSyncDataDto(
           appVersion: AppInfo.version,
           syncDevice: syncDevice,
@@ -1302,16 +1297,16 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   /// This ensures that when the client updates lastSyncDate, the server is also updated
   Future<void> _syncUpdatedSyncDevicesBackToServer(List<SyncDevice> updatedSyncDevices) async {
     try {
-      Logger.info('📡 Starting sync device consistency sync for ${updatedSyncDevices.length} devices');
+      Logger.info('Starting sync device consistency sync for ${updatedSyncDevices.length} devices');
 
       for (final updatedSyncDevice in updatedSyncDevices) {
         try {
-          Logger.info('🔄 Syncing updated sync device ${updatedSyncDevice.id} back to server');
+          Logger.info('Syncing updated sync device ${updatedSyncDevice.id} back to server');
 
           // Get the SyncDevice configuration
           final syncDeviceConfig = _configurationService.getConfiguration('SyncDevice');
           if (syncDeviceConfig == null) {
-            Logger.error('❌ SyncDevice configuration not found');
+            Logger.error('SyncDevice configuration not found');
             continue;
           }
 
@@ -1327,7 +1322,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
           final filteredData = _filterSyncDataForSpecificDevice(singleDeviceData, updatedSyncDevice);
 
           if (filteredData.data.getTotalItemCount() > 0) {
-            Logger.info('📤 Sending updated sync device ${updatedSyncDevice.id} to server');
+            Logger.info('Sending updated sync device ${updatedSyncDevice.id} to server');
 
             // Create DTO for the updated sync device
             final dto = await _createBidirectionalResponseDto(
@@ -1341,25 +1336,24 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             if (targetIp.isNotEmpty) {
               final response = await _communicationService.sendPaginatedDataToDevice(targetIp, dto);
               if (response.success) {
-                Logger.info('✅ Successfully synced updated sync device ${updatedSyncDevice.id} back to server');
+                Logger.info('Successfully synced updated sync device ${updatedSyncDevice.id} back to server');
               } else {
-                Logger.error('❌ Failed to sync updated sync device ${updatedSyncDevice.id}: ${response.error}');
+                Logger.error('Failed to sync updated sync device ${updatedSyncDevice.id}: ${response.error}');
               }
             } else {
-              Logger.error('❌ Could not determine target IP for sync device ${updatedSyncDevice.id}');
+              Logger.error('Could not determine target IP for sync device ${updatedSyncDevice.id}');
             }
           } else {
-            Logger.warning('⚠️ No sync data found for updated sync device ${updatedSyncDevice.id}');
+            Logger.warning('No sync data found for updated sync device ${updatedSyncDevice.id}');
           }
         } catch (e) {
-          Logger.error('❌ Error syncing updated sync device ${updatedSyncDevice.id}: $e');
+          Logger.error('Error syncing updated sync device ${updatedSyncDevice.id}: $e');
         }
       }
 
-      Logger.info('✅ Sync device consistency sync completed');
+      Logger.info('Sync device consistency sync completed');
     } catch (e, stackTrace) {
-      Logger.error('❌ CRITICAL: Failed to sync updated sync devices back to server: $e');
-      Logger.error('🔍 Stack trace: $stackTrace');
+      Logger.error('CRITICAL: Failed to sync updated sync devices back to server', error: e, stackTrace: stackTrace);
     }
   }
 
@@ -1423,25 +1417,25 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
 
   /// Verifies that sync date updates were properly applied to all devices
   Future<void> _verifySyncDateUpdates(List<SyncDevice> updatedSyncDevices) async {
-    Logger.info('🔍 Starting verification of sync date updates for ${updatedSyncDevices.length} devices');
+    Logger.info('Starting verification of sync date updates for ${updatedSyncDevices.length} devices');
 
     for (final device in updatedSyncDevices) {
       final verificationDevice = await _syncDeviceRepository.getById(device.id);
       if (verificationDevice != null) {
         if (verificationDevice.lastSyncDate != null) {
-          Logger.info('✅ Sync date verification passed for device ${device.id}: ${verificationDevice.lastSyncDate}');
+          Logger.info('Sync date verification passed for device ${device.id}: ${verificationDevice.lastSyncDate}');
         } else {
-          Logger.error('❌ Sync date verification failed for device ${device.id}: lastSyncDate is still null');
+          Logger.error('Sync date verification failed for device ${device.id}: lastSyncDate is still null');
         }
       } else {
-        Logger.error('❌ Could not verify sync date for device ${device.id}: device not found in repository');
+        Logger.error('Could not verify sync date for device ${device.id}: device not found in repository');
       }
     }
   }
 
   /// Enhanced diagnostics to help identify sync issues vs empty databases
   Future<void> _logSyncDiagnostics(List<SyncDevice> allDevices, List<SyncDevice> successfulDevices) async {
-    Logger.info('📊 SYNC DIAGNOSTICS SUMMARY');
+    Logger.info('SYNC DIAGNOSTICS SUMMARY');
     Logger.info('═══════════════════════════');
 
     // Check if this device has any data to sync
@@ -1466,32 +1460,32 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
             entitiesWithActiveData++;
           }
           Logger.info(
-              '📋 ${config.name}: $activeCount active / $totalCount total items locally (soft-deleted: $deletedCount)');
+              '${config.name}: $activeCount active / $totalCount total items locally (soft-deleted: $deletedCount)');
         }
       } catch (e) {
-        Logger.warning('⚠️ Failed to check ${config.name} data: $e');
+        Logger.warning('Failed to check ${config.name} data: $e');
       }
     }
 
     if (totalAllItems == 0) {
-      Logger.warning('🔍 DIAGNOSIS: This device has NO LOCAL DATA to sync');
-      Logger.warning('   This is likely a fresh installation or the app hasn\'t collected data yet');
-      Logger.warning('   Recommended: Use the app to create tasks, habits, track app usage, etc.');
+      Logger.warning('DIAGNOSIS: This device has NO LOCAL DATA to sync');
+      Logger.warning('This is likely a fresh installation or the app hasn\'t collected data yet');
+      Logger.warning('Recommended: Use the app to create tasks, habits, track app usage, etc.');
     } else {
       Logger.info(
-          '✅ DIAGNOSIS: Device has $totalActiveItems active items and $totalAllItems total (including soft-deleted) across $entitiesWithActiveData entity types');
+          'DIAGNOSIS: Device has $totalActiveItems active items and $totalAllItems total (including soft-deleted) across $entitiesWithActiveData entity types');
     }
 
     // Check sync device status
-    Logger.info('🔗 Sync Device Status:');
+    Logger.info('Sync Device Status:');
     for (final device in allDevices) {
       final isSuccessful = successfulDevices.contains(device);
-      final status = isSuccessful ? '✅ SUCCESS' : '❌ FAILED';
-      Logger.info('   ${device.id} (${device.fromIp} ↔ ${device.toIp}): $status');
+      final status = isSuccessful ? 'SUCCESS' : 'FAILED';
+      Logger.info('${device.id} (${device.fromIp} ↔ ${device.toIp}): $status');
       if (device.lastSyncDate != null) {
-        Logger.info('   Last sync: ${device.lastSyncDate}');
+        Logger.info('Last sync: ${device.lastSyncDate}');
       } else {
-        Logger.info('   Last sync: Never (initial sync)');
+        Logger.info('Last sync: Never (initial sync)');
       }
     }
     Logger.info('═══════════════════════════');
@@ -1510,7 +1504,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       return responseDtos.first;
     }
 
-    Logger.info('🔗 Accumulating ${responseDtos.length} pages for $entityType');
+    Logger.info('Accumulating ${responseDtos.length} pages for $entityType');
 
     // Use the first DTO as the base
     final baseDto = responseDtos.first;
@@ -1544,7 +1538,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       case 'NoteTag':
         return await _accumulateNoteTagPages(responseDtos);
       default:
-        Logger.warning('⚠️ No accumulation logic for entity type: $entityType, using first page only');
+        Logger.warning('No accumulation logic for entity type: $entityType, using first page only');
         return baseDto;
     }
   }
@@ -1568,7 +1562,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated HabitRecord data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated HabitRecord data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<HabitRecord>(
       createSync: allCreateSync,
@@ -1619,7 +1613,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated AppUsageTimeRecord data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated AppUsageTimeRecord data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<AppUsageTimeRecord>(
       createSync: allCreateSync,
@@ -1670,7 +1664,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated Task data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated Task data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<Task>(
       createSync: allCreateSync,
@@ -1721,7 +1715,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated TaskTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated TaskTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<TaskTag>(
       createSync: allCreateSync,
@@ -1772,7 +1766,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated TaskTimeRecord data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated TaskTimeRecord data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<TaskTimeRecord>(
       createSync: allCreateSync,
@@ -1823,7 +1817,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated AppUsage data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated AppUsage data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<AppUsage>(
       createSync: allCreateSync,
@@ -1874,7 +1868,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated AppUsageTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated AppUsageTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<AppUsageTag>(
       createSync: allCreateSync,
@@ -1925,7 +1919,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated Habit data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated Habit data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<Habit>(
       createSync: allCreateSync,
@@ -1976,7 +1970,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated HabitTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated HabitTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<HabitTag>(
       createSync: allCreateSync,
@@ -2027,7 +2021,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated Tag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated Tag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<Tag>(
       createSync: allCreateSync,
@@ -2078,7 +2072,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated Setting data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated Setting data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<Setting>(
       createSync: allCreateSync,
@@ -2129,7 +2123,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated Note data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated Note data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<Note>(
       createSync: allCreateSync,
@@ -2180,7 +2174,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     }
 
     Logger.info(
-        '🔗 Accumulated NoteTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
+        'Accumulated NoteTag data: ${allCreateSync.length} creates, ${allUpdateSync.length} updates, ${allDeleteSync.length} deletes (total: $totalItems)');
 
     final accumulatedSyncData = SyncData<NoteTag>(
       createSync: allCreateSync,

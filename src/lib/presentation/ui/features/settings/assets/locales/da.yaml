@@ -345,6 +345,7 @@ settings:
         Ingen debug-logfil fundet. Logfiler vil blive oprettet efter aktivering
         af debug-logføring og appen genererer logposter.
       empty: Debug-logfil er tom. Der er endnu ikke registreret nogen logposter.
+      toggle_auto_scroll: Skift automatisk rulning
     export:
       dialog_title: Eksporter debug-logfiler
       error: Fejl ved eksport af logfiler

@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
 
 /// Service for fetching localized changelog from GitHub

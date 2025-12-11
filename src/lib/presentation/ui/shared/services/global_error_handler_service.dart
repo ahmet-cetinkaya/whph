@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show BusinessException, ColorContrastHelper;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service responsible for global error handling and error widget configuration
 class GlobalErrorHandlerService {

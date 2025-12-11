@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class DesktopSingleInstanceService implements ISingleInstanceService {
   static const String _lockFileName = 'whph.lock';

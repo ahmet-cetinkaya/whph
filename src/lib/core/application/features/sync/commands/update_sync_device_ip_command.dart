@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
 
@@ -54,7 +54,7 @@ class UpdateSyncDeviceIpCommandHandler
 
       await _syncDeviceRepository.update(syncDevice);
 
-      Logger.info('✅ Updated sync device ${request.deviceId} IP address from $oldIpAddress to ${request.newIpAddress}');
+      Logger.info('Updated sync device ${request.deviceId} IP address from $oldIpAddress to ${request.newIpAddress}');
 
       return UpdateSyncDeviceIpCommandResponse(
         success: true,
@@ -62,7 +62,7 @@ class UpdateSyncDeviceIpCommandHandler
         oldIpAddress: oldIpAddress,
       );
     } catch (e) {
-      Logger.error('❌ Failed to update sync device IP: $e');
+      Logger.error('Failed to update sync device IP: $e');
       return UpdateSyncDeviceIpCommandResponse(
         success: false,
         message: e.toString(),

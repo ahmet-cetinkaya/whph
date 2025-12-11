@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/settings/commands/save_setting_co
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/about/components/changelog_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';

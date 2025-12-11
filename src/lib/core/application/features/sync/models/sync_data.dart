@@ -17,7 +17,7 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/notes/note.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 @jsonSerializable
 class SyncData<T extends BaseEntity<dynamic>> {

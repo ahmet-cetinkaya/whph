@@ -21,7 +21,7 @@ import 'package:whph/core/application/features/sync/models/sync_role.dart';
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();
@@ -98,15 +98,15 @@ class SyncQrScanButton extends StatelessWidget {
         String targetIp = syncQrCodeMessageFromIP.localIP;
 
         if (isDesktopSync) {
-          Logger.info('🖥️ Initiating desktop sync - connecting to desktop server...');
+          Logger.info('Initiating desktop sync - connecting to desktop server...');
           // For desktop sync, mobile always acts as client connecting to desktop server
           // targetIp remains the desktop's IP from QR code
         } else if (isMobileToMobileSync) {
-          Logger.info('🤝 Initiating mobile-to-mobile sync...');
+          Logger.info('Initiating mobile-to-mobile sync...');
 
           // Negotiate sync role
           final syncRole = await _mobileSyncManager.negotiateRole(syncQrCodeMessageFromIP);
-          Logger.info('📱 Negotiated role: $syncRole');
+          Logger.info('Negotiated role: $syncRole');
 
           if (syncRole == SyncRole.server) {
             // We become the server
@@ -114,7 +114,7 @@ class SyncQrScanButton extends StatelessWidget {
             final serverStarted = await _mobileSyncManager.tryStartAsServer(serverService);
 
             if (serverStarted) {
-              Logger.info('📱 Successfully started as mobile sync server');
+              Logger.info('Successfully started as mobile sync server');
               // Use our local IP since we're the server
               targetIp = localIp;
 
@@ -126,11 +126,11 @@ class SyncQrScanButton extends StatelessWidget {
                 );
               }
             } else {
-              Logger.warning('❌ Failed to start as server, falling back to client mode');
+              Logger.warning('Failed to start as server, falling back to client mode');
             }
           }
         } else {
-          Logger.info('🔗 Unknown platform sync - treating as standard client connection...');
+          Logger.info('Unknown platform sync - treating as standard client connection...');
           // For unknown platforms or backward compatibility, treat as standard client connection
         }
 

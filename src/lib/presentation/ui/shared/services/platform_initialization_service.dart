@@ -11,7 +11,7 @@ import 'package:whph/infrastructure/android/features/sync/android_sync_service.d
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 
@@ -204,9 +204,9 @@ class PlatformInitializationService {
       final success = await serverSyncService.startAsServer();
 
       if (success) {
-        Logger.info('✅ PlatformInitializationService: Android server mode started successfully for background sync');
+        Logger.info('PlatformInitializationService: Android server mode started successfully for background sync');
       } else {
-        Logger.warning('❌ PlatformInitializationService: Failed to start Android server mode');
+        Logger.warning('PlatformInitializationService: Failed to start Android server mode');
       }
     } catch (e) {
       Logger.error('PlatformInitializationService: Error initializing Android server mode: $e');
