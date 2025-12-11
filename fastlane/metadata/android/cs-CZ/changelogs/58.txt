@@ -1,1 +1,0 @@
-• Opravena problém s importem dat pro návyky a úkoly, aby se zabránilo ztrátě dat a zajistilo plynulé aktualizace

@@ -1,0 +1,1 @@
+- Förbättrad bakgrundsspårning av appanvändning på Android-enheter för en smidigare upplevelse

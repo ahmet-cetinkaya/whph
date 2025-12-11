@@ -1,0 +1,5 @@
+- Beregnet tid for opgaver er nu virkelig valgfrit - du kan lade det stå tomt uden at det som standard sættes til nul
+- Tilføjet mulighed for at indstille standard beregnet tid for nye opgaver i indstillinger
+- Forbedret håndtering af Windows-brandmur for bedre app-funktionalitet og detektering
+- Forbedret tidssporings-integration med vaner og tags for bedre indsigt
+- Forskellige ydelsesforbedringer og fejlrettelser

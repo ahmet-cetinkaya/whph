@@ -1,5 +1,5 @@
-• Improved appearance of the search field.
-• Improved user interface for a better experience.
-• Implemented a service for data migration with versioning.
-• Added a feature that prevents the phone from sleeping while using the Pomodoro timer.
-• Improved logic for the color of the progress bar in the Pomodoro timer.
+- Improved appearance of the search field.
+- Improved user interface for a better experience.
+- Implemented a service for data migration with versioning.
+- Added a feature that prevents the phone from sleeping while using the Pomodoro timer.
+- Improved logic for the color of the progress bar in the Pomodoro timer.

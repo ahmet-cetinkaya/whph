@@ -1,0 +1,3 @@
+- Meldingen worden nu weergegeven in overlays in plaats van snackbars.
+- Een laadmelding met een voortgangsbalk toegevoegd.
+- Verbeterde gegevensvoorbereiding en logging voor synchronisatie.

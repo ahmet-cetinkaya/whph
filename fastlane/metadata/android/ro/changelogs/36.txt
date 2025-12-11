@@ -1,0 +1,1 @@
+- Eliminați logica de actualizare a APK-ului și permisiunile aferente

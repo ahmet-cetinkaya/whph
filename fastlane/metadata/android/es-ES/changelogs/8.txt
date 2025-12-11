@@ -1,1 +1,1 @@
-• Navegación mejorada entre tareas y actualización de subtareas.
+- Navegación mejorada entre tareas y actualización de subtareas.

@@ -1,0 +1,6 @@
+- Dodaj podporo za sinhronizacijo med mobilnimi napravami
+- Dodaj indikator sinhronizacije na stran za sinhronizacijo naprav
+- Izboljšaj uporabniški vmesnik za skeniranje kode QR
+- Dodaj podporo za samodejni način teme
+- Vključi podporo za dinamične barve
+- Dodaj podporo za svetel način

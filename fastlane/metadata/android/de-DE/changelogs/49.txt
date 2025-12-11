@@ -1,6 +1,0 @@
-• Digital Wellbeing-kompatible Nutzungsverfolgung implementiert.
-• Eine klarere Beschreibung für die Verwendung dynamischer Farben hinzugefügt.
-• Dunkles Thema als Standard festgelegt.
-• Anfängliche Titel entfernt und Platzhalter für Eingaben hinzugefügt.
-• UI-Flackern während der Berechtigungsprüfung und des Datenladens verhindert.
-• Themenfarbe für die Schaltfläche „Weiter“ beim Onboarding verwendet.

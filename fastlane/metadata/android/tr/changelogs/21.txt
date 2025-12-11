@@ -1,0 +1,6 @@
+- Geliştirilmiş stille arama alanını geliştirin
+- Görev listesi seçeneklerine dolgu ekleyin
+- Daha iyi bir kullanıcı deneyimi için iletişim kutusu boyutunu ve davranışını güncelleyin
+- Anlamsal sürüm oluşturma ile veri taşıma hizmetini uygulayın
+- Pomodoro zamanlayıcısına zamanlayıcı için wakelock işlevselliği ekleyin
+- Pomodoro zamanlayıcısındaki ilerleme çubuğu rengi mantığını güncelleyin

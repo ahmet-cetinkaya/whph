@@ -1,0 +1,1 @@
+- Verbeterde uurlijkse verwerking van app-gebruiksgegevens.

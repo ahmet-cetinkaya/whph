@@ -1,0 +1,5 @@
+- Vylepšený vzhled vyhledávacího pole.
+- Vylepšené uživatelské rozhraní pro lepší zážitek.
+- Implementována služba pro migraci dat s verzováním.
+- Přidána funkce, která brání telefonu v usínání během používání časovače Pomodoro.
+- Vylepšená logika barvy ukazatele průběhu v časovači Pomodoro.

@@ -1,0 +1,6 @@
+- Izboljšaj sinhronizacijo mobilne platforme
+- Izboljšaj beleženje in reševanje sporov
+- Dodaj funkcionalnost preverjanja posodobitev
+- Izboljšaj pogled seznama z ločili
+- Izboljšaj beleženje napak pri uvozu/izvozu
+- Izboljšaj logiko paginacije na seznamu uporabe aplikacij

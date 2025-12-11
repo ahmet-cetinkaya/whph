@@ -1,6 +1,0 @@
-• Parannettu tunnisteiden prosenttiosuuksien näyttö.
-• Lisätty konfettianimaatio, kun tehtävä tai tapa on suoritettu.
-• Parannettu tottumusten putkien seuranta ja käyttöliittymä.
-• Parannettu ajan suunnittelu.
-• Parannettu muistutuskuvakkeen asettelu.
-• Lisätty vihje aikataulutuspainikkeeseen.

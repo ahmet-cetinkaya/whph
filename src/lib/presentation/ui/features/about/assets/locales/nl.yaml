@@ -34,3 +34,7 @@ about:
       next: "Volgende"
       back: "Terug"
       start: "Aan de slag"
+  changelog:
+    title: "Wat is nieuw"
+    close_button: "Begrepen!"
+    fetch_error: "Kan changelog niet ophalen"

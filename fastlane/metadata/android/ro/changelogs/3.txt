@@ -1,0 +1,5 @@
+- Adăugați sfaturi pentru acțiunile de reîmprospătare și ajutor în mai multe componente
+- Înlocuiți Padding cu Center pentru un aspect îmbunătățit în componenta AppAbout
+- Implementați un dialog de actualizare localizat
+- Ajustați spațierea pentru logo în ResponsiveScaffoldLayout în funcție de dimensiunea ecranului
+- Îmbunătățiți afișarea titlului în HelpMenu cu gestionarea depășirii cu elipsă

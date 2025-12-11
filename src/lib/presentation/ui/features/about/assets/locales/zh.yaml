@@ -35,3 +35,7 @@ about:
       next: "下一步"
       back: "返回"
       start: "开始"
+  changelog:
+    title: "新功能"
+    close_button: "知道了!"
+    fetch_error: "无法获取更新日志"

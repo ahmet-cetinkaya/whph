@@ -1,5 +1,5 @@
-• Ayuda de sincronización mejorada.
-• Se agregó soporte para un color de acento personalizado.
-• Uso mejorado de los colores del tema en la interfaz de usuario.
-• Se corrigió un error en la sincronización bidireccional.
-• Se agregó un color de fondo a la barra de la aplicación.
+- Ayuda de sincronización mejorada.
+- Se agregó soporte para un color de acento personalizado.
+- Uso mejorado de los colores del tema en la interfaz de usuario.
+- Se corrigió un error en la sincronización bidireccional.
+- Se agregó un color de fondo a la barra de la aplicación.

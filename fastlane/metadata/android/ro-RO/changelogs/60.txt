@@ -1,2 +1,0 @@
-• Îmbunătățită fiabilitatea pornirii aplicației cu gestionare îmbunătățită a erorilor
-• Remediate problemele de urmărire a obiceiurilor după actualizările aplicației

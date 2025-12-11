@@ -1,0 +1,1 @@
+- Remediat un bug care putea duce la pierderea datelor sarcinilor la actualizarea aplicației.

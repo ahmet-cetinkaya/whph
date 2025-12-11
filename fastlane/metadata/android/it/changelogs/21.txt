@@ -1,0 +1,5 @@
+- Migliorato l'aspetto del campo di ricerca.
+- Migliorata l'interfaccia utente per un'esperienza migliore.
+- Implementato un servizio per la migrazione dei dati con il controllo delle versioni.
+- Aggiunta una funzione che impedisce al telefono di andare in standby durante l'utilizzo del timer Pomodoro.
+- Migliorata la logica del colore della barra di avanzamento nel timer Pomodoro.

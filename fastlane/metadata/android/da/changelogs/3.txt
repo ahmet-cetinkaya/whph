@@ -1,0 +1,4 @@
+- Tilføjet tips til knapperne Opdater og Hjælp.
+- Forbedret layout i sektionen 'Om'.
+- Forbedret dialogboks til opdatering af appen.
+- Forbedret visning af titel i hjælpemenuen.

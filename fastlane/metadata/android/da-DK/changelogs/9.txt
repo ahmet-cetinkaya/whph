@@ -1,1 +1,0 @@
-• Forbedret fejlhåndtering og logning under synkronisering af enheder.

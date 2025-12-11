@@ -1,0 +1,6 @@
+- Tilføjet administration af tilladelser til automatisk start.
+- Tilføjet automatisk valg af opgave på maraton-siden.
+- Tilføjet en knap til hurtig oprettelse af opgaver.
+- Tilføjet låseindstillinger og en funktion til at slette alt.
+- Forbedret hjælpemenu.
+- Appens navn er opdateret til 'Work Hard Play Hard'.

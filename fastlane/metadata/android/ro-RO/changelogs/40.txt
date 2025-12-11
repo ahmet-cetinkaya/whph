@@ -1,6 +1,0 @@
-• Îmbunătățiți sincronizarea platformei mobile
-• Îmbunătățiți înregistrarea și rezolvarea conflictelor
-• Adăugați funcționalitatea de verificare a actualizărilor
-• Îmbunătățiți vizualizarea listei cu separatoare
-• Îmbunătățiți înregistrarea erorilor la import/export
-• Îmbunătățiți logica de paginare în lista de utilizare a aplicațiilor

@@ -1,2 +1,0 @@
-• Tilføjet understøttelse af oprettelse af et installationsprogram til Windows.
-• Fjernet standardindstilling for vinduesstørrelse.

@@ -1,3 +1,0 @@
-• Forbedret håndtering af tag-farver.
-• Forbedret håndtering af tags ved sporing af app-brug.
-• Forbedret centrering af elementer.

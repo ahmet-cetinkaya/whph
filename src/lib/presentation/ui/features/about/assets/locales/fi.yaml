@@ -34,3 +34,7 @@ about:
       next: "Seuraava"
       back: "Takaisin"
       start: "Aloita"
+  changelog:
+    title: "Uutta"
+    close_button: "Selvä!"
+    fetch_error: "Muutoslokia ei voitu hakea"

@@ -1,0 +1,4 @@
+- Lisätty tarkka etualan sovellusten käytön seuranta Androidille.
+- Optimoitu sovelluksen logo.
+- Parannettu painikkeiden visuaalinen tiheys.
+- Lisätty äänipalaute tietuetta luotaessa.

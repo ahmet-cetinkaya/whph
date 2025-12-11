@@ -1,0 +1,5 @@
+- Naprawiono problem, w którym wiele instancji aplikacji mogło działać jednocześnie
+- Ulepszone wskaźniki stanu synchronizacji i komunikaty zwrotne
+- Naprawiono problemy z wyświetlaniem tekstu innego niż angielski w aplikacji
+- Ulepszona synchronizacja śledzenia użycia aplikacji i nawyków
+- Ulepszenia wydajności dla szybszej reakcji aplikacji

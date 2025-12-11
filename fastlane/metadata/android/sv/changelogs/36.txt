@@ -1,0 +1,1 @@
+- Ta bort logik för APK-uppdatering och relaterade behörigheter

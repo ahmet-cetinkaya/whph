@@ -34,3 +34,7 @@ about:
       next: "Næste"
       back: "Tilbage"
       start: "Kom i gang"
+  changelog:
+    title: "Nyheder"
+    close_button: "Forstået!"
+    fetch_error: "Kunne ikke hente ændringslog"

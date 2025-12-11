@@ -1,6 +1,0 @@
-• Migliorata la visualizzazione delle percentuali dei tag.
-• Aggiunta un'animazione di coriandoli al completamento di un'attività o di un'abitudine.
-• Migliorato il monitoraggio delle serie di abitudini e l'interfaccia utente.
-• Migliorata la pianificazione del tempo.
-• Migliorato il layout dell'icona del promemoria.
-• Aggiunto un suggerimento al pulsante di pianificazione.

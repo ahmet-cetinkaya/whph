@@ -1,5 +1,0 @@
-• Parannettu tunnisteiden hallinta ja käännökset.
-• Parannetut ilmoitukset laitteiden synkronoinnissa.
-• Parannettu käyttöliittymä ja ominaisuudet asetuksissa.
-• Parannetut muistiinpanotoiminnot.
-• Parannettu tottumusten hallinta.

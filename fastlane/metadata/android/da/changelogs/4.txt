@@ -1,0 +1,5 @@
+- Tilføjet en funktion til at importere og eksportere data.
+- Forbedret indlæsning af tags.
+- Forbedret enhedssynkronisering.
+- Tilføjet en trykfunktion til kortet med meddelelsesindstillinger.
+- Tilføjet oversættelser til tippet 'Tilføj vane'.

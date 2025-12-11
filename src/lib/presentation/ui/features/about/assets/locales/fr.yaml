@@ -35,3 +35,7 @@ about:
       next: "Suivant"
       back: "Retour"
       start: "Commencer"
+  changelog:
+    title: "Nouveautés"
+    close_button: "Compris !"
+    fetch_error: "Impossible de récupérer le journal des modifications"

@@ -1,0 +1,3 @@
+- Ulepszony import danych dla bezpieczniejszych kopii zapasowych i odzyskiwania po błędach
+- Ulepszone aktualizacje aplikacji z niezawodną migracją danych i środkami ochronnymi
+- Naprawiono kolejność nawyków podczas aktualizacji w celu lepszej organizacji

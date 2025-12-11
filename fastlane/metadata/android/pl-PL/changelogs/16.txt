@@ -1,6 +1,0 @@
-• Dodano zarządzanie uprawnieniami do automatycznego uruchamiania.
-• Dodano automatyczny wybór zadania na stronie maratonu.
-• Dodano przycisk do szybkiego tworzenia zadań.
-• Dodano ustawienia blokady i funkcję usuwania wszystkiego.
-• Ulepszone menu pomocy.
-• Nazwa aplikacji została zaktualizowana na 'Work Hard Play Hard'.

@@ -1,6 +1,0 @@
-• Nieuwe filteroptie om eenvoudig subtaken weer te geven of te verbergen voor betere taakbeheer
-• Verbeterde debug-log export met volledige taalondersteuning voor soepelere probleemoplossing
-• Verbeterde debug-logs worden nu weergegeven als overlay-meldingen voor directe feedback
-• Volledige log-exportfunctie met lokalisatie voor alle ondersteunde talen
-• Toegevoegd foutvertalingen voor debug-logs in elke taal om de gebruikerservaring te verbeteren
-• Geïntroduceerd geavanceerde instellingen en uitgebreide debug-log functionaliteit voor power users

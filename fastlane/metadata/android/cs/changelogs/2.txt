@@ -1,0 +1,2 @@
+- Vylepšená instalace aktualizací aplikace.
+- Přidány překlady pro různé části aplikace, včetně štítků, synchronizace a nastavení.

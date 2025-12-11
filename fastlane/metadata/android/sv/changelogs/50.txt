@@ -1,0 +1,5 @@
+- Förbättra innehållet i synkroniseringshjälpen
+- Lägg till stöd för anpassad accentfärg
+- Använd tematjänst för accentfärg i UI-element
+- Lös dubbelriktat synkroniseringsfel som förhindrar att Linux-demodata synkroniseras till Android
+- Lägg till bakgrundsfärg i appfältet på sidor

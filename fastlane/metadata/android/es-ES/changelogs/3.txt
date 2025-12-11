@@ -1,4 +1,4 @@
-• Se agregaron información sobre herramientas para los botones Actualizar y Ayuda.
-• Diseño mejorado en la sección 'Acerca de'.
-• Cuadro de diálogo mejorado para actualizar la aplicación.
-• Visualización del título mejorada в el menú de ayuda.
+- Se agregaron información sobre herramientas para los botones Actualizar y Ayuda.
+- Diseño mejorado en la sección 'Acerca de'.
+- Cuadro de diálogo mejorado para actualizar la aplicación.
+- Visualización del título mejorada в el menú de ayuda.

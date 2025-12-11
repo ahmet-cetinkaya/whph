@@ -1,6 +1,0 @@
-• Verbesserte Schaltfläche zum Abschließen von Aufgaben mit Fortschrittsanzeige für Teilaufgaben.
-• Standardisierte Größen von Dialogfeldern.
-• Eine Schaltfläche zum Planen von Aufgaben hinzugefügt.
-• Eine Option für eine kompaktere Ansicht für eine bessere Übersicht hinzugefügt.
-• Einen Dienst zur Datenmigration implementiert.
-• Verbessertes Layout mit dem Wrap-Widget.

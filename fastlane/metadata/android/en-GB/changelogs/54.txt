@@ -1,6 +1,6 @@
-• New filter option to easily show or hide subtasks for better task management
-• Enhanced debug log export with full language support for smoother troubleshooting
-• Improved debug logs now display as overlay notifications for instant feedback
-• Complete log export feature with localization for all supported languages
-• Added error translations for debug logs in every language to improve user experience
-• Introduced advanced settings and comprehensive debug logs functionality for power users
+- New filter option to easily show or hide subtasks for better task management
+- Enhanced debug log export with full language support for smoother troubleshooting
+- Improved debug logs now display as overlay notifications for instant feedback
+- Complete log export feature with localization for all supported languages
+- Added error translations for debug logs in every language to improve user experience
+- Introduced advanced settings and comprehensive debug logs functionality for power users

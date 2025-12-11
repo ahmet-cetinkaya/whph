@@ -1,6 +1,0 @@
-• Förenkla hanteringen av uppgiftslistan och förbättra filterfunktionen på sidan med taggdetaljer
-• Förbättra uppdateringslogiken och lägg till taggfilterfunktion på dagens sida
-• Förbättra uppgiftslistningen med förbättrad uppdateringslogik och uppgiftsdatamodell
-• Justera logiken för uppgiftsfiltrering på maratonsidan
-• Se till att kontexten är monterad innan du tar bort navigatorn i listrutan för taggval
-• Förbättra filtreringen av vanelistan och uppdateringslogiken

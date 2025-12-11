@@ -1,0 +1,3 @@
+- Verbesserte Abfragen zum Ignorieren archivierter Tags.
+- Unnötige Berechnung des Fälligkeitsdatums entfernt.
+- Verbesserte Datumsfilterung auf der heutigen Seite.

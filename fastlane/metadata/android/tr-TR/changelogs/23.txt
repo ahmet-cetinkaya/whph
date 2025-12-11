@@ -1,4 +1,0 @@
-• Uygulama kullanımı ve etiket ayrıntılarında etiket rengi işlemeyi güncelleyin
-• Uygulama kullanımı ayrıntılarında etiket işleme mantığını iyileştirin
-• Dolguyu orta hizalamaya değiştirin
-• Kilit alanları iletişim kutusu boyutunu orta olarak değiştirin

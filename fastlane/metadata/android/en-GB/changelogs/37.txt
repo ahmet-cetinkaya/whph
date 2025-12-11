@@ -1,1 +1,1 @@
-• Improved background tracking of app usage for a smoother experience.
+- Improved background tracking of app usage for a smoother experience.

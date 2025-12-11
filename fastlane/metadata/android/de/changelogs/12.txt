@@ -1,0 +1,2 @@
+- Verbessertes schnelles Hinzufügen von Aufgaben mit der Möglichkeit, Tags auszuwählen.
+- Ein Abschnitt für erledigte Aufgaben hinzugefügt, der erweitert werden kann.

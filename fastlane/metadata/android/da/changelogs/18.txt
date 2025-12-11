@@ -1,0 +1,5 @@
+- Appens navn og beskrivelse er opdateret.
+- Forbedret håndtering af tilladelser.
+- Forenklet layoutstruktur på indstillingssiden.
+- Forbedret responsivitet af dialogbokse.
+- Forbedret afslutning og valg af opgaver.

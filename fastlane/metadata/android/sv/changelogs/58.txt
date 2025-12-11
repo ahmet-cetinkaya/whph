@@ -1,0 +1,1 @@
+- Åtgärdat importdata-problem för vanor och uppgifter för att förhindra datatapp och säkerställa smidda uppdateringar

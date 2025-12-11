@@ -1,0 +1,3 @@
+- Ulepszona obsługa kolorów tagów.
+- Ulepszona obsługa tagów podczas śledzenia użycia aplikacji.
+- Ulepszone centrowanie elementów.

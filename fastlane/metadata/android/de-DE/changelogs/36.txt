@@ -1,1 +1,0 @@
-• Logik zur Aktualisierung von APKs und zugehörige Berechtigungen entfernt.

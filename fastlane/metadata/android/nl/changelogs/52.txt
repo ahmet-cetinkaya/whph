@@ -1,0 +1,5 @@
+- Probleem opgelost waarbij meerdere app-instanties tegelijkertijd konden draaien
+- Verbeterde synchronisatiestatus-indicatoren en feedback-berichten
+- Weergaveproblemen opgelost met niet-Engelse tekst in de app
+- Verbeterde synchronisatie voor app-gebruikstracking en gewoontes
+- Prestatie-verbeteringen voor snellere app-responsiviteit

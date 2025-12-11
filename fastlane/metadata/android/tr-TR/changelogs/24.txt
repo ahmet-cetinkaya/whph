@@ -1,5 +1,0 @@
-• Sorgulara ignoreArchivedTagVisibility ekleyin
-• Kullanılmayan son tarih hesaplamasını kaldırın
-• Düzen içindeki düzen için dolguyu ayarlayın
-• Bugün sayfasında tarih filtreleme mantığını güncelleyin
-• depend_on_referenced_packages için yoksayma yönergesi ekleyin

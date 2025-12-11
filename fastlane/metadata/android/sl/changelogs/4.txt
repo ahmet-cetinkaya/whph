@@ -1,0 +1,6 @@
+- Dodaj funkcionalnost uvoza/izvoza in posodobi lokalizacijo
+- Implementiraj paginacijo za pridobivanje oznak v različnih komponentah
+- Implementiraj storitev ID naprave in posodobi model naprave za sinhronizacijo
+- Dodaj funkcijo dotika na kartico z nastavitvami obvestil
+- Dodaj prevod namiga orodja »Dodaj navado« v angleščini in turščini
+- Posodobi prevod oznake vzorca in dodaj razmik v seznamih pravil

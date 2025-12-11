@@ -1,4 +1,4 @@
-• Added accurate foreground app usage tracking for Android.
-• Optimized app logo.
-• Improved visual density of buttons.
-• Added sound feedback when creating a record.
+- Added accurate foreground app usage tracking for Android.
+- Optimized app logo.
+- Improved visual density of buttons.
+- Added sound feedback when creating a record.

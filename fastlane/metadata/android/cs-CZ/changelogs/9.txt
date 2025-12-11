@@ -1,1 +1,0 @@
-• Vylepšené zpracování chyb a protokolování během synchronizace zařízení.

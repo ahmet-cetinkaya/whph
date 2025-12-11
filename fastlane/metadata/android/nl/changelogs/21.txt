@@ -1,0 +1,5 @@
+- Verbeterd uiterlijk van het zoekveld.
+- Verbeterde gebruikersinterface voor een betere ervaring.
+- Een service voor datamigratie met versiebeheer geïmplementeerd.
+- Een functie toegevoegd die voorkomt dat de telefoon in de slaapstand gaat tijdens het gebruik van de Pomodoro-timer.
+- Verbeterde logica voor de kleur van de voortgangsbalk in de Pomodoro-timer.

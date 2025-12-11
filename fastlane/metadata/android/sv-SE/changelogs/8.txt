@@ -1,1 +1,0 @@
-• Uppdatera uppgiftsnavigering för att använda MaterialPageRoute och uppdatera deluppgifter vid återkomst

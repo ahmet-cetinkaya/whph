@@ -8,6 +8,7 @@ import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
+import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
@@ -44,6 +45,7 @@ class _AppState extends State<App> {
     _initializationService = AppInitializationService(
       widget.container.resolve<Mediator>(),
       widget.container.resolve<ISupportDialogService>(),
+      widget.container.resolve<IChangelogDialogService>(),
       widget.container.resolve<ISetupService>(),
     );
 

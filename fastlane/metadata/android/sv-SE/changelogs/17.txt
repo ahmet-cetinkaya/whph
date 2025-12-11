@@ -1,5 +1,0 @@
-• Ersätt SnackBars med överlagringsmeddelanden
-• Lägg till laddningsmeddelande med förloppsindikator
-• Använd konfiguration för versionssignering för byggtyper
-• Förbättra förberedelse och loggning av synkroniseringsdata
-• Uppdatera namn på frågeparametrar för konsekvens

@@ -1,6 +1,0 @@
-• Implementiraj sledenje uporabe, združljivo z Digital Wellbeing, z natančnimi algoritmi
-• Dodaj jasnejši opis za uporabo dinamičnih barv
-• Nastavi nadomestno temo na temno
-• Odstrani začetne naslove in dodaj ograde za vnos opravil, navad, opomb in oznak
-• Prepreči utripanje uporabniškega vmesnika med preverjanjem dovoljenj in nalaganjem podatkov
-• Uporabi barvo teme za besedilo gumba za nadaljevanje pri uvajanju

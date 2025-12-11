@@ -1,0 +1,6 @@
+- Ulepszony przycisk ukończenia zadania z postępem podzadań.
+- Ujednolicone rozmiary okien dialogowych.
+- Dodano przycisk do planowania zadań.
+- Dodano opcję bardziej zwartego widoku dla lepszego przeglądu.
+- Wdrożono usługę migracji danych.
+- Ulepszony układ za pomocą widżetu Wrap.

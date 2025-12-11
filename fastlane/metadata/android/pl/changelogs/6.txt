@@ -1,0 +1,1 @@
+- Dodano obsługę podzadań i relacji zadań. Zaktualizowano tłumaczenie i schemat bazy danych.

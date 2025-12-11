@@ -35,3 +35,7 @@ about:
       next: "다음"
       back: "뒤로"
       start: "시작하기"
+  changelog:
+    title: "새로운 기능"
+    close_button: "알겠습니다!"
+    fetch_error: "변경 로그를 가져올 수 없습니다"

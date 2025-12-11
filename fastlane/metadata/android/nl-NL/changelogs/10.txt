@@ -1,5 +1,0 @@
-• U kunt nu het zijpaneel verbergen.
-• Verbeterde taakverwijdering.
-• Vereenvoudigde taakweergave in tagdetails.
-• Vertaling toegevoegd voor wanneer er geen apps worden gebruikt.
-• Een bug verholpen in de logica voor het bijwerken van de taakduur.

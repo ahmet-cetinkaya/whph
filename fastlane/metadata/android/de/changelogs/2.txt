@@ -1,0 +1,2 @@
+- Verbesserte Installation von App-Updates.
+- Übersetzungen für verschiedene Teile der App hinzugefügt, einschließlich Tags, Synchronisierung und Einstellungen.

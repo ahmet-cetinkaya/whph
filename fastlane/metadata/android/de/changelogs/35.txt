@@ -1,0 +1,3 @@
+- Verbessertes Support-Dialogfeld und Einstellungen.
+- Verbesserte Fehlerprotokollierung beim App-Start.
+- Verbesserte Layoutstruktur auf der Einstellungsseite.

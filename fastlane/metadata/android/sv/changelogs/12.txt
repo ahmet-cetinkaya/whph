@@ -1,0 +1,2 @@
+- Förbättra QuickTaskBottomSheet med taggval och rensningsfunktion
+- Lägg till avsnitt för slutförda uppgifter med expanderbar vy på sidorna med uppgifts- och taggdetaljer

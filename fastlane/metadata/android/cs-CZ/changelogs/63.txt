@@ -1,6 +1,0 @@
-• Vylepšená navigace na prohlídce aplikací, která si pamatuje váš pokrok
-• Přidáno komplexní vícestránkové turné s užitečnými překryvy
-• Přidána možnost výběru jazyka během paluby
-• Vylepšené stavy načítání a plynulejší výkon v celé aplikaci
-• Lepší zobrazení a zpracování chyb synchronizace
-• Vylepšené chybové zprávy pro problémy synchronizace

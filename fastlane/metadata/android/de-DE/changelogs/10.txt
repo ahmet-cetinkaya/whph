@@ -1,5 +1,0 @@
-• Sie können jetzt die Seitenleiste ausblenden.
-• Verbessertes Löschen von Aufgaben.
-• Vereinfachte Aufgabenansicht in den Tag-Details.
-• Übersetzung für den Fall hinzugefügt, dass keine Apps verwendet werden.
-• Fehler in der Logik zur Aktualisierung der Aufgabendauer behoben.

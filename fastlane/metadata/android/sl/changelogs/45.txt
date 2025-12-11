@@ -1,0 +1,4 @@
+- Implementiraj natančno sledenje uporabe aplikacij v ospredju za Android
+- Posodobi sredstva logotipa za izboljšano optimizacijo
+- Posodobi vizualno gostoto IconButton
+- Dodaj zvočno povratno informacijo ob ustvarjanju zapisa

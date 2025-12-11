@@ -1,1 +1,1 @@
-• Removed logic for updating APKs and related permissions.
+- Removed logic for updating APKs and related permissions.

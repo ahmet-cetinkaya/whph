@@ -1,2 +1,2 @@
-• Instalación mejorada de las actualizaciones de la aplicación.
-• Se agregaron traducciones para varias partes de la aplicación, incluidas etiquetas, sincronización y configuración.
+- Instalación mejorada de las actualizaciones de la aplicación.
+- Se agregaron traducciones para varias partes de la aplicación, incluidas etiquetas, sincronización y configuración.

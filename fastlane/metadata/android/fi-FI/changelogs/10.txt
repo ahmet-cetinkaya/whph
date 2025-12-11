@@ -1,5 +1,0 @@
-• Voit nyt piilottaa sivupaneelin.
-• Parannettu tehtävien poisto.
-• Yksinkertaistettu tehtävänäkymä tunnisteen tiedoissa.
-• Lisätty käännös sille, kun sovelluksia ei käytetä.
-• Korjattu virhe tehtävän keston päivityslogiikassa.

@@ -1,0 +1,1 @@
+- Cihaz senkronizasyon işlemi sırasında hata işlemeyi ve günlüğe kaydetmeyi iyileştirin

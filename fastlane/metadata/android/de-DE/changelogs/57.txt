@@ -1,6 +1,0 @@
-• Option zum Anzeigen/Ausblenden von Unteraufgaben in den Tagesdetails für bessere Organisation hinzugefügt
-• Datumsbereichsfilterung für Abschlusszeiten zur Analyse Ihres Fortschritts eingeführt
-• Filterung für System- vs. Benutzer-Apps im Nutzungs-Tracking hinzugefügt
-• Unterscheidung zwischen geschätzter und manuell protokollierter Zeit für Gewohnheiten
-• Verbesserte Zeitprotokollierung und Timer-Integration für Gewohnheiten und Aufgaben
-• Standardwerte für geschätzte Zeiten für einfacheres Aufgabenplanen hinzugefügt

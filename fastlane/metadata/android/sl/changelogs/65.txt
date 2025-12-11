@@ -1,0 +1,5 @@
+- Ocenjeni čas za naloge je zdaj resnično neobvezen - lahko ga pustite praznega, ne da bi se privzeto nastavil na nič
+- Dodana možnost nastavitve privzetega ocenjenega časa za nove naloge v nastavitvah
+- Izboljšano ravnanje s požarnim zidom Windows za boljšo funkcionalnost aplikacije in zaznavanje
+- Izboljšana integracija sledenja časa s navadami in oznakami za boljše vpoglede
+- Različna izboljšanja zmogljivosti in popravki napak

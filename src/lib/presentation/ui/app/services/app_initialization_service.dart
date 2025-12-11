@@ -9,6 +9,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/presentation/ui/features/about/components/onboarding_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
+import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service responsible for handling app initialization tasks
@@ -17,15 +18,22 @@ class AppInitializationService {
 
   final Mediator _mediator;
   final ISupportDialogService _supportDialogService;
+  final IChangelogDialogService _changelogDialogService;
   final ISetupService _setupService;
 
-  AppInitializationService(this._mediator, this._supportDialogService, this._setupService);
+  AppInitializationService(
+    this._mediator,
+    this._supportDialogService,
+    this._changelogDialogService,
+    this._setupService,
+  );
 
   bool _hasCheckedForUpdates = false;
 
   /// Initialize all app-level services and dialogs
   Future<void> initializeApp(GlobalKey<NavigatorState> navigatorKey) async {
     await _checkAndShowOnboarding(navigatorKey);
+    await _checkAndShowChangelogDialog(navigatorKey);
     await _checkAndShowSupportDialog(navigatorKey);
     if (!PlatformUtils.isMobile) {
       await _checkForUpdates(navigatorKey);
@@ -67,6 +75,18 @@ class AppInitializationService {
       );
     } else {
       Logger.warning("Context not available for onboarding dialog");
+    }
+  }
+
+  /// Check and show changelog dialog for new version
+  Future<void> _checkAndShowChangelogDialog(GlobalKey<NavigatorState> navigatorKey) async {
+    try {
+      final context = navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        await _changelogDialogService.checkAndShowChangelogDialog(context);
+      }
+    } catch (e) {
+      Logger.error('Error checking changelog dialog: $e');
     }
   }
 

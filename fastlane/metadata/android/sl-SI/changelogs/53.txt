@@ -1,3 +1,0 @@
-• Nove nastavitve gostote vmesnika: Prilagodite velikosti besedila in elementov vmesnika za boljšo berljivost na zaslonih visoke ločljivosti
-• Izboljšana zmogljivost: Hitrejše upodabljanje seznama nalog in optimizirane hitrosti osveževanja zaslona
-• Izboljšena uporabniška izkušnja: Boljši izračuni datumov in bolj tekoče animacije

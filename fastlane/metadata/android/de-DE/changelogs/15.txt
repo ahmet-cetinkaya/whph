@@ -1,5 +1,0 @@
-• Verbesserte Tag-Verwaltung und Übersetzungen.
-• Verbesserte Benachrichtigungen bei der Gerätesynchronisierung.
-• Verbesserte Benutzeroberfläche und Funktionen in den Einstellungen.
-• Verbesserte Notiz-Aktionen.
-• Verbesserte Verwaltung von Gewohnheiten.

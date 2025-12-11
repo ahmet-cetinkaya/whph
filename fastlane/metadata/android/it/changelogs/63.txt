@@ -1,0 +1,6 @@
+- Navigazione del tour dell'app migliorata che ricorda i tuoi progressi
+- Aggiunto tour completo di più pagine con utili sovrapposizioni
+- Aggiunta l'opzione di selezione della lingua durante l'onboarding
+- Stati di caricamento migliorati e prestazioni più fluide in tutta l'app
+- Migliore visualizzazione e gestione degli errori di sincronizzazione
+- Messaggi di errore migliorati per problemi di sincronizzazione

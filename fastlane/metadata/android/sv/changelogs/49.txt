@@ -1,0 +1,6 @@
+- Implementera Digital Wellbeing-kompatibel användningsspårning med precisionsalgoritmer
+- Lägg till tydligare beskrivning för dynamisk färganvändning
+- Ställ in reservtema till mörkt
+- Ta bort initiala titlar och lägg till platshållare för uppgifts-, vane-, antecknings- och tagginmatningar
+- Förhindra UI-flimmer under behörighetskontroll och datainläsning
+- Använd temafärg för texten på nästa-knappen vid introduktion

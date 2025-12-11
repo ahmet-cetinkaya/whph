@@ -1,6 +1,0 @@
-• Izboljšana navigacija po aplikacijah, ki se spominja vašega napredka
-• Dodana celovita turneja na več straneh s koristnimi prekrivanji
-• Dodana možnost izbire jezika med vkrcanjem
-• Izboljšana stanja nalaganja in bolj gladka zmogljivost v celotni aplikaciji
-• Boljši prikaz in ravnanje z napakami sinhronizacije
-• Izboljšana sporočila o napakah za težave s sinhronizacijo

@@ -1,5 +1,0 @@
-• SnackBars'ı katman bildirimleriyle değiştirin
-• İlerleme göstergeli yükleme bildirimi ekleyin
-• Derleme türleri için sürüm imzalama yapılandırmasını kullanın
-• Senkronizasyon verisi hazırlama ve günlüğe kaydetmeyi geliştirin
-• Tutarlılık için sorgu parametre adlarını güncelleyin

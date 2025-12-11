@@ -1,6 +1,0 @@
-• Izboljšaj iskalno polje z izboljšanim slogom
-• Dodaj oblazinjenje možnostim seznama opravil
-• Posodobi velikost in vedenje pogovornega okna za boljšo uporabniško izkušnjo
-• Implementiraj storitev za selitev podatkov s semantičnim različiciranjem
-• Dodaj funkcionalnost zaklepanja budnosti za časovnik v časovnik pomodoro
-• Posodobi logiko barve vrstice napredka v časovniku pomodoro

@@ -1,0 +1,6 @@
+- Îmbunătățiți TaskCompleteButton cu progresul subsarcinilor
+- Standardizați dimensiunile dialogurilor în toate componentele
+- Adăugați componenta ScheduleButton pentru programarea sarcinilor
+- Adăugați opțiunea isDense la filtrul de căutare și la componente
+- Implementați serviciul de migrare a datelor
+- Îmbunătățiți aspectul cu widgetul Wrap

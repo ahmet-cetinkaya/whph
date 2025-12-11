@@ -34,3 +34,7 @@ about:
       next: "Dalej"
       back: "Wstecz"
       start: "Rozpocznij"
+  changelog:
+    title: "Co nowego"
+    close_button: "Rozumiem!"
+    fetch_error: "Nie można pobrać dziennika zmian"

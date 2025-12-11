@@ -1,0 +1,1 @@
+- Izboljšano sledenje uporabe aplikacij v ozadju na napravah Android za bolj gladko izkušnjo

@@ -1,4 +1,4 @@
-• Ajout d'info-bulles pour les boutons Actualiser et Aide.
-• Amélioration de la mise en page dans la section « À propos ».
-• Amélioration de la boîte de dialogue de mise à jour de l'application.
-• Amélioration de l'affichage du titre dans le menu d'aide.
+- Ajout d'info-bulles pour les boutons Actualiser et Aide.
+- Amélioration de la mise en page dans la section « À propos ».
+- Amélioration de la boîte de dialogue de mise à jour de l'application.
+- Amélioration de l'affichage du titre dans le menu d'aide.

@@ -1,2 +1,0 @@
-• Verbessertes App-Leisten-Layout für eine bessere Darstellung auf allen Geräten.
-• Neuer Hilfebereich hinzugefügt, der Ihnen bei Aufgaben, Tags, QR-Codes, Synchronisierung, Gewohnheiten und der Tagesübersicht hilft.

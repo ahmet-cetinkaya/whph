@@ -1,6 +1,0 @@
-• Förbättra TaskCompleteButton med förlopp för deluppgifter
-• Standardisera dialogstorlekar över komponenter
-• Lägg till ScheduleButton-komponent för uppgiftsplanering
-• Lägg till isDense-alternativ i sökfilter och komponenter
-• Implementera datamigreringstjänst
-• Förbättra layouten med Wrap-widgeten

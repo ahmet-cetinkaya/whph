@@ -1,5 +1,5 @@
-• 向查询添加ignoreArchivedTagVisibility
-• 删除未使用的截止日期计算
-• 调整布局中布局的填充
-• 更新今日页面中的日期筛选逻辑
-• 为depend_on_referenced_packages添加忽略指令
+- 向查询添加ignoreArchivedTagVisibility
+- 删除未使用的截止日期计算
+- 调整布局中布局的填充
+- 更新今日页面中的日期筛选逻辑
+- 为depend_on_referenced_packages添加忽略指令

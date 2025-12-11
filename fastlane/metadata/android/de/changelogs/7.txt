@@ -1,0 +1,1 @@
+- Verbessertes Layout und Abstand im Abschnitt „Über“.

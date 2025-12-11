@@ -1,6 +1,6 @@
-• Se agregó la gestión de permisos de inicio automático.
-• Se agregó la selección automática de tareas en la página de maratón.
-• Se agregó un botón para la creación rápida de tareas.
-• Se agregaron configuraciones de bloqueo y una función para eliminar todo.
-• Menú de ayuda mejorado.
-• El nombre de la aplicación se ha actualizado a 'Work Hard Play Hard'.
+- Se agregó la gestión de permisos de inicio automático.
+- Se agregó la selección automática de tareas en la página de maratón.
+- Se agregó un botón para la creación rápida de tareas.
+- Se agregaron configuraciones de bloqueo y una función para eliminar todo.
+- Menú de ayuda mejorado.
+- El nombre de la aplicación se ha actualizado a 'Work Hard Play Hard'.

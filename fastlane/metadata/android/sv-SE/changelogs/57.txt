@@ -1,6 +1,0 @@
-• Lagt till alternativ för att visa/dölja underuppgifter i dagdetaljer för bättre organisering
-• Introducerat datumintervallfiltrering för slutförandetider för att analysera din framsteg
-• Lagt till filtrering för system- vs. användarappar i användningsspårning
-• Skillnad mellan uppskattad och manuellt loggad tid för vanor
-• Förbättrad tidsloggning och timerintegration för vanor och uppgifter
-• Lagt till standardvärden för uppskattade tider för enklare uppgiftsplanering

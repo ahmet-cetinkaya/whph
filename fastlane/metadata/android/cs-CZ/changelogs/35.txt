@@ -1,3 +1,0 @@
-• Vylepšený dialog podpory a nastavení.
-• Vylepšené protokolování chyb při spuštění aplikace.
-• Vylepšená struktura rozvržení na stránce nastavení.

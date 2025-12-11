@@ -1,0 +1,5 @@
+- Adăugați mesaje de progres la export și import
+- Actualizați versiunea aplicației în testele de migrare
+- Eliminați metoda getInitialAppUsages
+- Îmbunătățiți metodele getById pentru a include notele șterse
+- Actualizați dimensiunea dialogului la mediu pentru o experiență de utilizare mai bună

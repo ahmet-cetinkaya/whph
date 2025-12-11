@@ -1,5 +1,5 @@
-• Estimated time for tasks is now truly optional - you can leave it blank without it defaulting to zero
-• Added ability to set a default estimated time for new tasks in settings
-• Improved Windows firewall handling for better app functionality and detection
-• Enhanced time tracking integration with habits and tags for better insights
-• Various performance improvements and bug fixes
+- Estimated time for tasks is now truly optional - you can leave it blank without it defaulting to zero
+- Added ability to set a default estimated time for new tasks in settings
+- Improved Windows firewall handling for better app functionality and detection
+- Enhanced time tracking integration with habits and tags for better insights
+- Various performance improvements and bug fixes

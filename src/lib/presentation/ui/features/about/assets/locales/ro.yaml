@@ -34,3 +34,7 @@ about:
       next: "Următorul"
       back: "Înapoi"
       start: "Începeți"
+  changelog:
+    title: "Ce este nou"
+    close_button: "Am înțeles!"
+    fetch_error: "Nu s-a putut obține jurnalul de modificări"

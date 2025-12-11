@@ -1,1 +1,0 @@
-• Corretto un bug che poteva causare la perdita dei dati delle attività durante l'aggiornamento dell'app.

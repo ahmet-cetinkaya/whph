@@ -1,6 +1,0 @@
-• Vylepšené tlačítko pro dokončení úkolu s ukazatelem průběhu dílčích úkolů.
-• Standardizované velikosti dialogových oken.
-• Přidáno tlačítko pro plánování úkolů.
-• Přidána možnost hustšího zobrazení pro lepší přehlednost.
-• Implementována služba pro migraci dat.
-• Vylepšené rozvržení pomocí widgetu Wrap.

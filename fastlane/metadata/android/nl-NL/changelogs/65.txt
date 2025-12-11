@@ -1,5 +1,0 @@
-• Geschatte tijd voor taken is nu echt optioneel - je kunt het leeg laten zonder dat het standaard op nul wordt ingesteld
-• Mogelijkheid toegevoegd om een standaard geschatte tijd voor nieuwe taken in te stellen in instellingen
-• Verbeterde Windows firewall-afhandeling voor betere app-functionaliteit en detectie
-• Verbeterde integratie van tijdregistratie met gewoonten en tags voor betere inzichten
-• Diverse prestatieverbeteringen en bugfixes

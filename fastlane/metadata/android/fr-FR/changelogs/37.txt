@@ -1,1 +1,1 @@
-• Amélioration du suivi en arrière-plan de l'utilisation des applications pour une expérience plus fluide.
+- Amélioration du suivi en arrière-plan de l'utilisation des applications pour une expérience plus fluide.

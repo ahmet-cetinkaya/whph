@@ -1,1 +1,1 @@
-• Removed unused update checking logic.
+- Removed unused update checking logic.

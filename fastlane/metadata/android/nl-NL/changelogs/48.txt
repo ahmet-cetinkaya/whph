@@ -1,6 +1,0 @@
-• Ondersteuning voor synchronisatie van mobiel naar mobiel toegevoegd.
-• Een synchronisatie-indicator toegevoegd.
-• Verbeterde gebruikersinterface voor het scannen van QR-codes.
-• Ondersteuning voor de automatische themamodus toegevoegd.
-• Ondersteuning voor dynamische kleuren geïntegreerd.
-• Ondersteuning voor de lichte modus toegevoegd.

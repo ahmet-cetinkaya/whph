@@ -1,0 +1,6 @@
+- Uppdatera applikationsnamn och beskrivning
+- Förbättra hantering av behörigheter
+- Förenkla layoutstrukturen på inställningssidan
+- Uppdatera dialogstorlekar för förbättrad responsivitet
+- Justera utfyllnad och höjd för bättre layout
+- Förbättra hantering av slutförande och val av uppgifter

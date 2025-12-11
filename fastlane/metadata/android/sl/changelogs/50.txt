@@ -1,0 +1,5 @@
+- Izboljšaj vsebino pomoči za sinhronizacijo
+- Dodaj podporo za barvo poudarka po meri
+- Uporabi storitev teme za barvo poudarka v elementih uporabniškega vmesnika
+- Odpravi napako pri dvosmerni sinhronizaciji, ki preprečuje sinhronizacijo demo podatkov Linuxa z Androidom
+- Dodaj barvo ozadja v vrstico z aplikacijami na straneh

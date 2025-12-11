@@ -1,0 +1,3 @@
+- Zjednodušené filtrování úkolů a štítků.
+- Vylepšená logika obnovování seznamu úkolů.
+- Vylepšené filtrování v seznamu zvyků.

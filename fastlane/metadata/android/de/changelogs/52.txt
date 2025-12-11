@@ -1,0 +1,5 @@
+- Problem behoben, bei dem mehrere App-Instanzen gleichzeitig laufen konnten
+- Verbesserte Synchronisationsstatus-Anzeigen und Feedback-Nachrichten
+- Anzeigeprobleme mit nicht-englischen Texten in der App behoben
+- Verbesserte Synchronisation für App-Nutzungsverfolgung und Gewohnheiten
+- Leistungsverbesserungen für schnellere App-Reaktionszeiten

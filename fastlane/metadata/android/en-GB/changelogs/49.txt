@@ -1,6 +1,6 @@
-• Implemented usage tracking compatible with Digital Wellbeing.
-• Added a clearer description for the use of dynamic colors.
-• Set dark theme as the default.
-• Removed initial titles and added placeholders for inputs.
-• Prevented UI flickering during permission checks and data loading.
-• Used the theme color for the 'Next' button during onboarding.
+- Implemented usage tracking compatible with Digital Wellbeing.
+- Added a clearer description for the use of dynamic colors.
+- Set dark theme as the default.
+- Removed initial titles and added placeholders for inputs.
+- Prevented UI flickering during permission checks and data loading.
+- Used the theme color for the 'Next' button during onboarding.

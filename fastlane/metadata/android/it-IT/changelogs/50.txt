@@ -1,5 +1,0 @@
-• Migliorata la guida alla sincronizzazione.
-• Aggiunto il supporto per il colore di accento personalizzato.
-• Migliorato l'uso dei colori del tema nell'interfaccia utente.
-• Risolto un bug nella sincronizzazione bidirezionale.
-• Aggiunto un colore di sfondo alla barra dell'app.

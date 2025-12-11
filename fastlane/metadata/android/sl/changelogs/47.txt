@@ -1,0 +1,4 @@
+- Izboljšaj metode oken KDE Wayland
+- Dodaj filtriranje naprav v funkcije uporabe aplikacij
+- Implementiraj storitev imenika aplikacij za platforme
+- Odstrani oblazinjenje iz opisov

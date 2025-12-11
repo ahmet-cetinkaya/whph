@@ -1,3 +1,0 @@
-• Testlerde sürüm referansını 0.6.7'den 0.6.10'a güncelleyin
-• app_usage_time_record_table için veritabanı geçişini yeniden düzenleyin
-• YAML ayrıştırmayı ve günlüğe kaydetmeyi geliştirin

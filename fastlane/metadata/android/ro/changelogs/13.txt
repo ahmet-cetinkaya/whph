@@ -1,0 +1,6 @@
+- Adăugați comutatorul de filtrare a sarcinilor finalizate și îmbunătățiți reconstruirea listei de sarcini
+- Afișați numele etichetei la selectare în regulile de etichetare a utilizării aplicațiilor
+- Îmbunătățiți detectarea ferestrelor cu mai multe strategii și gestionarea erorilor
+- Implementați vizibilitatea dinamică pentru câmpurile opționale în detalii
+- Adăugați ordonarea sarcinilor
+- Implementați tranziția de estompare pentru navigarea între pagini

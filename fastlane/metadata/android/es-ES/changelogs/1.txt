@@ -1,2 +1,2 @@
-• Diseño de la barra de aplicaciones mejorado para una mejor visualización en todos los dispositivos.
-• Se agregó una nueva sección de ayuda para ayudarlo con las tareas, etiquetas, códigos QR, sincronización, hábitos y la descripción general de hoy.
+- Diseño de la barra de aplicaciones mejorado para una mejor visualización en todos los dispositivos.
+- Se agregó una nueva sección de ayuda para ayudarlo con las tareas, etiquetas, códigos QR, sincronización, hábitos y la descripción general de hoy.

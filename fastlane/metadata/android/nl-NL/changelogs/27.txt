@@ -1,6 +1,0 @@
-• Verbeterde weergave van tagpercentages.
-• Een confetti-animatie toegevoegd wanneer een taak of gewoonte is voltooid.
-• Verbeterde tracking van gewoonte-streaks en gebruikersinterface.
-• Verbeterde tijdsplanning.
-• Verbeterde lay-out van het herinneringspictogram.
-• Een tooltip aan de planningsknop toegevoegd.

@@ -1,3 +1,3 @@
-• Nouveaux paramètres de densité d'interface : Ajustez la taille du texte et des éléments d'interface pour une meilleure lisibilité sur les écrans haute résolution
-• Performances améliorées : Rendu plus rapide de la liste des tâches et fréquences de rafraîchissement d'écran optimisées
-• Expérience utilisateur améliorée : Meilleurs calculs de dates et animations plus fluides
+- Nouveaux paramètres de densité d'interface : Ajustez la taille du texte et des éléments d'interface pour une meilleure lisibilité sur les écrans haute résolution
+- Performances améliorées : Rendu plus rapide de la liste des tâches et fréquences de rafraîchissement d'écran optimisées
+- Expérience utilisateur améliorée : Meilleurs calculs de dates et animations plus fluides

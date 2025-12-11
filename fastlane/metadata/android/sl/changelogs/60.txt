@@ -1,0 +1,2 @@
+- Izboljšana zanesljivost zagon aplikacije z izboljšanim ravnanjem z napakami
+- Popravljene težave s sledenjem navad po posodobitvah aplikacije

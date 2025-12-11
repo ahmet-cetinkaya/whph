@@ -1,1 +1,1 @@
-• Amélioration de la navigation entre les tâches et de la mise à jour des sous-tâches.
+- Amélioration de la navigation entre les tâches et de la mise à jour des sous-tâches.

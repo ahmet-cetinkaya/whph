@@ -1,4 +1,0 @@
-• Îmbunătățiți metodele ferestrei KDE Wayland
-• Adăugați filtrarea dispozitivelor la funcțiile de utilizare a aplicațiilor
-• Implementați serviciul de directoare de aplicații pentru platforme
-• Eliminați umplutura din descrieri

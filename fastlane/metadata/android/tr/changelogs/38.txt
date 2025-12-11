@@ -1,0 +1,1 @@
+- Kullanılmayan güncelleme kontrol mantığını kaldırın

@@ -1,5 +1,5 @@
-• Amélioration de l'aide à la synchronisation.
-• Ajout de la prise en charge des couleurs d'accentuation personnalisées.
-• Amélioration de l'utilisation des couleurs du thème dans l'interface utilisateur.
-• Correction d'un bug dans la synchronisation bidirectionnelle.
-• Ajout d'une couleur d'arrière-plan à la barre d'applications.
+- Amélioration de l'aide à la synchronisation.
+- Ajout de la prise en charge des couleurs d'accentuation personnalisées.
+- Amélioration de l'utilisation des couleurs du thème dans l'interface utilisateur.
+- Correction d'un bug dans la synchronisation bidirectionnelle.
+- Ajout d'une couleur d'arrière-plan à la barre d'applications.

@@ -1,4 +1,0 @@
-• Dodano dokładne śledzenie użycia aplikacji na pierwszym planie dla systemu Android.
-• Zoptymalizowane logo aplikacji.
-• Ulepszona gęstość wizualna przycisków.
-• Dodano informację zwrotną dźwiękową podczas tworzenia rekordu.

@@ -1,5 +1,0 @@
-• Timp estimat pentru sarcini acum opțional - poate fi lăsat gol
-• Adăugat timp estimat implicit pentru noi sarcini în setări
-• Îmbunătățită gestionarea firewall-ului Windows pentru mai bună funcționalitate
-• Integrare îmbunătățită a timpului cu obiceiuri și etichete
-• Îmbunătățiri de performanță și corecții de erori

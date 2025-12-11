@@ -1,6 +1,6 @@
-• Se agregó soporte para la sincronización de móvil a móvil.
-• Se agregó un indicador de sincronización.
-• Interfaz de usuario mejorada para escanear códigos QR.
-• Se agregó soporte para el modo de tema automático.
-• Se integró el soporte para colores dinámicos.
-• Se agregó soporte para el modo claro.
+- Se agregó soporte para la sincronización de móvil a móvil.
+- Se agregó un indicador de sincronización.
+- Interfaz de usuario mejorada para escanear códigos QR.
+- Se agregó soporte para el modo de tema automático.
+- Se integró el soporte para colores dinámicos.
+- Se agregó soporte para el modo claro.

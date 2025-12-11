@@ -1,0 +1,2 @@
+- Zlepšena spolehlivost spuštění aplikace s vylepšeným zpracováním chyb
+- Opravena problémy s sledováním návyků po aktualizacích aplikace

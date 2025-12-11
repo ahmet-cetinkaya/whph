@@ -34,3 +34,7 @@ about:
       next: "Επόμενο"
       back: "Πίσω"
       start: "Ξεκινήστε"
+  changelog:
+    title: "Τι νέο υπάρχει"
+    close_button: "Κατάλαβα!"
+    fetch_error: "Δεν ήταν δυνατή η ανάκτηση του αρχείου αλλαγών"

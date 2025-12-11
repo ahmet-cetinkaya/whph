@@ -1,6 +1,0 @@
-• Önyükleme tamamlandı olaylarını işle
-• Varsayılan sıralama yapılandırmasını güncelle
-• Sıralama iletişim kutusunda yeniden sıralama işlevselliğini geliştir
-• Boş durum katmanlarına dolgu ekle
-• Tarih filtreleme mantığını güncelle
-• Ses odağını içerecek şekilde oynatma yöntemini güncelle

@@ -1,0 +1,6 @@
+- Nova možnost filtra za enostavno prikazovanje ali skrivanje podnalog za boljšo upravljanje nalog
+- Izboljšan izvoz dnevnikov odpravljanja napak s popolno podporo jezikov za bolj gladko odpravljanje težav
+- Izboljšani dnevniki odpravljanja napak se zdaj prikazujejo kot prekrivna obvestila za takojšnjo povratno informacijo
+- Popolna funkcija izvoza dnevnikov z lokalizacijo za vse podprte jezike
+- Dodani prevodi napak za dnevnike odpravljanja napak v vsakem jeziku za izboljšanje uporabniške izkušnje
+- Uvedene napredne nastavitve in popolna funkcionalnost dnevnikov odpravljanja napak za napredne uporabnike

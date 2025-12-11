@@ -1,0 +1,1 @@
+- Ulepszone cogodzinne gromadzenie i przetwarzanie danych.

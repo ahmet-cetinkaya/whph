@@ -1,5 +1,5 @@
-• Gestión de etiquetas y traducciones mejoradas.
-• Notificaciones mejoradas al sincronizar dispositivos.
-• Interfaz de usuario y funciones mejoradas en la configuración.
-• Acciones de notas mejoradas.
-• Gestión de hábitos mejorada.
+- Gestión de etiquetas y traducciones mejoradas.
+- Notificaciones mejoradas al sincronizar dispositivos.
+- Interfaz de usuario y funciones mejoradas en la configuración.
+- Acciones de notas mejoradas.
+- Gestión de hábitos mejorada.

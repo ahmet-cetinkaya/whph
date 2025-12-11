@@ -1,3 +1,0 @@
-• Vereinfachte Filterung von Aufgaben und Tags.
-• Verbesserte Logik zur Aktualisierung der Aufgabenliste.
-• Verbesserte Filterung in der Gewohnheitenliste.

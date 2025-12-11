@@ -1,5 +1,5 @@
-• Ajout d'une fonctionnalité d'importation et d'exportation de données.
-• Amélioration du chargement des balises.
-• Amélioration de la synchronisation des appareils.
-• Ajout d'une fonction de pression sur la carte des paramètres de notification.
-• Ajout de traductions pour l'info-bulle « Ajouter une habitude ».
+- Ajout d'une fonctionnalité d'importation et d'exportation de données.
+- Amélioration du chargement des balises.
+- Amélioration de la synchronisation des appareils.
+- Ajout d'une fonction de pression sur la carte des paramètres de notification.
+- Ajout de traductions pour l'info-bulle « Ajouter une habitude ».

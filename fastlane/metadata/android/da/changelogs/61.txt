@@ -1,0 +1,3 @@
+- Forbedret dataimport for sikrere backups og fejlgenvinding
+- Forbedrede app-opdateringer med pålidelig datamigration og sikkerhedsforanstaltninger
+- Rettet vaneordning under opdateringer for bedre organisation

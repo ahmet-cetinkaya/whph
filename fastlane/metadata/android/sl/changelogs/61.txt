@@ -1,0 +1,3 @@
+- Izboljšana uvoz podatkov za varnejše varnostne kopije in obnovitev po napakah
+- Izboljšane posodobitve aplikacije z zanesljivo migracijo podatkov in varnostnimi ukrepi
+- Popravljeno urejanje navad med posodobitvami za boljšo organizacijo

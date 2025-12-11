@@ -1,0 +1,1 @@
+- Izboljšaj obravnavo povratnega klica za brisanje opravil v TaskDetailsPage

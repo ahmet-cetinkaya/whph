@@ -1,6 +1,6 @@
-• Improved display of tag percentages.
-• Added a confetti animation when a task or habit is completed.
-• Improved tracking of habit streaks and user interface.
-• Improved time scheduling.
-• Improved layout of the reminder icon.
-• Added a tooltip to the schedule button.
+- Improved display of tag percentages.
+- Added a confetti animation when a task or habit is completed.
+- Improved tracking of habit streaks and user interface.
+- Improved time scheduling.
+- Improved layout of the reminder icon.
+- Added a tooltip to the schedule button.

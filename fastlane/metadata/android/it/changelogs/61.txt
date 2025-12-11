@@ -1,0 +1,3 @@
+- Importazione dati migliorata per backup più sicuri e recupero errori
+- Aggiornamenti app migliorati con migrazione dati affidabile e misure di sicurezza
+- Correzione ordine abitudini durante aggiornamenti per migliore organizzazione

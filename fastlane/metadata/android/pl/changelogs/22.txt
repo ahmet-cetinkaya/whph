@@ -1,0 +1,3 @@
+- Dodano powiadomienia o stanie eksportu i importu danych.
+- Ulepszone pobieranie danych, które teraz obejmuje usunięte notatki.
+- Ulepszony rozmiar okien dialogowych dla lepszego doświadczenia użytkownika.

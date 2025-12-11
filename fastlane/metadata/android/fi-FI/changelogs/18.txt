@@ -1,5 +1,0 @@
-• Sovelluksen nimi ja kuvaus on päivitetty.
-• Parannettu lupien käsittely.
-• Yksinkertaistettu asettelurakenne asetussivulla.
-• Parannettu valintaikkunoiden reagoivuus.
-• Parannettu tehtävien suorittaminen ja valinta.

@@ -1,1 +1,0 @@
-• Alışkanlıklar ve görevler için içe aktarma sorunları düzeltildi, veri kaybını önlemek ve sorunsuz güncellemeleri sağlamak için

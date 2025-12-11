@@ -1,6 +1,0 @@
-• Mobil platform senkronizasyonunu iyileştirin
-• Günlüğe kaydetmeyi ve çakışma çözümünü geliştirin
-• Güncellemeleri kontrol etme işlevselliği ekleyin
-• Liste görünümünü ayırıcılarla iyileştirin
-• İçe/dışa aktarmada hata günlüğe kaydetmeyi iyileştirin
-• Uygulama kullanım listesinde sayfalama mantığını iyileştirin

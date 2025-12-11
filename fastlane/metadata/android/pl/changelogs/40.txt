@@ -1,0 +1,6 @@
+- Ulepszona synchronizacja z platformami mobilnymi.
+- Ulepszone rejestrowanie i rozwiązywanie konfliktów.
+- Dodano funkcję sprawdzania aktualizacji.
+- Ulepszony widok listy z separatorami.
+- Ulepszone rejestrowanie błędów podczas importu i eksportu.
+- Ulepszona logika paginacji na liście użycia aplikacji.

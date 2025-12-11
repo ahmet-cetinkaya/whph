@@ -1,5 +1,5 @@
-• Added missing translations and improved structure.
-• Improved user interface for the Pomodoro timer.
-• Improved update checking and downloading.
-• Improved layout and responsiveness throughout the app.
-• Reduced default page size for better performance.
+- Added missing translations and improved structure.
+- Improved user interface for the Pomodoro timer.
+- Improved update checking and downloading.
+- Improved layout and responsiveness throughout the app.
+- Reduced default page size for better performance.

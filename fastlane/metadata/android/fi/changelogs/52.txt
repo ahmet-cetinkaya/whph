@@ -1,0 +1,5 @@
+- Korjattiin ongelma, jossa useita sovelluksen instansseja saattoi käynnistyä samanaikaisesti
+- Parannetut synkronointitilan ilmaisimet ja palauteviestit
+- Korjattiin näyttöongelmia ei-englanninkielisessä tekstissä sovelluksessa
+- Parannettu synkronointi sovellusten käytön seurannalle ja tavoille
+- Suorituskyvyn parannukset nopeampaan sovelluksen reagointiin

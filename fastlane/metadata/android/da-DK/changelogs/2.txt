@@ -1,2 +1,0 @@
-• Forbedret installation af app-opdateringer.
-• Tilføjet oversættelser til forskellige dele af appen, herunder tags, synkronisering og indstillinger.

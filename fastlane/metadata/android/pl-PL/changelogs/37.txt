@@ -1,1 +1,0 @@
-• Ulepszone śledzenie w tle użycia aplikacji dla płynniejszego działania.

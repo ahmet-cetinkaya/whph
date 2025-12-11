@@ -1,0 +1,5 @@
+- Dodano opcje sortowania do wyboru tagów.
+- Ulepszone dodawanie podzadań.
+- Dodano pole zadania nadrzędnego w szczegółach zadania.
+- Ulepszona obsługa powiadomień.
+- Ulepszona usługa przypomnień dla systemu Android z obsługą tłumaczeń.

@@ -1,3 +1,0 @@
-• Ulepszony import danych w celu zapobiegania duplikatom i unikania utraty zmian
-• Ulepszone aktualizacje aplikacji dla płynniejszych i bardziej niezawodnych migracji
-• Lepsza stabilność i wydajność dzięki zoptymalizowanym połączeniom

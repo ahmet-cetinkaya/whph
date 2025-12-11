@@ -1,0 +1,3 @@
+- Uudet käyttöliittymän tiheysasetukset: Säädä tekstin ja käyttöliittymäelementtien kokoa paremman luettavuuden saavuttamiseksi korkean resoluution näytöillä
+- Parannettu suorituskyky: Nopeampi tehtäväluettelon renderöinti ja optimoidut näytön virkistystaajuudet
+- Parannettu käyttökokemus: Paremmat päivämäärälaskelmat ja sujuvammat animaatiot

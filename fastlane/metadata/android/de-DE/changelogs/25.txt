@@ -1,5 +1,0 @@
-• Verbesserte Handhabung von Ereignissen nach dem Neustart des Geräts.
-• Aktualisierte Standard-Sortierkonfiguration.
-• Verbesserte Funktion zum Ändern der Reihenfolge im Sortierdialog.
-• Verbesserte Datumsfilterung.
-• Verbesserte Audiowiedergabe.

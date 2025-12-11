@@ -1,6 +1,0 @@
-• Hantera händelser som slutförts vid start
-• Uppdatera standard sorteringskonfiguration
-• Förbättra omordningsfunktionen i sorteringsdialogen
-• Lägg till utfyllnad i överlagringar för tomt tillstånd
-• Uppdatera logiken för datumfiltrering
-• Uppdatera uppspelningsmetoden för att inkludera ljudfokus
