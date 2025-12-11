@@ -1,0 +1,1 @@
+- Ulepszone cogodzinne przetwarzanie danych o użytkowaniu aplikacji.

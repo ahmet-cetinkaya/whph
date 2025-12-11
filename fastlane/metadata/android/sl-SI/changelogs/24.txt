@@ -1,5 +1,0 @@
-• Dodaj ignoreArchivedTagVisibility v poizvedbe
-• Odstrani neuporabljen izračun roka
-• Prilagodi oblazinjenje za postavitev v postavitvi
-• Posodobi logiko filtriranja datumov na današnji strani
-• Dodaj direktivo za ignoriranje za depend_on_referenced_packages

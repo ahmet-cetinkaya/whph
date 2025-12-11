@@ -1,2 +1,0 @@
-• Vylepšený vzhled záhlaví aplikace pro lepší zobrazení na všech zařízeních.
-• Přidána nová sekce nápovědy, která vám pomůže s úkoly, štítky, QR kódy, synchronizací, návyky a denním přehledem.

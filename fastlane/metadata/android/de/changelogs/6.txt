@@ -1,0 +1,1 @@
+- Unterstützung für Teilaufgaben und Aufgabenbeziehungen hinzugefügt. Übersetzung und Datenbankschema aktualisiert.

@@ -1,1 +1,1 @@
-• Improved hourly data collection and processing.
+- Improved hourly data collection and processing.

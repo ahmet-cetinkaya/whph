@@ -1,0 +1,6 @@
+- Vylepšená synchronizace s mobilními platformami.
+- Vylepšené protokolování a řešení konfliktů.
+- Přidána funkce pro kontrolu aktualizací.
+- Vylepšené zobrazení seznamu s oddělovači.
+- Vylepšené protokolování chyb při importu a exportu.
+- Vylepšená logika stránkování v seznamu využití aplikací.

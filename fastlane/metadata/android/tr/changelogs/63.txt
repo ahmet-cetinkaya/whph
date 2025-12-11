@@ -1,0 +1,6 @@
+- İlerlemenizi hatırlayan geliştirilmiş uygulama turu navigasyonu
+- Yararlı katmanlar içeren kapsamlı çok sayfalı tur eklendi
+- İlk katılım sırasında dil seçimi seçeneği eklendi
+- Uygulama genelinde geliştirilmiş yükleme durumları ve daha sorunsuz performans
+- Senkronizasyon hatalarının daha iyi görüntülenmesi ve işlenmesi
+- Senkronizasyon sorunlarına ilişkin iyileştirilmiş hata mesajları

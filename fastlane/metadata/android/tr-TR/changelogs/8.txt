@@ -1,1 +1,0 @@
-• Görev gezinmesini MaterialPageRoute kullanacak şekilde güncelleyin ve geri dönüldüğünde alt görevleri yenileyin

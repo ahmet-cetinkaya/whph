@@ -1,0 +1,3 @@
+- Posodobi sklic na različico z 0.6.7 na 0.6.10 v testih
+- Refaktoriraj selitev baze podatkov za tabelo app_usage_time_record_table
+- Izboljšaj razčlenjevanje in beleženje YAML

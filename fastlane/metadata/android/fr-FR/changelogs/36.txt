@@ -1,1 +1,1 @@
-• Suppression de la logique de mise à jour des APK et des autorisations associées.
+- Suppression de la logique de mise à jour des APK et des autorisations associées.

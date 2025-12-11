@@ -1,0 +1,2 @@
+- Îmbunătățiți QuickTaskBottomSheet cu selecția etichetelor și funcționalitatea de ștergere
+- Adăugați secțiunea de sarcini finalizate cu vizualizare extensibilă în paginile de detalii ale sarcinilor și etichetelor

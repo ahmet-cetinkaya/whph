@@ -1,0 +1,5 @@
+- Lisätty puuttuvat käännökset ja parannettu rakenne.
+- Parannettu Pomodoro-ajastimen käyttöliittymä.
+- Parannettu päivitysten tarkistus ja lataus.
+- Parannettu asettelu ja reagoivuus koko sovelluksessa.
+- Pienennetty oletussivukokoa paremman suorituskyvyn saavuttamiseksi.

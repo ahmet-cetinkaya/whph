@@ -1,1 +1,0 @@
-• Korjattu bugi, joka saattoi aiheuttaa tehtävätietojen katoamisen sovelluksen päivityksessä.

@@ -1,0 +1,1 @@
+- Erweitern Sie das Tour-Overlay mit Übersetzungsunterstützung und verbessertem Layout

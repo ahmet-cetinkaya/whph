@@ -1,5 +1,0 @@
-• Szacowany czas dla zadań jest teraz naprawdę opcjonalny - możesz pozostawić go pustym bez domyślnego ustawiania na zero
-• Dodano możliwość ustawienia domyślnego szacowanego czasu dla nowych zadań w ustawieniach
-• Poprawiono obsługę zapory Windows dla lepszej funkcjonalności aplikacji i wykrywania
-• Ulepszona integracja śledzenia czasu z nawykami i tagami dla lepszych wglądów
-• Różne ulepszenia wydajności i poprawki błędów

@@ -1,0 +1,1 @@
+- Aggiunto il supporto per le sottoattività e le relazioni tra attività. Aggiornata la traduzione e lo schema del database.

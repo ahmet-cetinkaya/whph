@@ -1,0 +1,3 @@
+- Forbedret app-ydeevne med hurtigere fjernelse af duplikater
+- Rettet forældreløse opgaver forårsaget af duplikerede indtastninger
+- Bedre sortering af opgaver efter varighed

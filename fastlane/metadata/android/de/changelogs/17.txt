@@ -1,0 +1,3 @@
+- Benachrichtigungen werden jetzt in Overlays anstelle von Snackbars angezeigt.
+- Eine Ladebenachrichtigung mit einer Fortschrittsanzeige hinzugefügt.
+- Verbesserte Datenvorbereitung und Protokollierung für die Synchronisierung.

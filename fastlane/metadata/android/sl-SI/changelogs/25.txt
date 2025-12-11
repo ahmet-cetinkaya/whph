@@ -1,6 +1,0 @@
-• Obravnavaj dogodke ob zaključku zagona
-• Posodobi privzeto konfiguracijo razvrščanja
-• Izboljšaj funkcionalnost prerazvrščanja v pogovornem oknu za razvrščanje
-• Dodaj oblazinjenje prekrivnim elementom praznega stanja
-• Posodobi logiko filtriranja datumov
-• Posodobi metodo predvajanja, da vključi zvočni poudarek

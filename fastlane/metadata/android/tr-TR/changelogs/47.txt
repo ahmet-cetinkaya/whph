@@ -1,4 +1,0 @@
-• KDE Wayland pencere yöntemlerini geliştirin
-• Uygulama kullanım özelliklerine cihaz filtreleme ekleyin
-• Platformlar için uygulama dizin hizmeti uygulayın
-• Açıklamalardan dolguyu kaldırın

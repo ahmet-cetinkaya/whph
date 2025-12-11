@@ -1,5 +1,0 @@
-• Migliorata la gestione dei tag e le traduzioni.
-• Migliorate le notifiche durante la sincronizzazione dei dispositivi.
-• Migliorata l'interfaccia utente e le funzionalità nelle impostazioni.
-• Migliorate le azioni sulle note.
-• Migliorata la gestione delle abitudini.

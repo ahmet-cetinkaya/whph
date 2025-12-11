@@ -1,0 +1,3 @@
+- Parannetut kyselyt arkistoitujen tunnisteiden ohittamiseksi.
+- Poistettu tarpeeton määräajan laskenta.
+- Parannettu päivämääräsuodatus tämän päivän sivulla.

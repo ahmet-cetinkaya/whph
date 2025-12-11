@@ -1,0 +1,1 @@
+- Alt görevler ve üst görev ilişkileri için destek ekleyin; yerelleştirmeyi ve veritabanı şemasını güncelleyin

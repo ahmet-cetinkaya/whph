@@ -1,0 +1,6 @@
+- Verwaltung von Autostart-Berechtigungen hinzugefügt.
+- Automatische Auswahl von Aufgaben auf der Marathon-Seite hinzugefügt.
+- Eine Schaltfläche zum schnellen Erstellen von Aufgaben hinzugefügt.
+- Sperreinstellungen und eine Funktion zum Löschen aller Daten hinzugefügt.
+- Verbessertes Hilfemenü.
+- Der Name der App wurde in 'Work Hard Play Hard' aktualisiert.

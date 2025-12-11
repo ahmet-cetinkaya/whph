@@ -1,0 +1,6 @@
+- Lägg till filterväxling för slutförda uppgifter och förbättra ombyggnaden av uppgiftslistan
+- Visa taggnamn vid val i taggregler för appanvändning
+- Förbättra fönsterdetektering med flera strategier och felhantering
+- Implementera dynamisk synlighet för valfria fält i detaljer
+- Lägg till uppgiftssortering
+- Implementera en toningövergång för sidnavigering

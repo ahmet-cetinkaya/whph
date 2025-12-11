@@ -1,0 +1,5 @@
+- Dodano możliwość filtrowania ukończonych zadań.
+- Ulepszone wyświetlanie nazwy tagu przy wyborze.
+- Ulepszone wykrywanie okien i poprawki błędów.
+- Dodano sortowanie zadań.
+- Płynniejsze przejścia między stronami.

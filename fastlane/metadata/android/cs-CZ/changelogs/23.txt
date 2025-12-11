@@ -1,3 +1,0 @@
-• Vylepšené zpracování barev štítků.
-• Vylepšené zpracování štítků při sledování využití aplikací.
-• Vylepšené zarovnání prvků na střed.

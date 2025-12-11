@@ -1,0 +1,1 @@
+- Vylepšený hodinový sběr a zpracování dat.

@@ -1,0 +1,5 @@
+- Opravena chyba, kdy mohlo běžet současně více instancí aplikace
+- Vylepšeny indikátory stavu synchronizace a zpětná vazba
+- Opraveny problémy se zobrazováním v ne-anglických jazycích
+- Vylepšena synchronizace sledování využití aplikací a návyků  
+- Vylepšení výkonu pro rychlejší odezvu aplikace

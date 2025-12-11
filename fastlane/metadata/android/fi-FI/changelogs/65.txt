@@ -1,5 +1,0 @@
-• Tehtävien arvioitu aika on nyt todella valinnainen - voit jättää sen tyhjäksi ilman, että se oletuksena asetetaan nollaan
-• Lisätty mahdollisuus asettaa oletusarvoinen arvioitu aika uusille tehtäville asetuksissa
-• Parannettu Windowsin palomuurin käsittelyä paremman sovellustoiminnallisuuden ja tunnistuksen vuoksi
-• Parannettu ajan seurannan integraatiota tapojen ja tunnisteiden kanssa paremman näkemyksen saamiseksi
-• Erilaisia suorituskykyparannuksia ja virhekorjauksia

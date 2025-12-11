@@ -1,5 +1,5 @@
-• Fixed issue where multiple app instances could run simultaneously
-• Improved sync status indicators and feedback messages
-• Fixed display issues with non-English text in the app
-• Enhanced synchronisation for app usage tracking and habits
-• Performance improvements for faster app responsiveness
+- Fixed issue where multiple app instances could run simultaneously
+- Improved sync status indicators and feedback messages
+- Fixed display issues with non-English text in the app
+- Enhanced synchronisation for app usage tracking and habits
+- Performance improvements for faster app responsiveness

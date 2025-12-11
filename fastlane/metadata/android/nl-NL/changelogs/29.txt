@@ -1,5 +1,0 @@
-• Sorteeropties toegevoegd aan de tagselectie.
-• Verbeterde toevoeging van subtaken.
-• Een veld voor de bovenliggende taak in de taakdetails toegevoegd.
-• Verbeterde afhandeling van meldingen.
-• Verbeterde herinneringsservice voor Android met vertaalondersteuning.

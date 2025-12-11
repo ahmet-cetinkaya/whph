@@ -1,0 +1,6 @@
+- Ny filtermulighed til nemt at vise eller skjule delopgaver for bedre opgavestyring
+- Forbedret eksport af fejllog med fuld sprogunderstøttelse for lettere fejlfinding
+- Forbedrede fejllog vises nu som overlay-meddelelser for øjeblikkelig feedback
+- Komplet logeksport-funktion med lokalisering for alle understøttede sprog
+- Tilføjede fejloversættelser for fejllog på alle sprog for at forbedre brugeroplevelsen
+- Introducerede avancerede indstillinger og omfattende fejllog-funktionalitet for avancerede brugere

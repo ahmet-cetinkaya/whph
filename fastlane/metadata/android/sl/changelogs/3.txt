@@ -1,0 +1,5 @@
+- Dodaj namige orodij za dejanja osveževanja и pomoči v več komponentah
+- Zamenjaj oblazinjenje s središčem za izboljšano postavitev v komponenti AppAbout
+- Implementiraj lokalizirano pogovorno okno za posodobitev
+- Prilagodi razmik za logotip v ResponsiveScaffoldLayout glede na velikost zaslona
+- Izboljšaj prikaz naslova v HelpMenu z obravnavo prelivanja elipse

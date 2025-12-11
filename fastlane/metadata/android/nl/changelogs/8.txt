@@ -1,0 +1,1 @@
+- Verbeterde navigatie tussen taken en het bijwerken van subtaken.

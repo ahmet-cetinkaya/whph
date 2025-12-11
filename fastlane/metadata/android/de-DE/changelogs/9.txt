@@ -1,1 +1,0 @@
-• Verbesserte Fehlerbehandlung und Protokollierung bei der Gerätesynchronisierung.

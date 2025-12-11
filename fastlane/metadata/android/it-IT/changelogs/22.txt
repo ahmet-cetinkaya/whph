@@ -1,3 +1,0 @@
-• Aggiunte notifiche di stato per l'esportazione e l'importazione dei dati.
-• Migliorato il recupero dei dati, che ora include le note eliminate.
-• Migliorate le dimensioni delle finestre di dialogo per una migliore esperienza utente.

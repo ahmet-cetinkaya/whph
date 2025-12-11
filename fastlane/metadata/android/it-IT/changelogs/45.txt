@@ -1,4 +1,0 @@
-• Aggiunto il monitoraggio accurato dell'utilizzo dell'app in primo piano per Android.
-• Ottimizzato il logo dell'app.
-• Migliorata la densità visiva dei pulsanti.
-• Aggiunto un feedback sonoro durante la creazione di un record.

@@ -1,3 +1,0 @@
-• Förbättrad dataimport för säkrare säkerhetskopior och felåterställning
-• Förbättrade appuppdateringar med pålitlig datamigrering och skyddsåtgärder
-• Åtgärdad vanesordning under uppdateringar för bättre organisation

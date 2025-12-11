@@ -1,0 +1,5 @@
+- Înlocuiți SnackBars cu notificări suprapuse
+- Adăugați o notificare de încărcare cu un indicator de progres
+- Utilizați configurația de semnare a versiunii pentru tipurile de compilare
+- Îmbunătățiți pregătirea și înregistrarea datelor de sincronizare
+- Actualizați numele parametrilor de interogare pentru consecvență

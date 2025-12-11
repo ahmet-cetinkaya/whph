@@ -1,1 +1,1 @@
-• Varias mejoras y optimizaciones internas para una mejor experiencia.
+- Varias mejoras y optimizaciones internas para una mejor experiencia.

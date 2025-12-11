@@ -1,5 +1,5 @@
-• Added a feature to import and export data.
-• Improved loading of tags.
-• Improved device synchronization.
-• Added a tap function to the notification settings card.
-• Added translations for the 'Add Habit' tooltip.
+- Added a feature to import and export data.
+- Improved loading of tags.
+- Improved device synchronization.
+- Added a tap function to the notification settings card.
+- Added translations for the 'Add Habit' tooltip.

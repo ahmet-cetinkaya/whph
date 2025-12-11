@@ -1,0 +1,5 @@
+- Ulepszony wygląd pola wyszukiwania.
+- Ulepszony interfejs użytkownika dla lepszego doświadczenia.
+- Wdrożono usługę migracji danych z wersjonowaniem.
+- Dodano funkcję, która zapobiega usypianiu telefonu podczas korzystania z timera Pomodoro.
+- Ulepszona logika koloru paska postępu w timerze Pomodoro.

@@ -1,5 +1,0 @@
-• Dodaj možnost skrivanja stranske vrstice in obravnave povratnega klica za brisanje opravil
-• Poenostavi postavitev odseka opravil na strani s podrobnostmi o oznaki
-• Preuredi vrednosti naštevanja EisenhowerPriority za razvrščanje
-• Dodaj prevod za sporočilo o neuporabi aplikacije
-• Popravi logiko posodabljanja trajanja in izboljšaj pogovorno okno s podrobnostmi o opravilu

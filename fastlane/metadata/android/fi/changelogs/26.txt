@@ -1,0 +1,2 @@
+- Päivitetyt testit ja parannettu tietokannan siirto.
+- Parannettu YAML-käsittely ja kirjaaminen.

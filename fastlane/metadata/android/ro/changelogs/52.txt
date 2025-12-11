@@ -1,0 +1,5 @@
+- S-a remediat problema în care mai multe instanțe ale aplicației puteau rula simultan
+- Îmbunătățiți indicatorii de stare sincronizare și mesajele de feedback
+- S-au remediat problemele de afișare cu textul non-englez în aplicație
+- Sincronizare îmbunătățită pentru urmărirea utilizării aplicațiilor și obiceiurile
+- Îmbunătățiri de performanță pentru o reactivitate mai rapidă a aplicației

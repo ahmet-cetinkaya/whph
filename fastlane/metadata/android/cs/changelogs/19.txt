@@ -1,0 +1,5 @@
+- Přidány chybějící překlady a vylepšena struktura.
+- Vylepšené uživatelské rozhraní časovače Pomodoro.
+- Vylepšená kontrola a stahování aktualizací.
+- Vylepšené rozvržení a responzivita napříč aplikací.
+- Snížena výchozí velikost stránky pro lepší výkon.

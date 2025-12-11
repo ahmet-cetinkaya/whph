@@ -1,5 +1,0 @@
-• Nyní můžete skrýt boční panel.
-• Vylepšené mazání úkolů.
-• Zjednodušené zobrazení úkolů v detailech štítků.
-• Přidán překlad pro případ, že se nepoužívají žádné aplikace.
-• Opravena logika pro aktualizaci délky trvání úkolů.

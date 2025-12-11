@@ -1,0 +1,1 @@
+- Daha sorunsuz bir deneyim için Android cihazlarda uygulama kullanımının arka planda izlenmesi iyileştirildi

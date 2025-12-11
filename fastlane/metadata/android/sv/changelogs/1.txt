@@ -1,0 +1,6 @@
+- Förbättra appfältets titellayout för bättre responsivitet
+- Lägg till hjälpmodaler för Uppgiftsdetaljer och Uppgiftsöversikt sidor
+- Lägg till hjälpmodaler för Taggdetaljer och Taggöversikt sidor
+- Lägg till hjälpmodaler för QR-kodskanner och Synkronisera enheter sidor
+- Lägg till hjälpmodaler för Vanedetaljer och Vaneöversikt sidor
+- Lägg till hjälpmodal med funktioner och tips för Idag-vyn

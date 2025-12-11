@@ -1,5 +1,5 @@
-• Le nom et la description de l'application ont été mis à jour.
-• Amélioration de la gestion des autorisations.
-• Simplification de la structure de la mise en page sur la page des paramètres.
-• Amélioration de la réactivité des boîtes de dialogue.
-• Amélioration de l'achèvement et de la sélection des tâches.
+- Le nom et la description de l'application ont été mis à jour.
+- Amélioration de la gestion des autorisations.
+- Simplification de la structure de la mise en page sur la page des paramètres.
+- Amélioration de la réactivité des boîtes de dialogue.
+- Amélioration de l'achèvement et de la sélection des tâches.

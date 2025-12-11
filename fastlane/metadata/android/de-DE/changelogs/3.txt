@@ -1,4 +1,0 @@
-• Tipps für die Schaltflächen „Aktualisieren“ und „Hilfe“ hinzugefügt.
-• Verbessertes Layout im Abschnitt „Über“.
-• Verbessertes Dialogfeld zur Aktualisierung der App.
-• Verbesserte Titelanzeige im Hilfemenü.

@@ -1,2 +1,0 @@
-• Verbesserte App-Startzuverlässigkeit mit erweiterter Fehlerbehandlung
-• Behoben Probleme beim Gewohnheits-Tracking nach App-Updates

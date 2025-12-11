@@ -1,0 +1,4 @@
+- Přidány nápovědy pro tlačítka obnovení a nápovědy.
+- Vylepšené rozvržení v sekci "O aplikaci".
+- Vylepšený dialog pro aktualizaci aplikace.
+- Vylepšené zobrazení názvu v nabídce nápovědy.

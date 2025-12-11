@@ -1,1 +1,0 @@
-• Een bug opgelost die ervoor kon zorgen dat taakgegevens verloren gingen bij het updaten van de app.

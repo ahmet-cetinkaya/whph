@@ -1,0 +1,1 @@
+- Förbättra den timvisa bearbetningen av appanvändningsdata

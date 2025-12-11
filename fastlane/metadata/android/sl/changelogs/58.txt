@@ -1,0 +1,1 @@
+- Popravljene težave z uvozom podatkov za navade in naloge, da preprečimo izgubo podatkov in zagotovimo gladke posodobitve

@@ -1,0 +1,3 @@
+- Förbättrad app-prestanda med snabbare borttagning av dubbletter
+- Åtgärdade övergivna uppgifter orsakade av duplicerade poster
+- Bättre sortering av uppgifter efter varaktighet

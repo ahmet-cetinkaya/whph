@@ -1,1 +1,1 @@
-• Tamaños de icono uniformes en toda la aplicación.
+- Tamaños de icono uniformes en toda la aplicación.

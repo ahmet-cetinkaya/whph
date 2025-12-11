@@ -1,0 +1,6 @@
+- Lägg till saknade översättningar och förbättra strukturen
+- Förbättra användargränssnittet för pomodoro-timern
+- Förbättra uppdateringskontroll och nedladdning
+- Förbättra layout och responsivitet över komponenter
+- Förbättra layouten med responsiv design
+- Minska standard sidstorlek från 20 till 10

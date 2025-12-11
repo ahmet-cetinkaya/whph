@@ -1,0 +1,6 @@
+- Forbedret knap til afslutning af opgaver med status for underopgaver.
+- Standardiserede størrelser på dialogbokse.
+- Tilføjet en knap til planlægning af opgaver.
+- Tilføjet en mulighed for en mere kompakt visning for bedre overblik.
+- Implementeret en tjeneste til datamigrering.
+- Forbedret layout ved hjælp af Wrap-widget.

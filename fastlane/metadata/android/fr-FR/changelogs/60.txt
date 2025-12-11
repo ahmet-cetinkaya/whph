@@ -1,2 +1,2 @@
-• Amélioration de la fiabilité du démarrage de l'application avec une meilleure gestion des erreurs
-• Correction des problèmes de suivi des habitudes après les mises à jour de l'application
+- Amélioration de la fiabilité du démarrage de l'application avec une meilleure gestion des erreurs
+- Correction des problèmes de suivi des habitudes après les mises à jour de l'application

@@ -1,6 +1,6 @@
-• Ajout de la gestion des autorisations de démarrage automatique.
-• Ajout de la sélection automatique des tâches sur la page marathon.
-• Ajout d'un bouton pour la création rapide de tâches.
-• Ajout des paramètres de verrouillage et d'une fonctionnalité pour tout supprimer.
-• Amélioration du menu d'aide.
-• Le nom de l'application a été mis à jour en 'Work Hard Play Hard'.
+- Ajout de la gestion des autorisations de démarrage automatique.
+- Ajout de la sélection automatique des tâches sur la page marathon.
+- Ajout d'un bouton pour la création rapide de tâches.
+- Ajout des paramètres de verrouillage et d'une fonctionnalité pour tout supprimer.
+- Amélioration du menu d'aide.
+- Le nom de l'application a été mis à jour en 'Work Hard Play Hard'.

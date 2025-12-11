@@ -1,6 +1,0 @@
-• Aggiunta la gestione dei permessi di avvio automatico.
-• Aggiunta la selezione automatica delle attività nella pagina della maratona.
-• Aggiunto un pulsante per la creazione rapida di attività.
-• Aggiunte le impostazioni di blocco e una funzione per eliminare tutto.
-• Migliorato il menu di aiuto.
-• Il nome dell'app è stato aggiornato in 'Work Hard Play Hard'.

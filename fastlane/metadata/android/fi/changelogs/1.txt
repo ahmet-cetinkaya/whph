@@ -1,0 +1,2 @@
+- Parannettu sovelluspalkin asettelua paremman näkyvyyden saavuttamiseksi kaikilla laitteilla.
+- Lisätty uusi ohjeosio, joka auttaa sinua tehtävien, tunnisteiden, QR-koodien, synkronoinnin, tottumusten ja päivän yleiskatsauksen kanssa.

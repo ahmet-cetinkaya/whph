@@ -1,6 +1,0 @@
-• Konfiguriraj podpisovanje izdaje s shrambo ključev in posodobi build.gradle
-• Implementiraj namestitev APK prek MethodChannel in posodobi manifest za FileProvider
-• Integriraj prevajalsko storitev v različne komponente in dodaj datoteke za lokalizacijo
-• Integriraj prevajalsko storitev za komponente oznak
-• Integriraj prevajalsko storitev za komponente za sinhronizacijo
-• Integriraj prevajalsko storitev za komponente za nastavitve

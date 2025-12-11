@@ -1,0 +1,1 @@
+- Naprawiono problemy z importem danych dla nawyków i zadań, aby zapobiec utracie danych i zapewnić płynne aktualizacje

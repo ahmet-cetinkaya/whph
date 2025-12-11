@@ -1,0 +1,1 @@
+- Fjernet logik til opdatering af APK og relaterede tilladelser.

@@ -1,0 +1,1 @@
+- Logica voor het bijwerken van APK's en gerelateerde machtigingen verwijderd.

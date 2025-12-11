@@ -1,6 +1,0 @@
-• Adăugată opțiune pentru a afișa/ascunde sub-tareas în detaliile zilei pentru o organizare mai bună
-• Introducă filtrarea intervalului de date pentru timpii de finalizare pentru a analiza progresul tău
-• Adăugat filtrare pentru aplicații de sistem vs. aplicații de utilizator în urmărirea utilizării
-• Distincție între timpul estimat și timpul înregistrat manual pentru obiceiuri
-• Îmbunătățită înregistrarea timpului și integrarea cronometrului pentru obiceiuri și sarcini
-• Adăugate valori implicite pentru timpii estimați pentru planificarea mai ușoară a sarcinilor

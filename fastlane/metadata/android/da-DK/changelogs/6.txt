@@ -1,1 +1,0 @@
-• Tilføjet understøttelse af underopgaver og relationer mellem opgaver. Opdateret oversættelse og databaseskema.

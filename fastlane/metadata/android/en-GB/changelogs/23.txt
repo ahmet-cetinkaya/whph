@@ -1,3 +1,3 @@
-• Improved handling of tag colors.
-• Improved handling of tags when tracking app usage.
-• Improved centering of elements.
+- Improved handling of tag colors.
+- Improved handling of tags when tracking app usage.
+- Improved centering of elements.

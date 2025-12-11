@@ -1,1 +1,0 @@
-• Behoben ein Fehler, der dazu führen konnte, dass Aufgabendaten beim Aktualisieren der App verloren gehen.

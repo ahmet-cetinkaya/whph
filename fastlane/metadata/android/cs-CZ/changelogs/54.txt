@@ -1,6 +1,0 @@
-• Nová možnost filtru pro snadné zobrazení nebo skrytí dílčích úkolů pro lepší správu úkolů
-• Vylepšený export ladicích protokolů s plnou podporou jazyků pro plynulejší odstraňování problémů
-• Vylepšené ladicí protokoly se nyní zobrazují jako překryvné oznámení pro okamžitou zpětnou vazbu
-• Kompletní funkce exportu protokolů s lokalizací pro všechny podporované jazyky
-• Přidány překlady chyb pro ladicí protokoly ve všech jazycích pro zlepšení uživatelské zkušenosti
-• Zavedena pokročilá nastavení a komplexní funkce ladicích protokolů pro pokročilé uživatele

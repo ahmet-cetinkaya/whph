@@ -1,1 +1,0 @@
-• Parannettu virheenkäsittely ja kirjaaminen laitteen synkronoinnin aikana.

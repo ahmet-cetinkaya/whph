@@ -1,3 +1,0 @@
-• Statusbenachrichtigungen für den Export und Import von Daten hinzugefügt.
-• Verbesserte Datenabfrage, die jetzt auch gelöschte Notizen enthält.
-• Verbesserte Größe von Dialogfeldern für eine bessere Benutzererfahrung.

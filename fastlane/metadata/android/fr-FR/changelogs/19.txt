@@ -1,5 +1,5 @@
-• Ajout des traductions manquantes et amélioration de la structure.
-• Amélioration de l'interface utilisateur du minuteur Pomodoro.
-• Amélioration de la vérification et du téléchargement des mises à jour.
-• Amélioration de la mise en page et de la réactivité dans toute l'application.
-• Réduction de la taille de page par défaut pour de meilleures performances.
+- Ajout des traductions manquantes et amélioration de la structure.
+- Amélioration de l'interface utilisateur du minuteur Pomodoro.
+- Amélioration de la vérification et du téléchargement des mises à jour.
+- Amélioration de la mise en page et de la réactivité dans toute l'application.
+- Réduction de la taille de page par défaut pour de meilleures performances.

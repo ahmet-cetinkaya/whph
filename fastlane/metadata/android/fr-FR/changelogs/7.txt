@@ -1,1 +1,1 @@
-• Amélioration de la mise en page et de l'espacement dans la section « À propos ».
+- Amélioration de la mise en page et de l'espacement dans la section « À propos ».

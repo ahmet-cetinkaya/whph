@@ -1,2 +1,0 @@
-• Ulepszony układ paska aplikacji dla lepszego wyświetlania na wszystkich urządzeniach.
-• Dodano nową sekcję pomocy, która pomoże Ci w zadaniach, tagach, kodach QR, synchronizacji, nawykach i dzisiejszym przeglądzie.

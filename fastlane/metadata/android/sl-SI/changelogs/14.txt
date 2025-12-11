@@ -1,6 +1,0 @@
-• Poenostavi obravnavo seznama opravil in izboljšaj funkcionalnost filtra na strani s podrobnostmi o oznaki
-• Izboljšaj logiko osveževanja in dodaj funkcionalnost filtra oznak na današnji strani
-• Izboljšaj seznam opravil z izboljšano logiko osveževanja in podatkovnim modelom opravil
-• Prilagodi logiko filtriranja opravil na strani maratona
-• Zagotovi, da je kontekst nameščen, preden se prikaže navigator v spustnem meniju za izbiro oznake
-• Izboljšaj filtriranje seznama navad in logiko osveževanja

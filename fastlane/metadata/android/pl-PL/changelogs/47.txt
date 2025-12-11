@@ -1,4 +1,0 @@
-• Ulepszone metody okien dla KDE Wayland.
-• Dodano filtrowanie urządzeń do funkcji użycia aplikacji.
-• Wdrożono usługę katalogu aplikacji для różnych platform.
-• Usunięto dopełnienie z opisów.

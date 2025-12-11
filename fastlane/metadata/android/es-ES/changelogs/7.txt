@@ -1,1 +1,1 @@
-• Diseño y espaciado mejorados en la sección 'Acerca de'.
+- Diseño y espaciado mejorados en la sección 'Acerca de'.

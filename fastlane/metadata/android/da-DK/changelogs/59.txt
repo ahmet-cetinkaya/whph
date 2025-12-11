@@ -1,1 +1,0 @@
-• Rettet en fejl, der kunne forårsage tab af opgave data under app-opdatering.

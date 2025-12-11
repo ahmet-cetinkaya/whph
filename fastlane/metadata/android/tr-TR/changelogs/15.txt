@@ -1,6 +1,0 @@
-• Etiket yönetimini ve yerelleştirmeyi geliştirin
-• Cihaz senkronizasyon mesajları için yerelleştirmeyi güncelleyin
-• Ayarlar kullanıcı arayüzünü ve işlevselliğini geliştirin
-• Yerelleştirmeyi geliştirin ve not eylemlerini iyileştirin
-• Alışkanlık yönetimi özelliklerini ve kullanıcı arayüzünü geliştirin
-• Bugün sayfası liste seçeneklerini ve hata işlemeyi geliştirin

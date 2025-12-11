@@ -1,5 +1,0 @@
-• Risolto il problema per cui più istanze dell'app potevano essere eseguite simultaneamente
-• Migliorati gli indicatori dello stato di sincronizzazione e i messaggi di feedback
-• Risolti i problemi di visualizzazione con testo non inglese nell'app
-• Sincronizzazione migliorata per il monitoraggio dell'uso delle app e le abitudini
-• Miglioramenti delle prestazioni per una maggiore reattività dell'app

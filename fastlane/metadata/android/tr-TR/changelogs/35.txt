@@ -1,3 +1,0 @@
-• Destek iletişim kutusu mantığını ve ayarlarını geliştirin
-• Uygulama başlangıcında hata günlüğe kaydetmeyi iyileştirin
-• Ayarlar sayfasındaki düzen yapısını iyileştirin

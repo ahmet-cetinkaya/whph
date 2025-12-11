@@ -1,5 +1,0 @@
-• Îmbunătățiți conținutul ajutorului de sincronizare
-• Adăugați suport pentru o culoare de accent personalizată
-• Utilizați serviciul de teme pentru culoarea de accent în elementele interfeței de utilizare
-• Rezolvați eșecul de sincronizare bidirecțională care împiedică sincronizarea datelor demonstrative Linux cu Android
-• Adăugați o culoare de fundal la bara de aplicații în pagini

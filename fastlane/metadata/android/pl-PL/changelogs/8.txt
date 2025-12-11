@@ -1,1 +1,0 @@
-• Zaktualizuj nawigację po zadaniach, aby używać MaterialPageRoute i odświeżać podzadania po powrocie

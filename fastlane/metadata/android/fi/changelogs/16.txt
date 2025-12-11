@@ -1,0 +1,6 @@
+- Lisätty automaattisen käynnistyksen lupien hallinta.
+- Lisätty automaattinen tehtävän valinta maratonisivulla.
+- Lisätty painike nopeaan tehtävän luomiseen.
+- Lisätty lukitusasetukset ja ominaisuus kaiken poistamiseksi.
+- Parannettu ohjevalikko.
+- Sovelluksen nimi on päivitetty muotoon 'Work Hard Play Hard'.

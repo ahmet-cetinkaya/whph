@@ -1,0 +1,3 @@
+- Importazione dati migliorata per prevenire duplicati ed evitare la perdita delle modifiche
+- Aggiornamenti app migliorati per migrazioni più fluide e affidabili
+- Migliore stabilità e prestazioni con connessioni ottimizzate

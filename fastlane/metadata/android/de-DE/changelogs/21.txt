@@ -1,5 +1,0 @@
-• Verbessertes Aussehen des Suchfelds.
-• Verbesserte Benutzeroberfläche für eine bessere Erfahrung.
-• Einen Dienst zur Datenmigration mit Versionierung implementiert.
-• Eine Funktion hinzugefügt, die verhindert, dass das Telefon in den Ruhezustand wechselt, während der Pomodoro-Timer verwendet wird.
-• Verbesserte Logik für die Farbe der Fortschrittsanzeige im Pomodoro-Timer.

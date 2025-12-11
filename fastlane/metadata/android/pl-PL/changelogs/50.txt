@@ -1,5 +1,0 @@
-• Ulepszona pomoc dotycząca synchronizacji.
-• Dodano obsługę niestandardowego koloru akcentu.
-• Ulepszone użycie kolorów motywu w interfejsie użytkownika.
-• Naprawiono błąd w synchronizacji dwukierunkowej.
-• Dodano kolor tła do paska aplikacji.

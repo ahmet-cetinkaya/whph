@@ -1,2 +1,0 @@
-• Ulepszone szybkie dodawanie zadań z możliwością wyboru tagów.
-• Dodano sekcję ukończonych zadań, którą można rozwinąć.

@@ -1,6 +1,0 @@
-• Verbesserte App-Tournavigation, die Ihren Fortschritt speichert
-• Umfassende mehrseitige Tour mit hilfreichen Overlays hinzugefügt
-• Option zur Sprachauswahl beim Onboarding hinzugefügt
-• Verbesserte Ladezustände und reibungslosere Leistung in der gesamten App
-• Bessere Anzeige und Behandlung von Synchronisationsfehlern
-• Verbesserte Fehlermeldungen bei Synchronisierungsproblemen

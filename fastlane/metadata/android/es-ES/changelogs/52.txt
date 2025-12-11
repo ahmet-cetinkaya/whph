@@ -1,5 +1,5 @@
-• Se solucionó el problema donde múltiples instancias de la aplicación podían ejecutarse simultáneamente
-• Mejoraron los indicadores de estado de sincronización y mensajes de retroalimentación
-• Se solucionaron problemas de visualización con texto no inglés en la aplicación
-• Sincronización mejorada para seguimiento de uso de aplicaciones y hábitos
-• Mejoras de rendimiento para una respuesta más rápida de la aplicación
+- Se solucionó el problema donde múltiples instancias de la aplicación podían ejecutarse simultáneamente
+- Mejoraron los indicadores de estado de sincronización y mensajes de retroalimentación
+- Se solucionaron problemas de visualización con texto no inglés en la aplicación
+- Sincronización mejorada para seguimiento de uso de aplicaciones y hábitos
+- Mejoras de rendimiento para una respuesta más rápida de la aplicación

@@ -1,3 +1,0 @@
-• Verbeterde app-prestaties met snellere verwijdering van duplicaten
-• Opgeloste verweesde taken veroorzaakt door dubbele invoer
-• Betere sortering van taken op duur

@@ -1,5 +1,0 @@
-• Lägg till förloppsmeddelanden för export och import
-• Uppdatera appversionen i migreringstester
-• Ta bort metoden getInitialAppUsages
-• Förbättra getById-metoderna för att inkludera borttagna anteckningar
-• Uppdatera dialogstorleken till medium för bättre UX

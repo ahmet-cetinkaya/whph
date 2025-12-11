@@ -1,0 +1,6 @@
+- De mogelijkheid toegevoegd om de app met demogegevens uit te proberen.
+- Consistente opvulling in de hele app.
+- Verbeterde weergave van notities.
+- Herinneringen worden nu bijgewerkt wanneer de taal wordt gewijzigd.
+- Verbeterde dialoogvensters voor onboarding en ondersteuning.
+- Meldingen toegevoegd voor wijzigingen in gewoonterecords.

@@ -1,6 +1,0 @@
-• Tilføjet mulighed for at prøve appen med demodata.
-• Ensartet polstring i hele appen.
-• Forbedret visning af noter.
-• Påmindelser opdateres nu, når sproget ændres.
-• Forbedrede dialogbokse til onboarding og support.
-• Tilføjet meddelelser om ændringer i vaneregistreringer.

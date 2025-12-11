@@ -1,4 +1,0 @@
-• Parannetut ikkunamenetelmät KDE Waylandille.
-• Lisätty laitesuodatus sovellusten käyttöominaisuuksiin.
-• Toteutettu sovellushakemistopalvelu eri alustoille.
-• Poistettu täyttö kuvauksista.

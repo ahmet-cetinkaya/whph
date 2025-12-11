@@ -1,1 +1,0 @@
-• Fjernet ubrugt logik til kontrol af opdateringer.

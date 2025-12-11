@@ -1,0 +1,6 @@
+- Přidána podpora pro synchronizaci mezi mobilními zařízeními.
+- Přidán indikátor synchronizace.
+- Vylepšené uživatelské rozhraní pro skenování QR kódů.
+- Přidána podpora pro automatický režim motivu.
+- Integrována podpora dynamických barev.
+- Přidána podpora světlého režimu.

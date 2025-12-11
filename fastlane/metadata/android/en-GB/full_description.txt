@@ -1,16 +1,16 @@
 WHPH is a comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time. It tracks application usage to enhance focus, allowing you to analyze your progress, celebrate achievements, and stay motivated.
 Key Features:
-• Task Management: Organize and track your daily tasks efficiently
-• Habit Tracking: Build and maintain positive habits with progress monitoring
-• Time Optimization: Analyze your time usage patterns and improve productivity
-• Application Usage Tracking: Monitor how you spend time on different applications
-• Progress Analysis: View detailed insights into your productivity patterns
-• Achievement System: Celebrate milestones and stay motivated
+- Task Management: Organize and track your daily tasks efficiently
+- Habit Tracking: Build and maintain positive habits with progress monitoring
+- Time Optimization: Analyze your time usage patterns and improve productivity
+- Application Usage Tracking: Monitor how you spend time on different applications
+- Progress Analysis: View detailed insights into your productivity patterns
+- Achievement System: Celebrate milestones and stay motivated
 Why Choose WHPH?
 WHPH combines multiple productivity tools into one unified experience. Whether you're looking to manage your daily tasks, build better habits, or understand how you spend your time, WHPH provides the insights and tools you need to enhance your productivity and achieve your goals.
 The app is designed with privacy in mind - all your data stays on your device, giving you complete control over your personal productivity information.
 Supported Platforms:
-• Android
-• Windows
-• Linux
+- Android
+- Windows
+- Linux
 Start your journey to better productivity today with WHPH!

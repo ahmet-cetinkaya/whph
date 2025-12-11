@@ -1,1 +1,1 @@
-• Improved navigation between tasks and updating of sub-tasks.
+- Improved navigation between tasks and updating of sub-tasks.

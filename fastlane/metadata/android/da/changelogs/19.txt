@@ -1,0 +1,5 @@
+- Tilføjet manglende oversættelser og forbedret struktur.
+- Forbedret brugergrænseflade til Pomodoro-timeren.
+- Forbedret kontrol og download af opdateringer.
+- Forbedret layout og responsivitet i hele appen.
+- Reduceret standard sidestørrelse for bedre ydeevne.

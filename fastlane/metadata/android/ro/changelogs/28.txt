@@ -1,0 +1,2 @@
+- Adăugați Inno Setup pentru crearea programului de instalare Windows
+- Eliminați setarea implicită a dimensiunii ferestrei

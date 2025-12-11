@@ -1,3 +1,0 @@
-• Nowe ustawienia gęstości interfejsu: Dostosuj rozmiary tekstu i elementów interfejsu dla lepszej czytelności na ekranach wysokiej rozdzielczości
-• Ulepszona wydajność: Szybsze renderowanie listy zadań i zoptymalizowane częstotliwości odświeżania ekranu
-• Ulepszone doświadczenie użytkownika: Lepsze obliczenia dat i płynniejsze animacje

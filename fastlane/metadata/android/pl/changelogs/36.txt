@@ -1,0 +1,1 @@
+- Usunięto logikę aktualizacji pakietów APK i powiązane uprawnienia.

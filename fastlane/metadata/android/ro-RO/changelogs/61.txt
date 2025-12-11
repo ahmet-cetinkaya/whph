@@ -1,3 +1,0 @@
-• Import de date îmbunătățit pentru backup-uri mai sigure și recuperare după erori
-• Actualizări ale aplicației îmbunătățite cu migrare de date fiabilă și măsuri de protecție
-• Remediere a ordinii obiceiurilor în timpul actualizărilor pentru o organizare mai bună

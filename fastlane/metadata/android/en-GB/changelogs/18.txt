@@ -1,5 +1,5 @@
-• The app's name and description have been updated.
-• Improved permission handling.
-• Simplified layout structure on the settings page.
-• Improved responsiveness of dialog boxes.
-• Improved task completion and selection.
+- The app's name and description have been updated.
+- Improved permission handling.
+- Simplified layout structure on the settings page.
+- Improved responsiveness of dialog boxes.
+- Improved task completion and selection.

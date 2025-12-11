@@ -1,6 +1,0 @@
-• Implementeret brugssporing, der er kompatibel med Digital Wellbeing.
-• Tilføjet en klarere beskrivelse af brugen af dynamiske farver.
-• Indstillet mørkt tema som standard.
-• Fjernet indledende titler og tilføjet pladsholdere til input.
-• Forhindret UI-flimmer under kontrol af tilladelser og indlæsning af data.
-• Brugt temafarve til knappen 'Næste' under onboarding.

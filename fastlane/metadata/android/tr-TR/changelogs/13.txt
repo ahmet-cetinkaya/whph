@@ -1,6 +1,0 @@
-• Tamamlanan görevler filtre geçişini ekleyin ve görev listesi yeniden oluşturmayı geliştirin
-• Uygulama kullanımı etiket kurallarında seçimde etiket adını gösterin
-• Çoklu stratejiler ve hata işleme ile pencere algılamayı geliştirin
-• Ayrıntılarda isteğe bağlı alanlar için dinamik görünürlük uygulayın
-• Görev sıralaması ekleyin
-• Sayfa gezinmesi için solma geçişi uygulayın

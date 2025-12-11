@@ -1,6 +1,0 @@
-• Uusi suodatinvaihtoehto helposti näyttää tai piilottaa alitehtävät paremman tehtävänhallinnan vuoksi
-• Parannettu virheenkorjauslokien vienti täydellä kielituella sujuvampaa vianmääritystä varten
-• Parannetut virheenkorjauslokit näytetään nyt päällekkäisinä ilmoituksina välittömän palautteen saamiseksi
-• Täydellinen lokivientitoiminto lokalisoinnilla kaikille tuetuille kielille
-• Lisätty virhekäsitykset virheenkorjauslokeille jokaisella kielellä käyttäjäkokemuksen parantamiseksi
-• Esitelty edistyneet asetukset ja kattava virheenkorjauslokien toiminnallisuus edistyneille käyttäjille

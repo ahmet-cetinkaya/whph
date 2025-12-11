@@ -1,6 +1,0 @@
-• Gestionați evenimentele de finalizare a pornirii
-• Actualizați configurația de sortare implicită
-• Îmbunătățiți funcționalitatea de reordonare în dialogul de sortare
-• Adăugați umplutură la suprapunerile de stare goală
-• Actualizați logica de filtrare a datei
-• Actualizați metoda de redare pentru a include focalizarea audio

@@ -1,0 +1,1 @@
+- Rimossa la logica per l'aggiornamento degli APK e le autorizzazioni correlate.

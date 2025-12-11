@@ -1,0 +1,6 @@
+- Forbedret visning af tag-procenter.
+- Tilføjet en konfetti-animation, når en opgave eller vane er fuldført.
+- Forbedret sporing af vanestreaks og brugergrænseflade.
+- Forbedret planlægning af tid.
+- Forbedret layout af påmindelsesikon.
+- Tilføjet et tip til planlægningsknappen.

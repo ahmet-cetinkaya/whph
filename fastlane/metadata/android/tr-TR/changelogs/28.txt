@@ -1,2 +1,0 @@
-• Windows yükleyici oluşturma için Inno Setup ekleyin
-• Varsayılan pencere boyutu ayarını kaldırın

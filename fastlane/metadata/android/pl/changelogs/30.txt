@@ -1,0 +1,6 @@
+- Dodano możliwość wypróbowania aplikacji z danymi demonstracyjnymi.
+- Ujednolicone dopełnienie w całej aplikacji.
+- Ulepszone wyświetlanie notatek.
+- Przypomnienia są teraz aktualizowane po zmianie języka.
+- Ulepszone okna dialogowe wdrażania i pomocy technicznej.
+- Dodano powiadomienia o zmianach w zapisach nawyków.

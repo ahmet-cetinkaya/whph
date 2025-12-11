@@ -1,0 +1,6 @@
+- Migliorato il pulsante di completamento dell'attività con l'avanzamento delle sottoattività.
+- Standardizzate le dimensioni delle finestre di dialogo.
+- Aggiunto un pulsante per la pianificazione delle attività.
+- Aggiunta un'opzione per una visualizzazione più compatta per una migliore panoramica.
+- Implementato un servizio per la migrazione dei dati.
+- Migliorato il layout utilizzando il widget Wrap.

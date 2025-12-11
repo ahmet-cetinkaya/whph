@@ -1,1 +1,1 @@
-• 改进TaskDetailsPage中的任务删除回调处理
+- 改进TaskDetailsPage中的任务删除回调处理

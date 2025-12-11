@@ -1,0 +1,6 @@
+- Îmbunătățiți câmpul de căutare cu un stil îmbunătățit
+- Adăugați umplutură la opțiunile listei de sarcini
+- Actualizați dimensiunea și comportamentul dialogului pentru o experiență de utilizare mai bună
+- Implementați serviciul de migrare a datelor cu versionare semantică
+- Adăugați funcționalitatea de blocare a ecranului pentru cronometrul pomodoro
+- Actualizați logica culorii barei de progres în cronometrul pomodoro

@@ -1,0 +1,1 @@
+- Naprawiono błąd, który mógł powodować utratę danych zadań podczas aktualizacji aplikacji.

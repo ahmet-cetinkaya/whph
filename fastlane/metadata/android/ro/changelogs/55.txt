@@ -1,0 +1,3 @@
+- Performanță îmbunătățită a aplicației cu eliminare mai rapidă a duplicatelor
+- Corectate sarcinile orfane cauzate de intrări duplicate
+- Sortare mai bună a sarcinilor după durată

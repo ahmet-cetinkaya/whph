@@ -1,6 +1,6 @@
-• Amélioration du bouton d'achèvement des tâches avec la progression des sous-tâches.
-• Standardisation de la taille des boîtes de dialogue.
-• Ajout d'un bouton pour la planification des tâches.
-• Ajout d'une option pour une vue plus compacte pour une meilleure vue d'ensemble.
-• Implémentation d'un service de migration de données.
-• Amélioration de la mise en page à l'aide du widget Wrap.
+- Amélioration du bouton d'achèvement des tâches avec la progression des sous-tâches.
+- Standardisation de la taille des boîtes de dialogue.
+- Ajout d'un bouton pour la planification des tâches.
+- Ajout d'une option pour une vue plus compacte pour une meilleure vue d'ensemble.
+- Implémentation d'un service de migration de données.
+- Amélioration de la mise en page à l'aide du widget Wrap.

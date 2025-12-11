@@ -1,0 +1,1 @@
+- Förbättra hanteringen av återanrop för borttagning av uppgifter i TaskDetailsPage

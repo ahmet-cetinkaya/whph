@@ -1,6 +1,0 @@
-• Gün detaylarında alt görevleri göster/gizle seçeneği eklendi, daha iyi organizasyon için
-• İlerlemenizi analiz etmek için tamamlanma süreleri için tarih aralığı filtrelemesi getirildi
-• Kullanım izlemede sistem vs. kullanıcı uygulamaları için filtreleme eklendi
-• Alışkanlıklar için tahmini ve manuel kaydedilen süre arasındaki ayrım
-• Alışkanlıklar ve görevler için zaman kaydı ve zamanlayıcı entegrasyonu iyileştirildi
-• Görev planlamasını kolaylaştırmak için tahmini süreler için varsayılan değerler eklendi

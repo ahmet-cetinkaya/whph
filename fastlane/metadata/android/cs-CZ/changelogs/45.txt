@@ -1,4 +1,0 @@
-• Přidáno přesné sledování využití aplikací v popředí pro Android.
-• Optimalizované logo aplikace.
-• Vylepšená vizuální hustota tlačítek.
-• Přidána zvuková zpětná vazba při vytváření záznamu.

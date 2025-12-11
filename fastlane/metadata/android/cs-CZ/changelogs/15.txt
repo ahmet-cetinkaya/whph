@@ -1,5 +1,0 @@
-• Vylepšená správa štítků a překlady.
-• Vylepšené zprávy při synchronizaci zařízení.
-• Vylepšené uživatelské rozhraní a funkce nastavení.
-• Vylepšené akce s poznámkami.
-• Vylepšená správa zvyků.

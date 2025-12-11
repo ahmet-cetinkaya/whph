@@ -1,3 +1,0 @@
-• Parannettu tunnisteiden värien käsittely.
-• Parannettu tunnisteiden käsittely sovellusten käytön seurannassa.
-• Parannettu elementtien keskitys.

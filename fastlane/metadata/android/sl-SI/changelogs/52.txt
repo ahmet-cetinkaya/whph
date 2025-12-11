@@ -1,5 +1,0 @@
-• Odpravljena težava, pri kateri je lahko hkrati delovalo več primerkov aplikacije
-• Izboljšani kazalniki stanja sinhronizacije in sporočila povratnih informacij
-• Odpravljene težave prikaza z ne-angleškim besedilom v aplikaciji
-• Izboljšana sinhronizacija za sledenje uporabe aplikacij in navade
-• Izboljšave zmogljivosti za hitrejši odziv aplikacije

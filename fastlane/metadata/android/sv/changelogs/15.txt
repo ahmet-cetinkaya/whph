@@ -1,0 +1,6 @@
+- Förbättra tagghantering och lokalisering
+- Uppdatera lokalisering för synkroniseringsmeddelanden för enheter
+- Förbättra inställningarnas användargränssnitt och funktionalitet
+- Förbättra lokalisering och anteckningsåtgärder
+- Förbättra funktioner för vanehantering och användargränssnitt
+- Förbättra listalternativen på dagens sida och felhantering

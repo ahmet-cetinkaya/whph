@@ -1,5 +1,0 @@
-• Lisätty lajitteluvaihtoehtoja tunnisteiden valintaan.
-• Parannettu alitehtävien lisääminen.
-• Lisätty kenttä ylätason tehtävälle tehtävän tiedoissa.
-• Parannettu ilmoitusten käsittely.
-• Parannettu muistutuspalvelu Androidille käännöstuella.

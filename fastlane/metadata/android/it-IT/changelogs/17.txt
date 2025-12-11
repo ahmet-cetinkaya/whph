@@ -1,3 +1,0 @@
-• Le notifiche vengono ora visualizzate in sovrapposizioni anziché in snackbar.
-• Aggiunta una notifica di caricamento con una barra di avanzamento.
-• Migliorata la preparazione dei dati e la registrazione per la sincronizzazione.

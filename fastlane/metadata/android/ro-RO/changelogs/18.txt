@@ -1,6 +1,0 @@
-• Actualizați numele și descrierea aplicației
-• Îmbunătățiți gestionarea permisiunilor
-• Simplificați structura aspectului în pagina de setări
-• Actualizați dimensiunile dialogurilor pentru o mai bună receptivitate
-• Ajustați umplutura și înălțimea pentru un aspect mai bun
-• Îmbunătățiți gestionarea finalizării și selectării sarcinilor

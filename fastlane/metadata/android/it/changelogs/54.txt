@@ -1,0 +1,6 @@
+- Nuova opzione filtro per mostrare o nascondere facilmente le sottocompiti per una migliore gestione delle attività
+- Esportazione migliorata dei log di debug con supporto completo delle lingue per una risoluzione dei problemi più fluida
+- I log di debug migliorati ora vengono visualizzati come notifiche sovrapposte per un feedback istantaneo
+- Funzione completa di esportazione dei log con localizzazione per tutte le lingue supportate
+- Aggiunte traduzioni degli errori per i log di debug in ogni lingua per migliorare l'esperienza utente
+- Introdotte impostazioni avanzate e funzionalità complete dei log di debug per utenti esperti

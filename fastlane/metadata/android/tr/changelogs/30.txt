@@ -1,0 +1,8 @@
+- Demo veri hizmeti ve yapılandırması uygulayın
+- Kullanıcı arayüzü bileşenleri arasında dolguyu standartlaştırın
+- Yinelenenleri önlemek için etiket öğelerini birleştirin
+- Not içeriği görüntüleme mantığını basitleştirin
+- Dil değişikliğinde hatırlatıcıları yenileyin
+- İşe alım ve destek iletişim kutusu işlemeyi iyileştirin
+- Üst görev isteğe bağlı özellik çipini kaldırın
+- Alışkanlık kaydı değişiklikleri için bildirimler ekleyin

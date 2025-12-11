@@ -1,5 +1,0 @@
-• Aktualizován název a popis aplikace.
-• Vylepšené zpracování oprávnění.
-• Zjednodušená struktura rozvržení na stránce nastavení.
-• Vylepšená responzivita dialogových oken.
-• Vylepšené dokončování a výběr úkolů.

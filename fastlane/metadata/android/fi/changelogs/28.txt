@@ -1,0 +1,2 @@
+- Lisätty tuki Windows-asennusohjelman luomiselle.
+- Poistettu oletusikkunan kokoasetus.

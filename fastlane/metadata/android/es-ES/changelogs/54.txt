@@ -1,6 +1,6 @@
-• Nueva opción de filtro para mostrar u ocultar fácilmente subtareas para una mejor gestión de tareas
-• Exportación mejorada de registros de depuración con soporte completo de idioma para una resolución de problemas más fluida
-• Los registros de depuración mejorados ahora se muestran como notificaciones superpuestas para retroalimentación instantánea
-• Función completa de exportación de registros con localización para todos los idiomas admitidos
-• Agregadas traducciones de errores para registros de depuración en todos los idiomas para mejorar la experiencia del usuario
-• Introducidas configuraciones avanzadas y funcionalidad completa de registros de depuración para usuarios avanzados
+- Nueva opción de filtro para mostrar u ocultar fácilmente subtareas para una mejor gestión de tareas
+- Exportación mejorada de registros de depuración con soporte completo de idioma para una resolución de problemas más fluida
+- Los registros de depuración mejorados ahora se muestran como notificaciones superpuestas para retroalimentación instantánea
+- Función completa de exportación de registros con localización para todos los idiomas admitidos
+- Agregadas traducciones de errores para registros de depuración en todos los idiomas para mejorar la experiencia del usuario
+- Introducidas configuraciones avanzadas y funcionalidad completa de registros de depuración para usuarios avanzados

@@ -1,0 +1,3 @@
+- Parannettu tietojen tuonti turvallisempien varmuuskopioiden ja virheiden palautuksen varalle
+- Parannetut sovelluspäivitykset luotettavalla tietojen siirrolla ja turvatoimilla
+- Korjattu tapojen järjestys päivitysten aikana paremman organisoinnin takaamiseksi

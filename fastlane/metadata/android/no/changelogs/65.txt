@@ -1,0 +1,5 @@
+- Estimert tid for oppgaver er nå valgfritt - du kan la det stå tomt uten at det settes til null
+- Lagt til mulighet for å sette standard estimert tid for nye oppgaver i innstillinger
+- Forbedret Windows-brannmurhåndtering for bedre appfunksjonalitet og deteksjon
+- Forbedret tidssporing med vaner og etiketter for bedre innsikt
+- Diverse ytelsesforbedringer og feilrettinger

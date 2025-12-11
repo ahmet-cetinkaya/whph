@@ -1,6 +1,0 @@
-• İçe/dışa aktarma işlevselliği ekleyin ve yerelleştirmeyi güncelleyin
-• Çeşitli bileşenlerde etiketleri getirmek için sayfalama uygulayın
-• Cihaz kimliği hizmetini uygulayın ve senkronizasyon cihazı modelini güncelleyin
-• Bildirim ayar kartına dokunma işlevi ekleyin
-• İngilizce ve Türkçe olarak 'Alışkanlık Ekle' araç ipucu çevirisi ekleyin
-• Desen etiketi çevirisini güncelleyin ve kural listelerine boşluk ekleyin

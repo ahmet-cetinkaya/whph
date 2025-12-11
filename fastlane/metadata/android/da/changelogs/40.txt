@@ -1,0 +1,6 @@
+- Forbedret synkronisering med mobile platforme.
+- Forbedret logning og konflikthåndtering.
+- Tilføjet en funktion til at søge efter opdateringer.
+- Forbedret listevisning med separatorer.
+- Forbedret fejllogning ved import og eksport.
+- Forbedret pagineringslogik i listen over app-brug.

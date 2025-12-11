@@ -1,3 +1,0 @@
-• Forbedrede forespørgsler til at ignorere arkiverede tags.
-• Fjernet unødvendig beregning af deadline.
-• Forbedret datofiltrering på dagens side.

@@ -1,3 +1,0 @@
-• Daha güvenli yedeklemeler ve hata kurtarma için veri içe aktarma geliştirildi
-• Güvenilir veri tabanı güncelleme ve koruma önlemleriyle uygulama güncellemeleri geliştirildi
-• Güncellemeler sırasında alışkanlık sıralaması düzeltildi, daha iyi organizasyon için

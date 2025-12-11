@@ -1,0 +1,6 @@
+- Alt görevleri kolayca göstermek veya gizlemek için yeni filtre seçeneği, daha iyi görev yönetimi için
+- Daha akıcı sorun giderme için tam dil desteğiyle geliştirilmiş hata ayıklama günlüğü dışa aktarımı
+- Geliştirilmiş hata ayıklama günlükleri artık anında geri bildirim için kaplama bildirimleri olarak görüntüleniyor
+- Tüm desteklenen diller için yerelleştirme ile tam günlük dışa aktarma işlevi
+- Kullanıcı deneyimini geliştirmek için her dilde hata ayıklama günlükleri için hata çevirileri eklendi
+- Gelişmiş kullanıcılar için gelişmiş ayarlar ve kapsamlı hata ayıklama günlüğü işlevselliği tanıtıldı

@@ -1,0 +1,3 @@
+- Verbeterde data-import voor veiligere back-ups en foutherstel
+- Verbeterde app-updates met betrouwbare data-migratie en veiligheidsmaatregelen
+- Gefixeerde gewoontevolgorde tijdens updates voor betere organisatie

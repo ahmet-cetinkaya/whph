@@ -1,0 +1,5 @@
+- Aggiunta una funzione per importare ed esportare dati.
+- Migliorato il caricamento dei tag.
+- Migliorata la sincronizzazione dei dispositivi.
+- Aggiunta una funzione di tocco alla scheda delle impostazioni di notifica.
+- Aggiunte traduzioni per il suggerimento "Aggiungi abitudine".

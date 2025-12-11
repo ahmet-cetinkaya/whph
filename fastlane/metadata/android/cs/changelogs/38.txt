@@ -1,0 +1,1 @@
+- Odebrána nepoužívaná logika pro kontrolu aktualizací.

@@ -1,1 +1,1 @@
-• Enhance tour overlay with translation support and improved layout
+- Enhance tour overlay with translation support and improved layout

@@ -1,2 +1,0 @@
-• Přidána podpora pro dílčí úkoly a vztahy mezi úkoly.
-• Aktualizována lokalizace a schéma databáze.

@@ -1,0 +1,5 @@
+- Dodaj sporočila o napredku izvoza in uvoza
+- Posodobi različico aplikacije v testih selitve
+- Odstrani metodo getInitialAppUsages
+- Izboljšaj metode getById, da vključujejo izbrisane opombe
+- Posodobi velikost pogovornega okna na srednjo za boljšo uporabniško izkušnjo

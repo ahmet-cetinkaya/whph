@@ -1,0 +1,4 @@
+- Lisätty vihjeitä Päivitä- ja Ohje-painikkeille.
+- Parannettu asettelu Tietoja-osiossa.
+- Parannettu valintaikkuna sovelluksen päivittämistä varten.
+- Parannettu otsikon näyttö ohjevalikossa.

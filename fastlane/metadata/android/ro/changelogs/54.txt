@@ -1,0 +1,6 @@
+- Nouă opțiune de filtru pentru a afișa sau ascunde ușor subtaskurile pentru o mai bună gestionare a sarcinilor
+- Export îmbunătățit al jurnalelor de depanare cu suport complet de limbă pentru o rezolvare mai fluidă a problemelor
+- Jurnalele de depanare îmbunătățite se afișează acum ca notificări suprapuse pentru feedback instant
+- Funcție completă de export al jurnalelor cu localizare pentru toate limbile suportate
+- Adăugate traduceri de erori pentru jurnalele de depanare în fiecare limbă pentru a îmbunătăți experiența utilizatorului
+- Introduse setări avansate și funcționalitate completă a jurnalelor de depanare pentru utilizatori avansați

@@ -1,0 +1,3 @@
+- Notifikationer vises nu i overlays i stedet for snackbars.
+- Tilføjet en indlæsningsmeddelelse med en statuslinje.
+- Forbedret dataforberedelse og logning til synkronisering.

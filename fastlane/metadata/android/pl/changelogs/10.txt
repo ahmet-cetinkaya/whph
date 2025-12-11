@@ -1,0 +1,5 @@
+- Możesz teraz ukryć panel boczny.
+- Ulepszone usuwanie zadań.
+- Uproszczony widok zadań w szczegółach tagu.
+- Dodano tłumaczenie dla sytuacji, gdy żadne aplikacje nie są używane.
+- Naprawiono błąd w logice aktualizacji czasu trwania zadania.

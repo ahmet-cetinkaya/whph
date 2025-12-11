@@ -1,0 +1,5 @@
+- Vylepšené zpracování událostí po restartu zařízení.
+- Aktualizovaná výchozí konfigurace třídění.
+- Vylepšená funkce změny pořadí v dialogu pro třídění.
+- Vylepšené filtrování podle data.
+- Vylepšené přehrávání zvuku.

@@ -1,2 +1,0 @@
-• Parannettu tehtävien nopea lisääminen mahdollisuudella valita tunnisteita.
-• Lisätty osio suoritetuille tehtäville, jota voidaan laajentaa.

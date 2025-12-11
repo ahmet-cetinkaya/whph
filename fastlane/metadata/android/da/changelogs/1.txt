@@ -1,0 +1,2 @@
+- Forbedret app-bar-layout for bedre visning på alle enheder.
+- Tilføjet en ny hjælpesektion, der hjælper dig med opgaver, tags, QR-koder, synkronisering, vaner og dagsoversigten.

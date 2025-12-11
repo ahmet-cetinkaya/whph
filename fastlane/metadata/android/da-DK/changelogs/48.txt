@@ -1,6 +1,0 @@
-• Tilføjet understøttelse af synkronisering mellem mobile enheder.
-• Tilføjet en synkroniseringsindikator.
-• Forbedret brugergrænseflade til scanning af QR-koder.
-• Tilføjet understøttelse af automatisk tema.
-• Integreret understøttelse af dynamiske farver.
-• Tilføjet understøttelse af lystilstand.

@@ -1,0 +1,5 @@
+- Tilføjet sorteringsmuligheder til valg af tags.
+- Forbedret tilføjelse af underopgaver.
+- Tilføjet et felt til den overordnede opgave i opgavedetaljer.
+- Forbedret håndtering af meddelelser.
+- Forbedret påmindelsestjeneste til Android med understøttelse af oversættelse.

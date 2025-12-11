@@ -1,0 +1,1 @@
+- Ulepszone usuwanie zadań ze strony szczegółów zadania.

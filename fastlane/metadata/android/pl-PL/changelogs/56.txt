@@ -1,8 +1,0 @@
-Superładowaliśmy naszą synchronizację, aby ułatwić i uczynić bardziej niezawodnym utrzymywanie nawyków, zadań i notatek w idealnej harmonii na wszystkich urządzeniach!
-
-• Jasne przewodniki w aplikacji i proste ręczne ustawienie do bezproblemowego połączenia telefonu i komputera.
-• Silniejsze zabezpieczenia i płynniejsze obsługa podczas synchronizacji z wieloma urządzeniami.
-• Aktualizacje stanu w czasie rzeczywistym bezpośrednio w aplikacji, dzięki czemu zawsze wiesz, kiedy Twoje dane płyną.
-• Szybsza synchronizacja poprzez dzielenie danych na małe porcje dla szybszych i bezproblemowych transferów.
-• Prawdziwa dwukierunkowa synchronizacja działająca w tle, utrzymująca wszystko na bieżąco bez spowalniania.
-• Bezproblemowa obsługa dużych sesji synchronizacji od początku do końca na komputerze.
