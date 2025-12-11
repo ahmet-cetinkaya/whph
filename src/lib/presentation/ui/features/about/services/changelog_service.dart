@@ -22,6 +22,7 @@ class ChangelogService implements IChangelogService {
     'ja': 'ja-JP',
     'ko': 'ko-KR',
     'nl': 'nl-NL',
+    'no': 'nb-NO',
     'pl': 'pl-PL',
     'ro': 'ro-RO',
     'ru': 'ru-RU',
@@ -70,14 +71,14 @@ class ChangelogService implements IChangelogService {
       ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode != 200) {
-        Logger.debug('Failed to fetch changelog from $url: HTTP ${response.statusCode}');
+        Logger.warning('Failed to fetch changelog from $url: HTTP ${response.statusCode}');
         return null;
       }
 
       Logger.debug('Loaded changelog from $url');
       return response.body.trim();
     } catch (e) {
-      Logger.debug('Failed to fetch changelog from $url: $e');
+      Logger.warning('Failed to fetch changelog from $url: $e');
       return null;
     }
   }

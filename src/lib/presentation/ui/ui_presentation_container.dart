@@ -67,7 +67,8 @@ void registerUIPresentation(IContainer container) {
     (_) {
       final mediator = container.resolve<Mediator>();
       final changelogService = container.resolve<IChangelogService>();
-      return ChangelogDialogService(mediator, changelogService);
+      final translationService = container.resolve<ITranslationService>();
+      return ChangelogDialogService(mediator, changelogService, translationService);
     },
   );
   container.registerSingleton<ReminderService>((_) => ReminderService(

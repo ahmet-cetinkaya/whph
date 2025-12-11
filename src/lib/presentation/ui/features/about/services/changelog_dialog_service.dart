@@ -10,14 +10,16 @@ import 'package:whph/presentation/ui/features/about/components/changelog_dialog.
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:acore/acore.dart';
 
 /// Service to manage changelog dialog display logic
 class ChangelogDialogService implements IChangelogDialogService {
   final Mediator _mediator;
   final IChangelogService _changelogService;
+  final ITranslationService _translationService;
 
-  ChangelogDialogService(this._mediator, this._changelogService);
+  ChangelogDialogService(this._mediator, this._changelogService, this._translationService);
 
   @override
   Future<void> checkAndShowChangelogDialog(BuildContext context) async {
@@ -54,7 +56,10 @@ class ChangelogDialogService implements IChangelogDialogService {
       if (context.mounted) {
         await ResponsiveDialogHelper.showResponsiveDialog(
           context: context,
-          child: ChangelogDialog(changelogEntry: changelogEntry),
+          child: ChangelogDialog(
+            changelogEntry: changelogEntry,
+            translationService: _translationService,
+          ),
           size: DialogSize.medium,
         );
       }
@@ -66,7 +71,9 @@ class ChangelogDialogService implements IChangelogDialogService {
       // Still try to save the version to avoid showing broken dialog repeatedly
       try {
         await _saveLastShownVersion(AppInfo.version);
-      } catch (_) {}
+      } catch (e) {
+        Logger.error('Failed to save last shown changelog version after error: $e');
+      }
     }
   }
 
@@ -76,7 +83,8 @@ class ChangelogDialogService implements IChangelogDialogService {
         GetSettingQuery(key: SettingKeys.lastShownChangelogVersion),
       );
       return response.getValue<String>();
-    } catch (_) {
+    } catch (e) {
+      Logger.error('Failed to get last shown changelog version: $e');
       return null;
     }
   }

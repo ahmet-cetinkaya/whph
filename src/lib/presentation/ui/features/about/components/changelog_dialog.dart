@@ -3,7 +3,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/shared/utils/logger.dart';
-import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -12,20 +11,20 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 /// Dialog that displays the changelog for a new version
 class ChangelogDialog extends StatelessWidget {
   final ChangelogEntry changelogEntry;
+  final ITranslationService translationService;
 
-  ChangelogDialog({
+  const ChangelogDialog({
     super.key,
     required this.changelogEntry,
+    required this.translationService,
   });
-
-  final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _translationService.translate(AboutTranslationKeys.changelogTitle),
+          translationService.translate(AboutTranslationKeys.changelogTitle),
           style: AppTheme.headlineSmall,
         ),
         automaticallyImplyLeading: false,
@@ -33,7 +32,7 @@ class ChangelogDialog extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              _translationService.translate(AboutTranslationKeys.changelogCloseButton),
+              translationService.translate(AboutTranslationKeys.changelogCloseButton),
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
@@ -64,7 +63,7 @@ class ChangelogDialog extends StatelessWidget {
 
               // Version
               Text(
-                _translationService.translate(
+                translationService.translate(
                   AboutTranslationKeys.version,
                   namedArgs: {'version': changelogEntry.version},
                 ),
