@@ -81,7 +81,7 @@ class ChangelogService implements IChangelogService {
       Logger.debug('Loaded changelog from $url');
       return response.body.trim();
     } catch (e) {
-      Logger.debug('Failed to fetch changelog from $url: $e');
+      Logger.warning('Failed to fetch changelog from $url: $e');
       return null;
     }
   }
