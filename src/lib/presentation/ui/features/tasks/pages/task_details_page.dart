@@ -8,7 +8,7 @@ import 'package:whph/presentation/ui/features/tasks/components/task_add_button.d
 import 'package:whph/presentation/ui/features/tasks/components/task_delete_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_details_content.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_details_content/task_details_content.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
