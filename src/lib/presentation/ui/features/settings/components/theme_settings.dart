@@ -9,7 +9,7 @@ import 'package:whph/presentation/ui/shared/components/color_picker/color_picker
 
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
