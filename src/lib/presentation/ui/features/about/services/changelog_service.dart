@@ -38,10 +38,31 @@ class ChangelogService implements IChangelogService {
 
   static const String _fallbackLocale = 'en-US';
 
+  /// Simple in-memory cache to prevent repeated network calls
+  static final Map<String, String?> _cache = {};
+
   @override
   Future<ChangelogEntry?> fetchChangelog(String localeCode) async {
     final buildNumber = AppInfo.buildNumber;
     final fastlaneLocale = _localeMapping[localeCode] ?? _fallbackLocale;
+
+    // Create cache key
+    final cacheKey = '${fastlaneLocale}_$buildNumber';
+
+    // Check cache first
+    if (_cache.containsKey(cacheKey)) {
+      Logger.debug('Using cached changelog for $fastlaneLocale v$buildNumber');
+      final cachedContent = _cache[cacheKey];
+      if (cachedContent != null) {
+        return ChangelogEntry(
+          version: AppInfo.version,
+          content: cachedContent,
+        );
+      }
+      // If cached content is null, it means we already tried and failed
+      Logger.debug('Changelog not found (cached) for build $buildNumber');
+      return null;
+    }
 
     // Try locale-specific changelog first
     var content = await _fetchChangelogFromGitHub(fastlaneLocale, buildNumber);
@@ -51,6 +72,9 @@ class ChangelogService implements IChangelogService {
       Logger.debug('Changelog not found for $fastlaneLocale, falling back to $_fallbackLocale');
       content = await _fetchChangelogFromGitHub(_fallbackLocale, buildNumber);
     }
+
+    // Cache the result (null if not found)
+    _cache[cacheKey] = content;
 
     if (content == null) {
       Logger.debug('No changelog found for build $buildNumber');

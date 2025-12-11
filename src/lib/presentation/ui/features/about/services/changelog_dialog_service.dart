@@ -31,7 +31,7 @@ class ChangelogDialogService implements IChangelogDialogService {
       final currentVersion = AppInfo.version;
 
       // Don't show if this version was already shown
-      if (lastShownVersion == currentVersion) {
+      if (getCoreVersion(lastShownVersion) == getCoreVersion(currentVersion)) {
         Logger.debug('Changelog already shown for version $currentVersion');
         return;
       }
@@ -95,5 +95,12 @@ class ChangelogDialogService implements IChangelogDialogService {
       value: version,
       valueType: SettingValueType.string,
     ));
+  }
+
+  /// Extracts the core version number without build metadata
+  /// Example: "0.18.0+65" -> "0.18.0"
+  String getCoreVersion(String? fullVersion) {
+    if (fullVersion == null || fullVersion.isEmpty) return '';
+    return fullVersion.split('+')[0];
   }
 }
