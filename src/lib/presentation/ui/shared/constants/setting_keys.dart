@@ -61,4 +61,7 @@ class SettingKeys {
 
   // Task Settings
   static const String taskDefaultEstimatedTime = "TASK_DEFAULT_ESTIMATED_TIME";
+
+  // Changelog Settings
+  static const String lastShownChangelogVersion = 'LAST_SHOWN_CHANGELOG_VERSION';
 }

@@ -35,3 +35,7 @@ about:
       next: "Avanti"
       back: "Indietro"
       start: "Inizia"
+  changelog:
+    title: "Novità"
+    close_button: "Capito!"
+    fetch_error: "Impossibile recuperare il changelog"

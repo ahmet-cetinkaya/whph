@@ -70,6 +70,8 @@ sed -i "s/^version:.*/version: $NEW_VERSION+$NEW_BUILD/" "$PUBSPEC_FILE"
 # Update app_info.dart
 echo "Updating $APP_INFO_FILE..."
 sed -i "s/static const String version = \".*\";/static const String version = \"$NEW_VERSION\";/" "$APP_INFO_FILE"
+echo "Updating build number in $APP_INFO_FILE..."
+sed -i "s/static const String buildNumber = \".*\";/static const String buildNumber = \"$NEW_BUILD\";/" "$APP_INFO_FILE"
 
 # Update installer.iss
 echo "Updating $INSTALLER_FILE..."

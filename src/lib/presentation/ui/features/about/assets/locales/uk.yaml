@@ -35,3 +35,7 @@ about:
       next: "Далі"
       back: "Назад"
       start: "Почати"
+  changelog:
+    title: "Що нового"
+    close_button: "Зрозуміло!"
+    fetch_error: "Не вдалося отримати список змін"

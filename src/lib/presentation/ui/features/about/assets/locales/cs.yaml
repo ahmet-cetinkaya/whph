@@ -35,3 +35,7 @@ about:
       next: "Další"
       back: "Zpět"
       start: "Začít"
+  changelog:
+    title: "Co je nového"
+    close_button: "Rozumím!"
+    fetch_error: "Nepodařilo se načíst seznam změn"

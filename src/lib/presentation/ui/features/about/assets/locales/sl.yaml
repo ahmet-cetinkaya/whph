@@ -34,3 +34,7 @@ about:
       next: "Naprej"
       back: "Nazaj"
       start: "Začni"
+  changelog:
+    title: "Kaj je novega"
+    close_button: "Razumem!"
+    fetch_error: "Dnevnika sprememb ni bilo mogoče pridobiti"

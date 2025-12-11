@@ -25,6 +25,10 @@ import 'package:whph/infrastructure/windows/features/audio/windows_audio_player.
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/support_dialog_service.dart';
+import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
+import 'package:whph/presentation/ui/features/about/services/changelog_service.dart';
+import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
+import 'package:whph/presentation/ui/features/about/services/changelog_dialog_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/main.dart' show navigatorKey;
 
@@ -54,6 +58,16 @@ void registerUIPresentation(IContainer container) {
     (_) {
       final mediator = container.resolve<Mediator>();
       return SupportDialogService(mediator);
+    },
+  );
+  container.registerSingleton<IChangelogService>(
+    (_) => ChangelogService(),
+  );
+  container.registerSingleton<IChangelogDialogService>(
+    (_) {
+      final mediator = container.resolve<Mediator>();
+      final changelogService = container.resolve<IChangelogService>();
+      return ChangelogDialogService(mediator, changelogService);
     },
   );
   container.registerSingleton<ReminderService>((_) => ReminderService(

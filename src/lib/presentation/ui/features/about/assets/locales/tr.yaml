@@ -35,3 +35,7 @@ about:
       next: "İleri"
       back: "Geri"
       start: "Başlayın"
+  changelog:
+    title: "Yenilikler"
+    close_button: "Anladım!"
+    fetch_error: "Değişiklik günlüğü alınamadı"

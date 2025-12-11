@@ -35,3 +35,7 @@ about:
       next: "Siguiente"
       back: "Atrás"
       start: "Comenzar"
+  changelog:
+    title: "Novedades"
+    close_button: "¡Entendido!"
+    fetch_error: "No se pudo obtener el registro de cambios"

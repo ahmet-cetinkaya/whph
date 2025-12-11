@@ -34,3 +34,7 @@ about:
       next: "Nästa"
       back: "Tillbaka"
       start: "Kom igång"
+  changelog:
+    title: "Nyheter"
+    close_button: "Förstått!"
+    fetch_error: "Kunde inte hämta ändringsloggen"

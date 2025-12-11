@@ -35,3 +35,7 @@ about:
       next: "Next"
       back: "Back"
       start: "Get Started"
+  changelog:
+    title: "What's New"
+    close_button: "Got it!"
+    fetch_error: "Couldn't fetch changelog"

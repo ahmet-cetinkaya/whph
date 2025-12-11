@@ -35,3 +35,7 @@ about:
       next: "Далее"
       back: "Назад"
       start: "Начать"
+  changelog:
+    title: "Что нового"
+    close_button: "Понятно!"
+    fetch_error: "Не удалось загрузить список изменений"
