@@ -19,9 +19,6 @@ tasks:
       tomorrow: Mañana
       weekend: Fin de semana
       next_weekday: Próximo día laboral
-  date_selection:
-    deadline_date_title: Seleccionar fecha límite
-    planned_date_title: Seleccionar fecha planificada
   delete:
     error: Error inesperado al eliminar la tarea.
     message: ¿Estás seguro de que quieres eliminar esta tarea?
@@ -425,6 +422,9 @@ tasks:
     weekly: Semanal
     yearSuffix: año(s)
     yearly: Anual
+    weeks_plural: semanas
+    months_plural: meses
+    years_plural: años
   reminder:
     atTime: A la hora programada
     deadlineReminderLabel: Recordatorio de fecha límite
@@ -438,6 +438,8 @@ tasks:
     custom: Personalizado
     custom_title: Recordatorio personalizado
     before_suffix: antes
+    time: Hora
+    unit: Unidad
   task_details: Detalles de la tarea
   title: Tareas
   tooltips:

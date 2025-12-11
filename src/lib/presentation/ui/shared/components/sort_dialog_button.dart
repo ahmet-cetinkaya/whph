@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show PlatformUtils, SortDirection;
+import 'package:acore/acore.dart' show SortDirection;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class SortDialogButton<T> extends StatefulWidget {
   final Color? iconColor;
@@ -58,7 +59,7 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
           translationService: _translationService,
           onClose: widget.onDialogClose,
         ),
-        size: DialogSize.medium);
+        size: DialogSize.large);
   }
 
   @override
@@ -203,12 +204,16 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
   @override
   Widget build(BuildContext context) {
     final bool isDisabled = _currentConfig.useCustomOrder;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.translationService.translate(SharedTranslationKeys.sort)),
+        title: Text(
+          widget.translationService.translate(SharedTranslationKeys.sort),
+          style: AppTheme.headlineSmall,
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.close),
-          tooltip: widget.translationService.translate(SharedTranslationKeys.closeButton),
+          icon: const Icon(Icons.arrow_back),
+          tooltip: widget.translationService.translate(SharedTranslationKeys.backButton),
           onPressed: () {
             widget.onClose?.call();
             Navigator.of(context).pop();
@@ -216,7 +221,10 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
         ),
         actions: [
           TextButton(
-            child: Text(widget.translationService.translate(SharedTranslationKeys.doneButton)),
+            child: Text(
+              widget.translationService.translate(SharedTranslationKeys.doneButton),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             onPressed: () {
               widget.onClose?.call();
               Navigator.of(context).pop();
@@ -224,80 +232,139 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
           ),
           const SizedBox(width: AppTheme.sizeSmall),
         ],
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.showCustomOrderOption) ...[
-              SwitchListTile(
-                title: Text(
-                  widget.translationService.translate(SharedTranslationKeys.sortCustomTitle),
-                  style: AppTheme.bodyMedium,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.showCustomOrderOption) ...[
+                Card(
+                  elevation: 0,
+                  color: AppTheme.surface1,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                  child: SwitchListTile.adaptive(
+                    value: _currentConfig.useCustomOrder,
+                    onChanged: _toggleCustomOrder,
+                    title: Text(
+                      widget.translationService.translate(SharedTranslationKeys.sortCustomTitle),
+                      style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      widget.translationService.translate(SharedTranslationKeys.sortCustomDescription),
+                      style: AppTheme.bodySmall,
+                    ),
+                    secondary: StyledIcon(
+                      Icons.low_priority,
+                      isActive: _currentConfig.useCustomOrder,
+                    ),
+                  ),
                 ),
-                subtitle: Text(
-                  widget.translationService.translate(SharedTranslationKeys.sortCustomDescription),
-                  style: AppTheme.bodySmall,
-                ),
-                value: _currentConfig.useCustomOrder,
-                onChanged: _toggleCustomOrder,
-              ),
-              const Divider(),
-            ],
-            Flexible(
-              fit: FlexFit.loose,
-              child: isDisabled
-                  ? ListView.builder(
+                const SizedBox(height: AppTheme.sizeLarge),
+              ],
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                      child: Text(
+                        widget.translationService.translate(SharedTranslationKeys.sortCriteria),
+                        style: AppTheme.labelLarge,
+                      ),
+                    ),
+                    ReorderableListView.builder(
                       shrinkWrap: true,
-                      itemCount: _currentConfig.orderOptions.length,
-                      itemBuilder: (context, index) {
-                        return _buildCriteriaRow(index);
-                      },
-                    )
-                  : ReorderableListView.builder(
-                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: _currentConfig.orderOptions.length,
                       onReorder: _reorderCriteria,
+                      buildDefaultDragHandles: false,
                       itemBuilder: (context, index) {
                         return _buildCriteriaRow(index);
                       },
+                      proxyDecorator: (child, index, animation) {
+                        return Material(
+                          elevation: 2,
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                          child: child,
+                        );
+                      },
                     ),
-            ),
-            if (!isDisabled) ...[
-              const SizedBox(height: AppTheme.sizeSmall),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton.icon(
-                    icon: Icon(
-                      Icons.add,
-                      color: _canAddMoreCriteria() ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                    const SizedBox(height: AppTheme.sizeMedium),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: _canAddMoreCriteria() ? _addCriteria : null,
+                            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: _canAddMoreCriteria()
+                                      ? Theme.of(context).primaryColor.withValues(alpha: 0.5)
+                                      : Theme.of(context).disabledColor.withValues(alpha: 0.2),
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                                color: _canAddMoreCriteria()
+                                    ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
+                                    : Colors.transparent,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    size: 20,
+                                    color: _canAddMoreCriteria()
+                                        ? Theme.of(context).primaryColor
+                                        : Theme.of(context).disabledColor,
+                                  ),
+                                  const SizedBox(width: AppTheme.sizeSmall),
+                                  Text(
+                                    widget.translationService.translate(SharedTranslationKeys.addButton),
+                                    style: AppTheme.bodyMedium.copyWith(
+                                      color: _canAddMoreCriteria()
+                                          ? Theme.of(context).primaryColor
+                                          : Theme.of(context).disabledColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppTheme.sizeMedium),
+                        Tooltip(
+                          message: widget.translationService.translate(SharedTranslationKeys.refreshTooltip),
+                          child: InkWell(
+                            onTap: _resetToDefault,
+                            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                            child: Container(
+                              padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                              decoration: BoxDecoration(
+                                color: AppTheme.surface1,
+                                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                              ),
+                              child: const Icon(Icons.refresh),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    label: Text(
-                      widget.translationService.translate(SharedTranslationKeys.addButton),
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: _canAddMoreCriteria() ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                      ),
-                    ),
-                    onPressed: _canAddMoreCriteria() ? _addCriteria : null,
-                  ),
-                  Tooltip(
-                    message: widget.translationService.translate(SharedTranslationKeys.refreshTooltip),
-                    child: TextButton.icon(
-                      icon: const Icon(Icons.refresh),
-                      label: Text(
-                        widget.translationService.translate(SharedTranslationKeys.sortResetToDefault),
-                        style: AppTheme.bodyMedium,
-                      ),
-                      onPressed: _resetToDefault,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
+                crossFadeState: isDisabled ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                duration: const Duration(milliseconds: 300),
               ),
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -310,84 +377,88 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
             availableOption.field == option.field ||
             !_currentConfig.orderOptions.any((existing) => existing.field == availableOption.field))
         .toList();
-    final bool isDisabled = _currentConfig.useCustomOrder;
 
-    return ListTile(
+    return Container(
       key: Key('criteria_$index'),
-      dense: true,
-      title: AbsorbPointer(
-        absorbing: isDisabled,
-        child: DropdownButton<T>(
-          value: option.field,
-          isExpanded: true,
-          isDense: true,
-          underline: Container(),
-          onChanged: isDisabled
-              ? null
-              : (newValue) {
-                  if (newValue != null) {
-                    _changeField(index, newValue);
-                  }
-                },
-          items: availableFields
-              .map((o) => DropdownMenuItem<T>(
-                    value: o.field,
-                    child: Text(
-                      widget.translationService.translate(o.translationKey),
-                      style: AppTheme.bodyMedium.copyWith(
-                        color: isDisabled
-                            ? Theme.of(context).disabledColor
-                            : Theme.of(context).textTheme.bodyMedium?.color,
-                      ),
-                    ),
-                  ))
-              .toList(),
-        ),
+      margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+      decoration: BoxDecoration(
+        color: AppTheme.surface1,
+        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(
-              option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,
-              size: 20,
-              color: isDisabled ? Theme.of(context).disabledColor : null,
-            ),
-            tooltip: widget.translationService.translate(
-              option.direction == SortDirection.asc
-                  ? SharedTranslationKeys.sortAscending
-                  : SharedTranslationKeys.sortDescending,
-            ),
-            onPressed: isDisabled ? null : () => _toggleDirection(index),
-            padding: const EdgeInsets.all(AppTheme.sizeSmall),
-            constraints: const BoxConstraints(
-              minWidth: 36,
-              minHeight: 36,
-            ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: 4),
+        leading: StyledIcon(
+          Icons.sort,
+          isActive: true,
+          size: 20,
+        ),
+        title: DropdownButtonHideUnderline(
+          child: DropdownButton<T>(
+            value: option.field,
+            isExpanded: true,
+            isDense: true,
+            icon: const Icon(Icons.arrow_drop_down),
+            onChanged: (newValue) {
+              if (newValue != null) {
+                _changeField(index, newValue);
+              }
+            },
+            items: availableFields
+                .map((o) => DropdownMenuItem<T>(
+                      value: o.field,
+                      child: Text(
+                        widget.translationService.translate(o.translationKey),
+                        style: AppTheme.bodyMedium,
+                      ),
+                    ))
+                .toList(),
           ),
-          if (_currentConfig.orderOptions.length > 1)
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             IconButton(
-              icon: Icon(Icons.close, size: 20, color: isDisabled ? Theme.of(context).disabledColor : null),
-              tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
-              onPressed: isDisabled ? null : () => _removeCriteria(index),
-              padding: const EdgeInsets.all(AppTheme.sizeSmall),
+              icon: Icon(
+                option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,
+                size: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              tooltip: widget.translationService.translate(
+                option.direction == SortDirection.asc
+                    ? SharedTranslationKeys.sortAscending
+                    : SharedTranslationKeys.sortDescending,
+              ),
+              onPressed: () => _toggleDirection(index),
               constraints: const BoxConstraints(
                 minWidth: 36,
                 minHeight: 36,
               ),
             ),
-          // Drag handle for reordering
-          if (PlatformUtils.isDesktop) const SizedBox(width: AppTheme.sizeMedium), // Spacer for better alignment
-          if (_currentConfig.orderOptions.length > 1 && PlatformUtils.isMobile) ...[
+            if (_currentConfig.orderOptions.length > 1)
+              IconButton(
+                icon: Icon(Icons.close, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
+                tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
+                onPressed: () => _removeCriteria(index),
+                constraints: const BoxConstraints(
+                  minWidth: 36,
+                  minHeight: 36,
+                ),
+              ),
+            // Drag handle for reordering
             ReorderableDragStartListener(
               index: index,
               child: IconButton(
-                  icon: Icon(Icons.drag_handle, size: 20, color: isDisabled ? Theme.of(context).disabledColor : null),
-                  tooltip: widget.translationService.translate(SharedTranslationKeys.sort),
-                  onPressed: isDisabled ? null : () {}),
+                icon: Icon(Icons.drag_handle, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
+                tooltip: widget.translationService.translate(SharedTranslationKeys.sort),
+                onPressed: () {},
+                constraints: const BoxConstraints(
+                  minWidth: 36,
+                  minHeight: 36,
+                ),
+              ),
             ),
           ],
-        ],
+        ),
       ),
     );
   }

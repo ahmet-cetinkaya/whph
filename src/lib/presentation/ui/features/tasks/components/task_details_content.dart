@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/presentation/ui/shared/components/markdown_editor.dart';
+import 'package:acore/acore.dart' show MarkdownEditor;
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
@@ -90,6 +90,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
+  Duration _timeSinceLastSave = Duration.zero;
 
   // Define optional field keys
   static const String keyTags = 'tags';
@@ -104,8 +105,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   static const String keyRecurrence = 'recurrence';
   static const String keyParentTask = 'parentTask';
   static const String keyTimer = 'timer';
-
-  late List<DropdownOption<EisenhowerPriority?>> _priorityOptions;
 
   @override
   void initState() {
@@ -325,21 +324,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           }
 
           widget.onCompletedChanged?.call(response.isCompleted);
-          _priorityOptions = [
-            DropdownOption(label: _translationService.translate(TaskTranslationKeys.priorityNone), value: null),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityUrgentImportant),
-                value: EisenhowerPriority.urgentImportant),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityNotUrgentImportant),
-                value: EisenhowerPriority.notUrgentImportant),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityUrgentNotImportant),
-                value: EisenhowerPriority.urgentNotImportant),
-            DropdownOption(
-                label: _translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportant),
-                value: EisenhowerPriority.notUrgentNotImportant),
-          ];
 
           // Only update planned date if it's different
           final plannedDateText = _task!.plannedDate != null
@@ -430,9 +414,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   Future<void> _showTimeLoggingDialog() async {
     if (_task == null) return;
 
-    final result = await showDialog<bool>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      builder: (context) => TimeLoggingDialog(
+      size: DialogSize.medium,
+      child: TimeLoggingDialog(
         entityId: _task!.id,
         onCancel: () {
           // Handle cancel if needed
@@ -1056,7 +1041,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: PrioritySelectField(
             value: _task!.priority,
-            options: _priorityOptions,
             onChanged: _onPriorityChanged,
           ),
         ),
@@ -1246,10 +1230,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           DetailTableRowData(
             label: _translationService.translate(TaskTranslationKeys.descriptionLabel),
             icon: TaskUiConstants.descriptionIcon,
-            widget: MarkdownEditor(
+            widget: MarkdownEditor.simple(
               controller: _descriptionController,
               onChanged: _onDescriptionChanged,
               height: 250,
+              style: Theme.of(context).textTheme.bodyMedium,
+              hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
+              translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
             ),
             removePadding: true,
           ),
@@ -1386,7 +1373,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.max,
       child: TaskDetailsPage(
         taskId: _task!.parentTask!.id,
         hideSidebar: true,
@@ -1414,22 +1401,51 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           ),
           child: AppTimer(
             isMiniLayout: true,
+            onTick: _handleTimerTick,
             onTimerStop: _onTaskTimerStop,
+            onWorkSessionComplete: _onTaskWorkSessionComplete,
           ),
         ),
       );
 
-  // Timer event handlers
-  void _onTaskTimerStop(Duration totalElapsed) {
+  void _handleTimerTick(Duration elapsedIncrement) {
+    // Use the elapsed increment provided by the timer
+    _timeSinceLastSave += elapsedIncrement;
+    if (_timeSinceLastSave.inSeconds >= TaskUiConstants.kPeriodicSaveIntervalSeconds) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  void _saveTaskTime(Duration elapsed) {
     if (!mounted) return;
     if (_task?.id == null) return;
+    if (elapsed.inSeconds <= 0) return;
 
-    // Only save if there's actual time elapsed
-    if (totalElapsed.inSeconds > 0) {
-      final command =
-          AddTaskTimeRecordCommand(duration: totalElapsed.inSeconds, taskId: _task!.id, customDateTime: DateTime.now());
-      _mediator.send(command);
-      _tasksService.notifyTaskUpdated(_task!.id);
+    final command = AddTaskTimeRecordCommand(
+      duration: elapsed.inSeconds,
+      taskId: _task!.id,
+      customDateTime: DateTime.now(),
+    );
+    _mediator.send(command);
+    _tasksService.notifyTaskUpdated(_task!.id);
+  }
+
+  /// Called when a work session completes (e.g., Pomodoro work → break transition).
+  /// Flushes any accumulated elapsed time for the current task.
+  void _onTaskWorkSessionComplete(Duration totalElapsed) {
+    if (_timeSinceLastSave > Duration.zero) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  /// Called when the timer actually stops (user stops / session ends).
+  /// Flushes accumulated elapsed time for the current task.
+  void _onTaskTimerStop(Duration totalElapsed) {
+    if (_timeSinceLastSave > Duration.zero) {
+      _saveTaskTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
     }
   }
 }

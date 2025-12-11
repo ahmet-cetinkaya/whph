@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_option_settings.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
@@ -69,8 +70,20 @@ class HabitListOptions extends PersistentListOptionsBase {
   /// Callback when layout toggle changes
   final Function(bool)? onLayoutToggleChange;
 
+  /// Current habit list style
+  final HabitListStyle habitListStyle;
+
+  /// Callback when habit list style changes
+  final Function(HabitListStyle)? onHabitListStyleChange;
+
   /// Whether there are items to filter
   final bool hasItems;
+
+  /// Whether to show the view style option
+  final bool showViewStyleOption;
+
+  /// Whether to show only "Today" view styles (Grid/List) and hide Calendar
+  final bool showOnlyTodayStyles;
 
   const HabitListOptions({
     super.key,
@@ -90,6 +103,10 @@ class HabitListOptions extends PersistentListOptionsBase {
     this.showLayoutToggle = true,
     this.forceOriginalLayout = false,
     this.onLayoutToggleChange,
+    this.habitListStyle = HabitListStyle.grid,
+    this.onHabitListStyleChange,
+    this.showViewStyleOption = false,
+    this.showOnlyTodayStyles = false,
     super.showSaveButton = true,
     this.hasItems = true,
     super.hasUnsavedChanges = false,
@@ -149,6 +166,10 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
       if (widget.onLayoutToggleChange != null) {
         widget.onLayoutToggleChange!(filterSettings.forceOriginalLayout);
       }
+
+      if (widget.onHabitListStyleChange != null) {
+        widget.onHabitListStyleChange!(filterSettings.habitListStyle);
+      }
     }
 
     if (mounted) {
@@ -172,6 +193,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
           search: lastSearchQuery,
           sortConfig: widget.sortConfig,
           forceOriginalLayout: widget.forceOriginalLayout,
+          habitListStyle: widget.habitListStyle,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -200,6 +222,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
       search: lastSearchQuery,
       sortConfig: widget.sortConfig,
       forceOriginalLayout: widget.forceOriginalLayout,
+      habitListStyle: widget.habitListStyle,
     ).toJson();
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -219,7 +242,8 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
         widget.showNoTagsFilter != oldWidget.showNoTagsFilter ||
         widget.filterByArchived != oldWidget.filterByArchived ||
         widget.sortConfig != oldWidget.sortConfig ||
-        widget.forceOriginalLayout != oldWidget.forceOriginalLayout;
+        widget.forceOriginalLayout != oldWidget.forceOriginalLayout ||
+        widget.habitListStyle != oldWidget.habitListStyle;
 
     if (hasNonSearchChanges) {
       return true;
@@ -301,6 +325,20 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Style Toggle Button
+                if (widget.showViewStyleOption && widget.onHabitListStyleChange != null)
+                  FilterIconButton(
+                    icon: _getIconForStyle(widget.habitListStyle),
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: primaryColor,
+                    tooltip: _translationService.translate(HabitTranslationKeys.viewStyleTooltip),
+                    onPressed: () {
+                      final newStyle =
+                          widget.habitListStyle == HabitListStyle.grid ? HabitListStyle.list : HabitListStyle.grid;
+                      widget.onHabitListStyleChange!(newStyle);
+                    },
+                  ),
+
                 // Filter by tags
                 if (widget.showTagFilter && widget.onTagFilterChange != null)
                   TagSelectDropdown(
@@ -440,5 +478,16 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
         ),
       ],
     );
+  }
+
+  IconData _getIconForStyle(HabitListStyle style) {
+    switch (style) {
+      case HabitListStyle.grid:
+        return Icons.grid_view;
+      case HabitListStyle.list:
+        return Icons.view_list;
+      case HabitListStyle.calendar:
+        return Icons.calendar_month;
+    }
   }
 }

@@ -38,6 +38,9 @@ void main() {
     setUpAll(() async {
       TestWidgetsFlutterBinding.ensureInitialized();
 
+      // Reset the singleton instance to ensure test isolation
+      AppDatabase.resetInstance();
+
       // Create a test container with the required IApplicationDirectoryService registration
       final testContainer = Container();
 
@@ -55,7 +58,8 @@ void main() {
     tearDownAll(() async {
       // Clean up test resources
       await directoryService.cleanup();
-      // Database cleanup is handled by the singleton pattern
+      // Clean up database instance to ensure test isolation
+      AppDatabase.resetInstance();
     });
 
     test('should validate database integrity without crashing', () async {

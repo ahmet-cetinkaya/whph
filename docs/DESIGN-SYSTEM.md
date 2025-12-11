@@ -193,7 +193,31 @@ The typography system uses a consistent scale with optimal line heights:
 - **Padding**: 4px horizontal, 4px vertical
 - **Selected State**: Primary color with 20% opacity
 - **Typography**: Compact visual density
-
+ 
+### Dialogs
+ 
+#### General Style
+ 
+- **Background**: Surface 0 or Surface 1
+- **Shape**: Rounded corners (`AppTheme.containerBorderRadius`)
+- **Padding**: Large spacing (`AppTheme.sizeLarge`)
+- **AppBar**:
+    - **Leading**: `Icons.arrow_back` for navigation/closing
+    - **Title**: Headline Small
+    - **Actions**: Text buttons (e.g., "Done")
+ 
+#### Input Sections
+ 
+- **Container**: Surface 1 with rounded corners (`AppTheme.containerBorderRadius`)
+- **Layout**:
+    - **Icon**: `StyledIcon` (Icon within a colored circle container)
+    - **Content**: Vertically centered row with text on the left and controls on the right
+    - **Alignment**: Start-aligned for text content
+- **StyledIcon**:
+    - **Container**: Circle shape
+    - **Color**: Primary color (active) or Surface 2 (inactive)
+    - **Icon Color**: OnPrimary (active) or TextColor (inactive)
+ 
 ## Layout System
 
 ### Spacing Scale

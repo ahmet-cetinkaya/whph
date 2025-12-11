@@ -135,4 +135,13 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String tourCalendarViewDescription = 'habits.tour.calendar_view.description';
   static const String tourFilterSearchTitle = 'habits.tour.filter_search.title';
   static const String tourFilterSearchDescription = 'habits.tour.filter_search.description';
+
+  // List Options
+  static const String viewStyleTooltip = 'habits.list_options.view_style_tooltip';
+
+  // Accessibility
+  static const String detailsHint = 'habits.accessibility.details_hint';
+  static const String openDetailsHint = 'habits.accessibility.open_details_hint';
+  static const String completeHabitHint = 'habits.accessibility.complete_habit_hint';
+  static const String completionStatusHint = 'habits.accessibility.completion_status_hint';
 }

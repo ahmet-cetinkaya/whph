@@ -115,17 +115,17 @@ habits:
     toggling_archive: Не удалось переключить статус архива
   goals:
     current_goal: Цель
-    days_unit: дни
+    days_unit: Дни в этом периоде
     description:
       Хотите практиковать привычку с определённой частотой, а не каждый
       день? Тогда установите пользовательскую цель.
     enable: Включить пользовательские цели
     goal: Пользовательская цель
     goal_format: "{count} раз за {dayCount} дней"
-    period_days: Дни периода
+    period_days: Длительность периода
     settings: Настройки пользовательской цели
     target_frequency: Целевая частота
-    times_unit: раз
+    times_unit: Разы для завершения в этом периоде
   list:
     all_habits_done: Все привычки выполнены!
     no_habits_found: Нет привычек
@@ -229,3 +229,10 @@ habits:
     filter_search:
       title: Фильтр и поиск
       description: Находите конкретные привычки с помощью тегов, поисковых запросов или фильтруйте по статусу архивирования. Организуйте и управляйте своими привычками эффективно, чтобы оставаться сосредоточенным на важном.
+  list_options:
+    view_style_tooltip: Изменить стиль просмотра
+  accessibility:
+    details_hint: Просмотреть детали привычки
+    open_details_hint: Открыть детали привычки
+    complete_habit_hint: Завершить привычку
+    completion_status_hint: Статус выполнения привычки

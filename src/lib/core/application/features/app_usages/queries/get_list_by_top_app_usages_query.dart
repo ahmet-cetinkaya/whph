@@ -10,6 +10,8 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   bool showNoTagsFilter;
   DateTime? startDate;
   DateTime? endDate;
+  DateTime? compareStartDate;
+  DateTime? compareEndDate;
   String? searchByProcessName;
   List<String>? filterByDevices;
 
@@ -20,10 +22,14 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     this.showNoTagsFilter = false,
     DateTime? startDate,
     DateTime? endDate,
+    DateTime? compareStartDate,
+    DateTime? compareEndDate,
     this.searchByProcessName,
     this.filterByDevices,
   })  : startDate = startDate != null ? DateTimeHelper.toUtcDateTime(startDate) : null,
-        endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null;
+        endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null,
+        compareStartDate = compareStartDate != null ? DateTimeHelper.toUtcDateTime(compareStartDate) : null,
+        compareEndDate = compareEndDate != null ? DateTimeHelper.toUtcDateTime(compareEndDate) : null;
 }
 
 class AppUsageListItem {
@@ -33,6 +39,7 @@ class AppUsageListItem {
   String? color;
   String? deviceName;
   int duration;
+  int? compareDuration;
   List<AppUsageTagListItem> tags;
 
   AppUsageListItem({
@@ -42,6 +49,7 @@ class AppUsageListItem {
     this.color,
     this.deviceName,
     required this.duration,
+    this.compareDuration,
     this.tags = const [],
   });
 }
@@ -68,6 +76,8 @@ class GetListByTopAppUsagesQueryHandler
       showNoTagsFilter: request.showNoTagsFilter,
       startDate: request.startDate,
       endDate: request.endDate,
+      compareStartDate: request.compareStartDate,
+      compareEndDate: request.compareEndDate,
       searchByProcessName: request.searchByProcessName,
       filterByDevices: request.filterByDevices,
     );
@@ -80,6 +90,7 @@ class GetListByTopAppUsagesQueryHandler
               color: record.color,
               deviceName: record.deviceName,
               duration: record.duration,
+              compareDuration: record.compareDuration,
               tags: record.tags,
             ))
         .toList();

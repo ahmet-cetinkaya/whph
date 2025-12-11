@@ -19,9 +19,6 @@ tasks:
       tomorrow: Zítra
       weekend: Víkend
       next_weekday: Příští pracovní den
-  date_selection:
-    deadline_date_title: Vyberte datum splatnosti
-    planned_date_title: Vyberte plánované datum
   delete:
     error: Neočekávaná chyba při mazání úkolu.
     message: Jste si jisti, že chcete smazat tento úkol?
@@ -422,6 +419,9 @@ tasks:
     weekly: Týdně
     yearSuffix: rok(y)
     yearly: Ročně
+    weeks_plural: týdny
+    months_plural: měsíce
+    years_plural: roky
   reminder:
     atTime: V plánovaném čase
     deadlineReminderLabel: Připomínka splatnosti
@@ -435,6 +435,8 @@ tasks:
     custom: Vlastní
     custom_title: Vlastní připomenutí
     before_suffix: před
+    time: Čas
+    unit: Jednotka
   task_details: Detaily úkolu
   title: Úkoly
   tooltips:

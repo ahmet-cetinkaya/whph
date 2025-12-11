@@ -17,7 +17,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   final StreamController<void> _themeChangesController = StreamController<void>.broadcast();
 
   AppThemeMode _currentThemeMode = AppThemeMode.auto;
-  AppThemeMode _storedThemeMode = AppThemeMode.auto; // The user's preference
+  AppThemeMode _storedThemeMode = AppThemeMode.auto;
   bool _isDynamicAccentColorEnabled = false;
   bool _isCustomAccentColorEnabled = false;
   Color? _customAccentColor;
@@ -53,51 +53,47 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   @override
   Color get surface0 {
     if (_currentThemeMode == AppThemeMode.light) {
-      return const Color(0xFFFFFBFF); // Pure white with slight warm tint
+      return const Color(0xFFFFFBFF);
     } else {
-      return const Color(0xFF000000); // Pure black background
+      return const Color(0xFF000000);
     }
   }
 
   @override
   Color get surface1 {
     if (_currentThemeMode == AppThemeMode.light) {
-      return const Color(0xFFF8F9FA); // Very light gray with subtle blue tint
+      return const Color(0xFFF8F9FA);
     } else {
-      return const Color(0xFF121212); // Dark surface
+      return const Color(0xFF121212);
     }
   }
 
   @override
   Color get surface2 {
     if (_currentThemeMode == AppThemeMode.light) {
-      return const Color(0xFFF1F3F4); // Light gray for cards and containers
+      return const Color(0xFFF1F3F4);
     } else {
-      return const Color(0xFF181818); // Dark surface variant 2
+      return const Color(0xFF181818);
     }
   }
 
   @override
   Color get surface3 {
     if (_currentThemeMode == AppThemeMode.light) {
-      return const Color(0xFFE8EAED); // Medium light gray for elevated surfaces
+      return const Color(0xFFE8EAED);
     } else {
-      return const Color(0xFF202020); // Dark surface variant 3
+      return const Color(0xFF202020);
     }
   }
 
   @override
   Color get textColor {
-    return _currentThemeMode == AppThemeMode.light
-        ? const Color(0xFF202124) // Rich dark gray for better readability
-        : const Color(0xFFFFFFFF); // Pure white text for dark theme
+    return _currentThemeMode == AppThemeMode.light ? const Color(0xFF202124) : const Color(0xFFFFFFFF);
   }
 
   @override
   Color get secondaryTextColor {
-    return _currentThemeMode == AppThemeMode.light
-        ? const Color(0xFF5F6368) // Medium gray for secondary text
-        : const Color(0xFFB0B0B0); // Secondary gray text for dark theme
+    return _currentThemeMode == AppThemeMode.light ? const Color(0xFF5F6368) : const Color(0xFFB0B0B0);
   }
 
   @override
@@ -108,15 +104,13 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
 
   @override
   Color get dividerColor {
-    return _currentThemeMode == AppThemeMode.light
-        ? const Color(0xFFDADCE0) // Subtle divider color
-        : const Color(0xFF282828); // Dark divider
+    return _currentThemeMode == AppThemeMode.light ? const Color(0xFFDADCE0) : const Color(0xFF282828);
   }
 
   @override
   Color get barrierColor {
     if (_currentThemeMode == AppThemeMode.light) {
-      return const Color(0xFF000000).withValues(alpha: 0.4); // Semi-transparent black
+      return const Color(0xFF000000).withValues(alpha: 0.4);
     } else {
       return surface3.withValues(alpha: 0.8);
     }
@@ -475,6 +469,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
         ),
         iconTheme: IconThemeData(color: textColor),
         actionsIconTheme: IconThemeData(color: textColor),
+        actionsPadding: EdgeInsets.only(right: 16.0 * densityMultiplier),
       ),
       listTileTheme: ListTileThemeData(
         tileColor: Colors.transparent,
@@ -494,6 +489,15 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
           color: secondaryTextColor,
           fontSize: 14.0 * densityMultiplier,
         ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: surface2,
+        selectedItemColor: _primaryColor,
+        unselectedItemColor: secondaryTextColor,
+        elevation: isDark ? 0 : 8,
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
       ),
     );
   }
@@ -659,10 +663,10 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
           _storedThemeMode = AppThemeMode.auto;
           break;
         default:
-          _storedThemeMode = AppThemeMode.auto; // Default
+          _storedThemeMode = AppThemeMode.auto;
       }
     } catch (e) {
-      _storedThemeMode = AppThemeMode.auto; // Default
+      _storedThemeMode = AppThemeMode.auto;
     }
 
     // Update the actual theme mode based on user preference
@@ -675,7 +679,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       );
       _isDynamicAccentColorEnabled = dynamicResponse.getValue<bool>();
     } catch (e) {
-      _isDynamicAccentColorEnabled = false; // Default
+      _isDynamicAccentColorEnabled = false;
     }
 
     // Load custom accent color

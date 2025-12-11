@@ -87,6 +87,14 @@ class AppDatabase extends _$AppDatabase {
     return _instance ??= AppDatabase(_openConnection());
   }
 
+  /// Resets the singleton instance for testing purposes
+  static void resetInstance() {
+    _instance = null;
+    isTestMode = false;
+    testDirectory = null;
+    _container = null;
+  }
+
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   // Constructor for testing

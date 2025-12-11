@@ -195,6 +195,7 @@ shared:
   messages:
     confirm_delete: Er du sikker på at du vil slette dette elementet?
     no_items_found: Ingen elementer
+    loading: Laster...
   nav:
     items:
       app_usages: App-bruk
@@ -244,6 +245,7 @@ shared:
     remove_criteria: Fjern kriterium
     reset_to_default: Tilbakestill til standard
     sort: Sorter
+    criteria: Sorteringskriterier
   statistics:
     daily_usage:
       description: Viser total brukstid per ukedag
@@ -251,6 +253,11 @@ shared:
     hourly_usage:
       description: Viser total brukstid per time på dagen
       title: Timevis bruk
+    total_usage_label: Total bruk
+    average_daily_label: Gjennomsnitt daglig
+    peak_hour_label: Tidspunkt
+    select_date_range_message: Velg datoområde for å filtrere statistikk
+    select_date_range_description: Velg en egendefinert datoperiode for å se bruksstatistikk
   time:
     not_set: Ikke satt
     minutes: minutter

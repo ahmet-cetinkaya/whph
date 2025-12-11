@@ -13,7 +13,7 @@ class RegexHelpDialog extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const RegexHelpDialog(),
-      size: DialogSize.min,
+      size: DialogSize.large,
     );
   }
 
@@ -41,81 +41,85 @@ class RegexHelpDialog extends StatelessWidget {
     );
   }
 
-  void _closeDialog(BuildContext context) {
-    Navigator.pop(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
 
-    return AlertDialog(
-      title: Text(translationService.translate(SharedTranslationKeys.regexHelpTitle)),
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildPatternExample(
-              context,
-              '.*Chrome.*',
-              translationService.translate(SharedTranslationKeys.regexHelpExamplesChrome),
-            ),
-            _buildPatternExample(
-              context,
-              '.*Visual Studio Code.*',
-              translationService.translate(SharedTranslationKeys.regexHelpExamplesVscode),
-            ),
-            _buildPatternExample(
-              context,
-              '^Chrome\$',
-              translationService.translate(SharedTranslationKeys.regexHelpExamplesExactChrome),
-            ),
-            _buildPatternExample(
-              context,
-              'Slack|Discord',
-              translationService.translate(SharedTranslationKeys.regexHelpExamplesChat),
-            ),
-            _buildPatternExample(
-              context,
-              '.*\\.pdf',
-              translationService.translate(SharedTranslationKeys.regexHelpExamplesPdf),
-            ),
-            const SizedBox(height: AppTheme.sizeLarge),
-            Text(
-              translationService.translate(SharedTranslationKeys.regexHelpTips),
-              style: AppTheme.bodyMedium,
-            ),
-            Text(
-              translationService.translate(SharedTranslationKeys.regexHelpTipAny),
-              style: AppTheme.bodySmall,
-            ),
-            Text(
-              translationService.translate(SharedTranslationKeys.regexHelpTipStart),
-              style: AppTheme.bodySmall,
-            ),
-            Text(
-              translationService.translate(SharedTranslationKeys.regexHelpTipEnd),
-              style: AppTheme.bodySmall,
-            ),
-            Text(
-              translationService.translate(SharedTranslationKeys.regexHelpTipOr),
-              style: AppTheme.bodySmall,
-            ),
-            Text(
-              translationService.translate(SharedTranslationKeys.regexHelpTipDot),
-              style: AppTheme.bodySmall,
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          translationService.translate(SharedTranslationKeys.regexHelpTitle),
+          style: AppTheme.headlineSmall,
+        ),
+        centerTitle: false,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+          tooltip: translationService.translate(SharedTranslationKeys.backButton),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => _closeDialog(context),
-          child: Text(translationService.translate(SharedTranslationKeys.closeButton)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildPatternExample(
+                context,
+                '.*Chrome.*',
+                translationService.translate(SharedTranslationKeys.regexHelpExamplesChrome),
+              ),
+              _buildPatternExample(
+                context,
+                '.*Visual Studio Code.*',
+                translationService.translate(SharedTranslationKeys.regexHelpExamplesVscode),
+              ),
+              _buildPatternExample(
+                context,
+                '^Chrome\$',
+                translationService.translate(SharedTranslationKeys.regexHelpExamplesExactChrome),
+              ),
+              _buildPatternExample(
+                context,
+                'Slack|Discord',
+                translationService.translate(SharedTranslationKeys.regexHelpExamplesChat),
+              ),
+              _buildPatternExample(
+                context,
+                '.*\\.pdf',
+                translationService.translate(SharedTranslationKeys.regexHelpExamplesPdf),
+              ),
+              const SizedBox(height: AppTheme.sizeLarge),
+              Text(
+                translationService.translate(SharedTranslationKeys.regexHelpTips),
+                style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: AppTheme.sizeSmall),
+              Text(
+                translationService.translate(SharedTranslationKeys.regexHelpTipAny),
+                style: AppTheme.bodySmall,
+              ),
+              Text(
+                translationService.translate(SharedTranslationKeys.regexHelpTipStart),
+                style: AppTheme.bodySmall,
+              ),
+              Text(
+                translationService.translate(SharedTranslationKeys.regexHelpTipEnd),
+                style: AppTheme.bodySmall,
+              ),
+              Text(
+                translationService.translate(SharedTranslationKeys.regexHelpTipOr),
+                style: AppTheme.bodySmall,
+              ),
+              Text(
+                translationService.translate(SharedTranslationKeys.regexHelpTipDot),
+                style: AppTheme.bodySmall,
+              ),
+            ],
+          ),
         ),
-        const SizedBox(width: AppTheme.sizeSmall),
-      ],
+      ),
     );
   }
 }

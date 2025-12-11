@@ -68,6 +68,7 @@ settings:
     sounds_disabled: Звуки вимкнено
     all_sounds_enabled: Усі звуки увімкнено
     some_sounds_enabled: Деякі звуки увімкнено
+    settings: Налаштування звуку
   permissions:
     app_usage:
       description:
@@ -381,3 +382,10 @@ settings:
       load_error: Помилка завантаження часу за замовчуванням
       save_error: Помилка збереження часу за замовчуванням
       key_not_found: Ключ часу за замовчуванням не знайдено
+  section:
+    general: Загальні
+    appearance: Зовнішній вигляд
+    notifications: Сповіщення
+    data_sync: Дані та синхронізація
+    advanced: Додатково
+    about: Про програму

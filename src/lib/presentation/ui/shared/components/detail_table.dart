@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class DetailTableRowData {
   final String label;
@@ -122,12 +123,12 @@ class DetailTable extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
+        StyledIcon(
           data.icon,
+          isActive: true,
           size: AppTheme.iconSizeSmall,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
         ),
-        const SizedBox(width: AppTheme.size2XSmall),
+        const SizedBox(width: AppTheme.sizeSmall),
         Flexible(
           child: Row(
             mainAxisSize: MainAxisSize.min,

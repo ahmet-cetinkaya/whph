@@ -115,15 +115,15 @@ habits:
     toggling_archive: Selhalo přepnutí stavu archivace
   goals:
     current_goal: Cíl
-    days_unit: dny
+    days_unit: Dny v tomto období
     description: Chcete cvičit návyk s určitou frekvencí spíše než každý den? Pak nastavte vlastní cíl.
     enable: Povolit vlastní cíle
     goal: Vlastní cíl
     goal_format: "{count} krát za {dayCount} dní"
-    period_days: Dny období
+    period_days: Délka období
     settings: Nastavení vlastního cíle
-    target_frequency: Frekvence období
-    times_unit: krát za období
+    target_frequency: Cílová frekvence
+    times_unit: Počet dokončení v tomto období
   list:
     all_habits_done: Všechny návyky dokončeny!
     no_habits_found: Žádné návyky
@@ -244,3 +244,10 @@ habits:
     filter_search:
       title: Filtr a vyhledávání
       description: Najděte specifické návyky pomocí štítků, hledacích výrazů nebo filtrujte podle archivovaného stavu. Efektivně organizujte a spravujte své návyky, abyste zůstali zaměřeni na to, co je důležité.
+  list_options:
+    view_style_tooltip: Změnit styl zobrazení
+  accessibility:
+    details_hint: Zobrazit podrobnosti o zvyku
+    open_details_hint: Otevřít podrobnosti zvyku
+    complete_habit_hint: Dokončit zvyk
+    completion_status_hint: Stav dokončení zvyku

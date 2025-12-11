@@ -62,6 +62,7 @@ settings:
     sounds_disabled: Ljud inaktiverade
     all_sounds_enabled: Alla ljud aktiverade
     some_sounds_enabled: Vissa ljud aktiverade
+    settings: Ljudinställningar
   permissions:
     app_usage:
       description:
@@ -378,3 +379,10 @@ settings:
       load_error: Fel vid inläsning av standard uppskattad tid
       save_error: Fel vid sparande av standard uppskattad tid
       key_not_found: Standard uppskattad tid nyckel hittades inte
+  section:
+    general: Allmänt
+    appearance: Utseende
+    notifications: Aviseringar
+    data_sync: Data & synkronisering
+    advanced: Avancerat
+    about: Om

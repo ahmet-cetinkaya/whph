@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
-import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.dart';
+
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
+import 'package:whph/presentation/ui/shared/utils/tag_display_utils.dart';
 import 'package:whph/main.dart';
 import 'package:acore/acore.dart';
 
@@ -41,14 +42,11 @@ class _NoteCardState extends State<NoteCard> {
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
       onTap: widget.onOpenDetails,
-      leading: Icon(
-        NoteUiConstants.noteIcon,
-        size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-      ),
       title: Text(
         widget.note.title.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.note.title,
-        style: widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium,
+        style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+          fontWeight: FontWeight.bold,
+        ),
         overflow: TextOverflow.ellipsis,
         maxLines: widget.isDense ? 1 : 2,
       ),

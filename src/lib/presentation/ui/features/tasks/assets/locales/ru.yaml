@@ -19,9 +19,6 @@ tasks:
       tomorrow: Завтра
       weekend: Выходные
       next_weekday: Следующий рабочий день
-  date_selection:
-    deadline_date_title: Установить срок
-    planned_date_title: Выбрать запланированную дату
   delete:
     error: Неожиданная ошибка при удалении задачи.
     message: Вы уверены, что хотите удалить эту задачу?
@@ -424,6 +421,9 @@ tasks:
     weekly: Еженедельно
     yearSuffix: год(ы)
     yearly: Ежегодно
+    weeks_plural: недели
+    months_plural: месяцы
+    years_plural: годы
   reminder:
     atTime: В запланированное время
     deadlineReminderLabel: Напоминание о дедлайне
@@ -437,6 +437,8 @@ tasks:
     custom: Пользовательский
     custom_title: Пользовательское напоминание
     before_suffix: до
+    time: Время
+    unit: Единица
   task_details: Детали задачи
   title: Задачи
   tooltips:

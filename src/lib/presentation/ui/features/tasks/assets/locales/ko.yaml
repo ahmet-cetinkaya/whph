@@ -19,9 +19,6 @@ tasks:
       tomorrow: 내일
       weekend: 주말
       next_weekday: 다음 평일
-  date_selection:
-    deadline_date_title: 마감일 선택
-    planned_date_title: 계획일 선택
   delete:
     error: 작업 삭제 중 예상치 못한 오류가 발생했습니다.
     message: 이 작업을 삭제하시겠습니까?
@@ -390,6 +387,9 @@ tasks:
     weekly: 매주
     yearSuffix: 년
     yearly: 매년
+    weeks_plural: 주간
+    months_plural: 개월간
+    years_plural: 년간
   reminder:
     atTime: 예정된 시간에
     deadlineReminderLabel: 마감일 알림
@@ -403,6 +403,8 @@ tasks:
     custom: 사용자 정의
     custom_title: 사용자 정의 알림
     before_suffix: 전
+    time: 시간
+    unit: 단위
   task_details: 작업 세부 정보
   title: 작업
   tooltips:

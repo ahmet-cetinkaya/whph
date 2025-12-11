@@ -197,6 +197,7 @@ shared:
   messages:
     confirm_delete: Czy na pewno chcesz usunąć ten element?
     no_items_found: Brak elementów
+    loading: Ładowanie...
   nav:
     items:
       app_usages: Użycie aplikacji
@@ -246,6 +247,7 @@ shared:
     remove_criteria: Usuń kryteria
     reset_to_default: Przywróć domyślne
     sort: Sortuj
+    criteria: Kryteria sortowania
   statistics:
     daily_usage:
       description: Pokazuje całkowity czas użytkowania na dzień tygodnia
@@ -253,6 +255,13 @@ shared:
     hourly_usage:
       description: Pokazuje całkowity czas użytkowania na godzinę dnia
       title: Użycie godzinowe
+    total_usage_label: Całkowite użycie
+    average_daily_label: Średnia dzienna
+    peak_hour_label: Szczytowa godzina
+    select_date_range_message: Wybierz zakres dat, aby filtrować statystyki
+    select_date_range_description:
+      Wybierz niestandardowy zakres dat, aby wyświetlić
+      statystyki użycia
   time:
     not_set: Nie ustawiono
     minutes: minuty

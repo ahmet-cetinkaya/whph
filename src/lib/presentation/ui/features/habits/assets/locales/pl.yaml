@@ -116,17 +116,17 @@ habits:
     toggling_archive: Nie udało się przełączyć statusu archiwum
   goals:
     current_goal: Cel
-    days_unit: dni
+    days_unit: Dni w tym okresie
     description:
       Czy chcesz praktykować nawyk z określoną częstotliwością zamiast
       codziennie? Wtedy ustaw niestandardowy cel.
     enable: Włącz niestandardowe cele
     goal: Niestandardowy cel
     goal_format: "{count} razy w {dayCount} dni"
-    period_days: Dni okresu
+    period_days: Czas trwania okresu
     settings: Ustawienia niestandardowego celu
-    target_frequency: Częstotliwość okresu
-    times_unit: razy na okres
+    target_frequency: Częstotliwość docelowa
+    times_unit: Razy do ukończenia w tym okresie
   list:
     all_habits_done: Wszystkie nawyki ukończone!
     no_habits_found: Brak nawyków
@@ -229,3 +229,10 @@ habits:
     filter_search:
       title: Filtr i wyszukiwanie
       description: Znajdź konkretne nawyki przy użyciu tagów, fraz wyszukiwania lub filtrowania według statusu archiwum. Organizuj i zarządzaj swoimi nawykami efektywnie, aby pozostać skoncentrowanym na tym, co się liczy.
+  list_options:
+    view_style_tooltip: Zmień styl widoku
+  accessibility:
+    details_hint: Pokaż szczegóły nawyku
+    open_details_hint: Otwórz szczegóły nawyku
+    complete_habit_hint: Ukończ nawyk
+    completion_status_hint: Status completion nawyku

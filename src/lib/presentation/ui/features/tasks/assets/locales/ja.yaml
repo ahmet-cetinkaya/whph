@@ -19,9 +19,6 @@ tasks:
       tomorrow: 明日
       weekend: 週末
       next_weekday: 次の平日
-  date_selection:
-    deadline_date_title: 期限日を選択
-    planned_date_title: 予定日を選択
   delete:
     error: タスクの削除中に予期しないエラーが発生しました。
     message: このタスクを削除してもよろしいですか？
@@ -383,6 +380,9 @@ tasks:
     weekly: 毎週
     yearSuffix: 年
     yearly: 毎年
+    weeks_plural: 週間
+    months_plural: ヶ月間
+    years_plural: 年間
   reminder:
     atTime: 予定時刻に
     deadlineReminderLabel: 期限リマインダー
@@ -396,6 +396,8 @@ tasks:
     custom: カスタム
     custom_title: カスタムリマインダー
     before_suffix: 前
+    time: 時間
+    unit: 単位
   task_details: タスクの詳細
   title: タスク
   tooltips:

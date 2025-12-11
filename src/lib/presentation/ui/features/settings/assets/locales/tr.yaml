@@ -66,6 +66,7 @@ settings:
     sounds_disabled: Sesler devre dışı
     all_sounds_enabled: Tüm sesler etkin
     some_sounds_enabled: Bazı sesler etkin
+    settings: Ses Ayarları
   permissions:
     app_usage:
       description:
@@ -382,3 +383,10 @@ settings:
       load_error: Varsayılan tahmini süre yüklenirken hata
       save_error: Varsayılan tahmini süre kaydedilirken hata
       key_not_found: Varsayılan tahmini süre anahtarı bulunamadı
+  section:
+    general: Genel
+    appearance: Görünüm
+    notifications: Bildirimler
+    data_sync: Veri ve Senkronizasyon
+    advanced: Gelişmiş
+    about: Hakkında

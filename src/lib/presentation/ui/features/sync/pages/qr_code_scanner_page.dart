@@ -226,13 +226,24 @@ class _ScannerOverlayPainter extends CustomPainter {
     // Create path for the overlay with cut-out
     final overlayPath = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    // Create rounded rectangle for the scan area
-    final scanAreaPath = Path()..addRRect(RRect.fromRectAndRadius(scanRect, const Radius.circular(12)));
+    // Create rounded rectangle for the scan area with smoother corners
+    final scanAreaPath = Path()..addRRect(RRect.fromRectAndRadius(scanRect, const Radius.circular(24)));
 
     // Subtract scan area from overlay
     final finalPath = Path.combine(PathOperation.difference, overlayPath, scanAreaPath);
 
     canvas.drawPath(finalPath, paint);
+
+    // Draw a subtle border around the scan area
+    final borderPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(scanRect, const Radius.circular(24)),
+      borderPaint,
+    );
   }
 
   @override

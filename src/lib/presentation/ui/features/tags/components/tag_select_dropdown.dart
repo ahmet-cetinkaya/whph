@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/features/tags/components/tag_select_dialog.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'dart:async';
 import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 import 'package:acore/acore.dart' show SortDirection, SortOption;
@@ -66,13 +65,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   GetListTagsQueryResponse? _tags;
 
   List<String> _selectedTags = [];
-  final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final FocusNode _searchFocusNode = FocusNode();
-  Timer? _searchDebounce;
   bool _hasExplicitlySelectedNone = false;
   bool _needsStateUpdate = false;
-  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -84,8 +78,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       _selectedTags.clear();
     }
 
+    // We still need to fetch tags to display selected tags in the button/list
     _getTags(pageIndex: 0);
-    _scrollController.addListener(_scrollListener);
     super.initState();
   }
 
@@ -129,16 +123,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         }
       });
     }
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    _searchDebounce?.cancel();
-    _scrollController.removeListener(_scrollListener);
-    _searchController.dispose();
-    _searchFocusNode.dispose();
-    super.dispose();
   }
 
   bool _selectedTagsChanged(List<DropdownOption<String>> oldTags, List<DropdownOption<String>> newTags) {
@@ -194,222 +178,40 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     );
   }
 
-  void _scrollListener() {
-    if (_scrollController.position.extentAfter < 500) {
-      _getTags(pageIndex: _tags!.pageIndex + 1);
-    }
-  }
-
   Future<void> _showTagSelectionModal(BuildContext context) async {
-    List<String> tempSelectedTags = List<String>.from(_selectedTags);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _searchFocusNode.requestFocus();
-    });
-
-    await ResponsiveDialogHelper.showResponsiveDialog(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      child: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return Scaffold(
-            resizeToAvoidBottomInset: true,
-            appBar: AppBar(
-              title: Text(_translationService.translate(TagTranslationKeys.selectTooltip)),
-              automaticallyImplyLeading: true,
-              actions: [
-                if (tempSelectedTags.isNotEmpty || _hasExplicitlySelectedNone)
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        tempSelectedTags.clear();
-                        _hasExplicitlySelectedNone = false;
-                      });
-                    },
-                    icon: Icon(SharedUiConstants.clearIcon),
-                    tooltip: _translationService.translate(TagTranslationKeys.clearAllButton),
-                  ),
-                TextButton(
-                  onPressed: () => _confirmTagSelection(tempSelectedTags),
-                  child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
-                ),
-                const SizedBox(width: AppTheme.sizeSmall),
-              ],
-            ),
-            body: GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    // Search Section
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: TextField(
-                        controller: _searchController,
-                        focusNode: _isDisposed ? null : _searchFocusNode,
-                        textInputAction: TextInputAction.search,
-                        decoration: InputDecoration(
-                          labelText: _translationService.translate(TagTranslationKeys.searchLabel),
-                          fillColor: Colors.transparent,
-                          labelStyle: AppTheme.bodySmall,
-                          border: const OutlineInputBorder(),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        ),
-                        onChanged: (value) {
-                          if (!mounted) return;
-
-                          setState(() {
-                            _tags = null;
-                          });
-
-                          if (value.isEmpty) {
-                            _getTags(pageIndex: 0);
-                            return;
-                          }
-
-                          _searchDebounce?.cancel();
-                          _searchDebounce = Timer(
-                              value.length == 1 ? const Duration(milliseconds: 100) : const Duration(milliseconds: 300),
-                              () {
-                            if (!mounted || _isDisposed) return;
-                            _getTags(pageIndex: 0, search: value);
-                          });
-                        },
-                      ),
-                    ),
-
-                    // Tag List Section
-                    Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                        itemCount: (_tags?.items.length ?? 0) + (widget.showNoneOption ? 2 : 0) + 1,
-                        itemBuilder: (context, index) {
-                          if (widget.showNoneOption && index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(
-                                _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      color: Colors.grey,
-                                    ),
-                              ),
-                            );
-                          }
-
-                          if (widget.showNoneOption && index == 1) {
-                            return CheckboxListTile(
-                              title: Text(
-                                _translationService.translate(SharedTranslationKeys.noneOption),
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              value: _hasExplicitlySelectedNone,
-                              onChanged: (bool? value) {
-                                if (!mounted) return;
-                                setState(() {
-                                  if (value == true) {
-                                    tempSelectedTags.clear();
-                                    _hasExplicitlySelectedNone = true;
-                                  } else {
-                                    _hasExplicitlySelectedNone = false;
-                                  }
-                                });
-                              },
-                            );
-                          }
-
-                          if (widget.showNoneOption ? index == 2 : index == 0) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              child: Text(
-                                _translationService.translate(TagTranslationKeys.tagsLabel),
-                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                      color: Colors.grey,
-                                    ),
-                              ),
-                            );
-                          }
-
-                          final actualIndex = widget.showNoneOption ? index - 3 : index - 1;
-
-                          if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
-                            return const SizedBox.shrink();
-                          }
-
-                          final tag = _tags!.items[actualIndex];
-                          return CheckboxListTile(
-                            title: Text(tag.name.isNotEmpty
-                                ? tag.name
-                                : _translationService.translate(SharedTranslationKeys.untitled)),
-                            value: tempSelectedTags.contains(tag.id),
-                            onChanged: (bool? value) {
-                              if (!mounted) return;
-                              setState(() {
-                                if (value == true && _hasExplicitlySelectedNone) {
-                                  _hasExplicitlySelectedNone = false;
-                                }
-
-                                if (widget.isMultiSelect) {
-                                  if (value == true) {
-                                    if (widget.limit != null && tempSelectedTags.length >= widget.limit!) {
-                                      tempSelectedTags.removeAt(0);
-                                    }
-                                    tempSelectedTags.add(tag.id);
-                                  } else {
-                                    tempSelectedTags.remove(tag.id);
-                                  }
-                                } else {
-                                  tempSelectedTags.clear();
-                                  if (value == true) {
-                                    tempSelectedTags.add(tag.id);
-                                  }
-                                }
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+      size: DialogSize.large,
+      child: TagSelectDialog(
+        initialSelectedTags: _selectedTags,
+        excludeTagIds: widget.excludeTagIds,
+        isMultiSelect: widget.isMultiSelect,
+        showNoneOption: widget.showNoneOption,
+        initialNoneSelected: widget.initialNoneSelected,
+        initialShowNoTagsFilter: widget.initialShowNoTagsFilter,
+        limit: widget.limit,
+        showArchived: widget.showArchived,
       ),
     );
-  }
 
-  void _confirmTagSelection(List<String> tempSelectedTags) {
-    if (mounted) {
+    if (result != null && result is Map && mounted) {
+      final selectedOptions = result['selectedTags'] as List<DropdownOption<String>>;
+      final isNoneSelected = result['isNoneSelected'] as bool;
+
       setState(() {
-        _selectedTags = List<String>.from(tempSelectedTags);
+        _selectedTags = selectedOptions.map((e) => e.value).toList();
+        _hasExplicitlySelectedNone = isNoneSelected;
       });
+
+      widget.onTagsSelected(selectedOptions, isNoneSelected);
     }
-
-    final isNoneSelected = _hasExplicitlySelectedNone;
-
-    final selectedOptions = tempSelectedTags.map((id) {
-      final tag = _tags!.items.firstWhere((tag) => tag.id == id);
-      return DropdownOption(
-        label: tag.name,
-        value: tag.id,
-      );
-    }).toList();
-
-    widget.onTagsSelected(selectedOptions, isNoneSelected);
-
-    Future.delayed(const Duration(milliseconds: 1), () {
-      if (mounted && context.mounted && Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-    });
   }
 
   void _navigateToTagDetails(String tagId) {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: TagDetailsPage(tagId: tagId),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

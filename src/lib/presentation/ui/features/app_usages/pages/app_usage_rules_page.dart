@@ -9,7 +9,8 @@ import 'package:whph/presentation/ui/features/app_usages/components/app_usage_ig
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
-import 'package:acore/acore.dart' as acore;
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 
 class AppUsageRulesPage extends StatefulWidget {
   static const String route = '/app-usages/rules';
@@ -29,12 +30,70 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Widget _buildFormSection({
+    required IconData icon,
+    required String title,
+    required Widget child,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.sizeLarge),
+      decoration: BoxDecoration(
+        color: AppTheme.surface1,
+        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              StyledIcon(icon, isActive: true),
+              const SizedBox(width: AppTheme.sizeLarge),
+              Text(
+                title,
+                style: AppTheme.headlineSmall,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.sizeLarge),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListSection({
+    required IconData icon,
+    required String title,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon),
+            const SizedBox(width: AppTheme.sizeLarge),
+            Text(
+              title,
+              style: AppTheme.headlineSmall,
+            ),
+          ],
+        ),
+        const SizedBox(height: AppTheme.sizeLarge),
+        child,
+      ],
+    );
   }
 
   @override
@@ -55,19 +114,26 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
         padding: const EdgeInsets.all(AppTheme.sizeLarge),
         child: Column(
           children: [
-            acore.BorderFadeOverlay(
-              fadeBorders: {acore.FadeBorder.right},
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
-                tabs: [
-                  Tab(text: _translationService.translate(AppUsageTranslationKeys.tagRules)),
-                  Tab(text: _translationService.translate(AppUsageTranslationKeys.ignoreRules)),
-                ],
-                dividerColor: Colors.transparent,
-              ),
+            // Tab Selection
+            CustomTabBar(
+              selectedIndex: _tabController.index,
+              onTap: (index) {
+                setState(() {
+                  _tabController.animateTo(index);
+                });
+              },
+              items: [
+                CustomTabItem(
+                  icon: Icons.local_offer,
+                  label: _translationService.translate(AppUsageTranslationKeys.tagRules),
+                ),
+                CustomTabItem(
+                  icon: Icons.block,
+                  label: _translationService.translate(AppUsageTranslationKeys.ignoreRules),
+                ),
+              ],
             ),
+            const SizedBox(height: AppTheme.sizeXLarge),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -75,32 +141,20 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                   // Tag Rules Tab
                   SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppTheme.sizeLarge),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _translationService.translate(AppUsageTranslationKeys.addNewRule),
-                                  style: AppTheme.headlineSmall,
-                                ),
-                                const SizedBox(height: AppTheme.sizeLarge),
-                                AppUsageTagRuleForm(),
-                              ],
-                            ),
-                          ),
+                        _buildFormSection(
+                          icon: Icons.add_circle_outline,
+                          title: _translationService.translate(AppUsageTranslationKeys.addNewRule),
+                          child: AppUsageTagRuleForm(),
                         ),
                         const SizedBox(height: AppTheme.sizeXLarge),
-                        Text(
-                          _translationService.translate(AppUsageTranslationKeys.existingRules),
-                          style: AppTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: AppTheme.sizeLarge),
-                        AppUsageTagRuleList(
-                          mediator: _mediator,
+                        _buildListSection(
+                          icon: Icons.list_alt,
+                          title: _translationService.translate(AppUsageTranslationKeys.existingRules),
+                          child: AppUsageTagRuleList(
+                            mediator: _mediator,
+                          ),
                         ),
                       ],
                     ),
@@ -109,31 +163,19 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                   // Ignore Rules Tab
                   SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppTheme.sizeLarge),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _translationService.translate(AppUsageTranslationKeys.addNewRule),
-                                  style: AppTheme.headlineSmall,
-                                ),
-                                const SizedBox(height: AppTheme.sizeLarge),
-                                AppUsageIgnoreRuleForm(),
-                              ],
-                            ),
-                          ),
+                        _buildFormSection(
+                          icon: Icons.add_circle_outline,
+                          title: _translationService.translate(AppUsageTranslationKeys.addNewRule),
+                          child: AppUsageIgnoreRuleForm(),
                         ),
-                        const SizedBox(height: 24),
-                        Text(
-                          _translationService.translate(AppUsageTranslationKeys.existingRules),
-                          style: AppTheme.headlineSmall,
+                        const SizedBox(height: AppTheme.sizeXLarge),
+                        _buildListSection(
+                          icon: Icons.list_alt,
+                          title: _translationService.translate(AppUsageTranslationKeys.existingRules),
+                          child: AppUsageIgnoreRuleList(),
                         ),
-                        const SizedBox(height: 16),
-                        AppUsageIgnoreRuleList(),
                       ],
                     ),
                   ),

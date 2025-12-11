@@ -4,6 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/api/api.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_card.dart';
+import 'package:whph/presentation/ui/features/settings/components/permission_dialog.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

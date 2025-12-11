@@ -8,15 +8,15 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
 import 'package:acore/acore.dart' as acore;
 
-/// Dialog content component for selecting task priority
+/// Dialog component for selecting task priority
 /// Follows the established architectural pattern of other dialog content components
-class PrioritySelectionDialogContent extends StatelessWidget {
+class PrioritySelectionDialog extends StatelessWidget {
   final EisenhowerPriority? selectedPriority;
   final ValueChanged<EisenhowerPriority?> onPrioritySelected;
   final ITranslationService translationService;
   final ThemeData theme;
 
-  const PrioritySelectionDialogContent({
+  const PrioritySelectionDialog({
     super.key,
     required this.selectedPriority,
     required this.onPrioritySelected,
@@ -32,12 +32,6 @@ class PrioritySelectionDialogContent extends StatelessWidget {
         title: Text(translationService.translate(TaskTranslationKeys.priorityLabel)),
         automaticallyImplyLeading: true,
         actions: [
-          if (selectedPriority != null)
-            IconButton(
-              onPressed: () => onPrioritySelected(null),
-              icon: const Icon(Icons.clear),
-              tooltip: translationService.translate(TaskTranslationKeys.priorityNoneTooltip),
-            ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(translationService.translate(SharedTranslationKeys.doneButton)),

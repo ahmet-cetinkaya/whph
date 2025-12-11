@@ -60,6 +60,7 @@ settings:
     sounds_disabled: サウンド無効
     all_sounds_enabled: すべてのサウンド有効
     some_sounds_enabled: 一部のサウンド有効
+    settings: サウンド設定
   permissions:
     app_usage:
       description: このアプリはアプリ使用パターンを正確に追跡するためにアプリ使用統計へのアクセス許可が必要です。
@@ -300,3 +301,10 @@ settings:
       load_error: デフォルト推定時間の読み込みエラー
       save_error: デフォルト推定時間の保存エラー
       key_not_found: デフォルト推定時間キーが見つかりません
+  section:
+    general: 一般
+    appearance: 外観
+    notifications: 通知
+    data_sync: データと同期
+    advanced: 詳細
+    about: について

@@ -13,6 +13,8 @@ import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class DebugLogsSettings extends StatefulWidget {
   const DebugLogsSettings({super.key});
@@ -50,7 +52,6 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
           final response = await _mediator.send(query) as GetSettingQueryResponse?;
           _isEnabled = response?.getValue<bool>() ?? false;
         } catch (e) {
-          // Setting doesn't exist yet, use default (false)
           _isEnabled = false;
         }
         return true;
@@ -104,24 +105,27 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
         final theme = Theme.of(context);
 
         return Card(
+          elevation: 0,
+          color: AppTheme.surface1,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
           child: Column(
             children: [
               ListTile(
-                leading: Icon(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.sizeMedium,
+                  vertical: AppTheme.sizeSmall,
+                ),
+                leading: StyledIcon(
                   Icons.bug_report,
-                  color: theme.colorScheme.onSurface,
+                  isActive: _isEnabled,
                 ),
                 title: Text(
                   _translationService.translate(SettingsTranslationKeys.debugLogsTitle),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface,
-                  ),
+                  style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text(
                   _translationService.translate(SettingsTranslationKeys.debugLogsDescription),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
+                  style: AppTheme.bodySmall,
                 ),
                 trailing: _isLoading || _isUpdating
                     ? const SizedBox(
@@ -136,23 +140,24 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
                       ),
                 onTap: () => _isLoading || _isUpdating ? null : _toggleDebugLogs(!_isEnabled),
               ),
-              if (_isEnabled)
+              if (_isEnabled) ...[
+                const Divider(height: 1),
                 ListTile(
-                  leading: Icon(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.sizeMedium,
+                    vertical: AppTheme.sizeSmall,
+                  ),
+                  leading: StyledIcon(
                     Icons.description,
-                    color: theme.colorScheme.onSurface,
+                    isActive: true,
                   ),
                   title: Text(
                     _translationService.translate(SettingsTranslationKeys.viewLogsTitle),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                    ),
+                    style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
                     _translationService.translate(SettingsTranslationKeys.viewLogsDescription),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
+                    style: AppTheme.bodySmall,
                   ),
                   trailing: Icon(
                     Icons.arrow_forward_ios,
@@ -161,6 +166,7 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
                   ),
                   onTap: () => _showDebugLogsDialog(context),
                 ),
+              ],
             ],
           ),
         );

@@ -60,6 +60,7 @@ settings:
     sounds_disabled: 声音已禁用
     all_sounds_enabled: 所有声音已启用
     some_sounds_enabled: 部分声音已启用
+    settings: 声音设置
   permissions:
     app_usage:
       description: 此应用需要访问应用使用统计的权限以准确跟踪您的应用使用模式。
@@ -296,3 +297,10 @@ settings:
       load_error: 加载默认预计时间时出错
       save_error: 保存默认预计时间时出错
       key_not_found: 未找到默认预计时间键
+  section:
+    general: 常规
+    appearance: 外观
+    notifications: 通知
+    data_sync: 数据和同步
+    advanced: 高级
+    about: 关于

@@ -86,7 +86,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
       child: NoteDetailsPage(
         noteId: noteId,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 
@@ -99,7 +99,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
         child: NoteDetailsPage(
           noteId: noteId,
         ),
-        size: DialogSize.large,
+        size: DialogSize.max,
       );
     }
   }

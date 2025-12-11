@@ -19,9 +19,6 @@ tasks:
       tomorrow: Jutri
       weekend: Konec tedna
       next_weekday: Naslednji delovni dan
-  date_selection:
-    deadline_date_title: Izberi rok
-    planned_date_title: Izberi načrtovan datum
   delete:
     error: Nepričakovana napaka pri brisanju naloge.
     message: Ste prepričani, da želite izbrisati to nalogo?
@@ -341,6 +338,9 @@ tasks:
     weekly: Tedensko
     yearSuffix: leto(a)
     yearly: Letno
+    weeks_plural: tedni
+    months_plural: meseci
+    years_plural: leta
   reminder:
     atTime: Ob načrtovanem času
     deadlineReminderLabel: Opomnik Rok
@@ -354,6 +354,8 @@ tasks:
     custom: Po meri
     custom_title: Prilagojeno opomnik
     before_suffix: pred
+    time: Čas
+    unit: Enota
   task_details: Podrobnosti Naloge
   time_logging:
     add_time: Dodaj Čas

@@ -1,98 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
-class PrioritySelectField extends StatefulWidget {
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:acore/acore.dart' as acore;
+import 'package:acore/utils/dialog_size.dart';
+import 'package:whph/presentation/ui/features/tasks/components/dialogs/priority_selection_dialog.dart';
+
+class PrioritySelectField extends StatelessWidget {
   final EisenhowerPriority? value;
   final ValueChanged<EisenhowerPriority?> onChanged;
-  final List<DropdownOption<EisenhowerPriority?>> options;
 
   const PrioritySelectField({
     super.key,
     required this.value,
     required this.onChanged,
-    required this.options,
   });
 
-  @override
-  State<PrioritySelectField> createState() => _PrioritySelectFieldState();
-}
-
-class _PrioritySelectFieldState extends State<PrioritySelectField> {
-  final ITranslationService _translationService = container.resolve<ITranslationService>();
-
-  void _showPrioritySelection(BuildContext context) {
+  Future<void> _showPrioritySelection(BuildContext context) async {
+    final translationService = container.resolve<ITranslationService>();
     final theme = Theme.of(context);
 
-    showDialog(
+    // Use a temporary variable to track selection
+    EisenhowerPriority? tempSelectedPriority = value;
+
+    await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          _translationService.translate(TaskTranslationKeys.prioritySelectionTitle),
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: widget.options.map((option) => _buildPriorityOption(context, option)).toList(),
-          ),
-        ),
-        contentPadding:
-            const EdgeInsets.fromLTRB(AppTheme.sizeLarge, AppTheme.sizeSmall, AppTheme.sizeLarge, AppTheme.sizeLarge),
-      ),
-    );
-  }
-
-  Widget _buildPriorityOption(BuildContext context, DropdownOption<EisenhowerPriority?> option) {
-    final theme = Theme.of(context);
-    final isSelected = widget.value == option.value;
-    final textColor = option.value != null
-        ? TaskUiConstants.getPriorityColor(option.value)
-        : theme.colorScheme.onSurface.withValues(alpha: 0.7);
-
-    return GestureDetector(
-      onTap: () {
-        widget.onChanged(option.value);
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeLarge),
-        decoration: BoxDecoration(
-          color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
-          borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              TaskUiConstants.priorityIcon,
-              color: textColor,
-              size: AppTheme.fontSizeLarge,
-            ),
-            const SizedBox(width: AppTheme.sizeSmall),
-            Text(
-              option.label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: textColor,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-            if (isSelected) ...[
-              const Spacer(),
-              Icon(
-                Icons.check,
-                size: AppTheme.fontSizeLarge,
-                color: theme.colorScheme.primary,
-              ),
-            ],
-          ],
-        ),
+      size: DialogSize.large,
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return PrioritySelectionDialog(
+            selectedPriority: tempSelectedPriority,
+            onPrioritySelected: (priority) {
+              setState(() {
+                tempSelectedPriority = priority;
+              });
+              // Call the callback immediately as per original behavior
+              onChanged(priority);
+              // Close the dialog
+              Navigator.of(context).pop();
+            },
+            translationService: translationService,
+            theme: theme,
+          );
+        },
       ),
     );
   }
@@ -100,10 +52,9 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final selectedOption = widget.options.firstWhere(
-      (option) => option.value == widget.value,
-      orElse: () => widget.options.first,
-    );
+    final translationService = container.resolve<ITranslationService>();
+
+    final label = TaskUiConstants.getPriorityTooltip(value, translationService);
 
     return InkWell(
       onTap: () => _showPrioritySelection(context),
@@ -117,10 +68,10 @@ class _PrioritySelectFieldState extends State<PrioritySelectField> {
           children: [
             Expanded(
               child: Text(
-                selectedOption.label,
+                label,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: widget.value != null
-                      ? TaskUiConstants.getPriorityColor(widget.value)
+                  color: value != null
+                      ? TaskUiConstants.getPriorityColor(value)
                       : theme.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),

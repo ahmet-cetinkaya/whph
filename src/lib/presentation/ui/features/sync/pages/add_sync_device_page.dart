@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/main.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
@@ -519,19 +520,44 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                 horizontal: AppTheme.sizeLarge,
                 vertical: AppTheme.sizeMedium,
               ),
-              child: Row(
-                children: [
-                  const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+              child: Card(
+                elevation: 0,
+                color: AppTheme.surface1,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                      const SizedBox(width: AppTheme.sizeMedium),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _translationService.translate(SyncTranslationKeys.scanningForDevices),
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            if (_scanProgress != null)
+                              Text(
+                                _scanProgress!,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: AppTheme.sizeMedium),
-                  Text(
-                    _scanProgress ?? _translationService.translate(SyncTranslationKeys.scanningForDevices),
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
+                ),
               ),
             ),
 
@@ -542,7 +568,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
               padding: const EdgeInsets.all(AppTheme.sizeMedium),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.errorContainer,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
               ),
               child: Row(
                 children: [
@@ -580,10 +606,10 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            StyledIcon(
               Icons.devices_other,
               size: 48,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              isActive: false,
             ),
             const SizedBox(height: AppTheme.sizeMedium),
             Text(
@@ -652,15 +678,17 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                 final device = _discoveredDevices[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                  elevation: 0,
+                  color: AppTheme.surface1,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
                   child: Padding(
                     padding: const EdgeInsets.all(AppTheme.sizeMedium),
                     child: Row(
                       children: [
                         // Leading icon - centered
-                        CircleAvatar(
-                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                          foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                          child: const Icon(Icons.devices),
+                        StyledIcon(
+                          Icons.devices,
+                          isActive: true,
                         ),
                         const SizedBox(width: AppTheme.sizeMedium),
 
@@ -674,7 +702,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
                                 device.name,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.bold,
                                     ),
                               ),
                               const SizedBox(height: 4),

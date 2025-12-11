@@ -15,6 +15,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_devic
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:whph/presentation/api/api.dart';
 import 'package:acore/acore.dart' hide Container;
+import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 
 /// Dialog for displaying sync connection information (QR code and connection string)
 class SyncConnectInfoDialog extends StatefulWidget {
@@ -22,11 +23,10 @@ class SyncConnectInfoDialog extends StatefulWidget {
 
   /// Static method to show the dialog from anywhere
   static Future<void> show(BuildContext context) async {
-    await showDialog<void>(
+    await ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      builder: (BuildContext context) {
-        return const SyncConnectInfoDialog();
-      },
+      size: DialogSize.medium,
+      child: const SyncConnectInfoDialog(),
     );
   }
 
@@ -111,63 +111,54 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(_translationService.translate(SyncTranslationKeys.connectInfoDialogTitle)),
-      content: SizedBox(
-        width: 350.0,
-        child: _isLoading
-            ? const SizedBox(
-                height: 200,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : _errorMessage != null
-                ? SizedBox(
-                    height: 200,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            color: Theme.of(context).colorScheme.error,
-                            size: 48,
-                          ),
-                          const SizedBox(height: AppTheme.sizeMedium),
-                          Text(
-                            _translationService.translate(SyncTranslationKeys.errorLoadingConnectionInfo),
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: AppTheme.sizeSmall),
-                          Text(
-                            _errorMessage!,
-                            style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: AppTheme.sizeMedium),
-                          TextButton.icon(
-                            onPressed: _loadConnectionInfo,
-                            icon: const Icon(Icons.refresh),
-                            label: Text(_translationService.translate(SyncTranslationKeys.retry)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : _ConnectInfoTabs(
-                    qrData: _qrData!,
-                    connectionString: _connectionString,
-                    ipAddress: _ipAddress!,
-                    port: webSocketPort,
-                  ),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: Text(_translationService.translate(SyncTranslationKeys.qrDialogCloseButton)),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_translationService.translate(SyncTranslationKeys.connectInfoDialogTitle)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-      ],
+      ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : _errorMessage != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: Theme.of(context).colorScheme.error,
+                        size: 48,
+                      ),
+                      const SizedBox(height: AppTheme.sizeMedium),
+                      Text(
+                        _translationService.translate(SyncTranslationKeys.errorLoadingConnectionInfo),
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: AppTheme.sizeSmall),
+                      Text(
+                        _errorMessage!,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppTheme.sizeMedium),
+                      TextButton.icon(
+                        onPressed: _loadConnectionInfo,
+                        icon: const Icon(Icons.refresh),
+                        label: Text(_translationService.translate(SyncTranslationKeys.retry)),
+                      ),
+                    ],
+                  ),
+                )
+              : _ConnectInfoTabs(
+                  qrData: _qrData!,
+                  connectionString: _connectionString,
+                  ipAddress: _ipAddress!,
+                  port: webSocketPort,
+                ),
     );
   }
 }
@@ -189,19 +180,37 @@ class _ConnectInfoTabs extends StatefulWidget {
   State<_ConnectInfoTabs> createState() => _ConnectInfoTabsState();
 }
 
-class _ConnectInfoTabsState extends State<_ConnectInfoTabs> with TickerProviderStateMixin {
-  late TabController _tabController;
+class _ConnectInfoTabsState extends State<_ConnectInfoTabs> {
+  late PageController _pageController;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _pageController = PageController();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _pageController.dispose();
     super.dispose();
+  }
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -209,25 +218,28 @@ class _ConnectInfoTabsState extends State<_ConnectInfoTabs> with TickerProviderS
     final translationService = container.resolve<ITranslationService>();
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(
-              text: translationService.translate(SyncTranslationKeys.connectInfoQrTitle),
-            ),
-            Tab(
-              text: translationService.translate(SyncTranslationKeys.manualConnectionTab),
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(AppTheme.sizeMedium),
+          child: CustomTabBar(
+            items: [
+              CustomTabItem(
+                icon: Icons.qr_code,
+                label: translationService.translate(SyncTranslationKeys.connectInfoQrTitle),
+              ),
+              CustomTabItem(
+                icon: Icons.link,
+                label: translationService.translate(SyncTranslationKeys.manualConnectionTab),
+              ),
+            ],
+            selectedIndex: _selectedIndex,
+            onTap: _onTabSelected,
+          ),
         ),
-        const SizedBox(height: AppTheme.sizeMedium),
-        SizedBox(
-          width: 350,
-          height: 350,
-          child: TabBarView(
-            controller: _tabController,
+        Expanded(
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: _onPageChanged,
             children: [
               // QR Code Tab Content
               _QrCodeTabContent(qrData: widget.qrData),
@@ -256,6 +268,7 @@ class _QrCodeTabContent extends StatelessWidget {
     final translationService = container.resolve<ITranslationService>();
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.sizeMedium),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -320,6 +333,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
     }
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.sizeMedium),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -335,7 +349,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.sizeSmall),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
             child: Text(
               translationService.translate(SyncTranslationKeys.connectInfoServerDetailsDescription),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -404,7 +418,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.sizeSmall),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium * 2),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
             child: Text(
               translationService.translate(SyncTranslationKeys.connectInfoConnectionStringDescription),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -431,7 +445,7 @@ class _ConnectionStringTabContent extends StatelessWidget {
                         connectionString!,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontFamily: 'monospace',
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                         softWrap: true,
                       ),

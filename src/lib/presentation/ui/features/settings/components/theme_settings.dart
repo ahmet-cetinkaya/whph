@@ -5,12 +5,16 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/components/color_picker.dart';
+import 'package:whph/presentation/ui/shared/components/color_picker/color_picker.dart';
+
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/presentation/ui/shared/components/information_card.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
+import 'package:acore/acore.dart' hide Container;
 
 class ThemeSettings extends StatefulWidget {
   final VoidCallback? onLoaded;
@@ -81,50 +85,35 @@ class _ThemeSettingsState extends State<ThemeSettings> {
     );
   }
 
-  Future<void> _saveThemeMode(AppThemeMode mode) async {
-    await _themeService.setThemeMode(mode);
-  }
-
-  Future<void> _saveDynamicAccentColor(bool enabled) async {
-    await _themeService.setDynamicAccentColor(enabled);
-  }
-
-  Future<void> _saveCustomAccentColor(Color? color) async {
-    await _themeService.setCustomAccentColor(color);
-  }
-
-  Future<void> _saveUiDensity(domain.UiDensity density) async {
-    await _themeService.setUiDensity(density);
-  }
-
   void _showThemeModal() {
     if (!mounted) return;
 
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
+      size: DialogSize.large,
+      isScrollable: false,
       child: _ThemeDialogWrapper(
         currentThemeMode: _themeMode,
         currentDynamicAccentColor: _dynamicAccentColor,
         currentCustomAccentColor: _customAccentColor,
         currentCustomAccentColorValue: _customAccentColorValue,
         currentUiDensity: _uiDensity,
-        onThemeChanged: (mode, dynamic, custom, customColor, uiDensity) {
+        onThemeChanged: (mode, dynamicAccent, customAccent, customAccentValue, density) {
           if (mounted) {
             setState(() {
               _themeMode = mode;
-              _dynamicAccentColor = dynamic;
-              _customAccentColor = custom;
-              _customAccentColorValue = customColor;
-              _uiDensity = uiDensity;
+              _dynamicAccentColor = dynamicAccent;
+              _customAccentColor = customAccent;
+              _customAccentColorValue = customAccentValue;
+              _uiDensity = density;
             });
           }
         },
-        onSaveThemeMode: _saveThemeMode,
-        onSaveDynamicAccentColor: _saveDynamicAccentColor,
-        onSaveCustomAccentColor: _saveCustomAccentColor,
-        onSaveUiDensity: _saveUiDensity,
+        onSaveThemeMode: _themeService.setThemeMode,
+        onSaveDynamicAccentColor: _themeService.setDynamicAccentColor,
+        onSaveCustomAccentColor: _themeService.setCustomAccentColor,
+        onSaveUiDensity: _themeService.setUiDensity,
       ),
-      size: DialogSize.medium,
     );
   }
 
@@ -171,30 +160,19 @@ class _ThemeSettingsState extends State<ThemeSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.palette),
-        title: Text(
-          _translationService.translate(SettingsTranslationKeys.themeTitle),
-          style: AppTheme.bodyMedium,
-        ),
-        subtitle: _isLoading
-            ? null
-            : Text(
-                _getThemeDescription(),
-                style: AppTheme.bodySmall.copyWith(
-                  color: AppTheme.secondaryTextColor,
-                ),
-              ),
-        trailing: _isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Icon(Icons.chevron_right),
-        onTap: _isLoading ? null : _showThemeModal,
-      ),
+    return SettingsMenuTile(
+      icon: Icons.palette,
+      title: _translationService.translate(SettingsTranslationKeys.themeTitle),
+      subtitle: _isLoading ? null : _getThemeDescription(),
+      trailing: _isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : null,
+      onTap: _isLoading ? () {} : _showThemeModal,
+      isActive: true,
     );
   }
 }
@@ -318,33 +296,126 @@ class _ThemeDialogState extends State<_ThemeDialog> {
     widget.onThemeChanged(_themeMode, _dynamicAccentColor, _customAccentColor, _customAccentColorValue, _uiDensity);
   }
 
-  Widget _buildDensityOption(domain.UiDensity value, String titleKey, String subtitle) {
+  Widget _buildSelectableContainer({
+    required bool isSelected,
+    required VoidCallback onTap,
+    required Widget child,
+  }) {
     final theme = Theme.of(context);
-    return RadioListTile<domain.UiDensity>(
-      title: Text(
-        _translationService.translate(titleKey),
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.onSurface,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+        decoration: BoxDecoration(
+          color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3) : AppTheme.surface1,
+          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+          border: Border.all(
+            color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+            width: 2,
+          ),
         ),
+        child: child,
       ),
-      subtitle: Text(
-        subtitle,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-        ),
-      ),
-      value: value,
-      groupValue: _uiDensity,
-      activeColor: theme.colorScheme.primary,
-      onChanged: (newValue) async {
-        if (newValue != null) {
+    );
+  }
+
+  Widget _buildThemeModeOption(AppThemeMode mode, String titleKey, IconData icon) {
+    final isSelected = _themeMode == mode;
+    final theme = Theme.of(context);
+
+    return Expanded(
+      child: _buildSelectableContainer(
+        isSelected: isSelected,
+        onTap: () async {
           setState(() {
-            _uiDensity = newValue;
+            _themeMode = mode;
           });
           _updateTheme();
-          await widget.onSaveUiDensity(newValue);
-        }
+          await widget.onSaveThemeMode(mode);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? theme.colorScheme.primary : AppTheme.textColor,
+              size: 28,
+            ),
+            const SizedBox(height: AppTheme.sizeSmall),
+            Text(
+              _translationService.translate(titleKey),
+              style: AppTheme.bodySmall.copyWith(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? theme.colorScheme.primary : AppTheme.textColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDensityOption(domain.UiDensity value, String titleKey, String subtitle) {
+    final isSelected = _uiDensity == value;
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: () async {
+        setState(() {
+          _uiDensity = value;
+        });
+        _updateTheme();
+        await widget.onSaveUiDensity(value);
       },
+      borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
+        decoration: BoxDecoration(
+          color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+        ),
+        child: Row(
+          children: [
+            Radio<domain.UiDensity>(
+              value: value,
+              groupValue: _uiDensity,
+              activeColor: theme.colorScheme.primary,
+              onChanged: (newValue) async {
+                if (newValue != null) {
+                  setState(() {
+                    _uiDensity = newValue;
+                  });
+                  _updateTheme();
+                  await widget.onSaveUiDensity(newValue);
+                }
+              },
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _translationService.translate(titleKey),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -357,190 +428,122 @@ class _ThemeDialogState extends State<_ThemeDialog> {
       appBar: AppBar(
         title: Text(
           _translationService.translate(SettingsTranslationKeys.themeTitle),
+          style: AppTheme.headlineSmall,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         elevation: 0,
       ),
-      body: Container(
-        color: theme.scaffoldBackgroundColor,
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.sizeMedium),
-          child: ListView(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Description
-              Text(
-                _translationService.translate(SettingsTranslationKeys.themeDescription),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
+              InformationCard.themed(
+                context: context,
+                icon: Icons.info_outline,
+                text: _translationService.translate(SettingsTranslationKeys.themeDescription),
               ),
-              const SizedBox(height: AppTheme.sizeLarge),
+              const SizedBox(height: AppTheme.sizeXLarge),
 
               // Theme Mode Selection
-              Text(
-                _translationService.translate(SettingsTranslationKeys.themeModeTitle),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
-                ),
+              SectionHeader(
+                title: _translationService.translate(SettingsTranslationKeys.themeModeTitle),
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                titleStyle: AppTheme.labelLarge,
               ),
-              const SizedBox(height: AppTheme.sizeSmall),
+              Row(
+                children: [
+                  _buildThemeModeOption(
+                    AppThemeMode.light,
+                    SettingsTranslationKeys.themeModeLight,
+                    Icons.light_mode,
+                  ),
+                  const SizedBox(width: AppTheme.sizeMedium),
+                  _buildThemeModeOption(
+                    AppThemeMode.dark,
+                    SettingsTranslationKeys.themeModeDark,
+                    Icons.dark_mode,
+                  ),
+                  const SizedBox(width: AppTheme.sizeMedium),
+                  _buildThemeModeOption(
+                    AppThemeMode.auto,
+                    SettingsTranslationKeys.themeModeAuto,
+                    Icons.brightness_auto,
+                  ),
+                ],
+              ),
+              if (_themeMode == AppThemeMode.auto)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppTheme.sizeSmall),
+                  child: Text(
+                    _translationService.translate(SettingsTranslationKeys.themeModeAutoDescription),
+                    style: AppTheme.bodySmall.copyWith(fontStyle: FontStyle.italic),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
 
-              Card(
-                color: theme.cardTheme.color,
+              const SizedBox(height: AppTheme.sizeXLarge),
+
+              // Accent Color Section
+              SectionHeader(
+                title: _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                titleStyle: AppTheme.labelLarge,
+              ),
+
+              Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.surface1,
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                ),
                 child: Column(
                   children: [
-                    RadioListTile<AppThemeMode>(
+                    // Dynamic Color Switch
+                    SwitchListTile.adaptive(
                       title: Text(
-                        _translationService.translate(SettingsTranslationKeys.themeModeLight),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      value: AppThemeMode.light,
-                      groupValue: _themeMode,
-                      activeColor: theme.colorScheme.primary,
-                      onChanged: (value) async {
-                        if (value != null) {
-                          setState(() {
-                            _themeMode = value;
-                          });
-                          _updateTheme();
-                          await widget.onSaveThemeMode(value);
-                        }
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      color: theme.dividerColor,
-                    ),
-                    RadioListTile<AppThemeMode>(
-                      title: Text(
-                        _translationService.translate(SettingsTranslationKeys.themeModeDark),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-                      value: AppThemeMode.dark,
-                      groupValue: _themeMode,
-                      activeColor: theme.colorScheme.primary,
-                      onChanged: (value) async {
-                        if (value != null) {
-                          setState(() {
-                            _themeMode = value;
-                          });
-                          _updateTheme();
-                          await widget.onSaveThemeMode(value);
-                        }
-                      },
-                    ),
-                    Divider(
-                      height: 1,
-                      color: theme.dividerColor,
-                    ),
-                    RadioListTile<AppThemeMode>(
-                      title: Text(
-                        _translationService.translate(SettingsTranslationKeys.themeModeAuto),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
+                        _translationService.translate(SettingsTranslationKeys.dynamicAccentColorTitle),
+                        style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        _translationService.translate(SettingsTranslationKeys.themeModeAutoDescription),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
+                        _translationService.translate(SettingsTranslationKeys.dynamicAccentColorDescription),
+                        style: AppTheme.bodySmall,
                       ),
-                      value: AppThemeMode.auto,
-                      groupValue: _themeMode,
+                      value: _dynamicAccentColor,
                       activeColor: theme.colorScheme.primary,
+                      secondary: StyledIcon(Icons.wallpaper, isActive: _dynamicAccentColor),
                       onChanged: (value) async {
-                        if (value != null) {
-                          setState(() {
-                            _themeMode = value;
-                          });
-                          _updateTheme();
-                          await widget.onSaveThemeMode(value);
-                        }
+                        setState(() {
+                          _dynamicAccentColor = value;
+                          if (value) {
+                            _customAccentColor = false;
+                            _customAccentColorValue = null;
+                          }
+                        });
+                        _updateTheme();
+                        await widget.onSaveDynamicAccentColor(value);
                       },
                     ),
-                  ],
-                ),
-              ),
 
-              const SizedBox(height: AppTheme.sizeLarge),
+                    Divider(height: 1, color: theme.dividerColor),
 
-              // Dynamic Accent Color
-              Text(
-                _translationService.translate(SettingsTranslationKeys.dynamicAccentColorTitle),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: AppTheme.sizeSmall),
-
-              Card(
-                color: theme.cardTheme.color,
-                child: SwitchListTile(
-                  title: Text(
-                    _translationService.translate(SettingsTranslationKeys.dynamicAccentColorTitle),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ),
-                  subtitle: Text(
-                    _translationService.translate(SettingsTranslationKeys.dynamicAccentColorDescription),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  value: _dynamicAccentColor,
-                  activeColor: theme.colorScheme.primary,
-                  onChanged: (value) async {
-                    setState(() {
-                      _dynamicAccentColor = value;
-                      if (value) {
-                        _customAccentColor = false;
-                        _customAccentColorValue = null;
-                      }
-                    });
-                    _updateTheme();
-                    await widget.onSaveDynamicAccentColor(value);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: AppTheme.sizeLarge),
-
-              // Custom Accent Color
-              Text(
-                _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: AppTheme.sizeSmall),
-
-              Card(
-                color: theme.cardTheme.color,
-                child: Column(
-                  children: [
-                    SwitchListTile(
+                    // Custom Color Switch
+                    SwitchListTile.adaptive(
                       title: Text(
                         _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface,
-                        ),
+                        style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         _translationService.translate(SettingsTranslationKeys.customAccentColorDescription),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
+                        style: AppTheme.bodySmall,
                       ),
                       value: _customAccentColor,
                       activeColor: theme.colorScheme.primary,
+                      secondary: StyledIcon(Icons.palette, isActive: _customAccentColor),
                       onChanged: (value) async {
                         setState(() {
                           _customAccentColor = value;
@@ -556,52 +559,62 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                         await widget.onSaveCustomAccentColor(value ? _customAccentColorValue : null);
                       },
                     ),
-                    if (_customAccentColor) ...[
-                      Divider(height: 1, color: theme.dividerColor),
-                      Padding(
-                        padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                        child: SizedBox(
-                          height: 300,
-                          child: ColorPicker(
-                            pickerColor: _customAccentColorValue ?? theme.colorScheme.primary,
-                            onChangeColor: (color) async {
-                              setState(() {
-                                _customAccentColorValue = color;
-                              });
-                              _updateTheme();
-                              await widget.onSaveCustomAccentColor(color);
-                            },
+
+                    // Color Picker (Animated)
+                    AnimatedCrossFade(
+                      firstChild: const SizedBox.shrink(),
+                      secondChild: Column(
+                        children: [
+                          Divider(height: 1, color: theme.dividerColor),
+                          Padding(
+                            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                            child: SizedBox(
+                              height: 300,
+                              child: ColorPicker(
+                                pickerColor: _customAccentColorValue ?? theme.colorScheme.primary,
+                                onChangeColor: (color) async {
+                                  setState(() {
+                                    _customAccentColorValue = color;
+                                  });
+                                  _updateTheme();
+                                  await widget.onSaveCustomAccentColor(color);
+                                },
+                                translationService: _translationService,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                      crossFadeState: _customAccentColor ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                      duration: const Duration(milliseconds: 300),
+                    ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: AppTheme.sizeLarge),
+              const SizedBox(height: AppTheme.sizeXLarge),
 
               // UI Density
-              Text(
-                _translationService.translate(SettingsTranslationKeys.uiDensityTitle),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
-                ),
+              SectionHeader(
+                title: _translationService.translate(SettingsTranslationKeys.uiDensityTitle),
+                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                titleStyle: AppTheme.labelLarge,
               ),
-              const SizedBox(height: AppTheme.sizeSmall),
 
-              Card(
-                color: theme.cardTheme.color,
+              Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.surface1,
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                ),
                 child: Column(
                   children: [
                     _buildDensityOption(domain.UiDensity.compact, SettingsTranslationKeys.uiDensityCompact, '0.8x'),
-                    Divider(height: 1, color: theme.dividerColor),
+                    Divider(height: 1, color: theme.dividerColor, indent: 50),
                     _buildDensityOption(
                         domain.UiDensity.normal, SettingsTranslationKeys.uiDensityNormal, '1.0x (Default)'),
-                    Divider(height: 1, color: theme.dividerColor),
+                    Divider(height: 1, color: theme.dividerColor, indent: 50),
                     _buildDensityOption(domain.UiDensity.large, SettingsTranslationKeys.uiDensityLarge, '1.2x'),
-                    Divider(height: 1, color: theme.dividerColor),
+                    Divider(height: 1, color: theme.dividerColor, indent: 50),
                     _buildDensityOption(domain.UiDensity.larger, SettingsTranslationKeys.uiDensityLarger, '1.4x'),
                   ],
                 ),

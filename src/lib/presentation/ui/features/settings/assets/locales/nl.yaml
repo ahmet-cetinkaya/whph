@@ -68,6 +68,7 @@ settings:
     sounds_disabled: Geluiden uitgeschakeld
     all_sounds_enabled: Alle geluiden ingeschakeld
     some_sounds_enabled: Sommige geluiden ingeschakeld
+    settings: Geluidinstellingen
   permissions:
     app_usage:
       description:
@@ -391,3 +392,10 @@ settings:
       load_error: Fout bij laden standaard geschatte tijd
       save_error: Fout bij opslaan standaard geschatte tijd
       key_not_found: Standaard geschatte tijd sleutel niet gevonden
+  section:
+    general: Algemeen
+    appearance: Weergave
+    notifications: Meldingen
+    data_sync: Gegevens & synchronisatie
+    advanced: Geavanceerd
+    about: Over

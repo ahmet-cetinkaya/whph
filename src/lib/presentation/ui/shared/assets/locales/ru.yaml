@@ -195,6 +195,7 @@ shared:
   messages:
     confirm_delete: Вы уверены, что хотите удалить этот элемент?
     no_items_found: Нет элементов
+    loading: Загрузка...
   nav:
     items:
       app_usages: Использование приложений
@@ -244,6 +245,7 @@ shared:
     remove_criteria: Удалить критерий
     reset_to_default: Сбросить по умолчанию
     sort: Сортировать
+    criteria: Критерии сортировки
   statistics:
     daily_usage:
       description: Показывает общее время использования по дням недели
@@ -251,6 +253,13 @@ shared:
     hourly_usage:
       description: Показывает общее время использования по часам дня
       title: Почасовое использование
+    total_usage_label: Общее использование
+    average_daily_label: Среднее ежедневное
+    peak_hour_label: Час пик
+    select_date_range_message: Выберите диапазон дат для фильтрации статистики
+    select_date_range_description:
+      Выбрать пользовательский диапазон дат для просмотра
+      статистики использования
   time:
     not_set: Не установлено
     minutes: минуты

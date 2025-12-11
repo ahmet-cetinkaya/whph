@@ -66,6 +66,7 @@ settings:
     sounds_disabled: Sons desativados
     all_sounds_enabled: Todos os sons ativados
     some_sounds_enabled: Alguns sons ativados
+    settings: Configurações de som
   permissions:
     app_usage:
       description:
@@ -390,3 +391,10 @@ settings:
       load_error: Erro ao carregar tempo estimado padrão
       save_error: Erro ao salvar tempo estimado padrão
       key_not_found: Chave de tempo estimado padrão não encontrada
+  section:
+    general: Geral
+    appearance: Aparência
+    notifications: Notificações
+    data_sync: Dados e sincronização
+    advanced: Avançado
+    about: Sobre

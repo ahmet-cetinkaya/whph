@@ -19,9 +19,6 @@ tasks:
       tomorrow: Morgen
       weekend: Weekend
       next_weekday: Volgende werkdag
-  date_selection:
-    deadline_date_title: Selecteer deadline datum
-    planned_date_title: Selecteer geplande datum
   delete:
     error: Onverwachte fout opgetreden bij het verwijderen van taak.
     message: Weet je zeker dat je deze taak wilt verwijderen?
@@ -344,6 +341,9 @@ tasks:
     weekly: Wekelijks
     yearSuffix: jaar(en)
     yearly: Jaarlijks
+    weeks_plural: weken
+    months_plural: maanden
+    years_plural: jaren
   reminder:
     atTime: Op het geplande tijdstip
     deadlineReminderLabel: Deadline Herinnering
@@ -357,6 +357,8 @@ tasks:
     custom: Aangepast
     custom_title: Aangepaste herinnering
     before_suffix: voor
+    time: Tijd
+    unit: Eenheid
   task_details: Taakdetails
   time_logging:
     add_time: Tijd Toevoegen

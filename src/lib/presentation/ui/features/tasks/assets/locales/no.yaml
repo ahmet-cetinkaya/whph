@@ -19,9 +19,6 @@ tasks:
       tomorrow: I morgen
       weekend: Helg
       next_weekday: Neste virkedag
-  date_selection:
-    deadline_date_title: Velg fristdato
-    planned_date_title: Velg planlagt dato
   delete:
     error: Uventet feil oppstod under sletting av oppgave.
     message: Er du sikker på at du vil slette denne oppgaven?
@@ -342,6 +339,9 @@ tasks:
     weekly: Ukentlig
     yearSuffix: år
     yearly: Årlig
+    weeks_plural: uker
+    months_plural: måneder
+    years_plural: år
   reminder:
     atTime: På planlagt tid
     deadlineReminderLabel: Frist Påminnelse
@@ -355,6 +355,8 @@ tasks:
     custom: Egendefinert
     custom_title: Egendefinert påminnelse
     before_suffix: før
+    time: Tid
+    unit: Enhet
   task_details: Oppgavedetaljer
   time_logging:
     add_time: Legg Til Tid

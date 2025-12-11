@@ -66,6 +66,7 @@ settings:
     sounds_disabled: Звуки отключены
     all_sounds_enabled: Все звуки включены
     some_sounds_enabled: Некоторые звуки включены
+    settings: Настройки звука
   permissions:
     app_usage:
       description:
@@ -390,3 +391,10 @@ settings:
       load_error: Ошибка загрузки времени по умолчанию
       save_error: Ошибка сохранения времени по умолчанию
       key_not_found: Ключ времени по умолчанию не найден
+  section:
+    general: Общие
+    appearance: Внешний вид
+    notifications: Уведомления
+    data_sync: Данные и синхронизация
+    advanced: Дополнительно
+    about: О программе

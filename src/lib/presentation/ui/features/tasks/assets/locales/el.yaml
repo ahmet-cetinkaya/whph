@@ -19,9 +19,6 @@ tasks:
       tomorrow: Αύριο
       weekend: Σαββατοκύριακο
       next_weekday: Επόμενη εργάσιμη ημέρα
-  date_selection:
-    deadline_date_title: Επιλογή ημερομηνίας προθεσμίας
-    planned_date_title: Επιλογή προγραμματισμένης ημερομηνίας
   delete:
     error: Ανέλπιστο σφάλμα κατά τη διαγραφή εργασίας.
     message: Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την εργασία;
@@ -352,6 +349,9 @@ tasks:
     weekly: Εβδομαδιαία
     yearSuffix: χρόνο(υς)
     yearly: Ετήσια
+    weeks_plural: εβδομάδες
+    months_plural: μήνες
+    years_plural: έτη
   reminder:
     atTime: Στη προγραμματισμένη ώρα
     deadlineReminderLabel: Υπενθύμιση Προθεσμίας
@@ -365,6 +365,8 @@ tasks:
     custom: Προσαρμοσμένο
     custom_title: Προσαρμοσμένη υπενθύμιση
     before_suffix: πριν
+    time: Ώρα
+    unit: Μονάδα
   task_details: Λεπτομέρειες Εργασίας
   time_logging:
     add_time: Προσθήκη Χρόνου

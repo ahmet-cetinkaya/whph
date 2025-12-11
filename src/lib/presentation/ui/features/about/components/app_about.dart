@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/about/constants/about_translation_keys.dart';
+import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'dart:io' show Platform;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
@@ -21,113 +22,102 @@ class AppAbout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              const Image(
-                image: AssetImage(AppInfo.logoPath),
-                width: 100,
-                height: 100,
-              ),
-              const SizedBox(width: 16),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${AppInfo.name} (${AppInfo.shortName})",
-                      style: AppTheme.headlineMedium,
-                    ),
-                    Text(
-                      _translationService.translate(
-                        AboutTranslationKeys.version,
-                        namedArgs: {'version': AppInfo.version},
-                      ),
-                      style: AppTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        const SizedBox(height: AppTheme.sizeLarge),
+        // Logo and App Name
+        const Image(
+          image: AssetImage(AppInfo.logoPath),
+          width: 80,
+          height: 80,
         ),
         const SizedBox(height: AppTheme.sizeMedium),
         Text(
-          _translationService.translate(
-            AboutTranslationKeys.description,
-            namedArgs: {'appName': AppInfo.name},
-          ),
-          style: AppTheme.bodyMedium,
+          AppInfo.name,
+          style: AppTheme.headlineMedium.copyWith(fontWeight: FontWeight.bold),
         ),
-        Center(
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.center,
+        Text(
+          _translationService.translate(
+            AboutTranslationKeys.version,
+            namedArgs: {'version': AppInfo.version},
+          ),
+          style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+        ),
+        const SizedBox(height: AppTheme.sizeXLarge),
+
+        // Description
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
+          child: Text(
+            _translationService.translate(
+              AboutTranslationKeys.description,
+              namedArgs: {'appName': AppInfo.name},
+            ),
+            style: AppTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: AppTheme.sizeXLarge),
+
+        // Links
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium),
+          child: Column(
             children: [
-              _buildExternalLink(
+              SettingsMenuTile(
+                icon: Icons.language,
                 title: _translationService.translate(AboutTranslationKeys.websiteLink),
-                icon: Icons.web,
-                url: AppInfo.websiteUrl,
+                onTap: () => _launchUrl(AppInfo.websiteUrl),
+                isActive: true,
               ),
-              _buildExternalLink(
-                title: _translationService.translate(AboutTranslationKeys.sourceCodeLink),
+              const SizedBox(height: AppTheme.sizeSmall),
+              SettingsMenuTile(
                 icon: Icons.code,
-                url: AppInfo.sourceCodeUrl,
+                title: _translationService.translate(AboutTranslationKeys.sourceCodeLink),
+                onTap: () => _launchUrl(AppInfo.sourceCodeUrl),
+                isActive: true,
               ),
-              FutureBuilder<String>(
-                future: _prepareFeedbackIssueUrl(context),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator.adaptive());
-                  }
-                  return _buildExternalLink(
-                    title: _translationService.translate(AboutTranslationKeys.feedback),
-                    icon: Icons.feedback,
-                    url: snapshot.data ?? '${AppInfo.sourceCodeUrl}/issues/new',
-                  );
-                },
+              const SizedBox(height: AppTheme.sizeSmall),
+              SettingsMenuTile(
+                icon: Icons.feedback,
+                title: _translationService.translate(AboutTranslationKeys.feedback),
+                onTap: () => _handleFeedback(context),
+                isActive: true,
               ),
-              _buildExternalLink(
-                title: _translationService.translate(AboutTranslationKeys.contact),
+              const SizedBox(height: AppTheme.sizeSmall),
+              SettingsMenuTile(
                 icon: Icons.mail,
-                url: 'mailto:${AppInfo.supportEmail}',
+                title: _translationService.translate(AboutTranslationKeys.contact),
+                onTap: () => _launchUrl('mailto:${AppInfo.supportEmail}'),
+                isActive: true,
               ),
-              if (PlatformUtils.isDesktop) _buildCheckUpdateButton(context),
+              if (PlatformUtils.isDesktop) ...[
+                const SizedBox(height: AppTheme.sizeSmall),
+                SettingsMenuTile(
+                  icon: Icons.update,
+                  title: _translationService.translate(AboutTranslationKeys.checkUpdate),
+                  onTap: () => _setupService.checkForUpdates(context),
+                  isActive: true,
+                ),
+              ],
             ],
           ),
         ),
+        const SizedBox(height: AppTheme.sizeLarge),
       ],
     );
   }
 
-  Widget _buildExternalLink({required String title, required String url, required IconData icon}) {
-    return TextButton.icon(
-      onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
-      label: Text(
-        title,
-        style: AppTheme.bodyLarge,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-      ),
-      icon: Icon(icon),
-    );
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      Logger.error('Could not launch $url');
+    }
   }
 
-  Widget _buildCheckUpdateButton(BuildContext context) {
-    return TextButton.icon(
-      onPressed: () => _setupService.checkForUpdates(context),
-      label: Text(
-        _translationService.translate(AboutTranslationKeys.checkUpdate),
-        style: AppTheme.bodyLarge,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-      ),
-      icon: const Icon(Icons.update),
-    );
+  Future<void> _handleFeedback(BuildContext context) async {
+    final url = await _prepareFeedbackIssueUrl(context);
+    await _launchUrl(url);
   }
 
   Future<String> _prepareFeedbackIssueUrl(BuildContext context) async {

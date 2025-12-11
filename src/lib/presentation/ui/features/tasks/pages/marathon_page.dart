@@ -26,6 +26,7 @@ import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart'
 import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -43,25 +44,23 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   List<TaskListItem> _availableTasks = [];
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
 
-  // Tour keys
   final GlobalKey _timerKey = GlobalKey();
   final GlobalKey _selectedTaskKey = GlobalKey();
   final GlobalKey _filtersKey = GlobalKey();
   final GlobalKey _taskListKey = GlobalKey();
   final GlobalKey _mainContentKey = GlobalKey();
 
-  // Dimming overlay state
   bool _isTimerRunning = false;
   bool _isDimmed = false;
   Timer? _dimmingTimer;
-  static const Duration _dimmingDelay = Duration(seconds: 5); // Time before dimming starts
-  static const double _dimmingOpacity = 0.15; // Opacity value when dimmed
+  Duration _timeSinceLastSave = Duration.zero;
+  static const Duration _dimmingDelay = Duration(seconds: 5);
+  static const double _dimmingOpacity = 0;
 
   void _closeDialog() {
     Navigator.pop(context);
   }
 
-  // Task filter options
   static const String _taskFilterOptionsSettingKeySuffix = 'MARATHON_PAGE';
   List<String>? _selectedTaskTagIds;
   String? _taskSearchQuery;
@@ -69,14 +68,14 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   bool _showSubTasks = false;
 
   @override
-  bool get wantKeepAlive => true; // Keep the state alive when navigating away
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.immersiveSticky,
-      overlays: [], // Hide all system bars
+      overlays: [],
     );
     _setupEventListeners();
   }
@@ -125,22 +124,29 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       _onSelectTask(firstUncompletedTask);
     }
 
-    // Track timer state and start dimming countdown
     setState(() {
       _isTimerRunning = true;
+      _timeSinceLastSave = Duration.zero;
     });
     _startDimmingTimer();
   }
 
-  Future<void> _handleTimerStop(Duration totalElapsed) async {
-    _stopDimmingTimer();
+  void _handleTimerTick(Duration elapsedIncrement) {
+    // Use the elapsed increment provided by the timer
+    _timeSinceLastSave += elapsedIncrement;
+    if (_timeSinceLastSave.inSeconds >= TaskUiConstants.kPeriodicSaveIntervalSeconds) {
+      _saveElapsedTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
 
-    // Log the total elapsed time for the session
+  Future<void> _saveElapsedTime(Duration elapsed) async {
     if (_selectedTask == null) return;
+    if (elapsed.inSeconds <= 0) return;
 
     final command = AddTaskTimeRecordCommand(
       taskId: _selectedTask!.id,
-      duration: totalElapsed.inSeconds,
+      duration: elapsed.inSeconds,
     );
 
     await AsyncErrorHandler.executeVoid(
@@ -150,7 +156,35 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     );
   }
 
+  /// Called when a work session completes (e.g., Pomodoro work → break transition).
+  /// Flushes any accumulated elapsed time but intentionally does NOT stop dimming,
+  /// so the dimming persists into the break segment.
+  Future<void> _handleWorkSessionComplete(Duration totalElapsed) async {
+    if (_timeSinceLastSave > Duration.zero) {
+      await _saveElapsedTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
+  /// Called when the timer actually stops (user stops / session ends).
+  /// Flushes accumulated elapsed time and stops the dimming timer.
+  Future<void> _handleTimerStop(Duration totalElapsed) async {
+    _stopDimmingTimer();
+
+    if (_timeSinceLastSave > Duration.zero) {
+      await _saveElapsedTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+  }
+
   void _onSelectTask(TaskListItem task) async {
+    // Flush any pending elapsed time before switching tasks to ensure
+    // accumulated time is attributed to the correct task
+    if (_timeSinceLastSave > Duration.zero) {
+      await _saveElapsedTime(_timeSinceLastSave);
+      _timeSinceLastSave = Duration.zero;
+    }
+
     setState(() {
       _selectedTask = task;
     });
@@ -191,7 +225,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       if (otherTasks.isNotEmpty) {
         _onSelectTask(otherTasks.first);
       } else {
-        // No other tasks available, clear selection
         _clearSelectedTask();
       }
     }
@@ -205,11 +238,9 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         taskId: taskId,
         hideSidebar: true,
         onTaskDeleted: () {
-          // Only close the dialog here, don't pop twice
           Navigator.of(context).pop(true);
         },
         onTaskCompleted: () {
-          // Select next task when current task is completed
           _selectNextTask();
           _onTasksChanged();
         },
@@ -260,19 +291,16 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
             return;
           },
           onError: (error) {
-            // Task might have been deleted or other error occurred
             if (mounted) {
               setState(() {
-                _selectedTask = null; // Clear selected task on error
+                _selectedTask = null;
               });
 
-              // Only show error if it's not a "not found" error
               if (error.toString().toLowerCase().contains('not found')) {
-                // Task was deleted, silently clear selection
-                return false; // Don't show error message
+                return false;
               }
 
-              return true; // Show error message
+              return true;
             }
             return false;
           },
@@ -331,7 +359,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     }
   }
 
-  // Dimming overlay methods
   void _startDimmingTimer() {
     _dimmingTimer?.cancel();
     _dimmingTimer = Timer(_dimmingDelay, () {
@@ -388,14 +415,12 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
             onHover: (_) => _onUserInteraction(),
             child: Stack(
               children: [
-                // Main Content
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: SingleChildScrollView(
                     child: Column(
                       key: _mainContentKey,
                       children: [
-                        // Pomodoro Timer Section (always visible)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -407,20 +432,20 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.close),
+                                    icon: const Icon(Icons.arrow_back),
                                     onPressed: _closeDialog,
                                     tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                                   ),
                                 ],
                               ),
                             ),
-                            // Removed Expanded widget here
                             Center(
                               child: AppTimer(
                                 key: _timerKey,
-                                onTick: null, // No UI updates needed
+                                onTick: _handleTimerTick,
                                 onTimerStart: _onTimerStart,
                                 onTimerStop: _handleTimerStop,
+                                onWorkSessionComplete: _handleWorkSessionComplete,
                               ),
                             ),
                             AnimatedOpacity(
@@ -435,8 +460,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             ),
                           ],
                         ),
-
-                        // Selected Task Section (always visible when task is selected)
                         if (_selectedTask != null) ...[
                           const SizedBox(height: AppTheme.sizeSmall),
                           Container(
@@ -455,8 +478,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             ),
                           ),
                         ],
-
-                        // Filters Section (dimmed when timer is running)
                         AnimatedOpacity(
                           opacity: _isDimmed ? _dimmingOpacity : 1.0,
                           duration: const Duration(milliseconds: 500),
@@ -497,7 +518,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                     settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
                                   ),
                                 ),
-                                // Add task button
                                 if (!_showCompletedTasks)
                                   TaskAddButton(
                                     initialTagIds: _selectedTaskTagIds,
@@ -510,8 +530,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             ),
                           ),
                         ),
-
-                        // Task List Section (dimmed when timer is running)
                         AnimatedOpacity(
                           opacity: _isDimmed ? _dimmingOpacity : 1.0,
                           duration: const Duration(milliseconds: 500),
@@ -519,7 +537,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             key: _taskListKey,
                             filterByCompleted: _showCompletedTasks,
                             filterByTags: _selectedTaskTagIds,
-                            // Only apply date filters for incomplete tasks
                             filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
                             filterByPlannedEndDate:
                                 _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
@@ -527,7 +544,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             filterByDeadlineEndDate:
                                 _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
                             filterDateOr: true,
-                            // Filter completed tasks to only show those completed today
                             filterByCompletedStartDate:
                                 _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
                             filterByCompletedEndDate:

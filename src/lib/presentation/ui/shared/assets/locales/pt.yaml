@@ -208,6 +208,7 @@ shared:
   messages:
     confirm_delete: Tem certeza de que deseja excluir este item?
     no_items_found: Nenhum item
+    loading: Carregando...
   nav:
     items:
       app_usages: Uso de aplicativos
@@ -257,6 +258,7 @@ shared:
     remove_criteria: Remover critério
     reset_to_default: Redefinir para padrão
     sort: Ordenar
+    criteria: Critérios de ordenação
   statistics:
     daily_usage:
       description: Mostra o tempo total de uso por dia da semana
@@ -264,6 +266,13 @@ shared:
     hourly_usage:
       description: Mostra o tempo total de uso por hora do dia
       title: Uso por hora
+    total_usage_label: Uso total
+    average_daily_label: Média diária
+    peak_hour_label: Horário de pico
+    select_date_range_message: Selecionar intervalo de datas para filtrar estatísticas
+    select_date_range_description:
+      Escolher um intervalo de datas personalizado para
+      visualizar estatísticas de uso
   time:
     not_set: Não definido
     minutes: minutos

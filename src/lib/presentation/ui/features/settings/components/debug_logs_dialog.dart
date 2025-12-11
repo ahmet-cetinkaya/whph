@@ -11,6 +11,7 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class DebugLogsDialog extends StatefulWidget {
   const DebugLogsDialog({super.key});
@@ -184,6 +185,7 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
           appBar: AppBar(
             title: Text(
               _translationService.translate(SettingsTranslationKeys.debugLogsPageTitle),
+              style: AppTheme.headlineSmall,
             ),
             elevation: 0,
             actions: [
@@ -229,7 +231,7 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
             ],
           ),
           body: Padding(
-            padding: const EdgeInsets.all(AppTheme.sizeSmall),
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
@@ -238,35 +240,38 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
                       // Log content
                       Expanded(
                         child: Card(
+                          elevation: 0,
+                          color: AppTheme.surface1,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
                           child: Padding(
-                            padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                            padding: const EdgeInsets.all(AppTheme.sizeMedium),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
-                                    Icon(
+                                    StyledIcon(
                                       Icons.terminal,
-                                      color: theme.colorScheme.onSurface,
-                                      size: 16,
+                                      isActive: true,
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: AppTheme.sizeMedium),
                                     Text(
                                       _translationService.translate(SettingsTranslationKeys.debugLogsContent),
-                                      style: theme.textTheme.titleSmall,
+                                      style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
                                     ),
                                     if (_logFilePath != null) ...[
                                       const Spacer(),
                                       Text(
                                         _logFilePath!.split('/').last,
-                                        style: theme.textTheme.bodySmall?.copyWith(
+                                        style: AppTheme.bodySmall.copyWith(
                                           color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                                         ),
                                       ),
                                     ],
                                   ],
                                 ),
-                                const SizedBox(height: AppTheme.sizeSmall),
+                                const SizedBox(height: AppTheme.sizeMedium),
                                 Expanded(
                                   child: Container(
                                     width: double.infinity,

@@ -19,9 +19,6 @@ tasks:
       tomorrow: Jutro
       weekend: Weekend
       next_weekday: Następny dzień roboczy
-  date_selection:
-    deadline_date_title: Wybierz datę terminu
-    planned_date_title: Wybierz planowaną datę
   delete:
     error: Wystąpił nieoczekiwany błąd podczas usuwania zadania.
     message: Czy na pewno chcesz usunąć to zadanie?
@@ -422,6 +419,9 @@ tasks:
     weekly: Tygodniowo
     yearSuffix: rok/lata
     yearly: Rocznie
+    weeks_plural: tygodnie
+    months_plural: miesiące
+    years_plural: lata
   reminder:
     atTime: O zaplanowanej godzinie
     deadlineReminderLabel: Przypomnienie o terminie
@@ -435,6 +435,8 @@ tasks:
     custom: Własne
     custom_title: Własne przypomnienie
     before_suffix: przed
+    time: Czas
+    unit: Jednostka
   task_details: Szczegóły zadania
   title: Zadania
   tooltips:

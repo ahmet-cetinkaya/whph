@@ -5,7 +5,7 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/accordion_widget.dart';
-import 'package:whph/presentation/ui/features/settings/components/permission_card.dart';
+import 'package:whph/presentation/ui/features/settings/components/permission_dialog.dart';
 import 'package:whph/main.dart';
 
 /// A dialog component for showing firewall permission instructions

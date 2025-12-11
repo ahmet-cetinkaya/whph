@@ -19,6 +19,8 @@ abstract class IAppUsageTimeRecordRepository extends app.IRepository<AppUsageTim
     bool showNoTagsFilter = false,
     DateTime? startDate,
     DateTime? endDate,
+    DateTime? compareStartDate,
+    DateTime? compareEndDate,
     String? searchByProcessName,
     List<String>? filterByDevices,
   });

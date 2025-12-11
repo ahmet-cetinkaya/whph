@@ -6,96 +6,161 @@ sync:
       sync_failed: 기기 동기화에 실패했습니다
     from_label: 보낸 곳
     help:
-      content: |
-        🔄 **Sync란 무엇인가요?**
+      content: '🔄 **Sync란 무엇인가요?**
 
-        Sync는 습관, 작업, 메모, 데이터를 Wi-Fi 네트워크에서 (휴대폰, 태블릿, 노트북, 데스크톱) 모든 기기에서 업데이트합니다. 클라우드나 인터넷 없이 — 데이터는 개인적이고 로컬로 유지됩니다.
 
-        사용하기 쉽습니다: 한 번 설정하면 변경 사항이 자동 또는 수동으로 동기화됩니다. 기기를 원활하게 전환하세요, 예를 들어 휴대폰에서 시작해서 PC에서 마무리.
+        Sync는 습관, 작업, 메모, 데이터를 Wi-Fi 네트워크에서 (휴대폰, 태블릿, 노트북, 데스크톱) 모든 기기에서 업데이트합니다.
+        클라우드나 인터넷 없이 — 데이터는 개인적이고 로컬로 유지됩니다.
+
+
+        사용하기 쉽습니다: 한 번 설정하면 변경 사항이 자동 또는 수동으로 동기화됩니다. 기기를 원활하게 전환하세요, 예를 들어 휴대폰에서
+        시작해서 PC에서 마무리.
+
 
         ## 🔗 **Sync 모드**
 
-        모든 기기는 유연한 동기화를 위한 클라이언트 또는 서버 모드를 지원합니다. 서버가 리드 (데이터 공유), 클라이언트가 참여하고 교환. 최소 하나의 서버가 필요합니다.
+
+        모든 기기는 유연한 동기화를 위한 클라이언트 또는 서버 모드를 지원합니다. 서버가 리드 (데이터 공유), 클라이언트가 참여하고 교환.
+        최소 하나의 서버가 필요합니다.
+
 
         - **클라이언트 모드:** 서버에 연결하여 동기화. QR 또는 수동 입력으로 그룹에 참여하는 데 이상적.
+
         - **서버 모드:** 허브로 작동; 다른 기기가 연결할 QR 또는 문자열을 표시.
 
+
         **플랫폼 노트:**
+
         - **모바일:** Wi-Fi 핫스팟 아이콘으로 전환. 포터블 허브를 위한 서버.
+
         - **데스크톱 (기본: 서버):** Sync 설정에서 전환. 메인 PC에 동기화하는 노트북을 위한 클라이언트.
+
 
         **예시:** 모바일-모바일 (하나의 서버), 데스크톱-모바일 (어느 방향이든), 데스크톱-데스크톱 (하나의 서버, 하나의 클라이언트).
 
+
         Sync 설정에서 모드 전환; 앱이 선택을 기억합니다.
+
 
         ## 🛠️ **Sync 활성화**
 
+
         기기는 Wi-Fi를 공유해야 합니다; WHPH를 열어두세요.
 
+
         ### **QR 코드 설정**
+
         1. 서버: Sync에서 서버 모드 시작 — QR 표시.
+
         2. 클라이언트: "기기 추가" > QR 스캔.
+
         3. 자동 연결 및 동기화.
+
 
         모든 조합 지원.
 
+
         ### **연결 문자열**
+
         1. 서버: Sync에서 문자열 복사 (예: "whph://IP:44040?...").
+
         2. 클라이언트: "기기 추가" > 수동 > 문자열 붙여넣기 > 연결.
+
 
         카메라 불필요.
 
+
         ### **수동 입력**
+
         1. 서버: 연결 정보에서 IP/포트 (기본 44040) 메모.
+
         2. 클라이언트: "기기 추가" > 수동 > IP, 포트, 이름 입력 > 테스트 > 연결.
+
 
         **데스크톱 클라이언트:** 먼저 클라이언트 모드로 전환한 후 연결. 자동 동기화; 언제든지 돌아갈 수 있습니다.
 
+
         신뢰성을 위해 설정에서 자동 재연결 활성화.
+
 
         ## 📋 **기기 관리**
 
+
         - **보기:** Sync 설정에서 기기, 동기화 시간, 상태 보기.
+
         - **수동 동기화:** 기기당 버튼 탭.
+
         - **제거:** 선택하여 동기화 중지.
+
 
         ## 🔧 **문제 해결**
 
+
         **연결 문제:**
+
         1. 같은 Wi-Fi? VPN 없음.
+
         2. 앱 재시작.
+
         3. 서버 모드 확인.
+
         4. 방화벽 없이 테스트.
 
+
         **기기 없음?**
+
         - 안정적인 Wi-Fi, 프록시 없음.
+
         - 스캔 새로고침.
+
         - 수동 IP 사용.
 
+
         **동기화 실패/타임아웃:**
+
         1. 수동 동기화.
+
         2. 앱 버전 일치.
+
         3. 큰 데이터 대기.
+
 
         **방화벽 (포트 44040):**
 
-        연결이 작동하지 않으면 컴퓨터의 방화벽이 sync 신호를 차단할 수 있습니다. 기기가 로컬로 통신할 수 있도록 포트 44040을 열어주세요 — 홈 네트워크에는 안전합니다.
+
+        연결이 작동하지 않으면 컴퓨터의 방화벽이 sync 신호를 차단할 수 있습니다. 기기가 로컬로 통신할 수 있도록 포트 44040을 열어주세요
+        — 홈 네트워크에는 안전합니다.
+
 
         **Windows (GUI):**
+
         1. Defender 방화벽 열기 > 고급 > 수신 규칙 > 새 규칙.
+
         2. 포트 > TCP > 44040 > 허용 > 모든 프로필 > 이름 "WHPH Sync" > 완료.
 
+
         **Windows (관리자 CMD):**
+
         ```
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP localport=44040
+
+        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
+        localport=44040
+
         ```
+
 
         **Linux (UFW):**
-        ```
-        sudo ufw allow 44040/tcp && sudo ufw reload
+
         ```
 
+        sudo ufw allow 44040/tcp && sudo ufw reload
+
+        ```
+
+
         팁: 라우터 재시작, 사설 네트워크 사용. "찾을 수 없음" 오류 시 재페어링.
+
+        '
       title: 기기 동기화 도움말
     last_sync_label: 마지막 동기화
     no_devices_found: 동기화된 기기 없음
@@ -103,15 +168,21 @@ sync:
     title: 기기 동기화
     to_label: 받는 곳
     unnamed_device: 이름 없는 기기
+    never_synced: 동기화된 적 없음
+    remove_device: 기기 제거
   error:
     scan: 스캔에 실패했습니다
   errors:
-    connection_failed: |
-      연결에 실패했습니다. 다음을 확인하세요:
+    connection_failed: "연결에 실패했습니다. 다음을 확인하세요:
+
 
       1. 두 기기가 같은 네트워크에 있는지
+
       2. 두 앱이 모두 열려 있고 실행 중인지
+
       3. 방화벽이 연결을 차단하지 않는지
+
+      "
     device_mismatch: 동기화 오류. 동기화를 시도하는 기기가 이 기기와 올바르게 페어링되지 않았습니다.
     environment_mismatch: 디버그와 프로덕션 빌드 간의 동기화는 진행할 수 없습니다.
     device_not_found: 동기화 기기를 찾을 수 없습니다
@@ -122,7 +193,9 @@ sync:
     scan: 스캔에 실패했습니다
     sync_failed: 동기화에 실패했습니다. 다시 시도해 주세요.
     sync_timeout: 동기화 시간 초과
-    version_mismatch: "버전 불일치. 로컬 버전: {currentVersion}, 원격 버전: {remoteVersion}. 두 애플리케이션을 같은 버전으로 업데이트하세요."
+    version_mismatch:
+      "버전 불일치. 로컬 버전: {currentVersion}, 원격 버전: {remoteVersion}. 두
+      애플리케이션을 같은 버전으로 업데이트하세요."
     local_ip_error: 로컬 IP 오류
     device_already_paired: 기기는 이미 페어링되었습니다
     no_active_interfaces: 활성 네트워크 인터페이스가 없습니다
@@ -168,6 +241,8 @@ sync:
     device_became_server: 이 기기가 동기화 서버가 되었습니다
     start_menu: 서버 시작
     stop_menu: 서버 중지
+    mode_title: 서버 모드
+    mode_inactive: 서버 비활성
   manual:
     connection: 수동 연결
     ip_address: IP 주소
@@ -210,7 +285,6 @@ sync:
     refresh_scan: 검색 새로 고침
     last_seen: 마지막으로 본 시간
     already_added: 이미 추가됨
-
   connect_info:
     dialog_title: 기기 연결 정보
     menu_title: 연결 정보
@@ -227,7 +301,6 @@ sync:
     server_details_title: 서버 세부 정보
     connection_string_title_alt: 연결 문자열
     copy: 복사
-
   desktop:
     mode_title: 데스크톱 동기화 모드
     client_mode_start: 클라이언트로 연결
@@ -241,5 +314,5 @@ sync:
     client_mode_starting: 클라이언트 모드 시작 중...
     client_mode_started: 클라이언트 모드가 시작되었습니다
     client_mode_stopped: 서버 모드로 돌아갔습니다
-
+    sync_mode_toggle_error: 동기화 모드 전환 실패
   multi_interface_connection: 다중 인터페이스 연결

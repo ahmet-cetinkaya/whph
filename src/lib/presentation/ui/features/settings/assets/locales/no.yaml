@@ -62,6 +62,7 @@ settings:
     sounds_disabled: Lyder deaktivert
     all_sounds_enabled: Alle lyder aktivert
     some_sounds_enabled: Noen lyder aktivert
+    settings: Lyinnstillinger
   permissions:
     app_usage:
       description:
@@ -374,3 +375,10 @@ settings:
       load_error: Feil ved lasting av standard estimert tid
       save_error: Feil ved lagring av standard estimert tid
       key_not_found: Standard estimert tid nøkkel ikke funnet
+  section:
+    general: Generelt
+    appearance: Utseende
+    notifications: Varslinger
+    data_sync: Data & synkronisering
+    advanced: Avansert
+    about: Om

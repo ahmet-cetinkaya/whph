@@ -3,6 +3,7 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_translation
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class HabitGoalResult {
   final bool hasGoal;
@@ -150,40 +151,91 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
   }
 
   Widget _buildNumberInput({
+    required String sectionTitle,
+    required String title,
+    required String description,
+    required int value,
+    required String field,
+    required IconData icon,
+  }) {
+    // All fields require goal to be enabled
+    final isEnabled = _hasGoal;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+          child: Text(sectionTitle, style: AppTheme.labelLarge),
+        ),
+        Container(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          decoration: BoxDecoration(
+            color: AppTheme.surface1,
+            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+          ),
+          child: Row(
+            children: [
+              StyledIcon(icon, isActive: isEnabled),
+              const SizedBox(width: AppTheme.sizeLarge),
+              Expanded(
+                child: _buildInputContent(
+                  title: title,
+                  description: description,
+                  value: value,
+                  field: field,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInputContent({
     required String title,
     required String description,
     required int value,
     required String field,
   }) {
-    // All fields require goal to be enabled
     final isEnabled = _hasGoal;
-
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      enabled: isEnabled,
-      title: Text(title),
-      subtitle: Text(
-        description,
-        style: AppTheme.bodySmall,
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.remove_circle_outline),
-            onPressed: isEnabled && _canDecrement(field) ? () => _adjustValue(field, -1) : null,
-            tooltip: widget.translationService.translate(SharedTranslationKeys.deleteButton),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: AppTheme.labelLarge),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: AppTheme.bodySmall,
+              ),
+            ],
           ),
-          const SizedBox(width: 4),
-          Text('$value', style: AppTheme.bodyMedium),
-          const SizedBox(width: 4),
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: isEnabled && _canIncrement(field) ? () => _adjustValue(field, 1) : null,
-            tooltip: widget.translationService.translate(SharedTranslationKeys.addButton),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(width: AppTheme.sizeLarge),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.remove_circle_outline),
+              onPressed: isEnabled && _canDecrement(field) ? () => _adjustValue(field, -1) : null,
+              tooltip: widget.translationService.translate(SharedTranslationKeys.deleteButton),
+            ),
+            const SizedBox(width: 4),
+            Text('$value', style: AppTheme.bodyMedium),
+            const SizedBox(width: 4),
+            IconButton(
+              icon: const Icon(Icons.add_circle_outline),
+              onPressed: isEnabled && _canIncrement(field) ? () => _adjustValue(field, 1) : null,
+              tooltip: widget.translationService.translate(SharedTranslationKeys.addButton),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -202,87 +254,131 @@ class _HabitGoalDialogState extends State<HabitGoalDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.translationService.translate(HabitTranslationKeys.goalSettings)),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Goal description
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.blue.withValues(alpha: 0.3),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.translationService.translate(HabitTranslationKeys.goalSettings)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: _cancelDialog,
+          tooltip: widget.translationService.translate(SharedTranslationKeys.backButton),
+        ),
+        actions: [
+          TextButton(
+            onPressed: _confirmDialog,
+            child: Text(
+              widget.translationService.translate(SharedTranslationKeys.doneButton),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Goal Switch
+              Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.surface1,
+                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                ),
+                child: SwitchListTile.adaptive(
+                  value: _hasGoal,
+                  onChanged: _toggleGoal,
+                  title: Text(
+                    widget.translationService.translate(HabitTranslationKeys.goal),
+                    style: AppTheme.labelLarge,
+                  ),
+                  subtitle: _hasGoal
+                      ? Text(
+                          _getGoalDescription(),
+                          style: AppTheme.bodySmall,
+                        )
+                      : Text(
+                          widget.translationService.translate(HabitTranslationKeys.goalDescription),
+                          style: AppTheme.bodySmall,
+                        ),
+                  secondary: StyledIcon(Icons.flag, isActive: _hasGoal),
+                  contentPadding: const EdgeInsets.all(AppTheme.sizeMedium),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                  ),
                 ),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    color: Colors.blue,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(widget.translationService.translate(HabitTranslationKeys.goalDescription)),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Switch(
-                value: _hasGoal,
-                onChanged: _toggleGoal,
-              ),
-              title: Text(widget.translationService.translate(HabitTranslationKeys.goal)),
-              subtitle: _hasGoal
-                  ? Text(
-                      _getGoalDescription(),
-                      style: AppTheme.bodySmall,
-                    )
-                  : null,
-            ),
-            if (_hasGoal) ...[
-              const SizedBox(height: 16),
-              _buildNumberInput(
-                title: widget.translationService.translate(HabitTranslationKeys.dailyTargetLabel),
-                description: widget.translationService.translate(HabitTranslationKeys.dailyTargetHint),
-                value: _dailyTarget,
-                field: 'daily',
-              ),
-              const SizedBox(height: 16),
-              _buildNumberInput(
-                title: widget.translationService.translate(HabitTranslationKeys.targetFrequency),
-                description: widget.translationService.translate(HabitTranslationKeys.timesUnit),
-                value: _targetFrequency,
-                field: 'frequency',
-              ),
-              const SizedBox(height: 16),
-              _buildNumberInput(
-                title: widget.translationService.translate(HabitTranslationKeys.periodDays),
-                description: widget.translationService.translate(HabitTranslationKeys.daysUnit),
-                value: _periodDays,
-                field: 'period',
-              ),
+
+              if (_hasGoal) ...[
+                const SizedBox(height: AppTheme.sizeLarge),
+                _buildNumberInput(
+                  sectionTitle: widget.translationService.translate(HabitTranslationKeys.dailyTargetLabel),
+                  title: widget.translationService.translate(HabitTranslationKeys.dailyTargetLabel),
+                  description: widget.translationService.translate(HabitTranslationKeys.dailyTargetHint),
+                  value: _dailyTarget,
+                  field: 'daily',
+                  icon: Icons.adjust,
+                ),
+                const SizedBox(height: AppTheme.sizeLarge),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                      child: Text(
+                        widget.translationService.translate(HabitTranslationKeys.periodDays),
+                        style: AppTheme.labelLarge,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(AppTheme.sizeLarge),
+                      decoration: BoxDecoration(
+                        color: AppTheme.surface1,
+                        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              StyledIcon(Icons.date_range, isActive: _hasGoal),
+                              const SizedBox(width: AppTheme.sizeLarge),
+                              Expanded(
+                                child: _buildInputContent(
+                                  title: widget.translationService.translate(HabitTranslationKeys.periodDays),
+                                  description: widget.translationService.translate(HabitTranslationKeys.daysUnit),
+                                  value: _periodDays,
+                                  field: 'period',
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_periodDays > 1) ...[
+                            const SizedBox(height: AppTheme.sizeLarge),
+                            Row(
+                              children: [
+                                StyledIcon(Icons.repeat, isActive: _hasGoal),
+                                const SizedBox(width: AppTheme.sizeLarge),
+                                Expanded(
+                                  child: _buildInputContent(
+                                    title: widget.translationService.translate(HabitTranslationKeys.targetFrequency),
+                                    description: widget.translationService.translate(HabitTranslationKeys.timesUnit),
+                                    value: _targetFrequency,
+                                    field: 'frequency',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _cancelDialog,
-          child: Text(widget.translationService.translate(SharedTranslationKeys.cancelButton)),
-        ),
-        FilledButton(
-          onPressed: _confirmDialog,
-          child: Text(widget.translationService.translate(SharedTranslationKeys.doneButton)),
-        ),
-      ],
     );
   }
 }

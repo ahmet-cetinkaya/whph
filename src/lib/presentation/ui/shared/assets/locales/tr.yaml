@@ -197,6 +197,7 @@ shared:
   messages:
     confirm_delete: Bu öğeyi silmek istediğinize emin misiniz?
     no_items_found: Öğe yok
+    loading: Yükleniyor...
   nav:
     items:
       app_usages: Uygulama Kullanımları
@@ -249,6 +250,7 @@ shared:
     remove_criteria: Kriteri Kaldır
     reset_to_default: Varsayılana Sıfırla
     sort: Sırala
+    criteria: Sıralama ölçütleri
   statistics:
     daily_usage:
       description: Haftanın günlerine göre toplam kullanım süresini gösterir
@@ -256,6 +258,13 @@ shared:
     hourly_usage:
       description: Günün saatlerine göre toplam kullanım süresini gösterir
       title: Saatlik Kullanım
+    total_usage_label: Toplam Kullanım
+    average_daily_label: Günlük Ortalama
+    peak_hour_label: Zirve Saati
+    select_date_range_message: İstatistikleri filtrelemek için tarih aralığı seçin
+    select_date_range_description:
+      Kullanım istatistiklerini görüntülemek için özel
+      tarih aralığı seçin
   time:
     not_set: Ayarlanmadı
     minutes: dakika

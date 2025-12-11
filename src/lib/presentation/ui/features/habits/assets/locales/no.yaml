@@ -115,17 +115,17 @@ habits:
     toggling_archive: Feilet med å veksle arkivstatus
   goals:
     current_goal: Mål
-    days_unit: dager
+    days_unit: Dager i denne perioden
     description: |
       Vil du øve vanen med en spesifikk frekvens i stedet for
       hver dag? Sett da et tilpasset mål.
     enable: Aktiver Tilpassede Mål
     goal: Tilpasset Mål
     goal_format: "{count} ganger i {dayCount} dager"
-    period_days: Periode Dager
+    period_days: Periode Varighet
     settings: Tilpasset Mål Innstillinger
-    target_frequency: Periode Frekvens
-    times_unit: ganger per periode
+    target_frequency: Mål Frekvens
+    times_unit: Ganger å fullføre i denne perioden
   list:
     all_habits_done: Alle vaner fullført!
     no_habits_found: Ingen vaner
@@ -246,3 +246,10 @@ habits:
     filter_search:
       title: Filter & Søk
       description: Finn spesifikke vaner ved hjelp av etiketter, søkeord eller filtrer etter arkivert status. Organiser og håndter vanene dine effektivt for å forbli fokusert på det som betyr noe.
+  list_options:
+    view_style_tooltip: Endre visningsstil
+  accessibility:
+    details_hint: Se vanedetaljer
+    open_details_hint: Åpne vanedetaljer
+    complete_habit_hint: Fullfør vane
+    completion_status_hint: Vanens completion status

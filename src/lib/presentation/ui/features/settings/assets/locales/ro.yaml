@@ -68,6 +68,7 @@ settings:
     sounds_disabled: Sunete dezactivate
     all_sounds_enabled: Toate sunetele activate
     some_sounds_enabled: Unele sunete activate
+    settings: Setări sunet
   permissions:
     app_usage:
       description:
@@ -394,3 +395,10 @@ settings:
       load_error: Eroare la încărcarea timpului estimat implicit
       save_error: Eroare la salvarea timpului estimat implicit
       key_not_found: Cheia timpului estimat implicit nu a fost găsită
+  section:
+    general: General
+    appearance: Aspect
+    notifications: Notificări
+    data_sync: Date & sincronizare
+    advanced: Avansat
+    about: Despre

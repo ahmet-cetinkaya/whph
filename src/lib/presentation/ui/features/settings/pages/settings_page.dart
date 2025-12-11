@@ -16,6 +16,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/components/import_export_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/advanced_settings_tile.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class SettingsPage extends StatefulWidget {
   static const String route = '/settings';
@@ -82,48 +83,67 @@ class _SettingsPageState extends State<SettingsPage> {
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(top: AppTheme.sizeSmall),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.sizeMedium,
+                vertical: AppTheme.sizeSmall,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8.0,
                 children: [
-                  // Startup
-                  StartupSettings(
-                    onLoaded: _onStartupLoaded,
+                  // General Section
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionGeneral)),
+                  const SizedBox(height: AppTheme.sizeSmall),
+                  Column(
+                    spacing: AppTheme.sizeSmall,
+                    children: [
+                      LanguageSettings(),
+                      StartupSettings(onLoaded: _onStartupLoaded),
+                      if (PlatformUtils.isMobile) PermissionSettings(),
+                    ],
                   ),
+                  const SizedBox(height: AppTheme.sizeLarge),
 
-                  // Notification
-                  NotificationSettings(
-                    onLoaded: _onNotificationLoaded,
+                  // Appearance Section
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAppearance)),
+                  const SizedBox(height: AppTheme.sizeSmall),
+                  Column(
+                    spacing: AppTheme.sizeSmall,
+                    children: [
+                      ThemeSettings(onLoaded: _onThemeLoaded),
+                      SoundSettings(onLoaded: _onSoundLoaded),
+                    ],
                   ),
+                  const SizedBox(height: AppTheme.sizeLarge),
 
-                  // Theme Settings
-                  ThemeSettings(
-                    onLoaded: _onThemeLoaded,
+                  // Notifications Section
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionNotifications)),
+                  const SizedBox(height: AppTheme.sizeSmall),
+                  NotificationSettings(onLoaded: _onNotificationLoaded),
+                  const SizedBox(height: AppTheme.sizeLarge),
+
+                  // Data & Sync Section
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionDataSync)),
+                  const SizedBox(height: AppTheme.sizeSmall),
+                  Column(
+                    spacing: AppTheme.sizeSmall,
+                    children: [
+                      SyncDevicesTile(),
+                      const ImportExportSettings(),
+                    ],
                   ),
+                  const SizedBox(height: AppTheme.sizeLarge),
 
-                  // Sound Settings
-                  SoundSettings(
-                    onLoaded: _onSoundLoaded,
-                  ),
-
-                  // Permissions
-                  if (PlatformUtils.isMobile) PermissionSettings(),
-
-                  // Language
-                  LanguageSettings(),
-
-                  // Sync Devices
-                  SyncDevicesTile(),
-
-                  // Import/Export Settings
-                  const ImportExportSettings(),
-
-                  // Advanced Settings
+                  // Advanced Section
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAdvanced)),
+                  const SizedBox(height: AppTheme.sizeSmall),
                   const AdvancedSettingsTile(),
+                  const SizedBox(height: AppTheme.sizeLarge),
 
-                  // About
+                  // About Section
+                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAbout)),
+                  const SizedBox(height: AppTheme.sizeSmall),
                   AboutTile(),
+                  const SizedBox(height: AppTheme.sizeXLarge),
                 ],
               ),
             ),

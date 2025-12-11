@@ -10,10 +10,14 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
+import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 class SoundSettings extends StatefulWidget {
   final VoidCallback? onLoaded;
@@ -96,9 +100,6 @@ class _SoundSettingsState extends State<SoundSettings> {
 
         setting = await _settingRepository.getByKey(SettingKeys.timerAlarmSoundEnabled);
         _timerAlarmSoundEnabled = setting?.getValue<bool>() ?? true;
-
-        // Auto-disable master sound if all individual sounds are disabled
-        // This is now handled by optimistic UI updates and background save
 
         return true;
       },
@@ -183,126 +184,60 @@ class _SoundSettingsState extends State<SoundSettings> {
     });
   }
 
-  void _handleSubSettingToggle(
-      String settingKey, bool value, Function(bool) setStateFunction, void Function(VoidCallback) updateDialogState) {
-    // Optimistic UI update - update both states immediately
-    void updateState() {
-      setStateFunction(value);
-      // Apply master-slave rules immediately
-      _applyMasterSlaveRulesForSubSettingChange(settingKey, value);
-    }
-
-    updateDialogState(updateState);
-    setState(updateState);
-    // Save all sound settings in background without blocking UI
-    _saveAllSoundSettingsWithDebounce();
-  }
-
   void _showSoundModal() {
-    showDialog(
+    ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          return AlertDialog(
-            title: Text(_translationService.translate(SettingsTranslationKeys.soundTitle)),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 16.0,
-                children: [
-                  // Master sound toggle
-                  SwitchListTile(
-                    title: Text(_translationService.translate(SettingsTranslationKeys.soundEnabled)),
-                    subtitle: Text(_translationService.translate(SettingsTranslationKeys.soundSubtitle)),
-                    value: _soundEnabled,
-                    onChanged: (value) {
-                      // Optimistic UI update - update both states immediately
-                      void updateState() {
-                        _soundEnabled = value;
-                        // Show immediate visual feedback for Rule 3 & 4
-                        if (value) {
-                          _taskCompletionSoundEnabled = true;
-                          _habitCompletionSoundEnabled = true;
-                          _timerControlSoundEnabled = true;
-                          _timerAlarmSoundEnabled = true;
-                        } else {
-                          _taskCompletionSoundEnabled = false;
-                          _habitCompletionSoundEnabled = false;
-                          _timerControlSoundEnabled = false;
-                          _timerAlarmSoundEnabled = false;
-                        }
-                      }
-
-                      setDialogState(updateState);
-                      setState(updateState);
-                      // Save all sound settings in background without blocking UI
-                      _saveAllSoundSettingsWithDebounce();
-                    },
-                  ),
-                  const Divider(),
-                  // Individual sound toggles with optimistic updates and background saving
-                  SwitchListTile(
-                    title: Text(_translationService.translate(SettingsTranslationKeys.taskCompletionSound)),
-                    value: _taskCompletionSoundEnabled,
-                    onChanged: (value) {
-                      _handleSubSettingToggle(
-                        SettingKeys.taskCompletionSoundEnabled,
-                        value,
-                        (newValue) => _taskCompletionSoundEnabled = newValue,
-                        setDialogState,
-                      );
-                    },
-                  ),
-                  SwitchListTile(
-                    title: Text(_translationService.translate(SettingsTranslationKeys.habitCompletionSound)),
-                    value: _habitCompletionSoundEnabled,
-                    onChanged: (value) {
-                      _handleSubSettingToggle(
-                        SettingKeys.habitCompletionSoundEnabled,
-                        value,
-                        (newValue) => _habitCompletionSoundEnabled = newValue,
-                        setDialogState,
-                      );
-                    },
-                  ),
-                  SwitchListTile(
-                    title: Text(_translationService.translate(SettingsTranslationKeys.timerControlSound)),
-                    value: _timerControlSoundEnabled,
-                    onChanged: (value) {
-                      _handleSubSettingToggle(
-                        SettingKeys.timerControlSoundEnabled,
-                        value,
-                        (newValue) => _timerControlSoundEnabled = newValue,
-                        setDialogState,
-                      );
-                    },
-                  ),
-                  SwitchListTile(
-                    title: Text(_translationService.translate(SettingsTranslationKeys.timerAlarmSound)),
-                    value: _timerAlarmSoundEnabled,
-                    onChanged: (value) {
-                      _handleSubSettingToggle(
-                        SettingKeys.timerAlarmSoundEnabled,
-                        value,
-                        (newValue) => _timerAlarmSoundEnabled = newValue,
-                        setDialogState,
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  // State is updated optimistically, so no need to reload here.
-                },
-                child: Text(_translationService.translate(SharedTranslationKeys.closeButton)),
-              ),
-            ],
-          );
+      size: DialogSize.large,
+      child: _SoundDialog(
+        soundEnabled: _soundEnabled,
+        taskCompletionSoundEnabled: _taskCompletionSoundEnabled,
+        habitCompletionSoundEnabled: _habitCompletionSoundEnabled,
+        timerControlSoundEnabled: _timerControlSoundEnabled,
+        timerAlarmSoundEnabled: _timerAlarmSoundEnabled,
+        onSoundEnabledChanged: (value) {
+          setState(() {
+            _soundEnabled = value;
+            if (value) {
+              _taskCompletionSoundEnabled = true;
+              _habitCompletionSoundEnabled = true;
+              _timerControlSoundEnabled = true;
+              _timerAlarmSoundEnabled = true;
+            } else {
+              _taskCompletionSoundEnabled = false;
+              _habitCompletionSoundEnabled = false;
+              _timerControlSoundEnabled = false;
+              _timerAlarmSoundEnabled = false;
+            }
+          });
+          _saveAllSoundSettingsWithDebounce();
+        },
+        onTaskCompletionSoundChanged: (value) {
+          setState(() {
+            _taskCompletionSoundEnabled = value;
+            _applyMasterSlaveRulesForSubSettingChange(SettingKeys.taskCompletionSoundEnabled, value);
+          });
+          _saveAllSoundSettingsWithDebounce();
+        },
+        onHabitCompletionSoundChanged: (value) {
+          setState(() {
+            _habitCompletionSoundEnabled = value;
+            _applyMasterSlaveRulesForSubSettingChange(SettingKeys.habitCompletionSoundEnabled, value);
+          });
+          _saveAllSoundSettingsWithDebounce();
+        },
+        onTimerControlSoundChanged: (value) {
+          setState(() {
+            _timerControlSoundEnabled = value;
+            _applyMasterSlaveRulesForSubSettingChange(SettingKeys.timerControlSoundEnabled, value);
+          });
+          _saveAllSoundSettingsWithDebounce();
+        },
+        onTimerAlarmSoundChanged: (value) {
+          setState(() {
+            _timerAlarmSoundEnabled = value;
+            _applyMasterSlaveRulesForSubSettingChange(SettingKeys.timerAlarmSoundEnabled, value);
+          });
+          _saveAllSoundSettingsWithDebounce();
         },
       ),
     );
@@ -334,37 +269,261 @@ class _SoundSettingsState extends State<SoundSettings> {
     return StreamBuilder<void>(
       stream: _themeService.themeChanges,
       builder: (context, snapshot) {
-        final theme = Theme.of(context);
-
-        return Card(
-          child: ListTile(
-            leading: Icon(
-              Icons.volume_up,
-              color: theme.colorScheme.onSurface,
-            ),
-            title: Text(
-              _translationService.translate(SettingsTranslationKeys.soundTitle),
-              style: AppTheme.bodyMedium,
-            ),
-            subtitle: _isLoading
-                ? null
-                : Text(
-                    _getSoundDescription(),
-                    style: AppTheme.bodySmall.copyWith(
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                  ),
-            trailing: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.chevron_right),
-            onTap: _isLoading ? null : _showSoundModal,
-          ),
+        return SettingsMenuTile(
+          icon: Icons.volume_up,
+          title: _translationService.translate(SettingsTranslationKeys.soundTitle),
+          subtitle: _isLoading ? null : _getSoundDescription(),
+          trailing: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : null,
+          onTap: _isLoading ? () {} : _showSoundModal,
+          isActive: true,
         );
       },
+    );
+  }
+}
+
+class _SoundDialog extends StatefulWidget {
+  final bool soundEnabled;
+  final bool taskCompletionSoundEnabled;
+  final bool habitCompletionSoundEnabled;
+  final bool timerControlSoundEnabled;
+  final bool timerAlarmSoundEnabled;
+  final ValueChanged<bool> onSoundEnabledChanged;
+  final ValueChanged<bool> onTaskCompletionSoundChanged;
+  final ValueChanged<bool> onHabitCompletionSoundChanged;
+  final ValueChanged<bool> onTimerControlSoundChanged;
+  final ValueChanged<bool> onTimerAlarmSoundChanged;
+
+  const _SoundDialog({
+    required this.soundEnabled,
+    required this.taskCompletionSoundEnabled,
+    required this.habitCompletionSoundEnabled,
+    required this.timerControlSoundEnabled,
+    required this.timerAlarmSoundEnabled,
+    required this.onSoundEnabledChanged,
+    required this.onTaskCompletionSoundChanged,
+    required this.onHabitCompletionSoundChanged,
+    required this.onTimerControlSoundChanged,
+    required this.onTimerAlarmSoundChanged,
+  });
+
+  @override
+  State<_SoundDialog> createState() => _SoundDialogState();
+}
+
+class _SoundDialogState extends State<_SoundDialog> {
+  final _translationService = container.resolve<ITranslationService>();
+  late bool _soundEnabled;
+  late bool _taskCompletionSoundEnabled;
+  late bool _habitCompletionSoundEnabled;
+  late bool _timerControlSoundEnabled;
+  late bool _timerAlarmSoundEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    _soundEnabled = widget.soundEnabled;
+    _taskCompletionSoundEnabled = widget.taskCompletionSoundEnabled;
+    _habitCompletionSoundEnabled = widget.habitCompletionSoundEnabled;
+    _timerControlSoundEnabled = widget.timerControlSoundEnabled;
+    _timerAlarmSoundEnabled = widget.timerAlarmSoundEnabled;
+  }
+
+  @override
+  void didUpdateWidget(_SoundDialog oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.soundEnabled != widget.soundEnabled) {
+      _soundEnabled = widget.soundEnabled;
+    }
+    if (oldWidget.taskCompletionSoundEnabled != widget.taskCompletionSoundEnabled) {
+      _taskCompletionSoundEnabled = widget.taskCompletionSoundEnabled;
+    }
+    if (oldWidget.habitCompletionSoundEnabled != widget.habitCompletionSoundEnabled) {
+      _habitCompletionSoundEnabled = widget.habitCompletionSoundEnabled;
+    }
+    if (oldWidget.timerControlSoundEnabled != widget.timerControlSoundEnabled) {
+      _timerControlSoundEnabled = widget.timerControlSoundEnabled;
+    }
+    if (oldWidget.timerAlarmSoundEnabled != widget.timerAlarmSoundEnabled) {
+      _timerAlarmSoundEnabled = widget.timerAlarmSoundEnabled;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Text(
+          _translationService.translate(SettingsTranslationKeys.soundTitle),
+          style: AppTheme.headlineSmall,
+        ),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Main Toggle Card
+              Card(
+                elevation: 0,
+                color: AppTheme.surface1,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                child: SwitchListTile.adaptive(
+                  value: _soundEnabled,
+                  onChanged: (value) {
+                    setState(() {
+                      _soundEnabled = value;
+                      if (value) {
+                        _taskCompletionSoundEnabled = true;
+                        _habitCompletionSoundEnabled = true;
+                        _timerControlSoundEnabled = true;
+                        _timerAlarmSoundEnabled = true;
+                      } else {
+                        _taskCompletionSoundEnabled = false;
+                        _habitCompletionSoundEnabled = false;
+                        _timerControlSoundEnabled = false;
+                        _timerAlarmSoundEnabled = false;
+                      }
+                    });
+                    widget.onSoundEnabledChanged(value);
+                  },
+                  title: Text(
+                    _translationService.translate(SettingsTranslationKeys.soundEnabled),
+                    style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    _translationService.translate(SettingsTranslationKeys.soundSubtitle),
+                    style: AppTheme.bodySmall,
+                  ),
+                  secondary: StyledIcon(
+                    _soundEnabled ? Icons.volume_up : Icons.volume_off,
+                    isActive: _soundEnabled,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: AppTheme.sizeLarge),
+
+              // Animated Sub-settings Section
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                      child: Text(
+                        _translationService.translate(SettingsTranslationKeys.soundSettings),
+                        style: AppTheme.labelLarge,
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.surface1,
+                        borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                      ),
+                      child: Column(
+                        children: [
+                          _buildSoundOption(
+                            title: _translationService.translate(SettingsTranslationKeys.taskCompletionSound),
+                            value: _taskCompletionSoundEnabled,
+                            icon: Icons.check_circle_outline,
+                            onChanged: (value) {
+                              setState(() {
+                                _taskCompletionSoundEnabled = value;
+                                if (value) _soundEnabled = true;
+                              });
+                              widget.onTaskCompletionSoundChanged(value);
+                            },
+                          ),
+                          Divider(height: 1, color: theme.dividerColor, indent: 56, endIndent: 16),
+                          _buildSoundOption(
+                            title: _translationService.translate(SettingsTranslationKeys.habitCompletionSound),
+                            value: _habitCompletionSoundEnabled,
+                            icon: Icons.repeat,
+                            onChanged: (value) {
+                              setState(() {
+                                _habitCompletionSoundEnabled = value;
+                                if (value) _soundEnabled = true;
+                              });
+                              widget.onHabitCompletionSoundChanged(value);
+                            },
+                          ),
+                          Divider(height: 1, color: theme.dividerColor, indent: 56, endIndent: 16),
+                          _buildSoundOption(
+                            title: _translationService.translate(SettingsTranslationKeys.timerControlSound),
+                            value: _timerControlSoundEnabled,
+                            icon: Icons.play_circle_outline,
+                            onChanged: (value) {
+                              setState(() {
+                                _timerControlSoundEnabled = value;
+                                if (value) _soundEnabled = true;
+                              });
+                              widget.onTimerControlSoundChanged(value);
+                            },
+                          ),
+                          Divider(height: 1, color: theme.dividerColor, indent: 56, endIndent: 16),
+                          _buildSoundOption(
+                            title: _translationService.translate(SettingsTranslationKeys.timerAlarmSound),
+                            value: _timerAlarmSoundEnabled,
+                            icon: Icons.alarm,
+                            onChanged: (value) {
+                              setState(() {
+                                _timerAlarmSoundEnabled = value;
+                                if (value) _soundEnabled = true;
+                              });
+                              widget.onTimerAlarmSoundChanged(value);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                crossFadeState: _soundEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 300),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSoundOption({
+    required String title,
+    required bool value,
+    required IconData icon,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return SwitchListTile.adaptive(
+      value: value,
+      onChanged: onChanged,
+      title: Text(
+        title,
+        style: AppTheme.bodyMedium,
+      ),
+      secondary: StyledIcon(
+        icon,
+        isActive: value,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: 4),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
     );
   }
 }

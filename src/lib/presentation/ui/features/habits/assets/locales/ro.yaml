@@ -115,17 +115,17 @@ habits:
     toggling_archive: Eșec la comutarea stării de arhivare
   goals:
     current_goal: Țintă
-    days_unit: zile
+    days_unit: Zile în această perioadă
     description: |
       Vrei să practici obiceiul cu o frecvență specifică în loc de
       în fiecare zi? Atunci setează o țintă personalizată.
     enable: Activează Ținte Personalizate
     goal: Țintă Personalizată
     goal_format: "{count} ori în {dayCount} zile"
-    period_days: Zile Perioadă
+    period_days: Durata Perioadei
     settings: Setări Țintă Personalizată
-    target_frequency: Frecvența Perioadei
-    times_unit: ori pe perioadă
+    target_frequency: Frecvența Țintă
+    times_unit: Ori de finalizat în această perioadă
   list:
     all_habits_done: Toate obiceiurile finalizate!
     no_habits_found: Niciun obicei
@@ -201,3 +201,10 @@ habits:
   tags:
     add_tooltip: Adaugă etichetă
     select_tooltip: Selectați etichetă
+  list_options:
+    view_style_tooltip: Schimbă stilul vizualizării
+  accessibility:
+    details_hint: Vezi detalii obicei
+    open_details_hint: Deschide detalii obicei
+    complete_habit_hint: Completează obiceiul
+    completion_status_hint: Starea de completion a obiceiului
