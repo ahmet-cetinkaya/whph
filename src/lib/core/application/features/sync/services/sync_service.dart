@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';

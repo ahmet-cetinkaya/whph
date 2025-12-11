@@ -4,7 +4,7 @@ import 'package:whph/core/application/features/sync/commands/delete_sync_command
 import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
 import 'package:whph/core/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/core/application/features/sync/commands/stop_sync_command.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/commands/update_sync_device_ip_command.dart';
 import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';

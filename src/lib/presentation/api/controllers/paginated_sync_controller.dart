@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/main.dart';
 

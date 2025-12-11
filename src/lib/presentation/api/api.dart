@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
