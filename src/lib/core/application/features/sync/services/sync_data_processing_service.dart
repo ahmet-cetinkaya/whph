@@ -7,7 +7,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_repository.d
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Implementation of sync data processing service
 class SyncDataProcessingService implements ISyncDataProcessingService {

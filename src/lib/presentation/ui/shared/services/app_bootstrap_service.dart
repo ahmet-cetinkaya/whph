@@ -14,7 +14,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/presentation/ui/ui_presentation_container.dart';
 import 'package:acore/acore.dart';

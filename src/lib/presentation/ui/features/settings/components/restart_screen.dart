@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

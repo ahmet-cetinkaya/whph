@@ -21,7 +21,7 @@ import 'package:whph/core/application/features/sync/models/sync_role.dart';
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class SyncQrScanButton extends StatelessWidget {
   final Mediator _mediator = container.resolve<Mediator>();

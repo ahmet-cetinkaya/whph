@@ -4,7 +4,7 @@ import 'package:whph/infrastructure/persistence/persistence_container.dart';
 import 'package:whph/infrastructure/infrastructure_container.dart';
 import 'package:whph/core/application/application_container.dart';
 import 'package:whph/presentation/ui/ui_presentation_container.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';

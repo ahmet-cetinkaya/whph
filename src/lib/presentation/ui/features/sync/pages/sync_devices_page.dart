@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/commands/delete_sync_command.dart';

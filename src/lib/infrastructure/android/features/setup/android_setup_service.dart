@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 
 class AndroidSetupService extends BaseSetupService {

@@ -20,7 +20,7 @@ import 'package:whph/core/domain/features/habits/habit_tag.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Demo data service implementation
 ///

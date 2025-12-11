@@ -18,31 +18,31 @@ class StreamLogger implements ILogger {
         _includeStackTrace = includeStackTrace;
 
   @override
-  void debug(String message, [Object? error, StackTrace? stackTrace]) {
-    _log(LogLevel.debug, message, error, stackTrace);
+  void debug(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    _log(LogLevel.debug, message, error, stackTrace, component);
   }
 
   @override
-  void info(String message, [Object? error, StackTrace? stackTrace]) {
-    _log(LogLevel.info, message, error, stackTrace);
+  void info(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    _log(LogLevel.info, message, error, stackTrace, component);
   }
 
   @override
-  void warning(String message, [Object? error, StackTrace? stackTrace]) {
-    _log(LogLevel.warning, message, error, stackTrace);
+  void warning(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    _log(LogLevel.warning, message, error, stackTrace, component);
   }
 
   @override
-  void error(String message, [Object? error, StackTrace? stackTrace]) {
-    _log(LogLevel.error, message, error, stackTrace);
+  void error(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    _log(LogLevel.error, message, error, stackTrace, component);
   }
 
   @override
-  void fatal(String message, [Object? error, StackTrace? stackTrace]) {
-    _log(LogLevel.fatal, message, error, stackTrace);
+  void fatal(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    _log(LogLevel.fatal, message, error, stackTrace, component);
   }
 
-  void _log(LogLevel level, String message, Object? error, StackTrace? stackTrace) {
+  void _log(LogLevel level, String message, Object? error, StackTrace? stackTrace, String? component) {
     if (!level.isAtLeast(_minLevel)) return;
 
     final buffer = StringBuffer();
@@ -55,6 +55,11 @@ class StreamLogger implements ILogger {
 
     // Standardized format: [LEVEL] [COMPONENT] message
     buffer.write('[${level.name.toUpperCase()}] ');
+
+    if (component != null) {
+      buffer.write('[$component] ');
+    }
+
     buffer.write(message);
 
     if (error != null) {

@@ -6,7 +6,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import '../models/widget_data.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Implementation of sync communication service for WebSocket-based sync operations
 class SyncCommunicationService implements ISyncCommunicationService {

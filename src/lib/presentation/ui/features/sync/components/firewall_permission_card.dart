@@ -12,7 +12,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_setup_servic
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/presentation/ui/shared/components/accordion_widget.dart';
 

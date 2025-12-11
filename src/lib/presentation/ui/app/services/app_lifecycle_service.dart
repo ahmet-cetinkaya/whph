@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/corePackages/acore/lib/utils/utils.dart' show PlatformUtils;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service responsible for managing app lifecycle events
 class AppLifecycleService with WidgetsBindingObserver {

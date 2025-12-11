@@ -10,7 +10,7 @@ import 'package:whph/infrastructure/android/constants/android_app_constants.dart
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Implementation of the reminder service for Android platforms using native APIs
 class AndroidReminderService implements IReminderService {

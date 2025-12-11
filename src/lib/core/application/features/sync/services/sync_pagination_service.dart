@@ -9,7 +9,7 @@ import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Implementation of sync pagination service
 class SyncPaginationService implements ISyncPaginationService {

@@ -4,7 +4,7 @@ import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Configuration for a recurring reminder
 class _RecurringReminderConfig {

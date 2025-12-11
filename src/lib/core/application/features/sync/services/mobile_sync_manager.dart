@@ -1,4 +1,4 @@
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/models/sync_role.dart';
 import 'package:whph/presentation/ui/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';

@@ -10,7 +10,7 @@ import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart'
 import 'package:whph/presentation/ui/shared/components/color_picker.dart';
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class ThemeSettings extends StatefulWidget {
   final VoidCallback? onLoaded;

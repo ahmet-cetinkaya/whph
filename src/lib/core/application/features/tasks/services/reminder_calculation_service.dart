@@ -1,7 +1,7 @@
 import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class ReminderCalculationService extends IReminderCalculationService {
   final ITaskRecurrenceService _recurrenceService;

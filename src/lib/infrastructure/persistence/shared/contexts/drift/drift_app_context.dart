@@ -7,7 +7,7 @@ import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';

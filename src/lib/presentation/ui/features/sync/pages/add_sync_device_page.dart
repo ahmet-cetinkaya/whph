@@ -20,7 +20,7 @@ import 'package:whph/core/application/features/sync/commands/save_sync_command.d
 import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart' show BusinessException, PlatformUtils;
 
 /// Page for adding new sync devices with network discovery capabilities

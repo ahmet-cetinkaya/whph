@@ -8,7 +8,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 enum TaskSortFields {
   createdDate,
