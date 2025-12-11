@@ -143,7 +143,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
       ),
     );
 
-    if (result == true) {
+    if (result == true && mounted) {
       await _controller.loadHabitStatisticsOnly(widget.habitId, context);
       await _controller.refreshTotalDuration(widget.habitId);
     }

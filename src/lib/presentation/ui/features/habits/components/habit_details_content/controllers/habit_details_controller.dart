@@ -82,11 +82,11 @@ class HabitDetailsController extends ChangeNotifier {
 
   /// Initialize controller with habit ID
   Future<void> initialize(String habitId, BuildContext context) async {
-    await loadHabit(habitId, context);
-    await loadHabitRecordsForMonth(_currentMonth, habitId, context);
-    await loadHabitTags(habitId, context);
-    await refreshTotalDuration(habitId);
-    _setupEventListeners(habitId, context);
+    if (context.mounted) await loadHabit(habitId, context);
+    if (context.mounted) await loadHabitRecordsForMonth(_currentMonth, habitId, context);
+    if (context.mounted) await loadHabitTags(habitId, context);
+    if (context.mounted) await refreshTotalDuration(habitId);
+    if (context.mounted) _setupEventListeners(habitId, context);
   }
 
   void _setupEventListeners(String habitId, BuildContext context) {
@@ -407,6 +407,7 @@ class HabitDetailsController extends ChangeNotifier {
 
     if (result != null) {
       _forceTagsRefresh = true;
+      if (!context.mounted) return false;
       await loadHabitTags(habitId, context);
       return true;
     }
@@ -425,6 +426,7 @@ class HabitDetailsController extends ChangeNotifier {
 
     if (result != null) {
       _forceTagsRefresh = true;
+      if (!context.mounted) return false;
       await loadHabitTags(habitId, context);
       return true;
     }
@@ -485,9 +487,9 @@ class HabitDetailsController extends ChangeNotifier {
         await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () async {
-        await loadHabitRecordsForMonth(_currentMonth, habitId, context);
-        await loadHabitStatisticsOnly(habitId, context);
-        await refreshTotalDuration(habitId);
+        if (context.mounted) await loadHabitRecordsForMonth(_currentMonth, habitId, context);
+        if (context.mounted) await loadHabitStatisticsOnly(habitId, context);
+        if (context.mounted) await refreshTotalDuration(habitId);
         _habitsService.notifyHabitRecordRemoved(habitId);
         onHabitUpdated?.call();
       },

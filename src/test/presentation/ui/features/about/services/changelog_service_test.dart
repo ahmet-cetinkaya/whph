@@ -1,27 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:whph/presentation/ui/features/about/services/changelog_service.dart';
-import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
-
-import 'changelog_service_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
   group('ChangelogService', () {
     late ChangelogService service;
-    late MockClient mockClient;
 
     setUp(() {
-      mockClient = MockClient();
       service = ChangelogService();
     });
 
     test('should return changelog entry when successful fetch', () async {
       // Arrange
       const locale = 'en';
-      const buildNumber = '65';
 
       // Act
       final result = await service.fetchChangelog(locale);
@@ -36,7 +29,6 @@ void main() {
     test('should handle missing changelog gracefully', () async {
       // Arrange
       const locale = 'xx'; // Non-existent locale
-      const buildNumber = '999'; // Non-existent build number
 
       // Act
       final result = await service.fetchChangelog(locale);
