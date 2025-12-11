@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/sync/models/paginated_sync_data.d
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {
@@ -187,18 +187,18 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     int pageSize = SyncPaginationConfig.defaultDatabasePageSize,
     String? entityType,
   }) async {
-    Logger.debug('📄 Getting paginated sync data for ${table.actualTableName} - Page $pageIndex, Size $pageSize');
+    Logger.debug('Getting paginated sync data for ${table.actualTableName} - Page $pageIndex, Size $pageSize');
 
     // Ensure page size doesn't exceed maximum
     pageSize = pageSize > SyncPaginationConfig.maxPageSize ? SyncPaginationConfig.maxPageSize : pageSize;
 
     // Handle null lastSyncDate by using a very early date for initial sync
     final effectiveLastSyncDate = lastSyncDate;
-    Logger.debug('🕒 Using lastSyncDate: $effectiveLastSyncDate for ${table.actualTableName}');
+    Logger.debug('Using lastSyncDate: $effectiveLastSyncDate for ${table.actualTableName}');
 
     // Check if this is an initial sync (lastSyncDate is very old, indicating first sync)
     final isInitialSync = effectiveLastSyncDate.isBefore(DateTime(2010));
-    Logger.debug('🔄 Initial sync detected: $isInitialSync for ${table.actualTableName}');
+    Logger.debug('Initial sync detected: $isInitialSync for ${table.actualTableName}');
 
     // Get counts for each operation type
     final createCount = isInitialSync
@@ -236,9 +236,9 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     final isLastPage = pageIndex >= totalPages - 1;
 
     Logger.info(
-        '📊 Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems (isInitialSync: $isInitialSync)');
+        'Sync data counts for ${table.actualTableName}: Create=$createCount, Update=$updateCount, Delete=$deleteCount, Total=$totalItems (isInitialSync: $isInitialSync)');
     Logger.info(
-        '🔍 Total records in ${table.actualTableName}: $totalRecordsCount (active records), using sync filter date: $effectiveLastSyncDate');
+        'Total records in ${table.actualTableName}: $totalRecordsCount (active records), using sync filter date: $effectiveLastSyncDate');
 
     // Calculate which items to fetch for this page
     final offset = pageIndex * pageSize;
@@ -301,7 +301,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     );
 
     Logger.debug(
-        '📦 Page $pageIndex result: ${createSync.length} creates, ${updateSync.length} updates, ${deleteSync.length} deletes');
+        ' Page $pageIndex result: ${createSync.length} creates, ${updateSync.length} updates, ${deleteSync.length} deletes');
 
     return PaginatedSyncData<TEntity>(
       data: syncData,

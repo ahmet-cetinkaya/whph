@@ -9,7 +9,7 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;

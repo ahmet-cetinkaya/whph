@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/api/api.dart';
 import 'package:acore/acore.dart';
 

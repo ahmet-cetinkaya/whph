@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 
 class AndroidSyncService extends SyncService {

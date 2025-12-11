@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
@@ -223,12 +223,12 @@ class ReminderService {
     final taskId = _tasksService.onTaskCompleted.value;
     if (taskId == null) return;
 
-    Logger.debug('🔔 ReminderService: Task completed event received for task: $taskId');
+    Logger.debug('ReminderService: Task completed event received for task: $taskId');
 
     // Immediately cancel all reminders for the completed task
     await cancelRemindersForCompletedTask(taskId);
 
-    Logger.debug('✅ ReminderService: Completed task reminder cancellation for task: $taskId');
+    Logger.debug('ReminderService: Completed task reminder cancellation for task: $taskId');
   }
 
   /// Schedule a reminder for a task based on its reminder settings
@@ -253,17 +253,17 @@ class ReminderService {
 
       // Skip if reminder calculation failed
       if (reminderTime == null) {
-        Logger.warning('⚠️ ReminderService: Failed to calculate planned reminder time for task ${task.id}');
+        Logger.warning('ReminderService: Failed to calculate planned reminder time for task ${task.id}');
         return;
       }
 
-      Logger.debug('🔔 ReminderService: Scheduling planned reminder for task ${task.id}');
-      Logger.debug('   Planned Date: ${task.plannedDate}');
-      Logger.debug('   Reminder Time: ${task.plannedDateReminderTime}');
-      Logger.debug('   Custom Offset: ${task.plannedDateReminderCustomOffset}');
-      Logger.debug('   Calculated Reminder Time: $reminderTime');
-      Logger.debug('   Current Time: ${DateTime.now()}');
-      Logger.debug('   Is Future: ${reminderTime.isAfter(DateTime.now())}');
+      Logger.debug('ReminderService: Scheduling planned reminder for task ${task.id}');
+      Logger.debug('Planned Date: ${task.plannedDate}');
+      Logger.debug('Reminder Time: ${task.plannedDateReminderTime}');
+      Logger.debug('Custom Offset: ${task.plannedDateReminderCustomOffset}');
+      Logger.debug('Calculated Reminder Time: $reminderTime');
+      Logger.debug('Current Time: ${DateTime.now()}');
+      Logger.debug('Is Future: ${reminderTime.isAfter(DateTime.now())}');
 
       if (reminderTime.isAfter(DateTime.now())) {
         // Pre-translate notification strings to ensure they work in background
@@ -297,17 +297,17 @@ class ReminderService {
 
       // Skip if reminder calculation failed
       if (reminderTime == null) {
-        Logger.warning('⚠️ ReminderService: Failed to calculate deadline reminder time for task ${task.id}');
+        Logger.warning('ReminderService: Failed to calculate deadline reminder time for task ${task.id}');
         return;
       }
 
-      Logger.debug('🔔 ReminderService: Scheduling deadline reminder for task ${task.id}');
-      Logger.debug('   Deadline Date: ${task.deadlineDate}');
-      Logger.debug('   Reminder Time: ${task.deadlineDateReminderTime}');
-      Logger.debug('   Custom Offset: ${task.deadlineDateReminderCustomOffset}');
-      Logger.debug('   Calculated Reminder Time: $reminderTime');
-      Logger.debug('   Current Time: ${DateTime.now()}');
-      Logger.debug('   Is Future: ${reminderTime.isAfter(DateTime.now())}');
+      Logger.debug('ReminderService: Scheduling deadline reminder for task ${task.id}');
+      Logger.debug('Deadline Date: ${task.deadlineDate}');
+      Logger.debug('Reminder Time: ${task.deadlineDateReminderTime}');
+      Logger.debug('Custom Offset: ${task.deadlineDateReminderCustomOffset}');
+      Logger.debug('Calculated Reminder Time: $reminderTime');
+      Logger.debug('Current Time: ${DateTime.now()}');
+      Logger.debug('Is Future: ${reminderTime.isAfter(DateTime.now())}');
 
       if (reminderTime.isAfter(DateTime.now())) {
         // Pre-translate notification strings to ensure they work in background
@@ -390,10 +390,10 @@ class ReminderService {
     // Convert to local time using helper method that handles UTC check internally
     final localScheduledDate = DateTimeHelper.toLocalDateTime(scheduledDate);
 
-    Logger.debug('🔔 ReminderService: Scheduling generic reminder');
-    Logger.debug('   ID: $id');
-    Logger.debug('   Scheduled Date (Local): $localScheduledDate');
-    Logger.debug('   Current Time: ${DateTime.now()}');
+    Logger.debug('ReminderService: Scheduling generic reminder');
+    Logger.debug('ID: $id');
+    Logger.debug('Scheduled Date (Local): $localScheduledDate');
+    Logger.debug('Current Time: ${DateTime.now()}');
 
     // Compare with current local time
     if (localScheduledDate.isAfter(DateTime.now())) {
@@ -404,9 +404,9 @@ class ReminderService {
         scheduledDate: localScheduledDate,
         payload: payload,
       );
-      Logger.debug('   ✅ Reminder scheduled successfully');
+      Logger.debug('Reminder scheduled successfully');
     } else {
-      Logger.debug('   ❌ Reminder NOT scheduled (in the past)');
+      Logger.debug('Reminder NOT scheduled (in the past)');
     }
   }
 
@@ -448,7 +448,7 @@ class ReminderService {
 
   /// Cancel all reminders for a task
   Future<void> cancelTaskReminders(String taskId) async {
-    Logger.debug('🔔 ReminderService: Cancelling task reminders for task: $taskId');
+    Logger.debug('ReminderService: Cancelling task reminders for task: $taskId');
 
     // Cancel reminders using the contains pattern to catch all variations
     await cancelEntityReminders(contains: taskId);
@@ -457,7 +457,7 @@ class ReminderService {
     await cancelEntityReminders(equals: 'task_planned_$taskId');
     await cancelEntityReminders(equals: 'task_deadline_$taskId');
 
-    Logger.debug('🔔 ReminderService: Task reminder cancellation completed for task: $taskId');
+    Logger.debug('ReminderService: Task reminder cancellation completed for task: $taskId');
   }
 
   /// Cancel all reminders for a habit
@@ -467,7 +467,7 @@ class ReminderService {
 
   /// Cancel reminders for a completed task (explicit method for task completion)
   Future<void> cancelRemindersForCompletedTask(String taskId) async {
-    Logger.debug('🔔 ReminderService: Starting reminder cancellation for completed task: $taskId');
+    Logger.debug('ReminderService: Starting reminder cancellation for completed task: $taskId');
 
     // Multiple approaches to ensure reminders are cancelled
     await cancelTaskReminders(taskId);
@@ -479,7 +479,7 @@ class ReminderService {
     // Use pattern matching as backup
     await _reminderService.cancelReminders(startsWith: 'task_', contains: taskId);
 
-    Logger.debug('🔔 ReminderService: Finished reminder cancellation for completed task: $taskId');
+    Logger.debug('ReminderService: Finished reminder cancellation for completed task: $taskId');
   }
 
   /// Refresh all reminders with updated language translations
@@ -496,7 +496,7 @@ class ReminderService {
       await _scheduleExistingHabitReminders();
       await _scheduleExistingTaskReminders();
     } catch (e) {
-      Logger.error('🔔 ReminderService: Error refreshing reminders for language change: $e');
+      Logger.error('ReminderService: Error refreshing reminders for language change: $e');
     }
   }
 

@@ -20,4 +20,7 @@ abstract class ILoggerService {
 
   /// Clears all logs from memory
   void clearMemoryLogs();
+
+  /// Stream of log entries for real-time monitoring
+  Stream<String> get logStream;
 }

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Custom exception for firewall rule operations with detailed context
 class FirewallRuleException implements Exception {

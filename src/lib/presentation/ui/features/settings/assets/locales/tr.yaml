@@ -359,6 +359,7 @@ settings:
         kaydı etkinleştirildikten ve uygulama günlük girişleri oluşturduktan sonra
         oluşturulacak.
       empty: Hata ayıklama günlük dosyası boş. Henüz herhangi bir günlük girişi kaydedilmedi.
+      toggle_auto_scroll: Otomatik kaydırmayı değiştir
     export:
       dialog_title: Hata ayıklama günlüklerini dışa aktar
       error: Günlükleri dışa aktarırken hata

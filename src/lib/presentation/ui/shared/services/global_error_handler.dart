@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 

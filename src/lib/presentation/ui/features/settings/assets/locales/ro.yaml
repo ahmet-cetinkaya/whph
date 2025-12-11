@@ -369,6 +369,7 @@ settings:
       empty:
         Fișierul jurnal de depanare este gol. Nu au fost înregistrate încă intrări
         în jurnal.
+      toggle_auto_scroll: Comută derularea automată
     export:
       dialog_title: Exportă Jurnalele de Depanare
       error: Eroare la exportul jurnalelor

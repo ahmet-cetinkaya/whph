@@ -317,6 +317,7 @@ settings:
       copy: Copy to Clipboard
       save_as: Save As File
       copied: Debug logs copied to clipboard
+      toggle_auto_scroll: Toggle Auto-scroll
       load_error: Error loading debug logs
       not_enabled:
         Debug logging is not enabled. Enable it in Advanced Settings to

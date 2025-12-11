@@ -5,7 +5,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:path/path.dart' as path;
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class AndroidFileService implements IFileService {
   @override

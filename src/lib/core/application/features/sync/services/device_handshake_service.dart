@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service for performing device handshake to get device information
 class DeviceHandshakeService {
@@ -12,7 +12,7 @@ class DeviceHandshakeService {
     WebSocketChannel? channel;
     StreamSubscription? subscription;
     try {
-      Logger.info('🤝 Attempting handshake with device at $ipAddress:$port');
+      Logger.info('Attempting handshake with device at $ipAddress:$port');
 
       // Connect to the device
       final uri = Uri.parse('ws://$ipAddress:$port');
@@ -25,7 +25,7 @@ class DeviceHandshakeService {
       subscription = channel.stream.listen(
         (message) {
           try {
-            Logger.debug('📨 Received handshake response: $message');
+            Logger.debug('Received handshake response: $message');
             final response = JsonMapper.deserialize<WebSocketMessage>(message.toString());
 
             if (response?.type == 'device_info_response') {
@@ -56,37 +56,37 @@ class DeviceHandshakeService {
                 );
 
                 Logger.info(
-                    '✅ Device handshake successful: ${deviceInfo.deviceName} (${deviceInfo.deviceId}) - Capabilities: ${deviceInfo.capabilitiesText}');
+                    'Device handshake successful: ${deviceInfo.deviceName} (${deviceInfo.deviceId}) - Capabilities: ${deviceInfo.capabilitiesText}');
                 if (!completer.isCompleted) {
                   completer.complete(deviceInfo);
                 }
               } else {
-                Logger.warning('❌ Device handshake failed: ${data['error']}');
+                Logger.warning('Device handshake failed: ${data['error']}');
                 if (!completer.isCompleted) {
                   completer.complete(null);
                 }
               }
             } else if (response?.type == 'error') {
-              Logger.warning('❌ Device returned error during handshake');
+              Logger.warning('Device returned error during handshake');
               if (!completer.isCompleted) {
                 completer.complete(null);
               }
             }
           } catch (e) {
-            Logger.error('❌ Failed to parse handshake response: $e');
+            Logger.error('Failed to parse handshake response: $e');
             if (!completer.isCompleted) {
               completer.complete(null);
             }
           }
         },
         onError: (error) {
-          Logger.error('❌ WebSocket error during handshake: $error');
+          Logger.error('WebSocket error during handshake: $error');
           if (!completer.isCompleted) {
             completer.complete(null);
           }
         },
         onDone: () {
-          Logger.debug('🔚 Handshake WebSocket connection closed');
+          Logger.debug('Handshake WebSocket connection closed');
           if (!completer.isCompleted) {
             completer.complete(null);
           }
@@ -100,7 +100,7 @@ class DeviceHandshakeService {
       );
 
       channel.sink.add(JsonMapper.serialize(request));
-      Logger.debug('📤 Sent device info request to $ipAddress:$port');
+      Logger.debug('Sent device info request to $ipAddress:$port');
 
       // Wait for response with timeout
       final result = await completer.future.timeout(
@@ -113,7 +113,7 @@ class DeviceHandshakeService {
 
       return result;
     } catch (e) {
-      Logger.error('❌ Device handshake failed for $ipAddress:$port - $e');
+      Logger.error('Device handshake failed for $ipAddress:$port - $e');
       return null;
     } finally {
       // Clean up subscription

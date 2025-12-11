@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
@@ -30,14 +30,13 @@ class DesktopSyncService extends SyncService {
   /// Validates and recovers from any interrupted sync state from previous app instances
   /// This prevents crashes caused by leftover sync operations
   void _validateAndRecoverSyncState() {
-    Logger.debug('🔍 Validating and recovering sync state...');
-
     try {
       // Check if we're in an inconsistent state
       if (_isModeSwitching) {
-        Logger.warning('⚠️ Desktop sync service was in mode-switching state at startup - this indicates a crash');
+        Logger.warning('Desktop sync service was in mode-switching state at startup - this indicates a crash',
+            component: 'DesktopSyncService');
         _isModeSwitching = false; // Reset the flag
-        Logger.info('🔧 Reset mode-switching flag to prevent deadlocks');
+        Logger.info('Reset mode-switching flag to prevent deadlocks', component: 'DesktopSyncService');
       }
 
       // Validate that internal state is consistent
@@ -45,27 +44,26 @@ class DesktopSyncService extends SyncService {
       final hasClientService = _clientService != null;
 
       if (_currentMode == DesktopSyncMode.server && !hasServerService) {
-        Logger.warning('⚠️ Inconsistent state: server mode but no server service - resetting');
+        Logger.warning('Inconsistent state: server mode but no server service - resetting',
+            component: 'DesktopSyncService');
         _currentMode = DesktopSyncMode.disabled;
       } else if (_currentMode == DesktopSyncMode.client && !hasClientService) {
-        Logger.warning('⚠️ Inconsistent state: client mode but no client service - resetting');
+        Logger.warning('Inconsistent state: client mode but no client service - resetting',
+            component: 'DesktopSyncService');
         _currentMode = DesktopSyncMode.disabled;
       }
 
-      // Log current state for debugging
-      Logger.debug('📊 Sync service state at startup:');
-      Logger.debug('   Current mode: ${_currentMode.name}');
-      Logger.debug('   Server service: ${hasServerService ? "exists" : "null"}');
-      Logger.debug('   Client service: ${hasClientService ? "exists" : "null"}');
-      Logger.debug('   Is mode switching: $_isModeSwitching');
-
-      Logger.info('✅ Sync state validation and recovery completed');
+      // Log consolidated state for debugging
+      Logger.info(
+          'Sync service initialized: mode=${_currentMode.name}, services=server:$hasServerService,client:$hasClientService',
+          component: 'DesktopSyncService');
+      Logger.info('Sync state validation and recovery completed', component: 'DesktopSyncService');
     } catch (e) {
-      Logger.error('❌ Error during sync state recovery: $e');
+      Logger.error('Error during sync state recovery: $e');
       // Force safe state if recovery fails
       _currentMode = DesktopSyncMode.disabled;
       _isModeSwitching = false;
-      Logger.info('🔧 Forced safe state due to recovery error');
+      Logger.info('Forced safe state due to recovery error', component: 'DesktopSyncService');
     }
   }
 
@@ -118,25 +116,24 @@ class DesktopSyncService extends SyncService {
   Future<void> switchToMode(DesktopSyncMode mode) async {
     // Prevent concurrent mode switches
     if (_isModeSwitching) {
-      Logger.warning('⚠️ Mode switch already in progress, ignoring request');
+      Logger.warning('Mode switch already in progress, ignoring request');
       return;
     }
 
     if (_currentMode == mode) {
-      Logger.debug('Already in ${mode.name} mode');
-      return;
+      return; // Already in requested mode
     }
 
     // Additional safety check: validate current state before switching
     if (!_isCurrentStateValid()) {
-      Logger.warning('⚠️ Current sync state is invalid, forcing cleanup before mode switch');
+      Logger.warning('Current sync state is invalid, forcing cleanup before mode switch');
       await _forceCleanupAndReset();
     }
 
     _isModeSwitching = true;
 
     try {
-      Logger.info('🔄 Switching desktop sync from ${_currentMode.name} to ${mode.name} mode');
+      Logger.info('Switching desktop sync from ${_currentMode.name} to ${mode.name} mode');
 
       // Stop current mode with explicit cleanup and timeout protection
       await _stopCurrentModeWithTimeout();
@@ -146,12 +143,12 @@ class DesktopSyncService extends SyncService {
       // Start new mode with error recovery
       await _startCurrentModeWithRecovery();
 
-      Logger.info('✅ Successfully switched to ${mode.name} mode');
+      Logger.info('Successfully switched to ${mode.name} mode');
     } catch (e) {
-      Logger.error('❌ Error during mode switch: $e');
+      Logger.error('Error during mode switch: $e');
 
       // Recovery: try to get back to a safe state
-      Logger.warning('🔧 Attempting recovery after mode switch error...');
+      Logger.warning('Attempting recovery after mode switch error...');
       await _recoverFromModeSwitchError();
 
       // Re-throw the error so the caller knows the switch failed
@@ -175,7 +172,7 @@ class DesktopSyncService extends SyncService {
 
   /// Forces cleanup and reset to a safe state
   Future<void> _forceCleanupAndReset() async {
-    Logger.info('🔧 Forcing cleanup and reset of sync service...');
+    Logger.info('Forcing cleanup and reset of sync service...');
 
     try {
       // Stop everything aggressively
@@ -185,9 +182,9 @@ class DesktopSyncService extends SyncService {
       _currentMode = DesktopSyncMode.disabled;
       _isModeSwitching = false;
 
-      Logger.info('✅ Forced cleanup and reset completed');
+      Logger.info('Forced cleanup and reset completed');
     } catch (e) {
-      Logger.error('❌ Error during forced cleanup: $e');
+      Logger.error('Error during forced cleanup: $e');
       // Ensure we're in a safe state even if cleanup fails
       _currentMode = DesktopSyncMode.disabled;
       _isModeSwitching = false;
@@ -200,19 +197,19 @@ class DesktopSyncService extends SyncService {
       await _stopCurrentMode().timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          Logger.warning('⚠️ Mode stop operation timed out, forcing aggressive cleanup');
+          Logger.warning('Mode stop operation timed out, forcing aggressive cleanup');
           return _stopCurrentModeAggressive();
         },
       );
     } catch (e) {
-      Logger.warning('⚠️ Error stopping current mode, forcing aggressive cleanup: $e');
+      Logger.warning('Error stopping current mode, forcing aggressive cleanup: $e');
       await _stopCurrentModeAggressive();
     }
   }
 
   /// Aggressively stops current mode with error tolerance
   Future<void> _stopCurrentModeAggressive() async {
-    Logger.debug('🛑 Performing aggressive mode stop...');
+    Logger.info('Performing aggressive sync mode stop', component: 'DesktopSyncService');
 
     // Stop periodic timer
     _periodicTimer?.cancel();
@@ -223,7 +220,7 @@ class DesktopSyncService extends SyncService {
       try {
         await _serverService!.stopServer();
       } catch (e) {
-        Logger.warning('⚠️ Error stopping server service (ignoring): $e');
+        Logger.warning('Error stopping server service (ignoring): $e');
       } finally {
         _serverService?.dispose();
         _serverService = null;
@@ -235,14 +232,14 @@ class DesktopSyncService extends SyncService {
       try {
         await _clientService!.disconnectFromServer();
       } catch (e) {
-        Logger.warning('⚠️ Error disconnecting client service (ignoring): $e');
+        Logger.warning('Error disconnecting client service (ignoring): $e');
       } finally {
         _clientService?.dispose();
         _clientService = null;
       }
     }
 
-    Logger.debug('✅ Aggressive mode stop completed');
+    Logger.debug('Aggressive mode stop completed');
   }
 
   /// Starts current mode with error recovery
@@ -251,12 +248,12 @@ class DesktopSyncService extends SyncService {
       await _startCurrentMode().timeout(
         const Duration(seconds: 15),
         onTimeout: () {
-          Logger.warning('⚠️ Mode start operation timed out');
+          Logger.warning('Mode start operation timed out');
           throw TimeoutException('Mode start operation timed out', const Duration(seconds: 15));
         },
       );
     } catch (e) {
-      Logger.error('❌ Error starting current mode: $e');
+      Logger.error('Error starting current mode: $e');
 
       // Try to recover by stopping and cleaning up
       await _stopCurrentModeAggressive();
@@ -269,7 +266,7 @@ class DesktopSyncService extends SyncService {
 
   /// Recovers from a mode switch error
   Future<void> _recoverFromModeSwitchError() async {
-    Logger.info('🔧 Recovering from mode switch error...');
+    Logger.info('Recovering from mode switch error...');
 
     try {
       // Force cleanup to get back to a known good state
@@ -278,16 +275,16 @@ class DesktopSyncService extends SyncService {
       // Reset to disabled mode
       _currentMode = DesktopSyncMode.disabled;
 
-      Logger.info('✅ Recovery completed, sync service is now in disabled mode');
+      Logger.info('Recovery completed, sync service is now in disabled mode');
     } catch (e) {
-      Logger.error('❌ Error during recovery: $e');
+      Logger.error('Error during recovery: $e');
       // Last resort: ensure we're in disabled mode even if cleanup fails
       _currentMode = DesktopSyncMode.disabled;
     }
   }
 
   Future<void> _stopCurrentMode() async {
-    Logger.debug('🛑 Stopping current sync mode: ${_currentMode.name}');
+    Logger.debug('Stopping current sync mode: ${_currentMode.name}');
 
     // Stop periodic sync
     _periodicTimer?.cancel();
@@ -296,11 +293,11 @@ class DesktopSyncService extends SyncService {
     // Stop server service with proper cleanup
     if (_serverService != null) {
       try {
-        Logger.debug('🛑 Stopping server service...');
+        Logger.debug('Stopping server service...');
         await _serverService!.stopServer();
-        Logger.debug('✅ Server service stopped');
+        Logger.debug('Server service stopped');
       } catch (e) {
-        Logger.error('❌ Error stopping server service: $e');
+        Logger.error('Error stopping server service: $e');
       } finally {
         _serverService?.dispose();
         _serverService = null;
@@ -310,18 +307,18 @@ class DesktopSyncService extends SyncService {
     // Stop client service with proper cleanup
     if (_clientService != null) {
       try {
-        Logger.debug('🛑 Disconnecting client service...');
+        Logger.debug('Disconnecting client service...');
         await _clientService!.disconnectFromServer();
-        Logger.debug('✅ Client service disconnected');
+        Logger.debug('Client service disconnected');
       } catch (e) {
-        Logger.error('❌ Error disconnecting client service: $e');
+        Logger.error('Error disconnecting client service: $e');
       } finally {
         _clientService?.dispose();
         _clientService = null;
       }
     }
 
-    Logger.debug('✅ Current mode stopped and cleaned up');
+    Logger.debug('Current mode stopped and cleaned up');
   }
 
   Future<void> _startCurrentMode() async {
@@ -352,7 +349,7 @@ class DesktopSyncService extends SyncService {
 
     // Server mode should be passive - no periodic sync needed
     // Servers only respond to sync requests from clients
-    Logger.info('✅ Desktop server mode started - waiting for client connections');
+    Logger.info('Desktop server mode started - waiting for client connections');
   }
 
   Future<void> _startClientMode() async {
@@ -390,11 +387,11 @@ class DesktopSyncService extends SyncService {
 
   @override
   void dispose() {
-    Logger.debug('🗑️ Disposing DesktopSyncService');
+    Logger.debug('Disposing DesktopSyncService');
     try {
       _stopCurrentMode();
     } catch (e) {
-      Logger.error('❌ Error during disposal cleanup: $e');
+      Logger.error('Error during disposal cleanup: $e');
     }
     super.dispose();
   }

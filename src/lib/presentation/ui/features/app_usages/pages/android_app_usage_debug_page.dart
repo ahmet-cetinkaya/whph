@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
@@ -321,10 +321,10 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
       final appName = appData['appName'] as String;
       final seconds = appData['usageTimeSeconds'] as int;
       final minutes = (seconds / 60).toStringAsFixed(1);
-      Logger.info('  • $appName: ${minutes}m (${seconds}s)');
+      Logger.info('• $appName: ${minutes}m (${seconds}s)');
     }
     if (newSorted.length > 10) {
-      Logger.info('  • ... and ${newSorted.length - 10} more apps');
+      Logger.info('• ... and ${newSorted.length - 10} more apps');
     }
     Logger.info('');
 

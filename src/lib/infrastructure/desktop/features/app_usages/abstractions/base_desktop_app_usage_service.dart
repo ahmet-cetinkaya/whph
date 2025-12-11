@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   String _activeDesktopWindowOutput = '';

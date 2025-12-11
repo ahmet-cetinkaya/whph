@@ -83,13 +83,28 @@ class FakeSoundManagerService extends Fake implements ISoundManagerService {
 
 class FakeLogger extends Fake implements ILogger {
   @override
-  void debug(String message, [Object? error, StackTrace? stackTrace]) {
+  void debug(String message, [Object? error, StackTrace? stackTrace, String? component]) {
     debugPrint('DEBUG: $message');
   }
 
   @override
-  void error(String message, [Object? error, StackTrace? stackTrace]) {
+  void info(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    debugPrint('INFO: $message');
+  }
+
+  @override
+  void warning(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    debugPrint('WARNING: $message');
+  }
+
+  @override
+  void error(String message, [Object? error, StackTrace? stackTrace, String? component]) {
     debugPrint('ERROR: $message');
+  }
+
+  @override
+  void fatal(String message, [Object? error, StackTrace? stackTrace, String? component]) {
+    debugPrint('FATAL: $message');
   }
 }
 

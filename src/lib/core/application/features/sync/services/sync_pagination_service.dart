@@ -9,7 +9,7 @@ import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Implementation of sync pagination service
 class SyncPaginationService implements ISyncPaginationService {
@@ -51,16 +51,16 @@ class SyncPaginationService implements ISyncPaginationService {
     String? targetDeviceId,
   }) async {
     if (_isSyncCancelled) {
-      Logger.warning('⚠️ Sync operation was cancelled');
+      Logger.warning('Sync operation was cancelled');
       return false;
     }
 
     // Determine target IP - use sync device's IP for communication
     final String targetIp = _getTargetIpFromSyncDevice(syncDevice);
-    Logger.debug('🎯 Using target IP: $targetIp for ${config.name} sync with device ${syncDevice.id}');
+    Logger.debug('Using target IP: $targetIp for ${config.name} sync with device ${syncDevice.id}');
 
     if (targetIp.isEmpty) {
-      Logger.error('❌ Could not determine target IP address from sync device ${syncDevice.id}');
+      Logger.error('Could not determine target IP address from sync device ${syncDevice.id}');
       return false;
     }
 
@@ -71,8 +71,8 @@ class SyncPaginationService implements ISyncPaginationService {
       int pageIndex = 0;
       bool hasMorePages = true;
 
-      Logger.info('🔄 Starting paginated sync for ${config.name}');
-      Logger.info('📅 Using sync date filter: $effectiveLastSyncDate');
+      Logger.info('Starting paginated sync for ${config.name}');
+      Logger.info('Using sync date filter: $effectiveLastSyncDate');
 
       while (hasMorePages && !_isSyncCancelled) {
         try {
@@ -87,7 +87,7 @@ class SyncPaginationService implements ISyncPaginationService {
           );
 
           Logger.info(
-              '🔍 Fetching ${config.name} data (page $pageIndex, pageSize: ${SyncPaginationConfig.defaultNetworkPageSize}, lastSync: $effectiveLastSyncDate)');
+              'Fetching ${config.name} data (page $pageIndex, pageSize: ${SyncPaginationConfig.defaultNetworkPageSize}, lastSync: $effectiveLastSyncDate)');
 
           // Get paginated data for this entity
           final paginatedData = await config.getPaginatedSyncData(
@@ -98,9 +98,9 @@ class SyncPaginationService implements ISyncPaginationService {
           );
 
           Logger.info(
-              '📊 ${config.name} page $pageIndex: ${paginatedData.data.getTotalItemCount()} items, totalPages: ${paginatedData.totalPages}, isLastPage: ${paginatedData.isLastPage}');
+              '${config.name} page $pageIndex: ${paginatedData.data.getTotalItemCount()} items, totalPages: ${paginatedData.totalPages}, isLastPage: ${paginatedData.isLastPage}');
           Logger.info(
-              '📋 ${config.name} page $pageIndex details: totalItems=${paginatedData.totalItems}, pageSize=${paginatedData.pageSize}');
+              '${config.name} page $pageIndex details: totalItems=${paginatedData.totalItems}, pageSize=${paginatedData.pageSize}');
 
           // Update progress with actual page info
           final entityProgress =
@@ -118,13 +118,13 @@ class SyncPaginationService implements ISyncPaginationService {
           // Always send sync request for bidirectional sync, even if local device has no data
           // This ensures the remote device can send its data back
           if (paginatedData.totalItems == 0) {
-            Logger.debug('📤 Sending empty sync request for ${config.name} to receive remote data');
+            Logger.debug('Sending empty sync request for ${config.name} to receive remote data');
           }
 
           // Skip sending empty pages (optimization)
           final itemCount = paginatedData.data.getTotalItemCount();
           if (itemCount == 0 && pageIndex > 0) {
-            Logger.info('⏭️ Skipping empty ${config.name} page $pageIndex - no data to send');
+            Logger.info('Skipping empty ${config.name} page $pageIndex - no data to send');
             break;
           }
 
@@ -134,20 +134,20 @@ class SyncPaginationService implements ISyncPaginationService {
           // Send this page to the remote device
           final response = await _communicationService.sendPaginatedDataToDevice(targetIp, dto);
           if (!response.success) {
-            Logger.error('❌ Failed to send ${config.name} page $pageIndex: ${response.error}');
+            Logger.error('Failed to send ${config.name} page $pageIndex: ${response.error}');
             return false;
           }
 
           // Check if server indicates bidirectional sync is needed
           if (!response.isComplete) {
-            Logger.info('🔄 Server has data to send back for ${config.name} - storing for later processing');
+            Logger.info('Server has data to send back for ${config.name} - storing for later processing');
 
             // Store server response data for processing by the command handler
             if (response.responseData != null) {
-              Logger.info('📨 Server response data received for ${config.name} - storing for command processing');
+              Logger.info('Server response data received for ${config.name} - storing for command processing');
 
               // Log storage of received data
-              Logger.info('🔍 Storing ${config.name} response data: ${response.responseData!.entityType}');
+              Logger.info('Storing ${config.name} response data: ${response.responseData!.entityType}');
 
               _pendingResponseData[config.name] = response.responseData!;
 
@@ -158,7 +158,7 @@ class SyncPaginationService implements ISyncPaginationService {
                 final totalServerPages = responseData.totalServerPages ?? 1;
 
                 Logger.info(
-                    '🔄 Server has more pages for ${config.name} (page ${currentServerPage + 1}/$totalServerPages)');
+                    'Server has more pages for ${config.name} (page ${currentServerPage + 1}/$totalServerPages)');
 
                 // Continue requesting server pages for bidirectional sync
                 await _requestAdditionalServerPages(
@@ -171,7 +171,7 @@ class SyncPaginationService implements ISyncPaginationService {
                 );
               }
             } else {
-              Logger.warning('⚠️ Server indicated it has data but no response data received for ${config.name}');
+              Logger.warning('Server indicated it has data but no response data received for ${config.name}');
             }
           }
 
@@ -187,7 +187,7 @@ class SyncPaginationService implements ISyncPaginationService {
             if (serverTotalPages != null && pageIndex < serverTotalPages - 1) {
               hasMorePages = true;
               Logger.debug(
-                  '🔄 Local data complete but server metadata indicates $serverTotalPages pages total. Continuing pagination for ${config.name} (page $pageIndex)');
+                  'Local data complete but server metadata indicates $serverTotalPages pages total. Continuing pagination for ${config.name} (page $pageIndex)');
             }
           }
 
@@ -199,24 +199,24 @@ class SyncPaginationService implements ISyncPaginationService {
 
             // Check for cancellation after the delay
             if (_isSyncCancelled) {
-              Logger.warning('⚠️ Sync operation was cancelled during delay');
+              Logger.warning('Sync operation was cancelled during delay');
               return false;
             }
           }
 
-          Logger.debug('✅ Sent ${config.name} page ${pageIndex - 1}/${paginatedData.totalPages - 1}');
+          Logger.debug('Sent ${config.name} page ${pageIndex - 1}/${paginatedData.totalPages - 1}');
         } catch (e) {
-          Logger.error('❌ Error syncing ${config.name} page $pageIndex: $e');
+          Logger.error('Error syncing ${config.name} page $pageIndex: $e');
           return false;
         }
       }
 
       if (_isSyncCancelled) {
-        Logger.warning('⚠️ Sync for ${config.name} was cancelled');
+        Logger.warning('Sync for ${config.name} was cancelled');
         return false;
       }
 
-      Logger.debug('✅ Completed paginated sync for ${config.name}');
+      Logger.debug('Completed paginated sync for ${config.name}');
       return true;
     } finally {
       _activeEntityTypes.remove(config.name);
@@ -247,7 +247,7 @@ class SyncPaginationService implements ISyncPaginationService {
     _progressController.add(progress);
 
     Logger.debug(
-        '📊 Progress: ${progress.progressPercentage.toStringAsFixed(1)}% - $operation $currentEntity (page ${currentPage + 1}/$totalPages)');
+        'Progress: ${progress.progressPercentage.toStringAsFixed(1)}% - $operation $currentEntity (page ${currentPage + 1}/$totalPages)');
   }
 
   @override
@@ -259,7 +259,7 @@ class SyncPaginationService implements ISyncPaginationService {
     _activeEntityTypes.clear();
     _isSyncCancelled = false;
     _pendingResponseData.clear(); // Clear stale pending response data
-    Logger.debug('🔄 Progress tracking reset (including pending response data)');
+    Logger.debug('Progress tracking reset (including pending response data)');
   }
 
   @override
@@ -283,7 +283,7 @@ class SyncPaginationService implements ISyncPaginationService {
   ) {
     _serverTotalPages[entityType] = totalPages;
     _serverTotalItems[entityType] = totalItems;
-    Logger.debug('📊 Updated server pagination for $entityType: $totalPages pages, $totalItems items');
+    Logger.debug('Updated server pagination for $entityType: $totalPages pages, $totalItems items');
   }
 
   @override
@@ -326,12 +326,12 @@ class SyncPaginationService implements ISyncPaginationService {
   void setLastSentServerPage(String deviceId, String entityType, int page) {
     _serverLastSentPage.putIfAbsent(deviceId, () => {});
     _serverLastSentPage[deviceId]![entityType] = page;
-    Logger.debug('📊 Updated last sent server page for $deviceId/$entityType: $page');
+    Logger.debug('Updated last sent server page for $deviceId/$entityType: $page');
   }
 
   @override
   Future<void> cancelSync() async {
-    Logger.warning('⚠️ Cancelling sync operations');
+    Logger.warning('Cancelling sync operations');
     _isSyncCancelled = true;
     _activeEntityTypes.clear();
 
@@ -354,7 +354,7 @@ class SyncPaginationService implements ISyncPaginationService {
     // For sync communication, we need to send data TO the remote device
     // So we use the fromIp (remote device's IP) as the target
     final targetIp = syncDevice.fromIp.isNotEmpty ? syncDevice.fromIp : syncDevice.toIp;
-    Logger.debug('🎯 Selected target IP: $targetIp (fromIp: ${syncDevice.fromIp}, toIp: ${syncDevice.toIp})');
+    Logger.debug('Selected target IP: $targetIp (fromIp: ${syncDevice.fromIp}, toIp: ${syncDevice.toIp})');
     return targetIp;
   }
 
@@ -366,7 +366,7 @@ class SyncPaginationService implements ISyncPaginationService {
     // Create progress info
     final progress = _currentProgress[entityType];
 
-    Logger.debug('🔧 Creating DTO for $entityType with isDebugMode: $kDebugMode');
+    Logger.debug('Creating DTO for $entityType with isDebugMode: $kDebugMode');
 
     // Create DTO based on entity type
     // This is a simplified implementation - in reality, you'd need to handle all entity types
@@ -389,13 +389,13 @@ class SyncPaginationService implements ISyncPaginationService {
 
       case 'Task':
         final itemCount = paginatedData.data.getTotalItemCount();
-        Logger.debug('🔧 SERVICE Task DTO - ENTRY: itemCount=$itemCount, totalItems=${paginatedData.totalItems}');
+        Logger.debug('SERVICE Task DTO - ENTRY: itemCount=$itemCount, totalItems=${paginatedData.totalItems}');
         Logger.debug(
-            '🔧 SERVICE Task DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}');
+            'SERVICE Task DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}');
 
         final paginatedSyncData = paginatedData as PaginatedSyncData<Task>;
         final tasksData = itemCount > 0 ? paginatedSyncData : null;
-        Logger.debug('🔧 SERVICE Task DTO - tasksData is null: ${tasksData == null}');
+        Logger.debug('SERVICE Task DTO - tasksData is null: ${tasksData == null}');
 
         final dto = PaginatedSyncDataDto(
           appVersion: AppInfo.version,
@@ -411,22 +411,21 @@ class SyncPaginationService implements ISyncPaginationService {
           tasksSyncData: tasksData,
         );
 
-        Logger.debug('🔧 Final Task DTO - tasksSyncData is null: ${dto.tasksSyncData == null}');
+        Logger.debug('Final Task DTO - tasksSyncData is null: ${dto.tasksSyncData == null}');
         return dto;
 
       case 'Habit':
         final itemCount = paginatedData.data.getTotalItemCount();
-        Logger.debug('🔧 Habit DTO creation - itemCount: $itemCount, totalItems: ${paginatedData.totalItems}');
+        Logger.debug('Habit DTO creation - itemCount: $itemCount, totalItems: ${paginatedData.totalItems}');
         Logger.debug(
-            '🔧 Habit DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}, deleteSync: ${paginatedData.data.deleteSync.length}');
+            'Habit DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}, deleteSync: ${paginatedData.data.deleteSync.length}');
 
         final paginatedSyncData = paginatedData as PaginatedSyncData<Habit>;
         final habitsData = itemCount > 0 ? paginatedSyncData : null;
-        Logger.debug('🔧 Habit DTO - habitsData is null: ${habitsData == null}');
+        Logger.debug('Habit DTO - habitsData is null: ${habitsData == null}');
 
         if (habitsData != null) {
-          Logger.debug(
-              '🔧 Habit DTO - sample habit IDs: ${habitsData.data.createSync.take(3).map((h) => h.id).toList()}');
+          Logger.debug('Habit DTO - sample habit IDs: ${habitsData.data.createSync.take(3).map((h) => h.id).toList()}');
         }
 
         return PaginatedSyncDataDto(
@@ -445,16 +444,16 @@ class SyncPaginationService implements ISyncPaginationService {
 
       case 'HabitRecord':
         final itemCount = paginatedData.data.getTotalItemCount();
-        Logger.debug('🔧 HabitRecord DTO creation - itemCount: $itemCount, totalItems: ${paginatedData.totalItems}');
+        Logger.debug('HabitRecord DTO creation - itemCount: $itemCount, totalItems: ${paginatedData.totalItems}');
         Logger.debug(
-            '🔧 HabitRecord DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}, deleteSync: ${paginatedData.data.deleteSync.length}');
+            'HabitRecord DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}, deleteSync: ${paginatedData.data.deleteSync.length}');
 
         final habitRecordsData = itemCount > 0 ? paginatedData as dynamic : null;
-        Logger.debug('🔧 HabitRecord DTO - habitRecordsData is null: ${habitRecordsData == null}');
+        Logger.debug('HabitRecord DTO - habitRecordsData is null: ${habitRecordsData == null}');
 
         if (habitRecordsData != null) {
           Logger.debug(
-              '🔧 HabitRecord DTO - sample record IDs: ${habitRecordsData.data.createSync.take(3).map((r) => r.id).toList()}');
+              'HabitRecord DTO - sample record IDs: ${habitRecordsData.data.createSync.take(3).map((r) => r.id).toList()}');
         }
 
         return PaginatedSyncDataDto(
@@ -473,16 +472,16 @@ class SyncPaginationService implements ISyncPaginationService {
 
       case 'HabitTag':
         final itemCount = paginatedData.data.getTotalItemCount();
-        Logger.debug('🔧 HabitTag DTO creation - itemCount: $itemCount, totalItems: ${paginatedData.totalItems}');
+        Logger.debug('HabitTag DTO creation - itemCount: $itemCount, totalItems: ${paginatedData.totalItems}');
         Logger.debug(
-            '🔧 HabitTag DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}, deleteSync: ${paginatedData.data.deleteSync.length}');
+            'HabitTag DTO - createSync: ${paginatedData.data.createSync.length}, updateSync: ${paginatedData.data.updateSync.length}, deleteSync: ${paginatedData.data.deleteSync.length}');
 
         final habitTagsData = itemCount > 0 ? paginatedData as dynamic : null;
-        Logger.debug('🔧 HabitTag DTO - habitTagsData is null: ${habitTagsData == null}');
+        Logger.debug('HabitTag DTO - habitTagsData is null: ${habitTagsData == null}');
 
         if (habitTagsData != null) {
           Logger.debug(
-              '🔧 HabitTag DTO - sample tag IDs: ${habitTagsData.data.createSync.take(3).map((t) => t.id).toList()}');
+              'HabitTag DTO - sample tag IDs: ${habitTagsData.data.createSync.take(3).map((t) => t.id).toList()}');
         }
 
         return PaginatedSyncDataDto(
@@ -518,22 +517,22 @@ class SyncPaginationService implements ISyncPaginationService {
 
       // Add other entity types as needed
       default:
-        Logger.debug('🔧 Default case triggered for entity type: $entityType');
+        Logger.debug('Default case triggered for entity type: $entityType');
 
         // Warn if this is a habit-related entity to catch potential issues
         if (entityType.contains('Habit')) {
           Logger.warning(
-              '⚠️ Habit-related entity $entityType fell through to default case - this may indicate missing explicit handling');
+              'Habit-related entity $entityType fell through to default case - this may indicate missing explicit handling');
         }
 
         // Generic implementation for other entity types
         // Set appropriate sync data field based on entity type
         final hasData = paginatedData.data.getTotalItemCount() > 0;
-        Logger.debug('🔧 Default case - hasData: $hasData, itemCount: ${paginatedData.data.getTotalItemCount()}');
+        Logger.debug('Default case - hasData: $hasData, itemCount: ${paginatedData.data.getTotalItemCount()}');
 
         // Use dynamic casting for runtime type flexibility
         final syncDataDynamic = hasData ? paginatedData as dynamic : null;
-        Logger.debug('🔧 Default case - syncDataDynamic is null: ${syncDataDynamic == null}');
+        Logger.debug('Default case - syncDataDynamic is null: ${syncDataDynamic == null}');
 
         return PaginatedSyncDataDto(
           appVersion: AppInfo.version,
@@ -572,7 +571,7 @@ class SyncPaginationService implements ISyncPaginationService {
   @override
   Map<String, PaginatedSyncDataDto> getPendingResponseData() {
     Logger.info(
-        '📋 Retrieving ${_pendingResponseData.length} pending response DTOs: ${_pendingResponseData.keys.join(', ')}');
+        'Retrieving ${_pendingResponseData.length} pending response DTOs: ${_pendingResponseData.keys.join(', ')}');
     return Map<String, PaginatedSyncDataDto>.from(_pendingResponseData);
   }
 
@@ -581,7 +580,7 @@ class SyncPaginationService implements ISyncPaginationService {
   void clearPendingResponseData() {
     final clearedCount = _pendingResponseData.length;
     _pendingResponseData.clear();
-    Logger.debug('🧹 Cleared $clearedCount pending response data entries');
+    Logger.debug('Cleared $clearedCount pending response data entries');
   }
 
   /// Validates and cleans up stale pending response data
@@ -605,12 +604,12 @@ class SyncPaginationService implements ISyncPaginationService {
         if (now.difference(syncTimestamp) > staleThreshold) {
           staleKeys.add(entityType);
           Logger.warning(
-              '⚠️ Found stale pending sync data for $entityType (${now.difference(syncTimestamp).inMinutes} minutes old)');
+              'Found stale pending sync data for $entityType (${now.difference(syncTimestamp).inMinutes} minutes old)');
         }
       } catch (e) {
         // If we can't validate the timestamp, consider it stale
         staleKeys.add(entityType);
-        Logger.warning('⚠️ Found unvalidatable pending sync data for $entityType - marking as stale');
+        Logger.warning('Found unvalidatable pending sync data for $entityType - marking as stale');
       }
     });
 
@@ -618,15 +617,15 @@ class SyncPaginationService implements ISyncPaginationService {
     if (staleKeys.isNotEmpty) {
       for (final key in staleKeys) {
         _pendingResponseData.remove(key);
-        Logger.debug('🧹 Removed stale pending data for $key');
+        Logger.debug('Removed stale pending data for $key');
       }
-      Logger.info('🧹 Cleaned up ${staleKeys.length} stale pending sync data entries');
+      Logger.info('Cleaned up ${staleKeys.length} stale pending sync data entries');
     }
 
     // Additional safety check: if we have too much pending data, clear it all
     if (_pendingResponseData.length > 50) {
       Logger.warning(
-          '⚠️ Excessive pending response data (${_pendingResponseData.length} entries) - clearing all to prevent memory issues');
+          'Excessive pending response data (${_pendingResponseData.length} entries) - clearing all to prevent memory issues');
       _pendingResponseData.clear();
     }
   }
@@ -640,12 +639,11 @@ class SyncPaginationService implements ISyncPaginationService {
     int totalServerPages,
     int pageSize,
   ) async {
-    Logger.info(
-        '🔄 Requesting additional server pages for $entityType: pages $startServerPage-${totalServerPages - 1}');
+    Logger.info('Requesting additional server pages for $entityType: pages $startServerPage-${totalServerPages - 1}');
 
     for (int serverPage = startServerPage; serverPage < totalServerPages; serverPage++) {
       try {
-        Logger.info('📨 Requesting $entityType server page $serverPage/$totalServerPages');
+        Logger.info('Requesting $entityType server page $serverPage/$totalServerPages');
 
         // Create a minimal DTO requesting specific server page
         final requestDto = PaginatedSyncDataDto(
@@ -665,20 +663,20 @@ class SyncPaginationService implements ISyncPaginationService {
         final response = await _communicationService.sendPaginatedDataToDevice(targetIp, requestDto);
 
         if (!response.success) {
-          Logger.error('❌ Failed to request $entityType server page $serverPage: ${response.error}');
+          Logger.error('Failed to request $entityType server page $serverPage: ${response.error}');
           break;
         }
 
         // Store the additional server response data
         if (response.responseData != null) {
-          Logger.info('📨 Received additional $entityType server page $serverPage data');
+          Logger.info('Received additional $entityType server page $serverPage data');
 
           // Store alongside existing data for this entity type
           // The command handler will process all accumulated data together
           final existingData = _pendingResponseData[entityType];
           if (existingData != null) {
             // We have multiple pages - the command handler will need to merge them
-            Logger.info('🔗 Accumulating additional server page data for $entityType');
+            Logger.info('Accumulating additional server page data for $entityType');
             _pendingResponseData['${entityType}_page_$serverPage'] = response.responseData!;
           } else {
             _pendingResponseData[entityType] = response.responseData!;
@@ -687,7 +685,7 @@ class SyncPaginationService implements ISyncPaginationService {
           // Check if this was the last page
           final hasMorePages = response.responseData!.hasMoreServerPages == true;
           if (!hasMorePages) {
-            Logger.info('✅ Completed requesting all server pages for $entityType');
+            Logger.info('Completed requesting all server pages for $entityType');
             break;
           }
         }
@@ -697,18 +695,18 @@ class SyncPaginationService implements ISyncPaginationService {
 
         // Check for cancellation
         if (_isSyncCancelled) {
-          Logger.warning('⚠️ Additional server page requests cancelled for $entityType');
+          Logger.warning('Additional server page requests cancelled for $entityType');
           break;
         }
       } catch (e) {
-        Logger.error('❌ Error requesting $entityType server page $serverPage: $e');
+        Logger.error('Error requesting $entityType server page $serverPage: $e');
         break;
       }
     }
   }
 
   void dispose() {
-    Logger.debug('🗑️ Disposing SyncPaginationService and cleaning up state...');
+    Logger.debug('Disposing SyncPaginationService and cleaning up state...');
 
     // Clear all state to prevent memory leaks and stale data
     resetProgress();
@@ -716,6 +714,6 @@ class SyncPaginationService implements ISyncPaginationService {
     // Close the progress stream controller
     _progressController.close();
 
-    Logger.debug('✅ SyncPaginationService disposed successfully');
+    Logger.debug('SyncPaginationService disposed successfully');
   }
 }

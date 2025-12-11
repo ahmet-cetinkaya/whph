@@ -5,7 +5,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'package:acore/acore.dart' hide Container;
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Enum for notification position
 enum NotificationPosition { top, bottom }

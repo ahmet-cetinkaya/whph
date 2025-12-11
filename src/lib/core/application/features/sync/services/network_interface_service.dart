@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
 import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Cross-platform network interface discovery service
 /// Provides comprehensive network interface detection for multi-interface sync

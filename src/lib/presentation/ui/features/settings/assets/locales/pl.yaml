@@ -375,6 +375,7 @@ settings:
       empty:
         Plik dziennika debugowania jest pusty. Nie zostały jeszcze zapisane żadne
         wpisy dziennika.
+      toggle_auto_scroll: Przełącz automatyczne przewijanie
     export:
       dialog_title: Eksportuj dzienniki debugowania
       error: Błąd eksportu dzienników

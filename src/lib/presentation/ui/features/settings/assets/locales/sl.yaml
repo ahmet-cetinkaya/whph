@@ -366,6 +366,7 @@ settings:
       empty:
         Datoteka dnevnika razhroščevanja je prazna. Še ni bilo zabeleženih vnosov
         dnevnika.
+      toggle_auto_scroll: Preklopi samodejno pomikanje
     export:
       dialog_title: Izvoz dnevnikov razhroščevanja
       error: Napaka pri izvozu dnevnikov

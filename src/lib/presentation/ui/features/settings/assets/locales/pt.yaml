@@ -369,6 +369,7 @@ settings:
       empty:
         O arquivo de log de depuração está vazio. Nenhuma entrada de log foi
         registrada ainda.
+      toggle_auto_scroll: Alternar rolagem automática
     export:
       dialog_title: Exportar Logs de Depuração
       error: Erro ao exportar logs

@@ -4,7 +4,7 @@ import 'package:easy_localization_yaml/easy_localization_yaml.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart' show container;
-import 'package:whph/core/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/presentation/ui/features/settings/pages/settings_page.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -75,7 +75,7 @@ class TranslationService implements ITranslationService {
       final reminderService = container.resolve<ReminderService>();
       await reminderService.refreshAllRemindersForLanguageChange();
     } catch (e) {
-      Logger.error('🔔 TranslationService: Failed to refresh reminders for language change: $e');
+      Logger.error('TranslationService: Failed to refresh reminders for language change: $e');
     }
 
     if (context.mounted) Navigator.of(context).pushReplacementNamed(SettingsPage.route);
@@ -93,7 +93,7 @@ class TranslationService implements ITranslationService {
       final reminderService = container.resolve<ReminderService>();
       await reminderService.refreshAllRemindersForLanguageChange();
     } catch (e) {
-      Logger.error('🔔 TranslationService: Failed to refresh reminders for language change: $e');
+      Logger.error('TranslationService: Failed to refresh reminders for language change: $e');
     }
   }
 
