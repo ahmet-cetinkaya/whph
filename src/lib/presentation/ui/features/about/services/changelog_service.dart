@@ -9,28 +9,31 @@ class ChangelogService implements IChangelogService {
       'https://raw.githubusercontent.com/ahmet-cetinkaya/whph/main/fastlane/metadata/android';
 
   /// Maps app locale codes to fastlane directory names
+  /// Based on supported locales in translation_service.dart
+  /// Directory names follow Google Play Console format
   static const Map<String, String> _localeMapping = {
-    'cs': 'cs-CZ',
-    'da': 'da-DK',
-    'de': 'de-DE',
-    'el': 'el-GR',
-    'en': 'en-US',
-    'es': 'es-ES',
-    'fi': 'fi-FI',
-    'fr': 'fr-FR',
-    'it': 'it-IT',
-    'ja': 'ja-JP',
-    'ko': 'ko-KR',
-    'nl': 'nl-NL',
-    'no': 'nb-NO',
-    'pl': 'pl-PL',
-    'ro': 'ro-RO',
-    'ru': 'ru-RU',
-    'sl': 'sl-SI',
-    'sv': 'sv-SE',
-    'tr': 'tr-TR',
-    'uk': 'uk-UA',
-    'zh': 'zh-CN',
+    'cs': 'cs', // Czech
+    'da': 'da', // Danish
+    'de': 'de', // German
+    'el': 'el', // Greek
+    'en': 'en-US', // English
+    'es': 'es-ES', // Spanish
+    'fi': 'fi', // Finnish
+    'fr': 'fr-FR', // French
+    'it': 'it', // Italian
+    'ja': 'ja', // Japanese
+    'ko': 'ko', // Korean
+    'nl': 'nl', // Dutch
+    'no': 'no', // Norwegian
+    'pl': 'pl', // Polish
+    'pt': 'pt-PT', // Portuguese
+    'ro': 'ro', // Romanian
+    'ru': 'ru', // Russian
+    'sl': 'sl', // Slovenian
+    'sv': 'sv', // Swedish
+    'tr': 'tr', // Turkish
+    'uk': 'uk', // Ukrainian
+    'zh': 'zh-CN', // Chinese
   };
 
   static const String _fallbackLocale = 'en-US';
@@ -71,14 +74,14 @@ class ChangelogService implements IChangelogService {
       ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode != 200) {
-        Logger.warning('Failed to fetch changelog from $url: HTTP ${response.statusCode}');
+        Logger.debug('Failed to fetch changelog from $url: HTTP ${response.statusCode}');
         return null;
       }
 
       Logger.debug('Loaded changelog from $url');
       return response.body.trim();
     } catch (e) {
-      Logger.warning('Failed to fetch changelog from $url: $e');
+      Logger.debug('Failed to fetch changelog from $url: $e');
       return null;
     }
   }
