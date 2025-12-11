@@ -16,10 +16,8 @@ void main() {
 
     setUp(() {
       mockTranslationService = MockITranslationService();
-      when(mockTranslationService.translate(any))
-          .thenReturn('Translated text');
-      when(mockTranslationService.translate(any, namedArgs: anyNamed('namedArgs')))
-          .thenReturn('Version 0.18.0');
+      when(mockTranslationService.translate(any)).thenReturn('Translated text');
+      when(mockTranslationService.translate(any, namedArgs: anyNamed('namedArgs'))).thenReturn('Version 0.18.0');
     });
 
     Widget createWidgetUnderTest() {
@@ -92,8 +90,7 @@ void main() {
       expect(find.text('Version 0.18.0'), findsAtLeastNWidgets(1)); // Version number appears multiple times
     });
 
-    testWidgets('should close dialog when close button pressed',
-        (WidgetTester tester) async {
+    testWidgets('should close dialog when close button pressed', (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
