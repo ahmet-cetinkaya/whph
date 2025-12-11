@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_archive_button.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_delete_button.dart';
-import 'package:whph/presentation/ui/features/habits/components/habit_details_content.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_details_content/habit_details_content.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
