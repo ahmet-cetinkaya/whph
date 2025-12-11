@@ -41,6 +41,9 @@ class ChangelogService implements IChangelogService {
   /// Simple in-memory cache to prevent repeated network calls
   static final Map<String, String?> _cache = {};
 
+  /// Get locale mapping for testing purposes
+  static Map<String, String> get localeMapping => Map.unmodifiable(_localeMapping);
+
   @override
   Future<ChangelogEntry?> fetchChangelog(String localeCode) async {
     final buildNumber = AppInfo.buildNumber;

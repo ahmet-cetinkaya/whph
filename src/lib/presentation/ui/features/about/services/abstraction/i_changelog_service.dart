@@ -3,7 +3,7 @@ class ChangelogEntry {
   final String version;
   final String content;
 
-  ChangelogEntry({
+  const ChangelogEntry({
     required this.version,
     required this.content,
   });

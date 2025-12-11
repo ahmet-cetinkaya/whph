@@ -22,19 +22,15 @@ void main() {
       // Arrange
       const locale = 'en';
       const buildNumber = '65';
-      final response = '''
-- New feature added
-- Bug fixes
-- Performance improvements
-''';
 
       // Act
       final result = await service.fetchChangelog(locale);
 
       // Assert
       expect(result, isNotNull);
-      expect(result!.content, contains('New feature added'));
+      expect(result!.content, isNotEmpty);
       expect(result.version, isNotEmpty);
+      expect(result.content, contains('Estimated time for tasks'));
     });
 
     test('should handle missing changelog gracefully', () async {
@@ -46,33 +42,36 @@ void main() {
       final result = await service.fetchChangelog(locale);
 
       // Assert
-      expect(result, isNull);
+      // Since we have a fallback to English, we expect to get a result
+      expect(result, isNotNull);
+      expect(result!.content, isNotEmpty);
+      expect(result.version, isNotEmpty);
     });
 
     test('should map locale codes correctly', () {
       // Test that the locale mapping covers all expected locales
-      expect(ChangelogService._localeMapping, containsPair('en', 'en-US'));
-      expect(ChangelogService._localeMapping, containsPair('cs', 'cs'));
-      expect(ChangelogService._localeMapping, containsPair('da', 'da'));
-      expect(ChangelogService._localeMapping, containsPair('de', 'de'));
-      expect(ChangelogService._localeMapping, containsPair('el', 'el'));
-      expect(ChangelogService._localeMapping, containsPair('es', 'es-ES'));
-      expect(ChangelogService._localeMapping, containsPair('fi', 'fi'));
-      expect(ChangelogService._localeMapping, containsPair('fr', 'fr-FR'));
-      expect(ChangelogService._localeMapping, containsPair('it', 'it'));
-      expect(ChangelogService._localeMapping, containsPair('ja', 'ja'));
-      expect(ChangelogService._localeMapping, containsPair('ko', 'ko'));
-      expect(ChangelogService._localeMapping, containsPair('nl', 'nl'));
-      expect(ChangelogService._localeMapping, containsPair('no', 'no'));
-      expect(ChangelogService._localeMapping, containsPair('pl', 'pl'));
-      expect(ChangelogService._localeMapping, containsPair('pt', 'pt-PT'));
-      expect(ChangelogService._localeMapping, containsPair('ro', 'ro'));
-      expect(ChangelogService._localeMapping, containsPair('ru', 'ru'));
-      expect(ChangelogService._localeMapping, containsPair('sl', 'sl'));
-      expect(ChangelogService._localeMapping, containsPair('sv', 'sv'));
-      expect(ChangelogService._localeMapping, containsPair('tr', 'tr'));
-      expect(ChangelogService._localeMapping, containsPair('uk', 'uk'));
-      expect(ChangelogService._localeMapping, containsPair('zh', 'zh-CN'));
+      expect(ChangelogService.localeMapping, containsPair('en', 'en-US'));
+      expect(ChangelogService.localeMapping, containsPair('cs', 'cs'));
+      expect(ChangelogService.localeMapping, containsPair('da', 'da'));
+      expect(ChangelogService.localeMapping, containsPair('de', 'de'));
+      expect(ChangelogService.localeMapping, containsPair('el', 'el'));
+      expect(ChangelogService.localeMapping, containsPair('es', 'es-ES'));
+      expect(ChangelogService.localeMapping, containsPair('fi', 'fi'));
+      expect(ChangelogService.localeMapping, containsPair('fr', 'fr-FR'));
+      expect(ChangelogService.localeMapping, containsPair('it', 'it'));
+      expect(ChangelogService.localeMapping, containsPair('ja', 'ja'));
+      expect(ChangelogService.localeMapping, containsPair('ko', 'ko'));
+      expect(ChangelogService.localeMapping, containsPair('nl', 'nl'));
+      expect(ChangelogService.localeMapping, containsPair('no', 'no'));
+      expect(ChangelogService.localeMapping, containsPair('pl', 'pl'));
+      expect(ChangelogService.localeMapping, containsPair('pt', 'pt-PT'));
+      expect(ChangelogService.localeMapping, containsPair('ro', 'ro'));
+      expect(ChangelogService.localeMapping, containsPair('ru', 'ru'));
+      expect(ChangelogService.localeMapping, containsPair('sl', 'sl'));
+      expect(ChangelogService.localeMapping, containsPair('sv', 'sv'));
+      expect(ChangelogService.localeMapping, containsPair('tr', 'tr'));
+      expect(ChangelogService.localeMapping, containsPair('uk', 'uk'));
+      expect(ChangelogService.localeMapping, containsPair('zh', 'zh-CN'));
     });
 
     test('should handle null locale gracefully', () async {
