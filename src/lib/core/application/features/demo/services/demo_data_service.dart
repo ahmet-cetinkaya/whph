@@ -1,5 +1,5 @@
 import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
-import 'package:whph/core/application/features/demo/models/demo_data.dart';
+import 'package:whph/core/application/features/demo/models/demo_data/demo_data.dart';
 import 'package:whph/core/domain/shared/constants/demo_config.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
