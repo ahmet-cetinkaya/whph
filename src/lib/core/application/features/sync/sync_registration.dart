@@ -21,7 +21,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_validation_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_communication_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_communication_service/sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_data_processing_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
