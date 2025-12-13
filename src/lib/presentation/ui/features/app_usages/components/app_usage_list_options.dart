@@ -4,7 +4,7 @@ import 'package:whph/presentation/ui/features/app_usages/models/app_usage_filter
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/presentation/ui/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/ui/shared/components/date_range_filter/date_range_filter.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/device_select_dropdown.dart';
 import 'package:whph/presentation/ui/shared/components/persistent_list_options_base.dart';

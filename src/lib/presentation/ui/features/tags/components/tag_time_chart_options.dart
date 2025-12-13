@@ -5,7 +5,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tags/models/tag_time_chart_option_settings.dart';
-import 'package:whph/presentation/ui/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/ui/shared/components/date_range_filter/date_range_filter.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/persistent_list_options_base.dart';
 import 'package:whph/presentation/ui/shared/components/save_button.dart';
