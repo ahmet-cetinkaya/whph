@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_time_reco
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
-import 'package:whph/infrastructure/persistence/features/habits/drift_habits_repository.dart';
+import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
 
 @UseRowClass(HabitTimeRecord)
 class HabitTimeRecordTable extends Table {
