@@ -1,4 +1,4 @@
-import 'widget_service.dart';
+import 'widget_service/widget_service.dart';
 
 /// Handles automatic widget updates when data changes
 class WidgetEventHandler {

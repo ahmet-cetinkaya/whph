@@ -11,7 +11,7 @@ import 'package:whph/presentation/ui/shared/services/global_error_handler_servic
 import 'package:whph/presentation/ui/shared/services/notification_payload_service.dart';
 import 'package:whph/presentation/ui/shared/services/platform_initialization_service.dart';
 import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
-import 'package:whph/core/application/features/widget/services/widget_service.dart';
+import 'package:whph/core/application/features/widget/services/widget_service/widget_service.dart';
 import 'package:whph/core/application/features/widget/services/widget_update_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';

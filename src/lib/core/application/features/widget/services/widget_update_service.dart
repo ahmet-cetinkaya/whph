@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
-import 'widget_service.dart';
+import 'widget_service/widget_service.dart';
 
 class WidgetUpdateService {
   final WidgetService _widgetService;
