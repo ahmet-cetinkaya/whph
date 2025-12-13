@@ -21,7 +21,7 @@ import 'package:whph/presentation/ui/features/sync/constants/sync_translation_ke
 import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_button.dart';
 import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_device_list_item/sync_device_list_item.dart';
-import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
+import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/add_sync_device_page.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/server_mode_mixin.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/desktop_sync_mode_mixin.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/sync_status_mixin.dart';

@@ -14,7 +14,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart
 import 'package:whph/presentation/ui/features/tasks/pages/tasks_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/ui/features/sync/pages/qr_code_scanner_page.dart';
-import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
+import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/add_sync_device_page.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 
 class AppRoutes {
