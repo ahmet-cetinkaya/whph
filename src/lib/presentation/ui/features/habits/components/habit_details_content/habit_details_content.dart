@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, MarkdownEditor, ResponsiveDialogHelper, DialogSize;
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_view.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/components/habit_archived_section.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/components/habit_goal_section.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/components/habit_optional_field_chip.dart';
