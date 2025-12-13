@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
-import 'package:whph/corePackages/acore/lib/components/date_time_picker/components/time_selector.dart';
-import 'package:whph/corePackages/acore/lib/components/date_time_picker/constants/date_time_picker_translation_keys.dart';
+import 'package:acore/components/date_time_picker/components/time_selector.dart';
+import 'package:acore/components/date_time_picker/constants/date_time_picker_translation_keys.dart';
 
 void main() {
   group('TimeSelector Widget Tests', () {
@@ -34,7 +34,9 @@ void main() {
 
       // Verify the component renders
       expect(find.byType(TimeSelector), findsOneWidget);
-      expect(find.text('2:30 PM'), findsOneWidget);
+      // Check for time display - use regex to handle different locale formats (12h or 24h)
+      // Matches: "2:30 PM", "14:30", etc.
+      expect(find.textContaining(RegExp(r'(2:30\s*PM|14:30)')), findsOneWidget);
       expect(find.byIcon(Icons.access_time), findsOneWidget);
     });
 
@@ -97,8 +99,8 @@ void main() {
       await tester.tap(find.byType(TimeSelector));
       await tester.pump();
 
-      // Verify the inline time picker appears
-      expect(find.text('12:00 PM'), findsOneWidget);
+      // Verify the inline time picker appears - use regex to handle different locale formats
+      expect(find.textContaining(RegExp(r'(12:00\s*PM|12:00)')), findsOneWidget);
     });
 
     testWidgets('TimeSelector handles keyboard navigation - Enter key', (WidgetTester tester) async {
