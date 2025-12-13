@@ -2,20 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show DateTimeHelper, ResponsiveDialogHelper, DialogSize;
-import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
-import 'package:whph/core/application/features/habits/commands/remove_habit_tag_command.dart';
+import 'package:acore/acore.dart' show DateTimeHelper;
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
-import 'package:whph/core/application/features/habits/commands/save_habit_time_record_command.dart';
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/habits/components/habit_goal_dialog.dart';
-import 'package:whph/presentation/ui/features/habits/components/habit_reminder_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
@@ -23,7 +15,10 @@ import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'helpers/habit_data_loader.dart';
+import 'helpers/habit_tag_operations.dart';
+import 'helpers/habit_record_operations.dart';
+import 'helpers/habit_dialog_helper.dart';
 
 /// Controller for habit details business logic.
 /// Separates data management and operations from UI concerns.
@@ -31,7 +26,12 @@ class HabitDetailsController extends ChangeNotifier {
   final Mediator _mediator;
   final HabitsService _habitsService;
   final ITranslationService _translationService;
-  final ISoundManagerService _soundManagerService;
+
+  // Helpers
+  late final HabitDataLoader _dataLoader;
+  late final HabitTagOperations _tagOperations;
+  late final HabitRecordOperations _recordOperations;
+  late final HabitDialogHelper _dialogHelper;
 
   // Habit state
   GetHabitQueryResponse? _habit;
@@ -66,8 +66,23 @@ class HabitDetailsController extends ChangeNotifier {
     ISoundManagerService? soundManagerService,
   })  : _mediator = mediator ?? container.resolve<Mediator>(),
         _habitsService = habitsService ?? container.resolve<HabitsService>(),
-        _translationService = translationService ?? container.resolve<ITranslationService>(),
-        _soundManagerService = soundManagerService ?? container.resolve<ISoundManagerService>();
+        _translationService = translationService ?? container.resolve<ITranslationService>() {
+    final resolvedSoundManager = soundManagerService ?? container.resolve<ISoundManagerService>();
+
+    _dataLoader = HabitDataLoader(mediator: _mediator, translationService: _translationService);
+    _tagOperations = HabitTagOperations(
+      mediator: _mediator,
+      translationService: _translationService,
+      habitsService: _habitsService,
+    );
+    _recordOperations = HabitRecordOperations(
+      mediator: _mediator,
+      translationService: _translationService,
+      soundManagerService: resolvedSoundManager,
+      habitsService: _habitsService,
+    );
+    _dialogHelper = HabitDialogHelper(translationService: _translationService);
+  }
 
   // Getters
   GetHabitQueryResponse? get habit => _habit;
@@ -123,132 +138,76 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Data loading methods
+  // Data loading methods (delegated to helper)
   Future<void> loadHabit(String habitId, BuildContext context) async {
-    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
-      context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
-      operation: () async {
-        final query = GetHabitQuery(id: habitId);
-        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
-      },
-      onSuccess: (result) {
-        if (_habit == null) {
-          _habit = result;
-        } else {
-          _habit!.name = result.name;
-          _habit!.description = result.description;
-          _habit!.estimatedTime = result.estimatedTime;
-          _habit!.hasReminder = result.hasReminder;
-          _habit!.reminderTime = result.reminderTime;
-          _habit!.reminderDays = result.reminderDays;
-          _habit!.hasGoal = result.hasGoal;
-          _habit!.targetFrequency = result.targetFrequency;
-          _habit!.periodDays = result.periodDays;
-          _habit!.archivedDate = result.archivedDate;
-        }
-        _ensureValidReminderSettings();
-        _processFieldVisibility();
-        notifyListeners();
-      },
-    );
+    final result = await _dataLoader.loadHabit(habitId, context);
+    if (result != null) {
+      if (_habit == null) {
+        _habit = result;
+      } else {
+        _updateHabitFields(result);
+      }
+      _ensureValidReminderSettings();
+      _processFieldVisibility();
+      notifyListeners();
+    }
+  }
+
+  void _updateHabitFields(GetHabitQueryResponse result) {
+    _habit!.name = result.name;
+    _habit!.description = result.description;
+    _habit!.estimatedTime = result.estimatedTime;
+    _habit!.hasReminder = result.hasReminder;
+    _habit!.reminderTime = result.reminderTime;
+    _habit!.reminderDays = result.reminderDays;
+    _habit!.hasGoal = result.hasGoal;
+    _habit!.targetFrequency = result.targetFrequency;
+    _habit!.periodDays = result.periodDays;
+    _habit!.archivedDate = result.archivedDate;
   }
 
   Future<void> loadHabitStatisticsOnly(String habitId, BuildContext context) async {
-    await AsyncErrorHandler.execute<GetHabitQueryResponse>(
-      context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
-      operation: () async {
-        final query = GetHabitQuery(id: habitId);
-        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
-      },
-      onSuccess: (result) {
-        if (_habit != null) {
-          _habit!.name = result.name;
-          _habit!.description = result.description;
-          _habit!.estimatedTime = result.estimatedTime;
-          _habit!.hasReminder = result.hasReminder;
-          _habit!.reminderTime = result.reminderTime;
-          _habit!.reminderDays = result.reminderDays;
-          _habit!.hasGoal = result.hasGoal;
-          _habit!.targetFrequency = result.targetFrequency;
-          _habit!.periodDays = result.periodDays;
-          _habit!.archivedDate = result.archivedDate;
-        }
-        notifyListeners();
-      },
-    );
+    final result = await _dataLoader.loadHabit(habitId, context);
+    if (result != null && _habit != null) {
+      _updateHabitFields(result);
+      notifyListeners();
+    }
   }
 
   Future<void> loadHabitRecordsForMonth(DateTime month, String habitId, BuildContext context) async {
-    await AsyncErrorHandler.execute<GetListHabitRecordsQueryResponse>(
-      context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
-      operation: () async {
-        final firstDayOfMonth = DateTime(month.year, month.month, 1);
-        final firstWeekdayOfMonth = firstDayOfMonth.weekday;
-        final previousMonthDays = firstWeekdayOfMonth - 1;
-        final firstDisplayedDate = firstDayOfMonth.subtract(Duration(days: previousMonthDays));
-
-        final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
-        final lastWeekdayOfMonth = lastDayOfMonth.weekday;
-        final nextMonthDays = 7 - lastWeekdayOfMonth;
-        final lastDisplayedDate = lastDayOfMonth.add(Duration(days: nextMonthDays));
-
-        final query = GetListHabitRecordsQuery(
-          pageIndex: 0,
-          pageSize: 50,
-          habitId: habitId,
-          startDate: firstDisplayedDate.toUtc(),
-          endDate: lastDisplayedDate.toUtc(),
-        );
-        return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
-      },
-      onSuccess: (result) {
-        _habitRecords = result;
-        notifyListeners();
-      },
-    );
+    final result = await _dataLoader.loadHabitRecordsForMonth(month, habitId, context);
+    if (result != null) {
+      _habitRecords = result;
+      notifyListeners();
+    }
   }
 
   Future<void> loadHabitTags(String habitId, BuildContext context) async {
-    int pageIndex = 0;
-    const int pageSize = 50;
     final existingTagIds = _habitTags?.items.map((tag) => tag.tagId).toSet() ?? <String>{};
-    GetListHabitTagsQueryResponse? newHabitTags;
+    final result = await _dataLoader.loadHabitTags(habitId, context);
 
-    while (true) {
-      final query = GetListHabitTagsQuery(habitId: habitId, pageIndex: pageIndex, pageSize: pageSize);
-      final result = await AsyncErrorHandler.execute<GetListHabitTagsQueryResponse>(
-        context: context,
-        errorMessage: _translationService.translate(HabitTranslationKeys.loadingTagsError),
-        operation: () async => await _mediator.send<GetListHabitTagsQuery, GetListHabitTagsQueryResponse>(query),
-        onSuccess: (response) {
-          if (newHabitTags == null) {
-            newHabitTags = response;
-          } else {
-            newHabitTags!.items.addAll(response.items);
-          }
-        },
-      );
-
-      if (result == null || result.items.isEmpty || result.items.length < pageSize) break;
-      pageIndex++;
-    }
-
-    if (newHabitTags != null) {
-      final newTagIds = newHabitTags!.items.map((tag) => tag.tagId).toSet();
+    if (result != null) {
+      final newTagIds = result.items.map((tag) => tag.tagId).toSet();
       if (_forceTagsRefresh ||
           _habitTags == null ||
           existingTagIds.length != newTagIds.length ||
           !existingTagIds.containsAll(newTagIds)) {
-        _habitTags = newHabitTags;
+        _habitTags = result;
         _forceTagsRefresh = false;
         _processFieldVisibility();
         notifyListeners();
       }
     } else if (_habitTags == null) {
       _habitTags = GetListHabitTagsQueryResponse(items: [], pageIndex: 0, pageSize: 50, totalItemCount: 0);
+      _processFieldVisibility();
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshTotalDuration(String habitId) async {
+    final newDuration = await _dataLoader.refreshTotalDuration(habitId);
+    if (_totalDuration != newDuration) {
+      _totalDuration = newDuration;
       _processFieldVisibility();
       notifyListeners();
     }
@@ -394,18 +353,10 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Tag operations
+  // Tag operations (delegated to helper)
   Future<bool> addTag(String tagId, String habitId, BuildContext context) async {
-    final result = await AsyncErrorHandler.execute<AddHabitTagCommandResponse>(
-      context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.addingTagError),
-      operation: () async {
-        final command = AddHabitTagCommand(habitId: habitId, tagId: tagId);
-        return await _mediator.send(command);
-      },
-    );
-
-    if (result != null) {
+    final success = await _tagOperations.addTag(tagId, habitId, context);
+    if (success) {
       _forceTagsRefresh = true;
       if (!context.mounted) return false;
       await loadHabitTags(habitId, context);
@@ -415,16 +366,8 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   Future<bool> removeTag(String id, String habitId, BuildContext context) async {
-    final result = await AsyncErrorHandler.execute<RemoveHabitTagCommandResponse>(
-      context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.removingTagError),
-      operation: () async {
-        final command = RemoveHabitTagCommand(id: id);
-        return await _mediator.send(command);
-      },
-    );
-
-    if (result != null) {
+    final success = await _tagOperations.removeTag(id, context);
+    if (success) {
       _forceTagsRefresh = true;
       if (!context.mounted) return false;
       await loadHabitTags(habitId, context);
@@ -434,63 +377,38 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   Future<void> processTagChanges(List<DropdownOption<String>> tagOptions, String habitId, BuildContext context) async {
-    if (_habitTags == null) return;
-
-    final tagsToAdd = tagOptions
-        .where((tagOption) => !_habitTags!.items.any((habitTag) => habitTag.tagId == tagOption.value))
-        .map((option) => option.value)
-        .toList();
-
-    final tagsToRemove =
-        _habitTags!.items.where((habitTag) => !tagOptions.map((tag) => tag.value).contains(habitTag.tagId)).toList();
-
-    for (final tagId in tagsToAdd) {
-      if (!context.mounted) return;
-      await addTag(tagId, habitId, context);
-    }
-
-    for (final habitTag in tagsToRemove) {
-      if (!context.mounted) return;
-      await removeTag(habitTag.id, habitId, context);
-    }
-
-    if (tagsToAdd.isNotEmpty || tagsToRemove.isNotEmpty) {
-      _habitsService.notifyHabitUpdated(habitId);
-    }
+    await _tagOperations.processTagChanges(
+      tagOptions: tagOptions,
+      habitId: habitId,
+      context: context,
+      currentTags: _habitTags,
+      reloadTags: loadHabitTags,
+    );
   }
 
-  // Record operations
+  // Record operations (delegated to helper)
   Future<void> createHabitRecord(String habitId, DateTime date, BuildContext context) async {
-    await AsyncErrorHandler.executeVoid(
+    await _recordOperations.createHabitRecord(
+      habitId: habitId,
+      date: date,
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
-      operation: () async {
-        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
-        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
-      },
       onSuccess: () {
         loadHabitRecordsForMonth(_currentMonth, habitId, context);
         loadHabitStatisticsOnly(habitId, context);
-        _soundManagerService.playHabitCompletion();
-        _habitsService.notifyHabitRecordAdded(habitId);
         onHabitUpdated?.call();
       },
     );
   }
 
   Future<void> deleteAllHabitRecordsForDay(DateTime date, String habitId, BuildContext context) async {
-    await AsyncErrorHandler.executeVoid(
+    await _recordOperations.deleteAllHabitRecordsForDay(
+      date: date,
+      habitId: habitId,
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.deletingRecordError),
-      operation: () async {
-        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date, useIncrementalBehavior: false);
-        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
-      },
       onSuccess: () async {
         if (context.mounted) await loadHabitRecordsForMonth(_currentMonth, habitId, context);
         if (context.mounted) await loadHabitStatisticsOnly(habitId, context);
         if (context.mounted) await refreshTotalDuration(habitId);
-        _habitsService.notifyHabitRecordRemoved(habitId);
         onHabitUpdated?.call();
       },
     );
@@ -513,20 +431,12 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Timer operations
+  // Timer operations (delegated to helper)
   void onTimerStop(Duration totalElapsed, String habitId) {
     if (_habit?.id == null) return;
-    if (totalElapsed.inSeconds > 0) {
-      final command = AddHabitTimeRecordCommand(
-        habitId: habitId,
-        duration: totalElapsed.inSeconds,
-        customDateTime: DateTime.now(),
-      );
-      _mediator.send(command);
-    }
+    _recordOperations.onTimerStop(totalElapsed, habitId);
   }
 
-  // Time logging dialog
   Future<void> logTime({
     required BuildContext context,
     required String habitId,
@@ -534,43 +444,13 @@ class HabitDetailsController extends ChangeNotifier {
     required int durationInSeconds,
     required DateTime date,
   }) async {
-    await AsyncErrorHandler.executeVoid(
+    await _recordOperations.logTime(
       context: context,
-      operation: () async {
-        if (isSetTotalMode) {
-          await _mediator.send(SaveHabitTimeRecordCommand(
-            habitId: habitId,
-            totalDuration: durationInSeconds,
-            targetDate: date,
-          ));
-        } else {
-          await _mediator.send(AddHabitTimeRecordCommand(
-            habitId: habitId,
-            duration: durationInSeconds,
-            customDateTime: date,
-          ));
-        }
-      },
-      onSuccess: () {
-        _habitsService.notifyHabitUpdated(habitId);
-      },
+      habitId: habitId,
+      isSetTotalMode: isSetTotalMode,
+      durationInSeconds: durationInSeconds,
+      date: date,
     );
-  }
-
-  // Total duration
-  Future<void> refreshTotalDuration(String habitId) async {
-    try {
-      final query = GetTotalDurationByHabitIdQuery(habitId: habitId);
-      final result =
-          await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(query);
-      if (_totalDuration != result.totalDuration) {
-        _totalDuration = result.totalDuration;
-        _processFieldVisibility();
-        notifyListeners();
-      }
-    } catch (e) {
-      // Keep existing value on error
-    }
   }
 
   int getTodayRecordCount() {
@@ -578,54 +458,13 @@ class HabitDetailsController extends ChangeNotifier {
     return _habitRecords!.items.where((record) => DateTimeHelper.isSameDay(record.date, DateTime.now())).length;
   }
 
-  // Reminder operations
-  String getReminderSummaryText() {
-    if (_habit == null || !_habit!.hasReminder) {
-      return _translationService.translate(HabitTranslationKeys.noReminder);
-    }
-
-    String summary = "";
-
-    if (_habit!.reminderTime != null) {
-      final timeOfDay = _habit!.getReminderTimeOfDay();
-      if (timeOfDay != null) {
-        summary += '${timeOfDay.hour.toString().padLeft(2, '0')}:${timeOfDay.minute.toString().padLeft(2, '0')}';
-      }
-    }
-
-    final reminderDays = _habit!.getReminderDaysAsList();
-    if (reminderDays.isNotEmpty && reminderDays.length < 7) {
-      final dayNames = reminderDays.map((dayNum) {
-        return _translationService.translate(SharedTranslationKeys.getWeekDayTranslationKey(dayNum, short: true));
-      }).join(', ');
-      summary += ', $dayNames';
-    } else if (reminderDays.length == 7) {
-      summary += ', ${_translationService.translate(HabitTranslationKeys.everyDay)}';
-    }
-
-    return summary;
-  }
+  // Dialog operations (delegated to helper)
+  String getReminderSummaryText() => _dialogHelper.getReminderSummaryText(_habit);
 
   Future<void> openReminderDialog(BuildContext context, String habitId) async {
     if (_habit == null) return;
 
-    final now = DateTime.now();
-    final bool isArchived =
-        _habit!.archivedDate != null && DateTimeHelper.toLocalDateTime(_habit!.archivedDate!).isBefore(now);
-
-    if (isArchived) return;
-
-    final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitReminderSettingsResult>(
-      context: context,
-      size: DialogSize.medium,
-      child: HabitReminderSettingsDialog(
-        hasReminder: _habit!.hasReminder,
-        reminderTime: _habit!.getReminderTimeOfDay(),
-        reminderDays: _habit!.getReminderDaysAsList(),
-        translationService: _translationService,
-      ),
-    );
-
+    final result = await _dialogHelper.openReminderDialog(context, _habit!);
     if (result != null && context.mounted) {
       _habit!.hasReminder = result.hasReminder;
 
@@ -643,34 +482,16 @@ class HabitDetailsController extends ChangeNotifier {
     }
   }
 
-  // Goal operations
   Future<void> openGoalDialog(BuildContext context, String habitId) async {
     if (_habit == null) return;
 
-    final now = DateTime.now();
-    final bool isArchived =
-        _habit!.archivedDate != null && DateTimeHelper.toLocalDateTime(_habit!.archivedDate!).isBefore(now);
-
-    if (isArchived) return;
-
-    final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitGoalResult>(
-      context: context,
-      size: DialogSize.large,
-      child: HabitGoalDialog(
-        hasGoal: _habit!.hasGoal,
-        targetFrequency: _habit!.targetFrequency,
-        periodDays: _habit!.hasGoal ? _habit!.periodDays : 1,
-        dailyTarget: _habit!.dailyTarget ?? 1,
-        translationService: _translationService,
-      ),
-    );
-
+    final result = await _dialogHelper.openGoalDialog(context, _habit!);
     if (result != null && context.mounted) {
       _habit!.hasGoal = result.hasGoal;
       _habit!.dailyTarget = result.dailyTarget;
       if (result.hasGoal) {
-        _habit!.targetFrequency = result.targetFrequency;
-        _habit!.periodDays = result.periodDays;
+        if (result.targetFrequency != null) _habit!.targetFrequency = result.targetFrequency!;
+        if (result.periodDays != null) _habit!.periodDays = result.periodDays!;
       }
       await saveHabitImmediately(habitId, context);
       notifyListeners();
