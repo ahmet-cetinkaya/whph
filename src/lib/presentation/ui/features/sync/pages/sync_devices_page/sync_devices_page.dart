@@ -19,7 +19,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_button.dart';
-import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card.dart';
+import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card/firewall_permission_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_device_list_item/sync_device_list_item.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/add_sync_device_page.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/server_mode_mixin.dart';
