@@ -14,7 +14,7 @@ import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart'
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/features/tasks/components/timer.dart';
+import 'package:whph/presentation/ui/features/tasks/components/timer/timer.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';

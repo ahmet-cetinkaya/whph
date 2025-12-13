@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/ui/features/tasks/components/timer.dart';
+import 'package:whph/presentation/ui/features/tasks/components/timer/timer.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
