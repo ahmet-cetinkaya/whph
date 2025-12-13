@@ -24,8 +24,8 @@ import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart'
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/dialog_size.dart';
 
 /// Task details content widget - displays and edits task information.
 /// Uses [TaskDetailsController] for business logic separation.

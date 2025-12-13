@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/dialog_size.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/reset_database_dialog.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';

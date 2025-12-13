@@ -40,8 +40,8 @@ import 'core/domain/features/tasks/task_time_record.dart' as x14 show TaskTimeRe
 import 'core/domain/shared/constants/app_assets.dart' as x28 show TrayIconType;
 import 'core/domain/shared/constants/app_theme.dart' as x52 show UiDensity;
 import 'corePackages/acore/lib/components/border_fade_overlay.dart' as x31 show FadeBorder;
-import 'corePackages/acore/lib/components/date_time_picker/date_picker_types.dart' as x33 show DateSelectionMode;
-import 'corePackages/acore/lib/components/date_time_picker/date_time_picker_translation_keys.dart' as x32 show DateTimePickerTranslationKey;
+import 'corePackages/acore/lib/components/date_time_picker/constants/date_time_picker_translation_keys.dart' as x32 show DateTimePickerTranslationKey;
+import 'corePackages/acore/lib/components/date_time_picker/models/date_selection_mode.dart' as x33 show DateSelectionMode;
 import 'corePackages/acore/lib/components/numeric_input/numeric_input.dart' as x36 show NumericInputStyle;
 import 'corePackages/acore/lib/components/numeric_input/numeric_input_translation_keys.dart' as x37 show NumericInputTranslationKey;
 import 'corePackages/acore/lib/logging/log_level.dart' as x38 show LogLevel;
@@ -95,7 +95,7 @@ import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.
 import 'package:whph/core/domain/features/tasks/task.dart' as prefix7;
 import 'package:whph/core/domain/features/tasks/task_tag.dart' as prefix10;
 import 'package:whph/core/domain/features/tasks/task_time_record.dart' as prefix25;
-import 'package:whph/corePackages/acore/lib/repository/models/base_entity.dart' as prefix28;
+import 'package:acore/repository/models/base_entity.dart' as prefix28;
 import 'package:whph/presentation/ui/features/sync/models/sync_qr_code_message.dart' as prefix29;
 
 // ignore_for_file: camel_case_types

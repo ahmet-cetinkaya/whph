@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
+import 'package:acore/acore.dart' show PlatformUtils;
 
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';

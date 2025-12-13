@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/corePackages/acore/lib/utils/color_contrast_helper.dart';
+import 'package:acore/utils/color_contrast_helper.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 

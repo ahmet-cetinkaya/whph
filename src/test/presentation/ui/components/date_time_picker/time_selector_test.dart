@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
-import 'package:acore/components/date_time_picker/time_selector.dart';
-import 'package:acore/components/date_time_picker/date_time_picker_translation_keys.dart';
+import 'package:whph/corePackages/acore/lib/components/date_time_picker/components/time_selector.dart';
+import 'package:whph/corePackages/acore/lib/components/date_time_picker/constants/date_time_picker_translation_keys.dart';
 
 void main() {
   group('TimeSelector Widget Tests', () {
