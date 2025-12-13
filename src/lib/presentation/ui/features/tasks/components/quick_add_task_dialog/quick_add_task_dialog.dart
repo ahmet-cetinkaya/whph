@@ -6,10 +6,8 @@ import 'package:acore/acore.dart' as acore;
 import 'package:acore/utils/dialog_size.dart';
 
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 
-import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'builders/estimated_time_dialog_content.dart';
 import 'builders/description_dialog_content.dart';
@@ -19,6 +17,7 @@ import 'dialogs/lock_settings_dialog_content.dart';
 import 'dialogs/clear_fields_confirmation_dialog.dart';
 import 'models/lock_settings_state.dart';
 import 'controllers/quick_add_task_controller.dart';
+import 'components/quick_action_buttons_bar.dart';
 
 import '../task_date_picker_dialog.dart';
 
@@ -138,12 +137,8 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       onTaskCreated: widget.onTaskCreated,
     );
 
-    if (widget.initialTitle != null) {
-      _titleController.text = widget.initialTitle!;
-    }
-    if (widget.initialDescription != null) {
-      _descriptionController.text = widget.initialDescription!;
-    }
+    if (widget.initialTitle != null) _titleController.text = widget.initialTitle!;
+    if (widget.initialDescription != null) _descriptionController.text = widget.initialDescription!;
 
     _controller.initialize();
     _controller.addListener(_onControllerUpdate);
@@ -268,9 +263,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       ),
     );
 
-    if (mounted) {
-      _controller.setSelectedPriority(tempPriority);
-    }
+    if (mounted) _controller.setSelectedPriority(tempPriority);
   }
 
   Future<void> _showEstimatedTimeDialog() async {
@@ -282,33 +275,23 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       size: DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
-          final theme = Theme.of(context);
-
-          void updateTempTime(int value) {
-            setDialogState(() {
-              tempEstimatedTime = value;
-              tempIsExplicitlySet = true;
-            });
-          }
-
-          void confirmEstimatedTime() {
-            _controller.setEstimatedTime(tempEstimatedTime, isExplicit: tempIsExplicitlySet);
-          }
-
           return EstimatedTimeDialogContent(
             selectedTime: tempEstimatedTime,
-            onTimeSelected: updateTempTime,
-            onConfirm: confirmEstimatedTime,
+            onTimeSelected: (value) {
+              setDialogState(() {
+                tempEstimatedTime = value;
+                tempIsExplicitlySet = true;
+              });
+            },
+            onConfirm: () => _controller.setEstimatedTime(tempEstimatedTime, isExplicit: tempIsExplicitlySet),
             translationService: _controller.translationService,
-            theme: theme,
+            theme: Theme.of(context),
           );
         },
       ),
     );
 
-    if (mounted) {
-      _controller.setShowEstimatedTimeSection(false);
-    }
+    if (mounted) _controller.setShowEstimatedTimeSection(false);
   }
 
   Future<void> _showDescriptionDialog() async {
@@ -319,12 +302,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       size: DialogSize.large,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
-          final theme = Theme.of(context);
           return DescriptionDialogContent(
             description: tempDescription,
             onChanged: (value) => setDialogState(() => tempDescription = value),
             translationService: _controller.translationService,
-            theme: theme,
+            theme: Theme.of(context),
           );
         },
       ),
@@ -358,9 +340,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       ),
     );
 
-    if (mounted) {
-      _controller.setLockState(tempLockState);
-    }
+    if (mounted) _controller.setLockState(tempLockState);
   }
 
   Future<void> _onClearAllFields() async {
@@ -402,38 +382,6 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     );
   }
 
-  Widget _buildEstimatedTimeIcon() {
-    final theme = Theme.of(context);
-    final estimatedTime = _controller.estimatedTime;
-
-    if (estimatedTime != null && estimatedTime > 0) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        decoration: BoxDecoration(
-          color: _controller.isEstimatedTimeExplicitlySet
-              ? theme.colorScheme.primary
-              : theme.colorScheme.onSurface.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          estimatedTime.toString(),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: _controller.isEstimatedTimeExplicitlySet
-                ? theme.colorScheme.onPrimary
-                : theme.colorScheme.onSurface.withValues(alpha: 0.8),
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
-      );
-    } else {
-      return Icon(
-        TaskUiConstants.estimatedTimeIcon,
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
@@ -458,7 +406,18 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                 padding: EdgeInsets.only(top: AppTheme.sizeSmall),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: _buildQuickActionButtons(theme, isMobile),
+                  child: QuickActionButtonsBar(
+                    controller: _controller,
+                    descriptionController: _descriptionController,
+                    onShowLockSettings: _showLockSettingsDialog,
+                    onShowPriorityDialog: _showPrioritySelectionDialog,
+                    onShowEstimatedTimeDialog: _showEstimatedTimeDialog,
+                    onShowDescriptionDialog: _showDescriptionDialog,
+                    onSelectPlannedDate: _selectPlannedDate,
+                    onSelectDeadlineDate: _selectDeadlineDate,
+                    onClearAllFields: _onClearAllFields,
+                    isMobile: isMobile,
+                  ),
                 ),
               ),
             ),
@@ -538,191 +497,6 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       icon: Icon(_controller.isLoading ? Icons.hourglass_empty : Icons.send, color: theme.colorScheme.primary),
       onPressed: _createTask,
       tooltip: _controller.translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
-    );
-  }
-
-  Widget _buildQuickActionButtons(ThemeData theme, bool isMobile) {
-    final iconSize = AppTheme.iconSizeMedium;
-    final buttonGap = isMobile ? 2.0 : AppTheme.sizeXSmall;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildIconButton(
-          icon: Icons.lock_outline,
-          color: _controller.hasAnyLocks ? theme.colorScheme.primary : null,
-          onPressed: _showLockSettingsDialog,
-          tooltip: _controller.translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
-          iconSize: iconSize,
-          theme: theme,
-        ),
-        SizedBox(width: buttonGap),
-        _buildActionButtonWithLock(
-          child: TagSelectDropdown(
-            initialSelectedTags: _controller.selectedTags,
-            isMultiSelect: true,
-            tooltip: _controller.getTagsTooltip(),
-            onTagsSelected: (tags, _) => _controller.setSelectedTags(tags),
-            iconSize: iconSize,
-            color: _controller.selectedTags.isEmpty
-                ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
-                : _controller.getTagColor(),
-            buttonStyle: _getQuickActionButtonStyle(theme),
-          ),
-          isLocked: _controller.lockTags,
-          theme: theme,
-        ),
-        SizedBox(width: buttonGap),
-        _buildActionButtonWithLock(
-          child: _buildIconButton(
-            icon: _controller.selectedPriority == null
-                ? TaskUiConstants.priorityOutlinedIcon
-                : TaskUiConstants.priorityIcon,
-            color: _controller.getPriorityColor(),
-            onPressed: _showPrioritySelectionDialog,
-            tooltip: _controller.getPriorityTooltip(),
-            iconSize: iconSize,
-            theme: theme,
-          ),
-          isLocked: _controller.lockPriority,
-          theme: theme,
-        ),
-        SizedBox(width: buttonGap),
-        _buildActionButtonWithLock(
-          child: _buildIconButton(
-            iconWidget: _buildEstimatedTimeIcon(),
-            onPressed: () {
-              _controller.toggleEstimatedTimeSection();
-              if (_controller.showEstimatedTimeSection) _showEstimatedTimeDialog();
-            },
-            tooltip: _controller.getEstimatedTimeTooltip(),
-            iconSize: iconSize,
-            theme: theme,
-          ),
-          isLocked: _controller.lockEstimatedTime,
-          theme: theme,
-        ),
-        SizedBox(width: buttonGap),
-        _buildActionButtonWithLock(
-          child: _buildIconButton(
-            icon: _descriptionController.text.isNotEmpty ? Icons.description : Icons.description_outlined,
-            color: _descriptionController.text.isNotEmpty ? theme.colorScheme.primary : null,
-            onPressed: () {
-              _controller.toggleDescriptionSection();
-              if (_controller.showDescriptionSection) _showDescriptionDialog();
-            },
-            tooltip: _descriptionController.text.isNotEmpty
-                ? _controller.translationService.translate(TaskTranslationKeys.descriptionLabel)
-                : _controller.translationService.translate(TaskTranslationKeys.addDescriptionHint),
-            iconSize: iconSize,
-            theme: theme,
-          ),
-          isLocked: false,
-          theme: theme,
-        ),
-        SizedBox(width: buttonGap),
-        _buildActionButtonWithLock(
-          child: _buildIconButton(
-            icon: _controller.plannedDate == null
-                ? TaskUiConstants.plannedDateOutlinedIcon
-                : TaskUiConstants.plannedDateIcon,
-            color: _controller.plannedDate == null ? null : TaskUiConstants.plannedDateColor,
-            onPressed: _selectPlannedDate,
-            tooltip: _controller.getDateTooltip(false),
-            iconSize: iconSize,
-            theme: theme,
-          ),
-          isLocked: _controller.lockPlannedDate,
-          theme: theme,
-        ),
-        SizedBox(width: buttonGap),
-        _buildActionButtonWithLock(
-          child: _buildIconButton(
-            icon: _controller.deadlineDate == null
-                ? TaskUiConstants.deadlineDateOutlinedIcon
-                : TaskUiConstants.deadlineDateIcon,
-            color: _controller.deadlineDate == null ? null : TaskUiConstants.deadlineDateColor,
-            onPressed: _selectDeadlineDate,
-            tooltip: _controller.getDateTooltip(true),
-            iconSize: iconSize,
-            theme: theme,
-          ),
-          isLocked: _controller.lockDeadlineDate,
-          theme: theme,
-        ),
-        SizedBox(width: buttonGap),
-        _buildIconButton(
-          icon: Icons.close,
-          onPressed: _onClearAllFields,
-          tooltip: _controller.translationService.translate(TaskTranslationKeys.quickTaskResetAll),
-          iconSize: iconSize,
-          theme: theme,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildIconButton({
-    IconData? icon,
-    Widget? iconWidget,
-    Color? color,
-    required VoidCallback onPressed,
-    required String tooltip,
-    required double iconSize,
-    required ThemeData theme,
-  }) {
-    return IconButton(
-      icon: iconWidget ?? Icon(icon, color: color ?? theme.colorScheme.onSurface.withValues(alpha: 0.7)),
-      onPressed: onPressed,
-      tooltip: tooltip,
-      iconSize: iconSize,
-      style: _getQuickActionButtonStyle(theme),
-    );
-  }
-
-  ButtonStyle _getQuickActionButtonStyle(ThemeData theme) {
-    return IconButton.styleFrom(
-      backgroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-      foregroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6),
-        side: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2), width: 0.5),
-      ),
-      padding: EdgeInsets.zero,
-      minimumSize: const Size(32, 32),
-    );
-  }
-
-  Widget _buildActionButtonWithLock({
-    required Widget child,
-    required bool isLocked,
-    required ThemeData theme,
-  }) {
-    return Stack(
-      children: [
-        child,
-        if (isLocked)
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: theme.shadowColor.withValues(alpha: 0.2),
-                    blurRadius: 2,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: Icon(Icons.lock, size: AppTheme.iconSize2XSmall, color: theme.colorScheme.primary),
-            ),
-          ),
-      ],
     );
   }
 }
