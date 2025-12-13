@@ -23,7 +23,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';

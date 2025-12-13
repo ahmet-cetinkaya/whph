@@ -16,7 +16,7 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class NotesPage extends StatefulWidget {

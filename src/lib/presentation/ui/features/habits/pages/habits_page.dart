@@ -23,7 +23,7 @@ import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layou
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class HabitsPage extends StatefulWidget {

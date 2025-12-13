@@ -45,7 +45,7 @@ import 'presentation/ui/features/sync/models/sync_qr_code_message.dart' as x26 s
 import 'presentation/ui/features/tasks/components/custom_reminder_dialog.dart' as x42 show CustomReminderUnit;
 import 'presentation/ui/features/tasks/components/schedule_button.dart' as x43 show ScheduleOption;
 import 'presentation/ui/shared/components/time_logging_dialog.dart' as x45 show LoggingMode, TimeUnit;
-import 'presentation/ui/shared/components/tour_overlay.dart' as x46 show TourHighlightShape, TourPosition;
+import 'presentation/ui/shared/components/tour_overlay/tour_overlay.dart' as x46 show TourHighlightShape, TourPosition;
 import 'presentation/ui/shared/enums/timer_mode.dart' as x44 show TimerMode;
 import 'presentation/ui/shared/services/abstraction/i_theme_service.dart' as x40 show AppThemeMode;
 import 'presentation/ui/shared/utils/overlay_notification_helper.dart' as x38 show NotificationPosition;

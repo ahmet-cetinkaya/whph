@@ -19,7 +19,7 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';

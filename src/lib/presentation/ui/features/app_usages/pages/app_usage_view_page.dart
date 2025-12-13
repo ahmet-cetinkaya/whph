@@ -21,7 +21,7 @@ import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/app_usage_permission.dart';
-import 'package:whph/presentation/ui/shared/components/tour_overlay.dart';
+import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class AppUsageViewPage extends StatefulWidget {
