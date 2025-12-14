@@ -37,7 +37,7 @@ scripts:
   # Build Releases
   release:linux: cd src && fvm flutter build linux --release
   release:windows: cd src && fvm flutter build windows --release
-  release:windows:setup: cd src && fvm flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
+  release:windows:setup: cd src && fvm flutter build windows --release && ISCC.exe windows\\setup-wizard\\installer.iss
   release:android: cd src && fvm flutter build apk --release
   release:android:bundle: cd src && fvm flutter build appbundle --release
 
