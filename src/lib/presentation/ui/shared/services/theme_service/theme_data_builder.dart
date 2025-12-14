@@ -54,6 +54,7 @@ class ThemeDataBuilder {
       dialogTheme: _buildDialogTheme(),
       bottomSheetTheme: _buildBottomSheetTheme(),
       filledButtonTheme: _buildFilledButtonTheme(),
+      elevatedButtonTheme: _buildElevatedButtonTheme(),
       outlinedButtonTheme: _buildOutlinedButtonTheme(),
       textButtonTheme: _buildTextButtonTheme(),
       appBarTheme: _buildAppBarTheme(),
@@ -263,6 +264,18 @@ class ThemeDataBuilder {
           return 2;
         }),
         shadowColor: WidgetStateProperty.all(isDark ? Colors.transparent : Colors.black.withValues(alpha: 0.2)),
+      ),
+    );
+  }
+
+  ElevatedButtonThemeData _buildElevatedButtonTheme() {
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        padding: EdgeInsets.symmetric(horizontal: 16.0 * densityMultiplier, vertical: 12.0 * densityMultiplier),
       ),
     );
   }
