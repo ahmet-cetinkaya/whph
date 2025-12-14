@@ -118,7 +118,7 @@ class DemoAppUsages {
           records.add(AppUsageTimeRecord(
             id: KeyHelper.generateStringId(),
             appUsageId: app.id,
-            duration: duration.inMilliseconds,
+            duration: duration.inSeconds,
             usageDate: recordDate.subtract(Duration(hours: session * 4)),
             createdDate: recordDate,
           ));
