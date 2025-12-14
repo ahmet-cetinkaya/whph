@@ -22,7 +22,7 @@ scripts:
   run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
   clean: bash scripts/clean.sh
   format: bash scripts/format.sh
-  analyze: cd src && fvm flutter analyze
+  lint: ./scripts/lint.sh
 
   # Testing
   test: cd src && fvm flutter test
