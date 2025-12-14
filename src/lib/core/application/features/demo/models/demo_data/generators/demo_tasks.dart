@@ -201,7 +201,7 @@ class DemoTasks {
           records.add(TaskTimeRecord(
             id: KeyHelper.generateStringId(),
             taskId: task.id,
-            duration: duration.inMilliseconds,
+            duration: duration.inSeconds,
             createdDate: recordDate,
           ));
         }
