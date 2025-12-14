@@ -1,0 +1,272 @@
+name: "Run All Tests"
+description: "Runs comprehensive tests for the WHPH Flutter application on Linux"
+author: "Ahmet Çetinkaya"
+
+inputs:
+  enable-code-coverage:
+    description: "Generate code coverage reports"
+    required: false
+    default: "true"
+  test-directories:
+    description: "Test directories to run (space-separated)"
+    required: false
+    default: "test/ test/presentation/ui/shared/services/ test/drift/app_database/"
+  flutter-command:
+    description: "Flutter command to use"
+    required: false
+    default: "fvm flutter"
+  run-build-runner:
+    description: "Run build_runner before tests"
+    required: false
+    default: "true"
+  upload-coverage:
+    description: "Upload coverage reports to codecov"
+    required: false
+    default: "false"
+  cache-key-suffix:
+    description: "Suffix for cache keys"
+    required: false
+    default: "linux-tests"
+
+outputs:
+  test-result:
+    description: "Test execution result (success/failure)"
+    value: ${{ steps.test-summary.outputs.result }}
+  test-count:
+    description: "Total number of tests run"
+    value: ${{ steps.test-summary.outputs.count }}
+  coverage-percentage:
+    description: "Code coverage percentage"
+    value: ${{ steps.coverage.outputs.percentage }}
+
+runs:
+  using: "composite"
+  steps:
+    # Step 1: Setup Flutter environment
+    - name: Setup Flutter with FVM
+      uses: ./.github/actions/setup-fvm
+      with:
+        cache-key-suffix: ${{ inputs.cache-key-suffix }}
+
+    # Step 2: Install dependencies
+    - name: Install Flutter Dependencies
+      uses: ./.github/actions/install-flutter-deps
+
+    # Step 3: Run build_runner if requested
+    - name: Run build_runner
+      if: inputs.run-build-runner == 'true'
+      shell: bash
+      run: |
+        echo "🔧 Running build_runner..."
+        cd src
+        ${{ inputs.flutter-command }} pub run build_runner build --delete-conflicting-outputs
+        echo "✅ build_runner completed successfully"
+
+    # Step 4: Create test results directory
+    - name: Create test results directory
+      shell: bash
+      run: |
+        mkdir -p src/test-results
+        mkdir -p src/coverage
+
+    # Step 5: Run unit and widget tests
+    - name: Run Unit and Widget Tests
+      shell: bash
+      run: |
+        echo "🧪 Running unit and widget tests..."
+        cd src
+
+        # Run tests with coverage if enabled
+        if [[ "${{ inputs.enable-code-coverage }}" == "true" ]]; then
+          echo "Running tests with coverage..."
+          ${{ inputs.flutter-command }} test --coverage --coverage-path=coverage/lcov.info \
+            --reporter=expanded > test-results/unit-tests.log 2>&1 || {
+            echo "❌ Unit/Widget tests failed"
+            cat test-results/unit-tests.log
+            exit 1
+          }
+        else
+          echo "Running tests without coverage..."
+          ${{ inputs.flutter-command }} test --reporter=expanded \
+            > test-results/unit-tests.log 2>&1 || {
+            echo "❌ Unit/Widget tests failed"
+            cat test-results/unit-tests.log
+            exit 1
+          }
+        fi
+
+        echo "✅ Unit/Widget tests completed"
+        cat test-results/unit-tests.log
+
+    # Step 6: Run specific test directories
+    - name: Run Additional Test Suites
+      if: inputs.test-directories != ''
+      shell: bash
+      run: |
+        echo "🧪 Running additional test suites..."
+        cd src
+
+        for test_dir in ${{ inputs.test-directories }}; do
+          if [[ -d "$test_dir" ]]; then
+            echo "Running tests in: $test_dir"
+            ${{ inputs.flutter-command }} test "$test_dir" \
+              --reporter=expanded > "test-results/$(basename $test_dir)-tests.log" 2>&1 || {
+              echo "❌ Tests in $test_dir failed"
+              cat "test-results/$(basename $test_dir)-tests.log"
+              exit 1
+            }
+            echo "✅ Tests in $test_dir completed"
+          else
+            echo "⚠️ Test directory $test_dir not found, skipping..."
+          fi
+        done
+
+    # Step 7: Process coverage reports
+    - name: Process Coverage Reports
+      id: coverage
+      if: inputs.enable-code-coverage == 'true'
+      shell: bash
+      run: |
+        echo "📊 Processing coverage reports..."
+        cd src
+
+        if [[ -f "coverage/lcov.info" ]]; then
+          # Generate coverage summary
+          if command -v lcov >/dev/null 2>&1; then
+            lcov --summary coverage/lcov.info 2>&1 | tail -1 > coverage/summary.txt
+            COVERAGE_PERCENTAGE=$(cat coverage/summary.txt | grep -o '[0-9.]*%' | head -1)
+            echo "percentage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
+            echo "📈 Coverage: $COVERAGE_PERCENTAGE"
+          else
+            echo "percentage=N/A" >> $GITHUB_OUTPUT
+            echo "⚠️ lcov not installed, coverage percentage unavailable"
+          fi
+
+          # Generate HTML coverage report
+          if command -v genhtml >/dev/null 2>&1; then
+            genhtml coverage/lcov.info -o coverage/html --quiet
+            echo "📄 HTML coverage report generated in coverage/html/"
+          fi
+        else
+          echo "percentage=0%" >> $GITHUB_OUTPUT
+          echo "⚠️ No coverage report found"
+        fi
+
+    # Step 8: Run localization tests
+    - name: Run Localization Tests
+      shell: bash
+      run: |
+        echo "🌐 Running localization tests..."
+        cd src
+
+        ${{ inputs.flutter-command }} test test/presentation/ui/shared/services/translation_analysis_test.dart \
+          --reporter=expanded > test-results/localization-tests.log 2>&1 || {
+          echo "❌ Localization tests failed"
+          cat test-results/localization-tests.log
+          exit 1
+        }
+
+        echo "✅ Localization tests completed"
+        cat test-results/localization-tests.log
+
+    # Step 9: Run migration tests
+    - name: Run Migration Tests
+      shell: bash
+      run: |
+        echo "🗄️ Running migration tests..."
+        cd src
+
+        ${{ inputs.flutter-command }} test test/drift/app_database/migration_test.dart \
+          --reporter=expanded > test-results/migration-tests.log 2>&1 || {
+          echo "❌ Migration tests failed"
+          cat test-results/migration-tests.log
+          exit 1
+        }
+
+        echo "✅ Migration tests completed"
+        cat test-results/migration-tests.log
+
+    # Step 10: Upload coverage to Codecov
+    - name: Upload Coverage to Codecov
+      if: inputs.enable-code-coverage == 'true' && inputs.upload-coverage == 'true'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./src/coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+    # Step 11: Generate test summary
+    - name: Generate Test Summary
+      id: test-summary
+      shell: bash
+      run: |
+        echo "📋 Generating test summary..."
+        cd src
+
+        # Count total tests from logs
+        TOTAL_TESTS=0
+        for log_file in test-results/*tests.log; do
+          if [[ -f "$log_file" ]]; then
+            TEST_COUNT=$(grep -c "✓\|passed\|All tests passed" "$log_file" 2>/dev/null || echo "0")
+            TOTAL_TESTS=$((TOTAL_TESTS + TEST_COUNT))
+          fi
+        done
+
+        echo "Total tests run: $TOTAL_TESTS"
+        echo "count=$TOTAL_TESTS" >> $GITHUB_OUTPUT
+        echo "result=success" >> $GITHUB_OUTPUT
+
+        # Create summary file
+        cat > test-results/test-summary.md << EOF
+        # Test Execution Summary
+
+        ## Test Results
+        - **Total Tests**: $TOTAL_TESTS
+        - **Coverage**: ${{ steps.coverage.outputs.percentage || 'N/A' }}
+        - **Status**: ✅ Success
+
+        ## Test Categories
+        - Unit & Widget Tests: ✅
+        - Localization Tests: ✅
+        - Migration Tests: ✅
+        - Additional Test Suites: ✅
+        EOF
+
+        echo "📄 Test summary generated"
+
+    # Step 12: Upload test results
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ inputs.cache-key-suffix }}
+        path: src/test-results/
+        retention-days: 30
+
+    # Step 13: Upload coverage reports
+    - name: Upload Coverage Reports
+      uses: actions/upload-artifact@v4
+      if: inputs.enable-code-coverage == 'true'
+      with:
+        name: coverage-reports-${{ inputs.cache-key-suffix }}
+        path: src/coverage/
+        retention-days: 30
+
+    # Step 14: Display test summary
+    - name: Display Test Summary
+      shell: bash
+      run: |
+        echo "## 🧪 Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+        echo "| **Total Tests** | ${{ steps.test-summary.outputs.count }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| **Coverage** | ${{ steps.coverage.outputs.percentage || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| **Status** | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Test Categories" >> $GITHUB_STEP_SUMMARY
+        echo "- Unit & Widget Tests: ✅" >> $GITHUB_STEP_SUMMARY
+        echo "- Localization Tests: ✅" >> $GITHUB_STEP_SUMMARY
+        echo "- Migration Tests: ✅" >> $GITHUB_STEP_SUMMARY
+        echo "- Additional Test Suites: ✅" >> $GITHUB_STEP_SUMMARY
