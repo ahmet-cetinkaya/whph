@@ -181,7 +181,6 @@ class _DeviceSelectDropdownState extends State<DeviceSelectDropdown> {
                   onPressed: () => _confirmDeviceSelection(tempSelectedDevices),
                   child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
                 ),
-                const SizedBox(width: AppTheme.sizeSmall),
               ],
             ),
             body: GestureDetector(

@@ -77,7 +77,6 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
               _habitsService.notifyHabitDeleted(widget.habitId);
             },
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: Padding(

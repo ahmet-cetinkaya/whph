@@ -230,7 +230,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               Navigator.of(context).pop();
             },
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
         elevation: 0,
       ),

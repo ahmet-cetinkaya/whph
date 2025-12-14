@@ -47,7 +47,6 @@ class EstimatedTimeDialogContent extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(width: AppTheme.sizeLarge),
         ],
       ),
       body: GestureDetector(

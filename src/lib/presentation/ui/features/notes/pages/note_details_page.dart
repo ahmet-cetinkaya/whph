@@ -40,7 +40,6 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
             onDeleted: _handleNoteDeleted,
             buttonColor: _themeService.primaryColor,
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: SafeArea(

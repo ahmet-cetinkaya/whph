@@ -49,7 +49,6 @@ class LockSettingsDialogContent extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(translationService.translate(SharedTranslationKeys.doneButton)),
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: GestureDetector(

@@ -62,7 +62,6 @@ class _DescriptionDialogContentState extends State<DescriptionDialogContent> {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(widget.translationService.translate(SharedTranslationKeys.doneButton)),
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: SafeArea(

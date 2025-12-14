@@ -281,7 +281,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               buttonColor: _themeService.primaryColor,
             ),
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: Padding(
