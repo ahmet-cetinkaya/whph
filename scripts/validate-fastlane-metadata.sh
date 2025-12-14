@@ -44,8 +44,9 @@ validate_description_length() {
     local lang="$4"
 
     if [ -f "$file_path" ]; then
-        local length=$(head -1 "$file_path" | wc -c)
-        if [ $length -gt $max_length ]; then
+        local length
+        length=$(head -1 "$file_path" | wc -c)
+        if [ "$length" -gt "$max_length" ]; then
             echo "❌ ERROR: $desc_type too long for $lang ($length > $max_length chars)"
             ERRORS=$((ERRORS + 1))
         fi
@@ -59,8 +60,9 @@ validate_changelog_length() {
     local version="$3"
 
     if [ -f "$file_path" ]; then
-        local byte_size=$(wc -c <"$file_path")
-        if [ $byte_size -gt 500 ]; then
+        local byte_size
+        byte_size=$(wc -c <"$file_path")
+        if [ "$byte_size" -gt 500 ]; then
             echo "⚠️  WARNING: Changelog $version.txt too long for $lang ($byte_size > 500 bytes)"
             WARNINGS=$((WARNINGS + 1))
         fi
@@ -115,11 +117,11 @@ for lang in $LANGUAGES; do
             echo "⚠️  WARNING: Missing phoneScreenshots directory for $lang"
             WARNINGS=$((WARNINGS + 1))
         else
-            screenshot_count=$(ls "$lang_dir/images/phoneScreenshots"/*.png 2>/dev/null | wc -l)
-            if [ $screenshot_count -eq 0 ]; then
+            screenshot_count=$(find "$lang_dir/images/phoneScreenshots" -name "*.png" -type f 2>/dev/null | wc -l)
+            if [ "$screenshot_count" -eq 0 ]; then
                 echo "⚠️  WARNING: No screenshots found for $lang"
                 WARNINGS=$((WARNINGS + 1))
-            elif [ $screenshot_count -lt 2 ]; then
+            elif [ "$screenshot_count" -lt 2 ]; then
                 echo "⚠️  WARNING: Only $screenshot_count screenshot(s) for $lang (minimum 2 recommended)"
                 WARNINGS=$((WARNINGS + 1))
             fi
@@ -131,13 +133,13 @@ for lang in $LANGUAGES; do
         echo "⚠️  WARNING: Missing changelogs directory for $lang"
         WARNINGS=$((WARNINGS + 1))
     else
-        changelog_count=$(ls "$lang_dir/changelogs"/*.txt 2>/dev/null | wc -l)
-        if [ $changelog_count -eq 0 ]; then
+        changelog_count=$(find "$lang_dir/changelogs" -name "*.txt" -type f 2>/dev/null | wc -l)
+        if [ "$changelog_count" -eq 0 ]; then
             echo "⚠️  WARNING: No changelogs found for $lang"
             WARNINGS=$((WARNINGS + 1))
         else
             # Validate latest changelog exists
-            latest_changelog=$(ls "$lang_dir/changelogs"/*.txt 2>/dev/null | sort -V | tail -1)
+            latest_changelog=$(find "$lang_dir/changelogs" -name "*.txt" -type f 2>/dev/null | sort -V | tail -1)
             if [ -n "$latest_changelog" ]; then
                 version=$(basename "$latest_changelog" .txt)
                 validate_changelog_length "$latest_changelog" "$lang" "$version"

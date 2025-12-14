@@ -24,7 +24,7 @@ scripts:
   release:windows:setup: fvm flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
   release:android: fvm flutter build apk --release
   release:android:bundle: fvm flutter build appbundle --release
-  lint: fvm flutter analyze
+  lint: ../scripts/lint.sh
   test: fvm flutter test
   test:locale: fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
   test:ci: cd .. && act -j build

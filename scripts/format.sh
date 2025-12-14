@@ -91,7 +91,10 @@ if command -v prettier &>/dev/null; then
     JSON_COUNT=$(wc -l <"$JSON_FILES_LIST" 2>/dev/null || echo "0")
     if [[ $JSON_COUNT -gt 0 ]]; then
         print_info "Found $JSON_COUNT JSON files to format"
-        xargs -a "$JSON_FILES_LIST" prettier --write --log-level error
+        # Use prettier config from project root
+        cd "$PROJECT_ROOT"
+        sed "s|^\.|$SRC_DIR|" "$JSON_FILES_LIST" | xargs prettier --write --log-level error || true
+        cd "$SRC_DIR"
     else
         print_info "No JSON files found to format"
     fi
@@ -105,7 +108,10 @@ if command -v prettier &>/dev/null; then
     YAML_COUNT=$(wc -l <"$YAML_FILES_LIST" 2>/dev/null || echo "0")
     if [[ $YAML_COUNT -gt 0 ]]; then
         print_info "Found $YAML_COUNT YAML files to format"
-        xargs -a "$YAML_FILES_LIST" prettier --write --log-level error
+        # Use prettier config from project root
+        cd "$PROJECT_ROOT"
+        sed "s|^\.|$SRC_DIR|" "$YAML_FILES_LIST" | xargs prettier --write --log-level error || true
+        cd "$SRC_DIR"
     else
         print_info "No YAML files found to format"
     fi
@@ -119,7 +125,10 @@ if command -v prettier &>/dev/null; then
     MD_COUNT=$(wc -l <"$MD_FILES_LIST" 2>/dev/null || echo "0")
     if [[ $MD_COUNT -gt 0 ]]; then
         print_info "Found $MD_COUNT Markdown files to format"
-        xargs -a "$MD_FILES_LIST" prettier --write --prose-wrap=preserve --log-level error
+        # Convert relative paths to absolute paths for prettier
+        cd "$PROJECT_ROOT"
+        sed "s|^\.|$SRC_DIR|" "$MD_FILES_LIST" | xargs prettier --write --log-level error || true
+        cd "$SRC_DIR"
     else
         print_info "No Markdown files found to format"
     fi
