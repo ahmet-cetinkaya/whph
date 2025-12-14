@@ -311,7 +311,7 @@ Include server capabilities in QR code data:
 
 Support shareable connection strings as alternative to QR codes:
 
-```
+```text
 whph://192.168.1.100:44040?name=Desktop-Server&id=uuid&token=access-token
 ```
 

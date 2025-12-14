@@ -28,7 +28,7 @@ A comprehensive GitHub Action for running all WHPH Flutter application tests on 
 ## Inputs
 
 | Input Name | Description | Default | Required |
-|------------|-------------|---------|----------|
+| :--------- | :---------- | :------ | :------- |
 | `enable-code-coverage` | Generate code coverage reports | `true` | No |
 | `test-directories` | Space-separated list of test directories | `test/ test/presentation/ui/shared/services/ test/drift/app_database/` | No |
 | `flutter-command` | Flutter command to use | `fvm flutter` | No |
@@ -39,7 +39,7 @@ A comprehensive GitHub Action for running all WHPH Flutter application tests on 
 ## Outputs
 
 | Output Name | Description |
-|-------------|-------------|
+| :---------- | :---------- |
 | `test-result` | Test execution result (success/failure) |
 | `test-count` | Total number of tests run |
 | `coverage-percentage` | Code coverage percentage |
@@ -139,6 +139,7 @@ Ensure the `setup-repository` action is run before this action to properly initi
 ### Coverage Reports Not Generated
 
 Make sure `lcov` is installed on the runner:
+
 ```bash
 sudo apt-get install lcov
 ```

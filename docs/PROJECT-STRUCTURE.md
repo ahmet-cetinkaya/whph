@@ -6,7 +6,7 @@ This document provides a comprehensive overview of the WHPH (Work Hard Play Hard
 
 The project follows a standard Flutter application structure with additional platform-specific directories and custom organization:
 
-```
+```text
 whph-2/
 ├── android/                    # Android platform-specific code and configuration
 ├── build/                      # Build artifacts and generated files
@@ -26,13 +26,13 @@ whph-2/
 ├── CHANGELOG.md               # Version history and changes
 ├── LICENSE                    # Project license
 └── PRIVACY_POLICY.md          # Privacy policy document
-```
+```text
 
 ## Source Code Organization (`src/lib/` directory)
 
 The `src/lib/` directory contains the main Dart source code organized using Clean Architecture principles:
 
-```
+```text
 lib/
 ├── corePackages/              # External core packages and submodules
 │   └── acore/                 # Core Flutter utilities submodule
@@ -42,24 +42,24 @@ lib/
 │   └── presentation/          # UI and API layers
 ├── main.dart                  # Application entry point
 └── main.mapper.g.dart         # Generated mapper code
-```
+```text
 
 ### Core Layer (`src/lib/core/`)
 
 Contains the business logic and domain models:
 
-```
+```text
 src/core/
 ├── application/               # Application services and use cases
 ├── domain/                    # Domain entities, value objects, and business rules
 └── shared/                    # Shared core utilities and abstractions
-```
+```text
 
 ### Infrastructure Layer (`src/lib/infrastructure/`)
 
 Handles external concerns and platform-specific implementations:
 
-```
+```text
 src/infrastructure/
 ├── android/                   # Android-specific implementations
 ├── desktop/                   # Desktop-specific implementations
@@ -69,26 +69,26 @@ src/infrastructure/
 ├── shared/                    # Shared infrastructure utilities
 ├── windows/                   # Windows-specific implementations
 └── infrastructure_container.dart  # Dependency injection container
-```
+```text
 
 ### Presentation Layer (`src/lib/presentation/`)
 
 Contains UI components and API controllers:
 
-```
+```text
 src/presentation/
 ├── api/                       # API controllers and endpoints
 ├── ui/                        # User interface components
 │   ├── features/              # Feature-specific UI components
 │   └── shared/                # Shared UI components and utilities
 └── ui_presentation_container.dart  # UI dependency injection
-```
+```text
 
 ## Documentation Structure (`docs/` folder)
 
 The documentation is organized to help contributors and users:
 
-```
+```text
 docs/
 ├── CONTRIBUTING.md            # Contribution guidelines and development setup
 ├── LINUX-DEPENDENCIES.md     # Linux system dependencies guide
@@ -97,7 +97,7 @@ docs/
     ├── mobile_01.png          # Mobile interface screenshots
     ├── mobile_02.png
     └── ...                    # Additional screenshots
-```
+```text
 
 ## Platform-Specific Directories
 
@@ -105,7 +105,7 @@ docs/
 
 Contains Android-specific configuration and build files:
 
-```
+```text
 android/
 ├── app/                       # Android app module
 ├── fdroid/                    # F-Droid repository submodule
@@ -114,13 +114,13 @@ android/
 ├── gradle.properties         # Gradle properties
 ├── local.properties          # Local Android SDK configuration
 └── settings.gradle           # Gradle settings
-```
+```text
 
 ### Windows (`windows/`)
 
 Windows platform implementation and setup:
 
-```
+```text
 windows/
 ├── flutter/                   # Flutter Windows engine files
 ├── runner/                    # Windows application runner
@@ -128,13 +128,13 @@ windows/
 │   ├── installer.iss          # Inno Setup script
 │   └── README.md              # Setup wizard documentation
 └── CMakeLists.txt            # CMake build configuration
-```
+```text
 
 ### Linux (`linux/`)
 
 Linux platform implementation:
 
-```
+```text
 linux/
 ├── flutter/                   # Flutter Linux engine files
 ├── main.cc                    # Linux application entry point
@@ -144,7 +144,7 @@ linux/
 ├── window_detector.cpp        # Window detection functionality
 ├── window_detector.h          # Window detection header
 └── CMakeLists.txt            # CMake build configuration
-```
+```text
 
 ## Build and Configuration Files
 
@@ -173,7 +173,7 @@ linux/
 
 The F-Droid integration is handled through a Git submodule:
 
-```
+```text
 android/fdroid/                # F-Droid repository submodule
 ├── metadata/                  # App metadata for F-Droid
 ├── config/                    # F-Droid server configuration
@@ -181,7 +181,7 @@ android/fdroid/                # F-Droid repository submodule
 ├── templates/                 # Build templates
 ├── srclibs/                   # Source library definitions
 └── config.yml                # Main F-Droid configuration
-```
+```text
 
 This submodule points to a separate GitLab repository (`ahmet-cetinkaya/fdroid-data`) on the `me.ahmetcetinkaya.whph` branch, containing F-Droid-specific metadata and build configurations.
 
@@ -189,7 +189,7 @@ This submodule points to a separate GitLab repository (`ahmet-cetinkaya/fdroid-d
 
 The project includes the `acore-flutter` package as a Git submodule:
 
-```
+```text
 lib/corePackages/acore/        # acore-flutter submodule
 ├── lib/                       # Core package source code
 │   └── src/                   # Organized by functionality
@@ -207,7 +207,7 @@ lib/corePackages/acore/        # acore-flutter submodule
 │       └── utils/             # General utilities
 ├── pubspec.yaml              # Package configuration
 └── README.md                 # Package documentation
-```
+```text
 
 This submodule provides reusable Flutter components, utilities, and abstractions used throughout the WHPH application.
 
@@ -215,14 +215,14 @@ This submodule provides reusable Flutter components, utilities, and abstractions
 
 Contains utility scripts for development and build processes:
 
-```
+```text
 scripts/
 ├── clean.sh                   # Clean build artifacts and caches
 ├── create_changelog.sh        # Generate changelog from git history
 ├── get_flutter_version.sh     # Get current Flutter version
 ├── test_ci_fdroid.sh         # Test F-Droid CI pipeline
 └── version_bump.sh           # Bump version numbers
-```
+```text
 
 These scripts are integrated with the `pubspec.yaml` scripts section and can be run using the `rps` package.
 

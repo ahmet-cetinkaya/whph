@@ -5,11 +5,13 @@ This directory contains composite actions that are shared across multiple workfl
 ## Available Actions
 
 ### 1. setup-repository (Initialize Submodules)
+
 **Purpose**: Initializes required submodules for the project (specifically the acore submodule).
 
 **Note**: This action should be used after a standard `actions/checkout@v4` step.
 
 **Usage**:
+
 ```yaml
 - name: Checkout code
   uses: actions/checkout@v4
@@ -21,16 +23,20 @@ This directory contains composite actions that are shared across multiple workfl
 ```
 
 ### 2. setup-fvm
+
 **Purpose**: Sets up Flutter using FVM (Flutter Version Management) with caching.
 
 **Inputs**:
+
 - `cache-key-suffix` (optional): Additional suffix for cache key
 
 **Outputs**:
+
 - `flutter-version`: The Flutter version that was installed
 - `cache-hit`: Whether the cache was hit
 
 **Usage**:
+
 ```yaml
 - name: Setup Flutter with FVM
   uses: ./.github/actions/setup-fvm
@@ -39,12 +45,15 @@ This directory contains composite actions that are shared across multiple workfl
 ```
 
 ### 3. install-flutter-deps
+
 **Purpose**: Installs Flutter dependencies and sets up pub cache.
 
 **Inputs**:
+
 - `enable-platform` (optional): Platform to enable (e.g., 'windows-desktop')
 
 **Usage**:
+
 ```yaml
 - name: Install Flutter Dependencies
   uses: ./.github/actions/install-flutter-deps
@@ -53,14 +62,17 @@ This directory contains composite actions that are shared across multiple workfl
 ```
 
 ### 4. get-app-version
+
 **Purpose**: Extracts application version from pubspec.yaml.
 
 **Outputs**:
+
 - `version`: The full application version (e.g., "0.11.1+49")
 - `version-number`: The version number without build number (e.g., "0.11.1")
 - `build-number`: The build number (e.g., "49")
 
 **Usage**:
+
 ```yaml
 - name: Get application version
   id: app_version
@@ -71,9 +83,11 @@ This directory contains composite actions that are shared across multiple workfl
 ```
 
 ### 5. upload-build-artifact
+
 **Purpose**: Uploads build artifacts with consistent naming and versioning.
 
 **Inputs**:
+
 - `artifact-name` (required): Name of the artifact (e.g., 'android', 'linux', 'windows-portable')
 - `artifact-path` (required): Path to the artifact files
 - `app-version` (required): Application version for naming
@@ -81,6 +95,7 @@ This directory contains composite actions that are shared across multiple workfl
 - `if-no-files-found` (optional): What to do if no files are found (default: 'error')
 
 **Usage**:
+
 ```yaml
 - name: Upload build artifact
   uses: ./.github/actions/upload-build-artifact

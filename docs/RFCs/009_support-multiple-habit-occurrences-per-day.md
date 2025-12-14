@@ -65,6 +65,7 @@ Assumptions: Current DB no foreign key issues; statistics centralized in GetHabi
    - Add `daily_target INTEGER` column to `habit_table`.
    - Create index `idx_habit_record_habit_occurred_at ON habit_record_table (habit_id, occurred_at)` for query performance.
 3. Adjust domain entity:
+
    ```dart
    class HabitRecord extends BaseEntity<String> {
      String habitId;
@@ -72,6 +73,7 @@ Assumptions: Current DB no foreign key issues; statistics centralized in GetHabi
      DateTime get recordDate => DateTime(occurredAt.year, occurredAt.month, occurredAt.day);
    }
    ```
+
 4. Update repository methods:
    - Modify insert/update to include `occurredAt` (required).
    - Add helper query: `countByHabitIdAndDate(habitId, DateTime date)` for daily counts.
