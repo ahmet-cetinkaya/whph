@@ -12,7 +12,7 @@ runs:
         # Clean any potential submodule issues first
         git submodule sync || echo "Submodule sync not needed"
 
-        # Initialize the acore submodule
+        # Initialize the acore submodule with explicit handling for Windows
         if git submodule update --init --recursive src/lib/corePackages/acore; then
           echo "✅ ACore Flutter submodule initialized successfully"
         else
@@ -20,7 +20,14 @@ runs:
           echo "🔍 Debugging submodule status:"
           git submodule status || echo "Could not get submodule status"
           git ls-files --stage | grep 160000 || echo "No submodules found in index"
-          exit 1
+
+          # Try alternative initialization for Windows
+          echo "🔄 Trying alternative initialization..."
+          git submodule init
+          git submodule update --recursive src/lib/corePackages/acore || {
+            echo "❌ Alternative initialization also failed"
+            exit 1
+          }
         fi
 
         # Verify the submodule was initialized correctly
