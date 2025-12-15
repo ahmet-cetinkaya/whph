@@ -99,6 +99,9 @@ jobs:
           echo "⚡ Running performance tests..."
           cd src
 
+          # Create test-results directory if it doesn't exist
+          mkdir -p test-results
+
           # Run tests with performance profiling
           fvm flutter test --profile \
             --reporter=expanded > test-results/performance-tests.log 2>&1 || {
