@@ -3,6 +3,8 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_server_sync_service.dart';
+import 'package:whph/infrastructure/desktop/features/sync/websocket_connection_manager.dart';
+import 'package:whph/infrastructure/desktop/features/sync/websocket_message_validator.dart';
 import 'package:mediatr/mediatr.dart';
 
 import 'desktop_server_sync_service_test.mocks.dart';

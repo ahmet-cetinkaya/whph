@@ -10,28 +10,39 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - **Install FVM:**
   Follow the installation instructions on the [official FVM website](https://fvm.app/docs/getting_started/installation) for your operating system.
 - **Clone the repository (with submodules):**
+
   ```bash
   git clone --recurse-submodules https://github.com/ahmet-cetinkaya/whph.git
   ```
+
   If you already cloned without `--recurse-submodules`, run:
+
   ```bash
   git submodule update --init --recursive
   ```
+
 - **Navigate into the project directory:**
+
   ```bash
   cd whph
   ```
+
 - **Install the project's Flutter version using FVM:**
+
   ```bash
   fvm install
   fvm use
   ```
+
   This will automatically install and use the Flutter version specified in the `.fvmrc` file.
 - **Install dependencies:**
+
   ```bash
   fvm flutter pub get
   ```
+
 - **Start the application:**
+
   ```bash
   fvm flutter run
   ```
@@ -67,18 +78,24 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 
 1. **Fork the repository**
 2. **Create a new branch**
+
    ```bash
    git checkout -b feat/feature-branch
    ```
+
 3. **Make your changes**
 4. **Commit your changes**
+
    ```bash
    git commit -m 'feat: add new feature'
    ```
+
 5. **Push to your branch**
+
    ```bash
    git push origin feat/feature-branch
    ```
+
 6. **Open a Pull Request**
    - Provide a clear description of your changes and reference any related issues.
    - Ensure your branch is up to date with `main` before submitting.
@@ -97,9 +114,11 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - Write tests for new features and bug fixes.
 - Ensure all existing and new tests pass before submitting a pull request.
 - Use the test suite in the `test/` directory:
+
   ```bash
   fvm flutter test
   ```
+
 - Prefer widget, unit, and integration tests as appropriate.
 - Test on all supported platforms (Android, Windows, Linux) if possible.
 

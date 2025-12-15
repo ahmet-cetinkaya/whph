@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
-import 'services/widget_service.dart';
+import 'services/widget_service/widget_service.dart';
 import 'services/widget_update_service.dart';
 import 'services/widget_event_handler.dart';
 

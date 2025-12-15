@@ -14,8 +14,8 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/dialog_size.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 

@@ -8,13 +8,13 @@ import 'package:whph/presentation/ui/features/habits/pages/habits_page.dart';
 import 'package:whph/presentation/ui/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/ui/features/notes/pages/notes_page.dart';
 import 'package:whph/presentation/ui/features/settings/pages/settings_page.dart';
-import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page.dart';
+import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/sync_devices_page.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tags_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/tasks_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/ui/features/sync/pages/qr_code_scanner_page.dart';
-import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page.dart';
+import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/add_sync_device_page.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 
 class AppRoutes {

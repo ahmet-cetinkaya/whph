@@ -35,7 +35,23 @@ import 'package:whph/infrastructure/android/features/reminder/android_reminder_s
 import 'package:whph/infrastructure/mobile/features/system_tray/mobile_system_tray_service.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/wakelock_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_shortcut_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_update_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/windows_elevation_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/windows_firewall_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/windows_shortcut_service.dart';
+import 'package:whph/infrastructure/windows/features/setup/services/windows_update_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/windows_setup_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_firewall_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_desktop_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_kde_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_update_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_firewall_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_desktop_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_kde_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_update_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
@@ -147,9 +163,55 @@ void registerInfrastructure(IContainer container) {
     throw Exception('Unsupported platform for startup settings service.');
   });
 
+  // Register Windows-specific setup services
+  if (Platform.isWindows) {
+    container.registerSingleton<IWindowsElevationService>((_) => WindowsElevationService());
+    container.registerSingleton<IWindowsFirewallService>(
+      (_) => WindowsFirewallService(
+        elevationService: container.resolve<IWindowsElevationService>(),
+      ),
+    );
+    container.registerSingleton<IWindowsShortcutService>((_) => WindowsShortcutService());
+    container.registerSingleton<IWindowsUpdateService>((_) => WindowsUpdateService());
+  }
+
+  // Register Linux-specific setup services
+  if (Platform.isLinux) {
+    container.registerSingleton<ILinuxFirewallService>((_) => LinuxFirewallService());
+
+    final linuxUpdateService = LinuxUpdateService();
+    container.registerSingleton<ILinuxUpdateService>((_) => linuxUpdateService);
+
+    container.registerSingleton<ILinuxDesktopService>(
+      (_) => LinuxDesktopService(
+        getExecutablePath: linuxUpdateService.getExecutablePath,
+        getAppVersion: linuxUpdateService.getAppVersion,
+      ),
+    );
+
+    container.registerSingleton<ILinuxKdeService>(
+      (_) => LinuxKdeService(
+        getExecutablePath: linuxUpdateService.getExecutablePath,
+      ),
+    );
+  }
+
   container.registerSingleton<ISetupService>((_) {
-    if (Platform.isLinux) return LinuxSetupService();
-    if (Platform.isWindows) return WindowsSetupService();
+    if (Platform.isLinux) {
+      return LinuxSetupService(
+        firewallService: container.resolve<ILinuxFirewallService>(),
+        desktopService: container.resolve<ILinuxDesktopService>(),
+        kdeService: container.resolve<ILinuxKdeService>(),
+        updateService: container.resolve<ILinuxUpdateService>(),
+      );
+    }
+    if (Platform.isWindows) {
+      return WindowsSetupService(
+        firewallService: container.resolve<IWindowsFirewallService>(),
+        shortcutService: container.resolve<IWindowsShortcutService>(),
+        updateService: container.resolve<IWindowsUpdateService>(),
+      );
+    }
     if (Platform.isAndroid) return AndroidSetupService();
     throw Exception('Unsupported platform for setup service.');
   });

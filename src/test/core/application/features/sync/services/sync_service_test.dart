@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';

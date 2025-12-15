@@ -186,7 +186,7 @@ generate_changelog_from_commits() {
                 fi
             fi
         fi
-    done < <(git log --oneline --no-merges $COMMIT_RANGE)
+    done < <(git log --oneline --no-merges "$COMMIT_RANGE")
 
     # Build changelog sections
     CHANGELOG_SECTIONS=""
@@ -245,7 +245,7 @@ generate_all_versions_changelog() {
     echo "Generating changelog for all historical versions..."
 
     # Get all tags sorted by version
-    ALL_TAGS=($(git tag --sort=version:refname))
+    mapfile -t ALL_TAGS < <(git tag --sort=version:refname)
 
     if [ ${#ALL_TAGS[@]} -eq 0 ]; then
         echo "No version tags found in repository."
@@ -302,7 +302,7 @@ EOF
         fi
 
         # Clean version number (remove 'v' prefix if present)
-        clean_version=$(echo "$current_tag" | sed 's/^v//')
+        clean_version="${current_tag#v}"
 
         # Add to main changelog
         echo "## [$clean_version] - $tag_date" >>"$MAIN_CHANGELOG"
@@ -326,7 +326,7 @@ EOF
 
                 # Check file size (F-Droid limit: 500 bytes)
                 file_size=$(wc -c <"$fastlane_file")
-                if [ $file_size -gt 500 ]; then
+                if [ "$file_size" -gt 500 ]; then
                     echo "  ⚠️  Warning: Changelog for version code $version_code is $file_size bytes (exceeds 500 byte limit)"
                     # Truncate to fit limit - keep first few items and add "..."
                     truncated_content=$(echo -e "$fastlane_content" | head -c 450)
@@ -347,7 +347,7 @@ EOF
     done
 
     # Count Fastlane changelogs created
-    fastlane_count=$(ls "$CHANGELOG_DIR"/*.txt 2>/dev/null | wc -l)
+    fastlane_count=$(find "$CHANGELOG_DIR" -name "*.txt" -type f 2>/dev/null | wc -l)
 
     echo "✅ Generated complete changelog for all ${#ALL_TAGS[@]} versions"
     echo "📱 Created $fastlane_count Fastlane changelog files"
@@ -359,7 +359,8 @@ convert_to_fastlane_format() {
 
     # Convert to fastlane format and limit to stay under 500 bytes
     # Extract lines that start with "- " (bullet points), ignoring section headers
-    local fastlane_content=$(echo -e "$keep_a_changelog_content" |
+    local fastlane_content
+    fastlane_content=$(echo -e "$keep_a_changelog_content" |
         grep "^- " |
         sed 's/^- /• /' |
         while IFS= read -r line; do
@@ -378,19 +379,20 @@ convert_to_fastlane_format() {
     fi
 
     # Check if content exceeds 500 bytes and truncate if needed
-    local content_size=$(echo -e "$fastlane_content" | wc -c)
+    local content_size
+    content_size=$(echo -e "$fastlane_content" | wc -c)
 
-    if [ $content_size -gt 450 ]; then
+    if [ "$content_size" -gt 450 ]; then
         # Take only first few items to stay under limit
         local truncated_content=""
         local current_size=0
 
         echo -e "$fastlane_content" | while IFS= read -r line; do
             if [ -n "$line" ]; then
-                local line_size=$(echo "$line" | wc -c)
+                local line_size=${#line}
                 local new_size=$((current_size + line_size + 1)) # +1 for newline
 
-                if [ $new_size -lt 450 ]; then
+                if [ "$new_size" -lt 450 ]; then
                     if [ -z "$truncated_content" ]; then
                         truncated_content="$line"
                     else
@@ -414,7 +416,8 @@ convert_to_fastlane_format() {
 update_main_changelog() {
     local version="$1"
     local changelog_content="$2"
-    local date=$(date +%Y-%m-%d)
+    local date
+    date=$(date +%Y-%m-%d)
 
     local new_entry="## [$version] - $date\n\n$changelog_content"
 
@@ -482,7 +485,8 @@ extract_changelog_from_main() {
     fi
 
     # Extract content between version section and next version section
-    local content=$(awk "
+    local content
+    content=$(awk "
         /^## \[$version\]/ { found=1; next }
         found && /^## \[/ { found=0 }
         found && /^###/ { print }
@@ -506,12 +510,13 @@ get_version_from_code() {
     # Search through git tags for matching version code
     for tag in $(git tag --sort=-version:refname); do
         if git show "$tag:src/pubspec.yaml" >/dev/null 2>&1; then
-            local version_line=$(git show "$tag:src/pubspec.yaml" | grep "^version:" | head -1)
+            local version_line
+            version_line=$(git show "$tag:src/pubspec.yaml" | grep "^version:" | head -1)
             if [[ "$version_line" =~ version:\ [0-9]+\.[0-9]+\.[0-9]+\+([0-9]+) ]]; then
                 local tag_version_code="${BASH_REMATCH[1]}"
                 if [ "$tag_version_code" = "$version_code" ]; then
                     # Clean version number (remove 'v' prefix if present)
-                    echo $(echo "$tag" | sed 's/^v//')
+                    echo "${tag#v}"
                     return 0
                 fi
             fi
@@ -530,7 +535,7 @@ if [ "$ALL_VERSIONS" = true ]; then
     if [ "$AUTO_ACCEPT" = false ]; then
         echo "This will completely regenerate CHANGELOG.md with all historical versions."
         echo ""
-        read -p "Do you want to continue? (y/N): " confirm
+        read -r -p "Do you want to continue? (y/N): " confirm
 
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
             echo "Operation cancelled."
@@ -547,7 +552,7 @@ if [ "$ALL_VERSIONS" = true ]; then
 
     # Show statistics
     version_count=$(grep -c "^## \[" "$MAIN_CHANGELOG")
-    fastlane_count=$(ls "$CHANGELOG_DIR"/*.txt 2>/dev/null | wc -l)
+    fastlane_count=$(find "$CHANGELOG_DIR" -name "*.txt" -type f 2>/dev/null | wc -l)
     echo "📊 Total versions documented: $version_count"
     echo "📊 Fastlane changelogs created: $fastlane_count"
 
@@ -572,15 +577,11 @@ if [ -z "$CHANGELOG_TEXT" ]; then
         fi
     else
         # For historical versions, try to find the corresponding git tag
-        TARGET_VERSION=$(get_version_from_code "$VERSION_CODE")
-
-        if [ $? -eq 0 ] && [ "$TARGET_VERSION" != "Unknown version for code $VERSION_CODE" ]; then
+        if TARGET_VERSION=$(get_version_from_code "$VERSION_CODE") && [ "$TARGET_VERSION" != "Unknown version for code $VERSION_CODE" ]; then
             echo "Found existing version $TARGET_VERSION for code $VERSION_CODE"
 
             # Try to extract from existing CHANGELOG.md
-            CHANGELOG_CONTENT=$(extract_changelog_from_main "$TARGET_VERSION")
-
-            if [ $? -eq 0 ] && [ -n "$CHANGELOG_CONTENT" ]; then
+            if CHANGELOG_CONTENT=$(extract_changelog_from_main "$TARGET_VERSION") && [ -n "$CHANGELOG_CONTENT" ]; then
                 echo "Using existing changelog content from CHANGELOG.md for version $TARGET_VERSION"
             else
                 echo "No existing changelog found, generating from commit messages..."
@@ -619,7 +620,7 @@ if [ -z "$CHANGELOG_TEXT" ]; then
         echo "Auto-accepting generated changelog (--auto flag provided)"
         CHANGELOG_TEXT="$FASTLANE_CHANGELOG"
     else
-        read -p "Do you want to use this generated changelog? (y/N): " confirm
+        read -r -p "Do you want to use this generated changelog? (y/N): " confirm
 
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
             echo "Usage: $0 [version_code] \"changelog text\" [--auto] [--all-versions]"
@@ -627,7 +628,7 @@ if [ -z "$CHANGELOG_TEXT" ]; then
             echo "Current version: $CURRENT_VERSION"
             echo ""
             echo "Examples:"
-            echo "  $0 31 \"• New feature added\n• Bug fixes\n• Performance improvements\""
+            printf '  %s 31 "• New feature added\n• Bug fixes\n• Performance improvements"\n' "$0"
             echo "  $0 --auto                    # Auto-generate changelog for current version"
             echo "  $0 --all-versions --auto     # Generate complete historical changelog"
             exit 1
@@ -671,7 +672,7 @@ echo -e "$CHANGELOG_TEXT" >"$CHANGELOG_FILE"
 
 # Check file size (F-Droid limit: 500 bytes)
 FILE_SIZE=$(wc -c <"$CHANGELOG_FILE")
-if [ $FILE_SIZE -gt 500 ]; then
+if [ "$FILE_SIZE" -gt 500 ]; then
     echo "Warning: Changelog is $FILE_SIZE bytes, which exceeds F-Droid's 500 byte limit"
     echo "Please shorten the changelog text."
     exit 1

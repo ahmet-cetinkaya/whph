@@ -15,10 +15,9 @@ You can download the app from the following links:
 
 > For Linux users, please check the [Linux Dependencies Guide](docs/LINUX-DEPENDENCIES.md) to ensure you have all required system libraries installed before running the application.
 
-
 ## 📱 Screenshots
 
-<p align="center">
+<div align="center">
   <a href="docs/screenshots/mobile_01.png"><img src="docs/screenshots/mobile_01.png" alt="Mobile 01" width="220"/></a>
   <a href="docs/screenshots/mobile_02.png"><img src="docs/screenshots/mobile_02.png" alt="Mobile 02" width="220"/></a>
   <a href="docs/screenshots/mobile_03.png"><img src="docs/screenshots/mobile_03.png" alt="Mobile 03" width="220"/></a>
@@ -29,7 +28,7 @@ You can download the app from the following links:
   <a href="docs/screenshots/mobile_08.png"><img src="docs/screenshots/mobile_08.png" alt="Mobile 08" width="220"/></a>
   <a href="docs/screenshots/mobile_09.png"><img src="docs/screenshots/mobile_09.png" alt="Mobile 09" width="220"/></a>
   <a href="docs/screenshots/mobile_10.png"><img src="docs/screenshots/mobile_10.png" alt="Mobile 10" width="220"/></a>
-</p>
+</div>
 
 ## 🤝 Contributing
 

@@ -25,6 +25,7 @@ This directory contains metadata used by F-Droid to display app information in t
 ## Updating
 
 When releasing a new version:
+
 1. Add a new changelog file named `{versionCode}.txt` in the changelogs directory
 2. Update descriptions if necessary
 3. Add new screenshots if the UI has changed significantly

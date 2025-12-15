@@ -1,0 +1,58 @@
+name: Windows Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/lib/infrastructure/windows/**'
+      - 'src/test/infrastructure/windows/**'
+      - '.github/workflows/windows-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/lib/infrastructure/windows/**'
+      - 'src/test/infrastructure/windows/**'
+      - '.github/workflows/windows-tests.yml'
+  workflow_dispatch:
+
+jobs:
+  test-windows:
+    name: Run Windows-Specific Tests
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: "windows-tests"
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+
+      - name: Run build_runner
+        shell: bash
+        run: |
+          cd src
+          fvm dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run Windows-specific tests
+        shell: bash
+        run: |
+          cd src
+          fvm flutter test test/infrastructure/windows/
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-test-results
+          path: src/test-results/
+          retention-days: 30

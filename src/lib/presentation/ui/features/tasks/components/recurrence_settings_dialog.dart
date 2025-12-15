@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/task_recurrence_selector.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/main.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 
 class TagDeleteButton extends StatefulWidget {
   final String tagId;

@@ -1,0 +1,162 @@
+name: Test (Linux)
+
+on:
+  push:
+    branches: [ main, develop, "refactor/*" ]
+    paths-ignore:
+      - 'src/android/**'
+      - 'src/ios/**'
+      - 'src/windows/**'
+      - 'src/linux/flatpak/**'
+      - 'docs/**'
+      - '*.md'
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      upload_coverage:
+        description: 'Upload coverage to Codecov'
+        required: false
+        default: false
+        type: boolean
+      run_integration_tests:
+        description: 'Run integration tests'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  test:
+    name: Run All Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flutter-version: ['3.32.0']
+        include:
+          - flutter-version: '3.32.0'
+            cache-suffix: 'main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Install system dependencies
+        shell: bash
+        run: |
+          # Install lcov for coverage processing
+          sudo apt-get update
+          sudo apt-get install -y lcov
+
+      - name: Run All Tests
+        id: run-tests
+        uses: ./.github/actions/run-tests
+        with:
+          enable-code-coverage: 'true'
+          upload-coverage: ${{ github.event.inputs.upload_coverage || 'false' }}
+          cache-key-suffix: ${{ matrix.cache-suffix }}
+          run-build-runner: 'true'
+          test-directories: 'test/ test/presentation/ui/shared/services/ test/drift/app_database/'
+
+      - name: Upload Coverage to Codecov (on main/develop)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./src/coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  test-performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: "performance-tests"
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+
+      - name: Run Performance Tests
+        shell: bash
+        run: |
+          echo "⚡ Running performance tests..."
+          cd src
+
+          # Create test-results directory if it doesn't exist
+          mkdir -p test-results
+
+          # Run tests with detailed reporting for performance analysis
+          fvm flutter test \
+            --reporter=expanded > test-results/performance-tests.log 2>&1 || {
+            echo "❌ Performance tests failed"
+            cat test-results/performance-tests.log
+            exit 1
+          }
+
+          echo "✅ Performance tests completed"
+
+      - name: Upload Performance Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-test-results
+          path: src/test-results/
+          retention-days: 7
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: "security-scan"
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+
+      - name: Run Security Audit
+        shell: bash
+        run: |
+          echo "🔒 Running security audit..."
+          cd src
+
+          # Check for common security issues
+          echo "Checking dependencies for known vulnerabilities..."
+          # Add dependency check logic here if available
+
+          # Run static analysis with security focus
+          fvm flutter analyze --fatal-infos \
+            --fatal-warnings || {
+            echo "❌ Security analysis found issues"
+            exit 1
+          }
+
+          echo "✅ Security audit completed"

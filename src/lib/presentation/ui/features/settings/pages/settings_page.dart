@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
+import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/presentation/ui/features/settings/components/about_tile.dart';
 import 'package:whph/presentation/ui/features/settings/components/language_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_settings.dart';

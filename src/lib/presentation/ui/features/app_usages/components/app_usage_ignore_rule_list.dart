@@ -11,10 +11,10 @@ import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 
 class AppUsageIgnoreRuleList extends StatefulWidget {
   final VoidCallback? onRuleDeleted;

@@ -227,7 +227,6 @@ class _DebugLogsDialogState extends State<DebugLogsDialog> {
                       : const Icon(Icons.save_alt),
                   tooltip: _translationService.translate(SettingsTranslationKeys.debugLogsSaveAs),
                 ),
-              const SizedBox(width: AppTheme.sizeSmall),
             ],
           ),
           body: Padding(

@@ -1,10 +1,12 @@
 # Windows Installer Setup
 
-This directory contains the Inno Setup script for creating a Windows installer for the WHPH application.
+This directory contains the Inno Setup script for creating a Windows installer
+for the WHPH application.
 
 ## Files
 
-- `installer.iss` - Inno Setup script file that defines the installer configuration
+- `installer.iss` - Inno Setup script file that defines the installer
+  configuration
 
 ## Installer Features
 
@@ -34,7 +36,8 @@ To build the installer manually on Windows:
 
 1. Install [Inno Setup](https://jrsoftware.org/isinfo.php)
 2. Build the Flutter app: `flutter build windows --release`
-3. Compile the installer: `"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss`
+3. Compile the installer:
+   `"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss`
 
 The installer will be created at `build\windows\installer\whph-setup.exe`.
 
@@ -55,7 +58,9 @@ The installer supports multiple languages:
 - **English** (default)
 - **Turkish** (Türkçe)
 
-The installer will automatically detect the system language and display the appropriate interface. Users can also manually select their preferred language during installation.
+The installer will automatically detect the system language and display the
+appropriate interface. Users can also manually select their preferred language
+during installation.
 
 ## Installation Locations
 

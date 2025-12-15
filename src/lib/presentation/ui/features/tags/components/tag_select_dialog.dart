@@ -179,7 +179,6 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
             onPressed: _confirmTagSelection,
             child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: GestureDetector(

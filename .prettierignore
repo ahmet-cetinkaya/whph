@@ -1,0 +1,69 @@
+# Build directories
+build/
+*.build/
+dist/
+out/
+
+# Flutter/Dart
+.dart_tool/
+.fvm/
+pubspec.lock
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-tools-state
+
+# Generated files
+*.g.dart
+*.mocks.dart
+*.freezed.dart
+*.part.dart
+
+# Dependencies
+node_modules/
+vendor/
+src/**/deps/
+src/**/_deps/
+
+# Cache
+.cache/
+*.cache/
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private configuration
+.claude/
+.secrets/
+
+# Flutter specific
+src/android/fdroid/
+src/flutter_sdk/
+src/**/ephemeral/
+src/**/.plugin_symlinks/
+
+# Submodules
+src/**/submodules/
+src/**/external/
+
+# Lock files
+*.lock
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/

@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/features/about/services/changelog_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
 
 import 'changelog_dialog_service_test.mocks.dart';
 
 // Custom mock class that supports easy_localization extension
 class TestBuildContext extends Mock implements BuildContext {
-  @override
   Locale get locale => const Locale('en');
 
   @override
@@ -170,7 +166,6 @@ void main() {
 }
 
 class MockBuildContext extends Mock implements BuildContext {
-  @override
   Locale locale;
 
   MockBuildContext({this.locale = const Locale('en')});

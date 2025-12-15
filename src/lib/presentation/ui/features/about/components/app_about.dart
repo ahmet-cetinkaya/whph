@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
+import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

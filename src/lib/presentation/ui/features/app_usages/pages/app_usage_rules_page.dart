@@ -107,7 +107,6 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
             helpTitleKey: AppUsageTranslationKeys.rulesHelpTitle,
             helpMarkdownContentKey: AppUsageTranslationKeys.rulesHelpContent,
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: Padding(

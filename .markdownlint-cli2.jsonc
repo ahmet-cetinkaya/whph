@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint-cli2/refs/heads/main/schema/markdownlint-cli2-config-schema.json",
+  "config": {
+    "MD013": false, // Ignore line length rule, prettier handles this
+    "MD024": {
+      "siblings_only": true // Ignore duplicate headings if they are siblings
+    },
+    "MD033": {
+      "allowed_elements": ["div", "a", "img", "String", "UUID", "br"] // Allow these HTML elements for specific use cases
+    }
+  },
+  "gitignore": true
+}

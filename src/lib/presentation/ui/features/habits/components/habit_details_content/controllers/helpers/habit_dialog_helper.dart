@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+import 'package:acore/acore.dart' show DateTimeHelper, ResponsiveDialogHelper, DialogSize;
+import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_goal_dialog.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_reminder_settings_dialog.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+
+/// Result of reminder dialog operations.
+class ReminderDialogResult {
+  final bool hasReminder;
+  final TimeOfDay? reminderTime;
+  final List<int> reminderDays;
+
+  ReminderDialogResult({
+    required this.hasReminder,
+    this.reminderTime,
+    required this.reminderDays,
+  });
+}
+
+/// Result of goal dialog operations.
+class GoalDialogResult {
+  final bool hasGoal;
+  final int? targetFrequency;
+  final int? periodDays;
+  final int? dailyTarget;
+
+  GoalDialogResult({
+    required this.hasGoal,
+    this.targetFrequency,
+    this.periodDays,
+    this.dailyTarget,
+  });
+}
+
+/// Handles dialog operations for habit details.
+class HabitDialogHelper {
+  final ITranslationService _translationService;
+
+  HabitDialogHelper({required ITranslationService translationService}) : _translationService = translationService;
+
+  /// Gets a summary text for reminder settings.
+  String getReminderSummaryText(GetHabitQueryResponse? habit) {
+    if (habit == null || !habit.hasReminder) {
+      return _translationService.translate(HabitTranslationKeys.noReminder);
+    }
+
+    String summary = "";
+
+    if (habit.reminderTime != null) {
+      final timeOfDay = habit.getReminderTimeOfDay();
+      if (timeOfDay != null) {
+        summary += '${timeOfDay.hour.toString().padLeft(2, '0')}:${timeOfDay.minute.toString().padLeft(2, '0')}';
+      }
+    }
+
+    final reminderDays = habit.getReminderDaysAsList();
+    if (reminderDays.isNotEmpty && reminderDays.length < 7) {
+      final dayNames = reminderDays.map((dayNum) {
+        return _translationService.translate(SharedTranslationKeys.getWeekDayTranslationKey(dayNum, short: true));
+      }).join(', ');
+      summary += ', $dayNames';
+    } else if (reminderDays.length == 7) {
+      summary += ', ${_translationService.translate(HabitTranslationKeys.everyDay)}';
+    }
+
+    return summary;
+  }
+
+  /// Opens the reminder settings dialog.
+  Future<ReminderDialogResult?> openReminderDialog(BuildContext context, GetHabitQueryResponse habit) async {
+    final now = DateTime.now();
+    final bool isArchived =
+        habit.archivedDate != null && DateTimeHelper.toLocalDateTime(habit.archivedDate!).isBefore(now);
+
+    if (isArchived) return null;
+
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitReminderSettingsResult>(
+      context: context,
+      size: DialogSize.medium,
+      child: HabitReminderSettingsDialog(
+        hasReminder: habit.hasReminder,
+        reminderTime: habit.getReminderTimeOfDay(),
+        reminderDays: habit.getReminderDaysAsList(),
+        translationService: _translationService,
+      ),
+    );
+
+    if (result != null) {
+      return ReminderDialogResult(
+        hasReminder: result.hasReminder,
+        reminderTime: result.reminderTime,
+        reminderDays: result.reminderDays,
+      );
+    }
+    return null;
+  }
+
+  /// Opens the goal settings dialog.
+  Future<GoalDialogResult?> openGoalDialog(BuildContext context, GetHabitQueryResponse habit) async {
+    final now = DateTime.now();
+    final bool isArchived =
+        habit.archivedDate != null && DateTimeHelper.toLocalDateTime(habit.archivedDate!).isBefore(now);
+
+    if (isArchived) return null;
+
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitGoalResult>(
+      context: context,
+      size: DialogSize.large,
+      child: HabitGoalDialog(
+        hasGoal: habit.hasGoal,
+        targetFrequency: habit.targetFrequency,
+        periodDays: habit.hasGoal ? habit.periodDays : 1,
+        dailyTarget: habit.dailyTarget ?? 1,
+        translationService: _translationService,
+      ),
+    );
+
+    if (result != null) {
+      return GoalDialogResult(
+        hasGoal: result.hasGoal,
+        targetFrequency: result.targetFrequency,
+        periodDays: result.periodDays,
+        dailyTarget: result.dailyTarget,
+      );
+    }
+    return null;
+  }
+}

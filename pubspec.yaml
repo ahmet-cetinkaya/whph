@@ -1,0 +1,63 @@
+name: whph
+description: WHPH (Work Hard Play Hard) - A comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
+publish_to: "none"
+topics:
+  - productivity
+  - task-management
+  - habit-tracking
+  - time-management
+  - cross-platform
+
+homepage: whph.ahmetcetinkaya.me
+repository: https://github.com/ahmet-cetinkaya/whph
+issue_tracker: https://github.com/ahmet-cetinkaya/whph/issues
+documentation: https://github.com/ahmet-cetinkaya/whph/blob/main/README.md
+
+# RPS (Runner Package Script) commands - install with: dart pub global activate rps
+# Run commands from project root: rps <command>
+scripts:
+  # Development
+  pub:get: cd src && fvm flutter pub get
+  run: cd src && fvm flutter run
+  run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
+  clean: bash scripts/clean.sh
+  format: bash scripts/format.sh
+  lint: ./scripts/lint.sh
+
+  # Testing
+  test: cd src && fvm flutter test
+  test:locale: cd src && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
+  test:migrate: cd src && fvm flutter test test/drift/app_database/migration_test.dart
+
+  # Code Generation
+  gen: cd src && bash scripts/generate_gen_files.sh
+  gen:icons: cd src && fvm flutter pub run icons_launcher:create
+  gen:migrate: cd src && fvm flutter pub run drift_dev make-migrations
+
+  # Build Releases
+  release:linux: cd src && fvm flutter build linux --release
+  release:windows: cd src && fvm flutter build windows --release
+  release:windows:setup: cd src && fvm flutter build windows --release && ISCC.exe windows\\setup-wizard\\installer.iss
+  release:android: cd src && fvm flutter build apk --release
+  release:android:bundle: cd src && fvm flutter build appbundle --release
+
+  # Version Management
+  version:major: bash scripts/version_bump.sh major
+  version:minor: bash scripts/version_bump.sh minor
+  version:patch: bash scripts/version_bump.sh patch
+  version:push: git push && git push --tags
+
+  # Changelog
+  gen:changelog: bash scripts/create_changelog.sh --auto
+  gen:changelog:all: bash scripts/create_changelog.sh --all-versions --auto
+
+  # CI/CD
+  test:ci: act -j build
+  test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
+  test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
+  test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
+  test:ci:fdroid: bash scripts/test_ci_fdroid.sh
+
+  # Utilities
+  install:linux: bash scripts/install-linux.sh
+  validate:fastlane: bash scripts/validate-fastlane-metadata.sh

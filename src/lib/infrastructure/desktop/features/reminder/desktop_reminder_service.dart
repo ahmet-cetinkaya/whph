@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
+import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';

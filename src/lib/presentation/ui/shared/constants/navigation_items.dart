@@ -3,8 +3,8 @@ import 'package:whph/presentation/ui/features/about/components/support_dialog.da
 import 'package:whph/presentation/ui/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/dialog_size.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 import '../constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/ui/features/calendar/pages/today_page.dart';

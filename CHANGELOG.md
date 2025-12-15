@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.18.0] - 2025-10-25
 
 ### Added
+
 - Make estimated time truly optional by treating 0 as null
 - Add default estimated time setting for tasks with UI and logic
 - Implement batch firewall rule addition for Windows and improve detection
 
 ### Fixed
+
 - Address Gemini review feedback - remove redundant callbacks and restore UI descriptions
 - Add time data service and integrate with habit and tag components
 - Rename application layer settings translation keys file and update references
@@ -37,11 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.17.1] - 2025-10-13
 
 ### Added
+
 - Enhance tour overlay with translation support and improved layout
 
 ## [0.17.0] - 2025-10-12
 
 ### Added
+
 - Enhance tour navigation with async operations and state persistence
 - Add multi-page tour functionality with overlay component
 - Add language selection dropdown to onboarding dialog
@@ -50,9 +54,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement translation keys with parameters for sync error handling
 
 ### Changed
+
 - Initialize onboarding steps once in initState
 
 ### Fixed
+
 - Add mounted check before navigation after async gap
 - Update help dialog title and content formatting
 - Enhance task completion button touch area and recurrence handling
@@ -75,9 +81,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.16.5] - 2025-10-02
 
 ### Added
+
 - Add duplicate ID validation to data import and migration
 
 ### Fixed
+
 - Use modified_date for deduplication to prevent data loss
 - Improve migration error handling and add testing constructors
 - Improve connection management to prevent pool exhaustion
@@ -85,34 +93,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.16.4] - 2025-10-02
 
 ### Added
+
 - Enhance data import with backup, validation, and error handling
 - Enhance database migration with validation, backup, and error handling
 
 ### Fixed
+
 - Handle missing order column in habit_table migration with explicit column mapping
 
 ## [0.16.3] - 2025-10-01
 
 ### Added
+
 - Add error handling for app initialization failures
 
 ### Fixed
+
 - Remove incorrect multiline buffer assignment
 - Handle missing habit_time_record_table in migrations
 
 ## [0.16.2] - 2025-10-01
 
 ### Fixed
+
 - Enhance task table migration by recreating schema (fixes #96 reported by @ujo4eva)
 
 ## [0.16.1] - 2025-09-30
 
 ### Fixed
+
 - Add data migrations for habit and task schema updates
 
 ## [0.16.0] - 2025-09-30
 
 ### Added
+
 - Add toggle for showing subtasks in tag details
 - Add completion date range filtering
 - Introduce system and user app filtering service
@@ -127,11 +142,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add time tracking support with new repository and schema updates
 
 ### Changed
+
 - Add debounce to search filter input
 - Optimize queries and fix timer logging behavior
 - Optimize duration queries with batch fetching and fix timer logging
 
 ### Fixed
+
 - Add task time record repository to registration
 - Calculate totalElapsedTime for subtasks
 - Correct filtering logic for parent and subtasks inclusion
@@ -164,6 +181,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.15.0] - 2025-09-14
 
 ### Added
+
 - Add comprehensive sync help and manual connection UI translations
 - Add security and concurrency controls to desktop sync service
 - Enhance Android server sync status monitoring and UI feedback
@@ -199,11 +217,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add useParentScroll parameter to control list scrolling
 
 ### Changed
+
 - Implement client-driven paginated sync and manual connection UI
 - Batch fetch records for period-based habits
 - Add database index and clean up dead code
 
 ### Fixed
+
 - Add scrollability to connect info dialog tabs
 - Use tagId instead of id in task tags retrieval
 - Implement client-driven paginated sync and reconnection logic
@@ -246,9 +266,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.14.1] - 2025-09-04
 
 ### Changed
+
 - Optimize duplicate cleanup with batch delete operations
 
 ### Fixed
+
 - Resolve orphaned task issue caused by duplicate records
 - Handle total_duration alias in order by clause
 - Update project paths from lib/src to lib structure
@@ -256,6 +278,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.14.0] - 2025-09-04
 
 ### Added
+
 - New filter option to easily show or hide subtasks for better task management
 - Enhanced debug log export with full language support for smoother troubleshooting
 - Improved debug logs now display as overlay notifications for instant feedback
@@ -269,9 +292,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add DateFilterSetting model with quick selection and auto-refresh support
 
 ### Changed
+
 - Optimize order updates with batch processing and simplified command
 
 ### Fixed
+
 - Correct localization and recurrence logic issues
 - Address PR #47 review feedback
 - Add validation message for deadline date in multiple languages
@@ -298,16 +323,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.13.2] - 2025-08-17
 
 ### Added
+
 - **UI Density Settings**: New interface density controls allowing users to adjust text and UI element sizes (Compact, Normal, Large, Larger) for improved readability on high DPI displays
 - Complete internationalization support for UI density settings across all supported languages
 
 ### Changed
+
 - Optimize task list rendering performance by implementing task card caching
 - Improve date calculation performance with intelligent caching and staleness checks
 - Optimize display performance for high refresh rate screens
 - Enhanced UI density implementation based on code review feedback
 
 ### Fixed
+
 - Enable Impeller rendering engine for improved performance
 - Validate estimatedTime to prevent negative values in time tracking
 - Replace responsive color dialog with standard AlertDialog for better consistency
@@ -315,10 +343,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.13.1] - 2025-08-06
 
 ### Added
+
 - Implement single instance application management
 - Enhance server-side sync status tracking and UI feedback
 
 ### Fixed
+
 - Correct corrupted characters in multiple locale files
 - Add AppUsageTimeRecord and HabitRecord entity support to paginated sync
 - Use local variables to reduce `MediaQuery` calls
@@ -330,21 +360,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.13.0] - 2025-08-05
 
 ### Added
+
 - Add markdown editor tooltips for image, heading, and checkbox
 - Remove edit icons and improve spacing in detail forms
 - Add support for cs, da, el, fi, nl, no, pt, ro, sl, sv locales
 
 ### Fixed
+
 - Improve notification scheduling with better validation and fallback handling
 - Implement Windows audio player and add sound assets
 
 ## [0.12.0] - 2025-07-31
 
 ### Added
+
 - Improve sync help content
 - Add custom accent color support
 
 ### Fixed
+
 - Use theme service for accent color in ui elements
 - Resolve bidirectional sync failure preventing Linux demo data from syncing to Android
 - Add background color to appbar in pages
@@ -352,18 +386,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.11.1] - 2025-07-29
 
 ### Added
+
 - Implement Digital Wellbeing-compatible usage tracking with precision algorithms
 - Add clearer description for dynamic color usage
 - Set fallback theme to dark
 - Remove initial titles and add placeholders for task, habit, note, and tag inputs
 
 ### Fixed
+
 - Prevent UI flicker during permission check and data loading
 - Use theme color for onboarding next button text
 
 ## [0.11.0] - 2025-07-29
 
 ### Added
+
 - Add support for mobile-to-mobile sync
 - Add syncing indicator to sync devices page
 - Improve qr code scan ui
@@ -385,9 +422,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add German localization for notes, settings, sync, tags, tasks, and shared components
 
 ### Changed
+
 - Add pagination to synced data and thread isolation
 
 ### Fixed
+
 - Hide sync button when server node mode
 - Address code review comments from PR #16
 - Improve compact habit list view in today page
@@ -411,58 +450,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.10.1] - 2025-07-17
 
 ### Added
+
 - Enhance KDE Wayland window methods
 - Add device filtering to app usage features
 - Implement application directory service for platforms
 
 ### Fixed
+
 - Remove padding from descriptions
 
 ## [0.10.0] - 2025-07-16
 
 ### Changed
+
 - Internal improvements and maintenance
 
 ## [0.9.8] - 2025-07-08
 
 ### Added
+
 - Implement accurate foreground app usage tracking for Android
 
 ### Changed
+
 - Update logo assets for improved optimization
 
 ### Fixed
+
 - Update IconButton visual density
 - Add sound feedback on record creation
 
 ## [0.9.7] - 2025-07-07
 
 ### Changed
+
 - Internal improvements and maintenance
 
 ## [0.9.6] - 2025-07-02
 
 ### Changed
+
 - Internal improvements and maintenance
 
 ## [0.9.5] - 2025-07-02
 
 ### Changed
+
 - Internal improvements and maintenance
 
 ## [0.9.4] - 2025-07-01
 
 ### Fixed
+
 - Improve hourly data collection and processing
 
 ## [0.9.3] - 2025-07-01
 
 ### Added
+
 - Improve mobile platform sync
 - Enhance logging and conflict resolution
 - Add check for updates functionality
 
 ### Fixed
+
 - Improve list view with separators
 - Improve error logging in import/export
 - Improve pagination logic in app usage list
@@ -470,55 +521,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.9.2] - 2025-06-30
 
 ### Fixed
+
 - Enhance hourly processing of app usage data
 
 ## [0.9.1] - 2025-06-27
 
 ### Fixed
+
 - Remove unused update check logic for Android
 
 ## [0.9.0] - 2025-06-27
 
 ### Added
+
 - Improved background tracking of app usage on Android devices for a smoother experience
 
 ## [0.8.7] - 2025-06-27
 
 ### Added
+
 - Remove APK updating logic and related permissions
 
 ## [0.8.6] - 2025-06-27
 
 ### Added
+
 - Enhance support dialog logic and settings
 - Improve error logging on app startup
 
 ### Fixed
+
 - Improve layout structure in settings page
 
 ## [0.8.5] - 2025-06-26
 
 ### Changed
+
 - Internal improvements and maintenance
 
 ## [0.8.4] - 2025-06-25
 
 ### Changed
+
 - Internal improvements and maintenance
 
 ## [0.8.3] - 2025-06-25
 
 ### Changed
+
 - Various behind-the-scenes improvements and optimizations for a better experience
 
 ## [0.8.2] - 2025-06-24
 
 ### Changed
+
 - Various behind-the-scenes improvements and optimizations for a better experience
 
 ## [0.8.1] - 2025-06-24
 
 ### Added
+
 - Implement demo data service and configuration
 - Standardize padding across UI components
 - Aggregate tag items to avoid duplicates
@@ -526,6 +588,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refresh reminders on language change
 
 ### Fixed
+
 - Improve onboarding and support dialog handling
 - Remove parent task optional property chip
 - Add notifications for habit record changes
@@ -533,12 +596,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.8.0] - 2025-06-21
 
 ### Added
+
 - Add sorting options to tag selection
 - Disable sorting options based on custom order
 - Load initial tags and priority in adding sub task
 - Add parent task field in task details
 
 ### Fixed
+
 - Ensure parsing handles malformed notifications
 - Add tag update listener in task details
 - Enhance Android reminder service with translation support
@@ -546,20 +611,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.1] - 2025-06-19
 
 ### Added
+
 - Add Inno Setup for Windows installer creation
 
 ### Fixed
+
 - Remove default window size setting
 
 ## [0.7.0] - 2025-06-18
 
 ### Added
+
 - Update tag percentage threshold for display
 - Add confetti animation for task and habit completion
 - Enhance habit streak tracking and UI
 - Improve scheduling time handling
 
 ### Fixed
+
 - Improve reminder icon layout in HabitCard
 - Add tooltip to schedule button
 - Handle null values in custom order sorting
@@ -574,6 +643,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.11] - 2025-06-11
 
 ### Fixed
+
 - Update version reference from 0.6.7 to 0.6.10 in tests
 - Refactor database migration for app_usage_time_record_table
 - Enhance YAML parsing and logging
@@ -581,12 +651,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.10] - 2025-06-09
 
 ### Added
+
 - Handle boot completed events
 - Update default sorting configuration
 - Enhance reordering functionality in sort dialog
 - Add padding to empty state overlays
 
 ### Fixed
+
 - Update date filtering logic
 - Update play method to include audio focus
 - Update argument keys for navigation payload
@@ -602,10 +674,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.9] - 2025-06-06
 
 ### Added
+
 - Add ignoreArchivedTagVisibility to queries
 - Remove unused deadline date calculation
 
 ### Fixed
+
 - Adjust padding for layout in layout
 - Update date filtering logic in today page
 - Add ignore directive for depend_on_referenced_packages
@@ -613,6 +687,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.8] - 2025-06-03
 
 ### Fixed
+
 - Update tag color handling in app usage and tag details
 - Improve tag processing logic in app usage details
 - Change padding to center alignment
@@ -621,9 +696,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.7] - 2025-06-03
 
 ### Added
+
 - Add export and import progress messages
 
 ### Fixed
+
 - Update app version in migration tests
 - Remove getInitialAppUsages method
 - Enhance getById methods to include deleted notes
@@ -632,6 +709,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.6] - 2025-06-03
 
 ### Added
+
 - Enhance search field with improved styling
 - Add padding to task list options
 - Update dialog size and behavior for better UX
@@ -642,6 +720,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement debounce and save handling improvements
 
 ### Fixed
+
 - Add initial app usage collection settings
 - Simplify additional widget layout in app usage bar
 - Allow custom date for time records
@@ -649,6 +728,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.5] - 2025-06-02
 
 ### Added
+
 - Enhance TaskCompleteButton with subtask progress
 - Standardize dialog sizes across components
 - Add ScheduleButton component for task scheduling
@@ -660,6 +740,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance saveTimeRecord with custom date
 
 ### Fixed
+
 - Update task deletion handling in MarathonPage
 - Remove unnecessary padding in responsive layout
 - Reduce page size for task list
@@ -668,11 +749,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.4] - 2025-06-01
 
 ### Added
+
 - Add missing translations and improve structure
 - Improve pomodoro timer ui
 - Enhance update checking and downloading
 
 ### Fixed
+
 - Improve layout and responsiveness across components
 - Enhance layout with responsive design
 - Reduce default page size from 20 to 10
@@ -685,6 +768,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.3] - 2025-06-01
 
 ### Added
+
 - Update application name and description
 - Improve permission handling
 - Simplify layout structure in settings page
@@ -695,6 +779,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add label to date dialog and reset confirmation to quick add task dialog
 
 ### Fixed
+
 - Ensure tag icon color is set correctly
 - Refactor Pomodoro timer notification handling
 - Update onboarding dialog permissions descriptions
@@ -712,10 +797,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.2] - 2025-05-30
 
 ### Added
+
 - Replace SnackBars with overlay notifications
 - Add loading notification with progress indicator
 
 ### Fixed
+
 - Use release signing config for build types
 - Enhance sync data preparation and logging
 - Update query parameter names for consistency
@@ -723,6 +810,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.1] - 2025-05-30
 
 ### Added
+
 - Add auto-start permission management
 - Add auto select task on marathon page
 - Add floating action button for task creation
@@ -737,6 +825,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add BorderFadeOverlay component for UI enhancements
 
 ### Fixed
+
 - Adjust padding and layout in quick task sheet
 - Improve layout and structure of task pages
 - Update task scheduling logic and UI
@@ -763,6 +852,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2025-05-26
 
 ### Added
+
 - Enhance tag management and localization
 - Update localization for device sync messages
 - Enhance settings UI and functionality
@@ -812,9 +902,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance tag details with related tags and archived state visibility
 
 ### Changed
+
 - Enhance component management with event-driven updates and new UI components
 
 ### Fixed
+
 - Enhance Windows build process with environment variables
 - Enhance Windows build process with workarounds
 - Improve Windows build process in CI workflow
@@ -845,11 +937,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.1] - 2025-05-01
 
 ### Added
+
 - Simplify task list handling and improve filter functionality in tag details page
 - Enhance refresh logic and add tag filter functionality in today page
 - Enhance task listing with improved refresh logic and task data model
 
 ### Fixed
+
 - Adjust task filtering logic in marathon page
 - Ensure context is mounted before popping the navigator in tag select dropdown
 - Improve habits list filtering and refresh logic
@@ -860,6 +954,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.0] - 2025-04-10
 
 ### Added
+
 - Add completed tasks filter toggle and enhance task list rebuilding
 - Show tag name on selection in app usage tag rules
 - Enhance window detection with multiple strategies and error handling
@@ -874,6 +969,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance task duration formatting with localization support
 
 ### Fixed
+
 - Update fix_auto_start_flutter.sh to properly structure build.gradle and AndroidManifest.xml
 - Simplify description check and update color opacity methods
 - Remove unnecessary controller disposal after scanning
@@ -888,21 +984,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.6] - 2025-02-04
 
 ### Added
+
 - Enhance QuickTaskBottomSheet with tag selection and clear functionality
 - Add completed tasks section with expandable view in task and tag details pages
 
 ## [0.4.5] - 2025-02-04
 
 ### Fixed
+
 - Improve task deletion callback handling in TaskDetailsPage
 
 ## [0.4.4] - 2025-02-03
 
 ### Added
+
 - Add option to hide sidebar and handle task deletion callback
 - Simplify task section layout in tag details page
 
 ### Fixed
+
 - Reorder EisenhowerPriority enum values for sorting
 - Add translation for no app usage message
 - Correct duration update logic and enhance task details dialog
@@ -910,39 +1010,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.3] - 2025-02-02
 
 ### Fixed
+
 - Improve error handling and logging during device sync process
 
 ## [0.4.2] - 2025-02-01
 
 ### Fixed
+
 - Update task navigation to use MaterialPageRoute and refresh sub-tasks on return
 
 ## [0.4.1] - 2025-02-01
 
 ### Fixed
+
 - Improve layout and spacing in AppAbout component
 
 ## [0.4.0] - 2025-02-01
 
 ### Added
+
 - Add support for sub-tasks and parent task relationships; update localization and database schema
 
 ## [0.3.2] - 2025-01-31
 
 ### Fixed
+
 - Remove inconsistent icon sizes across various pages
 
 ## [0.3.1] - 2025-01-31
 
 ### Added
+
 - Add translation keys for tags, sync, settings, and habits; update error handling
 
 ### Fixed
+
 - Add file service for android
 
 ## [0.3.0] - 2025-01-31
 
 ### Added
+
 - Add import/export functionality and update localization
 - Implement pagination for fetching tags in various components
 - Implement device ID service and update sync device model
@@ -956,17 +1064,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.1] - 2025-01-29
 
 ### Added
+
 - Add tooltips for refresh and help actions in multiple components
 - Replace Padding with Center for improved layout in AppAbout component
 - Implement localized update dialog
 
 ### Fixed
+
 - Adjust spacing for logo in ResponsiveScaffoldLayout based on screen size
 - Improve title display in HelpMenu with ellipsis overflow handling
 
 ## [0.2.0] - 2025-01-29
 
 ### Added
+
 - Configure release signing with keystore and update build.gradle
 - Implement APK installation via MethodChannel and update manifest for FileProvider
 - Integrate translation service across various components and add localization files
@@ -979,6 +1090,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement translation service and integrate localization into the app
 
 ### Fixed
+
 - Update GitHub Actions workflows to use GITHUB_TOKEN consistently and simplify keystore setup
 - Add onUpdated callbacks and to input fields and details components and refresh the components on save
 - Update schema to version 10 and implement migration logic for timestamp format
@@ -986,22 +1098,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.7] - 2025-01-27
 
 ### Added
+
 - Add setup and update services
 - Integrate app usage ignore rules into sync feature and update related registrations
 - Implement add and delete commands for app usage ignore rules
 - Add additional fields to save commands
 
 ### Fixed
+
 - Enhance Windows update script and remove update checker utility
 
 ## [0.1.6] - 2025-01-26
 
 ### Added
+
 - Make app bar actions visible on all platforms
 
 ## [0.1.5] - 2025-01-26
 
 ### Added
+
 - Improve app bar title layout for better responsiveness
 - Add help modals for Task Details and Tasks Overview pages
 - Add help modals for Tag Details and Tags Overview pages
@@ -1013,6 +1129,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add task creation button with planned date support in today page
 
 ### Fixed
+
 - Add network security configuration and enhance WebSocket connection handling
 - Update color themes and improve text styles in app usage setting components
 - Override toString method in BusinessException for better error messaging
@@ -1020,10 +1137,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.4] - 2025-01-26
 
 ### Added
+
 - Add scheduling functionality to task cards and lists by default
 - Add estimatedTime field to Habit model and related queries
 
 ### Fixed
+
 - Display 'Not set' when estimatedTime is null
 - Update background colors for work and break states
 - Add deviceName to app usage details and name input fields
@@ -1031,6 +1150,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.3] - 2025-01-26
 
 ### Added
+
 - Enhance device name retrieval with user information
 - Add tag color selection with color picker
 - Refactor TagTimeChart to accept customizable height and width
@@ -1039,6 +1159,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement Android startup settings service and update dependencies
 
 ### Changed
+
 - Remove label enabling from ColorPicker for cleaner UI
 - Replace hardcoded values with UI constants for improved maintainability and consistency
 - Introduce UI constants for habit messages and icons, and update components to use them
@@ -1046,6 +1167,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduce shared UI constants for icons and messages, and refactor task components to utilize them
 
 ### Fixed
+
 - Improve task tag display with constrained width and ellipsis overflow
 - Optimize layout structure for filters and calendar display
 - Update bottom sheet background color to use color scheme surface
@@ -1053,6 +1175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.2] - 2025-01-25
 
 ### Fixed
+
 - Ensure tasks list is marked as non-empty on refresh
 - Enhance Linux and Windows services to dynamically locate and execute active window scripts
 - Remove 'Release' prefix from workflow release names
@@ -1060,10 +1183,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2025-01-24
 
 ### Added
+
 - Add release steps for Android, Linux, and Windows workflows
 - Implement DeviceInfoHelper for retrieving device names across platforms
 
 ### Fixed
+
 - Update release workflows to use dynamic versioning for APK and archives
 - Add libayatana-appindicator3-dev installation to CI workflow for indicator support
 - Add libnotify-dev installation to CI workflow for notification support
@@ -1071,6 +1196,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-01-24
 
 ### Added
+
 - Enhance Pomodoro timer display style and add displayLarge text style for better visibility
 - Add notification settings management and update notification service
 - Implement desktop startup settings service and add related constants
@@ -1113,9 +1239,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance task retrieval with associated tags and update task card layout
 
 ### Changed
+
 - Clean up debug prints and improve UI color consistency in tag rule components
 
 ### Fixed
+
 - Update fix_android script to use correct script for local notifications and improve error handling
 - Update support URL and remove unused navigation item action
 - Ensure deleted app usages are excluded from duration queries
@@ -1129,10 +1257,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.2] - 2024-11-06
 
 ### Added
+
 - Add error handling and reporting
 - Add sounds
 
 ### Fixed
+
 - Move update checker to TodayPage's initState for better update management
 - Retrieve process ID of the active window on Windows
 - Enhance QR code button styling with custom eye and data module shapes
@@ -1144,6 +1274,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1] - 2024-11-04
 
 ### Added
+
 - Implement update checker functionality
 - General improvement
 - Improve sync pages
@@ -1171,7 +1302,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add app usage tracking for linux
 
 ### Fixed
+
 - Add time to task filter by planned end date in today page
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
-

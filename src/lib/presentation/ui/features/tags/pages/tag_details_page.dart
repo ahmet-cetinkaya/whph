@@ -7,7 +7,7 @@ import 'package:whph/presentation/ui/features/notes/components/notes_list.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_list_options.dart';
@@ -22,7 +22,7 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';

@@ -28,7 +28,7 @@ This guide explains how to deploy the WHPH app to the Google Play Store using th
 Add the following secrets to your GitHub repository:
 
 | Secret Name | Description | How to Get |
-|-------------|-------------|------------|
+| :---------- | :---------- | :--------- |
 | `GOOGLE_PLAY_SERVICE_ACCOUNT_KEY` | Base64-encoded service account JSON key | `base64 your-service-account-key.json` |
 | `KEYSTORE_BASE64` | Base64-encoded Android keystore file | `base64 src/android/app/whph-release.keystore` |
 | `KEYSTORE_PASSWORD` | Keystore password | From your existing keystore |
@@ -46,24 +46,28 @@ The Fastlane configuration is already set up in the `fastlane/` directory:
 ## Deployment Tracks
 
 ### 1. Internal Testing
+
 - **Purpose**: Early testing with trusted testers
 - **Access**: Up to 100 testers via email list
 - **Review**: No Google review required
 - **Deployment**: Automatic on tag push or manual trigger
 
 ### 2. Alpha Testing
+
 - **Purpose**: Closed testing with larger group
 - **Access**: Up to 1000 testers via Google Groups or email
 - **Review**: Google review required
 - **Deployment**: Manual promotion from internal testing
 
 ### 3. Beta Testing
+
 - **Purpose**: Open testing or larger closed testing
 - **Access**: Unlimited testers via opt-in link
 - **Review**: Google review required
 - **Deployment**: Manual promotion from alpha testing
 
 ### 4. Production
+
 - **Purpose**: Public release
 - **Access**: All Google Play users
 - **Review**: Google review required
@@ -81,6 +85,7 @@ The deployment sequence is now integrated with the GitHub release workflow:
 4. **Play Store Deployment**: Automatic deployment to internal testing
 
 This ensures that:
+
 - GitHub releases are created before Play Store deployment
 - All platform builds are successful before Play Store deployment
 - Internal testing gets the same version as the GitHub release
@@ -94,6 +99,7 @@ Use the **Google Play Store Deployment** workflow in GitHub Actions for:
 3. **Metadata Updates**: Store listing changes
 
 **Steps**:
+
 1. Go to **Actions** → **Google Play Store Deployment**
 2. Click **Run workflow**
 3. Choose deployment options:
@@ -119,6 +125,7 @@ Use the **Google Play Store Rollout Management** workflow to manage production r
 ### Standard Release Process
 
 1. **Development & Testing**
+
    ```bash
    # Make changes and test locally
    rps test
@@ -126,11 +133,13 @@ Use the **Google Play Store Rollout Management** workflow to manage production r
    ```
 
 2. **Version Bump**
+
    ```bash
    rps version:patch  # or version:minor, version:major
    ```
 
 3. **Tag & Push**
+
    ```bash
    git push && git push --tags
    ```
@@ -182,7 +191,7 @@ If issues are discovered in production:
 
 Store metadata is managed in the `fastlane/metadata/android/` directory:
 
-```
+```text
 fastlane/metadata/android/
 ├── en-US/
 │   ├── title.txt              # App title
@@ -195,7 +204,7 @@ fastlane/metadata/android/
 │       ├── 65.txt            # Version 65 changelog
 │       └── ...
 └── [other locales]/
-```
+```text
 
 ### Updating Metadata
 
@@ -220,19 +229,21 @@ For each release, create a changelog file:
 echo "• Fixed crash on app startup
 • Added new habit tracking features
 • Improved performance" > fastlane/metadata/android/en-US/changelogs/65.txt
-```
+```text
 
 ## Local Development
 
 ### Running Fastlane Locally
 
 1. **Install Ruby Dependencies**
+
    ```bash
    cd fastlane
    bundle install
    ```
 
-2. **Setup Environment**
+1. **Setup Environment**
+
    ```bash
    export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
    export KEYSTORE_FILE_PATH="../src/android/app/whph-release.keystore"
@@ -241,7 +252,8 @@ echo "• Fixed crash on app startup
    export KEY_PASSWORD="your_key_password"
    ```
 
-3. **Run Lanes**
+2. **Run Lanes**
+
    ```bash
    cd fastlane
    
@@ -308,7 +320,7 @@ cd fastlane && bundle exec fastlane run validate_google_play_json_key
 
 # Check current rollout status
 cd fastlane && bundle exec fastlane run supply --track production --check_latest
-```
+```text
 
 ## Best Practices
 
@@ -343,7 +355,7 @@ For issues with the deployment process:
 
 1. Check GitHub Actions logs for detailed error messages
 2. Review Google Play Console for specific rejection reasons
-3. Consult Fastlane documentation at https://docs.fastlane.tools
+3. Consult Fastlane documentation at <https://docs.fastlane.tools>
 4. Check Google Play Developer API documentation
 
 For app-specific issues or questions about the deployment configuration, create an issue in the repository.

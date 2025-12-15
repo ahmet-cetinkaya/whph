@@ -2,7 +2,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/corePackages/acore/lib/acore.dart' show PlatformUtils;
+import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
@@ -13,10 +13,10 @@ import 'package:whph/presentation/ui/features/about/constants/about_translation_
 import 'package:whph/presentation/ui/features/settings/pages/permissions_page.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/language_dropdown.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 

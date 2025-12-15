@@ -9,7 +9,7 @@ import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdow
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_list_option_settings.dart';
-import 'package:whph/presentation/ui/shared/components/date_range_filter.dart';
+import 'package:whph/presentation/ui/shared/components/date_range_filter/date_range_filter.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/ui/shared/components/persistent_list_options_base.dart';

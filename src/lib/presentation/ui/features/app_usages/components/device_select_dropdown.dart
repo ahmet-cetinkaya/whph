@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -11,7 +11,7 @@ import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_tra
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_distinct_device_names_query.dart';
 import 'dart:async';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 
 class DeviceSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedDevices;
@@ -181,7 +181,6 @@ class _DeviceSelectDropdownState extends State<DeviceSelectDropdown> {
                   onPressed: () => _confirmDeviceSelection(tempSelectedDevices),
                   child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
                 ),
-                const SizedBox(width: AppTheme.sizeSmall),
               ],
             ),
             body: GestureDetector(

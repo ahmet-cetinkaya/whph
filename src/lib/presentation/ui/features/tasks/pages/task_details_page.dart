@@ -8,12 +8,12 @@ import 'package:whph/presentation/ui/features/tasks/components/task_add_button.d
 import 'package:whph/presentation/ui/features/tasks/components/task_delete_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_details_content.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_details_content/task_details_content.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/dialog_size.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -281,7 +281,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               buttonColor: _themeService.primaryColor,
             ),
           ),
-          const SizedBox(width: AppTheme.sizeSmall),
         ],
       ),
       body: Padding(

@@ -17,7 +17,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager
 import 'package:whph/presentation/ui/shared/services/confetti_animation_service.dart';
 import 'package:whph/presentation/ui/shared/services/json_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/shared/services/sound_manager_service.dart';
-import 'package:whph/presentation/ui/shared/services/theme_service.dart';
+import 'package:whph/presentation/ui/shared/services/theme_service/theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/translation_service.dart';
 import 'dart:io';
 import 'package:whph/presentation/ui/shared/utils/audio_player_sound_player.dart';

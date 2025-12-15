@@ -159,7 +159,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
             Icon(
               TagUiConstants.getTagTimeCategoryIcon(item.category),
               size: AppTheme.iconSizeSmall,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ],
         ),

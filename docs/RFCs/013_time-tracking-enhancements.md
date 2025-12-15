@@ -1,15 +1,15 @@
 # Time Tracking Enhancements — Architecture and Implementation Plan
 
 > RFC: 013
-
 > Status: Draft
-
 > Related Issues: [#60](https://github.com/ahmet-cetinkaya/whph/issues/60)
 
 ## Summary
+
 This RFC proposes comprehensive enhancements to WHPH's time tracking capabilities, addressing three main objectives: implementing a multi-mode timer (Normal + Pomodoro + Stopwatch), enabling manual time logging and editing for tasks, adding real timing support for habits with clarified semantics, and automatic insertion of estimated time records when habits are marked completed, with removal on unmarking to maintain accurate progress tracking for custom goals. The plan maintains backward compatibility and follows existing architectural patterns (Flutter + Drift, Mediator CQRS).
 
 **Status Update**:
+
 - ✅ Multi-mode timer system completed in `AppTimer` component with settings integration
 - ✅ Task manual time logging completed with `TaskTimeLoggingDialog` and task details integration
 - ✅ Habit time record infrastructure implemented: entity (`HabitTimeRecord`), repository (`IHabitTimeRecordRepository` and `DriftHabitTimeRecordRepository`), commands (`AddHabitTimeRecordCommand`, `RemoveHabitTimeRecordCommand`, `SaveHabitTimeRecordCommand`), database schema (`habit_time_record_table` in v24), and supporting tests
@@ -26,6 +26,7 @@ The current time tracking implementation has several limitations:
 - **Analytics gaps**: Time analytics rely on approximations for habits, reducing accuracy of productivity insights
 
 Users frequently request the ability to:
+
 - Use a simple timer without Pomodoro constraints
 - Log time for tasks completed offline or without timer usage
 - Track actual time spent on habits rather than estimates
@@ -37,17 +38,20 @@ Users frequently request the ability to:
 ### 1. Current State Analysis
 
 #### Timer Implementation
+
 - **Pomodoro-only widget**: `presentation/ui/features/tasks/components/pomodoro_timer.dart`
 - **Usage**: Marathon page integration with `onTimeUpdate` callbacks
 - **Persistence**: Hour-bucketed time records via `AddTaskTimeRecordCommand`
 
 #### Task Time Tracking
+
 - **Domain**: `TaskTimeRecord` entity with duration, createdDate
 - **Commands**: `AddTaskTimeRecordCommand`, `SaveTaskTimeRecordCommand`
 - **Queries**: `getTotalDurationByTaskId`
 - **UI**: Total duration display in task details
 
 #### Habits
+
 - **Current**: `HabitRecord` with occurrence timestamps only
 - **Analytics**: Estimated time as `count(records) × estimatedTime`
 - **Limitation**: No actual time tracking capability
@@ -73,6 +77,7 @@ class AppTimer extends StatefulWidget {
 ```
 
 **Features**:
+
 - Three distinct timer modes in a single component
 - Mode switching via settings dialog integration
 - System tray integration and keep-screen-awake support
@@ -98,6 +103,7 @@ class AddTaskTimeRecordCommand implements IRequest<AddTaskTimeRecordCommandRespo
 ```
 
 **Capabilities**:
+
 - Retroactive time entry with custom timestamps
 - Hour-bucket preservation for existing analytics
 - "Set total for day" functionality with delta calculations
@@ -127,6 +133,7 @@ class HabitTimeRecord extends BaseEntity<String> {
 ```
 
 **Database Schema**:
+
 ```sql
 CREATE TABLE habit_time_record_table (
   id TEXT NOT NULL PRIMARY KEY,
@@ -282,6 +289,7 @@ class MarathonPage extends StatefulWidget {
 ```
 
 **Current Implementation**:
+
 - Mode switching via settings dialog (gear icon when timer is stopped)
 - Persistent settings storage with real-time updates
 - Responsive UI that scales based on screen size
@@ -380,6 +388,7 @@ class DriftAppContext extends _$DriftAppContext {
 ## Implementation Plan
 
 ### Phase 1: Core Infrastructure ✅ COMPLETED
+
 1. **Data Model Creation**
    - Create `HabitTimeRecord` entity ✅
    - Implement Drift table and repository ✅
@@ -392,6 +401,7 @@ class DriftAppContext extends _$DriftAppContext {
    - Implement hour-bucket logic for custom dates ✅
 
 ### Phase 2: Timer Enhancement ✅ COMPLETED
+
 1. **Multi-Mode Timer Component** ✅ COMPLETED
    - Enhanced `AppTimer` with three modes: Normal, Pomodoro, Stopwatch ✅
    - Added system tray and keep-awake integration for all modes ✅
@@ -402,6 +412,7 @@ class DriftAppContext extends _$DriftAppContext {
    - Added comprehensive settings management for all timer modes ✅
 
 ### Phase 3: Manual Logging ✅ PARTIALLY COMPLETED
+
 1. **Task Time Logging** ✅ COMPLETED
    - Created `TaskTimeLoggingDialog` component with comprehensive UI ✅
    - Implemented "Add Time" and "Set Total for Day" modes ✅
@@ -418,6 +429,7 @@ class DriftAppContext extends _$DriftAppContext {
    - Ensure removal of estimated records affects custom goal progress calculations - PENDING
 
 ### Phase 4: Analytics Integration - PENDING
+
 1. **Query Updates**
    - Update tag time queries to use actual habit time
    - Implement fallback to estimated time logic
@@ -429,6 +441,7 @@ class DriftAppContext extends _$DriftAppContext {
    - Update habit details pages - PENDING
 
 ### Phase 5: Testing and Polish - PARTIALLY COMPLETED
+
 1. **Comprehensive Testing** - PARTIALLY COMPLETED
    - Unit tests for all new commands and queries ✅ (Added tests for `AddHabitTimeRecordCommand`, `HabitTimeRecord`, repository interface, Drift repo, `TimerMode`)
    - Widget tests for timer components - PENDING

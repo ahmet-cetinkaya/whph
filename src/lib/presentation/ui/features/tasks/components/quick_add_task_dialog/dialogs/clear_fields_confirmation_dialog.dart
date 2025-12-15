@@ -114,7 +114,6 @@ class ClearFieldsConfirmationDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(confirmText ?? translationService.translate(SharedTranslationKeys.confirmButton)),
         ),
-        const SizedBox(width: AppTheme.sizeSmall),
       ],
     );
   }

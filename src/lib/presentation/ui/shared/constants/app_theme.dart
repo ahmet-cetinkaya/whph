@@ -254,16 +254,12 @@ class _DefaultThemeService implements IThemeService {
   @override
   Color get dividerColor => Colors.grey.shade300;
 
-  @override
   Color get errorColor => Colors.red;
 
-  @override
   Color get warningColor => Colors.orange;
 
-  @override
   Color get successColor => Colors.green;
 
-  @override
   Color get infoColor => Colors.blue;
 
   @override

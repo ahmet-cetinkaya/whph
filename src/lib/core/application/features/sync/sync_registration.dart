@@ -4,7 +4,7 @@ import 'package:whph/core/application/features/sync/commands/delete_sync_command
 import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
 import 'package:whph/core/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/core/application/features/sync/commands/stop_sync_command.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/core/application/features/sync/commands/update_sync_device_ip_command.dart';
 import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
@@ -21,9 +21,9 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_validation_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_communication_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_communication_service/sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_data_processing_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_pagination_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_pagination_service/sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:acore/acore.dart';

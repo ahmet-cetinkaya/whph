@@ -5,6 +5,14 @@ set -euo pipefail
 unset IFS
 PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 
+# Logging and error handling (defined early to avoid SC2218)
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
+error() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
+    exit 1
+}
+warn() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] WARNING: $*"; }
+
 # Input validation functions
 validate_input() {
     local input="$1"
@@ -43,19 +51,23 @@ extract_version_from_package() {
     fi
 
     # Try to extract pubspec.yaml from the archive and read version
-    local version=$(tar -tf "$archive" 2>/dev/null | grep "pubspec.yaml$" | head -1)
-    if [[ -n "$version" ]]; then
+    local version_line
+    version_line=$(tar -tf "$archive" 2>/dev/null | grep "pubspec.yaml$" | head -1)
+    if [[ -n "$version_line" ]]; then
         # Extract pubspec.yaml to temporary location and read version
-        local temp_dir=$(mktemp -d)
+        local temp_dir
+        temp_dir=$(mktemp -d)
         tar -xzf "$archive" -C "$temp_dir" "*/pubspec.yaml" 2>/dev/null || {
             rm -rf "$temp_dir"
             return 1
         }
 
         # Find the pubspec.yaml file
-        local pubspec_file=$(find "$temp_dir" -name "pubspec.yaml" | head -1)
+        local pubspec_file
+        pubspec_file=$(find "$temp_dir" -name "pubspec.yaml" | head -1)
         if [[ -f "$pubspec_file" ]]; then
-            local extracted_version=$(grep -oP 'version:\s*\K[0-9]+\.[0-9]+\.[0-9]+' "$pubspec_file" 2>/dev/null)
+            local extracted_version
+            extracted_version=$(grep -oP 'version:\s*\K[0-9]+\.[0-9]+\.[0-9]+' "$pubspec_file" 2>/dev/null)
             rm -rf "$temp_dir"
             echo "$extracted_version"
             return 0
@@ -108,14 +120,6 @@ fi
 # Validate environment variables
 validate_input "$WHPH_INSTALL_DIR" "path"
 validate_input "$WHPH_VERSION" "version"
-
-# Logging and error handling
-log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
-error() {
-    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
-    exit 1
-}
-warn() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] WARNING: $*"; }
 
 # System requirements validation
 validate_system() {

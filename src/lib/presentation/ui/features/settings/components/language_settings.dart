@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/corePackages/acore/lib/utils/dialog_size.dart';
+import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/pages/settings_page.dart';
-import 'package:whph/corePackages/acore/lib/utils/responsive_dialog_helper.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';

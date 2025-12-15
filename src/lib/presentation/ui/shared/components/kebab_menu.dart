@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/corePackages/acore/lib/acore.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/components/help_dialog.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
