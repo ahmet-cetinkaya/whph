@@ -102,8 +102,8 @@ jobs:
           # Create test-results directory if it doesn't exist
           mkdir -p test-results
 
-          # Run tests with performance profiling
-          fvm flutter test --profile \
+          # Run tests with detailed reporting for performance analysis
+          fvm flutter test \
             --reporter=expanded > test-results/performance-tests.log 2>&1 || {
             echo "❌ Performance tests failed"
             cat test-results/performance-tests.log
