@@ -133,10 +133,24 @@ runs:
         if [[ -f "coverage/lcov.info" ]]; then
           # Generate coverage summary
           if command -v lcov >/dev/null 2>&1; then
-            lcov --summary coverage/lcov.info 2>&1 | tail -1 > coverage/summary.txt
-            COVERAGE_PERCENTAGE=$(cat coverage/summary.txt | grep -o '[0-9.]*%' | head -1)
+            # Make lcov command non-fatal and add debugging
+            lcov --summary coverage/lcov.info 2>&1 | tail -1 > coverage/summary.txt || {
+              echo "⚠️ lcov summary command failed, using fallback"
+              echo "No coverage data available" > coverage/summary.txt
+            }
+
+            # More robust coverage percentage extraction
+            COVERAGE_PERCENTAGE=$(cat coverage/summary.txt | grep -o '[0-9.]*%' | head -1 || echo "N/A")
+
+            # Handle empty coverage percentage
+            if [[ "$COVERAGE_PERCENTAGE" == "N/A" || -z "$COVERAGE_PERCENTAGE" ]]; then
+              COVERAGE_PERCENTAGE="N/A"
+              echo "⚠️ Could not extract coverage percentage"
+            else
+              echo "📈 Coverage: $COVERAGE_PERCENTAGE"
+            fi
+
             echo "percentage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
-            echo "📈 Coverage: $COVERAGE_PERCENTAGE"
           else
             echo "percentage=N/A" >> $GITHUB_OUTPUT
             echo "⚠️ lcov not installed, coverage percentage unavailable"
@@ -144,8 +158,12 @@ runs:
 
           # Generate HTML coverage report
           if command -v genhtml >/dev/null 2>&1; then
-            genhtml coverage/lcov.info -o coverage/html --quiet
-            echo "📄 HTML coverage report generated in coverage/html/"
+            genhtml coverage/lcov.info -o coverage/html --quiet || {
+              echo "⚠️ HTML coverage report generation failed, continuing..."
+            }
+            if [[ -d "coverage/html" ]]; then
+              echo "📄 HTML coverage report generated in coverage/html/"
+            fi
           fi
         else
           echo "percentage=0%" >> $GITHUB_OUTPUT
