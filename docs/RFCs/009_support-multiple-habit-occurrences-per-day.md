@@ -166,10 +166,10 @@ Assumptions: Current DB no foreign key issues; statistics centralized in GetHabi
 
 | Checkpoint  | Success Criteria                                                                                              |
 | ----------- | ------------------------------------------------------------------------------------------------------------- |
-| Unit Tests  | • Multiple records insertable same day without errors<br>• Queries return correct counts, scores, and streaks |
-| UI Tests    | • Badges update real-time; editing targets recalculates stats<br>• Tap/long-press logic functions as expected |
-| Performance | • Indexed queries <10ms on 10k records                                                                        |
-| UX Feedback | • Clear understanding of badges, inputs, and multi-reminder flows                                             |
+| Unit Tests  | - Multiple records insertable same day without errors<br>- Queries return correct counts, scores, and streaks |
+| UI Tests    | - Badges update real-time; editing targets recalculates stats<br>- Tap/long-press logic functions as expected |
+| Performance | - Indexed queries <10ms on 10k records                                                                        |
+| UX Feedback | - Clear understanding of badges, inputs, and multi-reminder flows                                             |
 
 **Dependencies:** All prior phases.
 

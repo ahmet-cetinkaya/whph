@@ -226,9 +226,9 @@ For each release, create a changelog file:
 
 ```bash
 # For version 65 (build number from pubspec.yaml)
-echo "• Fixed crash on app startup
-• Added new habit tracking features
-• Improved performance" > fastlane/metadata/android/en-US/changelogs/65.txt
+echo "- Fixed crash on app startup
+- Added new habit tracking features
+- Improved performance" > fastlane/metadata/android/en-US/changelogs/65.txt
 ```text
 
 ## Local Development

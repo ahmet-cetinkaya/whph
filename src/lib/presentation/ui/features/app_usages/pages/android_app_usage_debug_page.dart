@@ -267,9 +267,9 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
                   final appData = entry.value as Map<String, dynamic>;
                   final appName = appData['appName'] as String;
                   final usageMinutes = (appData['usageTimeSeconds'] as int) / 60;
-                  return Text('  • $appName: ${usageMinutes.toStringAsFixed(1)}m');
+                  return Text('  - $appName: ${usageMinutes.toStringAsFixed(1)}m');
                 }),
-                if (newMethod.length > 5) Text('  • ... and ${newMethod.length - 5} more'),
+                if (newMethod.length > 5) Text('  - ... and ${newMethod.length - 5} more'),
               ],
             ),
           ),
@@ -321,10 +321,10 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
       final appName = appData['appName'] as String;
       final seconds = appData['usageTimeSeconds'] as int;
       final minutes = (seconds / 60).toStringAsFixed(1);
-      Logger.info('• $appName: ${minutes}m (${seconds}s)');
+      Logger.info('- $appName: ${minutes}m (${seconds}s)');
     }
     if (newSorted.length > 10) {
-      Logger.info('• ... and ${newSorted.length - 10} more apps');
+      Logger.info('- ... and ${newSorted.length - 10} more apps');
     }
     Logger.info('');
 

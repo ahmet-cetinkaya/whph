@@ -332,7 +332,7 @@ EOF
                     truncated_content=$(echo -e "$fastlane_content" | head -c 450)
                     # Find the last complete line
                     last_newline=$(echo "$truncated_content" | grep -o ".*" | tail -1)
-                    echo -e "$last_newline\n• ..." >"$fastlane_file"
+                    echo -e "$last_newline\n- ..." >"$fastlane_file"
                     file_size=$(wc -c <"$fastlane_file")
                 fi
 
@@ -341,7 +341,7 @@ EOF
         elif [ -n "$version_code" ]; then
             # Create minimal Fastlane changelog even if no user-facing changes
             fastlane_file="$CHANGELOG_DIR/$version_code.txt"
-            echo "• Various behind-the-scenes improvements and optimizations for a better experience" >"$fastlane_file"
+            echo "- Various behind-the-scenes improvements and optimizations for a better experience" >"$fastlane_file"
             echo "  📱 Created minimal Fastlane changelog: $version_code.txt"
         fi
     done
@@ -362,13 +362,13 @@ convert_to_fastlane_format() {
     local fastlane_content
     fastlane_content=$(echo -e "$keep_a_changelog_content" |
         grep "^- " |
-        sed 's/^- /• /' |
+        sed 's/^- /- /' |
         while IFS= read -r line; do
             if [ -n "$line" ]; then
                 # Extract the content after the bullet point
-                content="${line#• }"
+                content="${line#- }"
                 # Capitalize first letter and add bullet point back
-                echo "• $(capitalize_first_letter "$content")"
+                echo "- $(capitalize_first_letter "$content")"
             fi
         done)
 
@@ -628,7 +628,7 @@ if [ -z "$CHANGELOG_TEXT" ]; then
             echo "Current version: $CURRENT_VERSION"
             echo ""
             echo "Examples:"
-            printf '  %s 31 "• New feature added\n• Bug fixes\n• Performance improvements"\n' "$0"
+            printf '  %s 31 "- New feature added\n- Bug fixes\n- Performance improvements"\n' "$0"
             echo "  $0 --auto                    # Auto-generate changelog for current version"
             echo "  $0 --all-versions --auto     # Generate complete historical changelog"
             exit 1
@@ -649,7 +649,7 @@ if [ -z "$CHANGELOG_TEXT" ]; then
 else
     # Manual changelog provided - create a simple Keep a Changelog entry
     # Capitalize each item in the manual changelog
-    CAPITALIZED_ITEMS=$(echo -e "$CHANGELOG_TEXT" | sed 's/^• /- /g' | while IFS= read -r line; do
+    CAPITALIZED_ITEMS=$(echo -e "$CHANGELOG_TEXT" | sed 's/^- /- /g' | while IFS= read -r line; do
         if [[ "$line" =~ ^-\ (.+)$ ]]; then
             content="${BASH_REMATCH[1]}"
             echo "- $(capitalize_first_letter "$content")"
