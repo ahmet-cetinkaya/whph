@@ -33,228 +33,156 @@ whph-2/
 The `src/lib/` directory contains the main Dart source code organized using Clean Architecture principles:
 
 ```text
-lib/
+src/lib/
 ├── corePackages/              # External core packages and submodules
 │   └── acore/                 # Core Flutter utilities submodule
-├── src/                       # Main application source code
-│   ├── core/                  # Core business logic and domain
-│   ├── infrastructure/        # External concerns and platform-specific code
-│   └── presentation/          # UI and API layers
+├── core/                      # Core business logic and domain
+│   ├── application/           # Application services and use cases
+│   └── domain/                # Domain entities and business rules
+├── infrastructure/            # External concerns and platform-specific code
+├── presentation/              # UI and API layers
 ├── main.dart                  # Application entry point
 └── main.mapper.g.dart         # Generated mapper code
-```text
+```
 
 ### Core Layer (`src/lib/core/`)
 
 Contains the business logic and domain models:
 
 ```text
-src/core/
+core/
 ├── application/               # Application services and use cases
-├── domain/                    # Domain entities, value objects, and business rules
-└── shared/                    # Shared core utilities and abstractions
-```text
+│   ├── features/              # Feature-specific commands, queries, and services
+│   │   ├── app_usages/        # App usage tracking
+│   │   ├── demo/              # Demo data generation
+│   │   ├── habits/            # Habit management
+│   │   ├── notes/             # Notes feature
+│   │   ├── settings/          # Application settings
+│   │   ├── sync/              # Data synchronization (modular services)
+│   │   ├── tags/              # Tag management
+│   │   ├── tasks/             # Task management
+│   │   └── widget/            # Home widget support
+│   └── shared/                # Shared application utilities
+└── domain/                    # Domain entities, value objects, and business rules
+    ├── features/              # Feature-specific domain models
+    └── shared/                # Shared domain utilities
+```
 
 ### Infrastructure Layer (`src/lib/infrastructure/`)
 
 Handles external concerns and platform-specific implementations:
 
 ```text
-src/infrastructure/
+infrastructure/
 ├── android/                   # Android-specific implementations
-├── desktop/                   # Desktop-specific implementations
+├── desktop/                   # Desktop-specific implementations (shared)
 ├── linux/                     # Linux-specific implementations
+│   └── features/setup/        # Linux setup with modular services
+│       └── services/          # Firewall, Desktop, KDE, Update services
 ├── mobile/                    # Mobile-specific implementations
 ├── persistence/               # Database and storage implementations
 ├── shared/                    # Shared infrastructure utilities
 ├── windows/                   # Windows-specific implementations
+│   └── features/setup/        # Windows setup with modular services
+│       └── services/          # Firewall, Elevation, Shortcut, Update services
 └── infrastructure_container.dart  # Dependency injection container
-```text
+```
 
 ### Presentation Layer (`src/lib/presentation/`)
 
 Contains UI components and API controllers:
 
 ```text
-src/presentation/
+presentation/
 ├── api/                       # API controllers and endpoints
 ├── ui/                        # User interface components
 │   ├── features/              # Feature-specific UI components
+│   │   ├── habits/            # Habit UI (modular calendar, details)
+│   │   ├── tasks/             # Task UI (modular recurrence, quick add)
+│   │   ├── sync/              # Sync UI (modular device management)
+│   │   └── ...                # Other features
 │   └── shared/                # Shared UI components and utilities
+│       └── components/        # Modular UI components (tour, date picker)
 └── ui_presentation_container.dart  # UI dependency injection
-```text
+```
 
-## Documentation Structure (`docs/` folder)
+## Modular Architecture Patterns (PR #156)
 
-The documentation is organized to help contributors and users:
+The refactoring introduces consistent modular patterns throughout the codebase:
 
-```text
-docs/
-├── CONTRIBUTING.md            # Contribution guidelines and development setup
-├── LINUX-DEPENDENCIES.md     # Linux system dependencies guide
-├── PROJECT-STRUCTURE.md      # This document
-└── screenshots/               # Application screenshots
-    ├── mobile_01.png          # Mobile interface screenshots
-    ├── mobile_02.png
-    └── ...                    # Additional screenshots
-```text
+### Service Modularization
 
-## Platform-Specific Directories
-
-### Android (`android/`)
-
-Contains Android-specific configuration and build files:
+Large services are broken into smaller, focused helper classes:
 
 ```text
-android/
-├── app/                       # Android app module
-├── fdroid/                    # F-Droid repository submodule
-├── gradle/                    # Gradle wrapper files
-├── build.gradle              # Android build configuration
-├── gradle.properties         # Gradle properties
-├── local.properties          # Local Android SDK configuration
-└── settings.gradle           # Gradle settings
-```text
+# Example: Sync Communication Service
+sync_communication_service/
+├── sync_communication_service.dart    # Main orchestrator
+└── helpers/
+    ├── sync_dto_serializer.dart       # DTO-to-JSON conversion
+    └── sync_message_serializer.dart   # Message serialization
+```
 
-### Windows (`windows/`)
+### Command Handler Modularization
 
-Windows platform implementation and setup:
+Complex command handlers delegate to specialized components:
 
 ```text
-windows/
-├── flutter/                   # Flutter Windows engine files
-├── runner/                    # Windows application runner
-├── setup-wizard/              # Inno Setup installer configuration
-│   ├── installer.iss          # Inno Setup script
-│   └── README.md              # Setup wizard documentation
-└── CMakeLists.txt            # CMake build configuration
-```text
+# Example: Paginated Sync Command
+paginated_sync_command/
+├── paginated_sync_command.dart        # Main handler
+└── helpers/
+    ├── sync_incoming_handler.dart     # Incoming data processing
+    ├── sync_outgoing_handler.dart     # Outgoing data orchestration
+    ├── sync_device_orchestrator.dart  # Device coordination
+    ├── sync_page_accumulator.dart     # Page aggregation
+    ├── sync_progress_tracker.dart     # Progress tracking
+    └── sync_response_builder.dart     # Response construction
+```
 
-### Linux (`linux/`)
+### Platform Service Modularization
 
-Linux platform implementation:
-
-```text
-linux/
-├── flutter/                   # Flutter Linux engine files
-├── main.cc                    # Linux application entry point
-├── my_application.cc          # Application implementation
-├── my_application.h           # Application header
-├── whph.desktop              # Desktop entry file
-├── window_detector.cpp        # Window detection functionality
-├── window_detector.h          # Window detection header
-└── CMakeLists.txt            # CMake build configuration
-```text
-
-## Build and Configuration Files
-
-### Core Configuration
-
-- **`pubspec.yaml`** - Flutter project configuration, dependencies, and custom scripts
-- **`pubspec.lock`** - Locked dependency versions
-- **`analysis_options.yaml`** - Dart/Flutter linting rules
-- **`build.yaml`** - Build runner configuration
-- **`devtools_options.yaml`** - Flutter DevTools configuration
-- **`icons_launcher.yaml`** - App icon generation configuration
-
-### Version Control
-
-- **`.gitignore`** - Git ignore patterns
-- **`.gitmodules`** - Git submodule configuration
-- **`.metadata`** - Flutter project metadata
-
-### Development Tools
-
-- **`.fvmrc`** - Flutter Version Management configuration
-- **`.vscode/`** - Visual Studio Code settings
-- **`.github/`** - GitHub Actions workflows and templates
-
-## F-Droid Integration (`android/fdroid/` submodule)
-
-The F-Droid integration is handled through a Git submodule:
+Platform-specific code uses interface segregation:
 
 ```text
-android/fdroid/                # F-Droid repository submodule
-├── metadata/                  # App metadata for F-Droid
-├── config/                    # F-Droid server configuration
-├── tools/                     # F-Droid build and maintenance tools
-├── templates/                 # Build templates
-├── srclibs/                   # Source library definitions
-└── config.yml                # Main F-Droid configuration
-```text
+# Example: Linux Setup Services
+linux/features/setup/
+├── linux_setup_service.dart           # Main coordinator
+├── services/
+│   ├── abstraction/                   # Service interfaces
+│   │   ├── i_linux_firewall_service.dart
+│   │   ├── i_linux_desktop_service.dart
+│   │   ├── i_linux_kde_service.dart
+│   │   └── i_linux_update_service.dart
+│   ├── linux_firewall_service.dart    # UFW integration
+│   ├── linux_desktop_service.dart     # Desktop file management
+│   ├── linux_kde_service.dart         # KDE Plasma integration
+│   └── linux_update_service.dart      # Update management
+└── exceptions/
+    └── linux_firewall_rule_exception.dart
+```
 
-This submodule points to a separate GitLab repository (`ahmet-cetinkaya/fdroid-data`) on the `me.ahmetcetinkaya.whph` branch, containing F-Droid-specific metadata and build configurations.
+### UI Component Modularization
 
-## Core Packages and Submodules (`src/lib/corePackages/acore/`)
-
-The project includes the `acore-flutter` package as a Git submodule:
-
-```text
-lib/corePackages/acore/        # acore-flutter submodule
-├── lib/                       # Core package source code
-│   └── src/                   # Organized by functionality
-│       ├── components/        # Reusable UI components
-│       ├── dependency_injection/  # DI container and abstractions
-│       ├── errors/            # Error handling utilities
-│       ├── file/              # File system abstractions
-│       ├── logging/           # Logging utilities
-│       ├── mapper/            # Data mapping utilities
-│       ├── queries/           # Query models and helpers
-│       ├── repository/        # Repository pattern implementations
-│       ├── sounds/            # Sound utilities
-│       ├── storage/           # Storage abstractions
-│       ├── time/              # Date/time utilities
-│       └── utils/             # General utilities
-├── pubspec.yaml              # Package configuration
-└── README.md                 # Package documentation
-```text
-
-This submodule provides reusable Flutter components, utilities, and abstractions used throughout the WHPH application.
-
-## Scripts Directory (`scripts/`)
-
-Contains utility scripts for development and build processes:
+Complex widgets extract logic into controllers and helpers:
 
 ```text
-scripts/
-├── clean.sh                   # Clean build artifacts and caches
-├── create_changelog.sh        # Generate changelog from git history
-├── get_flutter_version.sh     # Get current Flutter version
-├── test_ci_fdroid.sh         # Test F-Droid CI pipeline
-└── version_bump.sh           # Bump version numbers
-```text
+# Example: Task Recurrence Selector
+components/task_recurrence_selector/
+├── task_recurrence_selector.dart      # Main widget
+├── task_recurrence_controller.dart    # State management
+└── helpers/
+    ├── recurrence_date_helper.dart    # Date calculations
+    └── recurrence_ui_helper.dart      # UI utilities
+```
 
-These scripts are integrated with the `pubspec.yaml` scripts section and can be run using the `rps` package.
+### Benefits of This Pattern
 
-## Key Files Explanation
-
-### Application Entry Points
-
-- **`src/lib/main.dart`** - Main application entry point, sets up global error handling, dependency injection, and launches the app
-- **`src/lib/presentation/ui/app.dart`** - Main app widget with routing and theme configuration
-
-### Dependency Injection
-
-- **`src/lib/infrastructure/infrastructure_container.dart`** - Infrastructure layer DI container
-- **`src/lib/presentation/ui/ui_presentation_container.dart`** - Presentation layer DI container
-
-### Platform Integration
-
-- **`linux/main.cc`** - Linux application entry point with window detection
-- **`windows/runner/main.cpp`** - Windows application entry point
-- **`android/app/src/main/`** - Android application configuration
-
-### Build Configuration
-
-- **`pubspec.yaml`** - Defines dependencies, assets, and custom build scripts
-- **`build.yaml`** - Configures code generation (Drift, JSON mapping)
-- **Platform CMakeLists.txt** - Native build configuration for desktop platforms
-
-### Development Tools
-
-- **`.fvmrc`** - Specifies Flutter version (3.32.0) for consistent development
-- **`analysis_options.yaml`** - Dart linting and analysis rules
-- **GitHub Actions workflows** - Automated testing and building for all platforms
+1. **Single Responsibility**: Each module has one clear purpose
+2. **Testability**: Small modules are easier to unit test in isolation
+3. **Maintainability**: Changes to one concern don't affect others
+4. **Discoverability**: Related code is organized together
+5. **Reusability**: Helpers can be reused across features
 
 ## Architecture Overview
 
