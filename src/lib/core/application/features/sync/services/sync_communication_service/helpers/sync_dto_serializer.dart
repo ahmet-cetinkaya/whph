@@ -164,10 +164,7 @@ class SyncDtoSerializer {
 
   /// Adds entity data with yielding to prevent UI blocking
   Future<void> _addEntityDataWithYielding(Map<String, dynamic> result, PaginatedSyncDataDto dto) async {
-    if (dto.appUsagesSyncData != null) {
-      await _yieldToUIThread();
-      result['appUsagesSyncData'] = dto.appUsagesSyncData!.toJson();
-    }
+    await _serializeIfNotNull(result, 'appUsagesSyncData', dto.appUsagesSyncData);
 
     if (dto.habitsSyncData != null) {
       await _yieldToUIThread();
@@ -186,74 +183,26 @@ class SyncDtoSerializer {
       Logger.debug('No Task data to serialize for entityType: ${dto.entityType}');
     }
 
-    if (dto.appUsageTagsSyncData != null) {
-      await _yieldToUIThread();
-      result['appUsageTagsSyncData'] = dto.appUsageTagsSyncData!.toJson();
-    }
+    await _serializeIfNotNull(result, 'appUsageTagsSyncData', dto.appUsageTagsSyncData);
+    await _serializeIfNotNull(result, 'appUsageTimeRecordsSyncData', dto.appUsageTimeRecordsSyncData);
+    await _serializeIfNotNull(result, 'appUsageTagRulesSyncData', dto.appUsageTagRulesSyncData);
+    await _serializeIfNotNull(result, 'appUsageIgnoreRulesSyncData', dto.appUsageIgnoreRulesSyncData);
+    await _serializeIfNotNull(result, 'habitRecordsSyncData', dto.habitRecordsSyncData);
+    await _serializeIfNotNull(result, 'habitTagsSyncData', dto.habitTagsSyncData);
+    await _serializeIfNotNull(result, 'tagsSyncData', dto.tagsSyncData);
+    await _serializeIfNotNull(result, 'tagTagsSyncData', dto.tagTagsSyncData);
+    await _serializeIfNotNull(result, 'taskTagsSyncData', dto.taskTagsSyncData);
+    await _serializeIfNotNull(result, 'taskTimeRecordsSyncData', dto.taskTimeRecordsSyncData);
+    await _serializeIfNotNull(result, 'settingsSyncData', dto.settingsSyncData);
+    await _serializeIfNotNull(result, 'syncDevicesSyncData', dto.syncDevicesSyncData);
+    await _serializeIfNotNull(result, 'notesSyncData', dto.notesSyncData);
+    await _serializeIfNotNull(result, 'noteTagsSyncData', dto.noteTagsSyncData);
+  }
 
-    if (dto.appUsageTimeRecordsSyncData != null) {
+  Future<void> _serializeIfNotNull(Map<String, dynamic> result, String key, dynamic syncData) async {
+    if (syncData != null) {
       await _yieldToUIThread();
-      result['appUsageTimeRecordsSyncData'] = dto.appUsageTimeRecordsSyncData!.toJson();
-    }
-
-    if (dto.appUsageTagRulesSyncData != null) {
-      await _yieldToUIThread();
-      result['appUsageTagRulesSyncData'] = dto.appUsageTagRulesSyncData!.toJson();
-    }
-
-    if (dto.appUsageIgnoreRulesSyncData != null) {
-      await _yieldToUIThread();
-      result['appUsageIgnoreRulesSyncData'] = dto.appUsageIgnoreRulesSyncData!.toJson();
-    }
-
-    if (dto.habitRecordsSyncData != null) {
-      await _yieldToUIThread();
-      result['habitRecordsSyncData'] = dto.habitRecordsSyncData!.toJson();
-    }
-
-    if (dto.habitTagsSyncData != null) {
-      await _yieldToUIThread();
-      result['habitTagsSyncData'] = dto.habitTagsSyncData!.toJson();
-    }
-
-    if (dto.tagsSyncData != null) {
-      await _yieldToUIThread();
-      result['tagsSyncData'] = dto.tagsSyncData!.toJson();
-    }
-
-    if (dto.tagTagsSyncData != null) {
-      await _yieldToUIThread();
-      result['tagTagsSyncData'] = dto.tagTagsSyncData!.toJson();
-    }
-
-    if (dto.taskTagsSyncData != null) {
-      await _yieldToUIThread();
-      result['taskTagsSyncData'] = dto.taskTagsSyncData!.toJson();
-    }
-
-    if (dto.taskTimeRecordsSyncData != null) {
-      await _yieldToUIThread();
-      result['taskTimeRecordsSyncData'] = dto.taskTimeRecordsSyncData!.toJson();
-    }
-
-    if (dto.settingsSyncData != null) {
-      await _yieldToUIThread();
-      result['settingsSyncData'] = dto.settingsSyncData!.toJson();
-    }
-
-    if (dto.syncDevicesSyncData != null) {
-      await _yieldToUIThread();
-      result['syncDevicesSyncData'] = dto.syncDevicesSyncData!.toJson();
-    }
-
-    if (dto.notesSyncData != null) {
-      await _yieldToUIThread();
-      result['notesSyncData'] = dto.notesSyncData!.toJson();
-    }
-
-    if (dto.noteTagsSyncData != null) {
-      await _yieldToUIThread();
-      result['noteTagsSyncData'] = dto.noteTagsSyncData!.toJson();
+      result[key] = syncData.toJson();
     }
   }
 
@@ -313,7 +262,11 @@ class SyncDtoSerializer {
         'isLastPage': dto.tasksSyncData!.isLastPage,
         'entityType': dto.tasksSyncData!.entityType
       };
-      Logger.warning('Using fallback empty Task data due to serialization error');
+
+      // Add metric or more aggressive logging here
+      Logger.warning('Using fallback empty Task data due to serialization error. '
+          'This may result in missing tasks on the target device. '
+          'Check previous "CRITICAL ERROR" log for root cause.');
     }
   }
 

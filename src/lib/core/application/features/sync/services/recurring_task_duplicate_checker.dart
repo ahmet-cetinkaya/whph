@@ -4,14 +4,17 @@ import 'package:whph/core/application/shared/services/abstraction/i_repository.d
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
+import 'package:whph/core/application/features/sync/services/abstraction/i_recurring_task_duplicate_checker.dart';
+
 /// Utility for checking and handling recurring task duplicates during sync.
 ///
 /// Consolidates the duplicate detection logic used in both typed and dynamic
 /// processing paths.
-class RecurringTaskDuplicateChecker {
+class RecurringTaskDuplicateChecker implements IRecurringTaskDuplicateChecker {
   const RecurringTaskDuplicateChecker();
 
   /// Check for recurring task duplicates (typed version)
+  @override
   Future<T?> checkForDuplicate<T extends BaseEntity<String>>(
     T entity,
     IRepository<T, String> repository,
@@ -31,6 +34,7 @@ class RecurringTaskDuplicateChecker {
   }
 
   /// Check for recurring task duplicates (dynamic version)
+  @override
   Future<dynamic> checkForDuplicateDynamic(
     BaseEntity<String> entity,
     IRepository repository,

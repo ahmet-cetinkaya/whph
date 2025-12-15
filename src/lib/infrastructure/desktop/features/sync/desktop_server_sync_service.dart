@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/network_utils.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
@@ -54,9 +55,10 @@ class DesktopServerSyncService extends SyncService {
   }
 
   void _handleServerConnections() async {
-    if (_server == null) return;
+    final server = _server;
+    if (server == null) return;
 
-    await for (HttpRequest req in _server!) {
+    await for (HttpRequest req in server) {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
           final clientIP = req.connectionInfo?.remoteAddress.address ?? '127.0.0.1';
@@ -66,7 +68,7 @@ class DesktopServerSyncService extends SyncService {
             continue;
           }
 
-          if (!WebSocketConnectionManager.isPrivateIP(clientIP)) {
+          if (!NetworkUtils.isPrivateIP(clientIP)) {
             _rejectConnection(req, HttpStatus.forbidden, 'Only private network connections allowed');
             continue;
           }
@@ -368,7 +370,12 @@ class DesktopServerSyncService extends SyncService {
 
       final command =
           PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(data as Map<String, dynamic>));
-      final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+
+      final response = await mediator
+          .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command)
+          .timeout(const Duration(seconds: 60), onTimeout: () {
+        throw TimeoutException('Sync operation timed out');
+      });
 
       _sendMessage(
           socket,
@@ -437,7 +444,9 @@ class DesktopServerSyncService extends SyncService {
       if (serverAddress != null && serverAddress.address != '0.0.0.0') {
         return serverAddress.address;
       }
-    } catch (_) {}
+    } catch (e) {
+      Logger.debug('Failed to get server local IP: $e');
+    }
     return '127.0.0.1';
   }
 
