@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 
@@ -18,6 +19,7 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
   bool get isLoadingMore => _isLoadingMore;
 
   static const double _infinityScrollThresholdRatio = 0.8;
+  static const double _viewportFillThreshold = 10.0;
 
   @override
   void initState() {
@@ -71,12 +73,19 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
 
     if (!scrollController.hasClients) return;
 
-    final maxScroll = scrollController.position.maxScrollExtent;
-    final currentScroll = scrollController.position.pixels;
-    final threshold = maxScroll * _infinityScrollThresholdRatio;
+    // In Flutter 3.32.0+, position is non-nullable when hasClients is true
+    // but we wrap it in try-catch for additional safety
+    try {
+      final maxScroll = scrollController.position.maxScrollExtent;
+      final currentScroll = scrollController.position.pixels;
+      final threshold = maxScroll * _infinityScrollThresholdRatio;
 
-    if (currentScroll >= threshold) {
-      loadMoreInfinityScroll();
+      if (currentScroll >= threshold) {
+        loadMoreInfinityScroll();
+      }
+    } catch (e) {
+      // Handle any potential errors accessing position
+      debugPrint('Error accessing scroll position: $e');
     }
   }
 
@@ -90,21 +99,35 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
   }
 
   Future<void> loadMoreInfinityScroll() async {
-    // Double check to prevent race condition
+    // Synchronized access to prevent race condition
     if (_isLoadingMore || !hasNextPage) return;
 
+    // Use a completer to ensure only one operation at a time
+    if (_loadCompleter != null) {
+      await _loadCompleter!.future;
+      return;
+    }
+
+    _loadCompleter = Completer<void>();
     setState(() => _isLoadingMore = true);
+
     try {
       await onLoadMore();
+      _loadCompleter!.complete();
     } catch (e) {
       // Robust error handling: Log error or allow retry
       debugPrint('Error in infinity scroll load: $e');
+      _loadCompleter!.completeError(e);
     } finally {
+      _loadCompleter = null;
       if (mounted) {
         setState(() => _isLoadingMore = false);
       }
     }
   }
+
+  // Completer for synchronization
+  Completer<void>? _loadCompleter;
 
   /// Checks if viewport is full and loads more if needed.
   /// Should be called after data load.
@@ -112,12 +135,38 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
     if (!mounted || _isLoadingMore || !hasNextPage) return;
     if (!scrollController.hasClients) return;
 
-    // Use extentAfter/maxScrollExtent to determine if content fills the viewport.
-    // If maxScrollExtent is very small, it means the content fits in the viewport
-    // and we might need to load more to trigger the scroll capability.
-    // '10' is a small epsilon to account for potential minor layout variations.
-    if (scrollController.position.maxScrollExtent <= 10) {
-      loadMoreInfinityScroll();
+    // Prevent duplicate calls during the same frame cycle
+    if (_isCheckingViewport) return;
+    _isCheckingViewport = true;
+
+    // Schedule the check for the next frame to avoid race conditions
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isCheckingViewport = false;
+    });
+
+    // In Flutter 3.32.0+, position is non-nullable when hasClients is true
+    // but we wrap it in try-catch for additional safety
+    try {
+      final maxScrollExtent = scrollController.position.maxScrollExtent;
+
+      // Use extentAfter/maxScrollExtent to determine if content fills the viewport.
+      // If maxScrollExtent is very small, it means the content fits in the viewport
+      // and we might need to load more to trigger the scroll capability.
+      // The threshold is a small epsilon to account for potential minor layout variations.
+      if (maxScrollExtent <= _viewportFillThreshold) {
+        // Use Future.microtask to defer the call and avoid immediate recursion
+        Future.microtask(() {
+          if (mounted && !_isLoadingMore && hasNextPage) {
+            loadMoreInfinityScroll();
+          }
+        });
+      }
+    } catch (e) {
+      // Handle any potential errors accessing position
+      debugPrint('Error accessing scroll position in checkAndFillViewport: $e');
     }
   }
+
+  // Flag to prevent duplicate viewport checks
+  bool _isCheckingViewport = false;
 }

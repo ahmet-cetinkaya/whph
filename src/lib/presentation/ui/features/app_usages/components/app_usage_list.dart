@@ -92,7 +92,6 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
     super.initState();
     _currentFilters = _captureCurrentFilters();
     _setupEventListeners();
-    _setupEventListeners();
     _getList(isRefresh: true);
   }
 
