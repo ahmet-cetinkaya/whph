@@ -18,8 +18,9 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class TaskList extends StatefulWidget {
+class TaskList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
 
   // Filter props to match query parameters
@@ -56,6 +57,7 @@ class TaskList extends StatefulWidget {
   final Key? rebuildKey;
   final SortConfig<TaskSortFields>? sortConfig;
   final void Function()? onReorderComplete;
+  @override
   final PaginationMode paginationMode;
 
   const TaskList({
@@ -99,7 +101,7 @@ class TaskList extends StatefulWidget {
   State<TaskList> createState() => TaskListState();
 }
 
-class TaskListState extends State<TaskList> {
+class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
@@ -111,8 +113,11 @@ class TaskListState extends State<TaskList> {
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
 
-  // Infinity scroll state
-  bool _isLoadingMore = false;
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _tasks?.hasNext ?? false;
 
   @override
   void initState() {
@@ -120,45 +125,14 @@ class TaskListState extends State<TaskList> {
     _dragStateNotifier = DragStateNotifier();
     _getTasksList();
     _setupEventListeners();
-    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _dragStateNotifier.dispose();
     _removeEventListeners();
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _setupScrollListener() {
-    if (widget.paginationMode == PaginationMode.infinityScroll) {
-      _scrollController.addListener(_onScroll);
-    }
-  }
-
-  void _onScroll() {
-    if (widget.paginationMode != PaginationMode.infinityScroll) return;
-    if (_isLoadingMore || _tasks == null || !_tasks!.hasNext) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final threshold = maxScroll * 0.8; // Load more when 80% scrolled
-
-    if (currentScroll >= threshold) {
-      _loadMoreInfinityScroll();
-    }
-  }
-
-  Future<void> _loadMoreInfinityScroll() async {
-    if (_isLoadingMore || _tasks == null || !_tasks!.hasNext) return;
-
-    setState(() => _isLoadingMore = true);
-    await _getTasksList(pageIndex: _tasks!.pageIndex + 1);
-    if (mounted) {
-      setState(() => _isLoadingMore = false);
-    }
   }
 
   void _setupEventListeners() {
@@ -326,23 +300,11 @@ class TaskListState extends State<TaskList> {
         // For infinity scroll: check if viewport needs more content
         if (widget.paginationMode == PaginationMode.infinityScroll && _tasks!.hasNext) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _checkAndFillViewport();
+            checkAndFillViewport();
           });
         }
       },
     );
-  }
-
-  /// Checks if viewport has room for more content and auto-fetches if needed.
-  void _checkAndFillViewport() {
-    if (!mounted || _isLoadingMore || _tasks == null || !_tasks!.hasNext) return;
-    if (!_scrollController.hasClients) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    // If there's no scroll needed (maxScroll is 0 or very small), fetch more
-    if (maxScroll <= 0) {
-      _loadMoreInfinityScroll();
-    }
   }
 
   void _onTaskCompleted() {
@@ -470,7 +432,8 @@ class TaskListState extends State<TaskList> {
     }
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_tasks == null || !_tasks!.hasNext) return;
 
     _saveScrollPosition();
@@ -601,10 +564,10 @@ class TaskListState extends State<TaskList> {
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               )),
             ),
-          if (_tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+          if (_tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
             Padding(
               key: const ValueKey('loading_indicator'),
               padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
@@ -616,7 +579,7 @@ class TaskListState extends State<TaskList> {
       final taskCards = _buildTaskCards();
       final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
       final showInfinityLoading =
-          _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore;
+          _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
       final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
       return ListView.builder(
@@ -636,7 +599,7 @@ class TaskListState extends State<TaskList> {
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               )),
             );
           } else if (showInfinityLoading) {

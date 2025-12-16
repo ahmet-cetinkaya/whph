@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_tra
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
 /// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
 class FilterContext {
@@ -38,7 +39,7 @@ class FilterContext {
       'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices, showComparison: $showComparison)';
 }
 
-class AppUsageList extends StatefulWidget {
+class AppUsageList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
   final List<String>? filterByTags;
   final bool showNoTagsFilter;
@@ -48,6 +49,7 @@ class AppUsageList extends StatefulWidget {
   final DateTime? filterEndDate;
   final List<String>? filterByDevices;
   final bool showComparison;
+  @override
   final PaginationMode paginationMode;
 
   const AppUsageList({
@@ -68,7 +70,7 @@ class AppUsageList extends StatefulWidget {
   AppUsageListState createState() => AppUsageListState();
 }
 
-class AppUsageListState extends State<AppUsageList> {
+class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsageList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
@@ -79,54 +81,27 @@ class AppUsageListState extends State<AppUsageList> {
   double? _savedScrollPosition;
   bool _isInitialLoading = true;
 
-  // Infinity scroll state
-  bool _isLoadingMore = false;
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _appUsageList?.hasNext ?? false;
 
   @override
   void initState() {
     super.initState();
     _currentFilters = _captureCurrentFilters();
     _setupEventListeners();
+    _setupEventListeners();
     _getList(isRefresh: true);
-    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _removeEventListeners();
     _refreshDebounce?.cancel();
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _setupScrollListener() {
-    if (widget.paginationMode == PaginationMode.infinityScroll) {
-      _scrollController.addListener(_onScroll);
-    }
-  }
-
-  void _onScroll() {
-    if (widget.paginationMode != PaginationMode.infinityScroll) return;
-    if (_isLoadingMore || _appUsageList == null || !_appUsageList!.hasNext) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final threshold = maxScroll * 0.8;
-
-    if (currentScroll >= threshold) {
-      _loadMoreInfinityScroll();
-    }
-  }
-
-  Future<void> _loadMoreInfinityScroll() async {
-    if (_isLoadingMore || _appUsageList == null || !_appUsageList!.hasNext) return;
-
-    setState(() => _isLoadingMore = true);
-    await _getList(pageIndex: _appUsageList!.pageIndex + 1);
-    if (mounted) {
-      setState(() => _isLoadingMore = false);
-    }
   }
 
   @override
@@ -253,22 +228,12 @@ class AppUsageListState extends State<AppUsageList> {
           // For infinity scroll: check if viewport needs more content
           if (widget.paginationMode == PaginationMode.infinityScroll && (_appUsageList?.hasNext ?? false)) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              _checkAndFillViewport();
+              checkAndFillViewport();
             });
           }
         }
       },
     );
-  }
-
-  void _checkAndFillViewport() {
-    if (!mounted || _isLoadingMore || _appUsageList == null || !_appUsageList!.hasNext) return;
-    if (!_scrollController.hasClients) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    if (maxScroll <= 0) {
-      _loadMoreInfinityScroll();
-    }
   }
 
   void _setupEventListeners() {
@@ -288,7 +253,8 @@ class AppUsageListState extends State<AppUsageList> {
     refresh();
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_appUsageList?.hasNext == false) return;
 
     _saveScrollPosition();
@@ -322,7 +288,7 @@ class AppUsageListState extends State<AppUsageList> {
         _appUsageList!.items.length < _appUsageList!.totalItemCount &&
         widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
-        _appUsageList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore;
+        _appUsageList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
     return ListView.separated(
@@ -336,7 +302,7 @@ class AppUsageListState extends State<AppUsageList> {
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
               child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               ),
             ),
           );

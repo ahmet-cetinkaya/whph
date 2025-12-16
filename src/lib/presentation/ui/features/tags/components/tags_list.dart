@@ -15,8 +15,9 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class TagsList extends StatefulWidget {
+class TagsList extends StatefulWidget implements IPaginatedWidget {
   final List<String>? filterByTags;
   final VoidCallback? onTagAdded;
   final void Function(TagListItem tag)? onClickTag;
@@ -25,6 +26,7 @@ class TagsList extends StatefulWidget {
   final SortConfig<TagSortFields>? sortConfig;
   final String? search;
   final int pageSize;
+  @override
   final PaginationMode paginationMode;
 
   const TagsList({
@@ -44,7 +46,7 @@ class TagsList extends StatefulWidget {
   State<TagsList> createState() => TagsListState();
 }
 
-class TagsListState extends State<TagsList> {
+class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tagsService = container.resolve<TagsService>();
@@ -53,8 +55,11 @@ class TagsListState extends State<TagsList> {
   GetListTagsQueryResponse? _tags;
   double? _savedScrollPosition;
 
-  // Infinity scroll state
-  bool _isLoadingMore = false;
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _tags?.hasNext ?? false;
 
   @override
   void initState() {
@@ -62,44 +67,13 @@ class TagsListState extends State<TagsList> {
 
     _getTags();
     _setupEventListeners();
-    _setupScrollListener();
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _removeEventListeners();
     super.dispose();
-  }
-
-  void _setupScrollListener() {
-    if (widget.paginationMode == PaginationMode.infinityScroll) {
-      _scrollController.addListener(_onScroll);
-    }
-  }
-
-  void _onScroll() {
-    if (widget.paginationMode != PaginationMode.infinityScroll) return;
-    if (_isLoadingMore || _tags == null || !_tags!.hasNext) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final threshold = maxScroll * 0.8;
-
-    if (currentScroll >= threshold) {
-      _loadMoreInfinityScroll();
-    }
-  }
-
-  Future<void> _loadMoreInfinityScroll() async {
-    if (_isLoadingMore || _tags == null || !_tags!.hasNext) return;
-
-    setState(() => _isLoadingMore = true);
-    await _getTags(pageIndex: _tags!.pageIndex + 1);
-    if (mounted) {
-      setState(() => _isLoadingMore = false);
-    }
   }
 
   @override
@@ -215,21 +189,11 @@ class TagsListState extends State<TagsList> {
         // For infinity scroll: check if viewport needs more content
         if (widget.paginationMode == PaginationMode.infinityScroll && _tags!.hasNext) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _checkAndFillViewport();
+            checkAndFillViewport();
           });
         }
       },
     );
-  }
-
-  void _checkAndFillViewport() {
-    if (!mounted || _isLoadingMore || _tags == null || !_tags!.hasNext) return;
-    if (!_scrollController.hasClients) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    if (maxScroll <= 0) {
-      _loadMoreInfinityScroll();
-    }
   }
 
   @override
@@ -270,9 +234,9 @@ class TagsListState extends State<TagsList> {
           if (_tags!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-              child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+              child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
             ),
-          if (_tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+          if (_tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
               child: Center(child: CircularProgressIndicator()),
@@ -282,7 +246,8 @@ class TagsListState extends State<TagsList> {
     );
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_tags == null || !_tags!.hasNext) return;
 
     _saveScrollPosition();

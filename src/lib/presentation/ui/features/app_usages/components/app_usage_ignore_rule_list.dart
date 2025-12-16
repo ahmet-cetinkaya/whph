@@ -16,10 +16,12 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class AppUsageIgnoreRuleList extends StatefulWidget {
+class AppUsageIgnoreRuleList extends StatefulWidget implements IPaginatedWidget {
   final VoidCallback? onRuleDeleted;
   final int pageSize;
+  @override
   final PaginationMode paginationMode;
 
   const AppUsageIgnoreRuleList({
@@ -33,7 +35,7 @@ class AppUsageIgnoreRuleList extends StatefulWidget {
   State<AppUsageIgnoreRuleList> createState() => AppUsageIgnoreRuleListState();
 }
 
-class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
+class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> with PaginationMixin<AppUsageIgnoreRuleList> {
   final Mediator _mediator = container.resolve<Mediator>();
   final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
@@ -42,51 +44,25 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   GetListAppUsageIgnoreRulesQueryResponse? _ruleList;
   bool _isLoading = false;
   double _savedScrollPosition = 0.0;
-  bool _isLoadingMore = false;
+
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _ruleList?.hasNext ?? false;
 
   @override
   void initState() {
     super.initState();
     _setupEventListeners();
     _getList();
-    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _removeEventListeners();
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _setupScrollListener() {
-    if (widget.paginationMode == PaginationMode.infinityScroll) {
-      _scrollController.addListener(_onScroll);
-    }
-  }
-
-  void _onScroll() {
-    if (widget.paginationMode != PaginationMode.infinityScroll) return;
-    if (_isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final threshold = maxScroll * 0.8;
-
-    if (currentScroll >= threshold) {
-      _loadMoreInfinityScroll();
-    }
-  }
-
-  Future<void> _loadMoreInfinityScroll() async {
-    if (_isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
-
-    setState(() => _isLoadingMore = true);
-    await _getList(pageIndex: _ruleList!.pageIndex + 1);
-    if (mounted) {
-      setState(() => _isLoadingMore = false);
-    }
   }
 
   void _setupEventListeners() {
@@ -155,7 +131,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
           // For infinity scroll: check if viewport needs more content
           if (widget.paginationMode == PaginationMode.infinityScroll && (_ruleList?.hasNext ?? false)) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              _checkAndFillViewport();
+              checkAndFillViewport();
             });
           }
         }
@@ -176,17 +152,8 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     _backLastScrollPosition();
   }
 
-  void _checkAndFillViewport() {
-    if (!mounted || _isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
-    if (!_scrollController.hasClients) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    if (maxScroll <= 0) {
-      _loadMoreInfinityScroll();
-    }
-  }
-
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_ruleList?.hasNext == false) return;
 
     _saveScrollPosition();
@@ -330,11 +297,11 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
               child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               ),
             ),
           ),
-        if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+        if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
           const Padding(
             padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
             child: Center(child: CircularProgressIndicator()),

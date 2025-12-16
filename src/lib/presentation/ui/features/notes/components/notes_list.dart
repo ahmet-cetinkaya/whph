@@ -17,8 +17,9 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class NotesList extends StatefulWidget {
+class NotesList extends StatefulWidget implements IPaginatedWidget {
   final String? search;
   final List<String>? filterByTags;
   final bool filterNoTags;
@@ -27,6 +28,7 @@ class NotesList extends StatefulWidget {
   final void Function(int count)? onList;
   final SortConfig<NoteSortFields>? sortConfig;
   final int pageSize;
+  @override
   final PaginationMode paginationMode;
 
   const NotesList({
@@ -46,7 +48,7 @@ class NotesList extends StatefulWidget {
   State<NotesList> createState() => NotesListState();
 }
 
-class NotesListState extends State<NotesList> {
+class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
   final _notesService = container.resolve<NotesService>();
   final _translationService = container.resolve<ITranslationService>();
   final _mediator = container.resolve<Mediator>();
@@ -57,8 +59,11 @@ class NotesListState extends State<NotesList> {
   late FilterContext _currentFilters;
   double? _savedScrollPosition;
 
-  // Infinity scroll state
-  bool _isLoadingMore = false;
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _noteList?.hasNext ?? false;
 
   @override
   void initState() {
@@ -66,44 +71,13 @@ class NotesListState extends State<NotesList> {
     _currentFilters = _captureCurrentFilters(); // Initialize _currentFilters first
     _getNotes();
     _setupEventListeners();
-    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _removeEventListeners();
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _setupScrollListener() {
-    if (widget.paginationMode == PaginationMode.infinityScroll) {
-      _scrollController.addListener(_onScroll);
-    }
-  }
-
-  void _onScroll() {
-    if (widget.paginationMode != PaginationMode.infinityScroll) return;
-    if (_isLoadingMore || _noteList == null || !_noteList!.hasNext) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final threshold = maxScroll * 0.8;
-
-    if (currentScroll >= threshold) {
-      _loadMoreInfinityScroll();
-    }
-  }
-
-  Future<void> _loadMoreInfinityScroll() async {
-    if (_isLoadingMore || _noteList == null || !_noteList!.hasNext) return;
-
-    setState(() => _isLoadingMore = true);
-    await _getNotes(pageIndex: _noteList!.pageIndex + 1);
-    if (mounted) {
-      setState(() => _isLoadingMore = false);
-    }
   }
 
   @override
@@ -245,21 +219,11 @@ class NotesListState extends State<NotesList> {
         // For infinity scroll: check if viewport needs more content
         if (widget.paginationMode == PaginationMode.infinityScroll && _noteList!.hasNext) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _checkAndFillViewport();
+            checkAndFillViewport();
           });
         }
       },
     );
-  }
-
-  void _checkAndFillViewport() {
-    if (!mounted || _isLoadingMore || _noteList == null || !_noteList!.hasNext) return;
-    if (!_scrollController.hasClients) return;
-
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    if (maxScroll <= 0) {
-      _loadMoreInfinityScroll();
-    }
   }
 
   @override
@@ -282,7 +246,7 @@ class NotesListState extends State<NotesList> {
 
     final showLoadMore = _noteList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
-        _noteList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore;
+        _noteList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
     return ListView.separated(
@@ -294,7 +258,7 @@ class NotesListState extends State<NotesList> {
         if (index == _noteList!.items.length && showLoadMore) {
           return Padding(
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-            child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+            child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
           );
         } else if (index == _noteList!.items.length && showInfinityLoading) {
           return const Padding(
@@ -318,7 +282,8 @@ class NotesListState extends State<NotesList> {
     );
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_noteList == null || !_noteList!.hasNext) return;
 
     _saveScrollPosition();
