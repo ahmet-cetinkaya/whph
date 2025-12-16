@@ -134,7 +134,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
       child: AppUsageDetailsPage(
         appUsageId: id,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 
@@ -259,13 +259,13 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     return ResponsiveScaffoldLayout(
       title: _translationService.translate(AppUsageTranslationKeys.viewTitle),
       appBarActions: [
-        if (Platform.isAndroid && kDebugMode)
-          IconButton(
-            icon: const Icon(Icons.bug_report),
-            onPressed: _showAndroidDebugScreen,
-            color: _themeService.primaryColor,
-            tooltip: 'Debug Usage Statistics',
-          ),
+        // if (Platform.isAndroid && kDebugMode)
+        //   IconButton(
+        //     icon: const Icon(Icons.bug_report),
+        //     onPressed: _showAndroidDebugScreen,
+        //     color: _themeService.primaryColor,
+        //     tooltip: 'Debug Usage Statistics',
+        //   ),
         IconButton(
           key: _settingsButtonKey,
           icon: const Icon(Icons.settings),

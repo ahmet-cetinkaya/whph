@@ -8,12 +8,16 @@ class HourlyUsageChart extends StatelessWidget {
   final List<ChartHourlyData> hourlyData;
   final bool showComparison;
   final String Function(String) translate;
+  final String? currentDateRange;
+  final String? previousDateRange;
 
   const HourlyUsageChart({
     super.key,
     required this.hourlyData,
     required this.showComparison,
     required this.translate,
+    this.currentDateRange,
+    this.previousDateRange,
   });
 
   @override
@@ -36,6 +40,10 @@ class HourlyUsageChart extends StatelessWidget {
             _buildHeader(context),
             const SizedBox(height: AppTheme.sizeXLarge),
             _buildChart(context, maxY, locale, mainSpots, compareSpots),
+            if (showComparison) ...[
+              const SizedBox(height: AppTheme.sizeMedium),
+              _buildComparisonLegend(context),
+            ],
           ],
         ),
       ),
@@ -175,6 +183,38 @@ class HourlyUsageChart extends StatelessWidget {
       isStrokeCapRound: true,
       dotData: FlDotData(show: false),
       belowBarData: BarAreaData(show: true, color: color.withValues(alpha: 0.2)),
+    );
+  }
+
+  Widget _buildComparisonLegend(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final items = [
+          if (currentDateRange != null)
+            _buildLegendItem(context, Theme.of(context).colorScheme.primary, currentDateRange!),
+          if (previousDateRange != null)
+            _buildLegendItem(context, Theme.of(context).colorScheme.primary.withValues(alpha: 0.5), previousDateRange!),
+        ];
+        return constraints.maxWidth < 400
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [items[0], const SizedBox(height: AppTheme.sizeSmall), items[1]])
+            : Wrap(spacing: AppTheme.sizeLarge, runSpacing: AppTheme.sizeSmall, children: items);
+      },
+    );
+  }
+
+  Widget _buildLegendItem(BuildContext context, Color color, String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppTheme.size2XSmall))),
+        const SizedBox(width: AppTheme.sizeSmall),
+        Flexible(child: Text(text, style: Theme.of(context).textTheme.bodySmall, overflow: TextOverflow.ellipsis)),
+      ],
     );
   }
 }

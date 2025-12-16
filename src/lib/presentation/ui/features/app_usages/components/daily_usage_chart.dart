@@ -8,12 +8,16 @@ class DailyUsageChart extends StatelessWidget {
   final List<ChartDailyData> dailyData;
   final bool showComparison;
   final String Function(String) translate;
+  final String? currentDateRange;
+  final String? previousDateRange;
 
   const DailyUsageChart({
     super.key,
     required this.dailyData,
     required this.showComparison,
     required this.translate,
+    this.currentDateRange,
+    this.previousDateRange,
   });
 
   @override
@@ -34,6 +38,10 @@ class DailyUsageChart extends StatelessWidget {
             _buildHeader(context),
             const SizedBox(height: AppTheme.sizeXLarge),
             _buildChart(context, maxY, locale),
+            if (showComparison) ...[
+              const SizedBox(height: AppTheme.sizeMedium),
+              _buildComparisonLegend(context),
+            ],
           ],
         ),
       ),
@@ -162,6 +170,38 @@ class DailyUsageChart extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
               width: 15,
               borderRadius: BorderRadius.circular(2)),
+      ],
+    );
+  }
+
+  Widget _buildComparisonLegend(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final items = [
+          if (currentDateRange != null)
+            _buildLegendItem(context, Theme.of(context).colorScheme.primary, currentDateRange!),
+          if (previousDateRange != null)
+            _buildLegendItem(context, Theme.of(context).colorScheme.primary.withValues(alpha: 0.5), previousDateRange!),
+        ];
+        return constraints.maxWidth < 400
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [items[0], const SizedBox(height: AppTheme.sizeSmall), items[1]])
+            : Wrap(spacing: AppTheme.sizeLarge, runSpacing: AppTheme.sizeSmall, children: items);
+      },
+    );
+  }
+
+  Widget _buildLegendItem(BuildContext context, Color color, String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppTheme.size2XSmall))),
+        const SizedBox(width: AppTheme.sizeSmall),
+        Flexible(child: Text(text, style: Theme.of(context).textTheme.bodySmall, overflow: TextOverflow.ellipsis)),
       ],
     );
   }
