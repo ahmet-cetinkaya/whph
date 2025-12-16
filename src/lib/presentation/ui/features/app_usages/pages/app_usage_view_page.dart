@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_list_options.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_details_page.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_rules_page.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/android_app_usage_debug_page.dart';
@@ -327,7 +328,8 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                       filterStartDate: _getEffectiveStartDate(),
                       filterEndDate: _getEffectiveEndDate(),
                       filterByDevices: _filterState.devices,
-                      showComparison: _filterState.showComparison),
+                      showComparison: _filterState.showComparison,
+                      paginationMode: PaginationMode.infinityScroll),
                 ),
             ],
           ],

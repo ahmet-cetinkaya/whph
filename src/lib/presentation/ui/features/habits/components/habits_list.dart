@@ -20,8 +20,10 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class HabitsList extends StatefulWidget {
+class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
   final HabitListStyle style;
   final int dateRange;
@@ -41,6 +43,8 @@ class HabitsList extends StatefulWidget {
   final void Function()? onHabitCompleted;
   final void Function(int count)? onListing;
   final void Function()? onReorderComplete;
+  @override
+  final PaginationMode paginationMode;
 
   const HabitsList({
     super.key,
@@ -62,13 +66,14 @@ class HabitsList extends StatefulWidget {
     this.onHabitCompleted,
     this.onListing,
     this.onReorderComplete,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
   State<HabitsList> createState() => HabitsListState();
 }
 
-class HabitsListState extends State<HabitsList> {
+class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
@@ -82,6 +87,12 @@ class HabitsListState extends State<HabitsList> {
 
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
+
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _habitList?.hasNext ?? false;
 
   @override
   void initState() {
@@ -255,6 +266,13 @@ class HabitsListState extends State<HabitsList> {
           // Notify about listing count
           widget.onListing?.call(_habitList?.items.length ?? 0);
         });
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _habitList!.hasNext) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            checkAndFillViewport();
+          });
+        }
       },
     );
   }
@@ -333,13 +351,19 @@ class HabitsListState extends State<HabitsList> {
               ),
             );
           }),
-          if (_habitList!.hasNext)
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               key: const ValueKey('load_more_button_mini'),
               padding: const EdgeInsets.all(AppTheme.sizeXSmall),
               child: Center(
-                child: LoadMoreButton(onPressed: _onLoadMore),
+                child: LoadMoreButton(onPressed: onLoadMore),
               ),
+            ),
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
+            const Padding(
+              key: ValueKey('loading_indicator_mini'),
+              padding: EdgeInsets.all(AppTheme.sizeXSmall),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       );
@@ -360,13 +384,24 @@ class HabitsListState extends State<HabitsList> {
         itemCount: totalItemCount,
         itemBuilder: (context, index) {
           // Load more button at the end
-          if (index == _habitList!.items.length) {
+          if (index == _habitList!.items.length && widget.paginationMode == PaginationMode.loadMore) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppTheme.sizeXSmall),
-                child: LoadMoreButton(onPressed: _onLoadMore),
+                child: LoadMoreButton(onPressed: onLoadMore),
               ),
             );
+          } else if (index == _habitList!.items.length &&
+              widget.paginationMode == PaginationMode.infinityScroll &&
+              isLoadingMore) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.sizeXSmall),
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (index >= _habitList!.items.length) {
+            return const SizedBox.shrink();
           }
 
           final habit = _habitList!.items[index];
@@ -427,38 +462,54 @@ class HabitsListState extends State<HabitsList> {
         onReorder: _onReorder,
         children: [
           ..._buildHabitCards(),
-          if (_habitList!.hasNext)
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               key: const ValueKey('load_more_button'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               )),
+            ),
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
+            const Padding(
+              key: ValueKey('loading_indicator'),
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       );
     } else {
       final habitCards = _buildHabitCards();
+      final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+      final showInfinityLoading =
+          _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+      final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
+
       return ListView.builder(
         key: _pageStorageKey,
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        itemCount: habitCards.length + (_habitList!.hasNext ? 1 : 0),
+        itemCount: habitCards.length + extraItemCount,
         itemBuilder: (context, index) {
           if (index < habitCards.length) {
             return habitCards[index];
-          } else {
-            // Load more button
+          } else if (showLoadMore) {
             return Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               )),
             );
+          } else if (showInfinityLoading) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
+          return const SizedBox.shrink();
         },
       );
     }
@@ -608,7 +659,8 @@ class HabitsListState extends State<HabitsList> {
     }
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_habitList == null || !_habitList!.hasNext) return;
 
     _saveScrollPosition();

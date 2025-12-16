@@ -11,6 +11,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 
 class AppUsageRulesPage extends StatefulWidget {
   static const String route = '/app-usages/rules';
@@ -153,6 +154,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                           title: _translationService.translate(AppUsageTranslationKeys.existingRules),
                           child: AppUsageTagRuleList(
                             mediator: _mediator,
+                            paginationMode: PaginationMode.infinityScroll,
                           ),
                         ),
                       ],
@@ -173,7 +175,9 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
                         _buildListSection(
                           icon: Icons.list_alt,
                           title: _translationService.translate(AppUsageTranslationKeys.existingRules),
-                          child: AppUsageIgnoreRuleList(),
+                          child: AppUsageIgnoreRuleList(
+                            paginationMode: PaginationMode.infinityScroll,
+                          ),
                         ),
                       ],
                     ),

@@ -15,12 +15,16 @@ import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_tra
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class AppUsageTagRuleList extends StatefulWidget {
+class AppUsageTagRuleList extends StatefulWidget implements IPaginatedWidget {
   final Mediator mediator;
   final Function(String id)? onRuleSelected;
   final List<String>? filterByTags;
   final int pageSize;
+  @override
+  final PaginationMode paginationMode;
 
   const AppUsageTagRuleList({
     super.key,
@@ -28,19 +32,26 @@ class AppUsageTagRuleList extends StatefulWidget {
     this.onRuleSelected,
     this.filterByTags,
     this.pageSize = 10,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
   State<AppUsageTagRuleList> createState() => AppUsageTagRuleListState();
 }
 
-class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
+class AppUsageTagRuleListState extends State<AppUsageTagRuleList> with PaginationMixin<AppUsageTagRuleList> {
   final ScrollController _scrollController = ScrollController();
   GetListAppUsageTagRulesQueryResponse? _ruleList;
   bool _isLoading = false;
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
   double? _savedScrollPosition;
+
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _ruleList?.hasNext ?? false;
 
   @override
   void initState() {
@@ -136,6 +147,13 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
               _ruleList!.pageIndex = result.pageIndex;
             }
           });
+
+          // For infinity scroll: check if viewport needs more content
+          if (widget.paginationMode == PaginationMode.infinityScroll && (_ruleList?.hasNext ?? false)) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              checkAndFillViewport();
+            });
+          }
         }
       },
     );
@@ -248,17 +266,23 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
               );
             },
           ),
-          if (_ruleList!.hasNext)
+          if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-              child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+              child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
+            ),
+          if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
     );
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_ruleList == null || !_ruleList!.hasNext) return;
 
     _saveScrollPosition();

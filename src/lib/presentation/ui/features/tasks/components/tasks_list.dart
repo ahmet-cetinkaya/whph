@@ -16,9 +16,11 @@ import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class TaskList extends StatefulWidget {
+class TaskList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
 
   // Filter props to match query parameters
@@ -55,6 +57,8 @@ class TaskList extends StatefulWidget {
   final Key? rebuildKey;
   final SortConfig<TaskSortFields>? sortConfig;
   final void Function()? onReorderComplete;
+  @override
+  final PaginationMode paginationMode;
 
   const TaskList({
     super.key,
@@ -90,13 +94,14 @@ class TaskList extends StatefulWidget {
     this.rebuildKey,
     this.sortConfig,
     this.onReorderComplete,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
   State<TaskList> createState() => TaskListState();
 }
 
-class TaskListState extends State<TaskList> {
+class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
@@ -107,6 +112,12 @@ class TaskListState extends State<TaskList> {
 
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
+
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _tasks?.hasNext ?? false;
 
   @override
   void initState() {
@@ -120,6 +131,7 @@ class TaskListState extends State<TaskList> {
   void dispose() {
     _dragStateNotifier.dispose();
     _removeEventListeners();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -284,6 +296,13 @@ class TaskListState extends State<TaskList> {
             _normalizeTaskOrders();
           });
         }
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _tasks!.hasNext) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            checkAndFillViewport();
+          });
+        }
       },
     );
   }
@@ -413,7 +432,8 @@ class TaskListState extends State<TaskList> {
     }
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_tasks == null || !_tasks!.hasNext) return;
 
     _saveScrollPosition();
@@ -538,37 +558,58 @@ class TaskListState extends State<TaskList> {
         onReorder: _onReorder,
         children: [
           ..._buildTaskCards(),
-          if (_tasks!.hasNext)
+          if (_tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               key: const ValueKey('load_more_button'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               )),
+            ),
+          if (_tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
+            Padding(
+              key: const ValueKey('loading_indicator'),
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: const Center(child: CircularProgressIndicator()),
             ),
         ],
       );
     } else {
       final taskCards = _buildTaskCards();
+      final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+      final showInfinityLoading =
+          _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+      final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
+
       return ListView.builder(
         key: _pageStorageKey,
+        controller: widget.paginationMode == PaginationMode.infinityScroll && !widget.useParentScroll
+            ? _scrollController
+            : null,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        itemCount: taskCards.length + (_tasks!.hasNext ? 1 : 0),
+        itemCount: taskCards.length + extraItemCount,
         itemBuilder: (context, index) {
           if (index < taskCards.length) {
             return taskCards[index];
-          } else {
+          } else if (showLoadMore) {
             // Load more button
             return Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               )),
             );
+          } else if (showInfinityLoading) {
+            // Infinity scroll loading indicator
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
+          return const SizedBox.shrink();
         },
       );
     }

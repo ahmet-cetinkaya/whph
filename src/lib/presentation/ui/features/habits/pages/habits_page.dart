@@ -6,6 +6,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_add_button.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
@@ -375,6 +376,7 @@ class _HabitsPageState extends State<HabitsPage> {
                   enableReordering: _sortConfig.useCustomOrder,
                   forceOriginalLayout: _forceOriginalLayout,
                   useParentScroll: false,
+                  paginationMode: PaginationMode.infinityScroll,
                   onClickHabit: (item) {
                     _openDetails(item.id, context);
                   },

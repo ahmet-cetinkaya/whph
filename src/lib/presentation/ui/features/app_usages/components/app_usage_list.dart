@@ -13,6 +13,8 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
 /// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
 class FilterContext {
@@ -37,7 +39,7 @@ class FilterContext {
       'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices, showComparison: $showComparison)';
 }
 
-class AppUsageList extends StatefulWidget {
+class AppUsageList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
   final List<String>? filterByTags;
   final bool showNoTagsFilter;
@@ -47,6 +49,8 @@ class AppUsageList extends StatefulWidget {
   final DateTime? filterEndDate;
   final List<String>? filterByDevices;
   final bool showComparison;
+  @override
+  final PaginationMode paginationMode;
 
   const AppUsageList({
     super.key,
@@ -59,13 +63,14 @@ class AppUsageList extends StatefulWidget {
     this.filterEndDate,
     this.filterByDevices,
     this.showComparison = false,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
   AppUsageListState createState() => AppUsageListState();
 }
 
-class AppUsageListState extends State<AppUsageList> {
+class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsageList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
@@ -75,6 +80,12 @@ class AppUsageListState extends State<AppUsageList> {
   Timer? _refreshDebounce;
   double? _savedScrollPosition;
   bool _isInitialLoading = true;
+
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _appUsageList?.hasNext ?? false;
 
   @override
   void initState() {
@@ -212,6 +223,13 @@ class AppUsageListState extends State<AppUsageList> {
 
           // Notify about list count
           widget.onList?.call(_appUsageList?.items.length ?? 0);
+
+          // For infinity scroll: check if viewport needs more content
+          if (widget.paginationMode == PaginationMode.infinityScroll && (_appUsageList?.hasNext ?? false)) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              checkAndFillViewport();
+            });
+          }
         }
       },
     );
@@ -234,7 +252,8 @@ class AppUsageListState extends State<AppUsageList> {
     refresh();
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_appUsageList?.hasNext == false) return;
 
     _saveScrollPosition();
@@ -264,22 +283,35 @@ class AppUsageListState extends State<AppUsageList> {
     final maxCompareDuration =
         _appUsageList?.items.map((e) => (e.compareDuration ?? 0).toDouble() / 60).reduce((a, b) => a > b ? a : b);
 
+    final showLoadMore = _appUsageList!.hasNext &&
+        _appUsageList!.items.length < _appUsageList!.totalItemCount &&
+        widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading =
+        _appUsageList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
+
     return ListView.separated(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: _appUsageList!.items.length +
-          (_appUsageList!.hasNext && _appUsageList!.items.length < _appUsageList!.totalItemCount ? 1 : 0),
+      itemCount: _appUsageList!.items.length + extraItemCount,
       separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
       itemBuilder: (context, index) {
-        if (index == _appUsageList!.items.length) {
+        if (index == _appUsageList!.items.length && showLoadMore) {
           return Padding(
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
               child: LoadMoreButton(
-                onPressed: _onLoadMore,
+                onPressed: onLoadMore,
               ),
             ),
           );
+        } else if (index == _appUsageList!.items.length && showInfinityLoading) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        } else if (index >= _appUsageList!.items.length) {
+          return const SizedBox.shrink();
         }
 
         final appUsage = _appUsageList!.items[index];

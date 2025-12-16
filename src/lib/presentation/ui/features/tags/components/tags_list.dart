@@ -14,8 +14,10 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
-class TagsList extends StatefulWidget {
+class TagsList extends StatefulWidget implements IPaginatedWidget {
   final List<String>? filterByTags;
   final VoidCallback? onTagAdded;
   final void Function(TagListItem tag)? onClickTag;
@@ -24,6 +26,8 @@ class TagsList extends StatefulWidget {
   final SortConfig<TagSortFields>? sortConfig;
   final String? search;
   final int pageSize;
+  @override
+  final PaginationMode paginationMode;
 
   const TagsList({
     super.key,
@@ -35,13 +39,14 @@ class TagsList extends StatefulWidget {
     this.sortConfig,
     this.search,
     this.pageSize = 10,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
   State<TagsList> createState() => TagsListState();
 }
 
-class TagsListState extends State<TagsList> {
+class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tagsService = container.resolve<TagsService>();
@@ -49,6 +54,12 @@ class TagsListState extends State<TagsList> {
 
   GetListTagsQueryResponse? _tags;
   double? _savedScrollPosition;
+
+  @override
+  ScrollController get scrollController => _scrollController;
+
+  @override
+  bool get hasNextPage => _tags?.hasNext ?? false;
 
   @override
   void initState() {
@@ -60,10 +71,9 @@ class TagsListState extends State<TagsList> {
 
   @override
   void dispose() {
-    super.dispose();
     _scrollController.dispose();
-
     _removeEventListeners();
+    super.dispose();
   }
 
   @override
@@ -175,6 +185,13 @@ class TagsListState extends State<TagsList> {
         });
 
         widget.onList?.call(_tags!.items.length);
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _tags!.hasNext) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            checkAndFillViewport();
+          });
+        }
       },
     );
   }
@@ -214,17 +231,23 @@ class TagsListState extends State<TagsList> {
               ),
             );
           }),
-          if (_tags!.hasNext)
+          if (_tags!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-              child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+              child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
+            ),
+          if (_tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
     );
   }
 
-  Future<void> _onLoadMore() async {
+  @override
+  Future<void> onLoadMore() async {
     if (_tags == null || !_tags!.hasNext) return;
 
     _saveScrollPosition();
