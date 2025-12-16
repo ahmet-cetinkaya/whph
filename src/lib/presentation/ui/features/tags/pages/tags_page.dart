@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/features/tags/components/tag_list_options.d
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart.dart';
 import 'package:whph/presentation/ui/features/tags/components/tags_list.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -322,6 +323,7 @@ class _TagsPageState extends State<TagsPage> {
                     search: _searchFilterQuery,
                     showArchived: _showArchived,
                     sortConfig: _sortConfig,
+                    paginationMode: PaginationMode.infinityScroll,
                   ),
               ],
             ),

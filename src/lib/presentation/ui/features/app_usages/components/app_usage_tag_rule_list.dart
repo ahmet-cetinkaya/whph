@@ -15,12 +15,14 @@ import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_tra
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 
 class AppUsageTagRuleList extends StatefulWidget {
   final Mediator mediator;
   final Function(String id)? onRuleSelected;
   final List<String>? filterByTags;
   final int pageSize;
+  final PaginationMode paginationMode;
 
   const AppUsageTagRuleList({
     super.key,
@@ -28,6 +30,7 @@ class AppUsageTagRuleList extends StatefulWidget {
     this.onRuleSelected,
     this.filterByTags,
     this.pageSize = 10,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
@@ -42,18 +45,52 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
   final _appUsagesService = container.resolve<AppUsagesService>();
   double? _savedScrollPosition;
 
+  // Infinity scroll state
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
     _setupEventListeners();
     _loadRules(isRefresh: true);
+    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _removeEventListeners();
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _setupScrollListener() {
+    if (widget.paginationMode == PaginationMode.infinityScroll) {
+      _scrollController.addListener(_onScroll);
+    }
+  }
+
+  void _onScroll() {
+    if (widget.paginationMode != PaginationMode.infinityScroll) return;
+    if (_isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    final threshold = maxScroll * 0.8;
+
+    if (currentScroll >= threshold) {
+      _loadMoreInfinityScroll();
+    }
+  }
+
+  Future<void> _loadMoreInfinityScroll() async {
+    if (_isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
+
+    setState(() => _isLoadingMore = true);
+    await _loadRules(pageIndex: _ruleList!.pageIndex + 1);
+    if (mounted) {
+      setState(() => _isLoadingMore = false);
+    }
   }
 
   void _setupEventListeners() {
@@ -136,6 +173,13 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
               _ruleList!.pageIndex = result.pageIndex;
             }
           });
+
+          // For infinity scroll: check if viewport needs more content
+          if (widget.paginationMode == PaginationMode.infinityScroll && (_ruleList?.hasNext ?? false)) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _checkAndFillViewport();
+            });
+          }
         }
       },
     );
@@ -248,10 +292,15 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
               );
             },
           ),
-          if (_ruleList!.hasNext)
+          if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+            ),
+          if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
@@ -303,6 +352,16 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> {
           // The component will refresh automatically through event listener
         },
       );
+    }
+  }
+
+  void _checkAndFillViewport() {
+    if (!mounted || _isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    if (maxScroll <= 0) {
+      _loadMoreInfinityScroll();
     }
   }
 }

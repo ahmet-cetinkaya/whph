@@ -6,6 +6,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/components/note_add_button.dart';
 import 'package:whph/presentation/ui/features/notes/components/note_list_options.dart';
 import 'package:whph/presentation/ui/features/notes/components/notes_list.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/pages/note_details_page.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
@@ -202,6 +203,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
                   sortConfig: _sortConfig,
                   onClickNote: _openDetails,
                   onList: _onDataListed,
+                  paginationMode: PaginationMode.infinityScroll,
                 ),
               ),
           ],

@@ -20,6 +20,7 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 
 class HabitsList extends StatefulWidget {
   final int pageSize;
@@ -41,6 +42,7 @@ class HabitsList extends StatefulWidget {
   final void Function()? onHabitCompleted;
   final void Function(int count)? onListing;
   final void Function()? onReorderComplete;
+  final PaginationMode paginationMode;
 
   const HabitsList({
     super.key,
@@ -62,6 +64,7 @@ class HabitsList extends StatefulWidget {
     this.onHabitCompleted,
     this.onListing,
     this.onReorderComplete,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
@@ -83,6 +86,9 @@ class HabitsListState extends State<HabitsList> {
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
 
+  // Infinity scroll state
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
@@ -90,15 +96,46 @@ class HabitsListState extends State<HabitsList> {
     _currentFilters = _captureCurrentFilters();
     _getHabits();
     _setupEventListeners();
+    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _removeEventListeners();
     _refreshDebounce?.cancel();
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _dragStateNotifier.dispose();
     super.dispose();
+  }
+
+  void _setupScrollListener() {
+    if (widget.paginationMode == PaginationMode.infinityScroll) {
+      _scrollController.addListener(_onScroll);
+    }
+  }
+
+  void _onScroll() {
+    if (widget.paginationMode != PaginationMode.infinityScroll) return;
+    if (_isLoadingMore || _habitList == null || !_habitList!.hasNext) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    final threshold = maxScroll * 0.8;
+
+    if (currentScroll >= threshold) {
+      _loadMoreInfinityScroll();
+    }
+  }
+
+  Future<void> _loadMoreInfinityScroll() async {
+    if (_isLoadingMore || _habitList == null || !_habitList!.hasNext) return;
+
+    setState(() => _isLoadingMore = true);
+    await _getHabits(pageIndex: _habitList!.pageIndex + 1);
+    if (mounted) {
+      setState(() => _isLoadingMore = false);
+    }
   }
 
   void _setupEventListeners() {
@@ -255,8 +292,25 @@ class HabitsListState extends State<HabitsList> {
           // Notify about listing count
           widget.onListing?.call(_habitList?.items.length ?? 0);
         });
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _habitList!.hasNext) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _checkAndFillViewport();
+          });
+        }
       },
     );
+  }
+
+  void _checkAndFillViewport() {
+    if (!mounted || _isLoadingMore || _habitList == null || !_habitList!.hasNext) return;
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    if (maxScroll <= 0) {
+      _loadMoreInfinityScroll();
+    }
   }
 
   @override
@@ -333,13 +387,19 @@ class HabitsListState extends State<HabitsList> {
               ),
             );
           }),
-          if (_habitList!.hasNext)
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               key: const ValueKey('load_more_button_mini'),
               padding: const EdgeInsets.all(AppTheme.sizeXSmall),
               child: Center(
                 child: LoadMoreButton(onPressed: _onLoadMore),
               ),
+            ),
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+            const Padding(
+              key: ValueKey('loading_indicator_mini'),
+              padding: EdgeInsets.all(AppTheme.sizeXSmall),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       );
@@ -360,13 +420,24 @@ class HabitsListState extends State<HabitsList> {
         itemCount: totalItemCount,
         itemBuilder: (context, index) {
           // Load more button at the end
-          if (index == _habitList!.items.length) {
+          if (index == _habitList!.items.length && widget.paginationMode == PaginationMode.loadMore) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppTheme.sizeXSmall),
                 child: LoadMoreButton(onPressed: _onLoadMore),
               ),
             );
+          } else if (index == _habitList!.items.length &&
+              widget.paginationMode == PaginationMode.infinityScroll &&
+              _isLoadingMore) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.sizeXSmall),
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (index >= _habitList!.items.length) {
+            return const SizedBox.shrink();
           }
 
           final habit = _habitList!.items[index];
@@ -427,7 +498,7 @@ class HabitsListState extends State<HabitsList> {
         onReorder: _onReorder,
         children: [
           ..._buildHabitCards(),
-          if (_habitList!.hasNext)
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               key: const ValueKey('load_more_button'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
@@ -436,21 +507,31 @@ class HabitsListState extends State<HabitsList> {
                 onPressed: _onLoadMore,
               )),
             ),
+          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+            const Padding(
+              key: ValueKey('loading_indicator'),
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
+            ),
         ],
       );
     } else {
       final habitCards = _buildHabitCards();
+      final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+      final showInfinityLoading =
+          _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore;
+      final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
+
       return ListView.builder(
         key: _pageStorageKey,
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        itemCount: habitCards.length + (_habitList!.hasNext ? 1 : 0),
+        itemCount: habitCards.length + extraItemCount,
         itemBuilder: (context, index) {
           if (index < habitCards.length) {
             return habitCards[index];
-          } else {
-            // Load more button
+          } else if (showLoadMore) {
             return Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
@@ -458,7 +539,13 @@ class HabitsListState extends State<HabitsList> {
                 onPressed: _onLoadMore,
               )),
             );
+          } else if (showInfinityLoading) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
+          return const SizedBox.shrink();
         },
       );
     }

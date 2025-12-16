@@ -16,6 +16,7 @@ import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
 
 class TaskList extends StatefulWidget {
@@ -55,6 +56,7 @@ class TaskList extends StatefulWidget {
   final Key? rebuildKey;
   final SortConfig<TaskSortFields>? sortConfig;
   final void Function()? onReorderComplete;
+  final PaginationMode paginationMode;
 
   const TaskList({
     super.key,
@@ -90,6 +92,7 @@ class TaskList extends StatefulWidget {
     this.rebuildKey,
     this.sortConfig,
     this.onReorderComplete,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
@@ -108,19 +111,54 @@ class TaskListState extends State<TaskList> {
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
 
+  // Infinity scroll state
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
     _dragStateNotifier = DragStateNotifier();
     _getTasksList();
     _setupEventListeners();
+    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _dragStateNotifier.dispose();
     _removeEventListeners();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _setupScrollListener() {
+    if (widget.paginationMode == PaginationMode.infinityScroll) {
+      _scrollController.addListener(_onScroll);
+    }
+  }
+
+  void _onScroll() {
+    if (widget.paginationMode != PaginationMode.infinityScroll) return;
+    if (_isLoadingMore || _tasks == null || !_tasks!.hasNext) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    final threshold = maxScroll * 0.8; // Load more when 80% scrolled
+
+    if (currentScroll >= threshold) {
+      _loadMoreInfinityScroll();
+    }
+  }
+
+  Future<void> _loadMoreInfinityScroll() async {
+    if (_isLoadingMore || _tasks == null || !_tasks!.hasNext) return;
+
+    setState(() => _isLoadingMore = true);
+    await _getTasksList(pageIndex: _tasks!.pageIndex + 1);
+    if (mounted) {
+      setState(() => _isLoadingMore = false);
+    }
   }
 
   void _setupEventListeners() {
@@ -284,8 +322,27 @@ class TaskListState extends State<TaskList> {
             _normalizeTaskOrders();
           });
         }
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _tasks!.hasNext) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _checkAndFillViewport();
+          });
+        }
       },
     );
+  }
+
+  /// Checks if viewport has room for more content and auto-fetches if needed.
+  void _checkAndFillViewport() {
+    if (!mounted || _isLoadingMore || _tasks == null || !_tasks!.hasNext) return;
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    // If there's no scroll needed (maxScroll is 0 or very small), fetch more
+    if (maxScroll <= 0) {
+      _loadMoreInfinityScroll();
+    }
   }
 
   void _onTaskCompleted() {
@@ -538,7 +595,7 @@ class TaskListState extends State<TaskList> {
         onReorder: _onReorder,
         children: [
           ..._buildTaskCards(),
-          if (_tasks!.hasNext)
+          if (_tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               key: const ValueKey('load_more_button'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
@@ -547,19 +604,33 @@ class TaskListState extends State<TaskList> {
                 onPressed: _onLoadMore,
               )),
             ),
+          if (_tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+            Padding(
+              key: const ValueKey('loading_indicator'),
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: const Center(child: CircularProgressIndicator()),
+            ),
         ],
       );
     } else {
       final taskCards = _buildTaskCards();
+      final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+      final showInfinityLoading =
+          _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore;
+      final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
+
       return ListView.builder(
         key: _pageStorageKey,
+        controller: widget.paginationMode == PaginationMode.infinityScroll && !widget.useParentScroll
+            ? _scrollController
+            : null,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        itemCount: taskCards.length + (_tasks!.hasNext ? 1 : 0),
+        itemCount: taskCards.length + extraItemCount,
         itemBuilder: (context, index) {
           if (index < taskCards.length) {
             return taskCards[index];
-          } else {
+          } else if (showLoadMore) {
             // Load more button
             return Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
@@ -568,7 +639,14 @@ class TaskListState extends State<TaskList> {
                 onPressed: _onLoadMore,
               )),
             );
+          } else if (showInfinityLoading) {
+            // Infinity scroll loading indicator
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
+          return const SizedBox.shrink();
         },
       );
     }

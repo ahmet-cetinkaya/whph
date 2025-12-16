@@ -9,6 +9,7 @@ import 'package:whph/presentation/ui/features/tasks/components/task_add_button.d
 import 'package:whph/presentation/ui/features/tasks/components/task_add_floating_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:acore/utils/dialog_size.dart';
@@ -413,6 +414,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                   forceOriginalLayout: _forceOriginalLayout,
                   sortConfig: _sortConfig,
                   useParentScroll: false,
+                  paginationMode: PaginationMode.infinityScroll,
                 ),
               ),
           ],

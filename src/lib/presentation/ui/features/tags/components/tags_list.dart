@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 
 class TagsList extends StatefulWidget {
   final List<String>? filterByTags;
@@ -24,6 +25,7 @@ class TagsList extends StatefulWidget {
   final SortConfig<TagSortFields>? sortConfig;
   final String? search;
   final int pageSize;
+  final PaginationMode paginationMode;
 
   const TagsList({
     super.key,
@@ -35,6 +37,7 @@ class TagsList extends StatefulWidget {
     this.sortConfig,
     this.search,
     this.pageSize = 10,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
@@ -50,20 +53,53 @@ class TagsListState extends State<TagsList> {
   GetListTagsQueryResponse? _tags;
   double? _savedScrollPosition;
 
+  // Infinity scroll state
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
 
     _getTags();
     _setupEventListeners();
+    _setupScrollListener();
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-
     _removeEventListeners();
+    super.dispose();
+  }
+
+  void _setupScrollListener() {
+    if (widget.paginationMode == PaginationMode.infinityScroll) {
+      _scrollController.addListener(_onScroll);
+    }
+  }
+
+  void _onScroll() {
+    if (widget.paginationMode != PaginationMode.infinityScroll) return;
+    if (_isLoadingMore || _tags == null || !_tags!.hasNext) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    final threshold = maxScroll * 0.8;
+
+    if (currentScroll >= threshold) {
+      _loadMoreInfinityScroll();
+    }
+  }
+
+  Future<void> _loadMoreInfinityScroll() async {
+    if (_isLoadingMore || _tags == null || !_tags!.hasNext) return;
+
+    setState(() => _isLoadingMore = true);
+    await _getTags(pageIndex: _tags!.pageIndex + 1);
+    if (mounted) {
+      setState(() => _isLoadingMore = false);
+    }
   }
 
   @override
@@ -175,8 +211,25 @@ class TagsListState extends State<TagsList> {
         });
 
         widget.onList?.call(_tags!.items.length);
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _tags!.hasNext) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _checkAndFillViewport();
+          });
+        }
       },
     );
+  }
+
+  void _checkAndFillViewport() {
+    if (!mounted || _isLoadingMore || _tags == null || !_tags!.hasNext) return;
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    if (maxScroll <= 0) {
+      _loadMoreInfinityScroll();
+    }
   }
 
   @override
@@ -214,10 +267,15 @@ class TagsListState extends State<TagsList> {
               ),
             );
           }),
-          if (_tags!.hasNext)
+          if (_tags!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(child: LoadMoreButton(onPressed: _onLoadMore)),
+            ),
+          if (_tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: Center(child: CircularProgressIndicator()),
             ),
         ],
       ),

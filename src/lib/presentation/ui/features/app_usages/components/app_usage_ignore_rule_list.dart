@@ -15,15 +15,18 @@ import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 
 class AppUsageIgnoreRuleList extends StatefulWidget {
   final VoidCallback? onRuleDeleted;
   final int pageSize;
+  final PaginationMode paginationMode;
 
   const AppUsageIgnoreRuleList({
     super.key,
     this.onRuleDeleted,
     this.pageSize = 10,
+    this.paginationMode = PaginationMode.loadMore,
   });
 
   @override
@@ -39,19 +42,51 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
   GetListAppUsageIgnoreRulesQueryResponse? _ruleList;
   bool _isLoading = false;
   double _savedScrollPosition = 0.0;
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
     _setupEventListeners();
     _getList();
+    _setupScrollListener();
   }
 
   @override
   void dispose() {
     _removeEventListeners();
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _setupScrollListener() {
+    if (widget.paginationMode == PaginationMode.infinityScroll) {
+      _scrollController.addListener(_onScroll);
+    }
+  }
+
+  void _onScroll() {
+    if (widget.paginationMode != PaginationMode.infinityScroll) return;
+    if (_isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    final threshold = maxScroll * 0.8;
+
+    if (currentScroll >= threshold) {
+      _loadMoreInfinityScroll();
+    }
+  }
+
+  Future<void> _loadMoreInfinityScroll() async {
+    if (_isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
+
+    setState(() => _isLoadingMore = true);
+    await _getList(pageIndex: _ruleList!.pageIndex + 1);
+    if (mounted) {
+      setState(() => _isLoadingMore = false);
+    }
   }
 
   void _setupEventListeners() {
@@ -116,6 +151,13 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
               _ruleList!.pageIndex = response.pageIndex;
             }
           });
+
+          // For infinity scroll: check if viewport needs more content
+          if (widget.paginationMode == PaginationMode.infinityScroll && (_ruleList?.hasNext ?? false)) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _checkAndFillViewport();
+            });
+          }
         }
       },
       finallyAction: () {
@@ -132,6 +174,16 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
     _saveScrollPosition();
     await _getList(isRefresh: true);
     _backLastScrollPosition();
+  }
+
+  void _checkAndFillViewport() {
+    if (!mounted || _isLoadingMore || _ruleList == null || !_ruleList!.hasNext) return;
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    if (maxScroll <= 0) {
+      _loadMoreInfinityScroll();
+    }
   }
 
   Future<void> _onLoadMore() async {
@@ -273,7 +325,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
         ),
 
         // Load more button
-        if (_ruleList?.hasNext == true)
+        if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
           Padding(
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
@@ -281,6 +333,11 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> {
                 onPressed: _onLoadMore,
               ),
             ),
+          ),
+        if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && _isLoadingMore)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+            child: Center(child: CircularProgressIndicator()),
           ),
       ],
     );
