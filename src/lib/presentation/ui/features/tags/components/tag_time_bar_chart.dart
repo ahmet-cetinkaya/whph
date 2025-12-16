@@ -123,8 +123,6 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
 
     return ListView.builder(
       itemCount: _elementTimeData!.items.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final item = _elementTimeData!.items[index];
         return _buildBarItem(item);
