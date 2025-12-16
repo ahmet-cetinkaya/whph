@@ -100,7 +100,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     _dragStateNotifier = DragStateNotifier();
     _currentFilters = _captureCurrentFilters();
     _getHabits();
-    _getHabits();
     _setupEventListeners();
   }
 
