@@ -87,7 +87,7 @@ void main() {
 
       bool foundFullWidth = false;
       for (final element in constrainedBoxFinder.evaluate()) {
-        final widget = (element as Element).widget as ConstrainedBox;
+        final widget = element.widget as ConstrainedBox;
         if (widget.constraints.minWidth == double.infinity) {
           foundFullWidth = true;
           break;
@@ -188,7 +188,6 @@ void main() {
       expect(iconWidget.size, AppTheme.iconSizeMedium, reason: 'Icon size should be medium on mobile');
 
       // 3. Check Minimum Size (Height and Width)
-      final buttonFinder = find.byType(TextButton);
       final buttonStyle = tester.widget<TextButton>(find.byType(TextButton)).style!;
       final minSize = buttonStyle.minimumSize?.resolve({});
       // Desired: AppTheme.buttonSizeLarge (44.0) height
