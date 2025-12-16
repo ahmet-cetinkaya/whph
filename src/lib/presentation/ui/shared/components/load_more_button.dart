@@ -32,10 +32,10 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
       return TextButton(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.sizeSmall,
-            vertical: AppTheme.size2XSmall,
+            horizontal: AppTheme.sizeMedium,
+            vertical: AppTheme.sizeSmall,
           ),
-          minimumSize: const Size(0, 36),
+          minimumSize: const Size(double.infinity, AppTheme.buttonSizeXLarge),
           tapTargetSize: MaterialTapTargetSize.padded,
         ),
         onPressed: _isLoading
@@ -50,15 +50,22 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.expand_more,
-              size: AppTheme.iconSizeXSmall,
-            ),
+            if (_isLoading)
+              SizedBox(
+                width: AppTheme.iconSizeMedium,
+                height: AppTheme.iconSizeMedium,
+                child: const CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              Icon(
+                Icons.expand_more,
+                size: AppTheme.iconSizeMedium,
+              ),
             const SizedBox(width: AppTheme.size3XSmall),
             Flexible(
               child: Text(
                 buttonText,
-                style: const TextStyle(fontSize: AppTheme.fontSizeXSmall),
+                style: const TextStyle(fontSize: AppTheme.fontSizeMedium),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
@@ -75,13 +82,19 @@ class _LoadMoreButtonState extends State<LoadMoreButton> {
           horizontal: AppTheme.sizeSmall,
           vertical: AppTheme.size2XSmall,
         ),
-        minimumSize: const Size(0, 36),
+        minimumSize: const Size(double.infinity, AppTheme.buttonSizeXLarge),
         tapTargetSize: MaterialTapTargetSize.padded,
       ),
-      icon: Icon(
-        Icons.expand_more,
-        size: AppTheme.iconSizeXSmall,
-      ),
+      icon: _isLoading
+          ? SizedBox(
+              width: AppTheme.iconSizeXSmall,
+              height: AppTheme.iconSizeXSmall,
+              child: const CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(
+              Icons.expand_more,
+              size: AppTheme.iconSizeXSmall,
+            ),
       label: Text(
         buttonText,
         style: const TextStyle(fontSize: AppTheme.fontSizeXSmall),

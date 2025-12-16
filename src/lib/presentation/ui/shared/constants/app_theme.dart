@@ -173,6 +173,7 @@ class AppTheme {
   static const double buttonSizeSmall = 28.0;
   static const double buttonSizeMedium = 36.0;
   static const double buttonSizeLarge = 44.0;
+  static const double buttonSizeXLarge = 48.0;
 
   // Calendar Element Sizes
   static const double calendarDayWidth = 32.0;
