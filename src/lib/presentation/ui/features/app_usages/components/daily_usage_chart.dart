@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/ui/features/app_usages/components/comparison_legend.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:acore/acore.dart' hide Container;
 
@@ -175,34 +176,10 @@ class DailyUsageChart extends StatelessWidget {
   }
 
   Widget _buildComparisonLegend(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final items = [
-          if (currentDateRange != null)
-            _buildLegendItem(context, Theme.of(context).colorScheme.primary, currentDateRange!),
-          if (previousDateRange != null)
-            _buildLegendItem(context, Theme.of(context).colorScheme.primary.withValues(alpha: 0.5), previousDateRange!),
-        ];
-        return constraints.maxWidth < 400
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [items[0], const SizedBox(height: AppTheme.sizeSmall), items[1]])
-            : Wrap(spacing: AppTheme.sizeLarge, runSpacing: AppTheme.sizeSmall, children: items);
-      },
-    );
-  }
-
-  Widget _buildLegendItem(BuildContext context, Color color, String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppTheme.size2XSmall))),
-        const SizedBox(width: AppTheme.sizeSmall),
-        Flexible(child: Text(text, style: Theme.of(context).textTheme.bodySmall, overflow: TextOverflow.ellipsis)),
-      ],
+    return ComparisonLegend(
+      currentDateRange: currentDateRange,
+      previousDateRange: previousDateRange,
+      showComparison: showComparison,
     );
   }
 }

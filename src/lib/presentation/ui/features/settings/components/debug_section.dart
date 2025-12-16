@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/android_app_usage_debug_page.dart';
@@ -8,7 +9,7 @@ class DebugSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Only show in debug mode
+    // Only show in debug mode and Android
     if (!kDebugMode) {
       return const SizedBox.shrink();
     }
@@ -32,22 +33,25 @@ class DebugSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppTheme.sizeMedium),
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => AndroidAppUsageDebugPage(),
+
+          // Android App Usage Debug
+          if (Platform.isAndroid)
+            InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AndroidAppUsageDebugPage(),
+                  ),
+                );
+              },
+              child: Text(
+                '→ Android App Usage Debug',
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
                 ),
-              );
-            },
-            child: Text(
-              '→ Android App Usage Debug',
-              style: TextStyle(
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
               ),
             ),
-          ),
         ],
       ),
     );

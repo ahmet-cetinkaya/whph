@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/settings/components/debug_logs_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/debug_section.dart';
@@ -39,24 +40,22 @@ class AdvancedSettingsDialog extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(AppTheme.sizeLarge),
               children: [
-                // Tasks Settings
                 const TasksTile(),
-                const SizedBox(height: AppTheme.sizeMedium),
 
-                // Debug Logs Settings
+                const SizedBox(height: AppTheme.sizeMedium),
                 const DebugLogsSettings(),
 
                 const SizedBox(height: AppTheme.sizeMedium),
-
                 const Divider(),
 
-                // Reset Database
+                const SizedBox(height: AppTheme.sizeMedium),
                 const ResetDatabaseSettings(),
 
-                const SizedBox(height: AppTheme.sizeLarge),
-
                 // Debug Section (Debug Mode Only)
-                const DebugSection(),
+                if (kDebugMode) ...[
+                  const SizedBox(height: AppTheme.sizeMedium),
+                  const DebugSection(),
+                ],
               ],
             ),
           ),
