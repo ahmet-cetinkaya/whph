@@ -257,37 +257,6 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
     );
   }
 
-  Widget _buildComparisonLegend() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final items = [
-          _buildLegendItem(Theme.of(context).colorScheme.primary, _formatDateRange(_startDate!, _endDate!)),
-          _buildLegendItem(Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
-              _formatDateRange(_compareStartDate!, _compareEndDate!)),
-        ];
-        return constraints.maxWidth < 500
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [items[0], const SizedBox(height: AppTheme.sizeSmall), items[1]])
-            : Wrap(spacing: AppTheme.sizeLarge, runSpacing: AppTheme.sizeSmall, children: items);
-      },
-    );
-  }
-
-  Widget _buildLegendItem(Color color, String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppTheme.size2XSmall))),
-        const SizedBox(width: AppTheme.sizeSmall),
-        Flexible(child: Text(text, style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis)),
-      ],
-    );
-  }
-
   Widget _buildLoadingState() => Center(
       child: Padding(
           padding: const EdgeInsets.all(AppTheme.size4XLarge),
@@ -375,20 +344,6 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
         translate: (key) => _translationService.translate(
             key == 'hourlyUsage' ? SharedTranslationKeys.hourlyUsage : SharedTranslationKeys.hourlyUsageDescription),
       );
-
-  String _formatDateRange(DateTime start, DateTime end) {
-    final locale = Localizations.localeOf(context);
-    final startLocal = DateTimeHelper.toLocalDateTime(start);
-    final endLocal = DateTimeHelper.toLocalDateTime(end);
-
-    // If years are the same, show only day and month
-    if (startLocal.year == endLocal.year) {
-      return '${DateTimeHelper.formatDate(startLocal, locale: locale)} - ${DateTimeHelper.formatDate(endLocal, locale: locale)}';
-    }
-
-    // Otherwise, include the year
-    return '${DateTimeHelper.formatDate(startLocal, locale: locale)} - ${DateTimeHelper.formatDate(endLocal, locale: locale)}';
-  }
 
   String _formatShortDateRange(DateTime start, DateTime end) {
     final locale = Localizations.localeOf(context);
