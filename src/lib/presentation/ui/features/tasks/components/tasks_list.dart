@@ -108,6 +108,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   GetListTasksQueryResponse? _tasks;
   final ScrollController _scrollController = ScrollController();
   double? _savedScrollPosition;
+  Timer? _refreshDebounce;
+  bool _pendingRefresh = false;
 
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
@@ -130,6 +132,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   void dispose() {
     _dragStateNotifier.dispose();
     _removeEventListeners();
+    _refreshDebounce?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -176,8 +179,21 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     if (!mounted) return;
 
     _saveScrollPosition();
-    await _getTasksList(isRefresh: true);
-    _backLastScrollPosition();
+    _refreshDebounce?.cancel();
+
+    if (_pendingRefresh) {
+      return;
+    }
+
+    _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
+      await _getTasksList(isRefresh: true);
+      _backLastScrollPosition();
+
+      if (_pendingRefresh) {
+        _pendingRefresh = false;
+        refresh();
+      }
+    });
   }
 
   @override
@@ -188,6 +204,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     final isFilterChanged = _isFilterChanged(oldWidget);
 
     if ((isLayoutChanged || isFilterChanged) && mounted) {
+      // Cancel any pending refresh operations
+      _refreshDebounce?.cancel();
+      _pendingRefresh = false;
+
       // For ALL changes including layout and filters, force immediate rebuild to prevent visual corruption
       setState(() {
         // Recreate the tasks list to force complete rebuild
