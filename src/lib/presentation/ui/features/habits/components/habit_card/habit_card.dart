@@ -207,45 +207,51 @@ class _HabitCardState extends State<HabitCard> {
       button: true,
       label: '${widget.habit.name} ${_translationService.translate(HabitTranslationKeys.detailsHint)}',
       hint: _translationService.translate(HabitTranslationKeys.openDetailsHint),
-      child: Material(
-        color: AppTheme.surface1,
-        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-        child: InkWell(
-          onTap: widget.onOpenDetails,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.surface1,
           borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: (widget.style == HabitListStyle.grid)
-                  ? AppTheme.sizeMedium
-                  : (isCompactView || isMobileCalendar
-                      ? HabitUiConstants.calendarPaddingMobile
-                      : HabitUiConstants.calendarPaddingDesktop),
-              right: isCompactView || isMobileCalendar
-                  ? HabitUiConstants.calendarPaddingMobile
-                  : (widget.style == HabitListStyle.calendar ? HabitUiConstants.calendarPaddingDesktop : 0),
-              // Add vertical padding to ensure content doesn't touch edges if height is small
-              top: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
-              bottom: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: HabitCardHeader(
-                      habit: widget.habit,
-                      isDense: widget.isDense,
-                      style: widget.style,
-                      translationService: _translationService,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+          child: InkWell(
+            onTap: widget.onOpenDetails,
+            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: (widget.style == HabitListStyle.grid)
+                    ? AppTheme.sizeMedium
+                    : (isCompactView || isMobileCalendar
+                        ? HabitUiConstants.calendarPaddingMobile
+                        : HabitUiConstants.calendarPaddingDesktop),
+                right: isCompactView || isMobileCalendar
+                    ? HabitUiConstants.calendarPaddingMobile
+                    : (widget.style == HabitListStyle.calendar ? HabitUiConstants.calendarPaddingDesktop : 0),
+                // Add vertical padding to ensure content doesn't touch edges if height is small
+                top: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
+                bottom: widget.isDense ? AppTheme.sizeXSmall : AppTheme.sizeSmall,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: HabitCardHeader(
+                        habit: widget.habit,
+                        isDense: widget.isDense,
+                        style: widget.style,
+                        translationService: _translationService,
+                      ),
                     ),
                   ),
-                ),
-                if (_buildTrailing(isCompactView) != null) ...[
-                  const SizedBox(width: AppTheme.sizeSmall),
-                  _buildTrailing(isCompactView)!,
+                  if (_buildTrailing(isCompactView) != null) ...[
+                    const SizedBox(width: AppTheme.sizeSmall),
+                    _buildTrailing(isCompactView)!,
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -260,32 +266,38 @@ class _HabitCardState extends State<HabitCard> {
         button: true,
         label: '${widget.habit.name} ${_translationService.translate(HabitTranslationKeys.detailsHint)}',
         hint: _translationService.translate(HabitTranslationKeys.openDetailsHint),
-        child: Material(
-          color: AppTheme.surface1,
-          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-          child: InkWell(
-            onTap: widget.onOpenDetails,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppTheme.surface1,
             borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: AppTheme.sizeMedium,
-                right: isCompactView ? AppTheme.sizeSmall : 0,
-                top: AppTheme.sizeSmall,
-                bottom: AppTheme.sizeSmall,
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: HabitCardHeader(
-                        habit: widget.habit,
-                        isDense: widget.isDense,
-                        style: widget.style,
-                        translationService: _translationService),
-                  ),
-                  const SizedBox(width: AppTheme.sizeSmall),
-                  _buildTrailingForList()!,
-                ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+            child: InkWell(
+              onTap: widget.onOpenDetails,
+              borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: AppTheme.sizeMedium,
+                  right: isCompactView ? AppTheme.sizeSmall : 0,
+                  top: AppTheme.sizeSmall,
+                  bottom: AppTheme.sizeSmall,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: HabitCardHeader(
+                          habit: widget.habit,
+                          isDense: widget.isDense,
+                          style: widget.style,
+                          translationService: _translationService),
+                    ),
+                    const SizedBox(width: AppTheme.sizeSmall),
+                    _buildTrailingForList()!,
+                  ],
+                ),
               ),
             ),
           ),

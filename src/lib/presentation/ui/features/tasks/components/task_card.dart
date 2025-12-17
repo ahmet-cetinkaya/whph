@@ -77,67 +77,77 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasCurrentReminder = _hasReminder;
 
-    return ListTile(
-      tileColor: transparent ? Colors.transparent : AppTheme.surface1,
-      shape: RoundedRectangleBorder(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: transparent ? Colors.transparent : AppTheme.surface1,
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
-      visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
-      dense: isDense,
-      onTap: onOpenDetails,
-      leading: TaskCompleteButton(
-        taskId: taskItem.id,
-        isCompleted: taskItem.isCompleted,
-        onToggleCompleted: onCompleted,
-        color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
-        subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
-        size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-      ),
-      title: _buildTitleAndMetadata(context),
-      subtitle: showSubTasks && taskItem.subTasks.isNotEmpty
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _buildSubTasks(context),
-            )
-          : null,
-      contentPadding: EdgeInsets.only(
-        left: AppTheme.sizeMedium,
-        right: isCustomOrder ? AppTheme.sizeSmall : 0,
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Reminder icon
-          if (hasCurrentReminder)
-            Icon(
-              Icons.notifications,
-              size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-              color: Theme.of(context).colorScheme.primary,
-            ).wrapWithTooltip(
-              enabled: hasCurrentReminder,
-              message: _getReminderTooltip(),
-            ),
-          // Schedule button
-          if (showScheduleButton)
-            ScheduleButton(
-              translationService: _translationService,
-              onScheduleSelected: _handleSchedule,
-              isDense: isDense,
-              currentPlannedDate: taskItem.plannedDate,
-            ),
-          if (trailingButtons != null)
-            ...trailingButtons!.map((widget) {
-              if (widget is IconButton) {
-                return IconButton(
-                  icon: widget.icon,
-                  onPressed: widget.onPressed,
-                  color: widget.color,
-                  tooltip: widget.tooltip,
-                );
-              }
-              return widget;
-            }),
-        ],
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+        child: ListTile(
+          tileColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+          ),
+          visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
+          dense: isDense,
+          onTap: onOpenDetails,
+          leading: TaskCompleteButton(
+            taskId: taskItem.id,
+            isCompleted: taskItem.isCompleted,
+            onToggleCompleted: onCompleted,
+            color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
+            subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
+            size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+          ),
+          title: _buildTitleAndMetadata(context),
+          subtitle: showSubTasks && taskItem.subTasks.isNotEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildSubTasks(context),
+                )
+              : null,
+          contentPadding: EdgeInsets.only(
+            left: AppTheme.sizeMedium,
+            right: isCustomOrder ? AppTheme.sizeSmall : 0,
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Reminder icon
+              if (hasCurrentReminder)
+                Icon(
+                  Icons.notifications,
+                  size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+                  color: Theme.of(context).colorScheme.primary,
+                ).wrapWithTooltip(
+                  enabled: hasCurrentReminder,
+                  message: _getReminderTooltip(),
+                ),
+              // Schedule button
+              if (showScheduleButton)
+                ScheduleButton(
+                  translationService: _translationService,
+                  onScheduleSelected: _handleSchedule,
+                  isDense: isDense,
+                  currentPlannedDate: taskItem.plannedDate,
+                ),
+              if (trailingButtons != null)
+                ...trailingButtons!.map((widget) {
+                  if (widget is IconButton) {
+                    return IconButton(
+                      icon: widget.icon,
+                      onPressed: widget.onPressed,
+                      color: widget.color,
+                      tooltip: widget.tooltip,
+                    );
+                  }
+                  return widget;
+                }),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -83,7 +83,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
   double? _savedScrollPosition;
-  final PageStorageKey _pageStorageKey = const PageStorageKey<String>('habit_list_scroll');
 
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
@@ -146,7 +145,33 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final newFilters = _captureCurrentFilters();
     if (_isFilterChanged(oldFilters: _currentFilters, newFilters: newFilters)) {
       _currentFilters = newFilters;
-      refresh();
+
+      // For ALL filter changes including style, force immediate rebuild to prevent visual corruption
+      if (mounted) {
+        // Cancel any pending refresh operations
+        _refreshDebounce?.cancel();
+        _pendingRefresh = false;
+
+        // Force immediate state update to prevent visual corruption during filter changes
+        setState(() {
+          // Recreate the habit list to force complete rebuild
+          if (_habitList != null) {
+            _habitList = GetListHabitsQueryResponse(
+              items: _habitList!.items,
+              totalItemCount: _habitList!.totalItemCount,
+              pageIndex: _habitList!.pageIndex,
+              pageSize: _habitList!.pageSize,
+            );
+          }
+        });
+
+        // Also trigger a data refresh to get updated filtered results
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            refresh();
+          }
+        });
+      }
     }
   }
 
@@ -322,7 +347,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
       // Use ReorderableListView for drag-and-drop in mini layout
       return ReorderableListView(
-        key: _pageStorageKey,
+        key: ValueKey('reorderable_grid_${widget.style}_${_habitList?.items.length ?? 0}'),
         buildDefaultDragHandles: false,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -337,32 +362,37 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             final index = entry.key;
             final habit = entry.value;
             return Padding(
-              key: ValueKey(habit.id),
+              key: ValueKey('reorderable_grid_${habit.id}_${widget.style}'),
               padding: const EdgeInsets.all(AppTheme.size4XSmall),
-              child: HabitCard(
-                habit: habit,
-                style: widget.style,
-                dateRange: widget.dateRange,
-                onOpenDetails: () => widget.onClickHabit(habit),
-                isDense: true,
-                showDragHandle:
-                    widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
-                dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 100),
+                child: HabitCard(
+                  key: ValueKey('habit_card_reorderable_${habit.id}_${widget.style}'),
+                  habit: habit,
+                  style: widget.style,
+                  dateRange: widget.dateRange,
+                  onOpenDetails: () => widget.onClickHabit(habit),
+                  isDense: true,
+                  showDragHandle: widget.enableReordering &&
+                      widget.sortConfig?.useCustomOrder == true &&
+                      !widget.forceOriginalLayout,
+                  dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+                ),
               ),
             );
           }),
           if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
-              key: const ValueKey('load_more_button_mini'),
+              key: ValueKey('load_more_button_grid_${widget.style}'),
               padding: const EdgeInsets.all(AppTheme.sizeXSmall),
               child: Center(
                 child: LoadMoreButton(onPressed: onLoadMore),
               ),
             ),
           if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
-            const Padding(
-              key: ValueKey('loading_indicator_mini'),
-              padding: EdgeInsets.all(AppTheme.sizeXSmall),
+            Padding(
+              key: ValueKey('loading_indicator_grid_${widget.style}'),
+              padding: const EdgeInsets.all(AppTheme.sizeXSmall),
               child: Center(child: CircularProgressIndicator()),
             ),
         ],
@@ -372,6 +402,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
 
       return GridView.builder(
+        key: ValueKey('grid_view_${widget.style}_${_habitList?.items.length ?? 0}'),
         controller: _scrollController,
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
@@ -405,13 +436,13 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           }
 
           final habit = _habitList!.items[index];
-          return AnimatedOpacity(
-            opacity: 1.0,
-            duration: const Duration(milliseconds: 300),
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 100),
             child: Padding(
               padding: const EdgeInsets.all(AppTheme.size4XSmall),
               child: HabitCard(
-                key: ValueKey(habit.id),
+                key: ValueKey(
+                    'habit_card_grid_${habit.id}_${widget.style}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
                 habit: habit,
                 style: widget.style,
                 dateRange: widget.dateRange,
@@ -430,18 +461,23 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       final index = entry.key;
       final habit = entry.value;
       return Padding(
-        key: ValueKey(habit.id),
+        key: ValueKey('list_${habit.id}_${widget.style}'),
         padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
-        child: HabitCard(
-          habit: habit,
-          onOpenDetails: () => widget.onClickHabit(habit),
-          style: widget.style,
-          dateRange: widget.dateRange,
-          isDateLabelShowing: false,
-          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          showDragHandle:
-              widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
-          dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 100),
+          child: HabitCard(
+            key: ValueKey(
+                'habit_card_${habit.id}_${widget.style}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
+            habit: habit,
+            onOpenDetails: () => widget.onClickHabit(habit),
+            style: widget.style,
+            dateRange: widget.dateRange,
+            isDateLabelShowing: false,
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+            showDragHandle:
+                widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
+            dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+          ),
         ),
       );
     }).toList();
@@ -450,7 +486,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   Widget _buildColumnList() {
     if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
       return ReorderableListView(
-        key: _pageStorageKey,
+        key: ValueKey('reorderable_list_${widget.style}_${_habitList?.items.length ?? 0}'),
         buildDefaultDragHandles: false,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -464,7 +500,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           ..._buildHabitCards(),
           if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
-              key: const ValueKey('load_more_button'),
+              key: ValueKey('load_more_button_list_${widget.style}'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
@@ -472,8 +508,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               )),
             ),
           if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
-            const Padding(
-              key: ValueKey('loading_indicator'),
+            Padding(
+              key: ValueKey('loading_indicator_list_${widget.style}'),
               padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
               child: Center(child: CircularProgressIndicator()),
             ),
@@ -487,7 +523,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
       return ListView.builder(
-        key: _pageStorageKey,
+        key: ValueKey('list_view_${widget.style}_${_habitList?.items.length ?? 0}'),
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),

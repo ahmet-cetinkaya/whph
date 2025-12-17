@@ -59,9 +59,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   // Tour keys
   final GlobalKey _mainListOptionsKey = GlobalKey();
   final GlobalKey _habitsSectionKey = GlobalKey();
-  final GlobalKey _habitsListKey = GlobalKey();
   final GlobalKey _tasksSectionKey = GlobalKey();
-  final GlobalKey _tasksListKey = GlobalKey();
   final GlobalKey _mainContentKey = GlobalKey();
   final GlobalKey _timeChartSectionKey = GlobalKey();
   final GlobalKey _marathonButtonKey = GlobalKey();
@@ -420,7 +418,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     // Habits list
                     if (_habitListOptionSettingsLoaded)
                       HabitsList(
-                        key: _habitsListKey,
+                        key: ValueKey(
+                            'habits_list_${_habitListStyle}_$_remainingHabits${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}'),
                         pageSize: 5,
                         style: _habitListStyle,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
@@ -510,7 +509,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     // Tasks list
                     if (_taskListOptionSettingsLoaded)
                       TaskList(
-                        key: _tasksListKey,
+                        key: ValueKey(
+                            'task_list_${_taskForceOriginalLayout}_$_remainingTasks${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'nosearch'}'),
                         filterByCompleted: _showCompletedTasks,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                         filterNoTags: _showNoTagsFilter,
