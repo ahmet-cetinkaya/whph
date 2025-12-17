@@ -352,52 +352,14 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
 
     // If years are the same, show only day and month
     if (startLocal.year == endLocal.year) {
-      // Use format without year
-      final startFormat = _getShortDateFormat(locale);
-      final endFormat = _getShortDateFormat(locale);
-      return '${DateFormat(startFormat, locale.toString()).format(startLocal)} - ${DateFormat(endFormat, locale.toString()).format(endLocal)}';
+      // Use locale-aware format for month and day from the 'intl' package.
+      // This avoids the need for the large `_getShortDateFormat` method.
+      final format = DateFormat.MMMd(locale.toString());
+      return '${format.format(startLocal)} - ${format.format(endLocal)}';
     }
 
     // Otherwise, use the default format with year
     return '${DateTimeHelper.formatDate(startLocal, locale: locale)} - ${DateTimeHelper.formatDate(endLocal, locale: locale)}';
-  }
-
-  String _getShortDateFormat(Locale locale) {
-    final localeName = locale.toString();
-
-    if (localeName.startsWith('en_US')) {
-      return 'MMM d';
-    } else if (localeName.startsWith('en_GB') || localeName.startsWith('en_AU') || localeName.startsWith('en_NZ')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('de')) {
-      return 'd. MMM';
-    } else if (localeName.startsWith('fr')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('tr')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('ja')) {
-      return 'M月d日';
-    } else if (localeName.startsWith('ko')) {
-      return 'M월 d일';
-    } else if (localeName.startsWith('zh')) {
-      return 'M月d日';
-    } else if (localeName.startsWith('ar')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('ru')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('es')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('it')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('pt')) {
-      return 'd MMM';
-    } else if (localeName.startsWith('nl')) {
-      return 'd-MMM';
-    } else if (localeName.startsWith('sv') || localeName.startsWith('no') || localeName.startsWith('da')) {
-      return 'MM-dd';
-    }
-
-    return 'MMM d'; // Default format
   }
 
   String _formatHour(int hour) => DateTimeHelper.formatHour(hour, Localizations.localeOf(context));
