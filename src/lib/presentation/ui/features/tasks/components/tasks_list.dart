@@ -108,7 +108,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   GetListTasksQueryResponse? _tasks;
   final ScrollController _scrollController = ScrollController();
   double? _savedScrollPosition;
-  final PageStorageKey _pageStorageKey = const PageStorageKey<String>('task_list_scroll');
+  Timer? _refreshDebounce;
+  bool _pendingRefresh = false;
 
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
@@ -131,6 +132,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   void dispose() {
     _dragStateNotifier.dispose();
     _removeEventListeners();
+    _refreshDebounce?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -177,16 +179,54 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     if (!mounted) return;
 
     _saveScrollPosition();
-    await _getTasksList(isRefresh: true);
-    _backLastScrollPosition();
+    _refreshDebounce?.cancel();
+
+    if (_pendingRefresh) {
+      return;
+    }
+
+    _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
+      await _getTasksList(isRefresh: true);
+      _backLastScrollPosition();
+
+      if (_pendingRefresh) {
+        _pendingRefresh = false;
+        refresh();
+      }
+    });
   }
 
   @override
   void didUpdateWidget(TaskList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (_isFilterChanged(oldWidget) && mounted) {
-      refresh();
+    final isLayoutChanged = oldWidget.forceOriginalLayout != widget.forceOriginalLayout;
+    final isFilterChanged = _isFilterChanged(oldWidget);
+
+    if ((isLayoutChanged || isFilterChanged) && mounted) {
+      // Cancel any pending refresh operations
+      _refreshDebounce?.cancel();
+      _pendingRefresh = false;
+
+      // For ALL changes including layout and filters, force immediate rebuild to prevent visual corruption
+      setState(() {
+        // Recreate the tasks list to force complete rebuild
+        if (_tasks != null) {
+          _tasks = GetListTasksQueryResponse(
+            items: _tasks!.items,
+            totalItemCount: _tasks!.totalItemCount,
+            pageIndex: _tasks!.pageIndex,
+            pageSize: _tasks!.pageSize,
+          );
+        }
+      });
+
+      // Also trigger a data refresh to get updated filtered results
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          refresh();
+        }
+      });
     }
   }
 
@@ -445,33 +485,38 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     final items = _getFilteredTasks();
     return items
         .map((task) => Container(
-              key: ValueKey(task.id),
+              key: ValueKey('task_${task.id}_${widget.forceOriginalLayout}'),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
-                child: TaskCard(
-                  taskItem: task,
-                  transparent: widget.transparentCards,
-                  trailingButtons: [
-                    if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
-                    if (widget.showSelectButton)
-                      IconButton(
-                        icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                        onPressed: () => widget.onSelectTask?.call(task),
-                      ),
-                    if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
-                      ReorderableDragStartListener(
-                        index: items.indexOf(task),
-                        child: const Icon(Icons.drag_handle, color: Colors.grey),
-                      ),
-                  ],
-                  onCompleted: _onTaskCompleted,
-                  onOpenDetails: () => widget.onClickTask(task),
-                  onScheduled: !task.isCompleted && widget.onScheduleTask != null
-                      ? () => widget.onScheduleTask!(task, DateTime.now())
-                      : null,
-                  isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                  isCustomOrder:
-                      widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 100),
+                  child: TaskCard(
+                    key: ValueKey(
+                        'task_card_${task.id}_${widget.forceOriginalLayout}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
+                    taskItem: task,
+                    transparent: widget.transparentCards,
+                    trailingButtons: [
+                      if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
+                      if (widget.showSelectButton)
+                        IconButton(
+                          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                          onPressed: () => widget.onSelectTask?.call(task),
+                        ),
+                      if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
+                        ReorderableDragStartListener(
+                          index: items.indexOf(task),
+                          child: const Icon(Icons.drag_handle, color: Colors.grey),
+                        ),
+                    ],
+                    onCompleted: _onTaskCompleted,
+                    onOpenDetails: () => widget.onClickTask(task),
+                    onScheduled: !task.isCompleted && widget.onScheduleTask != null
+                        ? () => widget.onScheduleTask!(task, DateTime.now())
+                        : null,
+                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                    isCustomOrder:
+                        widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
+                  ),
                 ),
               ),
             ))
@@ -547,7 +592,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
 
     if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
       return ReorderableListView(
-        key: _pageStorageKey,
+        key: ValueKey('reorderable_tasks_${widget.forceOriginalLayout}_${_tasks?.items.length ?? 0}'),
         buildDefaultDragHandles: false,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -560,7 +605,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           ..._buildTaskCards(),
           if (_tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
-              key: const ValueKey('load_more_button'),
+              key: ValueKey('load_more_button_reorderable_${widget.forceOriginalLayout}'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
@@ -569,7 +614,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
             ),
           if (_tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
             Padding(
-              key: const ValueKey('loading_indicator'),
+              key: ValueKey('loading_indicator_reorderable_${widget.forceOriginalLayout}'),
               padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
               child: const Center(child: CircularProgressIndicator()),
             ),
@@ -583,7 +628,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
       return ListView.builder(
-        key: _pageStorageKey,
+        key: ValueKey('list_view_tasks_${widget.forceOriginalLayout}_${_tasks?.items.length ?? 0}'),
         controller: widget.paginationMode == PaginationMode.infinityScroll && !widget.useParentScroll
             ? _scrollController
             : null,
@@ -596,6 +641,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           } else if (showLoadMore) {
             // Load more button
             return Padding(
+              key: ValueKey('load_more_button_list_${widget.forceOriginalLayout}'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
@@ -604,9 +650,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
             );
           } else if (showInfinityLoading) {
             // Infinity scroll loading indicator
-            return const Padding(
+            return Padding(
+              key: ValueKey('loading_indicator_list_${widget.forceOriginalLayout}'),
               padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
-              child: Center(child: CircularProgressIndicator()),
+              child: const Center(child: CircularProgressIndicator()),
             );
           }
           return const SizedBox.shrink();
