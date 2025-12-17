@@ -17,6 +17,7 @@ import 'package:whph/presentation/ui/shared/components/save_button.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/models/app_usage_statistics_settings.dart';
 import 'package:acore/acore.dart' hide Container;
+import 'package:intl/intl.dart';
 
 class AppUsageStatisticsView extends PersistentListOptionsBase {
   final String appUsageId;
@@ -188,13 +189,6 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
             _buildEmptyState()
           else if (_statistics != null) ...[
             _buildSummaryCards(),
-            if (_showComparison &&
-                _startDate != null &&
-                _endDate != null &&
-                _compareStartDate != null &&
-                _compareEndDate != null)
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall), child: _buildComparisonLegend()),
             _buildDailyChart(),
             _buildHourlyChart(),
           ],
@@ -259,37 +253,6 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
             showSavedMessage: showSavedMessage,
             onSave: saveFilterSettings,
             tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions)),
-      ],
-    );
-  }
-
-  Widget _buildComparisonLegend() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final items = [
-          _buildLegendItem(Theme.of(context).colorScheme.primary, _formatDateRange(_startDate!, _endDate!)),
-          _buildLegendItem(Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
-              _formatDateRange(_compareStartDate!, _compareEndDate!)),
-        ];
-        return constraints.maxWidth < 500
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [items[0], const SizedBox(height: AppTheme.sizeSmall), items[1]])
-            : Wrap(spacing: AppTheme.sizeLarge, runSpacing: AppTheme.sizeSmall, children: items);
-      },
-    );
-  }
-
-  Widget _buildLegendItem(Color color, String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppTheme.size2XSmall))),
-        const SizedBox(width: AppTheme.sizeSmall),
-        Flexible(child: Text(text, style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis)),
       ],
     );
   }
@@ -360,6 +323,10 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
                 dayOfWeek: d.dayOfWeek, totalDuration: d.totalDuration, compareDuration: d.compareDuration))
             .toList(),
         showComparison: _showComparison,
+        currentDateRange: _startDate != null && _endDate != null ? _formatShortDateRange(_startDate!, _endDate!) : null,
+        previousDateRange: _showComparison && _compareStartDate != null && _compareEndDate != null
+            ? _formatShortDateRange(_compareStartDate!, _compareEndDate!)
+            : null,
         translate: (key) => _translationService.translate(
             key == 'dailyUsage' ? SharedTranslationKeys.dailyUsage : SharedTranslationKeys.dailyUsageDescription),
       );
@@ -370,13 +337,29 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
                 ChartHourlyData(hour: h.hour, totalDuration: h.totalDuration, compareDuration: h.compareDuration))
             .toList(),
         showComparison: _showComparison,
+        currentDateRange: _startDate != null && _endDate != null ? _formatShortDateRange(_startDate!, _endDate!) : null,
+        previousDateRange: _showComparison && _compareStartDate != null && _compareEndDate != null
+            ? _formatShortDateRange(_compareStartDate!, _compareEndDate!)
+            : null,
         translate: (key) => _translationService.translate(
             key == 'hourlyUsage' ? SharedTranslationKeys.hourlyUsage : SharedTranslationKeys.hourlyUsageDescription),
       );
 
-  String _formatDateRange(DateTime start, DateTime end) {
+  String _formatShortDateRange(DateTime start, DateTime end) {
     final locale = Localizations.localeOf(context);
-    return '${DateTimeHelper.formatDate(DateTimeHelper.toLocalDateTime(start), locale: locale)} - ${DateTimeHelper.formatDate(DateTimeHelper.toLocalDateTime(end), locale: locale)}';
+    final startLocal = DateTimeHelper.toLocalDateTime(start);
+    final endLocal = DateTimeHelper.toLocalDateTime(end);
+
+    // If years are the same, show only day and month
+    if (startLocal.year == endLocal.year) {
+      // Use locale-aware format for month and day from the 'intl' package.
+      // This avoids the need for the large `_getShortDateFormat` method.
+      final format = DateFormat.MMMd(locale.toString());
+      return '${format.format(startLocal)} - ${format.format(endLocal)}';
+    }
+
+    // Otherwise, use the default format with year
+    return '${DateTimeHelper.formatDate(startLocal, locale: locale)} - ${DateTimeHelper.formatDate(endLocal, locale: locale)}';
   }
 
   String _formatHour(int hour) => DateTimeHelper.formatHour(hour, Localizations.localeOf(context));

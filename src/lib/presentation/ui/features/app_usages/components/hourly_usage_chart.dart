@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/ui/features/app_usages/components/comparison_legend.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:acore/acore.dart' hide Container;
 
@@ -8,12 +9,16 @@ class HourlyUsageChart extends StatelessWidget {
   final List<ChartHourlyData> hourlyData;
   final bool showComparison;
   final String Function(String) translate;
+  final String? currentDateRange;
+  final String? previousDateRange;
 
   const HourlyUsageChart({
     super.key,
     required this.hourlyData,
     required this.showComparison,
     required this.translate,
+    this.currentDateRange,
+    this.previousDateRange,
   });
 
   @override
@@ -36,6 +41,10 @@ class HourlyUsageChart extends StatelessWidget {
             _buildHeader(context),
             const SizedBox(height: AppTheme.sizeXLarge),
             _buildChart(context, maxY, locale, mainSpots, compareSpots),
+            if (showComparison) ...[
+              const SizedBox(height: AppTheme.sizeMedium),
+              _buildComparisonLegend(context),
+            ],
           ],
         ),
       ),
@@ -175,6 +184,14 @@ class HourlyUsageChart extends StatelessWidget {
       isStrokeCapRound: true,
       dotData: FlDotData(show: false),
       belowBarData: BarAreaData(show: true, color: color.withValues(alpha: 0.2)),
+    );
+  }
+
+  Widget _buildComparisonLegend(BuildContext context) {
+    return ComparisonLegend(
+      currentDateRange: currentDateRange,
+      previousDateRange: previousDateRange,
+      showComparison: showComparison,
     );
   }
 }
