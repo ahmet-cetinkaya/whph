@@ -17,24 +17,19 @@ class ComparisonLegend extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!showComparison) return const SizedBox.shrink();
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final items = <Widget>[
-          if (currentDateRange != null)
-            _buildLegendItem(context, Theme.of(context).colorScheme.primary, currentDateRange!),
-          if (previousDateRange != null)
-            _buildLegendItem(context, Theme.of(context).colorScheme.primary.withValues(alpha: 0.5), previousDateRange!),
-        ];
+    final items = <Widget>[
+      if (currentDateRange != null) _buildLegendItem(context, Theme.of(context).colorScheme.primary, currentDateRange!),
+      if (previousDateRange != null)
+        _buildLegendItem(context, Theme.of(context).colorScheme.primary.withValues(alpha: 0.5), previousDateRange!),
+    ];
 
-        if (items.isEmpty) return const SizedBox.shrink();
+    if (items.isEmpty) return const SizedBox.shrink();
 
-        return constraints.maxWidth < 400
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: items.length > 1 ? [items[0], const SizedBox(height: AppTheme.sizeSmall), items[1]] : items,
-              )
-            : Wrap(spacing: AppTheme.sizeLarge, runSpacing: AppTheme.sizeSmall, children: items);
-      },
+    return Wrap(
+      spacing: AppTheme.sizeLarge,
+      runSpacing: AppTheme.sizeSmall,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: items,
     );
   }
 
