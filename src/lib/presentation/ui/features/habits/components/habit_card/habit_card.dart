@@ -215,6 +215,7 @@ class _HabitCardState extends State<HabitCard> {
         child: Material(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+          clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: widget.onOpenDetails,
             borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
@@ -274,6 +275,7 @@ class _HabitCardState extends State<HabitCard> {
           child: Material(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+            clipBehavior: Clip.antiAlias,
             child: InkWell(
               onTap: widget.onOpenDetails,
               borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
