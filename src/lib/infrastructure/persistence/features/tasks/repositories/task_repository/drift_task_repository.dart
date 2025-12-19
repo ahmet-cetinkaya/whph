@@ -61,6 +61,47 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     return t.id;
   }
 
+  /// Override getList to use custom mapper that correctly handles all Task fields including recurrenceParentId
+  @override
+  Future<PaginatedList<Task>> getList(int pageIndex, int pageSize,
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+    List<String> whereClauses = [
+      if (customWhereFilter != null) "(${customWhereFilter.query})",
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+
+    String? orderByClause = customOrder?.isNotEmpty == true
+        ? ' ORDER BY ${customOrder!.map((order) => '${order.field} IS NULL, ${order.field} ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        : null;
+
+    final query = database.customSelect(
+      "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
+      readsFrom: {table},
+    );
+    final result = await query.get();
+
+    final countQuery = await database.customSelect(
+      'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+      ],
+    ).getSingleOrNull();
+    final totalCount = countQuery?.data['count'] as int? ?? 0;
+
+    return PaginatedList(
+      items: result.map((row) => _mapper.mapTaskFromRow(row.data)).toList(),
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalItemCount: totalCount,
+    );
+  }
+
   @override
   Future<Task?> getById(String id, {bool includeDeleted = false}) async {
     List<String> whereClauses = [

@@ -32,7 +32,10 @@ void registerTasksFeature(
 ) {
   // Register the task recurrence service
   container.registerSingleton<ITaskRecurrenceService>(
-    (container) => TaskRecurrenceService(container.resolve<ILogger>()),
+    (container) => TaskRecurrenceService(
+      container.resolve<ILogger>(),
+      taskRepository,
+    ),
   );
 
   // Register the reminder calculation service

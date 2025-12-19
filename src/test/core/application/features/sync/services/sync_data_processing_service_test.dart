@@ -479,7 +479,9 @@ void main() {
         );
 
         when(mockTaskRepository.getById(any)).thenAnswer((_) async => null);
-        when(mockTaskRepository.add(any)).thenAnswer((_) async {});
+        when(mockTaskRepository.add(any)).thenAnswer((_) async {
+          await Future.delayed(const Duration(milliseconds: 1));
+        });
 
         // Act
         final stopwatch = Stopwatch()..start();

@@ -238,6 +238,12 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   }
 
   void _handleTaskDeleted() {
+    // If the deleted task is the current one, don't reload details as it will fail
+    // The page navigation back is handled by the delete button's onSuccess callback
+    if (_tasksService.onTaskDeleted.value == widget.taskId) {
+      return;
+    }
+
     if (mounted) {
       _loadTaskDetails(); // Update completion percentage
     }

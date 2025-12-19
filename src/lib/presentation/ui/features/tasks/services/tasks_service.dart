@@ -8,6 +8,10 @@ class TasksService extends ChangeNotifier {
   final Mediator _mediator;
   final ILogger _logger;
 
+  /// Tracks task IDs currently being processed for recurrence creation
+  /// to prevent duplicate recurring task generation from rapid consecutive completions.
+  final Set<String> _processingRecurrenceTasks = {};
+
   TasksService(this._taskRecurrenceService, this._mediator, this._logger);
 
   // Event listeners for task-related events - keeping nullable for the value
@@ -38,8 +42,6 @@ class TasksService extends ChangeNotifier {
   }
 
   void notifyTaskCompleted(String taskId) async {
-    _logger.debug('TasksService: notifyTaskCompleted called for task: $taskId');
-
     onTaskCompleted.value = taskId;
     onTaskCompleted.notifyListeners();
 
@@ -49,7 +51,12 @@ class TasksService extends ChangeNotifier {
   }
 
   Future<void> _handleRecurringTaskCreation(String taskId) async {
-    _logger.debug('TasksService: Starting recurring task creation workflow for $taskId');
+    // Prevent concurrent processing for the same task (race condition fix)
+    if (_processingRecurrenceTasks.contains(taskId)) {
+      return;
+    }
+
+    _processingRecurrenceTasks.add(taskId);
 
     try {
       // Add retry logic for robustness
@@ -61,13 +68,8 @@ class TasksService extends ChangeNotifier {
         try {
           final nextTaskId = await _taskRecurrenceService.handleCompletedRecurringTask(taskId, _mediator);
           if (nextTaskId != null) {
-            _logger.debug('TasksService: Successfully created next recurring task instance: $nextTaskId');
             // Notify about the newly created recurring task
             notifyTaskCreated(nextTaskId);
-            _logger.debug('TasksService: Notified listeners about new recurring task: $nextTaskId');
-          } else {
-            _logger.debug(
-                'TasksService: No next recurring task instance created for $taskId (task may not be recurring or reached limits)');
           }
           success = true;
         } catch (e) {
@@ -82,7 +84,8 @@ class TasksService extends ChangeNotifier {
       }
     } catch (e) {
       _logger.error('TasksService: Failed to create recurring task instance for $taskId after multiple retries: $e');
-      // Don't rethrow to avoid breaking the completion flow, but could notify user of error
+    } finally {
+      _processingRecurrenceTasks.remove(taskId);
     }
   }
 

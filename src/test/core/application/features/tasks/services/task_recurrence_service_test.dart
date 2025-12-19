@@ -2,6 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+
+// Fake repository for testing
+class FakeTaskRepository extends Fake implements ITaskRepository {}
 
 // Test logger that discards all log messages
 class TestLogger implements ILogger {
@@ -28,7 +32,7 @@ void main() {
     late TaskRecurrenceService service;
 
     setUp(() {
-      service = TaskRecurrenceService(TestLogger());
+      service = TaskRecurrenceService(TestLogger(), FakeTaskRepository());
     });
 
     group('Recurrence Detection', () {
