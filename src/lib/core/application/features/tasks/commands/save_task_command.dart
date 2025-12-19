@@ -173,9 +173,11 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.recurrenceCount = null;
       }
 
-      // Always update recurrenceParentId if provided in the request, regardless of recurrence type
-      // This allows users to clear a parent ID (set to null) while keeping other recurrence settings
-      task.recurrenceParentId = request.recurrenceParentId;
+      // Only update recurrenceParentId if explicitly provided in the request.
+      // This preserves the existing value when updating for completion toggle or other changes.
+      if (request.recurrenceParentId != null) {
+        task.recurrenceParentId = request.recurrenceParentId;
+      }
 
       await _taskRepository.update(task);
     } else {
