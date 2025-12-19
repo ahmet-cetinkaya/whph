@@ -97,6 +97,7 @@ class TaskDetailsController extends ChangeNotifier {
 
   void _setupEventListeners() {
     _tasksService.onTaskUpdated.addListener(_handleTaskServiceUpdate);
+    _tasksService.onTaskDeleted.addListener(_handleTaskDeleted);
     _tagsService.onTagUpdated.addListener(_handleTagUpdated);
   }
 
@@ -105,14 +106,24 @@ class TaskDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _handleTaskDeleted() {
+    if (_tasksService.onTaskDeleted.value == _task?.id) {
+      _isDeleted = true;
+    }
+  }
+
   void _handleTagUpdated() {
     notifyListeners();
   }
+
+  // Track deletion state to prevent saving after deletion
+  bool _isDeleted = false;
 
   @override
   void dispose() {
     _debounce?.cancel();
     _tasksService.onTaskUpdated.removeListener(_handleTaskServiceUpdate);
+    _tasksService.onTaskDeleted.removeListener(_handleTaskDeleted);
     _tagsService.onTagUpdated.removeListener(_handleTagUpdated);
     super.dispose();
   }
@@ -233,7 +244,7 @@ class TaskDetailsController extends ChangeNotifier {
 
   /// Save task immediately
   Future<void> saveTaskImmediately() async {
-    if (_task == null) return;
+    if (_task == null || _isDeleted) return;
 
     final saveCommand = buildSaveCommand();
     await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);

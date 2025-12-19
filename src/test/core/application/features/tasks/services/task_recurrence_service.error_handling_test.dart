@@ -7,14 +7,18 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+
 void main() {
   group('TaskRecurrenceService Error Handling Tests', () {
     late TaskRecurrenceService service;
     late MockMediator mockMediator;
+    late MockTaskRepository mockRepo;
 
     setUp(() {
       mockMediator = MockMediator();
-      service = TaskRecurrenceService(TestLogger());
+      mockRepo = MockTaskRepository();
+      service = TaskRecurrenceService(TestLogger(), mockRepo);
     });
 
     group('handleCompletedRecurringTask Error Scenarios', () {
@@ -402,8 +406,84 @@ void main() {
         final result2 = await service.handleCompletedRecurringTask('new-task-id', mockMediator);
         expect(result2, isNull); // Should not create another instance
       });
+      test('should return existing recurrence ID when duplicate instance found in repository', () async {
+        // Arrange
+        const taskId = 'task-1';
+        const existingRecurrenceId = 'existing-task-id';
+        final task = Task(
+          id: taskId,
+          createdDate: DateTime.now().toUtc(),
+          title: 'Recurring Task',
+          completedAt: DateTime.now().toUtc(),
+          recurrenceType: RecurrenceType.daily,
+          recurrenceParentId: 'parent-1',
+        );
+
+        mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
+          (query) => GetTaskQueryResponse(
+            id: task.id,
+            createdDate: task.createdDate,
+            title: task.title,
+            completedAt: task.completedAt,
+            recurrenceType: task.recurrenceType,
+            parentTaskId: task.parentTaskId,
+            recurrenceParentId: task.recurrenceParentId,
+            totalDuration: 0,
+            subTasksCompletionPercentage: 0,
+            subTasks: [],
+          ),
+        );
+
+        mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+          (query) => GetListTaskTagsQueryResponse(
+            items: [],
+            totalItemCount: 0,
+            pageIndex: 0,
+            pageSize: 10,
+          ),
+        );
+
+        // Mock Repository to return duplicate
+        mockRepo.getListHandler = (page, size,
+            {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+          return PaginatedList(
+            items: [
+              Task(
+                id: existingRecurrenceId,
+                title: 'Existing Task',
+                createdDate: DateTime.now(),
+              )
+            ],
+            totalItemCount: 1,
+            pageIndex: 0,
+            pageSize: 1,
+          );
+        };
+
+        // Act
+        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+
+        // Assert
+        expect(result, existingRecurrenceId);
+        // SaveTaskCommand should NOT be called (implied by no handler registered and no crash)
+      });
     });
   });
+}
+
+class MockTaskRepository extends Fake implements ITaskRepository {
+  Future<PaginatedList<Task>> Function(int, int,
+      {bool includeDeleted, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder})? getListHandler;
+
+  @override
+  Future<PaginatedList<Task>> getList(int pageIndex, int pageSize,
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+    if (getListHandler != null) {
+      return getListHandler!(pageIndex, pageSize,
+          includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
+    }
+    return PaginatedList(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 0);
+  }
 }
 
 // Mock classes for testing

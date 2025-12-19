@@ -5,15 +5,20 @@ import 'package:mediatr/mediatr.dart';
 import 'package:meta/meta.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/application/features/tasks/utils/task_recurrence_validator.dart';
 import 'package:whph/core/application/features/tasks/utils/date_helper.dart';
 
 class TaskRecurrenceService implements ITaskRecurrenceService {
   final ILogger _logger;
+  final ITaskRepository _taskRepository;
 
-  TaskRecurrenceService(this._logger);
+  /// Tracks recurrence parent IDs currently being processed to prevent race conditions.
+  /// This serializes creation of next instances for the same recurrence chain.
+  final Set<String> _processingRecurrenceParents = {};
+
+  TaskRecurrenceService(this._logger, this._taskRepository);
   @override
   bool isRecurring(Task task) {
     return task.recurrenceType != RecurrenceType.none;
@@ -135,17 +140,77 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
   /// Creates the next recurrence instance of a task
   Future<String> _createNextRecurrenceInstance(Task task, Mediator mediator) async {
-    final nextDates = _calculateNextDates(task);
-    final taskTags = await _getTaskTags(task.id, mediator);
-    final nextRecurrenceCount = _calculateNextRecurrenceCount(task);
+    final parentId = task.recurrenceParentId ?? task.id;
 
-    final saveCommand =
-        _buildSaveTaskCommand(task, nextDates.plannedDate, nextDates.deadlineDate, nextRecurrenceCount, taskTags);
+    // Serialize operations for the same recurrence parent to prevent race conditions.
+    int waitCount = 0;
+    while (_processingRecurrenceParents.contains(parentId)) {
+      waitCount++;
+      await Future.delayed(const Duration(milliseconds: 50));
+      if (waitCount > 100) {
+        // 5 second timeout
+        _logger.warning('TaskRecurrenceService: Timeout waiting for parent $parentId lock');
+        break;
+      }
+    }
 
-    final result = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
-    _logger.info('Created next recurrence instance ${result.id} for task ${task.id}');
+    _processingRecurrenceParents.add(parentId);
 
-    return result.id;
+    try {
+      // Re-verify the task is still completed before creating recurrence.
+      final currentTaskState = await _getTaskForRecurrence(task.id, mediator);
+      if (!currentTaskState.isCompleted) {
+        _logger.info('TaskRecurrenceService: Task ${task.id} is no longer completed - ABORTING recurrence creation');
+        throw StateError('Task is no longer completed');
+      }
+
+      final nextDates = _calculateNextDates(task);
+      final taskTags = await _getTaskTags(task.id, mediator);
+
+      // Check if the next recurrence instance already exists to prevent duplicates
+      final existingId = await _findDuplicateRecurrence(parentId, nextDates.plannedDate);
+      if (existingId != null) {
+        _logger.info('TaskRecurrenceService: Duplicate found for parent $parentId, returning existing ID: $existingId');
+        return existingId;
+      }
+
+      final nextRecurrenceCount = _calculateNextRecurrenceCount(task);
+      final saveCommand =
+          _buildSaveTaskCommand(task, nextDates.plannedDate, nextDates.deadlineDate, nextRecurrenceCount, taskTags);
+
+      final result = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+      _logger.info('TaskRecurrenceService: Created recurrence ${result.id} for task ${task.id}');
+
+      return result.id;
+    } finally {
+      _processingRecurrenceParents.remove(parentId);
+    }
+  }
+
+  /// Checks if a recurrence instance already exists for the given parent and date
+  Future<String?> _findDuplicateRecurrence(String parentId, DateTime scheduledDate) async {
+    try {
+      // CRITICAL: planned_date is stored as Unix timestamp, so we must use 'unixepoch' modifier
+      final filterSql =
+          "recurrence_parent_id = ? AND DATE(planned_date, 'unixepoch') = DATE(?) AND deleted_date IS NULL";
+      final filterArgs = [parentId, scheduledDate.toIso8601String()];
+
+      final filter = CustomWhereFilter(filterSql, filterArgs);
+
+      final result = await _taskRepository.getList(
+        0,
+        1,
+        customWhereFilter: filter,
+      );
+
+      if (result.items.isNotEmpty) {
+        return result.items.first.id;
+      }
+      return null;
+    } catch (e) {
+      _logger.error('TaskRecurrenceService: Error checking for duplicate recurrence: $e');
+      return null;
+    }
   }
 
   /// Calculates the next planned and deadline dates for recurrence
@@ -219,6 +284,10 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     int? nextRecurrenceCount,
     List<String> tagIds,
   ) {
+    final recurrenceParentIdToUse = task.recurrenceParentId ?? task.id;
+    _logger.debug(
+        'TaskRecurrenceService: _buildSaveTaskCommand - task.recurrenceParentId=${task.recurrenceParentId}, task.id=${task.id}, using recurrenceParentId=$recurrenceParentIdToUse');
+
     return SaveTaskCommand(
       title: task.title,
       description: task.description,
@@ -235,7 +304,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       recurrenceStartDate: task.recurrenceStartDate,
       recurrenceEndDate: task.recurrenceEndDate,
       recurrenceCount: nextRecurrenceCount,
-      recurrenceParentId: task.recurrenceParentId ?? task.id, // Use parent ID if available, otherwise this task's ID
+      recurrenceParentId: recurrenceParentIdToUse,
       tagIdsToAdd: tagIds,
     );
   }
