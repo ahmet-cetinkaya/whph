@@ -322,12 +322,10 @@ class _TaskRecurrenceSelectorState extends State<TaskRecurrenceSelector> {
         value: _recurrenceType,
         decoration: const InputDecoration(
           border: InputBorder.none,
-          contentPadding: EdgeInsets.zero,
-          isDense: true,
         ),
         isExpanded: false,
         icon: const Icon(Icons.arrow_drop_down),
-        alignment: AlignmentDirectional.centerEnd,
+        alignment: AlignmentDirectional.centerStart,
         items: RecurrenceType.values.map((type) {
           return DropdownMenuItem(
             value: type,

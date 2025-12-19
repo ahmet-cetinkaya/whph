@@ -359,22 +359,19 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                     label: _translationService.translate(TagTranslationKeys.detailsRelatedTags),
                     icon: TagUiConstants.tagIcon,
                     hintText: _translationService.translate(TagTranslationKeys.selectTooltip),
-                    widget: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TagSelectDropdown(
-                        key: ValueKey('${_tagTags!.items.length}_${_visibleOptionalFields.contains(keyRelatedTags)}'),
-                        isMultiSelect: true,
-                        onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
-                        showSelectedInDropdown: true,
-                        initialSelectedTags: _tagTags!.items
-                            .map((tag) => DropdownOption<String>(
-                                  value: tag.secondaryTagId,
-                                  label: tag.secondaryTagName,
-                                ))
-                            .toList(),
-                        excludeTagIds: [_tag!.id],
-                        icon: SharedUiConstants.addIcon,
-                      ),
+                    widget: TagSelectDropdown(
+                      key: ValueKey('${_tagTags!.items.length}_${_visibleOptionalFields.contains(keyRelatedTags)}'),
+                      isMultiSelect: true,
+                      onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
+                      showSelectedInDropdown: true,
+                      initialSelectedTags: _tagTags!.items
+                          .map((tag) => DropdownOption<String>(
+                                value: tag.secondaryTagId,
+                                label: tag.secondaryTagName,
+                              ))
+                          .toList(),
+                      excludeTagIds: [_tag!.id],
+                      icon: SharedUiConstants.addIcon,
                     ),
                   ),
                 if (_tag!.isArchived)

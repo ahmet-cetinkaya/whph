@@ -30,7 +30,7 @@ class TaskParentSection {
                 Expanded(
                   child: Text(
                     parentTitle ?? '',
-                    style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                    style: AppTheme.bodyMedium,
                   ),
                 ),
                 Icon(Icons.open_in_new, size: AppTheme.iconSizeSmall, color: AppTheme.secondaryTextColor),

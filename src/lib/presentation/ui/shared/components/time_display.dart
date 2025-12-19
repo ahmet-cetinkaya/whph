@@ -63,7 +63,7 @@ class _TimeDisplayState extends State<TimeDisplay> {
       child: Text(
         _getDisplayText(),
         style: TextStyle(
-          fontWeight: (widget.totalSeconds > 0) ? FontWeight.bold : FontWeight.normal,
+          fontWeight: FontWeight.normal,
           color: textColor,
         ),
       ),

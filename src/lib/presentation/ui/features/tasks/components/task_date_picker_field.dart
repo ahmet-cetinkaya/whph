@@ -249,38 +249,42 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
       });
     }
 
-    return Row(
-      children: [
-        // Date field
-        Expanded(
-          child: TextFormField(
-            controller: widget.controller,
-            focusNode: widget.focusNode,
-            readOnly: true,
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              focusedBorder: InputBorder.none,
-              isDense: true,
-              contentPadding: const EdgeInsets.only(left: 8.0),
+    return Padding(
+      padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+      child: Row(
+        children: [
+          // Date field
+          Expanded(
+            child: TextFormField(
+              controller: widget.controller,
+              focusNode: widget.focusNode,
+              readOnly: true,
+              style: AppTheme.bodyMedium,
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                focusedBorder: InputBorder.none,
+                isDense: true,
+                contentPadding: const EdgeInsets.only(left: 8.0),
+              ),
+              onTap: _handleDateSelection,
             ),
-            onTap: _handleDateSelection,
           ),
-        ),
 
-        // Reminder icon/button - use IconButton with the new reminder dialog
-        if (widget.controller.text.isNotEmpty)
-          IconButton(
-            icon: Icon(
-              Icons.notifications,
-              color: hasReminder
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-              size: AppTheme.iconSizeMedium,
+          // Reminder icon/button - use IconButton with the new reminder dialog
+          if (widget.controller.text.isNotEmpty)
+            IconButton(
+              icon: Icon(
+                Icons.notifications,
+                color: hasReminder
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                size: AppTheme.iconSizeMedium,
+              ),
+              tooltip: _currentTooltip,
+              onPressed: hasDate ? _showReminderDialog : null, // Disable if no date selected
             ),
-            tooltip: _currentTooltip,
-            onPressed: hasDate ? _showReminderDialog : null, // Disable if no date selected
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

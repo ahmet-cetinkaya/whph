@@ -21,7 +21,7 @@ class HabitGoalSection {
       label: translationService.translate(HabitTranslationKeys.goalSettings),
       icon: Icons.track_changes,
       widget: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.only(left: 8.0, top: 4.0, bottom: 4.0),
         child: GestureDetector(
           onTap: isArchived ? null : onTap,
           behavior: HitTestBehavior.opaque,
