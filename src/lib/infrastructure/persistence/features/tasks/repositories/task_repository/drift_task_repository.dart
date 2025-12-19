@@ -76,7 +76,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         : null;
 
     final query = database.customSelect(
-      "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''}LIMIT ? OFFSET ?",
+      "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
       variables: [
         if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
         Variable.withInt(pageSize),

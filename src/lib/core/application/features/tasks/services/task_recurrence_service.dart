@@ -150,7 +150,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       if (waitCount > 100) {
         // 5 second timeout
         _logger.warning('TaskRecurrenceService: Timeout waiting for parent $parentId lock');
-        break;
+        throw Exception('Timeout waiting for parent $parentId lock');
       }
     }
 
@@ -207,9 +207,9 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         return result.items.first.id;
       }
       return null;
-    } catch (e) {
-      _logger.error('TaskRecurrenceService: Error checking for duplicate recurrence: $e');
-      return null;
+    } catch (e, stackTrace) {
+      _logger.error('TaskRecurrenceService: Error checking for duplicate recurrence: $e\n$stackTrace');
+      rethrow;
     }
   }
 

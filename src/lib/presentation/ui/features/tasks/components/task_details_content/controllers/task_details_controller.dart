@@ -109,6 +109,7 @@ class TaskDetailsController extends ChangeNotifier {
   void _handleTaskDeleted() {
     if (_tasksService.onTaskDeleted.value == _task?.id) {
       _isDeleted = true;
+      notifyListeners();
     }
   }
 
