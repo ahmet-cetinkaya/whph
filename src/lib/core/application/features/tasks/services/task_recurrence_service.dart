@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
@@ -17,10 +18,9 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
   /// Tracks recurrence parent IDs currently being processed to prevent race conditions.
   /// This serializes creation of next instances for the same recurrence chain.
   final Set<String> _processingRecurrenceParents = {};
+  final _lockReleaseController = StreamController<String>.broadcast();
 
   static const int _lockTimeoutMs = 5000;
-  static const int _lockPollIntervalMs = 50;
-  static const int _maxLockWaitAttempts = _lockTimeoutMs ~/ _lockPollIntervalMs;
 
   TaskRecurrenceService(this._logger, this._taskRepository);
   @override
@@ -176,18 +176,28 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       return result.id;
     } finally {
       _processingRecurrenceParents.remove(parentId);
+      _lockReleaseController.add(parentId);
     }
   }
 
   Future<void> _acquireRecurrenceLock(String parentId) async {
     // Serialize operations for the same recurrence parent to prevent race conditions.
-    int waitCount = 0;
+    final timeoutDuration = const Duration(milliseconds: _lockTimeoutMs);
+    final startTime = DateTime.now();
+
     while (_processingRecurrenceParents.contains(parentId)) {
-      waitCount++;
-      await Future.delayed(const Duration(milliseconds: _lockPollIntervalMs));
-      if (waitCount > _maxLockWaitAttempts) {
+      final elapsed = DateTime.now().difference(startTime);
+      if (elapsed >= timeoutDuration) {
         _logger.warning('TaskRecurrenceService: Timeout waiting for parent $parentId lock');
         throw Exception('Timeout waiting for parent $parentId lock');
+      }
+
+      try {
+        await _lockReleaseController.stream.firstWhere((id) => id == parentId).timeout(timeoutDuration - elapsed);
+      } on TimeoutException {
+        // Loop check will handle timeout
+      } catch (_) {
+        // Ignore other errors and retry check
       }
     }
     _processingRecurrenceParents.add(parentId);

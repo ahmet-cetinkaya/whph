@@ -62,6 +62,8 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
     // Prevent multiple rapid taps
     if (_isProcessing) return;
 
+    _logger.info('TaskCompleteButton: Toggling completion for task ${widget.taskId}');
+
     setState(() {
       _isProcessing = true;
     });
@@ -137,6 +139,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
         _isProcessing = false;
       });
     }
+    _logger.info('TaskCompleteButton: Successfully toggled completion for task ${widget.taskId}');
   }
 
   @override
