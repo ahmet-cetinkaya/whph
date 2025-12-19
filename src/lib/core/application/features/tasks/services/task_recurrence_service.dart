@@ -177,6 +177,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     } finally {
       _processingRecurrenceParents.remove(parentId);
       _lockReleaseController.add(parentId);
+      _logger.debug('TaskRecurrenceService: Released lock for parent $parentId');
     }
   }
 
@@ -196,11 +197,13 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         await _lockReleaseController.stream.firstWhere((id) => id == parentId).timeout(timeoutDuration - elapsed);
       } on TimeoutException {
         // Loop check will handle timeout
-      } catch (_) {
+      } catch (e) {
+        _logger.warning('TaskRecurrenceService: Error waiting for lock stream: $e');
         // Ignore other errors and retry check
       }
     }
     _processingRecurrenceParents.add(parentId);
+    _logger.debug('TaskRecurrenceService: Acquired lock for parent $parentId');
   }
 
   /// Checks if a recurrence instance already exists for the given parent and date
