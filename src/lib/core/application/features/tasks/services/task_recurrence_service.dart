@@ -18,6 +18,10 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
   /// This serializes creation of next instances for the same recurrence chain.
   final Set<String> _processingRecurrenceParents = {};
 
+  static const int _lockTimeoutMs = 5000;
+  static const int _lockPollIntervalMs = 50;
+  static const int _maxLockWaitAttempts = _lockTimeoutMs ~/ _lockPollIntervalMs;
+
   TaskRecurrenceService(this._logger, this._taskRepository);
   @override
   bool isRecurring(Task task) {
@@ -138,23 +142,11 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     return canCreateNextInstance(task);
   }
 
-  /// Creates the next recurrence instance of a task
+  /// Creates the next recurrence instance for a completed recurring task.
   Future<String> _createNextRecurrenceInstance(Task task, Mediator mediator) async {
     final parentId = task.recurrenceParentId ?? task.id;
 
-    // Serialize operations for the same recurrence parent to prevent race conditions.
-    int waitCount = 0;
-    while (_processingRecurrenceParents.contains(parentId)) {
-      waitCount++;
-      await Future.delayed(const Duration(milliseconds: 50));
-      if (waitCount > 100) {
-        // 5 second timeout
-        _logger.warning('TaskRecurrenceService: Timeout waiting for parent $parentId lock');
-        throw Exception('Timeout waiting for parent $parentId lock');
-      }
-    }
-
-    _processingRecurrenceParents.add(parentId);
+    await _acquireRecurrenceLock(parentId);
 
     try {
       // Re-verify the task is still completed before creating recurrence.
@@ -185,6 +177,20 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     } finally {
       _processingRecurrenceParents.remove(parentId);
     }
+  }
+
+  Future<void> _acquireRecurrenceLock(String parentId) async {
+    // Serialize operations for the same recurrence parent to prevent race conditions.
+    int waitCount = 0;
+    while (_processingRecurrenceParents.contains(parentId)) {
+      waitCount++;
+      await Future.delayed(const Duration(milliseconds: _lockPollIntervalMs));
+      if (waitCount > _maxLockWaitAttempts) {
+        _logger.warning('TaskRecurrenceService: Timeout waiting for parent $parentId lock');
+        throw Exception('Timeout waiting for parent $parentId lock');
+      }
+    }
+    _processingRecurrenceParents.add(parentId);
   }
 
   /// Checks if a recurrence instance already exists for the given parent and date
