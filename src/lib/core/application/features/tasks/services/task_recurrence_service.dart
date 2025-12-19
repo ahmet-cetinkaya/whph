@@ -190,10 +190,21 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
   /// Checks if a recurrence instance already exists for the given parent and date
   Future<String?> _findDuplicateRecurrence(String parentId, DateTime scheduledDate) async {
     try {
-      // CRITICAL: planned_date is stored as Unix timestamp, so we must use 'unixepoch' modifier
-      final filterSql =
-          "recurrence_parent_id = ? AND DATE(planned_date, 'unixepoch') = DATE(?) AND deleted_date IS NULL";
-      final filterArgs = [parentId, scheduledDate.toIso8601String()];
+      // Create a range for the whole day to check for existing tasks safely with integer timestamps
+      final startOfDay = DateTime(scheduledDate.year, scheduledDate.month, scheduledDate.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+
+      // Drift/SQLite stores DateTimes as integer Unix timestamps (seconds or milliseconds depending on config).
+      // Comparing DATE(..., 'unixepoch') is fragile if the stored value doesn't match the expectation.
+      // It is safer to check if the integer value falls within the timestamps for the start and end of the day.
+      final filterSql = "recurrence_parent_id = ? AND planned_date >= ? AND planned_date < ? AND deleted_date IS NULL";
+
+      // Use milliSecondsSinceEpoch / 1000 if storing as seconds, or just milliSecondsSinceEpoch.
+      // Drift default for DateTime is to store as seconds since epoch (unix timestamp).
+      final startTimestamp = startOfDay.millisecondsSinceEpoch ~/ 1000;
+      final endTimestamp = endOfDay.millisecondsSinceEpoch ~/ 1000;
+
+      final filterArgs = [parentId, startTimestamp, endTimestamp];
 
       final filter = CustomWhereFilter(filterSql, filterArgs);
 

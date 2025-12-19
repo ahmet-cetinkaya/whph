@@ -8,7 +8,6 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 class FakeTaskRepository extends Fake implements ITaskRepository {}
 
 // Test logger that discards all log messages
-// Test logger that discards all log messages
 class TestLogger implements ILogger {
   const TestLogger();
 
