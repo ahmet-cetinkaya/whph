@@ -55,6 +55,7 @@ runs:
         echo "Installing FVM using recommended install script..."
         curl -fsSL https://fvm.app/install.sh | bash
         echo "FVM installed successfully"
+        echo "$HOME/fvm/bin" >> $GITHUB_PATH
 
     - name: Install FVM (Windows)
       if: runner.os == 'Windows'
