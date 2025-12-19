@@ -264,7 +264,6 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
                 hintText: widget.hintText,
                 focusedBorder: InputBorder.none,
                 isDense: true,
-                contentPadding: const EdgeInsets.only(left: 8.0),
               ),
               onTap: _handleDateSelection,
             ),
