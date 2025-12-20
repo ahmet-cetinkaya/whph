@@ -19,17 +19,24 @@ class HabitReminderSection {
       widget: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
         onTap: onTap,
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                reminderSummaryText,
-                style: AppTheme.bodyMedium.copyWith(
-                  color: !hasReminder ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6) : null,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: AppTheme.sizeSmall,
+            top: AppTheme.size2XSmall,
+            bottom: AppTheme.size2XSmall,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  reminderSummaryText,
+                  style: AppTheme.bodyMedium.copyWith(
+                    color: !hasReminder ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6) : null,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

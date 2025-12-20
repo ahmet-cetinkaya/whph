@@ -29,7 +29,7 @@ class HabitArchivedSection {
               DateTimeHelper.formatDate(archivedDate),
               style: AppTheme.bodyMedium.copyWith(
                 color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.normal,
               ),
             ),
           ],

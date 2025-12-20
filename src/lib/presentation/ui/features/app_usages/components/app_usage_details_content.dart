@@ -426,8 +426,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
               DetailTableRowData(
                 label: _translationService.translate(AppUsageTranslationKeys.deviceLabel),
                 icon: AppUsageUiConstants.deviceIcon,
-                widget: Text(
-                    _appUsage!.deviceName ?? _translationService.translate(AppUsageTranslationKeys.unknownDeviceLabel)),
+                widget: Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+                  child: Text(_appUsage!.deviceName ??
+                      _translationService.translate(AppUsageTranslationKeys.unknownDeviceLabel)),
+                ),
               ),
 
               // Tags - Optional field

@@ -21,7 +21,11 @@ class HabitGoalSection {
       label: translationService.translate(HabitTranslationKeys.goalSettings),
       icon: Icons.track_changes,
       widget: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.only(
+          left: AppTheme.sizeSmall,
+          top: AppTheme.size2XSmall,
+          bottom: AppTheme.size2XSmall,
+        ),
         child: GestureDetector(
           onTap: isArchived ? null : onTap,
           behavior: HitTestBehavior.opaque,
@@ -41,7 +45,9 @@ class HabitGoalSection {
                         style: AppTheme.bodyMedium.copyWith(
                           color: isArchived
                               ? Theme.of(context).disabledColor
-                              : Theme.of(context).textTheme.bodyMedium?.color,
+                              : !hasGoal
+                                  ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
+                                  : Theme.of(context).textTheme.bodyMedium?.color,
                         ),
                       ),
                     ],

@@ -87,6 +87,7 @@ class DetailTable extends StatelessWidget {
               child: Text(
                 data.hintText!,
                 style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.normal,
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
@@ -137,7 +138,7 @@ class DetailTable extends StatelessWidget {
                 child: Text(
                   data.label,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.normal,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -169,6 +170,7 @@ class DetailTable extends StatelessWidget {
       alignment: forceVertical ? Alignment.topLeft : Alignment.centerLeft,
       child: DefaultTextStyle(
         style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.normal,
               overflow: forceVertical ? TextOverflow.visible : TextOverflow.ellipsis,
               color: theme.colorScheme.onSurface,
             ) ??

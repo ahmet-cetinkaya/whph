@@ -3,6 +3,7 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:acore/utils/dialog_size.dart';
@@ -61,6 +62,7 @@ class PrioritySelectField extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: Container(
         height: 36,
+        padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
         ),

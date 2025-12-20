@@ -67,7 +67,11 @@ class _ColorFieldState extends State<ColorField> {
         onTap: _onColorSelectionOpen,
         borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppTheme.size2XSmall),
+          padding: const EdgeInsets.only(
+            left: AppTheme.sizeSmall,
+            top: AppTheme.size2XSmall,
+            bottom: AppTheme.size2XSmall,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,

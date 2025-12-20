@@ -27,23 +27,26 @@ class TaskRecurrenceSection {
           child: InkWell(
             borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
             onTap: onTap,
-            child: Row(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      summaryText,
-                      style: AppTheme.bodyMedium.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: recurrenceType == RecurrenceType.none
-                            ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
-                            : null,
+            child: Padding(
+              padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        summaryText,
+                        style: AppTheme.bodyMedium.copyWith(
+                          fontWeight: FontWeight.normal,
+                          color: recurrenceType == RecurrenceType.none
+                              ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
+                              : null,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
