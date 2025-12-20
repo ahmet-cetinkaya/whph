@@ -45,7 +45,9 @@ class HabitGoalSection {
                         style: AppTheme.bodyMedium.copyWith(
                           color: isArchived
                               ? Theme.of(context).disabledColor
-                              : Theme.of(context).textTheme.bodyMedium?.color,
+                              : !hasGoal
+                                  ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)
+                                  : Theme.of(context).textTheme.bodyMedium?.color,
                         ),
                       ),
                     ],
