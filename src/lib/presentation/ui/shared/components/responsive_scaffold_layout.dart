@@ -175,6 +175,8 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       return widget.builder(context);
     }
 
+    final double sidePadding = AppThemeHelper.isSmallScreen(context) ? AppTheme.sizeSmall : AppTheme.sizeLarge;
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -192,8 +194,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.showLogo) ...[
-                  if (AppThemeHelper.isSmallScreen(context)) const SizedBox(width: AppTheme.sizeSmall),
-                  if (!AppThemeHelper.isSmallScreen(context)) const SizedBox(width: AppTheme.sizeLarge),
+                  SizedBox(width: sidePadding),
                   const AppLogo(width: 32, height: 32),
                   const SizedBox(width: AppTheme.size2XSmall),
                 ],

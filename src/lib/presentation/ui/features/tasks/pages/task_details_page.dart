@@ -279,13 +279,10 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               )
             : null,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TaskDeleteButton(
-              taskId: widget.taskId,
-              onDeleteSuccess: _onTaskDeleteSuccess,
-              buttonColor: _themeService.primaryColor,
-            ),
+          TaskDeleteButton(
+            taskId: widget.taskId,
+            onDeleteSuccess: _onTaskDeleteSuccess,
+            buttonColor: _themeService.primaryColor,
           ),
         ],
       ),

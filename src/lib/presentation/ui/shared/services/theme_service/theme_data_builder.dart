@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' hide Container;
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 /// Builds ThemeData based on current theme settings.
 /// Extracted from ThemeService to separate theme configuration from settings management.
@@ -331,7 +332,7 @@ class ThemeDataBuilder {
       titleTextStyle: TextStyle(color: textColor, fontSize: 20.0 * densityMultiplier, fontWeight: FontWeight.w600),
       iconTheme: IconThemeData(color: textColor),
       actionsIconTheme: IconThemeData(color: textColor),
-      actionsPadding: EdgeInsets.only(right: 16.0 * densityMultiplier),
+      actionsPadding: EdgeInsets.only(right: AppTheme.size2XSmall * densityMultiplier),
     );
   }
 

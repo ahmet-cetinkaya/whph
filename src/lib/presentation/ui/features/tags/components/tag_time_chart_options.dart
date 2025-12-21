@@ -428,12 +428,9 @@ class _CategorySelectionDialogState extends State<_CategorySelectionDialog> {
         ),
         title: Text(_translationService.translate(TagTranslationKeys.selectCategory)),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppTheme.sizeSmall),
-            child: TextButton(
-              onPressed: () => Navigator.pop(context, _selectedCategories),
-              child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
-            ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, _selectedCategories),
+            child: Text(_translationService.translate(SharedTranslationKeys.doneButton)),
           ),
         ],
       ),

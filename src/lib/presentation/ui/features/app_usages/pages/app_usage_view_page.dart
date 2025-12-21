@@ -268,7 +268,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
         ),
       ],
       builder: (context) => LoadingOverlay(
-        isLoading: !_isPageFullyLoaded,
+        isLoading: _hasPermission && !_isPageFullyLoaded,
         child: Column(
           key: _mainContentKey,
           crossAxisAlignment: CrossAxisAlignment.start,
