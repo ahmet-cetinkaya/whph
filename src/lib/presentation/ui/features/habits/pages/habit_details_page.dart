@@ -5,8 +5,8 @@ import 'package:whph/presentation/ui/features/habits/components/habit_delete_but
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/habit_details_content.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
-import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 class HabitDetailsPage extends StatefulWidget {
   static const String route = '/habits/details';
@@ -80,7 +80,7 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
+        padding: context.pageBodyPadding,
         child: SingleChildScrollView(
           child: Column(
             children: [

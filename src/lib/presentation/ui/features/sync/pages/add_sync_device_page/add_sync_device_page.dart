@@ -88,9 +88,12 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: ListenableBuilder(
-        listenable: _controller,
-        builder: (context, _) => _buildBody(),
+      body: Padding(
+        padding: context.pageBodyPadding,
+        child: ListenableBuilder(
+          listenable: _controller,
+          builder: (context, _) => _buildBody(),
+        ),
       ),
     );
   }
@@ -161,9 +164,8 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   }
 
   Widget _buildHeader() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppTheme.sizeLarge),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -187,7 +189,6 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
   Widget _buildErrorMessage() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge),
       padding: const EdgeInsets.all(AppTheme.sizeMedium),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.errorContainer,
@@ -216,40 +217,37 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            StyledIcon(
-              Icons.devices_other,
-              size: 48,
-              isActive: false,
-            ),
-            const SizedBox(height: AppTheme.sizeMedium),
-            Text(
-              _translationService.translate(SyncTranslationKeys.noNearbyDevices),
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppTheme.sizeSmall),
-            Text(
-              _translationService.translate(SyncTranslationKeys.noNearbyDevicesHint),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppTheme.sizeLarge),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          StyledIcon(
+            Icons.devices_other,
+            size: 48,
+            isActive: false,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
+          Text(
+            _translationService.translate(SyncTranslationKeys.noNearbyDevices),
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppTheme.sizeSmall),
+          Text(
+            _translationService.translate(SyncTranslationKeys.noNearbyDevicesHint),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppTheme.sizeLarge),
 
-            // Refresh Button
-            ElevatedButton.icon(
-              onPressed: _controller.startDeviceDiscovery,
-              icon: const Icon(Icons.refresh),
-              label: Text(_translationService.translate(SyncTranslationKeys.refreshScan)),
-            ),
-          ],
-        ),
+          // Refresh Button
+          ElevatedButton.icon(
+            onPressed: _controller.startDeviceDiscovery,
+            icon: const Icon(Icons.refresh),
+            label: Text(_translationService.translate(SyncTranslationKeys.refreshScan)),
+          ),
+        ],
       ),
     );
   }
@@ -277,7 +275,6 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         // Device List
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge),
             itemCount:
                 _controller.discoveredDevices.length + (!_controller.isScanning ? 1 : 0), // Add 1 for refresh button
             itemBuilder: (context, index) {

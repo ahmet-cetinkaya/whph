@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/components/note_delete_button.dart';
 import 'package:whph/presentation/ui/features/notes/components/note_details_content.dart';
-import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 class NoteDetailsPage extends StatefulWidget {
   static const String route = '/notes/details';
@@ -44,7 +44,7 @@ class _NoteDetailsPageState extends State<NoteDetailsPage> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppTheme.sizeLarge),
+          padding: context.pageBodyPadding,
           child: NoteDetailsContent(
             noteId: widget.noteId,
           ),

@@ -94,24 +94,6 @@ void main() {
       expect(textWidget.style?.color, equals(Colors.red));
     });
 
-    testWidgets('uses custom padding when provided', (WidgetTester tester) async {
-      const customPadding = EdgeInsets.all(24.0);
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SectionHeader(
-              title: 'Test Header',
-              padding: customPadding,
-            ),
-          ),
-        ),
-      );
-
-      final paddingWidget = tester.widget<Padding>(find.byType(Padding));
-      expect(paddingWidget.padding, equals(customPadding));
-    });
-
     testWidgets('does not render icon or trailing when not provided', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(

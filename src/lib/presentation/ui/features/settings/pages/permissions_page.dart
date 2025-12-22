@@ -6,8 +6,8 @@ import 'package:whph/presentation/ui/features/settings/components/exact_alarm_pe
 import 'package:whph/presentation/ui/features/settings/components/notification_permission.dart';
 import 'package:whph/presentation/ui/features/settings/components/startup_permission.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 /// A page that displays all permission settings in one place
 class PermissionsPage extends StatefulWidget {
@@ -30,7 +30,7 @@ class _PermissionsPageState extends State<PermissionsPage> {
         title: Text(_translationService.translate(SettingsTranslationKeys.permissionsTitle)),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
+        padding: context.pageBodyPadding,
         child: ListView(
           children: const [
             // App Usage Permission

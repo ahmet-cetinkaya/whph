@@ -5,10 +5,7 @@ import 'package:whph/presentation/ui/features/app_usages/components/app_usage_de
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_statistics_view.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class AppUsageDetailsPage extends StatefulWidget {
   static const String route = '/app-usages/details';
@@ -23,7 +20,6 @@ class AppUsageDetailsPage extends StatefulWidget {
 
 class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
   final _appUsagesService = container.resolve<AppUsagesService>();
-  final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
 
   bool _hasChanges = false;
@@ -102,9 +98,9 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(AppTheme.sizeLarge),
+        body: Padding(
+          padding: context.pageBodyPadding,
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -114,16 +110,9 @@ class _AppUsageDetailsPageState extends State<AppUsageDetailsPage> {
                   onAppUsageUpdated: _onAppUsageUpdated,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppTheme.sizeMedium),
 
                 // App Usage Statistics Section
-                SectionHeader(
-                  title: _translationService.translate(SharedTranslationKeys.statisticsLabel),
-                  padding: EdgeInsets.zero,
-                  titleStyle: AppTheme.bodyLarge,
-                ),
-                const SizedBox(height: 16),
-
                 AppUsageStatisticsView(
                   appUsageId: widget.appUsageId,
                   onError: (error) {

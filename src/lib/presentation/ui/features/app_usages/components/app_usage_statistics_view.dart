@@ -5,7 +5,6 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/daily_usage_chart.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/hourly_usage_chart.dart';
-import 'package:whph/presentation/ui/features/app_usages/components/statistics_summary_cards.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -178,9 +177,82 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppTheme.sizeMedium,
         children: [
-          _buildHeaderRow(),
+          Padding(
+            padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
+            child: Row(
+              children: [
+                Text(
+                  _translationService.translate(SharedTranslationKeys.statisticsLabel),
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(width: AppTheme.sizeSmall),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        DateRangeFilter(
+                          dateFilterSetting: _dateFilterSetting,
+                          selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                          selectedEndDate: _dateFilterSetting != null ? _endDate : null,
+                          onDateFilterChange: (start, end) {
+                            setState(() {
+                              _startDate = start;
+                              _endDate = end;
+                              _updateComparisonDates();
+                              handleFilterChange();
+                            });
+                            _fetchStatistics();
+                          },
+                          onDateFilterSettingChange: (setting) {
+                            setState(() {
+                              _dateFilterSetting = setting;
+                              if (setting?.isQuickSelection == true) {
+                                final range = setting!.calculateCurrentDateRange();
+                                _startDate = range.startDate;
+                                _endDate = range.endDate;
+                              } else if (setting != null) {
+                                _startDate = setting.startDate;
+                                _endDate = setting.endDate;
+                              } else {
+                                _startDate = null;
+                                _endDate = null;
+                              }
+                              _updateComparisonDates();
+                              handleFilterChange();
+                            });
+                            _fetchStatistics();
+                          },
+                        ),
+                        const SizedBox(width: AppTheme.sizeSmall),
+                        IconButton(
+                          icon: Icon(Icons.compare_arrows),
+                          color: _showComparison ? Theme.of(context).colorScheme.primary : null,
+                          tooltip: _translationService.translate(SharedTranslationKeys.compareWithPreviousLabel),
+                          onPressed: () {
+                            setState(() {
+                              _showComparison = !_showComparison;
+                              _updateComparisonDates();
+                              handleFilterChange();
+                            });
+                            _fetchStatistics();
+                          },
+                        ),
+                        const SizedBox(width: AppTheme.sizeSmall),
+                        SaveButton(
+                            hasUnsavedChanges: hasUnsavedChanges,
+                            showSavedMessage: showSavedMessage,
+                            onSave: saveFilterSettings,
+                            tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           if (_isLoading)
             _buildLoadingState()
           else if (_errorMessage != null)
@@ -189,71 +261,13 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
             _buildEmptyState()
           else if (_statistics != null) ...[
             _buildSummaryCards(),
+            const SizedBox(height: AppTheme.sizeSmall),
             _buildDailyChart(),
+            const SizedBox(height: AppTheme.sizeSmall),
             _buildHourlyChart(),
           ],
         ],
       ),
-    );
-  }
-
-  Widget _buildHeaderRow() {
-    return Row(
-      children: [
-        DateRangeFilter(
-          dateFilterSetting: _dateFilterSetting,
-          selectedStartDate: _dateFilterSetting != null ? _startDate : null,
-          selectedEndDate: _dateFilterSetting != null ? _endDate : null,
-          onDateFilterChange: (start, end) {
-            setState(() {
-              _startDate = start;
-              _endDate = end;
-              _updateComparisonDates();
-              handleFilterChange();
-            });
-            _fetchStatistics();
-          },
-          onDateFilterSettingChange: (setting) {
-            setState(() {
-              _dateFilterSetting = setting;
-              if (setting?.isQuickSelection == true) {
-                final range = setting!.calculateCurrentDateRange();
-                _startDate = range.startDate;
-                _endDate = range.endDate;
-              } else if (setting != null) {
-                _startDate = setting.startDate;
-                _endDate = setting.endDate;
-              } else {
-                _startDate = null;
-                _endDate = null;
-              }
-              _updateComparisonDates();
-              handleFilterChange();
-            });
-            _fetchStatistics();
-          },
-        ),
-        const SizedBox(width: AppTheme.sizeSmall),
-        IconButton(
-          icon: Icon(Icons.compare_arrows),
-          color: _showComparison ? Theme.of(context).colorScheme.primary : null,
-          tooltip: _translationService.translate(SharedTranslationKeys.compareWithPreviousLabel),
-          onPressed: () {
-            setState(() {
-              _showComparison = !_showComparison;
-              _updateComparisonDates();
-              handleFilterChange();
-            });
-            _fetchStatistics();
-          },
-        ),
-        const SizedBox(width: AppTheme.sizeSmall),
-        SaveButton(
-            hasUnsavedChanges: hasUnsavedChanges,
-            showSavedMessage: showSavedMessage,
-            onSave: saveFilterSettings,
-            tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions)),
-      ],
     );
   }
 
@@ -307,13 +321,67 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
         peakHour = h.hour;
       }
     }
-    return StatisticsSummaryCards(
-      totalUsage: _formatDuration(totalSeconds),
-      averageDaily: _formatDuration(avgDaily),
-      peakHour: _formatHour(peakHour),
-      totalUsageLabel: _translationService.translate(SharedTranslationKeys.totalUsageLabel),
-      averageDailyLabel: _translationService.translate(SharedTranslationKeys.averageDailyLabel),
-      peakHourLabel: _translationService.translate(SharedTranslationKeys.peakHourLabel),
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      _translationService.translate(SharedTranslationKeys.totalUsageLabel),
+                      _formatDuration(totalSeconds),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildStatCard(
+                      _translationService.translate(SharedTranslationKeys.averageDailyLabel),
+                      _formatDuration(avgDaily),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildStatCard(
+                      _translationService.translate(SharedTranslationKeys.peakHourLabel),
+                      _formatHour(peakHour),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(String label, String value) {
+    return Card(
+      color: AppTheme.surface1,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeSmall),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: AppTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppTheme.size2XSmall),
+              Text(
+                value,
+                style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

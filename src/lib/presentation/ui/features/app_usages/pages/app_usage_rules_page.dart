@@ -111,7 +111,7 @@ class _AppUsageRulesPageState extends State<AppUsageRulesPage> with SingleTicker
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
+        padding: context.pageBodyPadding,
         child: Column(
           children: [
             // Tab Selection

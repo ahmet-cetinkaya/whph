@@ -82,70 +82,64 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.sizeMedium,
-                vertical: AppTheme.sizeSmall,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // General Section
-                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionGeneral)),
-                  const SizedBox(height: AppTheme.sizeSmall),
-                  Column(
-                    spacing: AppTheme.sizeSmall,
-                    children: [
-                      LanguageSettings(),
-                      StartupSettings(onLoaded: _onStartupLoaded),
-                      if (PlatformUtils.isMobile) PermissionSettings(),
-                    ],
-                  ),
-                  const SizedBox(height: AppTheme.sizeLarge),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // General Section
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionGeneral)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                Column(
+                  spacing: AppTheme.sizeSmall,
+                  children: [
+                    LanguageSettings(),
+                    StartupSettings(onLoaded: _onStartupLoaded),
+                    if (PlatformUtils.isMobile) PermissionSettings(),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.sizeLarge),
 
-                  // Appearance Section
-                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAppearance)),
-                  const SizedBox(height: AppTheme.sizeSmall),
-                  Column(
-                    spacing: AppTheme.sizeSmall,
-                    children: [
-                      ThemeSettings(onLoaded: _onThemeLoaded),
-                      SoundSettings(onLoaded: _onSoundLoaded),
-                    ],
-                  ),
-                  const SizedBox(height: AppTheme.sizeLarge),
+                // Appearance Section
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAppearance)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                Column(
+                  spacing: AppTheme.sizeSmall,
+                  children: [
+                    ThemeSettings(onLoaded: _onThemeLoaded),
+                    SoundSettings(onLoaded: _onSoundLoaded),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.sizeLarge),
 
-                  // Notifications Section
-                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionNotifications)),
-                  const SizedBox(height: AppTheme.sizeSmall),
-                  NotificationSettings(onLoaded: _onNotificationLoaded),
-                  const SizedBox(height: AppTheme.sizeLarge),
+                // Notifications Section
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionNotifications)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                NotificationSettings(onLoaded: _onNotificationLoaded),
+                const SizedBox(height: AppTheme.sizeLarge),
 
-                  // Data & Sync Section
-                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionDataSync)),
-                  const SizedBox(height: AppTheme.sizeSmall),
-                  Column(
-                    spacing: AppTheme.sizeSmall,
-                    children: [
-                      SyncDevicesTile(),
-                      const ImportExportSettings(),
-                    ],
-                  ),
-                  const SizedBox(height: AppTheme.sizeLarge),
+                // Data & Sync Section
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionDataSync)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                Column(
+                  spacing: AppTheme.sizeSmall,
+                  children: [
+                    SyncDevicesTile(),
+                    const ImportExportSettings(),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.sizeLarge),
 
-                  // Advanced Section
-                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAdvanced)),
-                  const SizedBox(height: AppTheme.sizeSmall),
-                  const AdvancedSettingsTile(),
-                  const SizedBox(height: AppTheme.sizeLarge),
+                // Advanced Section
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAdvanced)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                const AdvancedSettingsTile(),
+                const SizedBox(height: AppTheme.sizeLarge),
 
-                  // About Section
-                  SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAbout)),
-                  const SizedBox(height: AppTheme.sizeSmall),
-                  AboutTile(),
-                  const SizedBox(height: AppTheme.sizeXLarge),
-                ],
-              ),
+                // About Section
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAbout)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                AboutTile(),
+                const SizedBox(height: AppTheme.sizeXLarge),
+              ],
             ),
           ),
         ),

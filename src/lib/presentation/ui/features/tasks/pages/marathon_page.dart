@@ -415,9 +415,9 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
             onHover: (_) => _onUserInteraction(),
             child: Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                  child: SingleChildScrollView(
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: context.pageBodyPadding,
                     child: Column(
                       key: _mainContentKey,
                       children: [

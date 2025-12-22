@@ -219,12 +219,7 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             _buildDrawer(NavigationItems.topNavItems, NavigationItems.bottomNavItems),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(
-                left: AppTheme.sizeXSmall,
-                right: AppTheme.sizeXSmall,
-                top: AppTheme.size2XSmall,
-                bottom: AppTheme.size2XSmall,
-              ),
+              padding: context.pageBodyPadding,
               child: widget.builder(context),
             ),
           ),

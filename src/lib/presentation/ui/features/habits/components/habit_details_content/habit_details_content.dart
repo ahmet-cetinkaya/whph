@@ -322,11 +322,10 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                       ))
                   .toList(),
             ),
-            const SizedBox(height: AppTheme.size2XSmall),
+            const SizedBox(height: AppTheme.sizeMedium),
           ],
 
           // Records Section
-          HabitRecordsSection.buildRecordsHeader(translationService: translationService),
           if (_controller.habitRecords != null) ...[
             HabitCalendarView(
               currentMonth: _controller.currentMonth,

@@ -186,7 +186,6 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
       children: [
         SectionHeader(
           title: _translationService.translate(HabitTranslationKeys.statisticsLabel),
-          padding: EdgeInsets.zero,
         ),
         const SizedBox(height: AppTheme.sizeSmall),
         if (_habit!.archivedDate != null) ...[

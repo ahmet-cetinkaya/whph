@@ -287,7 +287,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
+        padding: context.pageBodyPadding,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -302,7 +302,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               // Sub Tasks Header Section
               SectionHeader(
                 title: _translationService.translate(TaskTranslationKeys.subTasksLabel),
-                padding: EdgeInsets.zero,
                 trailing: (_subTasksCompletionPercentage != null && _subTasksCompletionPercentage! > 0)
                     ? Text(
                         '${_subTasksCompletionPercentage!.toStringAsFixed(0)}%',

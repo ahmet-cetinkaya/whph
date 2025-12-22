@@ -222,11 +222,6 @@ class _LanguageDialog extends StatelessWidget {
           for (final section in _languageSections) ...[
             SectionHeader(
               title: section.title,
-              padding: const EdgeInsets.only(
-                left: AppTheme.sizeLarge,
-                top: AppTheme.sizeLarge,
-                bottom: AppTheme.sizeSmall,
-              ),
             ),
             for (final language in section.languages) _buildLanguageTile(context, language),
           ],

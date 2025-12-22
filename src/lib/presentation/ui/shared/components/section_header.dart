@@ -9,7 +9,6 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 /// - Customizable title style
 /// - Optional trailing widget (e.g., button, switch)
 /// - Optional tap handler for interactive headers
-/// - Configurable padding
 /// - Proper accessibility support
 class SectionHeader extends StatelessWidget {
   /// The title text displayed in the header
@@ -24,9 +23,6 @@ class SectionHeader extends StatelessWidget {
   /// Optional callback when the header is tapped
   final VoidCallback? onTap;
 
-  /// Custom padding for the header. Defaults to horizontal small padding
-  final EdgeInsetsGeometry? padding;
-
   /// Custom text style for the title. Defaults to theme's titleSmall
   final TextStyle? titleStyle;
 
@@ -36,7 +32,6 @@ class SectionHeader extends StatelessWidget {
     this.icon,
     this.trailing,
     this.onTap,
-    this.padding,
     this.titleStyle,
   });
 
@@ -82,7 +77,7 @@ class SectionHeader extends StatelessWidget {
     }
 
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+      padding: const EdgeInsets.only(left: AppTheme.sizeMedium, right: AppTheme.sizeSmall),
       child: content,
     );
   }

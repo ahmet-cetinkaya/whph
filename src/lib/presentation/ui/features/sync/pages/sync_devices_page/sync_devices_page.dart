@@ -290,25 +290,20 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         title: Text(_translationService.translate(SyncTranslationKeys.pageTitle)),
         actions: _buildAppBarActions(),
       ),
-      body: CustomScrollView(
-        slivers: [
-          // Firewall permission card (desktop only)
-          SliverToBoxAdapter(
-            child: FirewallPermissionCard(
-              onPermissionChanged: _onFirewallPermissionChanged,
-            ),
-          ),
-
-          // Server Mode Toggle (Android only)
-          if (Platform.isAndroid)
+      body: Padding(
+        padding: context.pageBodyPadding,
+        child: CustomScrollView(
+          slivers: [
+            // Firewall permission card (desktop only)
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppTheme.sizeLarge,
-                  AppTheme.sizeLarge,
-                  AppTheme.sizeLarge,
-                  0,
-                ),
+              child: FirewallPermissionCard(
+                onPermissionChanged: _onFirewallPermissionChanged,
+              ),
+            ),
+
+            // Server Mode Toggle (Android only)
+            if (Platform.isAndroid)
+              SliverToBoxAdapter(
                 child: ServerModeToggle(
                   isServerMode: isServerMode,
                   onToggle: toggleServerMode,
@@ -318,22 +313,19 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                       : _translationService.translate(SyncTranslationKeys.serverModeInactive),
                 ),
               ),
-            ),
 
-          // Device List
-          if (_list == null || _list!.items.isEmpty)
-            SliverFillRemaining(
-              child: SyncDevicesEmptyState(
-                message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
-                addDeviceLabel: _translationService.translate(SyncTranslationKeys.addDeviceTooltip),
-                showAddButton: !isServerMode,
-                onAddDevice: _showAddDevicePage,
-              ),
-            )
-          else
-            SliverPadding(
-              padding: const EdgeInsets.all(AppTheme.sizeLarge),
-              sliver: SliverList(
+            // Device List
+            if (_list == null || _list!.items.isEmpty)
+              SliverFillRemaining(
+                child: SyncDevicesEmptyState(
+                  message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
+                  addDeviceLabel: _translationService.translate(SyncTranslationKeys.addDeviceTooltip),
+                  showAddButton: !isServerMode,
+                  onAddDevice: _showAddDevicePage,
+                ),
+              )
+            else
+              SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     return Padding(
@@ -350,8 +342,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                   childCount: _list!.items.length,
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

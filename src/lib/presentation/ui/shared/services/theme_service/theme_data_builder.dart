@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/services/theme_service/page_padding_theme.dart';
 
 /// Builds ThemeData based on current theme settings.
 /// Extracted from ThemeService to separate theme configuration from settings management.
@@ -61,6 +62,9 @@ class ThemeDataBuilder {
       appBarTheme: _buildAppBarTheme(),
       listTileTheme: _buildListTileTheme(),
       bottomNavigationBarTheme: _buildBottomNavigationBarTheme(),
+      extensions: [
+        _buildPagePaddingTheme(),
+      ],
     );
   }
 
@@ -357,6 +361,13 @@ class ThemeDataBuilder {
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: true,
       showUnselectedLabels: true,
+    );
+  }
+
+  PagePaddingTheme _buildPagePaddingTheme() {
+    return PagePaddingTheme(
+      horizontal: AppTheme.sizeSmall * densityMultiplier,
+      vertical: AppTheme.sizeSmall * densityMultiplier,
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 /// Debug screen to test and compare app usage calculation methods.
 /// This helps identify why usage statistics are inflated compared to Digital Wellbeing.
@@ -91,7 +92,7 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
         title: const Text('App Usage Debug'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: context.pageBodyPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
