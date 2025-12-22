@@ -208,6 +208,9 @@ class DemoDataService implements IDemoDataService {
         await _appUsageTimeRecordRepository.add(record);
       }
 
+      // Insert demo filter settings for app usages (last week filter)
+      await _populateDemoFilterSettings();
+
       Logger.info('DemoDataService: Demo data populated successfully');
     } catch (e) {
       Logger.error('DemoDataService: Error populating demo data: $e');
@@ -460,8 +463,13 @@ class DemoDataService implements IDemoDataService {
 
     // Associate app usages with tags
     if (appUsages.isNotEmpty) {
-      // Work-related app usages
-      final workAppUsages = appUsages.where((appUsage) => appUsage.name == 'com.google.android.gm').toList();
+      // Work-related app usages (Gmail, Slack, Teams)
+      final workAppUsages = appUsages
+          .where((appUsage) =>
+              appUsage.name == 'com.google.android.gm' ||
+              appUsage.name == 'com.slack' ||
+              appUsage.name == 'com.microsoft.teams')
+          .toList();
 
       for (final appUsage in workAppUsages) {
         await _appUsageTagRepository.add(AppUsageTag(
@@ -472,8 +480,10 @@ class DemoDataService implements IDemoDataService {
         ));
       }
 
-      // Learning app usages (educational content)
-      final learningAppUsages = appUsages.where((appUsage) => appUsage.name == 'com.udemy.android').toList();
+      // Learning app usages (Udemy, Duolingo)
+      final learningAppUsages = appUsages
+          .where((appUsage) => appUsage.name == 'com.udemy.android' || appUsage.name == 'com.duolingo')
+          .toList();
 
       for (final appUsage in learningAppUsages) {
         await _appUsageTagRepository.add(AppUsageTag(
@@ -484,8 +494,14 @@ class DemoDataService implements IDemoDataService {
         ));
       }
 
-      // Personal app usages (music and other personal tools)
-      final personalAppUsages = appUsages.where((appUsage) => appUsage.name == 'com.spotify.music').toList();
+      // Personal app usages (Spotify, Maps, Calendar, Amazon)
+      final personalAppUsages = appUsages
+          .where((appUsage) =>
+              appUsage.name == 'com.spotify.music' ||
+              appUsage.name == 'com.google.android.apps.maps' ||
+              appUsage.name == 'com.google.android.calendar' ||
+              appUsage.name == 'com.amazon.mShop.android.shopping')
+          .toList();
 
       for (final appUsage in personalAppUsages) {
         await _appUsageTagRepository.add(AppUsageTag(
@@ -496,9 +512,11 @@ class DemoDataService implements IDemoDataService {
         ));
       }
 
-      // Entertainment app usages (video streaming)
-      final entertainmentAppUsages =
-          appUsages.where((appUsage) => appUsage.name == 'com.google.android.youtube').toList();
+      // Entertainment app usages (YouTube, Netflix)
+      final entertainmentAppUsages = appUsages
+          .where(
+              (appUsage) => appUsage.name == 'com.google.android.youtube' || appUsage.name == 'com.netflix.mediaclient')
+          .toList();
 
       for (final appUsage in entertainmentAppUsages) {
         await _appUsageTagRepository.add(AppUsageTag(
@@ -509,12 +527,13 @@ class DemoDataService implements IDemoDataService {
         ));
       }
 
-      // Social app usages (social media)
+      // Social app usages (WhatsApp, Instagram, Twitter, Facebook)
       final socialAppUsages = appUsages
           .where((appUsage) =>
               appUsage.name == 'com.whatsapp' ||
               appUsage.name == 'com.instagram.android' ||
-              appUsage.name == 'com.twitter.android')
+              appUsage.name == 'com.twitter.android' ||
+              appUsage.name == 'com.facebook.katana')
           .toList();
 
       for (final appUsage in socialAppUsages) {
@@ -557,5 +576,70 @@ class DemoDataService implements IDemoDataService {
       Logger.error('DemoDataService: Error marking demo data as initialized: $e');
       rethrow;
     }
+  }
+
+  /// Populates demo filter settings for app usages with 'last week' date range
+  Future<void> _populateDemoFilterSettings() async {
+    Logger.debug('DemoDataService: Populating demo filter settings...');
+
+    try {
+      final now = DateTime.now();
+      final lastWeekStart = now.subtract(const Duration(days: 7));
+
+      // Create app usage filter settings JSON with 'last week' quick selection
+      final filterSettingsJson = {
+        'showNoTagsFilter': false,
+        'showComparison': false,
+        'dateFilterSetting': {
+          'isQuickSelection': true,
+          'quickSelectionKey': 'last_week',
+          'startDate': lastWeekStart.toIso8601String(),
+          'endDate': now.toIso8601String(),
+          'isAutoRefreshEnabled': true,
+        },
+        'startDate': lastWeekStart.toIso8601String(),
+        'endDate': now.toIso8601String(),
+      };
+
+      // Store the setting in the database
+      final filterSetting = Setting(
+        id: KeyHelper.generateStringId(),
+        key: 'APP_USAGES_FILTER_SETTINGS',
+        value: _jsonEncode(filterSettingsJson),
+        valueType: SettingValueType.json,
+        createdDate: DateTime.now(),
+      );
+
+      await _settingRepository.add(filterSetting);
+      Logger.debug('DemoDataService: App usage filter settings added successfully');
+    } catch (e) {
+      Logger.error('DemoDataService: Error populating demo filter settings: $e');
+      // Don't rethrow - filter settings are not critical for demo data
+    }
+  }
+
+  /// Simple JSON encoder for filter settings
+  String _jsonEncode(Map<String, dynamic> json) {
+    // Manual JSON encoding to avoid dart:convert import issues
+    final buffer = StringBuffer('{');
+    var first = true;
+    for (final entry in json.entries) {
+      if (!first) buffer.write(',');
+      first = false;
+      buffer.write('"${entry.key}":');
+      if (entry.value == null) {
+        buffer.write('null');
+      } else if (entry.value is bool) {
+        buffer.write(entry.value.toString());
+      } else if (entry.value is num) {
+        buffer.write(entry.value.toString());
+      } else if (entry.value is String) {
+        buffer.write('"${entry.value}"');
+      } else if (entry.value is Map) {
+        buffer.write(_jsonEncode(entry.value as Map<String, dynamic>));
+      }
+    }
+    buffer.write('}');
+    return buffer.toString();
   }
 }

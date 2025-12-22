@@ -1,0 +1,61 @@
+# Screengrabfile
+# For more information about the Screengrab tool, see:
+# https://docs.fastlane.tools/actions/screengrab/
+
+# Android app package identifier
+app_package_name("me.ahmetcetinkaya.whph")
+
+# Test app package identifier (for instrumentation tests)
+# Note: For Flutter apps, screenshots are captured via flutter drive
+# This file is provided for reference if native screengrab is needed
+tests_package_name("me.ahmetcetinkaya.whph.test")
+
+# Use this to ensure only specific devices are used for screenshots
+# use_tests_in_packages(["me.ahmetcetinkaya.whph.test"])
+
+# Specify the locales for which screenshots should be taken
+locales([
+  "en-US",
+  "de-DE",
+  "es-ES",
+  "fr-FR",
+  "it-IT",
+  "ja-JP",
+  "ko-KR",
+  "zh-CN",
+  "tr-TR",
+  "ru-RU",
+  "uk-UA",
+  "pl-PL",
+  "pt-PT",
+  "nl-NL",
+  "sv-SE",
+  "nb-NO",
+  "da-DK",
+  "fi-FI",
+  "cs-CZ",
+  "el-GR",
+  "ro-RO",
+  "sl-SI"
+])
+
+# Clear previous screenshots before capturing new ones
+clear_previous_screenshots(true)
+
+# Output directory for screenshots
+output_directory("./metadata/android")
+
+# Skip open summary after completion
+skip_open_summary(true)
+
+# Use the UI Automator screenshot strategy for better quality
+# use_timestamp_suffix(false)
+
+# Specify specific devices if needed (for emulator)
+# specific_device("emulator-5554")
+
+# Retry failed screenshot attempts
+# reinstall_app(true)
+
+# Timeout settings
+# launch_arguments(["--es", "screengrab_locale", "en-US"])

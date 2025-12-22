@@ -1,0 +1,69 @@
+# Snapfile
+# For more information about the Snapshot tool, see:
+# https://docs.fastlane.tools/actions/snapshot/
+
+# Note: For Flutter apps, screenshots are captured via flutter drive
+# This file is provided for reference if native snapshot is needed on macOS
+
+# A list of devices you want to take the screenshots from
+devices([
+  "iPhone 15 Pro Max",
+  "iPhone SE (3rd generation)"
+])
+
+# Supported languages for screenshots
+languages([
+  "en-US",
+  "de-DE",
+  "es-ES",
+  "fr-FR",
+  "it-IT",
+  "ja",
+  "ko",
+  "zh-Hans",
+  "tr",
+  "ru",
+  "uk",
+  "pl",
+  "pt-PT",
+  "nl-NL",
+  "sv",
+  "nb",
+  "da",
+  "fi",
+  "cs",
+  "el",
+  "ro",
+  "sl"
+])
+
+# The name of the scheme which contains the UI Tests
+# scheme("whphUITests")
+
+# Where should the resulting screenshots be stored?
+output_directory("./metadata/ios")
+
+# Clear all previously generated screenshots before creating new ones
+clear_previous_screenshots(true)
+
+# Don't open the HTML summary after running
+skip_open_summary(true)
+
+# Rebuild the app before taking screenshots
+# reinstall_app(true)
+
+# Number of times to retry screenshot capture
+number_of_retries(3)
+
+# Arguments to pass to the app on launch
+# launch_arguments(["-DEMO_MODE", "true"])
+
+# iOS version
+# ios_version("17.0")
+
+# Stop after first error
+# stop_after_first_error(true)
+
+# Override status bar with clean values for screenshots
+override_status_bar(true)
+override_status_bar_arguments("--time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4")

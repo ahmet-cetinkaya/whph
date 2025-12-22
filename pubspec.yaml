@@ -29,6 +29,10 @@ scripts:
   test:locale: cd src && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
   test:migrate: cd src && fvm flutter test test/drift/app_database/migration_test.dart
 
+  # Screenshots (use flutter drive for file output)
+  gen:screenshots: cd src && mkdir -p ../fastlane/metadata/android/en-US/images/phoneScreenshots && fvm flutter drive --driver=test_driver/integration_test.dart --target=integration_test/screenshot_test.dart --dart-define=DEMO_MODE=true -d emulator-5554
+  gen:screenshots:device: cd src && mkdir -p ../fastlane/metadata/android/en-US/images/phoneScreenshots && fvm flutter drive --driver=test_driver/integration_test.dart --target=integration_test/screenshot_test.dart --dart-define=DEMO_MODE=true
+
   # Code Generation
   gen: cd src && bash scripts/generate_gen_files.sh
   gen:icons: cd src && fvm flutter pub run icons_launcher:create
