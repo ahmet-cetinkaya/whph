@@ -290,11 +290,10 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
         _appUsageList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
-    return ListView.separated(
+    return ListView.builder(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: _appUsageList!.items.length + extraItemCount,
-      separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
       itemBuilder: (context, index) {
         if (index == _appUsageList!.items.length && showLoadMore) {
           return Padding(

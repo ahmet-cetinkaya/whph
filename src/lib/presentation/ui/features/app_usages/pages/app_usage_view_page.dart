@@ -21,6 +21,7 @@ import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/app_usage_permission.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
+import 'package:whph/core/domain/shared/constants/demo_config.dart';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -107,6 +108,17 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
   }
 
   Future<void> _checkPermission() async {
+    // In demo mode, skip permission check and show mock data
+    if (DemoConfig.isDemoModeEnabled) {
+      if (mounted) {
+        setState(() {
+          _hasPermission = true;
+          _isCheckingPermission = false;
+        });
+      }
+      return;
+    }
+
     try {
       final hasPermission = await _deviceAppUsageService.checkUsageStatsPermission();
       if (mounted) {
@@ -173,7 +185,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const AppUsageRulesPage(),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
     setState(() {}); // Trigger rebuild to refresh list
   }

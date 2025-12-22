@@ -41,7 +41,7 @@ class TaskDatePickerConfig {
     this.initialReminderTime,
     this.initialReminderCustomOffset,
     this.translationService,
-    this.dialogSize = DialogSize.large,
+    this.dialogSize = DialogSize.xLarge,
     this.formatType = acore.DateFormatType.dateTime,
     this.context, // Add context parameter
   });
@@ -425,7 +425,7 @@ class TaskDatePickerDialog {
     return await ResponsiveDialogHelper.showResponsiveDialog<ReminderSelectionResult>(
       context: context,
       child: child,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       isScrollable: true,
       isDismissible: true,
       enableDrag: true,

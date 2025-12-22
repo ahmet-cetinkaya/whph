@@ -122,6 +122,8 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
     }
 
     return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: _elementTimeData!.items.length,
       itemBuilder: (context, index) {
         final item = _elementTimeData!.items[index];
@@ -142,25 +144,22 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
       barColor = _getCategoryColor(item.category);
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.size2XSmall),
-      child: BarChart(
-        title: item.name,
-        value: item.duration.toDouble(),
-        maxValue: maxDuration,
-        barColor: barColor,
-        formatValue: (value) => SharedUiConstants.formatDurationHuman((value / 60).toInt(), _translationService),
-        onTap: () => _openElementDetails(item),
-        additionalWidget: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              TagUiConstants.getTagTimeCategoryIcon(item.category),
-              size: AppTheme.iconSizeSmall,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ],
-        ),
+    return BarChart(
+      title: item.name,
+      value: item.duration.toDouble(),
+      maxValue: maxDuration,
+      barColor: barColor,
+      formatValue: (value) => SharedUiConstants.formatDurationHuman((value / 60).toInt(), _translationService),
+      onTap: () => _openElementDetails(item),
+      additionalWidget: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            TagUiConstants.getTagTimeCategoryIcon(item.category),
+            size: AppTheme.iconSizeSmall,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ],
       ),
     );
   }
@@ -176,7 +175,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
             taskId: item.id,
             hideSidebar: true,
           ),
-          size: DialogSize.large,
+          size: DialogSize.xLarge,
         );
         break;
       case TagTimeCategory.habits:
@@ -185,7 +184,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
           child: HabitDetailsPage(
             habitId: item.id,
           ),
-          size: DialogSize.large,
+          size: DialogSize.xLarge,
         );
         break;
       case TagTimeCategory.appUsage:
@@ -194,7 +193,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
           child: AppUsageDetailsPage(
             appUsageId: item.id,
           ),
-          size: DialogSize.large,
+          size: DialogSize.xLarge,
         );
         break;
       default:

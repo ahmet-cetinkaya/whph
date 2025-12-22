@@ -59,7 +59,7 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
           translationService: _translationService,
           onClose: widget.onDialogClose,
         ),
-        size: DialogSize.large);
+        size: DialogSize.xLarge);
   }
 
   @override

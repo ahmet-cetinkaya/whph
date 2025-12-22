@@ -177,7 +177,7 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
           useResponsiveDesign: true,
           enableFooterActions: true,
           translationService: widget.translationService,
-          dialogSize: DialogSize.large,
+          dialogSize: DialogSize.xLarge,
           context: context,
         ),
       );

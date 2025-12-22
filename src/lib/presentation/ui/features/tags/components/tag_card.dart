@@ -40,7 +40,8 @@ class _TagCardState extends State<TagCard> {
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
       visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
-      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      contentPadding: const EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      minTileHeight: 48,
       dense: widget.isDense,
       onTap: widget.onOpenDetails,
       title: Text(

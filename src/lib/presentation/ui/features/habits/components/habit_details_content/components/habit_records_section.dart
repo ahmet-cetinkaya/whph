@@ -1,24 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/section_header.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 /// Builds the records header and daily record button for habit details.
 class HabitRecordsSection {
-  static Widget buildRecordsHeader({
-    required ITranslationService translationService,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: SectionHeader(
-        title: translationService.translate(HabitTranslationKeys.recordsLabel),
-        padding: EdgeInsets.zero,
-      ),
-    );
-  }
-
   static Widget buildDailyRecordButton({
     required BuildContext context,
     required int dailyCompletionCount,

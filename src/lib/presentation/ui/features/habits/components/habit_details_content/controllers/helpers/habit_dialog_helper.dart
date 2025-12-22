@@ -108,7 +108,7 @@ class HabitDialogHelper {
 
     final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitGoalResult>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: HabitGoalDialog(
         hasGoal: habit.hasGoal,
         targetFrequency: habit.targetFrequency,

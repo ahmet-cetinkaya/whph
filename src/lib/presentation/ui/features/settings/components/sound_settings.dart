@@ -187,7 +187,7 @@ class _SoundSettingsState extends State<SoundSettings> {
   void _showSoundModal() {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.max,
       child: _SoundDialog(
         soundEnabled: _soundEnabled,
         taskCompletionSoundEnabled: _taskCompletionSoundEnabled,

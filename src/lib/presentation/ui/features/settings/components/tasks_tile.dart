@@ -52,7 +52,7 @@ class TasksTile extends StatelessWidget {
               ResponsiveDialogHelper.showResponsiveDialog(
                 context: context,
                 child: const TaskPreferencesDialog(),
-                size: DialogSize.large,
+                size: DialogSize.xLarge,
               );
             },
           ),

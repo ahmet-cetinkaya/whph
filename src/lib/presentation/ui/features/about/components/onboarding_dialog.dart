@@ -138,7 +138,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const PermissionsPage(),
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
     );
   }
 

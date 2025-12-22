@@ -260,9 +260,8 @@ class _TagsPageState extends State<TagsPage> {
 
                 // Tag Time Title
                 SectionHeader(
-                  key: _timeChartSectionKey,
                   title: _translationService.translate(TagTranslationKeys.timeDistribution),
-                  padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+                  expandTrailing: true,
                   trailing: TagTimeChartOptions(
                     dateFilterSetting: _dateFilterSetting,
                     selectedStartDate: _dateFilterSetting != null ? _startDate : null,
@@ -294,22 +293,19 @@ class _TagsPageState extends State<TagsPage> {
 
                 // List Options
                 SectionHeader(
-                  key: _listOptionsKey,
                   title: _translationService.translate(TagTranslationKeys.listSectionTitle),
-                  padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                  trailing: Expanded(
-                    child: TagListOptions(
-                      onSettingsLoaded: _onListOptionLoaded,
-                      showSearchFilter: true,
-                      search: _searchFilterQuery,
-                      onSearchChange: _onListSearchChange,
-                      showSortButton: true,
-                      sortConfig: _sortConfig,
-                      onSortChange: _onListSortConfigChange,
-                      showTagFilter: false,
-                      showArchivedToggle: false,
-                      settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
-                    ),
+                  expandTrailing: true,
+                  trailing: TagListOptions(
+                    onSettingsLoaded: _onListOptionLoaded,
+                    showSearchFilter: true,
+                    search: _searchFilterQuery,
+                    onSearchChange: _onListSearchChange,
+                    showSortButton: true,
+                    sortConfig: _sortConfig,
+                    onSortChange: _onListSortConfigChange,
+                    showTagFilter: false,
+                    showArchivedToggle: false,
+                    settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
                   ),
                 ),
 

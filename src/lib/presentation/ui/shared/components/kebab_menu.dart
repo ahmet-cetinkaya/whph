@@ -67,7 +67,7 @@ class KebabMenu extends StatelessWidget {
             if (_shouldShowHelp) {
               ResponsiveDialogHelper.showResponsiveDialog<String>(
                   context: context,
-                  size: DialogSize.large,
+                  size: DialogSize.xLarge,
                   child: HelpDialog(
                     titleKey: helpTitleKey!,
                     markdownContentKey: helpMarkdownContentKey!,

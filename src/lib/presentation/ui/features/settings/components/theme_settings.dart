@@ -90,7 +90,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
 
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.max,
       isScrollable: false,
       child: _ThemeDialogWrapper(
         currentThemeMode: _themeMode,
@@ -453,7 +453,6 @@ class _ThemeDialogState extends State<_ThemeDialog> {
               // Theme Mode Selection
               SectionHeader(
                 title: _translationService.translate(SettingsTranslationKeys.themeModeTitle),
-                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
                 titleStyle: AppTheme.labelLarge,
               ),
               Row(
@@ -492,7 +491,6 @@ class _ThemeDialogState extends State<_ThemeDialog> {
               // Accent Color Section
               SectionHeader(
                 title: _translationService.translate(SettingsTranslationKeys.customAccentColorTitle),
-                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
                 titleStyle: AppTheme.labelLarge,
               ),
 
@@ -597,7 +595,6 @@ class _ThemeDialogState extends State<_ThemeDialog> {
               // UI Density
               SectionHeader(
                 title: _translationService.translate(SettingsTranslationKeys.uiDensityTitle),
-                padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
                 titleStyle: AppTheme.labelLarge,
               ),
 

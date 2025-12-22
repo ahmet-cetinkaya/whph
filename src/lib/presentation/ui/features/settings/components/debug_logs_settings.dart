@@ -93,7 +93,7 @@ class _DebugLogsSettingsState extends State<DebugLogsSettings> {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const DebugLogsDialog(),
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/shared/services/theme_service/page_padding_theme.dart';
 
 class AppTheme {
   static IThemeService? _themeService;
@@ -204,6 +205,25 @@ class AppTheme {
 
   // ThemeData definition (dynamic)
   static ThemeData get themeData => _service.themeData;
+}
+
+extension PagePaddingContext on BuildContext {
+  /// Retrieves the centralized page padding from the theme.
+  /// Automatically reduces horizontal padding on small screens.
+  EdgeInsets get pageBodyPadding {
+    final theme = Theme.of(this);
+    final extension = theme.extension<PagePaddingTheme>();
+
+    if (extension == null) return EdgeInsets.zero;
+
+    final isSmall = MediaQuery.sizeOf(this).width <= AppTheme.screenSmall;
+    final horizontal = isSmall ? AppTheme.sizeSmall : extension.horizontal;
+
+    return EdgeInsets.symmetric(
+      horizontal: horizontal,
+      vertical: extension.vertical,
+    );
+  }
 }
 
 /// Default theme service for tests when container is not initialized
