@@ -147,12 +147,17 @@ class DemoDataService implements IDemoDataService {
     Logger.info('DemoDataService: Populating demo data...');
 
     try {
-      // Create demo data in dependency order
-      final tags = DemoData.tags;
-      final habits = DemoData.habits;
-      final tasks = DemoData.tasks;
-      final notes = DemoData.notes;
-      final appUsages = DemoData.appUsages;
+      // Get locale from dart-define SCREENSHOT_LOCALE (default: en)
+      const locale = String.fromEnvironment('SCREENSHOT_LOCALE', defaultValue: 'en');
+      Logger.info('DemoDataService: Using locale: $locale');
+
+      // Create demo data for the specified locale
+      final demoData = DemoData.forLocale(locale);
+      final tags = demoData.tags;
+      final habits = demoData.habits;
+      final tasks = demoData.tasks;
+      final notes = demoData.notes;
+      final appUsages = demoData.appUsages;
 
       // Insert tags first (no dependencies)
       Logger.debug('DemoDataService: Inserting ${tags.length} tags...');
@@ -188,21 +193,21 @@ class DemoDataService implements IDemoDataService {
       await _createTagAssociations(tags, habits, tasks, notes, appUsages);
 
       // Insert habit records
-      final habitRecords = DemoData.generateHabitRecords(habits);
+      final habitRecords = demoData.generateHabitRecords(habits);
       Logger.debug('DemoDataService: Inserting ${habitRecords.length} habit records...');
       for (final record in habitRecords) {
         await _habitRecordRepository.add(record);
       }
 
       // Insert task time records
-      final taskTimeRecords = DemoData.generateTaskTimeRecords(tasks);
+      final taskTimeRecords = demoData.generateTaskTimeRecords(tasks);
       Logger.debug('DemoDataService: Inserting ${taskTimeRecords.length} task time records...');
       for (final record in taskTimeRecords) {
         await _taskTimeRecordRepository.add(record);
       }
 
       // Insert app usage time records
-      final appUsageTimeRecords = DemoData.generateAppUsageTimeRecords(appUsages);
+      final appUsageTimeRecords = demoData.generateAppUsageTimeRecords(appUsages);
       Logger.debug('DemoDataService: Inserting ${appUsageTimeRecords.length} app usage time records...');
       for (final record in appUsageTimeRecords) {
         await _appUsageTimeRecordRepository.add(record);
@@ -218,8 +223,8 @@ class DemoDataService implements IDemoDataService {
     }
   }
 
-  /// Creates tag associations for demo entities
-  /// Ensures every task, habit, and note has at least one tag
+  /// Creates tag associations for demo entities using index-based assignments
+  /// This ensures proper tag associations regardless of locale since array order is consistent
   Future<void> _createTagAssociations(
     List<dynamic> tags,
     List<dynamic> habits,
@@ -231,237 +236,105 @@ class DemoDataService implements IDemoDataService {
 
     if (tags.isEmpty) return;
 
-    final workTag = tags.firstWhere((tag) => tag.name == 'Work');
-    final personalTag = tags.firstWhere((tag) => tag.name == 'Personal');
-    final healthTag = tags.firstWhere((tag) => tag.name == 'Health');
-    final learningTag = tags.firstWhere((tag) => tag.name == 'Learning');
-    final entertainmentTag = tags.firstWhere((tag) => tag.name == 'Entertainment');
-    final socialTag = tags.firstWhere((tag) => tag.name == 'Social');
+    // Tags are created in a fixed order in DemoTags:
+    // [0] Work, [1] Personal, [2] Health, [3] Learning, [4] Finance, [5] Entertainment, [6] Social
+    final workTag = tags[0];
+    final personalTag = tags[1];
+    final healthTag = tags[2];
+    final learningTag = tags[3];
+    // final financeTag = tags[4]; // Not used currently
+    final entertainmentTag = tags[5];
+    final socialTag = tags[6];
 
-    // Associate tasks with tags - comprehensive assignment
+    // Associate tasks with tags using index-based assignment
+    // Tasks are created in a fixed order in DemoTasks
     if (tasks.isNotEmpty) {
-      final assignedTaskIds = <String>{};
+      // Task indices (from DemoTasks generator):
+      // [0-8] Work tasks: Status Update, Project X, Team Meeting, Code Review, Email Responses,
+      //                   API Integration, Write Tests, Database Optimization, Quarterly Report
+      // [9-10] Learning tasks: Design Patterns, Microservices Architecture
+      // [11-13] Personal tasks: Buy Groceries, Update Resume, Call Mom, Backup Data, Renew Prescription
+      for (int i = 0; i < tasks.length; i++) {
+        final task = tasks[i];
+        dynamic targetTag;
 
-      // Work tasks
-      final workTasks = tasks
-          .where((task) =>
-              task.title.contains('Project') ||
-              task.title.contains('Team') ||
-              task.title.contains('Review') ||
-              task.title.contains('Report') ||
-              task.title.contains('Status') ||
-              task.title.contains('Code') ||
-              task.title.contains('Email'))
-          .toList();
+        if (i <= 8) {
+          // Work tasks
+          targetTag = workTag;
+        } else if (i <= 10) {
+          // Learning tasks
+          targetTag = learningTag;
+        } else {
+          // Personal tasks
+          targetTag = personalTag;
+        }
 
-      for (final task in workTasks) {
         await _taskTagRepository.add(TaskTag(
           id: KeyHelper.generateStringId(),
           taskId: task.id,
-          tagId: workTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedTaskIds.add(task.id);
-      }
-
-      // Personal tasks
-      final personalTasks = tasks
-          .where((task) =>
-              task.title.contains('Groceries') ||
-              task.title.contains('Resume') ||
-              task.title.contains('Call Mom') ||
-              task.title.contains('Backup'))
-          .toList();
-
-      for (final task in personalTasks) {
-        await _taskTagRepository.add(TaskTag(
-          id: KeyHelper.generateStringId(),
-          taskId: task.id,
-          tagId: personalTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedTaskIds.add(task.id);
-      }
-
-      // Health tasks
-      final healthTasks = tasks.where((task) => task.title.contains('Health')).toList();
-
-      for (final task in healthTasks) {
-        await _taskTagRepository.add(TaskTag(
-          id: KeyHelper.generateStringId(),
-          taskId: task.id,
-          tagId: healthTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedTaskIds.add(task.id);
-      }
-
-      // Learning tasks
-      final learningTasks = tasks
-          .where((task) =>
-              task.title.contains('Learn') ||
-              task.title.contains('Study') ||
-              task.title.contains('Design') ||
-              task.title.contains('API') ||
-              task.title.contains('Flutter') ||
-              task.title.contains('Dart') ||
-              task.title.contains('Course') ||
-              task.title.contains('Microservices') ||
-              task.title.contains('Architecture'))
-          .toList();
-
-      for (final task in learningTasks) {
-        await _taskTagRepository.add(TaskTag(
-          id: KeyHelper.generateStringId(),
-          taskId: task.id,
-          tagId: learningTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedTaskIds.add(task.id);
-      }
-
-      // Assign remaining tasks to Personal tag (fallback)
-      final unassignedTasks = tasks.where((task) => !assignedTaskIds.contains(task.id)).toList();
-      for (final task in unassignedTasks) {
-        await _taskTagRepository.add(TaskTag(
-          id: KeyHelper.generateStringId(),
-          taskId: task.id,
-          tagId: personalTag.id,
+          tagId: targetTag.id,
           createdDate: DateTime.now(),
         ));
       }
     }
 
-    // Associate habits with tags - comprehensive assignment
+    // Associate habits with tags using index-based assignment
+    // Habits are created in a fixed order in DemoHabits
     if (habits.isNotEmpty) {
-      final assignedHabitIds = <String>{};
+      // Habit indices (from DemoHabits generator):
+      // [0] Meditation - Health
+      // [1] Read - Learning
+      // [2] Exercise - Health
+      // [3] Drink Water - Health
+      // [4] Vitamins - Health
+      // [5] Journal - Personal
+      final habitTagAssignments = [
+        healthTag, // [0] Meditation
+        learningTag, // [1] Read
+        healthTag, // [2] Exercise
+        healthTag, // [3] Drink Water
+        healthTag, // [4] Vitamins
+        personalTag, // [5] Journal
+      ];
 
-      // Health habits
-      final healthHabits = habits
-          .where((habit) =>
-              habit.name.contains('Meditation') ||
-              habit.name.contains('Exercise') ||
-              habit.name.contains('water') ||
-              habit.name.contains('Vitamins'))
-          .toList();
-
-      for (final habit in healthHabits) {
+      for (int i = 0; i < habits.length && i < habitTagAssignments.length; i++) {
         await _habitTagRepository.add(HabitTag(
           id: KeyHelper.generateStringId(),
-          habitId: habit.id,
-          tagId: healthTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedHabitIds.add(habit.id);
-      }
-
-      // Learning habits
-      final learningHabits = habits.where((habit) => habit.name.contains('Read')).toList();
-
-      for (final habit in learningHabits) {
-        await _habitTagRepository.add(HabitTag(
-          id: KeyHelper.generateStringId(),
-          habitId: habit.id,
-          tagId: learningTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedHabitIds.add(habit.id);
-      }
-
-      // Personal habits
-      final personalHabits = habits.where((habit) => habit.name.contains('Journal')).toList();
-
-      for (final habit in personalHabits) {
-        await _habitTagRepository.add(HabitTag(
-          id: KeyHelper.generateStringId(),
-          habitId: habit.id,
-          tagId: personalTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedHabitIds.add(habit.id);
-      }
-
-      // Assign remaining habits to Personal tag (fallback)
-      final unassignedHabits = habits.where((habit) => !assignedHabitIds.contains(habit.id)).toList();
-      for (final habit in unassignedHabits) {
-        await _habitTagRepository.add(HabitTag(
-          id: KeyHelper.generateStringId(),
-          habitId: habit.id,
-          tagId: personalTag.id,
+          habitId: habits[i].id,
+          tagId: habitTagAssignments[i].id,
           createdDate: DateTime.now(),
         ));
       }
     }
 
-    // Associate notes with tags - comprehensive assignment
+    // Associate notes with tags using index-based assignment
+    // Notes are created in a fixed order in DemoNotes
     if (notes.isNotEmpty) {
-      final assignedNoteIds = <String>{};
+      // Note indices (from DemoNotes generator):
+      // [0] Meeting Notes - Work
+      // [1] Shopping List - Personal
+      // [2] Book Notes - Learning
+      // [3] Travel Ideas - Personal
+      // [4] Recipe - Health
+      final noteTagAssignments = [
+        workTag, // [0] Meeting Notes
+        personalTag, // [1] Shopping List
+        learningTag, // [2] Book Notes
+        personalTag, // [3] Travel Ideas
+        healthTag, // [4] Recipe
+      ];
 
-      // Work notes
-      final workNotes = notes.where((note) => note.title.contains('Meeting')).toList();
-
-      for (final note in workNotes) {
+      for (int i = 0; i < notes.length && i < noteTagAssignments.length; i++) {
         await _noteTagRepository.add(NoteTag(
           id: KeyHelper.generateStringId(),
-          noteId: note.id,
-          tagId: workTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedNoteIds.add(note.id);
-      }
-
-      // Personal notes
-      final personalNotes = notes.where((note) => note.title.contains('Travel')).toList();
-
-      for (final note in personalNotes) {
-        await _noteTagRepository.add(NoteTag(
-          id: KeyHelper.generateStringId(),
-          noteId: note.id,
-          tagId: personalTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedNoteIds.add(note.id);
-      }
-
-      // Health notes
-      final healthNotes = notes.where((note) => note.title.contains('Recipe')).toList();
-
-      for (final note in healthNotes) {
-        await _noteTagRepository.add(NoteTag(
-          id: KeyHelper.generateStringId(),
-          noteId: note.id,
-          tagId: healthTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedNoteIds.add(note.id);
-      }
-
-      // Learning notes
-      final learningNotes = notes.where((note) => note.title.contains('Book')).toList();
-
-      for (final note in learningNotes) {
-        await _noteTagRepository.add(NoteTag(
-          id: KeyHelper.generateStringId(),
-          noteId: note.id,
-          tagId: learningTag.id,
-          createdDate: DateTime.now(),
-        ));
-        assignedNoteIds.add(note.id);
-      }
-
-      // Assign remaining notes to Personal tag (fallback)
-      final unassignedNotes = notes.where((note) => !assignedNoteIds.contains(note.id)).toList();
-      for (final note in unassignedNotes) {
-        await _noteTagRepository.add(NoteTag(
-          id: KeyHelper.generateStringId(),
-          noteId: note.id,
-          tagId: personalTag.id,
+          noteId: notes[i].id,
+          tagId: noteTagAssignments[i].id,
           createdDate: DateTime.now(),
         ));
       }
     }
 
-    // Associate app usages with tags
+    // Associate app usages with tags using package name matching (not locale-dependent)
     if (appUsages.isNotEmpty) {
       // Work-related app usages (Gmail, Slack, Teams)
       final workAppUsages = appUsages

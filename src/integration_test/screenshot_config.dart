@@ -20,20 +20,20 @@ class ScreenshotConfig {
     ScreenshotScenario(
       id: 2,
       name: 'task_details',
-      description: 'Task details for Buy Groceries task',
+      description: 'Task details page',
       route: '/tasks',
       waitSeconds: 2,
-      tapText: 'Buy Groceries',
+      tapTranslationKey: 'task.buy_groceries.title', // Dynamically translated
     ),
 
-    // 3. Habit Details Page
+    // 3. Habit Details Page (Meditation habit)
     ScreenshotScenario(
       id: 3,
       name: 'habit_details',
       description: 'Habit details page',
       route: '/habits',
       waitSeconds: 2,
-      tapText: 'Meditation',
+      tapTranslationKey: 'habit.meditation.name', // Dynamically translated
     ),
 
     // 4. Habit Details Page / Statistics Section
@@ -43,7 +43,7 @@ class ScreenshotConfig {
       description: 'Habit details statistics section',
       route: '', // Continue from habit details
       waitSeconds: 2,
-      scrollToText: 'Statistics',
+      scrollToWidgetType: 'HabitStatisticsView', // Scroll to statistics card widget
     ),
 
     // 5. Note Details Page
@@ -72,8 +72,8 @@ class ScreenshotConfig {
       description: 'App usage statistics section',
       route: '', // Continue from app-usages
       waitSeconds: 2,
-      tapFirst: true,
-      scrollToText: 'Statistics',
+      tapFirst: true, // Tap first app to open details
+      scrollToWidgetType: 'AppUsageStatisticsView', // Scroll to statistics card widget
     ),
 
     // 8. Tags Page
@@ -119,8 +119,20 @@ class ScreenshotScenario {
   /// Text to scroll to before capturing (optional).
   final String? scrollToText;
 
+  /// Translation key to look up and tap (optional, uses DemoTranslationsRegistry).
+  final String? tapTranslationKey;
+
   /// Whether to scroll down before capturing (optional).
   final bool scrollDown;
+
+  /// Whether to scroll up (to the top) before capturing (optional).
+  final bool scrollUp;
+
+  /// Custom scroll offset in pixels (positive = up, negative = down).
+  final double? scrollOffset;
+
+  /// Widget type name to scroll to (e.g., 'HabitStatisticsView').
+  final String? scrollToWidgetType;
 
   const ScreenshotScenario({
     required this.id,
@@ -131,6 +143,10 @@ class ScreenshotScenario {
     this.tapText,
     this.tapFirst = false,
     this.scrollToText,
+    this.tapTranslationKey,
     this.scrollDown = false,
+    this.scrollUp = false,
+    this.scrollOffset,
+    this.scrollToWidgetType,
   });
 }

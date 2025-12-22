@@ -1,15 +1,16 @@
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/application/features/demo/constants/demo_translation_keys.dart';
 
 /// Demo habit data generator
 class DemoHabits {
-  /// Demo habits to be created
-  static List<Habit> get habits => [
+  /// Demo habits using translation function
+  static List<Habit> getHabits(String Function(String) translate) => [
         Habit(
           id: KeyHelper.generateStringId(),
-          name: 'Meditation',
-          description: 'Start the day with 10 minutes of mindfulness meditation',
+          name: translate(DemoTranslationKeys.habitMeditationName),
+          description: translate(DemoTranslationKeys.habitMeditationDescription),
           hasReminder: true,
           reminderTime: '07:00',
           reminderDays: '1,2,3,4,5,6,7',
@@ -20,8 +21,8 @@ class DemoHabits {
         ),
         Habit(
           id: KeyHelper.generateStringId(),
-          name: 'Read',
-          description: 'Read books, articles, or other educational material',
+          name: translate(DemoTranslationKeys.habitReadName),
+          description: translate(DemoTranslationKeys.habitReadDescription),
           hasReminder: true,
           reminderTime: '20:00',
           reminderDays: '1,2,3,4,5,6,7',
@@ -32,8 +33,8 @@ class DemoHabits {
         ),
         Habit(
           id: KeyHelper.generateStringId(),
-          name: 'Exercise',
-          description: 'Physical workout or sports activity',
+          name: translate(DemoTranslationKeys.habitExerciseName),
+          description: translate(DemoTranslationKeys.habitExerciseDescription),
           hasReminder: true,
           reminderTime: '18:00',
           reminderDays: '1,3,5',
@@ -44,8 +45,8 @@ class DemoHabits {
         ),
         Habit(
           id: KeyHelper.generateStringId(),
-          name: 'Drink Water',
-          description: 'Stay hydrated throughout the day',
+          name: translate(DemoTranslationKeys.habitDrinkWaterName),
+          description: translate(DemoTranslationKeys.habitDrinkWaterDescription),
           hasReminder: true,
           reminderTime: '09:00',
           reminderDays: '1,2,3,4,5,6,7',
@@ -56,8 +57,8 @@ class DemoHabits {
         ),
         Habit(
           id: KeyHelper.generateStringId(),
-          name: 'Vitamins',
-          description: 'Daily vitamin supplements for health',
+          name: translate(DemoTranslationKeys.habitVitaminsName),
+          description: translate(DemoTranslationKeys.habitVitaminsDescription),
           hasReminder: true,
           reminderTime: '08:00',
           reminderDays: '1,2,3,4,5,6,7',
@@ -68,8 +69,8 @@ class DemoHabits {
         ),
         Habit(
           id: KeyHelper.generateStringId(),
-          name: 'Journal',
-          description: 'Daily reflection and gratitude journaling',
+          name: translate(DemoTranslationKeys.habitJournalName),
+          description: translate(DemoTranslationKeys.habitJournalDescription),
           hasReminder: true,
           reminderTime: '21:00',
           reminderDays: '1,2,3,4,5,6,7',
@@ -79,6 +80,9 @@ class DemoHabits {
           createdDate: DateTime.now().subtract(const Duration(days: 8)),
         ),
       ];
+
+  /// Legacy getter for backward compatibility
+  static List<Habit> get habits => getHabits((key) => key);
 
   /// Generates habit records with realistic progress patterns
   static List<HabitRecord> generateRecords(List<Habit> habits) {

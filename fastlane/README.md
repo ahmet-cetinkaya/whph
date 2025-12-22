@@ -91,6 +91,7 @@ fastlane validate_screenshots
 ### screenshot_config.yaml
 
 Defines:
+
 - Locale mappings (Flutter → Android → iOS)
 - Screenshot scenarios (10 screens)
 - Device configurations
@@ -99,12 +100,13 @@ Defines:
 ### Integration Tests
 
 Located in `src/integration_test/`:
+
 - `screenshot_config.dart` - Dart configuration
 - `screenshot_test.dart` - Main test file
 
 ## Metadata Structure
 
-```
+```text
 metadata/android/
 ├── en-US/
 │   ├── title.txt
@@ -133,6 +135,7 @@ metadata/android/
 ## Troubleshooting
 
 ### No device found
+
 ```bash
 # Check connected devices
 adb devices
@@ -144,6 +147,7 @@ emulator -avd Pixel_8
 ```
 
 ### Flutter drive fails
+
 ```bash
 # Ensure Flutter is correct version
 fvm flutter --version
@@ -159,5 +163,6 @@ fvm flutter drive \
 ```
 
 ### Locale not changing
+
 - Device locale is set via ADB but may require restart
 - App locale is controlled by `SCREENSHOT_LOCALE` env var

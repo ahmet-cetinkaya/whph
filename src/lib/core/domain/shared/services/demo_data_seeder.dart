@@ -33,19 +33,8 @@ class DemoDataSeeder {
       return false;
     }
 
-    await _seedDemoData();
     _isSeeded = true;
     return true;
-  }
-
-  /// Seeds all demo data.
-  Future<void> _seedDemoData() async {
-    // Demo data seeding will be implemented based on existing repositories
-    // For now, the app's existing demo mode initialization handles this
-    // This class serves as the integration point for screenshot automation
-
-    // TODO: Implement specific demo data seeding once we understand
-    // the existing DemoConfig initialization flow better
   }
 
   /// Demo tasks for screenshot scenarios.
