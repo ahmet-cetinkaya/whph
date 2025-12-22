@@ -34,52 +34,48 @@ class _TagCardState extends State<TagCard> {
   Widget build(BuildContext context) {
     final spacing = widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall;
 
-    return Container(
-      constraints: const BoxConstraints(minHeight: 48),
-      alignment: Alignment.center,
-      child: ListTile(
-        tileColor: widget.transparent ? Colors.transparent : AppTheme.surface1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-        ),
-        visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
-        contentPadding: const EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
-        minTileHeight: 48,
-        dense: widget.isDense,
-        onTap: widget.onOpenDetails,
-        title: Text(
-          widget.tag.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.tag.name,
-          style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textColor,
-          ),
-          overflow: TextOverflow.ellipsis,
-          maxLines: widget.isDense ? 1 : 2,
-        ),
-        subtitle: widget.tag.relatedTags.isNotEmpty
-            ? Padding(
-                padding: EdgeInsets.only(top: spacing),
-                child: _buildRelatedTags(),
-              )
-            : null,
-        trailing: widget.trailingButtons != null
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: widget.trailingButtons!.map((btn) {
-                  if (btn is IconButton) {
-                    return IconButton(
-                      icon: btn.icon,
-                      onPressed: btn.onPressed,
-                      color: btn.color,
-                      tooltip: btn.tooltip,
-                      iconSize: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
-                    );
-                  }
-                  return btn;
-                }).toList(),
-              )
-            : null,
+    return ListTile(
+      tileColor: widget.transparent ? Colors.transparent : AppTheme.surface1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),
+      visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
+      contentPadding: const EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      minTileHeight: 48,
+      dense: widget.isDense,
+      onTap: widget.onOpenDetails,
+      title: Text(
+        widget.tag.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.tag.name,
+        style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+          fontWeight: FontWeight.bold,
+          color: AppTheme.textColor,
+        ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: widget.isDense ? 1 : 2,
+      ),
+      subtitle: widget.tag.relatedTags.isNotEmpty
+          ? Padding(
+              padding: EdgeInsets.only(top: spacing),
+              child: _buildRelatedTags(),
+            )
+          : null,
+      trailing: widget.trailingButtons != null
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: widget.trailingButtons!.map((btn) {
+                if (btn is IconButton) {
+                  return IconButton(
+                    icon: btn.icon,
+                    onPressed: btn.onPressed,
+                    color: btn.color,
+                    tooltip: btn.tooltip,
+                    iconSize: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+                  );
+                }
+                return btn;
+              }).toList(),
+            )
+          : null,
     );
   }
 

@@ -26,6 +26,9 @@ class SectionHeader extends StatelessWidget {
   /// Custom text style for the title. Defaults to theme's titleSmall
   final TextStyle? titleStyle;
 
+  /// Whether the trailing widget should expand to fill the available space
+  final bool expandTrailing;
+
   const SectionHeader({
     super.key,
     required this.title,
@@ -33,6 +36,7 @@ class SectionHeader extends StatelessWidget {
     this.trailing,
     this.onTap,
     this.titleStyle,
+    this.expandTrailing = false,
   });
 
   @override
@@ -63,7 +67,7 @@ class SectionHeader extends StatelessWidget {
         ),
         if (trailing != null) ...[
           const SizedBox(width: AppTheme.sizeSmall),
-          trailing!,
+          if (expandTrailing) Expanded(child: trailing!) else trailing!,
         ],
       ],
     );

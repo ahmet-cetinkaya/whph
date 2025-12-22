@@ -17,6 +17,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/models/app_usage_statistics_settings.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:intl/intl.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class AppUsageStatisticsView extends PersistentListOptionsBase {
   final String appUsageId;
@@ -178,79 +179,69 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
-            child: Row(
-              children: [
-                Text(
-                  _translationService.translate(SharedTranslationKeys.statisticsLabel),
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                const SizedBox(width: AppTheme.sizeSmall),
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        DateRangeFilter(
-                          dateFilterSetting: _dateFilterSetting,
-                          selectedStartDate: _dateFilterSetting != null ? _startDate : null,
-                          selectedEndDate: _dateFilterSetting != null ? _endDate : null,
-                          onDateFilterChange: (start, end) {
-                            setState(() {
-                              _startDate = start;
-                              _endDate = end;
-                              _updateComparisonDates();
-                              handleFilterChange();
-                            });
-                            _fetchStatistics();
-                          },
-                          onDateFilterSettingChange: (setting) {
-                            setState(() {
-                              _dateFilterSetting = setting;
-                              if (setting?.isQuickSelection == true) {
-                                final range = setting!.calculateCurrentDateRange();
-                                _startDate = range.startDate;
-                                _endDate = range.endDate;
-                              } else if (setting != null) {
-                                _startDate = setting.startDate;
-                                _endDate = setting.endDate;
-                              } else {
-                                _startDate = null;
-                                _endDate = null;
-                              }
-                              _updateComparisonDates();
-                              handleFilterChange();
-                            });
-                            _fetchStatistics();
-                          },
-                        ),
-                        const SizedBox(width: AppTheme.sizeSmall),
-                        IconButton(
-                          icon: Icon(Icons.compare_arrows),
-                          color: _showComparison ? Theme.of(context).colorScheme.primary : null,
-                          tooltip: _translationService.translate(SharedTranslationKeys.compareWithPreviousLabel),
-                          onPressed: () {
-                            setState(() {
-                              _showComparison = !_showComparison;
-                              _updateComparisonDates();
-                              handleFilterChange();
-                            });
-                            _fetchStatistics();
-                          },
-                        ),
-                        const SizedBox(width: AppTheme.sizeSmall),
-                        SaveButton(
-                            hasUnsavedChanges: hasUnsavedChanges,
-                            showSavedMessage: showSavedMessage,
-                            onSave: saveFilterSettings,
-                            tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions)),
-                      ],
-                    ),
+          SectionHeader(
+            title: _translationService.translate(SharedTranslationKeys.statisticsLabel),
+            expandTrailing: true,
+            trailing: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  DateRangeFilter(
+                    dateFilterSetting: _dateFilterSetting,
+                    selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                    selectedEndDate: _dateFilterSetting != null ? _endDate : null,
+                    onDateFilterChange: (start, end) {
+                      setState(() {
+                        _startDate = start;
+                        _endDate = end;
+                        _updateComparisonDates();
+                        handleFilterChange();
+                      });
+                      _fetchStatistics();
+                    },
+                    onDateFilterSettingChange: (setting) {
+                      setState(() {
+                        _dateFilterSetting = setting;
+                        if (setting?.isQuickSelection == true) {
+                          final range = setting!.calculateCurrentDateRange();
+                          _startDate = range.startDate;
+                          _endDate = range.endDate;
+                        } else if (setting != null) {
+                          _startDate = setting.startDate;
+                          _endDate = setting.endDate;
+                        } else {
+                          _startDate = null;
+                          _endDate = null;
+                        }
+                        _updateComparisonDates();
+                        handleFilterChange();
+                      });
+                      _fetchStatistics();
+                    },
                   ),
-                ),
-              ],
+                  const SizedBox(width: AppTheme.sizeSmall),
+                  IconButton(
+                    icon: Icon(Icons.compare_arrows),
+                    color: _showComparison ? Theme.of(context).colorScheme.primary : null,
+                    tooltip: _translationService.translate(SharedTranslationKeys.compareWithPreviousLabel),
+                    onPressed: () {
+                      setState(() {
+                        _showComparison = !_showComparison;
+                        _updateComparisonDates();
+                        handleFilterChange();
+                      });
+                      _fetchStatistics();
+                    },
+                  ),
+                  const SizedBox(width: AppTheme.sizeSmall),
+                  SaveButton(
+                      hasUnsavedChanges: hasUnsavedChanges,
+                      showSavedMessage: showSavedMessage,
+                      onSave: saveFilterSettings,
+                      tooltip: _translationService.translate(SharedTranslationKeys.saveListOptions)),
+                ],
+              ),
             ),
           ),
           if (_isLoading)

@@ -7,8 +7,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
 class TagStatisticsView extends StatefulWidget {
@@ -25,7 +24,6 @@ class TagStatisticsView extends StatefulWidget {
 
 class _TagStatisticsViewState extends State<TagStatisticsView> {
   final _translationService = container.resolve<ITranslationService>();
-  final _themeService = container.resolve<IThemeService>();
   final _barChartKey = GlobalKey<TagTimeBarChartState>();
 
   DateFilterSetting? _dateFilterSetting;
@@ -35,60 +33,52 @@ class _TagStatisticsViewState extends State<TagStatisticsView> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
-          child: Row(
-            children: [
-              Text(
-                _translationService.translate(SharedTranslationKeys.statisticsLabel),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(width: AppTheme.sizeSmall),
-              Expanded(
-                child: TagTimeChartOptions(
-                  dateFilterSetting: _dateFilterSetting,
-                  selectedStartDate: _dateFilterSetting != null ? _startDate : null,
-                  selectedEndDate: _dateFilterSetting != null ? _endDate : null,
-                  selectedCategories: _selectedCategories,
-                  onDateFilterChange: (start, end) {
-                    if (start != null && end != null) {
-                      setState(() {
-                        _startDate = start;
-                        _endDate = end;
-                        _barChartKey.currentState?.refresh();
-                      });
-                    }
-                  },
-                  onDateFilterSettingChange: (dateFilterSetting) {
-                    setState(() {
-                      _dateFilterSetting = dateFilterSetting;
-                      if (dateFilterSetting?.isQuickSelection == true) {
-                        final currentRange = dateFilterSetting!.calculateCurrentDateRange();
-                        _startDate = currentRange.startDate;
-                        _endDate = currentRange.endDate;
-                      } else if (dateFilterSetting != null) {
-                        _startDate = dateFilterSetting.startDate;
-                        _endDate = dateFilterSetting.endDate;
-                      } else {
-                        // Clear operation
-                        _startDate = null;
-                        _endDate = null;
-                      }
-                      _barChartKey.currentState?.refresh();
-                    });
-                  },
-                  onCategoriesChanged: (categories) {
-                    setState(() {
-                      _selectedCategories = categories;
-                      _barChartKey.currentState?.refresh();
-                    });
-                  },
-                ),
-              ),
-            ],
+        SectionHeader(
+          title: _translationService.translate(SharedTranslationKeys.statisticsLabel),
+          expandTrailing: true,
+          trailing: TagTimeChartOptions(
+            dateFilterSetting: _dateFilterSetting,
+            selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+            selectedEndDate: _dateFilterSetting != null ? _endDate : null,
+            selectedCategories: _selectedCategories,
+            onDateFilterChange: (start, end) {
+              if (start != null && end != null) {
+                setState(() {
+                  _startDate = start;
+                  _endDate = end;
+                  _barChartKey.currentState?.refresh();
+                });
+              }
+            },
+            onDateFilterSettingChange: (dateFilterSetting) {
+              setState(() {
+                _dateFilterSetting = dateFilterSetting;
+                if (dateFilterSetting?.isQuickSelection == true) {
+                  final currentRange = dateFilterSetting!.calculateCurrentDateRange();
+                  _startDate = currentRange.startDate;
+                  _endDate = currentRange.endDate;
+                } else if (dateFilterSetting != null) {
+                  _startDate = dateFilterSetting.startDate;
+                  _endDate = dateFilterSetting.endDate;
+                } else {
+                  // Clear operation
+                  _startDate = null;
+                  _endDate = null;
+                }
+                _barChartKey.currentState?.refresh();
+              });
+            },
+            onCategoriesChanged: (categories) {
+              setState(() {
+                _selectedCategories = categories;
+                _barChartKey.currentState?.refresh();
+              });
+            },
           ),
         ),
         Card(
@@ -106,13 +96,13 @@ class _TagStatisticsViewState extends State<TagStatisticsView> {
                     Container(
                       padding: const EdgeInsets.all(AppTheme.sizeSmall),
                       decoration: BoxDecoration(
-                        color: _themeService.primaryColor.withValues(alpha: 0.15),
+                        color: primaryColor.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
                       ),
                       child: Icon(
                         Icons.bar_chart,
                         size: AppTheme.iconSizeMedium,
-                        color: _themeService.primaryColor,
+                        color: primaryColor,
                       ),
                     ),
                     const SizedBox(width: AppTheme.sizeMedium),

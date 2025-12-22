@@ -23,6 +23,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
+import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class TagsPage extends StatefulWidget {
   static const String route = '/tags';
@@ -258,29 +259,19 @@ class _TagsPageState extends State<TagsPage> {
                 ),
 
                 // Tag Time Title
-                Padding(
-                  padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
-                  child: Row(
-                    children: [
-                      Text(
-                        _translationService.translate(TagTranslationKeys.timeDistribution),
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(width: AppTheme.sizeSmall),
-                      Expanded(
-                        child: TagTimeChartOptions(
-                          dateFilterSetting: _dateFilterSetting,
-                          selectedStartDate: _dateFilterSetting != null ? _startDate : null,
-                          selectedEndDate: _dateFilterSetting != null ? _endDate : null,
-                          onDateFilterChange: _onDateFilterChange,
-                          onDateFilterSettingChange: _onDateFilterSettingChange,
-                          selectedCategories: _selectedCategories,
-                          onCategoriesChanged: _onTimeChartCategoryChanged,
-                          settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
-                          onSettingsLoaded: _onTagTimeChartOptionsLoaded,
-                        ),
-                      ),
-                    ],
+                SectionHeader(
+                  title: _translationService.translate(TagTranslationKeys.timeDistribution),
+                  expandTrailing: true,
+                  trailing: TagTimeChartOptions(
+                    dateFilterSetting: _dateFilterSetting,
+                    selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                    selectedEndDate: _dateFilterSetting != null ? _endDate : null,
+                    onDateFilterChange: _onDateFilterChange,
+                    onDateFilterSettingChange: _onDateFilterSettingChange,
+                    selectedCategories: _selectedCategories,
+                    onCategoriesChanged: _onTimeChartCategoryChanged,
+                    settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
+                    onSettingsLoaded: _onTagTimeChartOptionsLoaded,
                   ),
                 ),
 
@@ -301,30 +292,20 @@ class _TagsPageState extends State<TagsPage> {
                   ),
 
                 // List Options
-                Padding(
-                  padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
-                  child: Row(
-                    children: [
-                      Text(
-                        _translationService.translate(TagTranslationKeys.listSectionTitle),
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(width: AppTheme.sizeSmall),
-                      Expanded(
-                        child: TagListOptions(
-                          onSettingsLoaded: _onListOptionLoaded,
-                          showSearchFilter: true,
-                          search: _searchFilterQuery,
-                          onSearchChange: _onListSearchChange,
-                          showSortButton: true,
-                          sortConfig: _sortConfig,
-                          onSortChange: _onListSortConfigChange,
-                          showTagFilter: false,
-                          showArchivedToggle: false,
-                          settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
-                        ),
-                      ),
-                    ],
+                SectionHeader(
+                  title: _translationService.translate(TagTranslationKeys.listSectionTitle),
+                  expandTrailing: true,
+                  trailing: TagListOptions(
+                    onSettingsLoaded: _onListOptionLoaded,
+                    showSearchFilter: true,
+                    search: _searchFilterQuery,
+                    onSearchChange: _onListSearchChange,
+                    showSortButton: true,
+                    sortConfig: _sortConfig,
+                    onSortChange: _onListSortConfigChange,
+                    showTagFilter: false,
+                    showArchivedToggle: false,
+                    settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
                   ),
                 ),
 
