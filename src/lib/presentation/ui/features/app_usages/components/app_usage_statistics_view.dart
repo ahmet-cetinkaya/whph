@@ -325,14 +325,14 @@ class _AppUsageStatisticsViewState extends PersistentListOptionsBaseState<AppUsa
                       _formatDuration(totalSeconds),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppTheme.sizeSmall),
                   Expanded(
                     child: _buildStatCard(
                       _translationService.translate(SharedTranslationKeys.averageDailyLabel),
                       _formatDuration(avgDaily),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppTheme.sizeSmall),
                   Expanded(
                     child: _buildStatCard(
                       _translationService.translate(SharedTranslationKeys.peakHourLabel),
