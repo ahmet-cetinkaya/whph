@@ -172,7 +172,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         showCompletedTasksToggle: widget.showCompletedTasksToggle,
         onTaskDeleted: _onSubTaskDeleted,
       ),
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
     );
     // TasksList will auto-refresh, just update completion percentage
     _loadTaskDetails();

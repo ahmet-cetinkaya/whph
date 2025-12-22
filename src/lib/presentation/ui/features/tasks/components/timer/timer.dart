@@ -175,7 +175,7 @@ class _AppTimerState extends State<AppTimer> {
   Future<void> _showSettingsModal() async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: TimerSettingsDialog(
         initialTimerMode: _controller.timerMode,
         initialWorkDuration: _controller.workDuration,

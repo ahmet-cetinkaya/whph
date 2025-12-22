@@ -25,7 +25,7 @@ class ImportExportSettings extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const _ImportExportActionsDialog(),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

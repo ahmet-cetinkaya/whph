@@ -152,7 +152,7 @@ class _DeviceSelectDropdownState extends State<DeviceSelectDropdown> {
 
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           final filteredDevices = _availableDevices.where((device) {

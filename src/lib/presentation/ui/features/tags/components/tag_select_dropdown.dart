@@ -181,7 +181,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   Future<void> _showTagSelectionModal(BuildContext context) async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: TagSelectDialog(
         initialSelectedTags: _selectedTags,
         excludeTagIds: widget.excludeTagIds,

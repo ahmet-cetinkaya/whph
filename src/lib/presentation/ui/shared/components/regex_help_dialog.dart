@@ -13,7 +13,7 @@ class RegexHelpDialog extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const RegexHelpDialog(),
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
     );
   }
 

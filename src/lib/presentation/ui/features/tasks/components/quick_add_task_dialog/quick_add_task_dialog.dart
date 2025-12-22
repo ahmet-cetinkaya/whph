@@ -248,7 +248,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           return PrioritySelectionDialog(
@@ -272,7 +272,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           return EstimatedTimeDialogContent(
@@ -299,7 +299,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           return DescriptionDialogContent(
@@ -323,7 +323,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           return LockSettingsDialogContent(

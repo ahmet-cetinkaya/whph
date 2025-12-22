@@ -15,7 +15,7 @@ class AdvancedSettingsTile extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const AdvancedSettingsDialog(),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

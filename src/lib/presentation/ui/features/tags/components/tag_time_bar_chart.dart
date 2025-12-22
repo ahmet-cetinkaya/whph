@@ -175,7 +175,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
             taskId: item.id,
             hideSidebar: true,
           ),
-          size: DialogSize.large,
+          size: DialogSize.xLarge,
         );
         break;
       case TagTimeCategory.habits:
@@ -184,7 +184,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
           child: HabitDetailsPage(
             habitId: item.id,
           ),
-          size: DialogSize.large,
+          size: DialogSize.xLarge,
         );
         break;
       case TagTimeCategory.appUsage:
@@ -193,7 +193,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
           child: AppUsageDetailsPage(
             appUsageId: item.id,
           ),
-          size: DialogSize.large,
+          size: DialogSize.xLarge,
         );
         break;
       default:

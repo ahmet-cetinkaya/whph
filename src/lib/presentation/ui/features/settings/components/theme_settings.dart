@@ -90,7 +90,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
 
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.max,
       isScrollable: false,
       child: _ThemeDialogWrapper(
         currentThemeMode: _themeMode,

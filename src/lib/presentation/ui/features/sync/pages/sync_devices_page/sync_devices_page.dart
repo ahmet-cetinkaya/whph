@@ -242,7 +242,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   Future<void> _showAddDevicePage() async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.max,
       child: AddSyncDevicePage(
         onDeviceAdded: () {
           Logger.info('Device added from AddSyncDevicePage - refreshing device list');

@@ -117,7 +117,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       onRefreshToggleChanged: (bool enabled) {},
       actionButtonRadius: AppTheme.containerBorderRadius,
       allowNullConfirm: true,
-      dialogSize: DialogSize.large,
+      dialogSize: DialogSize.xLarge,
     );
 
     final result = await DatePickerDialog.showResponsive(

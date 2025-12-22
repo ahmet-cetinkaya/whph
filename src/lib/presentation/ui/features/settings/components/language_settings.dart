@@ -19,7 +19,7 @@ class LanguageSettings extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: _LanguageDialog(),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

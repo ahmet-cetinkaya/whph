@@ -192,7 +192,7 @@ class PermissionCard extends StatelessWidget {
         onRequestPermission: onRequestPermission,
         actionButtonText: actionButtonText,
       ),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 }

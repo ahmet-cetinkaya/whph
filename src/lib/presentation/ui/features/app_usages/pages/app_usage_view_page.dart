@@ -185,7 +185,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const AppUsageRulesPage(),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
     setState(() {}); // Trigger rebuild to refresh list
   }

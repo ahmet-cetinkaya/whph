@@ -16,7 +16,7 @@ class SyncDevicesTile extends StatelessWidget {
     ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: const SyncDevicesPage(),
-      size: DialogSize.large,
+      size: DialogSize.max,
     );
   }
 

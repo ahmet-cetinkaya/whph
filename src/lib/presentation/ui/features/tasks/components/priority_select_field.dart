@@ -28,7 +28,7 @@ class PrioritySelectField extends StatelessWidget {
 
     await acore.ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.large,
+      size: DialogSize.xLarge,
       child: StatefulBuilder(
         builder: (context, setState) {
           return PrioritySelectionDialog(
