@@ -522,8 +522,11 @@ platform :ios do
 
     UI.message("🌍 Target locales: #{locales.join(', ')}")
 
+    # Ensure simulator is running and get device name
+    device_name = validate_ios_simulator
+
     locales.each do |locale|
-      capture_ios_screenshots_for_locale(locale: locale, config: config)
+      capture_ios_screenshots_for_locale(locale: locale, config: config, device_name: device_name)
     end
 
     UI.success("✅ iOS screenshot capture completed!")
@@ -532,26 +535,58 @@ platform :ios do
   private_lane :capture_ios_screenshots_for_locale do |options|
     locale = options[:locale]
     config = options[:config]
+    device_name = options[:device_name] || 'iPhone'
 
     UI.message("📱 Capturing iOS screenshots for locale: #{locale}")
 
     flutter_locale = get_flutter_locale(ios_locale: locale, config: config)
+    output_dir = File.expand_path("../metadata/ios/#{locale}/images", __dir__)
+
+    # Ensure output directory exists
+    FileUtils.mkdir_p(output_dir) unless Dir.exist?(output_dir)
 
     # Run Flutter integration test with screenshot capture
     Dir.chdir("../src") do
       sh(
-        "flutter", "drive",
+        "fvm", "flutter", "drive",
         "--driver=test_driver/integration_test.dart",
         "--target=integration_test/screenshot_test.dart",
         "--dart-define=DEMO_MODE=true",
         "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
-        "-d", "iPhone",
+        "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}",
+        "-d", device_name,
         "--no-pub"
       )
     end
 
+    UI.message("📁 Screenshots saved to: #{output_dir}")
+
     # Organize screenshots
     organize_screenshots_for_locale(locale: locale, platform: 'ios')
+  end
+
+  private_lane :validate_ios_simulator do
+    UI.message("🔍 Checking for iOS simulator...")
+
+    # Get list of booted simulators
+    simulators_output = `xcrun simctl list devices booted 2>/dev/null`.strip
+
+    if simulators_output.empty? || !simulators_output.include?("Booted")
+      UI.user_error!("❌ No iOS simulator running. Please start a simulator first with: open -a Simulator")
+    end
+
+    # Extract device name from the booted simulator
+    booted_lines = simulators_output.split("\n").select { |line| line.include?("Booted") }
+    if booted_lines.empty?
+      UI.user_error!("❌ No iOS simulator running. Please start a simulator first.")
+    end
+
+    # Parse device name (format: "    iPhone 15 Pro (UUID) (Booted)")
+    device_line = booted_lines.first
+    device_name = device_line.match(/^\s*(.+?)\s*\(/)[1].strip rescue "iPhone"
+
+    UI.success("✅ iOS simulator found: #{device_name}")
+    device_name # Return device name for use in capture lane
   end
 end
 
@@ -563,17 +598,18 @@ lane :screenshots do |options|
   UI.header("📸 WHPH Screenshot Automation")
 
   platform = options[:platform] || 'all'
+  locales_opt = options[:locales] ? "locales:#{options[:locales]}" : ""
 
   case platform.downcase
   when 'android'
-    Fastlane::LaneManager.cruise_lane('android', 'screenshots_android', options)
+    sh("fastlane", "android", "screenshots_android", locales_opt)
   when 'ios'
-    Fastlane::LaneManager.cruise_lane('ios', 'screenshots_ios', options)
+    sh("fastlane", "ios", "screenshots_ios", locales_opt)
   when 'all'
     UI.message("🤖 Capturing Android screenshots...")
-    Fastlane::LaneManager.cruise_lane('android', 'screenshots_android', options)
+    sh("fastlane", "android", "screenshots_android", locales_opt)
     UI.message("🍎 Capturing iOS screenshots...")
-    Fastlane::LaneManager.cruise_lane('ios', 'screenshots_ios', options)
+    sh("fastlane", "ios", "screenshots_ios", locales_opt)
   else
     UI.user_error!("Unknown platform: #{platform}. Use 'android', 'ios', or 'all'")
   end
@@ -660,6 +696,20 @@ def load_screenshot_config
   YAML.load_file(config_path)
 end
 
+# Format bytes for human readable output
+def format_bytes(bytes)
+  units = ['B', 'KB', 'MB', 'GB']
+  size = bytes.to_f
+  unit_index = 0
+
+  while size >= 1024 && unit_index < units.length - 1
+    size /= 1024
+    unit_index += 1
+  end
+
+  "#{size.round(2)} #{units[unit_index]}"
+end
+
 # Get Flutter locale from Android/iOS locale code
 def get_flutter_locale(android_locale: nil, ios_locale: nil, config:)
   config['locales'].each do |locale_config|
@@ -683,7 +733,16 @@ def organize_screenshots_for_locale(locale:, platform:)
     FileUtils.mkdir_p(screenshot_dir) unless Dir.exist?(screenshot_dir)
 
     # Screenshots are already in the correct location from flutter drive
-    UI.message("📁 Screenshots organized for #{locale}")
+    UI.message("📁 Screenshots organized for Android #{locale}")
+  elsif platform == 'ios'
+    metadata_dir = File.expand_path('../metadata/ios', __dir__)
+    screenshot_dir = File.join(metadata_dir, locale, 'images')
+
+    # Ensure directory exists
+    FileUtils.mkdir_p(screenshot_dir) unless Dir.exist?(screenshot_dir)
+
+    # Screenshots are already in the correct location from flutter drive
+    UI.message("📁 Screenshots organized for iOS #{locale}")
   end
 end
 
