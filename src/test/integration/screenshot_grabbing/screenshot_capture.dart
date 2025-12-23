@@ -67,13 +67,16 @@ void main() {
   });
 }
 
-/// Wait for app initialization.
+/// Wait for app initialization using fixed pumps.
+/// We use fixed pumps instead of pumpAndSettle because pumpAndSettle will timeout
+/// if the app has continuous animations or timers that never settle.
 Future<void> _waitForAppInit(WidgetTester tester) async {
-  await tester.pumpAndSettle(
-    const Duration(seconds: 10),
-    EnginePhase.sendSemanticsUpdate,
-    const Duration(seconds: 2),
-  );
+  // Wait for 10 seconds using fixed pump intervals
+  const int waitSeconds = 10;
+  const int iterations = waitSeconds * 2;
+  for (int i = 0; i < iterations; i++) {
+    await tester.pump(const Duration(milliseconds: 500));
+  }
 }
 
 /// Change the app's locale to the target language.
