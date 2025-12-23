@@ -1,18 +1,19 @@
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/application/features/demo/constants/demo_translation_keys.dart';
 
 /// Demo task data generator
 class DemoTasks {
-  /// Demo tasks to be created
-  static List<Task> get tasks {
+  /// Demo tasks using translation function
+  static List<Task> getTasks(String Function(String) translate) {
     final buyGroceriesTaskId = KeyHelper.generateStringId();
 
     return [
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Complete Project Proposal',
-        description: 'Prepare and submit the quarterly project proposal for review',
+        title: translate(DemoTranslationKeys.taskCompleteProjectTitle),
+        description: translate(DemoTranslationKeys.taskCompleteProjectDescription),
         completedAt: null,
         priority: EisenhowerPriority.urgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 2)),
@@ -21,8 +22,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Review Team Performance',
-        description: 'Conduct quarterly performance reviews for team members',
+        title: translate(DemoTranslationKeys.taskReviewTeamTitle),
+        description: translate(DemoTranslationKeys.taskReviewTeamDescription),
         completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 7)),
@@ -31,8 +32,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Update Resume',
-        description: 'Add recent projects and achievements to resume',
+        title: translate(DemoTranslationKeys.taskUpdateResumeTitle),
+        description: translate(DemoTranslationKeys.taskUpdateResumeDescription),
         completedAt: null,
         priority: EisenhowerPriority.notUrgentNotImportant,
         plannedDate: DateTime.now().add(const Duration(days: 10)),
@@ -40,8 +41,8 @@ class DemoTasks {
       ),
       Task(
         id: buyGroceriesTaskId,
-        title: 'Buy Groceries',
-        description: 'Weekly grocery shopping for the household',
+        title: translate(DemoTranslationKeys.taskBuyGroceriesTitle),
+        description: translate(DemoTranslationKeys.taskBuyGroceriesDescription),
         completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(),
@@ -50,8 +51,8 @@ class DemoTasks {
       // Subtasks for Buy Groceries
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Buy Fresh Vegetables',
-        description: 'Tomatoes, lettuce, carrots, onions, peppers',
+        title: translate(DemoTranslationKeys.taskBuyVegetablesTitle),
+        description: translate(DemoTranslationKeys.taskBuyVegetablesDescription),
         completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(),
@@ -60,8 +61,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Buy Dairy Products',
-        description: 'Milk, cheese, yogurt, butter',
+        title: translate(DemoTranslationKeys.taskBuyDairyTitle),
+        description: translate(DemoTranslationKeys.taskBuyDairyDescription),
         completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(),
@@ -70,8 +71,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Buy Meat & Protein',
-        description: 'Chicken breast, ground beef, eggs, salmon',
+        title: translate(DemoTranslationKeys.taskBuyMeatTitle),
+        description: translate(DemoTranslationKeys.taskBuyMeatDescription),
         completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(),
@@ -80,8 +81,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Buy Pantry Staples',
-        description: 'Rice, pasta, bread, olive oil, spices',
+        title: translate(DemoTranslationKeys.taskBuyPantryTitle),
+        description: translate(DemoTranslationKeys.taskBuyPantryDescription),
         completedAt: null,
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(),
@@ -90,8 +91,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Buy Household Items',
-        description: 'Toilet paper, cleaning supplies, laundry detergent',
+        title: translate(DemoTranslationKeys.taskBuyHouseholdTitle),
+        description: translate(DemoTranslationKeys.taskBuyHouseholdDescription),
         completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.urgentNotImportant,
         plannedDate: DateTime.now(),
@@ -100,9 +101,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Learn Microservices Architecture Patterns',
-        description:
-            'Study distributed system design patterns including circuit breaker, saga, and event sourcing for scalable applications',
+        title: translate(DemoTranslationKeys.taskLearnMicroservicesTitle),
+        description: translate(DemoTranslationKeys.taskLearnMicroservicesDescription),
         completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 7)),
@@ -110,8 +110,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Call Mom',
-        description: 'Weekly check-in call with family',
+        title: translate(DemoTranslationKeys.taskCallMomTitle),
+        description: translate(DemoTranslationKeys.taskCallMomDescription),
         completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now(),
@@ -119,8 +119,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Review Code Changes',
-        description: 'Review and approve pending pull requests',
+        title: translate(DemoTranslationKeys.taskReviewCodeTitle),
+        description: translate(DemoTranslationKeys.taskReviewCodeDescription),
         completedAt: null,
         priority: EisenhowerPriority.urgentImportant,
         deadlineDate: DateTime.now().add(const Duration(hours: 5)),
@@ -128,8 +128,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Backup Computer Files',
-        description: 'Weekly backup of important documents and projects',
+        title: translate(DemoTranslationKeys.taskBackupFilesTitle),
+        description: translate(DemoTranslationKeys.taskBackupFilesDescription),
         completedAt: null,
         priority: EisenhowerPriority.notUrgentNotImportant,
         plannedDate: DateTime.now().add(const Duration(days: 1)),
@@ -137,8 +137,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Learn Flutter State Management',
-        description: 'Complete online course on advanced Flutter state management patterns',
+        title: translate(DemoTranslationKeys.taskLearnFlutterTitle),
+        description: translate(DemoTranslationKeys.taskLearnFlutterDescription),
         completedAt: null,
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().add(const Duration(days: 3)),
@@ -147,8 +147,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Study Design Patterns',
-        description: 'Review and practice implementing key design patterns: Observer, Factory, and Strategy patterns',
+        title: translate(DemoTranslationKeys.taskStudyPatternsTitle),
+        description: translate(DemoTranslationKeys.taskStudyPatternsDescription),
         completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now(),
@@ -156,8 +156,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Learn API Documentation',
-        description: 'Study REST API best practices and OpenAPI specification',
+        title: translate(DemoTranslationKeys.taskLearnApiTitle),
+        description: translate(DemoTranslationKeys.taskLearnApiDescription),
         completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now(),
@@ -165,8 +165,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Schedule Annual Health Checkup',
-        description: 'Book appointment with primary care physician for annual checkup',
+        title: translate(DemoTranslationKeys.taskHealthCheckupTitle),
+        description: translate(DemoTranslationKeys.taskHealthCheckupDescription),
         completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.notUrgentImportant,
         plannedDate: DateTime.now().subtract(const Duration(days: 2)),
@@ -174,8 +174,8 @@ class DemoTasks {
       ),
       Task(
         id: KeyHelper.generateStringId(),
-        title: 'Review Morning Emails',
-        description: 'Check and respond to priority emails from overnight',
+        title: translate(DemoTranslationKeys.taskReviewEmailsTitle),
+        description: translate(DemoTranslationKeys.taskReviewEmailsDescription),
         completedAt: DateTime.now().subtract(const Duration(hours: 1)),
         priority: EisenhowerPriority.urgentImportant,
         plannedDate: DateTime.now(),
@@ -183,6 +183,9 @@ class DemoTasks {
       ),
     ];
   }
+
+  /// Legacy getter for backward compatibility
+  static List<Task> get tasks => getTasks((key) => key);
 
   /// Generates task time records for demo tasks
   static List<TaskTimeRecord> generateTimeRecords(List<Task> tasks) {

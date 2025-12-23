@@ -1,31 +1,166 @@
-# Fastlane Metadata for F-Droid
+# Fastlane Configuration for WHPH
 
-This directory contains metadata used by F-Droid to display app information in their repository.
+This directory contains Fastlane configuration for automated app store deployments and screenshot capture.
 
 ## Structure
 
-- `metadata/android/en-US/` - English (US) locale metadata
-  - `title.txt` - App title displayed in F-Droid
-  - `short_description.txt` - Brief description (max 80 characters)
-  - `full_description.txt` - Detailed app description (max 4000 characters, HTML allowed)
-  - `images/` - App graphics and screenshots
-    - `icon.png` - App icon (48x48 to 512x512 px)
-    - `phoneScreenshots/` - Mobile screenshots
-      - `1.png` to `10.png` - Screenshots in order
-  - `changelogs/` - Version-specific changelogs
-    - `{versionCode}.txt` - Changelog for specific version (max 500 bytes, plain text)
+- `Appfile` - App bundle identifier configuration
+- `Fastfile` - Lane definitions for deployment and screenshots
+- `Screengrabfile` - Android screenshot configuration
+- `Snapfile` - iOS screenshot configuration
+- `screenshot_config.yaml` - Cross-platform screenshot settings
+- `metadata/android/` - Google Play Store metadata by locale
 
-## Guidelines
+## Available Lanes
 
-1. **Screenshots**: Keep file sizes reasonable for mobile users with limited data plans
-2. **Descriptions**: Use basic HTML tags for formatting in `full_description.txt`
-3. **Changelogs**: Must correspond exactly to the versionCode in pubspec.yaml
-4. **Icon**: Minimum 48x48px, maximum 512x512px
+### Deployment (Android)
 
-## Updating
+```bash
+# Internal testing
+fastlane android deploy_internal
 
-When releasing a new version:
+# Alpha/Beta/Production
+fastlane android deploy_alpha
+fastlane android deploy_beta
+fastlane android deploy_production
 
-1. Add a new changelog file named `{versionCode}.txt` in the changelogs directory
-2. Update descriptions if necessary
-3. Add new screenshots if the UI has changed significantly
+# Metadata only
+fastlane android update_metadata
+```
+
+### Screenshots
+
+```bash
+# Capture all screenshots (Android + iOS)
+fastlane screenshots
+
+# Android only
+fastlane android screenshots_android
+
+# Specific locales
+fastlane android screenshots_android locales:en-US,de-DE,tr-TR
+
+# iOS only (requires macOS)
+fastlane ios screenshots_ios
+
+# Validate screenshots
+fastlane validate_screenshots
+
+# Organize for store upload
+fastlane organize_screenshots
+```
+
+## Screenshot Automation
+
+The screenshot system uses Flutter integration tests to capture screenshots:
+
+1. **Prerequisites**:
+   - Android: Running emulator (`emulator -avd Pixel_8`)
+   - iOS: macOS with Xcode and iOS Simulator
+
+2. **Demo Mode**:
+   - Screenshots are captured with `DEMO_MODE=true`
+   - App displays consistent demo data
+
+3. **Locales**:
+   - 22 locales supported
+   - Defined in `screenshot_config.yaml`
+
+4. **Output**:
+   - Android: `metadata/android/{locale}/images/phoneScreenshots/`
+   - iOS: `metadata/ios/{locale}/`
+
+## Running Screenshots
+
+```bash
+# 1. Start Android emulator
+emulator -avd Pixel_8 &
+
+# 2. Navigate to project root
+cd /path/to/whph
+
+# 3. Run screenshot capture
+fastlane android screenshots_android
+
+# 4. Validate results
+fastlane validate_screenshots
+```
+
+## Configuration
+
+### screenshot_config.yaml
+
+Defines:
+
+- Locale mappings (Flutter → Android → iOS)
+- Screenshot scenarios (8 screens)
+- Device configurations
+- Retry settings
+
+### Integration Tests
+
+Located in `src/integration_test/`:
+
+- `screenshot_config.dart` - Dart configuration
+- `screenshot_test.dart` - Main test file
+
+## Metadata Structure
+
+```text
+metadata/android/
+├── en-US/
+│   ├── title.txt
+│   ├── short_description.txt
+│   ├── full_description.txt
+│   ├── changelogs/
+│   │   └── {versionCode}.txt
+│   └── images/
+│       ├── icon.png
+│       └── phoneScreenshots/
+│           ├── 1.png  (Today page)
+│           ├── 2.png  (Task details)
+│           ├── 3.png  (Habit details)
+│           ├── 4.png  (Habit statistics)
+│           ├── 5.png  (Note details)
+│           ├── 6.png  (App usage overview)
+│           ├── 7.png  (App usage statistics)
+│           └── 8.png  (Tags)
+├── de-DE/
+├── tr-TR/
+└── ... (22 locales total)
+```
+
+## Troubleshooting
+
+### No device found
+
+```bash
+# Check connected devices
+adb devices
+
+# Start emulator
+emulator -avd Pixel_8
+
+# Or use physical device with USB debugging
+```
+
+### Flutter drive fails
+
+```bash
+# Ensure Flutter is correct version
+fvm flutter --version
+
+# Get dependencies
+cd src && fvm flutter pub get
+
+# Try running test directly
+fvm flutter drive \
+  --driver=test_driver/integration_test.dart \
+  --target=integration_test/screenshot_test.dart \
+  --dart-define=DEMO_MODE=true
+```
+
+### Locale not changing
+
+- Device locale is set via ADB but may require restart
+- App locale is controlled by `SCREENSHOT_LOCALE` env var

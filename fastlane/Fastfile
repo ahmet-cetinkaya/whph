@@ -15,8 +15,12 @@
 
 default_platform(:android)
 
-platform :android do
-  desc "Runs all the tests"
+  platform :android do
+  MIN_SCREENSHOT_FILE_SIZE_BYTES = 10_000 # 10KB
+
+  # ==============================================================================
+  # Android Platform
+  # ==============================================================================
   lane :test do
     Dir.chdir("../src/android") do
       sh("../../gradlew", "test")
@@ -259,6 +263,91 @@ platform :android do
     )
   end
 
+  # ==============================================================================
+  # Screenshot Automation
+  # ==============================================================================
+
+  desc "Capture Android screenshots using Flutter integration tests"
+  lane :android_screenshots do
+    capture_android_screenshots
+  end
+
+  desc "Capture Android screenshots for specified locales"
+  lane :capture_android_screenshots do |options|
+    UI.important("📸 Starting Android screenshot capture...")
+
+    # Load configuration
+    config = load_screenshot_config
+
+    # Get locales to process
+    locales = options[:locales] ? options[:locales].split(',') : config['locales'].map { |l| l['android'] }
+
+    UI.message("🌍 Target locales: #{locales.join(', ')}")
+
+    # Ensure emulator is running and get device ID
+    device_id = validate_android_emulator
+
+    locales.each do |locale|
+      capture_android_screenshots_for_locale(locale: locale, config: config, device_id: device_id)
+    end
+
+    UI.success("✅ Android screenshot capture completed!")
+  end
+
+  private_lane :capture_android_screenshots_for_locale do |options|
+    locale = options[:locale]
+    config = options[:config]
+    device_id = options[:device_id] || 'emulator-5554'
+
+    UI.message("📱 Capturing Android screenshots for locale: #{locale} using device: #{device_id}")
+
+    flutter_locale = get_flutter_locale(android_locale: locale, config: config)
+    output_dir = File.expand_path("../metadata/android/#{locale}/images/phoneScreenshots", __dir__)
+
+    # Ensure output directory exists
+    FileUtils.mkdir_p(output_dir) unless Dir.exist?(output_dir)
+
+    # Run Flutter integration test with screenshot capture
+    Dir.chdir("../src") do
+      # Set device locale if possible
+      begin
+        sh("adb", "shell", "settings", "put", "system", "system_locales", locale.gsub('-', '_'))
+      rescue StandardError => e
+        UI.message("⚠️ Could not set device locale: #{e.message}")
+      end
+
+      # Run the integration test
+      sh(
+        "fvm", "flutter", "drive",
+        "--driver=test_driver/integration_test.dart",
+        "--target=integration_test/screenshot_test.dart",
+        "--dart-define=DEMO_MODE=true",
+        "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
+        "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}",
+        "-d", device_id,
+        "--no-pub"
+      )
+    end
+
+    UI.message("📁 Screenshots saved to: #{output_dir}")
+  end
+
+  private_lane :validate_android_emulator do
+    UI.message("🔍 Checking for Android emulator...")
+
+    devices_output = `adb devices`.split("\n")
+    devices = devices_output.select { |line| line.include?("emulator") && line.include?("device") }
+    devices = devices.map { |line| line.split("\t").first }
+
+    if devices.empty?
+      UI.user_error!("❌ No Android emulator found. Please start an emulator first.")
+    end
+
+    device_id = devices.first
+    UI.success("✅ Android emulator found: #{device_id}")
+    device_id # Return the device ID for use in capture lane
+  end
+
   # Error handling
   error do |lane, exception|
     UI.error("❌ Lane #{lane} failed with exception: #{exception}")
@@ -373,19 +462,7 @@ platform :android do
     UI.important("📄 Service Account: #{service_account_path}")
   end
 
-  # Format bytes for human readable output
-  def self.format_bytes(bytes)
-    units = ['B', 'KB', 'MB', 'GB']
-    size = bytes.to_f
-    unit_index = 0
 
-    while size >= 1024 && unit_index < units.length - 1
-      size /= 1024
-      unit_index += 1
-    end
-
-    "#{size.round(2)} #{units[unit_index]}"
-  end
 
   # Validate AAB file integrity
   private_lane :validate_aab_file do |aab_path|
@@ -418,4 +495,241 @@ platform :android do
 
     UI.success("✅ AAB file validation passed")
   end
+end
+
+# ==============================================================================
+# iOS Platform
+# ==============================================================================
+platform :ios do
+  desc "Capture iOS screenshots using Flutter integration tests"
+  lane :ios_screenshots do
+    capture_ios_screenshots
+  end
+
+  desc "Capture iOS screenshots for specified locales"
+  lane :capture_ios_screenshots do |options|
+    UI.important("📸 Starting iOS screenshot capture...")
+
+    # Load configuration
+    config = load_screenshot_config
+
+    # Get locales to process
+    locales = options[:locales] ? options[:locales].split(',') : config['locales'].map { |l| l['ios'] }
+
+    UI.message("🌍 Target locales: #{locales.join(', ')}")
+
+    # Ensure simulator is running and get device name
+    device_name = validate_ios_simulator
+
+    locales.each do |locale|
+      capture_ios_screenshots_for_locale(locale: locale, config: config, device_name: device_name)
+    end
+
+    UI.success("✅ iOS screenshot capture completed!")
+  end
+
+  private_lane :capture_ios_screenshots_for_locale do |options|
+    locale = options[:locale]
+    config = options[:config]
+    device_name = options[:device_name] || 'iPhone'
+
+    UI.message("📱 Capturing iOS screenshots for locale: #{locale}")
+
+    flutter_locale = get_flutter_locale(ios_locale: locale, config: config)
+    output_dir = File.expand_path("../metadata/ios/#{locale}/images", __dir__)
+
+    # Ensure output directory exists
+    FileUtils.mkdir_p(output_dir) unless Dir.exist?(output_dir)
+
+    # Run Flutter integration test with screenshot capture
+    Dir.chdir("../src") do
+      sh(
+        "fvm", "flutter", "drive",
+        "--driver=test_driver/integration_test.dart",
+        "--target=integration_test/screenshot_test.dart",
+        "--dart-define=DEMO_MODE=true",
+        "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
+        "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}",
+        "-d", device_name,
+        "--no-pub"
+      )
+    end
+
+    UI.message("📁 Screenshots saved to: #{output_dir}")
+
+    # Organize screenshots
+    organize_screenshots_for_locale(locale: locale, platform: 'ios')
+  end
+
+  private_lane :validate_ios_simulator do
+    UI.message("🔍 Checking for iOS simulator...")
+
+    # Get list of booted simulators
+    simulators_output = `xcrun simctl list devices booted 2>/dev/null`.strip
+
+    if simulators_output.empty? || !simulators_output.include?("Booted")
+      UI.user_error!("❌ No iOS simulator running. Please start a simulator first with: open -a Simulator")
+    end
+
+    # Extract device name from the booted simulator
+    booted_lines = simulators_output.split("\n").select { |line| line.include?("Booted") }
+    if booted_lines.empty?
+      UI.user_error!("❌ No iOS simulator running. Please start a simulator first.")
+    end
+
+    # Parse device name (format: "    iPhone 15 Pro (UUID) (Booted)")
+    device_line = booted_lines.first
+    device_name = device_line.match(/^\s*(.+?)\s*\(/)[1].strip rescue "iPhone"
+
+    UI.success("✅ iOS simulator found: #{device_name}")
+    device_name # Return device name for use in capture lane
+  end
+
+  private_lane :organize_screenshots_for_locale do |options|
+    locale = options[:locale]
+    platform = options[:platform]
+
+    UI.message("✅ Organized screenshots for #{platform} - #{locale}")
+  end
+end
+
+# ==============================================================================
+# Cross-Platform Screenshot Lanes
+# ==============================================================================
+desc "Capture screenshots for all platforms and locales"
+lane :screenshots do |options|
+  UI.header("📸 WHPH Screenshot Automation")
+
+  platform = options[:platform] || 'all'
+  locales_opt = options[:locales] ? "locales:#{options[:locales]}" : ""
+
+  case platform.downcase
+  when 'android'
+    sh("fastlane", "android", "android_screenshots", locales_opt)
+  when 'ios'
+    sh("fastlane", "ios", "ios_screenshots", locales_opt)
+  when 'all'
+    UI.message("🤖 Capturing Android screenshots...")
+    sh("fastlane", "android", "android_screenshots", locales_opt)
+    UI.message("🍎 Capturing iOS screenshots...")
+    sh("fastlane", "ios", "ios_screenshots", locales_opt)
+  else
+    UI.user_error!("Unknown platform: #{platform}. Use 'android', 'ios', or 'all'")
+  end
+
+  # Run validation
+  validate_screenshots
+
+  UI.success("🎉 Screenshot capture completed for all platforms!")
+end
+
+desc "Validate captured screenshots for quality and completeness"
+lane :validate_screenshots do
+  UI.important("🔍 Validating screenshots...")
+
+  config = load_screenshot_config
+  issues = []
+
+  # Check Android screenshots
+  android_metadata = File.expand_path('../metadata/android', __dir__)
+  config['locales'].each do |locale_config|
+    android_locale = locale_config['android']
+    screenshot_dir = File.join(android_metadata, android_locale, 'images', 'phoneScreenshots')
+
+    if Dir.exist?(screenshot_dir)
+      expected_count = config['scenarios'].length
+      actual_files = Dir.glob(File.join(screenshot_dir, '*.png'))
+      actual_count = actual_files.length
+
+      if actual_count < expected_count
+        issues << "#{android_locale}: Missing screenshots (#{actual_count}/#{expected_count})"
+      end
+
+      # Check file sizes
+      actual_files.each do |file|
+        size = File.size(file)
+        if size < MIN_SCREENSHOT_FILE_SIZE_BYTES # Less than 10KB is suspicious
+          issues << "#{android_locale}: #{File.basename(file)} seems too small (#{format_bytes(size)})"
+        end
+      end
+    else
+      issues << "#{android_locale}: Screenshot directory not found"
+    end
+  end
+
+  if issues.empty?
+    UI.success("✅ All screenshots validated successfully!")
+  else
+    UI.important("⚠️ Screenshot validation issues found:")
+    issues.each { |issue| UI.message("  - #{issue}") }
+  end
+
+  # Generate validation report
+  generate_screenshot_report(issues: issues)
+end
+
+
+
+# ==============================================================================
+# Helper Methods
+# ==============================================================================
+
+# Load screenshot configuration from YAML
+def load_screenshot_config
+  require 'yaml'
+  config_path = File.expand_path('screenshot_config.yaml', __dir__)
+
+  unless File.exist?(config_path)
+    UI.user_error!("Screenshot config not found at: #{config_path}")
+  end
+
+  YAML.load_file(config_path)
+end
+
+# Format bytes for human readable output
+def format_bytes(bytes)
+  units = ['B', 'KB', 'MB', 'GB']
+  size = bytes.to_f
+  unit_index = 0
+
+  while size >= 1024 && unit_index < units.length - 1
+    size /= 1024
+    unit_index += 1
+  end
+
+  "#{size.round(2)} #{units[unit_index]}"
+end
+
+# Get Flutter locale from Android/iOS locale code
+def get_flutter_locale(android_locale: nil, ios_locale: nil, config:)
+  config['locales'].each do |locale_config|
+    if android_locale && locale_config['android'] == android_locale
+      return locale_config['flutter']
+    end
+    if ios_locale && locale_config['ios'] == ios_locale
+      return locale_config['flutter']
+    end
+  end
+  'en' # Default fallback
+end
+
+
+
+# Generate screenshot validation report
+def generate_screenshot_report(issues:)
+  report_path = File.expand_path('../metadata/screenshot_report.md', __dir__)
+
+  report_content = <<~REPORT
+    # Screenshot Validation Report
+    Generated: #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}
+
+    ## Summary
+    - Total issues: #{issues.length}
+
+    ## Issues
+    #{issues.empty? ? 'No issues found!' : issues.map { |i| "- #{i}" }.join("\n")}
+  REPORT
+
+  File.write(report_path, report_content)
+  UI.message("📄 Report generated: #{report_path}")
 end

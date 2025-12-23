@@ -1,0 +1,147 @@
+# Fastlane Screenshot Configuration
+#
+# This file maps locales and defines screenshot-related configurations
+# for the automated screenshot capture system.
+
+# Locale mapping between Flutter, Android, and iOS codes
+locales:
+  - flutter: en
+    android: en-US
+    ios: en-US
+    rtl: false
+  - flutter: de
+    android: de-DE
+    ios: de-DE
+    rtl: false
+  - flutter: es
+    android: es-ES
+    ios: es-ES
+    rtl: false
+  - flutter: fr
+    android: fr-FR
+    ios: fr-FR
+    rtl: false
+  - flutter: it
+    android: it-IT
+    ios: it-IT
+    rtl: false
+  - flutter: ja
+    android: ja-JP
+    ios: ja
+    rtl: false
+  - flutter: ko
+    android: ko-KR
+    ios: ko
+    rtl: false
+  - flutter: zh
+    android: zh-CN
+    ios: zh-Hans
+    rtl: false
+  - flutter: tr
+    android: tr-TR
+    ios: tr
+    rtl: false
+  - flutter: ru
+    android: ru-RU
+    ios: ru
+    rtl: false
+  - flutter: uk
+    android: uk-UA
+    ios: uk
+    rtl: false
+  - flutter: pl
+    android: pl-PL
+    ios: pl
+    rtl: false
+  - flutter: pt
+    android: pt-PT
+    ios: pt-PT
+    rtl: false
+  - flutter: nl
+    android: nl-NL
+    ios: nl-NL
+    rtl: false
+  - flutter: sv
+    android: sv-SE
+    ios: sv
+    rtl: false
+  - flutter: nb
+    android: nb-NO
+    ios: nb
+    rtl: false
+  - flutter: da
+    android: da-DK
+    ios: da
+    rtl: false
+  - flutter: fi
+    android: fi-FI
+    ios: fi
+    rtl: false
+  - flutter: cs
+    android: cs-CZ
+    ios: cs
+    rtl: false
+  - flutter: el
+    android: el-GR
+    ios: el
+    rtl: false
+  - flutter: ro
+    android: ro-RO
+    ios: ro
+    rtl: false
+  - flutter: sl
+    android: sl-SI
+    ios: sl
+    rtl: false
+
+# Screenshot scenarios
+scenarios:
+  - id: 1
+    name: today_page
+    description: "Today page with tasks and habits"
+    route: "/today"
+  - id: 2
+    name: task_details
+    description: "Task details with timer"
+    route: "/tasks"
+  - id: 3
+    name: habit_details
+    description: "Habit details with streaks"
+    route: "/habits"
+  - id: 4
+    name: habit_statistics
+    description: "Habit details statistics section"
+    route: ""
+  - id: 5
+    name: note_details
+    description: "Note details page"
+    route: "/notes"
+  - id: 6
+    name: app_usage_view
+    description: "App usage overview page"
+    route: "/app-usages"
+  - id: 7
+    name: app_usage_statistics
+    description: "App usage statistics section"
+    route: ""
+  - id: 8
+    name: tags_page
+    description: "Tag management view"
+    route: "/tags"
+
+# Device configurations
+devices:
+  android:
+    - name: "Pixel 8"
+      width: 1080
+      height: 2400
+  ios:
+    - name: "iPhone 15 Pro Max"
+      width: 1290
+      height: 2796
+
+# Retry configuration
+retry:
+  max_attempts: 3
+  delay_ms: 2000
+  timeout_seconds: 30
