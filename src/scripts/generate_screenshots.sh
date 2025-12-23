@@ -26,7 +26,7 @@ run_for_locale() {
     # Run flutter drive with locale via both env var and dart-define
     SCREENSHOT_LOCALE=$locale fvm flutter drive \
         --driver=test/integration/screenshot_grabbing/test_driver.dart \
-        --target=test/integration/screenshot_grabbing/screenshot_test.dart \
+        --target=test/integration/screenshot_grabbing/screenshot_capture.dart \
         --dart-define=DEMO_MODE=true \
         --dart-define=SCREENSHOT_LOCALE="$locale"
 

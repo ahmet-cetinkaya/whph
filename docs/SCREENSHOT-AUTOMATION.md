@@ -103,7 +103,7 @@ Defines:
 Located in `src/test/integration/screenshot_grabbing/`:
 
 - `screenshot_config.dart` - Dart configuration
-- `screenshot_test.dart` - Main test file
+- `screenshot_capture.dart` - Main test file
 - `test_driver.dart` - Integration test driver (extended for screenshots)
 
 ## Metadata Structure
@@ -156,13 +156,12 @@ fvm flutter --version
 cd src && fvm flutter pub get
 
 # Try running test directly
-fvm flutter drive \
-  --driver=test/integration/screenshot_grabbing/test_driver.dart \
-  --target=test/integration/screenshot_grabbing/screenshot_test.dart \
-  --dart-define=DEMO_MODE=true
+- **Screenshot Driver**: `src/test/integration/screenshot_grabbing/test_driver.dart`
+- **Screenshot Test**: `src/test/integration/screenshot_grabbing/screenshot_capture.dart`
+- **Configuration**: `fastlane/screenshot_config.yaml`
 ```
 
 ### Locale not changing
 
-- Device locale is set via ADB but may require restart
-- App locale is controlled by `SCREENSHOT_LOCALE` env var
+-   Device locale is set via ADB but may require restart
+-   App locale is controlled by `SCREENSHOT_LOCALE` env var

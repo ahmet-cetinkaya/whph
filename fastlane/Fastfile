@@ -539,7 +539,7 @@ platform :ios do
          # Arguments can be passed to the app to override locale internally if supported.
          # Assuming the app supports 'SCREENSHOT_LOCALE' env var or argument.
          
-         sh("SCREENSHOT_LOCALE=#{locale} fvm flutter drive --driver=test/integration/screenshot_grabbing/test_driver.dart --target=test/integration/screenshot_grabbing/screenshot_test.dart -d \"#{device_name}\"")
+         sh("SCREENSHOT_LOCALE=#{locale} fvm flutter drive --driver=test/integration/screenshot_grabbing/test_driver.dart --target=test/integration/screenshot_grabbing/screenshot_capture.dart -d \"#{device_name}\"")
        end
      end
   end
