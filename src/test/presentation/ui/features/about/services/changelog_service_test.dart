@@ -1,20 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:whph/presentation/ui/features/about/services/changelog_service.dart';
+import 'changelog_service_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
   group('ChangelogService', () {
     late ChangelogService service;
+    late MockClient mockClient;
 
     setUp(() {
-      service = ChangelogService();
+      mockClient = MockClient();
+      service = ChangelogService(client: mockClient);
     });
 
     test('should return changelog entry when successful fetch', () async {
       // Arrange
       const locale = 'en';
+      const content = 'Estimated time for tasks';
+      when(mockClient.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(content, 200));
 
       // Act
       final result = await service.fetchChangelog(locale);
@@ -29,6 +35,8 @@ void main() {
     test('should handle missing changelog gracefully', () async {
       // Arrange
       const locale = 'xx'; // Non-existent locale
+      const content = 'Fallback content';
+      when(mockClient.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(content, 200));
 
       // Act
       final result = await service.fetchChangelog(locale);
@@ -69,6 +77,8 @@ void main() {
     test('should handle null locale gracefully', () async {
       // Arrange
       const locale = 'invalid-locale';
+      const content = 'Fallback content';
+      when(mockClient.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(content, 200));
 
       // Act
       final result = await service.fetchChangelog(locale);

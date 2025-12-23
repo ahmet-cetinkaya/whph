@@ -5,6 +5,9 @@ import 'package:whph/presentation/ui/features/about/services/abstraction/i_chang
 
 /// Service for fetching localized changelog from GitHub
 class ChangelogService implements IChangelogService {
+  final http.Client _client;
+
+  ChangelogService({http.Client? client}) : _client = client ?? http.Client();
   static const String _baseUrl =
       'https://raw.githubusercontent.com/ahmet-cetinkaya/whph/main/fastlane/metadata/android';
 
@@ -95,7 +98,7 @@ class ChangelogService implements IChangelogService {
     final url = '$_baseUrl/$locale/changelogs/$buildNumber.txt';
 
     try {
-      final response = await http.get(
+      final response = await _client.get(
         Uri.parse(url),
         headers: {'User-Agent': 'WHPH/${AppInfo.version}'},
       ).timeout(const Duration(seconds: 10));
