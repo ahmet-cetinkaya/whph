@@ -184,9 +184,6 @@ class DemoTasks {
     ];
   }
 
-  /// Legacy getter for backward compatibility
-  static List<Task> get tasks => getTasks((key) => key);
-
   /// Generates task time records for demo tasks
   static List<TaskTimeRecord> generateTimeRecords(List<Task> tasks) {
     final records = <TaskTimeRecord>[];
