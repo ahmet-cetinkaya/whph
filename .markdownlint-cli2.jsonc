@@ -6,8 +6,16 @@
       "siblings_only": true // Ignore duplicate headings if they are siblings
     },
     "MD033": {
-      "allowed_elements": ["div", "a", "img", "String", "UUID", "br"] // Allow these HTML elements for specific use cases
+      "allowed_elements": [
+        "div",
+        "a",
+        "img",
+        "String",
+        "UUID",
+        "br"
+      ] // Allow these HTML elements for specific use cases
     }
   },
+  "customRules": [],
   "gitignore": true
 }
