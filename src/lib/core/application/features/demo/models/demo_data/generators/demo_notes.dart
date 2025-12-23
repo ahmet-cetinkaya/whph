@@ -77,7 +77,4 @@ class DemoNotes {
           createdDate: DateTime.now().subtract(const Duration(days: 15)),
         ),
       ];
-
-  /// Legacy getter for backward compatibility
-  static List<Note> get notes => getNotes((key) => key);
 }

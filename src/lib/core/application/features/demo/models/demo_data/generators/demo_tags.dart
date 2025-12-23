@@ -56,7 +56,4 @@ class DemoTags {
           createdDate: DateTime.now().subtract(const Duration(days: 24)),
         ),
       ];
-
-  /// Legacy getter for backward compatibility
-  static List<Tag> get tags => getTags((key) => key);
 }

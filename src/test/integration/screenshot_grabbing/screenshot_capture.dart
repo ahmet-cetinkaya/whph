@@ -2,7 +2,7 @@
 ///
 /// This test runs through the app and captures screenshots.
 /// Run with: flutter drive --driver=test_driver/integration_test.dart \
-///           --target=integration_test/screenshot_test.dart \
+///           --target=test/integration/screenshot_grabbing/screenshot_test.dart \
 ///           --dart-define=SCREENSHOT_LOCALE=en
 library;
 
@@ -67,9 +67,14 @@ void main() {
   });
 }
 
-/// Wait for app initialization.
+/// Wait for app initialization using fixed pumps.
+/// We use fixed pumps instead of pumpAndSettle because pumpAndSettle will timeout
+/// if the app has continuous animations or timers that never settle.
 Future<void> _waitForAppInit(WidgetTester tester) async {
-  for (int i = 0; i < 10; i++) {
+  // Wait for 10 seconds using fixed pump intervals
+  const int waitSeconds = 10;
+  const int iterations = waitSeconds * 2;
+  for (int i = 0; i < iterations; i++) {
     await tester.pump(const Duration(milliseconds: 500));
   }
 }

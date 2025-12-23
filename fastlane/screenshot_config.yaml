@@ -65,9 +65,9 @@ locales:
     android: sv-SE
     ios: sv
     rtl: false
-  - flutter: nb
-    android: nb-NO
-    ios: nb
+  - flutter: no
+    android: no
+    ios: no
     rtl: false
   - flutter: da
     android: da-DK

@@ -15,7 +15,7 @@ import 'demo_translations_it.dart';
 import 'demo_translations_ja.dart';
 import 'demo_translations_ko.dart';
 import 'demo_translations_nl.dart';
-import 'demo_translations_nb.dart';
+import 'demo_translations_no.dart';
 import 'demo_translations_pl.dart';
 import 'demo_translations_pt.dart';
 import 'demo_translations_ro.dart';
@@ -54,7 +54,7 @@ class DemoTranslationsRegistry {
     'ja': jaDemoTranslations,
     'ko': koDemoTranslations,
     'nl': nlDemoTranslations,
-    'nb': nbDemoTranslations,
+    'no': noDemoTranslations,
     'pl': plDemoTranslations,
     'pt': ptDemoTranslations,
     'ro': roDemoTranslations,

@@ -81,9 +81,6 @@ class DemoHabits {
         ),
       ];
 
-  /// Legacy getter for backward compatibility
-  static List<Habit> get habits => getHabits((key) => key);
-
   /// Generates habit records with realistic progress patterns
   static List<HabitRecord> generateRecords(List<Habit> habits) {
     final records = <HabitRecord>[];
