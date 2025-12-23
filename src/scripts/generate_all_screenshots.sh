@@ -55,6 +55,19 @@ for locale in "${LOCALES[@]}"; do
     echo ""
 done
 
+# Copy English screenshots to en-GB folder
+echo "📋 Copying English screenshots to en-GB..."
+EN_US_DIR="../fastlane/metadata/android/en-US/images/phoneScreenshots"
+EN_GB_DIR="../fastlane/metadata/android/en-GB/images/phoneScreenshots"
+mkdir -p "$EN_GB_DIR"
+if [ -d "$EN_US_DIR" ] && [ "$(ls -A $EN_US_DIR 2>/dev/null)" ]; then
+    cp -r "$EN_US_DIR"/* "$EN_GB_DIR/"
+    echo "✅ Copied English screenshots to en-GB"
+else
+    echo "⚠️ No English screenshots found to copy"
+fi
+
+echo ""
 echo "🎉 All screenshots generated successfully!"
 echo ""
 echo "Screenshots saved to: ../fastlane/metadata/android/*/images/phoneScreenshots/"
