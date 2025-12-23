@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.19.0] - 2025-12-23
 
 ### Added
+
 - **Changelog Dialog**: View version history directly in the app via Settings → About → Changelog
 - **Habit View Options**: Choose between grid, list, or calendar views for your habits
 - **Task Description Quick Add**: Add descriptions when creating tasks from the quick-add dialog
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Real-Time Log Export**: Stream and export debug logs for troubleshooting
 
 ### Changed
+
 - **Modernized Settings Interface**: Cleaner, more responsive settings pages
 - **Improved Date Picker**: Better quick-selection options and user experience
 - **Larger Detail Pages**: Details pages now use maximum available space
@@ -34,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Improved Tag Selection**: Enhanced dialog for selecting tags across the app
 
 ### Fixed
+
 - Duplicate recurring task instances no longer appear
 - Task descriptions are now properly saved
 - Task time tracking auto-saves every 10 seconds to prevent data loss
