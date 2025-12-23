@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
 import 'package:whph/core/application/features/demo/models/demo_data/demo_data.dart';
 import 'package:whph/core/domain/shared/constants/demo_config.dart';
@@ -478,7 +479,7 @@ class DemoDataService implements IDemoDataService {
       final filterSetting = Setting(
         id: KeyHelper.generateStringId(),
         key: 'APP_USAGES_FILTER_SETTINGS',
-        value: _jsonEncode(filterSettingsJson),
+        value: jsonEncode(filterSettingsJson),
         valueType: SettingValueType.json,
         createdDate: DateTime.now(),
       );
@@ -489,30 +490,5 @@ class DemoDataService implements IDemoDataService {
       Logger.error('DemoDataService: Error populating demo filter settings: $e');
       // Don't rethrow - filter settings are not critical for demo data
     }
-  }
-
-  /// Simple JSON encoder for filter settings
-  String _jsonEncode(Map<String, dynamic> json) {
-    // Manual JSON encoding to avoid dart:convert import issues
-    final buffer = StringBuffer('{');
-    var first = true;
-    for (final entry in json.entries) {
-      if (!first) buffer.write(',');
-      first = false;
-      buffer.write('"${entry.key}":');
-      if (entry.value == null) {
-        buffer.write('null');
-      } else if (entry.value is bool) {
-        buffer.write(entry.value.toString());
-      } else if (entry.value is num) {
-        buffer.write(entry.value.toString());
-      } else if (entry.value is String) {
-        buffer.write('"${entry.value}"');
-      } else if (entry.value is Map) {
-        buffer.write(_jsonEncode(entry.value as Map<String, dynamic>));
-      }
-    }
-    buffer.write('}');
-    return buffer.toString();
   }
 }

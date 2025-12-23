@@ -23,7 +23,7 @@ LOCALES=(
     "ja"
     "ko"
     "nl"
-    "no"
+    "nb"
     "pl"
     "pt"
     "ro"

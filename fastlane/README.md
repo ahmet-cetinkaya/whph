@@ -93,7 +93,7 @@ fastlane validate_screenshots
 Defines:
 
 - Locale mappings (Flutter → Android → iOS)
-- Screenshot scenarios (10 screens)
+- Screenshot scenarios (8 screens)
 - Device configurations
 - Retry settings
 
@@ -118,15 +118,13 @@ metadata/android/
 │       ├── icon.png
 │       └── phoneScreenshots/
 │           ├── 1.png  (Today page)
-│           ├── 2.png  (Task list)
-│           ├── 3.png  (Task details)
-│           ├── 4.png  (Habits)
-│           ├── 5.png  (Calendar)
-│           ├── 6.png  (Notes)
-│           ├── 7.png  (Statistics)
-│           ├── 8.png  (Tags)
-│           ├── 9.png  (Settings)
-│           └── 10.png (Sync)
+│           ├── 2.png  (Task details)
+│           ├── 3.png  (Habit details)
+│           ├── 4.png  (Habit statistics)
+│           ├── 5.png  (Note details)
+│           ├── 6.png  (App usage overview)
+│           ├── 7.png  (App usage statistics)
+│           └── 8.png  (Tags)
 ├── de-DE/
 ├── tr-TR/
 └── ... (22 locales total)

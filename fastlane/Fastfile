@@ -269,7 +269,7 @@ platform :android do
   end
 
   desc "Capture Android screenshots for specified locales"
-  lane :screenshots_android do |options|
+  lane :capture_android_screenshots do |options|
     UI.important("📸 Starting Android screenshot capture...")
 
     # Load configuration
@@ -280,11 +280,11 @@ platform :android do
 
     UI.message("🌍 Target locales: #{locales.join(', ')}")
 
-    # Ensure emulator is running
-    validate_android_emulator
+    # Ensure emulator is running and get device ID
+    device_id = validate_android_emulator
 
     locales.each do |locale|
-      capture_android_screenshots_for_locale(locale: locale, config: config)
+      capture_android_screenshots_for_locale(locale: locale, config: config, device_id: device_id)
     end
 
     UI.success("✅ Android screenshot capture completed!")
@@ -293,8 +293,9 @@ platform :android do
   private_lane :capture_android_screenshots_for_locale do |options|
     locale = options[:locale]
     config = options[:config]
+    device_id = options[:device_id] || 'emulator-5554'
 
-    UI.message("📱 Capturing Android screenshots for locale: #{locale}")
+    UI.message("📱 Capturing Android screenshots for locale: #{locale} using device: #{device_id}")
 
     flutter_locale = get_flutter_locale(android_locale: locale, config: config)
     output_dir = File.expand_path("../metadata/android/#{locale}/images/phoneScreenshots", __dir__)
@@ -319,7 +320,7 @@ platform :android do
         "--dart-define=DEMO_MODE=true",
         "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
         "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}",
-        "-d", "emulator-5554",
+        "-d", device_id,
         "--no-pub"
       )
     end
@@ -330,14 +331,17 @@ platform :android do
   private_lane :validate_android_emulator do
     UI.message("🔍 Checking for Android emulator...")
 
-    devices = `adb devices`.split("\n").select { |line| line.include?("emulator") || line.include?("device") }
-    devices = devices.reject { |line| line.include?("List of devices") }
+    devices_output = `adb devices`.split("\n")
+    devices = devices_output.select { |line| line.include?("emulator") && line.include?("device") }
+    devices = devices.map { |line| line.split("\t").first }
 
     if devices.empty?
-      UI.user_error!("❌ No Android emulator or device found. Please start an emulator first.")
+      UI.user_error!("❌ No Android emulator found. Please start an emulator first.")
     end
 
-    UI.success("✅ Android device found: #{devices.first}")
+    device_id = devices.first
+    UI.success("✅ Android emulator found: #{device_id}")
+    device_id # Return the device ID for use in capture lane
   end
 
   # Error handling
@@ -511,7 +515,7 @@ platform :ios do
   end
 
   desc "Capture iOS screenshots for specified locales"
-  lane :screenshots_ios do |options|
+  lane :capture_ios_screenshots do |options|
     UI.important("📸 Starting iOS screenshot capture...")
 
     # Load configuration
@@ -602,14 +606,14 @@ lane :screenshots do |options|
 
   case platform.downcase
   when 'android'
-    sh("fastlane", "android", "screenshots_android", locales_opt)
+    sh("fastlane", "android", "capture_android_screenshots", locales_opt)
   when 'ios'
-    sh("fastlane", "ios", "screenshots_ios", locales_opt)
+    sh("fastlane", "ios", "capture_ios_screenshots", locales_opt)
   when 'all'
     UI.message("🤖 Capturing Android screenshots...")
-    sh("fastlane", "android", "screenshots_android", locales_opt)
+    sh("fastlane", "android", "capture_android_screenshots", locales_opt)
     UI.message("🍎 Capturing iOS screenshots...")
-    sh("fastlane", "ios", "screenshots_ios", locales_opt)
+    sh("fastlane", "ios", "capture_ios_screenshots", locales_opt)
   else
     UI.user_error!("Unknown platform: #{platform}. Use 'android', 'ios', or 'all'")
   end
