@@ -31,8 +31,7 @@ scripts:
 
   # Screenshots
   # Usage: rps gen:screenshots:device [locale] (e.g., rps gen:screenshots:device tr)
-  gen:screenshots:device: bash -c 'cd src && SCREENSHOT_LOCALE="${1:-en}" fvm flutter drive --driver=test_driver/integration_test.dart --target=integration_test/screenshot_test.dart --dart-define=DEMO_MODE=true --dart-define=SCREENSHOT_LOCALE="${1:-en}"' _ 
-  gen:screenshots:all: cd src && bash scripts/generate_all_screenshots.sh
+  gen:screenshots: cd src && bash scripts/generate_screenshots.sh ${1:---all} --
 
   # Code Generation
   gen: cd src && bash scripts/generate_gen_files.sh

@@ -2,7 +2,7 @@
 ///
 /// This test runs through the app and captures screenshots.
 /// Run with: flutter drive --driver=test_driver/integration_test.dart \
-///           --target=integration_test/screenshot_test.dart \
+///           --target=test/integration/screenshot_grabbing/screenshot_test.dart \
 ///           --dart-define=SCREENSHOT_LOCALE=en
 library;
 
@@ -69,9 +69,7 @@ void main() {
 
 /// Wait for app initialization.
 Future<void> _waitForAppInit(WidgetTester tester) async {
-  for (int i = 0; i < 10; i++) {
-    await tester.pump(const Duration(milliseconds: 500));
-  }
+  await tester.pumpAndSettle(const Duration(seconds: 2));
 }
 
 /// Change the app's locale to the target language.

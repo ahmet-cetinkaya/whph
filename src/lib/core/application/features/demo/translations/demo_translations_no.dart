@@ -1,5 +1,5 @@
 /// Norwegian demo data translations.
-const Map<String, String> nbDemoTranslations = {
+const Map<String, String> noDemoTranslations = {
   'task.complete_project.title': 'Fullfør prosjektforslag',
   'task.complete_project.description': 'Forbered og send inn kvartalsvis prosjektforslag',
   'task.review_team.title': 'Gjennomgå teamets prestasjoner',

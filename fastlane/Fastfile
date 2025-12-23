@@ -319,8 +319,8 @@ default_platform(:android)
       # Run the integration test
       sh(
         "fvm", "flutter", "drive",
-        "--driver=test_driver/integration_test.dart",
-        "--target=integration_test/screenshot_test.dart",
+        "--driver=test/integration/screenshot_grabbing/test_driver.dart",
+        "--target=test/integration/screenshot_grabbing/screenshot_test.dart",
         "--dart-define=DEMO_MODE=true",
         "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
         "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}",
@@ -509,87 +509,39 @@ platform :ios do
   desc "Capture iOS screenshots for specified locales"
   lane :capture_ios_screenshots do |options|
     UI.important("📸 Starting iOS screenshot capture...")
-
-    # Load configuration
-    config = load_screenshot_config
-
-    # Get locales to process
-    locales = options[:locales] ? options[:locales].split(',') : config['locales'].map { |l| l['ios'] }
-
-    UI.message("🌍 Target locales: #{locales.join(', ')}")
-
-    # Ensure simulator is running and get device name
-    device_name = validate_ios_simulator
-
-    locales.each do |locale|
-      capture_ios_screenshots_for_locale(locale: locale, config: config, device_name: device_name)
-    end
-
-    UI.success("✅ iOS screenshot capture completed!")
+    build_ios_app
+    run_ios_screenshots
   end
 
-  private_lane :capture_ios_screenshots_for_locale do |options|
-    locale = options[:locale]
-    config = options[:config]
-    device_name = options[:device_name] || 'iPhone'
-
-    UI.message("📱 Capturing iOS screenshots for locale: #{locale}")
-
-    flutter_locale = get_flutter_locale(ios_locale: locale, config: config)
-    output_dir = File.expand_path("../metadata/ios/#{locale}/images", __dir__)
-
-    # Ensure output directory exists
-    FileUtils.mkdir_p(output_dir) unless Dir.exist?(output_dir)
-
-    # Run Flutter integration test with screenshot capture
-    Dir.chdir("../src") do
-      sh(
-        "fvm", "flutter", "drive",
-        "--driver=test_driver/integration_test.dart",
-        "--target=integration_test/screenshot_test.dart",
-        "--dart-define=DEMO_MODE=true",
-        "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
-        "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}",
-        "-d", device_name,
-        "--no-pub"
-      )
-    end
-
-    UI.message("📁 Screenshots saved to: #{output_dir}")
-
-    # Organize screenshots
-    organize_screenshots_for_locale(locale: locale, platform: 'ios')
+  private_lane :build_ios_app do
+     # iOS build is often handled by specific actions or pre-built app for simulator
+     # For this setup regarding integration tests on simulator:
+     sh("fvm flutter build ios --simulator --debug --flavor production")
   end
 
-  private_lane :validate_ios_simulator do
-    UI.message("🔍 Checking for iOS simulator...")
+  private_lane :run_ios_screenshots do
+     # Ensure a simulator is booted
+     device_name = sh("xcrun simctl list devices | grep '(Booted)' | grep -v 'Watch' | grep -v 'TV' | awk -F ' (' '{print $1}' | xargs").strip
+     if device_name.empty?
+       UI.user_error!("No iOS simulator booted.")
+     end
+     UI.message("Using iOS simulator: #{device_name}")
 
-    # Get list of booted simulators
-    simulators_output = `xcrun simctl list devices booted 2>/dev/null`.strip
+     Dir.chdir("../src") do
+       screenshot_config = YAML.load_file("../fastlane/screenshot_config.yaml")
+       
+       screenshot_config['locales'].each do |locale_code, locale_info|
+         locale = locale_info['locale']
+         UI.message("Generating iOS screenshots for locale: #{locale}")
 
-    if simulators_output.empty? || !simulators_output.include?("Booted")
-      UI.user_error!("❌ No iOS simulator running. Please start a simulator first with: open -a Simulator")
-    end
-
-    # Extract device name from the booted simulator
-    booted_lines = simulators_output.split("\n").select { |line| line.include?("Booted") }
-    if booted_lines.empty?
-      UI.user_error!("❌ No iOS simulator running. Please start a simulator first.")
-    end
-
-    # Parse device name (format: "    iPhone 15 Pro (UUID) (Booted)")
-    device_line = booted_lines.first
-    device_name = device_line.match(/^\s*(.+?)\s*\(/)[1].strip rescue "iPhone"
-
-    UI.success("✅ iOS simulator found: #{device_name}")
-    device_name # Return device name for use in capture lane
-  end
-
-  private_lane :organize_screenshots_for_locale do |options|
-    locale = options[:locale]
-    platform = options[:platform]
-
-    UI.message("✅ Organized screenshots for #{platform} - #{locale}")
+         # Run integration test
+         # Note: Changing simulator locale via command line is complex/unreliable without external tools or restarting.
+         # Arguments can be passed to the app to override locale internally if supported.
+         # Assuming the app supports 'SCREENSHOT_LOCALE' env var or argument.
+         
+         sh("SCREENSHOT_LOCALE=#{locale} fvm flutter drive --driver=test/integration/screenshot_grabbing/test_driver.dart --target=test/integration/screenshot_grabbing/screenshot_test.dart -d \"#{device_name}\"")
+       end
+     end
   end
 end
 
@@ -597,30 +549,9 @@ end
 # Cross-Platform Screenshot Lanes
 # ==============================================================================
 desc "Capture screenshots for all platforms and locales"
-lane :screenshots do |options|
-  UI.header("📸 WHPH Screenshot Automation")
-
-  platform = options[:platform] || 'all'
-  locales_opt = options[:locales] ? "locales:#{options[:locales]}" : ""
-
-  case platform.downcase
-  when 'android'
-    sh("fastlane", "android", "android_screenshots", locales_opt)
-  when 'ios'
-    sh("fastlane", "ios", "ios_screenshots", locales_opt)
-  when 'all'
-    UI.message("🤖 Capturing Android screenshots...")
-    sh("fastlane", "android", "android_screenshots", locales_opt)
-    UI.message("🍎 Capturing iOS screenshots...")
-    sh("fastlane", "ios", "ios_screenshots", locales_opt)
-  else
-    UI.user_error!("Unknown platform: #{platform}. Use 'android', 'ios', or 'all'")
-  end
-
-  # Run validation
-  validate_screenshots
-
-  UI.success("🎉 Screenshot capture completed for all platforms!")
+lane :screenshots do
+  android_screenshots
+  ios_screenshots
 end
 
 desc "Validate captured screenshots for quality and completeness"
