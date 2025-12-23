@@ -15,8 +15,12 @@
 
 default_platform(:android)
 
-platform :android do
-  desc "Runs all the tests"
+  platform :android do
+  MIN_SCREENSHOT_FILE_SIZE_BYTES = 10_000 # 10KB
+
+  # ==============================================================================
+  # Android Platform
+  # ==============================================================================
   lane :test do
     Dir.chdir("../src/android") do
       sh("../../gradlew", "test")
@@ -264,8 +268,8 @@ platform :android do
   # ==============================================================================
 
   desc "Capture Android screenshots using Flutter integration tests"
-  lane :screenshots do
-    screenshots_android
+  lane :android_screenshots do
+    capture_android_screenshots
   end
 
   desc "Capture Android screenshots for specified locales"
@@ -458,19 +462,7 @@ platform :android do
     UI.important("📄 Service Account: #{service_account_path}")
   end
 
-  # Format bytes for human readable output
-  def self.format_bytes(bytes)
-    units = ['B', 'KB', 'MB', 'GB']
-    size = bytes.to_f
-    unit_index = 0
 
-    while size >= 1024 && unit_index < units.length - 1
-      size /= 1024
-      unit_index += 1
-    end
-
-    "#{size.round(2)} #{units[unit_index]}"
-  end
 
   # Validate AAB file integrity
   private_lane :validate_aab_file do |aab_path|
@@ -510,8 +502,8 @@ end
 # ==============================================================================
 platform :ios do
   desc "Capture iOS screenshots using Flutter integration tests"
-  lane :screenshots do
-    screenshots_ios
+  lane :ios_screenshots do
+    capture_ios_screenshots
   end
 
   desc "Capture iOS screenshots for specified locales"
@@ -592,6 +584,13 @@ platform :ios do
     UI.success("✅ iOS simulator found: #{device_name}")
     device_name # Return device name for use in capture lane
   end
+
+  private_lane :organize_screenshots_for_locale do |options|
+    locale = options[:locale]
+    platform = options[:platform]
+
+    UI.message("✅ Organized screenshots for #{platform} - #{locale}")
+  end
 end
 
 # ==============================================================================
@@ -606,14 +605,14 @@ lane :screenshots do |options|
 
   case platform.downcase
   when 'android'
-    sh("fastlane", "android", "capture_android_screenshots", locales_opt)
+    sh("fastlane", "android", "android_screenshots", locales_opt)
   when 'ios'
-    sh("fastlane", "ios", "capture_ios_screenshots", locales_opt)
+    sh("fastlane", "ios", "ios_screenshots", locales_opt)
   when 'all'
     UI.message("🤖 Capturing Android screenshots...")
-    sh("fastlane", "android", "capture_android_screenshots", locales_opt)
+    sh("fastlane", "android", "android_screenshots", locales_opt)
     UI.message("🍎 Capturing iOS screenshots...")
-    sh("fastlane", "ios", "capture_ios_screenshots", locales_opt)
+    sh("fastlane", "ios", "ios_screenshots", locales_opt)
   else
     UI.user_error!("Unknown platform: #{platform}. Use 'android', 'ios', or 'all'")
   end
@@ -649,7 +648,7 @@ lane :validate_screenshots do
       # Check file sizes
       actual_files.each do |file|
         size = File.size(file)
-        if size < 10_000 # Less than 10KB is suspicious
+        if size < MIN_SCREENSHOT_FILE_SIZE_BYTES # Less than 10KB is suspicious
           issues << "#{android_locale}: #{File.basename(file)} seems too small (#{format_bytes(size)})"
         end
       end
@@ -669,20 +668,7 @@ lane :validate_screenshots do
   generate_screenshot_report(issues: issues)
 end
 
-desc "Organize screenshots into store-ready format"
-lane :organize_screenshots do
-  UI.important("📁 Organizing screenshots...")
 
-  config = load_screenshot_config
-  android_metadata = File.expand_path('../metadata/android', __dir__)
-
-  config['locales'].each do |locale_config|
-    android_locale = locale_config['android']
-    organize_screenshots_for_locale(locale: android_locale, platform: 'android')
-  end
-
-  UI.success("✅ Screenshots organized!")
-end
 
 # ==============================================================================
 # Helper Methods
@@ -727,28 +713,7 @@ def get_flutter_locale(android_locale: nil, ios_locale: nil, config:)
   'en' # Default fallback
 end
 
-# Organize screenshots for a specific locale
-def organize_screenshots_for_locale(locale:, platform:)
-  if platform == 'android'
-    metadata_dir = File.expand_path('../metadata/android', __dir__)
-    screenshot_dir = File.join(metadata_dir, locale, 'images', 'phoneScreenshots')
 
-    # Ensure directory exists
-    FileUtils.mkdir_p(screenshot_dir) unless Dir.exist?(screenshot_dir)
-
-    # Screenshots are already in the correct location from flutter drive
-    UI.message("📁 Screenshots organized for Android #{locale}")
-  elsif platform == 'ios'
-    metadata_dir = File.expand_path('../metadata/ios', __dir__)
-    screenshot_dir = File.join(metadata_dir, locale, 'images')
-
-    # Ensure directory exists
-    FileUtils.mkdir_p(screenshot_dir) unless Dir.exist?(screenshot_dir)
-
-    # Screenshots are already in the correct location from flutter drive
-    UI.message("📁 Screenshots organized for iOS #{locale}")
-  end
-end
 
 # Generate screenshot validation report
 def generate_screenshot_report(issues:)
