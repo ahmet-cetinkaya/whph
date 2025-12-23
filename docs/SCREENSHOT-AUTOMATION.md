@@ -8,8 +8,9 @@ This directory contains Fastlane configuration for automated app store deploymen
 - `Fastfile` - Lane definitions for deployment and screenshots
 - `Screengrabfile` - Android screenshot configuration
 - `Snapfile` - iOS screenshot configuration
-- `screenshot_config.yaml` - Cross-platform screenshot settings
-- `metadata/android/` - Google Play Store metadata by locale
+- `fastlane/screenshot_config.yaml` - Cross-platform screenshot settings
+- `fastlane/metadata/android/` - Google Play Store metadata by locale
+- `fastlane/metadata/ios/` - iOS metadata (if applicable)
 
 ## Available Lanes
 
@@ -34,20 +35,20 @@ fastlane android update_metadata
 # Capture all screenshots (Android + iOS)
 fastlane screenshots
 
-# Android only
-fastlane android screenshots_android
+# Android only (Using the script)
+# Generate for all locales (default)
+rps gen:screenshots
+# Or directly: cd src && bash scripts/generate_screenshots.sh --all
 
-# Specific locales
-fastlane android screenshots_android locales:en-US,de-DE,tr-TR
+# Generate for a specific locale
+rps gen:screenshots tr
+# Or directly: cd src && bash scripts/generate_screenshots.sh tr
 
 # iOS only (requires macOS)
-fastlane ios screenshots_ios
+fastlane ios ios_screenshots
 
 # Validate screenshots
 fastlane validate_screenshots
-
-# Organize for store upload
-fastlane organize_screenshots
 ```
 
 ## Screenshot Automation
@@ -64,11 +65,11 @@ The screenshot system uses Flutter integration tests to capture screenshots:
 
 3. **Locales**:
    - 22 locales supported
-   - Defined in `screenshot_config.yaml`
+   - Defined in `fastlane/screenshot_config.yaml`
 
 4. **Output**:
-   - Android: `metadata/android/{locale}/images/phoneScreenshots/`
-   - iOS: `metadata/ios/{locale}/`
+   - Android: `fastlane/metadata/android/{locale}/images/phoneScreenshots/`
+   - iOS: `fastlane/metadata/ios/{locale}/`
 
 ## Running Screenshots
 
@@ -77,10 +78,10 @@ The screenshot system uses Flutter integration tests to capture screenshots:
 emulator -avd Pixel_8 &
 
 # 2. Navigate to project root
-cd /path/to/whph
+cd /home/ac/Code/ahmet-cetinkaya/whph
 
-# 3. Run screenshot capture
-fastlane android screenshots_android
+# 3. Run screenshot capture (e.g., for all locales)
+rps gen:screenshots
 
 # 4. Validate results
 fastlane validate_screenshots
@@ -99,15 +100,16 @@ Defines:
 
 ### Integration Tests
 
-Located in `src/integration_test/`:
+Located in `src/test/integration/screenshot_grabbing/`:
 
 - `screenshot_config.dart` - Dart configuration
 - `screenshot_test.dart` - Main test file
+- `test_driver.dart` - Integration test driver (extended for screenshots)
 
 ## Metadata Structure
 
 ```text
-metadata/android/
+fastlane/metadata/android/
 ├── en-US/
 │   ├── title.txt
 │   ├── short_description.txt
@@ -155,8 +157,8 @@ cd src && fvm flutter pub get
 
 # Try running test directly
 fvm flutter drive \
-  --driver=test_driver/integration_test.dart \
-  --target=integration_test/screenshot_test.dart \
+  --driver=test/integration/screenshot_grabbing/test_driver.dart \
+  --target=test/integration/screenshot_grabbing/screenshot_test.dart \
   --dart-define=DEMO_MODE=true
 ```
 
