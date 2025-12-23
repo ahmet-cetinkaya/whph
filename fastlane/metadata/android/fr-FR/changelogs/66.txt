@@ -1,0 +1,14 @@
+- Journal des modifications dans Paramètres
+- Habitudes grille/liste/calendrier
+- Tâches hebdo par jours spécifiques
+- Panel son unifié
+- Comparaison utilisation apps
+- Défilement infini
+- Choisir position notifications
+- Paramètres modernisés
+- Meilleur sélecteur de date
+- Bouton terminer plus grand
+- Corrigé tâches en double
+- Corrigé sauvegarde descriptions
+- Sauvegarde auto toutes les 10s
+- Améliorations performances

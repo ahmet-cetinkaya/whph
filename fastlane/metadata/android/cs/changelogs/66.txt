@@ -1,0 +1,14 @@
+- Dialog se změnami v Nastavení → O aplikaci
+- Návyky jako mřížka/seznam/kalendář
+- Týdenní úkoly konkrétní dny
+- Jednotná nastavení zvuků
+- Porovnání využití aplikací
+- Plynulé scrollování v seznamech
+- Výběr pozice oznámení
+- Moderní nastavení
+- Lepší výběr data
+- Větší tlačítko dokončení úkolu
+- Opraveny duplicitní úkoly
+- Opraveno neukládání popisů
+- Automatické ukládání každých 10s
+- Vylepšení výkonu

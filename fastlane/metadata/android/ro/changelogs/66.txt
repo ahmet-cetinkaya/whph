@@ -1,0 +1,14 @@
+- Jurnal de modificări în Setări → Despre
+- Obiceiuri grilă/listă/calendar
+- Săptămânal recurente sarcini
+- Setări sunet unificate
+- Comparație utilizare aplicații
+- Derulare infinită în liste
+- Alege poziție notificare
+- Setări modernizate
+- Selector dată mai bun
+- Buton finalizare mai mare
+- Sarcini duplicate reparate
+- Salvare descrieri reparate
+- Urmărirea timpului salvează automat
+- Îmbunătățiri de performanță

@@ -1,0 +1,14 @@
+- Changelog dialog in Settings → About
+- Habit grid/list/calendar view options
+- Weekly recurring tasks by specific days
+- Unified sound settings panel
+- App usage comparison between periods
+- Infinity scroll in lists
+- Choose notification position
+- Modernized settings interface
+- Better date picker
+- Task completion button has larger touch area
+- Fixed duplicate recurring tasks
+- Fixed task descriptions not saving
+- Time tracking auto-saves every 10 seconds
+- Performance improvements

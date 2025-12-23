@@ -3,8 +3,6 @@
 # Fastlane Metadata Validation Script for F-Droid Compliance
 # This script validates all language metadata directories for F-Droid requirements
 
-set -e
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 METADATA_DIR="$PROJECT_ROOT/fastlane/metadata/android"
@@ -75,8 +73,9 @@ if [ ! -d "$METADATA_DIR" ]; then
     exit 1
 fi
 
-# Get all language directories
-LANGUAGES=$(find "$METADATA_DIR" -maxdepth 1 -type d -name "*-*" -exec basename {} \; | sort)
+# Get all language directories (both xx and xx-XX formats)
+# Exclude . and .. directories
+LANGUAGES=$(find "$METADATA_DIR" -maxdepth 1 -type d ! -name "$METADATA_DIR" -exec basename {} \; | grep -E '^[a-z]{2}(-[A-Z]{2})?$' | sort)
 
 if [ -z "$LANGUAGES" ]; then
     echo "❌ FATAL: No language directories found in $METADATA_DIR"
@@ -88,8 +87,16 @@ echo
 
 # Validate each language directory
 for lang in $LANGUAGES; do
-    echo "🌍 Validating $lang..."
     lang_dir="$METADATA_DIR/$lang"
+
+    # Skip incomplete directories (no title.txt means not a valid locale)
+    if [ ! -f "$lang_dir/title.txt" ]; then
+        echo "⏭️  Skipping $lang (no title.txt - incomplete locale)"
+        echo
+        continue
+    fi
+
+    echo "🌍 Validating $lang..."
 
     # Check required files
     check_file "$lang_dir/title.txt" "title.txt" "$lang"

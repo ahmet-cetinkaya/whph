@@ -1,0 +1,14 @@
+- Lista zmian w Ustawienia → O aplikacji
+- Nawyki siatka/lista/kalendarz
+- Cotygodniowe zadania w konkretne dni
+- Ujednolicona ustawienia dźwięku
+- Porównanie użycia aplikacji
+- Niekończące się przewijanie
+- Wybór pozycji powiadomień
+- Zmodernizowane ustawienia
+- Lepszy selektor dat
+- Większy przycisk ukończenia
+- Naprawiono duplikaty zadań
+- Naprawiono opisy nie zapisują się
+- Auto-zapis co 10 sekund
+- Ulepszenia wydajności

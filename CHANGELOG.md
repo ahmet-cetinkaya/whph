@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2025-12-23
+
+### Added
+- **Changelog Dialog**: View version history directly in the app via Settings → About → Changelog
+- **Habit View Options**: Choose between grid, list, or calendar views for your habits
+- **Task Description Quick Add**: Add descriptions when creating tasks from the quick-add dialog
+- **Weekly Recurrence by Days**: Schedule recurring tasks for specific days of the week (e.g., every Monday and Wednesday)
+- **App Usage Comparison**: Compare app usage statistics between different time periods
+- **Sound Settings**: Customize all app sounds from a unified settings panel
+- **Infinity Scroll**: Enable smooth continuous scrolling in lists (available in list options)
+- **Linux Theme Auto-Switch**: App automatically switches between light/dark theme based on your Linux desktop settings
+- **Notification Position (Mobile)**: Choose where notifications appear on your screen
+- **KDE Plasma Integration**: Better integration with KDE Plasma desktop environment
+- **Database Reset**: Reset app data with automatic backup before resetting
+- **Success Notification**: Receive confirmation when creating tasks
+- **Real-Time Log Export**: Stream and export debug logs for troubleshooting
+
+### Changed
+- **Modernized Settings Interface**: Cleaner, more responsive settings pages
+- **Improved Date Picker**: Better quick-selection options and user experience
+- **Larger Detail Pages**: Details pages now use maximum available space
+- **Better Task Completion Button**: Larger touch area for easier completion on mobile
+- **Enhanced Today View**: Habits section supports dynamic view switching (grid/list/calendar)
+- **Card-Based UI**: Calendar and statistics views now use modern card-based layouts
+- **Improved Tag Selection**: Enhanced dialog for selecting tags across the app
+
+### Fixed
+- Duplicate recurring task instances no longer appear
+- Task descriptions are now properly saved
+- Task time tracking auto-saves every 10 seconds to prevent data loss
+- Time duration units now display correctly (seconds instead of milliseconds)
+- Recurring task schedule calculations now preserve date spacing correctly
+- App performance and responsiveness improvements
+- Various UI rendering issues resolved (card backgrounds, widget layouts)
+- Turkish translation case issues corrected
+- Czech and German localization improvements for date/time formats
+- Database operations optimized for better performance
+
 ## [0.18.0] - 2025-10-25
 
 ### Added

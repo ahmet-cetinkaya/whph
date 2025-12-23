@@ -1,0 +1,14 @@
+- Changelog in Instellingen → Over
+- Gewoonten rooster/lijst/kalender weergave
+- Wekelijkse terugkerende taken
+- Unified geluidsinstellingen
+- App gebruik vergelijking
+- Oneindig scrollen in lijsten
+- Kies notificatie positie
+- Gemoderniseerde instellingen
+- Betere datumkiezer
+- Grotere taak voltooi knop
+- Dubbele taken verholpen
+- Beschrijving opslaan verholpen
+- Tijdtracking auto opslaat
+- Prestatie verbeteringen

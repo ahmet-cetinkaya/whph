@@ -1,0 +1,14 @@
+- Endringslogg i Innstillinger → Om
+- Vaner rutenett/liste/kalender visning
+- Ukentlige gjentakende oppgaver
+- Samlet lydinnstillinger
+- Sammenligning av appbruk
+- Uendelig rulling i lister
+- Velg varsling posisjon
+- Moderniserte innstillinger
+- Bedre datovelger
+- Større fullfør oppgave knapp
+- Fikk duplikate oppgaver
+- Fikk lagring av beskrivelser
+- Tidssporing lagrer automatisk
+- Ytelsesforbedringer
