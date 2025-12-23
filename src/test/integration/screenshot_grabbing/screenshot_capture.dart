@@ -69,7 +69,11 @@ void main() {
 
 /// Wait for app initialization.
 Future<void> _waitForAppInit(WidgetTester tester) async {
-  await tester.pumpAndSettle(const Duration(seconds: 2));
+  await tester.pumpAndSettle(
+    const Duration(seconds: 10),
+    EnginePhase.sendSemanticsUpdate,
+    const Duration(seconds: 2),
+  );
 }
 
 /// Change the app's locale to the target language.

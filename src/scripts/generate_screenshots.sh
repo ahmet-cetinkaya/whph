@@ -64,12 +64,9 @@ if [ "$1" == "--all" ]; then
 elif [ -n "$1" ]; then
     # Check if locale is supported
     SUPPORTED=false
-    for l in "${LOCALES[@]}"; do
-        if [ "$l" == "$1" ]; then
-            SUPPORTED=true
-            break
-        fi
-    done
+    if [[ " ${LOCALES[*]} " =~ " $1 " ]]; then
+        SUPPORTED=true
+    fi
 
     if [ "$SUPPORTED" = true ]; then
         run_for_locale "$1"

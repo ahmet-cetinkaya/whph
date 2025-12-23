@@ -78,7 +78,7 @@ The screenshot system uses Flutter integration tests to capture screenshots:
 emulator -avd Pixel_8 &
 
 # 2. Navigate to project root
-cd /home/ac/Code/ahmet-cetinkaya/whph
+cd /path/to/whph
 
 # 3. Run screenshot capture (e.g., for all locales)
 rps gen:screenshots

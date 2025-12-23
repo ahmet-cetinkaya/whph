@@ -320,7 +320,7 @@ default_platform(:android)
       sh(
         "fvm", "flutter", "drive",
         "--driver=test/integration/screenshot_grabbing/test_driver.dart",
-        "--target=test/integration/screenshot_grabbing/screenshot_test.dart",
+        "--target=test/integration/screenshot_grabbing/screenshot_capture.dart",
         "--dart-define=DEMO_MODE=true",
         "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
         "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}",
@@ -521,25 +521,32 @@ platform :ios do
 
   private_lane :run_ios_screenshots do
      # Ensure a simulator is booted
-     device_name = sh("xcrun simctl list devices | grep '(Booted)' | grep -v 'Watch' | grep -v 'TV' | awk -F ' (' '{print $1}' | xargs").strip
+     device_name = `xcrun simctl list devices | grep '(Booted)' | grep -v 'Watch' | grep -v 'TV' | awk -F ' (' '{print $1}' | xargs`.strip
      if device_name.empty?
-       UI.user_error!("No iOS simulator booted.")
+       UI.user_error!("No iOS simulator booted. Please start a simulator first.")
      end
      UI.message("Using iOS simulator: #{device_name}")
 
      Dir.chdir("../src") do
        screenshot_config = YAML.load_file("../fastlane/screenshot_config.yaml")
+       output_dir = File.expand_path("../fastlane/metadata/ios", __dir__)
        
-       screenshot_config['locales'].each do |locale_code, locale_info|
-         locale = locale_info['locale']
+       screenshot_config['locales'].each do |locale_entry|
+         locale = locale_entry['ios']
+         flutter_locale = locale_entry['flutter']
          UI.message("Generating iOS screenshots for locale: #{locale}")
 
          # Run integration test
-         # Note: Changing simulator locale via command line is complex/unreliable without external tools or restarting.
-         # Arguments can be passed to the app to override locale internally if supported.
-         # Assuming the app supports 'SCREENSHOT_LOCALE' env var or argument.
-         
-         sh("SCREENSHOT_LOCALE=#{locale} fvm flutter drive --driver=test/integration/screenshot_grabbing/test_driver.dart --target=test/integration/screenshot_grabbing/screenshot_capture.dart -d \"#{device_name}\"")
+         sh(
+            "fvm", "flutter", "drive",
+            "--driver=test/integration/screenshot_grabbing/test_driver.dart",
+            "--target=test/integration/screenshot_grabbing/screenshot_capture.dart",
+            "--dart-define=DEMO_MODE=true",
+            "--dart-define=SCREENSHOT_LOCALE=#{flutter_locale}",
+            "--dart-define=SCREENSHOT_OUTPUT_DIR=#{output_dir}/#{locale}",
+            "-d", device_name,
+            "--no-pub"
+         )
        end
      end
   end
@@ -549,9 +556,20 @@ end
 # Cross-Platform Screenshot Lanes
 # ==============================================================================
 desc "Capture screenshots for all platforms and locales"
-lane :screenshots do
-  android_screenshots
-  ios_screenshots
+lane :screenshots do |options|
+  platform = options[:platform]
+  
+  if platform.nil? || platform == 'android'
+    android_screenshots(options)
+  end
+  
+  if platform.nil? || platform == 'ios'
+    ios_screenshots(options)
+  end
+  
+  validate_screenshots
+  
+  UI.success("🎉 Screenshot capture completed!")
 end
 
 desc "Validate captured screenshots for quality and completeness"
