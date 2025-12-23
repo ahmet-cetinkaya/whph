@@ -64,7 +64,7 @@ if [ "$1" == "--all" ]; then
 elif [ -n "$1" ]; then
     # Check if locale is supported
     SUPPORTED=false
-    if [[ " ${LOCALES[*]} " =~ " $1 " ]]; then
+    if [[ " ${LOCALES[*]} " == *" $1 "* ]]; then
         SUPPORTED=true
     fi
 

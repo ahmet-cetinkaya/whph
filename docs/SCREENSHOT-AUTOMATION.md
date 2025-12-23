@@ -163,5 +163,5 @@ cd src && fvm flutter pub get
 
 ### Locale not changing
 
--   Device locale is set via ADB but may require restart
--   App locale is controlled by `SCREENSHOT_LOCALE` env var
+- Device locale is set via ADB but may require restart
+- App locale is controlled by `SCREENSHOT_LOCALE` env var
