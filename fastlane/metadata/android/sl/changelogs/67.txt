@@ -1,0 +1,4 @@
+- Čistejša poravnava predmetov seznama za polirani videz
+- Boljše cilje na dotik na mobilni z rafinirano višino predmetov seznama
+- Izboljšana postavitev tabele podrobnosti s čistejšim videzom
+- Rafiniran razmik izbirnika datuma v podrobnostih naloge

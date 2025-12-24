@@ -1,0 +1,4 @@
+- Alignement plus propre des éléments de liste pour une apparence soignée
+- Meilleures cibles tactiles sur mobile avec des hauteurs d'éléments de liste affinées
+- Mise en page de tableau de détails améliorée avec une apparence plus propre
+- Espacement du sélecteur de date affiné dans les détails des tâches

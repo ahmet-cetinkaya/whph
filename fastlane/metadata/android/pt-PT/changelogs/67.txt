@@ -1,0 +1,4 @@
+- Alinhamento mais limpo dos itens da lista para uma aparência polida
+- Melhores alvos de toque no telemóvel com alturas de item de lista refinadas
+- Layout de tabela de detalhes melhorado com aparência mais limpa
+- Espaçamento do selecionador de data refinado nos detalhes da tarefa

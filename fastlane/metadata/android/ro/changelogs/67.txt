@@ -1,0 +1,4 @@
+- Aliniere mai curată a elementelor listei pentru un aspect rafinat
+- Ținte tactile mai bune pe mobil cu înălțimi rafinate ale elementelor listei
+- Aspect mai curat al tabelului de detalii cu aspect mai curat
+- Spațiere rafinată a selectorului de date în detaliile sarcinii

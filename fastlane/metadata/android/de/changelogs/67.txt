@@ -1,0 +1,4 @@
+- Sauberere Listenabstände für ein optimiertes Erscheinungsbild
+- Bessere Touch-Ziele auf dem Handy mit verfeinerter Listenelementhöhe
+- Verbessertes Detailtabellen-Layout mit saubererem Erscheinungsbild
+- Verfeinerter Datumsauswahl-Abstand in Aufgabendetails

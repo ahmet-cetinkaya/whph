@@ -1,0 +1,4 @@
+- Siistimpi luettelon kohteen tasaus hiotun ulkoasun saavuttamiseksi
+- Paremmat kosketuskohteet mobiilissa hiotun luettelon kohteen korkeudella
+- Parannettu taulukon asettelu puhtaammalla ulkoasulla
+- Hienostettu päivämäärävalitsimen välykset tehtävien tiedoissa

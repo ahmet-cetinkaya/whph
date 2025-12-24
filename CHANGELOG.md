@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.1] - 2025-12-24
+
+### Fixed
+- Improved alignment of list items for a cleaner appearance
+- Refined list item heights for better touch targets on mobile
+- Cleaner detail tables with improved responsive layout
+- Refined date picker spacing in task details
+
 ## [0.19.0] - 2025-12-23
 
 ### Added
