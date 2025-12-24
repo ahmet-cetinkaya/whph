@@ -177,11 +177,11 @@ default_platform(:android)
     )
   end
 
-  desc "Promote from alpha to beta track"
+  desc "Promote from internal to beta track"
   lane :promote_to_beta do
     upload_to_play_store(
       track: 'beta',
-      track_promote_to: 'alpha',
+      track_promote_to: 'internal',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_aab: true,
