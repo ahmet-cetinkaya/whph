@@ -260,6 +260,7 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
               focusNode: widget.focusNode,
               readOnly: true,
               style: AppTheme.bodyMedium,
+              maxLines: null,
               decoration: InputDecoration(
                 hintText: widget.hintText,
                 focusedBorder: InputBorder.none,

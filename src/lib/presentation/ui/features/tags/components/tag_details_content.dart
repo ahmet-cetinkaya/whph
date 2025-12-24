@@ -358,7 +358,6 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                   DetailTableRowData(
                     label: _translationService.translate(TagTranslationKeys.detailsRelatedTags),
                     icon: TagUiConstants.tagIcon,
-                    hintText: _translationService.translate(TagTranslationKeys.selectTooltip),
                     widget: TagSelectDropdown(
                       key: ValueKey('${_tagTags!.items.length}_${_visibleOptionalFields.contains(keyRelatedTags)}'),
                       isMultiSelect: true,

@@ -56,6 +56,7 @@ class BarChart extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ListTile(
+        minTileHeight: 48,
         contentPadding: EdgeInsets.zero,
         title: Stack(
           alignment: Alignment.centerLeft,

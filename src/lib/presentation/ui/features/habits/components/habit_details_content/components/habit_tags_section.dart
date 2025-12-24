@@ -20,7 +20,6 @@ class HabitTagsSection {
     return DetailTableRowData(
       label: translationService.translate(HabitTranslationKeys.tagsLabel),
       icon: TagUiConstants.tagIcon,
-      hintText: translationService.translate(HabitTranslationKeys.tagsHint),
       widget: TagSelectDropdown(
         key: ValueKey('habit_${habitId}_tags'),
         isMultiSelect: true,

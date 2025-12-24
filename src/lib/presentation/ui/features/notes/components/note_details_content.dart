@@ -418,7 +418,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   DetailTableRowData _buildTagsSection() => DetailTableRowData(
         label: _translationService.translate(NoteTranslationKeys.tagsLabel),
         icon: TagUiConstants.tagIcon,
-        hintText: _translationService.translate(NoteTranslationKeys.tagsHint),
         widget: _note != null
             ? TagSelectDropdown(
                 key: ValueKey(_note!.tags.length),

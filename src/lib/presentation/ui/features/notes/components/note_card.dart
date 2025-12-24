@@ -38,6 +38,7 @@ class _NoteCardState extends State<NoteCard> {
       tileColor: widget.transparentCard ? theme.cardColor.withValues(alpha: 0.8) : theme.cardColor,
       visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
       contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+      minTileHeight: 48,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
       ),

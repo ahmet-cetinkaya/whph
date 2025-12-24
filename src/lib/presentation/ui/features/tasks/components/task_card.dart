@@ -88,6 +88,7 @@ class TaskCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: ListTile(
           tileColor: Colors.transparent,
+          minTileHeight: 48,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
           ),

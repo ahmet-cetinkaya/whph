@@ -256,8 +256,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                   child: Chip(
                       visualDensity: VisualDensity.compact,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: EdgeInsets.zero,
                       labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      backgroundColor: AppTheme.surface3,
+                      side: BorderSide.none,
                       label: Text(
                           tag.name.isNotEmpty
                               ? tag.name
