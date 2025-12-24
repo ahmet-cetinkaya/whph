@@ -118,10 +118,17 @@ jobs:
     permissions:
       contents: write
     outputs:
-      tag-name: ${{ needs.check-workflows.outputs.tag-name }}
-      tag-version: ${{ needs.check-workflows.outputs.tag-version }}
-      app-version: ${{ needs.check-workflows.outputs.app-version }}
+      tag-name: ${{ steps.set_outputs.outputs.tag-name }}
+      tag-version: ${{ steps.set_outputs.outputs.tag-version }}
+      app-version: ${{ steps.set_outputs.outputs.app-version }}
     steps:
+      - name: Set job outputs
+        id: set_outputs
+        run: |
+          echo "tag-name=${{ needs.check-workflows.outputs.tag-name }}" >> $GITHUB_OUTPUT
+          echo "tag-version=${{ needs.check-workflows.outputs.tag-version }}" >> $GITHUB_OUTPUT
+          echo "app-version=${{ needs.check-workflows.outputs.app-version }}" >> $GITHUB_OUTPUT
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
