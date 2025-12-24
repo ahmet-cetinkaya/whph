@@ -166,14 +166,13 @@ default_platform(:android)
   lane :promote_to_alpha do
     upload_to_play_store(
       track: 'alpha',
+      track_promote_to: 'internal',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_aab: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      from_track: 'internal',
-      promote_track: 'alpha',
       release_status: 'completed'
     )
   end
@@ -182,14 +181,13 @@ default_platform(:android)
   lane :promote_to_beta do
     upload_to_play_store(
       track: 'beta',
+      track_promote_to: 'alpha',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_aab: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      from_track: 'alpha',
-      promote_track: 'beta',
       release_status: 'completed'
     )
   end
@@ -198,14 +196,13 @@ default_platform(:android)
   lane :promote_to_production do
     upload_to_play_store(
       track: 'production',
+      track_promote_to: 'beta',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_aab: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      from_track: 'beta',
-      promote_track: 'production',
       release_status: 'completed',
       rollout: '0.1' # Start with 10% rollout
     )
