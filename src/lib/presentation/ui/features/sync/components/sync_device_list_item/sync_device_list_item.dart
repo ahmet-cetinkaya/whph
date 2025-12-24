@@ -93,6 +93,7 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Device Icon
                 StyledIcon(
