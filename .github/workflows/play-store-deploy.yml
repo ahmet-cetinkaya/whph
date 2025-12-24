@@ -126,8 +126,8 @@ jobs:
       - name: Deploy to Google Play Store
         run: |
           # Set environment variables for Fastlane
-          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="../google-play-service-account.json"
-          export KEYSTORE_FILE_PATH="../src/android/app/whph-release-key.jks"
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="${{ github.workspace }}/google-play-service-account.json"
+          export KEYSTORE_FILE_PATH="${{ github.workspace }}/src/android/app/whph-release-key.jks"
           export KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
           export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
           export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
@@ -178,7 +178,7 @@ jobs:
       - name: Update metadata if requested
         if: ${{ github.event.inputs.update_metadata == 'true' }}
         run: |
-          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="../google-play-service-account.json"
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="${{ github.workspace }}/google-play-service-account.json"
           bundle exec fastlane update_metadata
         working-directory: fastlane
 
