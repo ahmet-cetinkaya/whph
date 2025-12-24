@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateTimeHelper;
 import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
@@ -168,7 +170,7 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                     animation: _rotationController,
                     builder: (context, child) {
                       return Transform.rotate(
-                        angle: _rotationController.value * 2 * 3.14159,
+                        angle: _rotationController.value * 2 * pi,
                         child: Icon(
                           Icons.sync,
                           color: theme.colorScheme.primary,
