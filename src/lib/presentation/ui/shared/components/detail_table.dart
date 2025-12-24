@@ -9,7 +9,6 @@ class DetailTableRowData {
   final IconData icon;
   final Widget widget;
   final String? tooltip;
-  final String? hintText;
   final bool removePadding;
 
   DetailTableRowData({
@@ -17,7 +16,6 @@ class DetailTableRowData {
     required this.icon,
     required this.widget,
     this.tooltip,
-    this.hintText,
     this.removePadding = false,
   });
 }
@@ -40,6 +38,8 @@ class DetailTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final useVertical = forceVertical || AppThemeHelper.isVerySmallScreen(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: rowData.map((data) {
@@ -52,12 +52,12 @@ class DetailTable extends StatelessWidget {
             ),
             child: Padding(
               padding: _getContainerPadding(data),
-              child: !forceVertical
+              child: !useVertical
                   ? SizedBox(
                       height: AppTheme.size4XLarge,
-                      child: _buildRow(context, data, theme),
+                      child: _buildRow(context, data, theme, useVertical),
                     )
-                  : _buildRow(context, data, theme),
+                  : _buildRow(context, data, theme, useVertical),
             ),
           ),
         );
@@ -65,11 +65,8 @@ class DetailTable extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(BuildContext context, DetailTableRowData data, ThemeData theme) {
-    final isSmallScreen = AppThemeHelper.isSmallScreen(context);
-    final labelWidth = isSmallScreen ? 110.0 : 160.0;
-
-    if (forceVertical) {
+  Widget _buildRow(BuildContext context, DetailTableRowData data, ThemeData theme, bool useVertical) {
+    if (useVertical) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -77,29 +74,14 @@ class DetailTable extends StatelessWidget {
             padding: const EdgeInsets.only(top: AppTheme.sizeSmall, left: AppTheme.sizeSmall),
             child: _buildLabel(context, data, theme),
           ),
-          if (data.hintText != null)
-            Padding(
-              padding: const EdgeInsets.only(
-                left: AppTheme.sizeSmall + AppTheme.sizeLarge + AppTheme.size2XSmall,
-                right: AppTheme.sizeSmall,
-                top: AppTheme.size2XSmall,
-              ),
-              child: Text(
-                data.hintText!,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.normal,
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-            ),
           Padding(
             padding: data.removePadding
                 ? const EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall)
                 : const EdgeInsets.only(
-                    left: AppTheme.sizeSmall + AppTheme.sizeLarge + AppTheme.size2XSmall,
+                    left: AppTheme.sizeSmall,
                     right: AppTheme.sizeSmall,
                   ),
-            child: _buildContent(context, data, theme),
+            child: _buildContent(context, data, theme, useVertical),
           ),
         ],
       );
@@ -108,13 +90,14 @@ class DetailTable extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-          width: labelWidth,
+        Expanded(
+          flex: 2,
           child: _buildLabel(context, data, theme),
         ),
         const SizedBox(width: AppTheme.sizeSmall),
         Expanded(
-          child: _buildContent(context, data, theme),
+          flex: 8,
+          child: _buildContent(context, data, theme, useVertical),
         ),
       ],
     );
@@ -162,21 +145,21 @@ class DetailTable extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, DetailTableRowData data, ThemeData theme) {
+  Widget _buildContent(BuildContext context, DetailTableRowData data, ThemeData theme, bool useVertical) {
     return Container(
       padding: contentPadding ?? EdgeInsets.zero,
       clipBehavior: Clip.none,
-      constraints: forceVertical ? null : const BoxConstraints(minHeight: 28),
-      alignment: forceVertical ? Alignment.topLeft : Alignment.centerLeft,
+      constraints: useVertical ? null : const BoxConstraints(minHeight: 28),
+      alignment: useVertical ? Alignment.topLeft : Alignment.centerLeft,
       child: DefaultTextStyle(
         style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.normal,
-              overflow: forceVertical ? TextOverflow.visible : TextOverflow.ellipsis,
+              overflow: useVertical ? TextOverflow.visible : TextOverflow.ellipsis,
               color: theme.colorScheme.onSurface,
             ) ??
             const TextStyle(),
         child: Align(
-          alignment: forceVertical ? Alignment.topLeft : Alignment.centerLeft,
+          alignment: useVertical ? Alignment.topLeft : Alignment.centerLeft,
           child: data.widget,
         ),
       ),

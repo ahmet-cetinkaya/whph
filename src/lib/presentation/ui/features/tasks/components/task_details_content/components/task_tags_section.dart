@@ -25,7 +25,6 @@ class TaskTagsSection {
   DetailTableRowData build() => DetailTableRowData(
         label: translationService.translate(TaskTranslationKeys.tagsLabel),
         icon: TagUiConstants.tagIcon,
-        hintText: translationService.translate(TaskTranslationKeys.tagsHint),
         widget: Padding(
           padding: const EdgeInsets.only(top: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall, left: AppTheme.sizeSmall),
           child: TagSelectDropdown(

@@ -438,7 +438,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                 DetailTableRowData(
                   label: _translationService.translate(AppUsageTranslationKeys.tagsLabel),
                   icon: AppUsageUiConstants.tagsIcon,
-                  hintText: _translationService.translate(AppUsageTranslationKeys.tagsHint),
                   widget: TagSelectDropdown(
                     key: ValueKey(_appUsageTags!.items.length),
                     isMultiSelect: true,
@@ -460,7 +459,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                 DetailTableRowData(
                   label: _translationService.translate(AppUsageTranslationKeys.colorLabel),
                   icon: AppUsageUiConstants.colorIcon,
-                  hintText: _translationService.translate(AppUsageTranslationKeys.colorHint),
                   widget: ColorField(
                     initialColor: AppUsageUiConstants.getTagColor(_appUsage!.color),
                     onColorChanged: _onChangeColor,

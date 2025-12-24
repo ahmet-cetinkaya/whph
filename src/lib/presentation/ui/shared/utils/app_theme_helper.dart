@@ -8,6 +8,10 @@ class AppThemeHelper {
     return MediaQuery.sizeOf(context).width < AppTheme.screenMedium;
   }
 
+  static bool isVerySmallScreen(BuildContext context) {
+    return MediaQuery.sizeOf(context).width < AppTheme.screenSmall;
+  }
+
   static bool isMediumScreen(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     return width >= AppTheme.screenMedium && width < AppTheme.screenLarge;
