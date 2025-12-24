@@ -90,96 +90,99 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
         },
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.sizeMedium),
-          child: Row(
-            children: [
-              // Device Icon
-              StyledIcon(
-                Icons.devices, // Default icon since platform is not available in SyncDeviceListItem
-                isActive: isSyncing,
-              ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 48),
+            child: Row(
+              children: [
+                // Device Icon
+                StyledIcon(
+                  Icons.devices, // Default icon since platform is not available in SyncDeviceListItem
+                  isActive: isSyncing,
+                ),
 
-              const SizedBox(width: AppTheme.sizeMedium),
+                const SizedBox(width: AppTheme.sizeMedium),
 
-              // Device Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _getDeviceName(),
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.wifi,
-                          size: 12,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            '${widget.item.fromIP} ↔ ${widget.item.toIP}',
-                            style: AppTheme.bodySmall.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                              fontFamily: 'monospace',
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 12,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.item.lastSyncDate != null
-                              ? DateTimeHelper.formatDateTimeMedium(widget.item.lastSyncDate,
-                                  locale: Localizations.localeOf(context))
-                              : _translationService.translate(SyncTranslationKeys.neverSynced),
-                          style: AppTheme.bodySmall.copyWith(
+                // Device Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _getDeviceName(),
+                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.wifi,
+                            size: 12,
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: AppTheme.sizeSmall),
-
-              // Actions
-              if (isSyncing)
-                AnimatedBuilder(
-                  animation: _rotationController,
-                  builder: (context, child) {
-                    return Transform.rotate(
-                      angle: _rotationController.value * 2 * 3.14159,
-                      child: Icon(
-                        Icons.sync,
-                        color: theme.colorScheme.primary,
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              '${widget.item.fromIP} ↔ ${widget.item.toIP}',
+                              style: AppTheme.bodySmall.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontFamily: 'monospace',
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                )
-              else
-                IconButton(
-                  icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
-                  onPressed: () => widget.onRemove(widget.item.id),
-                  tooltip: _translationService.translate(SyncTranslationKeys.removeDevice),
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.access_time,
+                            size: 12,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            widget.item.lastSyncDate != null
+                                ? DateTimeHelper.formatDateTimeMedium(widget.item.lastSyncDate,
+                                    locale: Localizations.localeOf(context))
+                                : _translationService.translate(SyncTranslationKeys.neverSynced),
+                            style: AppTheme.bodySmall.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-            ],
+
+                const SizedBox(width: AppTheme.sizeSmall),
+
+                // Actions
+                if (isSyncing)
+                  AnimatedBuilder(
+                    animation: _rotationController,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: _rotationController.value * 2 * 3.14159,
+                        child: Icon(
+                          Icons.sync,
+                          color: theme.colorScheme.primary,
+                        ),
+                      );
+                    },
+                  )
+                else
+                  IconButton(
+                    icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
+                    onPressed: () => widget.onRemove(widget.item.id),
+                    tooltip: _translationService.translate(SyncTranslationKeys.removeDevice),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
