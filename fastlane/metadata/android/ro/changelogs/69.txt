@@ -1,0 +1,3 @@
+• Calitatea traducerii îmbunătățită pentru un suport multilingv mai bun
+• Îmbunătățite interacțiunile și comportamentul de derulare în modul maraton
+• Diverse rafinamente și îmbunătățiri

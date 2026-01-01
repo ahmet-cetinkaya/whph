@@ -1,0 +1,3 @@
+• Izboljšana kakovost prevodov za boljoš večjezično podporo
+• Izboljšane interakcije in obnašanje pomikanja v načinu maratona
+• Različne izboljšave in popravki

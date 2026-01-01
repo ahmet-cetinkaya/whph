@@ -1,0 +1,3 @@
+• Enhanced translation quality for better multilingual support
+• Improved marathon mode interactions and scrolling behaviour
+• Various refinements and polish

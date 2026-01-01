@@ -1,0 +1,3 @@
+• Übersetzungsqualität für bessere mehrsprachige Unterstützung verbessert
+• Interaktion und Scrollverhalten im Marathon-Modus verbessert
+• Diverse Verbesserungen und Optimierungen

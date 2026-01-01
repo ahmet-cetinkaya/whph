@@ -1,0 +1,3 @@
+• Poprawiona jakość tłumaczeń dla lepszej obsługi wielojęzycznej
+• Ulepszono interakcje i zachowanie przewijania w trybie maratonu
+• Różne ulepszenia i usprawnienia

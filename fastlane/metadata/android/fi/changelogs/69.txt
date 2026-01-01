@@ -1,0 +1,3 @@
+• Parannettu käännösten laatia parempaa monikielistä tukea varten
+• Parannettu maraton tilan vuorovaikutuksia ja vierityksen toimintaa
+• Erilaisia parannuksia ja hiontaa

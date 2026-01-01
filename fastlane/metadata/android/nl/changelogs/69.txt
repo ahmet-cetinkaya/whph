@@ -1,0 +1,3 @@
+• Vertaalkwaliteit verbeterd voor betere meertalige ondersteuning
+• Interacties en scrollgedrag in marathonmodus verbeterd
+• Diverse verfijningen en verbeteringen

@@ -1,0 +1,3 @@
+• Forbedret oversættelseskvaliteten for bedre flersproget support
+• Forbedret interaktion og rulleadfærd i maratontilstand
+• Diverse forbedringer og polering

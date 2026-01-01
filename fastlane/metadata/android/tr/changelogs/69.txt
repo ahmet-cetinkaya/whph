@@ -1,0 +1,3 @@
+• Daha iyi çok dilli destek için çeviri kalitesi geliştirildi
+• Maraton modunda etkileşimler ve kaydırma davranışı iyileştirildi
+• Çeşitli iyileştirmeler ve düzeltmeler

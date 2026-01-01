@@ -1,0 +1,3 @@
+• Förbättrad översättningskvalitet för bättre flerspråkigt stöd
+• Förbättrad interaktion och rullningsbeteende i maratonläge
+• Diverse förbättringar och polering

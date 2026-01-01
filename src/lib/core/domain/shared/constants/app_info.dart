@@ -11,8 +11,8 @@ import 'package:whph/core/domain/shared/constants/app_assets.dart';
 class AppInfo {
   static const String name = "Work Hard Play Hard";
   static const String shortName = "WHPH";
-  static const String version = "0.19.2";
-  static const String buildNumber = "68";
+  static const String version = "0.19.3";
+  static const String buildNumber = "69";
   static const String websiteUrl = "https://whph.ahmetcetinkaya.me/";
   static const String sourceCodeUrl = "https://github.com/ahmet-cetinkaya/whph";
   static const String logoPath = AppAssets.logo;

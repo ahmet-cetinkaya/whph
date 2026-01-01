@@ -1,0 +1,3 @@
+• Migliorata la qualità della traduzione per un migliore supporto multilingue
+• Migliorate le interazioni e il comportamento di scorrimento in modalità maratona
+• Vari affinamenti e migliorie

@@ -1,0 +1,3 @@
+• Qualidade de tradução aprimorada para melhor suporte multilingue
+• Interações e comportamento de rolagem aprimorados no modo maratona
+• Vários refinamentos e melhorias
