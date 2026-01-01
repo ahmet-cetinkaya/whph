@@ -428,13 +428,20 @@ tasks:
     years_plural: anni
   reminder:
     atTime: All'orario programmato
+    at_time: All'orario programmato
     deadlineReminderLabel: Promemoria scadenza
+    deadline_reminder_label: Promemoria scadenza
     fifteenMinutesBefore: 15 minuti prima
+    fifteen_minutes_before: 15 minuti prima
     fiveMinutesBefore: 5 minuti prima
+    five_minutes_before: 5 minuti prima
     none: Nessun promemoria
     oneDayBefore: 1 giorno prima
+    one_day_before: 1 giorno prima
     oneHourBefore: 1 ora prima
+    one_hour_before: 1 ora prima
     plannedReminderLabel: Promemoria data pianificata
+    planned_reminder_label: Promemoria data pianificata
     section_title: Promemoria
     custom: Personalizzato
     custom_title: Promemoria personalizzato
@@ -442,6 +449,27 @@ tasks:
     time: Ora
     unit: Unità
   task_details: Dettagli attività
+  time_logging:
+    add_time: Aggiungi tempo
+    add_time_description: Aggiungi il tempo specificato ai record esistenti
+    dialog_title: Registra tempo
+    duration: Durata da aggiungere
+    invalid_input: Inserire ore e minuti validi
+    log_time: Registra tempo
+    mode: Modalità di registrazione
+    set_total: Imposta totale
+    set_total_description: Imposta il tempo totale per il giorno selezionato
+    total_time: Tempo totale per il giorno
+  timer:
+    mode:
+      description: Scegli tra tecnica Pomodoro, timer per il conto alla rovescia o cronometro
+      normal: Timer normale
+      pomodoro: Pomodoro
+      stopwatch: Cronometro
+      title: Modalità timer
+    settings:
+      duration_label: Durata del timer
+      duration_title: Durata
   title: Attività
   tooltips:
     clear_date: Cancella data

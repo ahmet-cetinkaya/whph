@@ -107,14 +107,14 @@ shared:
     start_date_must_be_at_or_after: A data de início deve ser em ou após {date}
     time_must_be_at_or_after: O horário deve ser às {time} ou depois
     time_must_be_at_or_before: O horário deve ser às {time} ou antes
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: Selecionar hora
+    selected_time: Hora selecionada
+    select_date_title: Selecionar data
+    quick_selection: Seleção rápida
+    quick_selection_title: Seleção rápida
+    refresh_settings: Configurações de atualização
+    date_ranges: Intervalos de datas
+    refresh_settings_label: Configurações de atualização
   days:
     friday: Sexta-feira
     friday_short: Sex
@@ -345,61 +345,61 @@ shared:
     time_picker_hour_label: Hora
     time_picker_minute_label: Minuto
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
+    field_label: Data e hora
+    field_hint: Selecionar data e hora
+    edit_button_label: Editar
+    edit_button_hint: Editar data e hora
+    title: Data e hora
     confirm: Confirmar
     cancel: Cancelar
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    set_time: Ajustar hora
+    selected_time: Hora selecionada
+    select_time_title: Selecionar hora
+    select_date_title: Selecionar data
+    no_date_selected: Nenhuma data selecionada
+    select_end_date: Selecionar data de término
+    no_dates_selected: Nenhuma data selecionada
+    refresh: Atualizar
+    cannot_select_time_before_min_date: Não é possível selecionar horário antes de {time}
+    cannot_select_time_after_max_date: Não é possível selecionar horário após {time}
+    time_must_be_at_or_after: O horário deve ser às {time} ou depois
+    time_must_be_at_or_before: O horário deve ser às {time} ou antes
+    selected_date_must_be_at_or_after: A data selecionada deve ser em ou após {date}
+    selected_date_must_be_at_or_before: A data selecionada deve ser em ou antes de {date}
     start_date_cannot_be_after_end_date:
       A data de início não pode ser posterior à
-      data de fim
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+      data de término
+    start_date_must_be_at_or_after: A data de início deve ser em ou após {date}
+    end_date_must_be_at_or_before: A data de término deve ser em ou antes de {date}
+    cannot_select_date_before_min_date: Não é possível selecionar data antes de {date}
+    cannot_select_date_after_max_date: Não é possível selecionar data após {date}
+    start_date_cannot_be_before_min_date: A data de início não pode ser antes de {date}
+    end_date_cannot_be_after_max_date: A data de término não pode ser depois de {date}
+    selected_date_time_must_be_after: A data e hora selecionadas devem ser depois de {dateTime}
+    select_date_time_title: Selecionar data e hora
+    select_date_range_title: Selecionar intervalo de datas
     refresh_description: Atualizar automaticamente o intervalo de datas selecionado
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: Campo de data e hora
+    date_time_field_hint: Selecionar data e hora
+    allDay: Dia inteiro
+    refreshDescription: Atualizar automaticamente o intervalo de datas selecionado
+    quick_selection_today: Hoje
+    quick_selection_tomorrow: Amanhã
+    quick_selection_weekend: Fim de semana
+    quick_selection_next_week: Próxima semana
+    quick_selection_no_date: Sem data
+    quick_selection_last_week: Semana passada
+    quick_selection_last_month: Mês passado
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Diminuir
+    increment_button_label: Aumentar
+    text_field_label: Valor numérico
+    decrement_hint: Diminuir valor
+    increment_hint: Aumentar valor
+    text_field_hint: Inserir número
+    decrement_tooltip: Diminuir valor
+    increment_tooltip: Aumentar valor
+    at_minimum_value: No valor mínimo
+    at_maximum_value: No valor máximo
   skip_tour: Pular tour
   tap_to_resume: Toque para voltar ao conteúdo

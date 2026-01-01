@@ -81,23 +81,31 @@ habits:
     select_tooltip: Etiket seç
     statistics:
       archived_note: "Arşivlenme tarihi:"
-      archived_on: Arşivlenme tarihi
+      archived_on: Arşivlenme Tarihi
       archived_warning:
         İstatistikler arşivlendiği tarihe kadar gösterilmektedir.
         {startDate} - {archivedDate}
+      completed: Tamamlandı
       completions: tamamlama
       from: Başlangıç
+      last_month: Geçen Ay
+      last_week: Geçen Hafta
       monthly: Aylık
       no_streaks_yet: Henüz seri yok. Tutarlılık oluşturmaya başlayın!
       overall: Genel
       records: Kayıtlar
       score_trends: Puan Trendi
+      this_month: Bu Ay
+      this_week: Bu Hafta
       to: Bitiş
       top_streaks: En İyi Seriler
+      total: Toplam
       yearly: Yıllık
     statistics_label: İstatistikler
     tags: Etiketler
     tags_hint: İlişkilendirilecek etiketleri seçin
+    timer: Sayaç
+    elapsed_time: Geçen Süre
   errors:
     adding_tag: Etiket eklenemedi
     creating_record: Alışkanlık kaydı oluşturulamadı
@@ -175,7 +183,7 @@ habits:
     title: Alışkanlıklar
 
   reminder:
-    enableReminders: Hatırlatıcıları etkinleştir
+    enableReminders: Hatırlatıcıları Etkinleştir
     everyDay: Her gün
     noReminder: Hatırlatıcı ayarlanmadı
     reminderDays: Hatırlatıcı günleri
@@ -185,6 +193,28 @@ habits:
   reminders:
     enable: Hatırlatıcıları etkinleştir
     select_days_warning: Lütfen hatırlatıcılar için en az bir gün seçin
+  statistics:
+    archived_on: Arşivlenme Tarihi
+    from: Başlangıç
+    to: Bitiş
+  time_display:
+    actual_time_tooltip: Günlük kaydedilen süre
+    estimated: tahmini
+    estimated_time_tooltip: Alışkanlık ayarlarına dayalı tahmini süre
+    no_time_logged_tooltip: Bu gün için kaydedilmiş süre yok
+  time_logging:
+    add_time: Süre Ekle
+    add_time_description: Mevcut kayıtlara belirtilen süreyi ekleyin
+    dialog_title: Süre Kaydet
+    duration: Eklenecek Süre
+    invalid_input: Lütfen geçerli saat ve dakika girin
+    log_time: Süre Kaydet
+    mode: Kayıt Modu
+    set_total: Toplamı Ayarla
+    set_total_description: Seçilen gün için toplam süreyi ayarlayın
+    total_time: Günlük Toplam Süre
+  timer:
+    label: Sayaç
   tags:
     add_tooltip: Etiket ekle
     remove_tooltip: Etiketi kaldır

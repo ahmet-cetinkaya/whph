@@ -432,13 +432,20 @@ tasks:
     years_plural: années
   reminder:
     atTime: À l'heure prévue
-    deadlineReminderLabel: Rappel d'échéance
+    at_time: À l'heure prévue
+    deadlineReminderLabel: Rappel de date limite
+    deadline_reminder_label: Rappel de date limite
     fifteenMinutesBefore: 15 minutes avant
+    fifteen_minutes_before: 15 minutes avant
     fiveMinutesBefore: 5 minutes avant
-    none: Aucun rappel
+    five_minutes_before: 5 minutes avant
+    none: Pas de rappel
     oneDayBefore: 1 jour avant
+    one_day_before: 1 jour avant
     oneHourBefore: 1 heure avant
+    one_hour_before: 1 heure avant
     plannedReminderLabel: Rappel de date prévue
+    planned_reminder_label: Rappel de date prévue
     section_title: Rappels
     custom: Personnalisé
     custom_title: Rappel personnalisé
@@ -446,12 +453,33 @@ tasks:
     time: Heure
     unit: Unité
   task_details: Détails de la tâche
+  time_logging:
+    add_time: Ajouter du temps
+    add_time_description: Ajouter le temps spécifié aux enregistrements existants
+    dialog_title: Enregistrer le temps
+    duration: Durée à ajouter
+    invalid_input: Veuillez saisir des heures et des minutes valides
+    log_time: Enregistrer le temps
+    mode: Mode d'enregistrement
+    set_total: Définir le total
+    set_total_description: Définir le temps total pour la journée sélectionnée
+    total_time: Temps total de la journée
+  timer:
+    mode:
+      description: Choisissez entre la technique Pomodoro, le compte à rebours ou le chronomètre
+      normal: Minuteur normal
+      pomodoro: Pomodoro
+      stopwatch: Chronomètre
+      title: Mode minuteur
+    settings:
+      duration_label: Durée du minuteur
+      duration_title: Durée
   title: Tâches
   tooltips:
     clear_date: Effacer la date
     decrease_estimated_time: Diminuer le temps estimé
-    edit_title: Modifier le titre
     increase_estimated_time: Augmenter le temps estimé
+    edit_title: Modifier le titre
     reminder_date_required: Configurez d'abord une date pour configurer les rappels
     reminder_help_text:
       Définissez un rappel pour être notifié avant la date de la

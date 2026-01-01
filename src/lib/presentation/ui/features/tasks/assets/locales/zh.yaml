@@ -384,13 +384,20 @@ tasks:
     years_plural: 年
   reminder:
     atTime: 在预定时间
+    at_time: 在预定时间
     deadlineReminderLabel: 截止日期提醒
+    deadline_reminder_label: 截止日期提醒
     fifteenMinutesBefore: 15分钟前
+    fifteen_minutes_before: 15分钟前
     fiveMinutesBefore: 5分钟前
+    five_minutes_before: 5分钟前
     none: 无提醒
     oneDayBefore: 1天前
+    one_day_before: 1天前
     oneHourBefore: 1小时前
+    one_hour_before: 1小时前
     plannedReminderLabel: 计划日期提醒
+    planned_reminder_label: 计划日期提醒
     section_title: 提醒
     custom: 自定义
     custom_title: 自定义提醒
@@ -398,6 +405,27 @@ tasks:
     time: 时间
     unit: 单位
   task_details: 任务详情
+  time_logging:
+    add_time: 添加时间
+    add_time_description: 将指定的时间添加到现有记录中
+    dialog_title: 记录时间
+    duration: 要添加的持续时间
+    invalid_input: 请输入有效的小时和分钟
+    log_time: 记录时间
+    mode: 记录模式
+    set_total: 设置总计
+    set_total_description: 设置所选日期的总时间
+    total_time: 当日总时间
+  timer:
+    mode:
+      description: 在番茄钟技术、倒计时器或秒表之间选择
+      normal: 普通计时器
+      pomodoro: 番茄钟
+      stopwatch: 秒表
+      title: 计时模式
+    settings:
+      duration_label: 计时持续时间
+      duration_title: 持续时间
   title: 任务
   tooltips:
     clear_date: 清除日期

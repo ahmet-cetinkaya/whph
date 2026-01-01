@@ -91,14 +91,14 @@ shared:
     start_date_must_be_at_or_after: 시작일은 {date} 이후여야 합니다
     time_must_be_at_or_after: 시간은 {time} 이후여야 합니다
     time_must_be_at_or_before: 시간은 {time} 이전이어야 합니다
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: 시간 선택
+    selected_time: 선택된 시간
+    select_date_title: 날짜 선택
+    quick_selection: 빠른 선택
+    quick_selection_title: 빠른 선택
+    refresh_settings: 새로고침 설정
+    date_ranges: 날짜 범위
+    refresh_settings_label: 새로고침 설정
   days:
     friday: 금요일
     friday_short: 금
@@ -326,59 +326,59 @@ shared:
     time_picker_hour_label: 시
     time_picker_minute_label: 분
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
-    confirm: Confirm
-    cancel: Cancel
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    field_label: 날짜 및 시간
+    field_hint: 날짜 및 시간 선택
+    edit_button_label: 편집
+    edit_button_hint: 날짜 및 시간 편집
+    title: 날짜 및 시간
+    confirm: 확인
+    cancel: 취소
+    set_time: 시간 설정
+    selected_time: 선택된 시간
+    select_time_title: 시간 선택
+    select_date_title: 날짜 선택
+    no_date_selected: 선택된 날짜 없음
+    select_end_date: 종료 날짜 선택
+    no_dates_selected: 선택된 날짜 없음
+    refresh: 새로고침
+    cannot_select_time_before_min_date: "{time} 이전 시간은 선택할 수 없습니다"
+    cannot_select_time_after_max_date: "{time} 이후 시간은 선택할 수 없습니다"
+    time_must_be_at_or_after: 시간은 {time} 이후여야 합니다
+    time_must_be_at_or_before: 시간은 {time} 이전이어야 합니다
+    selected_date_must_be_at_or_after: 선택한 날짜는 {date} 이후여야 합니다
+    selected_date_must_be_at_or_before: 선택한 날짜는 {date} 이전이어야 합니다
     start_date_cannot_be_after_end_date: 시작 날짜는 종료 날짜보다 늦을 수 없습니다
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: 시작 날짜는 {date} 이후여야 합니다
+    end_date_must_be_at_or_before: 종료 날짜는 {date} 이전이어야 합니다
+    cannot_select_date_before_min_date: "{date} 이전 날짜는 선택할 수 없습니다"
+    cannot_select_date_after_max_date: "{date} 이후 날짜는 선택할 수 없습니다"
+    start_date_cannot_be_before_min_date: 시작일은 {date} 이전이 될 수 없습니다
+    end_date_cannot_be_after_max_date: 종료일은 {date} 이후가 될 수 없습니다
+    selected_date_time_must_be_after: 선택한 날짜와 시간은 {dateTime} 이후여야 합니다
+    select_date_time_title: 날짜 및 시간 선택
+    select_date_range_title: 날짜 범위 선택
     refresh_description: 선택된 날짜 범위를 자동으로 새로고침
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: 날짜 및 시간 필드
+    date_time_field_hint: 날짜 및 시간 선택
+    allDay: 종일
+    refreshDescription: 선택된 날짜 범위를 자동으로 새로고침
+    quick_selection_today: 오늘
+    quick_selection_tomorrow: 내일
+    quick_selection_weekend: 주말
+    quick_selection_next_week: 다음 주
+    quick_selection_no_date: 날짜 없음
+    quick_selection_last_week: 지난 주
+    quick_selection_last_month: 지난 달
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: 감소
+    increment_button_label: 증가
+    text_field_label: 숫자 값
+    decrement_hint: 값 감소
+    increment_hint: 값 증가
+    text_field_hint: 숫자 입력
+    decrement_tooltip: 값 감소
+    increment_tooltip: 값 증가
+    at_minimum_value: 최소값입니다
+    at_maximum_value: 최대값입니다
   skip_tour: 투어 건너뛰기
   tap_to_resume: 탭하여 콘텐츠로 돌아가기

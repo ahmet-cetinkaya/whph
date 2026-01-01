@@ -388,13 +388,20 @@ tasks:
     years_plural: yıllar
   reminder:
     atTime: Zamanında
+    at_time: Zamanında
     deadlineReminderLabel: Son Tarih Hatırlatıcısı
+    deadline_reminder_label: Son Tarih Hatırlatıcısı
     fifteenMinutesBefore: 15 dakika önce
+    fifteen_minutes_before: 15 dakika önce
     fiveMinutesBefore: 5 dakika önce
+    five_minutes_before: 5 dakika önce
     none: Hatırlatıcı yok
     oneDayBefore: 1 gün önce
+    one_day_before: 1 gün önce
     oneHourBefore: 1 saat önce
+    one_hour_before: 1 saat önce
     plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
+    planned_reminder_label: Planlanan Tarih Hatırlatıcısı
     section_title: Hatırlatıcılar
     custom: Özel
     custom_title: Özel Hatırlatıcı
@@ -402,6 +409,27 @@ tasks:
     time: Zaman
     unit: Birim
   task_details: Görev Detayları
+  time_logging:
+    add_time: Süre Ekle
+    add_time_description: Belirtilen süreyi mevcut kayıtlara ekle
+    dialog_title: Süre Kaydet
+    duration: Eklenecek Süre
+    invalid_input: Lütfen geçerli saat ve dakika girin
+    log_time: Süre Kaydet
+    mode: Kayıt Modu
+    set_total: Toplamı Ayarla
+    set_total_description: Seçili gün için toplam süreyi ayarla
+    total_time: Günlük Toplam Süre
+  timer:
+    mode:
+      description: Pomodoro tekniği, geri sayım sayacı veya kronometre arasında seçim yapın
+      normal: Normal Zamanlayıcı
+      pomodoro: Pomodoro
+      stopwatch: Kronometre
+      title: Zamanlayıcı Modu
+    settings:
+      duration_label: Zamanlayıcı Süresi
+      duration_title: Süre
   title: Görevler
   tooltips:
     clear_date: Tarihi temizle

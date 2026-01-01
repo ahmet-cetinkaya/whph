@@ -83,16 +83,21 @@ habits:
       completions: завершення
       from: Від
       monthly: Щомісяця
-      no_streaks_yet: Поки немає серій. Почніть будувати послідовність!
+      no_streaks_yet: Серій ще немає. Почніть будувати послідовність!
       overall: Загалом
+      last_month: Минулий місяць
+      last_week: Минулий тиждень
       records: Записи
       score_trends: Тенденції балів
+      this_month: Цей місяць
+      this_week: Цей тиждень
       to: До
-      top_streaks: Топ серії
+      top_streaks: Найкращі серії
       yearly: Щорічно
+      total: Усього
     statistics_label: Статистика
     tags: Теги
-    tags_hint: Виберіть теги для зв'язування
+    tags_hint: Виберіть теги для асоціації
   errors:
     adding_tag: Не вдалося додати тег
     creating_record: Не вдалося створити запис звички

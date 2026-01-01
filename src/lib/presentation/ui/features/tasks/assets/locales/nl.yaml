@@ -346,13 +346,20 @@ tasks:
     years_plural: jaren
   reminder:
     atTime: Op het geplande tijdstip
+    at_time: Op de geplande tijd
     deadlineReminderLabel: Deadline Herinnering
+    deadline_reminder_label: Deadline Herinnering
     fifteenMinutesBefore: 15 minuten ervoor
+    fifteen_minutes_before: 15 minuten ervoor
     fiveMinutesBefore: 5 minuten ervoor
+    five_minutes_before: 5 minuten ervoor
     none: Geen herinnering
     oneDayBefore: 1 dag ervoor
+    one_day_before: 1 dag ervoor
     oneHourBefore: 1 uur ervoor
+    one_hour_before: 1 uur ervoor
     plannedReminderLabel: Geplande Datum Herinnering
+    planned_reminder_label: Geplande Datum Herinnering
     section_title: Herinneringen
     custom: Aangepast
     custom_title: Aangepaste herinnering

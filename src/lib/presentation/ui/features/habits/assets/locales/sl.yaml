@@ -79,17 +79,23 @@ habits:
     remove_record_tooltip: Odstrani današnjo dokončanje
     statistics:
       archived_note: "Arhivirano na:"
-      archived_on: Arhivirano na
+      archived_on: Arhivirano
       archived_warning: Statistike so prikazane do datuma arhiviranja. {startDate} - {archivedDate}
+      completed: Dokončano
       completions: dokončanja
       from: Od
+      last_month: Prejšnji mesec
+      last_week: Prejšnji teden
       monthly: Mesečno
       no_streaks_yet: Še nobene serije. Začnite graditi doslednost!
       overall: Splošno
-      records: Zabeležke
-      score_trends: Trendi Ocene
+      records: Zapisi
+      score_trends: Trendi rezultatov
+      this_month: Ta mesec
+      this_week: Ta teden
       to: Do
-      top_streaks: Najboljše Serije
+      top_streaks: Najboljši nizi
+      total: Skupaj
       yearly: Letno
     statistics_label: Statistike
     tags: Oznake

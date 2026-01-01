@@ -101,14 +101,14 @@ shared:
     start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
     time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
     time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: Valitse aika
+    selected_time: Valittu aika
+    select_date_title: Valitse päivämäärä
+    quick_selection: Pikavalinta
+    quick_selection_title: Pikavalinta
+    refresh_settings: Päivitysasetukset
+    date_ranges: Päivämäärävälit
+    refresh_settings_label: Päivitysasetukset
   days:
     friday: Perjantai
     friday_short: Pe
@@ -340,62 +340,61 @@ shared:
     required: "{field} on pakollinen."
     time_picker_hour_label: Tunti
   date_time_picker:
-    quick_selection_last_month: Last month
-    field_label: Date and time
+    quick_selection_last_month: Viime kuussa
+    field_label: Päivämäärä ja aika
     time_picker_minute_label: Minuutti
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
+    field_hint: Valitse päivämäärä ja aika
+    edit_button_label: Muokkaa
+    edit_button_hint: Muokkaa päivämäärää ja aikaa
+    title: Päivämäärä ja aika
     confirm: Vahvista
     cancel: Peruuta
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    set_time: Aseta aika
+    selected_time: Valittu aika
+    select_time_title: Valitse aika
+    select_date_title: Valitse päivämäärä
+    no_date_selected: Ei päivämäärää valittuna
+    select_end_date: Valitse lopetuspäivä
+    no_dates_selected: Ei päivämääriä valittuna
+    refresh: Päivitä
+    cannot_select_time_before_min_date: Ei voi valita aikaa ennen {time}
+    cannot_select_time_after_max_date: Ei voi valita aikaa {time} jälkeen
+    time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
+    time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
+    selected_date_must_be_at_or_after: Valitun päivämäärän täytyy olla {date} tai sen jälkeen
+    selected_date_must_be_at_or_before: Valitun päivämäärän täytyy olla {date} tai sitä ennen
     start_date_cannot_be_after_end_date:
       Aloituspäivämäärä ei voi olla loppupäivämäärän
       jälkeen
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
+    end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
+    cannot_select_date_before_min_date: Ei voi valita päivämäärää ennen {date}
+    cannot_select_date_after_max_date: Ei voi valita päivämäärää {date} jälkeen
+    start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
+    end_date_cannot_be_after_max_date: Lopetuspäivä ei voi olla {date} jälkeen
+    selected_date_time_must_be_after: Valitun päivämäärän ja ajan täytyy olla {dateTime} jälkeen
+    select_date_time_title: Valitse päivämäärä ja aika
+    select_date_range_title: Valitse päivämääräväli
     refresh_description: Päivitä valittu aikaväli automaattisesti
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
+    date_time_field_label: Päivämäärä- ja aikakenttä
+    date_time_field_hint: Valitse päivämäärä ja aika
+    allDay: Koko päivä
+    refreshDescription: Päivitä valittu aikaväli automaattisesti
+    quick_selection_today: Tänään
+    quick_selection_tomorrow: Huomenna
+    quick_selection_weekend: Viikonloppu
+    quick_selection_next_week: Ensi viikolla
+    quick_selection_no_date: Ei päivämäärää
+    quick_selection_last_week: Viime viikolla
   numeric_input:
-    decrement_button_label: Decrease
-    quick_selection_last_month: Last month
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Pienennä
+    increment_button_label: Suurenna
+    text_field_label: Numeerinen arvo
+    decrement_hint: Pienennä arvoa
+    increment_hint: Suurenna arvoa
+    text_field_hint: Syötä numero
+    decrement_tooltip: Pienennä arvoa
+    increment_tooltip: Suurenna arvoa
+    at_minimum_value: Minimiarvossa
+    at_maximum_value: Maksimiarvossa
   tap_to_resume: Napauta palataksesi sisältöön

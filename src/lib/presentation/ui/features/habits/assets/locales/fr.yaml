@@ -97,6 +97,8 @@ habits:
     statistics_label: Statistiques
     tags: Tags
     tags_hint: Sélectionner des tags à associer
+    timer: Minuteur
+    elapsed_time: Temps écoulé
   errors:
     adding_tag: Impossible d'ajouter le tag
     creating_record: Impossible de créer l'enregistrement d'habitude
@@ -205,6 +207,24 @@ habits:
     archived_on: Archivé le
     from: De
     to: À
+  time_display:
+    actual_time_tooltip: Temps réel suivi pour cette journée
+    estimated: estimé
+    estimated_time_tooltip: Temps estimé basé sur les paramètres de l'habitude
+    no_time_logged_tooltip: Aucun temps enregistré pour cette journée
+  time_logging:
+    add_time: Ajouter du temps
+    add_time_description: Ajouter le temps spécifié aux enregistrements existants
+    dialog_title: Enregistrer le temps
+    duration: Durée à ajouter
+    invalid_input: Veuillez saisir des heures et des minutes valides
+    log_time: Enregistrer le temps
+    mode: Mode d'enregistrement
+    set_total: Définir le total
+    set_total_description: Définir le temps total pour la journée sélectionnée
+    total_time: Temps total de la journée
+  timer:
+    label: Minuteur
   tags:
     add_tooltip: Ajouter un tag
     select_tooltip: Sélectionner un tag

@@ -340,14 +340,21 @@ tasks:
     months_plural: kuukaudet
     years_plural: vuodet
   reminder:
-    atTime: Aikataulun mukaisesti
-    deadlineReminderLabel: Eräpäivä Muistutus
+    atTime: Suunniteltuna ajankohtana
+    at_time: Suunniteltuna ajankohtana
+    deadlineReminderLabel: Määräajan muistutus
+    deadline_reminder_label: Määräajan muistutus
     fifteenMinutesBefore: 15 minuuttia ennen
+    fifteen_minutes_before: 15 minuuttia ennen
     fiveMinutesBefore: 5 minuuttia ennen
+    five_minutes_before: 5 minuuttia ennen
     none: Ei muistutusta
     oneDayBefore: 1 päivä ennen
+    one_day_before: 1 päivä ennen
     oneHourBefore: 1 tunti ennen
-    plannedReminderLabel: Suunnitellun Päivän Muistutus
+    one_hour_before: 1 tunti ennen
+    plannedReminderLabel: Suunnitellun päivän muistutus
+    planned_reminder_label: Suunnitellun päivän muistutus
     section_title: Muistutukset
     custom: Mukautettu
     custom_title: Mukautettu muistutus

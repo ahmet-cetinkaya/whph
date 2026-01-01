@@ -102,11 +102,11 @@ shared:
     select_time_title: Zeit auswählen
     selected_time: Ausgewählte Zeit
     select_date_title: Datum auswählen
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    quick_selection: Schnellauswahl
+    quick_selection_title: Schnellauswahl
+    refresh_settings: Einstellungen aktualisieren
+    date_ranges: Datumsbereiche
+    refresh_settings_label: Aktualisierungseinstellungen
   days:
     friday: Freitag
     friday_short: Fr
@@ -376,7 +376,7 @@ shared:
     select_date_time_title: Datum und Uhrzeit auswählen
     select_date_range_title: Datumsbereich auswählen
     refresh_description: Ausgewählten Datumsbereich automatisch aktualisieren
-    date_time_field_label: Datum-Uhrzeit-Feld
+    date_time_field_label: Datum- und Zeitfeld
     date_time_field_hint: Datum und Uhrzeit auswählen
     allDay: Ganztägig
     refreshDescription: Automatisch den ausgewählten Datumsbereich aktualisieren

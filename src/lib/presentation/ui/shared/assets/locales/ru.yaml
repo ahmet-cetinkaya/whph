@@ -93,14 +93,14 @@ shared:
     start_date_must_be_at_or_after: Дата начала должна быть не раньше {date}
     time_must_be_at_or_after: Время должно быть не раньше {time}
     time_must_be_at_or_before: Время должно быть не позже {time}
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: Выбрать время
+    selected_time: Выбранное время
+    select_date_title: Выбрать дату
+    quick_selection: Быстрый выбор
+    quick_selection_title: Быстрый выбор
+    refresh_settings: Настройки обновления
+    date_ranges: Диапазоны дат
+    refresh_settings_label: Настройки обновления
   days:
     friday: Пятница
     friday_short: Пт
@@ -332,59 +332,59 @@ shared:
     time_picker_hour_label: Час
     time_picker_minute_label: Минута
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
+    field_label: Дата и время
+    field_hint: Выберите дату и время
+    edit_button_label: Редактировать
+    edit_button_hint: Редактировать дату и время
+    title: Дата и время
     confirm: Подтвердить
     cancel: Отмена
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    set_time: Установить время
+    selected_time: Выбранное время
+    select_time_title: Выбрать время
+    select_date_title: Выбрать дату
+    no_date_selected: Дата не выбрана
+    select_end_date: Выбрать дату окончания
+    no_dates_selected: Даты не выбраны
+    refresh: Обновить
+    cannot_select_time_before_min_date: Нельзя выбрать время до {time}
+    cannot_select_time_after_max_date: Нельзя выбрать время после {time}
+    time_must_be_at_or_after: Время должно быть не раньше {time}
+    time_must_be_at_or_before: Время должно быть не позже {time}
+    selected_date_must_be_at_or_after: Выбранная дата должна быть не раньше {date}
+    selected_date_must_be_at_or_before: Выбранная дата должна быть не позже {date}
     start_date_cannot_be_after_end_date: Дата начала не может быть позже даты окончания
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Дата начала должна быть не раньше {date}
+    end_date_must_be_at_or_before: Дата окончания должна быть не позже {date}
+    cannot_select_date_before_min_date: Нельзя выбрать дату раньше {date}
+    cannot_select_date_after_max_date: Нельзя выбрать дату позже {date}
+    start_date_cannot_be_before_min_date: Дата начала не может быть раньше {date}
+    end_date_cannot_be_after_max_date: Дата окончания не может быть позже {date}
+    selected_date_time_must_be_after: Выбранные дата и время должны быть позже {dateTime}
+    select_date_time_title: Выбрать дату и время
+    select_date_range_title: Выбрать диапазон дат
     refresh_description: Автоматически обновлять выбранный диапазон дат
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: Поле даты и времени
+    date_time_field_hint: Выберите дату и время
+    allDay: Весь день
+    refreshDescription: Автоматически обновлять выбранный диапазон дат
+    quick_selection_today: Сегодня
+    quick_selection_tomorrow: Завтра
+    quick_selection_weekend: Выходные
+    quick_selection_next_week: Следующая неделя
+    quick_selection_no_date: Без даты
+    quick_selection_last_week: Прошлая неделя
+    quick_selection_last_month: Прошлый месяц
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Уменьшить
+    increment_button_label: Увеличить
+    text_field_label: Числовое значение
+    decrement_hint: Уменьшить значение
+    increment_hint: Увеличить значение
+    text_field_hint: Введите число
+    decrement_tooltip: Уменьшить значение
+    increment_tooltip: Увеличить значение
+    at_minimum_value: Минимальное значение
+    at_maximum_value: Максимальное значение
   skip_tour: Пропустить тур
   tap_to_resume: Нажмите, чтобы вернуться к контенту

@@ -92,8 +92,15 @@ habits:
       from: Från
       to: Till
       archived_note: "Arkiverat den:"
-      archived_on: Arkiverat den
+      archived_on: Arkiverad den
       archived_warning: "Statistiken visas upp till arkiveringsdatum. {startDate}"
+      completed: Slutförd
+      last_month: Förra månaden
+      last_week: Förra veckan
+      this_month: Denna månad
+      this_week: Denna vecka
+      total: Totalt
+    timer: Timer
   errors:
     loading_records: Misslyckades med att ladda poster
     creating_record: Misslyckades med att skapa post

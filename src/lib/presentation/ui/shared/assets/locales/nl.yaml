@@ -99,14 +99,14 @@ shared:
     start_date_must_be_at_or_after: De startdatum moet op of na {date} zijn
     time_must_be_at_or_after: De tijd moet op of na {time} zijn
     time_must_be_at_or_before: De tijd moet op of voor {time} zijn
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: Tijd selecteren
+    selected_time: Geselecteerde tijd
+    select_date_title: Datum selecteren
+    quick_selection: Snelle selectie
+    quick_selection_title: Snelle selectie
+    refresh_settings: Verversingsinstellingen
+    date_ranges: Datumbereiken
+    refresh_settings_label: Verversingsinstellingen
   days:
     friday: Vrijdag
     friday_short: Vr
@@ -338,59 +338,59 @@ shared:
     time_picker_hour_label: Uur
     time_picker_minute_label: Minuut
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
+    field_label: Datum en tijd
+    field_hint: Selecteer datum en tijd
+    edit_button_label: Bewerken
+    edit_button_hint: Datum en tijd bewerken
+    title: Datum en tijd
     confirm: Bevestigen
     cancel: Annuleren
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    set_time: Tijd instellen
+    selected_time: Geselecteerde tijd
+    select_time_title: Tijd selecteren
+    select_date_title: Datum selecteren
+    no_date_selected: Geen datum geselecteerd
+    select_end_date: Einddatum selecteren
+    no_dates_selected: Geen datums geselecteerd
+    refresh: Vernieuwen
+    cannot_select_time_before_min_date: Kan geen tijd selecteren voor {time}
+    cannot_select_time_after_max_date: Kan geen tijd selecteren na {time}
+    time_must_be_at_or_after: De tijd moet op of na {time} zijn
+    time_must_be_at_or_before: De tijd moet op of voor {time} zijn
+    selected_date_must_be_at_or_after: De geselecteerde datum moet op of na {date} zijn
+    selected_date_must_be_at_or_before: De geselecteerde datum moet op of voor {date} zijn
     start_date_cannot_be_after_end_date: Startdatum kan niet na einddatum liggen
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Startdatum moet op of na {date} zijn
+    end_date_must_be_at_or_before: Einddatum moet op of voor {date} zijn
+    cannot_select_date_before_min_date: Kan geen datum selecteren voor {date}
+    cannot_select_date_after_max_date: Kan geen datum selecteren na {date}
+    start_date_cannot_be_before_min_date: Startdatum kan niet voor {date} zijn
+    end_date_cannot_be_after_max_date: Einddatum kan niet na {date} zijn
+    selected_date_time_must_be_after: De geselecteerde datum en tijd moeten na {dateTime} zijn
+    select_date_time_title: Selecteer datum en tijd
+    select_date_range_title: Selecteer datumbereik
     refresh_description: Geselecteerd datumbereik automatisch vernieuwen
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
+    date_time_field_label: Datum- en tijdfeld
+    date_time_field_hint: Selecteer datum en tijd
+    allDay: Hele dag
+    refreshDescription: Geselecteerd datumbereik automatisch vernieuwen
+    quick_selection_today: Vandaag
+    quick_selection_tomorrow: Morgen
     quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    quick_selection_next_week: Volgende week
+    quick_selection_no_date: Geen datum
+    quick_selection_last_week: Vorige week
+    quick_selection_last_month: Vorige maand
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Verlagen
+    increment_button_label: Verhogen
+    text_field_label: Numerieke waarde
+    decrement_hint: Waarde verlagen
+    increment_hint: Waarde verhogen
+    text_field_hint: Voer nummer in
+    decrement_tooltip: Waarde verlagen
+    increment_tooltip: Waarde verhogen
+    at_minimum_value: Op minimumwaarde
+    at_maximum_value: Op maximumwaarde
   skip_tour: Sla rondleiding over
   tap_to_resume: Tik om terug te keren naar de inhoud

@@ -392,20 +392,48 @@ tasks:
     years_plural: 년간
   reminder:
     atTime: 예정된 시간에
+    at_time: 예정된 시간에
     deadlineReminderLabel: 마감일 알림
+    deadline_reminder_label: 마감일 알림
     fifteenMinutesBefore: 15분 전
+    fifteen_minutes_before: 15분 전
     fiveMinutesBefore: 5분 전
+    five_minutes_before: 5분 전
     none: 알림 없음
     oneDayBefore: 1일 전
+    one_day_before: 1일 전
     oneHourBefore: 1시간 전
-    plannedReminderLabel: 계획일 알림
+    one_hour_before: 1시간 전
+    plannedReminderLabel: 예정일 알림
+    planned_reminder_label: 예정일 알림
     section_title: 알림
-    custom: 사용자 정의
-    custom_title: 사용자 정의 알림
+    custom: 사용자 지정
+    custom_title: 사용자 지정 알림
     before_suffix: 전
     time: 시간
     unit: 단위
-  task_details: 작업 세부 정보
+  task_details: 작업 상세 정보
+  time_logging:
+    add_time: 시간 추가
+    add_time_description: 지정된 시간을 기존 기록에 추가합니다
+    dialog_title: 시간 기록
+    duration: 추가할 시간
+    invalid_input: 올바른 시간과 분을 입력하세요
+    log_time: 시간 기록
+    mode: 기록 모드
+    set_total: 합계 설정
+    set_total_description: 선택한 날짜의 총 시간을 설정합니다
+    total_time: 해당 날짜의 총 시간
+  timer:
+    mode:
+      description: 뽀모도로 기법, 카운트다운 타이머 또는 스톱워치 중에서 선택하세요
+      normal: 일반 타이머
+      pomodoro: 뽀모도로
+      stopwatch: 스톱워치
+      title: 타이머 모드
+    settings:
+      duration_label: 타이머 시간
+      duration_title: 시간
   title: 작업
   tooltips:
     clear_date: 날짜 지우기

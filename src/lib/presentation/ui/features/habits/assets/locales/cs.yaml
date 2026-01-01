@@ -82,17 +82,23 @@ habits:
       archived_on: Archivováno dne
       archived_warning: Statistiky jsou zobrazeny až do data archivace. {startDate} - {archivedDate}
       completions: dokončení
+      completed: Dokončeno
       from: Od
+      last_month: Minulý měsíc
+      last_week: Minulý týden
       monthly: Měsíčně
       no_streaks_yet: Žádné série ještě. Začněte budovat konzistenci!
       overall: Celkově
       records: Záznamy
       score_trends: Trendy skóre
+      this_month: Tento měsíc
+      this_week: Tento týden
       to: Do
       top_streaks: Nejlepší série
+      total: Celkem
       yearly: Ročně
     statistics_label: Statistiky
-    tags: Značky
+    tags: Štítky
     tags_hint: Vyberte značky k asociaci
   errors:
     adding_tag: Selhalo přidání značky

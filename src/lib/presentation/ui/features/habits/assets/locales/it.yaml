@@ -82,19 +82,26 @@ habits:
       archived_warning:
         Le statistiche sono mostrate fino alla data di archiviazione.
         {startDate} - {archivedDate}
+      completed: Completato
       completions: completamenti
       from: Da
+      last_month: Mese scorso
+      last_week: Settimana scorsa
       monthly: Mensile
       no_streaks_yet: Nessuna serie ancora. Inizia a costruire coerenza!
       overall: Generale
-      records: Record
+      records: Registrazioni
       score_trends: Trend punteggi
+      this_month: Questo mese
+      this_week: Questa settimana
       to: A
       top_streaks: Serie migliori
+      total: Totale
       yearly: Annuale
     statistics_label: Statistiche
     tags: Tag
     tags_hint: Seleziona tag da associare
+    timer: Timer
   errors:
     adding_tag: Impossibile aggiungere il tag
     creating_record: Impossibile creare record abitudine
@@ -189,20 +196,38 @@ habits:
       title: Guida alla gestione abitudini quotidiane e ottimizzazione routine
     title: Abitudini
   reminder:
-    enableReminders: Abilita promemoria
+    enableReminders: Attiva promemoria
     everyDay: Ogni giorno
     noReminder: Nessun promemoria impostato
     reminderDays: Giorni promemoria
     reminderSettings: Impostazioni promemoria
     reminderTime: Ora promemoria
-    selectDaysWarning: Seleziona almeno un giorno per i promemoria
+    selectDaysWarning: Selezionare almeno un giorno per i promemoria
   reminders:
-    enable: Abilita promemoria
-    select_days_warning: Seleziona almeno un giorno per i promemoria
+    enable: Attiva promemoria
+    select_days_warning: Selezionare almeno un giorno per i promemoria
   statistics:
-    archived_on: Archiviata il
+    archived_on: Archiviato il
     from: Da
     to: A
+  time_display:
+    actual_time_tooltip: Tempo effettivo tracciato per questo giorno
+    estimated: stimato
+    estimated_time_tooltip: Tempo stimato basato sulle impostazioni dell'abitudine
+    no_time_logged_tooltip: Nessun tempo registrato per questo giorno
+  time_logging:
+    add_time: Aggiungi tempo
+    add_time_description: Aggiungi il tempo specificato alle registrazioni esistenti
+    dialog_title: Registra tempo
+    duration: Durata da aggiungere
+    invalid_input: Inserire ore e minuti validi
+    log_time: Registra tempo
+    mode: Modalità di registrazione
+    set_total: Imposta totale
+    set_total_description: Imposta il tempo totale per il giorno selezionato
+    total_time: Tempo totale per il giorno
+  timer:
+    label: Timer
   tags:
     add_tooltip: Aggiungi tag
     select_tooltip: Seleziona tag

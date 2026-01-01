@@ -96,11 +96,11 @@ shared:
     select_time_title: Vybrat čas
     selected_time: Vybraný čas
     select_date_title: Vybrat datum
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    quick_selection: Rychlý výběr
+    quick_selection_title: Rychlý výběρ
+    refresh_settings: Nastavení obnovení
+    date_ranges: Rozsahy dat
+    refresh_settings_label: Nastavení obnovení
   days:
     friday: Pátek
     friday_short: Pá
@@ -380,7 +380,6 @@ shared:
     quick_selection_last_week: Minulý týden
   numeric_input:
     decrement_button_label: Snížit
-    quick_selection_last_month: Minulý měsíc
     increment_button_label: Zvýšit
     text_field_label: Číselná hodnota
     decrement_hint: Snížit hodnotu

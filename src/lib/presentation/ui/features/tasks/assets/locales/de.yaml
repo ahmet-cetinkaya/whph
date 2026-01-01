@@ -428,20 +428,48 @@ tasks:
     years_plural: Jahre
   reminder:
     atTime: Zur geplanten Zeit
-    deadlineReminderLabel: Fristerinnerung
+    at_time: Zur geplanten Zeit
+    deadlineReminderLabel: Frist-Erinnerung
+    deadline_reminder_label: Frist-Erinnerung
     fifteenMinutesBefore: 15 Minuten vorher
+    fifteen_minutes_before: 15 Minuten vorher
     fiveMinutesBefore: 5 Minuten vorher
+    five_minutes_before: 5 Minuten vorher
     none: Keine Erinnerung
     oneDayBefore: 1 Tag vorher
+    one_day_before: 1 Tag vorher
     oneHourBefore: 1 Stunde vorher
-    plannedReminderLabel: Geplante Datumserinnerung
+    one_hour_before: 1 Stunde vorher
+    plannedReminderLabel: Planungs-Erinnerung
+    planned_reminder_label: Planungs-Erinnerung
     section_title: Erinnerungen
     custom: Benutzerdefiniert
     custom_title: Benutzerdefinierte Erinnerung
-    before_suffix: vor
+    before_suffix: vorher
     time: Zeit
     unit: Einheit
   task_details: Aufgabendetails
+  time_logging:
+    add_time: Zeit hinzufügen
+    add_time_description: Die angegebene Zeit zu den vorhandenen Datensätzen hinzufügen
+    dialog_title: Zeit erfassen
+    duration: Hinzuzufügende Dauer
+    invalid_input: Bitte geben Sie gültige Stunden und Minuten ein
+    log_time: Zeit erfassen
+    mode: Erfassungsmodus
+    set_total: Gesamtzeit festlegen
+    set_total_description: Die Gesamtzeit für den ausgewählten Tag festlegen
+    total_time: Gesamtzeit für den Tag
+  timer:
+    mode:
+      description: Wählen Sie zwischen Pomodoro-Technik, Countdown-Timer oder Stoppuhr
+      normal: Normaler Timer
+      pomodoro: Pomodoro
+      stopwatch: Stoppuhr
+      title: Timer-Modus
+    settings:
+      duration_label: Timer-Dauer
+      duration_title: Dauer
   title: Aufgaben
   tooltips:
     clear_date: Datum löschen

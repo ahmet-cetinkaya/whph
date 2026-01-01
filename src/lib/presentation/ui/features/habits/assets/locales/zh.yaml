@@ -81,18 +81,26 @@ habits:
       archived_on: 归档于
       archived_warning: 统计显示到归档日期。{startDate} - {archivedDate}
       completions: 完成次数
+      completed: 已完成
       from: 从
+      last_month: 上个月
+      last_week: 上周
       monthly: 月度
       no_streaks_yet: 还没有连续记录。开始建立一致性！
       overall: 总体
       records: 记录
       score_trends: 分数趋势
+      this_month: 本月
+      this_week: 本周
       to: 到
-      top_streaks: 最高连续记录
+      top_streaks: 最佳记录
+      total: 总计
       yearly: 年度
     statistics_label: 统计
     tags: 标签
     tags_hint: 选择要关联的标签
+    timer: 计时器
+    elapsed_time: 已耗时
   errors:
     adding_tag: 添加标签失败
     creating_record: 创建习惯记录失败

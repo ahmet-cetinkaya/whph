@@ -81,15 +81,21 @@ habits:
       archived_note: "Arquivado em:"
       archived_on: Arquivado em
       archived_warning: Estatísticas mostradas até a data de arquivamento. {startDate} - {archivedDate}
+      completed: Concluído
       completions: conclusões
       from: De
+      last_month: Mês passado
+      last_week: Semana passada
       monthly: Mensal
       no_streaks_yet: Nenhuma sequência ainda. Comece a construir consistência!
       overall: Geral
       records: Registros
-      score_trends: Tendências de Pontuação
+      score_trends: Tendências de pontuação
+      this_month: Este mês
+      this_week: Esta semana
       to: Até
-      top_streaks: Principais Sequências
+      top_streaks: Melhores sequências
+      total: Total
       yearly: Anual
     statistics_label: Estatísticas
     tags: Tags

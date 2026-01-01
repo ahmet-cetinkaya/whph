@@ -91,9 +91,16 @@ habits:
       to: Până la
       top_streaks: Principale Serie
       yearly: Anual
+      completed: Finalizat
+      last_month: Luna trecută
+      last_week: Săptămâna trecută
+      this_month: Luna aceasta
+      this_week: Săptămâna aceasta
+      total: Total
     statistics_label: Statistică
     tags: Etichete
-    tags_hint: Selectează etichete pentru asociere
+    tags_hint: Selectați etichete pentru asociere
+    timer: Cronometru
   errors:
     adding_tag: Eșec la adăugarea etichetei
     creating_record: Eșec la crearea înregistrării de obicei

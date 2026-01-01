@@ -423,21 +423,49 @@ tasks:
     months_plural: měsíce
     years_plural: roky
   reminder:
-    atTime: V plánovaném čase
-    deadlineReminderLabel: Připomínka splatnosti
-    fifteenMinutesBefore: 15 minut před
-    fiveMinutesBefore: 5 minut před
-    none: Žádná připomínka
-    oneDayBefore: 1 den před
-    oneHourBefore: 1 hodina před
-    plannedReminderLabel: Připomínka plánovaného data
-    section_title: Připomínky
+    at_time: V naplánovaném čase
+    atTime: V naplánovaném čase
+    deadline_reminder_label: Připomenutí termínu
+    deadlineReminderLabel: Připomenutí termínu
+    fifteenMinutesBefore: 15 minut předem
+    fifteen_minutes_before: 15 minut předem
+    fiveMinutesBefore: 5 minut předem
+    five_minutes_before: 5 minut předem
+    none: Bez připomenutí
+    oneDayBefore: 1 den předem
+    one_day_before: 1 den předem
+    oneHourBefore: 1 hodinu předem
+    one_hour_before: 1 hodinu předem
+    plannedReminderLabel: Připomenutí plánovaného data
+    planned_reminder_label: Připomenutí plánovaného data
+    section_title: Připomenutí
     custom: Vlastní
     custom_title: Vlastní připomenutí
-    before_suffix: před
+    before_suffix: předem
     time: Čas
     unit: Jednotka
   task_details: Detaily úkolu
+  time_logging:
+    add_time: Přidat čas
+    add_time_description: Přidat zadaný čas ke stávajícím záznamům
+    dialog_title: Protokolovat čas
+    duration: Doba k přidání
+    invalid_input: Zadejte prosím platné hodiny a minuty
+    log_time: Protokolovat čas
+    mode: Režim protokolování
+    set_total: Nastavit celkem
+    set_total_description: Nastavit celkový čas pro vybraný den
+    total_time: Celkový čas pro den
+  timer:
+    mode:
+      description: Vyberte si mezi technikou Pomodoro, odpočítávacím časovačem nebo stopkami
+      normal: Normální časovač
+      pomodoro: Pomodoro
+      stopwatch: Stopky
+      title: Režim časovače
+    settings:
+      duration_label: Doba časovače
+      duration_title: Trvání
   title: Úkoly
   tooltips:
     clear_date: Vymazat datum
