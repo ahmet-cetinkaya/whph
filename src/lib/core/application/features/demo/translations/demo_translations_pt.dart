@@ -79,7 +79,7 @@ const Map<String, String> ptDemoTranslations = {
   'note.workout.content': '# Plano de fitness\n\n## Segunda-feira - Parte superior\n- Flexões: 3x12\n- Elevações: 3x8',
   'note.learning.title': 'Recursos de aprendizagem',
   'note.learning.content':
-      '# Aprendizagem online\n\n## Cursuri programare\n- Udemy: Flutter Avançado\n- Coursera: Design de Sistemas (System Design)',
+      '# Aprendizagem online\n\n## Cursos de programação\n- Udemy: Flutter Avançado\n- Coursera: Design de Sistemas (System Design)',
   'note.budget.title': 'Revisão do orçamento mensal',
   'note.budget.content': '# Análise do orçamento\n\n## Rendimentos\n- Salário: €2.800\n- Freelance: €400',
 };
