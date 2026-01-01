@@ -420,7 +420,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     if (_habitListOptionSettingsLoaded)
                       HabitsList(
                         key: ValueKey(
-                            'habits_list_${_habitListStyle}_$_remainingHabits${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}'),
+                            'habits_list_${_habitListStyle}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}'),
                         pageSize: 5,
                         style: _habitListStyle,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
@@ -512,7 +512,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     if (_taskListOptionSettingsLoaded)
                       TaskList(
                         key: ValueKey(
-                            'task_list_${_taskForceOriginalLayout}_$_remainingTasks${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'nosearch'}'),
+                            'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'nosearch'}'),
                         filterByCompleted: _showCompletedTasks,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                         filterNoTags: _showNoTagsFilter,
