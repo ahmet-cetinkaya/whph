@@ -60,7 +60,7 @@ const Map<String, String> fiDemoTranslations = {
       '# Tuotesuunnittelukokous\n\n## Osallistujat\n- Tuotepäällikkö\n- Pääkehittäjä\n\n## Keskeiset kohdat\n- Q2 ominaisuudet\n- Palautteen analyysi',
   'note.book.title': 'Kirjasuositukset',
   'note.book.content':
-      '# Luettavat kirjat\n\n## Ohjelmointi\n- Clean Code\n- Design Patterns\n\n## Liiketoiminta\n- The Lean Startup',
+      '# Luettavat kirjat\n\n## Ohjelmointi\n- Puhdas koodi (Clean Code) - Robert Martin\n- Suunnittelumallit (Design Patterns)\n\n## Liiketoiminta\n- The Lean Startup',
   'note.recipe.title': 'Resepti - Terveellinen smoothie',
   'note.recipe.content':
       '# Vihreä smoothie\n\n## Ainekset\n- 1 banaani\n- 1 kuppi pinaattia\n- 1/2 avokado\n- 1 kuppi mantelijuomaa',
@@ -71,13 +71,15 @@ const Map<String, String> fiDemoTranslations = {
   'note.weekly_goals.content':
       '# Tämän viikon tavoitteet\n\n## Työ\n- [ ] Neljännesvuosikatsaus\n- [ ] API-dokumentaatio',
   'note.project_ideas.title': 'Projekti-ideat',
-  'note.project_ideas.content': '# Sovellus-ideat\n\n## Tuottavuus\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Sovellus-ideat\n\n## Tuottavuus\n1. Ajanseuranta Pro (Time Tracker Pro)\n2. Tavan rakentaja (Habit Builder)',
   'note.investment.title': 'Sijoitustutkimus',
   'note.investment.content': '# Sijoitussalkku\n\n## Nykyiset omistukset\n- Tech-osakkeet: 40%\n- Indeksirahastot: 35%',
   'note.workout.title': 'Harjoitusohjelmat',
   'note.workout.content': '# Kuntoiluohjelma\n\n## Maanantai - Yläkroppa\n- Punnerrukset: 3x12\n- Leuanvedot: 3x8',
   'note.learning.title': 'Oppimisresurssit',
-  'note.learning.content': '# Verkko-oppiminen\n\n## Ohjelmointikurssit\n- Udemy: Flutter\n- Coursera: System Design',
+  'note.learning.content':
+      '# Verkko-oppiminen\n\n## Ohjelmointikurssit\n- Udemy: Flutter-kehitys\n- Coursera: Järjestelmäsuunnittelu (System Design)',
   'note.budget.title': 'Kuukausibudjetti',
   'note.budget.content': '# Budjettianalyysi\n\n## Tulot\n- Palkka: 4.000€\n- Freelance: 500€',
 };

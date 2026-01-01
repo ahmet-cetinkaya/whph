@@ -26,7 +26,7 @@ const Map<String, String> itDemoTranslations = {
   'task.review_code.description': 'Rivedere e approvare le pull request',
   'task.backup_files.title': 'Fare backup dei file',
   'task.backup_files.description': 'Backup settimanale dei documenti',
-  'task.learn_flutter.title': 'Imparare Flutter State Management',
+  'task.learn_flutter.title': 'Imparare la Gestione dello Stato in Flutter',
   'task.learn_flutter.description': 'Completare il corso online Flutter',
   'task.study_patterns.title': 'Studiare i design pattern',
   'task.study_patterns.description': 'Praticare Observer, Factory, Strategy',
@@ -60,7 +60,7 @@ const Map<String, String> itDemoTranslations = {
       '# Riunione di pianificazione\n\n## Partecipanti\n- Product Manager\n- Lead Developer\n- Designer\n\n## Punti chiave\n- Roadmap Q2\n- Analisi feedback',
   'note.book.title': 'Consigli sui libri',
   'note.book.content':
-      '# Libri da leggere\n\n## Programmazione\n- Clean Code di Robert Martin\n- Design Patterns\n\n## Business\n- The Lean Startup',
+      '# Libri da leggere\n\n## Programmazione\n- Codice Pulito (Clean Code) di Robert Martin\n- Pattern di Progettazione (Design Patterns)\n\n## Business\n- Partire Leggeri (The Lean Startup)',
   'note.recipe.title': 'Ricetta - Smoothie salutare',
   'note.recipe.content':
       '# Smoothie verde\n\n## Ingredienti\n- 1 banana\n- 1 tazza di spinaci\n- 1/2 avocado\n- 1 tazza di latte di mandorla',
@@ -71,14 +71,15 @@ const Map<String, String> itDemoTranslations = {
   'note.weekly_goals.content':
       '# Obiettivi della settimana\n\n## Lavoro\n- [ ] Revisione trimestrale\n- [ ] Documentazione API',
   'note.project_ideas.title': 'Idee per progetti',
-  'note.project_ideas.content': '# Idee per app\n\n## Produttività\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Idee per app\n\n## Produttività\n1. Monitoraggio Tempo Pro (Time Tracker Pro)\n2. Creatore di Abitudini (Habit Builder)',
   'note.investment.title': 'Ricerca investimenti',
   'note.investment.content': '# Note sul portafoglio\n\n## Posizioni attuali\n- Azioni tech: 40%\n- Fondi indice: 35%',
   'note.workout.title': 'Programmi di allenamento',
   'note.workout.content': '# Piano fitness\n\n## Lunedì - Parte superiore\n- Flessioni: 3x12\n- Trazioni: 3x8',
   'note.learning.title': 'Risorse di apprendimento',
   'note.learning.content':
-      '# Apprendimento online\n\n## Corsi di programmazione\n- Udemy: Flutter avanzato\n- Coursera: System Design',
+      '# Apprendimento online\n\n## Corsi di programmazione\n- Udemy: Flutter avanzato\n- Coursera: Progettazione del Sistema (System Design)',
   'note.budget.title': 'Revisione budget mensile',
   'note.budget.content': '# Analisi del budget\n\n## Entrate\n- Stipendio: €3.200\n- Freelance: €400',
 };

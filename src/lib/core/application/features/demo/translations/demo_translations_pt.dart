@@ -26,7 +26,7 @@ const Map<String, String> ptDemoTranslations = {
   'task.review_code.description': 'Rever e aprovar pull requests pendentes',
   'task.backup_files.title': 'Fazer backup de ficheiros',
   'task.backup_files.description': 'Backup semanal de documentos importantes',
-  'task.learn_flutter.title': 'Aprender Flutter State Management',
+  'task.learn_flutter.title': 'Aprender Gestão de Estado no Flutter',
   'task.learn_flutter.description': 'Concluir curso online de Flutter',
   'task.study_patterns.title': 'Estudar padrões de design',
   'task.study_patterns.description': 'Praticar Observer, Factory, Strategy',
@@ -60,7 +60,7 @@ const Map<String, String> ptDemoTranslations = {
       '# Reunião de planeamento\n\n## Participantes\n- Gestor de produto\n- Developer líder\n- Designer\n\n## Pontos-chave\n- Roadmap Q2\n- Análise de feedback',
   'note.book.title': 'Recomendações de livros',
   'note.book.content':
-      '# Livros para ler\n\n## Programação\n- Clean Code\n- Design Patterns\n\n## Negócios\n- The Lean Startup',
+      '# Livros para ler\n\n## Programação\n- Código Limpio (Clean Code) de Robert Martin\n- Padrões de Projeto (Design Patterns)\n\n## Negócios\n- A Startup Enxuta (The Lean Startup)',
   'note.recipe.title': 'Receita - Smoothie saudável',
   'note.recipe.content':
       '# Smoothie verde\n\n## Ingredientes\n- 1 banana\n- 1 chávena de espinafres\n- 1/2 abacate\n- 1 chávena de leite de amêndoa',
@@ -71,14 +71,15 @@ const Map<String, String> ptDemoTranslations = {
   'note.weekly_goals.content':
       '# Objetivos desta semana\n\n## Trabalho\n- [ ] Concluir revisão trimestral\n- [ ] Terminar documentação API',
   'note.project_ideas.title': 'Ideias de projetos',
-  'note.project_ideas.content': '# Ideias de aplicações\n\n## Produtividade\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Ideias de aplicações\n\n## Produtividade\n1. Rastreador de Tempo Pro (Time Tracker Pro)\n2. Construtor de Hábitos (Habit Builder)',
   'note.investment.title': 'Pesquisa de investimentos',
   'note.investment.content': '# Notas de portfólio\n\n## Posições atuais\n- Ações tech: 40%\n- Fundos de índice: 35%',
   'note.workout.title': 'Programas de treino',
   'note.workout.content': '# Plano de fitness\n\n## Segunda-feira - Parte superior\n- Flexões: 3x12\n- Elevações: 3x8',
   'note.learning.title': 'Recursos de aprendizagem',
   'note.learning.content':
-      '# Aprendizagem online\n\n## Cursos de programação\n- Udemy: Flutter Avançado\n- Coursera: System Design',
+      '# Aprendizagem online\n\n## Cursuri programare\n- Udemy: Flutter Avançado\n- Coursera: Design de Sistemas (System Design)',
   'note.budget.title': 'Revisão do orçamento mensal',
   'note.budget.content': '# Análise do orçamento\n\n## Rendimentos\n- Salário: €2.800\n- Freelance: €400',
 };

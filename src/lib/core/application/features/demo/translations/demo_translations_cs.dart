@@ -84,14 +84,14 @@ const Map<String, String> csDemoTranslations = {
   'note.book.content': '''# Knihy ke čtení
 
 ## Programování
-- Clean Code od Roberta Martina
-- Design Patterns od Gang of Four
-- The Pragmatic Programmer
+- Čistý kód (Clean Code) od Roberta Martina
+- Návrhové vzory (Design Patterns) od Gang of Four
+- Pragmatický programátor (The Pragmatic Programmer)
 
 ## Business
-- The Lean Startup
-- Good to Great
-- Atomic Habits
+- Lean Startup (The Lean Startup)
+- Z dobrého skvělé (Good to Great)
+- Atomové návyky (Atomic Habits)
 ''',
   'note.recipe.title': 'Recept - Zdravé smoothie',
   'note.recipe.content': '''# Zelené smoothie
@@ -140,11 +140,11 @@ const Map<String, String> csDemoTranslations = {
   'note.project_ideas.content': '''# Nápady na aplikace
 
 ## Produktivní aplikace
-1. **Time Tracker Pro**
+1. **Sledování času Pro (Time Tracker Pro)**
    - Pomodoro časovač s analytikou
    - Kategorizace podle štítků
    
-2. **Habit Builder**
+2. **Tvůrce návyků (Habit Builder)**
    - Sledování streak
    - Připomínková oznámení
 ''',
@@ -178,9 +178,9 @@ const Map<String, String> csDemoTranslations = {
   'note.learning.content': '''# Online vzdělávací záložky
 
 ## Programovací kurzy
-- **Udemy**: Advanced Flutter Development
-- **Coursera**: System Design Fundamentals
-- **Pluralsight**: Clean Architecture
+- **Udemy**: Pokročilý vývoj ve Flutteru
+- **Coursera**: Základy navrhování systémů (System Design)
+- **Pluralsight**: Čistá architektura (Clean Architecture)
 ''',
   'note.budget.title': 'Měsíční rozpočet',
   'note.budget.content': '''# Analýza měsíčního rozpočtu

@@ -84,14 +84,14 @@ const Map<String, String> deDemoTranslations = {
   'note.book.content': '''# Bücher zum Lesen
 
 ## Programmierung
-- Clean Code von Robert Martin
-- Design Patterns von Gang of Four
-- The Pragmatic Programmer
+- Sauberer Code (Clean Code) von Robert Martin
+- Entwurfsmuster (Design Patterns) von Gang of Four
+- Der pragmatische Programmierer (The Pragmatic Programmer)
 
 ## Business
-- The Lean Startup
-- Good to Great
-- Atomic Habits
+- Das Lean Startup (The Lean Startup)
+- Von Gut zu Herausragend (Good to Great)
+- Die 1%-Methode (Atomic Habits)
 ''',
   'note.recipe.title': 'Rezept - Gesunder Smoothie',
   'note.recipe.content': '''# Grüner Power-Smoothie
@@ -141,11 +141,11 @@ const Map<String, String> deDemoTranslations = {
   'note.project_ideas.content': '''# App-Projektideen
 
 ## Produktivitäts-Apps
-1. **Time Tracker Pro**
+1. **Zeiterfassung Pro (Time Tracker Pro)**
    - Pomodoro-Timer mit Analysen
    - Tag-basierte Kategorisierung
    
-2. **Habit Builder**
+2. **Gewohnheits-Planer (Habit Builder)**
    - Streak-Tracking
    - Erinnerungsbenachrichtigungen
 ''',
@@ -179,9 +179,9 @@ const Map<String, String> deDemoTranslations = {
   'note.learning.content': '''# Online-Lernbookmarks
 
 ## Programmierkurse
-- **Udemy**: Advanced Flutter Development
-- **Coursera**: System Design Fundamentals
-- **Pluralsight**: Clean Architecture
+- **Udemy**: Fortgeschrittene Flutter-Entwicklung
+- **Coursera**: Grundlagen des Systemdesigns
+- **Pluralsight**: Saubere Architektur (Clean Architecture)
 ''',
   'note.budget.title': 'Monatliche Budgetüberprüfung',
   'note.budget.content': '''# Monatliche Budgetanalyse

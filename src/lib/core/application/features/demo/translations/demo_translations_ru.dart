@@ -60,7 +60,7 @@ const Map<String, String> ruDemoTranslations = {
       '# Встреча по планированию\n\n##  Участники\n- Продуктовый менеджер\n- Ведущий разработчик\n- Дизайнер\n\n## Ключевые моменты\n- План Q2\n- Анализ отзывов',
   'note.book.title': 'Рекомендации книг',
   'note.book.content':
-      '# Книги для чтения\n\n## Программирование\n- Clean Code\n- Design Patterns\n\n## Бизнес\n- The Lean Startup',
+      '# Книги для чтения\n\n## Программирование\n- Чистый код (Clean Code) Роберта Мартина\n- Паттерны проектирования (Design Patterns)\n\n## Бизнес\n- Бережливый стартап (The Lean Startup)',
   'note.recipe.title': 'Рецепт - Полезный смузи',
   'note.recipe.content':
       '# Зелёный смузи\n\n## Ингредиенты\n- 1 банан\n- 1 стакан шпината\n- 1/2 авокадо\n- 1 стакан миндального молока',
@@ -71,14 +71,15 @@ const Map<String, String> ruDemoTranslations = {
   'note.weekly_goals.content':
       '# Цели на эту неделю\n\n## Работа\n- [ ] Завершить квартальный отчёт\n- [ ] Закончить документацию API',
   'note.project_ideas.title': 'Идеи проектов',
-  'note.project_ideas.content': '# Идеи приложений\n\n## Продуктивность\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Идеи приложений\n\n## Продуктивность\n1. Тайм-трекер Pro (Time Tracker Pro)\n2. Построитель привычек (Habit Builder)',
   'note.investment.title': 'Исследование инвестиций',
   'note.investment.content': '# Заметки по портфелю\n\n## Текущие позиции\n- Акции tech: 40%\n- Индексные фонды: 35%',
   'note.workout.title': 'Программы тренировок',
   'note.workout.content': '# План фитнеса\n\n## Понедельник - Верх тела\n- Отжимания: 3x12\n- Подтягивания: 3x8',
   'note.learning.title': 'Ресурсы для обучения',
   'note.learning.content':
-      '# Онлайн-обучение\n\n## Курсы программирования\n- Udemy: Flutter продвинутый\n- Coursera: System Design',
+      '# Онлайн-обучение\n\n## Курсы программирования\n- Udemy: Flutter продвинутый\n- Coursera: Проектирование систем (System Design)',
   'note.budget.title': 'Ежемесячный обзор бюджета',
   'note.budget.content': '# Анализ бюджета\n\n## Доходы\n- Зарплата: ₽350,000\n- Фриланс: ₽50,000',
 };

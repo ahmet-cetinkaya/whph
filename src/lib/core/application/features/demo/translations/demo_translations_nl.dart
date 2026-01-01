@@ -60,7 +60,7 @@ const Map<String, String> nlDemoTranslations = {
       '# Productplanningsvergadering\n\n## Deelnemers\n- Productmanager\n- Lead Developer\n- Designer\n\n## Kernpunten\n- Q2 roadmap\n- Feedbackanalyse',
   'note.book.title': 'Boekaanbevelingen',
   'note.book.content':
-      '# Te lezen boeken\n\n## Programmeren\n- Clean Code\n- Design Patterns\n\n## Business\n- The Lean Startup',
+      '# Te lezen boeken\n\n## Programmeren\n- Schone Code (Clean Code) van Robert Martin\n- Ontwerppatronen (Design Patterns)\n\n## Business\n- De Lean Startup (The Lean Startup)',
   'note.recipe.title': 'Recept - Gezonde smoothie',
   'note.recipe.content':
       '# Groene smoothie\n\n## Ingrediënten\n- 1 banaan\n- 1 kop spinazie\n- 1/2 avocado\n- 1 kop amandelmelk',
@@ -71,14 +71,15 @@ const Map<String, String> nlDemoTranslations = {
   'note.weekly_goals.content':
       '# Doelen deze week\n\n## Werk\n- [ ] Kwartaalreview afronden\n- [ ] API-documentatie voltooien',
   'note.project_ideas.title': 'Projectideeën',
-  'note.project_ideas.content': '# App-ideeën\n\n## Productiviteit\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# App-ideeën\n\n## Productiviteit\n1. Tijdbewaker Pro (Time Tracker Pro)\n2. Gewoontebouwer (Habit Builder)',
   'note.investment.title': 'Investeringsonderzoek',
   'note.investment.content': '# Portfolionotities\n\n## Huidige posities\n- Tech-aandelen: 40%\n- Indexfondsen: 35%',
   'note.workout.title': 'Trainingsprogramma\'s',
   'note.workout.content': '# Fitnessplan\n\n## Maandag - Bovenlichaam\n- Push-ups: 3x12\n- Pull-ups: 3x8',
   'note.learning.title': 'Leerbronnen',
   'note.learning.content':
-      '# Online leren\n\n## Programmeercursussen\n- Udemy: Flutter Gevorderd\n- Coursera: System Design',
+      '# Online leren\n\n## Programmeercursussen\n- Udemy: Flutter Gevorderd\n- Coursera: Systeemontwerp (System Design)',
   'note.budget.title': 'Maandelijkse budgetreview',
   'note.budget.content': '# Budgetanalyse\n\n## Inkomen\n- Salaris: €4.200\n- Freelance: €600',
 };

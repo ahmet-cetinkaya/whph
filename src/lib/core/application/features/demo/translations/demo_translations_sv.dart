@@ -60,7 +60,7 @@ const Map<String, String> svDemoTranslations = {
       '# Produktplaneringsmöte\n\n## Deltagare\n- Produktchef\n- Lead-utvecklare\n- Designer\n\n## Huvudpunkter\n- Q2 roadmap\n- Feedbackanalys',
   'note.book.title': 'Bokrekommendationer',
   'note.book.content':
-      '# Böcker att läsa\n\n## Programmering\n- Clean Code\n- Design Patterns\n\n## Affärer\n- The Lean Startup',
+      '# Böcker att läsa\n\n## Programmering\n- Ren kod (Clean Code) av Robert Martin\n- Designmönster (Design Patterns)\n\n## Affärer\n- The Lean Startup',
   'note.recipe.title': 'Recept - Hälsosam smoothie',
   'note.recipe.content':
       '# Grön smoothie\n\n## Ingredienser\n- 1 banan\n- 1 kopp spenat\n- 1/2 avokado\n- 1 kopp mandelmjölk',
@@ -70,7 +70,8 @@ const Map<String, String> svDemoTranslations = {
   'note.weekly_goals.content':
       '# Mål denna vecka\n\n## Arbete\n- [ ] Slutför kvartalsgenomgång\n- [ ] Avsluta API-dokumentation',
   'note.project_ideas.title': 'Projektidéer',
-  'note.project_ideas.content': '# App-idéer\n\n## Produktivitet\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# App-idéer\n\n## Produktivitet\n1. Tidsregistrering Pro (Time Tracker Pro)\n2. Vanebyggare (Habit Builder)',
   'note.investment.title': 'Investeringsforskning',
   'note.investment.content':
       '# Portföljanteckningar\n\n## Nuvarande positioner\n- Tech-aktier: 40%\n- Indexfonder: 35%',
@@ -78,7 +79,7 @@ const Map<String, String> svDemoTranslations = {
   'note.workout.content': '# Fitnessplan\n\n## Måndag - Överkropp\n- Armhävningar: 3x12\n- Chins: 3x8',
   'note.learning.title': 'Läranderesurser',
   'note.learning.content':
-      '# Onlinelärande\n\n## Programmeringskurser\n- Udemy: Flutter Avancerad\n- Coursera: System Design',
+      '# Onlinelärande\n\n## Programmeringskurser\n- Udemy: Flutter Avancerad\n- Coursera: Systemdesign (System Design)',
   'note.budget.title': 'Månadsbudgetgranskning',
   'note.budget.content': '# Budgetanalys\n\n## Inkomst\n- Lön: 45.000 kr\n- Freelance: 6.000 kr',
 };

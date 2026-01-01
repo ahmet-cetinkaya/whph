@@ -26,7 +26,7 @@ const Map<String, String> plDemoTranslations = {
   'task.review_code.description': 'Przejrzyj i zatwierdź pull requesty',
   'task.backup_files.title': 'Zrób kopię zapasową plików',
   'task.backup_files.description': 'Tygodniowa kopia ważnych dokumentów',
-  'task.learn_flutter.title': 'Naucz się Flutter State Management',
+  'task.learn_flutter.title': 'Naucz się zarządzania stanem we Flutterze',
   'task.learn_flutter.description': 'Ukończ kurs online Flutter',
   'task.study_patterns.title': 'Studiuj wzorce projektowe',
   'task.study_patterns.description': 'Ćwicz Observer, Factory, Strategy',
@@ -60,7 +60,7 @@ const Map<String, String> plDemoTranslations = {
       '# Spotkanie planowania produktu\n\n## Uczestnicy\n- Kierownik produktu\n- Lead Developer\n- Designer\n\n## Kluczowe punkty\n- Mapa Q2\n- Analiza opinii',
   'note.book.title': 'Rekomendacje książek',
   'note.book.content':
-      '# Książki do przeczytania\n\n## Programowanie\n- Clean Code\n- Design Patterns\n\n## Biznes\n- The Lean Startup',
+      '# Książki do przeczytania\n\n## Programowanie\n- Czysty kod (Clean Code) Roberta Martina\n- Wzorce projektowe (Design Patterns)\n\n## Biznes\n- Metoda Lean Startup (The Lean Startup)',
   'note.recipe.title': 'Przepis - Zdrowe smoothie',
   'note.recipe.content':
       '# Zielone smoothie\n\n## Składniki\n- 1 banan\n- 1 szklanka szpinaku\n- 1/2 awokado\n- 1 szklanka mleka migdałowego',
@@ -71,14 +71,15 @@ const Map<String, String> plDemoTranslations = {
   'note.weekly_goals.content':
       '# Cele na ten tydzień\n\n## Praca\n- [ ] Ukończ kwartalny przegląd\n- [ ] Zakończ dokumentację API',
   'note.project_ideas.title': 'Pomysły na projekty',
-  'note.project_ideas.content': '# Pomysły na aplikacje\n\n## Produktywność\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Pomysły na aplikacje\n\n## Produktywność\n1. Monitor Czasu Pro (Time Tracker Pro)\n2. Kreator Nawyków (Habit Builder)',
   'note.investment.title': 'Badanie inwestycji',
   'note.investment.content': '# Notatki portfelowe\n\n## Obecne pozycje\n- Akcje tech: 40%\n- Fundusze indeksowe: 35%',
   'note.workout.title': 'Programy treningowe',
   'note.workout.content': '# Plan fitness\n\n## Poniedziałek - Górna część ciała\n- Pompki: 3x12\n- Podciągania: 3x8',
   'note.learning.title': 'Zasoby edukacyjne',
   'note.learning.content':
-      '# Nauka online\n\n## Kursy programowania\n- Udemy: Flutter Zaawansowany\n- Coursera: System Design',
+      '# Nauka online\n\n## Kursy programowania\n- Udemy: Flutter Zaawansowany\n- Coursera: Projektowanie systemów (System Design)',
   'note.budget.title': 'Miesięczny przegląd budżetu',
   'note.budget.content': '# Analiza budżetu\n\n## Dochody\n- Pensja: 12.000 zł\n- Freelance: 2.000 zł',
 };

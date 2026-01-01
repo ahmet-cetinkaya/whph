@@ -60,7 +60,7 @@ const Map<String, String> elDemoTranslations = {
       '# Συνάντηση σχεδιασμού\n\n## Συμμετέχοντες\n- Προϊστάμενος προϊόντος\n- Επικεφαλής ανάπτυξης\n\n## Βασικά σημεία\n- Χάρτης λειτουργιών Q2\n- Ανάλυση feedback',
   'note.book.title': 'Προτάσεις βιβλίων',
   'note.book.content':
-      '# Βιβλία για διάβασμα\n\n## Προγραμματισμός\n- Clean Code\n- Design Patterns\n\n## Business\n- The Lean Startup\n- Atomic Habits',
+      '# Βιβλία για διάβασμα\n\n## Προγραμματισμός\n- Καθαρός Κώδικας (Clean Code) του Robert Martin\n- Σχεδιαστικά Πρότυπα (Design Patterns)\n\n## Business\n- Η Μέθοδος Lean Startup (The Lean Startup)\n- Ατομικές Συνήθειες (Atomic Habits)',
   'note.recipe.title': 'Συνταγή - Υγιεινό smoothie',
   'note.recipe.content':
       '# Πράσινο Smoothie\n\n## Υλικά\n- 1 μπανάνα\n- 1 φλιτζάνι σπανάκι\n- 1/2 αβοκάντο\n- 1 φλιτζάνι γάλα αμυγδάλου',
@@ -71,13 +71,15 @@ const Map<String, String> elDemoTranslations = {
   'note.weekly_goals.content':
       '# Στόχοι αυτής της εβδομάδας\n\n## Εργασία\n- [ ] Τριμηνιαία αναφορά\n- [ ] API τεκμηρίωση',
   'note.project_ideas.title': 'Ιδέες έργων',
-  'note.project_ideas.content': '# Ιδέες εφαρμογών\n\n## Παραγωγικότητα\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Ιδέες εφαρμογών\n\n## Παραγωγικότητα\n1. Παρακολούθηση Χρόνου Pro (Time Tracker Pro)\n2. Δημιουργός Συνηθειών (Habit Builder)',
   'note.investment.title': 'Έρευνα επενδύσεων',
   'note.investment.content': '# Χαρτοφυλάκιο επενδύσεων\n\n## Τρέχουσες θέσεις\n- Tech μετοχές: 40%\n- Δείκτες: 35%',
   'note.workout.title': 'Προγράμματα άσκησης',
   'note.workout.content': '# Πρόγραμμα fitness\n\n## Δευτέρα - Άνω σώμα\n- Κάμψεις: 3x12\n- Έλξεις: 3x8',
   'note.learning.title': 'Πόροι μάθησης',
-  'note.learning.content': '# Online μάθηση\n\n## Μαθήματα\n- Udemy: Flutter\n- Coursera: System Design',
+  'note.learning.content':
+      '# Online μάθηση\n\n## Μαθήματα\n- Udemy: Ανάπτυξη Flutter\n- Coursera: Σχεδίαση Συστημάτων (System Design)',
   'note.budget.title': 'Μηνιαίος προϋπολογισμός',
   'note.budget.content': '# Ανάλυση προϋπολογισμού\n\n## Έσοδα\n- Μισθός: €2.500\n- Freelance: €400',
 };
