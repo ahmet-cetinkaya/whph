@@ -56,10 +56,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   Duration _timeSinceLastSave = Duration.zero;
   static const Duration _dimmingDelay = Duration(seconds: 5);
   static const double _dimmingOpacity = 0;
-  static const Duration _undimCooldown = Duration(seconds: 2);
 
   final ScrollController _scrollController = ScrollController();
-  DateTime? _lastUndimTime;
 
   void _closeDialog() {
     Navigator.pop(context);
@@ -381,8 +379,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         _isDimmed = false;
       });
     }
-    // Record the time of undimming to prevent immediate re-dimming
-    _lastUndimTime = DateTime.now();
     if (_isTimerRunning) {
       _startDimmingTimer();
     }
