@@ -423,21 +423,42 @@ tasks:
     months_plural: miesiące
     years_plural: lata
   reminder:
-    atTime: O zaplanowanej godzinie
-    deadlineReminderLabel: Przypomnienie o terminie
-    fifteenMinutesBefore: 15 minut wcześniej
-    fiveMinutesBefore: 5 minut wcześniej
+    at_time: O zaplanowanej godzinie
+    deadline_reminder_label: Przypomnienie o terminie
+    fifteen_minutes_before: 15 minut przed
+    five_minutes_before: 5 minut przed
     none: Brak przypomnienia
-    oneDayBefore: 1 dzień wcześniej
-    oneHourBefore: 1 godzinę wcześniej
-    plannedReminderLabel: Przypomnienie o planowanej dacie
+    one_day_before: 1 dzień przed
+    one_hour_before: 1 godzina przed
+    planned_reminder_label: Przypomnienie o planowanej dacie
     section_title: Przypomnienia
     custom: Własne
     custom_title: Własne przypomnienie
     before_suffix: przed
-    time: Czas
+    time: Godzina
     unit: Jednostka
   task_details: Szczegóły zadania
+  time_logging:
+    add_time: Dodaj czas
+    add_time_description: Dodaj określony czas do istniejących rekordów
+    dialog_title: Rejestruj czas
+    duration: Czas do dodania
+    invalid_input: Proszę wprowadzić poprawne godziny i minuty
+    log_time: Rejestruj czas
+    mode: Tryb rejestracji
+    set_total: Ustaw sumę
+    set_total_description: Ustaw całkowity czas dla wybranego dnia
+    total_time: Całkowity czas dla dnia
+  timer:
+    mode:
+      description: Wybierz między techniką Pomodoro, minutnikiem lub stoperem
+      normal: Zwykły minutnik
+      pomodoro: Pomodoro
+      stopwatch: Stoper
+      title: Tryb minutnika
+    settings:
+      duration_label: Czas trwania minutnika
+      duration_title: Czas trwania
   title: Zadania
   tooltips:
     clear_date: Wyczyść datę

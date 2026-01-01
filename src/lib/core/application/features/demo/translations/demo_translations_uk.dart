@@ -26,7 +26,7 @@ const Map<String, String> ukDemoTranslations = {
   'task.review_code.description': 'Переглянути та схвалити pull request-и',
   'task.backup_files.title': 'Зробити резервну копію файлів',
   'task.backup_files.description': 'Щотижнева резервна копія документів',
-  'task.learn_flutter.title': 'Вивчити Flutter State Management',
+  'task.learn_flutter.title': 'Вивчити управління станом у Flutter',
   'task.learn_flutter.description': 'Завершити онлайн-курс Flutter',
   'task.study_patterns.title': 'Вивчити патерни проектування',
   'task.study_patterns.description': 'Практикувати Observer, Factory, Strategy',
@@ -60,7 +60,7 @@ const Map<String, String> ukDemoTranslations = {
       '# Зустріч з планування\n\n## Учасники\n- Продуктовий менеджер\n- Провідний розробник\n- Дизайнер\n\n## Ключові моменти\n- План Q2\n- Аналіз відгуків',
   'note.book.title': 'Рекомендації книг',
   'note.book.content':
-      '# Книги для читання\n\n## Програмування\n- Clean Code\n- Design Patterns\n\n## Бізнес\n- The Lean Startup',
+      '# Книги для читання\n\n## Програмування\n- Чистий код (Clean Code) Роберта Мартіна\n- Патерни проектування (Design Patterns)\n\n## Бізнес\n- Бережливий стартап (The Lean Startup)',
   'note.recipe.title': 'Рецепт - Корисний смузі',
   'note.recipe.content':
       '# Зелений смузі\n\n## Інгредієнти\n- 1 банан\n- 1 склянка шпинату\n- 1/2 авокадо\n- 1 склянка мигдального молока',
@@ -71,14 +71,15 @@ const Map<String, String> ukDemoTranslations = {
   'note.weekly_goals.content':
       '# Цілі на цей тиждень\n\n## Робота\n- [ ] Завершити квартальний звіт\n- [ ] Закінчити документацію API',
   'note.project_ideas.title': 'Ідеї проектів',
-  'note.project_ideas.content': '# Ідеї додатків\n\n## Продуктивність\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Ідеї додатків\n\n## Продуктивність\n1. Тайм-трекер Pro (Time Tracker Pro)\n2. Побудовник звичок (Habit Builder)',
   'note.investment.title': 'Дослідження інвестицій',
   'note.investment.content': '# Нотатки по портфелю\n\n## Поточні позиції\n- Акції tech: 40%\n- Індексні фонди: 35%',
   'note.workout.title': 'Програми тренувань',
   'note.workout.content': '# План фітнесу\n\n## Понеділок - Верх тіла\n- Віджимання: 3x12\n- Підтягування: 3x8',
   'note.learning.title': 'Ресурси для навчання',
   'note.learning.content':
-      '# Онлайн-навчання\n\n## Курси програмування\n- Udemy: Flutter просунутий\n- Coursera: System Design',
+      '# Онлайн-навчання\n\n## Курси програмування\n- Udemy: Flutter просунутий\n- Coursera: Проектування систем (System Design)',
   'note.budget.title': 'Щомісячний огляд бюджету',
   'note.budget.content': '# Аналіз бюджету\n\n## Доходи\n- Зарплата: ₴70,000\n- Фріланс: ₴12,000',
 };

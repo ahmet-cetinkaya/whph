@@ -79,14 +79,14 @@ const Map<String, String> daDemoTranslations = {
   'note.book.content': '''# Bøger at læse
 
 ## Programmering
-- Clean Code af Robert Martin
-- Design Patterns af Gang of Four
-- The Pragmatic Programmer
+- Ren Kode (Clean Code) af Robert Martin
+- Designmønstre (Design Patterns) af Gang of Four
+- Den pragmatiske programmør (The Pragmatic Programmer)
 
 ## Forretning
 - The Lean Startup
-- Good to Great
-- Atomic Habits
+- Fra god til fremragende (Good to Great)
+- Atomvaner (Atomic Habits)
 ''',
   'note.recipe.title': 'Opskrift - Sund smoothie',
   'note.recipe.content': '''# Grøn Power Smoothie
@@ -119,7 +119,7 @@ const Map<String, String> daDemoTranslations = {
   'note.project_ideas.content': '''# App projektidéer
 
 ## Produktivitetsapps
-1. **Time Tracker Pro**
+1. **Tidsregistrering Pro (Time Tracker Pro)**
    - Pomodoro timer med analyser
    - Tag-baseret kategorisering
 ''',
@@ -143,8 +143,8 @@ const Map<String, String> daDemoTranslations = {
   'note.learning.content': '''# Online læringsbogmærker
 
 ## Programmeringskurser
-- **Udemy**: Advanced Flutter Development
-- **Coursera**: System Design Fundamentals
+- **Udemy**: Avanceret Flutter-udvikling
+- **Coursera**: Grundlæggende systemdesign (System Design)
 ''',
   'note.budget.title': 'Månedlig budgetgennemgang',
   'note.budget.content': '''# Månedlig budgetanalyse

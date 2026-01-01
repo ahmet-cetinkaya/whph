@@ -425,21 +425,42 @@ tasks:
     months_plural: месяцы
     years_plural: годы
   reminder:
-    atTime: В запланированное время
-    deadlineReminderLabel: Напоминание о дедлайне
-    fifteenMinutesBefore: За 15 минут
-    fiveMinutesBefore: За 5 минут
+    at_time: В запланированное время
+    deadline_reminder_label: Напоминание о дедлайне
+    fifteen_minutes_before: За 15 минут
+    five_minutes_before: За 5 минут
     none: Без напоминания
-    oneDayBefore: За 1 день
-    oneHourBefore: За 1 час
-    plannedReminderLabel: Напоминание о запланированной дате
+    one_day_before: За 1 день
+    one_hour_before: За 1 час
+    planned_reminder_label: Напоминание о запланированной дате
     section_title: Напоминания
-    custom: Пользовательский
-    custom_title: Пользовательское напоминание
+    custom: Настроить
+    custom_title: Настраиваемое напоминание
     before_suffix: до
     time: Время
     unit: Единица
   task_details: Детали задачи
+  time_logging:
+    add_time: Добавить время
+    add_time_description: Добавить указанное время к существующим записям
+    dialog_title: Записать время
+    duration: Продолжительность для добавления
+    invalid_input: Пожалуйста, введите корректные часы и минуты
+    log_time: Записать время
+    mode: Режим записи
+    set_total: Установить общее время
+    set_total_description: Установить общее время для выбранного дня
+    total_time: Общее время за день
+  timer:
+    mode:
+      description: Выберите между техникой Помодоро, таймером обратного отсчета или секундомером
+      normal: Обычный таймер
+      pomodoro: Помодоро
+      stopwatch: Секундомер
+      title: Режим таймера
+    settings:
+      duration_label: Длительность таймера
+      duration_title: Длительность
   title: Задачи
   tooltips:
     clear_date: Очистить дату

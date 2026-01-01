@@ -341,18 +341,18 @@ tasks:
     months_plural: månader
     years_plural: år
   reminder:
-    atTime: Vid schemalagd tid
-    deadlineReminderLabel: Deadline Påminnelse
-    fifteenMinutesBefore: 15 minuter innan
-    fiveMinutesBefore: 5 minuter innan
+    at_time: Vid den planerade tiden
+    deadline_reminder_label: Påminnelse om tidsfrist
+    fifteen_minutes_before: 15 minuter före
+    five_minutes_before: 5 minuter före
     none: Ingen påminnelse
-    oneDayBefore: 1 dag innan
-    oneHourBefore: 1 timme innan
-    plannedReminderLabel: Planerat Datum Påminnelse
+    one_day_before: 1 dag före
+    one_hour_before: 1 timme före
+    planned_reminder_label: Påminnelse om planerat datum
     section_title: Påminnelser
     custom: Anpassad
     custom_title: Anpassad påminnelse
-    before_suffix: innan
+    before_suffix: före
     time: Tid
     unit: Enhet
   task_details: Uppgiftsdetaljer

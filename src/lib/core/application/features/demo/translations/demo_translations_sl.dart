@@ -60,7 +60,7 @@ const Map<String, String> slDemoTranslations = {
       '# Sestanek za načrtovanje\n\n## Udeleženci\n- Produktni vodja\n- Vodilni razvijalec\n- Oblikovalec\n\n## Ključne točke\n- Načrt Q2\n- Analiza povratnih informacij',
   'note.book.title': 'Priporočila knjig',
   'note.book.content':
-      '# Knjige za branje\n\n## Programiranje\n- Clean Code\n- Design Patterns\n\n## Poslovanje\n- The Lean Startup',
+      '# Knjige za branje\n\n## Programiranje\n- Čista koda (Clean Code) Roberta Martina\n- Oblikovni vzorci (Design Patterns)\n\n## Poslovanje\n- Metoda Lean Startup (The Lean Startup)',
   'note.recipe.title': 'Recept - Zdrav smoothie',
   'note.recipe.content':
       '# Zeleni smoothie\n\n## Sestavine\n- 1 banana\n- 1 skodelica špinače\n- 1/2 avokada\n- 1 skodelica mandljevega mleka',
@@ -71,7 +71,8 @@ const Map<String, String> slDemoTranslations = {
   'note.weekly_goals.content':
       '# Cilji tega tedna\n\n## Delo\n- [ ] Dokončaj četrtletni pregled\n- [ ] Zaključi API dokumentacijo',
   'note.project_ideas.title': 'Ideje za projekte',
-  'note.project_ideas.content': '# Ideje za aplikacije\n\n## Produktivnost\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Ideje za aplikacije\n\n## Produktivnost\n1. Sledilnik časa Pro (Time Tracker Pro)\n2. Graditelj navad (Habit Builder)',
   'note.investment.title': 'Raziskava investicij',
   'note.investment.content':
       '# Beležke o portfelju\n\n## Trenutne pozicije\n- Tech delnice: 40%\n- Indeksni skladi: 35%',
@@ -79,7 +80,7 @@ const Map<String, String> slDemoTranslations = {
   'note.workout.content': '# Fitnes plan\n\n## Ponedeljek - Zgornji del telesa\n- Sklece: 3x12\n- Dvigi: 3x8',
   'note.learning.title': 'Učni viri',
   'note.learning.content':
-      '# Spletno učenje\n\n## Tečaji programiranja\n- Udemy: Flutter napredno\n- Coursera: System Design',
+      '# Spletno učenje\n\n## Tečaji programiranja\n- Udemy: Flutter napredno\n- Coursera: Načrtovanje sistemov (System Design)',
   'note.budget.title': 'Mesečni pregled proračuna',
   'note.budget.content': '# Analiza proračuna\n\n## Prihodki\n- Plača: 3.000€\n- Freelance: 400€',
 };

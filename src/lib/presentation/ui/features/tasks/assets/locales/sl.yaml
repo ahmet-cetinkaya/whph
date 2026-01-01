@@ -342,21 +342,21 @@ tasks:
     months_plural: meseci
     years_plural: leta
   reminder:
-    atTime: Ob načrtovanem času
-    deadlineReminderLabel: Opomnik Rok
-    fifteenMinutesBefore: 15 minut pred
-    fiveMinutesBefore: 5 minut pred
+    at_time: Ob načrtovanem času
+    deadline_reminder_label: Opomnik za rok
+    fifteen_minutes_before: 15 minut prej
+    five_minutes_before: 5 minut prej
     none: Brez opomnika
-    oneDayBefore: 1 dan pred
-    oneHourBefore: 1 uro pred
-    plannedReminderLabel: Opomnik Načrtovanega Datuma
+    one_day_before: 1 dan prej
+    one_hour_before: 1 ura prej
+    planned_reminder_label: Opomnik za načrtovan datum
     section_title: Opomniki
     custom: Po meri
-    custom_title: Prilagojeno opomnik
-    before_suffix: pred
+    custom_title: Opomnik po meri
+    before_suffix: prej
     time: Čas
     unit: Enota
-  task_details: Podrobnosti Naloge
+  task_details: Podrobnosti opravila
   time_logging:
     add_time: Dodaj Čas
     add_time_description: Dodaj določen čas obstoječim zapisom

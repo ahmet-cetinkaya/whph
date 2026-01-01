@@ -82,14 +82,20 @@ habits:
       archived_on: Gearchiveerd op
       archived_warning: Statistieken worden getoond tot archiefdatum. {startDate} - {archivedDate}
       completions: voltooiingen
+      completed: Voltooid
       from: Van
+      last_month: Vorige maand
+      last_week: Vorige week
       monthly: Maandelijks
       no_streaks_yet: Geen streaks nog. Begin met consistentie opbouwen!
       overall: Algemeen
       records: Records
       score_trends: Score Trends
+      this_month: Deze maand
+      this_week: Deze week
       to: Tot
       top_streaks: Top Streaks
+      total: Totaal
       yearly: Jaarlijks
     statistics_label: Statistieken
     tags: Tags

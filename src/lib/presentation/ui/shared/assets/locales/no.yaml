@@ -93,14 +93,14 @@ shared:
     start_date_must_be_at_or_after: Startdato må være på eller etter {date}
     time_must_be_at_or_after: Tidspunktet må være på eller etter {time}
     time_must_be_at_or_before: Tidspunktet må være på eller før {time}
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: Velg tid
+    selected_time: Valgt tid
+    select_date_title: Velg dato
+    quick_selection: Hurtigvalg
+    quick_selection_title: Hurtigvalg
+    refresh_settings: Oppdateringsinnstillinger
+    date_ranges: Datointervaller
+    refresh_settings_label: Oppdateringsinnstillinger
   days:
     friday: Fredag
     friday_short: Fre
@@ -330,58 +330,59 @@ shared:
     time_picker_hour_label: Time
     time_picker_minute_label: Minutt
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
-    confirm: Confirm
-    cancel: Cancel
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    field_label: Dato og tid
+    field_hint: Velg dato og tid
+    edit_button_label: Rediger
+    edit_button_hint: Rediger dato og tid
+    title: Dato og tid
+    confirm: Bekreft
+    cancel: Avbryt
+    set_time: Still inn tid
+    selected_time: Valgt tid
+    select_time_title: Velg tid
+    select_date_title: Velg dato
+    no_date_selected: Ingen dato valgt
+    select_end_date: Velg sluttdato
+    no_dates_selected: Ingen datoer valgt
+    refresh: Oppdater
+    cannot_select_time_before_min_date: Kan ikke velge tid før {time}
+    cannot_select_time_after_max_date: Kan ikke velge tid etter {time}
+    time_must_be_at_or_after: Tiden må være {time} eller senere
+    time_must_be_at_or_before: Tiden må være {time} eller tidligere
+    selected_date_must_be_at_or_after: Valgt dato må være {date} eller senere
+    selected_date_must_be_at_or_before: Valgt dato må være {date} eller tidligere
     start_date_cannot_be_after_end_date: Startdato kan ikke være etter sluttdato
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Startdato må være {date} eller senere
+    end_date_must_be_at_or_before: Sluttdato må være {date} eller tidligere
+    cannot_select_date_before_min_date: Kan ikke velge dato før {date}
+    cannot_select_date_after_max_date: Kan ikke velge dato etter {date}
+    start_date_cannot_be_before_min_date: Startdato kan ikke være før {date}
+    end_date_cannot_be_after_max_date: Sluttdato kan ikke være etter {date}
+    selected_date_time_must_be_after: Valgt dato og tid må være etter {dateTime}
+    select_date_time_title: Velg dato og tid
+    select_date_range_title: Velg datointervall
     refresh_description: Oppdater automatisk valgt datointervall
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: Dato- og tidsfelt
+    date_time_field_hint: Velg dato og tid
+    allDay: Hele dagen
+    refreshDescription: Oppdater automatisk valgt datointervall
+    quick_selection_today: I dag
+    quick_selection_tomorrow: I morgen
+    quick_selection_weekend: Helg
+    quick_selection_next_week: Neste uke
+    quick_selection_no_date: Ingen dato
+    quick_selection_last_week: Sist uke
+    quick_selection_last_month: Sist måned
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Reduser
+    increment_button_label: Øk
+    text_field_label: Numerisk verdi
+    decrement_hint: Reduser verdi
+    increment_hint: Øk verdi
+    text_field_hint: Skriv inn nummer
+    decrement_tooltip: Reduser verdi
+    increment_tooltip: Øk verdi
+    at_minimum_value: På minimumsverdi
+    at_maximum_value: På maksimumsverdi
   skip_tour: Hopp over omvisning
+  tap_to_resume: Trykk for å gå tilbake til innholdet

@@ -82,14 +82,20 @@ habits:
       archived_on: Arkiveret den
       archived_warning: Statistikker vises op til arkiveringsdato. {startDate} - {archivedDate}
       completions: afslutninger
+      completed: Gennemført
       from: Fra
+      last_month: Sidste måned
+      last_week: Sidste uge
       monthly: Månedlig
       no_streaks_yet: Ingen streaks endnu. Start med at bygge konsistens!
       overall: Overordnet
-      records: Optagelser
-      score_trends: Score trends
+      records: Registreringer
+      score_trends: Score-tendenser
+      this_month: Denne måned
+      this_week: Denne uge
       to: Til
-      top_streaks: Top streaks
+      top_streaks: Bedste serier
+      total: I alt
       yearly: Årligt
     statistics_label: Statistik
     tags: Tags

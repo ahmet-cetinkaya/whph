@@ -98,14 +98,14 @@ shared:
     start_date_must_be_at_or_after: Дата початку має бути не раніше {date}
     time_must_be_at_or_after: Час має бути не раніше {time}
     time_must_be_at_or_before: Час має бути не пізніше {time}
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: Вибрати час
+    selected_time: Вибраний час
+    select_date_title: Вибрати дату
+    quick_selection: Швидкий вибір
+    quick_selection_title: Швидкий вибір
+    refresh_settings: Налаштування оновлення
+    date_ranges: Діапазони дат
+    refresh_settings_label: Налаштування оновлення
   days:
     friday: П'ятниця
     friday_short: Пт
@@ -337,60 +337,61 @@ shared:
     time_picker_hour_label: Година
     time_picker_minute_label: Хвилина
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
-    confirm: Confirm
-    cancel: Cancel
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    field_label: Дата і час
+    field_hint: Виберіть дату і час
+    edit_button_label: Редагувати
+    edit_button_hint: Редагувати дату і час
+    title: Дата і час
+    confirm: Підтвердити
+    cancel: Скасувати
+    set_time: Встановити час
+    selected_time: Вибраний час
+    select_time_title: Вибрати час
+    select_date_title: Вибрати дату
+    no_date_selected: Дату не вибрано
+    select_end_date: Вибрати дату завершення
+    no_dates_selected: Дати не вибрано
+    refresh: Оновити
+    cannot_select_time_before_min_date: Не можна вибрати час до {time}
+    cannot_select_time_after_max_date: Не можна вибрати час після {time}
+    time_must_be_at_or_after: Час має бути {time} або пізніше
+    time_must_be_at_or_before: Час має бути {time} або раніше
+    selected_date_must_be_at_or_after: Вибрана дата має бути {date} або пізніше
+    selected_date_must_be_at_or_before: Вибрана дата має бути {date} або раніше
     start_date_cannot_be_after_end_date:
       Дата початку не може бути пізніше за дату
       завершення
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Дата початку має бути {date} або пізніше
+    end_date_must_be_at_or_before: Дата завершення має бути {date} або раніше
+    cannot_select_date_before_min_date: Не можна вибрати дату до {date}
+    cannot_select_date_after_max_date: Не можна вибрати дату після {date}
+    start_date_cannot_be_before_min_date: Дата початку не може бути раніше {date}
+    end_date_cannot_be_after_max_date: Дата завершення не може бути пізніше {date}
+    selected_date_time_must_be_after: Вибрані дата і час мають бути після {dateTime}
+    select_date_time_title: Виберіть дату і час
+    select_date_range_title: Виберіть діапазон дат
     refresh_description: Автоматично оновлювати вибраний діапазон дат
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: Поле дати і часу
+    date_time_field_hint: Виберіть дату і час
+    allDay: Весь день
+    refreshDescription: Автоматично оновлювати вибраний діапазон дат
+    quick_selection_today: Сьогодні
+    quick_selection_tomorrow: Завтра
+    quick_selection_weekend: Вихідні
+    quick_selection_next_week: Наступний тиждень
+    quick_selection_no_date: Без дати
+    quick_selection_last_week: Минулий тиждень
+    quick_selection_last_month: Минулий місяць
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Зменшити
+    increment_button_label: Збільшити
+    text_field_label: Числове значення
+    decrement_hint: Зменшити значення
+    increment_hint: Збільшити значення
+    text_field_hint: Введіть число
+    decrement_tooltip: Зменшити значення
+    increment_tooltip: Збільшити значення
+    at_minimum_value: Мінімальне значення
+    at_maximum_value: Максимальне значення
   skip_tour: Пропустити тур
+  tap_to_resume: Натисніть, щоб повернутися до вмісту

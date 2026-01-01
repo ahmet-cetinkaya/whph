@@ -424,21 +424,42 @@ tasks:
     months_plural: місяці
     years_plural: роки
   reminder:
-    atTime: О запланованому часі
-    deadlineReminderLabel: Нагадування про дедлайн
-    fifteenMinutesBefore: За 15 хвилин
-    fiveMinutesBefore: За 5 хвилин
+    at_time: У запланований час
+    deadline_reminder_label: Нагадування про термін
+    fifteen_minutes_before: За 15 хвилин
+    five_minutes_before: За 5 хвилин
     none: Без нагадування
-    oneDayBefore: За 1 день
-    oneHourBefore: За 1 годину
-    plannedReminderLabel: Нагадування про заплановану дату
+    one_day_before: За 1 день
+    one_hour_before: За 1 годину
+    planned_reminder_label: Нагадування про заплановану дату
     section_title: Нагадування
-    custom: Налаштований
-    custom_title: Налаштоване нагадування
+    custom: Налаштувати
+    custom_title: Настроюване нагадування
     before_suffix: до
     time: Час
     unit: Одиниця
   task_details: Деталі завдання
+  time_logging:
+    add_time: Додати час
+    add_time_description: Додати вказаний час до існуючих записів
+    dialog_title: Записати час
+    duration: Тривалість для додавання
+    invalid_input: Будь ласка, введіть коректні години та хвилини
+    log_time: Записати час
+    mode: Режим запису
+    set_total: Встановити загальний час
+    set_total_description: Встановити загальний час для вибраного дня
+    total_time: Загальний час за день
+  timer:
+    mode:
+      description: Виберіть між технікою Помодоро, таймером зворотного відліку або секундоміром
+      normal: Звичайний таймер
+      pomodoro: Помодоро
+      stopwatch: Секундомір
+      title: Режим таймера
+    settings:
+      duration_label: Тривалість таймера
+      duration_title: Тривалість
   title: Завдання
   tooltips:
     clear_date: Очистити дату

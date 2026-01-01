@@ -26,7 +26,7 @@ const Map<String, String> frDemoTranslations = {
   'task.review_code.description': 'Revoir et approuver les pull requests',
   'task.backup_files.title': 'Sauvegarder les fichiers',
   'task.backup_files.description': 'Sauvegarde hebdomadaire des documents',
-  'task.learn_flutter.title': 'Apprendre Flutter State Management',
+  'task.learn_flutter.title': 'Apprendre la Gestion d\'état Flutter',
   'task.learn_flutter.description': 'Terminer le cours en ligne Flutter',
   'task.study_patterns.title': 'Étudier les design patterns',
   'task.study_patterns.description': 'Pratiquer Observer, Factory, Strategy',
@@ -60,7 +60,7 @@ const Map<String, String> frDemoTranslations = {
       '# Réunion de planification\n\n## Participants\n- Chef de produit\n- Développeur principal\n- Designer\n\n## Points clés\n- Feuille de route Q2\n- Analyse des retours',
   'note.book.title': 'Recommandations de livres',
   'note.book.content':
-      '# Livres à lire\n\n## Programmation\n- Clean Code de Robert Martin\n- Design Patterns\n\n## Business\n- The Lean Startup\n- Atomic Habits',
+      '# Livres à lire\n\n## Programmation\n- Code Propre (Clean Code) de Robert Martin\n- Patrons de Conception (Design Patterns)\n\n## Business\n- Le Lean Startup (The Lean Startup)\n- Atomic Habits',
   'note.recipe.title': 'Recette - Smoothie santé',
   'note.recipe.content':
       '# Smoothie vert\n\n## Ingrédients\n- 1 banane\n- 1 tasse d\'épinards\n- 1/2 avocat\n- 1 tasse de lait d\'amande',
@@ -71,7 +71,8 @@ const Map<String, String> frDemoTranslations = {
   'note.weekly_goals.content':
       '# Objectifs de la semaine\n\n## Travail\n- [ ] Revue trimestrielle\n- [ ] Documentation API',
   'note.project_ideas.title': 'Idées de projets',
-  'note.project_ideas.content': '# Idées d\'applications\n\n## Productivité\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Idées d\'applications\n\n## Productivité\n1. Suivi du Temps Pro (Time Tracker Pro)\n2. Créateur d\'Habitudes (Habit Builder)',
   'note.investment.title': 'Recherche d\'investissement',
   'note.investment.content':
       '# Notes de portefeuille\n\n## Positions actuelles\n- Actions tech: 40%\n- Fonds indiciels: 35%',
@@ -79,7 +80,7 @@ const Map<String, String> frDemoTranslations = {
   'note.workout.content': '# Plan fitness\n\n## Lundi - Haut du corps\n- Pompes: 3x12\n- Tractions: 3x8',
   'note.learning.title': 'Ressources d\'apprentissage',
   'note.learning.content':
-      '# Apprentissage en ligne\n\n## Cours de programmation\n- Udemy: Flutter avancé\n- Coursera: System Design',
+      '# Apprentissage en ligne\n\n## Cours de programmation\n- Udemy: Flutter avancé\n- Coursera: Conception de Systèmes (System Design)',
   'note.budget.title': 'Revue du budget mensuel',
   'note.budget.content': '# Analyse du budget\n\n## Revenus\n- Salaire: 3.800€\n- Freelance: 500€',
 };

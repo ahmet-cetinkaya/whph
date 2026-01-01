@@ -26,7 +26,7 @@ const Map<String, String> trDemoTranslations = {
   'task.review_code.description': 'Bekleyen pull request\'leri incele ve onayla',
   'task.backup_files.title': 'Dosyaları yedekle',
   'task.backup_files.description': 'Önemli belgelerin haftalık yedeği',
-  'task.learn_flutter.title': 'Flutter State Management öğren',
+  'task.learn_flutter.title': 'Flutter Durum Yönetimi öğren',
   'task.learn_flutter.description': 'Online Flutter kursunu tamamla',
   'task.study_patterns.title': 'Tasarım kalıplarını çalış',
   'task.study_patterns.description': 'Observer, Factory, Strategy pratik yap',
@@ -60,7 +60,7 @@ const Map<String, String> trDemoTranslations = {
       '# Ürün Planlama Toplantısı\n\n## Katılımcılar\n- Ürün Yöneticisi\n- Baş Geliştirici\n- Tasarımcı\n\n## Ana Noktalar\n- Q2 yol haritası\n- Geri bildirim analizi',
   'note.book.title': 'Kitap Önerileri',
   'note.book.content':
-      '# Okunacak Kitaplar\n\n## Programlama\n- Clean Code\n- Design Patterns\n\n## İş\n- The Lean Startup',
+      '# Okunacak Kitaplar\n\n## Programlama\n- Temiz Kod (Clean Code)\n- Tasarım Kalıpları (Design Patterns)\n\n## İş\n- Yalın Yeni Girişim (The Lean Startup)',
   'note.recipe.title': 'Tarif - Sağlıklı Smoothie',
   'note.recipe.content':
       '# Yeşil Smoothie\n\n## Malzemeler\n- 1 muz\n- 1 fincan ıspanak\n- 1/2 avokado\n- 1 fincan badem sütü',
@@ -71,7 +71,8 @@ const Map<String, String> trDemoTranslations = {
   'note.weekly_goals.content':
       '# Bu Haftanın Hedefleri\n\n## İş\n- [ ] Üç aylık değerlendirmeyi tamamla\n- [ ] API dokümantasyonunu bitir',
   'note.project_ideas.title': 'Proje Fikirleri',
-  'note.project_ideas.content': '# Uygulama Fikirleri\n\n## Üretkenlik\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Uygulama Fikirleri\n\n## Üretkenlik\n1. Zaman Takipçisi Pro\n2. Alışkanlık Oluşturucu',
   'note.investment.title': 'Yatırım Araştırması',
   'note.investment.content':
       '# Portföy Notları\n\n## Mevcut Pozisyonlar\n- Teknoloji hisseleri: %40\n- Endeks fonları: %35',
@@ -79,7 +80,7 @@ const Map<String, String> trDemoTranslations = {
   'note.workout.content': '# Fitness Planı\n\n## Pazartesi - Üst Vücut\n- Şınav: 3x12\n- Barfiks: 3x8',
   'note.learning.title': 'Öğrenme Kaynakları',
   'note.learning.content':
-      '# Online Öğrenme\n\n## Programlama Kursları\n- Udemy: İleri Flutter\n- Coursera: System Design',
+      '# Online Öğrenme\n\n## Programlama Kursları\n- Udemy: İleri Seviye Flutter\n- Coursera: Sistem Tasarımı',
   'note.budget.title': 'Aylık Bütçe Değerlendirmesi',
   'note.budget.content': '# Bütçe Analizi\n\n## Gelir\n- Maaş: ₺80.000\n- Serbest Çalışma: ₺15.000',
 };

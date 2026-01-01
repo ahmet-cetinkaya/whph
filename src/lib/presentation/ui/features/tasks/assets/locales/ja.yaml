@@ -384,14 +384,14 @@ tasks:
     months_plural: ヶ月間
     years_plural: 年間
   reminder:
-    atTime: 予定時刻に
-    deadlineReminderLabel: 期限リマインダー
-    fifteenMinutesBefore: 15分前
-    fiveMinutesBefore: 5分前
+    at_time: 予定時刻
+    deadline_reminder_label: 期限のリマインダー
+    fifteen_minutes_before: 15分前
+    five_minutes_before: 5分前
     none: リマインダーなし
-    oneDayBefore: 1日前
-    oneHourBefore: 1時間前
-    plannedReminderLabel: 予定日リマインダー
+    one_day_before: 1日前
+    one_hour_before: 1時間前
+    planned_reminder_label: 予定日のリマインダー
     section_title: リマインダー
     custom: カスタム
     custom_title: カスタムリマインダー
@@ -399,6 +399,27 @@ tasks:
     time: 時間
     unit: 単位
   task_details: タスクの詳細
+  time_logging:
+    add_time: 時間を追加
+    add_time_description: 指定した時間を既存の記録に追加します
+    dialog_title: 時間を記録
+    duration: 追加する時間
+    invalid_input: 有効な時間を入力してください
+    log_time: 時間を記録
+    mode: 記録モード
+    set_total: 合計を設定
+    set_total_description: 選択した日の合計時間を設定します
+    total_time: その日の合計時間
+  timer:
+    mode:
+      description: ポモドーロ・テクニック、カウントダウンタイマー、またはストップウォッチから選択してください
+      normal: 通常のタイマー
+      pomodoro: ポモドーロ
+      stopwatch: ストップウォッチ
+      title: タイマーモード
+    settings:
+      duration_label: タイマー時間
+      duration_title: 時間
   title: タスク
   tooltips:
     clear_date: 日付をクリア

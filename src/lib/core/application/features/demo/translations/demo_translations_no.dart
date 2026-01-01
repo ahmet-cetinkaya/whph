@@ -60,7 +60,7 @@ const Map<String, String> noDemoTranslations = {
       '# Produktplanleggingsmøte\n\n## Deltakere\n- Produktsjef\n- Lead-utvikler\n- Designer\n\n## Hovedpunkter\n- Q2 veikart\n- Tilbakemeldingsanalyse',
   'note.book.title': 'Bokanbefalinger',
   'note.book.content':
-      '# Bøker å lese\n\n## Programmering\n- Clean Code\n- Design Patterns\n\n## Business\n- The Lean Startup',
+      '# Bøker å lese\n\n## Programmering\n- Ren kode (Clean Code) av Robert Martin\n- Designmønstre (Design Patterns)\n\n## Business\n- The Lean Startup',
   'note.recipe.title': 'Oppskrift - Sunn smoothie',
   'note.recipe.content':
       '# Grønn smoothie\n\n## Ingredienser\n- 1 banan\n- 1 kopp spinat\n- 1/2 avokado\n- 1 kopp mandelmelk',
@@ -71,14 +71,15 @@ const Map<String, String> noDemoTranslations = {
   'note.weekly_goals.content':
       '# Denne ukens mål\n\n## Arbeid\n- [ ] Fullføre kvartalsgjennomgang\n- [ ] Fullføre API-dokumentasjon',
   'note.project_ideas.title': 'Prosjektideer',
-  'note.project_ideas.content': '# App-ideer\n\n## Produktivitet\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# App-ideer\n\n## Produktivitet\n1. Tidsregistrering Pro (Time Tracker Pro)\n2. Vanebygger (Habit Builder)',
   'note.investment.title': 'Investeringsundersøkelse',
   'note.investment.content': '# Porteføljenotater\n\n## Nåværende beholdninger\n- Tech-aksjer: 40%\n- Indeksfond: 35%',
   'note.workout.title': 'Treningsprogrammer',
   'note.workout.content': '# Treningsplan\n\n## Mandag - Overkropp\n- Push-ups: 3x12\n- Pull-ups: 3x8',
   'note.learning.title': 'Læringsressurser',
   'note.learning.content':
-      '# Online læring\n\n## Programmeringskurs\n- Udemy: Flutter Avansert\n- Coursera: System Design',
+      '# Online læring\n\n## Programmeringskurs\n- Udemy: Flutter Avansert\n- Coursera: Systemdesign (System Design)',
   'note.budget.title': 'Månedlig budsjettgjennomgang',
   'note.budget.content': '# Budsjettanalyse\n\n## Inntekt\n- Lønn: 45.000 kr\n- Freelance: 6.000 kr',
 };

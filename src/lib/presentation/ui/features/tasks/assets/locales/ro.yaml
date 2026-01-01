@@ -349,21 +349,21 @@ tasks:
     months_plural: luni
     years_plural: ani
   reminder:
-    atTime: La ora programată
-    deadlineReminderLabel: Amintire Termen Limită
-    fifteenMinutesBefore: 15 minute înainte
-    fiveMinutesBefore: 5 minute înainte
-    none: Fără amintire
-    oneDayBefore: 1 zi înainte
-    oneHourBefore: 1 oră înainte
-    plannedReminderLabel: Amintire Data Planificată
-    section_title: Amintiri
+    at_time: La ora planificată
+    deadline_reminder_label: Memento termen limită
+    fifteen_minutes_before: 15 minute înainte
+    five_minutes_before: 5 minute înainte
+    none: Fără memento
+    one_day_before: 1 zi înainte
+    one_hour_before: 1 oră înainte
+    planned_reminder_label: Memento dată planificată
+    section_title: Memento-uri
     custom: Personalizat
     custom_title: Memento personalizat
     before_suffix: înainte
-    time: Timp
+    time: Oră
     unit: Unitate
-  task_details: Detalii Sarcină
+  task_details: Detalii sarcină
   time_logging:
     add_time: Adaugă Timp
     add_time_description: Adaugă timpul specificat la înregistrări existente

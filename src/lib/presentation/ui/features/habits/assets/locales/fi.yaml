@@ -82,14 +82,20 @@ habits:
       archived_on: Arkistoitu
       archived_warning: Tilastot näytetään arkistointipäivään asti. {startDate} - {archivedDate}
       completions: suoritukset
+      completed: Valmis
       from: Alkaen
+      last_month: Viime kuukausi
+      last_week: Viime viikko
       monthly: Kuukausittain
       no_streaks_yet: Ei sarjoja vielä. Aloita johdonmukaisuuden rakentaminen!
       overall: Kokonaisuudessaan
-      records: Tietueet
-      score_trends: Pisteiden trendit
-      to: Asti
-      top_streaks: Parhaat sarjat
+      records: Kirjanpito
+      score_trends: Pisteytyssuuntaukset
+      this_month: Tämä kuukausi
+      this_week: Tämä viikko
+      to: Päättyen
+      top_streaks: Parhaat putket
+      total: Yhteensä
       yearly: Vuosittain
     statistics_label: Tilastot
     tags: Tunnisteet

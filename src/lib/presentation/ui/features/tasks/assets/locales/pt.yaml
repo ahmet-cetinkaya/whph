@@ -346,28 +346,28 @@ tasks:
     months_plural: meses
     years_plural: anos
   reminder:
-    atTime: No horário agendado
-    deadlineReminderLabel: Lembrete de Prazo
-    fifteenMinutesBefore: 15 minutos antes
-    fiveMinutesBefore: 5 minutos antes
+    at_time: No horário agendado
+    deadline_reminder_label: Lembrete de prazo
+    fifteen_minutes_before: 15 minutos antes
+    five_minutes_before: 5 minutos antes
     none: Sem lembrete
-    oneDayBefore: 1 dia antes
-    oneHourBefore: 1 hora antes
-    plannedReminderLabel: Lembrete de Data Planejada
+    one_day_before: 1 dia antes
+    one_hour_before: 1 hora antes
+    planned_reminder_label: Lembrete de data planejada
     section_title: Lembretes
     custom: Personalizado
     custom_title: Lembrete personalizado
     before_suffix: antes
     time: Hora
     unit: Unidade
-  task_details: Detalhes da Tarefa
+  task_details: Detalhes da tarefa
   time_logging:
-    add_time: Adicionar Tempo
-    add_time_description: Adicionar o tempo especificado a registros existentes
-    dialog_title: Registrar Tempo
-    duration: Duração a Adicionar
+    add_time: Adicionar tempo
+    add_time_description: Adicione o tempo especificado aos registros existentes
+    dialog_title: Registrar tempo
+    duration: Duração a adicionar
     invalid_input: Por favor, insira horas e minutos válidos
-    log_time: Registrar Tempo
+    log_time: Registrar tempo
     mode: Modo de Registro
     set_total: Definir Total
     set_total_description: Definir o tempo total para o dia selecionado

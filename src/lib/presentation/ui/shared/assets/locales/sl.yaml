@@ -93,14 +93,14 @@ shared:
     start_date_must_be_at_or_after: Začetni datum mora biti na ali po {date}
     time_must_be_at_or_after: Čas mora biti ob ali po {time}
     time_must_be_at_or_before: Čas mora biti ob ali pred {time}
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: Izberi čas
+    selected_time: Izbrani čas
+    select_date_title: Izberi datum
+    quick_selection: Hitra izbira
+    quick_selection_title: Hitra izbira
+    refresh_settings: Nastavitve osveževanja
+    date_ranges: Datumski razponi
+    refresh_settings_label: Nastavitve osveževanja
   days:
     friday: Petek
     friday_short: Pet
@@ -333,58 +333,59 @@ shared:
     time_picker_hour_label: Ura
     time_picker_minute_label: Minuta
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
-    confirm: Confirm
-    cancel: Cancel
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    field_label: Datum in čas
+    field_hint: Izberite datum in čas
+    edit_button_label: Uredi
+    edit_button_hint: Uredi datum in čas
+    title: Datum in čas
+    confirm: Potrdi
+    cancel: Prekliči
+    set_time: Nastavi čas
+    selected_time: Izbrani čas
+    select_time_title: Izberi čas
+    select_date_title: Izberi datum
+    no_date_selected: Ni izbranega datuma
+    select_end_date: Izberite končni datum
+    no_dates_selected: Ni izbranih datumov
+    refresh: Osveži
+    cannot_select_time_before_min_date: Ne morete izbrati časa pred {time}
+    cannot_select_time_after_max_date: Ne morete izbrati časa po {time}
+    time_must_be_at_or_after: Čas mora biti ob {time} ali pozneje
+    time_must_be_at_or_before: Čas mora biti ob {time} ali prej
+    selected_date_must_be_at_or_after: Izbrani datum mora biti ob {date} ali pozneje
+    selected_date_must_be_at_or_before: Izbrani datum mora biti ob {date} ali prej
     start_date_cannot_be_after_end_date: Datum začetka ne sme biti po datumu konca
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: Začetni datum mora biti ob {date} ali pozneje
+    end_date_must_be_at_or_before: Končni datum mora biti ob {date} ali prej
+    cannot_select_date_before_min_date: Ne morete izbrati datuma pred {date}
+    cannot_select_date_after_max_date: Ne morete izbrati datuma po {date}
+    start_date_cannot_be_before_min_date: Začetni datum ne more biti pred {date}
+    end_date_cannot_be_after_max_date: Končni datum ne more biti po {date}
+    selected_date_time_must_be_after: Izbrani datum in čas morata biti po {dateTime}
+    select_date_time_title: Izberite datum in čas
+    select_date_range_title: Izberite datumski razpon
     refresh_description: Samodejno osveži izbran razpon datumov
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: Polje za datum in čas
+    date_time_field_hint: Izberite datum in čas
+    allDay: Ves dan
+    refreshDescription: Samodejno osveži izbran razpon datumov
+    quick_selection_today: Danes
+    quick_selection_tomorrow: Jutri
+    quick_selection_weekend: Vikend
+    quick_selection_next_week: Naslednji teden
+    quick_selection_no_date: Brez datuma
+    quick_selection_last_week: Prejšnji teden
+    quick_selection_last_month: Prejšnji mesec
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: Zmanjšaj
+    increment_button_label: Povečaj
+    text_field_label: Numerična vrednost
+    decrement_hint: Zmanjšaj vrednost
+    increment_hint: Povečaj vrednost
+    text_field_hint: Vnesite številko
+    decrement_tooltip: Zmanjšaj vrednost
+    increment_tooltip: Povečaj vrednost
+    at_minimum_value: Pri minimalni vrednosti
+    at_maximum_value: Pri maksimalni vrednosti
   skip_tour: Preskoči predstavitev
+  tap_to_resume: Dotaknite se za vrnitev na vsebino

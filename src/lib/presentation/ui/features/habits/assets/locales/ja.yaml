@@ -81,18 +81,26 @@ habits:
       archived_on: アーカイブ日
       archived_warning: 統計はアーカイブ日まで表示されます。{startDate} - {archivedDate}
       completions: 完了
+      completed: 完了
       from: 開始
+      last_month: 先月
+      last_week: 先週
       monthly: 月別
       no_streaks_yet: まだ連続記録がありません。一貫性を築き始めましょう！
       overall: 全体
       records: 記録
       score_trends: スコア傾向
+      this_month: 今月
+      this_week: 今週
       to: 終了
-      top_streaks: トップ連続記録
+      top_streaks: 最長記録
+      total: 合計
       yearly: 年別
     statistics_label: 統計
     tags: タグ
     tags_hint: 関連付けるタグを選択
+    timer: タイマー
+    elapsed_time: 経過時間
   errors:
     adding_tag: タグの追加に失敗しました
     creating_record: 習慣記録の作成に失敗しました

@@ -81,18 +81,26 @@ habits:
       archived_on: 보관일
       archived_warning: 통계는 보관일까지 표시됩니다. {startDate} - {archivedDate}
       completions: 완료
+      completed: 완료됨
       from: 시작
+      last_month: 지난달
+      last_week: 지난주
       monthly: 월별
       no_streaks_yet: 아직 연속 기록이 없습니다. 일관성을 구축하기 시작하세요!
       overall: 전체
       records: 기록
-      score_trends: 점수 트렌드
+      score_trends: 점수 추세
+      this_month: 이번 달
+      this_week: 이번 주
       to: 종료
-      top_streaks: 최고 연속 기록
+      top_streaks: 최장 연속 기록
+      total: 합계
       yearly: 연별
     statistics_label: 통계
     tags: 태그
     tags_hint: 연결할 태그 선택
+    timer: 타이머
+    elapsed_time: 경과 시간
   errors:
     adding_tag: 태그 추가에 실패했습니다
     creating_record: 습관 기록 생성에 실패했습니다

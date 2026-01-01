@@ -79,17 +79,23 @@ habits:
     remove_record_tooltip: Fjern dagens fullføring
     statistics:
       archived_note: "Arkivert på:"
-      archived_on: Arkivert på
+      archived_on: Arkivert den
       archived_warning: Statistikk vises frem til arkiveringsdato. {startDate} - {archivedDate}
       completions: fullføringer
+      completed: Fullført
       from: Fra
+      last_month: Forrige måned
+      last_week: Forrige uke
       monthly: Månedlig
       no_streaks_yet: Ingen streker ennå. Begynn å bygge konsistens!
       overall: Samlet
-      records: Poster
-      score_trends: Score Trends
+      records: Oppføringer
+      score_trends: Poengtrender
+      this_month: Denne måneden
+      this_week: Denne uken
       to: Til
-      top_streaks: Top Streker
+      top_streaks: Beste serier
+      total: Totalt
       yearly: Årlig
     statistics_label: Statistikk
     tags: Etiketter

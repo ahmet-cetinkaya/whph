@@ -425,14 +425,14 @@ tasks:
     months_plural: måneder
     years_plural: år
   reminder:
-    atTime: På den planlagte tid
-    deadlineReminderLabel: Fristpåmindelse
-    fifteenMinutesBefore: 15 minutter før
-    fiveMinutesBefore: 5 minutter før
+    at_time: På det planlagte tidspunkt
+    deadline_reminder_label: Påmindelse om deadline
+    fifteen_minutes_before: 15 minutter før
+    five_minutes_before: 5 minutter før
     none: Ingen påmindelse
-    oneDayBefore: 1 dag før
-    oneHourBefore: 1 time før
-    plannedReminderLabel: Planlagt Dato Påmindelse
+    one_day_before: 1 dag før
+    one_hour_before: 1 time før
+    planned_reminder_label: Påmindelse om planlagt dato
     section_title: Påmindelser
     custom: Brugerdefineret
     custom_title: Brugerdefineret påmindelse
@@ -440,6 +440,27 @@ tasks:
     time: Tid
     unit: Enhed
   task_details: Opgavedetaljer
+  time_logging:
+    add_time: Tilføj tid
+    add_time_description: Tilføj den angivne tid til eksisterende registreringer
+    dialog_title: Log tid
+    duration: Varighed der skal tilføjes
+    invalid_input: Angiv venligst gyldige timer og minutter
+    log_time: Log tid
+    mode: Logningstilstand
+    set_total: Indstil total
+    set_total_description: Indstil den samlede tid for den valgte dag
+    total_time: Samlet tid for dag
+  timer:
+    mode:
+      description: Vælg mellem Pomodoro-teknik, nedtællingsur eller stopur
+      normal: Normal timer
+      pomodoro: Pomodoro
+      stopwatch: Stopur
+      title: Timertilstand
+    settings:
+      duration_label: Timervarighed
+      duration_title: Varighed
   title: Opgaver
   tooltips:
     clear_date: Ryd dato

@@ -31,7 +31,7 @@ const Map<String, String> esDemoTranslations = {
   'task.study_patterns.title': 'Estudiar patrones de diseño',
   'task.study_patterns.description': 'Practicar patrones: Observer, Factory, Strategy',
   'task.learn_api.title': 'Aprender documentación de API',
-  'task.learn_api.description': 'Estudiar REST API best practices',
+  'task.learn_api.description': 'Estudiar las mejores prácticas de REST API',
   'task.health_checkup.title': 'Programar chequeo médico anual',
   'task.health_checkup.description': 'Reservar cita con el médico',
   'task.review_emails.title': 'Revisar emails de la mañana',
@@ -60,7 +60,7 @@ const Map<String, String> esDemoTranslations = {
       '# Reunión de planificación\n\n## Asistentes\n- Gerente de producto\n- Desarrollador líder\n- Diseñador\n\n## Puntos clave\n- Hoja de ruta Q2\n- Análisis de feedback',
   'note.book.title': 'Recomendaciones de libros',
   'note.book.content':
-      '# Libros para leer\n\n## Programación\n- Clean Code de Robert Martin\n- Design Patterns\n\n## Negocios\n- The Lean Startup\n- Atomic Habits',
+      '# Libros para leer\n\n## Programación\n- Código Limpio (Clean Code) de Robert Martin\n- Patrones de Diseño (Design Patterns)\n\n## Negocios\n- El Método Lean Startup (The Lean Startup)\n- Hábitos Atómicos (Atomic Habits)',
   'note.recipe.title': 'Receta - Batido saludable',
   'note.recipe.content':
       '# Batido verde\n\n## Ingredientes\n- 1 plátano\n- 1 taza de espinacas\n- 1/2 aguacate\n- 1 taza de leche de almendras',
@@ -71,7 +71,8 @@ const Map<String, String> esDemoTranslations = {
   'note.weekly_goals.content':
       '# Objetivos de esta semana\n\n## Trabajo\n- [ ] Completar revisión trimestral\n- [ ] Terminar documentación API',
   'note.project_ideas.title': 'Ideas de proyectos',
-  'note.project_ideas.content': '# Ideas de aplicaciones\n\n## Productividad\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Ideas de aplicaciones\n\n## Productividad\n1. Rastreador de Tiempo Pro (Time Tracker Pro)\n2. Creador de Hábitos (Habit Builder)',
   'note.investment.title': 'Investigación de inversiones',
   'note.investment.content':
       '# Notas de cartera\n\n## Posiciones actuales\n- Acciones tech: 40%\n- Fondos indexados: 35%',

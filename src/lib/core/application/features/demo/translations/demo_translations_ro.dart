@@ -26,7 +26,7 @@ const Map<String, String> roDemoTranslations = {
   'task.review_code.description': 'Revizuiește și aprobă pull request-urile',
   'task.backup_files.title': 'Fă backup la fișiere',
   'task.backup_files.description': 'Backup săptămânal al documentelor importante',
-  'task.learn_flutter.title': 'Învață Flutter State Management',
+  'task.learn_flutter.title': 'Învață Gestiunea Stării în Flutter',
   'task.learn_flutter.description': 'Finalizează cursul online Flutter',
   'task.study_patterns.title': 'Studiază design patterns',
   'task.study_patterns.description': 'Exersează Observer, Factory, Strategy',
@@ -60,7 +60,7 @@ const Map<String, String> roDemoTranslations = {
       '# Ședință de planificare\n\n## Participanți\n- Manager produs\n- Developer principal\n- Designer\n\n## Puncte cheie\n- Plan Q2\n- Analiză feedback',
   'note.book.title': 'Recomandări de cărți',
   'note.book.content':
-      '# Cărți de citit\n\n## Programare\n- Clean Code\n- Design Patterns\n\n## Business\n- The Lean Startup',
+      '# Cărți de citit\n\n## Programare\n- Cod Curat (Clean Code)\n- Modele de Proiectare (Design Patterns)\n\n## Business\n- Startup-ul Lean (The Lean Startup)',
   'note.recipe.title': 'Rețetă - Smoothie sănătos',
   'note.recipe.content':
       '# Smoothie verde\n\n## Ingrediente\n- 1 banană\n- 1 cană spanac\n- 1/2 avocado\n- 1 cană lapte de migdale',
@@ -71,14 +71,15 @@ const Map<String, String> roDemoTranslations = {
   'note.weekly_goals.content':
       '# Obiectivele săptămânii\n\n## Muncă\n- [ ] Finalizează raportul trimestrial\n- [ ] Termină documentația API',
   'note.project_ideas.title': 'Idei de proiecte',
-  'note.project_ideas.content': '# Idei de aplicații\n\n## Productivitate\n1. Time Tracker Pro\n2. Habit Builder',
+  'note.project_ideas.content':
+      '# Idei de aplicații\n\n## Productivitate\n1. Monitorizare Timp Pro\n2. Constructor de Obiceiuri',
   'note.investment.title': 'Cercetare investiții',
   'note.investment.content': '# Note portofoliu\n\n## Poziții actuale\n- Acțiuni tech: 40%\n- Fonduri index: 35%',
   'note.workout.title': 'Programe de antrenament',
   'note.workout.content': '# Plan fitness\n\n## Luni - Partea superioară\n- Flotări: 3x12\n- Tracțiuni: 3x8',
   'note.learning.title': 'Resurse de învățare',
   'note.learning.content':
-      '# Învățare online\n\n## Cursuri programare\n- Udemy: Flutter Avansat\n- Coursera: System Design',
+      '# Învățare online\n\n## Cursuri programare\n- Udemy: Dezvoltare Flutter Avansată\n- Coursera: Proiectarea Sistemelor',
   'note.budget.title': 'Revizuire buget lunar',
   'note.budget.content': '# Analiză buget\n\n## Venituri\n- Salariu: 15.000 lei\n- Freelance: 2.500 lei',
 };

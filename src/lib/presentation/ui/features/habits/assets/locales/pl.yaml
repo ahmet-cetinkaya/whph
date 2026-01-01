@@ -95,6 +95,7 @@ habits:
     statistics_label: Statystyki
     tags: Tagi
     tags_hint: Wybierz tagi do powiązania
+    elapsed_time: Upływ czasu
   errors:
     adding_tag: Nie udało się dodać tagu
     creating_record: Nie udało się utworzyć rekordu nawyku

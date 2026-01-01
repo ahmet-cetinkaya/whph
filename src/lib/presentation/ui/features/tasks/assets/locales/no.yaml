@@ -343,17 +343,17 @@ tasks:
     months_plural: måneder
     years_plural: år
   reminder:
-    atTime: På planlagt tid
-    deadlineReminderLabel: Frist Påminnelse
-    fifteenMinutesBefore: 15 minutter før
-    fiveMinutesBefore: 5 minutter før
+    at_time: På det planlagte tidspunktet
+    deadline_reminder_label: Påminnelse om tidsfrist
+    fifteen_minutes_before: 15 minutter før
+    five_minutes_before: 5 minutter før
     none: Ingen påminnelse
-    oneDayBefore: 1 dag før
-    oneHourBefore: 1 time før
-    plannedReminderLabel: Planlagt Dato Påminnelse
+    one_day_before: 1 dag før
+    one_hour_before: 1 time før
+    planned_reminder_label: Påminnelse om planlagt dato
     section_title: Påminnelser
-    custom: Egendefinert
-    custom_title: Egendefinert påminnelse
+    custom: Tilpasset
+    custom_title: Tilpasset påminnelse
     before_suffix: før
     time: Tid
     unit: Enhet

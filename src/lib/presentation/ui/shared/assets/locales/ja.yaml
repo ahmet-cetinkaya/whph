@@ -91,14 +91,14 @@ shared:
     start_date_must_be_at_or_after: 開始日は{date}以降でなければなりません
     time_must_be_at_or_after: 時間は{time}以降でなければなりません
     time_must_be_at_or_before: 時間は{time}以前でなければなりません
-    select_time_title: Select time
-    selected_time: Selected time
-    select_date_title: Select date
-    quick_selection: Quick selection
-    quick_selection_title: Quick selection
-    refresh_settings: Auto refresh
-    date_ranges: Date ranges
-    refresh_settings_label: Refresh settings
+    select_time_title: 時間を選択
+    selected_time: 選択された時間
+    select_date_title: 日付を選択
+    quick_selection: クイック選択
+    quick_selection_title: クイック選択
+    refresh_settings: 更新設定
+    date_ranges: 日付範囲
+    refresh_settings_label: 更新設定
   days:
     friday: 金曜日
     friday_short: 金
@@ -325,58 +325,59 @@ shared:
     time_picker_hour_label: 時
     time_picker_minute_label: 分
   date_time_picker:
-    field_label: Date and time
-    field_hint: Select date and time
-    edit_button_label: Edit
-    edit_button_hint: Edit date and time
-    title: Date and time
-    confirm: Confirm
-    cancel: Cancel
-    set_time: Set time
-    selected_time: Selected time
-    select_time_title: Select time
-    select_date_title: Select date
-    no_date_selected: No date selected
-    select_end_date: Select end date
-    no_dates_selected: No dates selected
-    refresh: Refresh
-    cannot_select_time_before_min_date: Cannot select time before {time}
-    cannot_select_time_after_max_date: Cannot select time after {time}
-    time_must_be_at_or_after: Time must be {time} or later
-    time_must_be_at_or_before: Time must be {time} or earlier
-    selected_date_must_be_at_or_after: Selected date must be {date} or later
-    selected_date_must_be_at_or_before: Selected date must be {date} or earlier
+    field_label: 日時
+    field_hint: 日時を選択
+    edit_button_label: 編集
+    edit_button_hint: 日時を編集
+    title: 日時
+    confirm: 確認
+    cancel: キャンセル
+    set_time: 時間を設定
+    selected_time: 選択された時間
+    select_time_title: 時間を選択
+    select_date_title: 日付を選択
+    no_date_selected: 日付が選択されていません
+    select_end_date: 終了日を選択
+    no_dates_selected: 日付が選択されていません
+    refresh: 更新
+    cannot_select_time_before_min_date: "{time}より前の時間は選択できません"
+    cannot_select_time_after_max_date: "{time}より後の時間は選択できません"
+    time_must_be_at_or_after: 時間は{time}以降でなければなりません
+    time_must_be_at_or_before: 時間は{time}以前でなければなりません
+    selected_date_must_be_at_or_after: 選択された日付は{date}以降でなければなりません
+    selected_date_must_be_at_or_before: 選択された日付は{date}以前でなければなりません
     start_date_cannot_be_after_end_date: 開始日を終了日より後にすることはできません
-    start_date_must_be_at_or_after: Start date must be {date} or later
-    end_date_must_be_at_or_before: End date must be {date} or earlier
-    cannot_select_date_before_min_date: Cannot select date before {date}
-    cannot_select_date_after_max_date: Cannot select date after {date}
-    start_date_cannot_be_before_min_date: Start date cannot be before {date}
-    end_date_cannot_be_after_max_date: End date cannot be after {date}
-    selected_date_time_must_be_after: Selected date and time must be after {dateTime}
-    select_date_time_title: Select date and time
-    select_date_range_title: Select date range
+    start_date_must_be_at_or_after: 開始日は{date}以降でなければなりません
+    end_date_must_be_at_or_before: 終了日は{date}以前でなければなりません
+    cannot_select_date_before_min_date: "{date}より前の日付は選択できません"
+    cannot_select_date_after_max_date: "{date}より後の日付は選択できません"
+    start_date_cannot_be_before_min_date: 開始日は{date}より前にできません
+    end_date_cannot_be_after_max_date: 終了日は{date}より後にできません
+    selected_date_time_must_be_after: 選択された日時は{dateTime}より後でなければなりません
+    select_date_time_title: 日時を選択
+    select_date_range_title: 日付範囲を選択
     refresh_description: 選択した日付範囲を自動的に更新
-    date_time_field_label: Date and time field
-    date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
+    date_time_field_label: 日時フィールド
+    date_time_field_hint: 日時を選択
+    allDay: 終日
+    refreshDescription: 選択した日付範囲を自動的に更新
+    quick_selection_today: 今日
+    quick_selection_tomorrow: 明日
+    quick_selection_weekend: 週末
+    quick_selection_next_week: 来週
+    quick_selection_no_date: 日付なし
+    quick_selection_last_week: 先週
+    quick_selection_last_month: 先月
   numeric_input:
-    decrement_button_label: Decrease
-    increment_button_label: Increase
-    text_field_label: Numeric value
-    decrement_hint: Decrease value
-    increment_hint: Increase value
-    text_field_hint: Enter number
-    decrement_tooltip: Decrease value
-    increment_tooltip: Increase value
-    at_minimum_value: At minimum value
-    at_maximum_value: At maximum value
+    decrement_button_label: 減らす
+    increment_button_label: 増やす
+    text_field_label: 数値
+    decrement_hint: 値を減らす
+    increment_hint: 値を増やす
+    text_field_hint: 数値を入力
+    decrement_tooltip: 値を減らす
+    increment_tooltip: 値を増やす
+    at_minimum_value: 最小値です
+    at_maximum_value: 最大値です
   skip_tour: ツアーをスキップ
+  tap_to_resume: タップしてコンテンツに戻る

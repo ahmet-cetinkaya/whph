@@ -337,20 +337,13 @@ tasks:
     years_plural: years
   reminder:
     at_time: At the scheduled time
-    atTime: At the scheduled time
     deadline_reminder_label: Deadline Reminder
-    deadlineReminderLabel: Deadline Reminder
     fifteen_minutes_before: 15 minutes before
-    fifteenMinutesBefore: 15 minutes before
     five_minutes_before: 5 minutes before
-    fiveMinutesBefore: 5 minutes before
     none: No reminder
     one_day_before: 1 day before
-    oneDayBefore: 1 day before
     one_hour_before: 1 hour before
-    oneHourBefore: 1 hour before
     planned_reminder_label: Planned Date Reminder
-    plannedReminderLabel: Planned Date Reminder
     section_title: Reminders
     custom: Custom
     custom_title: Custom Reminder

@@ -92,9 +92,17 @@ habits:
       to: Hasta
       top_streaks: Mejores rachas
       yearly: Anual
+      completed: Completado
+      last_month: Mes Pasado
+      last_week: Semana Pasada
+      this_month: Este Mes
+      this_week: Esta Semana
+      total: Total
     statistics_label: Estadísticas
     tags: Etiquetas
     tags_hint: Seleccionar etiquetas para asociar
+    timer: Temporizador
+    elapsed_time: Tiempo Transcurrido
   errors:
     adding_tag: No se pudo añadir la etiqueta
     creating_record: No se pudo crear el registro de hábito
@@ -189,20 +197,38 @@ habits:
       title: Guía de gestión diaria de hábitos y optimización de rutinas
     title: Hábitos
   reminder:
-    enableReminders: Habilitar recordatorios
+    enableReminders: Activar recordatorios
     everyDay: Todos los días
     noReminder: Sin recordatorio establecido
     reminderDays: Días de recordatorio
     reminderSettings: Configuración de recordatorios
     reminderTime: Hora de recordatorio
-    selectDaysWarning: Por favor selecciona al menos un día para recordatorios
+    selectDaysWarning: Seleccione al menos un día para los recordatorios
   reminders:
-    enable: Habilitar recordatorios
-    select_days_warning: Por favor selecciona al menos un día para recordatorios
+    enable: Activar recordatorios
+    select_days_warning: Seleccione al menos un día para los recordatorios
   statistics:
     archived_on: Archivado el
     from: Desde
     to: Hasta
+  time_display:
+    actual_time_tooltip: Tiempo real registrado para este día
+    estimated: estimado
+    estimated_time_tooltip: Tiempo estimado basado en la configuración del hábito
+    no_time_logged_tooltip: No hay tiempo registrado para este día
+  time_logging:
+    add_time: Añadir tiempo
+    add_time_description: Añadir el tiempo especificado a los registros existentes
+    dialog_title: Registrar tiempo
+    duration: Duración a añadir
+    invalid_input: Por favor, introduzca horas y minutos válidos
+    log_time: Registrar tiempo
+    mode: Modo de registro
+    set_total: Establecer total
+    set_total_description: Establecer el tiempo total para el día seleccionado
+    total_time: Tiempo total del día
+  timer:
+    label: Temporizador
   tags:
     add_tooltip: Añadir etiqueta
     select_tooltip: Seleccionar etiqueta
