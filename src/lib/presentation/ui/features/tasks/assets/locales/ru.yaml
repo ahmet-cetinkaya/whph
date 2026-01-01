@@ -425,20 +425,13 @@ tasks:
     months_plural: месяцы
     years_plural: годы
   reminder:
-    atTime: В запланированное время
     at_time: В запланированное время
-    deadlineReminderLabel: Напоминание о дедлайне
     deadline_reminder_label: Напоминание о дедлайне
-    fifteenMinutesBefore: За 15 минут
     fifteen_minutes_before: За 15 минут
-    fiveMinutesBefore: За 5 минут
     five_minutes_before: За 5 минут
     none: Без напоминания
-    oneDayBefore: За 1 день
     one_day_before: За 1 день
-    oneHourBefore: За 1 час
     one_hour_before: За 1 час
-    plannedReminderLabel: Напоминание о запланированной дате
     planned_reminder_label: Напоминание о запланированной дате
     section_title: Напоминания
     custom: Настроить

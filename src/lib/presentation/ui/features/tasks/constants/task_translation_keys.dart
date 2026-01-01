@@ -168,13 +168,13 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
 
   // Reminder Types and Labels
   static const String reminderNone = 'tasks.reminder.none';
-  static const String reminderAtTime = 'tasks.reminder.atTime';
-  static const String reminderFiveMinutesBefore = 'tasks.reminder.fiveMinutesBefore';
-  static const String reminderFifteenMinutesBefore = 'tasks.reminder.fifteenMinutesBefore';
-  static const String reminderOneHourBefore = 'tasks.reminder.oneHourBefore';
-  static const String reminderOneDayBefore = 'tasks.reminder.oneDayBefore';
-  static const String reminderPlannedLabel = 'tasks.reminder.plannedReminderLabel';
-  static const String reminderDeadlineLabel = 'tasks.reminder.deadlineReminderLabel';
+  static const String reminderAtTime = 'tasks.reminder.at_time';
+  static const String reminderFiveMinutesBefore = 'tasks.reminder.five_minutes_before';
+  static const String reminderFifteenMinutesBefore = 'tasks.reminder.fifteen_minutes_before';
+  static const String reminderOneHourBefore = 'tasks.reminder.one_hour_before';
+  static const String reminderOneDayBefore = 'tasks.reminder.one_day_before';
+  static const String reminderPlannedLabel = 'tasks.reminder.planned_reminder_label';
+  static const String reminderDeadlineLabel = 'tasks.reminder.deadline_reminder_label';
   static const String reminderSectionTitle = 'tasks.reminder.section_title';
   static const String reminderCustom = 'tasks.reminder.custom';
   static const String customReminderTitle = 'tasks.reminder.custom_title';

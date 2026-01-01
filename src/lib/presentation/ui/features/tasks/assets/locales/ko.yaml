@@ -391,20 +391,13 @@ tasks:
     months_plural: 개월간
     years_plural: 년간
   reminder:
-    atTime: 예정된 시간에
     at_time: 예정된 시간에
-    deadlineReminderLabel: 마감일 알림
     deadline_reminder_label: 마감일 알림
-    fifteenMinutesBefore: 15분 전
     fifteen_minutes_before: 15분 전
-    fiveMinutesBefore: 5분 전
     five_minutes_before: 5분 전
     none: 알림 없음
-    oneDayBefore: 1일 전
     one_day_before: 1일 전
-    oneHourBefore: 1시간 전
     one_hour_before: 1시간 전
-    plannedReminderLabel: 예정일 알림
     planned_reminder_label: 예정일 알림
     section_title: 알림
     custom: 사용자 지정

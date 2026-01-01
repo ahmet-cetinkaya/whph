@@ -346,20 +346,13 @@ tasks:
     months_plural: meses
     years_plural: anos
   reminder:
-    atTime: No horário agendado
     at_time: No horário agendado
-    deadlineReminderLabel: Lembrete de prazo
     deadline_reminder_label: Lembrete de prazo
-    fifteenMinutesBefore: 15 minutos antes
     fifteen_minutes_before: 15 minutos antes
-    fiveMinutesBefore: 5 minutos antes
     five_minutes_before: 5 minutos antes
     none: Sem lembrete
-    oneDayBefore: 1 dia antes
     one_day_before: 1 dia antes
-    oneHourBefore: 1 hora antes
     one_hour_before: 1 hora antes
-    plannedReminderLabel: Lembrete de data planejada
     planned_reminder_label: Lembrete de data planejada
     section_title: Lembretes
     custom: Personalizado

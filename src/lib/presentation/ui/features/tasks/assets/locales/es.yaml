@@ -426,20 +426,13 @@ tasks:
     months_plural: meses
     years_plural: años
   reminder:
-    atTime: A la hora programada
     at_time: A la hora programada
-    deadlineReminderLabel: Recordatorio de fecha límite
     deadline_reminder_label: Recordatorio de fecha límite
-    fifteenMinutesBefore: 15 minutos antes
     fifteen_minutes_before: 15 minutos antes
-    fiveMinutesBefore: 5 minutos antes
     five_minutes_before: 5 minutos antes
     none: Sin recordatorio
-    oneDayBefore: 1 día antes
     one_day_before: 1 día antes
-    oneHourBefore: 1 hora antes
     one_hour_before: 1 hora antes
-    plannedReminderLabel: Recordatorio de fecha planificada
     planned_reminder_label: Recordatorio de fecha planeada
     section_title: Recordatorios
     custom: Personalizado

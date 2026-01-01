@@ -427,20 +427,13 @@ tasks:
     months_plural: mesi
     years_plural: anni
   reminder:
-    atTime: All'orario programmato
     at_time: All'orario programmato
-    deadlineReminderLabel: Promemoria scadenza
     deadline_reminder_label: Promemoria scadenza
-    fifteenMinutesBefore: 15 minuti prima
     fifteen_minutes_before: 15 minuti prima
-    fiveMinutesBefore: 5 minuti prima
     five_minutes_before: 5 minuti prima
     none: Nessun promemoria
-    oneDayBefore: 1 giorno prima
     one_day_before: 1 giorno prima
-    oneHourBefore: 1 ora prima
     one_hour_before: 1 ora prima
-    plannedReminderLabel: Promemoria data pianificata
     planned_reminder_label: Promemoria data pianificata
     section_title: Promemoria
     custom: Personalizzato

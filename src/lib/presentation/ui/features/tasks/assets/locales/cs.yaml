@@ -424,19 +424,12 @@ tasks:
     years_plural: roky
   reminder:
     at_time: V naplánovaném čase
-    atTime: V naplánovaném čase
     deadline_reminder_label: Připomenutí termínu
-    deadlineReminderLabel: Připomenutí termínu
-    fifteenMinutesBefore: 15 minut předem
     fifteen_minutes_before: 15 minut předem
-    fiveMinutesBefore: 5 minut předem
     five_minutes_before: 5 minut předem
     none: Bez připomenutí
-    oneDayBefore: 1 den předem
     one_day_before: 1 den předem
-    oneHourBefore: 1 hodinu předem
     one_hour_before: 1 hodinu předem
-    plannedReminderLabel: Připomenutí plánovaného data
     planned_reminder_label: Připomenutí plánovaného data
     section_title: Připomenutí
     custom: Vlastní

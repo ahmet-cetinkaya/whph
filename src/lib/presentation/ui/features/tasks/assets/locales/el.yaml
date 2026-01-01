@@ -353,20 +353,13 @@ tasks:
     months_plural: μήνες
     years_plural: έτη
   reminder:
-    atTime: Στη προγραμματισμένη ώρα
     at_time: Την προγραμματισμένη ώρα
-    deadlineReminderLabel: Υπενθύμιση Προθεσμίας
     deadline_reminder_label: Υπενθύμιση προθεσμίας
-    fifteenMinutesBefore: 15 λεπτά πριν
     fifteen_minutes_before: 15 λεπτά πριν
-    fiveMinutesBefore: 5 λεπτά πριν
     five_minutes_before: 5 λεπτά πριν
     none: Καμία υπενθύμιση
-    oneDayBefore: 1 ημέρα πριν
     one_day_before: 1 ημέρα πριν
-    oneHourBefore: 1 ώρα πριν
     one_hour_before: 1 ώρα πριν
-    plannedReminderLabel: Υπενθύμιση προγραμματισμένης ημερομηνίας
     planned_reminder_label: Υπενθύμιση προγραμματισμένης ημερομηνίας
     section_title: Υπενθυμίσεις
     custom: Προσαρμογή

@@ -431,20 +431,13 @@ tasks:
     months_plural: mois
     years_plural: années
   reminder:
-    atTime: À l'heure prévue
     at_time: À l'heure prévue
-    deadlineReminderLabel: Rappel de date limite
     deadline_reminder_label: Rappel de date limite
-    fifteenMinutesBefore: 15 minutes avant
     fifteen_minutes_before: 15 minutes avant
-    fiveMinutesBefore: 5 minutes avant
     five_minutes_before: 5 minutes avant
     none: Pas de rappel
-    oneDayBefore: 1 jour avant
     one_day_before: 1 jour avant
-    oneHourBefore: 1 heure avant
     one_hour_before: 1 heure avant
-    plannedReminderLabel: Rappel de date prévue
     planned_reminder_label: Rappel de date prévue
     section_title: Rappels
     custom: Personnalisé

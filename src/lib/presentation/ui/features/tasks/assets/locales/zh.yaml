@@ -383,20 +383,13 @@ tasks:
     months_plural: 个月
     years_plural: 年
   reminder:
-    atTime: 在预定时间
     at_time: 在预定时间
-    deadlineReminderLabel: 截止日期提醒
     deadline_reminder_label: 截止日期提醒
-    fifteenMinutesBefore: 15分钟前
     fifteen_minutes_before: 15分钟前
-    fiveMinutesBefore: 5分钟前
     five_minutes_before: 5分钟前
     none: 无提醒
-    oneDayBefore: 1天前
     one_day_before: 1天前
-    oneHourBefore: 1小时前
     one_hour_before: 1小时前
-    plannedReminderLabel: 计划日期提醒
     planned_reminder_label: 计划日期提醒
     section_title: 提醒
     custom: 自定义

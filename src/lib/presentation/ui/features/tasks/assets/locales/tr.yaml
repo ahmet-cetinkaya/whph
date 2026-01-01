@@ -387,20 +387,13 @@ tasks:
     months_plural: aylar
     years_plural: yıllar
   reminder:
-    atTime: Zamanında
     at_time: Zamanında
-    deadlineReminderLabel: Son Tarih Hatırlatıcısı
     deadline_reminder_label: Son Tarih Hatırlatıcısı
-    fifteenMinutesBefore: 15 dakika önce
     fifteen_minutes_before: 15 dakika önce
-    fiveMinutesBefore: 5 dakika önce
     five_minutes_before: 5 dakika önce
     none: Hatırlatıcı yok
-    oneDayBefore: 1 gün önce
     one_day_before: 1 gün önce
-    oneHourBefore: 1 saat önce
     one_hour_before: 1 saat önce
-    plannedReminderLabel: Planlanan Tarih Hatırlatıcısı
     planned_reminder_label: Planlanan Tarih Hatırlatıcısı
     section_title: Hatırlatıcılar
     custom: Özel

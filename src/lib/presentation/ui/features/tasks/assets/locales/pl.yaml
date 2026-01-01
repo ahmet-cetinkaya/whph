@@ -423,20 +423,13 @@ tasks:
     months_plural: miesiące
     years_plural: lata
   reminder:
-    atTime: O zaplanowanej godzinie
     at_time: O zaplanowanej godzinie
-    deadlineReminderLabel: Przypomnienie o terminie
     deadline_reminder_label: Przypomnienie o terminie
-    fifteenMinutesBefore: 15 minut przed
     fifteen_minutes_before: 15 minut przed
-    fiveMinutesBefore: 5 minut przed
     five_minutes_before: 5 minut przed
     none: Brak przypomnienia
-    oneDayBefore: 1 dzień przed
     one_day_before: 1 dzień przed
-    oneHourBefore: 1 godzina przed
     one_hour_before: 1 godzina przed
-    plannedReminderLabel: Przypomnienie o planowanej dacie
     planned_reminder_label: Przypomnienie o planowanej dacie
     section_title: Przypomnienia
     custom: Własne

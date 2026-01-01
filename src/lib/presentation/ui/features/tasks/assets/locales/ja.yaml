@@ -385,19 +385,12 @@ tasks:
     years_plural: 年間
   reminder:
     at_time: 予定時刻
-    atTime: 予定時刻
     deadline_reminder_label: 期限のリマインダー
-    deadlineReminderLabel: 期限のリマインダー
-    fifteenMinutesBefore: 15分前
     fifteen_minutes_before: 15分前
-    fiveMinutesBefore: 5分前
     five_minutes_before: 5分前
     none: リマインダーなし
-    oneDayBefore: 1日前
     one_day_before: 1日前
-    oneHourBefore: 1時間前
     one_hour_before: 1時間前
-    plannedReminderLabel: 予定日のリマインダー
     planned_reminder_label: 予定日のリマインダー
     section_title: リマインダー
     custom: カスタム

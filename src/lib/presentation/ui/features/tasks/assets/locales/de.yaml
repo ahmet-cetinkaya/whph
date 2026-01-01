@@ -427,20 +427,13 @@ tasks:
     months_plural: Monate
     years_plural: Jahre
   reminder:
-    atTime: Zur geplanten Zeit
     at_time: Zur geplanten Zeit
-    deadlineReminderLabel: Frist-Erinnerung
     deadline_reminder_label: Frist-Erinnerung
-    fifteenMinutesBefore: 15 Minuten vorher
     fifteen_minutes_before: 15 Minuten vorher
-    fiveMinutesBefore: 5 Minuten vorher
     five_minutes_before: 5 Minuten vorher
     none: Keine Erinnerung
-    oneDayBefore: 1 Tag vorher
     one_day_before: 1 Tag vorher
-    oneHourBefore: 1 Stunde vorher
     one_hour_before: 1 Stunde vorher
-    plannedReminderLabel: Planungs-Erinnerung
     planned_reminder_label: Planungs-Erinnerung
     section_title: Erinnerungen
     custom: Benutzerdefiniert
