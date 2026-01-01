@@ -385,3 +385,4 @@ shared:
     at_minimum_value: At minimum value
     at_maximum_value: At maximum value
   skip_tour: Hopp over omvisning
+  tap_to_resume: Trykk for å gå tilbake til innholdet

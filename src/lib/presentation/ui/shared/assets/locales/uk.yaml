@@ -394,3 +394,4 @@ shared:
     at_minimum_value: At minimum value
     at_maximum_value: At maximum value
   skip_tour: Пропустити тур
+  tap_to_resume: Натисніть, щоб повернутися до вмісту

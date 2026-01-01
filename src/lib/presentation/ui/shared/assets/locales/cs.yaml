@@ -390,3 +390,4 @@ shared:
     increment_tooltip: Zvýšit hodnotu
     at_minimum_value: Dosaženo minimální hodnoty
     at_maximum_value: Dosaženo maximální hodnoty
+  tap_to_resume: Klepnutím se vrátíte k obsahu

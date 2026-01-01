@@ -379,3 +379,4 @@ shared:
     at_minimum_value: At minimum value
     at_maximum_value: At maximum value
   skip_tour: 跳过导览
+  tap_to_resume: 点击返回内容

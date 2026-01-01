@@ -393,3 +393,4 @@ shared:
     at_minimum_value: At minimum value
     at_maximum_value: At maximum value
   skip_tour: Sla rondleiding over
+  tap_to_resume: Tik om terug te keren naar de inhoud

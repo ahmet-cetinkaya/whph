@@ -358,6 +358,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String startTour = "shared.start_tour";
   static const String skipTour = "shared.skip_tour";
   static const String previousButton = "shared.buttons.previous";
+  static const String tapToResume = "shared.tap_to_resume";
 
   // Helper Methods
   static String getWeekDayKey(int weekday) {

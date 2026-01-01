@@ -412,3 +412,4 @@ shared:
     increment_tooltip: Increase value
     at_minimum_value: At minimum value
     at_maximum_value: At maximum value
+  tap_to_resume: Tocca per tornare al contenuto

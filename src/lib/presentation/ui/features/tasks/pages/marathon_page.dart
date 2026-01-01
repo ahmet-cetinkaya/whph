@@ -56,6 +56,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   Duration _timeSinceLastSave = Duration.zero;
   static const Duration _dimmingDelay = Duration(seconds: 5);
   static const double _dimmingOpacity = 0;
+  static const Duration _undimCooldown = Duration(seconds: 2);
+
+  final ScrollController _scrollController = ScrollController();
+  DateTime? _lastUndimTime;
 
   void _closeDialog() {
     Navigator.pop(context);
@@ -90,6 +94,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     final tasksService = container.resolve<TasksService>();
     tasksService.removeListener(_onTasksChanged);
     _dimmingTimer?.cancel();
+    _scrollController.dispose();
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: SystemUiOverlay.values,
@@ -363,6 +368,15 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     _dimmingTimer?.cancel();
     _dimmingTimer = Timer(_dimmingDelay, () {
       if (_isTimerRunning && mounted) {
+        // Check if we're in the cooldown period after a recent user interaction
+        if (_lastUndimTime != null) {
+          final timeSinceUndim = DateTime.now().difference(_lastUndimTime!);
+          if (timeSinceUndim < _undimCooldown) {
+            // Still in cooldown, restart timer
+            _startDimmingTimer();
+            return;
+          }
+        }
         setState(() {
           _isDimmed = true;
         });
@@ -376,6 +390,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         _isDimmed = false;
       });
     }
+    // Record the time of undimming to prevent immediate re-dimming
+    _lastUndimTime = DateTime.now();
     if (_isTimerRunning) {
       _startDimmingTimer();
     }
@@ -391,6 +407,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
 
   void _onUserInteraction() {
     _resetDimmingTimer();
+  }
+
+  void _onScrollInteraction() {
+    _onUserInteraction();
   }
 
   @override
@@ -409,163 +429,219 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       child: Material(
         color: AppTheme.surface0,
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: _onUserInteraction,
-          onPanUpdate: (_) => _onUserInteraction(),
+          onScaleStart: (_) => _onUserInteraction(),
+          onScaleUpdate: (_) => _onUserInteraction(),
+          onScaleEnd: (_) => _onUserInteraction(),
+          onLongPressStart: (_) => _onUserInteraction(),
           child: MouseRegion(
             onHover: (_) => _onUserInteraction(),
             child: Stack(
               children: [
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: context.pageBodyPadding,
-                    child: Column(
-                      key: _mainContentKey,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            AnimatedOpacity(
-                              opacity: _isDimmed ? _dimmingOpacity : 1.0,
-                              duration: const Duration(milliseconds: 500),
+                NotificationListener<ScrollNotification>(
+                  onNotification: (scrollNotification) {
+                    _onScrollInteraction();
+                    return false;
+                  },
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Padding(
+                      padding: context.pageBodyPadding,
+                      child: Column(
+                        key: _mainContentKey,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              AnimatedOpacity(
+                                opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                                duration: const Duration(milliseconds: 500),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.arrow_back),
+                                      onPressed: _closeDialog,
+                                      tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Center(
+                                child: AppTimer(
+                                  key: _timerKey,
+                                  onTick: _handleTimerTick,
+                                  onTimerStart: _onTimerStart,
+                                  onTimerStop: _handleTimerStop,
+                                  onWorkSessionComplete: _handleWorkSessionComplete,
+                                ),
+                              ),
+                              AnimatedOpacity(
+                                opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                                duration: const Duration(milliseconds: 500),
+                                child: KebabMenu(
+                                  helpTitleKey: TaskTranslationKeys.marathonHelpTitle,
+                                  helpMarkdownContentKey: TaskTranslationKeys.marathonHelpContent,
+                                  onStartTour: _startTour,
+                                  iconColor: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (_selectedTask != null) ...[
+                            const SizedBox(height: AppTheme.sizeSmall),
+                            Container(
+                              key: _selectedTaskKey,
+                              child: TaskCard(
+                                key: ValueKey(_selectedTask!.id),
+                                taskItem: _selectedTask!,
+                                onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
+                                onCompleted: () {
+                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                    _selectNextTask();
+                                    _onTasksChanged();
+                                  });
+                                },
+                                showScheduleButton: false,
+                              ),
+                            ),
+                          ],
+                          AnimatedOpacity(
+                            opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                            duration: const Duration(milliseconds: 500),
+                            child: Padding(
+                              key: _filtersKey,
+                              padding: const EdgeInsets.only(top: 8),
                               child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TaskListOptions(
+                                      selectedTagIds: _selectedTaskTagIds,
+                                      showNoTagsFilter: false,
+                                      onSearchChange: (query) {
+                                        setState(() {
+                                          _taskSearchQuery = query;
+                                        });
+                                      },
+                                      showCompletedTasks: _showCompletedTasks,
+                                      onCompletedTasksToggle: (showCompleted) {
+                                        setState(() {
+                                          _showCompletedTasks = showCompleted;
+                                        });
+                                      },
+                                      showSubTasks: _showSubTasks,
+                                      onSubTasksToggle: (showSubTasks) {
+                                        setState(() {
+                                          _showSubTasks = showSubTasks;
+                                        });
+                                      },
+                                      hasItems: true,
+                                      showDateFilter: false,
+                                      showTagFilter: false,
+                                      showSortButton: true,
+                                      showSearchFilter: true,
+                                      showSubTasksToggle: true,
+                                      sortConfig: _sortConfig,
+                                      onSortChange: _onSortConfigChange,
+                                      settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                                    ),
+                                  ),
+                                  if (!_showCompletedTasks)
+                                    TaskAddButton(
+                                      initialTagIds: _selectedTaskTagIds,
+                                      initialPlannedDate: DateTime.now(),
+                                      initialTitle: _taskSearchQuery,
+                                      initialCompleted: _showCompletedTasks,
+                                      onTaskCreated: (_, __) => _onTasksChanged(),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          AnimatedOpacity(
+                            opacity: _isDimmed ? _dimmingOpacity : 1.0,
+                            duration: const Duration(milliseconds: 500),
+                            child: TaskList(
+                              key: _taskListKey,
+                              filterByCompleted: _showCompletedTasks,
+                              filterByTags: _selectedTaskTagIds,
+                              filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                              filterByPlannedEndDate:
+                                  _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                              filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                              filterByDeadlineEndDate:
+                                  _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                              filterDateOr: true,
+                              filterByCompletedStartDate:
+                                  _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
+                              filterByCompletedEndDate:
+                                  _showCompletedTasks ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999) : null,
+                              search: _taskSearchQuery,
+                              includeSubTasks: _showSubTasks,
+                              onTaskCompleted: _onTasksChanged,
+                              onClickTask: (task) => _showTaskDetails(task.id),
+                              onSelectTask: _onSelectTask,
+                              onScheduleTask: (_, __) => _onTasksChanged(),
+                              onTasksLoaded: _onTasksLoaded,
+                              selectedTask: _selectedTask,
+                              showSelectButton: true,
+                              transparentCards: true,
+                              enableReordering: _sortConfig.useCustomOrder,
+                              sortConfig: _sortConfig,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Dimming overlay - appears when dimmed and captures all touches
+                if (_isDimmed)
+                  Positioned.fill(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: _onUserInteraction,
+                      onScaleStart: (_) => _onUserInteraction(),
+                      onScaleUpdate: (_) => _onUserInteraction(),
+                      onScaleEnd: (_) => _onUserInteraction(),
+                      onLongPressStart: (_) => _onUserInteraction(),
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Center(
+                          child: AnimatedOpacity(
+                            opacity: _isDimmed ? 0.3 : 0.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.arrow_back),
-                                    onPressed: _closeDialog,
-                                    tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
+                                  Icon(
+                                    Icons.touch_app,
+                                    size: 48,
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    _translationService.translate(SharedTranslationKeys.tapToResume).toUpperCase(),
+                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                        ),
                                   ),
                                 ],
                               ),
                             ),
-                            Center(
-                              child: AppTimer(
-                                key: _timerKey,
-                                onTick: _handleTimerTick,
-                                onTimerStart: _onTimerStart,
-                                onTimerStop: _handleTimerStop,
-                                onWorkSessionComplete: _handleWorkSessionComplete,
-                              ),
-                            ),
-                            AnimatedOpacity(
-                              opacity: _isDimmed ? _dimmingOpacity : 1.0,
-                              duration: const Duration(milliseconds: 500),
-                              child: KebabMenu(
-                                helpTitleKey: TaskTranslationKeys.marathonHelpTitle,
-                                helpMarkdownContentKey: TaskTranslationKeys.marathonHelpContent,
-                                onStartTour: _startTour,
-                                iconColor: Theme.of(context).colorScheme.onSurface,
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (_selectedTask != null) ...[
-                          const SizedBox(height: AppTheme.sizeSmall),
-                          Container(
-                            key: _selectedTaskKey,
-                            child: TaskCard(
-                              key: ValueKey(_selectedTask!.id),
-                              taskItem: _selectedTask!,
-                              onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                              onCompleted: () {
-                                Future.delayed(const Duration(milliseconds: 500), () {
-                                  _selectNextTask();
-                                  _onTasksChanged();
-                                });
-                              },
-                              showScheduleButton: false,
-                            ),
-                          ),
-                        ],
-                        AnimatedOpacity(
-                          opacity: _isDimmed ? _dimmingOpacity : 1.0,
-                          duration: const Duration(milliseconds: 500),
-                          child: Padding(
-                            key: _filtersKey,
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TaskListOptions(
-                                    selectedTagIds: _selectedTaskTagIds,
-                                    showNoTagsFilter: false,
-                                    onSearchChange: (query) {
-                                      setState(() {
-                                        _taskSearchQuery = query;
-                                      });
-                                    },
-                                    showCompletedTasks: _showCompletedTasks,
-                                    onCompletedTasksToggle: (showCompleted) {
-                                      setState(() {
-                                        _showCompletedTasks = showCompleted;
-                                      });
-                                    },
-                                    showSubTasks: _showSubTasks,
-                                    onSubTasksToggle: (showSubTasks) {
-                                      setState(() {
-                                        _showSubTasks = showSubTasks;
-                                      });
-                                    },
-                                    hasItems: true,
-                                    showDateFilter: false,
-                                    showTagFilter: false,
-                                    showSortButton: true,
-                                    showSearchFilter: true,
-                                    showSubTasksToggle: true,
-                                    sortConfig: _sortConfig,
-                                    onSortChange: _onSortConfigChange,
-                                    settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
-                                  ),
-                                ),
-                                if (!_showCompletedTasks)
-                                  TaskAddButton(
-                                    initialTagIds: _selectedTaskTagIds,
-                                    initialPlannedDate: DateTime.now(),
-                                    initialTitle: _taskSearchQuery,
-                                    initialCompleted: _showCompletedTasks,
-                                    onTaskCreated: (_, __) => _onTasksChanged(),
-                                  ),
-                              ],
-                            ),
                           ),
                         ),
-                        AnimatedOpacity(
-                          opacity: _isDimmed ? _dimmingOpacity : 1.0,
-                          duration: const Duration(milliseconds: 500),
-                          child: TaskList(
-                            key: _taskListKey,
-                            filterByCompleted: _showCompletedTasks,
-                            filterByTags: _selectedTaskTagIds,
-                            filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
-                            filterByPlannedEndDate:
-                                _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
-                            filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
-                            filterByDeadlineEndDate:
-                                _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
-                            filterDateOr: true,
-                            filterByCompletedStartDate:
-                                _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
-                            filterByCompletedEndDate:
-                                _showCompletedTasks ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999) : null,
-                            search: _taskSearchQuery,
-                            includeSubTasks: _showSubTasks,
-                            onTaskCompleted: _onTasksChanged,
-                            onClickTask: (task) => _showTaskDetails(task.id),
-                            onSelectTask: _onSelectTask,
-                            onScheduleTask: (_, __) => _onTasksChanged(),
-                            onTasksLoaded: _onTasksLoaded,
-                            selectedTask: _selectedTask,
-                            showSelectButton: true,
-                            transparentCards: true,
-                            enableReordering: _sortConfig.useCustomOrder,
-                            sortConfig: _sortConfig,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

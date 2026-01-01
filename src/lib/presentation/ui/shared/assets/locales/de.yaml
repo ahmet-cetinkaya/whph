@@ -399,3 +399,4 @@ shared:
     at_minimum_value: Mindestwert erreicht
     at_maximum_value: Höchstwert erreicht
   skip_tour: Tour überspringen
+  tap_to_resume: Tippen, um zum Inhalt zurückzukehren

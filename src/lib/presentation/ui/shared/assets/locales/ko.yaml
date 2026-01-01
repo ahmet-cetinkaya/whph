@@ -381,3 +381,4 @@ shared:
     at_minimum_value: At minimum value
     at_maximum_value: At maximum value
   skip_tour: 투어 건너뛰기
+  tap_to_resume: 탭하여 콘텐츠로 돌아가기
