@@ -368,15 +368,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     _dimmingTimer?.cancel();
     _dimmingTimer = Timer(_dimmingDelay, () {
       if (_isTimerRunning && mounted) {
-        // Check if we're in the cooldown period after a recent user interaction
-        if (_lastUndimTime != null) {
-          final timeSinceUndim = DateTime.now().difference(_lastUndimTime!);
-          if (timeSinceUndim < _undimCooldown) {
-            // Still in cooldown, restart timer
-            _startDimmingTimer();
-            return;
-          }
-        }
         setState(() {
           _isDimmed = true;
         });
