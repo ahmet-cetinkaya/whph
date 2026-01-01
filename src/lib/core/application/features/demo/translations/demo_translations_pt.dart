@@ -60,7 +60,7 @@ const Map<String, String> ptDemoTranslations = {
       '# Reunião de planeamento\n\n## Participantes\n- Gestor de produto\n- Developer líder\n- Designer\n\n## Pontos-chave\n- Roadmap Q2\n- Análise de feedback',
   'note.book.title': 'Recomendações de livros',
   'note.book.content':
-      '# Livros para ler\n\n## Programação\n- Código Limpio (Clean Code) de Robert Martin\n- Padrões de Projeto (Design Patterns)\n\n## Negócios\n- A Startup Enxuta (The Lean Startup)',
+      '# Livros para ler\n\n## Programação\n- Código Limpo (Clean Code) de Robert Martin\n- Padrões de Projeto (Design Patterns)\n\n## Negócios\n- A Startup Enxuta (The Lean Startup)',
   'note.recipe.title': 'Receita - Smoothie saudável',
   'note.recipe.content':
       '# Smoothie verde\n\n## Ingredientes\n- 1 banana\n- 1 chávena de espinafres\n- 1/2 abacate\n- 1 chávena de leite de amêndoa',
