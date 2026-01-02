@@ -91,12 +91,12 @@ class DetailTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
-          flex: 2,
+          flex: 3,
           child: _buildLabel(context, data, theme),
         ),
         const SizedBox(width: AppTheme.sizeSmall),
         Expanded(
-          flex: 8,
+          flex: 7,
           child: _buildContent(context, data, theme, useVertical),
         ),
       ],
@@ -118,13 +118,17 @@ class DetailTable extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
-                child: Text(
-                  data.label,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.normal,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                child: Tooltip(
+                  message: data.label,
+                  triggerMode: TooltipTriggerMode.tap,
+                  child: Text(
+                    data.label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (data.tooltip != null) ...[
