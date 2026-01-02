@@ -69,6 +69,7 @@ default_platform(:android)
       skip_upload_images: true,
       skip_upload_screenshots: true,
       release_status: 'completed',
+      changes_not_sent_for_review: true,
       **metadata_opts
     )
   end
@@ -87,6 +88,7 @@ default_platform(:android)
       skip_upload_images: true,
       skip_upload_screenshots: true,
       release_status: 'completed',
+      changes_not_sent_for_review: true,
       **metadata_opts
     )
   end
@@ -105,6 +107,7 @@ default_platform(:android)
       skip_upload_images: true,
       skip_upload_screenshots: true,
       release_status: 'completed',
+      changes_not_sent_for_review: true,
       **metadata_opts
     )
   end
@@ -124,6 +127,7 @@ default_platform(:android)
       skip_upload_screenshots: true,
       release_status: 'completed',
       rollout: '0.1', # Start with 10% rollout for production
+      changes_not_sent_for_review: true,
       **metadata_opts
     )
   end
@@ -143,6 +147,7 @@ default_platform(:android)
       skip_upload_screenshots: true,
       release_status: 'completed',
       rollout: '1.0', # Full rollout
+      changes_not_sent_for_review: true,
       **metadata_opts
     )
   end
@@ -158,6 +163,7 @@ default_platform(:android)
       skip_upload_aab: true,
       skip_upload_images: false,
       skip_upload_screenshots: false,
+      changes_not_sent_for_review: true,
       **metadata_opts
     )
   end
@@ -173,7 +179,8 @@ default_platform(:android)
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: 'completed'
+      release_status: 'completed',
+      changes_not_sent_for_review: true
     )
   end
 
@@ -188,7 +195,8 @@ default_platform(:android)
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: 'completed'
+      release_status: 'completed',
+      changes_not_sent_for_review: true
     )
   end
 
@@ -204,7 +212,8 @@ default_platform(:android)
       skip_upload_images: true,
       skip_upload_screenshots: true,
       release_status: 'completed',
-      rollout: '0.1' # Start with 10% rollout
+      rollout: '0.1', # Start with 10% rollout
+      changes_not_sent_for_review: true
     )
   end
 
@@ -225,7 +234,8 @@ default_platform(:android)
       skip_upload_images: true,
       skip_upload_screenshots: true,
       rollout: next_rollout.to_s,
-      release_status: 'completed'
+      release_status: 'completed',
+      changes_not_sent_for_review: true
     )
     
     UI.message("Rollout increased from #{current_rollout * 100}% to #{next_rollout * 100}%")
@@ -242,7 +252,8 @@ default_platform(:android)
       skip_upload_images: true,
       skip_upload_screenshots: true,
       rollout: '0.0',
-      release_status: 'halted'
+      release_status: 'halted',
+      changes_not_sent_for_review: true
     )
   end
 
@@ -256,7 +267,8 @@ default_platform(:android)
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: 'completed'
+      release_status: 'completed',
+      changes_not_sent_for_review: true
     )
   end
 
