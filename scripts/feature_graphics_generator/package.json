@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "puppeteer": "^24.0.0",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "@fontsource/roboto": "^5.1.0",
+    "@fontsource/material-icons": "^5.2.7"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.0",

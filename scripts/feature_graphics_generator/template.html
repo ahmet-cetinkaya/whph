@@ -5,11 +5,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WHPH Feature Graphic - Material Icons</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <!-- Load Roboto fonts from @fontsource package -->
+  <link rel="stylesheet" href="./node_modules/@fontsource/roboto/400.css" />
+  <link rel="stylesheet" href="./node_modules/@fontsource/roboto/500.css" />
+  <link rel="stylesheet" href="./node_modules/@fontsource/roboto/700.css" />
+  <link rel="stylesheet" href="./node_modules/@fontsource/roboto/900.css" />
+  <!-- Load Material Icons from @fontsource package -->
+  <link rel="stylesheet" href="./node_modules/@fontsource/material-icons/index.css" />
   <style>
     /* RESET & FONTS */
-    @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
-
     * {
       margin: 0;
       padding: 0;
@@ -150,8 +154,17 @@
     }
 
     /* MATERIAL ICONS - FEATURES */
-    .material-icons-round.feature-icon {
+    .material-icons.feature-icon {
+      direction: rtl;
+      font-family: "Material Icons";
+      font-weight: normal;
+      font-style: normal;
       font-size: 48px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      white-space: nowrap;
+      word-wrap: normal;
       margin-right: 15px;
       color: #f4ff92;
       opacity: 0.9;
@@ -185,21 +198,21 @@
 
     <div class="features-container">
       <div class="feature-item">
-        <span class="material-icons-round feature-icon">settings</span>
+        <span class="material-icons feature-icon">settings</span>
         <div class="feature-text">
           <span id="feature-1-line1">Efficient Task</span><br />
           <span id="feature-1-line2">Management</span>
         </div>
       </div>
       <div class="feature-item">
-        <span class="material-icons-round feature-icon">track_changes</span>
+        <span class="material-icons feature-icon">track_changes</span>
         <div class="feature-text">
           <span id="feature-2-line1">Goal Tracking</span><br />
           <span id="feature-2-line2">& Progress</span>
         </div>
       </div>
       <div class="feature-item">
-        <span class="material-icons-round feature-icon">timer</span>
+        <span class="material-icons feature-icon">timer</span>
         <div class="feature-text">
           <span id="feature-3-line1">Focus Timer</span><br />
           <span id="feature-3-line2">& Analytics</span>

@@ -125,10 +125,10 @@ async function main() {
         }
 
     } catch (error) {
-        console.error('Error generation feature graphics:', error);
+        console.error('Error generating feature graphics:', error);
     } finally {
         await browser.close();
     }
 }
 
-main();
+main().catch(console.error).finally(() => process.exit(0));
