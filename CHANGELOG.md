@@ -10,14 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.19.3] - 2026-01-02
 
 ### Added
+
 - Translations for time logging and timer features across all supported languages
 
 ### Changed
+
 - Improved Portuguese translation for "Clean Code" (Código Limpo)
 - Enhanced book and course translations in demo content
 - Refined demo content translations for programming courses in Portuguese
 
 ### Fixed
+
 - Removed unused variables from encryption key generation to improve code quality
 
 ## [0.19.2] - 2025-12-25

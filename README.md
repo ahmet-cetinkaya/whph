@@ -32,9 +32,9 @@ Download the latest release for your desktop platform:
 [![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&logo=github&style=flat)](https://github.com/ahmet-cetinkaya/whph/releases)
 
 <!-- prettier-ignore -->
-> [!TIP] Linux users 
-> Please check the [Linux Dependencies Guide](docs/LINUX-DEPENDENCIES.md) 
-> to ensure you have all required system libraries installed before 
+> [!TIP] Linux users
+> Please check the [Linux Dependencies Guide](docs/LINUX-DEPENDENCIES.md)
+> to ensure you have all required system libraries installed before
 > running the application.
 
 ## 📱 Screenshots
