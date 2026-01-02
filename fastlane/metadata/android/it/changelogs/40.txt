@@ -1,6 +1,0 @@
-- Migliorata la sincronizzazione con le piattaforme mobili.
-- Migliorata la registrazione e la risoluzione dei conflitti.
-- Aggiunta una funzione per verificare la presenza di aggiornamenti.
-- Migliorata la visualizzazione a elenco con i separatori.
-- Migliorata la registrazione degli errori durante l'importazione e l'esportazione.
-- Migliorata la logica di paginazione nell'elenco di utilizzo dell'app.

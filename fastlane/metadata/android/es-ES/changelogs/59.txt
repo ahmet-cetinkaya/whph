@@ -1,1 +1,1 @@
-- Se corrigió un error que podía causar la pérdida de datos de tareas al actualizar la app.
+• Se corrigió un error que podía causar la pérdida de datos de tareas al actualizar la app.

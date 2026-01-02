@@ -1,1 +1,1 @@
-- Procesamiento por hora mejorado de los datos de uso de la aplicación.
+• Procesamiento por hora mejorado de los datos de uso de la aplicación.

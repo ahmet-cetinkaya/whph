@@ -1,5 +1,0 @@
-- Du kan nu skjule sidepanelet.
-- Forbedret sletning af opgaver.
-- Forenklet opgavevisning i tag-detaljer.
-- Tilføjet oversættelse for, når ingen apps bruges.
-- Rettet en fejl i logikken for opdatering af opgavens varighed.

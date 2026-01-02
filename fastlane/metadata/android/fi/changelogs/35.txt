@@ -1,3 +1,0 @@
-- Parannettu tukivalintaikkuna ja asetukset.
-- Parannettu virhelokitus sovelluksen käynnistyksen yhteydessä.
-- Parannettu asettelurakenne asetussivulla.

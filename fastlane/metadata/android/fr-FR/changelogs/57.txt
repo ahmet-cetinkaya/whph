@@ -1,6 +1,6 @@
-- Ajout de l'option pour afficher/masquer les sous-tâches dans les détails du jour pour une meilleure organisation
-- Introduction du filtrage par plage de dates pour les temps de complétion afin d'analyser votre progression
-- Ajout du filtrage pour les applications système vs. utilisateur dans le suivi d'utilisation
-- Distinction entre le temps estimé et le temps enregistré manuellement pour les habitudes
-- Amélioration de l'enregistrement du temps et de l'intégration du minuteur pour les habitudes et les tâches
-- Ajout de valeurs par défaut pour les temps estimés pour une planification de tâches plus facile
+• Ajout de l'option pour afficher/masquer les sous-tâches dans les détails du jour pour une meilleure organisation
+• Introduction du filtrage par plage de dates pour les temps de complétion afin d'analyser votre progression
+• Ajout du filtrage pour les applications système vs. utilisateur dans le suivi d'utilisation
+• Distinction entre le temps estimé et le temps enregistré manuellement pour les habitudes
+• Amélioration de l'enregistrement du temps et de l'intégration du minuteur pour les habitudes et les tâches
+• Ajout de valeurs par défaut pour les temps estimés pour une planification de tâches plus facile

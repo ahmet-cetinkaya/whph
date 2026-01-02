@@ -1,3 +1,0 @@
-- Daha hızlı yinelenen kaldırma ile uygulama performansı iyileştirildi
-- Yinelenen girişler nedeniyle oluşan yalnız görevler düzeltildi
-- Görevlerin süreye göre daha iyi sıralanması

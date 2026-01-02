@@ -1,0 +1,4 @@
+• Genaue Verfolgung der App-Nutzung im Vordergrund für Android hinzugefügt.
+• Optimiertes App-Logo.
+• Verbesserte visuelle Dichte von Schaltflächen.
+• Audio-Feedback beim Erstellen eines Eintrags hinzugefügt.

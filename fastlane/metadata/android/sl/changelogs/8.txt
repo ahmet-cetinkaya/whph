@@ -1,1 +1,0 @@
-- Posodobi navigacijo opravil za uporabo MaterialPageRoute in osveži podopravila ob vrnitvi

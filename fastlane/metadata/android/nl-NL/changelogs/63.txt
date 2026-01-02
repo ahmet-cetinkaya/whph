@@ -1,0 +1,6 @@
+• Verbeterde app-tournavigatie die uw voortgang onthoudt
+• Uitgebreide rondleiding van meerdere pagina's toegevoegd met handige overlays
+• Taalselectieoptie toegevoegd tijdens onboarding
+• Verbeterde laadstatussen en soepelere prestaties in de hele app
+• Betere weergave en afhandeling van synchronisatiefouten
+• Verbeterde foutmeldingen voor synchronisatieproblemen

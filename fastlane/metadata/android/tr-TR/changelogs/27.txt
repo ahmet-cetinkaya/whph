@@ -1,0 +1,6 @@
+• Görüntüleme için etiket yüzdesi eşiğini güncelleyin
+• Görev ve alışkanlık tamamlama için konfeti animasyonu ekleyin
+• Alışkanlık serisi takibini ve kullanıcı arayüzünü geliştirin
+• Zamanlama zamanı işlemeyi iyileştirin
+• HabitCard'daki hatırlatıcı simgesi düzenini iyileştirin
+• Zamanlama düğmesine araç ipucu ekleyin

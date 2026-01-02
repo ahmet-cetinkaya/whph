@@ -1,1 +1,1 @@
-- Improved error handling and logging during device synchronization.
+• Improved error handling and logging during device synchronization.

@@ -1,1 +1,0 @@
-- Dimensioni delle icone uniformi in tutta l'app.

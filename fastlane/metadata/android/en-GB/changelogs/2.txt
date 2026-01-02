@@ -1,2 +1,2 @@
-- Improved installation of app updates.
-- Added translations for various parts of the app, including tags, sync, and settings.
+• Improved installation of app updates.
+• Added translations for various parts of the app, including tags, sync, and settings.

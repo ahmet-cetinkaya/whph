@@ -1,14 +1,14 @@
-- Novedades en Configuración → Acerca de
-- Hábitos como cuadrícula/lista/calendario
-- Tareas semanales por días específicos
-- Panel de sonido unificado
-- Comparación de uso de apps
-- Scroll infinito en listas
-- Elegir posición de notificaciones
-- Configuración modernizada
-- Mejor selector de fecha
-- Botón completar tarea más grande
-- Corregidas tareas duplicadas
-- Corregido guardado de descripciones
-- Guarda auto cada 10 segundos
-- Mejoras de rendimiento
+• Novedades en Configuración → Acerca de
+• Hábitos como cuadrícula/lista/calendario
+• Tareas semanales por días específicos
+• Panel de sonido unificado
+• Comparación de uso de apps
+• Scroll infinito en listas
+• Elegir posición de notificaciones
+• Configuración modernizada
+• Mejor selector de fecha
+• Botón completar tarea más grande
+• Corregidas tareas duplicadas
+• Corregido guardado de descripciones
+• Guarda auto cada 10 segundos
+• Mejoras de rendimiento

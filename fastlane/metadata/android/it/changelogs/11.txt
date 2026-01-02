@@ -1,1 +1,0 @@
-- Migliorata l'eliminazione delle attività dalla pagina dei dettagli dell'attività.

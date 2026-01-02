@@ -1,6 +1,6 @@
-- Added auto-start permission management.
-- Added automatic task selection on the marathon page.
-- Added a button for quick task creation.
-- Added lock settings and a feature to delete everything.
-- Improved help menu.
-- The app's name has been updated to 'Work Hard Play Hard'.
+• Added auto-start permission management.
+• Added automatic task selection on the marathon page.
+• Added a button for quick task creation.
+• Added lock settings and a feature to delete everything.
+• Improved help menu.
+• The app's name has been updated to 'Work Hard Play Hard'.

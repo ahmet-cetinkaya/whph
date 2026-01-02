@@ -1,6 +1,6 @@
-- Navegación de recorrido de aplicación mejorada que recuerda su progreso
-- Se agregó un recorrido completo de varias páginas con superposiciones útiles
-- Se agregó la opción de selección de idioma durante la incorporación
-- Estados de carga mejorados y rendimiento más fluido en toda la aplicación
-- Mejor visualización y manejo de errores de sincronización
-- Mensajes de error mejorados para problemas de sincronización
+• Navegación de recorrido de aplicación mejorada que recuerda su progreso
+• Se agregó un recorrido completo de varias páginas con superposiciones útiles
+• Se agregó la opción de selección de idioma durante la incorporación
+• Estados de carga mejorados y rendimiento más fluido en toda la aplicación
+• Mejor visualización y manejo de errores de sincronización
+• Mensajes de error mejorados para problemas de sincronización

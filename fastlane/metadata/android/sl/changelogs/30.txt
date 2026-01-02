@@ -1,8 +1,0 @@
-- Implementiraj storitev in konfiguracijo demo podatkov
-- Standardiziraj oblazinjenje v vseh komponentah uporabniškega vmesnika
-- Združi elemente oznak, da se izogneš podvojitvam
-- Poenostavi logiko prikaza vsebine opomb
-- Osveži opomnike ob spremembi jezika
-- Izboljšaj obravnavo pogovornih oken za uvajanje in podporo
-- Odstrani izbirni čip lastnosti nadrejenega opravila
-- Dodaj obvestila za spremembe zapisov navad

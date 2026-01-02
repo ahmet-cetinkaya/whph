@@ -1,6 +1,6 @@
-- Improved app tour navigation that remembers your progress
-- Added comprehensive multi-page tour with helpful overlays
-- Added language selection option during onboarding
-- Enhanced loading states and smoother performance throughout the app
-- Better display and handling of synchronization errors
-- Improved error messages for sync issues
+• Improved app tour navigation that remembers your progress
+• Added comprehensive multi-page tour with helpful overlays
+• Added language selection option during onboarding
+• Enhanced loading states and smoother performance throughout the app
+• Better display and handling of synchronization errors
+• Improved error messages for sync issues

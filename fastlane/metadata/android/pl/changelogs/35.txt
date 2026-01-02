@@ -1,3 +1,0 @@
-- Ulepszone okno dialogowe pomocy technicznej i ustawienia.
-- Ulepszone rejestrowanie błędów podczas uruchamiania aplikacji.
-- Ulepszona struktura układu na stronie ustawień.

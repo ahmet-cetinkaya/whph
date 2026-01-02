@@ -1,0 +1,5 @@
+• Aggiunta la possibilità di filtrare le attività completate.
+• Migliorata la visualizzazione del nome del tag alla selezione.
+• Migliorato il rilevamento delle finestre e correzioni di bug.
+• Aggiunto l'ordinamento delle attività.
+• Transizioni più fluide tra le pagine.

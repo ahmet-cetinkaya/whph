@@ -1,6 +1,6 @@
-- Se agregó la capacidad de probar la aplicación con datos de demostración.
-- Relleno uniforme en toda la aplicación.
-- Visualización mejorada de las notas.
-- Los recordatorios ahora se actualizan cuando se cambia el idioma.
-- Diálogos mejorados para la incorporación y el soporte.
-- Se agregaron notificaciones para los cambios en los registros de hábitos.
+• Se agregó la capacidad de probar la aplicación con datos de demostración.
+• Relleno uniforme en toda la aplicación.
+• Visualización mejorada de las notas.
+• Los recordatorios ahora se actualizan cuando se cambia el idioma.
+• Diálogos mejorados para la incorporación y el soporte.
+• Se agregaron notificaciones para los cambios en los registros de hábitos.

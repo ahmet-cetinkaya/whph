@@ -1,1 +1,0 @@
-- Sjednocené velikosti ikon napříč aplikací.

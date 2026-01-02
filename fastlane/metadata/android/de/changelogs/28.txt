@@ -1,2 +1,0 @@
-- Unterstützung für die Erstellung eines Installationsprogramms für Windows hinzugefügt.
-- Standardeinstellung für die Fenstergröße entfernt.

@@ -1,3 +1,0 @@
-- Yinelenenleri önlemek ve değişikliklerinizi kaybetmemek için veri içe aktarma geliştirildi
-- Daha akıcı ve güvenilir göçler için uygulama güncellemeleri geliştirildi
-- Optimize edilmiş bağlantılarla daha iyi kararlılık ve performans

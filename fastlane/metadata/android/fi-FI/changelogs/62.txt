@@ -1,0 +1,3 @@
+• Parannettu tietojen tuonti duplikaattien estämiseksi ja muutostesi menetyksen välttämiseksi
+• Parannetut sovelluspäivitykset sujuvampiin ja luotettavampiin migraatioihin
+• Parempi vakavuus ja suorituskyky optimoiduilla yhteyksillä

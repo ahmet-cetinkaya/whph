@@ -1,0 +1,5 @@
+• Verbeterde synchronisatiehulp.
+• Ondersteuning voor een aangepaste accentkleur toegevoegd.
+• Verbeterd gebruik van themakleuren in de gebruikersinterface.
+• Een bug in de bidirectionele synchronisatie verholpen.
+• Een achtergrondkleur aan de app-balk toegevoegd.

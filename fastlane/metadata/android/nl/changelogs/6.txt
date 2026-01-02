@@ -1,1 +1,0 @@
-- Ondersteuning voor subtaken en taakrelaties toegevoegd. Vertaling en databaseschema bijgewerkt.

@@ -1,0 +1,2 @@
+• Ulepszona instalacja aktualizacji aplikacji.
+• Dodano tłumaczenia dla różnych części aplikacji, w tym tagów, synchronizacji i ustawień.

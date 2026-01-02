@@ -1,6 +1,0 @@
-- Ulepszone wyświetlanie procentów tagów.
-- Dodano animację konfetti po ukończeniu zadania lub nawyku.
-- Ulepszone śledzenie passy nawyków i interfejs użytkownika.
-- Ulepszone planowanie czasu.
-- Ulepszony układ ikony przypomnienia.
-- Dodano podpowiedź do przycisku harmonogramu.

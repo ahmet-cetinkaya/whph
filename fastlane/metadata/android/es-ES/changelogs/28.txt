@@ -1,2 +1,2 @@
-- Se agregó soporte para crear un instalador para Windows.
-- Se eliminó la configuración de tamaño de ventana predeterminada.
+• Se agregó soporte para crear un instalador para Windows.
+• Se eliminó la configuración de tamaño de ventana predeterminada.

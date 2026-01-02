@@ -1,3 +1,0 @@
-- Izboljšana uvoz podatkov za preprečevanje dvojnikov in preprečevanje izgube vaših sprememb
-- Izboljšane posodobitve aplikacije za gladkejše in zanesljivejše migracije
-- Boljša stabilnost in zmogljivost z optimiziranimi povezavami

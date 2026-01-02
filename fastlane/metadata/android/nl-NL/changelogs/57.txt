@@ -1,0 +1,6 @@
+• Optie toegevoegd om subtaken te tonen/verbergen in dagdetails voor betere organisatie
+• Datumreeksfiltering voor voltooiingstijden geïntroduceerd om je voortgang te analyseren
+• Filtering toegevoegd voor systeemapps vs. gebruikersapps in gebruikstracking
+• Onderscheid tussen geschatte en handmatig gelogde tijd voor gewoonten
+• Verbeterde tijdlogboeking en timerintegratie voor gewoonten en taken
+• Standaardwaarden toegevoegd voor geschatte tijden voor eenvoudigere taakplanning

@@ -1,3 +1,0 @@
-- Verbeterd ondersteuningsdialoogvenster en instellingen.
-- Verbeterde foutenlogging bij het opstarten van de app.
-- Verbeterde lay-outstructuur op de instellingenpagina.

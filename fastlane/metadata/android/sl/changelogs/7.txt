@@ -1,1 +1,0 @@
-- Izboljšaj postavitev in razmike v komponenti AppAbout

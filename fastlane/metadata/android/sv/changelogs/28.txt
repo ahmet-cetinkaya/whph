@@ -1,2 +1,0 @@
-- Lägg till Inno Setup för att skapa Windows-installationsprogram
-- Ta bort standardinställningen för fönsterstorlek

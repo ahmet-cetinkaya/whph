@@ -1,0 +1,5 @@
+• Verbeterd tagbeheer en vertalingen.
+• Verbeterde meldingen bij het synchroniseren van apparaten.
+• Verbeterde gebruikersinterface en functies in de instellingen.
+• Verbeterde notitieacties.
+• Verbeterd gewoontebeheer.

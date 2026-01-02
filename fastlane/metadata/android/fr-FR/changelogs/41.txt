@@ -1,1 +1,1 @@
-- Amélioration de la collecte et du traitement des données horaires.
+• Amélioration de la collecte et du traitement des données horaires.

@@ -1,3 +1,0 @@
-- Migliorate le query per ignorare i tag archiviati.
-- Rimosso il calcolo non necessario della scadenza.
-- Migliorato il filtraggio per data nella pagina odierna.

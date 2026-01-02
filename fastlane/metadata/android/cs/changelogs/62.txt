@@ -1,3 +1,0 @@
-- Zlepšený import dat pro prevenci duplicit a zabránění ztráty vašich změn
-- Vylepšené aktualizace aplikace pro plynulejší a spolehlivější migrace
-- Lepší stabilita a výkon s optimalizovanými připojeními

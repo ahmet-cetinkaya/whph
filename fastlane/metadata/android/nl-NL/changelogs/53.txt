@@ -1,0 +1,3 @@
+• Nieuwe UI-dichtheidsinstellingen: Pas tekst• en interface-elementgroottes aan voor betere leesbaarheid op hoge-resolutieschermen
+• Verbeterde prestaties: Snellere takenlijstweergave en geoptimaliseerde schermverversingssnelheden
+• Verbeterde gebruikerservaring: Betere datumberekeningen en vloeiendere animaties

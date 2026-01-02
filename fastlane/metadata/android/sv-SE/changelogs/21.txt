@@ -1,0 +1,6 @@
+• Förbättra sökfältet med förbättrad stil
+• Lägg till utfyllnad i alternativen för uppgiftslistan
+• Uppdatera dialogstorlek och beteende för bättre UX
+• Implementera datamigreringstjänst med semantisk versionering
+• Lägg till wakelock-funktionalitet för timer till pomodoro-timer
+• Uppdatera logiken för förloppsindikatorns färg i pomodoro-timern

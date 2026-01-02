@@ -1,2 +1,0 @@
-- Parannettu sovelluksen käynnistyksen luotettavuus parannetulla virheenkäsittelyllä
-- Korjattu tapojen seurannan ongelmat sovelluksen päivitysten jälkeen

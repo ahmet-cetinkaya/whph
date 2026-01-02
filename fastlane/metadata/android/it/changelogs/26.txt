@@ -1,2 +1,0 @@
-- Test aggiornati e migrazione del database migliorata.
-- Migliorata l'elaborazione e la registrazione YAML.

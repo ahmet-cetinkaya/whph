@@ -1,0 +1,6 @@
+• Actualizați pragul procentual al etichetei pentru afișare
+• Adăugați o animație de confetti pentru finalizarea sarcinilor și a obiceiurilor
+• Îmbunătățiți urmărirea seriei de obiceiuri și interfața de utilizare
+• Îmbunătățiți gestionarea timpului de programare
+• Îmbunătățiți aspectul pictogramei de memento în HabitCard
+• Adăugați o descriere la butonul de programare

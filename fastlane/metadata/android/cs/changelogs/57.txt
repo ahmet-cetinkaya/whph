@@ -1,6 +1,0 @@
-- Přidána možnost zobrazit/skrýt podúlohy v detailech dne pro lepší organizaci
-- Zavedeno filtrování rozsahu dat pro časy dokončení k analýze vašeho pokroku
-- Přidáno filtrování systémových vs. uživatelských aplikací v sledování použití
-- Rozlišení mezi odhadovaným a ručně zalogovaným časem pro návyky
-- Zlepšené logování času a integrace časovače pro návyky a úlohy
-- Přidány výchozí hodnoty pro odhadované časy pro snadnější plánování úloh

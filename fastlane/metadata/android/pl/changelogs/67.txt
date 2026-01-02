@@ -1,4 +1,0 @@
-- Czytelniejsze wyrównanie elementów listy dla eleganckiego wyglądu
-- Lepsze cele dotykowe na urządzeniach mobilnych z dopracowaną wysokością elementów listy
-- Ulepszony układ tabeli szczegółów z czystszym wyglądem
-- Dopracowane odstępy wyboru daty w szczegółach zadania

@@ -1,0 +1,5 @@
+• Geschätzte Zeit für Aufgaben ist jetzt optional • kann leer gelassen werden
+• Standard-Geschätzte Zeit für neue Aufgaben in den Einstellungen hinzugefügt
+• Verbesserte Windows-Firewall-Verarbeitung für bessere Funktionalität
+• Erweiterte Zeitverfolgung mit Gewohnheiten und Tags für bessere Einblicke
+• Leistungsverbesserungen und Fehlerbehebungen

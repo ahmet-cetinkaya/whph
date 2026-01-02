@@ -1,2 +1,0 @@
-- Verbeterde app-startbetrouwbaarheid met verbeterde foutafhandeling
-- Opgelost problemen met gewoontetracking na app-updates

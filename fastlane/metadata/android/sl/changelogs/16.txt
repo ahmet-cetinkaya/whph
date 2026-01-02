@@ -1,6 +1,0 @@
-- Dodaj upravljanje dovoljenj za samodejni zagon
-- Dodaj samodejno izbiro opravil na strani maratona
-- Dodaj plavajoči gumb za dejanja za ustvarjanje opravil
-- Dodaj nastavitve zaklepanja in funkcionalnost brisanja vsega
-- Izboljšaj vsebino menija za pomoč
-- Posodobi ime aplikacije na 'Work Hard Play Hard'

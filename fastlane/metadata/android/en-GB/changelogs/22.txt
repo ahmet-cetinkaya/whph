@@ -1,3 +1,3 @@
-- Added status notifications for exporting and importing data.
-- Improved data retrieval, which now includes deleted notes.
-- Improved size of dialog boxes for a better user experience.
+• Added status notifications for exporting and importing data.
+• Improved data retrieval, which now includes deleted notes.
+• Improved size of dialog boxes for a better user experience.

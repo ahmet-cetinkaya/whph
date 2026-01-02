@@ -1,6 +1,0 @@
-- Eksik çevirileri ekleyin ve yapıyı iyileştirin
-- Pomodoro zamanlayıcı kullanıcı arayüzünü iyileştirin
-- Güncelleme kontrolünü ve indirmeyi geliştirin
-- Bileşenler arasında düzeni ve yanıt verebilirliği iyileştirin
-- Duyarlı tasarımla düzeni geliştirin
-- Varsayılan sayfa boyutunu 20'den 10'a düşürün

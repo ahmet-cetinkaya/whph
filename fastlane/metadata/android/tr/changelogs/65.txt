@@ -1,5 +1,0 @@
-- Görevler için tahmini süre artık gerçekten isteğe bağlı - varsayılan olarak sıfıra ayarlanmadan boş bırakabilirsiniz
-- Ayarlarda yeni görevler için varsayılan tahmini süre ayarlama özelliği eklendi
-- Daha iyi uygulama işlevselliği ve algılama için Windows güvenlik duvarı işleme iyileştirildi
-- Alışkanlıklar ve etiketlerle zaman takibi entegrasyonu geliştirildi, daha iyi içgörüler için
-- Çeşitli performans iyileştirmeleri ve hata düzeltmeleri

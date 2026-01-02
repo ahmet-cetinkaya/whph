@@ -1,5 +1,0 @@
-- Přidána funkce pro import a export dat.
-- Vylepšené načítání štítků.
-- Vylepšená synchronizace zařízení.
-- Přidána možnost klepnutí na kartu nastavení oznámení.
-- Přidány překlady pro nápovědu "Přidat zvyk".

@@ -1,6 +1,0 @@
-- Wdrożono śledzenie użytkowania zgodne z Digital Wellbeing.
-- Dodano jaśniejszy opis użycia dynamicznych kolorów.
-- Ustawiono domyślnie motyw ciemny.
-- Usunięto początkowe tytuły i dodano symbole zastępcze dla danych wejściowych.
-- Zapobiegano migotaniu interfejsu użytkownika podczas sprawdzania uprawnień i ładowania danych.
-- Użyto koloru motywu dla przycisku "Dalej" podczas wdrażania.

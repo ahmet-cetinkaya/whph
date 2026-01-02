@@ -1,4 +1,4 @@
-- Amélioration des méthodes de fenêtre pour KDE Wayland.
-- Ajout du filtrage des appareils aux fonctionnalités d'utilisation des applications.
-- Implémentation d'un service de répertoire d'applications pour diverses plateformes.
-- Suppression du rembourrage des descriptions.
+• Amélioration des méthodes de fenêtre pour KDE Wayland.
+• Ajout du filtrage des appareils aux fonctionnalités d'utilisation des applications.
+• Implémentation d'un service de répertoire d'applications pour diverses plateformes.
+• Suppression du rembourrage des descriptions.

@@ -1,0 +1,5 @@
+• Parannettu synkronointiohje.
+• Lisätty tuki mukautetulle korostusvärille.
+• Parannettu teemavärien käyttö käyttöliittymässä.
+• Korjattu virhe kaksisuuntaisessa synkronoinnissa.
+• Lisätty taustaväri sovelluspalkkiin.

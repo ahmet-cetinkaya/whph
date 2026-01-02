@@ -1,5 +1,0 @@
-- Ora puoi nascondere il pannello laterale.
-- Eliminazione delle attività migliorata.
-- Visualizzazione delle attività semplificata nei dettagli dei tag.
-- Aggiunta la traduzione per quando non vengono utilizzate app.
-- Risolto un bug nella logica di aggiornamento della durata delle attività.

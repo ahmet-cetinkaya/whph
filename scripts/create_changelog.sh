@@ -368,7 +368,7 @@ convert_to_fastlane_format() {
                 # Extract the content after the bullet point
                 content="${line#- }"
                 # Capitalize first letter and add bullet point back
-                echo "- $(capitalize_first_letter "$content")"
+                echo "• $(capitalize_first_letter "$content")"
             fi
         done)
 

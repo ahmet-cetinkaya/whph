@@ -1,14 +1,14 @@
-- Alterações em Definições → Sobre
-- Hábitos grelha/lista/calendário
-- Tarefas semanais por dias
-- Painel som unificado
-- Comparação uso apps
-- Scroll infinito
-- Escolher posição notificações
-- Definições modernizadas
-- Seletor data melhorado
-- Botão concluir maior
-- Corrigidas tarefas duplicadas
-- Corrigido descrições não guardam
-- Guarda auto cada 10 segundos
-- Melhorias desempenho
+• Alterações em Definições → Sobre
+• Hábitos grelha/lista/calendário
+• Tarefas semanais por dias
+• Painel som unificado
+• Comparação uso apps
+• Scroll infinito
+• Escolher posição notificações
+• Definições modernizadas
+• Seletor data melhorado
+• Botão concluir maior
+• Corrigidas tarefas duplicadas
+• Corrigido descrições não guardam
+• Guarda auto cada 10 segundos
+• Melhorias desempenho

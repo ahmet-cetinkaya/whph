@@ -1,0 +1,1 @@
+• Îmbunătățiți gestionarea apelului invers de ștergere a sarcinii în TaskDetailsPage

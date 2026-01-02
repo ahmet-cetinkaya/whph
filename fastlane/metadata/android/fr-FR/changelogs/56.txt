@@ -1,8 +1,8 @@
 Nous avons boosté notre synchronisation pour rendre le maintien de vos habitudes, tâches et notes en parfaite harmonie sur tous vos appareils plus facile et plus fiable !
 
-- Guides clairs dans l'application et configuration manuelle simple pour connecter votre téléphone et ordinateur sans effort.
-- Sécurité renforcée et gestion plus fluide lors de la synchronisation avec plusieurs appareils.
-- Mises à jour du statut en temps réel directement dans l'application, pour que vous sachiez toujours quand vos données circulent.
-- Synchronisation plus rapide en divisant les données en petits morceaux pour des transferts rapides et sans tracas.
-- Synchronisation bidirectionnelle vraie qui fonctionne en arrière-plan, gardant tout à jour sans ralentir.
-- Gestion fluide des grandes sessions de synchronisation du début à la fin sur ordinateur.
+• Guides clairs dans l'application et configuration manuelle simple pour connecter votre téléphone et ordinateur sans effort.
+• Sécurité renforcée et gestion plus fluide lors de la synchronisation avec plusieurs appareils.
+• Mises à jour du statut en temps réel directement dans l'application, pour que vous sachiez toujours quand vos données circulent.
+• Synchronisation plus rapide en divisant les données en petits morceaux pour des transferts rapides et sans tracas.
+• Synchronisation bidirectionnelle vraie qui fonctionne en arrière-plan, gardant tout à jour sans ralentir.
+• Gestion fluide des grandes sessions de synchronisation du début à la fin sur ordinateur.

@@ -1,0 +1,5 @@
+• Tilføjede værktøjstips til markdown-editor for billede, overskrift og afkrydsningsfelt
+• Fjernede redigeringsikoner og forbedrede mellemrum i detaljeformularer
+• Tilføjede understøttelse for cs, da, el, fi, nl, no, pt, ro, sl, sv sprog
+• Forbedret planlægning af notifikationer med bedre validering og reservehåndtering
+• Implementeret Windows-afspiller og tilføjet lyd-ressourcer

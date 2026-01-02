@@ -1,5 +1,0 @@
-- Zamenjaj SnackBars s prekrivnimi obvestili
-- Dodaj obvestilo o nalaganju z indikatorjem napredka
-- Uporabi konfiguracijo za podpisovanje izdaje za vrste gradenj
-- Izboljšaj pripravo in beleženje podatkov o sinhronizaciji
-- Posodobi imena parametrov poizvedbe za doslednost

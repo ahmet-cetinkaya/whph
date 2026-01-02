@@ -1,0 +1,4 @@
+• Čistší zarovnání položek seznamu pro vylepšený vzhled
+• Lepší cíle dotyku na mobilu vylepšenou výškou položek seznamu
+• Vylepšené rozložení tabulky detailů s čistším vzhledem
+• Vyladěné rozestupy výběru data v detailech úkolu

@@ -1,1 +1,0 @@
-- AppAbout bileşenindeki düzeni ve boşluğu iyileştirin

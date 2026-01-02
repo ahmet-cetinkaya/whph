@@ -1,5 +1,0 @@
-- Dışa ve içe aktarma ilerleme mesajları ekleyin
-- Taşıma testlerinde uygulama sürümünü güncelleyin
-- getInitialAppUsages yöntemini kaldırın
-- Silinen notları içerecek şekilde getById yöntemlerini geliştirin
-- Daha iyi bir kullanıcı deneyimi için iletişim kutusu boyutunu orta olarak güncelleyin

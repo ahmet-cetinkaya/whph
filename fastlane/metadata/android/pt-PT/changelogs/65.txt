@@ -1,5 +1,5 @@
-- O tempo estimado para tarefas é agora verdadeiramente opcional - pode deixar em branco sem que seja definido como zero
-- Adicionada a capacidade de definir um tempo estimado padrão para novas tarefas nas definições
-- Melhorada a gestão da firewall do Windows para melhor funcionalidade e deteção da aplicação
-- Integração melhorada do rastreamento de tempo com hábitos e etiquetas para melhores insights
-- Várias melhorias de desempenho e correções de erros
+• O tempo estimado para tarefas é agora verdadeiramente opcional • pode deixar em branco sem que seja definido como zero
+• Adicionada a capacidade de definir um tempo estimado padrão para novas tarefas nas definições
+• Melhorada a gestão da firewall do Windows para melhor funcionalidade e deteção da aplicação
+• Integração melhorada do rastreamento de tempo com hábitos e etiquetas para melhores insights
+• Várias melhorias de desempenho e correções de erros

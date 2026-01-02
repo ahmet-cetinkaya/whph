@@ -1,0 +1,5 @@
+• Forbedret udseende af søgefeltet.
+• Forbedret brugergrænseflade for en bedre oplevelse.
+• Implementeret en tjeneste til datamigrering med versionering.
+• Tilføjet en funktion, der forhindrer telefonen i at gå i dvale, mens Pomodoro-timeren er i brug.
+• Forbedret logik for farven på statuslinjen i Pomodoro-timeren.

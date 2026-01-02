@@ -1,6 +1,6 @@
-- Visualización mejorada de los porcentajes de las etiquetas.
-- Se agregó una animación de confeti cuando se completa una tarea o un hábito.
-- Seguimiento mejorado de las rachas de hábitos y de la interfaz de usuario.
-- Programación del tiempo mejorada.
-- Diseño mejorado del icono de recordatorio.
-- Se agregó una información sobre herramientas al botón de programación.
+• Visualización mejorada de los porcentajes de las etiquetas.
+• Se agregó una animación de confeti cuando se completa una tarea o un hábito.
+• Seguimiento mejorado de las rachas de hábitos y de la interfaz de usuario.
+• Programación del tiempo mejorada.
+• Diseño mejorado del icono de recordatorio.
+• Se agregó una información sobre herramientas al botón de programación.

@@ -1,5 +1,0 @@
-- Tilføjet mulighed for at filtrere afsluttede opgaver.
-- Forbedret visning af tag-navn ved valg.
-- Forbedret vinduesgenkendelse og fejlrettelser.
-- Tilføjet opgavesortering.
-- Jævnere overgange mellem sider.

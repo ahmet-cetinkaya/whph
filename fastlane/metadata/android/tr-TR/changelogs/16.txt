@@ -1,0 +1,6 @@
+• Otomatik başlatma izni yönetimi ekleyin
+• Maraton sayfasında otomatik görev seçimi ekleyin
+• Görev oluşturma için kayan eylem düğmesi ekleyin
+• Kilit ayarları ve tümünü temizle işlevselliği ekleyin
+• Yardım menüsü içeriğini iyileştirin
+• Uygulama adını 'Work Hard Play Hard' olarak güncelleyin

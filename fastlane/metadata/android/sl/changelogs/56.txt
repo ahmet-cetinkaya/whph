@@ -1,8 +1,0 @@
-Povečali smo zmogljivost sinhronizacije, da bo ohranjanje vaših navad, nalog in beležk v popolni harmoniji na vseh vaših napravah lažje in zanesljivejše!
-
-- Jasni vodiči v aplikaciji in preprosto ročno nastavitev za enostavno povezavo telefona in namizja brez truda.
-- Močnejša varnost in gladkejše upravljanje pri sinhronizaciji z več napravami.
-- Posodobitve stanja v realnem času neposredno v aplikaciji, da vedno veste, kdaj tečejo vaši podatki.
-- Hitrejša sinhronizacija z razdelitvijo podatkov na majhne koščke za hitrejše in brez težav prenos.
-- Prava dvosmerna sinhronizacija, ki deluje v ozadju in ohranja vse posodobljeno brez upočasnitve.
-- Tečna obdelava velikih sej sinhronizacije od začetka do konca na namizju.

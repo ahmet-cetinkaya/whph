@@ -1,0 +1,5 @@
+• Il nome e la descrizione dell'app sono stati aggiornati.
+• Migliorata la gestione dei permessi.
+• Semplificata la struttura del layout nella pagina delle impostazioni.
+• Migliorata la reattività delle finestre di dialogo.
+• Migliorato il completamento e la selezione delle attività.

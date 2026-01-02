@@ -1,6 +1,6 @@
-- Implémentation du suivi de l'utilisation compatible avec Digital Wellbeing.
-- Ajout d'une description plus claire pour l'utilisation des couleurs dynamiques.
-- Définition du thème sombre par défaut.
-- Suppression des titres initiaux et ajout d'espaces réservés pour les entrées.
-- Prévention du scintillement de l'interface utilisateur lors de la vérification des autorisations et du chargement des données.
-- Utilisation de la couleur du thème pour le bouton « Suivant » lors de l'intégration.
+• Implémentation du suivi de l'utilisation compatible avec Digital Wellbeing.
+• Ajout d'une description plus claire pour l'utilisation des couleurs dynamiques.
+• Définition du thème sombre par défaut.
+• Suppression des titres initiaux et ajout d'espaces réservés pour les entrées.
+• Prévention du scintillement de l'interface utilisateur lors de la vérification des autorisations et du chargement des données.
+• Utilisation de la couleur du thème pour le bouton « Suivant » lors de l'intégration.

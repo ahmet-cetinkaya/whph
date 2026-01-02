@@ -1,0 +1,8 @@
+Přepracovali jsme synchronizaci tak, aby udržování vašich návyků, úkolů a poznámek v dokonalé harmonii napříč všemi vašimi zařízeními bylo snazší a spolehlivější!
+
+• Jasné průvodce v aplikaci a jednoduché manuální nastavení pro snadné propojení telefonu a desktopu.
+• Silnější bezpečnost a plynulejší zpracování při synchronizaci s více zařízeními.
+• Aktualizace stavu synchronizace v reálném čase přímo v aplikaci, takže vždy víte, kdy vaše data proudí.
+• Rychlejší synchronizace rozdělením dat do malých částí pro rychlejší a bezproblémové přenosy.
+• Skutečná obousměrná synchronizace fungující na pozadí, která udržuje všechno aktuální bez zpomalování.
+• Bezproblémové zpracování velkých synchronizačních relací od začátku do konce na desktopu.

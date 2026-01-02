@@ -1,0 +1,2 @@
+• Verbeterde installatie van app-updates.
+• Vertalingen toegevoegd voor verschillende onderdelen van de app, waaronder tags, synchronisatie en instellingen.

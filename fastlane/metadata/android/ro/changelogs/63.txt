@@ -1,6 +1,0 @@
-- Navigare pentru turnee de aplicații îmbunătățite care își amintește progresul
-- Adăugat un tur complet pe mai multe pagini, cu suprapuneri utile
-- Adăugat opțiunea de selecție a limbii în timpul bordului
-- stări de încărcare îmbunătățite și performanțe mai ușoare în întreaga aplicație
-- Afișarea și manipularea mai bună a erorilor de sincronizare
-- Mesaje de eroare îmbunătățite pentru probleme de sincronizare

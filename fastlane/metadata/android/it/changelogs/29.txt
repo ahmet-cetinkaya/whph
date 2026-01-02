@@ -1,5 +1,0 @@
-- Aggiunte opzioni di ordinamento per la selezione dei tag.
-- Migliorata l'aggiunta di sottoattività.
-- Aggiunto un campo per l'attività principale nei dettagli dell'attività.
-- Migliorata la gestione delle notifiche.
-- Migliorato il servizio di promemoria per Android con supporto per la traduzione.

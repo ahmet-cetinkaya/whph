@@ -1,0 +1,6 @@
+• Parannettu sovelluskierroksen navigointi, joka muistaa edistymisen
+• Lisätty kattava monisivun kiertue hyödyllisillä peittokuvilla
+• Lisätty kielen valintavaihtoehto ajoneuvon aikana
+• Parannetut lastaustilat ja tasaisempi suorituskyky koko sovelluksen ajan
+• Synkronointivirheiden parempi näyttö ja käsittely
+• Parannetut virhesanomat synkronointiongelmiin

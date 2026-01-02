@@ -1,2 +1,0 @@
-- Miglioramento del layout della barra dell'app per una migliore visualizzazione su tutti i dispositivi.
-- Aggiunta una nuova sezione di aiuto per assisterti con attività, tag, codici QR, sincronizzazione, abitudini e la panoramica odierna.

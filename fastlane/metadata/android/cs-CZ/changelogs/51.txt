@@ -1,0 +1,5 @@
+• Přidáno vyskakovací okna pro editor markdownu pro obrázek, nadpis a zaškrtávací políčko
+• Odebrány ikony úprav a zlepšeno mezery v detailních formulářích
+• Přidána podpora pro jazyky cs, da, el, fi, nl, no, pt, ro, sl, sv
+• Vylepšeno plánování notifikací s lepší validací a záložním zpracováním
+• Implementován přehrávač zvuku pro Windows a přidány zvukové soubory

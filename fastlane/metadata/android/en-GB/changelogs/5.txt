@@ -1,1 +1,1 @@
-- Consistent icon sizes throughout the app.
+• Consistent icon sizes throughout the app.

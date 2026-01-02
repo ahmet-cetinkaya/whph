@@ -1,2 +1,2 @@
-- Pruebas actualizadas y migración de base de datos mejorada.
-- Procesamiento y registro de YAML mejorados.
+• Pruebas actualizadas y migración de base de datos mejorada.
+• Procesamiento y registro de YAML mejorados.

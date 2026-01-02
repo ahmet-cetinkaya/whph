@@ -1,4 +1,0 @@
-- Vylepšené metody oken pro KDE Wayland.
-- Přidáno filtrování zařízení pro funkce využití aplikací.
-- Implementována služba adresáře aplikací pro různé platformy.
-- Odebráno odsazení z popisů.

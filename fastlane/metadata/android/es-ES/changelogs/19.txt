@@ -1,5 +1,5 @@
-- Se agregaron traducciones faltantes y se mejoró la estructura.
-- Interfaz de usuario mejorada para el temporizador Pomodoro.
-- Comprobación y descarga de actualizaciones mejoradas.
-- Diseño y capacidad de respuesta mejorados en toda la aplicación.
-- Se redujo el tamaño de página predeterminado para un mejor rendimiento.
+• Se agregaron traducciones faltantes y se mejoró la estructura.
+• Interfaz de usuario mejorada para el temporizador Pomodoro.
+• Comprobación y descarga de actualizaciones mejoradas.
+• Diseño y capacidad de respuesta mejorados en toda la aplicación.
+• Se redujo el tamaño de página predeterminado para un mejor rendimiento.

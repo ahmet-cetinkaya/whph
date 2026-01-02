@@ -1,3 +1,0 @@
-- Forbedret supportdialog og indstillinger.
-- Forbedret fejllogning ved app-start.
-- Forbedret layoutstruktur på indstillingssiden.

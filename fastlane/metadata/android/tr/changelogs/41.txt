@@ -1,1 +1,0 @@
-- Saatlik veri toplama ve işlemeyi iyileştirin

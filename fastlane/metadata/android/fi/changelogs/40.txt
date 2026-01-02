@@ -1,6 +1,0 @@
-- Parannettu synkronointi mobiilialustojen kanssa.
-- Parannettu kirjaaminen ja ristiriitojen ratkaisu.
-- Lisätty ominaisuus päivitysten tarkistamiseen.
-- Parannettu luettelonäkymä erottimilla.
-- Parannettu virhelokitus tuonnin ja viennin yhteydessä.
-- Parannettu sivutuslogiikka sovellusten käyttöluettelossa.

@@ -1,5 +1,5 @@
-- Manejo mejorado de los eventos después del reinicio del dispositivo.
-- Configuración de clasificación predeterminada actualizada.
-- Función mejorada para cambiar el orden en el diálogo de clasificación.
-- Filtrado de fechas mejorado.
-- Reproducción de audio mejorada.
+• Manejo mejorado de los eventos después del reinicio del dispositivo.
+• Configuración de clasificación predeterminada actualizada.
+• Función mejorada para cambiar el orden en el diálogo de clasificación.
+• Filtrado de fechas mejorado.
+• Reproducción de audio mejorada.

@@ -1,6 +1,0 @@
-- Přidána možnost vyzkoušet si aplikaci s demo daty.
-- Sjednocené odsazení v celé aplikaci.
-- Vylepšené zobrazení poznámek.
-- Připomenutí se nyní aktualizují při změně jazyka.
-- Vylepšené dialogy pro onboarding a podporu.
-- Přidána oznámení o změnách v záznamech o zvycích.

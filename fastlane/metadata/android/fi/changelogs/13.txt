@@ -1,5 +1,0 @@
-- Lisätty mahdollisuus suodattaa suoritettuja tehtäviä.
-- Parannettu tunnisteen nimen näyttöä valittaessa.
-- Parannettu ikkunan tunnistus ja virheenkorjauksia.
-- Lisätty tehtävien lajittelu.
-- Sulavammat siirtymät sivujen välillä.

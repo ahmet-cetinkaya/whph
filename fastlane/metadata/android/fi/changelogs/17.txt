@@ -1,3 +1,0 @@
-- Ilmoitukset näytetään nyt peittokuvina välipalapalkkien sijaan.
-- Lisätty latausilmoitus edistymispalkilla.
-- Parannettu tietojen valmistelu ja kirjaaminen synkronointia varten.

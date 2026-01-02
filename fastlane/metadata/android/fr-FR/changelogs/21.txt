@@ -1,5 +1,5 @@
-- Amélioration de l'apparence du champ de recherche.
-- Amélioration de l'interface utilisateur pour une meilleure expérience.
-- Implémentation d'un service de migration de données avec gestion des versions.
-- Ajout d'une fonctionnalité qui empêche le téléphone de se mettre en veille lors de l'utilisation du minuteur Pomodoro.
-- Amélioration de la logique de la couleur de la barre de progression dans le minuteur Pomodoro.
+• Amélioration de l'apparence du champ de recherche.
+• Amélioration de l'interface utilisateur pour une meilleure expérience.
+• Implémentation d'un service de migration de données avec gestion des versions.
+• Ajout d'une fonctionnalité qui empêche le téléphone de se mettre en veille lors de l'utilisation du minuteur Pomodoro.
+• Amélioration de la logique de la couleur de la barre de progression dans le minuteur Pomodoro.

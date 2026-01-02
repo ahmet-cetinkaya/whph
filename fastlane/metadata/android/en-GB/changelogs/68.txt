@@ -1,2 +1,2 @@
-- Promote beta from internal track
-- Correct fastlane promotion parameters
+• Promote beta from internal track
+• Correct fastlane promotion parameters

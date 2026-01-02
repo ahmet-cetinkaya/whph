@@ -1,6 +1,0 @@
-- Ulepszona nawigacja po aplikacji, która zapamiętuje Twoje postępy
-- Dodano obszerną, wielostronicową wycieczkę z pomocnymi nakładkami
-- Dodano opcję wyboru języka podczas wdrażania
-- Ulepszone stany ładowania i płynniejsze działanie całej aplikacji
-- Lepsze wyświetlanie i obsługa błędów synchronizacji
-- Poprawione komunikaty o błędach dotyczące problemów z synchronizacją

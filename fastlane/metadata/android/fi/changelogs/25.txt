@@ -1,5 +1,0 @@
-- Parannettu tapahtumien käsittely laitteen uudelleenkäynnistyksen jälkeen.
-- Päivitetty oletuslajittelumääritys.
-- Parannettu ominaisuus järjestyksen muuttamiseksi lajitteluvalintaikkunassa.
-- Parannettu päivämääräsuodatus.
-- Parannettu äänentoisto.

@@ -1,3 +1,0 @@
-- Miglioramento delle prestazioni dell'app con rimozione più veloce dei duplicati
-- Corrette le attività orfane causate da voci duplicate
-- Migliore ordinamento delle attività per durata

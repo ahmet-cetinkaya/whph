@@ -1,2 +1,0 @@
-- Vylepšené rychlé přidávání úkolů s možností výběru štítků.
-- Přidána sekce pro dokončené úkoly, kterou lze rozbalit.

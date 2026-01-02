@@ -1,8 +1,0 @@
-Vi har superopladt vores synkronisering for at gøre det lettere og mere pålideligt at holde dine vaner, opgaver og noter i perfekt harmoni på tværs af alle dine enheder!
-
-- Klare vejledninger i appen og enkel manuel opsætning til at forbinde din telefon og desktop uden besvær.
-- Stærkere sikkerhed og glattere håndtering, når du synkroniserer med flere enheder.
-- Statusopdateringer i realtid direkte i appen, så du altid ved, hvornår dine data flyder.
-- Hurtigere synkronisering ved at opdele data i små bidder for hurtigere og problemfri overførsler.
-- Ægte tovejs synkronisering, der arbejder i baggrunden og holder alt opdateret uden at bremse dig.
-- Sømløs håndtering af store synkroniseringssessioner fra start til slut på desktop.

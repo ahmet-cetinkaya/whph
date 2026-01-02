@@ -1,3 +1,0 @@
-- Verbeterde query's om gearchiveerde tags te negeren.
-- Onnodige deadlineberekening verwijderd.
-- Verbeterde datumfiltering op de vandaag-pagina.

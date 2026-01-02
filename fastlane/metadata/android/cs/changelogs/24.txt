@@ -1,3 +1,0 @@
-- Vylepšené dotazy pro ignorování archivovaných štítků.
-- Odebrán nepotřebný výpočet termínu.
-- Vylepšené filtrování podle data na dnešní stránce.

@@ -1,1 +1,1 @@
-- Se eliminó la lógica para actualizar los APK y los permisos relacionados.
+• Se eliminó la lógica para actualizar los APK y los permisos relacionados.

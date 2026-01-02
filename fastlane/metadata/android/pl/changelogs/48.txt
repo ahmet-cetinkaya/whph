@@ -1,6 +1,0 @@
-- Dodano obsługę synchronizacji z telefonu komórkowego na telefon komórkowy.
-- Dodano wskaźnik synchronizacji.
-- Ulepszony interfejs użytkownika do skanowania kodów QR.
-- Dodano obsługę trybu automatycznego motywu.
-- Zintegrowano obsługę dynamicznych kolorów.
-- Dodano obsługę trybu jasnego.

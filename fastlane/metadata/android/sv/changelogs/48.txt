@@ -1,6 +1,0 @@
-- Lägg till stöd för synkronisering från mobil till mobil
-- Lägg till synkroniseringsindikator på sidan för synkroniseringsenheter
-- Förbättra användargränssnittet för QR-kodskanning
-- Lägg till stöd för automatiskt temaläge
-- Integrera stöd för dynamiska färger
-- Lägg till stöd för ljust läge

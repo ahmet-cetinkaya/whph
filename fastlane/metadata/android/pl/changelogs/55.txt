@@ -1,3 +1,0 @@
-- Poprawiona wydajność aplikacji z szybszym usuwaniem duplikatów
-- Naprawione osierocone zadania spowodowane duplikowanymi wpisami
-- Lepsze sortowanie zadań według czasu trwania

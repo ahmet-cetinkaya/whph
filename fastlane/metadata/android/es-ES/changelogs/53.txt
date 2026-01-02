@@ -1,3 +1,3 @@
-- Nuevas configuraciones de densidad de interfaz: Ajusta el tamaño del texto y elementos de interfaz para mejor legibilidad en pantallas de alta resolución
-- Rendimiento mejorado: Renderizado más rápido de la lista de tareas y frecuencias de actualización de pantalla optimizadas
-- Experiencia de usuario mejorada: Mejores cálculos de fechas y animaciones más suaves
+• Nuevas configuraciones de densidad de interfaz: Ajusta el tamaño del texto y elementos de interfaz para mejor legibilidad en pantallas de alta resolución
+• Rendimiento mejorado: Renderizado más rápido de la lista de tareas y frecuencias de actualización de pantalla optimizadas
+• Experiencia de usuario mejorada: Mejores cálculos de fechas y animaciones más suaves

@@ -1,2 +1,2 @@
-- Updated tests and improved database migration.
-- Improved YAML processing and logging.
+• Updated tests and improved database migration.
+• Improved YAML processing and logging.

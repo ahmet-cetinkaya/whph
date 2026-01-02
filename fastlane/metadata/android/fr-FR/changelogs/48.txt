@@ -1,6 +1,6 @@
-- Ajout de la prise en charge de la synchronisation de mobile à mobile.
-- Ajout d'un indicateur de synchronisation.
-- Amélioration de l'interface utilisateur pour la numérisation des codes QR.
-- Ajout de la prise en charge du mode de thème automatique.
-- Intégration de la prise en charge des couleurs dynamiques.
-- Ajout de la prise en charge du mode clair.
+• Ajout de la prise en charge de la synchronisation de mobile à mobile.
+• Ajout d'un indicateur de synchronisation.
+• Amélioration de l'interface utilisateur pour la numérisation des codes QR.
+• Ajout de la prise en charge du mode de thème automatique.
+• Intégration de la prise en charge des couleurs dynamiques.
+• Ajout de la prise en charge du mode clair.

@@ -1,5 +1,5 @@
-- Amélioration de la gestion des balises et des traductions.
-- Amélioration des notifications lors de la synchronisation des appareils.
-- Amélioration de l'interface utilisateur et des fonctionnalités dans les paramètres.
-- Amélioration des actions sur les notes.
-- Amélioration de la gestion des habitudes.
+• Amélioration de la gestion des balises et des traductions.
+• Amélioration des notifications lors de la synchronisation des appareils.
+• Amélioration de l'interface utilisateur et des fonctionnalités dans les paramètres.
+• Amélioration des actions sur les notes.
+• Amélioration de la gestion des habitudes.

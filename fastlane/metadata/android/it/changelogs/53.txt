@@ -1,3 +1,0 @@
-- Nuove impostazioni densità interfaccia: Regola le dimensioni del testo e degli elementi dell'interfaccia per una migliore leggibilità su schermi ad alta risoluzione
-- Prestazioni migliorate: Rendering più veloce dell'elenco attività e frequenze di aggiornamento dello schermo ottimizzate
-- Esperienza utente migliorata: Migliori calcoli delle date e animazioni più fluide

@@ -1,1 +1,0 @@
-- Uygulama güncellenirken görev verilerinin kaybolmasına neden olabilecek bir hata düzeltildi.

@@ -1,1 +1,1 @@
-- Added support for sub-tasks and task relationships. Updated translation and database schema.
+• Added support for sub-tasks and task relationships. Updated translation and database schema.

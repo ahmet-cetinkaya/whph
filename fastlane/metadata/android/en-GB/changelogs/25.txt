@@ -1,5 +1,5 @@
-- Improved handling of events after device restart.
-- Updated default sorting configuration.
-- Improved feature to change the order in the sorting dialog.
-- Improved date filtering.
-- Improved audio playback.
+• Improved handling of events after device restart.
+• Updated default sorting configuration.
+• Improved feature to change the order in the sorting dialog.
+• Improved date filtering.
+• Improved audio playback.

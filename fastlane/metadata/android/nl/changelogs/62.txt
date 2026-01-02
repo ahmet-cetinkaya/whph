@@ -1,3 +1,0 @@
-- Verbeterde data-import om duplicaten te voorkomen en verlies van wijzigingen te vermijden
-- Verbeterde app-updates voor soepelere en betrouwbaardere migraties
-- Betere stabiliteit en prestaties met geoptimaliseerde verbindingen

@@ -1,2 +1,0 @@
-- Migliorata l'aggiunta rapida di attività con la possibilità di selezionare i tag.
-- Aggiunta una sezione per le attività completate che può essere espansa.

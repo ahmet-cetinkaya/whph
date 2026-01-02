@@ -1,3 +1,0 @@
-- Nye UI-tæthedsindstillinger: Juster tekst- og interfaceelementstørrelser for bedre læsbarhed på højopløsningsskærme
-- Forbedret ydeevne: Hurtigere opgavelistegengering og optimerede skærmopdateringshastigheder
-- Forbedret brugeroplevelse: Bedre datoberegninger og jævnere animationer

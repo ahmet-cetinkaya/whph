@@ -1,6 +1,0 @@
-- Toteutettu Digital Wellbeing -yhteensopiva käytön seuranta.
-- Lisätty selkeämpi kuvaus dynaamisten värien käytölle.
-- Asetettu tumma teema oletukseksi.
-- Poistettu alkuperäiset otsikot ja lisätty paikkamerkkejä syötteille.
-- Estetty käyttöliittymän välkkyminen lupien tarkistuksen ja tietojen lataamisen aikana.
-- Käytetty teeman väriä Seuraava-painikkeelle perehdytyksen aikana.

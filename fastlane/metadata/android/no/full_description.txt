@@ -1,21 +1,21 @@
 WHPH er en omfattende produktivitetsapp designet for å hjelpe deg med å administrere oppgaver, utvikle nye vaner og optimalisere tiden din. Den sporer applikasjonsbruk for å forbedre fokus, slik at du kan analysere fremgangen din, feire prestasjoner og holde deg motivert.
 
 Hovedfunksjoner:
-- Oppgavestyring: Organiser og spor dine daglige oppgaver effektivt
-- Vanesporing: Bygg og oppretthold positive vaner med fremdriftsovervåking
-- Tidsoptimalisering: Analyser tidsmønstre og forbedre produktiviteten
-- Applikasjonsbrukssporing: Overvåk hvordan du bruker tid på forskjellige applikasjoner
-- Fremdriftsanalyse: Se detaljert innsikt i produktivitetsmønstrene dine
-- Prestasjonssystem: Feir milepæler og hold deg motivert
+• Oppgavestyring: Organiser og spor dine daglige oppgaver effektivt
+• Vanesporing: Bygg og oppretthold positive vaner med fremdriftsovervåking
+• Tidsoptimalisering: Analyser tidsmønstre og forbedre produktiviteten
+• Applikasjonsbrukssporing: Overvåk hvordan du bruker tid på forskjellige applikasjoner
+• Fremdriftsanalyse: Se detaljert innsikt i produktivitetsmønstrene dine
+• Prestasjonssystem: Feir milepæler og hold deg motivert
 
 Hvorfor velge WHPH?
 WHPH kombinerer flere produktivitetsverktøy i én samlet opplevelse. Enten du ønsker å administrere daglige oppgaver, bygge bedre vaner eller forstå hvordan du bruker tiden din, gir WHPH innsikten og verktøyene du trenger for å forbedre produktiviteten og nå målene dine.
 
-Appen er designet med personvern i tankene - alle dataene dine forblir på enheten din, noe som gir deg full kontroll over din personlige produktivitetsinformasjon.
+Appen er designet med personvern i tankene • alle dataene dine forblir på enheten din, noe som gir deg full kontroll over din personlige produktivitetsinformasjon.
 
 Støttede plattformer:
-- Android
-- Windows
-- Linux
+• Android
+• Windows
+• Linux
 
 Start din reise mot bedre produktivitet i dag med WHPH!

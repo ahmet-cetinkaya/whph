@@ -15,27 +15,27 @@ class ChangelogService implements IChangelogService {
   /// Based on supported locales in translation_service.dart
   /// Directory names follow Google Play Console format
   static const Map<String, String> _localeMapping = {
-    'cs': 'cs', // Czech
-    'da': 'da', // Danish
-    'de': 'de', // German
-    'el': 'el', // Greek
+    'cs': 'cs-CZ', // Czech
+    'da': 'da-DK', // Danish
+    'de': 'de-DE', // German
+    'el': 'el-GR', // Greek
     'en': 'en-US', // English
     'es': 'es-ES', // Spanish
-    'fi': 'fi', // Finnish
+    'fi': 'fi-FI', // Finnish
     'fr': 'fr-FR', // French
-    'it': 'it', // Italian
-    'ja': 'ja', // Japanese
-    'ko': 'ko', // Korean
-    'nl': 'nl', // Dutch
+    'it': 'it-IT', // Italian
+    'ja': 'ja-JP', // Japanese
+    'ko': 'ko-KR', // Korean
+    'nl': 'nl-NL', // Dutch
     'no': 'no', // Norwegian
-    'pl': 'pl', // Polish
+    'pl': 'pl-PL', // Polish
     'pt': 'pt-PT', // Portuguese
-    'ro': 'ro', // Romanian
-    'ru': 'ru', // Russian
-    'sl': 'sl', // Slovenian
-    'sv': 'sv', // Swedish
-    'tr': 'tr', // Turkish
-    'uk': 'uk', // Ukrainian
+    'ro': 'ro-RO', // Romanian
+    'ru': 'ru-RU', // Russian
+    'sl': 'sl-SI', // Slovenian
+    'sv': 'sv-SE', // Swedish
+    'tr': 'tr-TR', // Turkish
+    'uk': 'uk-UA', // Ukrainian
     'zh': 'zh-CN', // Chinese
   };
 
@@ -109,7 +109,7 @@ class ChangelogService implements IChangelogService {
       }
 
       Logger.debug('Loaded changelog from $url');
-      return response.body.trim();
+      return response.body.trim().replaceAll('• ', '- ');
     } catch (e) {
       Logger.warning('Failed to fetch changelog from $url: $e');
       return null;

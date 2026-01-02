@@ -1,6 +1,0 @@
-- Konfigurera versionssignering med nyckellager och uppdatera build.gradle
-- Implementera APK-installation via MethodChannel och uppdatera manifest för FileProvider
-- Integrera översättningstjänst över olika komponenter och lägg till lokaliseringsfiler
-- Integrera översättningstjänst för taggkomponenter
-- Integrera översättningstjänst för synkroniseringskomponenter
-- Integrera översättningstjänst för inställningskomponenter

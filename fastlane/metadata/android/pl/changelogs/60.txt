@@ -1,2 +1,0 @@
-- Ulepszona niezawodność uruchamiania aplikacji z ulepszonym obsługą błędów
-- Naprawiono problemy z śledzeniem nawyków po aktualizacjach aplikacji

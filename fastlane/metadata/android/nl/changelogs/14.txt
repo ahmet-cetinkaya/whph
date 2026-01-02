@@ -1,3 +1,0 @@
-- Vereenvoudigd filteren van taken en tags.
-- Verbeterde logica voor het bijwerken van de takenlijst.
-- Verbeterd filteren in de gewoontenlijst.

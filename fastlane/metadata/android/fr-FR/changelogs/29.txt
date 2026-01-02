@@ -1,5 +1,5 @@
-- Ajout d'options de tri pour la sélection des balises.
-- Amélioration de l'ajout de sous-tâches.
-- Ajout d'un champ pour la tâche parente dans les détails de la tâche.
-- Amélioration de la gestion des notifications.
-- Amélioration du service de rappel pour Android avec prise en charge de la traduction.
+• Ajout d'options de tri pour la sélection des balises.
+• Amélioration de l'ajout de sous-tâches.
+• Ajout d'un champ pour la tâche parente dans les détails de la tâche.
+• Amélioration de la gestion des notifications.
+• Amélioration du service de rappel pour Android avec prise en charge de la traduction.

@@ -1,7 +1,0 @@
-- Dodaj možnosti razvrščanja v izbiro oznak
-- Onemogoči možnosti razvrščanja na podlagi vrstnega reda po meri
-- Naloži začetne oznake in prednost pri dodajanju podopravila
-- Dodaj polje nadrejenega opravila v podrobnosti opravila
-- Zagotovi, da razčlenjevanje obravnava napačno oblikovana obvestila
-- Dodaj poslušalca posodobitev oznak v podrobnosti opravila
-- Izboljšaj storitev opomnikov za Android s podporo za prevajanje

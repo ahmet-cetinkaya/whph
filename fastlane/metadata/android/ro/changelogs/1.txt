@@ -1,6 +1,0 @@
-- Îmbunătățirea aspectului titlului barei de aplicații pentru o mai bună receptivitate
-- Adăugarea modalurilor de ajutor pentru paginile Detalii Sarcini și Prezentare Generală Sarcini
-- Adăugarea modalurilor de ajutor pentru paginile Detalii Etichete și Prezentare Generală Etichete
-- Adăugarea modalurilor de ajutor pentru paginile Scanner QR și Sincronizare Dispozitive
-- Adăugarea modalurilor de ajutor pentru paginile Detalii Obiceiuri și Prezentare Generală Obiceiuri
-- Adăugarea modalului de ajutor cu funcții și sfaturi pentru vizualizarea Astăzi

@@ -1,5 +1,0 @@
-- Adăugați opțiunea de a ascunde bara laterală și de a gestiona apelul invers de ștergere a sarcinii
-- Simplificați aspectul secțiunii de sarcini în pagina de detalii a etichetei
-- Reordonați valorile enum EisenhowerPriority pentru sortare
-- Adăugați traducere pentru mesajul de neutilizare a aplicației
-- Corectați logica de actualizare a duratei și îmbunătățiți dialogul cu detaliile sarcinii

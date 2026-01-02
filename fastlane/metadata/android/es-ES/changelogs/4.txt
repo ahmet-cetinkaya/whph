@@ -1,5 +1,5 @@
-- Se agregó una función para importar y exportar datos.
-- Carga mejorada de etiquetas.
-- Sincronización de dispositivos mejorada.
-- Se agregó una función de toque a la tarjeta de configuración de notificaciones.
-- Se agregaron traducciones para la información sobre herramientas 'Agregar hábito'.
+• Se agregó una función para importar y exportar datos.
+• Carga mejorada de etiquetas.
+• Sincronización de dispositivos mejorada.
+• Se agregó una función de toque a la tarjeta de configuración de notificaciones.
+• Se agregaron traducciones para la información sobre herramientas 'Agregar hábito'.

@@ -1,5 +1,0 @@
-- Lägg till ignoreArchivedTagVisibility i frågor
-- Ta bort oanvänd beräkning av deadline-datum
-- Justera utfyllnad för layout i layout
-- Uppdatera logiken för datumfiltrering på dagens sida
-- Lägg till ignore-direktiv för depend_on_referenced_packages

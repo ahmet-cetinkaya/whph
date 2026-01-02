@@ -1,3 +1,0 @@
-- Îmbunătățiți logica și setările dialogului de asistență
-- Îmbunătățiți înregistrarea erorilor la pornirea aplicației
-- Îmbunătățiți structura aspectului în pagina de setări

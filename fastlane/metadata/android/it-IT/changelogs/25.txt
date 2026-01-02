@@ -1,0 +1,5 @@
+• Migliorata la gestione degli eventi dopo il riavvio del dispositivo.
+• Aggiornata la configurazione di ordinamento predefinita.
+• Migliorata la funzione per modificare l'ordine nella finestra di dialogo di ordinamento.
+• Migliorato il filtraggio per data.
+• Migliorata la riproduzione audio.

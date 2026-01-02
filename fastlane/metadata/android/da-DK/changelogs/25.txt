@@ -1,0 +1,5 @@
+• Forbedret håndtering af hændelser efter genstart af enheden.
+• Opdateret standard sorteringskonfiguration.
+• Forbedret funktion til at ændre rækkefølge i sorteringsdialogen.
+• Forbedret datofiltrering.
+• Forbedret lydafspilning.

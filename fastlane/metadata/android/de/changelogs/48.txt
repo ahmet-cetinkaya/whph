@@ -1,6 +1,0 @@
-- Unterstützung für die Synchronisierung zwischen mobilen Geräten hinzugefügt.
-- Einen Synchronisierungsindikator hinzugefügt.
-- Verbesserte Benutzeroberfläche zum Scannen von QR-Codes.
-- Unterstützung für den automatischen Themenmodus hinzugefügt.
-- Unterstützung für dynamische Farben integriert.
-- Unterstützung für den Hellmodus hinzugefügt.

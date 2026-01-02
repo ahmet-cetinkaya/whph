@@ -1,2 +1,0 @@
-- Geliştirilmiş hata yönetimi ile uygulama başlatma güvenilirliği artırıldı
-- Uygulama güncellemeleri sonrası alışkanlık takibi sorunları düzeltildi

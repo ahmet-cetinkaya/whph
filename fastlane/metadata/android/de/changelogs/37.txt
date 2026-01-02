@@ -1,1 +1,0 @@
-- Verbesserte Hintergrundverfolgung der App-Nutzung für eine reibungslosere Erfahrung.

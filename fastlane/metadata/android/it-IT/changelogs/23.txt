@@ -1,0 +1,3 @@
+• Migliorata la gestione dei colori dei tag.
+• Migliorata la gestione dei tag durante il monitoraggio dell'utilizzo dell'app.
+• Migliorato il centraggio degli elementi.

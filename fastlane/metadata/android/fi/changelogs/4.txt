@@ -1,5 +1,0 @@
-- Lisätty ominaisuus tietojen tuomiseen ja viemiseen.
-- Parannettu tunnisteiden lataus.
-- Parannettu laitesynkronointi.
-- Lisätty napautustoiminto ilmoitusasetuskorttiin.
-- Lisätty käännöksiä Lisää tapa -vihjeeseen.

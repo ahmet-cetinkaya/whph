@@ -1,3 +1,0 @@
-- Tilføjet statusmeddelelser for eksport og import af data.
-- Forbedret datahentning, der nu inkluderer slettede noter.
-- Forbedret størrelse på dialogbokse for en bedre brugeroplevelse.

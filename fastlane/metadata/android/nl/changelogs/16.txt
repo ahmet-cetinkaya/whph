@@ -1,6 +1,0 @@
-- Beheer van autostart-toestemmingen toegevoegd.
-- Automatische taakselectie op de marathonpagina toegevoegd.
-- Een knop voor snelle taakcreatie toegevoegd.
-- Vergrendelingsinstellingen en een functie om alles te verwijderen toegevoegd.
-- Verbeterd helpmenu.
-- De naam van de app is bijgewerkt naar 'Work Hard Play Hard'.

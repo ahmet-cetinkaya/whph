@@ -1,0 +1,5 @@
+• Forbedret hjælp til synkronisering.
+• Tilføjet understøttelse af brugerdefineret accentfarve.
+• Forbedret brug af temafarver i brugergrænsefladen.
+• Rettet en fejl i tovejssynkronisering.
+• Tilføjet en baggrundsfarve til app-linjen.

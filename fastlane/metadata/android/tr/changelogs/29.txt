@@ -1,7 +1,0 @@
-- Etiket seçimine sıralama seçenekleri ekleyin
-- Özel sıraya göre sıralama seçeneklerini devre dışı bırakın
-- Alt görev eklerken başlangıç etiketlerini ve önceliği yükleyin
-- Görev ayrıntılarına üst görev alanı ekleyin
-- Ayrıştırmanın hatalı biçimlendirilmiş bildirimleri işlemesini sağlayın
-- Görev ayrıntılarına etiket güncelleme dinleyicisi ekleyin
-- Çeviri desteğiyle Android hatırlatıcı hizmetini geliştirin

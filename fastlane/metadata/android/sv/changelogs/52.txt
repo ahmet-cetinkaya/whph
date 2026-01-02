@@ -1,5 +1,0 @@
-- Åtgärdade problem där flera appinstanser kunde köra samtidigt
-- Förbättrade synkroniseringsstatusindikatorer och feedbackmeddelanden
-- Åtgärdade visningsproblem med icke-engelsk text i appen
-- Förbättrad synkronisering för appanvändningsspårning och vanor
-- Prestandaförbättringar för snabbare apprespons

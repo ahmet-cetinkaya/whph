@@ -1,3 +1,0 @@
-- Verbeterde afhandeling van tagkleuren.
-- Verbeterde afhandeling van tags bij het volgen van app-gebruik.
-- Verbeterde centrering van elementen.

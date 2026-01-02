@@ -1,5 +1,0 @@
-- Nazwa i opis aplikacji zostały zaktualizowane.
-- Ulepszona obsługa uprawnień.
-- Uproszczona struktura układu na stronie ustawień.
-- Ulepszona responsywność okien dialogowych.
-- Ulepszone wykonywanie i wybór zadań.

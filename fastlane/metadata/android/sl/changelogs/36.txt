@@ -1,1 +1,0 @@
-- Odstrani logiko posodabljanja APK in povezane dovoljenja

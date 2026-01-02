@@ -1,0 +1,5 @@
+• Parannettu hakukentän ulkoasu.
+• Parannettu käyttöliittymä paremman kokemuksen saavuttamiseksi.
+• Toteutettu palvelu tietojen siirtoa varten versioinnin kanssa.
+• Lisätty ominaisuus, joka estää puhelimen nukahtamisen Pomodoro-ajastimen käytön aikana.
+• Parannettu logiikka edistymispalkin värille Pomodoro-ajastimessa.

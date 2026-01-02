@@ -1,0 +1,4 @@
+• Schoner uitlijning van lijstitems voor een gepolijste look
+• Betere aanraakdoelen op mobiel met verfijnde lijstitemhoogtes
+• Verbeterde detailtabelopmaak met schonere uitstraling
+• Verfijnde datumpickerruimte in taakdetails

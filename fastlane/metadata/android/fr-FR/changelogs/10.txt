@@ -1,5 +1,5 @@
-- Vous pouvez maintenant masquer le panneau latéral.
-- Amélioration de la suppression des tâches.
-- Vue des tâches simplifiée dans les détails des balises.
-- Ajout de la traduction pour le cas où aucune application n'est utilisée.
-- Correction d'un bug dans la logique de mise à jour de la durée des tâches.
+• Vous pouvez maintenant masquer le panneau latéral.
+• Amélioration de la suppression des tâches.
+• Vue des tâches simplifiée dans les détails des balises.
+• Ajout de la traduction pour le cas où aucune application n'est utilisée.
+• Correction d'un bug dans la logique de mise à jour de la durée des tâches.

@@ -1,1 +1,0 @@
-- Îmbunătățiți gestionarea erorilor și înregistrarea în timpul procesului de sincronizare a dispozitivului

@@ -1,1 +1,1 @@
-- Improved task deletion from the task details page.
+• Improved task deletion from the task details page.

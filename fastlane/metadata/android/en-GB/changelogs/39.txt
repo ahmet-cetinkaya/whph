@@ -1,1 +1,1 @@
-- Improved hourly processing of app usage data.
+• Improved hourly processing of app usage data.

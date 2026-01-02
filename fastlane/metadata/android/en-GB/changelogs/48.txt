@@ -1,6 +1,6 @@
-- Added support for mobile-to-mobile synchronization.
-- Added a synchronization indicator.
-- Improved user interface for scanning QR codes.
-- Added support for automatic theme mode.
-- Integrated support for dynamic colors.
-- Added support for light mode.
+• Added support for mobile-to-mobile synchronization.
+• Added a synchronization indicator.
+• Improved user interface for scanning QR codes.
+• Added support for automatic theme mode.
+• Integrated support for dynamic colors.
+• Added support for light mode.

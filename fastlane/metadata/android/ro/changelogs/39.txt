@@ -1,1 +1,0 @@
-- Îmbunătățiți procesarea orară a datelor de utilizare a aplicațiilor

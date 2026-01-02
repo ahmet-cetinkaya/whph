@@ -1,3 +1,0 @@
-- Lisätty tilailmoitukset tietojen viennille ja tuonnille.
-- Parannettu tietojen haku, joka sisältää nyt myös poistetut muistiinpanot.
-- Parannettu valintaikkunoiden kokoa paremman käyttökokemuksen saavuttamiseksi.

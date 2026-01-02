@@ -1,1 +1,0 @@
-- APK güncelleme mantığını ve ilgili izinleri kaldırın

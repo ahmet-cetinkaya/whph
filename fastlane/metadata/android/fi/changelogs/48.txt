@@ -1,6 +1,0 @@
-- Lisätty tuki mobiililaitteiden väliselle synkronoinnille.
-- Lisätty synkronointi-ilmaisin.
-- Parannettu käyttöliittymä QR-koodien skannaamiseen.
-- Lisätty tuki automaattiselle teematilalle.
-- Integroitu tuki dynaamisille väreille.
-- Lisätty tuki vaalealle tilalle.

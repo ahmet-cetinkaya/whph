@@ -1,5 +1,5 @@
-- 在多个组件中为刷新和帮助操作添加工具提示
-- 在AppAbout组件中用Center替换Padding以改进布局
-- 实现本地化更新对话框
-- 根据屏幕大小调整ResponsiveScaffoldLayout中徽标的间距
-- 通过省略号溢出处理改进HelpMenu中的标题显示
+• 在多个组件中为刷新和帮助操作添加工具提示
+• 在AppAbout组件中用Center替换Padding以改进布局
+• 实现本地化更新对话框
+• 根据屏幕大小调整ResponsiveScaffoldLayout中徽标的间距
+• 通过省略号溢出处理改进HelpMenu中的标题显示

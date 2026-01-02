@@ -1,5 +1,0 @@
-- Een functie voor het importeren en exporteren van gegevens toegevoegd.
-- Verbeterd laden van tags.
-- Verbeterde apparaatsynchronisatie.
-- Een tikfunctie aan de kaart met meldingsinstellingen toegevoegd.
-- Vertalingen voor de tooltip 'Gewoonte toevoegen' toegevoegd.

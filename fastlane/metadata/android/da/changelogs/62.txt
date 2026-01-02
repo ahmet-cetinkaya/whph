@@ -1,3 +1,0 @@
-- Forbedret dataimport for at forhindre duplikater og undgå at miste dine ændringer
-- Forbedrede app-opdateringer for jævnere og mere pålidelige migrationer
-- Bedre stabilitet og ydeevne med optimerede forbindelser

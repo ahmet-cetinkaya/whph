@@ -1,3 +1,0 @@
-- Vylepšený import dat pro bezpečnější zálohy a obnovu po chybách
-- Vylepšené aktualizace aplikace s spolehlivou migrací dat a bezpečnostními opatřeními
-- Opraveno řazení návyků během aktualizací pro lepší organizaci

@@ -1,5 +1,0 @@
-- Verbeterde afhandeling van gebeurtenissen na het opnieuw opstarten van het apparaat.
-- Standaard sorteerconfiguratie bijgewerkt.
-- Verbeterde functie om de volgorde in het sorteerdialoogvenster te wijzigen.
-- Verbeterde datumfiltering.
-- Verbeterde audioweergave.

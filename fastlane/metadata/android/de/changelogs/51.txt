@@ -1,5 +1,0 @@
-- Add markdown editor tooltips for image, heading, and checkbox
-- Remove edit icons and improve spacing in detail forms
-- Add support for cs, da, el, fi, nl, no, pt, ro, sl, sv locales
-- Improve notification scheduling with better validation and fallback handling
-- Implement Windows audio player and add sound assets

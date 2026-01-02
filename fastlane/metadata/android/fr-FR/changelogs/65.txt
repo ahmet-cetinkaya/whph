@@ -1,5 +1,5 @@
-- Temps estimé pour les tâches maintenant optionnel - peut être laissé vide
-- Ajout d'un temps estimé par défaut pour les nouvelles tâches dans les paramètres
-- Amélioration de la gestion du pare-feu Windows pour une meilleure fonctionnalité
-- Intégration améliorée du suivi du temps avec les habitudes et les tags
-- Améliorations de performances et corrections de bugs
+• Temps estimé pour les tâches maintenant optionnel • peut être laissé vide
+• Ajout d'un temps estimé par défaut pour les nouvelles tâches dans les paramètres
+• Amélioration de la gestion du pare-feu Windows pour une meilleure fonctionnalité
+• Intégration améliorée du suivi du temps avec les habitudes et les tags
+• Améliorations de performances et corrections de bugs

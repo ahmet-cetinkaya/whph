@@ -1,0 +1,2 @@
+• Forbedret hurtig tilføjelse af opgaver med mulighed for at vælge tags.
+• Tilføjet en sektion for afsluttede opgaver, der kan udvides.

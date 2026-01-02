@@ -1,8 +1,0 @@
-- Implementați serviciul și configurația de date demonstrative
-- Standardizați umplutura în toate componentele interfeței de utilizare
-- Agregați elementele de etichetă pentru a evita duplicatele
-- Simplificați logica de afișare a conținutului notițelor
-- Reîmprospătați mementourile la schimbarea limbii
-- Îmbunătățiți gestionarea dialogurilor de integrare și asistență
-- Eliminați cipul de proprietate opțional al sarcinii părinte
-- Adăugați notificări pentru modificările înregistrărilor de obiceiuri

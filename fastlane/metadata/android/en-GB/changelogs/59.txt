@@ -1,1 +1,1 @@
-- Fixed a bug that could cause task data to be lost when updating the app.
+• Fixed a bug that could cause task data to be lost when updating the app.

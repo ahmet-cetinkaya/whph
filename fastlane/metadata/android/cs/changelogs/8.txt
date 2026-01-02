@@ -1,1 +1,0 @@
-- Vylepšená navigace mezi úkoly a obnovování dílčích úkolů.

@@ -1,0 +1,5 @@
+• Tempo stimato per attività ora opzionale • può essere lasciato vuoto
+• Aggiunto tempo stimato predefinito per nuove attività nelle impostazioni
+• Migliorata gestione firewall Windows per migliore funzionalità
+• Integrazione migliorata del tempo con abitudini e tag
+• Miglioramenti delle prestazioni e correzioni di bug

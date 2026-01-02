@@ -1,6 +1,0 @@
-- Posodobi prag odstotka oznake za prikaz
-- Dodaj animacijo konfetov za dokončanje opravil in navad
-- Izboljšaj sledenje nizu navad in uporabniški vmesnik
-- Izboljšaj obravnavo časa načrtovanja
-- Izboljšaj postavitev ikone opomnika v HabitCard
-- Dodaj namig orodja gumbu za urnik

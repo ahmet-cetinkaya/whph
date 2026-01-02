@@ -1,0 +1,14 @@
+• Ändringslogg i Inställningar → Om
+• Vanor rutnät/lista/kalender vy
+• Veckovisande återkommande uppgifter
+• Unified ljudinställningar
+• Jämförelse av appanvändning
+• Oändlig rullning i listor
+• Välj notifikationsposition
+• Moderniserade inställningar
+• Bättre datumväljare
+• Större klart knapp
+• Duplicerade uppgifter åtgärdade
+• Beskrivningssparning åtgärdad
+• Tidspårning sparar automatiskt
+• Prestandaförbättringar

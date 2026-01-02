@@ -1,7 +1,0 @@
-- Lägg till sorteringsalternativ i taggval
-- Inaktivera sorteringsalternativ baserat på anpassad ordning
-- Ladda initiala taggar och prioritet vid tillägg av deluppgift
-- Lägg till fält för överordnad uppgift i uppgiftsdetaljer
-- Se till att tolkningen hanterar felaktigt formaterade meddelanden
-- Lägg till tagguppdateringslyssnare i uppgiftsdetaljer
-- Förbättra Android-påminnelsetjänsten med översättningsstöd

@@ -1,6 +1,0 @@
-- Förbättra synkronisering av mobilplattform
-- Förbättra loggning och konflikthantering
-- Lägg till funktionalitet för att söka efter uppdateringar
-- Förbättra listvy med avgränsare
-- Förbättra felloggning vid import/export
-- Förbättra pagineringslogik i appanvändningslistan

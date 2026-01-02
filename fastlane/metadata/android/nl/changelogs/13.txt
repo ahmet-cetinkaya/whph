@@ -1,5 +1,0 @@
-- De mogelijkheid toegevoegd om voltooide taken te filteren.
-- Verbeterde weergave van de tagnaam bij selectie.
-- Verbeterde vensterdetectie en bugfixes.
-- Taakvolgorde toegevoegd.
-- Vloeiendere overgangen tussen pagina's.

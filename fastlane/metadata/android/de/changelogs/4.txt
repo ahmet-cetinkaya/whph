@@ -1,5 +1,0 @@
-- Eine Funktion zum Importieren und Exportieren von Daten hinzugefügt.
-- Verbessertes Laden von Tags.
-- Verbesserte Gerätesynchronisierung.
-- Eine Tippfunktion zur Karte mit den Benachrichtigungseinstellungen hinzugefügt.
-- Übersetzungen für den Tipp „Gewohnheit hinzufügen“ hinzugefügt.

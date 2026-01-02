@@ -1,2 +1,0 @@
-- Aktualizovány testy a vylepšena migrace databáze.
-- Vylepšené zpracování a protokolování YAML.

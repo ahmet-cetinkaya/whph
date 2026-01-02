@@ -1,0 +1,3 @@
+• Parannettu sovelluksen suorituskyky nopeammalla kaksoiskappaleiden poistolla
+• Korjattu orvot tehtävät, jotka johtuvat kaksoiskappaleista
+• Parempi tehtävien lajittelu keston mukaan

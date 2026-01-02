@@ -1,6 +1,0 @@
-- Posodobi ime in opis aplikacije
-- Izboljšaj obravnavo dovoljenj
-- Poenostavi strukturo postavitve na strani z nastavitvami
-- Posodobi velikosti pogovornih oken za izboljšano odzivnost
-- Prilagodi oblazinjenje in višino za boljšo postavitev
-- Izboljšaj obravnavo in izbiro dokončanja opravil

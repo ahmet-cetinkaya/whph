@@ -1,0 +1,2 @@
+• Aggiunto il supporto per la creazione di un programma di installazione per Windows.
+• Rimossa l'impostazione predefinita delle dimensioni della finestra.

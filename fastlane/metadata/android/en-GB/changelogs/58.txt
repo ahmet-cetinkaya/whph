@@ -1,1 +1,1 @@
-- Fixed import data issues for habits and tasks to prevent data loss and ensure smooth updates
+• Fixed import data issues for habits and tasks to prevent data loss and ensure smooth updates

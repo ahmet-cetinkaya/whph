@@ -1,5 +1,0 @@
-- Senkronizasyon yardım içeriğini iyileştirin
-- Özel vurgu rengi desteği ekleyin
-- Kullanıcı arayüzü öğelerinde vurgu rengi için tema hizmetini kullanın
-- Linux demo verilerinin Android ile senkronize edilmesini engelleyen çift yönlü senkronizasyon hatasını çözün
-- Sayfalardaki uygulama çubuğuna arka plan rengi ekleyin

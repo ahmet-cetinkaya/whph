@@ -1,5 +1,0 @@
-- Přidána možnost filtrovat dokončené úkoly.
-- Vylepšené zobrazení názvu štítku při výběru.
-- Vylepšená detekce oken a oprava chyb.
-- Přidáno řazení úkolů.
-- Plynulejší přechody mezi stránkami.

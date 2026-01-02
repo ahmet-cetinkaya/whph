@@ -1,1 +1,0 @@
-- Popraw obsługę błędów i rejestrowanie podczas procesu synchronizacji urządzenia

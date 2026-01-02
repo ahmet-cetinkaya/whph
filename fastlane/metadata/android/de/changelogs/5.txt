@@ -1,1 +1,0 @@
-- Einheitliche Symbolgrößen in der gesamten App.

@@ -1,3 +1,0 @@
-- Uproszczone filtrowanie zadań i tagów.
-- Ulepszona logika aktualizacji listy zadań.
-- Ulepszone filtrowanie na liście nawyków.

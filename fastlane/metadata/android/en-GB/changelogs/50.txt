@@ -1,5 +1,5 @@
-- Improved sync help.
-- Added support for custom accent color.
-- Improved use of theme colors in the user interface.
-- Fixed a bug in bidirectional synchronization.
-- Added a background color to the app bar.
+• Improved sync help.
+• Added support for custom accent color.
+• Improved use of theme colors in the user interface.
+• Fixed a bug in bidirectional synchronization.
+• Added a background color to the app bar.

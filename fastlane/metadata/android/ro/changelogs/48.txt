@@ -1,6 +1,0 @@
-- Adăugați suport pentru sincronizarea de la mobil la mobil
-- Adăugați un indicator de sincronizare la pagina de dispozitive de sincronizare
-- Îmbunătățiți interfața de utilizare a scanării codurilor QR
-- Adăugați suport pentru modul tematic automat
-- Integrați suportul pentru culori dinamice
-- Adăugați suport pentru modul luminos

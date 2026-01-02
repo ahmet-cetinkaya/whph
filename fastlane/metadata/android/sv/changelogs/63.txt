@@ -1,6 +1,0 @@
-- Förbättrad navigering av appturnéer som kommer ihåg dina framsteg
-- Tillagd omfattande turné med flera sidor med användbara överlägg
-- Tillagd språkvalsalternativ under onboarding
-- Förbättrade lastningstillstånd och jämnare prestanda i hela appen
-- Bättre visning och hantering av synkroniseringsfel
-- Förbättrade felmeddelanden för synkroniseringsproblem

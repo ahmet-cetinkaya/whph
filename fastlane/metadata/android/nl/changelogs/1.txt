@@ -1,2 +1,0 @@
-- Verbeterde lay-out van de app-balk voor een betere weergave op alle apparaten.
-- Een nieuwe helpsectie toegevoegd om u te helpen met taken, tags, QR-codes, synchronisatie, gewoonten en het vandaag-overzicht.

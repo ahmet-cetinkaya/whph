@@ -1,0 +1,14 @@
+• Changelog in Impostazioni → Info
+• Abitudini griglia/elenco/calendario
+• Attività settimanali per giorni
+• Pannello audio unificato
+• Confronto utilizzo app
+• Scroll infinito negli elenchi
+• Scegli posizione notifiche
+• Impostazioni modernizzate
+• Migliore selettore data
+• Pulsante completamento più grande
+• Corrette attività duplicate
+• Corretto salvataggio descrizioni
+• Salvataggio auto ogni 10 secondi
+• Miglioramenti prestazioni

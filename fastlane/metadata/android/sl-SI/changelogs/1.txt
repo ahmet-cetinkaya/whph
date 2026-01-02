@@ -1,0 +1,6 @@
+• Izboljšanje postavitve naslova aplikacijske vrstice za boljšo odzivnost
+• Dodajanje pomoči modalov za strani Podrobnosti Nalog in Pregled Nalog
+• Dodajanje pomoči modalov za strani Podrobnosti Oznak in Pregled Oznak
+• Dodajanje pomoči modalov za strani QR Skener in Sinhronizacija Naprav
+• Dodajanje pomoči modalov za strani Podrobnosti Navad in Pregled Navad
+• Dodajanje pomoči modala s funkcijami in nasveti za pogled Danes

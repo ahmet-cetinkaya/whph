@@ -1,3 +1,0 @@
-- Import de date îmbunătățit pentru a preveni duplicatele și a evita pierderea modificărilor dvs.
-- Actualizări ale aplicației îmbunătățite pentru migrații mai fluide și mai fiabile
-- Stabilitate și performanță mai bune cu conexiuni optimizate

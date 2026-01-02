@@ -1,1 +1,0 @@
-- Rimossa la logica di controllo degli aggiornamenti non utilizzata.

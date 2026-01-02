@@ -1,0 +1,4 @@
+• Implementați urmărirea precisă a utilizării aplicațiilor în prim-plan pentru Android
+• Actualizați activele logo-ului pentru o optimizare îmbunătățită
+• Actualizați densitatea vizuală a IconButton
+• Adăugați feedback sonor la crearea înregistrării

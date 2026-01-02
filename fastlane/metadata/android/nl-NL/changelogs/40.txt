@@ -1,0 +1,6 @@
+• Verbeterde synchronisatie met mobiele platforms.
+• Verbeterde logging en conflictoplossing.
+• Een functie voor het controleren op updates toegevoegd.
+• Verbeterde lijstweergave met scheidingstekens.
+• Verbeterde foutenlogging bij het importeren en exporteren.
+• Verbeterde pagineringslogica in de lijst met app-gebruik.

@@ -1,4 +1,0 @@
-- Posodobi obravnavo barv oznak pri uporabi aplikacije in podrobnostih oznak
-- Izboljšaj logiko obdelave oznak v podrobnostih uporabe aplikacije
-- Spremeni oblazinjenje v sredinsko poravnavo
-- Spremeni velikost pogovornega okna polj za zaklepanje na srednjo

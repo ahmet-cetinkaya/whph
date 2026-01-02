@@ -1,5 +1,0 @@
-- Ulepszona obsługa zdarzeń po ponownym uruchomieniu urządzenia.
-- Zaktualizowana domyślna konfiguracja sortowania.
-- Ulepszona funkcja zmiany kolejności w oknie dialogowym sortowania.
-- Ulepszone filtrowanie dat.
-- Ulepszone odtwarzanie dźwięku.

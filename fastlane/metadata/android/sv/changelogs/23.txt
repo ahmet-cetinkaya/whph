@@ -1,4 +1,0 @@
-- Uppdatera hanteringen av taggfärger i appanvändning och taggdetaljer
-- Förbättra logiken för taggbearbetning i appanvändningsdetaljer
-- Ändra utfyllnad till centrerad justering
-- Ändra dialogstorleken för låsfält till medium

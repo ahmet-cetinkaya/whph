@@ -1,6 +1,0 @@
-- Dodano opcję pokazywania/ukrywania podzadań w szczegółach dnia dla lepszej organizacji
-- Wprowadzono filtrowanie zakresu dat dla czasów ukończenia w celu analizy postępów
-- Dodano filtrowanie aplikacji systemowych vs. użytkownika w śledzeniu użycia
-- Rozróżnienie między szacowanym a ręcznie zalogowanym czasem dla nawyków
-- Ulepszone logowanie czasu i integracja timera dla nawyków i zadań
-- Dodano wartości domyślne dla szacowanych czasów dla łatwiejszego planowania zadań

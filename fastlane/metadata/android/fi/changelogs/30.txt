@@ -1,6 +1,0 @@
-- Lisätty mahdollisuus kokeilla sovellusta demotiedoilla.
-- Yhtenäinen täyttö koko sovelluksessa.
-- Parannettu muistiinpanojen näyttö.
-- Muistutukset päivitetään nyt, kun kieli vaihdetaan.
-- Parannetut valintaikkunat perehdyttämistä ja tukea varten.
-- Lisätty ilmoituksia tottumustietueiden muutoksista.

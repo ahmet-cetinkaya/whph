@@ -1,0 +1,4 @@
+• Renare listobjektsjustering för ett polerat utseende
+• Bättre touch-mål på mobil med raffinerad listobjektshöjd
+• Förbättrad detaljtabelllayout med renare utseende
+• Raffinerat datumväljaravstånd i uppgiftsdetaljer

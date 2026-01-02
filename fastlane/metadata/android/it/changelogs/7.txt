@@ -1,1 +1,0 @@
-- Migliorato il layout e la spaziatura nella sezione "Informazioni".

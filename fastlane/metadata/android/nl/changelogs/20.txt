@@ -1,6 +1,0 @@
-- Verbeterde taakvoltooiingsknop met voortgang van subtaken.
-- Gestandaardiseerde formaten van dialoogvensters.
-- Een knop voor het plannen van taken toegevoegd.
-- Een optie voor een compactere weergave voor een beter overzicht toegevoegd.
-- Een service voor datamigratie geïmplementeerd.
-- Verbeterde lay-out met de Wrap-widget.

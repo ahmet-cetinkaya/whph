@@ -1,5 +1,0 @@
-- Vylepšený obsah nápovědy k synchronizaci.
-- Přidána podpora pro vlastní barvu zvýraznění.
-- Vylepšené použití barev motivu v uživatelském rozhraní.
-- Opravena chyba při obousměrné synchronizaci.
-- Přidána barva pozadí do záhlaví aplikace.

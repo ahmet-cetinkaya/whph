@@ -1,0 +1,2 @@
+• Parannettu sovelluspäivitysten asennus.
+• Lisätty käännöksiä sovelluksen eri osiin, mukaan lukien tunnisteet, synkronointi ja asetukset.

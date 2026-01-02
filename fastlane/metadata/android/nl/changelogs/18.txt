@@ -1,5 +1,0 @@
-- De naam en beschrijving van de app zijn bijgewerkt.
-- Verbeterde afhandeling van toestemmingen.
-- Vereenvoudigde lay-outstructuur op de instellingenpagina.
-- Verbeterde responsiviteit van dialoogvensters.
-- Verbeterde taakvoltooiing en -selectie.

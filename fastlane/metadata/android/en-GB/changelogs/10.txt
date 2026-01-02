@@ -1,5 +1,5 @@
-- You can now hide the side panel.
-- Improved task deletion.
-- Simplified task view in tag details.
-- Added translation for when no apps are being used.
-- Fixed a bug in the logic for updating task duration.
+• You can now hide the side panel.
+• Improved task deletion.
+• Simplified task view in tag details.
+• Added translation for when no apps are being used.
+• Fixed a bug in the logic for updating task duration.

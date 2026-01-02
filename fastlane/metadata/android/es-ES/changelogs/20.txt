@@ -1,6 +1,6 @@
-- Botón de finalización de tareas mejorado con progreso de subtareas.
-- Tamaños estandarizados de los cuadros de diálogo.
-- Se agregó un botón para programar tareas.
-- Se agregó una opción para una vista más compacta para una mejor descripción general.
-- Se implementó un servicio para la migración de datos.
-- Diseño mejorado con el widget Wrap.
+• Botón de finalización de tareas mejorado con progreso de subtareas.
+• Tamaños estandarizados de los cuadros de diálogo.
+• Se agregó un botón para programar tareas.
+• Se agregó una opción para una vista más compacta para una mejor descripción general.
+• Se implementó un servicio para la migración de datos.
+• Diseño mejorado con el widget Wrap.

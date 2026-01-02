@@ -1,0 +1,5 @@
+• Rettede problem hvor flere app-instanser kunne køre samtidigt
+• Forbedrede synkroniseringsstatus-indikatorer og feedback-beskeder
+• Rettede visningsproblemer med ikke-engelsk tekst i appen
+• Forbedret synkronisering for app-forbrugs-sporing og vaner
+• Performance-forbedringer for hurtigere app-respons

@@ -1,2 +1,0 @@
-- Ondersteuning toegevoegd voor het maken van een installatieprogramma voor Windows.
-- De standaardinstelling voor de venstergrootte verwijderd.

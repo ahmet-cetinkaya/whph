@@ -1,3 +1,3 @@
-- Amélioration de la boîte de dialogue de support et des paramètres.
-- Amélioration de la journalisation des erreurs au démarrage de l'application.
-- Amélioration de la structure de la mise en page sur la page des paramètres.
+• Amélioration de la boîte de dialogue de support et des paramètres.
+• Amélioration de la journalisation des erreurs au démarrage de l'application.
+• Amélioration de la structure de la mise en page sur la page des paramètres.

@@ -1,0 +1,3 @@
+• Verbesserte App-Leistung mit schnellerer Duplikatentfernung
+• Behobene verwaiste Aufgaben durch duplizierte Einträge
+• Bessere Sortierung von Aufgaben nach Dauer

@@ -1,6 +1,0 @@
-- Alt görev ilerlemesiyle TaskCompleteButton'ı geliştirin
-- Bileşenler arasında iletişim kutusu boyutlarını standartlaştırın
-- Görev zamanlaması için ScheduleButton bileşenini ekleyin
-- Arama filtresine ve bileşenlere isDense seçeneğini ekleyin
-- Veri taşıma hizmetini uygulayın
-- Wrap widget'ıyla düzeni iyileştirin

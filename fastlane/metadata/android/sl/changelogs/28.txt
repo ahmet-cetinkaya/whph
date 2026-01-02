@@ -1,2 +1,0 @@
-- Dodaj Inno Setup za ustvarjanje namestitvenega programa za Windows
-- Odstrani privzeto nastavitev velikosti okna

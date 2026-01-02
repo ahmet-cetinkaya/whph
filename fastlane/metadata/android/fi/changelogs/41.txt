@@ -1,1 +1,0 @@
-- Parannettu tunneittainen tiedonkeruu ja -käsittely.

@@ -1,6 +1,0 @@
-- Tilføjet mulighed for at vise/skjule underopgaver i dagdetaljer for bedre organisering
-- Introduceret datointervalfiltrering for afslutningstider for at analysere din fremgang
-- Tilføjet filtrering for system- vs. brugerapps i brugssporing
-- Skel mellem estimeret og manuelt logget tid for vaner
-- Forbedret tidslogning og integration af timer for vaner og opgaver
-- Tilføjet standardværdier for estimerede tider for nemmere opgaveplanlægning

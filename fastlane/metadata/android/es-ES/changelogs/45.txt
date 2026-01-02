@@ -1,4 +1,4 @@
-- Se agregó un seguimiento preciso del uso de la aplicación en primer plano para Android.
-- Logotipo de la aplicación optimizado.
-- Densidad visual mejorada de los botones.
-- Se agregó retroalimentación de sonido al crear un registro.
+• Se agregó un seguimiento preciso del uso de la aplicación en primer plano para Android.
+• Logotipo de la aplicación optimizado.
+• Densidad visual mejorada de los botones.
+• Se agregó retroalimentación de sonido al crear un registro.

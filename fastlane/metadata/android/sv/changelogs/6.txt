@@ -1,1 +1,0 @@
-- Lägg till stöd för deluppgifter och överordnade uppgiftsrelationer; uppdatera lokalisering och databasschema

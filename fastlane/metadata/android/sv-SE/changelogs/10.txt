@@ -1,0 +1,5 @@
+• Lägg till alternativ för att dölja sidofältet och hantera återanrop för borttagning av uppgifter
+• Förenkla layouten för uppgiftssektionen på sidan med taggdetaljer
+• Ändra ordning på EisenhowerPriority-uppräkningsvärden för sortering
+• Lägg till översättning för meddelande om ingen appanvändning
+• Korrigera logiken för varaktighetsuppdatering och förbättra dialogrutan med uppgiftsdetaljer

@@ -1,6 +1,0 @@
-- Izboljšaj TaskCompleteButton z napredkom podopravil
-- Standardiziraj velikosti pogovornih oken v vseh komponentah
-- Dodaj komponento ScheduleButton za načrtovanje opravil
-- Dodaj možnost isDense v iskalni filter in komponente
-- Implementiraj storitev za selitev podatkov
-- Izboljšaj postavitev z pripomočkom Wrap

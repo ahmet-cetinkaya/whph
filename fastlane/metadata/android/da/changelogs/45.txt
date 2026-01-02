@@ -1,4 +1,0 @@
-- Tilføjet nøjagtig sporing af app-brug i forgrunden til Android.
-- Optimeret app-logo.
-- Forbedret visuel tæthed af knapper.
-- Tilføjet lydfeedback ved oprettelse af en post.

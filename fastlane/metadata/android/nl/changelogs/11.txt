@@ -1,1 +1,0 @@
-- Verbeterde taakverwijdering vanaf de taakdetailpagina.

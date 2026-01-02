@@ -1,4 +1,4 @@
-- Improved window methods for KDE Wayland.
-- Added device filtering to app usage features.
-- Implemented an application directory service for various platforms.
-- Removed padding from descriptions.
+• Improved window methods for KDE Wayland.
+• Added device filtering to app usage features.
+• Implemented an application directory service for various platforms.
+• Removed padding from descriptions.

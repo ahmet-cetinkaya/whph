@@ -1,0 +1,4 @@
+• Zarif bir görünüm için daha temiz liste öğesi hizalaması
+• İnce ayarlanmış liste öğesi yükseklikleri ile mobilde daha iyi dokunma hedefleri
+• Daha temiz bir görünüm ile geliştirilmiş detay tablosu yerleşimi
+• Görev detaylarında rafine tarih seçici aralığı

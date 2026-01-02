@@ -1,5 +1,5 @@
-- Se agregó la capacidad de filtrar tareas completadas.
-- Visualización mejorada del nombre de la etiqueta en la selección.
-- Detección de ventanas mejorada y correcciones de errores.
-- Se agregó la clasificación de tareas.
-- Transiciones más suaves entre páginas.
+• Se agregó la capacidad de filtrar tareas completadas.
+• Visualización mejorada del nombre de la etiqueta en la selección.
+• Detección de ventanas mejorada y correcciones de errores.
+• Se agregó la clasificación de tareas.
+• Transiciones más suaves entre páginas.

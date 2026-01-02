@@ -1,0 +1,5 @@
+• Beräknad tid för uppgifter är nu verkligen valfri • du kan lämna den tom utan att den som standard sätts till noll
+• Tillagt möjlighet att ställa in standard beräknad tid för nya uppgifter i inställningar
+• Förbättrad hantering av Windows-brandvägg för bättre app-funktionalitet och detektion
+• Förbättrad integration av tidsspårning med vanor och taggar för bättre insikter
+• Olika prestandaförbättringar och buggfixar

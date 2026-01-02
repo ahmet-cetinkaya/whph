@@ -1,0 +1,6 @@
+• Dodaj preklop filtra dokončanih opravil in izboljšaj ponovno sestavljanje seznama opravil
+• Prikaži ime oznake ob izbiri v pravilih za označevanje uporabe aplikacij
+• Izboljšaj zaznavanje oken z več strategijami in obravnavo napak
+• Implementiraj dinamično vidnost za neobvezna polja v podrobnostih
+• Dodaj razvrščanje opravil
+• Implementiraj prehod z zbledenjem za navigacijo po straneh

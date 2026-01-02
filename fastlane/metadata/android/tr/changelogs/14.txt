@@ -1,6 +1,0 @@
-- Etiket ayrıntıları sayfasında görev listesi işlemeyi basitleştirin ve filtre işlevselliğini iyileştirin
-- Bugün sayfasında yenileme mantığını geliştirin ve etiket filtresi işlevselliği ekleyin
-- Geliştirilmiş yenileme mantığı ve görev veri modeli ile görev listelemeyi geliştirin
-- Maraton sayfasında görev filtreleme mantığını ayarlayın
-- Etiket seçimi açılır menüsünde gezgini açmadan önce bağlamın monte edildiğinden emin olun
-- Alışkanlık listesi filtrelemeyi ve yenileme mantığını iyileştirin

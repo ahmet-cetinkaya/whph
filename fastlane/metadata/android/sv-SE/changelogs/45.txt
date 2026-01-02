@@ -1,0 +1,4 @@
+• Implementera korrekt spårning av appanvändning i förgrunden för Android
+• Uppdatera logotyptillgångar för förbättrad optimering
+• Uppdatera IconButton visuell densitet
+• Lägg till ljudåterkoppling vid skapande av post

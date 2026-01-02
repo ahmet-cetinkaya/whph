@@ -1,0 +1,4 @@
+• Allineamento più pulito degli elementi dell'elenco per un aspetto raffinato
+• Migliori target touch su mobile con altezze degli elementi dell'elenco raffinate
+• Layout tabella dettagli migliorato con aspetto più pulito
+• Spaziamento del selettore data raffinato nei dettagli attività

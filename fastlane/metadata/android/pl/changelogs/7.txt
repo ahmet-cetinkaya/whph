@@ -1,1 +1,0 @@
-- Popraw układ i odstępy w komponencie AppAbout

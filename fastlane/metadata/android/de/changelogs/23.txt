@@ -1,3 +1,0 @@
-- Verbesserte Handhabung von Tag-Farben.
-- Verbesserte Handhabung von Tags bei der Verfolgung der App-Nutzung.
-- Verbesserte Zentrierung von Elementen.

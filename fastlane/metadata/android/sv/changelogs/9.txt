@@ -1,1 +1,0 @@
-- Förbättra felhantering och loggning under enhetssynkroniseringsprocessen

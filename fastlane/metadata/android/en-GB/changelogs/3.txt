@@ -1,4 +1,4 @@
-- Added tooltips for the Refresh and Help buttons.
-- Improved layout in the 'About' section.
-- Improved dialog box for updating the app.
-- Improved title display in the help menu.
+• Added tooltips for the Refresh and Help buttons.
+• Improved layout in the 'About' section.
+• Improved dialog box for updating the app.
+• Improved title display in the help menu.

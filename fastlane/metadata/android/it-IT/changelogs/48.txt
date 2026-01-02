@@ -1,0 +1,6 @@
+• Aggiunto il supporto per la sincronizzazione da cellulare a cellulare.
+• Aggiunto un indicatore di sincronizzazione.
+• Migliorata l'interfaccia utente per la scansione dei codici QR.
+• Aggiunto il supporto per la modalità tema automatica.
+• Integrato il supporto per i colori dinamici.
+• Aggiunto il supporto per la modalità chiara.

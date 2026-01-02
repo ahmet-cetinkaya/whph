@@ -1,5 +1,5 @@
-- Improved tag management and translations.
-- Improved notifications when syncing devices.
-- Improved user interface and features in settings.
-- Improved note actions.
-- Improved habit management.
+• Improved tag management and translations.
+• Improved notifications when syncing devices.
+• Improved user interface and features in settings.
+• Improved note actions.
+• Improved habit management.

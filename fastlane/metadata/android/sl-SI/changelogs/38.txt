@@ -1,0 +1,1 @@
+• Odstrani neuporabljeno logiko preverjanja posodobitev

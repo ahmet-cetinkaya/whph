@@ -1,0 +1,8 @@
+• Implementera demodata-tjänst och konfiguration
+• Standardisera utfyllnad över UI-komponenter
+• Aggregera taggobjekt för att undvika dubbletter
+• Förenkla logiken för visning av anteckningsinnehåll
+• Uppdatera påminnelser vid språkbyte
+• Förbättra hanteringen av introduktions• och supportdialoger
+• Ta bort valfri egenskapchip för överordnad uppgift
+• Lägg till meddelanden för ändringar i vaneregister

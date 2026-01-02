@@ -1,0 +1,1 @@
+• Migliorato il monitoraggio in background dell'utilizzo dell'app per un'esperienza più fluida.

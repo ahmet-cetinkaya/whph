@@ -1,3 +1,0 @@
-- Yeni Arayüz Yoğunluğu Ayarları: Yüksek çözünürlüklü ekranlarda daha iyi okunabilirlik için metin ve arayüz öğesi boyutlarını ayarlayın
-- Geliştirilmiş Performans: Daha hızlı görev listesi oluşturma ve optimize edilmiş ekran yenileme hızları
-- Geliştirilmiş Kullanıcı Deneyimi: Daha iyi tarih hesaplamaları ve daha akıcı animasyonlar

@@ -1,0 +1,3 @@
+• Nya inställningar för gränssnittstäthet: Justera text• och gränssnittselementstorlekar för bättre läsbarhet på högupplösta skärmar
+• Förbättrad prestanda: Snabbare rendering av uppgiftslista och optimerade skärmuppdateringsfrekvenser
+• Förbättrad användarupplevelse: Bättre datumberäkningar och smidigare animationer

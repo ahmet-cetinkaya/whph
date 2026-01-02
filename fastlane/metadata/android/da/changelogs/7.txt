@@ -1,1 +1,0 @@
-- Forbedret layout og afstand i sektionen 'Om'.

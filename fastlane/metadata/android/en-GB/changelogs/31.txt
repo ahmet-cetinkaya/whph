@@ -1,1 +1,1 @@
-- Various behind-the-scenes improvements and optimizations for a better experience.
+• Various behind-the-scenes improvements and optimizations for a better experience.

@@ -1,1 +1,1 @@
-- Amélioration de la gestion des erreurs et de la journalisation lors de la synchronisation de l'appareil.
+• Amélioration de la gestion des erreurs et de la journalisation lors de la synchronisation de l'appareil.

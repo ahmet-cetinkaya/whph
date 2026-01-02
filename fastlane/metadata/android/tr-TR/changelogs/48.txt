@@ -1,0 +1,6 @@
+• Mobilden mobile senkronizasyon desteği ekleyin
+• Senkronizasyon cihazları sayfasına senkronizasyon göstergesi ekleyin
+• QR kodu tarama kullanıcı arayüzünü iyileştirin
+• Otomatik tema modu desteği ekleyin
+• Dinamik renk desteğini entegre edin
+• Açık mod desteği ekleyin

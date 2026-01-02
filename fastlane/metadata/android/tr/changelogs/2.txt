@@ -1,6 +1,0 @@
-- Anahtar deposuyla sürüm imzalamayı yapılandırın ve build.gradle'ı güncelleyin
-- MethodChannel aracılığıyla APK kurulumunu uygulayın ve FileProvider için manifestoyu güncelleyin
-- Çeşitli bileşenlere çeviri hizmetini entegre edin ve yerelleştirme dosyaları ekleyin
-- Etiket bileşenleri için çeviri hizmetini entegre edin
-- Senkronizasyon bileşenleri için çeviri hizmetini entegre edin
-- Ayar bileşenleri için çeviri hizmetini entegre edin

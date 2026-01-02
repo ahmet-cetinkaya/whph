@@ -1,4 +1,0 @@
-- Verbeterde venstermethoden voor KDE Wayland.
-- Apparaatfiltering aan de app-gebruiksfuncties toegevoegd.
-- Een applicatiemapservice voor verschillende platforms geïmplementeerd.
-- Opvulling uit beschrijvingen verwijderd.

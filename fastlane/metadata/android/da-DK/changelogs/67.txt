@@ -1,0 +1,4 @@
+• Renere listeindeling for et poleret udseende
+• Bedre touch targets på mobilen med raffineret listeelementhøjde
+• Forbedret detaljetabellayout med renere udseende
+• Raffineret datovælgerafstand i opgavedetaljer

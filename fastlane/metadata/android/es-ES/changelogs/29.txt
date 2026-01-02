@@ -1,5 +1,5 @@
-- Se agregaron opciones de clasificación para la selección de etiquetas.
-- Se mejoró la adición de subtareas.
-- Se agregó un campo para la tarea principal en los detalles de la tarea.
-- Manejo mejorado de las notificaciones.
-- Servicio de recordatorios mejorado para Android con soporte de traducción.
+• Se agregaron opciones de clasificación para la selección de etiquetas.
+• Se mejoró la adición de subtareas.
+• Se agregó un campo para la tarea principal en los detalles de la tarea.
+• Manejo mejorado de las notificaciones.
+• Servicio de recordatorios mejorado para Android con soporte de traducción.

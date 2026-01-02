@@ -1,1 +1,0 @@
-- Dodaj podporo za podopravila in odnose nadrejenih opravil; posodobi lokalizacijo in shemo baze podatkov

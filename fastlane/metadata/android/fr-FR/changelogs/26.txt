@@ -1,2 +1,2 @@
-- Tests mis à jour et migration de la base de données améliorée.
-- Amélioration du traitement et de la journalisation YAML.
+• Tests mis à jour et migration de la base de données améliorée.
+• Amélioration du traitement et de la journalisation YAML.

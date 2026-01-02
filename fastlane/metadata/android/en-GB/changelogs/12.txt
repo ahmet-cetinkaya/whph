@@ -1,2 +1,2 @@
-- Improved quick add tasks with the ability to select tags.
-- Added a section for completed tasks that can be expanded.
+• Improved quick add tasks with the ability to select tags.
+• Added a section for completed tasks that can be expanded.

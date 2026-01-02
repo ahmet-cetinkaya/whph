@@ -1,3 +1,3 @@
-- Importation de données améliorée pour éviter les doublons et prévenir la perte de vos modifications
-- Mises à jour de l'application améliorées pour des migrations plus fluides et fiables
-- Meilleure stabilité et performances avec des connexions optimisées
+• Importation de données améliorée pour éviter les doublons et prévenir la perte de vos modifications
+• Mises à jour de l'application améliorées pour des migrations plus fluides et fiables
+• Meilleure stabilité et performances avec des connexions optimisées

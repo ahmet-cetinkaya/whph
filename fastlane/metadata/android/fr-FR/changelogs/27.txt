@@ -1,6 +1,6 @@
-- Amélioration de l'affichage des pourcentages de balises.
-- Ajout d'une animation de confettis lorsqu'une tâche ou une habitude est terminée.
-- Amélioration du suivi des séries d'habitudes et de l'interface utilisateur.
-- Amélioration de la planification du temps.
-- Amélioration de la disposition de l'icône de rappel.
-- Ajout d'une info-bulle au bouton de planification.
+• Amélioration de l'affichage des pourcentages de balises.
+• Ajout d'une animation de confettis lorsqu'une tâche ou une habitude est terminée.
+• Amélioration du suivi des séries d'habitudes et de l'interface utilisateur.
+• Amélioration de la planification du temps.
+• Amélioration de la disposition de l'icône de rappel.
+• Ajout d'une info-bulle au bouton de planification.

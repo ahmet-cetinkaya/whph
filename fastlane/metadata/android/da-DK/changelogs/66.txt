@@ -1,0 +1,14 @@
+• Ændringslog i Indstillinger → Om
+• Vaner gitter/liste/kalender visning
+• Ugentlige tilbagevendende opgaver
+• Forenede lydindstillinger
+• Sammenligning af appforbrug
+• Uendelig rulning i lister
+• Vælg notifikationsposition
+• Moderniseret indstillingsgrænseflad
+• Bedre datovælger
+• Opgavefuldførelsesknap større
+• Ret duplikerede opgaver
+• Ret opgavebeskrivelser gemmes
+• Tidssporing gemmer automatisk
+• Ydeevneforbedringer

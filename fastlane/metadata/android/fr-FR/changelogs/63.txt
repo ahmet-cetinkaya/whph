@@ -1,6 +1,6 @@
-- Navigation améliorée dans la visite guidée de l'application qui mémorise vos progrès
-- Ajout d'une visite guidée complète de plusieurs pages avec des superpositions utiles
-- Ajout d'une option de sélection de la langue lors de l'intégration
-- États de chargement améliorés et performances plus fluides dans toute l'application
-- Meilleur affichage et gestion des erreurs de synchronisation
-- Messages d'erreur améliorés pour les problèmes de synchronisation
+• Navigation améliorée dans la visite guidée de l'application qui mémorise vos progrès
+• Ajout d'une visite guidée complète de plusieurs pages avec des superpositions utiles
+• Ajout d'une option de sélection de la langue lors de l'intégration
+• États de chargement améliorés et performances plus fluides dans toute l'application
+• Meilleur affichage et gestion des erreurs de synchronisation
+• Messages d'erreur améliorés pour les problèmes de synchronisation

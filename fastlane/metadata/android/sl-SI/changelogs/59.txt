@@ -1,0 +1,1 @@
+• Popravljena napaka, ki je lahko povzročila izgubo podatkov nalog pri posodabljanju aplikacije.

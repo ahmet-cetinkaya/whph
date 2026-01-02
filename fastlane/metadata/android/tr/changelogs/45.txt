@@ -1,4 +1,0 @@
-- Android için doğru ön plan uygulama kullanım takibi uygulayın
-- Geliştirilmiş optimizasyon için logo varlıklarını güncelleyin
-- IconButton görsel yoğunluğunu güncelleyin
-- Kayıt oluşturmada sesli geri bildirim ekleyin

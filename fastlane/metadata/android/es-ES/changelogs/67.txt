@@ -1,4 +1,4 @@
-- Alineación más limpia de elementos de lista para un aspecto pulido
-- Mejores objetivos táctiles en móvil con alturas de elemento de lista refinadas
-- Diseño de tabla de detalles mejorado con apariencia más limpia
-- Espaciado refinado del selector de fecha en detalles de tarea
+• Alineación más limpia de elementos de lista para un aspecto pulido
+• Mejores objetivos táctiles en móvil con alturas de elemento de lista refinadas
+• Diseño de tabla de detalles mejorado con apariencia más limpia
+• Espaciado refinado del selector de fecha en detalles de tarea

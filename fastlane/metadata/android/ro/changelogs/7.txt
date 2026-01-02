@@ -1,1 +1,0 @@
-- Îmbunătățiți aspectul și spațierea în componenta AppAbout

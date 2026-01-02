@@ -1,8 +1,0 @@
-Senkronizasyonumuzu güçlendirerek, alışkanlıklarınızı, görevlerinizi ve notlarınızı tüm cihazlarınızda mükemmel uyum içinde tutmayı daha kolay ve güvenilir hale getirdik!
-
-- Uygulama içindeki net rehberler ve telefonunuzu ve masaüstünüzü sorunsuz bağlamak için basit manuel kurulum.
-- Birden fazla cihazla senkronizasyon sırasında daha güçlü güvenlik ve daha akıcı işlem.
-- Verilerinizin akıp gittiğini her zaman bilmeniz için uygulama içinde gerçek zamanlı durum güncellemeleri.
-- Verileri küçük parçalara bölerek daha hızlı ve sorunsuz aktarımlar için daha hızlı senkronizasyon.
-- Arka planda çalışan gerçek çift yönlü senkronizasyon, sizi yavaşlatmadan her şeyi güncel tutar.
-- Masaüstünde büyük senkronizasyon oturumlarını baştan sona sorunsuz yönetme.

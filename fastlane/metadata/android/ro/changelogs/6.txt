@@ -1,1 +1,0 @@
-- Adăugați suport pentru subsarcini și relații de sarcini părinte; actualizați localizarea și schema bazei de date

@@ -1,2 +1,2 @@
-- Improved app bar layout for better display on all devices.
-- Added a new help section to help you with tasks, tags, QR codes, sync, habits and the today overview.
+• Improved app bar layout for better display on all devices.
+• Added a new help section to help you with tasks, tags, QR codes, sync, habits and the today overview.

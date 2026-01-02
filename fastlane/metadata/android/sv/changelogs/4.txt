@@ -1,6 +1,0 @@
-- Lägg till import-/exportfunktionalitet och uppdatera lokalisering
-- Implementera paginering för att hämta taggar i olika komponenter
-- Implementera enhets-ID-tjänst och uppdatera synkroniseringsenhetsmodell
-- Lägg till tryckfunktion på meddelandeinställningskortet
-- Lägg till översättning av verktygstipset 'Lägg till vana' på engelska och turkiska
-- Uppdatera översättning av mönsteretikett och lägg till avstånd i regellistor

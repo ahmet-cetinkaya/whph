@@ -1,4 +1,0 @@
-- Aggiunti suggerimenti per i pulsanti Aggiorna e Aiuto.
-- Migliorato il layout nella sezione "Informazioni".
-- Migliorata la finestra di dialogo per l'aggiornamento dell'app.
-- Migliorata la visualizzazione del titolo nel menu di aiuto.

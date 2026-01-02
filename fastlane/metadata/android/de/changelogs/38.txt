@@ -1,1 +1,0 @@
-- Unbenutzte Logik zur Überprüfung von Updates entfernt.
