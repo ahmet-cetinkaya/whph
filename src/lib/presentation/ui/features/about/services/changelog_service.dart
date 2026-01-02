@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
+import 'package:flutter/foundation.dart';
 
 /// Service for fetching localized changelog from GitHub
 class ChangelogService implements IChangelogService {
@@ -46,6 +47,9 @@ class ChangelogService implements IChangelogService {
 
   /// Get locale mapping for testing purposes
   static Map<String, String> get localeMapping => Map.unmodifiable(_localeMapping);
+
+  @visibleForTesting
+  static void clearCache() => _cache.clear();
 
   @override
   Future<ChangelogEntry?> fetchChangelog(String localeCode) async {
