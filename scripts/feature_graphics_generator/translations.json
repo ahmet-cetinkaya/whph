@@ -1,0 +1,194 @@
+{
+    "default": {
+        "feature-1-line1": "Efficient Task",
+        "feature-1-line2": "Management",
+        "feature-2-line1": "Goal Tracking",
+        "feature-2-line2": "& Progress",
+        "feature-3-line1": "Focus Timer",
+        "feature-3-line2": "& Analytics"
+    },
+    "cs": {
+        "feature-1-line1": "Efektivní Správa",
+        "feature-1-line2": "Úkolů",
+        "feature-2-line1": "Sledování Cílů",
+        "feature-2-line2": "& Pokrok",
+        "feature-3-line1": "Časovač",
+        "feature-3-line2": "& Analytika"
+    },
+    "da": {
+        "feature-1-line1": "Effektiv Opgave",
+        "feature-1-line2": "Styring",
+        "feature-2-line1": "Målsporing",
+        "feature-2-line2": "& Fremskridt",
+        "feature-3-line1": "Fokus Timer",
+        "feature-3-line2": "& Analyse"
+    },
+    "de": {
+        "feature-1-line1": "Effektive",
+        "feature-1-line2": "Aufgaben",
+        "feature-2-line1": "Zielverfolgung",
+        "feature-2-line2": "& Fortschritt",
+        "feature-3-line1": "Fokus-Timer",
+        "feature-3-line2": "& Analyse"
+    },
+    "el": {
+        "feature-1-line1": "Διαχείριση",
+        "feature-1-line2": "Εργασιών",
+        "feature-2-line1": "Παρακολούθηση",
+        "feature-2-line2": "Στόχων",
+        "feature-3-line1": "Χρονόμετρο",
+        "feature-3-line2": "& Ανάλυση"
+    },
+    "en-GB": {
+        "feature-1-line1": "Efficient Task",
+        "feature-1-line2": "Management",
+        "feature-2-line1": "Goal Tracking",
+        "feature-2-line2": "& Progress",
+        "feature-3-line1": "Focus Timer",
+        "feature-3-line2": "& Analytics"
+    },
+    "en-US": {
+        "feature-1-line1": "Efficient Task",
+        "feature-1-line2": "Management",
+        "feature-2-line1": "Goal Tracking",
+        "feature-2-line2": "& Progress",
+        "feature-3-line1": "Focus Timer",
+        "feature-3-line2": "& Analytics"
+    },
+    "es-ES": {
+        "feature-1-line1": "Gestión de",
+        "feature-1-line2": "Tareas",
+        "feature-2-line1": "Seguimiento",
+        "feature-2-line2": "de Metas",
+        "feature-3-line1": "Temporizador",
+        "feature-3-line2": "y Análisis"
+    },
+    "fi": {
+        "feature-1-line1": "Tehokas Tehtävien",
+        "feature-1-line2": "Hallinta",
+        "feature-2-line1": "Tavoitteiden",
+        "feature-2-line2": "Seuranta",
+        "feature-3-line1": "Fokusajastin",
+        "feature-3-line2": "& Analytiikka"
+    },
+    "fr-FR": {
+        "feature-1-line1": "Gestion",
+        "feature-1-line2": "Efficace",
+        "feature-2-line1": "Suivi des",
+        "feature-2-line2": "Objectifs",
+        "feature-3-line1": "Minuteur",
+        "feature-3-line2": "& Analytique"
+    },
+    "it": {
+        "feature-1-line1": "Gestione",
+        "feature-1-line2": "Compiti",
+        "feature-2-line1": "Monitoraggio",
+        "feature-2-line2": "Obiettivi",
+        "feature-3-line1": "Focus Timer",
+        "feature-3-line2": "& Analisi"
+    },
+    "ja": {
+        "feature-1-line1": "効率的な",
+        "feature-1-line2": "タスク管理",
+        "feature-2-line1": "目標追跡",
+        "feature-2-line2": "と進捗",
+        "feature-3-line1": "集中タイマー",
+        "feature-3-line2": "と分析"
+    },
+    "ko": {
+        "feature-1-line1": "효율적인",
+        "feature-1-line2": "작업 관리",
+        "feature-2-line1": "목표 추적",
+        "feature-2-line2": "및 진행",
+        "feature-3-line1": "집중 타이머",
+        "feature-3-line2": "및 분석"
+    },
+    "nl": {
+        "feature-1-line1": "Efficiënt Taak-",
+        "feature-1-line2": "beheer",
+        "feature-2-line1": "Doelen",
+        "feature-2-line2": "Volgen",
+        "feature-3-line1": "Focus Timer",
+        "feature-3-line2": "& Analyse"
+    },
+    "no": {
+        "feature-1-line1": "Effektiv Oppgave-",
+        "feature-1-line2": "styring",
+        "feature-2-line1": "Målsporing",
+        "feature-2-line2": "& Fremgang",
+        "feature-3-line1": "Fokus Timer",
+        "feature-3-line2": "& Analyse"
+    },
+    "pl": {
+        "feature-1-line1": "Efektywne",
+        "feature-1-line2": "Zadania",
+        "feature-2-line1": "Śledzenie",
+        "feature-2-line2": "Celów",
+        "feature-3-line1": "Timer Skupienia",
+        "feature-3-line2": "i Analityka"
+    },
+    "pt-PT": {
+        "feature-1-line1": "Gestão de",
+        "feature-1-line2": "Tarefas",
+        "feature-2-line1": "Monitorização",
+        "feature-2-line2": "de Metas",
+        "feature-3-line1": "Temporizador",
+        "feature-3-line2": "e Análise"
+    },
+    "ro": {
+        "feature-1-line1": "Gestionare",
+        "feature-1-line2": "Eficientă",
+        "feature-2-line1": "Urmărire",
+        "feature-2-line2": "Obiective",
+        "feature-3-line1": "Temporizator",
+        "feature-3-line2": "și Analiză"
+    },
+    "ru": {
+        "feature-1-line1": "Эффективные",
+        "feature-1-line2": "Задачи",
+        "feature-2-line1": "Отслеживание",
+        "feature-2-line2": "Целей",
+        "feature-3-line1": "Таймер",
+        "feature-3-line2": "и Аналитика"
+    },
+    "sl": {
+        "feature-1-line1": "Učinkovito",
+        "feature-1-line2": "Vodenje",
+        "feature-2-line1": "Sledenje",
+        "feature-2-line2": "Ciljem",
+        "feature-3-line1": "Časovnik",
+        "feature-3-line2": "in Analitika"
+    },
+    "sv": {
+        "feature-1-line1": "Effektiv Uppgifts-",
+        "feature-1-line2": "hantering",
+        "feature-2-line1": "Målspårning",
+        "feature-2-line2": "& Framsteg",
+        "feature-3-line1": "Fokus Timer",
+        "feature-3-line2": "& Analys"
+    },
+    "tr": {
+        "feature-1-line1": "Verimli Görev",
+        "feature-1-line2": "Yönetimi",
+        "feature-2-line1": "Hedef Takibi",
+        "feature-2-line2": "ve İlerleme",
+        "feature-3-line1": "Odaklanma",
+        "feature-3-line2": "ve Analiz"
+    },
+    "uk": {
+        "feature-1-line1": "Ефективні",
+        "feature-1-line2": "Завдання",
+        "feature-2-line1": "Відстеження",
+        "feature-2-line2": "Цілей",
+        "feature-3-line1": "Таймер",
+        "feature-3-line2": "та Аналітика"
+    },
+    "zh-CN": {
+        "feature-1-line1": "高效任务",
+        "feature-1-line2": "管理",
+        "feature-2-line1": "目标追踪",
+        "feature-2-line2": "与进度",
+        "feature-3-line1": "专注计时器",
+        "feature-3-line2": "与分析"
+    }
+}
