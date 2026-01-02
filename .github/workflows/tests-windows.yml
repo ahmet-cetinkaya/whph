@@ -15,6 +15,10 @@ on:
       - '.github/workflows/windows-tests.yml'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-windows:
     name: Run Windows-Specific Tests
