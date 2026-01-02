@@ -68,15 +68,15 @@ void main() {
       expect(ChangelogService.localeMapping, containsPair('ja', 'ja-JP'));
       expect(ChangelogService.localeMapping, containsPair('ko', 'ko-KR'));
       expect(ChangelogService.localeMapping, containsPair('nl', 'nl-NL'));
-      expect(ChangelogService.localeMapping, containsPair('no', 'no'));
+      expect(ChangelogService.localeMapping, containsPair('no', 'no-NO'));
       expect(ChangelogService.localeMapping, containsPair('pl', 'pl-PL'));
       expect(ChangelogService.localeMapping, containsPair('pt', 'pt-PT'));
-      expect(ChangelogService.localeMapping, containsPair('ro', 'ro-RO'));
+      expect(ChangelogService.localeMapping, containsPair('ro', 'ro'));
       expect(ChangelogService.localeMapping, containsPair('ru', 'ru-RU'));
-      expect(ChangelogService.localeMapping, containsPair('sl', 'sl-SI'));
+      expect(ChangelogService.localeMapping, containsPair('sl', 'sl'));
       expect(ChangelogService.localeMapping, containsPair('sv', 'sv-SE'));
       expect(ChangelogService.localeMapping, containsPair('tr', 'tr-TR'));
-      expect(ChangelogService.localeMapping, containsPair('uk', 'uk-UA'));
+      expect(ChangelogService.localeMapping, containsPair('uk', 'uk'));
       expect(ChangelogService.localeMapping, containsPair('zh', 'zh-CN'));
     });
 

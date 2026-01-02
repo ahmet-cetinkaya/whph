@@ -28,15 +28,15 @@ class ChangelogService implements IChangelogService {
     'ja': 'ja-JP', // Japanese
     'ko': 'ko-KR', // Korean
     'nl': 'nl-NL', // Dutch
-    'no': 'no', // Norwegian
+    'no': 'no-NO', // Norwegian
     'pl': 'pl-PL', // Polish
     'pt': 'pt-PT', // Portuguese
-    'ro': 'ro-RO', // Romanian
+    'ro': 'ro', // Romanian
     'ru': 'ru-RU', // Russian
-    'sl': 'sl-SI', // Slovenian
+    'sl': 'sl', // Slovenian
     'sv': 'sv-SE', // Swedish
     'tr': 'tr-TR', // Turkish
-    'uk': 'uk-UA', // Ukrainian
+    'uk': 'uk', // Ukrainian
     'zh': 'zh-CN', // Chinese
   };
 
