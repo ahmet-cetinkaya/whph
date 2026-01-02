@@ -53,13 +53,13 @@ class AndroidServerSyncService extends AndroidSyncService {
   }
 
   /// Attempt to start as WebSocket server
-  Future<bool> startAsServer() async {
+  Future<bool> startAsServer([int port = webSocketPort]) async {
     try {
-      Logger.info('Attempting to start mobile WebSocket server...');
+      Logger.info('Attempting to start mobile WebSocket server on port $port...');
 
       _server = await HttpServer.bind(
         InternetAddress.anyIPv4,
-        webSocketPort,
+        port,
         shared: true,
       );
 
@@ -247,15 +247,23 @@ class AndroidServerSyncService extends AndroidSyncService {
             final command =
                 PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
             final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
-            Logger.info('Mobile server paginated sync processing completed successfully');
+            Logger.info(
+                'Mobile server paginated sync processing completed ${response.hasErrors ? "with errors" : "successfully"}');
 
-            WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
+            final responseData = {
               'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
-              'success': true,
+              'success': !response.hasErrors,
               'isComplete': response.isComplete,
               'timestamp': DateTime.now().toIso8601String(),
               'server_type': 'mobile'
-            });
+            };
+
+            if (response.hasErrors) {
+              responseData['error'] = response.errorMessages.join('\n');
+              responseData['errorMessages'] = response.errorMessages; // Send full list too optional
+            }
+
+            WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: responseData);
             socket.add(JsonMapper.serialize(responseMessage));
             Logger.info('Mobile server paginated sync response sent to client');
 
@@ -390,4 +398,7 @@ class AndroidServerSyncService extends AndroidSyncService {
 
   /// Check if the server is running and healthy
   bool get isServerHealthy => _isServerMode && _server != null;
+
+  /// Get the current server port
+  int get serverPort => _server?.port ?? 0;
 }
