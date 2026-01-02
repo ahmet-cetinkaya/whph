@@ -13,26 +13,21 @@ import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
 import 'dart:io';
 
-// --- Manual Mocks ---
+// --- Improved Manual Fakes/Mocks ---
 
-class MockMediator extends Mock implements Mediator {
+class FakeMediator extends Fake implements Mediator {
+  PaginatedSyncCommandResponse? responseToReturn;
+
   @override
   Future<Response> send<Request extends IRequest<Response>, Response>(Request? request) {
     if (request is PaginatedSyncCommand) {
-      final response = PaginatedSyncCommandResponse(
-        isComplete: true,
-        hasErrors: true,
-        errorMessages: ['Version mismatch: local=1.0.0, remote=0.9.0'],
-        paginatedSyncDataDto: null,
-      );
+      final response = responseToReturn;
+      if (response == null) {
+        throw StateError('FakeMediator: responseToReturn not set for PaginatedSyncCommand');
+      }
       return Future.value(response as Response);
     }
-
-    return super.noSuchMethod(
-      Invocation.method(#send, [request]),
-      returnValue: Future.error(UnimplementedError('Missing stub for send')),
-      returnValueForMissingStub: Future.error(UnimplementedError('Missing stub for send')),
-    ) as Future<Response>;
+    throw UnimplementedError('FakeMediator: Unexpected request type: ${request.runtimeType}');
   }
 }
 
@@ -66,17 +61,17 @@ class MockAndroidDeviceInfo extends Mock implements AndroidDeviceInfo {
 void main() {
   group('AndroidServerSyncService Reproduction', () {
     late AndroidServerSyncService service;
-    late MockMediator mockMediator;
+    late FakeMediator fakeMediator;
     late MockIDeviceIdService mockDeviceIdService;
     late MockDeviceInfoPlugin mockDeviceInfoPlugin;
 
     setUp(() {
       initializeJsonMapper();
-      mockMediator = MockMediator();
+      fakeMediator = FakeMediator();
       mockDeviceIdService = MockIDeviceIdService();
       mockDeviceInfoPlugin = MockDeviceInfoPlugin();
 
-      service = AndroidServerSyncService(mockMediator, mockDeviceIdService, mockDeviceInfoPlugin);
+      service = AndroidServerSyncService(fakeMediator, mockDeviceIdService, mockDeviceInfoPlugin);
 
       when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
       when(mockDeviceInfoPlugin.androidInfo).thenAnswer((_) async => MockAndroidDeviceInfo());
@@ -87,18 +82,22 @@ void main() {
     });
 
     test('should report failure when paginated sync command returns errors', () async {
-      // 1. Start Server
-      final started = await service.startAsServer();
-      if (!started) {
-        print('Skipping test: Could not bind to port 44040');
-        return;
-      }
+      // 1. Start Server on a dynamic port (0) to avoid collisions
+      final started = await service.startAsServer(0);
+      expect(started, isTrue, reason: 'Server should start on dynamic port');
+      final actualPort = service.serverPort;
 
-      // 2. Mock mediator logic is handled in MockMediator.send manually for this specific test case.
-      // No need for when(mockMediator.send...).
+      // 2. Mock the mediator to return a response WITH ERRORS
+      const errorMsg = 'Version mismatch: local=1.0.0, remote=0.9.0';
+      fakeMediator.responseToReturn = PaginatedSyncCommandResponse(
+        isComplete: true,
+        hasErrors: true,
+        errorMessages: [errorMsg],
+        paginatedSyncDataDto: null,
+      );
 
-      // 3. Connect a real WebSocket client to the server
-      final socket = await WebSocket.connect('ws://127.0.0.1:44040');
+      // 3. Connect a real WebSocket client to the server using the dynamic port
+      final socket = await WebSocket.connect('ws://127.0.0.1:$actualPort');
 
       // 4. Send a dummy paginated_sync message
       final dummyDto = PaginatedSyncDataDto(
@@ -125,37 +124,33 @@ void main() {
         data: dummyDto.toJson(),
       );
 
-      // Serializing with known mapper
       socket.add(JsonMapper.serialize(message));
 
       // 5. Listen for response
       final completer = Completer<Map<String, dynamic>>();
       socket.listen((data) {
-        // Deserializing with known mapper
         final respMsg = JsonMapper.deserialize<WebSocketMessage>(data.toString());
         if (respMsg?.type == 'paginated_sync_complete' || respMsg?.type == 'paginated_sync_error') {
           completer.complete(respMsg?.data as Map<String, dynamic>?);
         }
       });
 
-      final responseData = await completer.future.timeout(Duration(seconds: 2));
+      final responseData = await completer.future.timeout(Duration(seconds: 5));
       await socket.close();
 
-      // 6. Assertions
-      print('Response Data: $responseData');
+      expect(responseData['success'], isFalse, reason: 'Success flag should be false when errors exist');
 
-      if (responseData['success'] == true) {
-        // This is what we expect to happen BEFORE the fix
-        fail('Bug Reproduced: Server reported success: true despite Mediator returning hasErrors: true');
-      }
+      // Check for specific error message
+      expect(responseData['error'], contains('Version mismatch'),
+          reason: 'Error string should contain mismatch detail');
 
-      expect(responseData['success'], isFalse, reason: 'Should return success: false when errors occur');
-      final hasErrorMsg = (responseData['error'] as String?)?.contains('Version mismatch') ??
-          (responseData['message'] as String?)?.contains('Version mismatch') ??
-          (responseData['errorMessages'] as List?)?.toString().contains('Version mismatch') ??
-          false;
+      // Verify errorMessages list presence and content
+      expect(responseData['errorMessages'], isA<List>(), reason: 'Response should include errorMessages list');
+      final errorMessages = responseData['errorMessages'] as List;
+      expect(errorMessages, contains(errorMsg), reason: 'errorMessages list should contain the specific error');
 
-      expect(hasErrorMsg, isTrue, reason: 'Should return the error message');
+      expect(responseData['server_type'], equals('mobile'));
+      expect(responseData['isComplete'], isTrue);
     });
   });
 }

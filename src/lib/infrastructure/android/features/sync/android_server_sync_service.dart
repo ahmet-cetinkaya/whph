@@ -53,13 +53,13 @@ class AndroidServerSyncService extends AndroidSyncService {
   }
 
   /// Attempt to start as WebSocket server
-  Future<bool> startAsServer() async {
+  Future<bool> startAsServer([int port = webSocketPort]) async {
     try {
-      Logger.info('Attempting to start mobile WebSocket server...');
+      Logger.info('Attempting to start mobile WebSocket server on port $port...');
 
       _server = await HttpServer.bind(
         InternetAddress.anyIPv4,
-        webSocketPort,
+        port,
         shared: true,
       );
 
@@ -398,4 +398,7 @@ class AndroidServerSyncService extends AndroidSyncService {
 
   /// Check if the server is running and healthy
   bool get isServerHealthy => _isServerMode && _server != null;
+
+  /// Get the current server port
+  int get serverPort => _server?.port ?? 0;
 }
