@@ -1,3 +1,0 @@
-• Amélioration de la qualité de traduction pour un meilleur support multilingue
-• Amélioration des interactions et du comportement de défilement en mode marathon
-• Diverses améliorations et polissages
