@@ -32,6 +32,7 @@ scripts:
   # Screenshots
   # Usage: rps gen:screenshots:device [locale] (e.g., rps gen:screenshots:device tr)
   gen:screenshots: cd src && bash scripts/generate_screenshots.sh ${1:---all} --
+  gen:feature-graphics: cd scripts/feature_graphics_generator && bun run generate
 
   # Code Generation
   gen: cd src && bash scripts/generate_gen_files.sh

@@ -1,0 +1,17 @@
+{
+  "name": "feature-graphics-generator",
+  "version": "1.0.0",
+  "description": "Generates feature graphics for Fastlane",
+  "main": "generate.ts",
+  "scripts": {
+    "generate": "bun run generate.ts"
+  },
+  "dependencies": {
+    "puppeteer": "^24.0.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

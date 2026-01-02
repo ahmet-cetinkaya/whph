@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WHPH Feature Graphic - Material Icons</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <style>
+    /* RESET & FONTS */
+    @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Roboto", sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #333;
+      /* Preview background */
+    }
+
+    /* MAIN CONTAINER (1024x500) */
+    .feature-graphic {
+      position: relative;
+      width: 1024px;
+      height: 500px;
+      background: radial-gradient(circle at center, #1a1c20 0%, #0f1115 100%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      /* Stack content vertically */
+      justify-content: center;
+      /* Center content vertically */
+      align-items: center;
+      /* Center content horizontally */
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    /* BACKGROUND LIGHTING */
+    .glow-effect {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.4;
+      z-index: 1;
+    }
+
+    .glow-top-left {
+      width: 600px;
+      height: 600px;
+      background: #f4ff92;
+      top: -300px;
+      left: -200px;
+    }
+
+    .glow-bottom-right {
+      width: 500px;
+      height: 500px;
+      background: #f4ff92;
+      bottom: -250px;
+      right: -150px;
+    }
+
+    .glow-center {
+      width: 300px;
+      height: 300px;
+      background: #f4ff92;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.2;
+    }
+
+    /* MAIN CONTENT WRAPPER (Logo + Title) */
+    .main-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 60px;
+      /* Space between title and features */
+    }
+
+    /* APP ICON */
+    .app-icon {
+      width: 160px;
+      height: 160px;
+      background-color: #000;
+      border-radius: 35px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 120px rgba(244, 255, 146, 0.5);
+      overflow: hidden;
+    }
+
+    /* TEXT SECTION */
+    .title-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .title {
+      font-size: 60px;
+      font-weight: 900;
+      color: #f4ff92;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(244, 255, 146, 0.4);
+      max-width: 700px;
+    }
+
+    .subtitle {
+      font-size: 24px;
+      font-weight: 600;
+      color: #f4ff92;
+      margin-top: 10px;
+      letter-spacing: 0px;
+      max-width: 600px;
+    }
+
+    /* FEATURES SECTION */
+    .features-container {
+      position: absolute;
+      bottom: 60px;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      width: 100%;
+      padding: 0 40px;
+    }
+
+    .feature-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      color: #f4ff92;
+    }
+
+    /* MATERIAL ICONS - FEATURES */
+    .material-icons-round.feature-icon {
+      font-size: 48px;
+      margin-right: 15px;
+      color: #f4ff92;
+      opacity: 0.9;
+    }
+
+    .feature-text {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: #f4f5e0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="feature-graphic">
+    <div class="glow-effect glow-top-left"></div>
+    <div class="glow-effect glow-bottom-right"></div>
+    <div class="glow-effect glow-center"></div>
+
+    <div class="main-content">
+      <div class="app-icon">
+        <img id="app-icon-img" src="" alt="App Icon"
+          style="width: 100%; height: 100%; object-fit: contain; border-radius: 20%;" />
+      </div>
+      <div class="title-section">
+        <div id="title" class="title">WHPH</div>
+        <div id="subtitle" class="subtitle">Boost your productivity</div>
+      </div>
+    </div>
+
+    <div class="features-container">
+      <div class="feature-item">
+        <span class="material-icons-round feature-icon">settings</span>
+        <div class="feature-text">
+          <span id="feature-1-line1">Efficient Task</span><br />
+          <span id="feature-1-line2">Management</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="material-icons-round feature-icon">track_changes</span>
+        <div class="feature-text">
+          <span id="feature-2-line1">Goal Tracking</span><br />
+          <span id="feature-2-line2">& Progress</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="material-icons-round feature-icon">timer</span>
+        <div class="feature-text">
+          <span id="feature-3-line1">Focus Timer</span><br />
+          <span id="feature-3-line2">& Analytics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
