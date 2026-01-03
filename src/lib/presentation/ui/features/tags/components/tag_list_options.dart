@@ -307,7 +307,6 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                 // Sort button
                 if (widget.showSortButton && widget.onSortChange != null && widget.hasItems)
                   SortDialogButton<TagSortFields>(
-                    isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                     tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
                     availableOptions: [
                       SortOptionWithTranslationKey(
