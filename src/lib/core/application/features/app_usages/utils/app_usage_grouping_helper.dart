@@ -24,7 +24,9 @@ class AppUsageGroupInfo {
         type = null;
 
   AppUsageGroupInfo.type(AppUsageGroupType groupType)
-      : name = groupType == AppUsageGroupType.unknownDevice ? 'app_usages.details.device.unknown' : '',
+      : name = switch (groupType) {
+          AppUsageGroupType.unknownDevice => 'app_usages.details.device.unknown',
+        },
         isTranslatable = true,
         type = groupType;
 }
