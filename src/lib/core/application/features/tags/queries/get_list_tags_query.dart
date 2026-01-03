@@ -2,6 +2,8 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
 
+import 'package:whph/core/application/features/tags/utils/tag_grouping_helper.dart';
+
 enum TagSortFields {
   name,
   createdDate,
@@ -32,6 +34,10 @@ class TagListItem {
   String? color;
   bool isArchived;
   List<TagListItem> relatedTags;
+  DateTime? createdDate;
+  DateTime? modifiedDate;
+  String? groupName;
+  bool isGroupNameTranslatable;
 
   TagListItem({
     required this.id,
@@ -39,6 +45,10 @@ class TagListItem {
     this.color,
     this.isArchived = false,
     this.relatedTags = const [],
+    this.createdDate,
+    this.modifiedDate,
+    this.groupName,
+    this.isGroupNameTranslatable = false,
   });
 }
 
@@ -63,20 +73,32 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
 
     final items = tagsWithRelated.items.map((tagPair) {
       final (tag, relatedTags) = tagPair;
-      return TagListItem(
+      final item = TagListItem(
         id: tag.id,
         name: tag.name,
         color: tag.color,
         isArchived: tag.isArchived,
+        createdDate: tag.createdDate,
+        modifiedDate: tag.modifiedDate,
         relatedTags: relatedTags
             .map((relatedTag) => TagListItem(
                   id: relatedTag.id,
                   name: relatedTag.name,
                   color: relatedTag.color,
                   isArchived: relatedTag.isArchived,
+                  createdDate: relatedTag.createdDate,
+                  modifiedDate: relatedTag.modifiedDate,
                 ))
             .toList(),
       );
+
+      final groupInfo = TagGroupingHelper.getGroupInfo(item, request.sortBy?.firstOrNull?.field);
+      if (groupInfo != null) {
+        item.groupName = groupInfo.name;
+        item.isGroupNameTranslatable = groupInfo.isTranslatable;
+      }
+
+      return item;
     }).toList();
 
     return GetListTagsQueryResponse(

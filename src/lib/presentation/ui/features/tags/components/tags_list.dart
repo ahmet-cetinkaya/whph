@@ -17,6 +17,8 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
+import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+
 class TagsList extends StatefulWidget implements IPaginatedWidget {
   final List<String>? filterByTags;
   final VoidCallback? onTagAdded;
@@ -196,10 +198,53 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
     );
   }
 
+  List<Widget> _buildTagItems() {
+    final List<Widget> listItems = [];
+    if (_tags == null || _tags!.items.isEmpty) return listItems;
+
+    String? currentGroup;
+    final sortConfig = widget.sortConfig;
+    final showHeaders = (sortConfig?.orderOptions.isNotEmpty ?? false) && (sortConfig?.enableGrouping ?? true);
+
+    for (var i = 0; i < _tags!.items.length; i++) {
+      final tag = _tags!.items[i];
+
+      if (showHeaders && tag.groupName != null && tag.groupName != currentGroup) {
+        currentGroup = tag.groupName;
+        if (i > 0) {
+          listItems.add(SizedBox(
+            key: ValueKey('separator_header_${tag.id}'),
+            height: AppTheme.sizeSmall,
+          ));
+        }
+        listItems.add(ListGroupHeader(
+          key: ValueKey('header_${tag.groupName}_$i'),
+          title: tag.groupName!,
+          shouldTranslate: tag.isGroupNameTranslatable,
+        ));
+      } else if (i > 0) {
+        listItems.add(SizedBox(
+          key: ValueKey('separator_item_${tag.id}'),
+          height: AppTheme.sizeSmall, // Consistent gap
+        ));
+      }
+
+      listItems.add(Padding(
+        key: ValueKey('tag_${tag.id}'),
+        padding: EdgeInsets.zero,
+        child: TagCard(
+          tag: tag,
+          onOpenDetails: () => widget.onClickTag?.call(tag),
+          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+        ),
+      ));
+    }
+    return listItems;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_tags == null) {
-      // No loading indicator since local DB is fast
       return const SizedBox.shrink();
     }
 
@@ -213,36 +258,35 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
       );
     }
 
-    return SingleChildScrollView(
+    final listItems = _buildTagItems();
+    final showLoadMore = _tags!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading =
+        _tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
+
+    return ListView.builder(
       controller: _scrollController,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...List.generate(_tags!.items.length, (index) {
-            final tag = _tags!.items[index];
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: index < _tags!.items.length - 1 ? AppTheme.size2XSmall : 0,
-              ),
-              child: TagCard(
-                tag: tag,
-                onOpenDetails: () => widget.onClickTag?.call(tag),
-                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-              ),
-            );
-          }),
-          if (_tags!.hasNext && widget.paginationMode == PaginationMode.loadMore)
-            Padding(
-              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-              child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
-            ),
-          if (_tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-        ],
-      ),
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+      itemCount: listItems.length + extraItemCount,
+      itemBuilder: (context, index) {
+        if (index < listItems.length) {
+          return listItems[index];
+        } else if (showLoadMore) {
+          return Padding(
+            key: const ValueKey('load_more_button'),
+            padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+            child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
+          );
+        } else if (showInfinityLoading) {
+          return const Padding(
+            key: ValueKey('infinity_loading_indicator'),
+            padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 

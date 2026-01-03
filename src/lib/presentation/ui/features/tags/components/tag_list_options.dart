@@ -332,6 +332,7 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                           direction: SortDirection.asc,
                         ),
                       ],
+                      enableGrouping: false,
                     ),
                     onConfigChanged: (config) {
                       widget.onSortChange?.call(config);
