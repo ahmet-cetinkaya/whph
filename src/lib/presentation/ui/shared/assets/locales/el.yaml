@@ -327,6 +327,7 @@ shared:
     compare_with_previous: Σύγκριση με προηγούμενη περίοδο
     filter_by_tags: Φιλτράρισμα κατά ετικέτες
     refresh: Ανανέωση
+    reset: Επαναφορά
   ui:
     report_error: Αναφορά
   units:
@@ -439,6 +440,9 @@ shared:
     future: Μέλλον
     next_7_days: Επόμενες 7 ημέρες
     no_date: Χωρίς ημερομηνία
+    yesterday: Χθες
+    last_7_days: Τελευταίες 7 ημέρες
+    older: Παλαιότερα
   duration_group:
     less_than_15_min: < 15 λεπ
     15_30_min: 15 - 30 λεπ

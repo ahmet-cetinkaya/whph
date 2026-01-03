@@ -307,6 +307,7 @@ shared:
     compare_with_previous: Porównaj z poprzednim okresem
     filter_by_tags: Filtruj według tagów
     refresh: Odśwież
+    reset: Resetuj
   ui:
     report_error: Zgłoś
   units:
@@ -403,6 +404,9 @@ shared:
     future: Przyszłość
     next_7_days: Następne 7 dni
     no_date: Bez daty
+    yesterday: Wczoraj
+    last_7_days: Ostatnie 7 dni
+    older: Starsze
   duration_group:
     less_than_15_min: < 15 min
     15_30_min: 15 - 30 min

@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/application/shared/utils/grouping_utils.dart';
 
 class TaskGroupingHelper {
   static String? getGroupName(TaskListItem task, TaskSortFields? sortField, {DateTime? now}) {
@@ -10,53 +11,27 @@ class TaskGroupingHelper {
 
     switch (sortField) {
       case TaskSortFields.createdDate:
-        return _getDateGroup(task.createdDate, now: now);
+        return GroupingUtils.getForwardDateGroup(task.createdDate, now: now);
       case TaskSortFields.deadlineDate:
-        return _getDateGroup(task.deadlineDate, now: now);
+        return GroupingUtils.getForwardDateGroup(task.deadlineDate, now: now);
       case TaskSortFields.modifiedDate:
-        return _getDateGroup(task.modifiedDate, now: now);
+        return GroupingUtils.getForwardDateGroup(task.modifiedDate, now: now);
       case TaskSortFields.plannedDate:
-        return _getDateGroup(task.plannedDate, now: now);
+        return GroupingUtils.getForwardDateGroup(task.plannedDate, now: now);
       case TaskSortFields.priority:
         return _getPriorityGroup(task.priority);
       case TaskSortFields.title:
-        return _getTitleGroup(task.title);
+        return GroupingUtils.getTitleGroup(task.title);
       case TaskSortFields.estimatedTime:
-        return _getDurationGroup(task.estimatedTime);
+        return GroupingUtils.getDurationGroup(task.estimatedTime);
       case TaskSortFields.totalDuration:
-        return _getDurationGroup(task.totalElapsedTime); // Assuming totalDuration maps to totalElapsedTime
-    }
-  }
-
-  static String _getDateGroup(DateTime? date, {DateTime? now}) {
-    if (date == null) return SharedTranslationKeys.noDate;
-
-    final nowValue = now ?? DateTime.now();
-    final today = DateTime(nowValue.year, nowValue.month, nowValue.day);
-    final tomorrow = today.add(const Duration(days: 1));
-    final nextWeek = today.add(const Duration(days: 7));
-
-    // Normalize input date to start of day for accurate comparison
-    final dateToCheck = DateTime(date.year, date.month, date.day);
-
-    if (dateToCheck.isBefore(today)) {
-      return SharedTranslationKeys.overdue;
-    } else if (dateToCheck.isAtSameMomentAs(today)) {
-      return SharedTranslationKeys.today;
-    } else if (dateToCheck.isAtSameMomentAs(tomorrow)) {
-      return SharedTranslationKeys.tomorrow;
-    } else if (dateToCheck.isBefore(nextWeek)) {
-      return SharedTranslationKeys.next7Days;
-    } else {
-      return SharedTranslationKeys.future;
+        return GroupingUtils.getDurationGroup(task.totalElapsedTime); // Assuming totalDuration maps to totalElapsedTime
     }
   }
 
   static String _getPriorityGroup(EisenhowerPriority? priority) {
     if (priority == null) return SharedTranslationKeys.none;
 
-    // Assuming EisenhowerPriority enum has values. Mapping explicitly.
-    // Adjust based on actual enum values if needed.
     switch (priority) {
       case EisenhowerPriority.urgentImportant:
         return TaskTranslationKeys.priorityUrgentImportant;
@@ -67,23 +42,5 @@ class TaskGroupingHelper {
       case EisenhowerPriority.notUrgentNotImportant:
         return TaskTranslationKeys.priorityNotUrgentNotImportant;
     }
-  }
-
-  static String _getTitleGroup(String? title) {
-    if (title == null || title.isEmpty) return "#";
-    final firstChar = title[0].toUpperCase();
-    if (RegExp(r'[A-Z]').hasMatch(firstChar)) {
-      return firstChar;
-    }
-    return "#";
-  }
-
-  static String _getDurationGroup(int? minutes) {
-    if (minutes == null || minutes == 0) return SharedTranslationKeys.none;
-    if (minutes < 15) return SharedTranslationKeys.durationLessThan15Min;
-    if (minutes < 30) return SharedTranslationKeys.duration15To30Min;
-    if (minutes < 60) return SharedTranslationKeys.duration30To60Min;
-    if (minutes < 120) return SharedTranslationKeys.duration1To2Hours;
-    return SharedTranslationKeys.durationMoreThan2Hours;
   }
 }

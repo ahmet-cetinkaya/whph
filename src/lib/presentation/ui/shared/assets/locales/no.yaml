@@ -303,6 +303,7 @@ shared:
     compare_with_previous: Sammenlign med forrige periode
     filter_by_tags: Filtrer etter tagger
     refresh: Oppdater
+    reset: Tilbakestill
   ui:
     report_error: Rapporter
   units:
@@ -397,6 +398,9 @@ shared:
     future: Fremtid
     next_7_days: Neste 7 dager
     no_date: Ingen dato
+    yesterday: I går
+    last_7_days: Siste 7 dager
+    older: Eldre
   duration_group:
     less_than_15_min: < 15 min
     15_30_min: 15 - 30 min

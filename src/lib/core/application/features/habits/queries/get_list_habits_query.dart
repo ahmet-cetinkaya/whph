@@ -2,20 +2,13 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 
-enum HabitSortFields {
-  name,
-  createdDate,
-  modifiedDate,
-  estimatedTime,
-  actualTime,
-  archivedDate,
-}
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:whph/core/application/features/habits/utils/habit_grouping_helper.dart';
+import 'package:whph/core/application/features/habits/models/habit_list_item.dart';
+export 'package:whph/core/application/features/habits/models/habit_list_item.dart';
 
 class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageIndex;
@@ -45,44 +38,6 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   });
 }
 
-class HabitListItem {
-  String id;
-  String name;
-  List<TagListItem> tags;
-  int? estimatedTime;
-  int? actualTime; // Total logged time in minutes
-  bool hasReminder;
-  String? reminderTime;
-  List<int> reminderDays;
-  DateTime? archivedDate;
-  double? order;
-  bool hasGoal;
-  int? dailyTarget;
-  int targetFrequency;
-  int periodDays;
-
-  HabitListItem({
-    required this.id,
-    required this.name,
-    this.tags = const [],
-    this.estimatedTime,
-    this.actualTime,
-    this.hasReminder = false,
-    this.reminderTime,
-    this.reminderDays = const [],
-    this.archivedDate,
-    this.order,
-    this.hasGoal = false,
-    this.dailyTarget,
-    this.targetFrequency = 1,
-    this.periodDays = 1,
-  });
-
-  bool isArchived() {
-    return archivedDate != null;
-  }
-}
-
 class GetListHabitsQueryResponse extends PaginatedList<HabitListItem> {
   GetListHabitsQueryResponse(
       {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
@@ -91,25 +46,20 @@ class GetListHabitsQueryResponse extends PaginatedList<HabitListItem> {
 class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, GetListHabitsQueryResponse> {
   late final IHabitRepository _habitRepository;
   late final IHabitTagsRepository _habitTagsRepository;
-  late final ITagRepository _tagRepository;
   late final IHabitRecordRepository _habitRecordRepository;
-  late final IHabitTimeRecordRepository _habitTimeRecordRepository;
 
   GetListHabitsQueryHandler({
     required IHabitRepository habitRepository,
     required IHabitTagsRepository habitTagRepository,
-    required ITagRepository tagRepository,
     required IHabitRecordRepository habitRecordRepository,
-    required IHabitTimeRecordRepository habitTimeRecordRepository,
   })  : _habitRepository = habitRepository,
         _habitTagsRepository = habitTagRepository,
-        _tagRepository = tagRepository,
-        _habitRecordRepository = habitRecordRepository,
-        _habitTimeRecordRepository = habitTimeRecordRepository;
+        _habitRecordRepository = habitRecordRepository;
 
   @override
   Future<GetListHabitsQueryResponse> call(GetListHabitsQuery request) async {
-    PaginatedList<Habit> habits = await _habitRepository.getList(
+    // 1. Fetch habits with aggregated actualTime in a single query
+    PaginatedList<HabitListItem> habits = await _habitRepository.getHabitListItems(
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getCustomWhereFilter(request),
@@ -117,96 +67,49 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     );
 
     // Apply period-aware filtering if excludeCompletedForDate is specified
-    List<Habit> filteredHabits = habits.items;
+    List<HabitListItem> filteredHabits = habits.items;
     if (request.excludeCompletedForDate != null) {
       filteredHabits = await _filterHabitsWithPeriodAwareness(habits.items, request.excludeCompletedForDate!);
     }
 
-    List<HabitListItem> habitItems = [];
-
-    // Fetch all habit tags for all habits in a single query to avoid N+1 problem
-    final habitIds = filteredHabits.map((habit) => habit.id).toList();
-    List<dynamic> habitTagsList = [];
-    Map<String, List<TagListItem>> habitTagsMap = {};
-
-    if (habitIds.isNotEmpty) {
-      final habitTagsWhereFilter = CustomWhereFilter(
-        "habit_id IN (${habitIds.map((_) => '?').join(',')})",
-        habitIds as List<Object>,
+    if (filteredHabits.isEmpty) {
+      return GetListHabitsQueryResponse(
+        items: [],
+        totalItemCount: habits.totalItemCount,
+        pageIndex: habits.pageIndex,
+        pageSize: habits.pageSize,
       );
-      habitTagsList = (await _habitTagsRepository.getList(
-        0,
-        habitIds.length * 5, // Allow up to 5 tags per habit
-        customWhereFilter: habitTagsWhereFilter,
-      ))
-          .items;
-
-      // Fetch all tags for these habit tags in a single query
-      final tagIds = habitTagsList.map((ht) => ht.tagId).toSet().toList();
-      List<dynamic> tagsList = [];
-      if (tagIds.isNotEmpty) {
-        final tagsWhereFilter = CustomWhereFilter(
-          "id IN (${tagIds.map((_) => '?').join(',')})",
-          tagIds.cast<Object>(),
-        );
-        tagsList = (await _tagRepository.getList(
-          0,
-          tagIds.length,
-          customWhereFilter: tagsWhereFilter,
-        ))
-            .items;
-      }
-
-      // Create a map for quick tag lookup
-      final tagMap = {for (final tag in tagsList) tag.id: tag};
-
-      // Create a map of habitId to tag items
-      habitTagsMap = <String, List<TagListItem>>{};
-      for (final ht in habitTagsList) {
-        final tag = tagMap[ht.tagId];
-        if (tag != null) {
-          habitTagsMap.putIfAbsent(ht.habitId, () => []).add(
-                TagListItem(
-                  id: ht.tagId,
-                  name: tag.name ?? "",
-                  color: tag.color,
-                ),
-              );
-        }
-      }
     }
 
-    // Fetch actual time for all habits in a single batch query
-    final habitIdsForTimeQuery = filteredHabits.map((habit) => habit.id).toList();
-    final habitActualTimeMap = await _habitTimeRecordRepository.getTotalDurationsByHabitIds(habitIdsForTimeQuery);
+    // 2. Fetch tags for the retrieved habits in a single batch query
+    final habitIds = filteredHabits.map((h) => h.id).toList();
+    final habitTagsMap = await _habitTagsRepository.getTagsForHabitIds(habitIds);
 
-    // Create habit items with their tags
-    for (final habit in filteredHabits) {
-      final tagItems = habitTagsMap.containsKey(habit.id) ? habitTagsMap[habit.id]! : <TagListItem>[];
-      final actualTime = habitActualTimeMap[habit.id] ?? 0;
-
-      habitItems.add(HabitListItem(
-        id: habit.id,
-        name: habit.name,
-        tags: tagItems,
-        estimatedTime: habit.estimatedTime,
-        actualTime: actualTime > 0 ? (actualTime / 60).round() : null,
-        hasReminder: habit.hasReminder,
-        reminderTime: habit.reminderTime,
-        reminderDays: habit.getReminderDaysAsList(),
-        archivedDate: habit.archivedDate,
-        order: habit.order,
-        hasGoal: habit.hasGoal,
-        dailyTarget: habit.dailyTarget,
-        targetFrequency: habit.targetFrequency,
-        periodDays: habit.periodDays,
-      ));
+    // 3. Populate tags and calculate group names
+    // Determine sort field for grouping
+    HabitSortFields? primarySortField;
+    if (request.sortBy != null && request.sortBy!.isNotEmpty) {
+      primarySortField = request.sortBy!.first.field;
     }
 
-    // Database-level sorting for actualTime is now implemented in DriftHabitRepository
+    final resultItems = filteredHabits.map((habitItem) {
+      // Assign tags
+      List<TagListItem> tags = habitItem.tags;
+      if (habitTagsMap.containsKey(habitItem.id)) {
+        tags = habitTagsMap[habitItem.id]!;
+      }
+
+      // Assign group name
+      final groupName = HabitGroupingHelper.getGroupName(habitItem, primarySortField);
+
+      return habitItem.copyWith(
+        tags: tags,
+        groupName: groupName,
+      );
+    }).toList();
 
     return GetListHabitsQueryResponse(
-      items: habitItems,
+      items: resultItems,
       totalItemCount: habits.totalItemCount,
       pageIndex: habits.pageIndex,
       pageSize: habits.pageSize,
@@ -319,8 +222,8 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   }
 
   /// Filters habits with period-aware completion logic
-  Future<List<Habit>> _filterHabitsWithPeriodAwareness(List<Habit> habits, DateTime targetDate) async {
-    final List<Habit> filteredHabits = [];
+  Future<List<HabitListItem>> _filterHabitsWithPeriodAwareness(List<HabitListItem> habits, DateTime targetDate) async {
+    final List<HabitListItem> filteredHabits = [];
     final today = DateTime(targetDate.year, targetDate.month, targetDate.day);
     final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
 

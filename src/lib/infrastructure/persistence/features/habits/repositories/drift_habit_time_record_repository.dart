@@ -24,6 +24,8 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
     implements IHabitTimeRecordRepository {
   DriftHabitTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().habitTimeRecordTable);
 
+  DriftHabitTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.habitTimeRecordTable);
+
   @override
   Expression<String> getPrimaryKey(HabitTimeRecordTable t) {
     return t.id;

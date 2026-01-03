@@ -5,6 +5,7 @@ import 'package:whph/core/domain/features/habits/habit_tag.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:acore/acore.dart';
 
 @UseRowClass(HabitTag)
@@ -23,6 +24,8 @@ class HabitTagTable extends Table {
 class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, HabitTagTable>
     implements IHabitTagsRepository {
   DriftHabitTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().habitTagTable);
+
+  DriftHabitTagRepository.withDatabase(AppDatabase db) : super(db, db.habitTagTable);
 
   @override
   Expression<String> getPrimaryKey(HabitTagTable t) {
@@ -146,5 +149,43 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
               tagColor: row.read<String?>('tag_color'),
             ))
         .toList();
+  }
+
+  @override
+  Future<Map<String, List<TagListItem>>> getTagsForHabitIds(List<String> habitIds) async {
+    if (habitIds.isEmpty) return {};
+
+    final query = database.customSelect(
+      """
+      SELECT ht.habit_id, t.id as tag_id, t.name as tag_name, t.color as tag_color
+      FROM habit_tag_table ht
+      JOIN tag_table t ON ht.tag_id = t.id
+      WHERE ht.habit_id IN (${habitIds.map((_) => '?').join(',')})
+      AND ht.deleted_date IS NULL
+      AND t.deleted_date IS NULL
+      """,
+      variables: habitIds.map((id) => Variable.withString(id)).toList(),
+      readsFrom: {database.habitTagTable, database.tagTable},
+    );
+
+    final rows = await query.get();
+    final Map<String, List<TagListItem>> result = {};
+
+    for (final row in rows) {
+      final habitId = row.read<String>('habit_id');
+      final tagId = row.read<String>('tag_id');
+      final tagName = row.read<String>('tag_name');
+      final tagColor = row.read<String?>('tag_color');
+
+      result.putIfAbsent(habitId, () => []).add(
+            TagListItem(
+              id: tagId,
+              name: tagName,
+              color: tagColor,
+            ),
+          );
+    }
+
+    return result;
   }
 }

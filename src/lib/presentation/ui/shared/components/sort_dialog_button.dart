@@ -375,7 +375,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                         ),
                         const SizedBox(width: AppTheme.sizeMedium),
                         Tooltip(
-                          message: widget.translationService.translate(SharedTranslationKeys.refreshTooltip),
+                          message: widget.translationService.translate(SharedTranslationKeys.resetTooltip),
                           child: InkWell(
                             onTap: _resetToDefault,
                             borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -407,6 +407,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                             ),
                           ],
                           useCustomOrder: false,
+                          enableGrouping: false,
                         ),
                     defaultConfig: SortConfig<HabitSortFields>(
                       orderOptions: [
@@ -422,6 +423,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                         ),
                       ],
                       useCustomOrder: false,
+                      enableGrouping: false,
                     ),
                     onConfigChanged: widget.onSortChange!,
                     availableOptions: [

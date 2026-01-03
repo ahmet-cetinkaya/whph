@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_add_button.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';

@@ -21,6 +21,7 @@ scripts:
   run: cd src && fvm flutter run
   run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
   clean: bash scripts/clean.sh
+  clean:db: rm -rf ~/.local/share/whph/debug_whph
   format: bash scripts/format.sh
   lint: ./scripts/lint.sh
 

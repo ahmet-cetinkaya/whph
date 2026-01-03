@@ -298,6 +298,7 @@ shared:
     compare_with_previous: 이전 기간과 비교
     filter_by_tags: 태그로 필터링
     refresh: 새로고침
+    reset: 재설정
   ui:
     report_error: 보고
   units:
@@ -393,6 +394,9 @@ shared:
     future: 미래
     next_7_days: 다음 7일
     no_date: 날짜 없음
+    yesterday: 어제
+    last_7_days: 최근 7일
+    older: 이전
   duration_group:
     less_than_15_min: 15분 미만
     15_30_min: 15 - 30분

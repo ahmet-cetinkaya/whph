@@ -16,6 +16,8 @@ import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
@@ -376,7 +378,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                   showDragHandle: widget.enableReordering &&
                       widget.sortConfig?.useCustomOrder == true &&
                       !widget.forceOriginalLayout,
-                  dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+                  dragIndex: !habit.isArchived ? index : null, // Only draggable if not archived
                 ),
               ),
             );
@@ -457,10 +459,31 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   List<Widget> _buildHabitCards() {
-    return _habitList!.items.asMap().entries.map((entry) {
+    final List<Widget> listItems = [];
+    String? currentGroup;
+
+    // Check if we should show headers
+    // Only show headers if we are sorting by something that produces groups (Name, Date)
+    // and if we are not in custom sort mode AND grouping is enabled
+    final bool showHeaders = widget.sortConfig?.useCustomOrder != true &&
+        (widget.sortConfig?.orderOptions.isNotEmpty ?? false) &&
+        (widget.sortConfig?.enableGrouping ?? false);
+
+    for (var entry in _habitList!.items.asMap().entries) {
       final index = entry.key;
       final habit = entry.value;
-      return Padding(
+
+      // Add header if group changed
+      if (showHeaders && habit.groupName != null && habit.groupName != currentGroup) {
+        currentGroup = habit.groupName;
+        listItems.add(ListGroupHeader(
+          key: ValueKey('header_${habit.groupName}'),
+          title: habit.groupName!,
+          shouldTranslate: habit.groupName!.length > 1, // Don't translate single letters like "A"
+        ));
+      }
+
+      listItems.add(Padding(
         key: ValueKey('list_${habit.id}_${widget.style}'),
         padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
         child: AnimatedSwitcher(
@@ -476,11 +499,12 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             showDragHandle:
                 widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
-            dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+            dragIndex: !habit.isArchived ? index : null, // Only draggable if not archived
           ),
         ),
-      );
-    }).toList();
+      ));
+    }
+    return listItems;
   }
 
   Widget _buildColumnList() {
@@ -592,16 +616,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         final habitToMove = reorderedItems.removeAt(oldIndex);
 
         // Update the moved habit's order to the target order for correct visual display
-        final updatedHabit = HabitListItem(
-          id: habitToMove.id,
-          name: habitToMove.name,
-          tags: habitToMove.tags,
-          estimatedTime: habitToMove.estimatedTime,
-          hasReminder: habitToMove.hasReminder,
-          reminderTime: habitToMove.reminderTime,
-          reminderDays: habitToMove.reminderDays,
-          archivedDate: habitToMove.archivedDate,
-          order: targetOrder, // Use the calculated target order
+        final updatedHabit = habitToMove.copyWith(
+          order: targetOrder,
         );
 
         reorderedItems.insert(newIndex, updatedHabit);
@@ -637,16 +653,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               final updatedItems = List<HabitListItem>.from(_habitList!.items);
               final habitIndex = updatedItems.indexWhere((item) => item.id == habit.id);
               if (habitIndex != -1) {
-                updatedItems[habitIndex] = HabitListItem(
-                  id: habit.id,
-                  name: habit.name,
-                  tags: habit.tags,
-                  estimatedTime: habit.estimatedTime,
-                  hasReminder: habit.hasReminder,
-                  reminderTime: habit.reminderTime,
-                  reminderDays: habit.reminderDays,
-                  archivedDate: habit.archivedDate,
-                  order: result.order, // Use the final order from backend
+                updatedItems[habitIndex] = updatedItems[habitIndex].copyWith(
+                  order: result.order,
                 );
 
                 // Re-sort with the updated order

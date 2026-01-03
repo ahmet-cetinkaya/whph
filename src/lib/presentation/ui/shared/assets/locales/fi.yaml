@@ -311,6 +311,7 @@ shared:
     compare_with_previous: Vertaa edelliseen jaksoon
     filter_by_tags: Suodata tunnisteiden mukaan
     refresh: Päivitä
+    reset: Nollaa
   ui:
     report_error: Ilmoita
   units:
@@ -415,6 +416,9 @@ shared:
     future: Tulevaisuus
     next_7_days: Seuraavat 7 päivää
     no_date: Ei päivämäärää
+    yesterday: Eilen
+    last_7_days: Viimeiset 7 päivää
+    older: Vanhempi
   duration_group:
     less_than_15_min: < 15 min
     15_30_min: 15 - 30 min

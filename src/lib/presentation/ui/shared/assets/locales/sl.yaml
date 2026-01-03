@@ -305,6 +305,7 @@ shared:
     compare_with_previous: Primerjaj s prejšnjim obdobjem
     filter_by_tags: Filtriraj po oznakah
     refresh: Osveži
+    reset: Ponastavi
   ui:
     report_error: Prijavi
   units:
@@ -400,6 +401,9 @@ shared:
     future: Prihodnost
     next_7_days: Naslednjih 7 dni
     no_date: Bz datuma
+    yesterday: Včeraj
+    last_7_days: Zadnjih 7 dni
+    older: Starejše
   duration_group:
     less_than_15_min: < 15 min
     15_30_min: 15 - 30 min

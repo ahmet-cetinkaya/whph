@@ -46,9 +46,7 @@ void registerHabitsFeature(
       () => GetListHabitsQueryHandler(
         habitRepository: habitRepository,
         habitTagRepository: habitTagRepository,
-        tagRepository: tagRepository,
         habitRecordRepository: habitRecordRepository,
-        habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
     ..registerHandler<GetHabitQuery, GetHabitQueryResponse, GetHabitQueryHandler>(

@@ -297,6 +297,7 @@ shared:
     compare_with_previous: 与上一期间比较
     filter_by_tags: 按标签筛选
     refresh: 刷新
+    reset: 重置
   ui:
     report_error: 报告
   units:
@@ -391,6 +392,9 @@ shared:
     future: 未来
     next_7_days: 未来7天
     no_date: 无日期
+    yesterday: 昨天
+    last_7_days: 过去7天
+    older: 更早
   duration_group:
     less_than_15_min: < 15分钟
     15_30_min: 15 - 30分钟

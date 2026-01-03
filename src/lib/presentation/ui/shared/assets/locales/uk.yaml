@@ -310,6 +310,7 @@ shared:
     compare_with_previous: Порівняти з попереднім періодом
     filter_by_tags: Фільтрувати за тегами
     refresh: Оновити
+    reset: Скинути
   ui:
     report_error: Повідомити
   units:
@@ -406,6 +407,9 @@ shared:
     future: Майбутнє
     next_7_days: Наступні 7 днів
     no_date: Без дати
+    yesterday: Вчора
+    last_7_days: Останні 7 днів
+    older: Старіше
   duration_group:
     less_than_15_min: < 15 хв
     15_30_min: 15 - 30 хв

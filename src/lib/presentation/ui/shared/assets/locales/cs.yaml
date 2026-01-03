@@ -305,6 +305,7 @@ shared:
     compare_with_previous: Porovnat s předchozím obdobím
     filter_by_tags: Filtrovat podle štítků
     refresh: Obnovit
+    reset: Reset
   ui:
     report_error: Nahlásit
   units:
@@ -401,6 +402,9 @@ shared:
     future: Budoucnost
     next_7_days: P příštích 7 dní
     no_date: Bez data
+    yesterday: Včera
+    last_7_days: Posledních 7 dní
+    older: Starší
   duration_group:
     less_than_15_min: < 15 min
     15_30_min: 15 - 30 min
