@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
+import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_card.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
@@ -18,6 +19,27 @@ import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+
+// Sealed class for lazy-loading list items
+sealed class _ListItem {}
+
+class _HeaderItem extends _ListItem {
+  final String title;
+  final bool shouldTranslate;
+  final int index;
+  _HeaderItem({required this.title, required this.shouldTranslate, required this.index});
+}
+
+class _DataItem extends _ListItem {
+  final AppUsageListItem appUsage;
+  _DataItem({required this.appUsage});
+}
+
+class _SeparatorItem extends _ListItem {
+  final Key key;
+  final double height;
+  _SeparatorItem({required this.key, required this.height});
+}
 
 /// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
 class FilterContext {
@@ -88,6 +110,9 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
   Timer? _refreshDebounce;
   double? _savedScrollPosition;
   bool _isInitialLoading = true;
+  List<_ListItem> _flattenedItems = [];
+  double _maxDuration = 0;
+  double _maxCompareDuration = 0;
 
   @override
   ScrollController get scrollController => _scrollController;
@@ -232,6 +257,8 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
             }
             // Mark initial loading as complete
             _isInitialLoading = false;
+            // Build flattened items for lazy loading
+            _buildFlattenedItems();
           });
 
           // Notify about list count
@@ -274,10 +301,15 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
     _backLastScrollPosition();
   }
 
-  List<Widget> _buildAppUsageItems() {
-    final List<Widget> listItems = [];
-    if (_appUsageList == null || _appUsageList!.items.isEmpty) return listItems;
+  void _buildFlattenedItems() {
+    if (_appUsageList == null || _appUsageList!.items.isEmpty) {
+      _flattenedItems = [];
+      _maxDuration = 0;
+      _maxCompareDuration = 0;
+      return;
+    }
 
+    final List<_ListItem> items = [];
     String? currentGroup;
 
     final sortConfig = widget.sortConfig;
@@ -285,6 +317,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
         (sortConfig?.orderOptions.isNotEmpty ?? false) &&
         (sortConfig?.enableGrouping ?? false);
 
+    // Calculate max durations
     double maxDuration = 0;
     double maxCompareDuration = 0;
 
@@ -296,41 +329,37 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       if (compareDuration > maxCompareDuration) maxCompareDuration = compareDuration;
     }
 
+    _maxDuration = maxDuration;
+    _maxCompareDuration = maxCompareDuration;
+
+    // Build flattened model list
     for (var i = 0; i < _appUsageList!.items.length; i++) {
       final appUsage = _appUsageList!.items[i];
 
       if (showHeaders && appUsage.groupName != null && appUsage.groupName != currentGroup) {
         currentGroup = appUsage.groupName;
         if (i > 0) {
-          listItems.add(SizedBox(
+          items.add(_SeparatorItem(
             key: ValueKey('separator_header_${appUsage.id}'),
             height: AppTheme.sizeSmall,
           ));
         }
-        listItems.add(ListGroupHeader(
-          key: ValueKey('header_${appUsage.groupName}_$i'),
+        items.add(_HeaderItem(
           title: appUsage.groupName!,
           shouldTranslate: appUsage.isGroupNameTranslatable,
+          index: i,
         ));
       } else if (i > 0) {
-        listItems.add(SizedBox(
+        items.add(_SeparatorItem(
           key: ValueKey('separator_item_${appUsage.id}'),
           height: AppTheme.sizeSmall,
         ));
       }
 
-      listItems.add(Padding(
-        key: ValueKey('app_usage_${appUsage.id}'),
-        padding: const EdgeInsets.symmetric(vertical: 0),
-        child: AppUsageCard(
-          appUsage: appUsage,
-          maxDurationInListing: maxDuration,
-          maxCompareDurationInListing: maxCompareDuration,
-          onTap: () => widget.onOpenDetails?.call(appUsage.id),
-        ),
-      ));
+      items.add(_DataItem(appUsage: appUsage));
     }
-    return listItems;
+
+    _flattenedItems = items;
   }
 
   @override
@@ -351,7 +380,6 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       );
     }
 
-    final listItems = _buildAppUsageItems();
     final showLoadMore = _appUsageList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _appUsageList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
@@ -361,10 +389,31 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-      itemCount: listItems.length + extraItemCount,
+      itemCount: _flattenedItems.length + extraItemCount,
       itemBuilder: (context, index) {
-        if (index < listItems.length) {
-          return listItems[index];
+        if (index < _flattenedItems.length) {
+          final item = _flattenedItems[index];
+          return switch (item) {
+            _HeaderItem() => ListGroupHeader(
+                key: ValueKey('header_${item.title}_${item.index}'),
+                title: item.title,
+                shouldTranslate: item.shouldTranslate,
+              ),
+            _DataItem() => Padding(
+                key: ValueKey('app_usage_${item.appUsage.id}'),
+                padding: const EdgeInsets.symmetric(vertical: 0),
+                child: AppUsageCard(
+                  appUsage: item.appUsage,
+                  maxDurationInListing: _maxDuration,
+                  maxCompareDurationInListing: _maxCompareDuration,
+                  onTap: () => widget.onOpenDetails?.call(item.appUsage.id),
+                ),
+              ),
+            _SeparatorItem() => SizedBox(
+                key: item.key,
+                height: item.height,
+              ),
+          };
         } else if (showLoadMore) {
           return Padding(
             key: const ValueKey('load_more_button'),

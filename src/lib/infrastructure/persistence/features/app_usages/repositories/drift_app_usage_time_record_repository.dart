@@ -105,7 +105,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
               case AppUsageSortFields.duration:
                 return 'ad.total_duration $direction';
               case AppUsageSortFields.name:
-                return 'ad.name $direction';
+                return 'COALESCE(ad.display_name, ad.name) COLLATE NOCASE $direction';
               case AppUsageSortFields.device:
                 return 'ad.device_name $direction';
             }

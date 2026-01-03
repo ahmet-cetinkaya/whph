@@ -1,8 +1,8 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/core/application/features/app_usages/utils/app_usage_grouping_helper.dart';
 
@@ -37,32 +37,6 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
         endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null,
         compareStartDate = compareStartDate != null ? DateTimeHelper.toUtcDateTime(compareStartDate) : null,
         compareEndDate = compareEndDate != null ? DateTimeHelper.toUtcDateTime(compareEndDate) : null;
-}
-
-class AppUsageListItem {
-  String id;
-  String name;
-  String? displayName;
-  String? color;
-  String? deviceName;
-  int duration;
-  int? compareDuration;
-  List<AppUsageTagListItem> tags;
-  String? groupName;
-  bool isGroupNameTranslatable;
-
-  AppUsageListItem({
-    required this.id,
-    required this.name,
-    this.displayName,
-    this.color,
-    this.deviceName,
-    required this.duration,
-    this.compareDuration,
-    this.tags = const [],
-    this.groupName,
-    this.isGroupNameTranslatable = false,
-  });
 }
 
 class GetListByTopAppUsagesQueryResponse extends PaginatedList<AppUsageListItem> {
