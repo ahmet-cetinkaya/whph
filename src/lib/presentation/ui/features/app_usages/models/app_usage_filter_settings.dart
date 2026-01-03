@@ -1,4 +1,6 @@
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
+import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 
 class AppUsageFilterSettings {
   /// Selected tag IDs for filtering
@@ -22,6 +24,9 @@ class AppUsageFilterSettings {
   /// Flag to indicate if comparison with previous period should be shown
   final bool showComparison;
 
+  /// Current sort configuration
+  final SortConfig<AppUsageSortFields>? sortConfig;
+
   /// Default constructor
   AppUsageFilterSettings({
     this.tags,
@@ -31,6 +36,7 @@ class AppUsageFilterSettings {
     this.endDate,
     this.devices,
     this.showComparison = false,
+    this.sortConfig,
   });
 
   /// Create settings from a JSON map
@@ -70,6 +76,15 @@ class AppUsageFilterSettings {
       endDate: endDate,
       devices: json['devices'] != null ? List<String>.from(json['devices'] as List<dynamic>) : null,
       showComparison: json['showComparison'] as bool? ?? false,
+      sortConfig: json['sortConfig'] != null
+          ? SortConfig.fromJson(
+              json['sortConfig'],
+              (v) => AppUsageSortFields.values.firstWhere(
+                (e) => e.toString() == v,
+                orElse: () => AppUsageSortFields.duration,
+              ),
+            )
+          : null,
     );
   }
 
@@ -100,6 +115,10 @@ class AppUsageFilterSettings {
 
     json['showComparison'] = showComparison;
 
+    if (sortConfig != null) {
+      json['sortConfig'] = sortConfig!.toJson((v) => v.toString());
+    }
+
     return json;
   }
 
@@ -112,6 +131,7 @@ class AppUsageFilterSettings {
     DateTime? endDate,
     List<String>? devices,
     bool? showComparison,
+    SortConfig<AppUsageSortFields>? sortConfig,
   }) {
     return AppUsageFilterSettings(
       tags: tags ?? this.tags,
@@ -121,6 +141,7 @@ class AppUsageFilterSettings {
       endDate: endDate ?? this.endDate,
       devices: devices ?? this.devices,
       showComparison: showComparison ?? this.showComparison,
+      sortConfig: sortConfig ?? this.sortConfig,
     );
   }
 }

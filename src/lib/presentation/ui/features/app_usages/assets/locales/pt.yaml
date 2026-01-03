@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Configurações de Rastreamento
       description: Configure regras de rastreamento de apps, defina marcação automática e gerencie quais aplicativos monitorar. Personalize o rastreamento de acordo com suas necessidades de produtividade.
+  sort:
+    duration: Duração
+    name: Nome
+    device: Dispositivo

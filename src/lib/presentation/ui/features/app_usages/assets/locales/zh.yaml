@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: 跟踪设置
       description: 配置应用跟踪规则，设置自动标签，并管理要监控的应用程序。根据您的生产力需求自定义跟踪。
+  sort:
+    duration: 时长
+    name: 名称
+    device: 设备

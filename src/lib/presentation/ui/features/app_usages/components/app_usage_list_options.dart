@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/models/app_usage_filter_settings.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -14,6 +15,10 @@ import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_tra
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
+import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
+import 'package:acore/acore.dart' show SortDirection;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'dart:async';
@@ -26,6 +31,7 @@ class AppUsageFilterState {
   final DateTime? endDate;
   final List<String>? devices;
   final bool showComparison;
+  final SortConfig<AppUsageSortFields>? sortConfig;
 
   const AppUsageFilterState({
     this.tags,
@@ -35,6 +41,7 @@ class AppUsageFilterState {
     this.endDate,
     this.devices,
     this.showComparison = false,
+    this.sortConfig,
   });
 
   AppUsageFilterState copyWith({
@@ -45,6 +52,7 @@ class AppUsageFilterState {
     DateTime? endDate,
     List<String>? devices,
     bool? showComparison,
+    SortConfig<AppUsageSortFields>? sortConfig,
   }) {
     return AppUsageFilterState(
       tags: tags ?? this.tags,
@@ -54,6 +62,7 @@ class AppUsageFilterState {
       endDate: endDate ?? this.endDate,
       devices: devices ?? this.devices,
       showComparison: showComparison ?? this.showComparison,
+      sortConfig: sortConfig ?? this.sortConfig,
     );
   }
 }
@@ -121,6 +130,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
         endDate: effectiveEnd ?? settings.endDate,
         devices: settings.devices,
         showComparison: settings.showComparison,
+        sortConfig: settings.sortConfig,
       );
 
       if (mounted) {
@@ -153,6 +163,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
           endDate: _currentState.endDate,
           devices: _currentState.devices,
           showComparison: _currentState.showComparison,
+          sortConfig: _currentState.sortConfig,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -182,6 +193,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       endDate: _currentState.endDate,
       devices: _currentState.devices,
       showComparison: _currentState.showComparison,
+      sortConfig: _currentState.sortConfig,
     );
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -285,6 +297,8 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       startDate: _currentState.startDate,
       endDate: _currentState.endDate,
       devices: selectedValues.isEmpty ? null : selectedValues,
+      showComparison: _currentState.showComparison,
+      sortConfig: _currentState.sortConfig,
     );
 
     if (mounted) {
@@ -292,6 +306,14 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
     }
 
     widget.onFiltersChanged(newState);
+    handleFilterChange();
+  }
+
+  void _handleSortChange(SortConfig<AppUsageSortFields>? sortConfig) {
+    setState(() {
+      _currentState = _currentState.copyWith(sortConfig: sortConfig);
+    });
+    widget.onFiltersChanged(_currentState);
     handleFilterChange();
   }
 
@@ -369,6 +391,45 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
               widget.onFiltersChanged(newState);
               handleFilterChange();
             },
+          ),
+
+          // Sort Button
+          SortDialogButton<AppUsageSortFields>(
+            tooltip: _translationService.translate(SharedTranslationKeys.sort),
+            availableOptions: [
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.name,
+                translationKey: AppUsageTranslationKeys.sortName,
+              ),
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.duration,
+                translationKey: AppUsageTranslationKeys.sortDuration,
+              ),
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.device,
+                translationKey: AppUsageTranslationKeys.sortDevice,
+              ),
+            ],
+            config: _currentState.sortConfig ??
+                SortConfig(
+                  orderOptions: [
+                    SortOptionWithTranslationKey(
+                      field: AppUsageSortFields.duration,
+                      translationKey: AppUsageTranslationKeys.sortDuration,
+                      direction: SortDirection.desc,
+                    ),
+                  ],
+                ),
+            defaultConfig: SortConfig(
+              orderOptions: [
+                SortOptionWithTranslationKey(
+                  field: AppUsageSortFields.duration,
+                  translationKey: AppUsageTranslationKeys.sortDuration,
+                  direction: SortDirection.desc,
+                ),
+              ],
+            ),
+            onConfigChanged: _handleSortChange,
           ),
 
           // Save Button

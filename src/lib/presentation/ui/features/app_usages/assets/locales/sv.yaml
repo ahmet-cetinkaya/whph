@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Spårningsinställningar
       description: Konfigurera appspårningsregler, ställ in automatisk taggning och hantera vilka applikationer som ska övervakas. Anpassa spårningen efter dina produktivitetsbehov.
+  sort:
+    duration: Varaktighet
+    name: Namn
+    device: Enhet

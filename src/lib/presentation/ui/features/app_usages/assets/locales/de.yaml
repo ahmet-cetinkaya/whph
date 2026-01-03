@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Tracking-Einstellungen
       description: Konfigurieren Sie App-Tracking-Regeln, richten Sie automatisches Tagging ein und verwalten Sie, welche Anwendungen überwacht werden sollen. Passen Sie das Tracking an Ihre Produktivitätsbedürfnisse an.
+  sort:
+    duration: Dauer
+    name: Name
+    device: Gerät

@@ -323,6 +323,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                       filterEndDate: _getEffectiveEndDate(),
                       filterByDevices: _filterState.devices,
                       showComparison: _filterState.showComparison,
+                      sortConfig: _filterState.sortConfig,
                       paginationMode: PaginationMode.infinityScroll),
                 ),
             ],

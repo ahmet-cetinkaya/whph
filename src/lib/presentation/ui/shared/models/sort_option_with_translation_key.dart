@@ -17,4 +17,23 @@ class SortOptionWithTranslationKey<T> extends SortOption<T> {
       direction: direction,
     );
   }
+
+  factory SortOptionWithTranslationKey.fromJson(Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
+    return SortOptionWithTranslationKey(
+      field: fromJsonT(json['field']),
+      translationKey: json['translationKey'] as String,
+      direction: SortDirection.values.firstWhere(
+        (e) => e.toString() == json['direction'],
+        orElse: () => SortDirection.asc,
+      ),
+    );
+  }
+
+  Map<String, dynamic> toJson(dynamic Function(T) toJsonT) {
+    return {
+      'field': toJsonT(field),
+      'translationKey': translationKey,
+      'direction': direction.toString(),
+    };
+  }
 }
