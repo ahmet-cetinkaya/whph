@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 
@@ -26,10 +27,13 @@ class ListGroupHeader extends StatelessWidget {
       }
     }
 
-    return SectionHeader(
-      title: displayTitle,
-      trailing: const Divider(),
-      expandTrailing: true,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+      child: SectionHeader(
+        title: displayTitle,
+        trailing: const Divider(),
+        expandTrailing: true,
+      ),
     );
   }
 }
