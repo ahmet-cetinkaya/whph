@@ -378,7 +378,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                   showDragHandle: widget.enableReordering &&
                       widget.sortConfig?.useCustomOrder == true &&
                       !widget.forceOriginalLayout,
-                  dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+                  dragIndex: !habit.isArchived ? index : null, // Only draggable if not archived
                 ),
               ),
             );
@@ -499,7 +499,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             showDragHandle:
                 widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
-            dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
+            dragIndex: !habit.isArchived ? index : null, // Only draggable if not archived
           ),
         ),
       ));
@@ -616,16 +616,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         final habitToMove = reorderedItems.removeAt(oldIndex);
 
         // Update the moved habit's order to the target order for correct visual display
-        final updatedHabit = HabitListItem(
-          id: habitToMove.id,
-          name: habitToMove.name,
-          tags: habitToMove.tags,
-          estimatedTime: habitToMove.estimatedTime,
-          hasReminder: habitToMove.hasReminder,
-          reminderTime: habitToMove.reminderTime,
-          reminderDays: habitToMove.reminderDays,
-          archivedDate: habitToMove.archivedDate,
-          order: targetOrder, // Use the calculated target order
+        final updatedHabit = habitToMove.copyWith(
+          order: targetOrder,
         );
 
         reorderedItems.insert(newIndex, updatedHabit);
@@ -661,16 +653,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               final updatedItems = List<HabitListItem>.from(_habitList!.items);
               final habitIndex = updatedItems.indexWhere((item) => item.id == habit.id);
               if (habitIndex != -1) {
-                updatedItems[habitIndex] = HabitListItem(
-                  id: habit.id,
-                  name: habit.name,
-                  tags: habit.tags,
-                  estimatedTime: habit.estimatedTime,
-                  hasReminder: habit.hasReminder,
-                  reminderTime: habit.reminderTime,
-                  reminderDays: habit.reminderDays,
-                  archivedDate: habit.archivedDate,
-                  order: result.order, // Use the final order from backend
+                updatedItems[habitIndex] = updatedItems[habitIndex].copyWith(
+                  order: result.order,
                 );
 
                 // Re-sort with the updated order

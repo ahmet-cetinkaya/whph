@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_repositor
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/core/application/features/habits/utils/habit_grouping_helper.dart';
@@ -91,18 +92,24 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       primarySortField = request.sortBy!.first.field;
     }
 
-    for (final habitItem in filteredHabits) {
+    final resultItems = filteredHabits.map((habitItem) {
       // Assign tags
+      List<TagListItem> tags = habitItem.tags;
       if (habitTagsMap.containsKey(habitItem.id)) {
-        habitItem.tags = habitTagsMap[habitItem.id]!;
+        tags = habitTagsMap[habitItem.id]!;
       }
 
       // Assign group name
-      habitItem.groupName = HabitGroupingHelper.getGroupName(habitItem, primarySortField);
-    }
+      final groupName = HabitGroupingHelper.getGroupName(habitItem, primarySortField);
+
+      return habitItem.copyWith(
+        tags: tags,
+        groupName: groupName,
+      );
+    }).toList();
 
     return GetListHabitsQueryResponse(
-      items: filteredHabits,
+      items: resultItems,
       totalItemCount: habits.totalItemCount,
       pageIndex: habits.pageIndex,
       pageSize: habits.pageSize,

@@ -92,7 +92,7 @@ class ReminderService {
       // Schedule reminders for habits with reminders enabled
       for (final habitItem in habitsResponse.items) {
         // Don't schedule reminders for archived habits
-        if (habitItem.isArchived()) {
+        if (habitItem.isArchived) {
           continue;
         }
 

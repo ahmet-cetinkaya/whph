@@ -395,12 +395,12 @@ class _HabitCardState extends State<HabitCard> {
     final trailingWidgets = <Widget>[];
 
     // Add reminder icon if applicable
-    if (widget.habit.hasReminder && !widget.habit.isArchived()) {
+    if (widget.habit.hasReminder && !widget.habit.isArchived) {
       trailingWidgets.add(_buildReminderIcon());
     }
 
     // Add calendar if not archived
-    if (!widget.habit.isArchived()) {
+    if (!widget.habit.isArchived) {
       if (trailingWidgets.isNotEmpty) {
         trailingWidgets.add(const SizedBox(width: HabitUiConstants.dragHandleSpacer));
       }

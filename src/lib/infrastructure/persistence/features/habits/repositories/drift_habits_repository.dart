@@ -198,9 +198,13 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
+    final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
+
     // LEFT JOIN for actualTime aggregation and sorting
-    // Always join to get actualTime
-    const joinClause = "LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL";
+    // Only join if we are sorting/grouping by actual_time to avoid unnecessary aggregation
+    final joinClause = hasActualTimeSort
+        ? "LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL"
+        : "";
 
     // Build ORDER BY clause
     String? orderByClause;
@@ -220,7 +224,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     // Main Query
     final query = database.customSelect(
       """
-      SELECT h.*, COALESCE(SUM(htr.duration), 0) as total_duration
+      SELECT h.* ${hasActualTimeSort ? ', COALESCE(SUM(htr.duration), 0) as total_duration' : ''}
       FROM habit_table h
       $joinClause
       ${whereClause ?? ''}
@@ -233,7 +237,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
-      readsFrom: {table, database.habitTimeRecordTable},
+      readsFrom: {table, if (hasActualTimeSort) database.habitTimeRecordTable},
     );
 
     final rows = await query.get();
@@ -242,7 +246,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       final habitOrFuture = table.map(row.data);
       // Ensure we have the Habit object, whether mapped sync or async
       final habit = habitOrFuture is Future<Habit> ? await habitOrFuture : habitOrFuture;
-      final totalDuration = row.read<int>('total_duration');
+      final totalDuration = hasActualTimeSort ? row.read<int>('total_duration') : 0;
 
       return HabitListItem(
         id: habit.id,
