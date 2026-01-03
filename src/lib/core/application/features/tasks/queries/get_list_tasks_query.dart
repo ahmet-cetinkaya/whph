@@ -1,26 +1,10 @@
-import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
 
-enum TaskSortFields {
-  createdDate,
-  deadlineDate,
-  totalDuration,
-  estimatedTime,
-  modifiedDate,
-  plannedDate,
-  priority,
-  title,
-}
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
@@ -127,88 +111,6 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   }
 }
 
-class TaskListItem {
-  String id;
-  String title;
-  EisenhowerPriority? priority;
-  final DateTime? plannedDate;
-  final DateTime? deadlineDate;
-  final DateTime? modifiedDate;
-  final DateTime? createdDate;
-  final bool isCompleted;
-  final List<TagListItem> tags;
-  final int? estimatedTime;
-  final int totalElapsedTime;
-  final String? parentTaskId;
-  final double subTasksCompletionPercentage;
-  final double order;
-  final List<TaskListItem> subTasks;
-  final ReminderTime plannedDateReminderTime;
-  final ReminderTime deadlineDateReminderTime;
-  final String? groupName;
-
-  TaskListItem({
-    required this.id,
-    required this.title,
-    required this.priority,
-    required this.isCompleted,
-    this.plannedDate,
-    this.deadlineDate,
-    this.modifiedDate,
-    this.createdDate,
-    this.tags = const [],
-    this.estimatedTime,
-    this.parentTaskId,
-    this.subTasksCompletionPercentage = 0,
-    this.order = 0.0,
-    this.subTasks = const [],
-    this.totalElapsedTime = 0,
-    this.plannedDateReminderTime = ReminderTime.none,
-    this.deadlineDateReminderTime = ReminderTime.none,
-    this.groupName,
-  });
-
-  TaskListItem copyWith({
-    String? id,
-    String? title,
-    EisenhowerPriority? priority,
-    DateTime? plannedDate,
-    DateTime? deadlineDate,
-    DateTime? modifiedDate,
-    DateTime? createdDate,
-    bool? isCompleted,
-    List<TagListItem>? tags,
-    int? estimatedTime,
-    int? totalElapsedTime,
-    String? parentTaskId,
-    double? subTasksCompletionPercentage,
-    List<TaskListItem>? subTasks,
-    ReminderTime? plannedDateReminderTime,
-    ReminderTime? deadlineDateReminderTime,
-    String? groupName,
-  }) {
-    return TaskListItem(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      priority: priority ?? this.priority,
-      plannedDate: plannedDate ?? this.plannedDate,
-      deadlineDate: deadlineDate ?? this.deadlineDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      createdDate: createdDate ?? this.createdDate,
-      isCompleted: isCompleted ?? this.isCompleted,
-      tags: tags ?? this.tags,
-      estimatedTime: estimatedTime ?? this.estimatedTime,
-      totalElapsedTime: totalElapsedTime ?? this.totalElapsedTime,
-      parentTaskId: parentTaskId ?? this.parentTaskId,
-      subTasksCompletionPercentage: subTasksCompletionPercentage ?? this.subTasksCompletionPercentage,
-      subTasks: subTasks ?? this.subTasks,
-      plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
-      deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
-      groupName: groupName ?? this.groupName,
-    );
-  }
-}
-
 class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
   GetListTasksQueryResponse(
       {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
@@ -216,23 +118,12 @@ class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
 
 class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, GetListTasksQueryResponse> {
   late final ITaskRepository _taskRepository;
-  late final ITaskTagRepository _taskTagRepository;
-  late final ITagRepository _tagRepository;
-  late final ITaskTimeRecordRepository _taskTimeRecordRepository;
 
-  GetListTasksQueryHandler(
-      {required ITaskRepository taskRepository,
-      required ITaskTagRepository taskTagRepository,
-      required ITagRepository tagRepository,
-      required ITaskTimeRecordRepository taskTimeRecordRepository})
-      : _taskRepository = taskRepository,
-        _taskTagRepository = taskTagRepository,
-        _tagRepository = tagRepository,
-        _taskTimeRecordRepository = taskTimeRecordRepository;
+  GetListTasksQueryHandler({required ITaskRepository taskRepository}) : _taskRepository = taskRepository;
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
-    final tasks = await _taskRepository.getListWithOptions(
+    final tasks = await _taskRepository.getListWithDetails(
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
       filter: TaskQueryFilter(
@@ -252,132 +143,12 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         sortBy: _getCustomOrders(request),
         sortByCustomSort: request.sortByCustomSort,
         ignoreArchivedTagVisibility: request.ignoreArchivedTagVisibility,
+        enableGrouping: request.enableGrouping,
       ),
     );
 
-    // Fixing task orders with order value 0
-    var needsReorder = tasks.items.any((task) => task.order == 0);
-    if (needsReorder) {
-      const int orderStep = 1000;
-      var orderCounter = orderStep;
-
-      for (var task in tasks.items) {
-        if (task.order == 0) {
-          task.order = orderCounter.toDouble();
-          task.modifiedDate = DateTime.now().toUtc();
-          await _taskRepository.update(task);
-          orderCounter += orderStep;
-        }
-      }
-    }
-
-    List<TaskListItem> taskListItems = [];
-
-    for (final task in tasks.items) {
-      // Fetch tags for each task
-      PaginatedList<TaskTag> taskTags =
-          await _taskTagRepository.getList(0, 5, customWhereFilter: CustomWhereFilter("task_id = ?", [task.id]));
-
-      final tagItems = await Future.wait(taskTags.items.map((tt) async {
-        try {
-          final tag = await _tagRepository.getById(tt.tagId);
-
-          return TagListItem(
-            id: tt.tagId,
-            name: tag?.name ?? "Unknown Tag",
-            color: tag?.color,
-          );
-        } catch (e) {
-          Logger.error('Failed to fetch tag ${tt.tagId} for task ${task.id}: $e');
-          return TagListItem(
-            id: tt.tagId,
-            name: "Error Loading Tag",
-            color: null,
-          );
-        }
-      }).toList());
-
-      final subTasks = await _taskRepository.getAll(
-        customWhereFilter: CustomWhereFilter("parent_task_id = ?", [task.id]),
-      );
-
-      double subTasksCompletionPercentage = 0;
-      if (subTasks.isNotEmpty) {
-        final completedSubTasks = subTasks.where((subTask) => subTask.isCompleted).length;
-        subTasksCompletionPercentage = (completedSubTasks / subTasks.length) * 100;
-      }
-
-      // Fetch durations for all subtasks in a batch
-      final subTaskIds = subTasks.map((st) => st.id).toList();
-      final subTaskDurations = subTaskIds.isNotEmpty
-          ? await _taskTimeRecordRepository.getTotalDurationsByTaskIds(subTaskIds)
-          : <String, int>{};
-
-      // Convert subtasks to TaskListItem
-      final subTaskListItems = subTasks
-          .map((subTask) => TaskListItem(
-                id: subTask.id,
-                title: subTask.title,
-                priority: subTask.priority,
-                isCompleted: subTask.isCompleted,
-                plannedDate: subTask.plannedDate,
-                deadlineDate: subTask.deadlineDate,
-                estimatedTime: subTask.estimatedTime,
-                totalElapsedTime: subTaskDurations[subTask.id] ?? 0,
-                parentTaskId: subTask.parentTaskId,
-                subTasksCompletionPercentage: 0,
-                order: subTask.order,
-                plannedDateReminderTime: subTask.plannedDateReminderTime,
-                deadlineDateReminderTime: subTask.deadlineDateReminderTime,
-              ))
-          .toList();
-
-      // Determine primary sort field for grouping
-      // Default to createdDate if no sort is specified or if custom sort is active (unless we want to group by 'order', which might not make sense)
-      // Using the first sort option as the primary grouping key
-      TaskSortFields? primarySortField;
-      if (request.sortBy != null && request.sortBy!.isNotEmpty && !request.sortByCustomSort) {
-        primarySortField = request.sortBy!.first.field;
-      }
-
-      taskListItems.add(TaskListItem(
-        id: task.id,
-        title: task.title,
-        priority: task.priority,
-        isCompleted: task.isCompleted,
-        plannedDate: task.plannedDate,
-        deadlineDate: task.deadlineDate,
-        tags: tagItems, // Now using TagListItem list
-        estimatedTime: task.estimatedTime,
-        totalElapsedTime: task.totalDuration,
-        parentTaskId: task.parentTaskId,
-        subTasksCompletionPercentage: subTasksCompletionPercentage,
-        order: task.order,
-        subTasks: subTaskListItems,
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-
-        groupName: request.enableGrouping
-            ? TaskGroupingHelper.getGroupName(
-                TaskListItem(
-                  id: task.id,
-                  title: task.title,
-                  priority: task.priority,
-                  isCompleted: task.isCompleted,
-                  plannedDate: task.plannedDate,
-                  deadlineDate: task.deadlineDate,
-                  modifiedDate: task.modifiedDate,
-                  createdDate: task.createdDate,
-                  estimatedTime: task.estimatedTime,
-                  totalElapsedTime: task.totalDuration, // Needed for duration grouping
-                ),
-                primarySortField)
-            : null,
-      ));
-    }
-
     return GetListTasksQueryResponse(
-      items: taskListItems,
+      items: tasks.items,
       totalItemCount: tasks.totalItemCount,
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,

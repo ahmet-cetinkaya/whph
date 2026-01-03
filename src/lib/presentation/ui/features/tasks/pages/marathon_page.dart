@@ -7,6 +7,8 @@ import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';

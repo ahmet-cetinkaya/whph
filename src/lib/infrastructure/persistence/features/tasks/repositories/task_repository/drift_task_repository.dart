@@ -1,6 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
@@ -488,5 +493,171 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   @override
   Insertable<Task> toCompanion(Task entity) {
     return _mapper.toCompanion(entity);
+  }
+
+  @override
+  Future<PaginatedList<TaskListItem>> getListWithDetails({
+    required int pageIndex,
+    required int pageSize,
+    TaskQueryFilter? filter,
+    bool includeDeleted = false,
+  }) async {
+    // 1. Fetch Request Page
+    final tasksWithDuration = await getListWithOptions(
+        pageIndex: pageIndex, pageSize: pageSize, filter: filter, includeDeleted: includeDeleted);
+
+    if (tasksWithDuration.items.isEmpty) {
+      return PaginatedList(
+          items: [], totalItemCount: tasksWithDuration.totalItemCount, pageIndex: pageIndex, pageSize: pageSize);
+    }
+
+    final taskIds = tasksWithDuration.items.map((e) => e.id).toList();
+
+    // 2. Batch Fetch Tags (efficient IN clause)
+    // Manually constructed query to avoid N+1 calls
+    final tagsQuery = database.customSelect(
+      '''
+      SELECT tt.task_id, t.id, t.name, t.color, t.is_archived
+      FROM task_tag_table tt
+      INNER JOIN tag_table t ON tt.tag_id = t.id
+      WHERE tt.task_id IN (${taskIds.map((_) => '?').join(',')})
+      AND tt.deleted_date IS NULL
+      AND (t.deleted_date IS NULL)
+      ''',
+      variables: taskIds.map((e) => Variable.withString(e)).toList(),
+      readsFrom: {database.taskTagTable, database.tagTable},
+    );
+    final tagsResult = await tagsQuery.get();
+
+    final tagsMap = <String, List<TagListItem>>{};
+    for (final row in tagsResult) {
+      final taskId = row.read<String>('task_id');
+      final tagItem = TagListItem(
+        id: row.read<String>('id'),
+        name: row.read<String>('name'),
+        color: row.read<String?>('color'),
+        isArchived: row.read<bool>('is_archived'),
+      );
+      tagsMap.putIfAbsent(taskId, () => []).add(tagItem);
+    }
+
+    // 3. Batch Fetch Subtasks
+    final subtasksQuery = database.customSelect(
+      'SELECT * FROM ${table.actualTableName} WHERE parent_task_id IN (${taskIds.map((_) => '?').join(',')}) AND deleted_date IS NULL',
+      variables: taskIds.map((e) => Variable.withString(e)).toList(),
+      readsFrom: {table},
+    );
+    final subtasksResult = await subtasksQuery.get();
+    final allSubtasks = subtasksResult.map((row) => _mapper.mapTaskFromRow(row.data)).toList();
+
+    // 4. Batch Fetch Subtask Durations
+    final subtaskIds = allSubtasks.map((e) => e.id).toList();
+    final subtaskDurationsMap = <String, int>{};
+    if (subtaskIds.isNotEmpty) {
+      final durationQuery = database.customSelect(
+          '''
+         SELECT task_id, SUM(duration) as total_duration 
+         FROM task_time_record_table 
+         WHERE task_id IN (${subtaskIds.map((_) => '?').join(',')})
+         AND deleted_date IS NULL
+         GROUP BY task_id
+         ''',
+          variables: subtaskIds.map((e) => Variable.withString(e)).toList(),
+          readsFrom: {database.taskTimeRecordTable});
+      final durationResult = await durationQuery.get();
+      for (final row in durationResult) {
+        subtaskDurationsMap[row.read<String>('task_id')] = row.read<int>('total_duration');
+      }
+    }
+
+    // Group Subtasks
+    final subtasksMap = <String, List<TaskListItem>>{};
+    for (final subtask in allSubtasks) {
+      final parentId = subtask.parentTaskId;
+      if (parentId == null) continue;
+
+      final duration = subtaskDurationsMap[subtask.id] ?? 0;
+
+      final subItem = TaskListItem(
+          id: subtask.id,
+          title: subtask.title,
+          priority: subtask.priority,
+          isCompleted: subtask.isCompleted,
+          plannedDate: subtask.plannedDate,
+          deadlineDate: subtask.deadlineDate,
+          estimatedTime: subtask.estimatedTime,
+          totalElapsedTime: duration,
+          parentTaskId: subtask.parentTaskId,
+          order: subtask.order,
+          plannedDateReminderTime: subtask.plannedDateReminderTime,
+          deadlineDateReminderTime: subtask.deadlineDateReminderTime);
+      subtasksMap.putIfAbsent(parentId, () => []).add(subItem);
+    }
+
+    // 5. Construct Final List
+    TaskSortFields? primarySortField;
+    if (filter?.sortBy != null && filter!.sortBy!.isNotEmpty && !(filter.sortByCustomSort)) {
+      final sortFieldString = filter.sortBy!.first.field;
+      if (sortFieldString == 'created_date') {
+        primarySortField = TaskSortFields.createdDate;
+      } else if (sortFieldString == 'deadline_date') {
+        primarySortField = TaskSortFields.deadlineDate;
+      } else if (sortFieldString == 'total_duration') {
+        primarySortField = TaskSortFields.totalDuration;
+      } else if (sortFieldString == 'estimated_time') {
+        primarySortField = TaskSortFields.estimatedTime;
+      } else if (sortFieldString == 'modified_date') {
+        primarySortField = TaskSortFields.modifiedDate;
+      } else if (sortFieldString == 'planned_date') {
+        primarySortField = TaskSortFields.plannedDate;
+      } else if (sortFieldString == 'priority') {
+        primarySortField = TaskSortFields.priority;
+      } else if (sortFieldString == 'title') {
+        primarySortField = TaskSortFields.title;
+      }
+    }
+
+    final detailedItems = tasksWithDuration.items.map((task) {
+      final subTasksList = subtasksMap[task.id] ?? [];
+
+      double subTasksCompletionPercentage = 0;
+      if (subTasksList.isNotEmpty) {
+        final completed = subTasksList.where((s) => s.isCompleted).length;
+        subTasksCompletionPercentage = (completed / subTasksList.length) * 100;
+      }
+
+      final tItem = TaskListItem(
+        id: task.id,
+        title: task.title,
+        priority: task.priority,
+        // Assuming TaskWithTotalDuration has completedAt and logic for isCompleted
+        isCompleted: task.completedAt != null,
+        plannedDate: task.plannedDate,
+        deadlineDate: task.deadlineDate,
+        modifiedDate: task.modifiedDate,
+        createdDate: task.createdDate,
+        tags: tagsMap[task.id] ?? [],
+        estimatedTime: task.estimatedTime,
+        totalElapsedTime: task.totalDuration,
+        parentTaskId: task.parentTaskId,
+        subTasksCompletionPercentage: subTasksCompletionPercentage,
+        order: task.order,
+        subTasks: subTasksList,
+        plannedDateReminderTime: task.plannedDateReminderTime,
+        deadlineDateReminderTime: task.deadlineDateReminderTime,
+      );
+
+      // Add grouping
+      final groupName =
+          filter?.enableGrouping == true ? TaskGroupingHelper.getGroupName(tItem, primarySortField) : null;
+
+      return tItem.copyWith(groupName: groupName);
+    }).toList();
+
+    return PaginatedList(
+        items: detailedItems,
+        totalItemCount: tasksWithDuration.totalItemCount,
+        pageIndex: pageIndex,
+        pageSize: pageSize);
   }
 }

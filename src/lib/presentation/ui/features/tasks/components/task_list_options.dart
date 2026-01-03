@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'dart:async';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';

@@ -3,6 +3,7 @@ import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
 import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 
 abstract class ITaskRepository extends app.IRepository<Task, String> {
   Future<PaginatedList<TaskWithTotalDuration>> getListWithTotalDuration(
@@ -36,6 +37,13 @@ abstract class ITaskRepository extends app.IRepository<Task, String> {
       includeDeleted: includeDeleted,
     );
   }
+
+  Future<PaginatedList<TaskListItem>> getListWithDetails({
+    required int pageIndex,
+    required int pageSize,
+    TaskQueryFilter? filter,
+    bool includeDeleted = false,
+  });
 
   Future<List<Task>> getByParentTaskId(String parentTaskId);
 

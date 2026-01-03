@@ -17,7 +17,9 @@ class TaskQueryFilter {
   final bool includeParentAndSubTasks;
   final List<CustomOrder>? sortBy;
   final bool sortByCustomSort;
+
   final bool ignoreArchivedTagVisibility;
+  final bool enableGrouping;
 
   const TaskQueryFilter({
     this.tags,
@@ -36,6 +38,7 @@ class TaskQueryFilter {
     this.sortBy,
     this.sortByCustomSort = false,
     this.ignoreArchivedTagVisibility = false,
+    this.enableGrouping = false,
   });
 
   TaskQueryFilter copyWith({
@@ -55,6 +58,7 @@ class TaskQueryFilter {
     List<CustomOrder>? sortBy,
     bool? sortByCustomSort,
     bool? ignoreArchivedTagVisibility,
+    bool? enableGrouping,
   }) {
     return TaskQueryFilter(
       tags: tags ?? this.tags,
@@ -73,6 +77,7 @@ class TaskQueryFilter {
       sortBy: sortBy ?? this.sortBy,
       sortByCustomSort: sortByCustomSort ?? this.sortByCustomSort,
       ignoreArchivedTagVisibility: ignoreArchivedTagVisibility ?? this.ignoreArchivedTagVisibility,
+      enableGrouping: enableGrouping ?? this.enableGrouping,
     );
   }
 }

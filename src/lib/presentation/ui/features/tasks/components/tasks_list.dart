@@ -7,8 +7,11 @@ import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';

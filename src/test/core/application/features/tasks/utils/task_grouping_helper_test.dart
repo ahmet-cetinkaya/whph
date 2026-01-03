@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';

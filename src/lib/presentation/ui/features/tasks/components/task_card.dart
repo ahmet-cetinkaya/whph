@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
