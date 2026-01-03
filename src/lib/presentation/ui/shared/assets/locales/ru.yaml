@@ -305,6 +305,7 @@ shared:
     compare_with_previous: Сравнить с предыдущим периодом
     filter_by_tags: Фильтровать по тегам
     refresh: Обновить
+    reset: Сброс
   ui:
     report_error: Сообщить
   units:
@@ -399,6 +400,9 @@ shared:
     future: Будущее
     next_7_days: Следующие 7 дней
     no_date: Без даты
+    yesterday: Вчера
+    last_7_days: Последние 7 дней
+    older: Старше
   duration_group:
     less_than_15_min: < 15 мин
     15_30_min: 15 - 30 мин

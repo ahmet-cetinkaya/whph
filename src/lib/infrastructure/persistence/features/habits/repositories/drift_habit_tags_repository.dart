@@ -24,6 +24,8 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
     implements IHabitTagsRepository {
   DriftHabitTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().habitTagTable);
 
+  DriftHabitTagRepository.withDatabase(AppDatabase db) : super(db, db.habitTagTable);
+
   @override
   Expression<String> getPrimaryKey(HabitTagTable t) {
     return t.id;

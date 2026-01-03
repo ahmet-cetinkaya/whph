@@ -303,6 +303,7 @@ shared:
     compare_with_previous: Jämför med föregående period
     filter_by_tags: Filtrera efter taggar
     refresh: Uppdatera
+    reset: Återställ
   ui:
     report_error: Rapportera
   units:
@@ -397,6 +398,9 @@ shared:
     future: Framtid
     next_7_days: Kommande 7 dagar
     no_date: Inget datum
+    yesterday: Igår
+    last_7_days: Senaste 7 dagarna
+    older: Äldre
   duration_group:
     less_than_15_min: < 15 min
     15_30_min: 15 - 30 min

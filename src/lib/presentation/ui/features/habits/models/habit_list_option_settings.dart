@@ -1,6 +1,6 @@
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 
@@ -58,6 +58,7 @@ class HabitListOptionSettings {
       sortConfig = SortConfig<HabitSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
+        enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
       );
     }
 
@@ -102,6 +103,7 @@ class HabitListOptionSettings {
                 })
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
+        'enableGrouping': sortConfig!.enableGrouping,
       };
     }
 

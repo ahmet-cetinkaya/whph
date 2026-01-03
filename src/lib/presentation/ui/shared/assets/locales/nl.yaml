@@ -311,6 +311,7 @@ shared:
     compare_with_previous: Vergelijken met vorige periode
     filter_by_tags: Filteren op tags
     refresh: Vernieuwen
+    reset: Reset
   ui:
     report_error: Melden
   units:
@@ -411,6 +412,9 @@ shared:
     future: Toekomst
     next_7_days: Volgende 7 dagen
     no_date: Geen datum
+    yesterday: Gisteren
+    last_7_days: Laatste 7 dagen
+    older: Ouder
   duration_group:
     less_than_15_min: < 15 min
     15_30_min: 15 - 30 min

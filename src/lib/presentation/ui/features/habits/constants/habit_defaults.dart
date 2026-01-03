@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
@@ -23,5 +23,6 @@ class HabitDefaults {
       ),
     ],
     useCustomOrder: false,
+    enableGrouping: false,
   );
 }

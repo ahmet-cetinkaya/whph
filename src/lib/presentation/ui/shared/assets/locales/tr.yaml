@@ -310,6 +310,7 @@ shared:
     compare_with_previous: Önceki dönemle karşılaştır
     filter_by_tags: Etiketlere göre filtrele
     refresh: Yenile
+    reset: Sıfırla
   ui:
     report_error: Bildir
   units:
@@ -407,6 +408,9 @@ shared:
     future: Gelecek
     next_7_days: Gelecek 7 gün
     no_date: Tarih yok
+    yesterday: Dün
+    last_7_days: Son 7 Gün
+    older: Daha eski
   duration_group:
     less_than_15_min: < 15 dak
     15_30_min: 15 - 30 dak

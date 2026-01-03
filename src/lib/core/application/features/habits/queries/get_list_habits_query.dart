@@ -8,14 +8,8 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 
-enum HabitSortFields {
-  name,
-  createdDate,
-  modifiedDate,
-  estimatedTime,
-  actualTime,
-  archivedDate,
-}
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:whph/core/application/features/habits/utils/habit_grouping_helper.dart';
 
 class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageIndex;
@@ -60,6 +54,7 @@ class HabitListItem {
   int? dailyTarget;
   int targetFrequency;
   int periodDays;
+  String? groupName;
 
   HabitListItem({
     required this.id,
@@ -76,6 +71,7 @@ class HabitListItem {
     this.dailyTarget,
     this.targetFrequency = 1,
     this.periodDays = 1,
+    this.groupName,
   });
 
   bool isArchived() {
@@ -185,7 +181,13 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       final tagItems = habitTagsMap.containsKey(habit.id) ? habitTagsMap[habit.id]! : <TagListItem>[];
       final actualTime = habitActualTimeMap[habit.id] ?? 0;
 
-      habitItems.add(HabitListItem(
+      // Determine sort field for grouping
+      HabitSortFields? primarySortField;
+      if (request.sortBy != null && request.sortBy!.isNotEmpty) {
+        primarySortField = request.sortBy!.first.field;
+      }
+
+      final habitItem = HabitListItem(
         id: habit.id,
         name: habit.name,
         tags: tagItems,
@@ -200,7 +202,12 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         dailyTarget: habit.dailyTarget,
         targetFrequency: habit.targetFrequency,
         periodDays: habit.periodDays,
-      ));
+      );
+
+      // set group name
+      habitItem.groupName = HabitGroupingHelper.getGroupName(habitItem, primarySortField);
+
+      habitItems.add(habitItem);
     }
 
     // Database-level sorting for actualTime is now implemented in DriftHabitRepository

@@ -39,6 +39,8 @@ class HabitTable extends Table {
 class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable> implements IHabitRepository {
   DriftHabitRepository() : super(AppDatabase.instance(), AppDatabase.instance().habitTable);
 
+  DriftHabitRepository.withDatabase(AppDatabase db) : super(db, db.habitTable);
+
   @override
   Expression<String> getPrimaryKey(HabitTable t) {
     return t.id;
@@ -92,30 +94,38 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,
       List<acore.CustomOrder>? customOrder}) async {
-    // Check if sorting by actualTime is requested
+    // Check if sorting by actualTime or name is requested
     final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
+    final hasNameSort = customOrder?.any((order) => order.field == "name") == true;
 
-    if (!hasActualTimeSort) {
-      // Use default implementation if no actualTime sorting
+    if (!hasActualTimeSort && !hasNameSort) {
+      // Use default implementation if no custom sorting needed
       return super.getList(pageIndex, pageSize,
           includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
     }
 
     // Build custom query with LEFT JOIN for actualTime sorting
     List<String> whereClauses = [
-      if (customWhereFilter != null) "(${customWhereFilter.query})",
+      if (customWhereFilter != null) "(${customWhereFilter.query.replaceAll('habit_table.', 'h.')})",
       if (!includeDeleted) 'h.deleted_date IS NULL',
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
-    // Build ORDER BY clause with special handling for actual_time
+    // Only include JOIN if we are sorting by actual_time
+    final joinClause = hasActualTimeSort
+        ? "LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL"
+        : "";
+
+    // Build ORDER BY clause with special handling for actual_time and name
     String? orderByClause;
     if (customOrder?.isNotEmpty == true) {
       final orderClauses = customOrder!.map((order) {
         if (order.field == "actual_time") {
           return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else if (order.field == "name") {
+          return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else {
-          return "`h.${order.field}` IS NULL, `h.${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+          return "h.${order.field} IS NULL, h.${order.field} ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         }
       }).join(', ');
       orderByClause = ' ORDER BY $orderClauses ';
@@ -125,7 +135,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       """
       SELECT h.*
       FROM habit_table h
-      LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL
+      $joinClause
       ${whereClause ?? ''}
       GROUP BY h.id
       ${orderByClause ?? ''}
@@ -136,7 +146,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
-      readsFrom: {table, database.habitTimeRecordTable},
+      readsFrom: {table, if (hasActualTimeSort) database.habitTimeRecordTable},
     ).map((row) => table.map(row.data));
     final result = await query.get();
 

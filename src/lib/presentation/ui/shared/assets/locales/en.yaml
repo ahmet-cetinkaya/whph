@@ -73,6 +73,9 @@ shared:
     future: Future
     next_7_days: Next 7 Days
     no_date: No Date
+    yesterday: Yesterday
+    last_7_days: Last 7 Days
+    older: Older
   date_filter:
     title: Select Date Range
     tooltips:
@@ -142,11 +145,11 @@ shared:
         quote: Quote
         strikethrough: Strikethrough
   duration_group:
-    less_than_15_min: "< 15 min"
-    15_30_min: "15 - 30 min"
-    30_60_min: "30 - 60 min"
-    1_2_hours: "1 - 2 hours"
-    more_than_2_hours: "2+ hours"
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 hours
+    more_than_2_hours: 2+ hours
   errors:
     deleting: Error occurred while deleting data
     file_not_found: File not found
@@ -317,6 +320,7 @@ shared:
     compare_with_previous: Compare with previous period
     filter_by_tags: Filter by tags
     refresh: Refresh
+    reset: Reset
   ui:
     report_error: Report
   units:

@@ -16,6 +16,8 @@ import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
@@ -457,10 +459,31 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   List<Widget> _buildHabitCards() {
-    return _habitList!.items.asMap().entries.map((entry) {
+    final List<Widget> listItems = [];
+    String? currentGroup;
+
+    // Check if we should show headers
+    // Only show headers if we are sorting by something that produces groups (Name, Date)
+    // and if we are not in custom sort mode AND grouping is enabled
+    final bool showHeaders = widget.sortConfig?.useCustomOrder != true &&
+        (widget.sortConfig?.orderOptions.isNotEmpty ?? false) &&
+        (widget.sortConfig?.enableGrouping ?? false);
+
+    for (var entry in _habitList!.items.asMap().entries) {
       final index = entry.key;
       final habit = entry.value;
-      return Padding(
+
+      // Add header if group changed
+      if (showHeaders && habit.groupName != null && habit.groupName != currentGroup) {
+        currentGroup = habit.groupName;
+        listItems.add(ListGroupHeader(
+          key: ValueKey('header_${habit.groupName}'),
+          title: habit.groupName!,
+          shouldTranslate: habit.groupName!.length > 1, // Don't translate single letters like "A"
+        ));
+      }
+
+      listItems.add(Padding(
         key: ValueKey('list_${habit.id}_${widget.style}'),
         padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
         child: AnimatedSwitcher(
@@ -479,8 +502,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             dragIndex: !habit.isArchived() ? index : null, // Only draggable if not archived
           ),
         ),
-      );
-    }).toList();
+      ));
+    }
+    return listItems;
   }
 
   Widget _buildColumnList() {

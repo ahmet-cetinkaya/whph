@@ -20,6 +20,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String untitled = 'shared.untitled'; // Added for sl, tr, uk locales
   static const String requiredValidation = 'shared.validation.required';
   static const String refreshTooltip = 'shared.tooltips.refresh';
+  static const String resetTooltip = 'shared.tooltips.reset';
 
   // UI-specific errors (inherited from application layer but also defined here for UI components)
   static const String unexpectedError = 'shared.errors.unexpected';

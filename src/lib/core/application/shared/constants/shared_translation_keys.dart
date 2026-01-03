@@ -9,6 +9,9 @@ class SharedTranslationKeys {
   static const String future = 'shared.date_group.future';
   static const String next7Days = 'shared.date_group.next_7_days';
   static const String noDate = 'shared.date_group.no_date';
+  static const String yesterday = 'shared.date_group.yesterday';
+  static const String last7Days = 'shared.date_group.last_7_days';
+  static const String older = 'shared.date_group.older';
 
   // Duration bucket keys
   static const String durationLessThan15Min = 'shared.duration_group.less_than_15_min';
