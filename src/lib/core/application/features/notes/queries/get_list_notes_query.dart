@@ -1,12 +1,12 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
+import 'package:whph/core/application/features/notes/models/note_list_item.dart';
+import 'package:whph/core/application/features/notes/utils/note_grouping_helper.dart';
 
-enum NoteSortFields {
-  title,
-  createdDate,
-  modifiedDate,
-}
+export 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
+export 'package:whph/core/application/features/notes/models/note_list_item.dart';
 
 class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final int pageIndex;
@@ -27,38 +27,6 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
     this.sortBy,
     this.sortByCustomOrder = false,
     this.ignoreArchivedTagVisibility = false,
-  });
-}
-
-class TagListItem {
-  String tagId;
-  String tagName;
-  String? tagColor;
-
-  TagListItem({
-    required this.tagId,
-    required this.tagName,
-    this.tagColor,
-  });
-}
-
-class NoteListItem {
-  String id;
-  String title;
-  String? content;
-  List<TagListItem> tags;
-  DateTime createdDate;
-  DateTime? modifiedDate;
-
-  DateTime? get updatedAt => modifiedDate;
-
-  NoteListItem({
-    required this.id,
-    required this.title,
-    this.content,
-    this.tags = const [],
-    required this.createdDate,
-    this.modifiedDate,
   });
 }
 
@@ -149,22 +117,30 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     );
 
     // Map notes to list items with their tags
-    final items = notesPaginated.items
-        .map((note) => NoteListItem(
-              id: note.id,
-              title: note.title,
-              content: note.content,
-              tags: note.tags
-                  .map((noteTag) => TagListItem(
-                        tagId: noteTag.tagId,
-                        tagName: noteTag.tag?.name ?? '',
-                        tagColor: noteTag.tag?.color,
-                      ))
-                  .toList(),
-              createdDate: note.createdDate,
-              modifiedDate: note.modifiedDate,
-            ))
-        .toList();
+    final items = notesPaginated.items.map((note) {
+      final noteItem = NoteListItem(
+        id: note.id,
+        title: note.title,
+        content: note.content,
+        tags: note.tags
+            .map((noteTag) => TagListItem(
+                  tagId: noteTag.tagId,
+                  tagName: noteTag.tag?.name ?? '',
+                  tagColor: noteTag.tag?.color,
+                ))
+            .toList(),
+        createdDate: note.createdDate,
+        modifiedDate: note.modifiedDate,
+      );
+
+      // Populate group name if sorting is applied
+      if (request.sortBy != null && request.sortBy!.isNotEmpty) {
+        final groupName = NoteGroupingHelper.getGroupName(noteItem, request.sortBy!.first.field);
+        return noteItem.copyWith(groupName: groupName);
+      }
+
+      return noteItem;
+    }).toList();
 
     return GetListNotesQueryResponse(
       items: items,

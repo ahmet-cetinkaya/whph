@@ -34,61 +34,69 @@ class _NoteCardState extends State<NoteCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ListTile(
-      tileColor: widget.transparentCard ? theme.cardColor.withValues(alpha: 0.8) : theme.cardColor,
-      visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
-      contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
-      minTileHeight: 48,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-      ),
-      onTap: widget.onOpenDetails,
-      title: Text(
-        widget.note.title.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.note.title,
-        style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
-          fontWeight: FontWeight.bold,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 48),
+      child: ListTile(
+        tileColor: widget.transparentCard ? theme.cardColor.withValues(alpha: 0.8) : theme.cardColor,
+        visualDensity: widget.isDense ? VisualDensity.compact : VisualDensity.standard,
+        contentPadding: EdgeInsets.only(left: AppTheme.sizeMedium, right: 0),
+        minTileHeight: 48,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
         ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: widget.isDense ? 1 : 2,
+        onTap: widget.onOpenDetails,
+        title: Text(
+          widget.note.title.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.note.title,
+          style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: widget.isDense ? 1 : 2,
+        ),
+        subtitle: _buildSubtitle(theme, context),
       ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Tags and last updated time
-          if (widget.note.tags.isNotEmpty || widget.note.updatedAt != null) ...[
-            SizedBox(height: widget.isDense ? 2 : AppTheme.size2XSmall),
-            DefaultTextStyle(
-              style: AppTheme.bodySmall,
-              child: Wrap(
-                spacing: AppTheme.sizeSmall,
-                runSpacing: AppTheme.size2XSmall,
-                crossAxisAlignment: WrapCrossAlignment.center,
+    );
+  }
+
+  Widget? _buildSubtitle(ThemeData theme, BuildContext context) {
+    if (widget.note.tags.isEmpty && widget.note.updatedAt == null) {
+      return null;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: widget.isDense ? 2 : AppTheme.size2XSmall),
+        DefaultTextStyle(
+          style: AppTheme.bodySmall,
+          child: Wrap(
+            spacing: AppTheme.sizeSmall,
+            runSpacing: AppTheme.size2XSmall,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (widget.note.tags.isNotEmpty) _buildNoteTagsWidget(),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (widget.note.tags.isNotEmpty) _buildNoteTagsWidget(),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.update,
-                        size: AppTheme.iconSizeXSmall,
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                      ),
-                      const SizedBox(width: AppTheme.size3XSmall),
-                      Text(
-                        _formatDateTime(widget.note.updatedAt ?? widget.note.createdDate, context),
-                        style: TextStyle(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ],
+                  Icon(
+                    Icons.update,
+                    size: AppTheme.iconSizeXSmall,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(width: AppTheme.size3XSmall),
+                  Text(
+                    _formatDateTime(widget.note.updatedAt ?? widget.note.createdDate, context),
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ],
-      ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

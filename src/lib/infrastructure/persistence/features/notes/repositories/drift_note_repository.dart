@@ -66,16 +66,34 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     List<CustomOrder>? customOrder,
     bool includeDeleted = false,
   }) async {
-    // Get notes with pagination
-    final paginatedNotes = await super.getList(
-      pageIndex,
-      pageSize,
-      customWhereFilter: customWhereFilter,
-      customOrder: customOrder,
-      includeDeleted: includeDeleted,
-    );
+    // Build SQL query manually to support COLLATE NOCASE for title sorting
+    List<String> whereClauses = [
+      if (customWhereFilter != null) "(${customWhereFilter.query})",
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
-    if (paginatedNotes.items.isEmpty) {
+    String? orderByClause;
+    if (customOrder?.isNotEmpty == true) {
+      final orderClauses = customOrder!.map((order) {
+        if (order.field == 'title') {
+          return "title COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+        }
+        return "`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+      }).join(', ');
+      orderByClause = ' ORDER BY $orderClauses ';
+    }
+
+    final countResult = await database.customSelect(
+      'SELECT COUNT(*) AS count FROM note_table${whereClause ?? ''}',
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+      ],
+    ).getSingleOrNull();
+
+    final totalCount = countResult?.data['count'] as int? ?? 0;
+
+    if (totalCount == 0) {
       return PaginatedList<Note>(
         items: [],
         totalItemCount: 0,
@@ -84,52 +102,70 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       );
     }
 
+    final query = database.customSelect(
+      "SELECT * FROM note_table${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
+      readsFrom: {table},
+    ).map((row) => table.map(row.data));
+
+    final result = await query.get();
+    final List<Note> notes = await Future.wait(
+      result.map((entity) => entity is Future<Note> ? entity : Future.value(entity)),
+    );
+
     // Get note_tags with their associated tags for this page of notes
-    final noteIds = paginatedNotes.items.map((n) => n.id).join("','");
-    final tagQuery = '''
-      SELECT nt.*, t.name as tag_name, t.color as tag_color, t.created_date as tag_created_date
-      FROM note_tag_table nt
-      LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
-      WHERE nt.deleted_date IS NULL 
-      AND nt.note_id IN ('$noteIds')
-    ''';
+    final noteIds = notes.map((n) => n.id).join("','");
 
-    final tagRows = await database.customSelect(tagQuery).get();
+    // If we have notes, fetch tags
+    if (notes.isNotEmpty) {
+      final tagQuery = '''
+        SELECT nt.*, t.name as tag_name, t.color as tag_color, t.created_date as tag_created_date
+        FROM note_tag_table nt
+        LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
+        WHERE nt.deleted_date IS NULL 
+        AND nt.note_id IN ('$noteIds')
+      ''';
 
-    // Group note_tags by note_id
-    final noteTagsMap = <String, List<NoteTag>>{};
-    for (final row in tagRows) {
-      final noteTag = NoteTag(
-        id: row.read<String>('id'),
-        noteId: row.read<String>('note_id'),
-        tagId: row.read<String>('tag_id'),
-        createdDate: row.read<DateTime>('created_date'),
-        modifiedDate: row.readNullable<DateTime>('modified_date'),
-        deletedDate: row.readNullable<DateTime>('deleted_date'),
-      );
+      final tagRows = await database.customSelect(tagQuery).get();
 
-      // Add tag information
-      noteTag.tag = Tag(
-        id: row.read<String>('tag_id'),
-        name: row.read<String>('tag_name'),
-        color: row.readNullable<String>('tag_color'),
-        createdDate: row.read<DateTime>('tag_created_date'),
-      );
+      // Group note_tags by note_id
+      final noteTagsMap = <String, List<NoteTag>>{};
+      for (final row in tagRows) {
+        final noteTag = NoteTag(
+          id: row.read<String>('id'),
+          noteId: row.read<String>('note_id'),
+          tagId: row.read<String>('tag_id'),
+          createdDate: row.read<DateTime>('created_date'),
+          modifiedDate: row.readNullable<DateTime>('modified_date'),
+          deletedDate: row.readNullable<DateTime>('deleted_date'),
+        );
 
-      noteTagsMap.putIfAbsent(noteTag.noteId, () => []).add(noteTag);
+        // Add tag information
+        noteTag.tag = Tag(
+          id: row.read<String>('tag_id'),
+          name: row.read<String>('tag_name'),
+          color: row.readNullable<String>('tag_color'),
+          createdDate: row.read<DateTime>('tag_created_date'),
+        );
+
+        noteTagsMap.putIfAbsent(noteTag.noteId, () => []).add(noteTag);
+      }
+
+      // Assign note_tags to notes
+      for (final note in notes) {
+        note.tags = noteTagsMap[note.id] ?? [];
+      }
     }
 
-    // Assign note_tags to notes
-    final notesWithTags = paginatedNotes.items.map((note) {
-      note.tags = noteTagsMap[note.id] ?? [];
-      return note;
-    }).toList();
-
     return PaginatedList<Note>(
-      items: notesWithTags,
-      totalItemCount: paginatedNotes.totalItemCount,
-      pageIndex: paginatedNotes.pageIndex,
-      pageSize: paginatedNotes.pageSize,
+      items: notes,
+      totalItemCount: totalCount,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
     );
   }
 
@@ -170,5 +206,25 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     }).toList();
 
     return note;
+  }
+
+  Variable<Object> _convertToQueryVariable(dynamic object) {
+    if (object is String) {
+      return Variable.withString(object);
+    } else if (object is int) {
+      return Variable.withInt(object);
+    } else if (object is double) {
+      return Variable.withReal(object);
+    } else if (object is DateTime) {
+      return Variable.withDateTime(object);
+    } else if (object is bool) {
+      return Variable.withBool(object);
+    } else if (object is Uint8List) {
+      return Variable.withBlob(object);
+    } else if (object is BigInt) {
+      return Variable.withBigInt(object);
+    } else {
+      throw Exception('Unsupported variable type');
+    }
   }
 }

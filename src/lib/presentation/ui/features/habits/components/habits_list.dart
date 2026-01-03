@@ -410,8 +410,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         physics: const ClampingScrollPhysics(),
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 300.0,
-          crossAxisSpacing: AppTheme.size3XSmall,
-          mainAxisSpacing: AppTheme.size3XSmall,
+          crossAxisSpacing: AppTheme.sizeSmall,
+          mainAxisSpacing: AppTheme.sizeSmall,
           mainAxisExtent: 42,
         ),
         itemCount: totalItemCount,
@@ -485,7 +485,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
       listItems.add(Padding(
         key: ValueKey('list_${habit.id}_${widget.style}'),
-        padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
+        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 100),
           child: HabitCard(

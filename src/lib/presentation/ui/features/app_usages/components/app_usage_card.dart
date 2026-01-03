@@ -49,6 +49,7 @@ class AppUsageCard extends StatelessWidget {
       barColor: barColor,
       onTap: onTap,
       additionalWidget: _buildAdditionalWidget(),
+      minHeight: 40.0,
     );
   }
 

@@ -314,11 +314,14 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
         }
 
         final appUsage = _appUsageList!.items[index];
-        return AppUsageCard(
-          appUsage: appUsage,
-          maxDurationInListing: maxDuration!,
-          maxCompareDurationInListing: maxCompareDuration,
-          onTap: () => widget.onOpenDetails?.call(appUsage.id),
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+          child: AppUsageCard(
+            appUsage: appUsage,
+            maxDurationInListing: maxDuration!,
+            maxCompareDurationInListing: maxCompareDuration,
+            onTap: () => widget.onOpenDetails?.call(appUsage.id),
+          ),
         );
       },
     );
