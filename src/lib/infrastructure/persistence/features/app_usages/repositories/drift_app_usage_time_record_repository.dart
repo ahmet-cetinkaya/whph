@@ -98,19 +98,25 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     List<SortOptionWithTranslationKey<AppUsageSortFields>>? sortBy,
     bool sortByCustomOrder = false,
   }) async {
-    final sortClause = sortBy != null && sortBy.isNotEmpty
-        ? sortBy.map((s) {
-            final direction = s.direction == SortDirection.desc ? 'DESC' : 'ASC';
-            switch (s.field) {
-              case AppUsageSortFields.duration:
-                return 'ad.total_duration $direction';
-              case AppUsageSortFields.name:
-                return 'COALESCE(ad.display_name, ad.name) COLLATE NOCASE $direction';
-              case AppUsageSortFields.device:
-                return 'ad.device_name $direction';
-            }
-          }).join(', ')
-        : 'ad.total_duration DESC';
+    // Helper function to generate sort clause for a given table alias
+    String getSortClauseForAlias(String alias) {
+      if (sortBy == null || sortBy.isEmpty) {
+        return '$alias.total_duration DESC';
+      }
+      return sortBy.map((s) {
+        final direction = s.direction == SortDirection.desc ? 'DESC' : 'ASC';
+        switch (s.field) {
+          case AppUsageSortFields.duration:
+            return '$alias.total_duration $direction';
+          case AppUsageSortFields.name:
+            return 'COALESCE($alias.display_name, $alias.name) COLLATE NOCASE $direction';
+          case AppUsageSortFields.device:
+            return '$alias.device_name $direction';
+        }
+      }).join(', ');
+    }
+
+    final sortClause = getSortClauseForAlias('ad');
 
     final countQuery = database.customSelect(
       '''
@@ -183,7 +189,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     }
 
     // Get paginated data with proper app usage-level pagination
-    final outerSortClause = sortClause.replaceAll('ad.', 'fau.');
+    final outerSortClause = getSortClauseForAlias('fau');
 
     final dataQuery = database.customSelect(
       '''

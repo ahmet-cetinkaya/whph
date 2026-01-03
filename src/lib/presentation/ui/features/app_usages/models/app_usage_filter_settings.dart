@@ -78,7 +78,12 @@ class AppUsageFilterSettings {
       showComparison: json['showComparison'] as bool? ?? false,
       sortConfig: json['sortConfig'] != null
           ? SortConfig.fromJson(
-              json['sortConfig'], (v) => AppUsageSortFields.values.firstWhere((e) => e.toString() == v))
+              json['sortConfig'],
+              (v) => AppUsageSortFields.values.firstWhere(
+                (e) => e.toString() == v,
+                orElse: () => AppUsageSortFields.duration,
+              ),
+            )
           : null,
     );
   }
