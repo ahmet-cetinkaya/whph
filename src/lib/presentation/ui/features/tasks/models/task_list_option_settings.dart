@@ -97,6 +97,7 @@ class TaskListOptionSettings {
       sortConfig = SortConfig<TaskSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
+        enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
       );
     }
 
@@ -153,6 +154,7 @@ class TaskListOptionSettings {
                 })
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
+        'enableGrouping': sortConfig!.enableGrouping,
       };
     }
 
