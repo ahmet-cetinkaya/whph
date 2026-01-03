@@ -98,7 +98,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     final countResult = await database.customSelect(
       'SELECT COUNT(*) AS count FROM note_table${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
 
@@ -137,8 +137,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       ${outerOrderByClause ?? ''}
     ''';
 
-    final variables = [
-      if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+    final List<Variable<Object>> variables = [
+      if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       Variable.withInt(pageSize),
       Variable.withInt(pageIndex * pageSize)
     ];
@@ -146,7 +146,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     final rows = await database.customSelect(
       query,
       variables: variables,
-      readsFrom: {table, AppDatabase.instance().noteTagTable, AppDatabase.instance().tagTable},
+      readsFrom: {table, database.noteTagTable, database.tagTable},
     ).get();
 
     // Grouping Logic
@@ -159,11 +159,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       final noteId = row.read<String>('id');
       if (!noteMap.containsKey(noteId)) {
         final mapped = table.map(row.data);
-        if (mapped is Future<Note>) {
-          noteMap[noteId] = await mapped;
-        } else {
-          noteMap[noteId] = mapped;
-        }
+        noteMap[noteId] = mapped is Future<Note> ? await mapped : mapped;
         noteMap[noteId]!.tags = [];
       }
 
@@ -229,12 +225,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     for (final row in rows) {
       if (note == null) {
         final mapped = table.map(row.data);
-        if (mapped is Future<Note>) {
-          note = await mapped;
-        } else {
-          note = mapped;
-        }
-        note.tags = [];
+        note = mapped is Future<Note> ? await mapped : mapped;
+        note!.tags = [];
       }
 
       final noteTagId = row.readNullable<String>('nt_id');
@@ -262,25 +254,5 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     }
 
     return note;
-  }
-
-  Variable<Object> _convertToQueryVariable(dynamic object) {
-    if (object is String) {
-      return Variable.withString(object);
-    } else if (object is int) {
-      return Variable.withInt(object);
-    } else if (object is double) {
-      return Variable.withReal(object);
-    } else if (object is DateTime) {
-      return Variable.withDateTime(object);
-    } else if (object is bool) {
-      return Variable.withBool(object);
-    } else if (object is Uint8List) {
-      return Variable.withBlob(object);
-    } else if (object is BigInt) {
-      return Variable.withBigInt(object);
-    } else {
-      throw Exception('Unsupported variable type');
-    }
   }
 }

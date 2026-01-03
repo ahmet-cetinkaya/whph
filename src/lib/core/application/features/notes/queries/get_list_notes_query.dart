@@ -135,14 +135,18 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
         modifiedDate: note.modifiedDate,
       );
 
-      // Populate group name if sorting is applied
-      if (request.sortBy != null && request.sortBy!.isNotEmpty) {
-        final groupName = NoteGroupingHelper.getGroupName(noteItem, request.sortBy!.first.field, now: now);
-        return noteItem.copyWith(groupName: groupName);
-      }
-
       return noteItem;
     }).toList();
+
+    // Populate group name if sorting is applied
+    for (var i = 0; i < items.length; i++) {
+      final item = items[i];
+      final groupInfo = NoteGroupingHelper.getGroupInfo(item, request.sortBy?.first.field, now: now);
+      items[i] = item.copyWith(
+        groupName: groupInfo?.name,
+        isGroupNameTranslatable: groupInfo?.isTranslatable ?? true,
+      );
+    }
 
     return GetListNotesQueryResponse(
       items: items,

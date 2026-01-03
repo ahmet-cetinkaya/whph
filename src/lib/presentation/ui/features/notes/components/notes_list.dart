@@ -299,7 +299,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
         listItems.add(ListGroupHeader(
           key: ValueKey('header_${note.groupName}'),
           title: note.groupName!,
-          shouldTranslate: note.groupName!.length > 1, // Don't translate single letters like "A"
+          shouldTranslate: note.isGroupNameTranslatable,
         ));
       } else if (i > 0 && !(showHeaders && note.groupName != null && note.groupName != currentGroup)) {
         // Add separator if it's not the first item and we didn't just add a header

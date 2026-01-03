@@ -23,6 +23,7 @@ class NoteListItem extends Equatable {
   final DateTime createdDate;
   final DateTime? modifiedDate;
   final String? groupName;
+  final bool isGroupNameTranslatable;
 
   const NoteListItem({
     required this.id,
@@ -32,6 +33,7 @@ class NoteListItem extends Equatable {
     required this.createdDate,
     this.modifiedDate,
     this.groupName,
+    this.isGroupNameTranslatable = true,
   });
 
   DateTime? get updatedAt => modifiedDate;
@@ -39,22 +41,26 @@ class NoteListItem extends Equatable {
   NoteListItem copyWith({
     String? id,
     String? title,
-    String? content,
+    Object? content = _sentinel,
     List<TagListItem>? tags,
     DateTime? createdDate,
-    DateTime? modifiedDate,
-    String? groupName,
+    Object? modifiedDate = _sentinel,
+    Object? groupName = _sentinel,
+    bool? isGroupNameTranslatable,
   }) {
     return NoteListItem(
       id: id ?? this.id,
       title: title ?? this.title,
-      content: content ?? this.content,
+      content: content == _sentinel ? this.content : content as String?,
       tags: tags ?? this.tags,
       createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      groupName: groupName ?? this.groupName,
+      modifiedDate: modifiedDate == _sentinel ? this.modifiedDate : modifiedDate as DateTime?,
+      groupName: groupName == _sentinel ? this.groupName : groupName as String?,
+      isGroupNameTranslatable: isGroupNameTranslatable ?? this.isGroupNameTranslatable,
     );
   }
+
+  static const _sentinel = Object();
 
   @override
   List<Object?> get props => [
@@ -65,5 +71,6 @@ class NoteListItem extends Equatable {
         createdDate,
         modifiedDate,
         groupName,
+        isGroupNameTranslatable,
       ];
 }
