@@ -226,7 +226,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       if (note == null) {
         final mapped = table.map(row.data);
         note = mapped is Future<Note> ? await mapped : mapped;
-        note!.tags = [];
+        note.tags = [];
       }
 
       final noteTagId = row.readNullable<String>('nt_id');
