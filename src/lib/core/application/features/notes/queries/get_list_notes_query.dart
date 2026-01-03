@@ -17,6 +17,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final List<SortOption<NoteSortFields>>? sortBy;
   final bool sortByCustomOrder;
   final bool ignoreArchivedTagVisibility;
+  final DateTime? now;
 
   GetListNotesQuery({
     required this.pageIndex,
@@ -27,6 +28,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
     this.sortBy,
     this.sortByCustomOrder = false,
     this.ignoreArchivedTagVisibility = false,
+    this.now,
   });
 }
 
@@ -116,7 +118,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
       customWhereFilter: filter,
     );
 
-    final now = DateTime.now();
+    final now = request.now ?? DateTime.now();
 
     // Map notes to list items with their tags
     final items = notesPaginated.items.map((note) {
