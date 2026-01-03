@@ -308,7 +308,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           areParentAndSubTasksIncluded: widget.includeSubTasks,
           sortBy: widget.sortConfig?.orderOptions,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
-          enableGrouping: widget.sortConfig?.enableGrouping ?? true,
+          enableGrouping:
+              (widget.sortConfig?.useCustomOrder ?? false) ? false : (widget.sortConfig?.enableGrouping ?? true),
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
 
@@ -532,6 +533,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   List<Widget> _buildGroupedList() {
     if (_tasks == null || _tasks!.items.isEmpty) return [];
 
+    // Filter out selected task to avoid duplicates and wrong indices
+    final filteredTasks = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
+    if (filteredTasks.isEmpty) return [];
+
     final List<Widget> listItems = [];
     String? currentGroup;
 
@@ -544,14 +549,14 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
 
     bool showHeaders = true;
     if (isGroupedByDate) {
-      final firstGroup = _tasks!.items.first.groupName;
-      bool multipleGroups = _tasks!.items.any((t) => t.groupName != firstGroup);
+      final firstGroup = filteredTasks.first.groupName;
+      bool multipleGroups = filteredTasks.any((t) => t.groupName != firstGroup);
       if (!multipleGroups && firstGroup == SharedTranslationKeys.today) {
         showHeaders = false;
       }
     }
 
-    for (var task in _tasks!.items) {
+    for (var task in filteredTasks) {
       // Check if group has changed
       // Only add header if groupName is not null AND we should show headers
       if (showHeaders && task.groupName != null && task.groupName != currentGroup) {
@@ -559,6 +564,24 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         listItems.add(ListGroupHeader(
           title: currentGroup!,
           shouldTranslate: currentGroup.length > 1,
+        ));
+      }
+
+      // Build trailing buttons list
+      final List<Widget> trailingButtons = [];
+      if (widget.trailingButtons != null) {
+        trailingButtons.addAll(widget.trailingButtons!(task));
+      }
+      if (widget.showSelectButton) {
+        trailingButtons.add(IconButton(
+          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+          onPressed: () => widget.onSelectTask?.call(task),
+        ));
+      }
+      if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+        trailingButtons.add(ReorderableDragStartListener(
+          index: filteredTasks.indexOf(task),
+          child: const Icon(Icons.drag_handle, color: Colors.grey),
         ));
       }
 
@@ -573,7 +596,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
                 ? null
                 : () => widget.onScheduleTask!(task, DateTime.now()),
             transparent: widget.transparentCards,
-            trailingButtons: widget.trailingButtons != null ? widget.trailingButtons!(task) : null,
+            trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
             showSubTasks: widget.includeSubTasks,
             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           )));
