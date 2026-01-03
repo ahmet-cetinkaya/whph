@@ -241,6 +241,9 @@ shared:
     reset_to_default: デフォルトにリセット
     sort: ソート
     criteria: 並べ替え条件
+    enable_grouping: 並べ替えオプションでグループ化
+    enable_grouping_description: 最初の並べ替えフィールドに基づいてアイテムをグループ化
+    sort_and_group: 並べ替えとグループ化
   statistics:
     daily_usage:
       description: 曜日ごとの総使用時間を表示
@@ -381,3 +384,17 @@ shared:
     at_maximum_value: 最大値です
   skip_tour: ツアーをスキップ
   tap_to_resume: タップしてコンテンツに戻る
+  none: なし
+  date_group:
+    today: 今日
+    tomorrow: 明日
+    overdue: 期限超過
+    future: 未来
+    next_7_days: 今後7日間
+    no_date: 日付なし
+  duration_group:
+    less_than_15_min: 15分未満
+    15_30_min: 15 - 30分
+    30_60_min: 30 - 60分
+    1_2_hours: 1 - 2時間
+    more_than_2_hours: 2時間以上

@@ -266,6 +266,9 @@ shared:
     reset_to_default: Ripristina predefinito
     sort: Ordina
     criteria: Criteri di ordinamento
+    enable_grouping: Raggruppa per ordinamento
+    enable_grouping_description: Raggruppa elementi in base al primo campo di ordinamento
+    sort_and_group: Ordina e Raggruppa
   statistics:
     daily_usage:
       description: Mostra il tempo totale di utilizzo per giorno della settimana
@@ -369,22 +372,34 @@ shared:
     select_end_date: Seleziona data di fine
     no_dates_selected: Nessuna data selezionata
     refresh: Aggiorna
-    cannot_select_time_before_min_date: Impossibile selezionare un orario prima delle {time}
+    cannot_select_time_before_min_date:
+      Impossibile selezionare un orario prima delle
+      {time}
     cannot_select_time_after_max_date: Impossibile selezionare un orario dopo le {time}
     time_must_be_at_or_after: L'orario deve essere alle {time} o successivo
     time_must_be_at_or_before: L'orario deve essere alle {time} o precedente
-    selected_date_must_be_at_or_after: La data selezionata deve essere il {date} o successiva
-    selected_date_must_be_at_or_before: La data selezionata deve essere il {date} o precedente
+    selected_date_must_be_at_or_after:
+      La data selezionata deve essere il {date} o
+      successiva
+    selected_date_must_be_at_or_before:
+      La data selezionata deve essere il {date}
+      o precedente
     start_date_cannot_be_after_end_date:
       La data di inizio non può essere successiva
       alla data di fine
     start_date_must_be_at_or_after: La data di inizio deve essere il {date} o successiva
     end_date_must_be_at_or_before: La data di fine deve essere il {date} o precedente
-    cannot_select_date_before_min_date: Impossibile selezionare una data prima del {date}
+    cannot_select_date_before_min_date:
+      Impossibile selezionare una data prima del
+      {date}
     cannot_select_date_after_max_date: Impossibile selezionare una data dopo il {date}
-    start_date_cannot_be_before_min_date: La data di inizio non può essere prima del {date}
+    start_date_cannot_be_before_min_date:
+      La data di inizio non può essere prima del
+      {date}
     end_date_cannot_be_after_max_date: La data di fine non può essere dopo il {date}
-    selected_date_time_must_be_after: La data e l'ora selezionate devono essere successive a {dateTime}
+    selected_date_time_must_be_after:
+      La data e l'ora selezionate devono essere successive
+      a {dateTime}
     select_date_time_title: Seleziona data e ora
     select_date_range_title: Seleziona intervallo di date
     refresh_description: Aggiorna automaticamente l'intervallo di date selezionato
@@ -411,3 +426,17 @@ shared:
     at_minimum_value: Al valore minimo
     at_maximum_value: Al valore massimo
   tap_to_resume: Tocca per tornare al contenuto
+  none: Nessuno
+  date_group:
+    today: Oggi
+    tomorrow: Domani
+    overdue: In ritardo
+    future: Futuro
+    next_7_days: Prossimi 7 giorni
+    no_date: Nessuna data
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 ore
+    more_than_2_hours: 2+ ore

@@ -251,6 +251,9 @@ shared:
     reset_to_default: Varsayılana Sıfırla
     sort: Sırala
     criteria: Sıralama ölçütleri
+    enable_grouping: Sıralamaya göre gruplandır
+    enable_grouping_description: Öğeleri ilk sıralama alanına göre gruplandır
+    sort_and_group: Sırala ve Gruplandır
   statistics:
     daily_usage:
       description: Haftanın günlerine göre toplam kullanım süresini gösterir
@@ -396,3 +399,17 @@ shared:
     at_maximum_value: Maksimum değerde
   skip_tour: Turu Atla
   tap_to_resume: İçeriğe dönmek için dokunun
+  none: Yok
+  date_group:
+    today: Bugün
+    tomorrow: Yarın
+    overdue: Gecikmiş
+    future: Gelecek
+    next_7_days: Gelecek 7 gün
+    no_date: Tarih yok
+  duration_group:
+    less_than_15_min: < 15 dak
+    15_30_min: 15 - 30 dak
+    30_60_min: 30 - 60 dak
+    1_2_hours: 1 - 2 saat
+    more_than_2_hours: 2+ saat

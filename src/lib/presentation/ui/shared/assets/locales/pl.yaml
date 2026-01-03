@@ -248,6 +248,9 @@ shared:
     reset_to_default: Przywróć domyślne
     sort: Sortuj
     criteria: Kryteria sortowania
+    enable_grouping: Grupuj według sortowania
+    enable_grouping_description: Grupuj elementy na podstawie pierwszego pola sortowania
+    sort_and_group: Sortuj i grupuj
   statistics:
     daily_usage:
       description: Pokazuje całkowity czas użytkowania na dzień tygodnia
@@ -392,3 +395,17 @@ shared:
     at_maximum_value: Wartość maksymalna
   skip_tour: Pomiń wycieczkę
   tap_to_resume: Stuknij, aby wrócić do treści
+  none: Brak
+  date_group:
+    today: Dziś
+    tomorrow: Jutro
+    overdue: Po terminie
+    future: Przyszłość
+    next_7_days: Następne 7 dni
+    no_date: Bez daty
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 godziny
+    more_than_2_hours: 2+ godzin

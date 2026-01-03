@@ -252,6 +252,9 @@ shared:
     reset_to_default: Terugzetten naar standaard
     sort: Sorteren
     criteria: Sorteercriteria
+    enable_grouping: Groepeer op sortering
+    enable_grouping_description: Groepeer items op basis van het eerste sorteerveld
+    sort_and_group: Sorteren & Groeperen
   statistics:
     daily_usage:
       description: Toont de totale gebruikstijd per dag van de week
@@ -357,8 +360,12 @@ shared:
     cannot_select_time_after_max_date: Kan geen tijd selecteren na {time}
     time_must_be_at_or_after: De tijd moet op of na {time} zijn
     time_must_be_at_or_before: De tijd moet op of voor {time} zijn
-    selected_date_must_be_at_or_after: De geselecteerde datum moet op of na {date} zijn
-    selected_date_must_be_at_or_before: De geselecteerde datum moet op of voor {date} zijn
+    selected_date_must_be_at_or_after:
+      De geselecteerde datum moet op of na {date}
+      zijn
+    selected_date_must_be_at_or_before:
+      De geselecteerde datum moet op of voor {date}
+      zijn
     start_date_cannot_be_after_end_date: Startdatum kan niet na einddatum liggen
     start_date_must_be_at_or_after: Startdatum moet op of na {date} zijn
     end_date_must_be_at_or_before: Einddatum moet op of voor {date} zijn
@@ -366,7 +373,9 @@ shared:
     cannot_select_date_after_max_date: Kan geen datum selecteren na {date}
     start_date_cannot_be_before_min_date: Startdatum kan niet voor {date} zijn
     end_date_cannot_be_after_max_date: Einddatum kan niet na {date} zijn
-    selected_date_time_must_be_after: De geselecteerde datum en tijd moeten na {dateTime} zijn
+    selected_date_time_must_be_after:
+      De geselecteerde datum en tijd moeten na {dateTime}
+      zijn
     select_date_time_title: Selecteer datum en tijd
     select_date_range_title: Selecteer datumbereik
     refresh_description: Geselecteerd datumbereik automatisch vernieuwen
@@ -394,3 +403,17 @@ shared:
     at_maximum_value: Op maximumwaarde
   skip_tour: Sla rondleiding over
   tap_to_resume: Tik om terug te keren naar de inhoud
+  none: Geen
+  date_group:
+    today: Vandaag
+    tomorrow: Morgen
+    overdue: Te laat
+    future: Toekomst
+    next_7_days: Volgende 7 dagen
+    no_date: Geen datum
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 uur
+    more_than_2_hours: 2+ uur

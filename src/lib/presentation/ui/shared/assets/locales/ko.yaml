@@ -241,6 +241,9 @@ shared:
     reset_to_default: 기본값으로 재설정
     sort: 정렬
     criteria: 정렬 기준
+    enable_grouping: 정렬 옵션으로 그룹화
+    enable_grouping_description: 첫 번째 정렬 필드를 기준으로 항목 그룹화
+    sort_and_group: 정렬 및 그룹화
   statistics:
     daily_usage:
       description: 요일별 총 사용 시간을 표시
@@ -382,3 +385,17 @@ shared:
     at_maximum_value: 최대값입니다
   skip_tour: 투어 건너뛰기
   tap_to_resume: 탭하여 콘텐츠로 돌아가기
+  none: 없음
+  date_group:
+    today: 오늘
+    tomorrow: 내일
+    overdue: 기간 경과
+    future: 미래
+    next_7_days: 다음 7일
+    no_date: 날짜 없음
+  duration_group:
+    less_than_15_min: 15분 미만
+    15_30_min: 15 - 30분
+    30_60_min: 30 - 60분
+    1_2_hours: 1 - 2시간
+    more_than_2_hours: 2시간 이상

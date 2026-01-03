@@ -246,6 +246,9 @@ shared:
     reset_to_default: Сбросить по умолчанию
     sort: Сортировать
     criteria: Критерии сортировки
+    enable_grouping: Группировать по сортировке
+    enable_grouping_description: Группировать элементы на основе первого поля сортировки
+    sort_and_group: Сортировка и Группировка
   statistics:
     daily_usage:
       description: Показывает общее время использования по дням недели
@@ -388,3 +391,17 @@ shared:
     at_maximum_value: Максимальное значение
   skip_tour: Пропустить тур
   tap_to_resume: Нажмите, чтобы вернуться к контенту
+  none: Нет
+  date_group:
+    today: Сегодня
+    tomorrow: Завтра
+    overdue: Просрочено
+    future: Будущее
+    next_7_days: Следующие 7 дней
+    no_date: Без даты
+  duration_group:
+    less_than_15_min: < 15 мин
+    15_30_min: 15 - 30 мин
+    30_60_min: 30 - 60 мин
+    1_2_hours: 1 - 2 часа
+    more_than_2_hours: 2+ часов

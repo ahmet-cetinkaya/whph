@@ -251,6 +251,9 @@ shared:
     reset_to_default: Скинути до стандартних
     sort: Сортувати
     criteria: Критерії сортування
+    enable_grouping: Групувати за сортуванням
+    enable_grouping_description: Групувати елементи на основі першого поля сортування
+    sort_and_group: Сортування та Групування
   statistics:
     daily_usage:
       description: Показує загальний час використання за день тижня
@@ -395,3 +398,17 @@ shared:
     at_maximum_value: Максимальне значення
   skip_tour: Пропустити тур
   tap_to_resume: Натисніть, щоб повернутися до вмісту
+  none: Немає
+  date_group:
+    today: Сьогодні
+    tomorrow: Завтра
+    overdue: Прострочено
+    future: Майбутнє
+    next_7_days: Наступні 7 днів
+    no_date: Без дати
+  duration_group:
+    less_than_15_min: < 15 хв
+    15_30_min: 15 - 30 хв
+    30_60_min: 30 - 60 хв
+    1_2_hours: 1 - 2 години
+    more_than_2_hours: 2+ годин

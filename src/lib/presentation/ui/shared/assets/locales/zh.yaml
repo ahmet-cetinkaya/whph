@@ -240,6 +240,9 @@ shared:
     reset_to_default: 重置为默认
     sort: 排序
     criteria: 排序条件
+    enable_grouping: 按排序选项分组
+    enable_grouping_description: 根据第一个排序字段对项目进行分组
+    sort_and_group: 排序和分组
   statistics:
     daily_usage:
       description: 显示每周各天的总使用时间
@@ -380,3 +383,17 @@ shared:
     at_maximum_value: 已达最大值
   skip_tour: 跳过导览
   tap_to_resume: 点击返回内容
+  none: 无
+  date_group:
+    today: 今天
+    tomorrow: 明天
+    overdue: 逾期
+    future: 未来
+    next_7_days: 未来7天
+    no_date: 无日期
+  duration_group:
+    less_than_15_min: < 15分钟
+    15_30_min: 15 - 30分钟
+    30_60_min: 30 - 60分钟
+    1_2_hours: 1 - 2小时
+    more_than_2_hours: 2+小时

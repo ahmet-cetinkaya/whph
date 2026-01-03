@@ -246,6 +246,9 @@ shared:
     reset_to_default: Återställ till standard
     sort: Sortera
     criteria: Sorteringskriterier
+    enable_grouping: Gruppera efter sortering
+    enable_grouping_description: Gruppera objekt baserat på första sorteringsfältet
+    sort_and_group: Sortera och Gruppera
   statistics:
     daily_usage:
       description: Visar total användningstid per veckodag
@@ -386,3 +389,17 @@ shared:
     at_maximum_value: Vid största värde
   skip_tour: Hoppa över rundtur
   tap_to_resume: Tryck för att återvända till innehållet
+  none: Ingen
+  date_group:
+    today: Idag
+    tomorrow: Imorgon
+    overdue: Försenad
+    future: Framtid
+    next_7_days: Kommande 7 dagar
+    no_date: Inget datum
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 timmar
+    more_than_2_hours: 2+ timmar
