@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Tracking Settings
       description: Configure app tracking rules, set up automatic tagging, and manage which applications to monitor. Customize tracking to match your productivity needs.
+  sort:
+    duration: Duration
+    name: Name
+    device: Device

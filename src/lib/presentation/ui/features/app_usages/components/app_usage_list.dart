@@ -15,6 +15,9 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
+import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 
 /// Immutable snapshot of filter state to ensure consistent filter state throughout lifecycle
 class FilterContext {
@@ -24,6 +27,7 @@ class FilterContext {
   final DateTime? filterEndDate;
   final List<String>? filterByDevices;
   final bool showComparison;
+  final SortConfig<AppUsageSortFields>? sortConfig;
 
   const FilterContext({
     this.filterByTags,
@@ -32,11 +36,12 @@ class FilterContext {
     this.filterEndDate,
     this.filterByDevices,
     this.showComparison = false,
+    this.sortConfig,
   });
 
   @override
   String toString() =>
-      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices, showComparison: $showComparison)';
+      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices, showComparison: $showComparison, sortConfig: $sortConfig)';
 }
 
 class AppUsageList extends StatefulWidget implements IPaginatedWidget {
@@ -49,6 +54,8 @@ class AppUsageList extends StatefulWidget implements IPaginatedWidget {
   final DateTime? filterEndDate;
   final List<String>? filterByDevices;
   final bool showComparison;
+  final SortConfig<AppUsageSortFields>? sortConfig;
+
   @override
   final PaginationMode paginationMode;
 
@@ -63,6 +70,7 @@ class AppUsageList extends StatefulWidget implements IPaginatedWidget {
     this.filterEndDate,
     this.filterByDevices,
     this.showComparison = false,
+    this.sortConfig,
     this.paginationMode = PaginationMode.loadMore,
   });
 
@@ -121,6 +129,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
         filterEndDate: widget.filterEndDate,
         filterByDevices: widget.filterByDevices,
         showComparison: widget.showComparison,
+        sortConfig: widget.sortConfig,
       );
 
   bool _filtersChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -131,6 +140,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       'endDate': oldFilters.filterEndDate,
       'filterByDevices': oldFilters.filterByDevices,
       'showComparison': oldFilters.showComparison,
+      'sortConfig': oldFilters.sortConfig,
     };
 
     final newMap = {
@@ -140,6 +150,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       'endDate': newFilters.filterEndDate,
       'filterByDevices': newFilters.filterByDevices,
       'showComparison': newFilters.showComparison,
+      'sortConfig': newFilters.sortConfig,
     };
 
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
@@ -195,7 +206,9 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
         compareEndDate: _currentFilters.showComparison && _currentFilters.filterEndDate != null
             ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
             : null,
-        filterByDevices: _currentFilters.filterByDevices);
+        filterByDevices: _currentFilters.filterByDevices,
+        sortBy: _currentFilters.sortConfig?.orderOptions,
+        sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false);
 
     await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(
       context: context,
@@ -261,6 +274,65 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
     _backLastScrollPosition();
   }
 
+  List<Widget> _buildAppUsageItems() {
+    final List<Widget> listItems = [];
+    if (_appUsageList == null || _appUsageList!.items.isEmpty) return listItems;
+
+    String? currentGroup;
+
+    final sortConfig = widget.sortConfig;
+    final showHeaders = sortConfig?.useCustomOrder != true &&
+        (sortConfig?.orderOptions.isNotEmpty ?? false) &&
+        (sortConfig?.enableGrouping ?? false);
+
+    double maxDuration = 0;
+    double maxCompareDuration = 0;
+
+    for (final item in _appUsageList!.items) {
+      final duration = item.duration.toDouble() / 60;
+      if (duration > maxDuration) maxDuration = duration;
+
+      final compareDuration = (item.compareDuration ?? 0).toDouble() / 60;
+      if (compareDuration > maxCompareDuration) maxCompareDuration = compareDuration;
+    }
+
+    for (var i = 0; i < _appUsageList!.items.length; i++) {
+      final appUsage = _appUsageList!.items[i];
+
+      if (showHeaders && appUsage.groupName != null && appUsage.groupName != currentGroup) {
+        currentGroup = appUsage.groupName;
+        if (i > 0) {
+          listItems.add(SizedBox(
+            key: ValueKey('separator_header_${appUsage.id}'),
+            height: AppTheme.sizeSmall,
+          ));
+        }
+        listItems.add(ListGroupHeader(
+          key: ValueKey('header_${appUsage.groupName}_$i'),
+          title: appUsage.groupName!,
+          shouldTranslate: appUsage.isGroupNameTranslatable,
+        ));
+      } else if (i > 0) {
+        listItems.add(SizedBox(
+          key: ValueKey('separator_item_${appUsage.id}'),
+          height: AppTheme.sizeSmall,
+        ));
+      }
+
+      listItems.add(Padding(
+        key: ValueKey('app_usage_${appUsage.id}'),
+        padding: const EdgeInsets.symmetric(vertical: 0),
+        child: AppUsageCard(
+          appUsage: appUsage,
+          maxDurationInListing: maxDuration,
+          maxCompareDurationInListing: maxCompareDuration,
+          onTap: () => widget.onOpenDetails?.call(appUsage.id),
+        ),
+      ));
+    }
+    return listItems;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Show nothing while initial data is being fetched to prevent flickering
@@ -279,13 +351,8 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       );
     }
 
-    final maxDuration = _appUsageList?.items.map((e) => e.duration.toDouble() / 60).reduce((a, b) => a > b ? a : b);
-    final maxCompareDuration =
-        _appUsageList?.items.map((e) => (e.compareDuration ?? 0).toDouble() / 60).reduce((a, b) => a > b ? a : b);
-
-    final showLoadMore = _appUsageList!.hasNext &&
-        _appUsageList!.items.length < _appUsageList!.totalItemCount &&
-        widget.paginationMode == PaginationMode.loadMore;
+    final listItems = _buildAppUsageItems();
+    final showLoadMore = _appUsageList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _appUsageList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
@@ -293,10 +360,14 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
     return ListView.builder(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: _appUsageList!.items.length + extraItemCount,
+      padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+      itemCount: listItems.length + extraItemCount,
       itemBuilder: (context, index) {
-        if (index == _appUsageList!.items.length && showLoadMore) {
+        if (index < listItems.length) {
+          return listItems[index];
+        } else if (showLoadMore) {
           return Padding(
+            key: const ValueKey('load_more_button'),
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
               child: LoadMoreButton(
@@ -304,25 +375,14 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
               ),
             ),
           );
-        } else if (index == _appUsageList!.items.length && showInfinityLoading) {
+        } else if (showInfinityLoading) {
           return const Padding(
+            key: ValueKey('infinity_loading_indicator'),
             padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
             child: Center(child: CircularProgressIndicator()),
           );
-        } else if (index >= _appUsageList!.items.length) {
-          return const SizedBox.shrink();
         }
-
-        final appUsage = _appUsageList!.items[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-          child: AppUsageCard(
-            appUsage: appUsage,
-            maxDurationInListing: maxDuration!,
-            maxCompareDurationInListing: maxCompareDuration,
-            onTap: () => widget.onOpenDetails?.call(appUsage.id),
-          ),
-        );
+        return const SizedBox.shrink();
       },
     );
   }

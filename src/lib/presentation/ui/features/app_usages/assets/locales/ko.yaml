@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: 추적 설정
       description: 앱 추적 규칙을 구성하고 자동 태그 지정을 설정하며 모니터링할 애플리케이션을 관리합니다. 생산성 요구에 맞게 추적을 사용자 정의합니다.
+  sort:
+    duration: 기간
+    name: 이름
+    device: 장치

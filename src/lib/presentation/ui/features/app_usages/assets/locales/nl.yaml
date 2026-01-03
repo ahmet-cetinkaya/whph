@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Tracking-instellingen
       description: Configureer app-trackingregels, stel automatische tagging in en beheer welke applicaties worden gevolgd. Pas tracking aan uw productiviteitsbehoeften aan.
+  sort:
+    duration: Duur
+    name: Naam
+    device: Apparaat

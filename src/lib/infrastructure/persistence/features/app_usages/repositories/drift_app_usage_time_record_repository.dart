@@ -5,6 +5,8 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 
 @UseRowClass(AppUsageTimeRecord)
@@ -93,7 +95,23 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     DateTime? compareEndDate,
     String? searchByProcessName,
     List<String>? filterByDevices,
+    List<SortOptionWithTranslationKey<AppUsageSortFields>>? sortBy,
+    bool sortByCustomOrder = false,
   }) async {
+    final sortClause = sortBy != null && sortBy.isNotEmpty
+        ? sortBy.map((s) {
+            final direction = s.direction == SortDirection.desc ? 'DESC' : 'ASC';
+            switch (s.field) {
+              case AppUsageSortFields.duration:
+                return 'ad.total_duration $direction';
+              case AppUsageSortFields.name:
+                return 'ad.name $direction';
+              case AppUsageSortFields.device:
+                return 'ad.device_name $direction';
+            }
+          }).join(', ')
+        : 'ad.total_duration DESC';
+
     final countQuery = database.customSelect(
       '''
       WITH app_usages_data AS (
@@ -165,6 +183,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     }
 
     // Get paginated data with proper app usage-level pagination
+    final outerSortClause = sortClause.replaceAll('ad.', 'fau.');
+
     final dataQuery = database.customSelect(
       '''
       WITH app_usages_data AS (
@@ -184,7 +204,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
       ),
       filtered_app_usages AS (
-        SELECT ad.id, ad.name, ad.display_name, ad.color, ad.device_name, ad.total_duration
+         SELECT ad.id, ad.name, ad.display_name, ad.color, ad.device_name, ad.total_duration
         FROM app_usages_data ad
         WHERE 1=1
         ${filterByTags != null && filterByTags.isNotEmpty ? '''
@@ -208,7 +228,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         ${filterByDevices != null && filterByDevices.isNotEmpty ? '''
         AND ad.device_name IN (${filterByDevices.map((_) => '?').join(', ')})
         ''' : ''}
-        ORDER BY ad.total_duration DESC
+        ORDER BY $sortClause
         LIMIT ? OFFSET ?
       )
       SELECT 
@@ -225,7 +245,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       FROM filtered_app_usages fau
       LEFT JOIN app_usage_tag_table aut ON fau.id = aut.app_usage_id AND aut.deleted_date IS NULL
       LEFT JOIN tag_table t ON aut.tag_id = t.id AND t.deleted_date IS NULL
-      ORDER BY fau.total_duration DESC, fau.id, aut.id
+      ORDER BY $outerSortClause, fau.id, aut.id
       ''',
       variables: [
         if (startDate != null) Variable<DateTime>(startDate),

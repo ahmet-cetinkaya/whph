@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Configuración de seguimiento
       description: Configure las reglas de seguimiento de aplicaciones, establezca etiquetado automático y administre qué aplicaciones monitorear. Personalice el seguimiento para que se adapte a sus necesidades de productividad.
+  sort:
+    duration: Duración
+    name: Nombre
+    device: Dispositivo
