@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'dart:async';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
@@ -106,6 +106,9 @@ class TaskListOptions extends PersistentListOptionsBase {
   /// Callback when subtasks toggle changes
   final Function(bool)? onSubTasksToggle;
 
+  /// Whether to show the grouping option
+  final bool showGroupingOption;
+
   const TaskListOptions({
     super.key,
     this.selectedTagIds,
@@ -126,6 +129,7 @@ class TaskListOptions extends PersistentListOptionsBase {
     this.showSearchFilter = true,
     this.showSortButton = true,
     this.showLayoutToggle = true,
+    this.showGroupingOption = true,
     this.forceOriginalLayout = false,
     this.onLayoutToggleChange,
     super.showSaveButton = true,
@@ -560,10 +564,11 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                 if (widget.showSortButton && widget.onSortChange != null)
                   SortDialogButton<TaskSortFields>(
                     iconColor: Theme.of(context).primaryColor,
-                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
+                    tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
                     config: widget.sortConfig ?? TaskDefaults.sorting,
                     defaultConfig: TaskDefaults.sorting,
                     onConfigChanged: widget.onSortChange!,
+                    showGroupingOption: widget.showGroupingOption,
                     availableOptions: [
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.title,

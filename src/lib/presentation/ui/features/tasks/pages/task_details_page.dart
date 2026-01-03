@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_delete_button.dart';

@@ -266,6 +266,11 @@ shared:
     reset_to_default: Επαναφορά στην προεπιλογή
     sort: Ταξινόμηση
     criteria: Κριτήρια ταξινόμησης
+    enable_grouping: Ομαδοποίηση κατά ταξινόμηση
+    enable_grouping_description:
+      Ομαδοποίηση αντικειμένων βάσει του πρώτου πεδίου
+      ταξινόμησης
+    sort_and_group: Ταξινόμηση & Ομαδοποίηση
   statistics:
     daily_usage:
       description: Εμφανίζει τον συνολικό χρόνο χρήσης ανά ημέρα της εβδομάδας
@@ -367,8 +372,12 @@ shared:
     select_end_date: Επιλογή ημερομηνίας λήξης
     no_dates_selected: Δεν επιλέχθηκαν ημερομηνίες
     refresh: Ανανέωση
-    cannot_select_time_before_min_date: Δεν μπορείτε να επιλέξετε ώρα πριν από τις {time}
-    cannot_select_time_after_max_date: Δεν μπορείτε να επιλέξετε ώρα μετά από τις {time}
+    cannot_select_time_before_min_date:
+      Δεν μπορείτε να επιλέξετε ώρα πριν από τις
+      {time}
+    cannot_select_time_after_max_date:
+      Δεν μπορείτε να επιλέξετε ώρα μετά από τις
+      {time}
     time_must_be_at_or_after: Η ώρα πρέπει να είναι {time} ή μεταγενέστερη
     time_must_be_at_or_before: Η ώρα πρέπει να είναι {time} ή προγενέστερη
     selected_date_must_be_at_or_after: Η ημερομηνία πρέπει να είναι {date} ή μεταγενέστερη
@@ -376,13 +385,25 @@ shared:
     start_date_cannot_be_after_end_date:
       Η ημερομηνία έναρξης δεν μπορεί να είναι
       μετά την ημερομηνία λήξης
-    start_date_must_be_at_or_after: Η ημερομηνία έναρξης πρέπει να είναι {date} ή μεταγενέστερη
+    start_date_must_be_at_or_after:
+      Η ημερομηνία έναρξης πρέπει να είναι {date} ή
+      μεταγενέστερη
     end_date_must_be_at_or_before: Η ημερομηνία λήξης πρέπει να είναι {date} ή προγενέστερη
-    cannot_select_date_before_min_date: Δεν μπορείτε να επιλέξετε ημερομηνία πριν από τις {date}
-    cannot_select_date_after_max_date: Δεν μπορείτε να επιλέξετε ημερομηνία μετά από τις {date}
-    start_date_cannot_be_before_min_date: Η ημερομηνία έναρξης δεν μπορεί να είναι πριν από τις {date}
-    end_date_cannot_be_after_max_date: Η ημερομηνία λήξης δεν μπορεί να είναι μετά από τις {date}
-    selected_date_time_must_be_after: Η ημερομηνία και η ώρα πρέπει να είναι μετά από τις {dateTime}
+    cannot_select_date_before_min_date:
+      Δεν μπορείτε να επιλέξετε ημερομηνία πριν
+      από τις {date}
+    cannot_select_date_after_max_date:
+      Δεν μπορείτε να επιλέξετε ημερομηνία μετά από
+      τις {date}
+    start_date_cannot_be_before_min_date:
+      Η ημερομηνία έναρξης δεν μπορεί να είναι
+      πριν από τις {date}
+    end_date_cannot_be_after_max_date:
+      Η ημερομηνία λήξης δεν μπορεί να είναι μετά
+      από τις {date}
+    selected_date_time_must_be_after:
+      Η ημερομηνία και η ώρα πρέπει να είναι μετά
+      από τις {dateTime}
     select_date_time_title: Επιλογή ημερομηνίας και ώρας
     select_date_range_title: Επιλογή εύρους ημερομηνιών
     refresh_description: Αυτόματη ανανέωση επιλεγμένου εύρους ημερομηνιών
@@ -410,3 +431,17 @@ shared:
     at_maximum_value: Στην μέγιστη τιμή
   skip_tour: Παράλειψη περιήγησης
   tap_to_resume: Πατήστε για επιστροφή στο περιεχόμενο
+  none: Κανένα
+  date_group:
+    today: Σήμερα
+    tomorrow: Αύριο
+    overdue: Εκπρόθεσμος
+    future: Μέλλον
+    next_7_days: Επόμενες 7 ημέρες
+    no_date: Χωρίς ημερομηνία
+  duration_group:
+    less_than_15_min: < 15 λεπ
+    15_30_min: 15 - 30 λεπ
+    30_60_min: 30 - 60 λεπ
+    1_2_hours: 1 - 2 ώρες
+    more_than_2_hours: 2+ ώρες

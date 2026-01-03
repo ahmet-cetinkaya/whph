@@ -3,6 +3,7 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart' as application;
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
@@ -59,7 +60,7 @@ class PrioritySelectionDialog extends StatelessWidget {
                   // No Priority Option
                   _buildPriorityOptionTile(
                     context: context,
-                    title: translationService.translate(TaskTranslationKeys.priorityNoneTooltip),
+                    title: translationService.translate(application.TaskTranslationKeys.priorityNoneTooltip),
                     icon: TaskUiConstants.priorityOutlinedIcon,
                     iconColor: AppTheme.secondaryTextColor,
                     isSelected: selectedPriority == null,

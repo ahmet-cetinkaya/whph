@@ -252,6 +252,9 @@ shared:
     reset_to_default: Auf Standard zurücksetzen
     sort: Sortieren
     criteria: Sortierkriterien
+    enable_grouping: Nach Sortierung gruppieren
+    enable_grouping_description: Elemente basierend auf dem ersten Sortierfeld gruppieren
+    sort_and_group: Sortieren & Gruppieren
   statistics:
     daily_usage:
       description: Zeigt die gesamte Nutzungszeit pro Wochentag
@@ -400,3 +403,17 @@ shared:
     at_maximum_value: Höchstwert erreicht
   skip_tour: Tour überspringen
   tap_to_resume: Tippen, um zum Inhalt zurückzukehren
+  none: Keine
+  date_group:
+    today: Heute
+    tomorrow: Morgen
+    overdue: Überfällig
+    future: Zukunft
+    next_7_days: Nächste 7 Tage
+    no_date: Kein Datum
+  duration_group:
+    less_than_15_min: < 15 Min
+    15_30_min: 15 - 30 Min
+    30_60_min: 30 - 60 Min
+    1_2_hours: 1 - 2 Stunden
+    more_than_2_hours: 2+ Stunden

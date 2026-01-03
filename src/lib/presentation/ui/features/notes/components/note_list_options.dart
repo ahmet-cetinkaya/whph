@@ -280,7 +280,7 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                 if (widget.showSortButton && widget.onSortChange != null)
                   SortDialogButton<NoteSortFields>(
                     iconColor: Theme.of(context).primaryColor,
-                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
+                    tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
                     config: widget.sortConfig ??
                         SortConfig<NoteSortFields>(
                           orderOptions: [

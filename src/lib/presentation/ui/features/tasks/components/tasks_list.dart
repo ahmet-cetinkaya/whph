@@ -7,12 +7,16 @@ import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
+import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
@@ -304,6 +308,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           areParentAndSubTasksIncluded: widget.includeSubTasks,
           sortBy: widget.sortConfig?.orderOptions,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
+          enableGrouping:
+              (widget.sortConfig?.useCustomOrder ?? false) ? false : (widget.sortConfig?.enableGrouping ?? true),
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
 
@@ -345,10 +351,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         }
       },
     );
-  }
-
-  void _onTaskCompleted() {
-    widget.onTaskCompleted?.call();
   }
 
   List<TaskListItem> _getFilteredTasks() {
@@ -481,47 +483,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     _backLastScrollPosition();
   }
 
-  List<Widget> _buildTaskCards() {
-    final items = _getFilteredTasks();
-    return items
-        .map((task) => Container(
-              key: ValueKey('task_${task.id}_${widget.forceOriginalLayout}'),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 100),
-                  child: TaskCard(
-                    key: ValueKey(
-                        'task_card_${task.id}_${widget.forceOriginalLayout}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
-                    taskItem: task,
-                    transparent: widget.transparentCards,
-                    trailingButtons: [
-                      if (widget.trailingButtons != null) ...widget.trailingButtons!(task),
-                      if (widget.showSelectButton)
-                        IconButton(
-                          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                          onPressed: () => widget.onSelectTask?.call(task),
-                        ),
-                      if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
-                        ReorderableDragStartListener(
-                          index: items.indexOf(task),
-                          child: const Icon(Icons.drag_handle, color: Colors.grey),
-                        ),
-                    ],
-                    onCompleted: _onTaskCompleted,
-                    onOpenDetails: () => widget.onClickTask(task),
-                    onScheduled: !task.isCompleted && widget.onScheduleTask != null
-                        ? () => widget.onScheduleTask!(task, DateTime.now())
-                        : null,
-                    isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                    isCustomOrder:
-                        widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
-                  ),
-                ),
-              ),
-            ))
-        .toList();
-  }
+  // _buildTaskCards removed as it is replaced by _buildGroupedList
 
   // Helper method to check and normalize very small orders
   bool _shouldNormalizeOrders(List<TaskListItem> items) {
@@ -568,6 +530,80 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     );
   }
 
+  List<Widget> _buildGroupedList() {
+    if (_tasks == null || _tasks!.items.isEmpty) return [];
+
+    // Filter out selected task to avoid duplicates and wrong indices
+    final filteredTasks = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
+    if (filteredTasks.isEmpty) return [];
+
+    final List<Widget> listItems = [];
+    String? currentGroup;
+
+    // Check if we should show headers for Date grouping
+    final primarySortField = widget.sortConfig?.orderOptions.firstOrNull?.field;
+    final isGroupedByDate = primarySortField == TaskSortFields.createdDate ||
+        primarySortField == TaskSortFields.deadlineDate ||
+        primarySortField == TaskSortFields.plannedDate ||
+        primarySortField == TaskSortFields.modifiedDate;
+
+    bool showHeaders = true;
+    if (isGroupedByDate) {
+      final firstGroup = filteredTasks.first.groupName;
+      bool multipleGroups = filteredTasks.any((t) => t.groupName != firstGroup);
+      if (!multipleGroups && firstGroup == SharedTranslationKeys.today) {
+        showHeaders = false;
+      }
+    }
+
+    for (var task in filteredTasks) {
+      // Check if group has changed
+      // Only add header if groupName is not null AND we should show headers
+      if (showHeaders && task.groupName != null && task.groupName != currentGroup) {
+        currentGroup = task.groupName;
+        listItems.add(ListGroupHeader(
+          title: currentGroup!,
+          shouldTranslate: currentGroup.length > 1,
+        ));
+      }
+
+      // Build trailing buttons list
+      final List<Widget> trailingButtons = [];
+      if (widget.trailingButtons != null) {
+        trailingButtons.addAll(widget.trailingButtons!(task));
+      }
+      if (widget.showSelectButton) {
+        trailingButtons.add(IconButton(
+          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+          onPressed: () => widget.onSelectTask?.call(task),
+        ));
+      }
+      if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+        trailingButtons.add(ReorderableDragStartListener(
+          index: filteredTasks.indexOf(task),
+          child: const Icon(Icons.drag_handle, color: Colors.grey),
+        ));
+      }
+
+      listItems.add(Padding(
+          padding: const EdgeInsets.only(bottom: AppTheme.size2XSmall),
+          child: TaskCard(
+            key: ValueKey('task_card_${task.id}'),
+            taskItem: task,
+            onOpenDetails: () => widget.onClickTask(task),
+            onCompleted: widget.onTaskCompleted,
+            onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+                ? null
+                : () => widget.onScheduleTask!(task, DateTime.now()),
+            transparent: widget.transparentCards,
+            trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+            showSubTasks: widget.includeSubTasks,
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          )));
+    }
+    return listItems;
+  }
+
   Widget _buildContent(BuildContext context) {
     if (_tasks == null) {
       // No loading indicator because local DB is fast
@@ -602,7 +638,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         ),
         onReorder: _onReorder,
         children: [
-          ..._buildTaskCards(),
+          ..._buildGroupedList(),
           if (_tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               key: ValueKey('load_more_button_reorderable_${widget.forceOriginalLayout}'),
@@ -621,7 +657,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         ],
       );
     } else {
-      final taskCards = _buildTaskCards();
+      final taskCards = _buildGroupedList();
       final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
       final showInfinityLoading =
           _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;

@@ -252,6 +252,9 @@ shared:
     reset_to_default: Resetează la implicit
     sort: Sortează
     criteria: Criterii de sortare
+    enable_grouping: Grupează după sortare
+    enable_grouping_description: Grupează elementele pe baza primului câmp de sortare
+    sort_and_group: Sortează și Grupează
   statistics:
     daily_usage:
       description: Arată timpul total de utilizare pe zi a săptămânii
@@ -396,3 +399,17 @@ shared:
     at_maximum_value: La valoarea maximă
   skip_tour: Sari peste tur
   tap_to_resume: Atingeți pentru a reveni la conținut
+  none: Niciunul
+  date_group:
+    today: Astăzi
+    tomorrow: Mâine
+    overdue: Întârziat
+    future: Viitor
+    next_7_days: Următoarele 7 zile
+    no_date: Fără dată
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 ore
+    more_than_2_hours: 2+ ore

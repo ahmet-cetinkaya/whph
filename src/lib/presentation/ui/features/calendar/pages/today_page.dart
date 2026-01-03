@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
@@ -74,7 +74,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   bool _showCompletedTasks = false;
   bool _showSubTasks = false;
   String? _taskSearchQuery;
-  SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
+  SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting.copyWith(enableGrouping: false);
   bool _taskForceOriginalLayout = false;
 
   // Habit list options state
@@ -492,6 +492,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                   showDateFilter: false,
                                   showTagFilter: false,
                                   showSubTasksToggle: true,
+                                  showGroupingOption: true,
                                 ),
                               ),
                             ),
@@ -512,7 +513,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     if (_taskListOptionSettingsLoaded)
                       TaskList(
                         key: ValueKey(
-                            'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'nosearch'}'),
+                            'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}'),
                         filterByCompleted: _showCompletedTasks,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
                         filterNoTags: _showNoTagsFilter,

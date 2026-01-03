@@ -22,6 +22,7 @@ class SortDialogButton<T> extends StatefulWidget {
   final double? dialogMaxHeightRatio;
   final double? dialogMaxWidthRatio;
   final bool showCustomOrderOption;
+  final bool showGroupingOption;
   final VoidCallback? onDialogClose;
 
   const SortDialogButton({
@@ -37,6 +38,7 @@ class SortDialogButton<T> extends StatefulWidget {
     this.dialogMaxHeightRatio = 0.4,
     this.dialogMaxWidthRatio = 0.6,
     this.showCustomOrderOption = false,
+    this.showGroupingOption = true,
     this.onDialogClose,
   });
 
@@ -56,6 +58,7 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
           defaultConfig: widget.defaultConfig,
           onConfigChanged: widget.onConfigChanged,
           showCustomOrderOption: widget.showCustomOrderOption,
+          showGroupingOption: widget.showGroupingOption,
           translationService: _translationService,
           onClose: widget.onDialogClose,
         ),
@@ -84,6 +87,7 @@ class _SortDialog<T> extends StatefulWidget {
   final SortConfig<T> defaultConfig;
   final Function(SortConfig<T>) onConfigChanged;
   final bool showCustomOrderOption;
+  final bool showGroupingOption;
   final ITranslationService translationService;
   final VoidCallback? onClose;
 
@@ -94,6 +98,7 @@ class _SortDialog<T> extends StatefulWidget {
     required this.onConfigChanged,
     required this.translationService,
     this.showCustomOrderOption = false,
+    this.showGroupingOption = true,
     this.onClose,
   });
 
@@ -201,6 +206,13 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
     });
   }
 
+  void _toggleGrouping(bool value) {
+    setState(() {
+      _currentConfig = _currentConfig.copyWith(enableGrouping: value);
+      widget.onConfigChanged(_currentConfig);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDisabled = _currentConfig.useCustomOrder;
@@ -208,7 +220,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.translationService.translate(SharedTranslationKeys.sort),
+          widget.translationService.translate(SharedTranslationKeys.sortAndGroup),
           style: AppTheme.headlineSmall,
         ),
         leading: IconButton(
@@ -234,9 +246,9 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
         elevation: 0,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: ReorderableListView.builder(
           padding: const EdgeInsets.all(AppTheme.sizeLarge),
-          child: Column(
+          header: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.showCustomOrderOption) ...[
@@ -261,38 +273,60 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                     ),
                   ),
                 ),
-                const SizedBox(height: AppTheme.sizeLarge),
+                const SizedBox(height: AppTheme.sizeSmall),
               ],
-              AnimatedCrossFade(
-                firstChild: const SizedBox.shrink(),
-                secondChild: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              if (widget.showGroupingOption) ...[
+                Card(
+                  elevation: 0,
+                  color: AppTheme.surface1,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                  child: SwitchListTile.adaptive(
+                    value: _currentConfig.enableGrouping,
+                    onChanged: isDisabled ? null : _toggleGrouping,
+                    title: Text(
+                      widget.translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                      style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      widget.translationService.translate(SharedTranslationKeys.sortEnableGroupingDescription),
+                      style: AppTheme.bodySmall,
+                    ),
+                    secondary: StyledIcon(
+                      Icons.view_list,
+                      isActive: _currentConfig.enableGrouping && !isDisabled,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppTheme.sizeSmall),
+              ],
+              if (!isDisabled)
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                  child: Text(
+                    widget.translationService.translate(SharedTranslationKeys.sortCriteria),
+                    style: AppTheme.labelLarge,
+                  ),
+                ),
+            ],
+          ),
+          itemCount: isDisabled ? 0 : _currentConfig.orderOptions.length,
+          itemBuilder: (context, index) {
+            return _buildCriteriaRow(index);
+          },
+          onReorder: _reorderCriteria,
+          buildDefaultDragHandles: false,
+          proxyDecorator: (child, index, animation) {
+            return Material(
+              elevation: 2,
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+              child: child,
+            );
+          },
+          footer: isDisabled
+              ? null
+              : Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
-                      child: Text(
-                        widget.translationService.translate(SharedTranslationKeys.sortCriteria),
-                        style: AppTheme.labelLarge,
-                      ),
-                    ),
-                    ReorderableListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _currentConfig.orderOptions.length,
-                      onReorder: _reorderCriteria,
-                      buildDefaultDragHandles: false,
-                      itemBuilder: (context, index) {
-                        return _buildCriteriaRow(index);
-                      },
-                      proxyDecorator: (child, index, animation) {
-                        return Material(
-                          elevation: 2,
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                          child: child,
-                        );
-                      },
-                    ),
                     const SizedBox(height: AppTheme.sizeMedium),
                     Row(
                       children: [
@@ -359,11 +393,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                     ),
                   ],
                 ),
-                crossFadeState: isDisabled ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 300),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -378,7 +407,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
         .toList();
 
     return Container(
-      key: Key('criteria_$index'),
+      key: ValueKey(option.field),
       margin: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
       decoration: BoxDecoration(
         color: AppTheme.surface1,
@@ -416,43 +445,39 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              icon: Icon(
-                option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,
-                size: 20,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              tooltip: widget.translationService.translate(
-                option.direction == SortDirection.asc
-                    ? SharedTranslationKeys.sortAscending
-                    : SharedTranslationKeys.sortDescending,
-              ),
-              onPressed: () => _toggleDirection(index),
-              constraints: const BoxConstraints(
-                minWidth: 36,
-                minHeight: 36,
+            InkWell(
+              onTap: () => _toggleDirection(index),
+              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
             if (_currentConfig.orderOptions.length > 1)
-              IconButton(
-                icon: Icon(Icons.close, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
-                tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
-                onPressed: () => _removeCriteria(index),
-                constraints: const BoxConstraints(
-                  minWidth: 36,
-                  minHeight: 36,
+              InkWell(
+                onTap: () => _removeCriteria(index),
+                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.close, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
                 ),
               ),
             // Drag handle for reordering
             ReorderableDragStartListener(
               index: index,
-              child: IconButton(
-                icon: Icon(Icons.drag_handle, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
-                tooltip: widget.translationService.translate(SharedTranslationKeys.sort),
-                onPressed: () {},
-                constraints: const BoxConstraints(
-                  minWidth: 36,
-                  minHeight: 36,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.drag_handle,
+                    size: 20,
+                    color: AppTheme.textColor.withValues(alpha: 0.5),
+                  ),
                 ),
               ),
             ),

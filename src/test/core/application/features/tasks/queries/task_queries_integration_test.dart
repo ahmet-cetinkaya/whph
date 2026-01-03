@@ -4,8 +4,8 @@ import 'package:whph/core/application/features/tasks/queries/get_task_query.dart
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
-import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_tag_repository.dart';
-import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_repository.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
@@ -15,8 +15,6 @@ void main() {
     late AppDatabase database;
     late DriftTaskRepository taskRepository;
     late DriftTaskTimeRecordRepository taskTimeRecordRepository;
-    late DriftTaskTagRepository taskTagRepository;
-    late DriftTagRepository tagRepository;
     late GetTaskQueryHandler getTaskHandler;
     late GetListTasksQueryHandler getListTasksHandler;
 
@@ -29,8 +27,6 @@ void main() {
       database = AppDatabase.forTesting();
       taskRepository = DriftTaskRepository.withDatabase(database);
       taskTimeRecordRepository = DriftTaskTimeRecordRepository.withDatabase(database);
-      taskTagRepository = DriftTaskTagRepository.withDatabase(database);
-      tagRepository = DriftTagRepository.withDatabase(database);
 
       // Initialize the query handlers with the repositories
       getTaskHandler = GetTaskQueryHandler(
@@ -40,9 +36,6 @@ void main() {
 
       getListTasksHandler = GetListTasksQueryHandler(
         taskRepository: taskRepository,
-        taskTagRepository: taskTagRepository,
-        tagRepository: tagRepository,
-        taskTimeRecordRepository: taskTimeRecordRepository,
       );
     });
 
@@ -224,6 +217,63 @@ void main() {
         final firstPageIds = firstPageResult.items.map((item) => item.id).toSet();
         final secondPageIds = secondPageResult.items.map((item) => item.id).toSet();
         expect(firstPageIds.intersection(secondPageIds), isEmpty);
+      });
+      test('should sort tasks locally by title case-insensitively', () async {
+        final task1 = Task(
+            id: '1',
+            title: 'Apple',
+            createdDate: DateTime.now(),
+            modifiedDate: DateTime.now(),
+            deletedDate: null,
+            completedAt: null,
+            priority: EisenhowerPriority.urgentImportant,
+            order: 0);
+        final task2 = Task(
+            id: '2',
+            title: 'Banana',
+            createdDate: DateTime.now(),
+            modifiedDate: DateTime.now(),
+            deletedDate: null,
+            completedAt: null,
+            priority: EisenhowerPriority.urgentImportant,
+            order: 0);
+        final task3 = Task(
+            id: '3',
+            title: 'apple 2',
+            createdDate: DateTime.now(),
+            modifiedDate: DateTime.now(),
+            deletedDate: null,
+            completedAt: null,
+            priority: EisenhowerPriority.urgentImportant,
+            order: 0);
+        final task4 = Task(
+            id: '4',
+            title: 'card',
+            createdDate: DateTime.now(),
+            modifiedDate: DateTime.now(),
+            deletedDate: null,
+            completedAt: null,
+            priority: EisenhowerPriority.urgentImportant,
+            order: 0);
+
+        await taskRepository.add(task1);
+        await taskRepository.add(task2);
+        await taskRepository.add(task3);
+        await taskRepository.add(task4);
+
+        final query = GetListTasksQuery(
+            pageIndex: 0,
+            pageSize: 10,
+            sortBy: [SortOption(field: TaskSortFields.title, direction: SortDirection.asc)],
+            sortByCustomSort: false);
+
+        final result = await getListTasksHandler.call(query);
+
+        expect(result.items.length, 4);
+        expect(result.items[0].title, 'Apple');
+        expect(result.items[1].title, 'apple 2');
+        expect(result.items[2].title, 'Banana');
+        expect(result.items[3].title, 'card');
       });
     });
   });

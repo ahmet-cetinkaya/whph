@@ -66,6 +66,13 @@ shared:
     modified_date_label: Modified Date
     name_label: Name
   date: Date
+  date_group:
+    today: Today
+    tomorrow: Tomorrow
+    overdue: Overdue
+    future: Future
+    next_7_days: Next 7 Days
+    no_date: No Date
   date_filter:
     title: Select Date Range
     tooltips:
@@ -134,6 +141,12 @@ shared:
         preview: Preview
         quote: Quote
         strikethrough: Strikethrough
+  duration_group:
+    less_than_15_min: "< 15 min"
+    15_30_min: "15 - 30 min"
+    30_60_min: "30 - 60 min"
+    1_2_hours: "1 - 2 hours"
+    more_than_2_hours: "2+ hours"
   errors:
     deleting: Error occurred while deleting data
     file_not_found: File not found
@@ -206,6 +219,7 @@ shared:
       tags: Tags
       tasks: Tasks
       today: Today
+  none: None
   none_option: No tags
   regex_help:
     examples:
@@ -245,6 +259,9 @@ shared:
     remove_criteria: Remove Criteria
     reset_to_default: Reset to Default
     sort: Sort
+    enable_grouping: Group by sort option
+    enable_grouping_description: Group items based on the first sort field
+    sort_and_group: Sort & Group
     criteria: Sort criteria
   statistics:
     daily_usage:

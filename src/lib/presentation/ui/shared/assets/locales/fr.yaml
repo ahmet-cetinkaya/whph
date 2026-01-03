@@ -264,6 +264,11 @@ shared:
     reset_to_default: Remettre par défaut
     sort: Trier
     criteria: Critères de tri
+    enable_grouping: Grouper par tri
+    enable_grouping_description:
+      Grouper les éléments en fonction du premier champ
+      de tri
+    sort_and_group: Trier & Grouper
   statistics:
     daily_usage:
       description: Affiche le temps d'utilisation total par jour de la semaine
@@ -365,8 +370,12 @@ shared:
     select_end_date: Sélectionner la date de fin
     no_dates_selected: Aucune date sélectionnée
     refresh: Actualiser
-    cannot_select_time_before_min_date: Impossible de sélectionner une heure avant {time}
-    cannot_select_time_after_max_date: Impossible de sélectionner une heure après {time}
+    cannot_select_time_before_min_date:
+      Impossible de sélectionner une heure avant
+      {time}
+    cannot_select_time_after_max_date:
+      Impossible de sélectionner une heure après
+      {time}
     time_must_be_at_or_after: L'heure doit être {time} ou après
     time_must_be_at_or_before: L'heure doit être {time} ou avant
     selected_date_must_be_at_or_after: La date sélectionnée doit être {date} ou après
@@ -376,11 +385,17 @@ shared:
       date de fin
     start_date_must_be_at_or_after: La date de début doit être {date} ou après
     end_date_must_be_at_or_before: La date de fin doit être {date} ou avant
-    cannot_select_date_before_min_date: Impossible de sélectionner une date avant {date}
+    cannot_select_date_before_min_date:
+      Impossible de sélectionner une date avant
+      {date}
     cannot_select_date_after_max_date: Impossible de sélectionner une date après {date}
-    start_date_cannot_be_before_min_date: La date de début ne peut pas être avant {date}
+    start_date_cannot_be_before_min_date:
+      La date de début ne peut pas être avant
+      {date}
     end_date_cannot_be_after_max_date: La date de fin ne peut pas être après {date}
-    selected_date_time_must_be_after: La date et l'heure sélectionnées doivent être après {dateTime}
+    selected_date_time_must_be_after:
+      La date et l'heure sélectionnées doivent être
+      après {dateTime}
     select_date_time_title: Sélectionner la date et l'heure
     select_date_range_title: Sélectionner la plage de dates
     refresh_description: Actualiser automatiquement la plage de dates sélectionnée
@@ -408,3 +423,17 @@ shared:
     at_maximum_value: Au maximum
   skip_tour: Passer la visite
   tap_to_resume: Appuyer pour revenir au contenu
+  none: Aucun
+  date_group:
+    today: Aujourd'hui
+    tomorrow: Demain
+    overdue: En retard
+    future: Futur
+    next_7_days: Les 7 prochains jours
+    no_date: Sans date
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 heures
+    more_than_2_hours: 2+ heures

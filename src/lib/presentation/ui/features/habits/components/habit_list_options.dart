@@ -391,7 +391,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                 if (widget.showSortButton && widget.onSortChange != null)
                   SortDialogButton<HabitSortFields>(
                     iconColor: Theme.of(context).primaryColor,
-                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
+                    tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
                     config: widget.sortConfig ??
                         SortConfig<HabitSortFields>(
                           orderOptions: [

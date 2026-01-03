@@ -215,6 +215,9 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String enableReorderingTooltip = 'shared.sort.enable_reordering_tooltip';
   static const String disableReorderingTooltip = 'shared.sort.disable_reordering_tooltip';
   static const String sortCriteria = 'shared.sort.criteria';
+  static const String sortEnableGrouping = application.SharedTranslationKeys.sortEnableGrouping;
+  static const String sortEnableGroupingDescription = application.SharedTranslationKeys.sortEnableGroupingDescription;
+  static const String sortAndGroup = application.SharedTranslationKeys.sortAndGroup;
 
   // Data
   static const String createdDateLabel = 'shared.data.created_date_label';

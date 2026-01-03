@@ -30,21 +30,6 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String pomodoroKeepScreenAwakeSectionLabel = 'tasks.pomodoro.settings.keep_screen_awake_section';
   static const String pomodoroKeepScreenAwakeLabel = 'tasks.pomodoro.settings.keep_screen_awake';
 
-  // Priority Selection
-  static const String prioritySelectionTitle = 'tasks.priority.selection.title';
-  static const String priorityUrgentImportant = 'tasks.priority.types.urgent_important';
-  static const String priorityNotUrgentImportant = 'tasks.priority.types.not_urgent_important';
-  static const String priorityUrgentNotImportant = 'tasks.priority.types.urgent_not_important';
-  static const String priorityNotUrgentNotImportant = 'tasks.priority.types.not_urgent_not_important';
-  static const String priorityNone = 'tasks.priority.types.none';
-
-  // Priority Tooltips
-  static const String priorityUrgentImportantTooltip = 'tasks.priority.tooltips.urgent_important';
-  static const String priorityNotUrgentImportantTooltip = 'tasks.priority.tooltips.not_urgent_important';
-  static const String priorityUrgentNotImportantTooltip = 'tasks.priority.tooltips.urgent_not_important';
-  static const String priorityNotUrgentNotImportantTooltip = 'tasks.priority.tooltips.not_urgent_not_important';
-  static const String priorityNoneTooltip = 'tasks.priority.tooltips.none';
-
   // Quick Task
   static const String quickTaskTitle = 'tasks.quick_task.title';
   static const String quickTaskTitleHint = 'tasks.quick_task.title_hint';

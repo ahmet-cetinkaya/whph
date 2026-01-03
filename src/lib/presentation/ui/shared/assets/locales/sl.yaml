@@ -246,6 +246,9 @@ shared:
     reset_to_default: Ponastavi na privzeto
     sort: Razvrsti
     criteria: Kriteriji razvrščanja
+    enable_grouping: Združi po razvrščanju
+    enable_grouping_description: Združi predmete glede na prvo polje razvrščanja
+    sort_and_group: Razvrsti in združi
   statistics:
     daily_usage:
       description: Prikazuje skupni čas uporabe na dan v tednu
@@ -389,3 +392,17 @@ shared:
     at_maximum_value: Pri maksimalni vrednosti
   skip_tour: Preskoči predstavitev
   tap_to_resume: Dotaknite se za vrnitev na vsebino
+  none: Brez
+  date_group:
+    today: Danes
+    tomorrow: Jutri
+    overdue: Zapadlo
+    future: Prihodnost
+    next_7_days: Naslednjih 7 dni
+    no_date: Bz datuma
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 uri
+    more_than_2_hours: 2+ ur

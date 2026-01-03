@@ -259,6 +259,9 @@ shared:
     reset_to_default: Redefinir para padrão
     sort: Ordenar
     criteria: Critérios de ordenação
+    enable_grouping: Agrupar por ordenação
+    enable_grouping_description: Agrupar itens com base no primeiro campo de ordenação
+    sort_and_group: Ordenar e Agrupar
   statistics:
     daily_usage:
       description: Mostra o tempo total de uso por dia da semana
@@ -360,12 +363,16 @@ shared:
     select_end_date: Selecionar data de término
     no_dates_selected: Nenhuma data selecionada
     refresh: Atualizar
-    cannot_select_time_before_min_date: Não é possível selecionar horário antes de {time}
+    cannot_select_time_before_min_date:
+      Não é possível selecionar horário antes de
+      {time}
     cannot_select_time_after_max_date: Não é possível selecionar horário após {time}
     time_must_be_at_or_after: O horário deve ser às {time} ou depois
     time_must_be_at_or_before: O horário deve ser às {time} ou antes
     selected_date_must_be_at_or_after: A data selecionada deve ser em ou após {date}
-    selected_date_must_be_at_or_before: A data selecionada deve ser em ou antes de {date}
+    selected_date_must_be_at_or_before:
+      A data selecionada deve ser em ou antes de
+      {date}
     start_date_cannot_be_after_end_date:
       A data de início não pode ser posterior à
       data de término
@@ -375,7 +382,9 @@ shared:
     cannot_select_date_after_max_date: Não é possível selecionar data após {date}
     start_date_cannot_be_before_min_date: A data de início não pode ser antes de {date}
     end_date_cannot_be_after_max_date: A data de término não pode ser depois de {date}
-    selected_date_time_must_be_after: A data e hora selecionadas devem ser depois de {dateTime}
+    selected_date_time_must_be_after:
+      A data e hora selecionadas devem ser depois
+      de {dateTime}
     select_date_time_title: Selecionar data e hora
     select_date_range_title: Selecionar intervalo de datas
     refresh_description: Atualizar automaticamente o intervalo de datas selecionado
@@ -403,3 +412,17 @@ shared:
     at_maximum_value: No valor máximo
   skip_tour: Pular tour
   tap_to_resume: Toque para voltar ao conteúdo
+  none: Nenhum
+  date_group:
+    today: Hoje
+    tomorrow: Amanhã
+    overdue: Atrasado
+    future: Futuro
+    next_7_days: Próximos 7 dias
+    no_date: Sem data
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 horas
+    more_than_2_hours: 2+ horas

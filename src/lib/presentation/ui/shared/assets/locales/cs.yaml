@@ -246,6 +246,9 @@ shared:
     reset_to_default: Obnovit na výchozí
     sort: Řadit
     criteria: Kritéria řazení
+    enable_grouping: Seskupit podle třídění
+    enable_grouping_description: Seskupit položky podle prvního třídícího pole
+    sort_and_group: Třídit a seskupovat
   statistics:
     daily_usage:
       description: Zobrazuje celkový čas využití za den v týdnu
@@ -390,3 +393,17 @@ shared:
     at_minimum_value: Dosaženo minimální hodnoty
     at_maximum_value: Dosaženo maximální hodnoty
   tap_to_resume: Klepnutím se vrátíte k obsahu
+  none: Žádný
+  date_group:
+    today: Dnes
+    tomorrow: Zítra
+    overdue: Po splatnosti
+    future: Budoucnost
+    next_7_days: P příštích 7 dní
+    no_date: Bez data
+  duration_group:
+    less_than_15_min: < 15 min
+    15_30_min: 15 - 30 min
+    30_60_min: 30 - 60 min
+    1_2_hours: 1 - 2 hodiny
+    more_than_2_hours: 2+ hodin
