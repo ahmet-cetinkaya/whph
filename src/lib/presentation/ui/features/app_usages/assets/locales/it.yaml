@@ -186,3 +186,7 @@ app_usages:
     tracking_settings:
       title: Impostazioni di tracciamento
       description: Configura le regole di tracciamento delle app, imposta l'etichettatura automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento in base alle tue esigenze di produttività.
+  sort:
+    duration: Durata
+    name: Nome
+    device: Dispositivo

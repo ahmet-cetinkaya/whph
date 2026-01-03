@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Nastavitve sledenja
       description: Konfigurirajte pravila sledenja aplikacij, nastavite samodejno označevanje in upravljajte, katere aplikacije se spremljajo. Prilagodite sledenje svojim potrebam produktivnosti.
+  sort:
+    duration: Trajanje
+    name: Ime
+    device: Naprava

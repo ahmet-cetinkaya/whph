@@ -92,4 +92,9 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   static const String tourFilterSortDescription = 'app_usages.tour.filter_sort.description';
   static const String tourTrackingSettingsTitle = 'app_usages.tour.tracking_settings.title';
   static const String tourTrackingSettingsDescription = 'app_usages.tour.tracking_settings.description';
+
+  // Sort
+  static const String sortDuration = 'app_usages.sort.duration';
+  static const String sortName = 'app_usages.sort.name';
+  static const String sortDevice = 'app_usages.sort.device';
 }

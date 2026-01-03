@@ -22,4 +22,23 @@ class SortConfig<T> {
       enableGrouping: enableGrouping ?? this.enableGrouping,
     );
   }
+
+  factory SortConfig.fromJson(Map<String, dynamic> json, T Function(dynamic) fromJsonT) {
+    return SortConfig(
+      orderOptions: (json['orderOptions'] as List<dynamic>?)
+              ?.map((e) => SortOptionWithTranslationKey.fromJson(e as Map<String, dynamic>, fromJsonT))
+              .toList() ??
+          [],
+      useCustomOrder: json['useCustomOrder'] as bool? ?? false,
+      enableGrouping: json['enableGrouping'] as bool? ?? true,
+    );
+  }
+
+  Map<String, dynamic> toJson(dynamic Function(T) toJsonT) {
+    return {
+      'orderOptions': orderOptions.map((e) => e.toJson(toJsonT)).toList(),
+      'useCustomOrder': useCustomOrder,
+      'enableGrouping': enableGrouping,
+    };
+  }
 }

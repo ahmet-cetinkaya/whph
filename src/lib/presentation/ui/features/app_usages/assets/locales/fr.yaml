@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Paramètres de suivi
       description: Configurez les règles de suivi des applications, mettez en place un marquage automatique et gérez les applications à surveiller. Personnalisez le suivi selon vos besoins de productivité.
+  sort:
+    duration: Durée
+    name: Nom
+    device: Appareil

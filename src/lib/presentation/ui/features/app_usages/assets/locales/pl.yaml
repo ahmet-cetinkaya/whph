@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Ustawienia śledzenia
       description: Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie i zarządzaj aplikacjami do monitorowania. Dostosuj śledzenie do swoich potrzeb produktywności.
+  sort:
+    duration: Czas trwania
+    name: Nazwa
+    device: Urządzenie

@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Nastavení sledování
       description: Nakonfigurujte pravidla sledování aplikací, nastavte automatické označování a spravujte, které aplikace sledovat. Přizpůsobte sledování vašim potřebám produktivity.
+  sort:
+    duration: Trvání
+    name: Název
+    device: Zařízení

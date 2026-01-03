@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Setări de urmărire
       description: Configurați regulile de urmărire a aplicațiilor, setați etichetarea automată și gestionați ce aplicații să fie monitorizate. Personalizați urmărirea în funcție de nevoile dumneavoastră de productivitate.
+  sort:
+    duration: Durată
+    name: Nume
+    device: Dispozitiv

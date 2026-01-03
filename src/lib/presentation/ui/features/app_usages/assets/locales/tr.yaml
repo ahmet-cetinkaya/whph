@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Takip Ayarları
       description: Uygulama takip kurallarını yapılandırın, otomatik etiketlemeyi ayarlayın ve hangi uygulamaların izleneceğini yönetin. Takibi verimlilik ihtiyaçlarınıza göre özelleştirin.
+  sort:
+    duration: Süre
+    name: Ad
+    device: Cihaz

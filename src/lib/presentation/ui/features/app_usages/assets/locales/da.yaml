@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Sporingindstillinger
       description: Konfigurer app-sporingsregler, sæt automatiske tags og håndter hvilke applikationer der skal overvåges. Tilpas sporingen efter dine produktivitetsbehov.
+  sort:
+    duration: Varighed
+    name: Navn
+    device: Enhed

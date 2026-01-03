@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: 追跡設定
       description: アプリ追跡ルールを構成し、自動タグ付けを設定し、監視するアプリケーションを管理します。生産性ニーズに合わせて追跡をカスタマイズします。
+  sort:
+    duration: 期間
+    name: 名前
+    device: デバイス

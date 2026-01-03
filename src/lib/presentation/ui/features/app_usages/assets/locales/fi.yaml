@@ -187,3 +187,7 @@ app_usages:
     tracking_settings:
       title: Seuranta-asetukset
       description: Määritä sovelluksen seurantasäännöt, aseta automaattinen etiketöinti ja hallitse mitä sovelluksia seurataan. Mukauta seurantaa tuottavuustarpeidesi mukaan.
+  sort:
+    duration: Kesto
+    name: Nimi
+    device: Laite
