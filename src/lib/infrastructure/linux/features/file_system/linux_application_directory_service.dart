@@ -19,7 +19,10 @@ class LinuxApplicationDirectoryService implements IApplicationDirectoryService {
       throw StateError('Unable to find Linux HOME directory');
     }
 
-    final newDir = Directory(p.join(home, '.local', 'share', _folderName));
+    // Use whph/ folder, with debug_whph/ subdirectory in debug mode
+    final newDir = kDebugMode
+        ? Directory(p.join(home, '.local', 'share', folderName, _folderName))
+        : Directory(p.join(home, '.local', 'share', folderName));
 
     // Check for migration from old Documents location
     await _migrateFromOldLocation(newDir);

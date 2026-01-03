@@ -92,10 +92,12 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
             .toList(),
       );
 
-      final groupInfo = TagGroupingHelper.getGroupInfo(item, request.sortBy?.firstOrNull?.field);
-      if (groupInfo != null) {
-        item.groupName = groupInfo.name;
-        item.isGroupNameTranslatable = groupInfo.isTranslatable;
+      if (request.sortBy != null) {
+        final groupInfo = TagGroupingHelper.getGroupInfo(item, request.sortBy!.firstOrNull?.field);
+        if (groupInfo != null) {
+          item.groupName = groupInfo.name;
+          item.isGroupNameTranslatable = groupInfo.isTranslatable;
+        }
       }
 
       return item;

@@ -204,7 +204,7 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
 
     String? currentGroup;
     final sortConfig = widget.sortConfig;
-    final showHeaders = (sortConfig?.orderOptions.isNotEmpty ?? false) && (sortConfig?.enableGrouping ?? true);
+    final showHeaders = (sortConfig?.orderOptions.isNotEmpty ?? false) && (sortConfig?.enableGrouping ?? false);
 
     for (var i = 0; i < _tags!.items.length; i++) {
       final tag = _tags!.items[i];

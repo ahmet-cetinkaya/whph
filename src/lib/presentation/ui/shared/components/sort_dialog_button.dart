@@ -66,11 +66,12 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
   @override
   Widget build(BuildContext context) {
     final Color effectiveColor = widget.iconColor ?? Theme.of(context).primaryColor;
+    final bool isActive = widget.config.orderOptions.isNotEmpty;
 
     return IconButton(
       icon: Icon(
         Icons.sort,
-        color: effectiveColor,
+        color: isActive ? effectiveColor : Colors.grey,
       ),
       iconSize: widget.iconSize,
       tooltip: widget.tooltip,
