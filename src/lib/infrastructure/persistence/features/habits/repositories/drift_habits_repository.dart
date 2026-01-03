@@ -4,6 +4,7 @@ import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:acore/acore.dart' as acore;
+import 'package:whph/core/application/features/habits/models/habit_list_item.dart';
 
 @UseRowClass(Habit)
 class HabitTable extends Table {
@@ -182,6 +183,103 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     return Variable(value);
   }
 
-  // No need to override getById method anymore
-  // The conversion between String and List<int> is handled automatically by Habit class
+  @override
+  Future<acore.PaginatedList<HabitListItem>> getHabitListItems(
+    int pageIndex,
+    int pageSize, {
+    bool includeDeleted = false,
+    acore.CustomWhereFilter? customWhereFilter,
+    List<acore.CustomOrder>? customOrder,
+  }) async {
+    // Build WHERE clause
+    List<String> whereClauses = [
+      if (customWhereFilter != null) "(${customWhereFilter.query.replaceAll('habit_table.', 'h.')})",
+      if (!includeDeleted) 'h.deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+
+    // LEFT JOIN for actualTime aggregation and sorting
+    // Always join to get actualTime
+    const joinClause = "LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL";
+
+    // Build ORDER BY clause
+    String? orderByClause;
+    if (customOrder?.isNotEmpty == true) {
+      final orderClauses = customOrder!.map((order) {
+        if (order.field == "actual_time") {
+          return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else if (order.field == "name") {
+          return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else {
+          return "h.${order.field} IS NULL, h.${order.field} ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        }
+      }).join(', ');
+      orderByClause = ' ORDER BY $orderClauses ';
+    }
+
+    // Main Query
+    final query = database.customSelect(
+      """
+      SELECT h.*, COALESCE(SUM(htr.duration), 0) as total_duration
+      FROM habit_table h
+      $joinClause
+      ${whereClause ?? ''}
+      GROUP BY h.id
+      ${orderByClause ?? ''}
+      LIMIT ? OFFSET ?
+      """,
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
+      readsFrom: {table, database.habitTimeRecordTable},
+    );
+
+    final rows = await query.get();
+
+    final items = await Future.wait(rows.map((row) async {
+      final habitOrFuture = table.map(row.data);
+      // Ensure we have the Habit object, whether mapped sync or async
+      final habit = habitOrFuture is Future<Habit> ? await habitOrFuture : habitOrFuture;
+      final totalDuration = row.read<int>('total_duration');
+
+      return HabitListItem(
+        id: habit.id,
+        name: habit.name,
+        estimatedTime: habit.estimatedTime,
+        actualTime: totalDuration > 0 ? (totalDuration / 60).round() : null,
+        hasReminder: habit.hasReminder,
+        reminderTime: habit.reminderTime,
+        reminderDays: habit.getReminderDaysAsList(),
+        archivedDate: habit.archivedDate,
+        order: habit.order,
+        hasGoal: habit.hasGoal,
+        dailyTarget: habit.dailyTarget,
+        targetFrequency: habit.targetFrequency,
+        periodDays: habit.periodDays,
+        tags: [], // Tags will be populated separately
+      );
+    }));
+
+    // Get count
+    final count = await database.customSelect(
+      """
+      SELECT COUNT(DISTINCT h.id) AS count
+      FROM habit_table h
+      ${whereClause ?? ''}
+      """,
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+      ],
+    ).getSingleOrNull();
+    final totalCount = count?.data['count'] as int? ?? 0;
+
+    return acore.PaginatedList(
+      items: items,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+      totalItemCount: totalCount,
+    );
+  }
 }

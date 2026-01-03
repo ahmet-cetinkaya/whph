@@ -4,8 +4,6 @@ import 'package:whph/core/application/features/habits/queries/get_list_habits_qu
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_tags_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_records_repository.dart';
-import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_time_record_repository.dart';
-import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:acore/acore.dart';
@@ -16,9 +14,7 @@ void main() {
     late AppDatabase database;
     late DriftHabitRepository habitRepository;
     late DriftHabitTagRepository habitTagsRepository;
-    late DriftTagRepository tagRepository;
     late DriftHabitRecordRepository habitRecordRepository;
-    late DriftHabitTimeRecordRepository habitTimeRecordRepository;
     late GetListHabitsQueryHandler getListHabitsHandler;
 
     setUpAll(() async {
@@ -30,16 +26,12 @@ void main() {
       database = AppDatabase.forTesting();
       habitRepository = DriftHabitRepository.withDatabase(database);
       habitTagsRepository = DriftHabitTagRepository.withDatabase(database);
-      tagRepository = DriftTagRepository.withDatabase(database);
       habitRecordRepository = DriftHabitRecordRepository.withDatabase(database);
-      habitTimeRecordRepository = DriftHabitTimeRecordRepository.withDatabase(database);
 
       getListHabitsHandler = GetListHabitsQueryHandler(
         habitRepository: habitRepository,
         habitTagRepository: habitTagsRepository,
-        tagRepository: tagRepository,
         habitRecordRepository: habitRecordRepository,
-        habitTimeRecordRepository: habitTimeRecordRepository,
       );
     });
 
