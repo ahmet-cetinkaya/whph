@@ -54,6 +54,17 @@ class TaskTable extends Table {
 }
 
 class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
+  static const sortFieldMap = <String, TaskSortFields>{
+    'created_date': TaskSortFields.createdDate,
+    'deadline_date': TaskSortFields.deadlineDate,
+    'total_duration': TaskSortFields.totalDuration,
+    'estimated_time': TaskSortFields.estimatedTime,
+    'modified_date': TaskSortFields.modifiedDate,
+    'planned_date': TaskSortFields.plannedDate,
+    'priority': TaskSortFields.priority,
+    'title': TaskSortFields.title,
+  };
+
   final TaskDataMapper _mapper = TaskDataMapper();
   final TaskQueryBuilder _queryBuilder = TaskQueryBuilder();
 
@@ -597,24 +608,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     // 5. Construct Final List
     TaskSortFields? primarySortField;
     if (filter?.sortBy != null && filter!.sortBy!.isNotEmpty && !(filter.sortByCustomSort)) {
-      final sortFieldString = filter.sortBy!.first.field;
-      if (sortFieldString == 'created_date') {
-        primarySortField = TaskSortFields.createdDate;
-      } else if (sortFieldString == 'deadline_date') {
-        primarySortField = TaskSortFields.deadlineDate;
-      } else if (sortFieldString == 'total_duration') {
-        primarySortField = TaskSortFields.totalDuration;
-      } else if (sortFieldString == 'estimated_time') {
-        primarySortField = TaskSortFields.estimatedTime;
-      } else if (sortFieldString == 'modified_date') {
-        primarySortField = TaskSortFields.modifiedDate;
-      } else if (sortFieldString == 'planned_date') {
-        primarySortField = TaskSortFields.plannedDate;
-      } else if (sortFieldString == 'priority') {
-        primarySortField = TaskSortFields.priority;
-      } else if (sortFieldString == 'title') {
-        primarySortField = TaskSortFields.title;
-      }
+      primarySortField = sortFieldMap[filter.sortBy!.first.field];
     }
 
     final detailedItems = tasksWithDuration.items.map((task) {
