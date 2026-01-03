@@ -301,7 +301,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
           title: note.groupName!,
           shouldTranslate: note.isGroupNameTranslatable,
         ));
-      } else if (i > 0 && !(showHeaders && note.groupName != null && note.groupName != currentGroup)) {
+      } else if (i > 0) {
         // Add separator if it's not the first item and we didn't just add a header
         listItems.add(const SizedBox(height: AppTheme.sizeSmall));
       }
