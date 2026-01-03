@@ -1,6 +1,6 @@
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
+import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 
 /// Model for storing note filter and sort settings

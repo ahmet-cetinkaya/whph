@@ -586,7 +586,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       }
 
       listItems.add(Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.size2XSmall),
+          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
           child: TaskCard(
             key: ValueKey('task_card_${task.id}'),
             taskItem: task,

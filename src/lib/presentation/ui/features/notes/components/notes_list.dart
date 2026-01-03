@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
@@ -244,42 +245,78 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
       );
     }
 
+    final noteItems = _buildNoteItems();
     final showLoadMore = _noteList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _noteList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
-    return ListView.separated(
+    return ListView.builder(
       controller: _scrollController,
       shrinkWrap: true,
-      itemCount: _noteList!.items.length + extraItemCount,
-      separatorBuilder: (context, index) => const SizedBox(height: AppTheme.size3XSmall),
+      itemCount: noteItems.length + extraItemCount,
       itemBuilder: (context, index) {
-        if (index == _noteList!.items.length && showLoadMore) {
+        if (index < noteItems.length) {
+          return noteItems[index];
+        } else if (showLoadMore) {
           return Padding(
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
           );
-        } else if (index == _noteList!.items.length && showInfinityLoading) {
+        } else if (index < noteItems.length + extraItemCount) {
+          // Correct logic for loading indicator
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
             child: Center(child: CircularProgressIndicator()),
           );
-        } else if (index >= _noteList!.items.length) {
-          return const SizedBox.shrink();
         }
-
-        final note = _noteList!.items[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppTheme.size3XSmall),
-          child: NoteCard(
-            note: note,
-            onOpenDetails: () => _onNoteSelected(note.id),
-            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          ),
-        );
+        return const SizedBox.shrink();
       },
     );
+  }
+
+  List<Widget> _buildNoteItems() {
+    final List<Widget> listItems = [];
+    String? currentGroup;
+
+    // Check if we should show headers
+    // Only show headers if we are sorting by something that produces groups (Name, Date)
+    // and if we are not in custom sort mode AND grouping is enabled
+    final bool showHeaders = widget.sortConfig?.useCustomOrder != true &&
+        (widget.sortConfig?.orderOptions.isNotEmpty ?? false) &&
+        (widget.sortConfig?.enableGrouping ?? false);
+
+    for (var i = 0; i < _noteList!.items.length; i++) {
+      final note = _noteList!.items[i];
+
+      // Add header if group changed
+      if (showHeaders && note.groupName != null && note.groupName != currentGroup) {
+        currentGroup = note.groupName;
+        // Add spacing before header if it's not the first item
+        if (i > 0) {
+          listItems.add(const SizedBox(height: AppTheme.sizeSmall));
+        }
+        listItems.add(ListGroupHeader(
+          key: ValueKey('header_${note.groupName}'),
+          title: note.groupName!,
+          shouldTranslate: note.isGroupNameTranslatable,
+        ));
+      } else if (i > 0) {
+        // Add separator if it's not the first item and we didn't just add a header
+        listItems.add(const SizedBox(height: AppTheme.sizeSmall));
+      }
+
+      listItems.add(Padding(
+        key: ValueKey('note_${note.id}'),
+        padding: const EdgeInsets.symmetric(vertical: 0), // Separator handles spacing
+        child: NoteCard(
+          note: note,
+          onOpenDetails: () => _onNoteSelected(note.id),
+          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+        ),
+      ));
+    }
+    return listItems;
   }
 
   @override

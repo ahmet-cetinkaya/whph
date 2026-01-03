@@ -37,7 +37,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     final query = database.customSelect(
       "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''}LIMIT ? OFFSET ?",
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
@@ -48,7 +48,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     final count = await ((database.customSelect(
       'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     )).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
@@ -82,7 +82,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     final countResult = await database.customSelect(
       'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
     final totalCount = countResult?.data['count'] as int? ?? 0;
@@ -93,7 +93,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
       final query = database.customSelect(
         "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
         variables: [
-          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
           Variable.withInt(chunkSize),
           Variable.withInt(pageIndex * chunkSize),
         ],
@@ -142,7 +142,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     return database
         .customSelect(
           'SELECT * FROM ${table.actualTableName} WHERE $whereClause LIMIT 1',
-          variables: customWhereFilter.variables.map((e) => _convertToQueryVariable(e)).toList(),
+          variables: customWhereFilter.variables.map((e) => convertToQueryVariable(e)).toList(),
           readsFrom: {table},
         )
         .getSingleOrNull()
@@ -342,7 +342,7 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     return d;
   }
 
-  Variable<Object> _convertToQueryVariable(dynamic object) {
+  Variable<Object> convertToQueryVariable(dynamic object) {
     if (object is String) {
       return Variable.withString(object);
     } else if (object is int) {

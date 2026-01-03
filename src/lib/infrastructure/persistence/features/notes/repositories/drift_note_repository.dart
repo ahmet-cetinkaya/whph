@@ -66,16 +66,45 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     List<CustomOrder>? customOrder,
     bool includeDeleted = false,
   }) async {
-    // Get notes with pagination
-    final paginatedNotes = await super.getList(
-      pageIndex,
-      pageSize,
-      customWhereFilter: customWhereFilter,
-      customOrder: customOrder,
-      includeDeleted: includeDeleted,
-    );
+    // Build SQL query manually to support COLLATE NOCASE for title sorting
+    List<String> whereClauses = [
+      if (customWhereFilter != null) "(${customWhereFilter.query})",
+      if (!includeDeleted) 'deleted_date IS NULL',
+    ];
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
-    if (paginatedNotes.items.isEmpty) {
+    String? orderByClause;
+    String? outerOrderByClause;
+
+    if (customOrder?.isNotEmpty == true) {
+      final orderClauses = customOrder!.map((order) {
+        if (order.field == 'title') {
+          return "title COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+        }
+        return "`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+      }).join(', ');
+
+      final outerOrderClauses = customOrder.map((order) {
+        if (order.field == 'title') {
+          return "n.title COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+        }
+        return "n.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+      }).join(', ');
+
+      orderByClause = ' ORDER BY $orderClauses ';
+      outerOrderByClause = ' ORDER BY $outerOrderClauses ';
+    }
+
+    final countResult = await database.customSelect(
+      'SELECT COUNT(*) AS count FROM note_table${whereClause ?? ''}',
+      variables: [
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+      ],
+    ).getSingleOrNull();
+
+    final totalCount = countResult?.data['count'] as int? ?? 0;
+
+    if (totalCount == 0) {
       return PaginatedList<Note>(
         items: [],
         totalItemCount: 0,
@@ -84,90 +113,145 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       );
     }
 
-    // Get note_tags with their associated tags for this page of notes
-    final noteIds = paginatedNotes.items.map((n) => n.id).join("','");
-    final tagQuery = '''
-      SELECT nt.*, t.name as tag_name, t.color as tag_color, t.created_date as tag_created_date
-      FROM note_tag_table nt
+    // Consolidated Query:
+    // 1. Fetch IDs of the paginated notes using subquery
+    // 2. Join Note, NoteTag, and Tag tables
+    // 3. Select all necessary columns with aliases to avoid collision
+
+    final query = '''
+      SELECT 
+        n.*,
+        nt.id as nt_id, nt.note_id as nt_note_id, nt.tag_id as nt_tag_id, 
+        nt.created_date as nt_created_date, nt.modified_date as nt_modified_date, nt.deleted_date as nt_deleted_date,
+        t.id as t_id, t.name as t_name, t.color as t_color, t.created_date as t_created_date
+      FROM (
+        SELECT id 
+        FROM note_table
+        ${whereClause ?? ''}
+        ${orderByClause ?? ''}
+        LIMIT ? OFFSET ?
+      ) as limited_notes
+      JOIN note_table n ON n.id = limited_notes.id
+      LEFT JOIN note_tag_table nt ON nt.note_id = n.id AND nt.deleted_date IS NULL
       LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
-      WHERE nt.deleted_date IS NULL 
-      AND nt.note_id IN ('$noteIds')
+      ${outerOrderByClause ?? ''}
     ''';
 
-    final tagRows = await database.customSelect(tagQuery).get();
+    final List<Variable<Object>> variables = [
+      if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+      Variable.withInt(pageSize),
+      Variable.withInt(pageIndex * pageSize)
+    ];
 
-    // Group note_tags by note_id
-    final noteTagsMap = <String, List<NoteTag>>{};
-    for (final row in tagRows) {
-      final noteTag = NoteTag(
-        id: row.read<String>('id'),
-        noteId: row.read<String>('note_id'),
-        tagId: row.read<String>('tag_id'),
-        createdDate: row.read<DateTime>('created_date'),
-        modifiedDate: row.readNullable<DateTime>('modified_date'),
-        deletedDate: row.readNullable<DateTime>('deleted_date'),
-      );
+    final rows = await database.customSelect(
+      query,
+      variables: variables,
+      readsFrom: {table, database.noteTagTable, database.tagTable},
+    ).get();
 
-      // Add tag information
-      noteTag.tag = Tag(
-        id: row.read<String>('tag_id'),
-        name: row.read<String>('tag_name'),
-        color: row.readNullable<String>('tag_color'),
-        createdDate: row.read<DateTime>('tag_created_date'),
-      );
+    // Grouping Logic
+    final Map<String, Note> noteMap = {};
 
-      noteTagsMap.putIfAbsent(noteTag.noteId, () => []).add(noteTag);
+    for (final row in rows) {
+      // 1. Map Note (if not already mapped)
+      // NoteTable columns are selected as raw (n.*), so we can use table.map
+      // We rely on the fact that Drift ignores extra aliased columns when mapping to NoteTable
+      final noteId = row.read<String>('id');
+      if (!noteMap.containsKey(noteId)) {
+        final mapped = table.map(row.data);
+        noteMap[noteId] = mapped is Future<Note> ? await mapped : mapped;
+        noteMap[noteId]!.tags = [];
+      }
+
+      final note = noteMap[noteId]!;
+
+      // 2. Map NoteTag & Tag if present
+      final noteTagId = row.readNullable<String>('nt_id');
+      if (noteTagId != null) {
+        final noteTag = NoteTag(
+          id: noteTagId,
+          noteId: row.read<String>('nt_note_id'),
+          tagId: row.read<String>('nt_tag_id'),
+          createdDate: row.read<DateTime>('nt_created_date'),
+          modifiedDate: row.readNullable<DateTime>('nt_modified_date'),
+          deletedDate: row.readNullable<DateTime>('nt_deleted_date'),
+        );
+
+        final tagId = row.readNullable<String>('t_id');
+        if (tagId != null) {
+          noteTag.tag = Tag(
+            id: tagId,
+            name: row.read<String>('t_name'),
+            color: row.readNullable<String>('t_color'),
+            createdDate: row.read<DateTime>('t_created_date'),
+          );
+        }
+
+        note.tags.add(noteTag);
+      }
     }
 
-    // Assign note_tags to notes
-    final notesWithTags = paginatedNotes.items.map((note) {
-      note.tags = noteTagsMap[note.id] ?? [];
-      return note;
-    }).toList();
-
     return PaginatedList<Note>(
-      items: notesWithTags,
-      totalItemCount: paginatedNotes.totalItemCount,
-      pageIndex: paginatedNotes.pageIndex,
-      pageSize: paginatedNotes.pageSize,
+      items: noteMap.values.toList(),
+      totalItemCount: totalCount,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
     );
   }
 
   @override
   Future<Note?> getById(String id, {bool includeDeleted = false}) async {
-    final note = await super.getById(id, includeDeleted: includeDeleted);
-    if (note == null) return null;
-
-    // Get note_tags and their associated tags for this note
     final query = '''
-      SELECT nt.*, t.name as tag_name, t.color as tag_color
-      FROM note_tag_table nt
+      SELECT 
+        n.*,
+        nt.id as nt_id, nt.note_id as nt_note_id, nt.tag_id as nt_tag_id, 
+        nt.created_date as nt_created_date, nt.modified_date as nt_modified_date, nt.deleted_date as nt_deleted_date,
+        t.id as t_id, t.name as t_name, t.color as t_color, t.created_date as t_created_date
+      FROM note_table n
+      LEFT JOIN note_tag_table nt ON nt.note_id = n.id AND nt.deleted_date IS NULL
       LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
-      WHERE nt.deleted_date IS NULL AND nt.note_id = ?
+      WHERE n.id = ? ${includeDeleted ? '' : 'AND n.deleted_date IS NULL'}
     ''';
 
-    final rows = await database.customSelect(query, variables: [Variable<String>(id)]).get();
+    final rows = await database.customSelect(
+      query,
+      variables: [Variable<String>(id)],
+      readsFrom: {table, database.noteTagTable, database.tagTable},
+    ).get();
 
-    note.tags = rows.map((row) {
-      final noteTag = NoteTag(
-        id: row.read<String>('id'),
-        noteId: row.read<String>('note_id'),
-        tagId: row.read<String>('tag_id'),
-        createdDate: row.read<DateTime>('created_date'),
-        modifiedDate: row.readNullable<DateTime>('modified_date'),
-        deletedDate: row.readNullable<DateTime>('deleted_date'),
-      );
+    if (rows.isEmpty) return null;
 
-      // Add tag information
-      noteTag.tag = Tag(
-        id: row.read<String>('tag_id'),
-        name: row.read<String>('tag_name'),
-        color: row.readNullable<String>('tag_color'),
-        createdDate: row.read<DateTime>('created_date'),
-      );
+    Note? note;
+    for (final row in rows) {
+      if (note == null) {
+        final mapped = table.map(row.data);
+        note = mapped is Future<Note> ? await mapped : mapped;
+        note.tags = [];
+      }
 
-      return noteTag;
-    }).toList();
+      final noteTagId = row.readNullable<String>('nt_id');
+      if (noteTagId != null) {
+        final noteTag = NoteTag(
+          id: noteTagId,
+          noteId: row.read<String>('nt_note_id'),
+          tagId: row.read<String>('nt_tag_id'),
+          createdDate: row.read<DateTime>('nt_created_date'),
+          modifiedDate: row.readNullable<DateTime>('nt_modified_date'),
+          deletedDate: row.readNullable<DateTime>('nt_deleted_date'),
+        );
+
+        final tagId = row.readNullable<String>('t_id');
+        if (tagId != null) {
+          noteTag.tag = Tag(
+            id: tagId,
+            name: row.read<String>('t_name'),
+            color: row.readNullable<String>('t_color'),
+            createdDate: row.read<DateTime>('t_created_date'),
+          );
+        }
+        note.tags.add(noteTag);
+      }
+    }
 
     return note;
   }

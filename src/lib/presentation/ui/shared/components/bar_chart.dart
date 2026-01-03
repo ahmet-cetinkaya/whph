@@ -13,6 +13,7 @@ class BarChart extends StatelessWidget {
   final String Function(double)? formatValue;
   final double? compareValue;
   final double? compareMaxValue;
+  final double? minHeight;
 
   const BarChart({
     super.key,
@@ -26,6 +27,7 @@ class BarChart extends StatelessWidget {
     this.onTap,
     required this.title,
     this.formatValue,
+    this.minHeight,
   });
 
   @override
@@ -56,7 +58,8 @@ class BarChart extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ListTile(
-        minTileHeight: 48,
+        minTileHeight: minHeight ?? 48,
+        minVerticalPadding: 0,
         contentPadding: EdgeInsets.zero,
         title: Stack(
           alignment: Alignment.centerLeft,

@@ -1,12 +1,12 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
+import 'package:whph/core/application/features/notes/models/note_list_item.dart';
+import 'package:whph/core/application/features/notes/utils/note_grouping_helper.dart';
 
-enum NoteSortFields {
-  title,
-  createdDate,
-  modifiedDate,
-}
+export 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
+export 'package:whph/core/application/features/notes/models/note_list_item.dart';
 
 class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final int pageIndex;
@@ -17,6 +17,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final List<SortOption<NoteSortFields>>? sortBy;
   final bool sortByCustomOrder;
   final bool ignoreArchivedTagVisibility;
+  final DateTime? now;
 
   GetListNotesQuery({
     required this.pageIndex,
@@ -27,38 +28,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
     this.sortBy,
     this.sortByCustomOrder = false,
     this.ignoreArchivedTagVisibility = false,
-  });
-}
-
-class TagListItem {
-  String tagId;
-  String tagName;
-  String? tagColor;
-
-  TagListItem({
-    required this.tagId,
-    required this.tagName,
-    this.tagColor,
-  });
-}
-
-class NoteListItem {
-  String id;
-  String title;
-  String? content;
-  List<TagListItem> tags;
-  DateTime createdDate;
-  DateTime? modifiedDate;
-
-  DateTime? get updatedAt => modifiedDate;
-
-  NoteListItem({
-    required this.id,
-    required this.title,
-    this.content,
-    this.tags = const [],
-    required this.createdDate,
-    this.modifiedDate,
+    this.now,
   });
 }
 
@@ -84,7 +54,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
 
     // Combine search and tag filters
     List<String> conditions = [];
-    List<Object> variables = []; // Changed type to List<Object>
+    List<Object> variables = [];
 
     // Add search condition
     if (request.search?.isNotEmpty ?? false) {
@@ -102,7 +72,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
             AND deleted_date IS NULL
         )
       ''');
-      variables.addAll(request.filterByTags!.map((tag) => tag as Object));
+      variables.addAll(request.filterByTags!);
     } else if (request.filterNoTags) {
       conditions.add('''
         id NOT IN (
@@ -148,23 +118,37 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
       customWhereFilter: filter,
     );
 
+    final now = request.now ?? DateTime.now();
+
     // Map notes to list items with their tags
-    final items = notesPaginated.items
-        .map((note) => NoteListItem(
-              id: note.id,
-              title: note.title,
-              content: note.content,
-              tags: note.tags
-                  .map((noteTag) => TagListItem(
-                        tagId: noteTag.tagId,
-                        tagName: noteTag.tag?.name ?? '',
-                        tagColor: noteTag.tag?.color,
-                      ))
-                  .toList(),
-              createdDate: note.createdDate,
-              modifiedDate: note.modifiedDate,
-            ))
-        .toList();
+    final items = notesPaginated.items.map((note) {
+      final noteItem = NoteListItem(
+        id: note.id,
+        title: note.title,
+        content: note.content,
+        tags: note.tags
+            .map((noteTag) => TagListItem(
+                  tagId: noteTag.tagId,
+                  tagName: noteTag.tag?.name ?? '',
+                  tagColor: noteTag.tag?.color,
+                ))
+            .toList(),
+        createdDate: note.createdDate,
+        modifiedDate: note.modifiedDate,
+      );
+
+      return noteItem;
+    }).toList();
+
+    // Populate group name if sorting is applied
+    for (var i = 0; i < items.length; i++) {
+      final item = items[i];
+      final groupInfo = NoteGroupingHelper.getGroupInfo(item, request.sortBy?.first.field, now: now);
+      items[i] = item.copyWith(
+        groupName: groupInfo?.name,
+        isGroupNameTranslatable: groupInfo?.isTranslatable ?? true,
+      );
+    }
 
     return GetListNotesQueryResponse(
       items: items,
