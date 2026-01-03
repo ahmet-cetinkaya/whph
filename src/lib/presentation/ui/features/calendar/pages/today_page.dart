@@ -74,7 +74,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   bool _showCompletedTasks = false;
   bool _showSubTasks = false;
   String? _taskSearchQuery;
-  SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting;
+  SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting.copyWith(enableGrouping: false);
   bool _taskForceOriginalLayout = false;
 
   // Habit list options state
@@ -492,6 +492,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                   showDateFilter: false,
                                   showTagFilter: false,
                                   showSubTasksToggle: true,
+                                  showGroupingOption: true,
                                 ),
                               ),
                             ),

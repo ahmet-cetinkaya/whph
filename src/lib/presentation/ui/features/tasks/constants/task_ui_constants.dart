@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+
+import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart' as application;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
@@ -59,14 +60,14 @@ class TaskUiConstants {
   static String getPriorityTooltip(EisenhowerPriority? priority, ITranslationService translationService) {
     return switch (priority) {
       EisenhowerPriority.urgentImportant =>
-        translationService.translate(TaskTranslationKeys.priorityUrgentImportantTooltip),
+        translationService.translate(application.TaskTranslationKeys.priorityUrgentImportantTooltip),
       EisenhowerPriority.notUrgentImportant =>
-        translationService.translate(TaskTranslationKeys.priorityNotUrgentImportantTooltip),
+        translationService.translate(application.TaskTranslationKeys.priorityNotUrgentImportantTooltip),
       EisenhowerPriority.urgentNotImportant =>
-        translationService.translate(TaskTranslationKeys.priorityUrgentNotImportantTooltip),
+        translationService.translate(application.TaskTranslationKeys.priorityUrgentNotImportantTooltip),
       EisenhowerPriority.notUrgentNotImportant =>
-        translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportantTooltip),
-      _ => translationService.translate(TaskTranslationKeys.priorityNoneTooltip),
+        translationService.translate(application.TaskTranslationKeys.priorityNotUrgentNotImportantTooltip),
+      _ => translationService.translate(application.TaskTranslationKeys.priorityNoneTooltip),
     };
   }
 }

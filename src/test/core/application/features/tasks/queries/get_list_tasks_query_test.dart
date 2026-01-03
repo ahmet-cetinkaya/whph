@@ -221,7 +221,7 @@ void main() {
         expect(taskItem.estimatedTime, 3600);
         expect(taskItem.totalElapsedTime, 1800);
         expect(taskItem.parentTaskId, 'parent-1');
-        expect(taskItem.order, 1000);
+        expect(taskItem.order, 1000.0);
         expect(taskItem.plannedDateReminderTime, ReminderTime.fiveMinutesBefore);
         expect(taskItem.deadlineDateReminderTime, ReminderTime.oneHourBefore);
       });
@@ -825,6 +825,7 @@ void main() {
           id: 'subtask1',
           title: 'Subtask 1',
           isCompleted: true,
+          priority: null,
         ),
       ];
 
@@ -871,6 +872,7 @@ void main() {
         id: 'minimal-task',
         title: 'Minimal Task',
         isCompleted: true,
+        priority: null,
       );
 
       // Assert

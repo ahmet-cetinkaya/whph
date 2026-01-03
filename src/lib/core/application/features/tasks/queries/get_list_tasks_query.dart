@@ -1,3 +1,4 @@
+import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -47,6 +48,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final List<SortOption<TaskSortFields>>? sortBy;
   final bool sortByCustomSort;
   final bool ignoreArchivedTagVisibility;
+  final bool enableGrouping;
 
   GetListTasksQuery({
     required this.pageIndex,
@@ -67,6 +69,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.sortBy,
     this.sortByCustomSort = false,
     this.ignoreArchivedTagVisibility = false,
+    this.enableGrouping = true,
   })  : filterByPlannedStartDate =
             filterByPlannedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedStartDate) : null,
         filterByPlannedEndDate =
@@ -98,6 +101,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     List<SortOption<TaskSortFields>>? sortBy,
     bool sortByCustomSort = false,
     bool ignoreArchivedTagVisibility = false,
+    bool enableGrouping = true,
   }) {
     return GetListTasksQuery(
       pageIndex: pageIndex,
@@ -116,6 +120,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       sortBy: sortBy,
       sortByCustomSort: sortByCustomSort,
       ignoreArchivedTagVisibility: ignoreArchivedTagVisibility,
+      enableGrouping: enableGrouping,
       areParentAndSubTasksIncluded: true,
       filterByParentTaskId: null,
     );
@@ -126,38 +131,41 @@ class TaskListItem {
   String id;
   String title;
   EisenhowerPriority? priority;
-  DateTime? plannedDate;
-  DateTime? deadlineDate;
-  bool isCompleted;
-  List<TagListItem> tags;
-  int? estimatedTime;
-  int totalElapsedTime = 0;
-  String? parentTaskId;
-  double order = 0;
-
-  // Reminder properties
-  ReminderTime plannedDateReminderTime = ReminderTime.none;
-  ReminderTime deadlineDateReminderTime = ReminderTime.none;
-
-  double subTasksCompletionPercentage = 0;
-  List<TaskListItem> subTasks;
+  final DateTime? plannedDate;
+  final DateTime? deadlineDate;
+  final DateTime? modifiedDate;
+  final DateTime? createdDate;
+  final bool isCompleted;
+  final List<TagListItem> tags;
+  final int? estimatedTime;
+  final int totalElapsedTime;
+  final String? parentTaskId;
+  final double subTasksCompletionPercentage;
+  final double order;
+  final List<TaskListItem> subTasks;
+  final ReminderTime plannedDateReminderTime;
+  final ReminderTime deadlineDateReminderTime;
+  final String? groupName;
 
   TaskListItem({
     required this.id,
     required this.title,
+    required this.priority,
     required this.isCompleted,
-    this.priority,
     this.plannedDate,
     this.deadlineDate,
+    this.modifiedDate,
+    this.createdDate,
     this.tags = const [],
     this.estimatedTime,
     this.parentTaskId,
     this.subTasksCompletionPercentage = 0,
-    this.order = 0,
+    this.order = 0.0,
     this.subTasks = const [],
     this.totalElapsedTime = 0,
     this.plannedDateReminderTime = ReminderTime.none,
     this.deadlineDateReminderTime = ReminderTime.none,
+    this.groupName,
   });
 
   TaskListItem copyWith({
@@ -166,6 +174,8 @@ class TaskListItem {
     EisenhowerPriority? priority,
     DateTime? plannedDate,
     DateTime? deadlineDate,
+    DateTime? modifiedDate,
+    DateTime? createdDate,
     bool? isCompleted,
     List<TagListItem>? tags,
     int? estimatedTime,
@@ -175,6 +185,7 @@ class TaskListItem {
     List<TaskListItem>? subTasks,
     ReminderTime? plannedDateReminderTime,
     ReminderTime? deadlineDateReminderTime,
+    String? groupName,
   }) {
     return TaskListItem(
       id: id ?? this.id,
@@ -182,6 +193,8 @@ class TaskListItem {
       priority: priority ?? this.priority,
       plannedDate: plannedDate ?? this.plannedDate,
       deadlineDate: deadlineDate ?? this.deadlineDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      createdDate: createdDate ?? this.createdDate,
       isCompleted: isCompleted ?? this.isCompleted,
       tags: tags ?? this.tags,
       estimatedTime: estimatedTime ?? this.estimatedTime,
@@ -191,6 +204,7 @@ class TaskListItem {
       subTasks: subTasks ?? this.subTasks,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      groupName: groupName ?? this.groupName,
     );
   }
 }
@@ -304,35 +318,61 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
           .map((subTask) => TaskListItem(
                 id: subTask.id,
                 title: subTask.title,
-                isCompleted: subTask.isCompleted,
                 priority: subTask.priority,
+                isCompleted: subTask.isCompleted,
                 plannedDate: subTask.plannedDate,
                 deadlineDate: subTask.deadlineDate,
                 estimatedTime: subTask.estimatedTime,
-                parentTaskId: subTask.parentTaskId,
-                order: subTask.order,
                 totalElapsedTime: subTaskDurations[subTask.id] ?? 0,
+                parentTaskId: subTask.parentTaskId,
+                subTasksCompletionPercentage: 0,
+                order: subTask.order,
                 plannedDateReminderTime: subTask.plannedDateReminderTime,
                 deadlineDateReminderTime: subTask.deadlineDateReminderTime,
               ))
           .toList();
 
+      // Determine primary sort field for grouping
+      // Default to createdDate if no sort is specified or if custom sort is active (unless we want to group by 'order', which might not make sense)
+      // Using the first sort option as the primary grouping key
+      TaskSortFields? primarySortField;
+      if (request.sortBy != null && request.sortBy!.isNotEmpty && !request.sortByCustomSort) {
+        primarySortField = request.sortBy!.first.field;
+      }
+
       taskListItems.add(TaskListItem(
         id: task.id,
         title: task.title,
-        isCompleted: task.isCompleted,
         priority: task.priority,
+        isCompleted: task.isCompleted,
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
-        tags: tagItems,
+        tags: tagItems, // Now using TagListItem list
         estimatedTime: task.estimatedTime,
         totalElapsedTime: task.totalDuration,
         parentTaskId: task.parentTaskId,
-        order: task.order,
         subTasksCompletionPercentage: subTasksCompletionPercentage,
+        order: task.order,
         subTasks: subTaskListItems,
         plannedDateReminderTime: task.plannedDateReminderTime,
         deadlineDateReminderTime: task.deadlineDateReminderTime,
+
+        groupName: request.enableGrouping
+            ? TaskGroupingHelper.getGroupName(
+                TaskListItem(
+                  id: task.id,
+                  title: task.title,
+                  priority: task.priority,
+                  isCompleted: task.isCompleted,
+                  plannedDate: task.plannedDate,
+                  deadlineDate: task.deadlineDate,
+                  modifiedDate: task.modifiedDate,
+                  createdDate: task.createdDate,
+                  estimatedTime: task.estimatedTime,
+                  totalElapsedTime: task.totalDuration, // Needed for duration grouping
+                ),
+                primarySortField)
+            : null,
       ));
     }
 

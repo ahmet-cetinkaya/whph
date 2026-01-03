@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateFormatService, DateFormatType;
 import 'package:whph/core/domain/features/tasks/task.dart';
+
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart' as application;
+
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
@@ -123,18 +125,18 @@ class QuickActionsBuilder {
     ITranslationService translationService,
   ) {
     if (priority == null) {
-      return translationService.translate(TaskTranslationKeys.priorityNone);
+      return translationService.translate(application.TaskTranslationKeys.priorityNone);
     }
 
     switch (priority) {
       case EisenhowerPriority.urgentImportant:
-        return translationService.translate(TaskTranslationKeys.priorityUrgentImportant);
+        return translationService.translate(application.TaskTranslationKeys.priorityUrgentImportant);
       case EisenhowerPriority.urgentNotImportant:
-        return translationService.translate(TaskTranslationKeys.priorityUrgentNotImportant);
+        return translationService.translate(application.TaskTranslationKeys.priorityUrgentNotImportant);
       case EisenhowerPriority.notUrgentImportant:
-        return translationService.translate(TaskTranslationKeys.priorityNotUrgentImportant);
+        return translationService.translate(application.TaskTranslationKeys.priorityNotUrgentImportant);
       case EisenhowerPriority.notUrgentNotImportant:
-        return translationService.translate(TaskTranslationKeys.priorityNotUrgentNotImportant);
+        return translationService.translate(application.TaskTranslationKeys.priorityNotUrgentNotImportant);
     }
   }
 
