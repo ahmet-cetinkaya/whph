@@ -88,7 +88,12 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
-        ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
+        ? ' ORDER BY ${customOrder!.map((order) {
+            if (order.field == 'title') {
+              return '`${order.field}` IS NULL, `${order.field}` COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+            }
+            return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+          }).join(', ')} '
         : null;
 
     final query = database.customSelect(
@@ -192,10 +197,10 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     // Add order by clause if needed
     if (customOrder != null && customOrder.isNotEmpty) {
       query += ' ORDER BY ';
-      query += customOrder
-          .map((order) =>
-              '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}')
-          .join(', ');
+      query += customOrder.map((order) {
+        String collation = (order.field == 'title') ? 'COLLATE NOCASE ' : '';
+        return '`${order.field}` IS NULL, `${order.field}` $collation${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+      }).join(', ');
     }
 
     // Execute the query

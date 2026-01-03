@@ -53,6 +53,9 @@ class TaskQueryBuilder {
       if (order.field == 'total_duration') {
         return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
       }
+      if (order.field == 'title') {
+        return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+      }
       return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
     }).join(', ')} ';
   }

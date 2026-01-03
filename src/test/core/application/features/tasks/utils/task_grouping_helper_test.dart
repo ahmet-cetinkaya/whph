@@ -95,6 +95,16 @@ void main() {
         );
       });
 
+      test('returns uppercase letter for lowercase titles', () {
+        expect(
+          TaskGroupingHelper.getGroupName(
+            baseTask.copyWith(title: 'apple'),
+            TaskSortFields.title,
+          ),
+          equals('A'),
+        );
+      });
+
       test('returns # for non-letter titles', () {
         expect(
           TaskGroupingHelper.getGroupName(
