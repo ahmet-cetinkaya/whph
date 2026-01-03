@@ -5,18 +5,18 @@ import 'package:whph/core/application/features/tasks/constants/task_translation_
 import 'package:whph/core/domain/features/tasks/task.dart';
 
 class TaskGroupingHelper {
-  static String? getGroupName(TaskListItem task, TaskSortFields? sortField) {
+  static String? getGroupName(TaskListItem task, TaskSortFields? sortField, {DateTime? now}) {
     if (sortField == null) return null;
 
     switch (sortField) {
       case TaskSortFields.createdDate:
-        return _getDateGroup(task.createdDate);
+        return _getDateGroup(task.createdDate, now: now);
       case TaskSortFields.deadlineDate:
-        return _getDateGroup(task.deadlineDate);
+        return _getDateGroup(task.deadlineDate, now: now);
       case TaskSortFields.modifiedDate:
-        return _getDateGroup(task.modifiedDate);
+        return _getDateGroup(task.modifiedDate, now: now);
       case TaskSortFields.plannedDate:
-        return _getDateGroup(task.plannedDate);
+        return _getDateGroup(task.plannedDate, now: now);
       case TaskSortFields.priority:
         return _getPriorityGroup(task.priority);
       case TaskSortFields.title:
@@ -28,11 +28,11 @@ class TaskGroupingHelper {
     }
   }
 
-  static String _getDateGroup(DateTime? date) {
+  static String _getDateGroup(DateTime? date, {DateTime? now}) {
     if (date == null) return SharedTranslationKeys.noDate;
 
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final nowValue = now ?? DateTime.now();
+    final today = DateTime(nowValue.year, nowValue.month, nowValue.day);
     final tomorrow = today.add(const Duration(days: 1));
     final nextWeek = today.add(const Duration(days: 7));
 
