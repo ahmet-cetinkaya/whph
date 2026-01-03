@@ -52,7 +52,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
 
     // Combine search and tag filters
     List<String> conditions = [];
-    List<Object> variables = []; // Changed type to List<Object>
+    List<Object> variables = [];
 
     // Add search condition
     if (request.search?.isNotEmpty ?? false) {
@@ -70,7 +70,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
             AND deleted_date IS NULL
         )
       ''');
-      variables.addAll(request.filterByTags!.map((tag) => tag as Object));
+      variables.addAll(request.filterByTags!);
     } else if (request.filterNoTags) {
       conditions.add('''
         id NOT IN (
@@ -116,6 +116,8 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
       customWhereFilter: filter,
     );
 
+    final now = DateTime.now();
+
     // Map notes to list items with their tags
     final items = notesPaginated.items.map((note) {
       final noteItem = NoteListItem(
@@ -135,7 +137,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
 
       // Populate group name if sorting is applied
       if (request.sortBy != null && request.sortBy!.isNotEmpty) {
-        final groupName = NoteGroupingHelper.getGroupName(noteItem, request.sortBy!.first.field);
+        final groupName = NoteGroupingHelper.getGroupName(noteItem, request.sortBy!.first.field, now: now);
         return noteItem.copyWith(groupName: groupName);
       }
 
