@@ -126,7 +126,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         } else if (order.field == "name") {
           return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else {
-          return "h.${order.field} IS NULL, h.${order.field} ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+          // Quote the field name to handle reserved words like "order"
+          return "h.\"${order.field}\" IS NULL, h.\"${order.field}\" ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         }
       }).join(', ');
       orderByClause = ' ORDER BY $orderClauses ';
@@ -215,7 +216,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         } else if (order.field == "name") {
           return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else {
-          return "h.${order.field} IS NULL, h.${order.field} ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+          // Quote the field name to handle reserved words like "order"
+          return "h.\"${order.field}\" IS NULL, h.\"${order.field}\" ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         }
       }).join(', ');
       orderByClause = ' ORDER BY $orderClauses ';
