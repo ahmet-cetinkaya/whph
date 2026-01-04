@@ -24,8 +24,7 @@ void main() {
         final task = baseTask.copyWith(
           plannedDate: DateTime.now().subtract(const Duration(days: 1)),
         );
-        expect(
-            TaskGroupingHelper.getGroupName(task, TaskSortFields.plannedDate), equals(SharedTranslationKeys.overdue));
+        expect(TaskGroupingHelper.getGroupName(task, TaskSortFields.plannedDate), equals(SharedTranslationKeys.past));
       });
 
       test('returns Today for today', () {
