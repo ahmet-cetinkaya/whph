@@ -24,5 +24,6 @@ class TaskDefaults {
       ),
     ],
     useCustomOrder: false,
+    enableGrouping: false,
   );
 }

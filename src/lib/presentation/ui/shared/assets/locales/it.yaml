@@ -431,7 +431,7 @@ shared:
   date_group:
     today: Oggi
     tomorrow: Domani
-    overdue: In ritardo
+    past: Passato
     future: Futuro
     next_7_days: Prossimi 7 giorni
     no_date: Nessuna data

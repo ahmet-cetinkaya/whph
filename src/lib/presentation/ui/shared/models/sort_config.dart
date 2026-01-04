@@ -8,7 +8,7 @@ class SortConfig<T> {
   const SortConfig({
     required this.orderOptions,
     this.useCustomOrder = false,
-    this.enableGrouping = true,
+    this.enableGrouping = false,
   });
 
   SortConfig<T> copyWith({
@@ -30,7 +30,7 @@ class SortConfig<T> {
               .toList() ??
           [],
       useCustomOrder: json['useCustomOrder'] as bool? ?? false,
-      enableGrouping: json['enableGrouping'] as bool? ?? true,
+      enableGrouping: json['enableGrouping'] as bool? ?? false,
     );
   }
 

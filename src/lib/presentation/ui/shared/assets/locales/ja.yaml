@@ -389,7 +389,7 @@ shared:
   date_group:
     today: 今日
     tomorrow: 明日
-    overdue: 期限超過
+    past: 過去
     future: 未来
     next_7_days: 今後7日間
     no_date: 日付なし

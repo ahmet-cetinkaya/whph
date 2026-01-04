@@ -562,6 +562,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       if (showHeaders && task.groupName != null && task.groupName != currentGroup) {
         currentGroup = task.groupName;
         listItems.add(ListGroupHeader(
+          key: ValueKey('group_header_$currentGroup'),
           title: currentGroup!,
           shouldTranslate: currentGroup.length > 1,
         ));
@@ -586,6 +587,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       }
 
       listItems.add(Padding(
+          key: ValueKey('task_padding_${task.id}'),
           padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
           child: TaskCard(
             key: ValueKey('task_card_${task.id}'),

@@ -403,7 +403,7 @@ shared:
   date_group:
     today: Сьогодні
     tomorrow: Завтра
-    overdue: Прострочено
+    past: Минулі
     future: Майбутнє
     next_7_days: Наступні 7 днів
     no_date: Без дати

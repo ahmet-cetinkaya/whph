@@ -49,6 +49,7 @@ class TagListOptionSettings {
       sortConfig = SortConfig<TagSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
+        enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
       );
     }
 
@@ -84,6 +85,7 @@ class TagListOptionSettings {
                 })
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
+        'enableGrouping': sortConfig!.enableGrouping,
       };
     }
 

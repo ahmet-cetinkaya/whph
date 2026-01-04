@@ -611,7 +611,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
                       ),
                     ],
-                    isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                     showCustomOrderOption: true,
                   ),
 

@@ -408,7 +408,7 @@ shared:
   date_group:
     today: Vandaag
     tomorrow: Morgen
-    overdue: Te laat
+    past: Verleden
     future: Toekomst
     next_7_days: Volgende 7 dagen
     no_date: Geen datum

@@ -394,7 +394,7 @@ shared:
   date_group:
     today: Idag
     tomorrow: Imorgon
-    overdue: Försenad
+    past: Tidigare
     future: Framtid
     next_7_days: Kommande 7 dagar
     no_date: Inget datum

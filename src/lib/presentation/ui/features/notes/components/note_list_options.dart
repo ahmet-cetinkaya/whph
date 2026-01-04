@@ -323,7 +323,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
                       ),
                     ],
-                    isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                   ),
 
                 // Save button

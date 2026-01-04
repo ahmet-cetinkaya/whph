@@ -449,7 +449,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                       ),
                     ],
                     showCustomOrderOption: true,
-                    isActive: widget.sortConfig?.orderOptions.isNotEmpty ?? false,
                   ),
 
                 // Layout toggle button (only show when custom sort is enabled)

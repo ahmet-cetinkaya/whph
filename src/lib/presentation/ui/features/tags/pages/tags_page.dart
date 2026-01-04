@@ -238,80 +238,90 @@ class _TagsPageState extends State<TagsPage> {
         isLoading: !_isPageFullyLoaded,
         child: Align(
           alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            child: Column(
-              key: _mainContentKey,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Main List Options
-                TagListOptions(
-                  key: _mainFiltersKey,
-                  settingKeyVariantSuffix: _mainSettingKeyVariantSuffix,
-                  onSettingsLoaded: _onMainSettingsLoaded,
-                  selectedTagIds: _selectedTagIds,
-                  showNoTagsFilter: _showNoTagsFilter,
-                  showArchived: _showArchived,
-                  onTagFilterChange: _onTagFilterChange,
-                  onArchivedToggle: _onArchivedToggle,
-                  showSearchFilter: false,
-                  showSortButton: false,
-                ),
-
-                // Tag Time Title
-                SectionHeader(
-                  title: _translationService.translate(TagTranslationKeys.timeDistribution),
-                  expandTrailing: true,
-                  trailing: TagTimeChartOptions(
-                    dateFilterSetting: _dateFilterSetting,
-                    selectedStartDate: _dateFilterSetting != null ? _startDate : null,
-                    selectedEndDate: _dateFilterSetting != null ? _endDate : null,
-                    onDateFilterChange: _onDateFilterChange,
-                    onDateFilterSettingChange: _onDateFilterSettingChange,
-                    selectedCategories: _selectedCategories,
-                    onCategoriesChanged: _onTimeChartCategoryChanged,
-                    settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
-                    onSettingsLoaded: _onTagTimeChartOptionsLoaded,
-                  ),
-                ),
-
-                // Tag Time Chart
-                if (_mainListOptionLoaded && _tagTimeChartOptionsLoaded)
-                  Padding(
-                    key: _timeChartKey,
-                    padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                    child: Center(
-                      child: TagTimeChart(
-                        filterByTags: _selectedTagIds,
-                        startDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
-                        endDate: _endDate ?? DateTime.now(),
-                        filterByIsArchived: _showArchived,
-                        selectedCategories: _selectedCategories,
+          child: Column(
+            key: _mainContentKey,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              // Header section with scroll protection
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Main List Options
+                      TagListOptions(
+                        key: _mainFiltersKey,
+                        settingKeyVariantSuffix: _mainSettingKeyVariantSuffix,
+                        onSettingsLoaded: _onMainSettingsLoaded,
+                        selectedTagIds: _selectedTagIds,
+                        showNoTagsFilter: _showNoTagsFilter,
+                        showArchived: _showArchived,
+                        onTagFilterChange: _onTagFilterChange,
+                        onArchivedToggle: _onArchivedToggle,
+                        showSearchFilter: false,
+                        showSortButton: false,
                       ),
-                    ),
-                  ),
 
-                // List Options
-                SectionHeader(
-                  title: _translationService.translate(TagTranslationKeys.listSectionTitle),
-                  expandTrailing: true,
-                  trailing: TagListOptions(
-                    onSettingsLoaded: _onListOptionLoaded,
-                    showSearchFilter: true,
-                    search: _searchFilterQuery,
-                    onSearchChange: _onListSearchChange,
-                    showSortButton: true,
-                    sortConfig: _sortConfig,
-                    onSortChange: _onListSortConfigChange,
-                    showTagFilter: false,
-                    showArchivedToggle: false,
-                    settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
+                      // Tag Time Title
+                      SectionHeader(
+                        title: _translationService.translate(TagTranslationKeys.timeDistribution),
+                        expandTrailing: true,
+                        trailing: TagTimeChartOptions(
+                          dateFilterSetting: _dateFilterSetting,
+                          selectedStartDate: _dateFilterSetting != null ? _startDate : null,
+                          selectedEndDate: _dateFilterSetting != null ? _endDate : null,
+                          onDateFilterChange: _onDateFilterChange,
+                          onDateFilterSettingChange: _onDateFilterSettingChange,
+                          selectedCategories: _selectedCategories,
+                          onCategoriesChanged: _onTimeChartCategoryChanged,
+                          settingKeyVariantSuffix: _timeChartSettingKeyVariantSuffix,
+                          onSettingsLoaded: _onTagTimeChartOptionsLoaded,
+                        ),
+                      ),
+
+                      // Tag Time Chart
+                      if (_mainListOptionLoaded && _tagTimeChartOptionsLoaded)
+                        Padding(
+                          key: _timeChartKey,
+                          padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                          child: Center(
+                            child: TagTimeChart(
+                              filterByTags: _selectedTagIds,
+                              startDate: _startDate ?? DateTime.now().subtract(const Duration(days: 30)),
+                              endDate: _endDate ?? DateTime.now(),
+                              filterByIsArchived: _showArchived,
+                              selectedCategories: _selectedCategories,
+                            ),
+                          ),
+                        ),
+
+                      // List Options
+                      SectionHeader(
+                        title: _translationService.translate(TagTranslationKeys.listSectionTitle),
+                        expandTrailing: true,
+                        trailing: TagListOptions(
+                          onSettingsLoaded: _onListOptionLoaded,
+                          showSearchFilter: true,
+                          search: _searchFilterQuery,
+                          onSearchChange: _onListSearchChange,
+                          showSortButton: true,
+                          sortConfig: _sortConfig,
+                          onSortChange: _onListSortConfigChange,
+                          showTagFilter: false,
+                          showArchivedToggle: false,
+                          settingKeyVariantSuffix: _listSettingKeyVariantSuffix,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
 
-                // List
-                if (_mainListOptionLoaded && _listOptionLoaded)
-                  TagsList(
+              // List
+              if (_mainListOptionLoaded && _listOptionLoaded)
+                Expanded(
+                  child: TagsList(
                     key: _tagsListKey,
                     onClickTag: (tag) => _openDetails(tag.id),
                     onList: _onDataListed,
@@ -321,8 +331,8 @@ class _TagsPageState extends State<TagsPage> {
                     sortConfig: _sortConfig,
                     paginationMode: PaginationMode.infinityScroll,
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),

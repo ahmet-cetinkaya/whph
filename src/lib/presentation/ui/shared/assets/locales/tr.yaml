@@ -404,7 +404,7 @@ shared:
   date_group:
     today: Bugün
     tomorrow: Yarın
-    overdue: Gecikmiş
+    past: Geçmiş
     future: Gelecek
     next_7_days: Gelecek 7 gün
     no_date: Tarih yok

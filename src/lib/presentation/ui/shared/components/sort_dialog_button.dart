@@ -13,7 +13,6 @@ import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 class SortDialogButton<T> extends StatefulWidget {
   final Color? iconColor;
   final double iconSize;
-  final bool isActive;
   final String tooltip;
   final List<SortOptionWithTranslationKey<T>> availableOptions;
   final SortConfig<T> config;
@@ -34,7 +33,6 @@ class SortDialogButton<T> extends StatefulWidget {
     required this.onConfigChanged,
     this.iconColor,
     this.iconSize = AppTheme.iconSizeMedium,
-    this.isActive = false,
     this.dialogMaxHeightRatio = 0.4,
     this.dialogMaxWidthRatio = 0.6,
     this.showCustomOrderOption = false,
@@ -68,11 +66,12 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
   @override
   Widget build(BuildContext context) {
     final Color effectiveColor = widget.iconColor ?? Theme.of(context).primaryColor;
+    final bool isActive = widget.config.orderOptions.isNotEmpty;
 
     return IconButton(
       icon: Icon(
         Icons.sort,
-        color: widget.isActive ? effectiveColor : Colors.grey,
+        color: isActive ? effectiveColor : Colors.grey,
       ),
       iconSize: widget.iconSize,
       tooltip: widget.tooltip,

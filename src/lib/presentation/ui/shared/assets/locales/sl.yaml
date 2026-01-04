@@ -397,7 +397,7 @@ shared:
   date_group:
     today: Danes
     tomorrow: Jutri
-    overdue: Zapadlo
+    past: Preteklost
     future: Prihodnost
     next_7_days: Naslednjih 7 dni
     no_date: Bz datuma

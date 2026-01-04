@@ -14,5 +14,6 @@ class TagDefaults {
       ),
     ],
     useCustomOrder: false,
+    enableGrouping: false,
   );
 }

@@ -69,7 +69,7 @@ shared:
   date_group:
     today: Today
     tomorrow: Tomorrow
-    overdue: Overdue
+    past: Past
     future: Future
     next_7_days: Next 7 Days
     no_date: No Date

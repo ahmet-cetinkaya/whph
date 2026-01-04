@@ -428,6 +428,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
                   direction: SortDirection.desc,
                 ),
               ],
+              enableGrouping: false,
             ),
             onConfigChanged: _handleSortChange,
           ),

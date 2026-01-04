@@ -5,7 +5,7 @@ class SharedTranslationKeys {
   static const String none = 'shared.none';
   static const String today = 'shared.date_group.today';
   static const String tomorrow = 'shared.date_group.tomorrow';
-  static const String overdue = 'shared.date_group.overdue';
+  static const String past = 'shared.date_group.past';
   static const String future = 'shared.date_group.future';
   static const String next7Days = 'shared.date_group.next_7_days';
   static const String noDate = 'shared.date_group.no_date';

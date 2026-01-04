@@ -396,7 +396,7 @@ shared:
   date_group:
     today: Сегодня
     tomorrow: Завтра
-    overdue: Просрочено
+    past: Прошедшие
     future: Будущее
     next_7_days: Следующие 7 дней
     no_date: Без даты

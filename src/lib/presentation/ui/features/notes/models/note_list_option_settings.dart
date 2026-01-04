@@ -45,6 +45,7 @@ class NoteListOptionSettings {
       sortConfig = SortConfig<NoteSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
+        enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
       );
     }
 
@@ -78,6 +79,7 @@ class NoteListOptionSettings {
                 })
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
+        'enableGrouping': sortConfig!.enableGrouping,
       };
     }
 
