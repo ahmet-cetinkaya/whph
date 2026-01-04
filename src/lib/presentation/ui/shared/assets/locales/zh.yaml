@@ -388,7 +388,7 @@ shared:
   date_group:
     today: 今天
     tomorrow: 明天
-    overdue: 逾期
+    past: 过去
     future: 未来
     next_7_days: 未来7天
     no_date: 无日期

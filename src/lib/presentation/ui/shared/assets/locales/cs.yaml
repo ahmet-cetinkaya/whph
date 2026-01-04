@@ -398,7 +398,7 @@ shared:
   date_group:
     today: Dnes
     tomorrow: Zítra
-    overdue: Po splatnosti
+    past: Minulé
     future: Budoucnost
     next_7_days: P příštích 7 dní
     no_date: Bez data

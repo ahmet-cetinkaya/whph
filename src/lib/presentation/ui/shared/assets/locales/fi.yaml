@@ -412,7 +412,7 @@ shared:
   date_group:
     today: Tänään
     tomorrow: Huomenna
-    overdue: Myöhässä
+    past: Menneet
     future: Tulevaisuus
     next_7_days: Seuraavat 7 päivää
     no_date: Ei päivämäärää

@@ -397,7 +397,7 @@ shared:
   date_group:
     today: I dag
     tomorrow: I morgen
-    overdue: Forfalden
+    past: Tidligere
     future: Fremtid
     next_7_days: Næste 7 dage
     no_date: Ingen dato

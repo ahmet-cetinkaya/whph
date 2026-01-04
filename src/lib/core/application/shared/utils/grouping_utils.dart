@@ -30,7 +30,7 @@ class GroupingUtils {
     final dateToCheck = DateTime(date.year, date.month, date.day);
 
     if (dateToCheck.isBefore(today)) {
-      return SharedTranslationKeys.overdue;
+      return SharedTranslationKeys.past;
     } else if (dateToCheck.isAtSameMomentAs(today)) {
       return SharedTranslationKeys.today;
     } else if (dateToCheck.isAtSameMomentAs(tomorrow)) {

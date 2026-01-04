@@ -390,7 +390,7 @@ shared:
   date_group:
     today: 오늘
     tomorrow: 내일
-    overdue: 기간 경과
+    past: 과거
     future: 미래
     next_7_days: 다음 7일
     no_date: 날짜 없음

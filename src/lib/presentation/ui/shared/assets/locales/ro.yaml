@@ -404,7 +404,7 @@ shared:
   date_group:
     today: Astăzi
     tomorrow: Mâine
-    overdue: Întârziat
+    past: Trecut
     future: Viitor
     next_7_days: Următoarele 7 zile
     no_date: Fără dată

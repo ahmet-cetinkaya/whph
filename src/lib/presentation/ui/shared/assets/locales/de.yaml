@@ -408,7 +408,7 @@ shared:
   date_group:
     today: Heute
     tomorrow: Morgen
-    overdue: Überfällig
+    past: Vergangen
     future: Zukunft
     next_7_days: Nächste 7 Tage
     no_date: Kein Datum

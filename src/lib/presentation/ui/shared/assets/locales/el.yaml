@@ -436,7 +436,7 @@ shared:
   date_group:
     today: Σήμερα
     tomorrow: Αύριο
-    overdue: Εκπρόθεσμος
+    past: Παρελθόν
     future: Μέλλον
     next_7_days: Επόμενες 7 ημέρες
     no_date: Χωρίς ημερομηνία
