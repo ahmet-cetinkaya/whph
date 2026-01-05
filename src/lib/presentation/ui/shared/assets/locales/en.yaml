@@ -386,8 +386,6 @@ shared:
     refresh_description: Automatically refresh selected date range
     date_time_field_label: Date and time field
     date_time_field_hint: Select date and time
-    allDay: All day
-    refreshDescription: Automatically refresh selected date range
     quick_selection_today: Today
     quick_selection_tomorrow: Tomorrow
     quick_selection_weekend: Weekend
@@ -395,6 +393,10 @@ shared:
     quick_selection_no_date: No date
     quick_selection_last_week: Last week
     quick_selection_last_month: Last month
+    time_picker_hour_label: Hour
+    time_picker_minute_label: Minute
+    time_picker_all_day_label: All day
+    quick_selection_next_weekday: Next Weekday
   numeric_input:
     decrement_button_label: Decrease
     increment_button_label: Increase

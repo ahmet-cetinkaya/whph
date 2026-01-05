@@ -411,8 +411,6 @@ shared:
     refresh_description: Αυτόματη ανανέωση επιλεγμένου εύρους ημερομηνιών
     date_time_field_label: Πεδίο ημερομηνίας και ώρας
     date_time_field_hint: Επιλογή ημερομηνίας και ώρας
-    allDay: Ολόκληρη την ημέρα
-    refreshDescription: Αυτόματη ανανέωση επιλεγμένου εύρους ημερομηνιών
     quick_selection_today: Σήμερα
     quick_selection_tomorrow: Αύριο
     quick_selection_weekend: Σαββατοκύριακο
@@ -420,6 +418,10 @@ shared:
     quick_selection_no_date: Χωρίς ημερομηνία
     quick_selection_last_week: Προηγούμενη εβδομάδα
     quick_selection_last_month: Προηγούμενος μήνας
+    time_picker_hour_label: Ώρα
+    time_picker_minute_label: Λεπτό
+    time_picker_all_day_label: Ολόμερη ημέρα
+    quick_selection_next_weekday: Επόμενη καθημερινή
   numeric_input:
     decrement_button_label: Μείωση
     increment_button_label: Αύξηση

@@ -358,6 +358,10 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String dateTimePickerQuickSelectionNoDate = 'shared.date_time_picker.quick_selection_no_date';
   static const String dateTimePickerQuickSelectionLastWeek = 'shared.date_time_picker.quick_selection_last_week';
   static const String dateTimePickerQuickSelectionLastMonth = 'shared.date_time_picker.quick_selection_last_month';
+  static const String dateTimePickerQuickSelectionNextWeekday = 'shared.date_time_picker.quick_selection_next_weekday';
+  static const String dateTimePickerTimePickerHourLabel = 'shared.date_time_picker.time_picker_hour_label';
+  static const String dateTimePickerTimePickerMinuteLabel = 'shared.date_time_picker.time_picker_minute_label';
+  static const String dateTimePickerTimePickerAllDayLabel = 'shared.date_time_picker.time_picker_all_day_label';
 
   static const String help = "shared.help";
   static const String startTour = "shared.start_tour";
@@ -505,6 +509,10 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
         return SharedTranslationKeys.dateTimePickerSelectDateTimeTitle;
       case DateTimePickerTranslationKey.selectDateRangeTitle:
         return SharedTranslationKeys.dateTimePickerSelectDateRangeTitle;
+      case DateTimePickerTranslationKey.allDay:
+        return SharedTranslationKeys.allDay;
+      case DateTimePickerTranslationKey.refreshDescription:
+        return SharedTranslationKeys.dateTimePickerRefreshDescription;
       // Quick selection translations
       case DateTimePickerTranslationKey.quickSelection:
         return SharedTranslationKeys.quickSelection;
@@ -540,6 +548,14 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
         return SharedTranslationKeys.dateTimePickerQuickSelectionLastWeek;
       case DateTimePickerTranslationKey.quickSelectionLastMonth:
         return SharedTranslationKeys.dateTimePickerQuickSelectionLastMonth;
+      case DateTimePickerTranslationKey.quickSelectionNextWeekday:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionNextWeekday;
+      case DateTimePickerTranslationKey.timePickerHourLabel:
+        return SharedTranslationKeys.dateTimePickerTimePickerHourLabel;
+      case DateTimePickerTranslationKey.timePickerMinuteLabel:
+        return SharedTranslationKeys.dateTimePickerTimePickerMinuteLabel;
+      case DateTimePickerTranslationKey.timePickerAllDayLabel:
+        return SharedTranslationKeys.dateTimePickerTimePickerAllDayLabel;
       // Handle weekday abbreviations dynamically
       case DateTimePickerTranslationKey.weekdayMonShort:
         return getWeekDayTranslationKey(1, short: true);
@@ -555,9 +571,6 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
         return getWeekDayTranslationKey(6, short: true);
       case DateTimePickerTranslationKey.weekdaySunShort:
         return getWeekDayTranslationKey(7, short: true);
-      default:
-        // For any other keys, try to use the key directly
-        return 'shared.date_time_picker.${key.name}';
     }
   }
 

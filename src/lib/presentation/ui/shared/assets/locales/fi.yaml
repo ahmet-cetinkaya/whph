@@ -347,7 +347,7 @@ shared:
   date_time_picker:
     quick_selection_last_month: Viime kuussa
     field_label: Päivämäärä ja aika
-    time_picker_minute_label: Minuutti
+    time_picker_minute_label: Minute
     field_hint: Valitse päivämäärä ja aika
     edit_button_label: Muokkaa
     edit_button_hint: Muokkaa päivämäärää ja aikaa
@@ -389,14 +389,15 @@ shared:
     refresh_description: Päivitä valittu aikaväli automaattisesti
     date_time_field_label: Päivämäärä- ja aikakenttä
     date_time_field_hint: Valitse päivämäärä ja aika
-    allDay: Koko päivä
-    refreshDescription: Päivitä valittu aikaväli automaattisesti
     quick_selection_today: Tänään
     quick_selection_tomorrow: Huomenna
     quick_selection_weekend: Viikonloppu
     quick_selection_next_week: Ensi viikolla
     quick_selection_no_date: Ei päivämäärää
     quick_selection_last_week: Viime viikolla
+    time_picker_hour_label: Tunti
+    time_picker_all_day_label: Koko päivä
+    quick_selection_next_weekday: Seuraava arkipäivä
   numeric_input:
     decrement_button_label: Pienennä
     increment_button_label: Suurenna

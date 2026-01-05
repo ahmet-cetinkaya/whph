@@ -375,14 +375,15 @@ shared:
     refresh_description: Automaticky obnovit vybraný rozsah dat
     date_time_field_label: Pole data a času
     date_time_field_hint: Vybrat datum a čas
-    allDay: Celý den
-    refreshDescription: Automaticky obnovit vybraný rozsah dat
     quick_selection_today: Dnes
     quick_selection_tomorrow: Zítra
     quick_selection_weekend: Víkend
     quick_selection_next_week: Příští týden
     quick_selection_no_date: Bez data
     quick_selection_last_week: Minulý týden
+    time_picker_hour_label: Hodina
+    time_picker_all_day_label: Celý den
+    quick_selection_next_weekday: Další pracovní den
   numeric_input:
     decrement_button_label: Snížit
     increment_button_label: Zvýšit

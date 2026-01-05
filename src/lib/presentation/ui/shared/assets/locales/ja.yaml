@@ -364,8 +364,6 @@ shared:
     refresh_description: 選択した日付範囲を自動的に更新
     date_time_field_label: 日時フィールド
     date_time_field_hint: 日時を選択
-    allDay: 終日
-    refreshDescription: 選択した日付範囲を自動的に更新
     quick_selection_today: 今日
     quick_selection_tomorrow: 明日
     quick_selection_weekend: 週末
@@ -373,6 +371,10 @@ shared:
     quick_selection_no_date: 日付なし
     quick_selection_last_week: 先週
     quick_selection_last_month: 先月
+    time_picker_hour_label: 時
+    time_picker_minute_label: 分
+    time_picker_all_day_label: 終日
+    quick_selection_next_weekday: 次の平日
   numeric_input:
     decrement_button_label: 減らす
     increment_button_label: 増やす

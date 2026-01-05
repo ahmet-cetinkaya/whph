@@ -378,8 +378,6 @@ shared:
     refresh_description: Seçilen tarih aralığını otomatik yenile
     date_time_field_label: Tarih ve saat alanı
     date_time_field_hint: Tarih ve saat seçin
-    allDay: Tüm gün
-    refreshDescription: Seçilen tarih aralığını otomatik yenile
     quick_selection_today: Bugün
     quick_selection_tomorrow: Yarın
     quick_selection_weekend: Hafta sonu
@@ -388,6 +386,9 @@ shared:
     quick_selection_no_date: Tarih yok
     quick_selection_last_week: Geçen hafta
     quick_selection_last_month: Geçen ay
+    time_picker_hour_label: Saat
+    time_picker_minute_label: Dakika
+    time_picker_all_day_label: Tüm gün
   numeric_input:
     decrement_button_label: Azalt
     increment_button_label: Artır

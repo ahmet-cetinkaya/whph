@@ -365,8 +365,6 @@ shared:
     refresh_description: 선택된 날짜 범위를 자동으로 새로고침
     date_time_field_label: 날짜 및 시간 필드
     date_time_field_hint: 날짜 및 시간 선택
-    allDay: 종일
-    refreshDescription: 선택된 날짜 범위를 자동으로 새로고침
     quick_selection_today: 오늘
     quick_selection_tomorrow: 내일
     quick_selection_weekend: 주말
@@ -374,6 +372,10 @@ shared:
     quick_selection_no_date: 날짜 없음
     quick_selection_last_week: 지난 주
     quick_selection_last_month: 지난 달
+    time_picker_hour_label: 시
+    time_picker_minute_label: 분
+    time_picker_all_day_label: 종일
+    quick_selection_next_weekday: 다음 평일
   numeric_input:
     decrement_button_label: 감소
     increment_button_label: 증가

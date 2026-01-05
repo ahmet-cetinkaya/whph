@@ -383,8 +383,6 @@ shared:
     refresh_description: Ausgewählten Datumsbereich automatisch aktualisieren
     date_time_field_label: Datum- und Zeitfeld
     date_time_field_hint: Datum und Uhrzeit auswählen
-    allDay: Ganztägig
-    refreshDescription: Automatisch den ausgewählten Datumsbereich aktualisieren
     quick_selection_today: Heute
     quick_selection_tomorrow: Morgen
     quick_selection_weekend: Wochenende
@@ -392,6 +390,10 @@ shared:
     quick_selection_no_date: Kein Datum
     quick_selection_last_week: Vor einer Woche
     quick_selection_last_month: Vor einem Monat
+    time_picker_hour_label: Stunde
+    time_picker_minute_label: Minute
+    time_picker_all_day_label: Ganzer Tag
+    quick_selection_next_weekday: Nächster Werktag
   numeric_input:
     decrement_button_label: Verringern
     increment_button_label: Erhöhen

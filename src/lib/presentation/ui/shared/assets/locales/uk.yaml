@@ -378,8 +378,6 @@ shared:
     refresh_description: Автоматично оновлювати вибраний діапазон дат
     date_time_field_label: Поле дати і часу
     date_time_field_hint: Виберіть дату і час
-    allDay: Весь день
-    refreshDescription: Автоматично оновлювати вибраний діапазон дат
     quick_selection_today: Сьогодні
     quick_selection_tomorrow: Завтра
     quick_selection_weekend: Вихідні
@@ -387,6 +385,10 @@ shared:
     quick_selection_no_date: Без дати
     quick_selection_last_week: Минулий тиждень
     quick_selection_last_month: Минулий місяць
+    time_picker_hour_label: Година
+    time_picker_minute_label: Хвилина
+    time_picker_all_day_label: Весь день
+    quick_selection_next_weekday: Наступний робочий день
   numeric_input:
     decrement_button_label: Зменшити
     increment_button_label: Збільшити

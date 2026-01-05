@@ -407,8 +407,6 @@ shared:
     refresh_description: Aggiorna automaticamente l'intervallo di date selezionato
     date_time_field_label: Campo data e ora
     date_time_field_hint: Seleziona data e ora
-    allDay: Tutto il giorno
-    refreshDescription: Aggiorna automaticamente l'intervallo di date selezionato
     quick_selection_today: Oggi
     quick_selection_tomorrow: Domani
     quick_selection_weekend: Fine settimana
@@ -416,6 +414,10 @@ shared:
     quick_selection_no_date: Nessuna data
     quick_selection_last_week: Settimana scorsa
     quick_selection_last_month: Mese scorso
+    time_picker_hour_label: Ora
+    time_picker_minute_label: Minute
+    time_picker_all_day_label: Tutto il giorno
+    quick_selection_next_weekday: Prossimo giorno lavorativo
   numeric_input:
     decrement_button_label: Diminuisci
     increment_button_label: Aumenta

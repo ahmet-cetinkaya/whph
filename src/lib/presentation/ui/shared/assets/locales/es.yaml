@@ -403,8 +403,6 @@ shared:
     refresh_description: Actualizar automáticamente el rango de fechas seleccionado
     date_time_field_label: Campo de fecha y hora
     date_time_field_hint: Seleccionar fecha y hora
-    allDay: Todo el día
-    refreshDescription: Actualizar automáticamente el rango de fechas seleccionado
     quick_selection_today: Hoy
     quick_selection_tomorrow: Mañana
     quick_selection_weekend: Fin de semana
@@ -412,6 +410,10 @@ shared:
     quick_selection_no_date: Sin fecha
     quick_selection_last_week: Semana pasada
     quick_selection_last_month: Mes pasado
+    time_picker_hour_label: Hora
+    time_picker_minute_label: Minuto
+    time_picker_all_day_label: Todo el día
+    quick_selection_next_weekday: Próximo día hábil
   numeric_input:
     decrement_button_label: Disminuir
     increment_button_label: Aumentar
