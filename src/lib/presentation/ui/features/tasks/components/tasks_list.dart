@@ -612,8 +612,39 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         },
       );
     } catch (e) {
-      _dragStateNotifier.stopDragging();
-      if (mounted) refresh();
+      if (e is RankGapTooSmallException && mounted) {
+        // Try to recover by placing at the end
+        final targetOrder = groupTasks.last.order + OrderRank.initialStep * 2;
+
+        await AsyncErrorHandler.executeVoid(
+          context: context,
+          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+          operation: () async {
+            await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+              UpdateTaskOrderCommand(
+                taskId: task.id,
+                parentTaskId: widget.parentTaskId,
+                beforeTaskOrder: originalOrder,
+                afterTaskOrder: targetOrder,
+              ),
+            );
+          },
+          onSuccess: () {
+            _dragStateNotifier.stopDragging();
+            widget.onReorderComplete?.call();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) refresh();
+            });
+          },
+          onError: (_) {
+            _dragStateNotifier.stopDragging();
+            if (mounted) refresh(); // Revert on error
+          },
+        );
+      } else {
+        _dragStateNotifier.stopDragging();
+        if (mounted) refresh(); // Revert on other errors
+      }
     }
   }
 
