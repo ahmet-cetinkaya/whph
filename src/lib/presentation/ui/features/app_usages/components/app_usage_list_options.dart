@@ -18,6 +18,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
+import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
 import 'package:acore/acore.dart' show SortDirection;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
@@ -431,6 +432,37 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
               enableGrouping: false,
             ),
             onConfigChanged: _handleSortChange,
+          ),
+
+          // Group Button
+          GroupDialogButton<AppUsageSortFields>(
+            iconColor: _themeService.primaryColor,
+            tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+            config: _currentState.sortConfig ??
+                SortConfig(
+                  orderOptions: [
+                    SortOptionWithTranslationKey(
+                      field: AppUsageSortFields.duration,
+                      translationKey: AppUsageTranslationKeys.sortDuration,
+                      direction: SortDirection.desc,
+                    ),
+                  ],
+                ),
+            onConfigChanged: _handleSortChange,
+            availableOptions: [
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.name,
+                translationKey: AppUsageTranslationKeys.sortName,
+              ),
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.device,
+                translationKey: AppUsageTranslationKeys.sortDevice,
+              ),
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.duration,
+                translationKey: AppUsageTranslationKeys.sortDuration,
+              ),
+            ],
           ),
 
           // Save Button

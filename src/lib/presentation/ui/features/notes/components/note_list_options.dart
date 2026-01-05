@@ -13,6 +13,7 @@ import 'package:whph/presentation/ui/shared/components/persistent_list_options_b
 import 'package:whph/presentation/ui/shared/components/save_button.dart';
 import 'package:whph/presentation/ui/shared/components/search_filter.dart';
 import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
+import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -280,7 +281,7 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                 if (widget.showSortButton && widget.onSortChange != null)
                   SortDialogButton<NoteSortFields>(
                     iconColor: Theme.of(context).primaryColor,
-                    tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
+                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
                     config: widget.sortConfig ??
                         SortConfig<NoteSortFields>(
                           orderOptions: [
@@ -320,6 +321,42 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                       SortOptionWithTranslationKey(
                         field: NoteSortFields.modifiedDate,
                         direction: SortDirection.desc,
+                        translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                    ],
+                  ),
+
+                // Group button
+                if (widget.showSortButton && widget.onSortChange != null)
+                  GroupDialogButton<NoteSortFields>(
+                    iconColor: Theme.of(context).primaryColor,
+                    tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                    config: widget.sortConfig ??
+                        SortConfig<NoteSortFields>(
+                          orderOptions: [
+                            SortOptionWithTranslationKey(
+                              field: NoteSortFields.createdDate,
+                              direction: SortDirection.desc,
+                              translationKey: SharedTranslationKeys.createdDateLabel,
+                            ),
+                          ],
+                          useCustomOrder: false,
+                        ),
+                    onConfigChanged: (config) {
+                      widget.onSortChange!(config);
+                      handleFilterChange();
+                    },
+                    availableOptions: [
+                      SortOptionWithTranslationKey(
+                        field: NoteSortFields.title,
+                        translationKey: NoteTranslationKeys.titleLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: NoteSortFields.createdDate,
+                        translationKey: SharedTranslationKeys.createdDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: NoteSortFields.modifiedDate,
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
                       ),
                     ],

@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/shared/components/persistent_list_options_b
 import 'package:whph/presentation/ui/shared/components/save_button.dart';
 import 'package:whph/presentation/ui/shared/components/search_filter.dart';
 import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
+import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -307,7 +308,7 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                 // Sort button
                 if (widget.showSortButton && widget.onSortChange != null && widget.hasItems)
                   SortDialogButton<TagSortFields>(
-                    tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
+                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
                     availableOptions: [
                       SortOptionWithTranslationKey(
                         field: TagSortFields.name,
@@ -331,13 +332,37 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                           direction: SortDirection.asc,
                         ),
                       ],
-                      enableGrouping: false,
                     ),
                     onConfigChanged: (config) {
                       widget.onSortChange?.call(config);
                       handleFilterChange();
                     },
                   ),
+
+                // Group button
+                GroupDialogButton<TagSortFields>(
+                  iconColor: Theme.of(context).primaryColor,
+                  tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                  config: widget.sortConfig ?? const SortConfig(orderOptions: []),
+                  onConfigChanged: (config) {
+                    widget.onSortChange?.call(config);
+                    handleFilterChange();
+                  },
+                  availableOptions: [
+                    SortOptionWithTranslationKey(
+                      field: TagSortFields.name,
+                      translationKey: TagTranslationKeys.nameLabel,
+                    ),
+                    SortOptionWithTranslationKey(
+                      field: TagSortFields.createdDate,
+                      translationKey: SharedTranslationKeys.createdDateLabel,
+                    ),
+                    SortOptionWithTranslationKey(
+                      field: TagSortFields.modifiedDate,
+                      translationKey: SharedTranslationKeys.modifiedDateLabel,
+                    ),
+                  ],
+                ),
 
                 // Archived toggle button
                 if (widget.showArchivedToggle && widget.onArchivedToggle != null && widget.hasItems)
