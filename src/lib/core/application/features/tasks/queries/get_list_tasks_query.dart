@@ -161,10 +161,11 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
     List<CustomOrder> customOrders = [];
+    SortOption<TaskSortFields>? groupField;
 
     // Prioritize grouping field if exists
     if (request.enableGrouping) {
-      final groupField = request.groupBy ?? (request.sortBy?.isNotEmpty == true ? request.sortBy!.first : null);
+      groupField = request.groupBy ?? (request.sortBy?.isNotEmpty == true ? request.sortBy!.first : null);
       if (groupField != null) {
         _addCustomOrder(customOrders, groupField);
       }
@@ -180,7 +181,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
     for (var option in sortOptions) {
       // Avoid duplicating the group field if it's already added
-      if (request.enableGrouping && request.groupBy != null && option.field == request.groupBy!.field) {
+      if (request.enableGrouping && groupField != null && option.field == groupField.field) {
         continue;
       }
       _addCustomOrder(customOrders, option);
