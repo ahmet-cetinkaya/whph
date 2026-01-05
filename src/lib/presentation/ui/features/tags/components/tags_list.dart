@@ -177,6 +177,7 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
               .map((option) => SortOption(field: option.field, direction: option.direction))
               .toList(),
           groupBy: widget.sortConfig?.groupOption,
+          enableGrouping: widget.sortConfig?.enableGrouping ?? false,
         );
 
         return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);

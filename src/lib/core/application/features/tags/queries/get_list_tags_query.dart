@@ -18,6 +18,7 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   bool showArchived = false;
   List<SortOption<TagSortFields>>? sortBy;
   SortOption<TagSortFields>? groupBy;
+  bool enableGrouping;
 
   GetListTagsQuery({
     required this.pageIndex,
@@ -27,6 +28,7 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
     this.showArchived = false,
     this.sortBy,
     this.groupBy,
+    this.enableGrouping = false,
   });
 }
 
@@ -94,7 +96,7 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
             .toList(),
       );
 
-      final groupField = request.groupBy?.field ?? request.sortBy?.firstOrNull?.field;
+      final groupField = request.enableGrouping ? request.groupBy?.field ?? request.sortBy?.firstOrNull?.field : null;
       if (groupField != null) {
         final groupInfo = getTagGroupInfo(item, groupField);
         if (groupInfo != null) {
@@ -148,21 +150,21 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
   }
 
   List<CustomOrder>? _getCustomOrders(GetListTagsQuery request) {
-    if ((request.sortBy == null || request.sortBy!.isEmpty) && request.groupBy == null) {
+    if ((request.sortBy == null || request.sortBy!.isEmpty) && (!request.enableGrouping || request.groupBy == null)) {
       return null;
     }
 
     List<CustomOrder> customOrders = [];
 
     // Prioritize grouping field if exists
-    if (request.groupBy != null) {
+    if (request.enableGrouping && request.groupBy != null) {
       _addCustomOrder(customOrders, request.groupBy!);
     }
 
     if (request.sortBy != null) {
       for (var option in request.sortBy!) {
         // Avoid duplicate if group by is same as first sort option
-        if (request.groupBy != null && option.field == request.groupBy!.field) {
+        if (request.enableGrouping && request.groupBy != null && option.field == request.groupBy!.field) {
           continue;
         }
         _addCustomOrder(customOrders, option);
