@@ -259,6 +259,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         reminderTime: habit.reminderTime,
         reminderDays: habit.getReminderDaysAsList(),
         archivedDate: habit.archivedDate,
+        createdDate: habit.createdDate,
+        modifiedDate: habit.modifiedDate,
         order: habit.order,
         hasGoal: habit.hasGoal,
         dailyTarget: habit.dailyTarget,

@@ -96,24 +96,56 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     String? searchByProcessName,
     List<String>? filterByDevices,
     List<SortOptionWithTranslationKey<AppUsageSortFields>>? sortBy,
+    SortOptionWithTranslationKey<AppUsageSortFields>? groupBy,
     bool sortByCustomOrder = false,
   }) async {
     // Helper function to generate sort clause for a given table alias
     String getSortClauseForAlias(String alias) {
-      if (sortBy == null || sortBy.isEmpty) {
+      final List<String> clauses = [];
+
+      // Prioritize grouping field if exists
+      if (groupBy != null) {
+        final direction = groupBy.direction == SortDirection.desc ? 'DESC' : 'ASC';
+        switch (groupBy.field) {
+          case AppUsageSortFields.name:
+            // Use only the first character for grouping to allow secondary sorting within the group
+            clauses.add('SUBSTR(COALESCE($alias.display_name, $alias.name), 1, 1) COLLATE NOCASE $direction');
+            break;
+          case AppUsageSortFields.duration:
+            clauses.add('$alias.total_duration $direction');
+            break;
+          case AppUsageSortFields.device:
+            clauses.add('$alias.device_name $direction');
+            break;
+        }
+      }
+
+      // Add other sort options
+      if (sortBy != null) {
+        for (final s in sortBy) {
+          // Skip if it's the same as group field (already added)
+          if (groupBy != null && s.field == groupBy.field) continue;
+
+          final direction = s.direction == SortDirection.desc ? 'DESC' : 'ASC';
+          switch (s.field) {
+            case AppUsageSortFields.duration:
+              clauses.add('$alias.total_duration $direction');
+              break;
+            case AppUsageSortFields.name:
+              clauses.add('COALESCE($alias.display_name, $alias.name) COLLATE NOCASE $direction');
+              break;
+            case AppUsageSortFields.device:
+              clauses.add('$alias.device_name $direction');
+              break;
+          }
+        }
+      }
+
+      if (clauses.isEmpty) {
         return '$alias.total_duration DESC';
       }
-      return sortBy.map((s) {
-        final direction = s.direction == SortDirection.desc ? 'DESC' : 'ASC';
-        switch (s.field) {
-          case AppUsageSortFields.duration:
-            return '$alias.total_duration $direction';
-          case AppUsageSortFields.name:
-            return 'COALESCE($alias.display_name, $alias.name) COLLATE NOCASE $direction';
-          case AppUsageSortFields.device:
-            return '$alias.device_name $direction';
-        }
-      }).join(', ');
+
+      return clauses.join(', ');
     }
 
     final sortClause = getSortClauseForAlias('ad');

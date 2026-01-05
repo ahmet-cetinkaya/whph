@@ -244,6 +244,7 @@ shared:
     enable_grouping: 並べ替えオプションでグループ化
     enable_grouping_description: 最初の並べ替えフィールドに基づいてアイテムをグループ化
     sort_and_group: 並べ替えとグループ化
+    group_by: グループ化
   statistics:
     daily_usage:
       description: 曜日ごとの総使用時間を表示

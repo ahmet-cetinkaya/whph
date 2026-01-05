@@ -19,6 +19,8 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   List<String>? filterByDevices;
   List<SortOptionWithTranslationKey<AppUsageSortFields>>? sortBy;
   bool sortByCustomOrder;
+  SortOptionWithTranslationKey<AppUsageSortFields>? groupBy;
+  bool enableGrouping;
 
   GetListByTopAppUsagesQuery({
     required this.pageIndex,
@@ -32,7 +34,9 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     this.searchByProcessName,
     this.filterByDevices,
     this.sortBy,
+    this.groupBy,
     this.sortByCustomOrder = false,
+    this.enableGrouping = false,
   })  : startDate = startDate != null ? DateTimeHelper.toUtcDateTime(startDate) : null,
         endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null,
         compareStartDate = compareStartDate != null ? DateTimeHelper.toUtcDateTime(compareStartDate) : null,
@@ -66,6 +70,7 @@ class GetListByTopAppUsagesQueryHandler
       searchByProcessName: request.searchByProcessName,
       filterByDevices: request.filterByDevices,
       sortBy: request.sortBy,
+      groupBy: request.enableGrouping ? request.groupBy : null,
       sortByCustomOrder: request.sortByCustomOrder,
     );
 
@@ -81,7 +86,8 @@ class GetListByTopAppUsagesQueryHandler
         tags: record.tags,
       );
 
-      final groupInfo = AppUsageGroupingHelper.getGroupInfo(item, request.sortBy?.first.field);
+      final groupField = request.enableGrouping ? request.groupBy?.field ?? request.sortBy?.firstOrNull?.field : null;
+      final groupInfo = AppUsageGroupingHelper.getGroupInfo(item, groupField);
       if (groupInfo != null) {
         item.groupName = groupInfo.name;
         item.isGroupNameTranslatable = groupInfo.isTranslatable;

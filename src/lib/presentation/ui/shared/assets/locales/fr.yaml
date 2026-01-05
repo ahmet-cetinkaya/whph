@@ -269,6 +269,7 @@ shared:
       Grouper les éléments en fonction du premier champ
       de tri
     sort_and_group: Trier & Grouper
+    group_by: Grouper par
   statistics:
     daily_usage:
       description: Affiche le temps d'utilisation total par jour de la semaine

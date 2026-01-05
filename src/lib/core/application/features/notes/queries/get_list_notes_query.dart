@@ -18,6 +18,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final bool sortByCustomOrder;
   final bool ignoreArchivedTagVisibility;
   final DateTime? now;
+  final SortOption<NoteSortFields>? groupBy;
 
   GetListNotesQuery({
     required this.pageIndex,
@@ -26,6 +27,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
     this.filterNoTags = false,
     this.search,
     this.sortBy,
+    this.groupBy,
     this.sortByCustomOrder = false,
     this.ignoreArchivedTagVisibility = false,
     this.now,
@@ -143,7 +145,8 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     // Populate group name if sorting is applied
     for (var i = 0; i < items.length; i++) {
       final item = items[i];
-      final groupInfo = NoteGroupingHelper.getGroupInfo(item, request.sortBy?.first.field, now: now);
+      final groupField = request.groupBy?.field ?? request.sortBy?.firstOrNull?.field;
+      final groupInfo = NoteGroupingHelper.getGroupInfo(item, groupField, now: now);
       items[i] = item.copyWith(
         groupName: groupInfo?.name,
         isGroupNameTranslatable: groupInfo?.isTranslatable ?? true,
@@ -159,39 +162,50 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
   }
 
   List<CustomOrder> _getCustomOrders(GetListNotesQuery request) {
-    if (request.sortBy == null || request.sortBy!.isEmpty) {
-      return [
-        CustomOrder(
-          field: 'created_date',
-          direction: SortDirection.desc,
-        ),
-      ];
+    List<CustomOrder> customOrders = [];
+
+    // Prioritize grouping field if exists
+    if (request.groupBy != null) {
+      _addCustomOrder(customOrders, request.groupBy!);
     }
 
     if (request.sortByCustomOrder) {
-      return [CustomOrder(field: "order")];
+      customOrders.add(CustomOrder(field: "order"));
+      return customOrders;
     }
 
-    List<CustomOrder> customOrders = [];
-    for (var option in request.sortBy!) {
-      if (option.field == NoteSortFields.title) {
-        customOrders.add(CustomOrder(field: "title", direction: option.direction));
-      } else if (option.field == NoteSortFields.createdDate) {
-        customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
-      } else if (option.field == NoteSortFields.modifiedDate) {
-        customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
+    if (request.sortBy == null || request.sortBy!.isEmpty) {
+      // If no sort is specified, return default sort unless grouping is active.
+      if (customOrders.isEmpty) {
+        return [
+          CustomOrder(
+            field: 'created_date',
+            direction: SortDirection.desc,
+          ),
+        ];
       }
+      // If only grouping is specified, just use that.
+      return customOrders;
     }
 
-    if (customOrders.isEmpty) {
-      return [
-        CustomOrder(
-          field: 'created_date',
-          direction: SortDirection.desc,
-        ),
-      ];
+    // Add other sort options, avoiding duplicates
+    for (var option in request.sortBy!) {
+      if (request.groupBy != null && option.field == request.groupBy!.field) {
+        continue;
+      }
+      _addCustomOrder(customOrders, option);
     }
 
     return customOrders;
+  }
+
+  void _addCustomOrder(List<CustomOrder> orders, SortOption<NoteSortFields> option) {
+    if (option.field == NoteSortFields.title) {
+      orders.add(CustomOrder(field: "title", direction: option.direction));
+    } else if (option.field == NoteSortFields.createdDate) {
+      orders.add(CustomOrder(field: "created_date", direction: option.direction));
+    } else if (option.field == NoteSortFields.modifiedDate) {
+      orders.add(CustomOrder(field: "modified_date", direction: option.direction));
+    }
   }
 }

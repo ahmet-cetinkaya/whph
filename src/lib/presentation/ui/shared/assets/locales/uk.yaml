@@ -254,6 +254,7 @@ shared:
     enable_grouping: Групувати за сортуванням
     enable_grouping_description: Групувати елементи на основі першого поля сортування
     sort_and_group: Сортування та Групування
+    group_by: Групувати за
   statistics:
     daily_usage:
       description: Показує загальний час використання за день тижня

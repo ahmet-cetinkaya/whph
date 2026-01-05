@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/ui/shared/components/persistent_list_options_base.dart';
 import 'package:whph/presentation/ui/shared/components/search_filter.dart';
 import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
+import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -391,7 +392,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                 if (widget.showSortButton && widget.onSortChange != null)
                   SortDialogButton<HabitSortFields>(
                     iconColor: Theme.of(context).primaryColor,
-                    tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
+                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
                     config: widget.sortConfig ??
                         SortConfig<HabitSortFields>(
                           orderOptions: [
@@ -463,6 +464,57 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                         ? _translationService.translate(SharedTranslationKeys.enableReorderingTooltip)
                         : _translationService.translate(SharedTranslationKeys.disableReorderingTooltip),
                     onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
+                  ),
+
+                // Group button
+                if (widget.showSortButton && widget.onSortChange != null)
+                  GroupDialogButton<HabitSortFields>(
+                    iconColor: Theme.of(context).primaryColor,
+                    tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                    config: widget.sortConfig ??
+                        SortConfig<HabitSortFields>(
+                          orderOptions: [
+                            SortOptionWithTranslationKey(
+                              field: HabitSortFields.name,
+                              direction: SortDirection.asc,
+                              translationKey: SharedTranslationKeys.nameLabel,
+                            ),
+                            SortOptionWithTranslationKey(
+                              field: HabitSortFields.createdDate,
+                              direction: SortDirection.desc,
+                              translationKey: SharedTranslationKeys.createdDateLabel,
+                            ),
+                          ],
+                          useCustomOrder: false,
+                          enableGrouping: false,
+                        ),
+                    onConfigChanged: widget.onSortChange!,
+                    availableOptions: [
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.name,
+                        translationKey: SharedTranslationKeys.nameLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.estimatedTime,
+                        translationKey: SharedTranslationKeys.timeDisplayEstimated,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.actualTime,
+                        translationKey: SharedTranslationKeys.timeDisplayElapsed,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.createdDate,
+                        translationKey: SharedTranslationKeys.createdDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.modifiedDate,
+                        translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.archivedDate,
+                        translationKey: HabitTranslationKeys.archivedDateLabel,
+                      ),
+                    ],
                   ),
 
                 // Save button

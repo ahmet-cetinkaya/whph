@@ -22,6 +22,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   String? search;
   bool ignoreArchivedTagVisibility;
   DateTime? excludeCompletedForDate;
+  SortOption<HabitSortFields>? groupBy;
 
   GetListHabitsQuery({
     required this.pageIndex,
@@ -35,6 +36,7 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
     this.search,
     this.ignoreArchivedTagVisibility = false,
     this.excludeCompletedForDate,
+    this.groupBy,
   });
 }
 
@@ -88,7 +90,9 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     // 3. Populate tags and calculate group names
     // Determine sort field for grouping
     HabitSortFields? primarySortField;
-    if (request.sortBy != null && request.sortBy!.isNotEmpty) {
+    if (request.groupBy != null) {
+      primarySortField = request.groupBy!.field;
+    } else if (request.sortBy != null && request.sortBy!.isNotEmpty) {
       primarySortField = request.sortBy!.first.field;
     }
 
@@ -193,32 +197,51 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   }
 
   List<CustomOrder>? _getCustomOrders(GetListHabitsQuery request) {
-    if (request.sortBy == null || request.sortBy!.isEmpty) {
-      return null;
+    List<CustomOrder> customOrders = [];
+
+    // Prioritize grouping field if exists
+    if (request.groupBy != null) {
+      _addCustomOrder(customOrders, request.groupBy!);
     }
 
     if (request.sortByCustomSort) {
-      return [CustomOrder(field: "order", direction: SortDirection.asc)];
+      customOrders.add(CustomOrder(field: "order", direction: SortDirection.asc));
+      return customOrders;
     }
 
-    List<CustomOrder> customOrders = [];
-    for (var option in request.sortBy!) {
-      if (option.field == HabitSortFields.name) {
-        customOrders.add(CustomOrder(field: "name", direction: option.direction));
-      } else if (option.field == HabitSortFields.createdDate) {
-        customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
-      } else if (option.field == HabitSortFields.modifiedDate) {
-        customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
-      } else if (option.field == HabitSortFields.estimatedTime) {
-        customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
-      } else if (option.field == HabitSortFields.actualTime) {
-        // actualTime sorting is now handled at the database level with LEFT JOIN
-        customOrders.add(CustomOrder(field: "actual_time", direction: option.direction));
-      } else if (option.field == HabitSortFields.archivedDate) {
-        customOrders.add(CustomOrder(field: "archived_date", direction: option.direction));
+    if (request.sortBy == null || request.sortBy!.isEmpty) {
+      return customOrders.isEmpty ? null : customOrders;
+    }
+
+    // Add other sort options from list
+    if (request.sortBy != null) {
+      for (var option in request.sortBy!) {
+        // Avoid duplicate if group by is same as first sort option
+        if (request.groupBy != null && option.field == request.groupBy!.field) {
+          continue;
+        }
+        _addCustomOrder(customOrders, option);
       }
     }
+
     return customOrders.isEmpty ? null : customOrders;
+  }
+
+  void _addCustomOrder(List<CustomOrder> orders, SortOption<HabitSortFields> option) {
+    if (option.field == HabitSortFields.name) {
+      orders.add(CustomOrder(field: "name", direction: option.direction));
+    } else if (option.field == HabitSortFields.createdDate) {
+      orders.add(CustomOrder(field: "created_date", direction: option.direction));
+    } else if (option.field == HabitSortFields.modifiedDate) {
+      orders.add(CustomOrder(field: "modified_date", direction: option.direction));
+    } else if (option.field == HabitSortFields.estimatedTime) {
+      orders.add(CustomOrder(field: "estimated_time", direction: option.direction));
+    } else if (option.field == HabitSortFields.actualTime) {
+      // actualTime sorting is now handled at the database level with LEFT JOIN
+      orders.add(CustomOrder(field: "actual_time", direction: option.direction));
+    } else if (option.field == HabitSortFields.archivedDate) {
+      orders.add(CustomOrder(field: "archived_date", direction: option.direction));
+    }
   }
 
   /// Filters habits with period-aware completion logic

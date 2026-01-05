@@ -612,7 +612,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
     // 5. Construct Final List
     TaskSortFields? primarySortField;
-    if (filter?.sortBy != null && filter!.sortBy!.isNotEmpty && !(filter.sortByCustomSort)) {
+    if (filter?.sortBy != null && filter!.sortBy!.isNotEmpty) {
       primarySortField = sortFieldMap[filter.sortBy!.first.field];
     }
 

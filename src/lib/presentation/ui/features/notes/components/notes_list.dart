@@ -195,6 +195,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
           filterNoTags: _currentFilters.filterNoTags,
           ignoreArchivedTagVisibility: _currentFilters.ignoreArchivedTagVisibility,
           sortBy: _currentFilters.sortConfig?.orderOptions,
+          groupBy: _currentFilters.sortConfig?.groupOption,
           sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false,
         );
 
@@ -282,9 +283,9 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
     // Check if we should show headers
     // Only show headers if we are sorting by something that produces groups (Name, Date)
     // and if we are not in custom sort mode AND grouping is enabled
-    final bool showHeaders = widget.sortConfig?.useCustomOrder != true &&
-        (widget.sortConfig?.orderOptions.isNotEmpty ?? false) &&
-        (widget.sortConfig?.enableGrouping ?? false);
+    final bool showHeaders =
+        ((widget.sortConfig?.orderOptions.isNotEmpty ?? false) || (widget.sortConfig?.groupOption != null)) &&
+            (widget.sortConfig?.enableGrouping ?? false);
 
     for (var i = 0; i < _noteList!.items.length; i++) {
       final note = _noteList!.items[i];

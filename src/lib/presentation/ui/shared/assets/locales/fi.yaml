@@ -257,6 +257,7 @@ shared:
     enable_grouping: Ryhmittele lajittelun mukaan
     enable_grouping_description: Ryhmittele kohteet ensimmäisen lajitteluken perusteella
     sort_and_group: Lajittele ja ryhmittele
+    group_by: Ryhmittele
   statistics:
     daily_usage:
       description: Näyttää kokonaiskäyttöajan viikonpäivittäin

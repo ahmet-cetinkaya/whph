@@ -21,7 +21,6 @@ class SortDialogButton<T> extends StatefulWidget {
   final double? dialogMaxHeightRatio;
   final double? dialogMaxWidthRatio;
   final bool showCustomOrderOption;
-  final bool showGroupingOption;
   final VoidCallback? onDialogClose;
 
   const SortDialogButton({
@@ -36,7 +35,6 @@ class SortDialogButton<T> extends StatefulWidget {
     this.dialogMaxHeightRatio = 0.4,
     this.dialogMaxWidthRatio = 0.6,
     this.showCustomOrderOption = false,
-    this.showGroupingOption = true,
     this.onDialogClose,
   });
 
@@ -56,7 +54,6 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
           defaultConfig: widget.defaultConfig,
           onConfigChanged: widget.onConfigChanged,
           showCustomOrderOption: widget.showCustomOrderOption,
-          showGroupingOption: widget.showGroupingOption,
           translationService: _translationService,
           onClose: widget.onDialogClose,
         ),
@@ -86,7 +83,6 @@ class _SortDialog<T> extends StatefulWidget {
   final SortConfig<T> defaultConfig;
   final Function(SortConfig<T>) onConfigChanged;
   final bool showCustomOrderOption;
-  final bool showGroupingOption;
   final ITranslationService translationService;
   final VoidCallback? onClose;
 
@@ -97,7 +93,6 @@ class _SortDialog<T> extends StatefulWidget {
     required this.onConfigChanged,
     required this.translationService,
     this.showCustomOrderOption = false,
-    this.showGroupingOption = true,
     this.onClose,
   });
 
@@ -205,13 +200,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
     });
   }
 
-  void _toggleGrouping(bool value) {
-    setState(() {
-      _currentConfig = _currentConfig.copyWith(enableGrouping: value);
-      widget.onConfigChanged(_currentConfig);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final bool isDisabled = _currentConfig.useCustomOrder;
@@ -219,7 +207,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.translationService.translate(SharedTranslationKeys.sortAndGroup),
+          widget.translationService.translate(SharedTranslationKeys.sort),
           style: AppTheme.headlineSmall,
         ),
         leading: IconButton(
@@ -269,30 +257,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                     secondary: StyledIcon(
                       Icons.low_priority,
                       isActive: _currentConfig.useCustomOrder,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppTheme.sizeSmall),
-              ],
-              if (widget.showGroupingOption) ...[
-                Card(
-                  elevation: 0,
-                  color: AppTheme.surface1,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-                  child: SwitchListTile.adaptive(
-                    value: _currentConfig.enableGrouping,
-                    onChanged: isDisabled ? null : _toggleGrouping,
-                    title: Text(
-                      widget.translationService.translate(SharedTranslationKeys.sortEnableGrouping),
-                      style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      widget.translationService.translate(SharedTranslationKeys.sortEnableGroupingDescription),
-                      style: AppTheme.bodySmall,
-                    ),
-                    secondary: StyledIcon(
-                      Icons.view_list,
-                      isActive: _currentConfig.enableGrouping && !isDisabled,
                     ),
                   ),
                 ),
@@ -373,19 +337,15 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                           ),
                         ),
                         const SizedBox(width: AppTheme.sizeMedium),
-                        Tooltip(
-                          message: widget.translationService.translate(SharedTranslationKeys.resetTooltip),
-                          child: InkWell(
-                            onTap: _resetToDefault,
-                            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                            child: Container(
-                              padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                              decoration: BoxDecoration(
-                                color: AppTheme.surface1,
-                                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                              ),
-                              child: const Icon(Icons.refresh),
-                            ),
+                        IconButton(
+                          icon: const Icon(Icons.refresh, size: 20),
+                          onPressed: _resetToDefault,
+                          tooltip: widget.translationService.translate(SharedTranslationKeys.sortResetToDefault),
+                          style: IconButton.styleFrom(
+                            backgroundColor: AppTheme.surface1,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                            padding: const EdgeInsets.all(AppTheme.sizeMedium),
                           ),
                         ),
                       ],
@@ -414,11 +374,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: 4),
-        leading: StyledIcon(
-          Icons.sort,
-          isActive: true,
-          size: 20,
-        ),
         title: DropdownButtonHideUnderline(
           child: DropdownButton<T>(
             value: option.field,
@@ -444,26 +399,24 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            InkWell(
-              onTap: () => _toggleDirection(index),
-              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,
-                  size: 20,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+            IconButton(
+              icon: Icon(
+                option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,
+                size: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onPressed: () => _toggleDirection(index),
+              tooltip: widget.translationService.translate(
+                option.direction == SortDirection.asc
+                    ? SharedTranslationKeys.sortAscending
+                    : SharedTranslationKeys.sortDescending,
               ),
             ),
             if (_currentConfig.orderOptions.length > 1)
-              InkWell(
-                onTap: () => _removeCriteria(index),
-                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.close, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
-                ),
+              IconButton(
+                icon: Icon(Icons.close, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
+                onPressed: () => _removeCriteria(index),
+                tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
               ),
             // Drag handle for reordering
             ReorderableDragStartListener(

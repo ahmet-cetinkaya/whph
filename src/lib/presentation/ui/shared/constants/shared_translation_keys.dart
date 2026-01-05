@@ -219,6 +219,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String sortEnableGrouping = application.SharedTranslationKeys.sortEnableGrouping;
   static const String sortEnableGroupingDescription = application.SharedTranslationKeys.sortEnableGroupingDescription;
   static const String sortAndGroup = application.SharedTranslationKeys.sortAndGroup;
+  static const String groupBy = 'shared.sort.group_by';
 
   // Data
   static const String createdDateLabel = 'shared.data.created_date_label';

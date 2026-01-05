@@ -10,6 +10,8 @@ class HabitListItem {
   final String? reminderTime;
   final List<int> reminderDays;
   final DateTime? archivedDate;
+  final DateTime? createdDate;
+  final DateTime? modifiedDate;
   final double? order;
   final bool hasGoal;
   final int? dailyTarget;
@@ -27,6 +29,8 @@ class HabitListItem {
     this.reminderTime,
     this.reminderDays = const [],
     this.archivedDate,
+    this.createdDate,
+    this.modifiedDate,
     this.order,
     this.hasGoal = false,
     this.dailyTarget,
@@ -47,6 +51,8 @@ class HabitListItem {
     String? reminderTime,
     List<int>? reminderDays,
     DateTime? archivedDate,
+    DateTime? createdDate,
+    DateTime? modifiedDate,
     double? order,
     bool? hasGoal,
     int? dailyTarget,
@@ -64,6 +70,8 @@ class HabitListItem {
       reminderTime: reminderTime ?? this.reminderTime,
       reminderDays: reminderDays ?? this.reminderDays,
       archivedDate: archivedDate ?? this.archivedDate,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
       order: order ?? this.order,
       hasGoal: hasGoal ?? this.hasGoal,
       dailyTarget: dailyTarget ?? this.dailyTarget,

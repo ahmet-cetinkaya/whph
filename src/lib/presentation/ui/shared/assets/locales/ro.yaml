@@ -255,6 +255,7 @@ shared:
     enable_grouping: Grupează după sortare
     enable_grouping_description: Grupează elementele pe baza primului câmp de sortare
     sort_and_group: Sortează și Grupează
+    group_by: Grupează după
   statistics:
     daily_usage:
       description: Arată timpul total de utilizare pe zi a săptămânii

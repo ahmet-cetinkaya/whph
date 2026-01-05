@@ -16,6 +16,7 @@ import 'package:whph/presentation/ui/shared/components/persistent_list_options_b
 import 'package:whph/presentation/ui/shared/components/save_button.dart';
 import 'package:whph/presentation/ui/shared/components/search_filter.dart';
 import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
+import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -564,11 +565,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                 if (widget.showSortButton && widget.onSortChange != null)
                   SortDialogButton<TaskSortFields>(
                     iconColor: Theme.of(context).primaryColor,
-                    tooltip: _translationService.translate(SharedTranslationKeys.sortAndGroup),
+                    tooltip: _translationService.translate(SharedTranslationKeys.sort),
                     config: widget.sortConfig ?? TaskDefaults.sorting,
                     defaultConfig: TaskDefaults.sorting,
                     onConfigChanged: widget.onSortChange!,
-                    showGroupingOption: widget.showGroupingOption,
                     availableOptions: [
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.title,
@@ -626,6 +626,49 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         ? _translationService.translate(SharedTranslationKeys.enableReorderingTooltip)
                         : _translationService.translate(SharedTranslationKeys.disableReorderingTooltip),
                     onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
+                  ),
+
+                // Group button
+                if (widget.showGroupingOption && widget.onSortChange != null)
+                  GroupDialogButton<TaskSortFields>(
+                    iconColor: Theme.of(context).primaryColor,
+                    tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                    config: widget.sortConfig ?? TaskDefaults.sorting,
+                    onConfigChanged: widget.onSortChange!,
+                    availableOptions: [
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.priority,
+                        translationKey: TaskTranslationKeys.priorityLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.plannedDate,
+                        translationKey: TaskTranslationKeys.plannedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.deadlineDate,
+                        translationKey: TaskTranslationKeys.deadlineDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.createdDate,
+                        translationKey: SharedTranslationKeys.createdDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.modifiedDate,
+                        translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.title,
+                        translationKey: TaskTranslationKeys.titleLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.estimatedTime,
+                        translationKey: SharedTranslationKeys.timeDisplayEstimated,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.totalDuration,
+                        translationKey: SharedTranslationKeys.timeDisplayElapsed,
+                      ),
+                    ],
                   ),
 
                 // Save button

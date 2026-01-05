@@ -249,6 +249,7 @@ shared:
     enable_grouping: Združi po razvrščanju
     enable_grouping_description: Združi predmete glede na prvo polje razvrščanja
     sort_and_group: Razvrsti in združi
+    group_by: Grupiraj po
   statistics:
     daily_usage:
       description: Prikazuje skupni čas uporabe na dan v tednu

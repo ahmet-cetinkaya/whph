@@ -243,10 +243,11 @@ class _TagsPageState extends State<TagsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              // Header section with scroll protection
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
+              // List
+              Expanded(
+                child: TagsList(
+                  key: _tagsListKey,
+                  header: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Main List Options
@@ -261,6 +262,7 @@ class _TagsPageState extends State<TagsPage> {
                         onArchivedToggle: _onArchivedToggle,
                         showSearchFilter: false,
                         showSortButton: false,
+                        showGroupButton: false,
                       ),
 
                       // Tag Time Title
@@ -281,7 +283,7 @@ class _TagsPageState extends State<TagsPage> {
                       ),
 
                       // Tag Time Chart
-                      if (_mainListOptionLoaded && _tagTimeChartOptionsLoaded)
+                      if (_tagTimeChartOptionsLoaded)
                         Padding(
                           key: _timeChartKey,
                           padding: const EdgeInsets.all(AppTheme.sizeSmall),
@@ -315,23 +317,15 @@ class _TagsPageState extends State<TagsPage> {
                       ),
                     ],
                   ),
+                  onClickTag: (tag) => _openDetails(tag.id),
+                  onList: _onDataListed,
+                  filterByTags: _selectedTagIds,
+                  search: _searchFilterQuery,
+                  showArchived: _showArchived,
+                  sortConfig: _sortConfig,
+                  paginationMode: PaginationMode.infinityScroll,
                 ),
               ),
-
-              // List
-              if (_mainListOptionLoaded && _listOptionLoaded)
-                Expanded(
-                  child: TagsList(
-                    key: _tagsListKey,
-                    onClickTag: (tag) => _openDetails(tag.id),
-                    onList: _onDataListed,
-                    filterByTags: _selectedTagIds,
-                    search: _searchFilterQuery,
-                    showArchived: _showArchived,
-                    sortConfig: _sortConfig,
-                    paginationMode: PaginationMode.infinityScroll,
-                  ),
-                ),
             ],
           ),
         ),

@@ -249,6 +249,7 @@ shared:
     enable_grouping: Grupper etter sortering
     enable_grouping_description: Grupper elementer basert på første sorteringsfelt
     sort_and_group: Sorter og grupper
+    group_by: Grupper etter
   statistics:
     daily_usage:
       description: Viser total brukstid per ukedag

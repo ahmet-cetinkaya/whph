@@ -244,6 +244,7 @@ shared:
     enable_grouping: 정렬 옵션으로 그룹화
     enable_grouping_description: 첫 번째 정렬 필드를 기준으로 항목 그룹화
     sort_and_group: 정렬 및 그룹화
+    group_by: 그룹화 기준
   statistics:
     daily_usage:
       description: 요일별 총 사용 시간을 표시

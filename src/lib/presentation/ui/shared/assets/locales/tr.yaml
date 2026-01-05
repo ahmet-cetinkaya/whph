@@ -254,6 +254,7 @@ shared:
     enable_grouping: Sıralamaya göre gruplandır
     enable_grouping_description: Öğeleri ilk sıralama alanına göre gruplandır
     sort_and_group: Sırala ve Gruplandır
+    group_by: Şuna göre gruplandır
   statistics:
     daily_usage:
       description: Haftanın günlerine göre toplam kullanım süresini gösterir
