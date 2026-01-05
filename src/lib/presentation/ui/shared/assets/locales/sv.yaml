@@ -249,6 +249,7 @@ shared:
     enable_grouping: Gruppera efter sortering
     enable_grouping_description: Gruppera objekt baserat på första sorteringsfältet
     sort_and_group: Sortera och Gruppera
+    group_by: Gruppera efter
   statistics:
     daily_usage:
       description: Visar total användningstid per veckodag

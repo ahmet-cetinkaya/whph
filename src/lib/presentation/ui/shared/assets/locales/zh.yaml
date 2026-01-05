@@ -243,6 +243,7 @@ shared:
     enable_grouping: 按排序选项分组
     enable_grouping_description: 根据第一个排序字段对项目进行分组
     sort_and_group: 排序和分组
+    group_by: 分组依据
   statistics:
     daily_usage:
       description: 显示每周各天的总使用时间

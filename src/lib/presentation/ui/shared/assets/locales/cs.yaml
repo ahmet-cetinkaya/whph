@@ -249,6 +249,7 @@ shared:
     enable_grouping: Seskupit podle třídění
     enable_grouping_description: Seskupit položky podle prvního třídícího pole
     sort_and_group: Třídit a seskupovat
+    group_by: Seskupit podle
   statistics:
     daily_usage:
       description: Zobrazuje celkový čas využití za den v týdnu

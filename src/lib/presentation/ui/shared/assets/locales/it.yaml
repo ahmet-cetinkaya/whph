@@ -269,6 +269,7 @@ shared:
     enable_grouping: Raggruppa per ordinamento
     enable_grouping_description: Raggruppa elementi in base al primo campo di ordinamento
     sort_and_group: Ordina e Raggruppa
+    group_by: Raggruppa per
   statistics:
     daily_usage:
       description: Mostra il tempo totale di utilizzo per giorno della settimana

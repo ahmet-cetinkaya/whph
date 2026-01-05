@@ -249,6 +249,7 @@ shared:
     enable_grouping: Группировать по сортировке
     enable_grouping_description: Группировать элементы на основе первого поля сортировки
     sort_and_group: Сортировка и Группировка
+    group_by: Группировать по
   statistics:
     daily_usage:
       description: Показывает общее время использования по дням недели

@@ -255,6 +255,7 @@ shared:
     enable_grouping: Groepeer op sortering
     enable_grouping_description: Groepeer items op basis van het eerste sorteerveld
     sort_and_group: Sorteren & Groeperen
+    group_by: Groeperen op
   statistics:
     daily_usage:
       description: Toont de totale gebruikstijd per dag van de week

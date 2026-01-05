@@ -266,6 +266,7 @@ shared:
     enable_grouping_description: Group items based on the first sort field
     sort_and_group: Sort & Group
     criteria: Sort criteria
+    group_by: Group by
   statistics:
     daily_usage:
       description: Shows the total usage time per day of the week

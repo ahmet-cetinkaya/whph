@@ -255,6 +255,7 @@ shared:
     enable_grouping: Nach Sortierung gruppieren
     enable_grouping_description: Elemente basierend auf dem ersten Sortierfeld gruppieren
     sort_and_group: Sortieren & Gruppieren
+    group_by: Gruppieren nach
   statistics:
     daily_usage:
       description: Zeigt die gesamte Nutzungszeit pro Wochentag

@@ -251,6 +251,7 @@ shared:
     enable_grouping: Grupuj według sortowania
     enable_grouping_description: Grupuj elementy na podstawie pierwszego pola sortowania
     sort_and_group: Sortuj i grupuj
+    group_by: Grupuj według
   statistics:
     daily_usage:
       description: Pokazuje całkowity czas użytkowania na dzień tygodnia

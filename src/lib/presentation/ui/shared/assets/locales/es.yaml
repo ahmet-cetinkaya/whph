@@ -267,6 +267,7 @@ shared:
     enable_grouping: Agrupar por opción de ordenamiento
     enable_grouping_description: Agrupar elementos según el primer campo de ordenamiento
     sort_and_group: Ordenar y agrupar
+    group_by: Agrupar por
   statistics:
     daily_usage:
       description: Muestra el tiempo total de uso por día de la semana
