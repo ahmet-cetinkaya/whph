@@ -175,8 +175,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     }
 
     if (request.sortBy == null || request.sortBy!.isEmpty) {
-      // If grouping is the only thing, it's already in customOrders.
-      // But if we want default sort when no sort is specified (besides grouping):
+      // If no sort is specified, return default sort unless grouping is active.
       if (customOrders.isEmpty) {
         return [
           CustomOrder(
@@ -185,25 +184,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
           ),
         ];
       }
-      // If we have grouping, we might still want a secondary sort?
-      // Current logic mimics behavior: if no sort provided, default.
-      // If grouping provided, it acts as sort.
-
-      // Correct logic based on original file: if sortBy is null/empty, return default.
-      // But now we have groupBy.
-
-      // If groupBy is present, we have at least one sort.
-      // If no other sort is present, maybe we should add default secondary sort?
-      // The original code returned default if sortBy was empty.
-
-      if (request.groupBy == null) {
-        return [
-          CustomOrder(
-            field: 'created_date',
-            direction: SortDirection.desc,
-          ),
-        ];
-      }
+      // If only grouping is specified, just use that.
       return customOrders;
     }
 
@@ -213,15 +194,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
         continue;
       }
       _addCustomOrder(customOrders, option);
-    }
-
-    if (customOrders.isEmpty) {
-      return [
-        CustomOrder(
-          field: 'created_date',
-          direction: SortDirection.desc,
-        ),
-      ];
     }
 
     return customOrders;
