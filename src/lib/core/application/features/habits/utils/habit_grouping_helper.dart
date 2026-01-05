@@ -10,12 +10,9 @@ class HabitGroupingHelper {
       case HabitSortFields.name:
         return GroupingUtils.getTitleGroup(habit.name);
       case HabitSortFields.createdDate:
-        // Habits usually don't have createdDate in list item but if we add it:
-        // return GroupingUtils.getBackwardDateGroup(habit.createdDate, now: now);
-        return null;
+        return GroupingUtils.getBackwardDateGroup(habit.createdDate, now: now);
       case HabitSortFields.modifiedDate:
-        // return GroupingUtils.getBackwardDateGroup(habit.modifiedDate, now: now);
-        return null;
+        return GroupingUtils.getBackwardDateGroup(habit.modifiedDate, now: now);
       case HabitSortFields.estimatedTime:
         return GroupingUtils.getDurationGroup(habit.estimatedTime);
       case HabitSortFields.actualTime:
