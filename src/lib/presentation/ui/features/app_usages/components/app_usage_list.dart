@@ -234,6 +234,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
         filterByDevices: _currentFilters.filterByDevices,
         sortBy: _currentFilters.sortConfig?.orderOptions,
         groupBy: _currentFilters.sortConfig?.groupOption,
+        enableGrouping: _currentFilters.sortConfig?.enableGrouping ?? false,
         sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false);
 
     await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(
