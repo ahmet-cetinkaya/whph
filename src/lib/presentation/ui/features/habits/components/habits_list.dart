@@ -223,11 +223,13 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (_savedScrollPosition == null) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          _scrollController.hasClients &&
-          _scrollController.position.hasViewportDimension &&
-          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
-        _scrollController.jumpTo(_savedScrollPosition!);
+      if (mounted && _scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+        final maxScroll = _scrollController.position.maxScrollExtent;
+        if (_savedScrollPosition! <= maxScroll) {
+          _scrollController.jumpTo(_savedScrollPosition!);
+        } else {
+          _scrollController.jumpTo(maxScroll);
+        }
       }
     });
   }
@@ -351,7 +353,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
       // Use ReorderableListView for drag-and-drop in mini layout
       return ReorderableListView(
-        key: ValueKey('reorderable_grid_${widget.style}_${_habitList?.items.length ?? 0}'),
+        key: ValueKey('reorderable_grid_${widget.style}'),
         buildDefaultDragHandles: false,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -407,7 +409,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
 
       return GridView.builder(
-        key: ValueKey('grid_view_${widget.style}_${_habitList?.items.length ?? 0}'),
+        key: ValueKey('grid_view_${widget.style}'),
         controller: _scrollController,
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
@@ -629,7 +631,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final groupEntries = groupedHabits.entries.toList();
 
     return ListView.builder(
-        key: ValueKey('habit_list_content_${widget.style}_${_habitList?.items.length ?? 0}'),
+        key: ValueKey('habit_list_content_${widget.style}'),
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),

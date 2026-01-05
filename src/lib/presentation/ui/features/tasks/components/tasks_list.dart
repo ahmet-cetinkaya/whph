@@ -170,11 +170,13 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     if (_savedScrollPosition == null) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          _scrollController.hasClients &&
-          _scrollController.position.hasViewportDimension &&
-          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
-        _scrollController.jumpTo(_savedScrollPosition!);
+      if (mounted && _scrollController.hasClients && _scrollController.position.hasViewportDimension) {
+        final maxScroll = _scrollController.position.maxScrollExtent;
+        if (_savedScrollPosition! <= maxScroll) {
+          _scrollController.jumpTo(_savedScrollPosition!);
+        } else {
+          _scrollController.jumpTo(maxScroll);
+        }
       }
     });
   }
@@ -679,7 +681,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     final groupEntries = groupedTasks.entries.toList();
 
     return ListView.builder(
-        key: ValueKey('list_content_${widget.forceOriginalLayout}_${_tasks?.items.length ?? 0}'),
+        key: ValueKey('list_content_${widget.forceOriginalLayout}'),
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
