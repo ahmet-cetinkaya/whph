@@ -797,8 +797,29 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             refresh();
           });
     } catch (e) {
-      _dragStateNotifier.stopDragging();
-      refresh();
+      if (e is RankGapTooSmallException && mounted) {
+        // Normalize all habit orders to resolve ranking conflicts
+        await AsyncErrorHandler.executeVoid(
+          context: context,
+          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+          operation: () async {
+            await _mediator.send<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse>(
+              const NormalizeHabitOrdersCommand(),
+            );
+          },
+          onSuccess: () {
+            _dragStateNotifier.stopDragging();
+            widget.onReorderComplete?.call(); // Refresh to show normalized order
+          },
+          onError: (_) {
+            _dragStateNotifier.stopDragging();
+            refresh();
+          },
+        );
+      } else {
+        _dragStateNotifier.stopDragging();
+        refresh();
+      }
     }
   }
 
