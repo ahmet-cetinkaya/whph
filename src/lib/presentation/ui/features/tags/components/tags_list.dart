@@ -31,6 +31,8 @@ class TagsList extends StatefulWidget implements IPaginatedWidget {
   @override
   final PaginationMode paginationMode;
 
+  final Widget? header;
+
   const TagsList({
     super.key,
     this.filterByTags,
@@ -42,6 +44,7 @@ class TagsList extends StatefulWidget implements IPaginatedWidget {
     this.search,
     this.pageSize = 10,
     this.paginationMode = PaginationMode.loadMore,
+    this.header,
   });
 
   @override
@@ -85,13 +88,18 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
         (oldWidget.sortConfig?.orderOptions.length ?? 0) != (widget.sortConfig?.orderOptions.length ?? 0);
 
     if (oldWidget.sortConfig != null && widget.sortConfig != null && !sortConfigChanged) {
-      // Check if any sort option has changed
-      for (int i = 0; i < oldWidget.sortConfig!.orderOptions.length; i++) {
-        final oldOption = oldWidget.sortConfig!.orderOptions[i];
-        final newOption = widget.sortConfig!.orderOptions[i];
-        if (oldOption.field != newOption.field || oldOption.direction != newOption.direction) {
-          sortConfigChanged = true;
-          break;
+      if (oldWidget.sortConfig!.groupOption != widget.sortConfig!.groupOption ||
+          oldWidget.sortConfig!.enableGrouping != widget.sortConfig!.enableGrouping) {
+        sortConfigChanged = true;
+      } else {
+        // Check if any sort option has changed
+        for (int i = 0; i < oldWidget.sortConfig!.orderOptions.length; i++) {
+          final oldOption = oldWidget.sortConfig!.orderOptions[i];
+          final newOption = widget.sortConfig!.orderOptions[i];
+          if (oldOption.field != newOption.field || oldOption.direction != newOption.direction) {
+            sortConfigChanged = true;
+            break;
+          }
         }
       }
     }
@@ -196,6 +204,10 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
           });
         }
       },
+      onError: (_) {
+        // Notify parent that list is loaded (even if empty/error) to dismiss loading overlay
+        widget.onList?.call(0);
+      },
     );
   }
 
@@ -247,16 +259,30 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
   @override
   Widget build(BuildContext context) {
     if (_tags == null) {
+      if (widget.header != null) {
+        return ListView(
+          controller: _scrollController,
+          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+          children: [widget.header!],
+        );
+      }
       return const SizedBox.shrink();
     }
 
-    if (_tags == null || _tags!.items.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeMedium),
-        child: IconOverlay(
-          icon: Icons.label_off,
-          message: _translationService.translate(TagTranslationKeys.noTags),
-        ),
+    if (_tags!.items.isEmpty) {
+      return ListView(
+        controller: _scrollController,
+        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+        children: [
+          if (widget.header != null) widget.header!,
+          Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+            child: IconOverlay(
+              icon: Icons.label_off,
+              message: _translationService.translate(TagTranslationKeys.noTags),
+            ),
+          ),
+        ],
       );
     }
 
@@ -265,13 +291,19 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
     final showInfinityLoading =
         _tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
+    final headerCount = widget.header != null ? 1 : 0;
 
     return ListView.builder(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-      itemCount: listItems.length + extraItemCount,
+      itemCount: headerCount + listItems.length + extraItemCount,
       itemBuilder: (context, index) {
+        if (widget.header != null) {
+          if (index == 0) return widget.header!;
+          index--;
+        }
+
         if (index < listItems.length) {
           return listItems[index];
         } else if (showLoadMore) {

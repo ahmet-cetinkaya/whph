@@ -62,6 +62,9 @@ class TagListOptions extends PersistentListOptionsBase {
   /// Whether to show the sort button
   final bool showSortButton;
 
+  /// Whether to show the group button
+  final bool showGroupButton;
+
   /// Whether to show the archived toggle button
   final bool showArchivedToggle;
 
@@ -82,6 +85,7 @@ class TagListOptions extends PersistentListOptionsBase {
     this.showTagFilter = true,
     this.showSearchFilter = true,
     this.showSortButton = true,
+    this.showGroupButton = true,
     this.showArchivedToggle = true,
     this.hasItems = true,
     super.showSaveButton = true,
@@ -340,29 +344,30 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                   ),
 
                 // Group button
-                GroupDialogButton<TagSortFields>(
-                  iconColor: Theme.of(context).primaryColor,
-                  tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
-                  config: widget.sortConfig ?? const SortConfig(orderOptions: []),
-                  onConfigChanged: (config) {
-                    widget.onSortChange?.call(config);
-                    handleFilterChange();
-                  },
-                  availableOptions: [
-                    SortOptionWithTranslationKey(
-                      field: TagSortFields.name,
-                      translationKey: TagTranslationKeys.nameLabel,
-                    ),
-                    SortOptionWithTranslationKey(
-                      field: TagSortFields.createdDate,
-                      translationKey: SharedTranslationKeys.createdDateLabel,
-                    ),
-                    SortOptionWithTranslationKey(
-                      field: TagSortFields.modifiedDate,
-                      translationKey: SharedTranslationKeys.modifiedDateLabel,
-                    ),
-                  ],
-                ),
+                if (widget.showGroupButton)
+                  GroupDialogButton<TagSortFields>(
+                    iconColor: Theme.of(context).primaryColor,
+                    tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                    config: widget.sortConfig ?? const SortConfig(orderOptions: []),
+                    onConfigChanged: (config) {
+                      widget.onSortChange?.call(config);
+                      handleFilterChange();
+                    },
+                    availableOptions: [
+                      SortOptionWithTranslationKey(
+                        field: TagSortFields.name,
+                        translationKey: TagTranslationKeys.nameLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TagSortFields.createdDate,
+                        translationKey: SharedTranslationKeys.createdDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TagSortFields.modifiedDate,
+                        translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                    ],
+                  ),
 
                 // Archived toggle button
                 if (widget.showArchivedToggle && widget.onArchivedToggle != null && widget.hasItems)
