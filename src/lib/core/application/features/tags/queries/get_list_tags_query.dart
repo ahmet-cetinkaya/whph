@@ -172,7 +172,7 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
   }
 
   void _addCustomOrder(List<CustomOrder> orders, SortOption<TagSortFields> option) {
-    String field = "created_date";
+    String field;
     switch (option.field) {
       case TagSortFields.name:
         field = "name";
@@ -183,6 +183,9 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
       case TagSortFields.modifiedDate:
         field = "modified_date";
         break;
+      // ignore: unreachable_switch_default
+      default:
+        throw UnimplementedError('Sort field ${option.field} not implemented');
     }
     orders.add(CustomOrder(field: field, direction: option.direction));
   }
