@@ -593,6 +593,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       );
     } catch (e) {
       if (e is RankGapTooSmallException && mounted) {
+        // Normalize all habit orders to resolve ranking conflicts
         await AsyncErrorHandler.executeVoid(
           context: context,
           errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
@@ -603,7 +604,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           },
           onSuccess: () {
             _dragStateNotifier.stopDragging();
-            widget.onReorderComplete?.call();
+            widget.onReorderComplete?.call(); // Refresh to show normalized order
           },
           onError: (_) {
             _dragStateNotifier.stopDragging();
