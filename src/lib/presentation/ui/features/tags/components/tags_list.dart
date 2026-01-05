@@ -168,6 +168,7 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
           sortBy: widget.sortConfig?.orderOptions
               .map((option) => SortOption(field: option.field, direction: option.direction))
               .toList(),
+          groupBy: widget.sortConfig?.groupOption,
         );
 
         return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
@@ -204,7 +205,8 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
 
     String? currentGroup;
     final sortConfig = widget.sortConfig;
-    final showHeaders = (sortConfig?.orderOptions.isNotEmpty ?? false) && (sortConfig?.enableGrouping ?? false);
+    final showHeaders = ((sortConfig?.orderOptions.isNotEmpty ?? false) || (sortConfig?.groupOption != null)) &&
+        (sortConfig?.enableGrouping ?? false);
 
     for (var i = 0; i < _tags!.items.length; i++) {
       final tag = _tags!.items[i];

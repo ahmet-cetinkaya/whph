@@ -18,6 +18,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final bool sortByCustomOrder;
   final bool ignoreArchivedTagVisibility;
   final DateTime? now;
+  final SortOption<NoteSortFields>? groupBy;
 
   GetListNotesQuery({
     required this.pageIndex,
@@ -26,6 +27,7 @@ class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
     this.filterNoTags = false,
     this.search,
     this.sortBy,
+    this.groupBy,
     this.sortByCustomOrder = false,
     this.ignoreArchivedTagVisibility = false,
     this.now,
@@ -143,7 +145,8 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     // Populate group name if sorting is applied
     for (var i = 0; i < items.length; i++) {
       final item = items[i];
-      final groupInfo = NoteGroupingHelper.getGroupInfo(item, request.sortBy?.first.field, now: now);
+      final groupField = request.groupBy?.field ?? request.sortBy?.firstOrNull?.field;
+      final groupInfo = NoteGroupingHelper.getGroupInfo(item, groupField, now: now);
       items[i] = item.copyWith(
         groupName: groupInfo?.name,
         isGroupNameTranslatable: groupInfo?.isTranslatable ?? true,
@@ -159,28 +162,57 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
   }
 
   List<CustomOrder> _getCustomOrders(GetListNotesQuery request) {
-    if (request.sortBy == null || request.sortBy!.isEmpty) {
-      return [
-        CustomOrder(
-          field: 'created_date',
-          direction: SortDirection.desc,
-        ),
-      ];
+    List<CustomOrder> customOrders = [];
+
+    // Prioritize grouping field if exists
+    if (request.groupBy != null) {
+      _addCustomOrder(customOrders, request.groupBy!);
     }
 
     if (request.sortByCustomOrder) {
-      return [CustomOrder(field: "order")];
+      customOrders.add(CustomOrder(field: "order"));
+      return customOrders;
     }
 
-    List<CustomOrder> customOrders = [];
-    for (var option in request.sortBy!) {
-      if (option.field == NoteSortFields.title) {
-        customOrders.add(CustomOrder(field: "title", direction: option.direction));
-      } else if (option.field == NoteSortFields.createdDate) {
-        customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
-      } else if (option.field == NoteSortFields.modifiedDate) {
-        customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
+    if (request.sortBy == null || request.sortBy!.isEmpty) {
+      // If grouping is the only thing, it's already in customOrders.
+      // But if we want default sort when no sort is specified (besides grouping):
+      if (customOrders.isEmpty) {
+        return [
+          CustomOrder(
+            field: 'created_date',
+            direction: SortDirection.desc,
+          ),
+        ];
       }
+      // If we have grouping, we might still want a secondary sort?
+      // Current logic mimics behavior: if no sort provided, default.
+      // If grouping provided, it acts as sort.
+
+      // Correct logic based on original file: if sortBy is null/empty, return default.
+      // But now we have groupBy.
+
+      // If groupBy is present, we have at least one sort.
+      // If no other sort is present, maybe we should add default secondary sort?
+      // The original code returned default if sortBy was empty.
+
+      if (request.groupBy == null) {
+        return [
+          CustomOrder(
+            field: 'created_date',
+            direction: SortDirection.desc,
+          ),
+        ];
+      }
+      return customOrders;
+    }
+
+    // Add other sort options, avoiding duplicates
+    for (var option in request.sortBy!) {
+      if (request.groupBy != null && option.field == request.groupBy!.field) {
+        continue;
+      }
+      _addCustomOrder(customOrders, option);
     }
 
     if (customOrders.isEmpty) {
@@ -193,5 +225,15 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     }
 
     return customOrders;
+  }
+
+  void _addCustomOrder(List<CustomOrder> orders, SortOption<NoteSortFields> option) {
+    if (option.field == NoteSortFields.title) {
+      orders.add(CustomOrder(field: "title", direction: option.direction));
+    } else if (option.field == NoteSortFields.createdDate) {
+      orders.add(CustomOrder(field: "created_date", direction: option.direction));
+    } else if (option.field == NoteSortFields.modifiedDate) {
+      orders.add(CustomOrder(field: "modified_date", direction: option.direction));
+    }
   }
 }

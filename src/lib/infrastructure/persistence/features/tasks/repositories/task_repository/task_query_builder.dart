@@ -42,10 +42,6 @@ class TaskQueryBuilder {
 
   /// Builds ORDER BY clause from custom order list.
   String? buildOrderByClause(List<CustomOrder>? customOrder, {bool useCustomSort = false}) {
-    if (useCustomSort) {
-      return ' ORDER BY task_table.`order` IS NULL, task_table.`order` ASC ';
-    }
-
     if (customOrder == null || customOrder.isEmpty) return null;
 
     return ' ORDER BY ${customOrder.map((order) {

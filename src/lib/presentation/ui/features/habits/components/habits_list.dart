@@ -24,6 +24,7 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
+// import 'package:whph/presentation/ui/features/habits/components/habit_visual_item.dart'; // Removed
 
 class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
@@ -271,6 +272,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           filterByArchived: _currentFilters.filterByArchived,
           search: _currentFilters.search,
           sortBy: _currentFilters.sortConfig?.orderOptions,
+          groupBy: _currentFilters.sortConfig?.groupOption,
           sortByCustomSort: _currentFilters.sortConfig?.useCustomOrder ?? false,
           excludeCompletedForDate: _currentFilters.excludeCompletedForDate,
         );
@@ -358,7 +360,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           child: child,
         ),
         scrollController: widget.useParentScroll ? null : _scrollController,
-        onReorder: _onReorder,
+        onReorder: (oldIndex, newIndex) =>
+            _onReorder(oldIndex, newIndex), // Use legacy handler or independent? Legacy for grid for now.
         children: [
           ..._habitList!.items.asMap().entries.map((entry) {
             final index = entry.key;
@@ -458,182 +461,114 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     }
   }
 
-  List<Widget> _buildHabitCards() {
-    final List<Widget> listItems = [];
-    String? currentGroup;
+  Map<String, List<HabitListItem>> _groupHabits() {
+    if (_habitList == null) return {};
 
-    // Check if we should show headers
-    // Only show headers if we are sorting by something that produces groups (Name, Date)
-    // and if we are not in custom sort mode AND grouping is enabled
-    final bool showHeaders = widget.sortConfig?.useCustomOrder != true &&
-        (widget.sortConfig?.orderOptions.isNotEmpty ?? false) &&
-        (widget.sortConfig?.enableGrouping ?? false);
+    final groupedHabits = <String, List<HabitListItem>>{};
 
-    for (var entry in _habitList!.items.asMap().entries) {
-      final index = entry.key;
-      final habit = entry.value;
+    // Check grouping settings
+    final bool showHeaders =
+        ((widget.sortConfig?.orderOptions.isNotEmpty ?? false) || (widget.sortConfig?.groupOption != null)) &&
+            (widget.sortConfig?.enableGrouping ?? false);
 
-      // Add header if group changed
-      if (showHeaders && habit.groupName != null && habit.groupName != currentGroup) {
-        currentGroup = habit.groupName;
-        listItems.add(ListGroupHeader(
-          key: ValueKey('header_${habit.groupName}'),
-          title: habit.groupName!,
-          shouldTranslate: habit.groupName!.length > 1, // Don't translate single letters like "A"
-        ));
+    if (!showHeaders) {
+      groupedHabits[''] = _habitList!.items;
+      return groupedHabits;
+    }
+
+    // Preserve order from GetListHabitsQuery
+    for (var habit in _habitList!.items) {
+      final groupName = habit.groupName ?? '';
+      if (!groupedHabits.containsKey(groupName)) {
+        groupedHabits[groupName] = [];
       }
-
-      listItems.add(Padding(
-        key: ValueKey('list_${habit.id}_${widget.style}'),
-        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 100),
-          child: HabitCard(
-            key: ValueKey(
-                'habit_card_${habit.id}_${widget.style}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
-            habit: habit,
-            onOpenDetails: () => widget.onClickHabit(habit),
-            style: widget.style,
-            dateRange: widget.dateRange,
-            isDateLabelShowing: false,
-            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-            showDragHandle:
-                widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout,
-            dragIndex: !habit.isArchived ? index : null, // Only draggable if not archived
-          ),
-        ),
-      ));
+      groupedHabits[groupName]!.add(habit);
     }
-    return listItems;
+    return groupedHabits;
   }
 
-  Widget _buildColumnList() {
-    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
-      return ReorderableListView(
-        key: ValueKey('reorderable_list_${widget.style}_${_habitList?.items.length ?? 0}'),
-        buildDefaultDragHandles: false,
-        shrinkWrap: widget.useParentScroll,
-        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        proxyDecorator: (child, index, animation) => Material(
-          elevation: 2,
-          child: child,
-        ),
-        scrollController: widget.useParentScroll ? null : _scrollController,
-        onReorder: _onReorder,
-        children: [
-          ..._buildHabitCards(),
-          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
-            Padding(
-              key: ValueKey('load_more_button_list_${widget.style}'),
-              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-              child: Center(
-                  child: LoadMoreButton(
-                onPressed: onLoadMore,
-              )),
-            ),
-          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
-            Padding(
-              key: ValueKey('loading_indicator_list_${widget.style}'),
-              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-        ],
-      );
-    } else {
-      final habitCards = _buildHabitCards();
-      final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-      final showInfinityLoading =
-          _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
-      final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
-
-      return ListView.builder(
-        key: ValueKey('list_view_${widget.style}_${_habitList?.items.length ?? 0}'),
-        controller: widget.useParentScroll ? null : _scrollController,
-        shrinkWrap: widget.useParentScroll,
-        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        itemCount: habitCards.length + extraItemCount,
-        itemBuilder: (context, index) {
-          if (index < habitCards.length) {
-            return habitCards[index];
-          } else if (showLoadMore) {
-            return Padding(
-              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-              child: Center(
-                  child: LoadMoreButton(
-                onPressed: onLoadMore,
-              )),
-            );
-          } else if (showInfinityLoading) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      );
-    }
-  }
-
-  Future<void> _onReorder(int oldIndex, int newIndex) async {
+  Future<void> _onReorderInGroup(int oldIndex, int newIndex, List<HabitListItem> groupHabits) async {
     if (!mounted) return;
 
-    // Start dragging state
     _dragStateNotifier.startDragging();
-
-    final items = _habitList!.items;
 
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
 
-    final habit = items[oldIndex];
+    final habit = groupHabits[oldIndex];
     final originalOrder = habit.order ?? 0.0;
 
-    try {
-      // Prepare data for server update
-      final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
+    // Update local state visually
+    setState(() {
+      final reorderedAllItems = List<HabitListItem>.from(_habitList!.items);
+      final globalIndex = reorderedAllItems.indexWhere((h) => h.id == habit.id);
 
-      // Calculate target order - use manual calculation for position 0 until core package changes take effect
+      if (globalIndex != -1) {
+        reorderedAllItems.removeAt(globalIndex);
+
+        // Strategy: Find neighbor in group and insert relative to it globally
+        HabitListItem? nextGlobalHabit;
+        if (newIndex < groupHabits.length && groupHabits[newIndex].id != habit.id) {
+          nextGlobalHabit = groupHabits[newIndex];
+        }
+
+        if (nextGlobalHabit != null) {
+          final nextIndex = reorderedAllItems.indexWhere((h) => h.id == nextGlobalHabit!.id);
+          if (nextIndex != -1) {
+            reorderedAllItems.insert(nextIndex, habit);
+          } else {
+            reorderedAllItems.add(habit);
+          }
+        } else {
+          final groupCopy = List<HabitListItem>.from(groupHabits);
+          groupCopy.removeAt(oldIndex);
+          groupCopy.insert(newIndex, habit);
+
+          if (newIndex + 1 < groupCopy.length) {
+            final next = groupCopy[newIndex + 1];
+            final idx = reorderedAllItems.indexWhere((h) => h.id == next.id);
+            if (idx != -1)
+              reorderedAllItems.insert(idx, habit);
+            else
+              reorderedAllItems.add(habit);
+          } else if (newIndex - 1 >= 0) {
+            final prev = groupCopy[newIndex - 1];
+            final idx = reorderedAllItems.indexWhere((h) => h.id == prev.id);
+            if (idx != -1)
+              reorderedAllItems.insert(idx + 1, habit);
+            else
+              reorderedAllItems.add(habit);
+          } else {
+            reorderedAllItems.add(habit);
+          }
+        }
+
+        _habitList = GetListHabitsQueryResponse(
+          items: reorderedAllItems,
+          totalItemCount: _habitList!.totalItemCount,
+          pageIndex: _habitList!.pageIndex,
+          pageSize: _habitList!.pageSize,
+        );
+      }
+    });
+
+    try {
+      final existingOrders = groupHabits.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
       double targetOrder;
-      if (newIndex == 0 && existingOrders.isNotEmpty) {
-        // Manual fix for position 0: subtract initialStep from first order
-        final firstOrder = existingOrders.first;
+
+      if (newIndex == 0) {
+        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
         targetOrder = firstOrder - OrderRank.initialStep;
       } else {
-        // Use OrderRank utility for other positions
         targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
       }
 
       if ((targetOrder - originalOrder).abs() < 1e-10) {
         _dragStateNotifier.stopDragging();
-        return; // No real change in order
+        return;
       }
 
-      // Apply visual reordering with correct target order
-      setState(() {
-        final reorderedItems = List<HabitListItem>.from(_habitList!.items);
-        final habitToMove = reorderedItems.removeAt(oldIndex);
-
-        // Update the moved habit's order to the target order for correct visual display
-        final updatedHabit = habitToMove.copyWith(
-          order: targetOrder,
-        );
-
-        reorderedItems.insert(newIndex, updatedHabit);
-
-        // Sort the items by order to ensure correct visual display
-        reorderedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
-
-        _habitList = GetListHabitsQueryResponse(
-          items: reorderedItems,
-          totalItemCount: _habitList!.totalItemCount,
-          pageIndex: _habitList!.pageIndex,
-          pageSize: _habitList!.pageSize,
-        );
-      });
-
-      // Update backend
       await AsyncErrorHandler.execute<UpdateHabitOrderResponse>(
         context: context,
         errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
@@ -646,39 +581,18 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           );
         },
         onSuccess: (result) {
-          // Check if the backend returned a different order (due to re-normalization)
-          if ((result.order - targetOrder).abs() > 1e-10) {
-            // Backend order is different, update local state to match
-            setState(() {
-              final updatedItems = List<HabitListItem>.from(_habitList!.items);
-              final habitIndex = updatedItems.indexWhere((item) => item.id == habit.id);
-              if (habitIndex != -1) {
-                updatedItems[habitIndex] = updatedItems[habitIndex].copyWith(
-                  order: result.order,
-                );
-
-                // Re-sort with the updated order
-                updatedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
-
-                _habitList = GetListHabitsQueryResponse(
-                  items: updatedItems,
-                  totalItemCount: _habitList!.totalItemCount,
-                  pageIndex: _habitList!.pageIndex,
-                  pageSize: _habitList!.pageSize,
-                );
-              }
-            });
-          }
           _dragStateNotifier.stopDragging();
+          if ((result.order - targetOrder).abs() > 1e-10) {
+            refresh();
+          }
         },
         onError: (error) {
           _dragStateNotifier.stopDragging();
-          refresh(); // Refresh to restore correct order on error
+          refresh();
         },
       );
     } catch (e) {
       if (e is RankGapTooSmallException && mounted) {
-        // Normalize all habit orders to resolve ranking conflicts
         await AsyncErrorHandler.executeVoid(
           context: context,
           errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
@@ -689,7 +603,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           },
           onSuccess: () {
             _dragStateNotifier.stopDragging();
-            widget.onReorderComplete?.call(); // Refresh to show normalized order
+            widget.onReorderComplete?.call();
           },
           onError: (_) {
             _dragStateNotifier.stopDragging();
@@ -700,6 +614,190 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         _dragStateNotifier.stopDragging();
         refresh();
       }
+    }
+  }
+
+  Widget _buildColumnList() {
+    final groupedHabits = _groupHabits();
+    if (groupedHabits.isEmpty) return const SizedBox.shrink();
+
+    final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading =
+        _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+
+    final groupEntries = groupedHabits.entries.toList();
+
+    return ListView.builder(
+        key: ValueKey('habit_list_content_${widget.style}_${_habitList?.items.length ?? 0}'),
+        controller: widget.useParentScroll ? null : _scrollController,
+        shrinkWrap: widget.useParentScroll,
+        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
+        itemCount: groupEntries.length + (showLoadMore || showInfinityLoading ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index < groupEntries.length) {
+            final entry = groupEntries[index];
+            final groupName = entry.key;
+            final habits = entry.value;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (groupName.isNotEmpty)
+                  ListGroupHeader(
+                    key: ValueKey('header_$groupName'),
+                    title: groupName,
+                    shouldTranslate: groupName.length > 1,
+                  ),
+                if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout)
+                  ReorderableListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    buildDefaultDragHandles: false,
+                    itemCount: habits.length,
+                    proxyDecorator: (child, index, animation) => Material(
+                      elevation: 2,
+                      child: child,
+                    ),
+                    onReorder: (oldIndex, newIndex) => _onReorderInGroup(oldIndex, newIndex, habits),
+                    itemBuilder: (context, i) {
+                      final habit = habits[i];
+                      return Padding(
+                        key: ValueKey('list_${habit.id}_${widget.style}'),
+                        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 100),
+                          child: HabitCard(
+                            key: ValueKey('habit_card_${habit.id}'),
+                            habit: habit,
+                            onOpenDetails: () => widget.onClickHabit(habit),
+                            style: widget.style,
+                            dateRange: widget.dateRange,
+                            isDateLabelShowing: false,
+                            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                            showDragHandle: true,
+                            dragIndex: !habit.isArchived ? i : null,
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                else
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: habits.length,
+                    itemBuilder: (context, i) {
+                      final habit = habits[i];
+                      return Padding(
+                        key: ValueKey('list_${habit.id}_${widget.style}'),
+                        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 100),
+                          child: HabitCard(
+                            key: ValueKey('habit_card_${habit.id}'),
+                            habit: habit,
+                            onOpenDetails: () => widget.onClickHabit(habit),
+                            style: widget.style,
+                            dateRange: widget.dateRange,
+                            isDateLabelShowing: false,
+                            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                            showDragHandle: false,
+                          ),
+                        ),
+                      );
+                    },
+                  )
+              ],
+            );
+          } else if (showLoadMore) {
+            return Padding(
+              key: ValueKey('load_more_button_list_${widget.style}'),
+              padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+              child: Center(
+                  child: LoadMoreButton(
+                onPressed: onLoadMore,
+              )),
+            );
+          } else if (showInfinityLoading) {
+            return Padding(
+              key: ValueKey('loading_indicator_list_${widget.style}'),
+              padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+              child: const Center(child: CircularProgressIndicator()),
+            );
+          }
+          return const SizedBox.shrink();
+        });
+  }
+
+  // Necessary fallback for Grid mode reordering (no independent lists yet)
+  Future<void> _onReorder(int oldIndex, int newIndex) async {
+    // ... legacy simple reorder for grid ...
+    // For now reusing the one for single list if grid uses it.
+    // But Grid calls `_onReorder`.
+
+    // Simplest port of old `_onReorder` but using `_habitList!.items` directly without "VisualItems" logic
+    // since Grid doesn't have headers.
+    if (!mounted) return;
+
+    _dragStateNotifier.startDragging();
+    final items = _habitList!.items;
+
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final habit = items[oldIndex];
+    final originalOrder = habit.order ?? 0.0;
+
+    try {
+      // Calculation using OrderRank...
+      // Duplicating logic is fine for now to keep Grid working.
+      final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
+      double targetOrder;
+      if (newIndex == 0) {
+        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
+        targetOrder = firstOrder - OrderRank.initialStep;
+      } else {
+        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+      }
+
+      if ((targetOrder - originalOrder).abs() < 1e-10) {
+        _dragStateNotifier.stopDragging();
+        return;
+      }
+
+      setState(() {
+        final reorderedItems = List<HabitListItem>.from(items);
+        reorderedItems.removeAt(oldIndex);
+        reorderedItems.insert(newIndex, habit.copyWith(order: targetOrder));
+        reorderedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
+        _habitList = GetListHabitsQueryResponse(
+          items: reorderedItems,
+          totalItemCount: _habitList!.totalItemCount,
+          pageIndex: _habitList!.pageIndex,
+          pageSize: _habitList!.pageSize,
+        );
+      });
+
+      await AsyncErrorHandler.execute<UpdateHabitOrderResponse>(
+          context: context,
+          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+          operation: () async {
+            return await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
+              UpdateHabitOrderCommand(habitId: habit.id, newOrder: targetOrder),
+            );
+          },
+          onSuccess: (result) {
+            _dragStateNotifier.stopDragging();
+            if ((result.order - targetOrder).abs() > 1e-10) refresh();
+          },
+          onError: (_) {
+            _dragStateNotifier.stopDragging();
+            refresh();
+          });
+    } catch (e) {
+      _dragStateNotifier.stopDragging();
+      refresh();
     }
   }
 

@@ -19,6 +19,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   List<String>? filterByDevices;
   List<SortOptionWithTranslationKey<AppUsageSortFields>>? sortBy;
   bool sortByCustomOrder;
+  SortOptionWithTranslationKey<AppUsageSortFields>? groupBy;
 
   GetListByTopAppUsagesQuery({
     required this.pageIndex,
@@ -32,6 +33,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     this.searchByProcessName,
     this.filterByDevices,
     this.sortBy,
+    this.groupBy,
     this.sortByCustomOrder = false,
   })  : startDate = startDate != null ? DateTimeHelper.toUtcDateTime(startDate) : null,
         endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null,
@@ -54,6 +56,15 @@ class GetListByTopAppUsagesQueryHandler
 
   @override
   Future<GetListByTopAppUsagesQueryResponse> call(GetListByTopAppUsagesQuery request) async {
+    // Construct effective sort options prioritizing groupBy
+    List<SortOptionWithTranslationKey<AppUsageSortFields>>? effectiveSortBy = request.sortBy;
+    if (request.groupBy != null) {
+      effectiveSortBy = [
+        request.groupBy!,
+        ...?request.sortBy?.where((s) => s.field != request.groupBy!.field),
+      ];
+    }
+
     final results = await _timeRecordRepository.getTopAppUsagesWithDetails(
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
@@ -65,7 +76,7 @@ class GetListByTopAppUsagesQueryHandler
       compareEndDate: request.compareEndDate,
       searchByProcessName: request.searchByProcessName,
       filterByDevices: request.filterByDevices,
-      sortBy: request.sortBy,
+      sortBy: effectiveSortBy,
       sortByCustomOrder: request.sortByCustomOrder,
     );
 
@@ -81,7 +92,8 @@ class GetListByTopAppUsagesQueryHandler
         tags: record.tags,
       );
 
-      final groupInfo = AppUsageGroupingHelper.getGroupInfo(item, request.sortBy?.first.field);
+      final groupField = request.groupBy?.field ?? request.sortBy?.firstOrNull?.field;
+      final groupInfo = AppUsageGroupingHelper.getGroupInfo(item, groupField);
       if (groupInfo != null) {
         item.groupName = groupInfo.name;
         item.isGroupNameTranslatable = groupInfo.isTranslatable;

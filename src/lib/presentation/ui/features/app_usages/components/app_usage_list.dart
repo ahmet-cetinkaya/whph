@@ -233,6 +233,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
             : null,
         filterByDevices: _currentFilters.filterByDevices,
         sortBy: _currentFilters.sortConfig?.orderOptions,
+        groupBy: _currentFilters.sortConfig?.groupOption,
         sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false);
 
     await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(
@@ -313,8 +314,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
     String? currentGroup;
 
     final sortConfig = widget.sortConfig;
-    final showHeaders = sortConfig?.useCustomOrder != true &&
-        (sortConfig?.orderOptions.isNotEmpty ?? false) &&
+    final showHeaders = ((sortConfig?.orderOptions.isNotEmpty ?? false) || (sortConfig?.groupOption != null)) &&
         (sortConfig?.enableGrouping ?? false);
 
     // Calculate max durations

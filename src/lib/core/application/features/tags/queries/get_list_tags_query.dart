@@ -17,6 +17,7 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   List<String>? filterByTags;
   bool showArchived = false;
   List<SortOption<TagSortFields>>? sortBy;
+  SortOption<TagSortFields>? groupBy;
 
   GetListTagsQuery({
     required this.pageIndex,
@@ -25,6 +26,7 @@ class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
     this.filterByTags,
     this.showArchived = false,
     this.sortBy,
+    this.groupBy,
   });
 }
 
@@ -92,8 +94,9 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
             .toList(),
       );
 
-      if (request.sortBy != null) {
-        final groupInfo = getTagGroupInfo(item, request.sortBy!.firstOrNull?.field);
+      final groupField = request.groupBy?.field ?? request.sortBy?.firstOrNull?.field;
+      if (groupField != null) {
+        final groupInfo = getTagGroupInfo(item, groupField);
         if (groupInfo != null) {
           item.groupName = groupInfo.name;
           item.isGroupNameTranslatable = groupInfo.isTranslatable;
@@ -145,26 +148,42 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
   }
 
   List<CustomOrder>? _getCustomOrders(GetListTagsQuery request) {
-    if (request.sortBy == null || request.sortBy!.isEmpty) {
+    if ((request.sortBy == null || request.sortBy!.isEmpty) && request.groupBy == null) {
       return null;
     }
 
     List<CustomOrder> customOrders = [];
-    for (var option in request.sortBy!) {
-      String field;
-      switch (option.field) {
-        case TagSortFields.name:
-          field = "name";
-          break;
-        case TagSortFields.createdDate:
-          field = "created_date";
-          break;
-        case TagSortFields.modifiedDate:
-          field = "modified_date";
-          break;
+
+    // Prioritize grouping field if exists
+    if (request.groupBy != null) {
+      _addCustomOrder(customOrders, request.groupBy!);
+    }
+
+    if (request.sortBy != null) {
+      for (var option in request.sortBy!) {
+        // Avoid duplicate if group by is same as first sort option
+        if (request.groupBy != null && option.field == request.groupBy!.field) {
+          continue;
+        }
+        _addCustomOrder(customOrders, option);
       }
-      customOrders.add(CustomOrder(field: field, direction: option.direction));
     }
     return customOrders;
+  }
+
+  void _addCustomOrder(List<CustomOrder> orders, SortOption<TagSortFields> option) {
+    String field = "created_date";
+    switch (option.field) {
+      case TagSortFields.name:
+        field = "name";
+        break;
+      case TagSortFields.createdDate:
+        field = "created_date";
+        break;
+      case TagSortFields.modifiedDate:
+        field = "modified_date";
+        break;
+    }
+    orders.add(CustomOrder(field: field, direction: option.direction));
   }
 }

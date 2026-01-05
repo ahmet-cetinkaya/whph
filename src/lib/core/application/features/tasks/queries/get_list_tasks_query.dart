@@ -33,6 +33,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final bool sortByCustomSort;
   final bool ignoreArchivedTagVisibility;
   final bool enableGrouping;
+  final SortOption<TaskSortFields>? groupBy;
 
   GetListTasksQuery({
     required this.pageIndex,
@@ -51,6 +52,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.filterByParentTaskId,
     this.areParentAndSubTasksIncluded = false,
     this.sortBy,
+    this.groupBy,
     this.sortByCustomSort = false,
     this.ignoreArchivedTagVisibility = false,
     this.enableGrouping = true,
@@ -86,6 +88,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     bool sortByCustomSort = false,
     bool ignoreArchivedTagVisibility = false,
     bool enableGrouping = true,
+    SortOption<TaskSortFields>? groupBy,
   }) {
     return GetListTasksQuery(
       pageIndex: pageIndex,
@@ -102,6 +105,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       filterByCompleted: filterByCompleted,
       filterBySearch: filterBySearch,
       sortBy: sortBy,
+      groupBy: groupBy,
       sortByCustomSort: sortByCustomSort,
       ignoreArchivedTagVisibility: ignoreArchivedTagVisibility,
       enableGrouping: enableGrouping,
@@ -156,33 +160,51 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   }
 
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
+    List<CustomOrder> customOrders = [];
+
+    // Prioritize grouping field if exists
+    if (request.enableGrouping) {
+      final groupField = request.groupBy ?? (request.sortBy?.isNotEmpty == true ? request.sortBy!.first : null);
+      if (groupField != null) {
+        _addCustomOrder(customOrders, groupField);
+      }
+    }
+
     if (request.sortByCustomSort) {
-      return [CustomOrder(field: "order", direction: SortDirection.asc)];
+      customOrders.add(CustomOrder(field: "order", direction: SortDirection.asc));
+      return customOrders;
     }
 
     // Ensure sortBy is not null before iterating
     final sortOptions = request.sortBy ?? [];
 
-    List<CustomOrder> customOrders = [];
     for (var option in sortOptions) {
-      if (option.field == TaskSortFields.createdDate) {
-        customOrders.add(CustomOrder(field: "created_date", direction: option.direction));
-      } else if (option.field == TaskSortFields.deadlineDate) {
-        customOrders.add(CustomOrder(field: "deadline_date", direction: option.direction));
-      } else if (option.field == TaskSortFields.totalDuration) {
-        customOrders.add(CustomOrder(field: "total_duration", direction: option.direction));
-      } else if (option.field == TaskSortFields.estimatedTime) {
-        customOrders.add(CustomOrder(field: "estimated_time", direction: option.direction));
-      } else if (option.field == TaskSortFields.modifiedDate) {
-        customOrders.add(CustomOrder(field: "modified_date", direction: option.direction));
-      } else if (option.field == TaskSortFields.plannedDate) {
-        customOrders.add(CustomOrder(field: "planned_date", direction: option.direction));
-      } else if (option.field == TaskSortFields.priority) {
-        customOrders.add(CustomOrder(field: "priority", direction: option.direction));
-      } else if (option.field == TaskSortFields.title) {
-        customOrders.add(CustomOrder(field: "title", direction: option.direction));
+      // Avoid duplicating the group field if it's already added
+      if (request.enableGrouping && request.groupBy != null && option.field == request.groupBy!.field) {
+        continue;
       }
+      _addCustomOrder(customOrders, option);
     }
     return customOrders;
+  }
+
+  void _addCustomOrder(List<CustomOrder> orders, SortOption<TaskSortFields> option) {
+    if (option.field == TaskSortFields.createdDate) {
+      orders.add(CustomOrder(field: "created_date", direction: option.direction));
+    } else if (option.field == TaskSortFields.deadlineDate) {
+      orders.add(CustomOrder(field: "deadline_date", direction: option.direction));
+    } else if (option.field == TaskSortFields.totalDuration) {
+      orders.add(CustomOrder(field: "total_duration", direction: option.direction));
+    } else if (option.field == TaskSortFields.estimatedTime) {
+      orders.add(CustomOrder(field: "estimated_time", direction: option.direction));
+    } else if (option.field == TaskSortFields.modifiedDate) {
+      orders.add(CustomOrder(field: "modified_date", direction: option.direction));
+    } else if (option.field == TaskSortFields.plannedDate) {
+      orders.add(CustomOrder(field: "planned_date", direction: option.direction));
+    } else if (option.field == TaskSortFields.priority) {
+      orders.add(CustomOrder(field: "priority", direction: option.direction));
+    } else if (option.field == TaskSortFields.title) {
+      orders.add(CustomOrder(field: "title", direction: option.direction));
+    }
   }
 }
