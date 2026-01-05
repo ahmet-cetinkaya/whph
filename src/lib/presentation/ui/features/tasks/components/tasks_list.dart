@@ -320,8 +320,12 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           if (_tasks == null || isRefresh) {
             _tasks = result;
           } else {
+            // Deduplicate items to ensure uniqueness
+            final existingIds = _tasks!.items.map((e) => e.id).toSet();
+            final newItems = result.items.where((e) => !existingIds.contains(e.id)).toList();
+
             _tasks = GetListTasksQueryResponse(
-              items: [..._tasks!.items, ...result.items],
+              items: [..._tasks!.items, ...newItems],
               totalItemCount: result.totalItemCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
@@ -355,6 +359,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
 
   @override
   Future<void> onLoadMore() async {
+    // Prevent concurrent loads if triggered directly (e.g. via Load More button)
     if (_tasks == null || !_tasks!.hasNext) return;
 
     _saveScrollPosition();
