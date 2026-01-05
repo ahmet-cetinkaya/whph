@@ -42,10 +42,21 @@ class NoteListOptionSettings {
         );
       }).toList();
 
+      SortOptionWithTranslationKey<NoteSortFields>? groupOption;
+      if (sortConfigJson['groupOption'] != null) {
+        final Map<String, dynamic> groupOptionMap = sortConfigJson['groupOption'] as Map<String, dynamic>;
+        groupOption = SortOptionWithTranslationKey<NoteSortFields>(
+          field: _stringToNoteSortField(groupOptionMap['field'] as String),
+          direction: groupOptionMap['direction'] == 'asc' ? SortDirection.asc : SortDirection.desc,
+          translationKey: groupOptionMap['translationKey'] as String,
+        );
+      }
+
       sortConfig = SortConfig<NoteSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
         enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
+        groupOption: groupOption,
       );
     }
 
@@ -80,6 +91,13 @@ class NoteListOptionSettings {
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
         'enableGrouping': sortConfig!.enableGrouping,
+        'groupOption': sortConfig!.groupOption != null
+            ? {
+                'field': sortConfig!.groupOption!.field.toString().split('.').last,
+                'direction': sortConfig!.groupOption!.direction == SortDirection.asc ? 'asc' : 'desc',
+                'translationKey': sortConfig!.groupOption!.translationKey,
+              }
+            : null,
       };
     }
 
