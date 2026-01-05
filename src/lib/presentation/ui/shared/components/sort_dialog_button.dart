@@ -408,8 +408,8 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               onPressed: () => _toggleDirection(index),
               tooltip: widget.translationService.translate(
                 option.direction == SortDirection.asc
-                    ? SharedTranslationKeys.sortDescending
-                    : SharedTranslationKeys.sortAscending,
+                    ? SharedTranslationKeys.sortAscending
+                    : SharedTranslationKeys.sortDescending,
               ),
             ),
             if (_currentConfig.orderOptions.length > 1)

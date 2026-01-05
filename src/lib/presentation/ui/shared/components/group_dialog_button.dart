@@ -184,8 +184,8 @@ class _GroupDialogState<T> extends State<_GroupDialog<T>> {
                 onPressed: _toggleGroupDirection,
                 tooltip: widget.translationService.translate(
                   currentOption.direction == SortDirection.asc
-                      ? SharedTranslationKeys.sortDescending
-                      : SharedTranslationKeys.sortAscending,
+                      ? SharedTranslationKeys.sortAscending
+                      : SharedTranslationKeys.sortDescending,
                 ),
               ),
             Radio<T>(
