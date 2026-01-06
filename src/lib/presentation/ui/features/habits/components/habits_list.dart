@@ -542,14 +542,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     return groupedHabits;
   }
 
-  Future<void> _onReorderInGroup(int oldIndex, int newIndex, List<HabitListItem> groupHabits) async {
+  Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<HabitListItem> groupHabits) async {
     if (!mounted) return;
+    if (oldIndex < 0 || oldIndex >= groupHabits.length) return;
 
     _dragStateNotifier.startDragging();
-
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
 
     final habit = groupHabits[oldIndex];
     final originalOrder = habit.order ?? 0.0;
@@ -562,41 +559,37 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       if (globalIndex != -1) {
         reorderedAllItems.removeAt(globalIndex);
 
-        // Strategy: Find neighbor in group and insert relative to it globally
-        HabitListItem? nextGlobalHabit;
-        if (newIndex < groupHabits.length && groupHabits[newIndex].id != habit.id) {
-          nextGlobalHabit = groupHabits[newIndex];
+        // Find the correct global insertion index based on local group targetIndex
+        int globalNewIndex;
+        final reducedGroup = List<HabitListItem>.from(groupHabits)..removeAt(oldIndex);
+
+        if (targetIndex < reducedGroup.length) {
+          // Inserting before an item in the group
+          final anchorItem = reducedGroup[targetIndex];
+          globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == anchorItem.id);
+        } else {
+          // Inserting at the end of the group
+          if (reducedGroup.isNotEmpty) {
+            final lastItem = reducedGroup.last;
+            globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == lastItem.id) + 1;
+          } else {
+            // Group became empty (except this item), put it back at original relative position locally?
+            // Actually if group is empty, logic implies globalNewIndex is tricky without group context.
+            // But reducedGroup empty means groupHabits had 1 item.
+            // So we just want to put it back where it was (globalIndex).
+            globalNewIndex = globalIndex;
+          }
         }
 
-        if (nextGlobalHabit != null) {
-          final nextIndex = reorderedAllItems.indexWhere((h) => h.id == nextGlobalHabit!.id);
-          if (nextIndex != -1) {
-            reorderedAllItems.insert(nextIndex, habit);
-          } else {
-            reorderedAllItems.add(habit);
-          }
-        } else {
-          final groupCopy = List<HabitListItem>.from(groupHabits);
-          groupCopy.removeAt(oldIndex);
-          groupCopy.insert(newIndex, habit);
+        if (globalNewIndex != -1) {
+          // Clamp checks just in case
+          if (globalNewIndex < 0) globalNewIndex = 0;
+          if (globalNewIndex > reorderedAllItems.length) globalNewIndex = reorderedAllItems.length;
 
-          if (newIndex + 1 < groupCopy.length) {
-            final next = groupCopy[newIndex + 1];
-            final idx = reorderedAllItems.indexWhere((h) => h.id == next.id);
-            if (idx != -1)
-              reorderedAllItems.insert(idx, habit);
-            else
-              reorderedAllItems.add(habit);
-          } else if (newIndex - 1 >= 0) {
-            final prev = groupCopy[newIndex - 1];
-            final idx = reorderedAllItems.indexWhere((h) => h.id == prev.id);
-            if (idx != -1)
-              reorderedAllItems.insert(idx + 1, habit);
-            else
-              reorderedAllItems.add(habit);
-          } else {
-            reorderedAllItems.add(habit);
-          }
+          reorderedAllItems.insert(globalNewIndex, habit);
+        } else {
+          // Fallback if anchor not found (should not happen in consistent state)
+          reorderedAllItems.insert(globalIndex, habit);
         }
 
         _habitList = GetListHabitsQueryResponse(
@@ -612,11 +605,15 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       final existingOrders = groupHabits.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
       double targetOrder;
 
-      if (newIndex == 0) {
+      // Calculate target order based on targetIndex
+      if (targetIndex == 0) {
         final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
         targetOrder = firstOrder - OrderRank.initialStep;
+      } else if (targetIndex >= existingOrders.length) {
+        final lastOrder = existingOrders.isNotEmpty ? existingOrders.last : 0.0;
+        targetOrder = lastOrder + OrderRank.initialStep;
       } else {
-        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+        targetOrder = OrderRank.getTargetOrder(existingOrders, targetIndex);
       }
 
       if ((targetOrder - originalOrder).abs() < 1e-10) {
@@ -714,7 +711,12 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                       elevation: 2,
                       child: child,
                     ),
-                    onReorder: (oldIndex, newIndex) => _onReorderInGroup(oldIndex, newIndex, habits),
+                    onReorder: (oldIndex, newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
+                      }
+                      _onReorderInGroup(oldIndex, newIndex, habits);
+                    },
                     itemBuilder: (context, i) {
                       final habit = habits[i];
                       return Padding(
@@ -887,17 +889,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final habit = oldItem.data;
     final groupName = habit.groupName ?? '';
 
-    // Adjust newIndex for Flutter's reorder logic
-    int actualNewIndex = newIndex;
-    if (oldIndex < newIndex) {
-      actualNewIndex -= 1;
-    }
-
-    if (actualNewIndex < 0) actualNewIndex = 0;
-    if (actualNewIndex >= visualItems.length) actualNewIndex = visualItems.length - 1;
-
-    final targetItem = visualItems[actualNewIndex];
-
     final groupedHabits = _groupHabits();
     final groupHabits = groupedHabits[groupName] ?? [];
     if (groupHabits.isEmpty) return;
@@ -905,19 +896,19 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final habitGroupIndex = groupHabits.indexWhere((h) => h.id == habit.id);
     if (habitGroupIndex == -1) return;
 
-    int targetGroupIndex;
-    if (targetItem is VisualItemSingle<HabitListItem> && targetItem.data.groupName == groupName) {
-      targetGroupIndex = groupHabits.indexWhere((h) => h.id == targetItem.data.id);
-    } else {
-      // Reordering cross-group boundary (if allowed) or using group bounds
-      if (actualNewIndex < oldIndex) {
-        targetGroupIndex = 0;
-      } else {
-        targetGroupIndex = groupHabits.length - 1;
+    // Calculate target index within the group by counting preceding items of the same group
+    int targetGroupIndex = 0;
+    for (int i = 0; i < newIndex; i++) {
+      if (i == oldIndex) continue;
+      if (i >= visualItems.length) break;
+
+      final item = visualItems[i];
+      if (item is VisualItemSingle<HabitListItem> && item.data.groupName == groupName) {
+        targetGroupIndex++;
       }
     }
 
-    _onReorderInGroup(habitGroupIndex, targetGroupIndex + (actualNewIndex > oldIndex ? 1 : 0), groupHabits);
+    _onReorderInGroup(habitGroupIndex, targetGroupIndex, groupHabits);
   }
 
   @override
@@ -927,6 +918,91 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     _saveScrollPosition();
     await _getHabits(pageIndex: _habitList!.pageIndex + 1);
     _backLastScrollPosition();
+  }
+
+  Widget _buildListItem(
+    BuildContext context,
+    int index,
+    List<VisualItem<HabitListItem>> visualItems,
+    bool showLoadMore,
+    bool showInfinityLoading,
+    int gridColumns,
+  ) {
+    if (index >= visualItems.length) {
+      if (showLoadMore) {
+        return Padding(
+          key: ValueKey('load_more_button_sliver_list_$_effectiveStyle'),
+          padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+          child: Center(
+            child: LoadMoreButton(onPressed: onLoadMore),
+          ),
+        );
+      } else if (showInfinityLoading) {
+        return Padding(
+          key: ValueKey('loading_indicator_sliver_list_$_effectiveStyle'),
+          padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+          child: const Center(child: CircularProgressIndicator()),
+        );
+      }
+      return const SizedBox.shrink();
+    }
+
+    final item = visualItems[index];
+    if (item is VisualItemHeader<HabitListItem>) {
+      return ListGroupHeader(
+        key: ValueKey('header_${item.title}'),
+        title: item.title,
+        shouldTranslate: item.title.length > 1,
+      );
+    } else if (item is VisualItemSingle<HabitListItem>) {
+      final habit = item.data;
+      return Padding(
+        key: ValueKey('list_${habit.id}_$_effectiveStyle'),
+        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+        child: HabitCard(
+          key: ValueKey('habit_card_${habit.id}'),
+          habit: habit,
+          onOpenDetails: () => widget.onClickHabit(habit),
+          style: _effectiveStyle,
+          dateRange: widget.dateRange,
+          isDateLabelShowing: false,
+          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          showDragHandle: widget.enableReordering &&
+              widget.sortConfig?.useCustomOrder == true &&
+              !widget.forceOriginalLayout &&
+              !habit.isArchived,
+          dragIndex: !habit.isArchived ? index : null,
+        ),
+      );
+    } else if (item is VisualItemRow<HabitListItem>) {
+      return Padding(
+        key: ValueKey('grid_row_$index'),
+        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...item.items.map((habit) => Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall / 2),
+                    child: HabitCard(
+                      key: ValueKey('habit_card_sliver_grid_${habit.id}'),
+                      habit: habit,
+                      style: _effectiveStyle,
+                      dateRange: widget.dateRange,
+                      onOpenDetails: () => widget.onClickHabit(habit),
+                      isDense: true,
+                    ),
+                  ),
+                )),
+            ...List.generate(
+              gridColumns - item.items.length,
+              (index) => const Spacer(),
+            ),
+          ],
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget _buildSliverList({List<VisualItem<HabitListItem>>? precalculatedItems, int gridColumns = 1}) {
@@ -946,164 +1022,30 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, visualItems),
         proxyDecorator: (child, index, animation) => Material(
           elevation: 2,
-          color: Colors.transparent,
+          color: Colors.transparent, // Use transparent to match design
           child: child,
         ),
-        itemBuilder: (context, index) {
-          if (index >= visualItems.length) {
-            if (showLoadMore) {
-              return Padding(
-                key: ValueKey('load_more_button_sliver_list_$_effectiveStyle'),
-                padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-                child: Center(
-                  child: LoadMoreButton(onPressed: onLoadMore),
-                ),
-              );
-            } else if (showInfinityLoading) {
-              return Padding(
-                key: ValueKey('loading_indicator_sliver_list_$_effectiveStyle'),
-                padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
-                child: const Center(child: CircularProgressIndicator()),
-              );
-            }
-            return const SizedBox.shrink();
-          }
-
-          final item = visualItems[index];
-          if (item is VisualItemHeader<HabitListItem>) {
-            return ListGroupHeader(
-              key: ValueKey('header_${item.title}'),
-              title: item.title,
-              shouldTranslate: item.title.length > 1,
-            );
-          } else if (item is VisualItemSingle<HabitListItem>) {
-            final habit = item.data;
-            return Padding(
-              key: ValueKey('list_${habit.id}_$_effectiveStyle'),
-              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-              child: HabitCard(
-                key: ValueKey('habit_card_${habit.id}'),
-                habit: habit,
-                onOpenDetails: () => widget.onClickHabit(habit),
-                style: _effectiveStyle,
-                dateRange: widget.dateRange,
-                isDateLabelShowing: false,
-                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                showDragHandle: widget.enableReordering &&
-                    widget.sortConfig?.useCustomOrder == true &&
-                    !widget.forceOriginalLayout &&
-                    !habit.isArchived,
-                dragIndex: !habit.isArchived ? index : null,
-              ),
-            );
-          } else if (item is VisualItemRow<HabitListItem>) {
-            return Padding(
-              key: ValueKey('grid_row_$index'),
-              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...item.items.map((habit) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall / 2),
-                          child: HabitCard(
-                            key: ValueKey('habit_card_sliver_grid_${habit.id}'),
-                            habit: habit,
-                            style: _effectiveStyle,
-                            dateRange: widget.dateRange,
-                            onOpenDetails: () => widget.onClickHabit(habit),
-                            isDense: true,
-                          ),
-                        ),
-                      )),
-                  ...List.generate(
-                    gridColumns - item.items.length,
-                    (index) => const Spacer(),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
+        itemBuilder: (context, index) => _buildListItem(
+          context,
+          index,
+          visualItems,
+          showLoadMore,
+          showInfinityLoading,
+          gridColumns,
+        ),
       );
     }
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          if (index >= visualItems.length) {
-            if (showLoadMore) {
-              return Padding(
-                key: ValueKey('load_more_button_sliver_list_$_effectiveStyle'),
-                padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
-                child: Center(
-                  child: LoadMoreButton(onPressed: onLoadMore),
-                ),
-              );
-            } else if (showInfinityLoading) {
-              return Padding(
-                key: ValueKey('loading_indicator_sliver_list_$_effectiveStyle'),
-                padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
-                child: const Center(child: CircularProgressIndicator()),
-              );
-            }
-            return const SizedBox.shrink();
-          }
-
-          final item = visualItems[index];
-          if (item is VisualItemHeader<HabitListItem>) {
-            return ListGroupHeader(
-              key: ValueKey('header_${item.title}'),
-              title: item.title,
-              shouldTranslate: item.title.length > 1,
-            );
-          } else if (item is VisualItemSingle<HabitListItem>) {
-            final habit = item.data;
-            return Padding(
-              key: ValueKey('list_${habit.id}_$_effectiveStyle'),
-              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-              child: HabitCard(
-                key: ValueKey('habit_card_${habit.id}'),
-                habit: habit,
-                onOpenDetails: () => widget.onClickHabit(habit),
-                style: _effectiveStyle,
-                dateRange: widget.dateRange,
-                isDateLabelShowing: false,
-                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                showDragHandle: false, // Reorderable Sliver implemented elsewhere now
-              ),
-            );
-          } else if (item is VisualItemRow<HabitListItem>) {
-            return Padding(
-              key: ValueKey('grid_row_$index'),
-              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...item.items.map((habit) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall / 2),
-                          child: HabitCard(
-                            key: ValueKey('habit_card_sliver_grid_${habit.id}'),
-                            habit: habit,
-                            style: _effectiveStyle,
-                            dateRange: widget.dateRange,
-                            onOpenDetails: () => widget.onClickHabit(habit),
-                            isDense: true,
-                          ),
-                        ),
-                      )),
-                  ...List.generate(
-                    gridColumns - item.items.length,
-                    (index) => const Spacer(),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
+        (context, index) => _buildListItem(
+          context,
+          index,
+          visualItems,
+          showLoadMore,
+          showInfinityLoading,
+          gridColumns,
+        ),
         childCount: totalCount,
       ),
     );

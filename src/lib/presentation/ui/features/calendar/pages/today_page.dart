@@ -381,39 +381,44 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
               // Habits Header
               SliverToBoxAdapter(
                 key: _habitsSectionKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionHeader(
-                      title: _translationService.translate(CalendarTranslationKeys.habitsTitle),
-                      trailing: Expanded(
-                        child: HabitListOptions(
-                          settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
-                          onSettingsLoaded: _onHabitListOptionSettingsLoaded,
-                          selectedTagIds: _selectedTagFilter,
-                          showNoTagsFilter: _showNoTagsFilter,
-                          sortConfig: _habitSortConfig,
-                          forceOriginalLayout: _habitForceOriginalLayout,
-                          onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
-                            setState(() {
-                              _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
-                              _showNoTagsFilter = isNoneSelected;
-                            });
-                          },
-                          onSortChange: _onHabitSortConfigChange,
-                          onLayoutToggleChange: _onHabitLayoutToggleChange,
-                          onHabitListStyleChange: _onHabitListStyleChange,
-                          habitListStyle: _habitListStyle,
-                          showViewStyleOption: true,
-                          showOnlyTodayStyles: true,
-                          showTagFilter: false,
-                          showArchiveFilter: false,
-                          showSortButton: true,
+                child: AnimatedSize(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SectionHeader(
+                        title: _translationService.translate(CalendarTranslationKeys.habitsTitle),
+                        trailing: Expanded(
+                          child: HabitListOptions(
+                            settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
+                            onSettingsLoaded: _onHabitListOptionSettingsLoaded,
+                            selectedTagIds: _selectedTagFilter,
+                            showNoTagsFilter: _showNoTagsFilter,
+                            sortConfig: _habitSortConfig,
+                            forceOriginalLayout: _habitForceOriginalLayout,
+                            onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
+                              setState(() {
+                                _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
+                                _showNoTagsFilter = isNoneSelected;
+                              });
+                            },
+                            onSortChange: _onHabitSortConfigChange,
+                            onLayoutToggleChange: _onHabitLayoutToggleChange,
+                            onHabitListStyleChange: _onHabitListStyleChange,
+                            habitListStyle: _habitListStyle,
+                            showViewStyleOption: true,
+                            showOnlyTodayStyles: true,
+                            showTagFilter: false,
+                            showArchiveFilter: false,
+                            showSortButton: true,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: AppTheme.sizeSmall),
-                  ],
+                      const SizedBox(height: AppTheme.sizeSmall),
+                    ],
+                  ),
                 ),
               ),
 
@@ -446,64 +451,69 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
               // Tasks Header
               SliverToBoxAdapter(
                 key: _tasksSectionKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionHeader(
-                      title: _translationService.translate(CalendarTranslationKeys.tasksTitle),
-                      trailing: Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            // Task filters
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
-                                child: TaskListOptions(
-                                  settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
-                                  onSettingsLoaded: _onTaskListOptionSettingsLoaded,
-                                  onSearchChange: (query) {
-                                    setState(() {
-                                      _taskSearchQuery = query;
-                                    });
-                                  },
-                                  showCompletedTasks: _showCompletedTasks,
-                                  onCompletedTasksToggle: (showCompleted) {
-                                    setState(() {
-                                      _showCompletedTasks = showCompleted;
-                                    });
-                                  },
-                                  showSubTasks: _showSubTasks,
-                                  onSubTasksToggle: (showSubTasks) {
-                                    setState(() {
-                                      _showSubTasks = showSubTasks;
-                                    });
-                                  },
-                                  sortConfig: _taskSortConfig,
-                                  forceOriginalLayout: _taskForceOriginalLayout,
-                                  onSortChange: _onSortConfigChange,
-                                  onLayoutToggleChange: _onTaskLayoutToggleChange,
-                                  hasItems: true,
-                                  showDateFilter: false,
-                                  showTagFilter: false,
-                                  showSubTasksToggle: true,
-                                  showGroupingOption: true,
+                child: AnimatedSize(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SectionHeader(
+                        title: _translationService.translate(CalendarTranslationKeys.tasksTitle),
+                        trailing: Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              // Task filters
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+                                  child: TaskListOptions(
+                                    settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                                    onSettingsLoaded: _onTaskListOptionSettingsLoaded,
+                                    onSearchChange: (query) {
+                                      setState(() {
+                                        _taskSearchQuery = query;
+                                      });
+                                    },
+                                    showCompletedTasks: _showCompletedTasks,
+                                    onCompletedTasksToggle: (showCompleted) {
+                                      setState(() {
+                                        _showCompletedTasks = showCompleted;
+                                      });
+                                    },
+                                    showSubTasks: _showSubTasks,
+                                    onSubTasksToggle: (showSubTasks) {
+                                      setState(() {
+                                        _showSubTasks = showSubTasks;
+                                      });
+                                    },
+                                    sortConfig: _taskSortConfig,
+                                    forceOriginalLayout: _taskForceOriginalLayout,
+                                    onSortChange: _onSortConfigChange,
+                                    onLayoutToggleChange: _onTaskLayoutToggleChange,
+                                    hasItems: true,
+                                    showDateFilter: false,
+                                    showTagFilter: false,
+                                    showSubTasksToggle: true,
+                                    showGroupingOption: true,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            // Add button
-                            TaskAddButton(
-                              initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
-                              initialPlannedDate: DateTime.now(),
-                              initialTitle: _taskSearchQuery,
-                              initialCompleted: _showCompletedTasks,
-                            ),
-                          ],
+                              // Add button
+                              TaskAddButton(
+                                initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
+                                initialPlannedDate: DateTime.now(),
+                                initialTitle: _taskSearchQuery,
+                                initialCompleted: _showCompletedTasks,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
