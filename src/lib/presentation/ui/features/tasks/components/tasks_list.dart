@@ -51,6 +51,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final bool enableReordering;
   final bool forceOriginalLayout;
   final bool useParentScroll;
+  final bool useSliver;
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
@@ -64,7 +65,6 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final void Function()? onReorderComplete;
   @override
   final PaginationMode paginationMode;
-
   const TaskList({
     super.key,
     this.pageSize = 10,
@@ -88,6 +88,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
     this.enableReordering = false,
     this.forceOriginalLayout = false,
     this.useParentScroll = true,
+    this.useSliver = false,
     this.showDoneOverlayWhenEmpty = false,
     this.ignoreArchivedTagVisibility = false,
     required this.onClickTask,
@@ -415,6 +416,16 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.useSliver) {
+      if (_tasks == null) {
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
+      }
+      return DragStateProvider(
+        notifier: _dragStateNotifier,
+        child: _buildSliverList(),
+      );
+    }
+
     return DragStateProvider(
       notifier: _dragStateNotifier,
       child: _buildContent(context),
@@ -815,4 +826,112 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           return const SizedBox.shrink();
         });
   }
+
+  List<TaskVariableVisualItem> _getVisualItems() {
+    final groupedTasks = _groupTasks();
+    final items = <TaskVariableVisualItem>[];
+    if (groupedTasks.isEmpty) return items;
+
+    for (final entry in groupedTasks.entries) {
+      if (entry.key.isNotEmpty) {
+        items.add(TaskHeaderVisualItem(entry.key));
+      }
+      for (int i = 0; i < entry.value.length; i++) {
+        items.add(TaskVisualItem(entry.value[i], i, entry.value));
+      }
+    }
+    return items;
+  }
+
+  Widget _buildSliverList() {
+    final visualItems = _getVisualItems();
+    final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading =
+        _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index >= visualItems.length) {
+            if (showLoadMore) {
+              return Padding(
+                key: ValueKey('load_more_button_sliver_list_${widget.forceOriginalLayout}'),
+                padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+                child: Center(
+                  child: LoadMoreButton(onPressed: onLoadMore),
+                ),
+              );
+            } else if (showInfinityLoading) {
+              return Padding(
+                key: ValueKey('loading_indicator_sliver_list_${widget.forceOriginalLayout}'),
+                padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+
+          final item = visualItems[index];
+
+          if (item is TaskHeaderVisualItem) {
+            return ListGroupHeader(
+              key: ValueKey('group_header_${item.title}'),
+              title: item.title,
+              shouldTranslate: item.title.length > 1,
+            );
+          } else if (item is TaskVisualItem) {
+            final task = item.task;
+            final List<Widget> trailingButtons = [];
+            if (widget.trailingButtons != null) {
+              trailingButtons.addAll(widget.trailingButtons!(task));
+            }
+            if (widget.showSelectButton) {
+              trailingButtons.add(IconButton(
+                icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                onPressed: () => widget.onSelectTask?.call(task),
+              ));
+            }
+            // Add drag handle only if enabled (though SliverList drag logic is limited without ReorderableSliverList)
+            // Currently HabitsList implementation disabled dragging for Slivers to focus on performance
+            // We'll hide drag handle for sliver mode for now unless we implement ReorderableSliverList
+
+            return Padding(
+              key: ValueKey('task_padding_${task.id}'),
+              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+              child: TaskCard(
+                key: ValueKey('task_card_${task.id}'),
+                taskItem: task,
+                onOpenDetails: () => widget.onClickTask(task),
+                onCompleted: widget.onTaskCompleted,
+                onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+                    ? null
+                    : () => widget.onScheduleTask!(task, DateTime.now()),
+                transparent: widget.transparentCards,
+                trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+                showSubTasks: widget.includeSubTasks,
+                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+        childCount: totalCount,
+      ),
+    );
+  }
+}
+
+sealed class TaskVariableVisualItem {}
+
+class TaskHeaderVisualItem extends TaskVariableVisualItem {
+  final String title;
+  TaskHeaderVisualItem(this.title);
+}
+
+class TaskVisualItem extends TaskVariableVisualItem {
+  final TaskListItem task;
+  final int indexInGroup;
+  final List<TaskListItem> group;
+  TaskVisualItem(this.task, this.indexInGroup, this.group);
 }

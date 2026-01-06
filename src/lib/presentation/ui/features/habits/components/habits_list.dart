@@ -40,6 +40,7 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final bool enableReordering;
   final bool forceOriginalLayout;
   final bool useParentScroll;
+  final bool useSliver;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -64,6 +65,7 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
     this.enableReordering = false,
     this.forceOriginalLayout = false,
     this.useParentScroll = true,
+    this.useSliver = false,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -310,6 +312,48 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.useSliver) {
+      if (_habitList == null) {
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
+      }
+
+      if (_habitList!.items.isEmpty) {
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+            child: SizedBox(
+              width: double.infinity,
+              child: widget.showDoneOverlayWhenEmpty
+                  ? IconOverlay(
+                      icon: Icons.done_all_rounded,
+                      iconSize: AppTheme.iconSize2XLarge,
+                      message: _translationService.translate(HabitTranslationKeys.allHabitsDone),
+                    )
+                  : IconOverlay(
+                      icon: Icons.check_circle_outline,
+                      message: _translationService.translate(HabitTranslationKeys.noHabitsFound),
+                    ),
+            ),
+          ),
+        );
+      }
+
+      if (widget.style == HabitListStyle.grid) {
+        return SliverLayoutBuilder(
+          builder: (context, constraints) {
+            final crossAxisExtent = constraints.crossAxisExtent;
+            const maxCrossAxisExtent = 300.0;
+            final gridColumns = (crossAxisExtent / maxCrossAxisExtent).ceil();
+
+            final visualItems = _getVisualItems(gridColumns: gridColumns > 0 ? gridColumns : 1);
+            return _buildSliverList(precalculatedItems: visualItems, gridColumns: gridColumns > 0 ? gridColumns : 1);
+          },
+        );
+      } else {
+        return _buildSliverList();
+      }
+    }
+
     if (_habitList == null) {
       return const SizedBox.shrink();
     }
@@ -833,6 +877,174 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     await _getHabits(pageIndex: _habitList!.pageIndex + 1);
     _backLastScrollPosition();
   }
+
+  Widget _buildSliverGrid() {
+    final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
+
+    return SliverGrid(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 300.0,
+        crossAxisSpacing: AppTheme.sizeSmall,
+        mainAxisSpacing: AppTheme.sizeSmall,
+        mainAxisExtent: 42,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index == _habitList!.items.length && widget.paginationMode == PaginationMode.loadMore) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.sizeXSmall),
+                child: LoadMoreButton(onPressed: onLoadMore),
+              ),
+            );
+          } else if (index == _habitList!.items.length &&
+              widget.paginationMode == PaginationMode.infinityScroll &&
+              isLoadingMore) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.sizeXSmall),
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (index >= _habitList!.items.length) {
+            return const SizedBox.shrink();
+          }
+
+          final habit = _habitList!.items[index];
+          return Padding(
+            key: ValueKey('sliver_grid_item_${habit.id}'),
+            padding: const EdgeInsets.all(AppTheme.size4XSmall),
+            child: HabitCard(
+              key: ValueKey('habit_card_sliver_grid_${habit.id}'),
+              habit: habit,
+              style: widget.style,
+              dateRange: widget.dateRange,
+              onOpenDetails: () => widget.onClickHabit(habit),
+              isDense: true,
+              showDragHandle: false,
+            ),
+          );
+        },
+        childCount: totalItemCount,
+      ),
+    );
+  }
+
+  List<VariableVisualItem> _getVisualItems({int gridColumns = 1}) {
+    final groupedHabits = _groupHabits();
+    final items = <VariableVisualItem>[];
+    if (groupedHabits.isEmpty) return items;
+
+    for (final entry in groupedHabits.entries) {
+      if (entry.key.isNotEmpty) {
+        items.add(HeaderVisualItem(entry.key));
+      }
+
+      final habits = entry.value;
+      if (gridColumns > 1) {
+        for (int i = 0; i < habits.length; i += gridColumns) {
+          final end = (i + gridColumns < habits.length) ? i + gridColumns : habits.length;
+          items.add(GridRowVisualItem(habits.sublist(i, end)));
+        }
+      } else {
+        for (int i = 0; i < habits.length; i++) {
+          items.add(HabitVisualItem(habits[i], i, habits));
+        }
+      }
+    }
+    return items;
+  }
+
+  Widget _buildSliverList({List<VariableVisualItem>? precalculatedItems, int gridColumns = 1}) {
+    final visualItems = precalculatedItems ?? _getVisualItems();
+    final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading =
+        _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index >= visualItems.length) {
+            if (showLoadMore) {
+              return Padding(
+                key: ValueKey('load_more_button_sliver_list_${widget.style}'),
+                padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+                child: Center(
+                  child: LoadMoreButton(onPressed: onLoadMore),
+                ),
+              );
+            } else if (showInfinityLoading) {
+              return Padding(
+                key: ValueKey('loading_indicator_sliver_list_${widget.style}'),
+                padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+
+          final item = visualItems[index];
+          if (item is HeaderVisualItem) {
+            return ListGroupHeader(
+              key: ValueKey('header_${item.title}'),
+              title: item.title,
+              shouldTranslate: item.title.length > 1,
+            );
+          } else if (item is HabitVisualItem) {
+            final habit = item.habit;
+            return Padding(
+              key: ValueKey('list_${habit.id}_${widget.style}'),
+              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+              child: HabitCard(
+                key: ValueKey('habit_card_${habit.id}'),
+                habit: habit,
+                onOpenDetails: () => widget.onClickHabit(habit),
+                style: widget.style,
+                dateRange: widget.dateRange,
+                isDateLabelShowing: false,
+                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                showDragHandle: widget.enableReordering &&
+                    widget.sortConfig?.useCustomOrder == true &&
+                    !widget.forceOriginalLayout &&
+                    !habit.isArchived,
+              ),
+            );
+          } else if (item is GridRowVisualItem) {
+            return Padding(
+              key: ValueKey('grid_row_$index'),
+              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...item.items.map((habit) => Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall / 2),
+                          child: HabitCard(
+                            key: ValueKey('habit_card_sliver_grid_${habit.id}'),
+                            habit: habit,
+                            style: widget.style,
+                            dateRange: widget.dateRange,
+                            onOpenDetails: () => widget.onClickHabit(habit),
+                            isDense: true,
+                            showDragHandle: false,
+                          ),
+                        ),
+                      )),
+                  ...List.generate(
+                    gridColumns - item.items.length,
+                    (index) => const Spacer(),
+                  ),
+                ],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+        childCount: totalCount,
+      ),
+    );
+  }
 }
 
 class FilterContext {
@@ -855,4 +1067,23 @@ class FilterContext {
     this.sortConfig,
     this.excludeCompletedForDate,
   });
+}
+
+sealed class VariableVisualItem {}
+
+class HeaderVisualItem extends VariableVisualItem {
+  final String title;
+  HeaderVisualItem(this.title);
+}
+
+class HabitVisualItem extends VariableVisualItem {
+  final HabitListItem habit;
+  final int indexInGroup;
+  final List<HabitListItem> group;
+  HabitVisualItem(this.habit, this.indexInGroup, this.group);
+}
+
+class GridRowVisualItem extends VariableVisualItem {
+  final List<HabitListItem> items;
+  GridRowVisualItem(this.items);
 }
