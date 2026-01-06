@@ -24,7 +24,8 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
-// import 'package:whph/presentation/ui/features/habits/components/habit_visual_item.dart'; // Removed
+import 'package:whph/presentation/ui/shared/models/visual_item.dart';
+import 'package:whph/presentation/ui/shared/utils/visual_item_utils.dart';
 
 class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
@@ -345,7 +346,10 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             const maxCrossAxisExtent = 300.0;
             final gridColumns = (crossAxisExtent / maxCrossAxisExtent).ceil();
 
-            final visualItems = _getVisualItems(gridColumns: gridColumns > 0 ? gridColumns : 1);
+            final visualItems = VisualItemUtils.getVisualItems<HabitListItem>(
+              groupedItems: _groupHabits(),
+              gridColumns: gridColumns > 0 ? gridColumns : 1,
+            );
             return _buildSliverList(precalculatedItems: visualItems, gridColumns: gridColumns > 0 ? gridColumns : 1);
           },
         );
@@ -878,85 +882,12 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     _backLastScrollPosition();
   }
 
-  Widget _buildSliverGrid() {
-    final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
-
-    return SliverGrid(
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 300.0,
-        crossAxisSpacing: AppTheme.sizeSmall,
-        mainAxisSpacing: AppTheme.sizeSmall,
-        mainAxisExtent: 42,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          if (index == _habitList!.items.length && widget.paginationMode == PaginationMode.loadMore) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeXSmall),
-                child: LoadMoreButton(onPressed: onLoadMore),
-              ),
-            );
-          } else if (index == _habitList!.items.length &&
-              widget.paginationMode == PaginationMode.infinityScroll &&
-              isLoadingMore) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(AppTheme.sizeXSmall),
-                child: CircularProgressIndicator(),
-              ),
-            );
-          } else if (index >= _habitList!.items.length) {
-            return const SizedBox.shrink();
-          }
-
-          final habit = _habitList!.items[index];
-          return Padding(
-            key: ValueKey('sliver_grid_item_${habit.id}'),
-            padding: const EdgeInsets.all(AppTheme.size4XSmall),
-            child: HabitCard(
-              key: ValueKey('habit_card_sliver_grid_${habit.id}'),
-              habit: habit,
-              style: widget.style,
-              dateRange: widget.dateRange,
-              onOpenDetails: () => widget.onClickHabit(habit),
-              isDense: true,
-              showDragHandle: false,
-            ),
-          );
-        },
-        childCount: totalItemCount,
-      ),
-    );
-  }
-
-  List<VariableVisualItem> _getVisualItems({int gridColumns = 1}) {
-    final groupedHabits = _groupHabits();
-    final items = <VariableVisualItem>[];
-    if (groupedHabits.isEmpty) return items;
-
-    for (final entry in groupedHabits.entries) {
-      if (entry.key.isNotEmpty) {
-        items.add(HeaderVisualItem(entry.key));
-      }
-
-      final habits = entry.value;
-      if (gridColumns > 1) {
-        for (int i = 0; i < habits.length; i += gridColumns) {
-          final end = (i + gridColumns < habits.length) ? i + gridColumns : habits.length;
-          items.add(GridRowVisualItem(habits.sublist(i, end)));
-        }
-      } else {
-        for (int i = 0; i < habits.length; i++) {
-          items.add(HabitVisualItem(habits[i], i, habits));
-        }
-      }
-    }
-    return items;
-  }
-
-  Widget _buildSliverList({List<VariableVisualItem>? precalculatedItems, int gridColumns = 1}) {
-    final visualItems = precalculatedItems ?? _getVisualItems();
+  Widget _buildSliverList({List<VisualItem<HabitListItem>>? precalculatedItems, int gridColumns = 1}) {
+    final visualItems = precalculatedItems ??
+        VisualItemUtils.getVisualItems<HabitListItem>(
+          groupedItems: _groupHabits(),
+          gridColumns: gridColumns,
+        );
     final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
@@ -985,14 +916,14 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           }
 
           final item = visualItems[index];
-          if (item is HeaderVisualItem) {
+          if (item is VisualItemHeader<HabitListItem>) {
             return ListGroupHeader(
               key: ValueKey('header_${item.title}'),
               title: item.title,
               shouldTranslate: item.title.length > 1,
             );
-          } else if (item is HabitVisualItem) {
-            final habit = item.habit;
+          } else if (item is VisualItemSingle<HabitListItem>) {
+            final habit = item.data;
             return Padding(
               key: ValueKey('list_${habit.id}_${widget.style}'),
               padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
@@ -1010,7 +941,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                     !habit.isArchived,
               ),
             );
-          } else if (item is GridRowVisualItem) {
+          } else if (item is VisualItemRow<HabitListItem>) {
             return Padding(
               key: ValueKey('grid_row_$index'),
               padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
@@ -1067,23 +998,4 @@ class FilterContext {
     this.sortConfig,
     this.excludeCompletedForDate,
   });
-}
-
-sealed class VariableVisualItem {}
-
-class HeaderVisualItem extends VariableVisualItem {
-  final String title;
-  HeaderVisualItem(this.title);
-}
-
-class HabitVisualItem extends VariableVisualItem {
-  final HabitListItem habit;
-  final int indexInGroup;
-  final List<HabitListItem> group;
-  HabitVisualItem(this.habit, this.indexInGroup, this.group);
-}
-
-class GridRowVisualItem extends VariableVisualItem {
-  final List<HabitListItem> items;
-  GridRowVisualItem(this.items);
 }

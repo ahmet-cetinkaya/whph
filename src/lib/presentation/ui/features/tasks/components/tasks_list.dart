@@ -12,17 +12,19 @@ import 'package:whph/core/application/features/tasks/models/task_sort_fields.dar
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 
-import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
-import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
+import 'package:whph/presentation/ui/shared/models/visual_item.dart';
+import 'package:whph/presentation/ui/shared/utils/visual_item_utils.dart';
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
-import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
-import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
 class TaskList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
@@ -827,24 +829,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         });
   }
 
-  List<TaskVariableVisualItem> _getVisualItems() {
-    final groupedTasks = _groupTasks();
-    final items = <TaskVariableVisualItem>[];
-    if (groupedTasks.isEmpty) return items;
-
-    for (final entry in groupedTasks.entries) {
-      if (entry.key.isNotEmpty) {
-        items.add(TaskHeaderVisualItem(entry.key));
-      }
-      for (int i = 0; i < entry.value.length; i++) {
-        items.add(TaskVisualItem(entry.value[i], i, entry.value));
-      }
-    }
-    return items;
-  }
-
   Widget _buildSliverList() {
-    final visualItems = _getVisualItems();
+    final visualItems = VisualItemUtils.getVisualItems<TaskListItem>(
+      groupedItems: _groupTasks(),
+    );
     final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
@@ -874,14 +862,14 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
 
           final item = visualItems[index];
 
-          if (item is TaskHeaderVisualItem) {
+          if (item is VisualItemHeader<TaskListItem>) {
             return ListGroupHeader(
               key: ValueKey('group_header_${item.title}'),
               title: item.title,
               shouldTranslate: item.title.length > 1,
             );
-          } else if (item is TaskVisualItem) {
-            final task = item.task;
+          } else if (item is VisualItemSingle<TaskListItem>) {
+            final task = item.data;
             final List<Widget> trailingButtons = [];
             if (widget.trailingButtons != null) {
               trailingButtons.addAll(widget.trailingButtons!(task));
@@ -920,18 +908,4 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       ),
     );
   }
-}
-
-sealed class TaskVariableVisualItem {}
-
-class TaskHeaderVisualItem extends TaskVariableVisualItem {
-  final String title;
-  TaskHeaderVisualItem(this.title);
-}
-
-class TaskVisualItem extends TaskVariableVisualItem {
-  final TaskListItem task;
-  final int indexInGroup;
-  final List<TaskListItem> group;
-  TaskVisualItem(this.task, this.indexInGroup, this.group);
 }
