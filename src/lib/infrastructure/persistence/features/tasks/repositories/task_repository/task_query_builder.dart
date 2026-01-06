@@ -73,17 +73,14 @@ class TaskQueryBuilder {
       if (areParentAndSubTasksIncluded) {
         // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
         final plannedCondition = '''(
-          (task_table.planned_date >= ? AND task_table.planned_date <= ?)
-          ${includeNullDates ? 'OR task_table.planned_date IS NULL' : ''}
+          ((task_table.planned_date >= ? AND task_table.planned_date <= ?)${includeNullDates ? ' OR task_table.planned_date IS NULL' : ''})
           OR
           EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (
-            (subtask.planned_date >= ? AND subtask.planned_date <= ?)
-            ${includeNullDates ? 'OR subtask.planned_date IS NULL' : ''}
+            (subtask.planned_date >= ? AND subtask.planned_date <= ?)${includeNullDates ? ' OR subtask.planned_date IS NULL' : ''}
           ))
           OR
           EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (
-            (parent.planned_date >= ? AND parent.planned_date <= ?)
-            ${includeNullDates ? 'OR parent.planned_date IS NULL' : ''}
+            (parent.planned_date >= ? AND parent.planned_date <= ?)${includeNullDates ? ' OR parent.planned_date IS NULL' : ''}
           ))
         )''';
         dateParts.add(plannedCondition);
@@ -106,17 +103,14 @@ class TaskQueryBuilder {
       if (areParentAndSubTasksIncluded) {
         // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
         final deadlineCondition = '''(
-          (task_table.deadline_date >= ? AND task_table.deadline_date <= ?)
-          ${includeNullDates ? 'OR task_table.deadline_date IS NULL' : ''}
+          ((task_table.deadline_date >= ? AND task_table.deadline_date <= ?)${includeNullDates ? ' OR task_table.deadline_date IS NULL' : ''})
           OR
           EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (
-            (subtask.deadline_date >= ? AND subtask.deadline_date <= ?)
-            ${includeNullDates ? 'OR subtask.deadline_date IS NULL' : ''}
+            (subtask.deadline_date >= ? AND subtask.deadline_date <= ?)${includeNullDates ? ' OR subtask.deadline_date IS NULL' : ''}
           ))
           OR
           EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (
-            (parent.deadline_date >= ? AND parent.deadline_date <= ?)
-            ${includeNullDates ? 'OR parent.deadline_date IS NULL' : ''}
+            (parent.deadline_date >= ? AND parent.deadline_date <= ?)${includeNullDates ? ' OR parent.deadline_date IS NULL' : ''}
           ))
         )''';
         dateParts.add(deadlineCondition);
