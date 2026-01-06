@@ -263,10 +263,11 @@ class DateRangeFilterController extends ChangeNotifier {
 
       // Then check additional ranges
       if (_additionalQuickRanges != null) {
-        try {
-          final range = _additionalQuickRanges!.firstWhere((r) => r.key == _activeQuickSelectionKey);
-          return range.label;
-        } catch (_) {}
+        for (final range in _additionalQuickRanges!) {
+          if (range.key == _activeQuickSelectionKey) {
+            return range.label;
+          }
+        }
       }
     }
 
