@@ -378,7 +378,7 @@ shared:
       last_week: Sidste uge
       last_month: Sidste måned
       next_weekday: Næste hverdag
-      up_to_today: " til i dag"
+      up_to_today: "Til i dag"
   numeric_input:
     decrement_button_label: Formindsk
     increment_button_label: Forøg

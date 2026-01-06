@@ -377,7 +377,7 @@ shared:
       last_week: Sist uke
       last_month: Sist måned
       next_weekday: Neste hverdag
-      up_to_today: " til i dag"
+      up_to_today: "Til i dag"
   numeric_input:
     decrement_button_label: Reduser
     increment_button_label: Øk
