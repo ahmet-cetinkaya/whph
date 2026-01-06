@@ -74,40 +74,20 @@ shared:
   date_format:
     hint: JJ/MM/AAAA
   datepicker:
-    cannot_select_date_after_max_date:
-      Impossible de sélectionner une date après le
-      {date}
-    cannot_select_date_before_min_date:
-      Impossible de sélectionner une date avant
-      le {date}
-    cannot_select_time_after_max_date:
-      Impossible de sélectionner une heure après
-      {time}
-    cannot_select_time_before_min_date:
-      Impossible de sélectionner une heure avant
-      {time}
-    deadline_cannot_be_before_planned_date:
-      La date limite doit être égale ou postérieure
-      à la date planifiée
+    cannot_select_date_after_max_date: Impossible de sélectionner une date après le {date}
+    cannot_select_date_before_min_date: Impossible de sélectionner une date avant le {date}
+    cannot_select_time_after_max_date: Impossible de sélectionner une heure après {time}
+    cannot_select_time_before_min_date: Impossible de sélectionner une heure avant {time}
+    deadline_cannot_be_before_planned_date: La date limite doit être égale ou postérieure à la date planifiée
     end_date_cannot_be_after_max_date: La date de fin ne peut pas être après le {date}
     end_date_must_be_at_or_before: La date de fin doit être le {date} ou avant
     select_date_range_title: Sélectionner la plage de dates
     select_date_time_title: Sélectionner la date et l'heure
-    selected_date_must_be_at_or_after:
-      La date sélectionnée doit être le {date} ou
-      après
-    selected_date_must_be_at_or_before:
-      La date sélectionnée doit être le {date} ou
-      avant
-    selected_date_time_must_be_after:
-      La date et l'heure sélectionnées doivent être
-      après {dateTime}
-    start_date_cannot_be_after_end_date:
-      La date de début ne peut pas être après la
-      date de fin
-    start_date_cannot_be_before_min_date:
-      La date de début ne peut pas être avant
-      le {date}
+    selected_date_must_be_at_or_after: La date sélectionnée doit être le {date} ou après
+    selected_date_must_be_at_or_before: La date sélectionnée doit être le {date} ou avant
+    selected_date_time_must_be_after: La date et l'heure sélectionnées doivent être après {dateTime}
+    start_date_cannot_be_after_end_date: La date de début ne peut pas être après la date de fin
+    start_date_cannot_be_before_min_date: La date de début ne peut pas être avant le {date}
     start_date_must_be_at_or_after: La date de début doit être le {date} ou après
     time_must_be_at_or_after: L'heure doit être à {time} ou après
     time_must_be_at_or_before: L'heure doit être à {time} ou avant
@@ -161,12 +141,11 @@ shared:
     file_write: Erreur lors de l'écriture du fichier
     loading: Erreur lors du chargement des données
     report_subject: "App {appName} : Rapport d'erreur inattendue"
-    report_template: "Bonjour, j'ai rencontré une erreur inattendue en utilisant
-      l'application {appName}.
+    report_template:
+      "Bonjour, j'ai rencontré une erreur inattendue en utilisant l'application {appName}.
 
 
-      Voici les informations qui pourraient vous aider à diagnostiquer le problème
-      :
+      Voici les informations qui pourraient vous aider à diagnostiquer le problème :
 
       Version de l'app : {version}
 
@@ -202,9 +181,7 @@ shared:
   startup_error:
     copied_to_clipboard: Détails de l'erreur copiés dans le presse-papiers
     copy_button: Copier les détails de l'erreur
-    description:
-      Quelque chose s'est mal passé lors du démarrage de l'application.
-      Cela peut être dû à un problème système ou à une configuration incompatible.
+    description: Quelque chose s'est mal passé lors du démarrage de l'application. Cela peut être dû à un problème système ou à une configuration incompatible.
     details_title: Détails de l'Erreur
     report_button: Signaler un Problème
     title: Erreur de Démarrage de l'Application
@@ -265,9 +242,7 @@ shared:
     sort: Trier
     criteria: Critères de tri
     enable_grouping: Grouper par tri
-    enable_grouping_description:
-      Grouper les éléments en fonction du premier champ
-      de tri
+    enable_grouping_description: Grouper les éléments en fonction du premier champ de tri
     sort_and_group: Trier & Grouper
     group_by: Grouper par
   statistics:
@@ -281,9 +256,7 @@ shared:
     average_daily_label: Moyenne quotidienne
     peak_hour_label: Heure de pointe
     select_date_range_message: Sélectionner une plage de dates pour filtrer les statistiques
-    select_date_range_description:
-      Choisir une plage de dates personnalisée pour voir
-      les statistiques d'utilisation
+    select_date_range_description: Choisir une plage de dates personnalisée pour voir les statistiques d'utilisation
   time:
     not_set: Non défini
     minutes: minutes
@@ -372,48 +345,39 @@ shared:
     select_end_date: Sélectionner la date de fin
     no_dates_selected: Aucune date sélectionnée
     refresh: Actualiser
-    cannot_select_time_before_min_date:
-      Impossible de sélectionner une heure avant
-      {time}
-    cannot_select_time_after_max_date:
-      Impossible de sélectionner une heure après
-      {time}
+    cannot_select_time_before_min_date: Impossible de sélectionner une heure avant {time}
+    cannot_select_time_after_max_date: Impossible de sélectionner une heure après {time}
     time_must_be_at_or_after: L'heure doit être {time} ou après
     time_must_be_at_or_before: L'heure doit être {time} ou avant
     selected_date_must_be_at_or_after: La date sélectionnée doit être {date} ou après
     selected_date_must_be_at_or_before: La date sélectionnée doit être {date} ou avant
-    start_date_cannot_be_after_end_date:
-      La date de début ne peut pas être après la
-      date de fin
+    start_date_cannot_be_after_end_date: La date de début ne peut pas être après la date de fin
     start_date_must_be_at_or_after: La date de début doit être {date} ou après
     end_date_must_be_at_or_before: La date de fin doit être {date} ou avant
-    cannot_select_date_before_min_date:
-      Impossible de sélectionner une date avant
-      {date}
+    cannot_select_date_before_min_date: Impossible de sélectionner une date avant {date}
     cannot_select_date_after_max_date: Impossible de sélectionner une date après {date}
-    start_date_cannot_be_before_min_date:
-      La date de début ne peut pas être avant
-      {date}
+    start_date_cannot_be_before_min_date: La date de début ne peut pas être avant {date}
     end_date_cannot_be_after_max_date: La date de fin ne peut pas être après {date}
-    selected_date_time_must_be_after:
-      La date et l'heure sélectionnées doivent être
-      après {dateTime}
+    selected_date_time_must_be_after: La date et l'heure sélectionnées doivent être après {dateTime}
     select_date_time_title: Sélectionner la date et l'heure
     select_date_range_title: Sélectionner la plage de dates
     refresh_description: Actualiser automatiquement la plage de dates sélectionnée
     date_time_field_label: Champ date et heure
     date_time_field_hint: Sélectionner la date et l'heure
-    quick_selection_today: Aujourd'hui
-    quick_selection_tomorrow: Demain
-    quick_selection_weekend: Week-end
-    quick_selection_next_week: Semaine prochaine
-    quick_selection_no_date: Pas de date
-    quick_selection_last_week: Semaine dernière
-    quick_selection_last_month: Mois dernier
     time_picker_hour_label: Heure
     time_picker_minute_label: Minute
     time_picker_all_day_label: Toute la journée
-    quick_selection_next_weekday: Prochain jour ouvrable
+    show_no_date: Afficher les éléments sans date
+    quick_selection:
+      today: Aujourd'hui
+      tomorrow: Demain
+      weekend: Week-end
+      next_week: Semaine prochaine
+      no_date: Pas de date
+      last_week: Semaine dernière
+      last_month: Mois dernier
+      next_weekday: Prochain jour ouvrable
+      up_to_today: Jusqu'à aujourd'hui
   numeric_input:
     decrement_button_label: Diminuer
     increment_button_label: Augmenter

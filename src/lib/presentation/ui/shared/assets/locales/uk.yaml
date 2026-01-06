@@ -81,9 +81,7 @@ shared:
     cannot_select_date_before_min_date: Не можна вибрати дату раніше {date}
     cannot_select_time_after_max_date: Не можна вибрати час пізніше {time}
     cannot_select_time_before_min_date: Не можна вибрати час раніше {time}
-    deadline_cannot_be_before_planned_date:
-      Кінцевий термін має бути в день запланованої
-      дати або пізніше
+    deadline_cannot_be_before_planned_date: Кінцевий термін має бути в день запланованої дати або пізніше
     end_date_cannot_be_after_max_date: Дата завершення не може бути пізніше {date}
     end_date_must_be_at_or_before: Дата завершення має бути не пізніше {date}
     select_date_range_title: Виберіть діапазон дат
@@ -91,9 +89,7 @@ shared:
     selected_date_must_be_at_or_after: Вибрана дата має бути не раніше {date}
     selected_date_must_be_at_or_before: Вибрана дата має бути не пізніше {date}
     selected_date_time_must_be_after: Вибрані дата і час мають бути пізніше {dateTime}
-    start_date_cannot_be_after_end_date:
-      Дата початку не може бути пізніше за дату
-      завершення
+    start_date_cannot_be_after_end_date: Дата початку не може бути пізніше за дату завершення
     start_date_cannot_be_before_min_date: Дата початку не може бути раніше {date}
     start_date_must_be_at_or_after: Дата початку має бути не раніше {date}
     time_must_be_at_or_after: Час має бути не раніше {time}
@@ -149,8 +145,7 @@ shared:
     loading: Сталася помилка під час завантаження даних
     report_subject: "{appName} App: Звіт про неочікувану помилку"
     report_template:
-      "Привіт, я зіткнувся з неочікуваною помилкою під час використання
-      додатку {appName}.
+      "Привіт, я зіткнувся з неочікуваною помилкою під час використання додатку {appName}.
 
 
       Ось інформація, яка може допомогти діагностувати проблему:
@@ -189,9 +184,7 @@ shared:
   startup_error:
     copied_to_clipboard: Деталі помилки скопійовано в буфер обміну
     copy_button: Копіювати деталі помилки
-    description:
-      Щось пішло не так під час запуску додатка. Це може бути спричинено
-      проблемою системи або несумісною конфігурацією.
+    description: Щось пішло не так під час запуску додатка. Це може бути спричинено проблемою системи або несумісною конфігурацією.
     details_title: Деталі Помилки
     report_button: Повідомити про Проблему
     title: Помилка Запуску Додатка
@@ -266,9 +259,7 @@ shared:
     average_daily_label: Середньоденний
     peak_hour_label: Пікова година
     select_date_range_message: Виберіть діапазон дат для фільтрації статистики
-    select_date_range_description:
-      Виберіть власний діапазон дат для перегляду статистики
-      використання
+    select_date_range_description: Виберіть власний діапазон дат для перегляду статистики використання
   time:
     not_set: Не встановлено
     minutes: хвилини
@@ -363,9 +354,7 @@ shared:
     time_must_be_at_or_before: Час має бути {time} або раніше
     selected_date_must_be_at_or_after: Вибрана дата має бути {date} або пізніше
     selected_date_must_be_at_or_before: Вибрана дата має бути {date} або раніше
-    start_date_cannot_be_after_end_date:
-      Дата початку не може бути пізніше за дату
-      завершення
+    start_date_cannot_be_after_end_date: Дата початку не може бути пізніше за дату завершення
     start_date_must_be_at_or_after: Дата початку має бути {date} або пізніше
     end_date_must_be_at_or_before: Дата завершення має бути {date} або раніше
     cannot_select_date_before_min_date: Не можна вибрати дату до {date}
@@ -378,17 +367,20 @@ shared:
     refresh_description: Автоматично оновлювати вибраний діапазон дат
     date_time_field_label: Поле дати і часу
     date_time_field_hint: Виберіть дату і час
-    quick_selection_today: Сьогодні
-    quick_selection_tomorrow: Завтра
-    quick_selection_weekend: Вихідні
-    quick_selection_next_week: Наступний тиждень
-    quick_selection_no_date: Без дати
-    quick_selection_last_week: Минулий тиждень
-    quick_selection_last_month: Минулий місяць
     time_picker_hour_label: Година
     time_picker_minute_label: Хвилина
     time_picker_all_day_label: Весь день
-    quick_selection_next_weekday: Наступний робочий день
+    show_no_date: Показати елементи без дати
+    quick_selection:
+      today: Сьогодні
+      tomorrow: Завтра
+      weekend: Вихідні
+      next_week: Наступний тиждень
+      no_date: Без дати
+      last_week: Минулий тиждень
+      last_month: Минулий місяць
+      next_weekday: Наступний робочий день
+      up_to_today: До сьогодні
   numeric_input:
     decrement_button_label: Зменшити
     increment_button_label: Збільшити

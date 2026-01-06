@@ -78,9 +78,7 @@ shared:
     cannot_select_date_before_min_date: Ne morete izbrati datuma pred {date}
     cannot_select_time_after_max_date: Ne morete izbrati časa po {time}
     cannot_select_time_before_min_date: Ne morete izbrati časa pred {time}
-    deadline_cannot_be_before_planned_date:
-      Rok mora biti na načrtovani datum ali
-      kasneje
+    deadline_cannot_be_before_planned_date: Rok mora biti na načrtovani datum ali kasneje
     end_date_cannot_be_after_max_date: Končni datum ne more biti po {date}
     end_date_must_be_at_or_before: Končni datum mora biti na ali pred {date}
     select_date_range_title: Izberite obdobje
@@ -144,8 +142,7 @@ shared:
     loading: Napaka pri nalaganju podatkov
     report_subject: "{appName} Aplikacija: Poročilo o nepričakovani napaki"
     report_template:
-      "Pozdravljeni, naletел sem na nepričakovano napako med uporabo
-      aplikacije {appName}.
+      "Pozdravljeni, naletел sem na nepričakovano napako med uporabo aplikacije {appName}.
 
 
       Tukaj so informacije, ki lahko pomagajo pri diagnosticiranju problema:
@@ -184,9 +181,7 @@ shared:
   startup_error:
     copied_to_clipboard: Podrobnosti napake kopirane v odložišče
     copy_button: Kopiraj podrobnosti napake
-    description:
-      Nekaj je šlo narobe med zagonom aplikacije. To je lahko posledica
-      sistemske težave ali nekompatibilne konfiguracije.
+    description: Nekaj je šlo narobe med zagonom aplikacije. To je lahko posledica sistemske težave ali nekompatibilne konfiguracije.
     details_title: Podrobnosti Napake
     report_button: Prijavi Težavo
     title: Napaka Zagona Aplikacije
@@ -261,9 +256,7 @@ shared:
     average_daily_label: Povprečno dnevno
     peak_hour_label: Vrh ure
     select_date_range_message: Izberite datumski razpon za filtriranje statistik
-    select_date_range_description:
-      Izberite datumski razpon po meri za ogled statistik
-      uporabe
+    select_date_range_description: Izberite datumski razpon po meri za ogled statistik uporabe
   time:
     not_set: Ni nastavljeno
     minutes: minute
@@ -372,17 +365,20 @@ shared:
     refresh_description: Samodejno osveži izbran razpon datumov
     date_time_field_label: Polje za datum in čas
     date_time_field_hint: Izberite datum in čas
-    quick_selection_today: Danes
-    quick_selection_tomorrow: Jutri
-    quick_selection_weekend: Vikend
-    quick_selection_next_week: Naslednji teden
-    quick_selection_no_date: Brez datuma
-    quick_selection_last_week: Prejšnji teden
-    quick_selection_last_month: Prejšnji mesec
     time_picker_hour_label: Ura
     time_picker_minute_label: Minuta
     time_picker_all_day_label: Ves dan
-    quick_selection_next_weekday: Naslednji delovni dan
+    show_no_date: Prikaži elemente brez datuma
+    quick_selection:
+      today: Danes
+      tomorrow: Jutri
+      weekend: Vikend
+      next_week: Naslednji teden
+      no_date: Brez datuma
+      last_week: Prejšnji teden
+      last_month: Prejšnji mesec
+      next_weekday: Naslednji delovni dan
+      up_to_today: Do danes
   numeric_input:
     decrement_button_label: Zmanjšaj
     increment_button_label: Povečaj

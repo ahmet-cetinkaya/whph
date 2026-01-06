@@ -78,22 +78,14 @@ shared:
     cannot_select_date_before_min_date: Datum kann nicht vor {date} ausgewählt werden
     cannot_select_time_after_max_date: Zeit kann nicht nach {time} ausgewählt werden
     cannot_select_time_before_min_date: Zeit kann nicht vor {time} ausgewählt werden
-    deadline_cannot_be_before_planned_date:
-      Fälligkeitsdatum muss am oder nach dem
-      geplanten Datum liegen
+    deadline_cannot_be_before_planned_date: Fälligkeitsdatum muss am oder nach dem geplanten Datum liegen
     end_date_cannot_be_after_max_date: Enddatum kann nicht nach dem {date} liegen
     end_date_must_be_at_or_before: Enddatum muss am oder vor dem {date} sein
     select_date_range_title: Datumsbereich auswählen
     select_date_time_title: Datum und Uhrzeit auswählen
-    selected_date_must_be_at_or_after:
-      Ausgewähltes Datum muss am oder nach dem {date}
-      sein
-    selected_date_must_be_at_or_before:
-      Ausgewähltes Datum muss am oder vor dem {date}
-      sein
-    selected_date_time_must_be_after:
-      Ausgewähltes Datum und Uhrzeit müssen nach {dateTime}
-      sein
+    selected_date_must_be_at_or_after: Ausgewähltes Datum muss am oder nach dem {date} sein
+    selected_date_must_be_at_or_before: Ausgewähltes Datum muss am oder vor dem {date} sein
+    selected_date_time_must_be_after: Ausgewähltes Datum und Uhrzeit müssen nach {dateTime} sein
     start_date_cannot_be_after_end_date: Startdatum kann nicht nach Enddatum liegen
     start_date_cannot_be_before_min_date: Startdatum kann nicht vor dem {date} liegen
     start_date_must_be_at_or_after: Startdatum muss am oder nach dem {date} sein
@@ -150,8 +142,7 @@ shared:
     loading: Fehler beim Laden der Daten
     report_subject: "{appName} App: Unerwarteter Fehlerbericht"
     report_template:
-      "Hallo, ich bin auf einen unerwarteten Fehler gestoßen, während
-      ich die {appName} App verwendet habe.
+      "Hallo, ich bin auf einen unerwarteten Fehler gestoßen, während ich die {appName} App verwendet habe.
 
 
       Hier sind Informationen, die Ihnen bei der Diagnose des Problems helfen könnten:
@@ -190,9 +181,7 @@ shared:
   startup_error:
     copied_to_clipboard: Fehlerdetails in die Zwischenablage kopiert
     copy_button: Fehlerdetails kopieren
-    description:
-      Etwas ist während des App-Starts schiefgelaufen. Dies könnte auf
-      ein Systemproblem oder eine inkompatible Konfiguration zurückzuführen sein.
+    description: Etwas ist während des App-Starts schiefgelaufen. Dies könnte auf ein Systemproblem oder eine inkompatible Konfiguration zurückzuführen sein.
     details_title: Fehlerdetails
     report_button: Problem melden
     title: Datum und Uhrzeit
@@ -267,9 +256,7 @@ shared:
     average_daily_label: Durchschnittlich täglich
     peak_hour_label: Hauptstunde
     select_date_range_message: Datumsbereich auswählen, um Statistiken zu filtern
-    select_date_range_description:
-      Benutzerdefinierten Datumsbereich auswählen, um
-      Nutzungsstatistiken anzuzeigen
+    select_date_range_description: Benutzerdefinierten Datumsbereich auswählen, um Nutzungsstatistiken anzuzeigen
   time:
     not_set: Nicht festgelegt
     minutes: Minuten
@@ -362,12 +349,8 @@ shared:
     cannot_select_time_after_max_date: Zeit kann nicht nach {time} ausgewählt werden
     time_must_be_at_or_after: Zeit muss um oder nach {time} sein
     time_must_be_at_or_before: Zeit muss um oder vor {time} sein
-    selected_date_must_be_at_or_after:
-      Ausgewähltes Datum muss am oder nach dem {date}
-      sein
-    selected_date_must_be_at_or_before:
-      Ausgewähltes Datum muss am oder vor dem {date}
-      sein
+    selected_date_must_be_at_or_after: Ausgewähltes Datum muss am oder nach dem {date} sein
+    selected_date_must_be_at_or_before: Ausgewähltes Datum muss am oder vor dem {date} sein
     start_date_cannot_be_after_end_date: Startdatum kann nicht nach Enddatum liegen
     start_date_must_be_at_or_after: Startdatum muss am oder nach dem {date} sein
     end_date_must_be_at_or_before: Enddatum muss am oder vor dem {date} sein
@@ -375,25 +358,26 @@ shared:
     cannot_select_date_after_max_date: Datum kann nicht nach {date} ausgewählt werden
     start_date_cannot_be_before_min_date: Startdatum kann nicht vor dem {date} liegen
     end_date_cannot_be_after_max_date: Enddatum kann nicht nach dem {date} liegen
-    selected_date_time_must_be_after:
-      Ausgewähltes Datum und Uhrzeit müssen nach {dateTime}
-      sein
+    selected_date_time_must_be_after: Ausgewähltes Datum und Uhrzeit müssen nach {dateTime} sein
     select_date_time_title: Datum und Uhrzeit auswählen
     select_date_range_title: Datumsbereich auswählen
     refresh_description: Ausgewählten Datumsbereich automatisch aktualisieren
     date_time_field_label: Datum- und Zeitfeld
     date_time_field_hint: Datum und Uhrzeit auswählen
-    quick_selection_today: Heute
-    quick_selection_tomorrow: Morgen
-    quick_selection_weekend: Wochenende
-    quick_selection_next_week: Nächste Woche
-    quick_selection_no_date: Kein Datum
-    quick_selection_last_week: Vor einer Woche
-    quick_selection_last_month: Vor einem Monat
     time_picker_hour_label: Stunde
     time_picker_minute_label: Minute
     time_picker_all_day_label: Ganzer Tag
-    quick_selection_next_weekday: Nächster Werktag
+    show_no_date: Elemente ohne Datum anzeigen
+    quick_selection:
+      today: Heute
+      tomorrow: Morgen
+      weekend: Wochenende
+      next_week: Nächste Woche
+      no_date: Kein Datum
+      last_week: Vor einer Woche
+      last_month: Vor einem Monat
+      next_weekday: Nächster Werktag
+      up_to_today: Bis heute
   numeric_input:
     decrement_button_label: Verringern
     increment_button_label: Erhöhen

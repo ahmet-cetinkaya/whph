@@ -78,9 +78,7 @@ shared:
     cannot_select_date_before_min_date: Kan inte välja datum före {date}
     cannot_select_time_after_max_date: Kan inte välja tid efter {time}
     cannot_select_time_before_min_date: Kan inte välja tid före {time}
-    deadline_cannot_be_before_planned_date:
-      Deadline måste vara på eller efter planerat
-      datum
+    deadline_cannot_be_before_planned_date: Deadline måste vara på eller efter planerat datum
     end_date_cannot_be_after_max_date: Slutdatum kan inte vara efter {date}
     end_date_must_be_at_or_before: Slutdatum måste vara på eller före {date}
     select_date_range_title: Välj datumintervall
@@ -144,8 +142,7 @@ shared:
     loading: Fel uppstod vid laddning av data
     report_subject: "{appName} App: Oväntad felrapport"
     report_template:
-      "Hej, jag stötte på ett oväntat fel när jag använde {appName}
-      appen.
+      "Hej, jag stötte på ett oväntat fel när jag använde {appName} appen.
 
 
       Här är information som kan hjälpa till att diagnostisera problemet:
@@ -184,9 +181,7 @@ shared:
   startup_error:
     copied_to_clipboard: Feltdetaljer kopierade till urklipp
     copy_button: Kopiera feltdetaljer
-    description:
-      Något gick fel under appstarten. Detta kan bero på ett systemproblem
-      eller inkompatibel konfiguration.
+    description: Något gick fel under appstarten. Detta kan bero på ett systemproblem eller inkompatibel konfiguration.
     details_title: Feltdetaljer
     report_button: Rapportera Problem
     title: Appstartfel
@@ -369,17 +364,20 @@ shared:
     refresh_description: Uppdatera automatiskt valt datumintervall
     date_time_field_label: Datum- och tidsfält
     date_time_field_hint: Välj datum och tid
-    quick_selection_today: Idag
-    quick_selection_tomorrow: Imorgon
-    quick_selection_weekend: Helg
-    quick_selection_next_week: Nästa vecka
-    quick_selection_no_date: Inget datum
-    quick_selection_last_week: Förra veckan
-    quick_selection_last_month: Förra månaden
     time_picker_hour_label: Timme
     time_picker_minute_label: Minut
     time_picker_all_day_label: Hela dagen
-    quick_selection_next_weekday: Nästa vardag
+    show_no_date: Visa objekt utan datum
+    quick_selection:
+      today: Idag
+      tomorrow: Imorgon
+      weekend: Helg
+      next_week: Nästa vecka
+      no_date: Inget datum
+      last_week: Förra veckan
+      last_month: Förra månaden
+      next_weekday: Nästa vardag
+      up_to_today: Till idag
   numeric_input:
     decrement_button_label: Minska
     increment_button_label: Öka

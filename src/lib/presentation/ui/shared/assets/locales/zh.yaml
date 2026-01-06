@@ -363,17 +363,20 @@ shared:
     refresh_description: 自动刷新选定的日期范围
     date_time_field_label: 日期时间字段
     date_time_field_hint: 选择日期和时间
-    quick_selection_today: 今天
-    quick_selection_tomorrow: 明天
-    quick_selection_weekend: 周末
-    quick_selection_next_week: 下周
-    quick_selection_no_date: 无日期
-    quick_selection_last_week: 上周
-    quick_selection_last_month: 上个月
     time_picker_hour_label: 小时
     time_picker_minute_label: 分钟
     time_picker_all_day_label: 全天
-    quick_selection_next_weekday: 下一个工作日
+    show_no_date: 显示没有日期的项目
+    quick_selection:
+      today: 今天
+      tomorrow: 明天
+      weekend: 周末
+      next_week: 下周
+      no_date: 无日期
+      last_week: 上周
+      last_month: 上个月
+      next_weekday: 下一个工作日
+      up_to_today: 到今天
   numeric_input:
     decrement_button_label: 减少
     increment_button_label: 增加
