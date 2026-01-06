@@ -403,117 +403,63 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   Widget _buildGridList() {
-    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
-      // Use ReorderableListView for drag-and-drop in mini layout
-      return ReorderableListView(
-        key: ValueKey('reorderable_grid_$_effectiveStyle'),
-        buildDefaultDragHandles: false,
-        shrinkWrap: widget.useParentScroll,
-        physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        proxyDecorator: (child, index, animation) => Material(
-          elevation: 2,
-          child: child,
-        ),
-        scrollController: widget.useParentScroll ? null : _scrollController,
-        onReorder: (oldIndex, newIndex) =>
-            _onReorder(oldIndex, newIndex), // Use legacy handler or independent? Legacy for grid for now.
-        children: [
-          ..._habitList!.items.asMap().entries.map((entry) {
-            final index = entry.key;
-            final habit = entry.value;
-            return Padding(
-              key: ValueKey('reorderable_grid_${habit.id}_$_effectiveStyle'),
-              padding: const EdgeInsets.all(AppTheme.size4XSmall),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 100),
-                child: HabitCard(
-                  key: ValueKey('habit_card_reorderable_${habit.id}_$_effectiveStyle'),
-                  habit: habit,
-                  style: _effectiveStyle,
-                  dateRange: widget.dateRange,
-                  onOpenDetails: () => widget.onClickHabit(habit),
-                  isDense: true,
-                  showDragHandle: widget.enableReordering &&
-                      widget.sortConfig?.useCustomOrder == true &&
-                      !widget.forceOriginalLayout,
-                  dragIndex: !habit.isArchived ? index : null, // Only draggable if not archived
-                ),
-              ),
-            );
-          }),
-          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
-            Padding(
-              key: ValueKey('load_more_button_grid_$_effectiveStyle'),
-              padding: const EdgeInsets.all(AppTheme.sizeXSmall),
-              child: Center(
-                child: LoadMoreButton(onPressed: onLoadMore),
-              ),
-            ),
-          if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
-            Padding(
-              key: ValueKey('loading_indicator_grid_$_effectiveStyle'),
-              padding: const EdgeInsets.all(AppTheme.sizeXSmall),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-        ],
-      );
-    } else {
-      // Calculate the total item count including load more button
-      final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
+    // Note: When custom order is active, _effectiveStyle becomes list mode, so grid mode
+    // never has reordering. The GridView below is the only path for grid layout.
+    // Calculate the total item count including load more button
+    final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
 
-      return GridView.builder(
-        key: ValueKey('grid_view_$_effectiveStyle'),
-        controller: _scrollController,
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 300.0,
-          crossAxisSpacing: AppTheme.sizeSmall,
-          mainAxisSpacing: AppTheme.sizeSmall,
-          mainAxisExtent: 42,
-        ),
-        itemCount: totalItemCount,
-        itemBuilder: (context, index) {
-          // Load more button at the end
-          if (index == _habitList!.items.length && widget.paginationMode == PaginationMode.loadMore) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.sizeXSmall),
-                child: LoadMoreButton(onPressed: onLoadMore),
-              ),
-            );
-          } else if (index == _habitList!.items.length &&
-              widget.paginationMode == PaginationMode.infinityScroll &&
-              isLoadingMore) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(AppTheme.sizeXSmall),
-                child: CircularProgressIndicator(),
-              ),
-            );
-          } else if (index >= _habitList!.items.length) {
-            return const SizedBox.shrink();
-          }
-
-          final habit = _habitList!.items[index];
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 100),
+    return GridView.builder(
+      key: ValueKey('grid_view_$_effectiveStyle'),
+      controller: _scrollController,
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 300.0,
+        crossAxisSpacing: AppTheme.sizeSmall,
+        mainAxisSpacing: AppTheme.sizeSmall,
+        mainAxisExtent: 42,
+      ),
+      itemCount: totalItemCount,
+      itemBuilder: (context, index) {
+        // Load more button at the end
+        if (index == _habitList!.items.length && widget.paginationMode == PaginationMode.loadMore) {
+          return Center(
             child: Padding(
-              padding: const EdgeInsets.all(AppTheme.size4XSmall),
-              child: HabitCard(
-                key: ValueKey(
-                    'habit_card_grid_${habit.id}_${_effectiveStyle}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
-                habit: habit,
-                style: _effectiveStyle,
-                dateRange: widget.dateRange,
-                onOpenDetails: () => widget.onClickHabit(habit),
-                isDense: true,
-              ),
+              padding: const EdgeInsets.all(AppTheme.sizeXSmall),
+              child: LoadMoreButton(onPressed: onLoadMore),
             ),
           );
-        },
-      );
-    }
+        } else if (index == _habitList!.items.length &&
+            widget.paginationMode == PaginationMode.infinityScroll &&
+            isLoadingMore) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(AppTheme.sizeXSmall),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (index >= _habitList!.items.length) {
+          return const SizedBox.shrink();
+        }
+
+        final habit = _habitList!.items[index];
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 100),
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.size4XSmall),
+            child: HabitCard(
+              key: ValueKey(
+                  'habit_card_grid_${habit.id}_${_effectiveStyle}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
+              habit: habit,
+              style: _effectiveStyle,
+              dateRange: widget.dateRange,
+              onOpenDetails: () => widget.onClickHabit(habit),
+              isDense: true,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Map<String, List<HabitListItem>> _groupHabits() {
@@ -787,100 +733,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         });
   }
 
-  // Necessary fallback for Grid mode reordering (no independent lists yet)
-  Future<void> _onReorder(int oldIndex, int newIndex) async {
-    // ... legacy simple reorder for grid ...
-    // For now reusing the one for single list if grid uses it.
-    // But Grid calls `_onReorder`.
-
-    // Simplest port of old `_onReorder` but using `_habitList!.items` directly without "VisualItems" logic
-    // since Grid doesn't have headers.
-    if (!mounted) return;
-
-    _dragStateNotifier.startDragging();
-    final items = _habitList!.items;
-
+  void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<HabitListItem>> visualItems) {
+    // Adjust newIndex when moving item downward (as per SliverReorderableList behavior)
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-
-    final habit = items[oldIndex];
-    final originalOrder = habit.order ?? 0.0;
-
-    try {
-      // Calculation using OrderRank...
-      // Duplicating logic is fine for now to keep Grid working.
-      final existingOrders = items.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
-      double targetOrder;
-      if (newIndex == 0) {
-        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
-        targetOrder = firstOrder - OrderRank.initialStep;
-      } else {
-        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
-      }
-
-      if ((targetOrder - originalOrder).abs() < 1e-10) {
-        _dragStateNotifier.stopDragging();
-        return;
-      }
-
-      setState(() {
-        final reorderedItems = List<HabitListItem>.from(items);
-        reorderedItems.removeAt(oldIndex);
-        reorderedItems.insert(newIndex, habit.copyWith(order: targetOrder));
-        reorderedItems.sort((a, b) => (a.order ?? 0.0).compareTo(b.order ?? 0.0));
-        _habitList = GetListHabitsQueryResponse(
-          items: reorderedItems,
-          totalItemCount: _habitList!.totalItemCount,
-          pageIndex: _habitList!.pageIndex,
-          pageSize: _habitList!.pageSize,
-        );
-      });
-
-      await AsyncErrorHandler.execute<UpdateHabitOrderResponse>(
-          context: context,
-          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
-          operation: () async {
-            return await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
-              UpdateHabitOrderCommand(habitId: habit.id, newOrder: targetOrder),
-            );
-          },
-          onSuccess: (result) {
-            _dragStateNotifier.stopDragging();
-            if ((result.order - targetOrder).abs() > 1e-10) refresh();
-          },
-          onError: (_) {
-            _dragStateNotifier.stopDragging();
-            refresh();
-          });
-    } catch (e) {
-      if (e is RankGapTooSmallException && mounted) {
-        // Normalize all habit orders to resolve ranking conflicts
-        await AsyncErrorHandler.executeVoid(
-          context: context,
-          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
-          operation: () async {
-            await _mediator.send<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse>(
-              const NormalizeHabitOrdersCommand(),
-            );
-          },
-          onSuccess: () {
-            _dragStateNotifier.stopDragging();
-            widget.onReorderComplete?.call(); // Refresh to show normalized order
-          },
-          onError: (_) {
-            _dragStateNotifier.stopDragging();
-            refresh();
-          },
-        );
-      } else {
-        _dragStateNotifier.stopDragging();
-        refresh();
-      }
-    }
-  }
-
-  void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<HabitListItem>> visualItems) {
     if (oldIndex < 0 || oldIndex >= visualItems.length) return;
 
     final oldItem = visualItems[oldIndex];

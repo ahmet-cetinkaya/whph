@@ -208,6 +208,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   }
 
   void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<TaskListItem>> visualItems) {
+    // Adjust newIndex when moving item downward (as per SliverReorderableList behavior)
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
     if (oldIndex < 0 || oldIndex >= visualItems.length) return;
 
     final oldItem = visualItems[oldIndex];
