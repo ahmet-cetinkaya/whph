@@ -7,6 +7,10 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 class TaskUiConstants {
+  // Date filter constants
+  static final DateTime minFilterDate = DateTime(2000);
+  static final DateTime maxFilterDate = DateTime(2050);
+
   // Task-specific Icons
   static const IconData priorityIcon = Icons.flag;
   static const IconData priorityOutlinedIcon = Icons.flag_outlined;

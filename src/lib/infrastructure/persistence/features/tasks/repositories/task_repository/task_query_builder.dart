@@ -57,6 +57,7 @@ class TaskQueryBuilder {
   }
 
   /// Builds date filter conditions (planned and deadline dates).
+  /// Builds date filter conditions (planned and deadline dates).
   QueryConditionResult buildDateCondition({
     DateTime? filterByPlannedStartDate,
     DateTime? filterByPlannedEndDate,
@@ -64,19 +65,34 @@ class TaskQueryBuilder {
     DateTime? filterByDeadlineEndDate,
     required bool filterDateOr,
     required bool areParentAndSubTasksIncluded,
+    bool includeNullDates = false,
   }) {
     final dateParts = <String>[];
     final variables = <Variable>[];
 
-    if (filterByPlannedStartDate != null || filterByPlannedEndDate != null) {
+    // Determine strict null handling: if filtering by MULTIPLE fields with OR,
+    // "No Date" means ALL of them must be null.
+    // If filtering by single field, matching null is lenient (IS NULL).
+    final hasPlannedFilter = filterByPlannedStartDate != null || filterByPlannedEndDate != null;
+    final hasDeadlineFilter = filterByDeadlineStartDate != null || filterByDeadlineEndDate != null;
+    final isMultiFieldOrFilter = hasPlannedFilter && hasDeadlineFilter && filterDateOr;
+
+    // Use "lenient" null checks for individual fields only if we are NOT in the special multi-field OR mode
+    // If we ARE in multi-field OR mode, we will append a separate "ALL NULL" condition at the end.
+    final bool useIndividualNullCheck = includeNullDates && !isMultiFieldOrFilter;
+
+    if (hasPlannedFilter) {
       if (areParentAndSubTasksIncluded) {
-        // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
         final plannedCondition = '''(
-          (task_table.planned_date >= ? AND task_table.planned_date <= ?)
+          ((task_table.planned_date >= ? AND task_table.planned_date <= ?)${useIndividualNullCheck ? ' OR task_table.planned_date IS NULL' : ''})
           OR
-          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (subtask.planned_date >= ? AND subtask.planned_date <= ?))
+          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (
+            (subtask.planned_date >= ? AND subtask.planned_date <= ?)${useIndividualNullCheck ? ' OR subtask.planned_date IS NULL' : ''}
+          ))
           OR
-          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (parent.planned_date >= ? AND parent.planned_date <= ?))
+          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (
+            (parent.planned_date >= ? AND parent.planned_date <= ?)${useIndividualNullCheck ? ' OR parent.planned_date IS NULL' : ''}
+          ))
         )''';
         dateParts.add(plannedCondition);
         // Add variables for: task_table, subtask, parent
@@ -84,7 +100,9 @@ class TaskQueryBuilder {
         final endVar = Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999));
         variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
-        dateParts.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
+        dateParts.add(useIndividualNullCheck
+            ? '(task_table.planned_date IS NULL OR (task_table.planned_date >= ? AND task_table.planned_date <= ?))'
+            : 'task_table.planned_date >= ? AND task_table.planned_date <= ?');
         variables.addAll([
           Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)),
           Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999))
@@ -92,15 +110,18 @@ class TaskQueryBuilder {
       }
     }
 
-    if (filterByDeadlineStartDate != null || filterByDeadlineEndDate != null) {
+    if (hasDeadlineFilter) {
       if (areParentAndSubTasksIncluded) {
-        // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
         final deadlineCondition = '''(
-          (task_table.deadline_date >= ? AND task_table.deadline_date <= ?)
+          ((task_table.deadline_date >= ? AND task_table.deadline_date <= ?)${useIndividualNullCheck ? ' OR task_table.deadline_date IS NULL' : ''})
           OR
-          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (subtask.deadline_date >= ? AND subtask.deadline_date <= ?))
+          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (
+            (subtask.deadline_date >= ? AND subtask.deadline_date <= ?)${useIndividualNullCheck ? ' OR subtask.deadline_date IS NULL' : ''}
+          ))
           OR
-          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (parent.deadline_date >= ? AND parent.deadline_date <= ?))
+          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (
+            (parent.deadline_date >= ? AND parent.deadline_date <= ?)${useIndividualNullCheck ? ' OR parent.deadline_date IS NULL' : ''}
+          ))
         )''';
         dateParts.add(deadlineCondition);
         // Add variables for: task_table, subtask, parent
@@ -108,7 +129,9 @@ class TaskQueryBuilder {
         final endVar = Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999));
         variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
-        dateParts.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
+        dateParts.add(useIndividualNullCheck
+            ? '(task_table.deadline_date IS NULL OR (task_table.deadline_date >= ? AND task_table.deadline_date <= ?))'
+            : 'task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
         variables.addAll([
           Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)),
           Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999))
@@ -116,9 +139,46 @@ class TaskQueryBuilder {
       }
     }
 
-    final condition = dateParts.isEmpty
-        ? '1=1'
-        : (dateParts.length == 1 ? dateParts[0] : '(${dateParts.join(filterDateOr ? ' OR ' : ' AND ')})');
+    String condition;
+    if (dateParts.isEmpty) {
+      condition = '1=1';
+    } else {
+      if (isMultiFieldOrFilter) {
+        // Special case: Planned OR Deadline.
+        // If includeNullDates is true, we want (PlannedInRange) OR (DeadlineInRange) OR (Planned IS NULL AND Deadline IS NULL).
+        final joinedParts = dateParts.join(' OR ');
+
+        if (includeNullDates) {
+          if (areParentAndSubTasksIncluded) {
+            // For strict null check with hierarchy, valid "Null Task" is one where NEITHER field matches,
+            // implying we check if BOTH are null on the SAME entity.
+            // This gets complicated with subtasks/parents.
+            // Simplification: We add "OR BOTH NULL" for the main task.
+            // For subtasks/parents, we assume the same strictness applies.
+
+            // Strict null condition for main task
+            const strictNullSelf = '(task_table.planned_date IS NULL AND task_table.deadline_date IS NULL)';
+
+            // Strict null condition for subtasks
+            const strictNullSub =
+                'EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.planned_date IS NULL AND subtask.deadline_date IS NULL)';
+
+            // Strict null condition for parent
+            const strictNullParent =
+                'EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.planned_date IS NULL AND parent.deadline_date IS NULL)';
+
+            condition = '($joinedParts OR $strictNullSelf OR $strictNullSub OR $strictNullParent)';
+          } else {
+            condition = '($joinedParts OR (task_table.planned_date IS NULL AND task_table.deadline_date IS NULL))';
+          }
+        } else {
+          condition = '($joinedParts)';
+        }
+      } else {
+        // Standard behavior (Single filter OR multiple with AND)
+        condition = dateParts.length == 1 ? dateParts[0] : '(${dateParts.join(filterDateOr ? ' OR ' : ' AND ')})';
+      }
+    }
 
     return (condition: condition, variables: variables);
   }

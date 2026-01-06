@@ -88,9 +88,7 @@ shared:
     cannot_select_date_before_min_date: Cannot select date before {date}
     cannot_select_time_after_max_date: Cannot select time after {time}
     cannot_select_time_before_min_date: Cannot select time before {time}
-    deadline_cannot_be_before_planned_date:
-      Deadline date must be on or after the
-      planned date
+    deadline_cannot_be_before_planned_date: Deadline date must be on or after the planned date
     end_date_cannot_be_after_max_date: End date cannot be after {date}
     end_date_must_be_at_or_before: End date must be at or before {date}
     select_date_range_title: Select Date Range
@@ -160,8 +158,7 @@ shared:
     loading: Error occurred while loading data
     report_subject: "{appName} App: Unexpected Error Report"
     report_template:
-      "Hi, I encountered an unexpected error while using the {appName}
-      app.
+      "Hi, I encountered an unexpected error while using the {appName} app.
 
 
       Here's information that might help you diagnose the issue:
@@ -200,9 +197,7 @@ shared:
   startup_error:
     copied_to_clipboard: Error details copied to clipboard
     copy_button: Copy error details
-    description:
-      Something went wrong during app startup. This could be due to a system
-      issue or incompatible configuration.
+    description: Something went wrong during app startup. This could be due to a system issue or incompatible configuration.
     details_title: Error Details
     report_button: Report Issue
     title: App Startup Error
@@ -386,17 +381,20 @@ shared:
     refresh_description: Automatically refresh selected date range
     date_time_field_label: Date and time field
     date_time_field_hint: Select date and time
-    quick_selection_today: Today
-    quick_selection_tomorrow: Tomorrow
-    quick_selection_weekend: Weekend
-    quick_selection_next_week: Next week
-    quick_selection_no_date: No date
-    quick_selection_last_week: Last week
-    quick_selection_last_month: Last month
     time_picker_hour_label: Hour
     time_picker_minute_label: Minute
     time_picker_all_day_label: All day
-    quick_selection_next_weekday: Next Weekday
+    show_no_date: Show items with no date
+    quick_selection:
+      today: Today
+      tomorrow: Tomorrow
+      weekend: Weekend
+      next_week: Next week
+      no_date: No date
+      last_week: Last week
+      last_month: Last month
+      next_weekday: Next Weekday
+      up_to_today: Up to Today
   numeric_input:
     decrement_button_label: Decrease
     increment_button_label: Increase

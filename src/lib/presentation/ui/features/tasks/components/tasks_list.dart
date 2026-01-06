@@ -35,6 +35,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final DateTime? filterByDeadlineStartDate;
   final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
+  final bool includeNullDates;
   final bool? filterByCompleted;
   final DateTime? filterByCompletedStartDate;
   final DateTime? filterByCompletedEndDate;
@@ -74,6 +75,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
     this.filterByDeadlineStartDate,
     this.filterByDeadlineEndDate,
     this.filterDateOr = false,
+    this.includeNullDates = false,
     this.filterByCompleted,
     this.filterByCompletedStartDate,
     this.filterByCompletedEndDate,
@@ -251,6 +253,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       'plannedEndDate': oldWidget.filterByPlannedEndDate?.toIso8601String(),
       'deadlineStartDate': oldWidget.filterByDeadlineStartDate?.toIso8601String(),
       'deadlineEndDate': oldWidget.filterByDeadlineEndDate?.toIso8601String(),
+      'filterDateOr': oldWidget.filterDateOr,
+      'includeNullDates': oldWidget.includeNullDates,
       'sortConfig': oldWidget.sortConfig,
     };
 
@@ -267,6 +271,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       'plannedEndDate': widget.filterByPlannedEndDate?.toIso8601String(),
       'deadlineStartDate': widget.filterByDeadlineStartDate?.toIso8601String(),
       'deadlineEndDate': widget.filterByDeadlineEndDate?.toIso8601String(),
+      'filterDateOr': widget.filterDateOr,
+      'includeNullDates': widget.includeNullDates,
       'sortConfig': widget.sortConfig,
     };
 
@@ -296,6 +302,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
               ? DateTimeHelper.toUtcDateTime(widget.filterByDeadlineEndDate!)
               : null,
           filterDateOr: widget.filterDateOr,
+          includeNullDates: widget.includeNullDates,
           filterByCompletedStartDate: widget.filterByCompletedStartDate != null
               ? DateTimeHelper.toUtcDateTime(widget.filterByCompletedStartDate!)
               : null,

@@ -351,16 +351,18 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String dateTimePickerDateTimeFieldHint = 'shared.date_time_picker.date_time_field_hint';
   static const String dateTimePickerEditButtonLabel = 'shared.date_time_picker.edit_button_label';
   static const String dateTimePickerEditButtonHint = 'shared.date_time_picker.edit_button_hint';
-  static const String dateTimePickerQuickSelectionToday = 'shared.date_time_picker.quick_selection_today';
-  static const String dateTimePickerQuickSelectionTomorrow = 'shared.date_time_picker.quick_selection_tomorrow';
-  static const String dateTimePickerQuickSelectionWeekend = 'shared.date_time_picker.quick_selection_weekend';
-  static const String dateTimePickerQuickSelectionNextWeek = 'shared.date_time_picker.quick_selection_next_week';
-  static const String dateTimePickerQuickSelectionNoDate = 'shared.date_time_picker.quick_selection_no_date';
-  static const String dateTimePickerQuickSelectionLastWeek = 'shared.date_time_picker.quick_selection_last_week';
-  static const String dateTimePickerQuickSelectionLastMonth = 'shared.date_time_picker.quick_selection_last_month';
-  static const String dateTimePickerQuickSelectionNextWeekday = 'shared.date_time_picker.quick_selection_next_weekday';
+  static const String dateTimePickerQuickSelectionToday = 'shared.date_time_picker.quick_selection.today';
+  static const String dateTimePickerQuickSelectionTomorrow = 'shared.date_time_picker.quick_selection.tomorrow';
+  static const String dateTimePickerQuickSelectionWeekend = 'shared.date_time_picker.quick_selection.weekend';
+  static const String dateTimePickerQuickSelectionNextWeek = 'shared.date_time_picker.quick_selection.next_week';
+  static const String dateTimePickerQuickSelectionNoDate = 'shared.date_time_picker.quick_selection.no_date';
+  static const String dateTimePickerQuickSelectionLastWeek = 'shared.date_time_picker.quick_selection.last_week';
+  static const String dateTimePickerQuickSelectionLastMonth = 'shared.date_time_picker.quick_selection.last_month';
+  static const String dateTimePickerQuickSelectionNextWeekday = 'shared.date_time_picker.quick_selection.next_weekday';
+  static const String dateTimePickerQuickSelectionUpToToday = 'shared.date_time_picker.quick_selection.up_to_today';
   static const String dateTimePickerTimePickerHourLabel = 'shared.date_time_picker.time_picker_hour_label';
   static const String dateTimePickerTimePickerMinuteLabel = 'shared.date_time_picker.time_picker_minute_label';
+  static const String dateTimePickerShowNoDate = 'shared.date_time_picker.show_no_date';
   static const String dateTimePickerTimePickerAllDayLabel = 'shared.date_time_picker.time_picker_all_day_label';
 
   static const String help = "shared.help";
@@ -550,6 +552,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
         return SharedTranslationKeys.dateTimePickerQuickSelectionLastMonth;
       case DateTimePickerTranslationKey.quickSelectionNextWeekday:
         return SharedTranslationKeys.dateTimePickerQuickSelectionNextWeekday;
+      case DateTimePickerTranslationKey.quickSelectionUpToToday:
+        return SharedTranslationKeys.dateTimePickerQuickSelectionUpToToday;
       case DateTimePickerTranslationKey.timePickerHourLabel:
         return SharedTranslationKeys.dateTimePickerTimePickerHourLabel;
       case DateTimePickerTranslationKey.timePickerMinuteLabel:

@@ -347,6 +347,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         filterByDeadlineEndDate: f.deadlineEndDate,
         filterDateOr: f.dateOr,
         areParentAndSubTasksIncluded: true,
+        includeNullDates: f.includeNullDates,
       );
 
       final searchResult = _queryBuilder.buildSearchCondition(
@@ -379,6 +380,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         filterByDeadlineEndDate: f.deadlineEndDate,
         filterDateOr: f.dateOr,
         areParentAndSubTasksIncluded: false,
+        includeNullDates: f.includeNullDates,
       );
 
       if (dateResult.condition != '1=1') {

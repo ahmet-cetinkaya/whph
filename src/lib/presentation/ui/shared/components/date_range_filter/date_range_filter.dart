@@ -1,7 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart' hide DatePickerDialog;
 import 'package:acore/acore.dart'
-    show DatePickerConfig, DateSelectionMode, DatePickerDialog, DateTimePickerTranslationKey, DialogSize;
+    show
+        DatePickerConfig,
+        DateSelectionMode,
+        DatePickerDialog,
+        DateTimePickerTranslationKey,
+        DialogSize,
+        QuickDateRange,
+        DatePickerFooterAction;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -10,6 +17,7 @@ import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/date_range_filter/controllers/date_range_filter_controller.dart';
 import 'package:whph/presentation/ui/shared/components/date_range_filter/helpers/quick_date_range_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 
 class DateRangeFilter extends StatefulWidget {
   final DateTime? selectedStartDate;
@@ -20,6 +28,8 @@ class DateRangeFilter extends StatefulWidget {
   final Function(DateTime?, DateTime?, DateFilterSetting?)? onAutoRefresh;
   final double iconSize;
   final Color? iconColor;
+  final List<QuickDateRange>? additionalQuickRanges;
+  final List<DatePickerFooterAction>? footerActions;
 
   const DateRangeFilter({
     super.key,
@@ -31,6 +41,8 @@ class DateRangeFilter extends StatefulWidget {
     this.onAutoRefresh,
     this.iconSize = AppTheme.iconSizeMedium,
     this.iconColor,
+    this.additionalQuickRanges,
+    this.footerActions,
   });
 
   @override
@@ -49,6 +61,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     _translationService = container.resolve<ITranslationService>();
     _quickRangeHelper = QuickDateRangeHelper(translationService: _translationService);
     _controller = DateRangeFilterController(quickRangeHelper: _quickRangeHelper);
+    _controller.additionalQuickRanges = widget.additionalQuickRanges;
 
     _controller.addListener(_onControllerChanged);
     _controller.initializeFromSettings(
@@ -76,6 +89,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   void didUpdateWidget(DateRangeFilter oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    if (widget.additionalQuickRanges != oldWidget.additionalQuickRanges) {
+      _controller.additionalQuickRanges = widget.additionalQuickRanges;
+    }
+
     if (widget.dateFilterSetting != oldWidget.dateFilterSetting) {
       if (_controller.isAutoRefreshActive() && _controller.isSameQuickSelection(widget.dateFilterSetting)) {
         return;
@@ -101,13 +118,17 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         key: _translationService.translate(SharedTranslationKeys.mapDateTimePickerKey(key)),
     };
 
-    final quickRanges = _quickRangeHelper.getQuickRanges();
+    final quickRanges = [
+      if (widget.additionalQuickRanges != null) ...widget.additionalQuickRanges!,
+      ..._quickRangeHelper.getQuickRanges(),
+    ];
+
     final config = DatePickerConfig(
       selectionMode: DateSelectionMode.range,
       initialStartDate: _controller.selectedStartDate,
       initialEndDate: _controller.selectedEndDate,
-      minDate: DateTime(2000),
-      maxDate: DateTime(2050),
+      minDate: TaskUiConstants.minFilterDate,
+      maxDate: TaskUiConstants.maxFilterDate,
       showQuickRanges: true,
       quickRanges: quickRanges,
       enableManualInput: true,
@@ -118,6 +139,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       actionButtonRadius: AppTheme.containerBorderRadius,
       allowNullConfirm: true,
       dialogSize: DialogSize.xLarge,
+      footerActions: widget.footerActions,
     );
 
     final result = await DatePickerDialog.showResponsive(
@@ -132,6 +154,25 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
 
       // Detect quick selection
       String? quickSelectionKey = result.quickSelectionKey;
+
+      // Try to detect injected custom ranges first
+      if (quickSelectionKey == null && startDate != null && endDate != null && widget.additionalQuickRanges != null) {
+        for (final range in widget.additionalQuickRanges!) {
+          // We need exact match logic here. Since we can't easily reuse the helper's private logic,
+          // and QuickDateRange from acore doesn't expose a matcher, we rely on the specific implementation knowledge
+          // or we can invoke the calculator.
+
+          // Actually, we can just replicate the basic check:
+          final qStart = range.startDateCalculator();
+          final qEnd = range.endDateCalculator();
+
+          if (startDate.isAtSameMomentAs(qStart) && endDate.isAtSameMomentAs(qEnd)) {
+            quickSelectionKey = range.key;
+            break;
+          }
+        }
+      }
+
       if (quickSelectionKey == null && startDate != null && endDate != null) {
         quickSelectionKey = _quickRangeHelper.detectQuickSelectionKey(startDate, endDate);
       }
@@ -151,6 +192,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         endDate: endDate,
         refreshEnabled: refreshEnabled,
         quickSelectionKey: quickSelectionKey,
+        includeNullDates: widget.dateFilterSetting?.includeNullDates ?? false,
       );
 
       widget.onDateFilterChange(startDate, endDate);

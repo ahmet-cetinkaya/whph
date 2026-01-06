@@ -406,6 +406,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                   filterByDeadlineStartDate: _effectiveFilterStartDate,
                   filterByDeadlineEndDate: _effectiveFilterEndDate,
                   filterDateOr: true,
+                  includeNullDates: _dateFilterSetting?.includeNullDates ?? false,
                   search: _searchQuery,
                   includeSubTasks: _showSubTasks,
                   onClickTask: (task) => _openDetails(task.id),

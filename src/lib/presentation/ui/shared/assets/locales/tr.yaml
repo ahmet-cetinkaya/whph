@@ -78,9 +78,7 @@ shared:
     cannot_select_date_before_min_date: "{date} tarihinden önce bir tarih seçilemez"
     cannot_select_time_after_max_date: "{time} saatinden sonra bir saat seçilemez"
     cannot_select_time_before_min_date: "{time} saatinden önce bir saat seçilemez"
-    deadline_cannot_be_before_planned_date:
-      Bitiş tarihi planlanan tarihte veya sonrasında
-      olmalıdır
+    deadline_cannot_be_before_planned_date: Bitiş tarihi planlanan tarihte veya sonrasında olmalıdır
     end_date_cannot_be_after_max_date: Bitiş tarihi "{date}" tarihinden sonra olamaz
     end_date_must_be_at_or_before: Bitiş tarihi "{date}" veya öncesi olmalıdır
     select_date_range_title: Tarih aralığı seçin
@@ -89,9 +87,7 @@ shared:
     selected_date_must_be_at_or_before: Seçilen tarih "{date}" veya öncesi olmalı
     selected_date_time_must_be_after: Seçilen tarih ve saat "{dateTime}" sonrası olmalıdır
     start_date_cannot_be_after_end_date: Başlangıç tarihi bitiş tarihinden sonra olamaz
-    start_date_cannot_be_before_min_date:
-      Başlangıç tarihi "{date}" tarihinden önce
-      olamaz
+    start_date_cannot_be_before_min_date: Başlangıç tarihi "{date}" tarihinden önce olamaz
     start_date_must_be_at_or_after: Başlangıç tarihi "{date}" veya sonrası olmalı
     time_must_be_at_or_after: Saat {time} veya sonrası olmalıdır
     time_must_be_at_or_before: Saat {time} veya öncesi olmalıdır
@@ -146,8 +142,7 @@ shared:
     loading: Veri yüklenirken hata oluştu
     report_subject: "{appName}: Beklenmeyen Hata Bildirimi"
     report_template:
-      "Merhaba, {appName} uygulamasını kullanırken beklenmedik bir
-      hatayla karşılaştım.
+      "Merhaba, {appName} uygulamasını kullanırken beklenmedik bir hatayla karşılaştım.
 
 
       Sorunu teşhis etmenize yardımcı olabilecek bilgiler:
@@ -186,9 +181,7 @@ shared:
   startup_error:
     copied_to_clipboard: Hata detayları panoya kopyalandı
     copy_button: Hata detaylarını kopyala
-    description:
-      Uygulama başlangıcında bir şeyler ters gitti. Bu, bir sistem sorunu
-      veya uyumsuz yapılandırma nedeniyle olabilir.
+    description: Uygulama başlangıcında bir şeyler ters gitti. Bu, bir sistem sorunu veya uyumsuz yapılandırma nedeniyle olabilir.
     details_title: Hata Detayları
     report_button: Sorunu Bildir
     title: Uygulama Başlatma Hatası
@@ -266,9 +259,7 @@ shared:
     average_daily_label: Günlük Ortalama
     peak_hour_label: Zirve Saati
     select_date_range_message: İstatistikleri filtrelemek için tarih aralığı seçin
-    select_date_range_description:
-      Kullanım istatistiklerini görüntülemek için özel
-      tarih aralığı seçin
+    select_date_range_description: Kullanım istatistiklerini görüntülemek için özel tarih aralığı seçin
   time:
     not_set: Ayarlanmadı
     minutes: dakika
@@ -368,9 +359,7 @@ shared:
     end_date_must_be_at_or_before: Bitiş tarihi "{date}" veya öncesi olmalıdır
     cannot_select_date_before_min_date: "{date} tarihinden önce bir tarih seçilemez"
     cannot_select_date_after_max_date: "{date} tarihinden sonra bir tarih seçilemez"
-    start_date_cannot_be_before_min_date:
-      Başlangıç tarihi "{date}" tarihinden önce
-      olamaz
+    start_date_cannot_be_before_min_date: Başlangıç tarihi "{date}" tarihinden önce olamaz
     end_date_cannot_be_after_max_date: Bitiş tarihi "{date}" tarihinden sonra olamaz
     selected_date_time_must_be_after: Seçilen tarih ve saat "{dateTime}" sonrası olmalıdır
     select_date_time_title: Tarih ve saat seçin
@@ -378,17 +367,20 @@ shared:
     refresh_description: Seçilen tarih aralığını otomatik yenile
     date_time_field_label: Tarih ve saat alanı
     date_time_field_hint: Tarih ve saat seçin
-    quick_selection_today: Bugün
-    quick_selection_tomorrow: Yarın
-    quick_selection_weekend: Hafta sonu
-    quick_selection_next_weekday: Gelecek hafta içi
-    quick_selection_next_week: Gelecek hafta
-    quick_selection_no_date: Tarih yok
-    quick_selection_last_week: Geçen hafta
-    quick_selection_last_month: Geçen ay
     time_picker_hour_label: Saat
     time_picker_minute_label: Dakika
     time_picker_all_day_label: Tüm gün
+    show_no_date: Tarihsiz öğeleri göster
+    quick_selection:
+      today: Bugün
+      tomorrow: Yarın
+      weekend: Hafta sonu
+      next_week: Gelecek hafta
+      no_date: Tarih yok
+      last_week: Geçen hafta
+      last_month: Geçen ay
+      next_weekday: Gelecek hafta içi
+      up_to_today: Bugüne kadar
   numeric_input:
     decrement_button_label: Azalt
     increment_button_label: Artır
