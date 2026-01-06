@@ -967,11 +967,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           dateRange: widget.dateRange,
           isDateLabelShowing: false,
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          showDragHandle: widget.enableReordering &&
-              widget.sortConfig?.useCustomOrder == true &&
-              !widget.forceOriginalLayout &&
-              !habit.isArchived,
-          dragIndex: !habit.isArchived ? index : null,
+          showDragHandle: false, // Disabled in sliver mode - SliverList doesn't support reordering
+          dragIndex: null,
         ),
       );
     } else if (item is VisualItemRow<HabitListItem>) {
