@@ -734,11 +734,14 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<HabitListItem>> visualItems) {
+    // Validate bounds before index manipulation
+    if (oldIndex < 0 || oldIndex >= visualItems.length) return;
+    if (newIndex < 0 || newIndex >= visualItems.length) return;
+
     // Adjust newIndex when moving item downward (as per SliverReorderableList behavior)
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    if (oldIndex < 0 || oldIndex >= visualItems.length) return;
 
     final oldItem = visualItems[oldIndex];
     if (oldItem is! VisualItemSingle<HabitListItem>) return;

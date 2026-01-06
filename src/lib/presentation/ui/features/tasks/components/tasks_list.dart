@@ -208,11 +208,14 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   }
 
   void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<TaskListItem>> visualItems) {
+    // Validate bounds before index manipulation
+    if (oldIndex < 0 || oldIndex >= visualItems.length) return;
+    if (newIndex < 0 || newIndex >= visualItems.length) return;
+
     // Adjust newIndex when moving item downward (as per SliverReorderableList behavior)
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    if (oldIndex < 0 || oldIndex >= visualItems.length) return;
 
     final oldItem = visualItems[oldIndex];
     if (oldItem is! VisualItemSingle<TaskListItem>) return;
@@ -608,18 +611,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       );
     } catch (e) {
       if (e is RankGapTooSmallException && mounted) {
-        // Normalize all task orders? Or just try to recover?
-        // TasksList logic had a "retry with spacing" block.
-        // But HabitsList logic used NormalizeHabitOrdersCommand?
-        // TasksList apparently doesn't have NormalizeTaskOrdersCommand exposed here or used in original code?
-        // Original code used: `final targetOrder = groupTasks.last.order + OrderRank.initialStep * 2;`
-        // I'll keep the retry logic but simplified if possible, or copy it back.
-        // Original code:
-        /*
-        // Try to recover by placing at the end
-        final targetOrder = groupTasks.last.order + OrderRank.initialStep * 2;
-         */
-        // I will use that logic.
+        // Fallback recovery: Place the task at the end of the group with increased spacing
+        // to resolve order rank conflicts when the gap is too small for normal insertion.
         final retryTargetOrder = (groupTasks.isNotEmpty ? groupTasks.last.order : 0.0) + OrderRank.initialStep * 2;
 
         await AsyncErrorHandler.executeVoid(
