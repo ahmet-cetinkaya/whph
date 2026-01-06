@@ -15,12 +15,16 @@ class DateFilterSetting {
   /// Whether auto-refresh is enabled for quick selections (dynamic dates)
   final bool isAutoRefreshEnabled;
 
+  /// Whether to include items with null dates in the filter results
+  final bool includeNullDates;
+
   const DateFilterSetting({
     this.quickSelectionKey,
     this.startDate,
     this.endDate,
     this.isQuickSelection = false,
     this.isAutoRefreshEnabled = false,
+    this.includeNullDates = false,
   });
 
   /// Create a quick selection date filter
@@ -29,6 +33,7 @@ class DateFilterSetting {
     required DateTime startDate,
     required DateTime endDate,
     bool isAutoRefreshEnabled = false,
+    bool includeNullDates = false,
   }) {
     return DateFilterSetting(
       quickSelectionKey: key,
@@ -36,6 +41,7 @@ class DateFilterSetting {
       endDate: endDate,
       isQuickSelection: true,
       isAutoRefreshEnabled: isAutoRefreshEnabled,
+      includeNullDates: includeNullDates,
     );
   }
 
@@ -43,12 +49,33 @@ class DateFilterSetting {
   factory DateFilterSetting.manual({
     required DateTime? startDate,
     required DateTime? endDate,
+    bool includeNullDates = false,
   }) {
     return DateFilterSetting(
       quickSelectionKey: null,
       startDate: startDate,
       endDate: endDate,
       isQuickSelection: false,
+      includeNullDates: includeNullDates,
+    );
+  }
+
+  /// Copy with new values
+  DateFilterSetting copyWith({
+    String? quickSelectionKey,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool? isQuickSelection,
+    bool? isAutoRefreshEnabled,
+    bool? includeNullDates,
+  }) {
+    return DateFilterSetting(
+      quickSelectionKey: quickSelectionKey ?? this.quickSelectionKey,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      isQuickSelection: isQuickSelection ?? this.isQuickSelection,
+      isAutoRefreshEnabled: isAutoRefreshEnabled ?? this.isAutoRefreshEnabled,
+      includeNullDates: includeNullDates ?? this.includeNullDates,
     );
   }
 
@@ -70,6 +97,7 @@ class DateFilterSetting {
       endDate: endDate,
       isQuickSelection: json['isQuickSelection'] as bool? ?? false,
       isAutoRefreshEnabled: json['isAutoRefreshEnabled'] as bool? ?? false,
+      includeNullDates: json['includeNullDates'] as bool? ?? false,
     );
   }
 
@@ -81,6 +109,7 @@ class DateFilterSetting {
       'endDate': endDate?.toIso8601String(),
       'isQuickSelection': isQuickSelection,
       'isAutoRefreshEnabled': isAutoRefreshEnabled,
+      'includeNullDates': includeNullDates,
     };
   }
 
@@ -168,12 +197,13 @@ class DateFilterSetting {
         other.startDate == startDate &&
         other.endDate == endDate &&
         other.isQuickSelection == isQuickSelection &&
-        other.isAutoRefreshEnabled == isAutoRefreshEnabled;
+        other.isAutoRefreshEnabled == isAutoRefreshEnabled &&
+        other.includeNullDates == includeNullDates;
   }
 
   @override
   int get hashCode {
-    return Object.hash(quickSelectionKey, startDate, endDate, isQuickSelection, isAutoRefreshEnabled);
+    return Object.hash(quickSelectionKey, startDate, endDate, isQuickSelection, isAutoRefreshEnabled, includeNullDates);
   }
 
   @override
@@ -183,7 +213,8 @@ class DateFilterSetting {
         'startDate: $startDate, '
         'endDate: $endDate, '
         'isQuickSelection: $isQuickSelection, '
-        'isAutoRefreshEnabled: $isAutoRefreshEnabled)';
+        'isAutoRefreshEnabled: $isAutoRefreshEnabled, '
+        'includeNullDates: $includeNullDates)';
   }
 }
 

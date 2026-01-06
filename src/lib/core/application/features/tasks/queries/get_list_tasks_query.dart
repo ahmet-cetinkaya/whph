@@ -15,6 +15,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final DateTime? filterByDeadlineStartDate;
   final DateTime? filterByDeadlineEndDate;
   final bool filterDateOr;
+  final bool includeNullDates;
 
   final DateTime? filterByCompletedStartDate;
   final DateTime? filterByCompletedEndDate;
@@ -43,6 +44,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     DateTime? filterByDeadlineStartDate,
     DateTime? filterByDeadlineEndDate,
     this.filterDateOr = false,
+    this.includeNullDates = false,
     DateTime? filterByCompletedStartDate,
     DateTime? filterByCompletedEndDate,
     this.filterByTags,
@@ -78,6 +80,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     DateTime? filterByDeadlineStartDate,
     DateTime? filterByDeadlineEndDate,
     bool filterDateOr = false,
+    bool includeNullDates = false,
     DateTime? filterByCompletedStartDate,
     DateTime? filterByCompletedEndDate,
     List<String>? filterByTags,
@@ -98,6 +101,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       filterByDeadlineStartDate: filterByDeadlineStartDate,
       filterByDeadlineEndDate: filterByDeadlineEndDate,
       filterDateOr: filterDateOr,
+      includeNullDates: includeNullDates,
       filterByCompletedStartDate: filterByCompletedStartDate,
       filterByCompletedEndDate: filterByCompletedEndDate,
       filterByTags: filterByTags,
@@ -138,6 +142,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         deadlineStartDate: request.filterByDeadlineStartDate,
         deadlineEndDate: request.filterByDeadlineEndDate,
         dateOr: request.filterDateOr,
+        includeNullDates: request.includeNullDates,
         completed: request.filterByCompleted,
         completedStartDate: request.filterByCompletedStartDate,
         completedEndDate: request.filterByCompletedEndDate,

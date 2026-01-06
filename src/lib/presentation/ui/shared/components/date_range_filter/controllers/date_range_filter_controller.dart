@@ -2,10 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/date_range_filter/helpers/quick_date_range_helper.dart';
+import 'package:acore/acore.dart' show QuickDateRange;
 
 /// Controller for managing DateRangeFilter state and auto-refresh logic.
 class DateRangeFilterController extends ChangeNotifier {
   final QuickDateRangeHelper _quickRangeHelper;
+
+  List<QuickDateRange>? _additionalQuickRanges;
 
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
@@ -15,6 +18,7 @@ class DateRangeFilterController extends ChangeNotifier {
   DateFilterSetting? _preservedQuickSelectionSetting;
   bool _isRefreshToggleEnabled = false;
   bool _justCleared = false;
+  bool _includeNullDates = false;
 
   // Getters
   DateTime? get selectedStartDate => _selectedStartDate;
@@ -22,7 +26,13 @@ class DateRangeFilterController extends ChangeNotifier {
   DateFilterSetting? get dateFilterSetting => _dateFilterSetting;
   String? get activeQuickSelectionKey => _activeQuickSelectionKey;
   bool get isRefreshToggleEnabled => _isRefreshToggleEnabled;
+  bool get includeNullDates => _includeNullDates;
   bool get hasDateFilter => _selectedStartDate != null && _selectedEndDate != null;
+
+  set additionalQuickRanges(List<QuickDateRange>? value) {
+    _additionalQuickRanges = value;
+    notifyListeners();
+  }
 
   DateRangeFilterController({required QuickDateRangeHelper quickRangeHelper}) : _quickRangeHelper = quickRangeHelper;
 
@@ -37,6 +47,7 @@ class DateRangeFilterController extends ChangeNotifier {
     if (_dateFilterSetting != null) {
       _activeQuickSelectionKey = _dateFilterSetting!.quickSelectionKey;
       _isRefreshToggleEnabled = _dateFilterSetting!.isAutoRefreshEnabled;
+      _includeNullDates = _dateFilterSetting!.includeNullDates;
 
       if (_dateFilterSetting!.isQuickSelection) {
         final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
@@ -52,6 +63,7 @@ class DateRangeFilterController extends ChangeNotifier {
       _selectedEndDate = selectedEndDate;
       _activeQuickSelectionKey = null;
       _isRefreshToggleEnabled = false;
+      _includeNullDates = false;
 
       if (_selectedStartDate != null && _selectedEndDate != null) {
         _tryDetectQuickSelectionFromDates();
@@ -69,6 +81,7 @@ class DateRangeFilterController extends ChangeNotifier {
     if (_dateFilterSetting != null) {
       _activeQuickSelectionKey = _dateFilterSetting!.quickSelectionKey;
       _isRefreshToggleEnabled = _dateFilterSetting!.isAutoRefreshEnabled;
+      _includeNullDates = _dateFilterSetting!.includeNullDates;
 
       if (_dateFilterSetting!.isQuickSelection) {
         final currentRange = _dateFilterSetting!.calculateCurrentDateRange();
@@ -85,6 +98,7 @@ class DateRangeFilterController extends ChangeNotifier {
       _selectedEndDate = null;
       _activeQuickSelectionKey = null;
       _isRefreshToggleEnabled = false;
+      _includeNullDates = false;
       _preservedQuickSelectionSetting = null;
     }
 
@@ -185,9 +199,11 @@ class DateRangeFilterController extends ChangeNotifier {
     DateTime? endDate,
     bool refreshEnabled = false,
     String? quickSelectionKey,
+    bool includeNullDates = false,
   }) {
     _selectedStartDate = startDate;
     _selectedEndDate = endDate;
+    _includeNullDates = includeNullDates;
 
     if (quickSelectionKey != null && startDate != null && endDate != null) {
       _activeQuickSelectionKey = quickSelectionKey;
@@ -197,6 +213,7 @@ class DateRangeFilterController extends ChangeNotifier {
         startDate: startDate,
         endDate: endDate,
         isAutoRefreshEnabled: refreshEnabled,
+        includeNullDates: includeNullDates,
       );
       if (refreshEnabled) {
         _preservedQuickSelectionSetting = _dateFilterSetting;
@@ -208,6 +225,7 @@ class DateRangeFilterController extends ChangeNotifier {
       _dateFilterSetting = DateFilterSetting.manual(
         startDate: startDate,
         endDate: endDate,
+        includeNullDates: includeNullDates,
       );
     } else {
       _activeQuickSelectionKey = null;
@@ -227,6 +245,7 @@ class DateRangeFilterController extends ChangeNotifier {
     _dateFilterSetting = null;
     _activeQuickSelectionKey = null;
     _isRefreshToggleEnabled = false;
+    _includeNullDates = false;
     _justCleared = true;
     _autoRefreshTimer?.cancel();
     _preservedQuickSelectionSetting = null;
@@ -238,8 +257,17 @@ class DateRangeFilterController extends ChangeNotifier {
     if (_selectedStartDate == null || _selectedEndDate == null) return '';
 
     if (_activeQuickSelectionKey != null) {
+      // First check defaults
       final label = _quickRangeHelper.getLabelForKey(_activeQuickSelectionKey!);
       if (label != null) return label;
+
+      // Then check additional ranges
+      if (_additionalQuickRanges != null) {
+        try {
+          final range = _additionalQuickRanges!.firstWhere((r) => r.key == _activeQuickSelectionKey);
+          return range.label;
+        } catch (_) {}
+      }
     }
 
     return '${_selectedStartDate!.day}/${_selectedStartDate!.month} - ${_selectedEndDate!.day}/${_selectedEndDate!.month}';

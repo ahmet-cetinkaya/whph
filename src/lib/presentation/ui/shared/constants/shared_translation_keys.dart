@@ -361,6 +361,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String dateTimePickerQuickSelectionNextWeekday = 'shared.date_time_picker.quick_selection_next_weekday';
   static const String dateTimePickerTimePickerHourLabel = 'shared.date_time_picker.time_picker_hour_label';
   static const String dateTimePickerTimePickerMinuteLabel = 'shared.date_time_picker.time_picker_minute_label';
+  static const String dateTimePickerQuickSelectionUpToToday = 'shared.date_time_picker.quick_selection_up_to_today';
+  static const String dateTimePickerShowNoDate = 'shared.date_time_picker.show_no_date';
   static const String dateTimePickerTimePickerAllDayLabel = 'shared.date_time_picker.time_picker_all_day_label';
 
   static const String help = "shared.help";

@@ -1285,6 +1285,62 @@ void main() {
         expect(retrievedTask.deadlineDate!.month, equals(6));
         expect(retrievedTask.deadlineDate!.day, equals(20));
       });
+
+      test('should include null dates when includeNullDates is true', () async {
+        final task1 = Task(
+          id: 'task-date-1',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Task with date',
+          plannedDate: DateTime.utc(2024, 1, 15),
+        );
+        final task2 = Task(
+          id: 'task-date-2',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Task without date',
+          plannedDate: null,
+        );
+        final task3 = Task(
+          id: 'task-date-3',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Task with future date',
+          plannedDate: DateTime.utc(2024, 1, 25),
+        );
+
+        await repository.add(task1);
+        await repository.add(task2);
+        await repository.add(task3);
+
+        // Test with includeNullDates = true
+        final resultIncluded = await repository.getListWithOptions(
+          pageIndex: 0,
+          pageSize: 10,
+          filter: TaskQueryFilter(
+            plannedStartDate: DateTime.utc(2024, 1, 10),
+            plannedEndDate: DateTime.utc(2024, 1, 20),
+            includeNullDates: true,
+          ),
+        );
+
+        expect(resultIncluded.items.length, 2);
+        expect(resultIncluded.items.any((t) => t.id == task1.id), isTrue);
+        expect(resultIncluded.items.any((t) => t.id == task2.id), isTrue);
+        expect(resultIncluded.items.any((t) => t.id == task3.id), isFalse);
+
+        // Test with includeNullDates = false
+        final resultExcluded = await repository.getListWithOptions(
+          pageIndex: 0,
+          pageSize: 10,
+          filter: TaskQueryFilter(
+            plannedStartDate: DateTime.utc(2024, 1, 10),
+            plannedEndDate: DateTime.utc(2024, 1, 20),
+            includeNullDates: false,
+          ),
+        );
+
+        expect(resultExcluded.items.length, 1);
+        expect(resultExcluded.items.any((t) => t.id == task1.id), isTrue);
+        expect(resultExcluded.items.any((t) => t.id == task2.id), isFalse);
+      });
     });
   });
 }

@@ -103,6 +103,27 @@ void main() {
             .called(1);
       });
 
+      test('should propagate includeNullDates filter', () async {
+        // Arrange
+        when(taskRepository.getListWithDetails(
+          pageIndex: anyNamed('pageIndex'),
+          pageSize: anyNamed('pageSize'),
+          filter: anyNamed('filter'),
+          includeDeleted: anyNamed('includeDeleted'),
+        )).thenAnswer((_) async => PaginatedList(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 10));
+
+        // Act
+        await handler(GetListTasksQuery(pageIndex: 0, pageSize: 10, includeNullDates: true));
+
+        // Assert
+        verify(taskRepository.getListWithDetails(
+                pageIndex: 0,
+                pageSize: 10,
+                filter: argThat(predicate<TaskQueryFilter>((f) => f.includeNullDates == true), named: 'filter'),
+                includeDeleted: false))
+            .called(1);
+      });
+
       test('should propagate errors', () async {
         // Arrange
         when(taskRepository.getListWithDetails(

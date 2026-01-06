@@ -397,6 +397,8 @@ shared:
     time_picker_minute_label: Minute
     time_picker_all_day_label: All day
     quick_selection_next_weekday: Next Weekday
+    show_no_date: Show items with no date
+    quick_selection_up_to_today: Up to Today
   numeric_input:
     decrement_button_label: Decrease
     increment_button_label: Increase

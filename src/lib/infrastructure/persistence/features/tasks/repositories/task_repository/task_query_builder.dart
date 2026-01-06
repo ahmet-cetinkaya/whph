@@ -64,6 +64,7 @@ class TaskQueryBuilder {
     DateTime? filterByDeadlineEndDate,
     required bool filterDateOr,
     required bool areParentAndSubTasksIncluded,
+    bool includeNullDates = false,
   }) {
     final dateParts = <String>[];
     final variables = <Variable>[];
@@ -73,10 +74,17 @@ class TaskQueryBuilder {
         // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
         final plannedCondition = '''(
           (task_table.planned_date >= ? AND task_table.planned_date <= ?)
+          ${includeNullDates ? 'OR task_table.planned_date IS NULL' : ''}
           OR
-          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (subtask.planned_date >= ? AND subtask.planned_date <= ?))
+          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (
+            (subtask.planned_date >= ? AND subtask.planned_date <= ?)
+            ${includeNullDates ? 'OR subtask.planned_date IS NULL' : ''}
+          ))
           OR
-          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (parent.planned_date >= ? AND parent.planned_date <= ?))
+          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (
+            (parent.planned_date >= ? AND parent.planned_date <= ?)
+            ${includeNullDates ? 'OR parent.planned_date IS NULL' : ''}
+          ))
         )''';
         dateParts.add(plannedCondition);
         // Add variables for: task_table, subtask, parent
@@ -84,7 +92,9 @@ class TaskQueryBuilder {
         final endVar = Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999));
         variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
-        dateParts.add('task_table.planned_date >= ? AND task_table.planned_date <= ?');
+        dateParts.add(includeNullDates
+            ? '(task_table.planned_date IS NULL OR (task_table.planned_date >= ? AND task_table.planned_date <= ?))'
+            : 'task_table.planned_date >= ? AND task_table.planned_date <= ?');
         variables.addAll([
           Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0)),
           Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999))

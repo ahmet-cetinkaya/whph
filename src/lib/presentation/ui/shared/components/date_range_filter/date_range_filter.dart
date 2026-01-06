@@ -1,7 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart' hide DatePickerDialog;
 import 'package:acore/acore.dart'
-    show DatePickerConfig, DateSelectionMode, DatePickerDialog, DateTimePickerTranslationKey, DialogSize;
+    show
+        DatePickerConfig,
+        DateSelectionMode,
+        DatePickerDialog,
+        DateTimePickerTranslationKey,
+        DialogSize,
+        QuickDateRange,
+        DatePickerFooterAction;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -20,6 +27,8 @@ class DateRangeFilter extends StatefulWidget {
   final Function(DateTime?, DateTime?, DateFilterSetting?)? onAutoRefresh;
   final double iconSize;
   final Color? iconColor;
+  final List<QuickDateRange>? additionalQuickRanges;
+  final List<DatePickerFooterAction>? footerActions;
 
   const DateRangeFilter({
     super.key,
@@ -31,6 +40,8 @@ class DateRangeFilter extends StatefulWidget {
     this.onAutoRefresh,
     this.iconSize = AppTheme.iconSizeMedium,
     this.iconColor,
+    this.additionalQuickRanges,
+    this.footerActions,
   });
 
   @override
@@ -49,6 +60,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
     _translationService = container.resolve<ITranslationService>();
     _quickRangeHelper = QuickDateRangeHelper(translationService: _translationService);
     _controller = DateRangeFilterController(quickRangeHelper: _quickRangeHelper);
+    _controller.additionalQuickRanges = widget.additionalQuickRanges;
 
     _controller.addListener(_onControllerChanged);
     _controller.initializeFromSettings(
@@ -76,6 +88,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   void didUpdateWidget(DateRangeFilter oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    if (widget.additionalQuickRanges != oldWidget.additionalQuickRanges) {
+      _controller.additionalQuickRanges = widget.additionalQuickRanges;
+    }
+
     if (widget.dateFilterSetting != oldWidget.dateFilterSetting) {
       if (_controller.isAutoRefreshActive() && _controller.isSameQuickSelection(widget.dateFilterSetting)) {
         return;
@@ -101,7 +117,13 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         key: _translationService.translate(SharedTranslationKeys.mapDateTimePickerKey(key)),
     };
 
-    final quickRanges = _quickRangeHelper.getQuickRanges();
+    var quickRanges = _quickRangeHelper.getQuickRanges();
+
+    // Add additional quick ranges if provided
+    if (widget.additionalQuickRanges != null) {
+      quickRanges.insertAll(0, widget.additionalQuickRanges!);
+    }
+
     final config = DatePickerConfig(
       selectionMode: DateSelectionMode.range,
       initialStartDate: _controller.selectedStartDate,
@@ -118,6 +140,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       actionButtonRadius: AppTheme.containerBorderRadius,
       allowNullConfirm: true,
       dialogSize: DialogSize.xLarge,
+      footerActions: widget.footerActions,
     );
 
     final result = await DatePickerDialog.showResponsive(
@@ -151,6 +174,7 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         endDate: endDate,
         refreshEnabled: refreshEnabled,
         quickSelectionKey: quickSelectionKey,
+        includeNullDates: widget.dateFilterSetting?.includeNullDates ?? false,
       );
 
       widget.onDateFilterChange(startDate, endDate);
