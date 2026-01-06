@@ -99,6 +99,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   @override
   bool get hasNextPage => _habitList?.hasNext ?? false;
 
+  bool get _isCustomOrderActive =>
+      widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout;
+
+  HabitListStyle get _effectiveStyle => _isCustomOrderActive ? HabitListStyle.list : widget.style;
+
   @override
   void initState() {
     super.initState();
@@ -339,7 +344,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         );
       }
 
-      if (widget.style == HabitListStyle.grid) {
+      if (_effectiveStyle == HabitListStyle.grid) {
         return SliverLayoutBuilder(
           builder: (context, constraints) {
             final crossAxisExtent = constraints.crossAxisExtent;
@@ -383,7 +388,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
     final child = ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-      child: widget.style == HabitListStyle.grid ? _buildGridList() : _buildColumnList(),
+      child: _effectiveStyle == HabitListStyle.grid ? _buildGridList() : _buildColumnList(),
     );
 
     if (widget.useParentScroll) {
@@ -401,7 +406,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
       // Use ReorderableListView for drag-and-drop in mini layout
       return ReorderableListView(
-        key: ValueKey('reorderable_grid_${widget.style}'),
+        key: ValueKey('reorderable_grid_$_effectiveStyle'),
         buildDefaultDragHandles: false,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -417,14 +422,14 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             final index = entry.key;
             final habit = entry.value;
             return Padding(
-              key: ValueKey('reorderable_grid_${habit.id}_${widget.style}'),
+              key: ValueKey('reorderable_grid_${habit.id}_$_effectiveStyle'),
               padding: const EdgeInsets.all(AppTheme.size4XSmall),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 100),
                 child: HabitCard(
-                  key: ValueKey('habit_card_reorderable_${habit.id}_${widget.style}'),
+                  key: ValueKey('habit_card_reorderable_${habit.id}_$_effectiveStyle'),
                   habit: habit,
-                  style: widget.style,
+                  style: _effectiveStyle,
                   dateRange: widget.dateRange,
                   onOpenDetails: () => widget.onClickHabit(habit),
                   isDense: true,
@@ -438,7 +443,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           }),
           if (_habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
             Padding(
-              key: ValueKey('load_more_button_grid_${widget.style}'),
+              key: ValueKey('load_more_button_grid_$_effectiveStyle'),
               padding: const EdgeInsets.all(AppTheme.sizeXSmall),
               child: Center(
                 child: LoadMoreButton(onPressed: onLoadMore),
@@ -446,7 +451,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             ),
           if (_habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
             Padding(
-              key: ValueKey('loading_indicator_grid_${widget.style}'),
+              key: ValueKey('loading_indicator_grid_$_effectiveStyle'),
               padding: const EdgeInsets.all(AppTheme.sizeXSmall),
               child: Center(child: CircularProgressIndicator()),
             ),
@@ -457,7 +462,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
 
       return GridView.builder(
-        key: ValueKey('grid_view_${widget.style}'),
+        key: ValueKey('grid_view_$_effectiveStyle'),
         controller: _scrollController,
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
@@ -497,9 +502,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               padding: const EdgeInsets.all(AppTheme.size4XSmall),
               child: HabitCard(
                 key: ValueKey(
-                    'habit_card_grid_${habit.id}_${widget.style}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
+                    'habit_card_grid_${habit.id}_${_effectiveStyle}_${widget.enableReordering}_${widget.sortConfig?.useCustomOrder}'),
                 habit: habit,
-                style: widget.style,
+                style: _effectiveStyle,
                 dateRange: widget.dateRange,
                 onOpenDetails: () => widget.onClickHabit(habit),
                 isDense: true,
@@ -679,7 +684,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final groupEntries = groupedHabits.entries.toList();
 
     return ListView.builder(
-        key: ValueKey('habit_list_content_${widget.style}'),
+        key: ValueKey('habit_list_content_$_effectiveStyle'),
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -713,7 +718,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                     itemBuilder: (context, i) {
                       final habit = habits[i];
                       return Padding(
-                        key: ValueKey('list_${habit.id}_${widget.style}'),
+                        key: ValueKey('list_${habit.id}_$_effectiveStyle'),
                         padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 100),
@@ -721,7 +726,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                             key: ValueKey('habit_card_${habit.id}'),
                             habit: habit,
                             onOpenDetails: () => widget.onClickHabit(habit),
-                            style: widget.style,
+                            style: _effectiveStyle,
                             dateRange: widget.dateRange,
                             isDateLabelShowing: false,
                             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
@@ -740,7 +745,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                     itemBuilder: (context, i) {
                       final habit = habits[i];
                       return Padding(
-                        key: ValueKey('list_${habit.id}_${widget.style}'),
+                        key: ValueKey('list_${habit.id}_$_effectiveStyle'),
                         padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 100),
@@ -748,7 +753,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                             key: ValueKey('habit_card_${habit.id}'),
                             habit: habit,
                             onOpenDetails: () => widget.onClickHabit(habit),
-                            style: widget.style,
+                            style: _effectiveStyle,
                             dateRange: widget.dateRange,
                             isDateLabelShowing: false,
                             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
@@ -762,7 +767,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             );
           } else if (showLoadMore) {
             return Padding(
-              key: ValueKey('load_more_button_list_${widget.style}'),
+              key: ValueKey('load_more_button_list_$_effectiveStyle'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
@@ -771,7 +776,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             );
           } else if (showInfinityLoading) {
             return Padding(
-              key: ValueKey('loading_indicator_list_${widget.style}'),
+              key: ValueKey('loading_indicator_list_$_effectiveStyle'),
               padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
               child: const Center(child: CircularProgressIndicator()),
             );
@@ -873,6 +878,48 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     }
   }
 
+  void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<HabitListItem>> visualItems) {
+    if (oldIndex < 0 || oldIndex >= visualItems.length) return;
+
+    final oldItem = visualItems[oldIndex];
+    if (oldItem is! VisualItemSingle<HabitListItem>) return;
+
+    final habit = oldItem.data;
+    final groupName = habit.groupName ?? '';
+
+    // Adjust newIndex for Flutter's reorder logic
+    int actualNewIndex = newIndex;
+    if (oldIndex < newIndex) {
+      actualNewIndex -= 1;
+    }
+
+    if (actualNewIndex < 0) actualNewIndex = 0;
+    if (actualNewIndex >= visualItems.length) actualNewIndex = visualItems.length - 1;
+
+    final targetItem = visualItems[actualNewIndex];
+
+    final groupedHabits = _groupHabits();
+    final groupHabits = groupedHabits[groupName] ?? [];
+    if (groupHabits.isEmpty) return;
+
+    final habitGroupIndex = groupHabits.indexWhere((h) => h.id == habit.id);
+    if (habitGroupIndex == -1) return;
+
+    int targetGroupIndex;
+    if (targetItem is VisualItemSingle<HabitListItem> && targetItem.data.groupName == groupName) {
+      targetGroupIndex = groupHabits.indexWhere((h) => h.id == targetItem.data.id);
+    } else {
+      // Reordering cross-group boundary (if allowed) or using group bounds
+      if (actualNewIndex < oldIndex) {
+        targetGroupIndex = 0;
+      } else {
+        targetGroupIndex = groupHabits.length - 1;
+      }
+    }
+
+    _onReorderInGroup(habitGroupIndex, targetGroupIndex + (actualNewIndex > oldIndex ? 1 : 0), groupHabits);
+  }
+
   @override
   Future<void> onLoadMore() async {
     if (_habitList == null || !_habitList!.hasNext) return;
@@ -893,13 +940,20 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
 
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
+    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
+      return SliverReorderableList(
+        itemCount: totalCount,
+        onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, visualItems),
+        proxyDecorator: (child, index, animation) => Material(
+          elevation: 2,
+          color: Colors.transparent,
+          child: child,
+        ),
+        itemBuilder: (context, index) {
           if (index >= visualItems.length) {
             if (showLoadMore) {
               return Padding(
-                key: ValueKey('load_more_button_sliver_list_${widget.style}'),
+                key: ValueKey('load_more_button_sliver_list_$_effectiveStyle'),
                 padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
                 child: Center(
                   child: LoadMoreButton(onPressed: onLoadMore),
@@ -907,7 +961,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               );
             } else if (showInfinityLoading) {
               return Padding(
-                key: ValueKey('loading_indicator_sliver_list_${widget.style}'),
+                key: ValueKey('loading_indicator_sliver_list_$_effectiveStyle'),
                 padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
                 child: const Center(child: CircularProgressIndicator()),
               );
@@ -925,13 +979,13 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           } else if (item is VisualItemSingle<HabitListItem>) {
             final habit = item.data;
             return Padding(
-              key: ValueKey('list_${habit.id}_${widget.style}'),
+              key: ValueKey('list_${habit.id}_$_effectiveStyle'),
               padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
               child: HabitCard(
                 key: ValueKey('habit_card_${habit.id}'),
                 habit: habit,
                 onOpenDetails: () => widget.onClickHabit(habit),
-                style: widget.style,
+                style: _effectiveStyle,
                 dateRange: widget.dateRange,
                 isDateLabelShowing: false,
                 isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
@@ -939,6 +993,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                     widget.sortConfig?.useCustomOrder == true &&
                     !widget.forceOriginalLayout &&
                     !habit.isArchived,
+                dragIndex: !habit.isArchived ? index : null,
               ),
             );
           } else if (item is VisualItemRow<HabitListItem>) {
@@ -954,11 +1009,88 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                           child: HabitCard(
                             key: ValueKey('habit_card_sliver_grid_${habit.id}'),
                             habit: habit,
-                            style: widget.style,
+                            style: _effectiveStyle,
                             dateRange: widget.dateRange,
                             onOpenDetails: () => widget.onClickHabit(habit),
                             isDense: true,
-                            showDragHandle: false,
+                          ),
+                        ),
+                      )),
+                  ...List.generate(
+                    gridColumns - item.items.length,
+                    (index) => const Spacer(),
+                  ),
+                ],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      );
+    }
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index >= visualItems.length) {
+            if (showLoadMore) {
+              return Padding(
+                key: ValueKey('load_more_button_sliver_list_$_effectiveStyle'),
+                padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+                child: Center(
+                  child: LoadMoreButton(onPressed: onLoadMore),
+                ),
+              );
+            } else if (showInfinityLoading) {
+              return Padding(
+                key: ValueKey('loading_indicator_sliver_list_$_effectiveStyle'),
+                padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+
+          final item = visualItems[index];
+          if (item is VisualItemHeader<HabitListItem>) {
+            return ListGroupHeader(
+              key: ValueKey('header_${item.title}'),
+              title: item.title,
+              shouldTranslate: item.title.length > 1,
+            );
+          } else if (item is VisualItemSingle<HabitListItem>) {
+            final habit = item.data;
+            return Padding(
+              key: ValueKey('list_${habit.id}_$_effectiveStyle'),
+              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+              child: HabitCard(
+                key: ValueKey('habit_card_${habit.id}'),
+                habit: habit,
+                onOpenDetails: () => widget.onClickHabit(habit),
+                style: _effectiveStyle,
+                dateRange: widget.dateRange,
+                isDateLabelShowing: false,
+                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                showDragHandle: false, // Reorderable Sliver implemented elsewhere now
+              ),
+            );
+          } else if (item is VisualItemRow<HabitListItem>) {
+            return Padding(
+              key: ValueKey('grid_row_$index'),
+              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...item.items.map((habit) => Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall / 2),
+                          child: HabitCard(
+                            key: ValueKey('habit_card_sliver_grid_${habit.id}'),
+                            habit: habit,
+                            style: _effectiveStyle,
+                            dateRange: widget.dateRange,
+                            onOpenDetails: () => widget.onClickHabit(habit),
+                            isDense: true,
                           ),
                         ),
                       )),

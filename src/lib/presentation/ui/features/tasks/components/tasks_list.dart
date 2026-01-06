@@ -207,6 +207,47 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     });
   }
 
+  void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<TaskListItem>> visualItems) {
+    if (oldIndex < 0 || oldIndex >= visualItems.length) return;
+
+    final oldItem = visualItems[oldIndex];
+    if (oldItem is! VisualItemSingle<TaskListItem>) return;
+
+    final task = oldItem.data;
+    final groupName = task.groupName ?? '';
+
+    // Adjust newIndex for Flutter's reorder logic
+    int actualNewIndex = newIndex;
+    if (oldIndex < newIndex) {
+      actualNewIndex -= 1;
+    }
+
+    if (actualNewIndex < 0) actualNewIndex = 0;
+    if (actualNewIndex >= visualItems.length) actualNewIndex = visualItems.length - 1;
+
+    final targetItem = visualItems[actualNewIndex];
+
+    final groupedTasks = _groupTasks();
+    final groupTasks = groupedTasks[groupName] ?? [];
+    if (groupTasks.isEmpty) return;
+
+    final taskGroupIndex = groupTasks.indexWhere((t) => t.id == task.id);
+    if (taskGroupIndex == -1) return;
+
+    int targetGroupIndex;
+    if (targetItem is VisualItemSingle<TaskListItem> && targetItem.data.groupName == groupName) {
+      targetGroupIndex = groupTasks.indexWhere((t) => t.id == targetItem.data.id);
+    } else {
+      if (actualNewIndex < oldIndex) {
+        targetGroupIndex = 0;
+      } else {
+        targetGroupIndex = groupTasks.length - 1;
+      }
+    }
+
+    _onReorderInGroup(taskGroupIndex, targetGroupIndex + (actualNewIndex > oldIndex ? 1 : 0), groupTasks);
+  }
+
   @override
   void didUpdateWidget(TaskList oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -838,6 +879,84 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
 
+    if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+      return SliverReorderableList(
+        itemCount: totalCount,
+        onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, visualItems),
+        proxyDecorator: (child, index, animation) => Material(
+          elevation: 2,
+          color: Colors.transparent,
+          child: child,
+        ),
+        itemBuilder: (context, index) {
+          if (index >= visualItems.length) {
+            if (showLoadMore) {
+              return Padding(
+                key: ValueKey('load_more_button_sliver_list_${widget.forceOriginalLayout}'),
+                padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+                child: Center(
+                  child: LoadMoreButton(onPressed: onLoadMore),
+                ),
+              );
+            } else if (showInfinityLoading) {
+              return Padding(
+                key: ValueKey('loading_indicator_sliver_list_${widget.forceOriginalLayout}'),
+                padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+
+          final item = visualItems[index];
+
+          if (item is VisualItemHeader<TaskListItem>) {
+            return ListGroupHeader(
+              key: ValueKey('group_header_${item.title}'),
+              title: item.title,
+              shouldTranslate: item.title.length > 1,
+            );
+          } else if (item is VisualItemSingle<TaskListItem>) {
+            final task = item.data;
+            final List<Widget> trailingButtons = [];
+            if (widget.trailingButtons != null) {
+              trailingButtons.addAll(widget.trailingButtons!(task));
+            }
+            if (widget.showSelectButton) {
+              trailingButtons.add(IconButton(
+                icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                onPressed: () => widget.onSelectTask?.call(task),
+              ));
+            }
+            trailingButtons.add(ReorderableDragStartListener(
+              index: index,
+              child: const Icon(Icons.drag_handle, color: Colors.grey),
+            ));
+
+            return Padding(
+              key: ValueKey('task_padding_${task.id}'),
+              padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+              child: TaskCard(
+                key: ValueKey('task_card_${task.id}'),
+                taskItem: task,
+                onOpenDetails: () => widget.onClickTask(task),
+                onCompleted: widget.onTaskCompleted,
+                onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+                    ? null
+                    : () => widget.onScheduleTask!(task, DateTime.now()),
+                transparent: widget.transparentCards,
+                trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+                showSubTasks: widget.includeSubTasks,
+                isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                isCustomOrder: true,
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      );
+    }
+
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -880,9 +999,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
                 onPressed: () => widget.onSelectTask?.call(task),
               ));
             }
-            // Add drag handle only if enabled (though SliverList drag logic is limited without ReorderableSliverList)
-            // Currently HabitsList implementation disabled dragging for Slivers to focus on performance
-            // We'll hide drag handle for sliver mode for now unless we implement ReorderableSliverList
 
             return Padding(
               key: ValueKey('task_padding_${task.id}'),
