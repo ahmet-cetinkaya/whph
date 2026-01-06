@@ -127,6 +127,28 @@ class DateRangeFilterController extends ChangeNotifier {
   void _tryDetectQuickSelectionFromDates() {
     if (_selectedStartDate == null || _selectedEndDate == null) return;
 
+    // Check additional ranges first
+    if (_additionalQuickRanges != null) {
+      for (final range in _additionalQuickRanges!) {
+        final qStart = range.startDateCalculator();
+        final qEnd = range.endDateCalculator();
+        if (_selectedStartDate!.isAtSameMomentAs(qStart) && _selectedEndDate!.isAtSameMomentAs(qEnd)) {
+          _activeQuickSelectionKey = range.key;
+          _isRefreshToggleEnabled = false;
+          // We reconstruct the setting as a quick selection
+          _dateFilterSetting = DateFilterSetting.quickSelection(
+            key: range.key,
+            startDate: _selectedStartDate!,
+            endDate: _selectedEndDate!,
+            isAutoRefreshEnabled: false,
+            includeNullDates: _includeNullDates,
+          );
+          _preservedQuickSelectionSetting = null;
+          return;
+        }
+      }
+    }
+
     final detected = _quickRangeHelper.tryDetectQuickSelectionFromDates(_selectedStartDate!, _selectedEndDate!);
 
     if (detected != null) {

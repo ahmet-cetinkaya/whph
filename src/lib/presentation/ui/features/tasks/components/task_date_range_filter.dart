@@ -49,7 +49,11 @@ class _TaskDateRangeFilterState extends State<TaskDateRangeFilter> {
   void didUpdateWidget(TaskDateRangeFilter oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.dateFilterSetting?.includeNullDates != oldWidget.dateFilterSetting?.includeNullDates) {
-      _includeNullDatesNotifier.value = widget.dateFilterSetting?.includeNullDates ?? false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _includeNullDatesNotifier.value = widget.dateFilterSetting?.includeNullDates ?? false;
+        }
+      });
     }
   }
 
