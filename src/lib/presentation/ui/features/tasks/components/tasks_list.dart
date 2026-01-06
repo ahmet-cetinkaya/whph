@@ -460,6 +460,25 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       if (_tasks == null) {
         return const SliverToBoxAdapter(child: SizedBox.shrink());
       }
+
+      if (_tasks!.items.isEmpty) {
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+            child: widget.showDoneOverlayWhenEmpty
+                ? IconOverlay(
+                    icon: Icons.done_all_rounded,
+                    iconSize: AppTheme.iconSize2XLarge,
+                    message: _translationService.translate(TaskTranslationKeys.allTasksDone),
+                  )
+                : IconOverlay(
+                    icon: Icons.check_circle_outline,
+                    message: _translationService.translate(TaskTranslationKeys.noTasks),
+                  ),
+          ),
+        );
+      }
+
       return DragStateProvider(
         notifier: _dragStateNotifier,
         child: _buildSliverList(),
