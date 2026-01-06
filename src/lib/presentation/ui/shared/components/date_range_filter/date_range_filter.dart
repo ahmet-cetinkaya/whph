@@ -17,6 +17,7 @@ import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/date_range_filter/controllers/date_range_filter_controller.dart';
 import 'package:whph/presentation/ui/shared/components/date_range_filter/helpers/quick_date_range_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 
 class DateRangeFilter extends StatefulWidget {
   final DateTime? selectedStartDate;
@@ -117,19 +118,17 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         key: _translationService.translate(SharedTranslationKeys.mapDateTimePickerKey(key)),
     };
 
-    var quickRanges = _quickRangeHelper.getQuickRanges();
-
-    // Add additional quick ranges if provided
-    if (widget.additionalQuickRanges != null) {
-      quickRanges.insertAll(0, widget.additionalQuickRanges!);
-    }
+    final quickRanges = [
+      if (widget.additionalQuickRanges != null) ...widget.additionalQuickRanges!,
+      ..._quickRangeHelper.getQuickRanges(),
+    ];
 
     final config = DatePickerConfig(
       selectionMode: DateSelectionMode.range,
       initialStartDate: _controller.selectedStartDate,
       initialEndDate: _controller.selectedEndDate,
-      minDate: DateTime(2000),
-      maxDate: DateTime(2050),
+      minDate: TaskUiConstants.minFilterDate,
+      maxDate: TaskUiConstants.maxFilterDate,
       showQuickRanges: true,
       quickRanges: quickRanges,
       enableManualInput: true,
