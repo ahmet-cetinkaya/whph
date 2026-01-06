@@ -107,10 +107,17 @@ class TaskQueryBuilder {
         // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent match the date filter
         final deadlineCondition = '''(
           (task_table.deadline_date >= ? AND task_table.deadline_date <= ?)
+          ${includeNullDates ? 'OR task_table.deadline_date IS NULL' : ''}
           OR
-          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (subtask.deadline_date >= ? AND subtask.deadline_date <= ?))
+          EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND (
+            (subtask.deadline_date >= ? AND subtask.deadline_date <= ?)
+            ${includeNullDates ? 'OR subtask.deadline_date IS NULL' : ''}
+          ))
           OR
-          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (parent.deadline_date >= ? AND parent.deadline_date <= ?))
+          EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND (
+            (parent.deadline_date >= ? AND parent.deadline_date <= ?)
+            ${includeNullDates ? 'OR parent.deadline_date IS NULL' : ''}
+          ))
         )''';
         dateParts.add(deadlineCondition);
         // Add variables for: task_table, subtask, parent
@@ -118,7 +125,9 @@ class TaskQueryBuilder {
         final endVar = Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999));
         variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
-        dateParts.add('task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
+        dateParts.add(includeNullDates
+            ? '(task_table.deadline_date IS NULL OR (task_table.deadline_date >= ? AND task_table.deadline_date <= ?))'
+            : 'task_table.deadline_date >= ? AND task_table.deadline_date <= ?');
         variables.addAll([
           Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0)),
           Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999))
