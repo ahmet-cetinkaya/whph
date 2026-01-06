@@ -6,6 +6,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 
 class TaskDateRangeFilter extends StatefulWidget {
   final DateTime? selectedStartDate;
@@ -66,15 +67,11 @@ class _TaskDateRangeFilterState extends State<TaskDateRangeFilter> {
       dateFilterSetting: widget.dateFilterSetting,
       onDateFilterChange: widget.onDateFilterChange,
       onDateFilterSettingChange: (setting) {
-        // Ensure includeNullDates is preserved or updated
-        if (setting == null && widget.onDateFilterSettingChange != null) {
-          widget.onDateFilterSettingChange!(null);
-          return;
-        }
-
-        if (setting != null) {
-          final updatedSetting = setting.copyWith(includeNullDates: _includeNullDatesNotifier.value);
-          widget.onDateFilterSettingChange?.call(updatedSetting);
+        if (widget.onDateFilterSettingChange != null) {
+          final newSetting = setting?.copyWith(
+            includeNullDates: _includeNullDatesNotifier.value,
+          );
+          widget.onDateFilterSettingChange!(newSetting);
         }
       },
       onAutoRefresh: widget.onAutoRefresh,
@@ -84,7 +81,7 @@ class _TaskDateRangeFilterState extends State<TaskDateRangeFilter> {
         QuickDateRange(
           key: 'up_to_today',
           label: _translationService.translate(SharedTranslationKeys.dateTimePickerQuickSelectionUpToToday),
-          startDateCalculator: () => DateTime(2000),
+          startDateCalculator: () => TaskUiConstants.minFilterDate,
           endDateCalculator: () {
             final now = DateTime.now();
             return DateTime(now.year, now.month, now.day, 23, 59, 59);
