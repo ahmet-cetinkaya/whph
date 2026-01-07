@@ -12,17 +12,19 @@ import 'package:whph/core/application/features/tasks/models/task_sort_fields.dar
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 
-import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
-import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
+import 'package:whph/presentation/ui/shared/models/visual_item.dart';
+import 'package:whph/presentation/ui/shared/utils/visual_item_utils.dart';
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
+import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
-import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
-import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
 class TaskList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
@@ -51,6 +53,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final bool enableReordering;
   final bool forceOriginalLayout;
   final bool useParentScroll;
+  final bool useSliver;
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
@@ -64,7 +67,6 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final void Function()? onReorderComplete;
   @override
   final PaginationMode paginationMode;
-
   const TaskList({
     super.key,
     this.pageSize = 10,
@@ -88,6 +90,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
     this.enableReordering = false,
     this.forceOriginalLayout = false,
     this.useParentScroll = true,
+    this.useSliver = false,
     this.showDoneOverlayWhenEmpty = false,
     this.ignoreArchivedTagVisibility = false,
     required this.onClickTask,
@@ -116,6 +119,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   double? _savedScrollPosition;
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
+
+  // Cache for performance optimization
+  Map<String, List<TaskListItem>>? _cachedGroupedTasks;
+  List<VisualItem>? _cachedVisualItems;
 
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
@@ -204,6 +211,43 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     });
   }
 
+  void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<TaskListItem>> visualItems) {
+    // Validate bounds before index manipulation
+    if (oldIndex < 0 || oldIndex >= visualItems.length) return;
+    if (newIndex < 0 || newIndex >= visualItems.length) return;
+
+    // Adjust newIndex when moving item downward (as per SliverReorderableList behavior)
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final oldItem = visualItems[oldIndex];
+    if (oldItem is! VisualItemSingle<TaskListItem>) return;
+
+    final task = oldItem.data;
+    final groupName = task.groupName ?? '';
+
+    final groupedTasks = _groupTasks();
+    final groupTasks = groupedTasks[groupName] ?? [];
+    if (groupTasks.isEmpty) return;
+
+    final taskGroupIndex = groupTasks.indexWhere((t) => t.id == task.id);
+    if (taskGroupIndex == -1) return;
+
+    // Calculate target index within the group by counting preceding items of the same group
+    int targetGroupIndex = 0;
+    for (int i = 0; i < newIndex; i++) {
+      if (i == oldIndex) continue;
+
+      final item = visualItems[i];
+      if (item is VisualItemSingle<TaskListItem> && item.data.groupName == groupName) {
+        targetGroupIndex++;
+      }
+    }
+
+    _onReorderInGroup(taskGroupIndex, targetGroupIndex, groupTasks);
+  }
+
   @override
   void didUpdateWidget(TaskList oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -226,6 +270,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
             pageIndex: _tasks!.pageIndex,
             pageSize: _tasks!.pageSize,
           );
+
+          // Invalidate cache
+          _cachedGroupedTasks = null;
+          _cachedVisualItems = null;
         }
       });
 
@@ -328,6 +376,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         setState(() {
           if (_tasks == null || isRefresh) {
             _tasks = result;
+            _cachedGroupedTasks = null; // Invalidate cache
+            _cachedVisualItems = null;
           } else {
             // Deduplicate items to ensure uniqueness
             final existingIds = _tasks!.items.map((e) => e.id).toSet();
@@ -339,6 +389,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
+            _cachedGroupedTasks = null; // Invalidate cache
+            _cachedVisualItems = null;
           }
         });
 
@@ -413,8 +465,51 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     await refresh();
   }
 
+  void _updateCacheIfNeeded() {
+    if (_tasks == null) {
+      _cachedGroupedTasks = null;
+      _cachedVisualItems = null;
+      return;
+    }
+
+    if (_cachedGroupedTasks == null) {
+      _cachedGroupedTasks = _groupTasks();
+      _cachedVisualItems = null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _updateCacheIfNeeded();
+    if (widget.useSliver) {
+      if (_tasks == null) {
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
+      }
+
+      if (_tasks!.items.isEmpty) {
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+            child: widget.showDoneOverlayWhenEmpty
+                ? IconOverlay(
+                    icon: Icons.done_all_rounded,
+                    iconSize: AppTheme.iconSize2XLarge,
+                    message: _translationService.translate(TaskTranslationKeys.allTasksDone),
+                  )
+                : IconOverlay(
+                    icon: Icons.check_circle_outline,
+                    message: _translationService.translate(TaskTranslationKeys.noTasks),
+                  ),
+          ),
+        );
+      }
+
+      return DragStateProvider(
+        notifier: _dragStateNotifier,
+        child: _buildSliverList(),
+      );
+    }
+
     return DragStateProvider(
       notifier: _dragStateNotifier,
       child: _buildContent(context),
@@ -461,15 +556,11 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     return groupedTasks;
   }
 
-  Future<void> _onReorderInGroup(int oldIndex, int newIndex, List<TaskListItem> groupTasks) async {
+  Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<TaskListItem> groupTasks) async {
     if (!mounted) return;
+    if (oldIndex < 0 || oldIndex >= groupTasks.length) return;
 
     _dragStateNotifier.startDragging();
-
-    // Standard ReorderableListView logic: newIndex is in relation to the list *before* removal
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
 
     final task = groupTasks[oldIndex];
     final originalOrder = task.order;
@@ -481,88 +572,32 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
 
       if (globalIndex != -1) {
         reorderedAllItems.removeAt(globalIndex);
-        // We need to re-insert it into the correct position relative to its group siblings.
-        // Because _tasks!.items might be interleaved or sorted differently, this is tricky globally.
-        // BUT, since we are only changing order *within the group*, we can find the new neighbors in the group
-        // and infer the order.
 
-        // Actually, we just need to update the _tasks list order to match the visual change for the next frame.
-        // Since we are sorting by order, simply updating the object's order property (later) and re-sorting
-        // is the best way. But for immediate visual feedback of the dragging, we need to mutate the list.
+        int globalNewIndex;
+        final reducedGroup = List<TaskListItem>.from(groupTasks)..removeAt(oldIndex);
 
-        // Strategy: Find where the "target" neighbor is in the global list and insert there.
-        // If inserting at end of group: find last item of group in global list, insert after.
-        // If inserting at start of group: find first item of group in global list, insert before.
-
-        // Let's rely on backend update + refresh for perfect consistency,
-        // but for local state, we can try to "fake" it by manipulating the group list.
-
-        // However, simplest visual update is meaningless if we don't update the global list structure?
-        // Actually, _buildGroupedList re-groups every time. So if we update the order property of the task
-        // and re-sort local list, it works? No, we don't sort locally here.
-
-        // Correct approach for local UI update:
-        // 1. Remove from global list.
-        // 2. Find the task that should be AFTER it in the global list.
-        //    This is the task at groupTasks[newIndex] (if it exists).
-
-        TaskListItem? nextGlobalTask;
-        if (newIndex < groupTasks.length && groupTasks[newIndex].id != task.id) {
-          nextGlobalTask = groupTasks[newIndex];
+        if (targetIndex < reducedGroup.length) {
+          // Inserting before an item in the group
+          final anchorItem = reducedGroup[targetIndex];
+          globalNewIndex = reorderedAllItems.indexWhere((t) => t.id == anchorItem.id);
+        } else {
+          // Inserting at the end of the group
+          if (reducedGroup.isNotEmpty) {
+            final lastItem = reducedGroup.last;
+            globalNewIndex = reorderedAllItems.indexWhere((t) => t.id == lastItem.id) + 1;
+          } else {
+            // Group became empty (except this item), put it back at original relative position locally?
+            globalNewIndex = globalIndex;
+          }
         }
 
-        // If nextGlobalTask exists, find its index in global list and insert before.
-        // If it doesn't (end of group), find the last task of the group (excluding moved one) and insert after.
+        if (globalNewIndex != -1) {
+          if (globalNewIndex < 0) globalNewIndex = 0;
+          if (globalNewIndex > reorderedAllItems.length) globalNewIndex = reorderedAllItems.length;
 
-        if (nextGlobalTask != null) {
-          final nextIndex = reorderedAllItems.indexWhere((t) => t.id == nextGlobalTask!.id);
-          if (nextIndex != -1) {
-            reorderedAllItems.insert(nextIndex, task);
-          } else {
-            reorderedAllItems.add(task); // Fallback
-          }
+          reorderedAllItems.insert(globalNewIndex, task);
         } else {
-          // End of list or end of group
-          // Find the last item of this group in the global list context
-          // (which is groupTasks.last BEFORE modification, but we don't have that easily unless we copy)
-
-          // Easier: Just manipulate groupTasks copy to find neighbors for calculation,
-          // then rely on refresh() for global list consistency?
-          // ReorderableListView usually expects the list passed to `children` to be modified.
-          // BUT we are rebuilding the groups on every build.
-
-          // We must modify `_tasks!.items` such that the next `_groupTasks()` call produces the swapped order.
-          // Since `_groupTasks` preserves generic order of `_tasks!.items`, we just need to move `task` in `_tasks!.items`
-          // to be near its new neighbors.
-
-          // Removing from global was done. Now inserting.
-
-          // Move in group copy to find neighbor
-          final groupCopy = List<TaskListItem>.from(groupTasks);
-          groupCopy.removeAt(oldIndex);
-          groupCopy.insert(newIndex, task);
-
-          // Now task is at newIndex.
-          // If there is an item after it, insert before that item globally.
-          if (newIndex + 1 < groupCopy.length) {
-            final next = groupCopy[newIndex + 1];
-            final idx = reorderedAllItems.indexWhere((t) => t.id == next.id);
-            if (idx != -1)
-              reorderedAllItems.insert(idx, task);
-            else
-              reorderedAllItems.add(task);
-          } else if (newIndex - 1 >= 0) {
-            // If there is an item before it, insert after that item globally.
-            final prev = groupCopy[newIndex - 1];
-            final idx = reorderedAllItems.indexWhere((t) => t.id == prev.id);
-            if (idx != -1)
-              reorderedAllItems.insert(idx + 1, task);
-            else
-              reorderedAllItems.add(task);
-          } else {
-            // Only item?
-            reorderedAllItems.add(task);
-          }
+          reorderedAllItems.insert(globalIndex, task);
         }
 
         _tasks = GetListTasksQueryResponse(
@@ -574,25 +609,18 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       }
     });
 
-    // Calculate target order
-    final existingOrders = groupTasks.map((item) => item.order).toList()..removeAt(oldIndex);
-    double targetOrder;
-
     try {
-      if (newIndex == 0) {
+      final existingOrders = groupTasks.map((item) => item.order).toList()..removeAt(oldIndex);
+      double targetOrder;
+
+      if (targetIndex == 0) {
         final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
-        if (firstOrder <= 0 || firstOrder < 1e-10) {
-          targetOrder = OrderRank.initialStep / 2;
-        } else if (firstOrder < 1e-6) {
-          targetOrder = firstOrder / 1000;
-        } else {
-          targetOrder = firstOrder - OrderRank.initialStep;
-          if (targetOrder <= 0) {
-            targetOrder = firstOrder / 2;
-          }
-        }
+        targetOrder = firstOrder - OrderRank.initialStep;
+      } else if (targetIndex >= existingOrders.length) {
+        final lastOrder = existingOrders.isNotEmpty ? existingOrders.last : 0.0;
+        targetOrder = lastOrder + OrderRank.initialStep;
       } else {
-        targetOrder = OrderRank.getTargetOrder(existingOrders, newIndex);
+        targetOrder = OrderRank.getTargetOrder(existingOrders, targetIndex);
       }
 
       if ((targetOrder - originalOrder).abs() < 1e-10) {
@@ -627,8 +655,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       );
     } catch (e) {
       if (e is RankGapTooSmallException && mounted) {
-        // Try to recover by placing at the end
-        final targetOrder = groupTasks.last.order + OrderRank.initialStep * 2;
+        // Fallback for RankGapTooSmallException: Try to recover by placing the item at the end of the group
+        // with a larger spacing. This helps to resolve the inconsistent order values.
+        final retryTargetOrder = (groupTasks.isNotEmpty ? groupTasks.last.order : 0.0) + OrderRank.initialStep * 2;
 
         await AsyncErrorHandler.executeVoid(
           context: context,
@@ -639,7 +668,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
                 taskId: task.id,
                 parentTaskId: widget.parentTaskId,
                 beforeTaskOrder: originalOrder,
-                afterTaskOrder: targetOrder,
+                afterTaskOrder: retryTargetOrder,
               ),
             );
           },
@@ -652,12 +681,12 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           },
           onError: (_) {
             _dragStateNotifier.stopDragging();
-            if (mounted) refresh(); // Revert on error
+            if (mounted) refresh();
           },
         );
       } else {
         _dragStateNotifier.stopDragging();
-        if (mounted) refresh(); // Revert on other errors
+        if (mounted) refresh();
       }
     }
   }
@@ -721,7 +750,12 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
                       elevation: 2,
                       child: child,
                     ),
-                    onReorder: (oldIndex, newIndex) => _onReorderInGroup(oldIndex, newIndex, tasks),
+                    onReorder: (oldIndex, newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
+                      }
+                      _onReorderInGroup(oldIndex, newIndex, tasks);
+                    },
                     itemBuilder: (context, i) {
                       final task = tasks[i];
                       final List<Widget> trailingButtons = [];
@@ -814,5 +848,128 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           }
           return const SizedBox.shrink();
         });
+  }
+
+  Widget _buildTaskItem(
+    BuildContext context,
+    int index,
+    List<VisualItem<TaskListItem>> visualItems,
+    bool showLoadMore,
+    bool showInfinityLoading,
+  ) {
+    if (index >= visualItems.length) {
+      if (showLoadMore) {
+        return Padding(
+          key: ValueKey('load_more_button_sliver_list_${widget.forceOriginalLayout}'),
+          padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
+          child: Center(
+            child: LoadMoreButton(onPressed: onLoadMore),
+          ),
+        );
+      } else if (showInfinityLoading) {
+        return Padding(
+          key: ValueKey('loading_indicator_sliver_list_${widget.forceOriginalLayout}'),
+          padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+          child: const Center(child: CircularProgressIndicator()),
+        );
+      }
+      return const SizedBox.shrink();
+    }
+
+    final item = visualItems[index];
+
+    if (item is VisualItemHeader<TaskListItem>) {
+      return ListGroupHeader(
+        key: ValueKey('group_header_${item.title}'),
+        title: item.title,
+        shouldTranslate: item.title.length > 1,
+      );
+    } else if (item is VisualItemSingle<TaskListItem>) {
+      final task = item.data;
+      final List<Widget> trailingButtons = [];
+      if (widget.trailingButtons != null) {
+        trailingButtons.addAll(widget.trailingButtons!(task));
+      }
+      if (widget.showSelectButton) {
+        trailingButtons.add(IconButton(
+          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+          onPressed: () => widget.onSelectTask?.call(task),
+        ));
+      }
+      if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+        trailingButtons.add(ReorderableDragStartListener(
+          index: index,
+          child: const Icon(Icons.drag_handle, color: Colors.grey),
+        ));
+      }
+
+      return Padding(
+        key: ValueKey('task_padding_${task.id}'),
+        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+        child: TaskCard(
+          key: ValueKey('task_card_${task.id}'),
+          taskItem: task,
+          onOpenDetails: () => widget.onClickTask(task),
+          onCompleted: widget.onTaskCompleted,
+          onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+              ? null
+              : () => widget.onScheduleTask!(task, DateTime.now()),
+          transparent: widget.transparentCards,
+          trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+          showSubTasks: widget.includeSubTasks,
+          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          isCustomOrder: widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildSliverList() {
+    // Ensure grouping is cached
+    _cachedGroupedTasks ??= _groupTasks();
+
+    // Ensure visual items are cached
+    _cachedVisualItems ??= VisualItemUtils.getVisualItems<TaskListItem>(
+      groupedItems: _cachedGroupedTasks!,
+    );
+
+    final visualItems = _cachedVisualItems!.cast<VisualItem<TaskListItem>>();
+    final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading =
+        _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
+
+    if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+      return SliverReorderableList(
+        itemCount: totalCount,
+        onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, visualItems),
+        proxyDecorator: (child, index, animation) => Material(
+          elevation: 2,
+          color: Colors.transparent,
+          child: child,
+        ),
+        itemBuilder: (context, index) => _buildTaskItem(
+          context,
+          index,
+          visualItems,
+          showLoadMore,
+          showInfinityLoading,
+        ),
+      );
+    }
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => _buildTaskItem(
+          context,
+          index,
+          visualItems,
+          showLoadMore,
+          showInfinityLoading,
+        ),
+        childCount: totalCount,
+      ),
+    );
   }
 }
