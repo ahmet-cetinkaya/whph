@@ -566,11 +566,12 @@ void main() {
     group('Date Spacing Preservation', () {
       test('should preserve 3-day gap between planned and deadline dates for daily recurrence', () {
         // Arrange
+        final completedDate = DateTime(2024, 1, 15);
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Task with date spacing',
-          completedAt: null,
+          completedAt: completedDate,
           plannedDate: DateTime(2024, 1, 15),
           deadlineDate: DateTime(2024, 1, 18), // 3-day gap
           recurrenceType: RecurrenceType.daily,
@@ -585,7 +586,7 @@ void main() {
         final gap = result.deadlineDate!.difference(result.plannedDate);
         expect(gap.inDays, 3); // Should maintain 3-day gap
 
-        // Verify dates are correctly calculated
+        // Verify dates are correctly calculated from completion date (15th) + 1 day = 16th
         expect(result.plannedDate.year, 2024);
         expect(result.plannedDate.month, 1);
         expect(result.plannedDate.day, 16); // Next day
@@ -597,11 +598,12 @@ void main() {
 
       test('should preserve 1-week gap between planned and deadline dates for weekly recurrence', () {
         // Arrange
+        final completedDate = DateTime(2024, 1, 15);
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Task with weekly date spacing',
-          completedAt: null,
+          completedAt: completedDate,
           plannedDate: DateTime(2024, 1, 15),
           deadlineDate: DateTime(2024, 1, 22), // 1-week gap
           recurrenceType: RecurrenceType.weekly,
@@ -616,7 +618,7 @@ void main() {
         final gap = result.deadlineDate!.difference(result.plannedDate);
         expect(gap.inDays, 7); // Should maintain 1-week gap
 
-        // Verify dates are correctly calculated (every 2 weeks)
+        // Verify dates are correctly calculated from completion date (15th) + 14 days = 29th
         expect(result.plannedDate.year, 2024);
         expect(result.plannedDate.month, 1);
         expect(result.plannedDate.day, 29); // 2 weeks later
@@ -628,11 +630,12 @@ void main() {
 
       test('should preserve 2-day gap for daysOfWeek recurrence', () {
         // Arrange
+        final completedDate = DateTime(2024, 1, 15); // Monday
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Task with daysOfWeek date spacing',
-          completedAt: null,
+          completedAt: completedDate,
           plannedDate: DateTime(2024, 1, 15), // Monday
           deadlineDate: DateTime(2024, 1, 17), // Wednesday (2-day gap)
           recurrenceType: RecurrenceType.daysOfWeek,
@@ -647,7 +650,7 @@ void main() {
         final gap = result.deadlineDate!.difference(result.plannedDate);
         expect(gap.inDays, 2); // Should maintain 2-day gap
 
-        // Should go to next Wednesday (from Monday 15th to Wednesday 17th)
+        // Next valid day after Mon 15th is Wed 17th
         expect(result.plannedDate.year, 2024);
         expect(result.plannedDate.month, 1);
         expect(result.plannedDate.day, 17); // Next Wednesday
@@ -659,11 +662,12 @@ void main() {
 
       test('should handle planned date only (no deadline date)', () {
         // Arrange
+        final completedDate = DateTime(2024, 1, 15);
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Task with only planned date',
-          completedAt: null,
+          completedAt: completedDate,
           plannedDate: DateTime(2024, 1, 15),
           deadlineDate: null, // No deadline
           recurrenceType: RecurrenceType.daily,
@@ -676,16 +680,17 @@ void main() {
         expect(result.deadlineDate, isNull); // Should remain null
         expect(result.plannedDate.year, 2024);
         expect(result.plannedDate.month, 1);
-        expect(result.plannedDate.day, 16); // Next day
+        expect(result.plannedDate.day, 16); // Next day after completion
       });
 
       test('should handle deadline date only (no planned date)', () {
         // Arrange
+        final completedDate = DateTime(2024, 1, 18);
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Task with only deadline date',
-          completedAt: null,
+          completedAt: completedDate,
           plannedDate: null, // No planned date
           deadlineDate: DateTime(2024, 1, 18),
           recurrenceType: RecurrenceType.weekly,
@@ -698,19 +703,23 @@ void main() {
         expect(result.deadlineDate, isNotNull);
         expect(result.plannedDate, isNotNull); // Should be calculated from deadline
 
-        // Verify deadline is calculated correctly
+        // Verify deadline is calculated correctly (18th + 7 days = 25th)
         expect(result.deadlineDate!.year, 2024);
         expect(result.deadlineDate!.month, 1);
         expect(result.deadlineDate!.day, 25); // Next week
+
+        // Verify planned date is 1 day before deadline (24th)
+        expect(result.plannedDate.day, 24);
       });
 
       test('should handle complex time offset with hours and minutes', () {
         // Arrange
+        final completedDate = DateTime(2024, 1, 15, 10, 0); // Completed at 10:00 (1 hour after planned)
         final task = Task(
           id: 'task-1',
           createdDate: DateTime.now().toUtc(),
           title: 'Task with complex time offset',
-          completedAt: null,
+          completedAt: completedDate,
           plannedDate: DateTime(2024, 1, 15, 9, 0), // 9:00 AM
           deadlineDate: DateTime(2024, 1, 15, 17, 30), // 5:30 PM (8.5 hours later)
           recurrenceType: RecurrenceType.daily,
@@ -723,15 +732,121 @@ void main() {
         expect(result.deadlineDate, isNotNull);
         final gap = result.deadlineDate!.difference(result.plannedDate);
         expect(gap.inHours, 8);
-        expect(gap.inMinutes % 60, 30); // Should maintain 8 hour 30 minute gap (30 minutes beyond full hours)
-        expect(gap.inMinutes, 8 * 60 + 30); // Total minutes should be 510
+        expect(gap.inMinutes % 60, 30); // Should maintain 8 hour 30 minute gap
 
-        // Verify time is preserved
-        expect(result.plannedDate.hour, 9);
+        // Verify time uses completion time (10:00) as base
+        expect(result.plannedDate.hour, 10);
         expect(result.plannedDate.minute, 0);
+        expect(result.plannedDate.day, 16); // Next day
 
-        expect(result.deadlineDate!.hour, 17);
+        // Deadline should be 10:00 + 8h30m = 18:30
+        expect(result.deadlineDate!.hour, 18);
         expect(result.deadlineDate!.minute, 30);
+      });
+    });
+
+    group('Recurrence from Completion Date', () {
+      test('should recur from completion date when completed late (daily)', () {
+        // Arrange
+        // Planned for 15th, but completed on 17th (2 days late)
+        final completedDate = DateTime(2024, 1, 17);
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Late Daily Task',
+          completedAt: completedDate,
+          plannedDate: DateTime(2024, 1, 15),
+          recurrenceType: RecurrenceType.daily,
+          recurrenceInterval: 1,
+        );
+
+        // Act
+        final result = service.calculateNextDatesForTesting(task);
+
+        // Assert
+        // Should be 17th + 1 day = 18th.
+        // (Old behavior would be 15th + 1 = 16th, effectively immediately overdue)
+        expect(result.plannedDate.year, 2024);
+        expect(result.plannedDate.month, 1);
+        expect(result.plannedDate.day, 18);
+      });
+
+      test('should recur from planned date when completed early (daily)', () {
+        // Arrange
+        // Planned for 15th, completed on 14th (1 day early)
+        final completedDate = DateTime(2024, 1, 14);
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Early Daily Task',
+          completedAt: completedDate,
+          plannedDate: DateTime(2024, 1, 15),
+          recurrenceType: RecurrenceType.daily,
+          recurrenceInterval: 1,
+        );
+
+        // Act
+        final result = service.calculateNextDatesForTesting(task);
+
+        // Assert
+        // Planned (15th) is after Completed (14th).
+        // Recurrence base should be Planned (15th).
+        // Next date = 15th + 1 = 16th.
+        expect(result.plannedDate.year, 2024);
+        expect(result.plannedDate.month, 1);
+        expect(result.plannedDate.day, 16);
+      });
+
+      test('should find next valid weekday after completion date (Days of Week)', () {
+        // Arrange
+        // Mondays and Fridays.
+        // Planned Mon 15th. Completed Tue 16th (Late).
+        final completedDate = DateTime(2024, 1, 16); // Tuesday
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Late Weekday Task',
+          completedAt: completedDate,
+          plannedDate: DateTime(2024, 1, 15), // Monday
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'monday,friday',
+        );
+
+        // Act
+        final result = service.calculateNextDatesForTesting(task);
+
+        // Assert
+        // Next valid day after Tue 16th is Fri 19th.
+        expect(result.plannedDate.year, 2024);
+        expect(result.plannedDate.month, 1);
+        expect(result.plannedDate.day, 19);
+      });
+
+      test('should skip missed slots if completed very late (Days of Week)', () {
+        // Arrange
+        // Mondays and Fridays.
+        // Planned Mon 15th. Completed Fri 19th (Very Late).
+        final completedDate = DateTime(2024, 1, 19); // Friday
+        final task = Task(
+          id: 'task-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Very Late Weekday Task',
+          completedAt: completedDate,
+          plannedDate: DateTime(2024, 1, 15), // Monday
+          recurrenceType: RecurrenceType.daysOfWeek,
+          recurrenceDaysString: 'monday,friday',
+        );
+
+        // Act
+        final result = service.calculateNextDatesForTesting(task);
+
+        // Assert
+        // Next valid day after Fri 19th is Mon 22nd.
+        // Note: It skips the "Fri 19th" slot itself because we effectively "used" it up
+        // or passed it by completing *on* that day.
+        expect(result.plannedDate.year, 2024);
+        expect(result.plannedDate.month, 1);
+        expect(result.plannedDate.day, 22);
       });
     });
 
