@@ -120,6 +120,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
 
+  // Cache for performance optimization
+  Map<String, List<TaskListItem>>? _cachedGroupedTasks;
+  List<VisualItem>? _cachedVisualItems;
+
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
 
@@ -267,6 +271,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
             pageIndex: _tasks!.pageIndex,
             pageSize: _tasks!.pageSize,
           );
+
+          // Invalidate cache
+          _cachedGroupedTasks = null;
+          _cachedVisualItems = null;
         }
       });
 
@@ -369,6 +377,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
         setState(() {
           if (_tasks == null || isRefresh) {
             _tasks = result;
+            _cachedGroupedTasks = null; // Invalidate cache
+            _cachedVisualItems = null;
           } else {
             // Deduplicate items to ensure uniqueness
             final existingIds = _tasks!.items.map((e) => e.id).toSet();
@@ -380,6 +390,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
+            _cachedGroupedTasks = null; // Invalidate cache
+            _cachedVisualItems = null;
           }
         });
 
@@ -454,8 +466,22 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     await refresh();
   }
 
+  void _updateCacheIfNeeded() {
+    if (_tasks == null) {
+      _cachedGroupedTasks = null;
+      _cachedVisualItems = null;
+      return;
+    }
+
+    if (_cachedGroupedTasks == null) {
+      _cachedGroupedTasks = _groupTasks();
+      _cachedVisualItems = null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _updateCacheIfNeeded();
     if (widget.useSliver) {
       if (_tasks == null) {
         return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -901,9 +927,15 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
   }
 
   Widget _buildSliverList() {
-    final visualItems = VisualItemUtils.getVisualItems<TaskListItem>(
-      groupedItems: _groupTasks(),
+    // Ensure grouping is cached
+    _cachedGroupedTasks ??= _groupTasks();
+
+    // Ensure visual items are cached
+    _cachedVisualItems ??= VisualItemUtils.getVisualItems<TaskListItem>(
+      groupedItems: _cachedGroupedTasks!,
     );
+
+    final visualItems = _cachedVisualItems!.cast<VisualItem<TaskListItem>>();
     final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;

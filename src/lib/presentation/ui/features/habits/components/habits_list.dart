@@ -90,6 +90,10 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   late FilterContext _currentFilters;
   double? _savedScrollPosition;
 
+  // Cache for performance optimization
+  Map<String, List<HabitListItem>>? _cachedGroupedHabits;
+  List<VisualItem>? _cachedVisualItems;
+
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
 
@@ -173,6 +177,10 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               pageIndex: _habitList!.pageIndex,
               pageSize: _habitList!.pageSize,
             );
+
+            // Invalidate cache
+            _cachedGroupedHabits = null;
+            _cachedVisualItems = null;
           }
         });
 
@@ -293,6 +301,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         setState(() {
           if (_habitList == null || isRefresh) {
             _habitList = result;
+            _cachedGroupedHabits = null; // Invalidate cache
+            _cachedVisualItems = null;
           } else {
             _habitList = GetListHabitsQueryResponse(
               items: [..._habitList!.items, ...result.items],
@@ -300,6 +310,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
+            _cachedGroupedHabits = null; // Invalidate cache
+            _cachedVisualItems = null;
           }
 
           // Notify about listing count
@@ -316,8 +328,26 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     );
   }
 
+  void _updateCacheIfNeeded() {
+    if (_habitList == null) {
+      _cachedGroupedHabits = null;
+      _cachedVisualItems = null;
+      return;
+    }
+
+    if (_cachedGroupedHabits == null) {
+      _cachedGroupedHabits = _groupHabits();
+
+      // Also update visual items when grouping changes
+      // only if we are in grid mode (which uses sliver layout builder)
+      // or if we want to support sliver list mode later
+      _cachedVisualItems = null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _updateCacheIfNeeded();
     if (widget.useSliver) {
       if (_habitList == null) {
         return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -351,8 +381,13 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             const maxCrossAxisExtent = 300.0;
             final gridColumns = (crossAxisExtent / maxCrossAxisExtent).ceil();
 
+            // Calculate visual items if needed (dependent on gridColumns)
+            // Note: Visual items depend on gridColumns, so we can't fully cache outside LayoutBuilder
+            // unless we cache map<columns, items>, but simple check is enough here
+            // since grouping is the expensive part which is already cached.
+
             final visualItems = VisualItemUtils.getVisualItems<HabitListItem>(
-              groupedItems: _groupHabits(),
+              groupedItems: _cachedGroupedHabits!,
               gridColumns: gridColumns > 0 ? gridColumns : 1,
             );
             return _buildSliverList(precalculatedItems: visualItems, gridColumns: gridColumns > 0 ? gridColumns : 1);
@@ -863,11 +898,22 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   Widget _buildSliverList({List<VisualItem<HabitListItem>>? precalculatedItems, int gridColumns = 1}) {
-    final visualItems = precalculatedItems ??
-        VisualItemUtils.getVisualItems<HabitListItem>(
-          groupedItems: _groupHabits(),
-          gridColumns: gridColumns,
-        );
+    List<VisualItem<HabitListItem>> visualItems;
+
+    if (precalculatedItems != null) {
+      visualItems = precalculatedItems;
+    } else {
+      // Ensure grouping is cached
+      _cachedGroupedHabits ??= _groupHabits();
+
+      // Ensure visual items are cached
+      _cachedVisualItems ??= VisualItemUtils.getVisualItems<HabitListItem>(
+        groupedItems: _cachedGroupedHabits!,
+        gridColumns: 1, // List mode is always 1 column
+      );
+      visualItems = _cachedVisualItems!.cast<VisualItem<HabitListItem>>();
+    }
+
     final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
