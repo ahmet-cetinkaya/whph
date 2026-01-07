@@ -24,6 +24,7 @@ scripts:
   clean:db: bash src/scripts/clean_db.sh
   format: bash scripts/format.sh
   lint: ./scripts/lint.sh
+  check: rps format && rps lint && rps test
 
   # Testing
   test: cd src && fvm flutter test
