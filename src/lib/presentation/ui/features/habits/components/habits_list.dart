@@ -795,7 +795,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     int targetGroupIndex = 0;
     for (int i = 0; i < newIndex; i++) {
       if (i == oldIndex) continue;
-      if (i >= visualItems.length) break;
 
       final item = visualItems[i];
       if (item is VisualItemSingle<HabitListItem> && item.data.groupName == groupName) {

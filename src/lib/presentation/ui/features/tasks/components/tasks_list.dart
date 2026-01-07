@@ -238,7 +238,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     int targetGroupIndex = 0;
     for (int i = 0; i < newIndex; i++) {
       if (i == oldIndex) continue;
-      if (i >= visualItems.length) break;
 
       final item = visualItems[i];
       if (item is VisualItemSingle<TaskListItem> && item.data.groupName == groupName) {
@@ -656,8 +655,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       );
     } catch (e) {
       if (e is RankGapTooSmallException && mounted) {
-        // Fallback recovery: Place the task at the end of the group with increased spacing
-        // to resolve order rank conflicts when the gap is too small for normal insertion.
+        // Fallback for RankGapTooSmallException: Try to recover by placing the item at the end of the group
+        // with a larger spacing. This helps to resolve the inconsistent order values.
         final retryTargetOrder = (groupTasks.isNotEmpty ? groupTasks.last.order : 0.0) + OrderRank.initialStep * 2;
 
         await AsyncErrorHandler.executeVoid(
