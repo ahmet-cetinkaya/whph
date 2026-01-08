@@ -78,7 +78,9 @@ shared:
     cannot_select_date_before_min_date: Kan ikke velge dato før {date}
     cannot_select_time_after_max_date: Kan ikke velge tidspunkt etter {time}
     cannot_select_time_before_min_date: Kan ikke velge tidspunkt før {time}
-    deadline_cannot_be_before_planned_date: Fristen må være på eller etter den planlagte datoen
+    deadline_cannot_be_before_planned_date:
+      Fristen må være på eller etter den planlagte
+      datoen
     end_date_cannot_be_after_max_date: Sluttdato kan ikke være etter {date}
     end_date_must_be_at_or_before: Sluttdato må være på eller før {date}
     select_date_range_title: Velg datoperiode
@@ -142,7 +144,8 @@ shared:
     loading: Feil oppstod under lasting av data
     report_subject: "{appName} App: Uventet feilrapport"
     report_template:
-      "Hei, jeg støtte på en uventet feil mens jeg brukte {appName} appen.
+      "Hei, jeg støtte på en uventet feil mens jeg brukte {appName}
+      appen.
 
 
       Her er informasjon som kan hjelpe deg med å diagnostisere problemet:
@@ -181,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Feildetaljer kopiert til utklippstavle
     copy_button: Kopier feildetaljer
-    description: Noe gikk galt under app-start. Dette kan skyldes et systemproblem eller inkompatibel konfigurasjon.
+    description:
+      Noe gikk galt under app-start. Dette kan skyldes et systemproblem
+      eller inkompatibel konfigurasjon.
     details_title: Feildetaljer
     report_button: Rapporter problem
     title: App-startfeil
@@ -263,6 +268,10 @@ shared:
     hours: timer
     days: dager
     weeks: uker
+    minute: minutt
+    hour: time
+    day: dag
+    week: uke
   time_display:
     elapsed: Forløpt
     elapsed_time_tooltip: Tid brukt på denne oppgaven
@@ -377,7 +386,7 @@ shared:
       last_week: Sist uke
       last_month: Sist måned
       next_weekday: Neste hverdag
-      up_to_today: "Til i dag"
+      up_to_today: Til i dag
   numeric_input:
     decrement_button_label: Reduser
     increment_button_label: Øk

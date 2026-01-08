@@ -434,7 +434,7 @@ tasks:
     none: Keine Erinnerung
     one_day_before: 1 Tag vorher
     one_hour_before: 1 Stunde vorher
-    planned_reminder_label: Planungs-Erinnerung
+    label: Planungs-Erinnerung
     section_title: Erinnerungen
     custom: Benutzerdefiniert
     custom_title: Benutzerdefinierte Erinnerung
@@ -541,3 +541,7 @@ shared:
     hours: Stunden
     days: Tage
     weeks: Wochen
+    minute: Minute
+    hour: Stunde
+    day: Tag
+    week: Woche

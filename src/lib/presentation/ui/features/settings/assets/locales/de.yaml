@@ -409,6 +409,13 @@ settings:
       load_error: Fehler beim Laden der Standard-Zeitschätzung
       save_error: Fehler beim Speichern der Standard-Zeitschätzung
       key_not_found: Standard-Zeitschätzung-Schlüssel nicht gefunden
+    default_planned_date_reminder:
+      title: Standarderinnerung
+      description:
+        Automatisch eine Erinnerung festlegen, wenn ein geplantes Datum
+        ausgewählt wird.
+      save_error: Fehler beim Speichern der Standarderinnerungseinstellung
+      load_error: Fehler beim Laden der Standarderinnerungseinstellung
   section:
     general: Allgemein
     appearance: Erscheinungsbild
@@ -416,3 +423,4 @@ settings:
     data_sync: Daten & Synchronisierung
     advanced: Erweitert
     about: Über
+    flow: Ablauf

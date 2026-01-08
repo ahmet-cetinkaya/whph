@@ -432,7 +432,7 @@ tasks:
     none: Ingen påmindelse
     one_day_before: 1 dag før
     one_hour_before: 1 time før
-    planned_reminder_label: Påmindelse om planlagt dato
+    label: Dato
     section_title: Påmindelser
     custom: Brugerdefineret
     custom_title: Brugerdefineret påmindelse
@@ -533,3 +533,7 @@ shared:
     hours: timer
     days: dage
     weeks: uger
+    minute: minut
+    hour: time
+    day: dag
+    week: uge

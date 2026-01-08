@@ -360,7 +360,7 @@ tasks:
     none: Καμία υπενθύμιση
     one_day_before: 1 ημέρα πριν
     one_hour_before: 1 ώρα πριν
-    planned_reminder_label: Υπενθύμιση προγραμματισμένης ημερομηνίας
+    label: Ημερομηνίας
     section_title: Υπενθυμίσεις
     custom: Προσαρμογή
     custom_title: Προσαρμοσμένη υπενθύμιση
@@ -469,3 +469,7 @@ shared:
     hours: ώρες
     days: ημέρες
     weeks: εβδομάδες
+    minute: λεπτό
+    hour: ώρα
+    day: ημέρα
+    week: εβδομάδα

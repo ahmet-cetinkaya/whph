@@ -347,7 +347,7 @@ tasks:
     none: Ei muistutusta
     one_day_before: 1 päivä ennen
     one_hour_before: 1 tunti ennen
-    planned_reminder_label: Suunnitellun päivän muistutus
+    label: Muistutus
     section_title: Muistutukset
     custom: Mukautettu
     custom_title: Mukautettu muistutus
@@ -447,3 +447,7 @@ shared:
     hours: tunnit
     days: päivät
     weeks: viikot
+    minute: minuutti
+    hour: tunti
+    day: päivä
+    week: viikko

@@ -78,7 +78,9 @@ shared:
     cannot_select_date_before_min_date: Kan inte välja datum före {date}
     cannot_select_time_after_max_date: Kan inte välja tid efter {time}
     cannot_select_time_before_min_date: Kan inte välja tid före {time}
-    deadline_cannot_be_before_planned_date: Deadline måste vara på eller efter planerat datum
+    deadline_cannot_be_before_planned_date:
+      Deadline måste vara på eller efter planerat
+      datum
     end_date_cannot_be_after_max_date: Slutdatum kan inte vara efter {date}
     end_date_must_be_at_or_before: Slutdatum måste vara på eller före {date}
     select_date_range_title: Välj datumintervall
@@ -142,7 +144,8 @@ shared:
     loading: Fel uppstod vid laddning av data
     report_subject: "{appName} App: Oväntad felrapport"
     report_template:
-      "Hej, jag stötte på ett oväntat fel när jag använde {appName} appen.
+      "Hej, jag stötte på ett oväntat fel när jag använde {appName}
+      appen.
 
 
       Här är information som kan hjälpa till att diagnostisera problemet:
@@ -181,7 +184,9 @@ shared:
   startup_error:
     copied_to_clipboard: Feltdetaljer kopierade till urklipp
     copy_button: Kopiera feltdetaljer
-    description: Något gick fel under appstarten. Detta kan bero på ett systemproblem eller inkompatibel konfiguration.
+    description:
+      Något gick fel under appstarten. Detta kan bero på ett systemproblem
+      eller inkompatibel konfiguration.
     details_title: Feltdetaljer
     report_button: Rapportera Problem
     title: Appstartfel
@@ -263,6 +268,10 @@ shared:
     hours: timmar
     days: dagar
     weeks: veckor
+    minute: minut
+    hour: timme
+    day: dag
+    week: vecka
   time_display:
     elapsed: Förfluten
     elapsed_time_tooltip: Tid spenderad på denna uppgift

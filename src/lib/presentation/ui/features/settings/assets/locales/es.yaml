@@ -411,6 +411,13 @@ settings:
       load_error: Error al cargar el tiempo estimado predeterminado
       save_error: Error al guardar el tiempo estimado predeterminado
       key_not_found: Clave de tiempo estimado predeterminado no encontrada
+    default_planned_date_reminder:
+      title: Recordatorio predeterminado
+      description:
+        Establecer automáticamente un recordatorio cuando se selecciona
+        una fecha planificada.
+      save_error: Error al guardar la configuración de recordatorio predeterminado
+      load_error: Error al cargar la configuración de recordatorio predeterminado
   section:
     general: General
     appearance: Apariencia
@@ -418,3 +425,4 @@ settings:
     data_sync: Datos y sincronización
     advanced: Avanzado
     about: Acerca de
+    flow: Flujo

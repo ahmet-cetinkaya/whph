@@ -352,7 +352,7 @@ tasks:
     none: Geen herinnering
     one_day_before: 1 dag ervoor
     one_hour_before: 1 uur ervoor
-    planned_reminder_label: Geplande Datum Herinnering
+    label: Herinnering
     section_title: Herinneringen
     custom: Aangepast
     custom_title: Aangepaste herinnering
@@ -454,3 +454,7 @@ shared:
     hours: uren
     days: dagen
     weeks: weken
+    minute: minuut
+    hour: uur
+    day: dag
+    week: week

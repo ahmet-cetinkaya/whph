@@ -381,6 +381,11 @@ settings:
       load_error: Chyba při načítání výchozího odhadovaného času
       save_error: Chyba při ukládání výchozího odhadovaného času
       key_not_found: Klíč výchozího odhadovaného času nebyl nalezen
+    default_planned_date_reminder:
+      title: Výchozí připomínka
+      description: Automaticky nastavit připomínku po výběru plánovaného data.
+      save_error: Chyba při ukládání nastavení výchozí připomínky
+      load_error: Chyba při načítání nastavení výchozí připomínky
   section:
     general: Obecné
     appearance: Vzhled
@@ -388,3 +393,4 @@ settings:
     data_sync: Data a synchronizace
     advanced: Pokročilé
     about: O aplikaci
+    flow: Flow

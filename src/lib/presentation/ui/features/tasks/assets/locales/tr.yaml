@@ -394,7 +394,7 @@ tasks:
     none: Hatırlatıcı yok
     one_day_before: 1 gün önce
     one_hour_before: 1 saat önce
-    planned_reminder_label: Planlanan Tarih Hatırlatıcısı
+    label: Hatırlatıcı
     section_title: Hatırlatıcılar
     custom: Özel
     custom_title: Özel Hatırlatıcı
@@ -415,7 +415,9 @@ tasks:
     total_time: Günlük Toplam Süre
   timer:
     mode:
-      description: Pomodoro tekniği, geri sayım sayacı veya kronometre arasında seçim yapın
+      description:
+        Pomodoro tekniği, geri sayım sayacı veya kronometre arasında seçim
+        yapın
       normal: Normal Zamanlayıcı
       pomodoro: Pomodoro
       stopwatch: Kronometre
@@ -497,3 +499,7 @@ shared:
     hours: saat
     days: gün
     weeks: hafta
+    minute: dakika
+    hour: saat
+    day: gün
+    week: hafta

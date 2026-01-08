@@ -158,7 +158,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String reminderFifteenMinutesBefore = 'tasks.reminder.fifteen_minutes_before';
   static const String reminderOneHourBefore = 'tasks.reminder.one_hour_before';
   static const String reminderOneDayBefore = 'tasks.reminder.one_day_before';
-  static const String reminderPlannedLabel = 'tasks.reminder.planned_reminder_label';
+  static const String reminderDateLabel = 'tasks.reminder.label';
   static const String reminderDeadlineLabel = 'tasks.reminder.deadline_reminder_label';
   static const String reminderSectionTitle = 'tasks.reminder.section_title';
   static const String reminderCustom = 'tasks.reminder.custom';
@@ -170,6 +170,12 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String weeks = 'shared.time.weeks';
   static const String reminderTime = 'tasks.reminder.time';
   static const String reminderUnit = 'tasks.reminder.unit';
+
+  // Reminder pluralization for custom offsets
+  static const String reminderMinute = 'shared.time.minute';
+  static const String reminderHour = 'shared.time.hour';
+  static const String reminderDay = 'shared.time.day';
+  static const String reminderWeek = 'shared.time.week';
 
   // Recurrence Types and Labels
   static const String recurrenceLabel = 'tasks.recurrence.label';

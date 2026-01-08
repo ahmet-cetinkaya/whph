@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:acore/components/numeric_input/numeric_input.dart';
-import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/presentation/ui/features/settings/components/task_settings/default_estimated_time_setting.dart';
+import 'package:whph/presentation/ui/features/settings/components/task_settings/default_reminder_setting.dart';
+import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
+import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 
 class TaskSettings extends StatefulWidget {
   final VoidCallback? onLoaded;
@@ -35,8 +34,8 @@ class _TaskSettingsState extends State<TaskSettings> {
 
   bool _isLoading = true;
   int? _defaultEstimatedTime;
-  bool _isSettingEnabled = true;
-  bool _isSaving = false;
+  ReminderTime? _defaultPlannedDateReminder;
+  int? _defaultPlannedDateReminderCustomOffset;
 
   @override
   void initState() {
@@ -52,37 +51,55 @@ class _TaskSettingsState extends State<TaskSettings> {
       }),
       errorMessage: _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeLoadError),
       operation: () async {
+        // Load Default Estimated Time
         try {
           final setting = await _mediator.send<GetSettingQuery, Setting?>(
             GetSettingQuery(key: SettingKeys.taskDefaultEstimatedTime),
           );
 
           if (setting != null) {
-            final value = setting.getValue<int?>();
-            setState(() {
-              _defaultEstimatedTime = value;
-              _isSettingEnabled = value != null && value > 0;
-            });
+            _defaultEstimatedTime = setting.getValue<int?>();
           } else {
-            // Default to TaskConstants.defaultEstimatedTime minutes if setting doesn't exist
-            setState(() {
-              _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
-              _isSettingEnabled = true;
-            });
-            // Create the setting with default value
-            await _saveDefaultEstimatedTime(TaskConstants.defaultEstimatedTime);
-          }
-          return true;
-        } catch (e, s) {
-          // Don't show overlay notification for missing setting key - just use default
-          Logger.error('Failed to load default estimated time setting: $e\n$s');
-          // Set default values anyway
-          setState(() {
             _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
-            _isSettingEnabled = true;
-          });
-          return true;
+          }
+        } catch (_) {
+          // Setting not found or error, use default
+          _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
         }
+
+        // Load Default Planned Date Reminder
+        try {
+          final reminderSetting = await _mediator.send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminder),
+          );
+
+          if (reminderSetting != null) {
+            final value = reminderSetting.getValue<String>();
+            _defaultPlannedDateReminder = ReminderTimeExtension.fromString(value);
+          } else {
+            _defaultPlannedDateReminder = TaskConstants.defaultReminderTime;
+          }
+        } catch (_) {
+          _defaultPlannedDateReminder = TaskConstants.defaultReminderTime;
+        }
+
+        // Load Default Planned Date Reminder Custom Offset
+        try {
+          final reminderOffsetSetting = await _mediator.send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminderCustomOffset),
+          );
+
+          if (reminderOffsetSetting != null) {
+            _defaultPlannedDateReminderCustomOffset = reminderOffsetSetting.getValue<int?>();
+          } else {
+            _defaultPlannedDateReminderCustomOffset = null;
+          }
+        } catch (_) {
+          _defaultPlannedDateReminderCustomOffset = null;
+        }
+
+        setState(() {});
+        return true;
       },
       onSuccess: (_) {
         widget.onLoaded?.call();
@@ -90,179 +107,27 @@ class _TaskSettingsState extends State<TaskSettings> {
     );
   }
 
-  Future<void> _saveDefaultEstimatedTime(int? value) async {
-    if (_isSaving) return; // Prevent concurrent saves
-
-    setState(() {
-      _isSaving = true;
-    });
-
-    try {
-      await _mediator.send(
-        SaveSettingCommand(
-          key: SettingKeys.taskDefaultEstimatedTime,
-          value: value?.toString() ?? '0',
-          valueType: SettingValueType.int,
-        ),
-      );
-    } catch (error, stackTrace) {
-      // Show error message without reverting all settings
-      if (mounted) {
-        Logger.error('Failed to save default estimated time setting: $error\n$stackTrace');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeSaveError)),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-        // Revert only the changed value to previous state
-        _loadSettings();
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
-    }
-  }
-
-  void _onToggleChanged(bool enabled) {
-    if (!enabled) {
-      // Disable the setting by setting value to 0
-      setState(() {
-        _isSettingEnabled = false;
-        _defaultEstimatedTime = 0;
-      });
-      _saveDefaultEstimatedTime(0);
-    } else {
-      // Enable with a default of TaskConstants.defaultEstimatedTime minutes
-      setState(() {
-        _isSettingEnabled = true;
-        _defaultEstimatedTime = TaskConstants.defaultEstimatedTime;
-      });
-      _saveDefaultEstimatedTime(TaskConstants.defaultEstimatedTime);
-    }
-  }
-
-  void _onEstimatedTimeChanged(int value) {
-    if (value != _defaultEstimatedTime) {
-      setState(() {
-        _defaultEstimatedTime = value;
-        // Enable setting if value is greater than 0
-        _isSettingEnabled = value > 0;
-      });
-      // Debounce save operation to avoid excessive saves while user is adjusting
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted && !_isSaving && value == _defaultEstimatedTime) {
-          _saveDefaultEstimatedTime(value);
-        }
-      });
-    }
-  }
-
-  Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
-    return NumericInputTranslationKey.values.asMap().map(
-          (key, value) =>
-              MapEntry(value, _translationService.translate(SharedTranslationKeys.mapNumericInputKey(value))),
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    if (_isLoading) {
-      return const Card(
-        margin: EdgeInsets.symmetric(horizontal: AppTheme.sizeMedium, vertical: AppTheme.sizeSmall),
-        child: Padding(
-          padding: EdgeInsets.all(AppTheme.sizeLarge),
-          child: Center(child: CircularProgressIndicator()),
-        ),
-      );
-    }
-
-    return Card(
-      elevation: 0,
-      color: AppTheme.surface1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.sizeLarge),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title
-            Row(
-              children: [
-                StyledIcon(
-                  Icons.timer_outlined,
-                  isActive: true,
-                ),
-                const SizedBox(width: AppTheme.sizeSmall),
-                Text(
-                  _translationService.translate(SettingsTranslationKeys.taskSettingsTitle),
-                  style: AppTheme.headlineSmall.copyWith(fontSize: 18),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.sizeMedium),
-
-            // Default Estimated Time Setting
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Toggle and Title
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeTitle),
-                            style: AppTheme.labelLarge,
-                          ),
-                          const SizedBox(height: AppTheme.sizeSmall),
-                          Text(
-                            _translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeDescription),
-                            style: AppTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Switch(
-                      value: _isSettingEnabled,
-                      onChanged: _onToggleChanged,
-                    ),
-                  ],
-                ),
-
-                if (_isSettingEnabled) ...[
-                  const SizedBox(height: AppTheme.sizeMedium),
-
-                  // Numeric Input
-                  Row(
-                    children: [
-                      Expanded(
-                        child: NumericInput(
-                          initialValue: _defaultEstimatedTime ?? TaskConstants.defaultEstimatedTime,
-                          minValue: 5,
-                          maxValue: 480, // Increased from 60 to 480 minutes (8 hours) for better usability
-                          incrementValue: 5,
-                          decrementValue: 5,
-                          onValueChanged: _onEstimatedTimeChanged,
-                          valueSuffix: _translationService.translate(SharedTranslationKeys.minutes),
-                          iconSize: 20,
-                          iconColor: theme.colorScheme.primary,
-                          translations: _getNumericInputTranslations(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ],
-            ),
-          ],
+    return ResponsiveScaffoldLayout(
+      title: _translationService.translate(SettingsTranslationKeys.taskSettingsTitle),
+      showBackButton: true,
+      hideSidebar: true,
+      showLogo: false,
+      builder: (context) => LoadingOverlay(
+        isLoading: _isLoading,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DefaultEstimatedTimeSetting(initialValue: _defaultEstimatedTime),
+              const SizedBox(height: AppTheme.sizeMedium),
+              DefaultReminderSetting(
+                initialValue: _defaultPlannedDateReminder,
+                initialCustomOffset: _defaultPlannedDateReminderCustomOffset,
+              ),
+            ],
+          ),
         ),
       ),
     );

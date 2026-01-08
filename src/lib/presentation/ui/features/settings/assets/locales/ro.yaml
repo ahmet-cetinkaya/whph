@@ -395,6 +395,11 @@ settings:
       load_error: Eroare la încărcarea timpului estimat implicit
       save_error: Eroare la salvarea timpului estimat implicit
       key_not_found: Cheia timpului estimat implicit nu a fost găsită
+    default_planned_date_reminder:
+      title: Memento implicit
+      description: Setează automat o memento când este selectată o dată planificată.
+      save_error: Eroare la salvarea setării memento implicit
+      load_error: Eroare la încărcarea setării memento implicit
   section:
     general: General
     appearance: Aspect
@@ -402,3 +407,4 @@ settings:
     data_sync: Date & sincronizare
     advanced: Avansat
     about: Despre
+    flow: Flux

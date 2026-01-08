@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
+
 import 'package:whph/presentation/ui/features/settings/components/about_tile.dart';
 import 'package:whph/presentation/ui/features/settings/components/language_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/sound_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/sync_devices_tile.dart';
+import 'package:whph/presentation/ui/features/settings/components/tasks_tile.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/features/settings/components/startup_settings.dart';
@@ -14,6 +16,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
+
 import 'package:whph/presentation/ui/features/settings/components/import_export_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/advanced_settings_tile.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
@@ -96,6 +99,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (PlatformUtils.isMobile) PermissionSettings(),
                   ],
                 ),
+                const SizedBox(height: AppTheme.sizeLarge),
+
+                // Flow Section
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionFlow)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                const TasksTile(),
                 const SizedBox(height: AppTheme.sizeLarge),
 
                 // Appearance Section

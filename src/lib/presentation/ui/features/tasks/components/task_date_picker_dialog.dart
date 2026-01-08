@@ -5,6 +5,7 @@ import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/reminder_helper.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tasks/components/custom_reminder_dialog.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -319,7 +320,7 @@ class TaskDatePickerDialog {
     final child = Scaffold(
       appBar: AppBar(
         title: Text(
-          translationService?.translate(TaskTranslationKeys.reminderPlannedLabel) ?? 'Set Reminder',
+          translationService?.translate(TaskTranslationKeys.reminderDateLabel) ?? 'Set Reminder',
           style: AppTheme.headlineSmall,
         ),
         leading: IconButton(
@@ -425,7 +426,7 @@ class TaskDatePickerDialog {
     return await ResponsiveDialogHelper.showResponsiveDialog<ReminderSelectionResult>(
       context: context,
       child: child,
-      size: DialogSize.xLarge,
+      size: DialogSize.large,
       isScrollable: true,
       isDismissible: true,
       enableDrag: true,
@@ -454,38 +455,8 @@ class TaskDatePickerDialog {
   /// Gets label for reminder time
   static String _getReminderLabel(ReminderTime? reminderTime, ITranslationService? translationService,
       [int? customOffset]) {
-    switch (reminderTime) {
-      case ReminderTime.none:
-        return translationService?.translate(TaskTranslationKeys.reminderNone) ?? 'None';
-      case ReminderTime.atTime:
-        return translationService?.translate(TaskTranslationKeys.reminderAtTime) ?? 'At time';
-      case ReminderTime.fiveMinutesBefore:
-        return translationService?.translate(TaskTranslationKeys.reminderFiveMinutesBefore) ?? '5 minutes before';
-      case ReminderTime.fifteenMinutesBefore:
-        return translationService?.translate(TaskTranslationKeys.reminderFifteenMinutesBefore) ?? '15 minutes before';
-      case ReminderTime.oneHourBefore:
-        return translationService?.translate(TaskTranslationKeys.reminderOneHourBefore) ?? '1 hour before';
-      case ReminderTime.oneDayBefore:
-        return translationService?.translate(TaskTranslationKeys.reminderOneDayBefore) ?? '1 day before';
-      case ReminderTime.custom:
-        if (customOffset != null && translationService != null) {
-          if (customOffset % (60 * 24 * 7) == 0) {
-            final weeks = customOffset ~/ (60 * 24 * 7);
-            return '$weeks ${translationService.translate(TaskTranslationKeys.weeks)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
-          } else if (customOffset % (60 * 24) == 0) {
-            final days = customOffset ~/ (60 * 24);
-            return '$days ${translationService.translate(TaskTranslationKeys.days)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
-          } else if (customOffset % 60 == 0) {
-            final hours = customOffset ~/ 60;
-            return '$hours ${translationService.translate(TaskTranslationKeys.hours)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
-          } else {
-            return '$customOffset ${translationService.translate(TaskTranslationKeys.minutes)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
-          }
-        }
-        return translationService?.translate(TaskTranslationKeys.reminderCustom) ?? 'Custom';
-      case null:
-        return translationService?.translate(TaskTranslationKeys.reminderNone) ?? 'None';
-    }
+    if (translationService == null) return '';
+    return ReminderHelper.getReminderText(reminderTime, translationService, customOffset);
   }
 
   /// Gets color for reminder time

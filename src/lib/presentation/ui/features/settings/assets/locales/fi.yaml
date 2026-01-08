@@ -378,6 +378,11 @@ settings:
       load_error: Virhe oletusarvioidun ajan lataamisessa
       save_error: Virhe oletusarvioidun ajan tallentamisessa
       key_not_found: Oletusarvioidun ajan avainta ei löytynyt
+    default_planned_date_reminder:
+      title: Oletusmuistutus
+      description: Aseta automaattisesti muistutus, kun suunniteltu päivämäärä valitaan.
+      save_error: Virhe tallennettaessa oletusmuistutuksen asetusta
+      load_error: Virhe ladattaessa oletusmuistutuksen asetusta
   section:
     general: Yleinen
     appearance: Ulkoasu
@@ -385,3 +390,4 @@ settings:
     data_sync: Tiedot & synkronointi
     advanced: Lisäasetukset
     about: Tietoja
+    flow: Flow

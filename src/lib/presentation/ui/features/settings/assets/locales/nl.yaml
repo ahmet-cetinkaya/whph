@@ -392,6 +392,13 @@ settings:
       load_error: Fout bij laden standaard geschatte tijd
       save_error: Fout bij opslaan standaard geschatte tijd
       key_not_found: Standaard geschatte tijd sleutel niet gevonden
+    default_planned_date_reminder:
+      title: Standaardherinnering
+      description:
+        Stel automatisch een herinnering in wanneer een geplande datum
+        wordt geselecteerd.
+      save_error: Fout bij opslaan van standaardherinneringinstelling
+      load_error: Fout bij laden van standaardherinneringinstelling
   section:
     general: Algemeen
     appearance: Weergave
@@ -399,3 +406,4 @@ settings:
     data_sync: Gegevens & synchronisatie
     advanced: Geavanceerd
     about: Over
+    flow: Stroom

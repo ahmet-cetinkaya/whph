@@ -349,7 +349,7 @@ tasks:
     none: Brez opomnika
     one_day_before: 1 dan prej
     one_hour_before: 1 ura prej
-    planned_reminder_label: Opomnik za načrtovan datum
+    label: Datum
     section_title: Opomniki
     custom: Po meri
     custom_title: Opomnik po meri
@@ -450,3 +450,7 @@ shared:
     hours: ure
     days: dni
     weeks: tedni
+    minute: minuta
+    hour: ura
+    day: dan
+    week: teden

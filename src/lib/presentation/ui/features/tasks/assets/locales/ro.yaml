@@ -356,7 +356,7 @@ tasks:
     none: Fără memento
     one_day_before: 1 zi înainte
     one_hour_before: 1 oră înainte
-    planned_reminder_label: Memento dată planificată
+    label: Planificată
     section_title: Memento-uri
     custom: Personalizat
     custom_title: Memento personalizat
@@ -459,3 +459,7 @@ shared:
     hours: ore
     days: zile
     weeks: săptămâni
+    minute: minut
+    hour: oră
+    day: zi
+    week: săptămână
