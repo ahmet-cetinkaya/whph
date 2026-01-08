@@ -343,7 +343,7 @@ tasks:
     none: No reminder
     one_day_before: 1 day before
     one_hour_before: 1 hour before
-    planned_reminder_label: Planned Date Reminder
+    label: Reminder
     section_title: Reminders
     custom: Custom
     custom_title: Custom Reminder
@@ -440,7 +440,11 @@ tasks:
     deadline_time_invalid: Please enter a valid deadline time
 shared:
   time:
+    minute: minute
     minutes: minutes
+    hour: hour
     hours: hours
+    day: day
     days: days
+    week: week
     weeks: weeks

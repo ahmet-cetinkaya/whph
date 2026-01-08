@@ -430,7 +430,7 @@ tasks:
     none: Bez připomenutí
     one_day_before: 1 den předem
     one_hour_before: 1 hodinu předem
-    planned_reminder_label: Připomenutí plánovaného data
+    label: Data
     section_title: Připomenutí
     custom: Vlastní
     custom_title: Vlastní připomenutí
@@ -451,7 +451,9 @@ tasks:
     total_time: Celkový čas pro den
   timer:
     mode:
-      description: Vyberte si mezi technikou Pomodoro, odpočítávacím časovačem nebo stopkami
+      description:
+        Vyberte si mezi technikou Pomodoro, odpočítávacím časovačem nebo
+        stopkami
       normal: Normální časovač
       pomodoro: Pomodoro
       stopwatch: Stopky
@@ -533,3 +535,7 @@ shared:
     hours: hodiny
     days: dny
     weeks: týdny
+    minute: minuta
+    hour: hodina
+    day: den
+    week: týden

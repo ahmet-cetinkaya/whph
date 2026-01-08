@@ -6,7 +6,6 @@ import 'package:whph/core/application/features/settings/queries/get_setting_quer
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
@@ -49,9 +48,12 @@ class QuickAddTaskController extends ChangeNotifier {
   DateTime? _plannedDate;
   DateTime? _deadlineDate;
   ReminderTime _plannedDateReminderTime = ReminderTime.none;
+  int? _plannedDateReminderCustomOffset;
   ReminderTime _deadlineDateReminderTime = ReminderTime.none;
+  int? _deadlineDateReminderCustomOffset;
   List<DropdownOption<String>> _selectedTags = [];
   bool _isEstimatedTimeExplicitlySet = false;
+  bool _isReminderSetByUser = false;
   bool _isLoading = false;
 
   // Lock state
@@ -74,7 +76,9 @@ class QuickAddTaskController extends ChangeNotifier {
   DateTime? get plannedDate => _plannedDate;
   DateTime? get deadlineDate => _deadlineDate;
   ReminderTime get plannedDateReminderTime => _plannedDateReminderTime;
+  int? get plannedDateReminderCustomOffset => _plannedDateReminderCustomOffset;
   ReminderTime get deadlineDateReminderTime => _deadlineDateReminderTime;
+  int? get deadlineDateReminderCustomOffset => _deadlineDateReminderCustomOffset;
   List<DropdownOption<String>> get selectedTags => _selectedTags;
   bool get isEstimatedTimeExplicitlySet => _isEstimatedTimeExplicitlySet;
   bool get isLoading => _isLoading;
@@ -141,6 +145,10 @@ class QuickAddTaskController extends ChangeNotifier {
     if (_estimatedTime == null) {
       await _loadDefaultEstimatedTime();
     }
+    // Only load default reminder if no reminder is explicitly set yet
+    if (!_isReminderSetByUser) {
+      await _loadDefaultPlannedDateReminder();
+    }
   }
 
   /// Load default estimated time from settings
@@ -157,9 +165,39 @@ class QuickAddTaskController extends ChangeNotifier {
           notifyListeners();
         }
       }
-    } catch (e) {
-      Logger.error('Error loading default estimated time in QuickAddTaskController: $e');
+    } catch (_) {
+      // Setting not found or error - silently use default
       _estimatedTime = TaskConstants.defaultEstimatedTime;
+      notifyListeners();
+    }
+  }
+
+  /// Load default planned date reminder from settings
+  Future<void> _loadDefaultPlannedDateReminder() async {
+    try {
+      final setting = await _mediator.send<GetSettingQuery, Setting?>(
+        GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminder),
+      );
+
+      if (setting != null) {
+        final value = setting.getValue<String>();
+        _plannedDateReminderTime = ReminderTimeExtension.fromString(value);
+
+        if (_plannedDateReminderTime == ReminderTime.custom) {
+          final offsetSetting = await _mediator.send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminderCustomOffset),
+          );
+          if (offsetSetting != null) {
+            _plannedDateReminderCustomOffset = offsetSetting.getValue<int?>();
+          }
+        }
+      } else {
+        _plannedDateReminderTime = TaskConstants.defaultReminderTime;
+      }
+      notifyListeners();
+    } catch (_) {
+      // Setting not found or error - silently use default
+      _plannedDateReminderTime = TaskConstants.defaultReminderTime;
       notifyListeners();
     }
   }
@@ -199,15 +237,18 @@ class QuickAddTaskController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPlannedDate(DateTime? date, ReminderTime reminderTime) {
+  void setPlannedDate(DateTime? date, ReminderTime reminderTime, [int? customOffset]) {
     _plannedDate = date;
     _plannedDateReminderTime = reminderTime;
+    _plannedDateReminderCustomOffset = customOffset;
+    _isReminderSetByUser = true;
     notifyListeners();
   }
 
-  void setDeadlineDate(DateTime? date, ReminderTime reminderTime) {
+  void setDeadlineDate(DateTime? date, ReminderTime reminderTime, [int? customOffset]) {
     _deadlineDate = date;
     _deadlineDateReminderTime = reminderTime;
+    _deadlineDateReminderCustomOffset = customOffset;
     notifyListeners();
   }
 
@@ -339,7 +380,9 @@ class QuickAddTaskController extends ChangeNotifier {
           plannedDate: _plannedDate,
           deadlineDate: _deadlineDate,
           plannedDateReminderTime: _plannedDateReminderTime,
+          plannedDateReminderCustomOffset: _plannedDateReminderCustomOffset,
           deadlineDateReminderTime: _deadlineDateReminderTime,
+          deadlineDateReminderCustomOffset: _deadlineDateReminderCustomOffset,
           completedAt: (_initialCompleted ?? false) ? DateTime.now().toUtc() : null,
           parentTaskId: _initialParentTaskId,
         );

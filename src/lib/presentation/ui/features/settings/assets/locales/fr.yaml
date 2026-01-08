@@ -421,6 +421,13 @@ settings:
       load_error: Erreur lors du chargement du temps estimé par défaut
       save_error: Erreur lors de l'enregistrement du temps estimé par défaut
       key_not_found: Clé de temps estimé par défaut non trouvée
+    default_planned_date_reminder:
+      title: Rappel par défaut
+      description:
+        Définir automatiquement un rappel lorsqu'une date planifiée est
+        sélectionnée.
+      save_error: Erreur lors de l'enregistrement du paramètre de rappel par défaut
+      load_error: Erreur lors du chargement du paramètre de rappel par défaut
   section:
     general: Général
     appearance: Apparence
@@ -428,3 +435,4 @@ settings:
     data_sync: Données & synchronisation
     advanced: Avancé
     about: À propos
+    flow: Flux

@@ -5,6 +5,7 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constant
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import '../constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/ui/features/calendar/pages/today_page.dart';
@@ -18,7 +19,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/tasks_page.dart';
 class NavigationItems {
   static List<NavItem> topNavItems = [
     NavItem(titleKey: SharedTranslationKeys.navToday, icon: Icons.today, route: TodayPage.route),
-    NavItem(titleKey: SharedTranslationKeys.navTasks, icon: Icons.check_circle, route: TasksPage.route),
+    NavItem(titleKey: SharedTranslationKeys.navTasks, icon: TaskUiConstants.taskIcon, route: TasksPage.route),
     NavItem(titleKey: SharedTranslationKeys.navHabits, icon: HabitUiConstants.habitIcon, route: HabitsPage.route),
     NavItem(titleKey: SharedTranslationKeys.navNotes, icon: Icons.note_alt_outlined, route: NotesPage.route),
     NavItem(titleKey: SharedTranslationKeys.navAppUsages, icon: Icons.bar_chart, route: AppUsageViewPage.route),

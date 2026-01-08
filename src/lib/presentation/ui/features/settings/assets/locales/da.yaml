@@ -371,6 +371,11 @@ settings:
       load_error: Fejl ved indlæsning af standard estimeret tid
       save_error: Fejl ved gemning af standard estimeret tid
       key_not_found: Standard estimeret tid nøgle ikke fundet
+    default_planned_date_reminder:
+      title: Standardpåmindelse
+      description: Angiv automatisk en påmindelse, når en planlagt dato vælges.
+      save_error: Fejl ved gemning af standardindstilling for påmindelse
+      load_error: Fejl ved indlæsning af standardindstilling for påmindelse
   section:
     general: Generelt
     appearance: Udseende
@@ -378,3 +383,4 @@ settings:
     data_sync: Data og synkronisering
     advanced: Avanceret
     about: Om
+    flow: Flow

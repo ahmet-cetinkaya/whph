@@ -7,6 +7,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 class TaskUiConstants {
+  static const taskIcon = Icons.check_circle;
+
   // Date filter constants
   static final DateTime minFilterDate = DateTime(2000);
   static final DateTime maxFilterDate = DateTime(2050);

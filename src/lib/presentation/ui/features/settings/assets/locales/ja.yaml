@@ -301,6 +301,11 @@ settings:
       load_error: デフォルト推定時間の読み込みエラー
       save_error: デフォルト推定時間の保存エラー
       key_not_found: デフォルト推定時間キーが見つかりません
+    default_planned_date_reminder:
+      title: デフォルトのリマインダー
+      description: 予定日を選択したときに自動的にリマインダーを設定します。
+      save_error: デフォルトのリマインダー設定の保存中にエラーが発生しました
+      load_error: デフォルトのリマインダー設定の読み込み中にエラーが発生しました
   section:
     general: 一般
     appearance: 外観
@@ -308,3 +313,4 @@ settings:
     data_sync: データと同期
     advanced: 詳細
     about: について
+    flow: フロー

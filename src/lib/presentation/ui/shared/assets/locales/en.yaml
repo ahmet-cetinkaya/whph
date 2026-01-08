@@ -280,6 +280,10 @@ shared:
     hours: hours
     days: days
     weeks: weeks
+    minute: minute
+    hour: hour
+    day: day
+    week: week
   time_display:
     elapsed: Elapsed
     elapsed_time_tooltip: Time spent on this task

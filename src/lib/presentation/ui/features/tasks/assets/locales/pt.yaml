@@ -353,7 +353,7 @@ tasks:
     none: Sem lembrete
     one_day_before: 1 dia antes
     one_hour_before: 1 hora antes
-    planned_reminder_label: Lembrete de data planejada
+    label: Planejada
     section_title: Lembretes
     custom: Personalizado
     custom_title: Lembrete personalizado
@@ -456,3 +456,7 @@ shared:
     hours: horas
     days: dias
     weeks: semanas
+    minute: minuto
+    hour: hora
+    day: dia
+    week: semana

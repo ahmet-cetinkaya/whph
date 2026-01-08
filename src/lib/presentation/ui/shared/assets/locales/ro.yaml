@@ -78,15 +78,23 @@ shared:
     cannot_select_date_before_min_date: Nu se poate selecta o dată înainte de {date}
     cannot_select_time_after_max_date: Nu se poate selecta o oră după {time}
     cannot_select_time_before_min_date: Nu se poate selecta o oră înainte de {time}
-    deadline_cannot_be_before_planned_date: Termenul limită trebuie să fie la data planificată sau ulterior
+    deadline_cannot_be_before_planned_date:
+      Termenul limită trebuie să fie la data
+      planificată sau ulterior
     end_date_cannot_be_after_max_date: Data de sfârșit nu poate fi după {date}
-    end_date_must_be_at_or_before: Data de sfârșit trebuie să fie la sau înainte de {date}
+    end_date_must_be_at_or_before:
+      Data de sfârșit trebuie să fie la sau înainte de
+      {date}
     select_date_range_title: Selectați intervalul de date
     select_date_time_title: Selectați data și ora
     selected_date_must_be_at_or_after: Data selectată trebuie să fie la sau după {date}
-    selected_date_must_be_at_or_before: Data selectată trebuie să fie la sau înainte de {date}
+    selected_date_must_be_at_or_before:
+      Data selectată trebuie să fie la sau înainte
+      de {date}
     selected_date_time_must_be_after: Data și ora selectate trebuie să fie după {dateTime}
-    start_date_cannot_be_after_end_date: Data de început nu poate fi după data de sfârșit
+    start_date_cannot_be_after_end_date:
+      Data de început nu poate fi după data de
+      sfârșit
     start_date_cannot_be_before_min_date: Data de început nu poate fi înainte de {date}
     start_date_must_be_at_or_after: Data de început trebuie să fie la sau după {date}
     time_must_be_at_or_after: Ora trebuie să fie la sau după {time}
@@ -142,7 +150,8 @@ shared:
     loading: Eroare la încărcarea datelor
     report_subject: "{appName} App: Raport de eroare neașteptată"
     report_template:
-      "Salut, am întâlnit o eroare neașteptată în timp ce foloseam aplicația {appName}.
+      "Salut, am întâlnit o eroare neașteptată în timp ce foloseam
+      aplicația {appName}.
 
 
       Iată informații care ar putea ajuta la diagnosticarea problemei:
@@ -181,7 +190,9 @@ shared:
   startup_error:
     copied_to_clipboard: Detaliile erorii au fost copiate în clipboard
     copy_button: Copiază detaliile erorii
-    description: Ceva a mers prost în timpul pornirii aplicației. Acest lucru poate fi cauzat de o problemă de sistem sau o configurație incompatibilă.
+    description:
+      Ceva a mers prost în timpul pornirii aplicației. Acest lucru poate
+      fi cauzat de o problemă de sistem sau o configurație incompatibilă.
     details_title: Detalii Eroare
     report_button: Raportează Problemă
     title: Eroare la Pornirea Aplicației
@@ -256,13 +267,19 @@ shared:
     average_daily_label: Medie zilnică
     peak_hour_label: Oră de vârf
     select_date_range_message: Selectați intervalul de date pentru a filtra statisticile
-    select_date_range_description: Alegeți un interval de date personalizat pentru a vizualiza statisticile de utilizare
+    select_date_range_description:
+      Alegeți un interval de date personalizat pentru
+      a vizualiza statisticile de utilizare
   time:
     not_set: Nu este setat
     minutes: minute
     hours: ore
     days: zile
     weeks: săptămâni
+    minute: minut
+    hour: oră
+    day: zi
+    week: săptămână
   time_display:
     elapsed: Scurs
     elapsed_time_tooltip: Timp petrecut pe această sarcină
@@ -351,7 +368,9 @@ shared:
     time_must_be_at_or_before: Ora trebuie să fie {time} sau anterior
     selected_date_must_be_at_or_after: Data selectată trebuie să fie {date} sau ulterior
     selected_date_must_be_at_or_before: Data selectată trebuie să fie {date} sau anterior
-    start_date_cannot_be_after_end_date: Data de început nu poate fi după data de sfârșit
+    start_date_cannot_be_after_end_date:
+      Data de început nu poate fi după data de
+      sfârșit
     start_date_must_be_at_or_after: Data de început trebuie să fie {date} sau ulterior
     end_date_must_be_at_or_before: Data de sfârșit trebuie să fie {date} sau anterior
     cannot_select_date_before_min_date: Nu se poate selecta data înainte de {date}

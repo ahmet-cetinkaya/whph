@@ -434,7 +434,7 @@ tasks:
     none: Nessun promemoria
     one_day_before: 1 giorno prima
     one_hour_before: 1 ora prima
-    planned_reminder_label: Promemoria data pianificata
+    label: Pianificata
     section_title: Promemoria
     custom: Personalizzato
     custom_title: Promemoria personalizzato
@@ -455,7 +455,9 @@ tasks:
     total_time: Tempo totale per il giorno
   timer:
     mode:
-      description: Scegli tra tecnica Pomodoro, timer per il conto alla rovescia o cronometro
+      description:
+        Scegli tra tecnica Pomodoro, timer per il conto alla rovescia o
+        cronometro
       normal: Timer normale
       pomodoro: Pomodoro
       stopwatch: Cronometro
@@ -540,3 +542,7 @@ shared:
     hours: ore
     days: giorni
     weeks: settimane
+    minute: minuto
+    hour: ora
+    day: giorno
+    week: settimana

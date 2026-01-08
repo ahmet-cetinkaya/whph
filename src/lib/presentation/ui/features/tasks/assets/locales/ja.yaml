@@ -391,7 +391,7 @@ tasks:
     none: リマインダーなし
     one_day_before: 1日前
     one_hour_before: 1時間前
-    planned_reminder_label: 予定日のリマインダー
+    label: 予定日のリマインダー
     section_title: リマインダー
     custom: カスタム
     custom_title: カスタムリマインダー
@@ -468,3 +468,7 @@ shared:
     hours: 時間
     days: 日
     weeks: 週
+    minute: 分
+    hour: 時間
+    day: 日
+    week: 週間

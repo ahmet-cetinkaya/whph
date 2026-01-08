@@ -398,7 +398,7 @@ tasks:
     none: 알림 없음
     one_day_before: 1일 전
     one_hour_before: 1시간 전
-    planned_reminder_label: 예정일 알림
+    label: 알림
     section_title: 알림
     custom: 사용자 지정
     custom_title: 사용자 지정 알림
@@ -491,3 +491,7 @@ shared:
     hours: 시간
     days: 일
     weeks: 주
+    minute: 분
+    hour: 시간
+    day: 일
+    week: 주
