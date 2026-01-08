@@ -731,8 +731,7 @@ void main() {
         // Assert
         expect(result.deadlineDate, isNotNull);
         final gap = result.deadlineDate!.difference(result.plannedDate);
-        expect(gap.inHours, 8);
-        expect(gap.inMinutes % 60, 30); // Should maintain 8 hour 30 minute gap
+        expect(gap.inMinutes, 8 * 60 + 30, reason: 'The time gap should be exactly 8 hours and 30 minutes.');
 
         // Verify time uses completion time (10:00) as base
         expect(result.plannedDate.hour, 10);
