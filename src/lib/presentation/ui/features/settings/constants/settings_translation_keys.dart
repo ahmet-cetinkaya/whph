@@ -75,6 +75,13 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String taskDefaultEstimatedTimeLoadError = 'settings.task.default_estimated_time.load_error';
   static const String taskDefaultEstimatedTimeSaveError = 'settings.task.default_estimated_time.save_error';
   static const String taskDefaultEstimatedTimeKeyNotFound = 'settings.task.default_estimated_time.key_not_found';
+  static const String taskDefaultPlannedDateReminderTitle = 'settings.task.default_planned_date_reminder.title';
+  static const String taskDefaultPlannedDateReminderDescription =
+      'settings.task.default_planned_date_reminder.description';
+  static const String taskDefaultPlannedDateReminderSaveError =
+      'settings.task.default_planned_date_reminder.save_error';
+  static const String taskDefaultPlannedDateReminderLoadError =
+      'settings.task.default_planned_date_reminder.load_error';
   static const String importStrategyTitle = 'settings.import.strategy.title';
   static const String importSuccess = 'settings.import.success';
   static const String importTitle = 'settings.import.title';
@@ -262,6 +269,7 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String sectionDataSync = 'settings.section.data_sync';
   static const String sectionAdvanced = 'settings.section.advanced';
   static const String sectionAbout = 'settings.section.about';
+  static const String sectionFlow = 'settings.section.flow';
 
   // Reset Database
   static const String resetDatabaseTitle = 'settings.advanced.reset_database.title';

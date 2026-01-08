@@ -397,6 +397,11 @@ settings:
       load_error: Błąd ładowania domyślnego szacowanego czasu
       save_error: Błąd zapisu domyślnego szacowanego czasu
       key_not_found: Klucz domyślnego szacowanego czasu nie znaleziony
+    default_planned_date_reminder:
+      title: Domyślne przypomnienie
+      description: Automatyczne ustawienie przypomnienia po wybraniu planowanej daty.
+      save_error: Błąd podczas zapisywania ustawienia domyślnego przypomnienia
+      load_error: Błąd podczas ładowania ustawienia domyślnego przypomnienia
   section:
     general: Ogólne
     appearance: Wygląd
@@ -404,3 +409,4 @@ settings:
     data_sync: Dane i synchronizacja
     advanced: Zaawansowane
     about: O aplikacji
+    flow: Przepływ

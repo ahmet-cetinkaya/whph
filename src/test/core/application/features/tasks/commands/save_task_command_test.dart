@@ -640,4 +640,213 @@ void main() {
       ))).called(1);
     });
   });
+
+  group('SaveTaskCommandHandler Tests - Planned Date Reminder', () {
+    test('should apply default reminder when creating task with plannedDate and no explicit reminder', () async {
+      // Arrange
+      final command = SaveTaskCommand(
+        title: 'Test Task',
+        plannedDate: DateTime.now().add(const Duration(days: 1)).toUtc(),
+      );
+
+      final setting = Setting(
+        id: 'setting-id',
+        key: SettingKeys.taskDefaultPlannedDateReminder,
+        value: ReminderTime.atTime.name,
+        valueType: SettingValueType.string,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
+
+      when(mockTaskRepository.getList(any, any,
+              customWhereFilter: anyNamed('customWhereFilter'),
+              customOrder: anyNamed('customOrder'),
+              includeDeleted: anyNamed('includeDeleted')))
+          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.plannedDateReminderTime == ReminderTime.atTime),
+      ))).called(1);
+    });
+
+    test('should NOT apply default reminder when explicit reminder provided', () async {
+      // Arrange
+      final command = SaveTaskCommand(
+        title: 'Test Task',
+        plannedDate: DateTime.now().add(const Duration(days: 1)).toUtc(),
+        plannedDateReminderTime: ReminderTime.fiveMinutesBefore,
+      );
+
+      // Default setting says AtTime, but we provide FiveMinutesBefore
+      final setting = Setting(
+        id: 'setting-id',
+        key: SettingKeys.taskDefaultPlannedDateReminder,
+        value: ReminderTime.atTime.name,
+        valueType: SettingValueType.string,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
+
+      when(mockTaskRepository.getList(any, any,
+              customWhereFilter: anyNamed('customWhereFilter'),
+              customOrder: anyNamed('customOrder'),
+              includeDeleted: anyNamed('includeDeleted')))
+          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.plannedDateReminderTime == ReminderTime.fiveMinutesBefore),
+      ))).called(1);
+    });
+
+    test('should apply default reminder when updating task with changed plannedDate', () async {
+      // Arrange
+      const taskId = 'task-1';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Task',
+        plannedDate: DateTime.now().toUtc(), // Old date
+        plannedDateReminderTime: ReminderTime.none,
+      );
+
+      final newDate = DateTime.now().add(const Duration(days: 1)).toUtc();
+      final command = SaveTaskCommand(
+        id: taskId,
+        title: 'Task',
+        plannedDate: newDate, // Changed date
+      );
+
+      final setting = Setting(
+        id: 'setting-id',
+        key: SettingKeys.taskDefaultPlannedDateReminder,
+        value: ReminderTime.oneHourBefore.name,
+        valueType: SettingValueType.string,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) =>
+            task.id == taskId &&
+            task.plannedDate == newDate &&
+            task.plannedDateReminderTime == ReminderTime.oneHourBefore),
+      ))).called(1);
+    });
+
+    test('should NOT update reminder when plannedDate is NOT changed', () async {
+      // Arrange
+      const taskId = 'task-1';
+      final date = DateTime.now().toUtc();
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Task',
+        plannedDate: date,
+        plannedDateReminderTime: ReminderTime.fifteenMinutesBefore, // Existing valid reminder
+      );
+
+      final command = SaveTaskCommand(
+        id: taskId,
+        title: 'Task Updated',
+        plannedDate: date, // Same date
+      );
+
+      // Default is different, but should not be applied
+      final setting = Setting(
+        id: 'setting-id',
+        key: SettingKeys.taskDefaultPlannedDateReminder,
+        value: ReminderTime.atTime.name,
+        valueType: SettingValueType.string,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) =>
+                task.id == taskId &&
+                task.plannedDateReminderTime == ReminderTime.fifteenMinutesBefore // Should stay same
+            ),
+      ))).called(1);
+    });
+
+    test('should apply custom default reminder offset when creating task given default setting is custom', () async {
+      // Arrange
+      final command = SaveTaskCommand(
+        title: 'Test Task',
+        plannedDate: DateTime.now().add(const Duration(days: 1)).toUtc(),
+      );
+
+      final reminderSetting = Setting(
+        id: 'setting-id-1',
+        key: SettingKeys.taskDefaultPlannedDateReminder,
+        value: ReminderTime.custom.name,
+        valueType: SettingValueType.string,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      final offsetSetting = Setting(
+        id: 'setting-id-2',
+        key: SettingKeys.taskDefaultPlannedDateReminderCustomOffset,
+        value: '45', // 45 minutes
+        valueType: SettingValueType.int,
+        createdDate: DateTime.now().toUtc(),
+        modifiedDate: DateTime.now().toUtc(),
+      );
+
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder))
+          .thenAnswer((_) async => reminderSetting);
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset))
+          .thenAnswer((_) async => offsetSetting);
+
+      when(mockTaskRepository.getList(any, any,
+              customWhereFilter: anyNamed('customWhereFilter'),
+              customOrder: anyNamed('customOrder'),
+              includeDeleted: anyNamed('includeDeleted')))
+          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) =>
+            task.plannedDateReminderTime == ReminderTime.custom && task.plannedDateReminderCustomOffset == 45),
+      ))).called(1);
+    });
+  });
 }

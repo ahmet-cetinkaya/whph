@@ -263,6 +263,10 @@ shared:
     hours: 時間
     days: 日
     weeks: 週
+    minute: 分
+    hour: 時間
+    day: 日
+    week: 週
   time_display:
     elapsed: 経過
     elapsed_time_tooltip: このタスクに費やされた時間

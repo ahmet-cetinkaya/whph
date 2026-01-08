@@ -392,6 +392,11 @@ settings:
       load_error: Napaka pri nalaganju privzetega ocenjenega časa
       save_error: Napaka pri shranjevanju privzetega ocenjenega časa
       key_not_found: Ključ privzetega ocenjenega časa ni bil najden
+    default_planned_date_reminder:
+      title: Privzeto opomnik
+      description: Samodejno nastavi opomnik, ko je izbran načrtovani datum.
+      save_error: Napaka pri shranjevanju nastavitve privzetega opomnika
+      load_error: Napaka pri nalaganju nastavitve privzetega opomnika
   section:
     general: Splošno
     appearance: Videz
@@ -399,3 +404,4 @@ settings:
     data_sync: Podatki & sinhronizacija
     advanced: Napredno
     about: O programu
+    flow: Tok

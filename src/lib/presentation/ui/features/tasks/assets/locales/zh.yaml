@@ -390,7 +390,7 @@ tasks:
     none: 无提醒
     one_day_before: 1天前
     one_hour_before: 1小时前
-    planned_reminder_label: 计划日期提醒
+    label: 计划日期提醒
     section_title: 提醒
     custom: 自定义
     custom_title: 自定义提醒
@@ -467,3 +467,7 @@ shared:
     hours: 小时
     days: 天
     weeks: 周
+    minute: 分钟
+    hour: 小时
+    day: 天
+    week: 周

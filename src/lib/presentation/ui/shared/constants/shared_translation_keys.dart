@@ -371,6 +371,12 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String previousButton = "shared.buttons.previous";
   static const String tapToResume = "shared.tap_to_resume";
 
+  // Singular time unit keys for proper pluralization
+  static const String timeMinute = 'shared.time.minute';
+  static const String timeHour = 'shared.time.hour';
+  static const String timeDay = 'shared.time.day';
+  static const String timeWeek = 'shared.time.week';
+
   // Helper Methods
   static String getWeekDayKey(int weekday) {
     if (weekday < 1 || weekday > 7) {

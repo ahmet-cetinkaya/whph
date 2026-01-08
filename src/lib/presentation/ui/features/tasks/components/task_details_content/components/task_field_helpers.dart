@@ -32,7 +32,7 @@ class TaskFieldHelpers {
       case TaskDetailsController.keyDescription:
         return translationService.translate(TaskTranslationKeys.descriptionLabel);
       case TaskDetailsController.keyPlannedDateReminder:
-        return translationService.translate(TaskTranslationKeys.reminderPlannedLabel);
+        return translationService.translate(TaskTranslationKeys.reminderDateLabel);
       case TaskDetailsController.keyDeadlineDateReminder:
         return translationService.translate(TaskTranslationKeys.reminderDeadlineLabel);
       case TaskDetailsController.keyRecurrence:

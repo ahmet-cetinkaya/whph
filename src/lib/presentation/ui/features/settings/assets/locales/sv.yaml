@@ -379,6 +379,11 @@ settings:
       load_error: Fel vid inläsning av standard uppskattad tid
       save_error: Fel vid sparande av standard uppskattad tid
       key_not_found: Standard uppskattad tid nyckel hittades inte
+    default_planned_date_reminder:
+      title: Standardpåminnelse
+      description: Ställ in en påminnelse automatiskt när ett planerat datum väljs.
+      save_error: Fel vid sparande av standardinställning för påminnelse
+      load_error: Fel vid inläsning av standardinställning för påminnelse
   section:
     general: Allmänt
     appearance: Utseende
@@ -386,3 +391,4 @@ settings:
     data_sync: Data & synkronisering
     advanced: Avancerat
     about: Om
+    flow: Flöde

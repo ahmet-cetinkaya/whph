@@ -262,6 +262,10 @@ shared:
     hours: 小时
     days: 天
     weeks: 周
+    minute: 分钟
+    hour: 小时
+    day: 天
+    week: 周
   time_display:
     elapsed: 已用
     elapsed_time_tooltip: 此任务已用时间

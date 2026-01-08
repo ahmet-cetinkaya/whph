@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/settings/components/debug_logs_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/debug_section.dart';
-import 'package:whph/presentation/ui/features/settings/components/tasks_tile.dart';
+
 import 'package:whph/presentation/ui/features/settings/components/reset_database_settings.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -40,9 +40,6 @@ class AdvancedSettingsDialog extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(AppTheme.sizeLarge),
               children: [
-                const TasksTile(),
-
-                const SizedBox(height: AppTheme.sizeMedium),
                 const DebugLogsSettings(),
 
                 const SizedBox(height: AppTheme.sizeMedium),

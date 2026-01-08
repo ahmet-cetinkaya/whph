@@ -383,6 +383,13 @@ settings:
       load_error: Varsayılan tahmini süre yüklenirken hata
       save_error: Varsayılan tahmini süre kaydedilirken hata
       key_not_found: Varsayılan tahmini süre anahtarı bulunamadı
+    default_planned_date_reminder:
+      title: Varsayılan Hatırlatıcı
+      description:
+        Planlanan bir tarih seçildiğinde otomatik olarak bir hatırlatıcı
+        ayarlayın.
+      save_error: Varsayılan hatırlatıcı ayarı kaydedilirken hata oluştu
+      load_error: Varsayılan hatırlatıcı ayarı yüklenirken hata oluştu
   section:
     general: Genel
     appearance: Görünüm
@@ -390,3 +397,4 @@ settings:
     data_sync: Veri ve Senkronizasyon
     advanced: Gelişmiş
     about: Hakkında
+    flow: Akış

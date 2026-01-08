@@ -112,10 +112,52 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       // Handle parsing errors specifically
       Logger.warning('Failed to parse default estimated time setting. Error: $e\n$s');
       return TaskConstants.defaultEstimatedTime;
-    } catch (e) {
+    } catch (e, s) {
       // Handle any other unexpected errors
-      Logger.error('Unexpected error getting default estimated time: $e');
+      Logger.error('Unexpected error getting default estimated time: $e\n$s');
       return TaskConstants.defaultEstimatedTime;
+    }
+  }
+
+  Future<(ReminderTime, int?)> _getDefaultPlannedDateReminder() async {
+    try {
+      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder);
+      if (setting == null) return (TaskConstants.defaultReminderTime, null);
+
+      final value = setting.getValue<String>();
+      final reminderTime = ReminderTimeExtension.fromString(value);
+
+      // Fetch custom offset if type is custom
+      if (reminderTime == ReminderTime.custom) {
+        final offset = await _getDefaultPlannedDateReminderCustomOffset();
+        if (offset == null) {
+          Logger.warning('Default planned date reminder is custom without offset, treating as none');
+          return (ReminderTime.none, null);
+        }
+        return (reminderTime, offset);
+      }
+
+      return (reminderTime, null);
+    } catch (e, s) {
+      Logger.error('Error getting default planned date reminder: $e\n$s');
+      return (TaskConstants.defaultReminderTime, null);
+    }
+  }
+
+  /// Gets the default planned date reminder custom offset
+  Future<int?> _getDefaultPlannedDateReminderCustomOffset() async {
+    try {
+      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset);
+      if (setting == null) return null;
+
+      final value = setting.getValue<int?>();
+      if (!ReminderOffsets.isValidCustomOffset(value)) {
+        return null;
+      }
+      return value;
+    } catch (e, s) {
+      Logger.error('Error getting default planned date reminder custom offset: $e\n$s');
+      return null;
     }
   }
 
@@ -132,7 +174,11 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.title = request.title;
       task.description = request.description;
       task.priority = request.priority;
+
+      // Check if planned date is being changed
+      final bool isPlannedDateChanged = request.plannedDate != task.plannedDate;
       task.plannedDate = request.plannedDate;
+
       task.deadlineDate = request.deadlineDate;
       task.estimatedTime = request.estimatedTime != null && request.estimatedTime! > 0 ? request.estimatedTime : null;
 
@@ -141,10 +187,22 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       task.order = request.order ?? task.order;
 
-      // Always update reminder settings
+      // Update reminder settings
       if (request.plannedDateReminderTime != null) {
+        // Explicit reminder setting provided
         task.plannedDateReminderTime = request.plannedDateReminderTime!;
         task.plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
+      } else if (isPlannedDateChanged) {
+        if (task.plannedDate != null) {
+          // When the date changes, the default reminder policy is applied.
+          final (defaultReminder, customOffset) = await _getDefaultPlannedDateReminder();
+          task.plannedDateReminderTime = defaultReminder;
+          task.plannedDateReminderCustomOffset = customOffset;
+        } else {
+          // Date cleared -> clear reminder
+          task.plannedDateReminderTime = ReminderTime.none;
+          task.plannedDateReminderCustomOffset = null;
+        }
       }
 
       if (request.deadlineDateReminderTime != null) {
@@ -196,6 +254,20 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       final lastOrder = lastTasks.items.isNotEmpty ? lastTasks.items.first.order : 0;
       final newOrder = request.order ?? ((lastOrder + orderStep).toDouble());
 
+      // Resolve default reminder for new task
+      ReminderTime plannedDateReminderTime;
+      int? plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
+
+      if (request.plannedDateReminderTime != null) {
+        plannedDateReminderTime = request.plannedDateReminderTime!;
+      } else if (request.plannedDate != null) {
+        final (defaultReminder, customOffset) = await _getDefaultPlannedDateReminder();
+        plannedDateReminderTime = defaultReminder;
+        plannedDateReminderCustomOffset = customOffset;
+      } else {
+        plannedDateReminderTime = ReminderTime.none;
+      }
+
       task = Task(
           id: KeyHelper.generateStringId(),
           createdDate: DateTime.now().toUtc(),
@@ -210,8 +282,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           completedAt: request.completedAt,
           parentTaskId: request.parentTaskId,
           order: newOrder,
-          plannedDateReminderTime: request.plannedDateReminderTime ?? ReminderTime.none,
-          plannedDateReminderCustomOffset: request.plannedDateReminderCustomOffset,
+          plannedDateReminderTime: plannedDateReminderTime,
+          plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
           deadlineDateReminderTime: request.deadlineDateReminderTime ?? ReminderTime.none,
           deadlineDateReminderCustomOffset: request.deadlineDateReminderCustomOffset,
           recurrenceType: request.recurrenceType ?? RecurrenceType.none,

@@ -61,6 +61,8 @@ class SettingKeys {
 
   // Task Settings
   static const String taskDefaultEstimatedTime = "TASK_DEFAULT_ESTIMATED_TIME";
+  static const String taskDefaultPlannedDateReminder = "TASK_DEFAULT_PLANNED_DATE_REMINDER";
+  static const String taskDefaultPlannedDateReminderCustomOffset = "TASK_DEFAULT_PLANNED_DATE_REMINDER_CUSTOM_OFFSET";
 
   // Changelog Settings
   static const String lastShownChangelogVersion = 'LAST_SHOWN_CHANGELOG_VERSION';

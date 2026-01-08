@@ -349,10 +349,16 @@ settings:
       load_error: Error loading default estimated time setting
       save_error: Error saving default estimated time setting
       key_not_found: Default estimated time setting not found
+    default_planned_date_reminder:
+      title: Default Reminder
+      description: Automatically set a reminder when a planned date is selected.
+      save_error: Error saving default reminder setting
+      load_error: Error loading default reminder setting
   section:
     general: General
     appearance: Appearance
     notifications: Notifications
     data_sync: Data & Sync
+    flow: Flow
     advanced: Advanced
     about: About

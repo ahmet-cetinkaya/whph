@@ -263,6 +263,10 @@ shared:
     hours: 시간
     days: 일
     weeks: 주
+    minute: 분
+    hour: 시간
+    day: 일
+    week: 주
   time_display:
     elapsed: 경과
     elapsed_time_tooltip: 이 작업에 소요된 시간

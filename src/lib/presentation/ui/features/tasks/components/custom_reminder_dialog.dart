@@ -28,7 +28,7 @@ class CustomReminderDialog extends StatefulWidget {
   static Future<int?> show(BuildContext context, ITranslationService translationService, {int? initialMinutes}) {
     return ResponsiveDialogHelper.showResponsiveDialog<int>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: CustomReminderDialog(
         translationService: translationService,
         initialMinutes: initialMinutes,

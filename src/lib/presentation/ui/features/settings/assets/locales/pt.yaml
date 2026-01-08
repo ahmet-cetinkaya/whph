@@ -391,6 +391,13 @@ settings:
       load_error: Erro ao carregar tempo estimado padrão
       save_error: Erro ao salvar tempo estimado padrão
       key_not_found: Chave de tempo estimado padrão não encontrada
+    default_planned_date_reminder:
+      title: Lembrete padrão
+      description:
+        Definir automaticamente um lembrete quando uma data planeada for
+        selecionada.
+      save_error: Erro ao salvar configuração de lembrete padrão
+      load_error: Erro ao carregar configuração de lembrete padrão
   section:
     general: Geral
     appearance: Aparência
@@ -398,3 +405,4 @@ settings:
     data_sync: Dados e sincronização
     advanced: Avançado
     about: Sobre
+    flow: Fluxo

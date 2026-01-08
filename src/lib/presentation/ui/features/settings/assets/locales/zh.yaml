@@ -297,6 +297,11 @@ settings:
       load_error: 加载默认预计时间时出错
       save_error: 保存默认预计时间时出错
       key_not_found: 未找到默认预计时间键
+    default_planned_date_reminder:
+      title: 默认提醒
+      description: 选择计划日期时自动设置提醒。
+      save_error: 保存默认提醒设置时出错
+      load_error: 加载默认提醒设置时出错
   section:
     general: 常规
     appearance: 外观
@@ -304,3 +309,4 @@ settings:
     data_sync: 数据和同步
     advanced: 高级
     about: 关于
+    flow: 流程

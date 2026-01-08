@@ -431,7 +431,7 @@ tasks:
     none: Без нагадування
     one_day_before: За 1 день
     one_hour_before: За 1 годину
-    planned_reminder_label: Нагадування про заплановану дату
+    label: Дату
     section_title: Нагадування
     custom: Налаштувати
     custom_title: Настроюване нагадування
@@ -452,7 +452,9 @@ tasks:
     total_time: Загальний час за день
   timer:
     mode:
-      description: Виберіть між технікою Помодоро, таймером зворотного відліку або секундоміром
+      description:
+        Виберіть між технікою Помодоро, таймером зворотного відліку або
+        секундоміром
       normal: Звичайний таймер
       pomodoro: Помодоро
       stopwatch: Секундомір
@@ -537,3 +539,7 @@ shared:
     hours: години
     days: дні
     weeks: тижні
+    minute: хвилина
+    hour: година
+    day: день
+    week: тиждень

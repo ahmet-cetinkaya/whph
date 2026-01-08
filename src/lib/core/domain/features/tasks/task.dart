@@ -2,6 +2,7 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/features/tasks/task_constants.dart';
 
 enum EisenhowerPriority {
   notUrgentNotImportant,
@@ -19,6 +20,18 @@ enum ReminderTime {
   oneHourBefore,
   oneDayBefore,
   custom,
+}
+
+/// Extension for ReminderTime enum to provide parsing functionality
+extension ReminderTimeExtension on ReminderTime {
+  /// Parses a string value into a ReminderTime enum.
+  /// Returns the default reminder time if the value is invalid or not found.
+  static ReminderTime fromString(String? value) {
+    return ReminderTime.values.firstWhere(
+      (e) => e.name == value || e.toString() == value,
+      orElse: () => TaskConstants.defaultReminderTime,
+    );
+  }
 }
 
 /// Recurrence type options for recurring tasks
@@ -137,8 +150,8 @@ class Task extends BaseEntity<String> {
         'isCompleted': isCompleted, // Backward compatibility
         'parentTaskId': parentTaskId,
         'order': order,
-        'plannedDateReminderTime': plannedDateReminderTime.toString(),
-        'deadlineDateReminderTime': deadlineDateReminderTime.toString(),
+        'plannedDateReminderTime': plannedDateReminderTime.name,
+        'deadlineDateReminderTime': deadlineDateReminderTime.name,
         'plannedDateReminderCustomOffset': plannedDateReminderCustomOffset,
         'deadlineDateReminderCustomOffset': deadlineDateReminderCustomOffset,
         'recurrenceType': recurrenceType.toString(),
@@ -210,7 +223,7 @@ class Task extends BaseEntity<String> {
   static T _parseEnum<T>(List<T> values, String? value, T defaultValue, String enumName) {
     if (value == null) return defaultValue;
     try {
-      return values.firstWhere((e) => e.toString() == value);
+      return values.firstWhere((e) => (e as dynamic).name == value || e.toString() == value);
     } catch (e) {
       Logger.warning('Invalid $enumName value "$value", defaulting to $defaultValue',
           component: DomainLogComponents.task);
