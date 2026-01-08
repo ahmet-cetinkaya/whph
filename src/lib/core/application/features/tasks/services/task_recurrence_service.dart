@@ -264,7 +264,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     if (task.plannedDate != null && task.completedAt != null && task.plannedDate!.isAfter(task.completedAt!)) {
       recurrenceBaseDate = task.plannedDate!;
     } else {
-      recurrenceBaseDate = task.completedAt ?? DateTime.now().toUtc();
+      recurrenceBaseDate = task.completedAt ?? task.plannedDate ?? task.deadlineDate ?? DateTime.now().toUtc();
     }
 
     // Calculate next recurrence for primary date
