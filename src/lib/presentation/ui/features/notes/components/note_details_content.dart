@@ -124,11 +124,19 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         return await _mediator.send<GetNoteQuery, GetNoteQueryResponse>(query);
       },
       onSuccess: (response) {
+        // Skip update if fields became active during the async operation
+        if (_isTitleFieldActive || _isContentFieldActive) return;
+
         setState(() {
+          // Check if local content has modifications compared to LAST LOADED content
+          // This protects unsaved changes even if the field is not currently active
+          final bool isTitleDirty = _titleController.text != (_note?.title ?? '');
+          final bool isContentDirty = _contentController.text != (_note?.content ?? '');
+
           _note = response;
 
-          // Update title if it's different
-          if (_titleController.text != response.title) {
+          // Update title if it's different and NOT dirty and NOT active
+          if (!isTitleDirty && _titleController.text != response.title) {
             _titleController.text = response.title;
           }
 
@@ -142,9 +150,9 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             });
           }
 
-          // Update content if it's different
+          // Update content if it's different and NOT dirty and NOT active
           final content = response.content ?? '';
-          if (_contentController.text != content) {
+          if (!isContentDirty && _contentController.text != content) {
             _contentController.text = content;
           }
         });
@@ -400,6 +408,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           // Note Content (always visible)
           MarkdownEditor.simple(
             controller: _contentController,
+            focusNode: _contentFocusNode,
             onChanged: _onContentChanged,
             style: theme.textTheme.bodyMedium,
             height: 400,

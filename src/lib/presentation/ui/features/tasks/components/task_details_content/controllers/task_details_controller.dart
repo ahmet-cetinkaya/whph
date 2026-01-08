@@ -40,6 +40,7 @@ class TaskDetailsController extends ChangeNotifier {
   bool _isPlannedDatePickerActive = false;
   bool _isDeadlineDatePickerActive = false;
   bool _isTitleFieldActive = false;
+  bool _isDescriptionFieldActive = false;
 
   // Time tracking
   Duration _timeSinceLastSave = Duration.zero;
@@ -132,10 +133,14 @@ class TaskDetailsController extends ChangeNotifier {
   /// Load task data
   Future<void> loadTask(String taskId) async {
     if (_isDatePickerInteractionActive()) return;
-    if (_isTitleFieldActive) return;
+    if (_isTitleFieldActive || _isDescriptionFieldActive) return;
 
     final query = GetTaskQuery(id: taskId);
     final response = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+
+    // Check if fields became active during the async operation
+    if (_isTitleFieldActive || _isDescriptionFieldActive) return;
+
     _task = response;
     _processFieldVisibility();
     notifyListeners();
@@ -232,6 +237,11 @@ class TaskDetailsController extends ChangeNotifier {
 
   void setTitleFieldActive(bool active) {
     _isTitleFieldActive = active;
+    notifyListeners();
+  }
+
+  void setDescriptionFieldActive(bool active) {
+    _isDescriptionFieldActive = active;
     notifyListeners();
   }
 
@@ -341,6 +351,7 @@ class TaskDetailsController extends ChangeNotifier {
   }
 
   void updateDescription(String value) {
+    _isDescriptionFieldActive = true;
     _task!.description = value.trim().isEmpty ? null : value;
     saveTaskDebounced();
   }

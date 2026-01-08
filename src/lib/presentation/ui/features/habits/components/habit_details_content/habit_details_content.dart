@@ -43,6 +43,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _descriptionFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -53,30 +54,53 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     _controller.addListener(_onControllerUpdate);
     _nameFocusNode.addListener(_handleNameFocusChange);
+    _descriptionFocusNode.addListener(_handleDescriptionFocusChange);
     _initializeController();
   }
 
   Future<void> _initializeController() async {
     await _controller.initialize(widget.habitId, context);
-    _updateTextControllers();
+    if (mounted) {
+      _lastSyncedName = _controller.habit?.name;
+      _lastSyncedDescription = _controller.habit?.description;
+      _updateTextControllers();
+    }
   }
+
+  // Track last synced values to detect dirty state
+  String? _lastSyncedName;
+  String? _lastSyncedDescription;
 
   void _updateTextControllers() {
     if (_controller.habit == null) return;
 
-    if (_nameController.text != _controller.habit!.name) {
-      _nameController.text = _controller.habit!.name;
-      widget.onNameUpdated?.call(_controller.habit!.name);
+    final name = _controller.habit!.name;
+    if (_nameController.text == name) {
+      _lastSyncedName = name;
+    } else {
+      final bool isNameDirty = _nameController.text != (_lastSyncedName ?? '');
+      if (!isNameDirty && _nameController.text != name) {
+        _nameController.text = name;
+        _lastSyncedName = name;
+        widget.onNameUpdated?.call(name);
 
-      if (_controller.habit!.name.isEmpty) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (mounted) _nameFocusNode.requestFocus();
-        });
+        if (name.isEmpty) {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (mounted) _nameFocusNode.requestFocus();
+          });
+        }
       }
     }
 
-    if (_descriptionController.text != _controller.habit!.description) {
-      _descriptionController.text = _controller.habit!.description;
+    final description = _controller.habit!.description;
+    if (_descriptionController.text == description) {
+      _lastSyncedDescription = description;
+    } else {
+      final bool isDescriptionDirty = _descriptionController.text != (_lastSyncedDescription ?? '');
+      if (!isDescriptionDirty && _descriptionController.text != description) {
+        _descriptionController.text = description;
+        _lastSyncedDescription = description;
+      }
     }
   }
 
@@ -91,12 +115,17 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     _controller.setNameFieldActive(_nameFocusNode.hasFocus);
   }
 
+  void _handleDescriptionFocusChange() {
+    _controller.setDescriptionFieldActive(_descriptionFocusNode.hasFocus);
+  }
+
   @override
   void dispose() {
     _controller.habitsService.onHabitUpdated.removeListener(() {});
     _controller.habitsService.onHabitRecordAdded.removeListener(() {});
     _controller.habitsService.onHabitRecordRemoved.removeListener(() {});
     _nameFocusNode.removeListener(_handleNameFocusChange);
+    _descriptionFocusNode.removeListener(_handleDescriptionFocusChange);
 
     if (widget.onNameUpdated != null && _nameController.text.isNotEmpty) {
       widget.onNameUpdated!(_nameController.text);
@@ -107,6 +136,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     _nameController.dispose();
     _descriptionController.dispose();
     _nameFocusNode.dispose();
+    _descriptionFocusNode.dispose();
     super.dispose();
   }
 
@@ -115,6 +145,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   }
 
   void _onDescriptionChanged(String value) {
+    _controller.setDescriptionFieldActive(true);
     if (value.trim().isEmpty) {
       _descriptionController.clear();
       if (mounted) {
@@ -291,6 +322,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   icon: HabitUiConstants.descriptionIcon,
                   widget: MarkdownEditor.simple(
                     controller: _descriptionController,
+                    focusNode: _descriptionFocusNode,
                     onChanged: _onDescriptionChanged,
                     height: 250,
                     style: Theme.of(context).textTheme.bodyMedium,

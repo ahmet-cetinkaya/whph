@@ -61,6 +61,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _plannedDateFocusNode = FocusNode();
   final FocusNode _deadlineDateFocusNode = FocusNode();
+  final FocusNode _descriptionFocusNode = FocusNode();
 
   // Track date picker interaction state
   bool _isPlannedDatePickerActive = false;
@@ -81,6 +82,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   void _setupFocusListeners() {
     _titleFocusNode.addListener(_handleTitleFocusChange);
+    _descriptionFocusNode.addListener(_handleDescriptionFocusChange);
     _plannedDateFocusNode.addListener(() => setState(() {}));
     _deadlineDateFocusNode.addListener(() => setState(() {}));
   }
@@ -90,9 +92,18 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _controller.setTitleFieldActive(_titleFocusNode.hasFocus);
   }
 
+  void _handleDescriptionFocusChange() {
+    if (!mounted) return;
+    _controller.setDescriptionFieldActive(_descriptionFocusNode.hasFocus);
+  }
+
   Future<void> _initializeController() async {
     await _controller.initialize(widget.taskId);
-    _syncControllersFromTask();
+    if (mounted) {
+      _lastSyncedTitle = _controller.task?.title;
+      _lastSyncedDescription = _controller.task?.description;
+      _syncControllersFromTask();
+    }
   }
 
   void _onControllerChanged() {
@@ -101,13 +112,25 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     setState(() {});
   }
 
+  // Track last synced values to detect dirty state
+  String? _lastSyncedTitle;
+  String? _lastSyncedDescription;
+
   void _syncControllersFromTask() {
     final task = _controller.task;
     if (task == null) return;
 
-    if (_titleController.text != task.title) {
-      _titleController.text = task.title;
+    if (_titleController.text == task.title) {
+      _lastSyncedTitle = task.title;
+    } else {
+      final bool isTitleDirty = _titleController.text != (_lastSyncedTitle ?? '');
+      if (!isTitleDirty && _titleController.text != task.title) {
+        _titleController.text = task.title;
+        _lastSyncedTitle = task.title;
+      }
     }
+
+    // ... date logic ...
 
     if (!_isPlannedDatePickerActive && !_plannedDateFocusNode.hasFocus) {
       final plannedDateText = task.plannedDate != null
@@ -128,8 +151,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
 
     final descriptionText = task.description ?? '';
-    if (_descriptionController.text != descriptionText) {
-      _descriptionController.text = descriptionText;
+    if (_descriptionController.text == descriptionText) {
+      _lastSyncedDescription = descriptionText;
+    } else {
+      final bool isDescriptionDirty = _descriptionController.text != (_lastSyncedDescription ?? '');
+      if (!isDescriptionDirty && _descriptionController.text != descriptionText) {
+        _descriptionController.text = descriptionText;
+        _lastSyncedDescription = descriptionText;
+      }
     }
   }
 
@@ -156,6 +185,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _deadlineDateController.dispose();
     _deadlineDateFocusNode.dispose();
     _descriptionController.dispose();
+    _descriptionFocusNode.dispose();
     super.dispose();
   }
 
@@ -197,6 +227,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       _controller.updateDeadlineReminder(value, customOffset);
 
   void _onDescriptionChanged(String value) {
+    _controller.setDescriptionFieldActive(true);
     if (value.trim().isEmpty) {
       _descriptionController.clear();
       if (mounted) {
@@ -332,6 +363,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     final descriptionSection = TaskDescriptionSection(
       translationService: _controller.translationService,
       controller: _descriptionController,
+      focusNode: _descriptionFocusNode,
       onChanged: _onDescriptionChanged,
     );
     final timerSection = TaskTimerSection(

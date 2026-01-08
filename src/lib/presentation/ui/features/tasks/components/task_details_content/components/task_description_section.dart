@@ -12,11 +12,13 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 class TaskDescriptionSection {
   final ITranslationService translationService;
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final void Function(String) onChanged;
 
   const TaskDescriptionSection({
     required this.translationService,
     required this.controller,
+    this.focusNode,
     required this.onChanged,
   });
 
@@ -28,6 +30,7 @@ class TaskDescriptionSection {
             icon: TaskUiConstants.descriptionIcon,
             widget: MarkdownEditor.simple(
               controller: controller,
+              focusNode: focusNode,
               onChanged: onChanged,
               height: 250,
               style: Theme.of(context).textTheme.bodyMedium,

@@ -39,6 +39,7 @@ class HabitDetailsController extends ChangeNotifier {
   GetListHabitTagsQueryResponse? _habitTags;
   Timer? _debounce;
   bool _isNameFieldActive = false;
+  bool _isDescriptionFieldActive = false;
   bool _forceTagsRefresh = false;
   int _totalDuration = 0;
   DateTime _currentMonth = DateTime.now();
@@ -90,6 +91,7 @@ class HabitDetailsController extends ChangeNotifier {
   GetListHabitTagsQueryResponse? get habitTags => _habitTags;
   Set<String> get visibleOptionalFields => _visibleOptionalFields;
   bool get isNameFieldActive => _isNameFieldActive;
+  bool get isDescriptionFieldActive => _isDescriptionFieldActive;
   int get totalDuration => _totalDuration;
   DateTime get currentMonth => _currentMonth;
   ITranslationService get translationService => _translationService;
@@ -112,7 +114,7 @@ class HabitDetailsController extends ChangeNotifier {
 
   void _handleHabitUpdated(String habitId, BuildContext context) {
     if (_habitsService.onHabitUpdated.value != habitId) return;
-    if (_isNameFieldActive) return;
+    if (_isNameFieldActive || _isDescriptionFieldActive) return;
     loadHabit(habitId, context);
     loadHabitTags(habitId, context);
   }
@@ -138,10 +140,18 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setDescriptionFieldActive(bool active) {
+    _isDescriptionFieldActive = active;
+    notifyListeners();
+  }
+
   // Data loading methods (delegated to helper)
   Future<void> loadHabit(String habitId, BuildContext context) async {
     final result = await _dataLoader.loadHabit(habitId, context);
     if (result != null) {
+      // Check if fields became active during the async operation
+      if (_isNameFieldActive || _isDescriptionFieldActive) return;
+
       if (_habit == null) {
         _habit = result;
       } else {
