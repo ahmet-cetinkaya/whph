@@ -159,8 +159,8 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       final nextDates = _calculateNextDates(task);
       final taskTags = await _getTaskTags(task.id, mediator);
 
-      // Check if the next recurrence instance already exists to prevent duplicates
-      final existingId = await _findDuplicateRecurrence(parentId, nextDates.plannedDate);
+      // Check if the next recurrence instance already exists to prevent duplicates, excluding the current task
+      final existingId = await _findDuplicateRecurrence(parentId, nextDates.plannedDate, excludeTaskId: task.id);
       if (existingId != null) {
         _logger.info('TaskRecurrenceService: Duplicate found for parent $parentId, returning existing ID: $existingId');
         return existingId;
@@ -206,8 +206,8 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     _logger.debug('TaskRecurrenceService: Acquired lock for parent $parentId');
   }
 
-  /// Checks if a recurrence instance already exists for the given parent and date
-  Future<String?> _findDuplicateRecurrence(String parentId, DateTime scheduledDate) async {
+  /// Checks if a recurrence instance already exists for the given parent and date, excluding the current task
+  Future<String?> _findDuplicateRecurrence(String parentId, DateTime scheduledDate, {String? excludeTaskId}) async {
     try {
       // Create a range for the whole day to check for existing tasks safely with integer timestamps
       final startOfDay = DateTime(scheduledDate.year, scheduledDate.month, scheduledDate.day);
@@ -216,7 +216,8 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       // Drift/SQLite stores DateTimes as integer Unix timestamps (seconds or milliseconds depending on config).
       // Comparing DATE(..., 'unixepoch') is fragile if the stored value doesn't match the expectation.
       // It is safer to check if the integer value falls within the timestamps for the start and end of the day.
-      final filterSql = "recurrence_parent_id = ? AND planned_date >= ? AND planned_date < ? AND deleted_date IS NULL";
+      var filterSql =
+          "recurrence_parent_id = ? AND planned_date >= ? AND planned_date < ? AND deleted_date IS NULL AND completed_at IS NULL";
 
       // Use milliSecondsSinceEpoch / 1000 if storing as seconds, or just milliSecondsSinceEpoch.
       // Drift default for DateTime is to store as seconds since epoch (unix timestamp).
@@ -224,6 +225,11 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       final endTimestamp = endOfDay.millisecondsSinceEpoch ~/ 1000;
 
       final filterArgs = [parentId, startTimestamp, endTimestamp];
+
+      if (excludeTaskId != null) {
+        filterSql += " AND id != ?";
+        filterArgs.add(excludeTaskId);
+      }
 
       final filter = CustomWhereFilter(filterSql, filterArgs);
 
@@ -245,40 +251,43 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
   /// Calculates the next planned and deadline dates for recurrence
   ({DateTime plannedDate, DateTime? deadlineDate}) _calculateNextDates(Task task) {
-    DateTime? primaryDate, secondaryDate;
     Duration? originalOffset;
 
-    // Determine which date exists and calculate offset
+    // Determine the offset if both dates exist
     if (task.plannedDate != null && task.deadlineDate != null) {
       originalOffset = task.deadlineDate!.difference(task.plannedDate!);
-      primaryDate = task.plannedDate;
-    } else if (task.plannedDate != null) {
-      primaryDate = task.plannedDate;
-    } else if (task.deadlineDate != null) {
-      primaryDate = task.deadlineDate;
+    }
+
+    // If plannedDate is in the future (after completedAt), keep the original schedule (use plannedDate)
+    // Otherwise (completed late), recur from the actual completion time to avoid piling up
+    final DateTime recurrenceBaseDate;
+    if (task.plannedDate != null && task.completedAt != null && task.plannedDate!.isAfter(task.completedAt!)) {
+      recurrenceBaseDate = task.plannedDate!;
     } else {
-      primaryDate = DateTime.now().toUtc();
+      recurrenceBaseDate = task.completedAt ?? task.plannedDate ?? task.deadlineDate ?? DateTime.now().toUtc();
     }
 
     // Calculate next recurrence for primary date
-    final nextPrimaryDate = calculateNextRecurrenceDate(task, primaryDate!);
+    final nextAnchorDate = calculateNextRecurrenceDate(task, recurrenceBaseDate);
 
-    // Apply same offset to secondary date
-    if (originalOffset != null) {
-      secondaryDate = nextPrimaryDate.add(originalOffset);
-    }
-
-    // Return in correct order
+    // Reconstruct calculated dates based on what components originally existed
     if (task.plannedDate != null) {
-      return (plannedDate: nextPrimaryDate, deadlineDate: secondaryDate);
+      // Original anchor was plannedDate
+      final nextPlannedDate = nextAnchorDate;
+      DateTime? nextDeadlineDate;
+      if (originalOffset != null) {
+        nextDeadlineDate = nextPlannedDate.add(originalOffset);
+      }
+      return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
     } else if (task.deadlineDate != null) {
-      // primaryDate was deadlineDate, so nextPrimaryDate is the next deadline.
-      // Set plannedDate to a reasonable time before the deadline (e.g., 1 day before)
-      final plannedDate = nextPrimaryDate.subtract(const Duration(days: 1));
-      return (plannedDate: plannedDate, deadlineDate: nextPrimaryDate);
+      // Original anchor was deadlineDate (since plannedDate is null)
+      final nextDeadlineDate = nextAnchorDate;
+      // As per previous logic, if only deadline exists, set planned to 1 day before
+      final nextPlannedDate = nextDeadlineDate.subtract(const Duration(days: 1));
+      return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
     } else {
-      // Both were null, primaryDate was now(), so nextPrimaryDate is the next planned date.
-      return (plannedDate: nextPrimaryDate, deadlineDate: null);
+      // Fallback if neither existed
+      return (plannedDate: nextAnchorDate, deadlineDate: null);
     }
   }
 
