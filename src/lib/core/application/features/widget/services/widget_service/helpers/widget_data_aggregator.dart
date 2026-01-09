@@ -8,6 +8,13 @@ import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dar
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/calendar/models/today_page_list_option_settings.dart';
 import 'package:whph/core/application/features/widget/models/widget_data.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_list_option_settings.dart';
+import 'package:whph/presentation/ui/features/habits/models/habit_list_option_settings.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
+import 'package:whph/presentation/ui/shared/models/sort_config.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 
 /// Aggregates widget data (tasks and habits) for the home widget display.
 class WidgetDataAggregator {
@@ -33,22 +40,55 @@ class WidgetDataAggregator {
     List<String>? selectedTagIds;
     bool showNoTagsFilter = false;
 
+    // Load Task Sort Settings
+    SortConfig<TaskSortFields> taskSortConfig = TaskDefaults.sorting.copyWith(enableGrouping: false);
+
+    // Load Habit Sort Settings
+    SortConfig<HabitSortFields> habitSortConfig = HabitDefaults.sorting;
+
     try {
-      final savedSettings = await _filterSettingsManager.loadFilterSettings(
+      // 1. Load Main List Options (Tags)
+      final savedMainSettings = await _filterSettingsManager.loadFilterSettings(
         settingKey: SettingKeys.todayPageListOptionsSettings,
       );
 
-      if (savedSettings != null) {
-        final filterSettings = TodayPageListOptionSettings.fromJson(savedSettings);
+      if (savedMainSettings != null) {
+        final filterSettings = TodayPageListOptionSettings.fromJson(savedMainSettings);
         selectedTagIds = filterSettings.selectedTagIds;
         showNoTagsFilter = filterSettings.showNoTagsFilter;
       }
+
+      // 2. Load Task Settings
+      // Note: The key in TodayPage is constructed with a suffix 'TODAY_PAGE'.
+      // We manually reconstruct it here.
+      final savedTaskSettings = await _filterSettingsManager.loadFilterSettings(
+        settingKey: '${SettingKeys.tasksListOptionsSettings}_TODAY_PAGE',
+      );
+
+      if (savedTaskSettings != null) {
+        final taskSettings = TaskListOptionSettings.fromJson(savedTaskSettings);
+        if (taskSettings.sortConfig != null) {
+          taskSortConfig = taskSettings.sortConfig!;
+        }
+      }
+
+      // 3. Load Habit Settings
+      final savedHabitSettings = await _filterSettingsManager.loadFilterSettings(
+        settingKey: '${SettingKeys.habitsListOptionsSettings}_TODAY_PAGE',
+      );
+
+      if (savedHabitSettings != null) {
+        final habitSettings = HabitListOptionSettings.fromJson(savedHabitSettings);
+        if (habitSettings.sortConfig != null) {
+          habitSortConfig = habitSettings.sortConfig!;
+        }
+      }
     } catch (e) {
-      developer.log('Error loading tag filter settings for widget: $e', name: 'WidgetDataAggregator');
+      developer.log('Error loading settings for widget: $e', name: 'WidgetDataAggregator');
     }
 
-    final tasks = await _getTasksData(startOfDay, endOfDay, selectedTagIds, showNoTagsFilter);
-    final habits = await _getHabitsData(startOfDay, endOfDay, selectedTagIds, showNoTagsFilter);
+    final tasks = await _getTasksData(startOfDay, endOfDay, selectedTagIds, showNoTagsFilter, taskSortConfig);
+    final habits = await _getHabitsData(startOfDay, endOfDay, selectedTagIds, showNoTagsFilter, habitSortConfig);
 
     return WidgetData(
       tasks: tasks,
@@ -62,11 +102,12 @@ class WidgetDataAggregator {
     DateTime endOfDay,
     List<String>? selectedTagIds,
     bool showNoTagsFilter,
+    SortConfig<TaskSortFields> sortConfig,
   ) async {
     final tasksResult = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
       GetListTasksQuery(
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: 1000, // Significantly increased limit for widget
         filterByCompleted: false,
         filterByPlannedStartDate: DateTime(0),
         filterByPlannedEndDate: endOfDay,
@@ -75,6 +116,8 @@ class WidgetDataAggregator {
         filterDateOr: true,
         filterByTags: showNoTagsFilter ? [] : selectedTagIds,
         filterNoTags: showNoTagsFilter,
+        sortBy: sortConfig.orderOptions,
+        sortByCustomSort: sortConfig.useCustomOrder,
       ),
     );
 
@@ -95,15 +138,18 @@ class WidgetDataAggregator {
     DateTime endOfDay,
     List<String>? selectedTagIds,
     bool showNoTagsFilter,
+    SortConfig<HabitSortFields> sortConfig,
   ) async {
     final habitsResult = await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(
       GetListHabitsQuery(
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: 1000, // Significantly increased limit for widget
         filterByArchived: false,
         excludeCompletedForDate: startOfDay,
         filterByTags: showNoTagsFilter ? [] : selectedTagIds,
         filterNoTags: showNoTagsFilter,
+        sortBy: sortConfig.orderOptions,
+        sortByCustomSort: sortConfig.useCustomOrder,
       ),
     );
 
@@ -172,7 +218,7 @@ class WidgetDataAggregator {
     final habitRecordRepository = _container.resolve<IHabitRecordRepository>();
     final todayRecordsResult = await habitRecordRepository.getList(
       0,
-      habitIds.length * 20,
+      habitIds.length * 20, // Increased multiplier to ensure we get all records if limit is high
       customWhereFilter: todayRecordsWhereFilter,
     );
 

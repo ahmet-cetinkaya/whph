@@ -139,6 +139,10 @@ class HabitListOptionSettings {
         return HabitSortFields.modifiedDate;
       case 'archivedDate':
         return HabitSortFields.archivedDate;
+      case 'estimatedTime':
+        return HabitSortFields.estimatedTime;
+      case 'actualTime':
+        return HabitSortFields.actualTime;
       default:
         return HabitSortFields.createdDate;
     }

@@ -4,7 +4,6 @@ import 'package:whph/core/application/features/settings/queries/get_setting_quer
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
