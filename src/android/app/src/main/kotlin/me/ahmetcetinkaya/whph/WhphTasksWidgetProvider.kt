@@ -58,7 +58,7 @@ class WhphTasksWidgetProvider : AppWidgetProvider() {
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
             views.setRemoteAdapter(R.id.tasks_widget_list, intent)
-            views.setEmptyView(R.id.tasks_widget_list, R.id.tasks_empty_view)
+
 
             // Flutter sends only pending tasks to the widget. Empty list means all tasks are completed.
             val widgetData = HomeWidgetPlugin.getData(context)
@@ -76,11 +76,10 @@ class WhphTasksWidgetProvider : AppWidgetProvider() {
             }
 
             if (showCompletedIcon) {
-                views.setViewVisibility(R.id.all_tasks_completed_icon, android.view.View.VISIBLE)
+                views.setViewVisibility(R.id.tasks_empty_state_container, android.view.View.VISIBLE)
                 views.setViewVisibility(R.id.tasks_widget_list, android.view.View.GONE)
-                views.setViewVisibility(R.id.tasks_empty_view, android.view.View.GONE)
             } else {
-                views.setViewVisibility(R.id.all_tasks_completed_icon, android.view.View.GONE)
+                views.setViewVisibility(R.id.tasks_empty_state_container, android.view.View.GONE)
                 views.setViewVisibility(R.id.tasks_widget_list, android.view.View.VISIBLE)
             }
             

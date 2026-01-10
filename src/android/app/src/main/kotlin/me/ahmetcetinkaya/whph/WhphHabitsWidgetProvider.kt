@@ -58,7 +58,7 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
             views.setRemoteAdapter(R.id.habits_widget_list, intent)
-            views.setEmptyView(R.id.habits_widget_list, R.id.habits_empty_view)
+
 
             // Flutter sends only pending habits to the widget. Empty list means all habits are completed.
             val widgetData = HomeWidgetPlugin.getData(context)
@@ -76,11 +76,10 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
             }
 
             if (showCompletedIcon) {
-                views.setViewVisibility(R.id.all_habits_completed_icon, android.view.View.VISIBLE)
+                views.setViewVisibility(R.id.habits_empty_state_container, android.view.View.VISIBLE)
                 views.setViewVisibility(R.id.habits_widget_list, android.view.View.GONE)
-                views.setViewVisibility(R.id.habits_empty_view, android.view.View.GONE)
             } else {
-                views.setViewVisibility(R.id.all_habits_completed_icon, android.view.View.GONE)
+                views.setViewVisibility(R.id.habits_empty_state_container, android.view.View.GONE)
                 views.setViewVisibility(R.id.habits_widget_list, android.view.View.VISIBLE)
             }
             

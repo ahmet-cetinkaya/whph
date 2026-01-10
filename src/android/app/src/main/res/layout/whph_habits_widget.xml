@@ -63,27 +63,34 @@
     android:clipToPadding="false"
   />
   
-  <TextView
-    android:id="@+id/habits_empty_view"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:gravity="center"
-    android:text="No pending habits"
-    android:textColor="@color/widget_text_secondary"
-    android:textSize="12sp"
-    android:visibility="gone"
-  />
+  <!-- Empty State Container -->
+  <LinearLayout
+      android:id="@+id/habits_empty_state_container"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:orientation="vertical"
+      android:gravity="center"
+      android:visibility="gone">
 
-  <!-- All Habits Completed Icon -->
-  <ImageView
-    android:id="@+id/all_habits_completed_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/ic_done_all"
-    android:layout_gravity="center_horizontal"
-    android:visibility="gone"
-    android:contentDescription="All habits completed"
-    android:padding="8dp"
-  />
+      <TextView
+        android:id="@+id/habits_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No pending habits"
+        android:textColor="@color/widget_text_secondary"
+        android:textSize="12sp"
+        android:layout_marginBottom="8dp"
+      />
+
+      <ImageView
+        android:id="@+id/all_habits_completed_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_done_all"
+        android:contentDescription="All habits completed"
+        android:padding="8dp"
+      />
+  </LinearLayout>
 </LinearLayout>
