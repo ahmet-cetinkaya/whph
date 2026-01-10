@@ -47,10 +47,8 @@ class MobileSystemTrayService implements ISystemTrayService {
     try {
       _menuItems.clear();
       _isInitialized = false;
-      // Cancel the persistent notification with ID 888
+      // Only cancel the persistent notification with ID 888
       await _notifications.cancel(_notificationId);
-      // Also try to cancel all notifications as a safety measure
-      await _notifications.cancelAll();
     } catch (e) {
       // Log the error but don't throw to prevent disposal issues
       Logger.error('Error during MobileSystemTrayService destroy: $e');

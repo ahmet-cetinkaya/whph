@@ -44,6 +44,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     if (payload != null) {
                         putExtra(Constants.IntentExtras.NOTIFICATION_PAYLOAD, payload)
                     }
+                    putExtra(Constants.IntentExtras.NOTIFICATION_ID, notificationId)
                 }
 
                 try {
