@@ -10,40 +10,92 @@ import android.util.Log
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import es.antonborri.home_widget.HomeWidgetPlugin
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import org.json.JSONObject
 
 class WhphTasksWidgetProvider : AppWidgetProvider() {
-    companion object {
-        private const val TAG = "WhphTasksWidgetProvider"
-    }
+  companion object {
+    private const val TAG = "WhphTasksWidgetProvider"
+  }
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
+  override fun onUpdate(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetIds: IntArray,
+  ) {
+    for (appWidgetId in appWidgetIds) {
+      updateAppWidget(context, appWidgetManager, appWidgetId)
+    }
+  }
+
+  override fun onReceive(context: Context, intent: Intent) {
+    super.onReceive(context, intent)
+
+    when (intent.action) {
+      "REFRESH_TASKS_WIDGET" -> {
+        val appWidgetId =
+          intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID,
+          )
+        if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+          val appWidgetManager = AppWidgetManager.getInstance(context)
+          updateAppWidget(context, appWidgetManager, appWidgetId)
+
+          // Trigger a sync to get fresh data
+          try {
+            val syncIntent = Intent("me.ahmetcetinkaya.whph.SYNC_TRIGGER")
+            context.sendBroadcast(syncIntent)
+          } catch (e: Exception) {
+            Log.e(TAG, "Error sending sync trigger", e)
+          }
         }
+      }
     }
+  }
 
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        
-        when (intent.action) {
-            "REFRESH_TASKS_WIDGET" -> {
-                val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-                if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    val appWidgetManager = AppWidgetManager.getInstance(context)
-                    updateAppWidget(context, appWidgetManager, appWidgetId)
+  private fun updateAppWidget(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetId: Int,
+  ) {
+    try {
+      val views = RemoteViews(context.packageName, R.layout.whph_tasks_widget)
 
-                    // Trigger a sync to get fresh data
-                    try {
-                        val syncIntent = Intent("me.ahmetcetinkaya.whph.SYNC_TRIGGER")
-                        context.sendBroadcast(syncIntent)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error sending sync trigger", e)
-                    }
-                }
+      // Get widget data from HomeWidget plugin
+      val widgetData = HomeWidgetPlugin.getData(context)
+      val dataString = widgetData?.getString("widget_data", null)
+
+      if (dataString != null) {
+        val data = JSONObject(dataString)
+        val tasks = data.optJSONArray("tasks")
+        val taskCount = tasks?.length() ?: 0
+
+        setupTaskItems(context, views, tasks, taskCount)
+
+        // Show/hide completed icon
+        var showCompletedIcon = false
+        if (taskCount == 0) {
+          // No tasks at all: show completed icon
+          showCompletedIcon = true
+        } else {
+          // Check if all tasks are completed
+          var allCompleted = true
+          if (tasks != null) {
+            for (i in 0 until taskCount) {
+              val task = tasks.getJSONObject(i)
+              if (!task.optBoolean("isCompleted", false)) {
+                allCompleted = false
+                break
+              }
             }
+          } else {
+            allCompleted = false
+          }
+          if (allCompleted) {
+            showCompletedIcon = true
+          }
         }
     }
 

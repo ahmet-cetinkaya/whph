@@ -10,46 +10,67 @@ import android.util.Log
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import es.antonborri.home_widget.HomeWidgetPlugin
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import org.json.JSONObject
 
 class WhphHabitsWidgetProvider : AppWidgetProvider() {
-    companion object {
-        private const val TAG = "WhphHabitsWidgetProvider"
-    }
+  companion object {
+    private const val TAG = "WhphHabitsWidgetProvider"
+  }
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
+  override fun onUpdate(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetIds: IntArray,
+  ) {
+    for (appWidgetId in appWidgetIds) {
+      updateAppWidget(context, appWidgetManager, appWidgetId)
+    }
+  }
+
+  override fun onReceive(context: Context, intent: Intent) {
+    super.onReceive(context, intent)
+
+    when (intent.action) {
+      "REFRESH_HABITS_WIDGET" -> {
+        val appWidgetId =
+          intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID,
+          )
+        if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+          val appWidgetManager = AppWidgetManager.getInstance(context)
+          updateAppWidget(context, appWidgetManager, appWidgetId)
+
+          // Trigger a sync to get fresh data
+          try {
+            val syncIntent = Intent("me.ahmetcetinkaya.whph.SYNC_TRIGGER")
+            context.sendBroadcast(syncIntent)
+          } catch (e: Exception) {
+            Log.e(TAG, "Error sending sync trigger", e)
+          }
         }
+      }
     }
+  }
 
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        
-        when (intent.action) {
-            "REFRESH_HABITS_WIDGET" -> {
-                val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-                if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    val appWidgetManager = AppWidgetManager.getInstance(context)
-                    updateAppWidget(context, appWidgetManager, appWidgetId)
+  private fun updateAppWidget(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetId: Int,
+  ) {
+    try {
+      val views = RemoteViews(context.packageName, R.layout.whph_habits_widget)
 
-                    // Trigger a sync to get fresh data
-                    try {
-                        val syncIntent = Intent("me.ahmetcetinkaya.whph.SYNC_TRIGGER")
-                        context.sendBroadcast(syncIntent)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error sending sync trigger", e)
-                    }
-                }
-            }
-        }
-    }
+      // Get widget data from HomeWidget plugin
+      val widgetData = HomeWidgetPlugin.getData(context)
+      val dataString = widgetData?.getString("widget_data", null)
 
-    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        try {
-            val views = RemoteViews(context.packageName, R.layout.whph_habits_widget)
+      if (dataString != null) {
+        val data = JSONObject(dataString)
+        val habits = data.optJSONArray("habits")
+        val habitCount = habits?.length() ?: 0
 
             // Bind the widget to the RemoteViewsService
             val intent = Intent(context, WhphWidgetService::class.java).apply {
@@ -122,8 +143,17 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
             appWidgetManager.updateAppWidget(appWidgetId, views)
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.habits_widget_list)
 
-        } catch (e: Exception) {
-            Log.e(TAG, "Error updating habits widget $appWidgetId", e)
+              if (!isHabitCompleted) {
+                allCompleted = false
+                break
+              }
+            }
+          } else {
+            allCompleted = false
+          }
+          if (allCompleted) {
+            showCompletedIcon = true
+          }
         }
     }
 }

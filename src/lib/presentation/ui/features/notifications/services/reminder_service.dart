@@ -102,7 +102,7 @@ class ReminderService {
             GetHabitQuery(id: habitItem.id),
           );
 
-          await scheduleHabitReminder(habitResponse);
+          await scheduleHabitReminder(habitResponse, cancelExisting: false);
         }
       }
     } catch (e) {
@@ -234,7 +234,8 @@ class ReminderService {
   /// Schedule a reminder for a task based on its reminder settings
   Future<void> scheduleTaskReminder(Task task) async {
     // Always cancel any existing reminders for this task first
-    await cancelTaskReminders(task.id);
+    // Note: We don't cancel all reminders immediately anymore to allow persistent notifications for past events
+    // await cancelTaskReminders(task.id);
 
     // Don't schedule reminders for completed or deleted tasks
     if (task.isCompleted || task.isDeleted) {
@@ -254,6 +255,9 @@ class ReminderService {
       // Skip if reminder calculation failed
       if (reminderTime == null) {
         Logger.warning('ReminderService: Failed to calculate planned reminder time for task ${task.id}');
+        Logger.debug('ReminderService: Cancelling planned reminder for task ${task.id} due to calculation failure');
+        // If calculation fails (e.g. invalid date), ensure we don't leave a stale reminder
+        await cancelEntityReminders(equals: _plannedReminderKey(task.id));
         return;
       }
 
@@ -266,6 +270,10 @@ class ReminderService {
       Logger.debug('Is Future: ${reminderTime.isAfter(DateTime.now())}');
 
       if (reminderTime.isAfter(DateTime.now())) {
+        // Only cancel existing reminder if we are scheduling a new future one
+        // This preserves past notifications if the user merely opens the app
+        await cancelEntityReminders(equals: _plannedReminderKey(task.id));
+
         // Pre-translate notification strings to ensure they work in background
         final notificationStrings = _notificationTranslationService.preTranslateNotificationStrings(
           titleKey: TaskTranslationKeys.notificationReminderTitle,
@@ -275,7 +283,7 @@ class ReminderService {
         );
 
         await scheduleReminder(
-          id: 'task_planned_${task.id}',
+          id: _plannedReminderKey(task.id),
           title: notificationStrings.title,
           body: notificationStrings.body,
           scheduledDate: reminderTime,
@@ -284,7 +292,14 @@ class ReminderService {
             arguments: {'taskId': task.id},
           ),
         );
+      } else {
+        Logger.debug('ReminderService: Skipping planned scheduling for task ${task.id} because time is in the past.');
       }
+    } else {
+      // If reminder is explicitly disabled (or none), ensure any existing reminder is cancelled
+      Logger.debug(
+          'ReminderService: Cancelling planned reminder for task ${task.id} because it is disabled or invalid. PlannedDate: ${task.plannedDate}, ReminderTime: ${task.plannedDateReminderTime}');
+      await cancelEntityReminders(equals: _plannedReminderKey(task.id));
     }
 
     // Schedule deadline date reminder
@@ -298,6 +313,9 @@ class ReminderService {
       // Skip if reminder calculation failed
       if (reminderTime == null) {
         Logger.warning('ReminderService: Failed to calculate deadline reminder time for task ${task.id}');
+        Logger.debug('ReminderService: Cancelling deadline reminder for task ${task.id} due to calculation failure');
+        // If calculation fails (e.g. invalid date), ensure we don't leave a stale reminder
+        await cancelEntityReminders(equals: _deadlineReminderKey(task.id));
         return;
       }
 
@@ -310,6 +328,10 @@ class ReminderService {
       Logger.debug('Is Future: ${reminderTime.isAfter(DateTime.now())}');
 
       if (reminderTime.isAfter(DateTime.now())) {
+        // Only cancel existing reminder if we are scheduling a new future one
+        // This preserves past notifications if the user merely opens the app
+        await cancelEntityReminders(equals: _deadlineReminderKey(task.id));
+
         // Pre-translate notification strings to ensure they work in background
         final notificationStrings = _notificationTranslationService.preTranslateNotificationStrings(
           titleKey: TaskTranslationKeys.notificationDeadlineTitle,
@@ -319,7 +341,7 @@ class ReminderService {
         );
 
         await scheduleReminder(
-          id: 'task_deadline_${task.id}',
+          id: _deadlineReminderKey(task.id),
           title: notificationStrings.title,
           body: notificationStrings.body,
           scheduledDate: reminderTime,
@@ -328,14 +350,23 @@ class ReminderService {
             arguments: {'taskId': task.id},
           ),
         );
+      } else {
+        Logger.debug('ReminderService: Skipping deadline scheduling for task ${task.id} because time is in the past.');
       }
+    } else {
+      // If reminder is explicitly disabled (or none), ensure any existing reminder is cancelled
+      Logger.debug(
+          'ReminderService: Cancelling deadline reminder for task ${task.id} because it is disabled or invalid. DeadlineDate: ${task.deadlineDate}, ReminderTime: ${task.deadlineDateReminderTime}');
+      await cancelEntityReminders(equals: _deadlineReminderKey(task.id));
     }
   }
 
   /// Schedule a recurring reminder for a habit based on its reminder settings
-  Future<void> scheduleHabitReminder(Habit habit) async {
-    // Cancel any existing reminders for this habit
-    await cancelHabitReminders(habit.id);
+  Future<void> scheduleHabitReminder(Habit habit, {bool cancelExisting = true}) async {
+    // Cancel any existing reminders for this habit if requested
+    if (cancelExisting) {
+      await cancelHabitReminders(habit.id);
+    }
 
     // Don't schedule reminders for archived or deleted habits
     if (habit.isArchived || habit.isDeleted) {
@@ -454,8 +485,8 @@ class ReminderService {
     await cancelEntityReminders(contains: taskId);
 
     // Also explicitly cancel by specific IDs to ensure they're removed
-    await cancelEntityReminders(equals: 'task_planned_$taskId');
-    await cancelEntityReminders(equals: 'task_deadline_$taskId');
+    await cancelEntityReminders(equals: _plannedReminderKey(taskId));
+    await cancelEntityReminders(equals: _deadlineReminderKey(taskId));
 
     Logger.debug('ReminderService: Task reminder cancellation completed for task: $taskId');
   }
@@ -473,8 +504,8 @@ class ReminderService {
     await cancelTaskReminders(taskId);
 
     // Additional explicit cancellation by exact IDs
-    await _reminderService.cancelReminders(equals: 'task_planned_$taskId');
-    await _reminderService.cancelReminders(equals: 'task_deadline_$taskId');
+    await _reminderService.cancelReminders(equals: _plannedReminderKey(taskId));
+    await _reminderService.cancelReminders(equals: _deadlineReminderKey(taskId));
 
     // Use pattern matching as backup
     await _reminderService.cancelReminders(startsWith: 'task_', contains: taskId);
@@ -486,13 +517,17 @@ class ReminderService {
   /// This method cancels all existing reminders and reschedules them with current language
   Future<void> refreshAllRemindersForLanguageChange() async {
     try {
-      // 1. Cancel all existing reminders
-      await _reminderService.cancelAllReminders();
-
-      // 2. Reinitialize translation service to load new language
+      // 1. Reinitialize translation service to load new language
       await _notificationTranslationService.initialize();
 
-      // 3. Reschedule all existing reminders with new language
+      // 2. Reschedule all existing reminders with new language
+      // Note: We deliberately do NOT call cancelAllReminders() here.
+      // Calling cancelAllReminders() would remove all notifications, including "past" ones that are currently
+      // visible in the tray. Since _scheduleExistingTaskReminders only schedules FUTURE reminders,
+      // the past notifications would be lost forever (auto-dismissed).
+      // By skipping cancelAllReminders, we:
+      // - Update future reminders (scheduleTaskReminder cancels & reschedules them)
+      // - Preserve past reminders (they keep the old language, but at least they remain visible)
       await _scheduleExistingHabitReminders();
       await _scheduleExistingTaskReminders();
     } catch (e) {
@@ -506,4 +541,10 @@ class ReminderService {
     final localDateTime = DateTimeHelper.toLocalDateTime(dateTime);
     return '${localDateTime.hour.toString().padLeft(2, '0')}:${localDateTime.minute.toString().padLeft(2, '0')}';
   }
+
+  /// Generate the planned reminder key for a task
+  String _plannedReminderKey(String taskId) => 'task_planned_$taskId';
+
+  /// Generate the deadline reminder key for a task
+  String _deadlineReminderKey(String taskId) => 'task_deadline_$taskId';
 }
