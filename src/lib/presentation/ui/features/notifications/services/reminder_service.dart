@@ -299,7 +299,7 @@ class ReminderService {
       // If reminder is explicitly disabled (or none), ensure any existing reminder is cancelled
       Logger.debug(
           'ReminderService: Cancelling planned reminder for task ${task.id} because it is disabled or invalid. PlannedDate: ${task.plannedDate}, ReminderTime: ${task.plannedDateReminderTime}');
-      await cancelEntityReminders(equals: 'task_planned_${task.id}');
+      await cancelEntityReminders(equals: _plannedReminderKey(task.id));
     }
 
     // Schedule deadline date reminder
@@ -357,7 +357,7 @@ class ReminderService {
       // If reminder is explicitly disabled (or none), ensure any existing reminder is cancelled
       Logger.debug(
           'ReminderService: Cancelling deadline reminder for task ${task.id} because it is disabled or invalid. DeadlineDate: ${task.deadlineDate}, ReminderTime: ${task.deadlineDateReminderTime}');
-      await cancelEntityReminders(equals: 'task_deadline_${task.id}');
+      await cancelEntityReminders(equals: _deadlineReminderKey(task.id));
     }
   }
 
