@@ -129,11 +129,11 @@ class MainActivity : FlutterActivity() {
 
         // Check if there's a notification ID related to this intent and cancel it
         if (intent.hasExtra(Constants.IntentExtras.NOTIFICATION_ID)) {
-             val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
-             if (notificationId != -1) {
-                 Log.d(TAG, "Explicitly cancelling clicked notification ID: $notificationId")
-                 NotificationManagerCompat.from(this).cancel(notificationId)
-             }
+            val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
+            if (notificationId != -1) {
+                Log.d(TAG, "Explicitly cancelling clicked notification ID: $notificationId")
+                NotificationManagerCompat.from(this).cancel(notificationId)
+            }
         }
 
         // Extract payload based on the action
