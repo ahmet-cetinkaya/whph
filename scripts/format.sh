@@ -42,10 +42,11 @@ JSON_FILES_LIST=$(mktemp)
 YAML_FILES_LIST=$(mktemp)
 MD_FILES_LIST=$(mktemp)
 SHELL_FILES_LIST=$(mktemp)
+KOTLIN_FILES_LIST=$(mktemp)
 
 # Cleanup function
 cleanup() {
-    rm -f "$DART_FILES_LIST" "$JSON_FILES_LIST" "$YAML_FILES_LIST" "$MD_FILES_LIST" "$SHELL_FILES_LIST"
+    rm -f "$DART_FILES_LIST" "$JSON_FILES_LIST" "$YAML_FILES_LIST" "$MD_FILES_LIST" "$SHELL_FILES_LIST" "$KOTLIN_FILES_LIST"
 }
 trap cleanup EXIT
 
@@ -56,12 +57,14 @@ find . \( \
     -o \( -name "*.json" \) \
     -o \( -name "*.yaml" -o -name "*.yml" \) \
     -o \( -name "*.md" \) \
+    -o \( -name "*.kt" -o -name "*.kts" \) \
     \) "${EXCLUDES[@]}" | while IFS= read -r file; do
     case "$file" in
     *.dart) echo "$file" >>"$DART_FILES_LIST" ;;
     *.json) echo "$file" >>"$JSON_FILES_LIST" ;;
     *.yaml | *.yml) echo "$file" >>"$YAML_FILES_LIST" ;;
     *.md) echo "$file" >>"$MD_FILES_LIST" ;;
+    *.kt | *.kts) echo "$file" >>"$KOTLIN_FILES_LIST" ;;
     esac
 done
 
@@ -153,6 +156,43 @@ if command -v shfmt >/dev/null 2>&1; then
 else
     print_error "❌ shfmt not found - skipping shell script formatting"
     print_warning "Install with: go install mvdan.cc/sh/v3/cmd/shfmt@latest"
+fi
+
+# 🎯 Kotlin Formatting with ktfmt
+print_section "🎯 Formatting Kotlin files with ktfmt..."
+KOTLIN_COUNT=$(wc -l <"$KOTLIN_FILES_LIST" 2>/dev/null || echo "0")
+if [[ $KOTLIN_COUNT -gt 0 ]]; then
+    print_info "Found $KOTLIN_COUNT Kotlin files to format"
+
+    # Check for ktfmt in various ways
+    KTFMT_CMD=""
+    if command -v ktfmt >/dev/null 2>&1; then
+        KTFMT_CMD="ktfmt"
+    elif [[ -f "$PROJECT_ROOT/.ktfmt" ]] || command -v java >/dev/null 2>&1; then
+        # Try to use ktfmt via a wrapper script or check if jar exists
+        if [[ -f "$PROJECT_ROOT/scripts/ktfmt" ]]; then
+            KTFMT_CMD="$PROJECT_ROOT/scripts/ktfmt"
+        elif [[ -f "$PROJECT_ROOT/tools/ktfmt.jar" ]]; then
+            KTFMT_CMD="java -jar $PROJECT_ROOT/tools/ktfmt.jar"
+        fi
+    fi
+
+    if [[ -n "$KTFMT_CMD" ]]; then
+        print_info "🔧 Using ktfmt for Kotlin formatting..."
+        # Convert relative paths to absolute
+        sed "s|^\.|$SRC_DIR|" "$KOTLIN_FILES_LIST" | xargs $KTFMT_CMD --google-style 2>/dev/null || {
+            print_warning "⚠️ ktfmt formatting encountered some issues (continuing...)"
+        }
+        print_success "✅ Kotlin files formatted"
+    else
+        print_warning "⚠️ ktfmt not found - skipping Kotlin formatting"
+        print_warning "Install options:"
+        print_warning "  - macOS: brew install ktfmt"
+        print_warning "  - Manual: Download ktfmt jar and place in tools/ directory"
+        print_warning "  - Visit: https://github.com/facebook/ktfmt"
+    fi
+else
+    print_info "No Kotlin files found to format"
 fi
 
 print_success "✅ All files have been formatted successfully!"
