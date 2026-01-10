@@ -3,6 +3,7 @@ package me.ahmetcetinkaya.whph
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
@@ -11,6 +12,9 @@ import es.antonborri.home_widget.HomeWidgetPlugin
 import org.json.JSONObject
 
 class HabitsRemoteViewsFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
+    companion object {
+        private const val TAG = "HabitsRemoteViewsFactory"
+    }
     private var habits: org.json.JSONArray? = null
 
     override fun onCreate() {
@@ -52,8 +56,6 @@ class HabitsRemoteViewsFactory(private val context: Context) : RemoteViewsServic
             val hasGoal = habit.optBoolean("hasGoal", false)
             val dailyTarget = habit.optInt("dailyTarget", 1)
             val currentCompletionCount = habit.optInt("currentCompletionCount", 0)
-            val isDailyGoalMet = habit.optBoolean("isDailyGoalMet", false)
-            val periodDays = habit.optInt("periodDays", 1)
 
             views.setTextViewText(R.id.habit_title, name)
 
@@ -96,26 +98,11 @@ class HabitsRemoteViewsFactory(private val context: Context) : RemoteViewsServic
             // Fill Intent
             val fillInIntent = Intent()
             val uri = Uri.parse("whph://widget?action=toggle_habit&itemId=$habitId")
-            // HomeWidgetBackgroundIntent creates a PendingIntent, but we need an Intent for setOnClickFillInIntent
-            // We can't use HomeWidgetBackgroundIntent directly here because fillInIntent must be a plain Intent
-            // that adds extras to the PendingIntent template set on the ListView.
-            
-            // However, HomeWidget's architecture relies on BroadcastReceivers. 
-            // The template pending intent should target HomeWidgetBackgroundReceiver (or the Provider).
-            // Let's look at how HomeWidgetBackgroundIntent works. It usually sends a broadcast.
-            
-            // We need to construct the intent exactly as HomeWidget expects it.
-            // Since we can't easily use HomeWidgetBackgroundIntent.getBroadcast in a fillInIntent context 
-            // (it returns a PendingIntent), we need to manually construct the Intent that the BroadcastReceiver expects.
-            
-            // Actually, simpler approach:
-            // The pending intent template on the list view will be a Broadcast to HomeWidgetBackgroundReceiver.
-            // The fillInIntent will add the data URI.
             fillInIntent.data = uri
             views.setOnClickFillInIntent(R.id.habit_checkbox, fillInIntent)
             
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Error processing habit at position $position", e)
         }
 
         return views
@@ -130,10 +117,14 @@ class HabitsRemoteViewsFactory(private val context: Context) : RemoteViewsServic
     }
 
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return try {
+            habits?.getJSONObject(position)?.getString("id")?.hashCode()?.toLong() ?: position.toLong()
+        } catch (e: Exception) {
+            position.toLong()
+        }
     }
 
     override fun hasStableIds(): Boolean {
-        return false
+        return true
     }
 }

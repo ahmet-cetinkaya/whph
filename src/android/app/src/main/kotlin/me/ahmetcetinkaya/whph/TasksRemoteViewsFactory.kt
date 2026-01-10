@@ -3,6 +3,7 @@ package me.ahmetcetinkaya.whph
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
@@ -10,6 +11,9 @@ import es.antonborri.home_widget.HomeWidgetPlugin
 import org.json.JSONObject
 
 class TasksRemoteViewsFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
+    companion object {
+        private const val TAG = "TasksRemoteViewsFactory"
+    }
     private var tasks: org.json.JSONArray? = null
 
     override fun onCreate() {
@@ -64,7 +68,7 @@ class TasksRemoteViewsFactory(private val context: Context) : RemoteViewsService
             views.setOnClickFillInIntent(R.id.task_checkbox, fillInIntent)
             
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Error processing task at position $position", e)
         }
 
         return views
@@ -79,10 +83,14 @@ class TasksRemoteViewsFactory(private val context: Context) : RemoteViewsService
     }
 
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return try {
+            tasks?.getJSONObject(position)?.getString("id")?.hashCode()?.toLong() ?: position.toLong()
+        } catch (e: Exception) {
+            position.toLong()
+        }
     }
 
     override fun hasStableIds(): Boolean {
-        return false
+        return true
     }
 }

@@ -60,16 +60,16 @@ class WhphTasksWidgetProvider : AppWidgetProvider() {
             views.setRemoteAdapter(R.id.tasks_widget_list, intent)
             views.setEmptyView(R.id.tasks_widget_list, R.id.tasks_empty_view)
 
-            // Check if we should show 'All Completed' icon separate from list
+            // Flutter sends only pending tasks to the widget. Empty list means all tasks are completed.
             val widgetData = HomeWidgetPlugin.getData(context)
             val dataString = widgetData?.getString("widget_data", null)
-            
+
             var showCompletedIcon = false
             if (dataString != null) {
                 val data = JSONObject(dataString)
                 val tasks = data.optJSONArray("tasks")
                 val taskCount = tasks?.length() ?: 0
-                
+
                 if (taskCount == 0) {
                      showCompletedIcon = true
                 }
@@ -102,15 +102,16 @@ class WhphTasksWidgetProvider : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.tasks_widget_refresh_button, refreshPendingIntent)
-            
-            // Set up item click title template
+
+            // Set up item click template - the PendingIntent template targets HomeWidgetBackgroundReceiver
+            // and the fillInIntent in the factory will provide the specific data URI.
             val bgIntent = Intent(context, es.antonborri.home_widget.HomeWidgetBackgroundReceiver::class.java)
             bgIntent.action = "es.antonborri.home_widget.action.BACKGROUND"
             
             val pendingIntentTemplate = PendingIntent.getBroadcast(
-                context, 
-                0, 
-                bgIntent, 
+                context,
+                0,
+                bgIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
             views.setPendingIntentTemplate(R.id.tasks_widget_list, pendingIntentTemplate)
@@ -125,9 +126,5 @@ class WhphTasksWidgetProvider : AppWidgetProvider() {
         } catch (e: Exception) {
             Log.e(TAG, "Error updating tasks widget $appWidgetId", e)
         }
-    }
-
-    private fun setupTaskItems(context: Context, views: RemoteViews, tasks: org.json.JSONArray?, taskCount: Int) {
-        // Deprecated: Logic moved to TasksRemoteViewsFactory
     }
 }
