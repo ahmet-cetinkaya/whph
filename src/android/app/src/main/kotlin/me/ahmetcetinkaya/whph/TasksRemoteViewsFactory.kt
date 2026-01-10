@@ -45,10 +45,11 @@ class TasksRemoteViewsFactory(private val context: Context) : RemoteViewsService
     override fun getViewAt(position: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_task_item)
 
-        if (tasks == null || position >= tasks!!.length()) return views
+        val currentTasks = tasks ?: return views
+        if (position >= currentTasks.length()) return views
 
         try {
-            val task = tasks!!.getJSONObject(position)
+            val task = currentTasks.getJSONObject(position)
             val taskId = task.optString("id", "")
             val title = task.optString("title", "Unknown task")
             val isCompleted = task.optBoolean("isCompleted", false)

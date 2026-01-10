@@ -46,10 +46,11 @@ class HabitsRemoteViewsFactory(private val context: Context) : RemoteViewsServic
     override fun getViewAt(position: Int): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_habit_item)
 
-        if (habits == null || position >= habits!!.length()) return views
+        val currentHabits = habits ?: return views
+        if (position >= currentHabits.length()) return views
 
         try {
-            val habit = habits!!.getJSONObject(position)
+            val habit = currentHabits.getJSONObject(position)
             val habitId = habit.optString("id", "")
             val name = habit.optString("name", "Unknown habit")
             val isCompletedToday = habit.optBoolean("isCompletedToday", false)
