@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/habits_widget_container"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:padding="8dp"
+  android:background="@drawable/widget_background"
+>
+  <!-- Header -->
+  <LinearLayout
+    android:id="@+id/habits_widget_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingBottom="6dp"
+    android:background="?android:attr/selectableItemBackground"
+  >
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="Habits"
+      android:textSize="16sp"
+      android:textStyle="bold"
+      android:textColor="@color/widget_text_primary"
+      android:letterSpacing="0.05"
+    />
+    <TextView
+      android:id="@+id/habits_widget_timestamp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Today"
+      android:textSize="10sp"
+      android:textColor="@color/widget_text_secondary"
+      android:fontFamily="sans-serif-medium"
+    />
+    <ImageView
+      android:id="@+id/habits_widget_refresh_button"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:src="@drawable/ic_refresh"
+      android:clickable="true"
+      android:background="@drawable/widget_refresh_background"
+      android:padding="4dp"
+      android:contentDescription="Refresh habits widget"
+      android:scaleType="centerInside"
+    />
+  </LinearLayout>
+
+  <!-- Habits List Preview Items -->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <!-- Item 1 -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="3dp"
+        android:paddingHorizontal="2dp"
+      >
+          <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_check_box_outline"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/widget_checkbox_background"
+            android:padding="6dp"
+          />
+          <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Daily Meditation"
+            android:textSize="13sp"
+            android:textColor="@color/widget_text_primary"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="1dp"
+            android:fontFamily="sans-serif"
+          />
+      </LinearLayout>
+
+      <!-- Item 2 -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="3dp"
+        android:paddingHorizontal="2dp"
+      >
+          <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_check_box_outline"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/widget_checkbox_background"
+            android:padding="6dp"
+          />
+          <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Drink Water"
+            android:textSize="13sp"
+            android:textColor="@color/widget_text_primary"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="1dp"
+            android:fontFamily="sans-serif"
+          />
+      </LinearLayout>
+
+      <!-- Item 3 -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="3dp"
+        android:paddingHorizontal="2dp"
+      >
+          <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_check_box_outline"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/widget_checkbox_background"
+            android:padding="6dp"
+          />
+          <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Read 10 Pages"
+            android:textSize="13sp"
+            android:textColor="@color/widget_text_primary"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="1dp"
+            android:fontFamily="sans-serif"
+          />
+      </LinearLayout>
+  </LinearLayout>
+</LinearLayout>

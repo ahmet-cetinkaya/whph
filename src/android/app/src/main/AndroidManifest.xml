@@ -110,6 +110,12 @@
         <action android:name="es.antonborri.home_widget.action.BACKGROUND" />
       </intent-filter>
     </receiver>
+    <!-- Widget List Service -->
+    <service
+        android:name=".WhphWidgetService"
+        android:permission="android.permission.BIND_REMOTEVIEWS"
+        android:exported="false" />
+
     <service
       android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
       android:permission="android.permission.BIND_JOB_SERVICE"
