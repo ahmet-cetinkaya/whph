@@ -25,7 +25,6 @@ void main() {
     await tempDir.delete(recursive: true);
   });
 
-  /*
   group('simple database migrations', () {
     // These simple tests verify all possible schema updates with a simple (no
     // data) migration. This is a quick way to ensure that written database
@@ -44,21 +43,38 @@ void main() {
       });
     }
   });
-  */
 
-  // NOTE: The data integrity test has been disabled because schema generation
-  // changed when explicit primary keys were added. The test was not actually
-  // testing any data (all lists were empty). Re-enable if needed by updating
-  // to use the new schema generation format without *Data classes.
-  //
-  // The following template shows how to write tests ensuring your migrations
-  // preserve existing data.
-  // Testing this can be useful for migrations that change existing columns
-  // (e.g. by altercating their type or constraints). Migrations that only add
-  // tables or columns typically don't need these advanced tests. For more
-  // information, see https://drift.simonbinder.eu/migrations/tests/#verifying-data-integrity
-  //
-  // test("migration from v1 to v2 does not corrupt data", () async {
-  //   ...test implementation...
-  // });
+
+  group('specific migration scenarios', () {
+    test('migration from v29 to v30 sets default status to 0 (Complete)', () async {
+      final schema29 = await verifier.schemaAt(29);
+      final db = AppDatabase(schema29.newConnection());
+
+      // Create a dummy record in v29.
+      final habitId = 'habit_1';
+      final recordId = 'record_1';
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      // Insert parent habit first to satisfy FK constraints if any (good practice)
+      // Note: We use raw insert because the table object might be the latest version.
+      await db.customStatement(
+          'INSERT INTO habit_table (id, created_date, name, description, has_reminder, reminder_days, has_goal, target_frequency, period_days, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [habitId, now, 'Test Habit', 'Desc', 0, '', 0, 1, 7, 0.0]);
+
+      await db.customStatement(
+          'INSERT INTO habit_record_table (id, created_date, habit_id, occurred_at) VALUES (?, ?, ?, ?)',
+          [recordId, now, habitId, now]);
+
+      // Migrate to v30
+      await verifier.migrateAndValidate(db, 30);
+
+      // Verify status
+      final result = await db.customSelect('SELECT status FROM habit_record_table WHERE id = ?',
+          variables: [Variable.withString(recordId)]).getSingle();
+
+      expect(result.data['status'], 0, reason: 'Status should default to 0 (Complete)');
+
+      await db.close();
+    });
+  });
 }
