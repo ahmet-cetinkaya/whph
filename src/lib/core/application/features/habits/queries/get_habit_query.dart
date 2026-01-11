@@ -215,7 +215,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     // Calculate monthly score based on daily scores
-    // Calculate monthly score based on daily scores
     int daysInCurrentMonth;
     if (isThreeStateEnabled) {
       daysInCurrentMonth = records
@@ -240,7 +239,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     final monthlyTotalScore = monthlyDailyScores.fold(0.0, (sum, score) => sum + score);
     final monthlyScore = monthlyTotalScore / daysInCurrentMonth;
 
-    // Calculate yearly score based on daily scores
     // Calculate yearly score based on daily scores
     int daysInCurrentYear;
     if (isThreeStateEnabled) {
@@ -306,13 +304,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
     // Calculate yearly frequency
     final yearlyFrequency = <int, int>{};
-    // Only count complete records for frequency? Or all records?
-    // Usually usage frequency implies "Active" usage.
-    // If I explicitly mark "Not Done", that's activity. But frequency usually shows "Good" days.
-    // I'll stick to 'complete' records which are filtered in recordsByDate roughly?
-    // No, 'records' contains all. 'recordsByDate' contains complete.
-    // The original code iterated 'records'.
-    // I should iterate 'records' but filter 'status == complete'.
+
     for (final record in records) {
       if (record.status == HabitRecordStatus.complete) {
         final dayOfYear = record.recordDate.difference(DateTime(record.recordDate.year, 1, 1)).inDays;
@@ -329,8 +321,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       final periodEnd = endDate;
       final periodStart = periodEnd.subtract(Duration(days: habit.periodDays - 1));
 
-      // Use pre-filtered 'recordsByDate' or 'dailyScores' to assume correctness.
-      // logic below re-iterates 'records'. Let's filter there too.
+
       final recordsInCurrentPeriod = records
           .where((record) =>
               record.status == HabitRecordStatus.complete &&
