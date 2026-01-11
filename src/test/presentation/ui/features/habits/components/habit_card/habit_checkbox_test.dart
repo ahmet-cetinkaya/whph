@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_checkbox.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:mockito/mockito.dart';
@@ -90,7 +91,7 @@ void main() {
       final habit = HabitListItem(id: '1', name: 'Exercise', dailyTarget: 1);
       final today = DateTime.now();
       final records = [
-        HabitRecordListItem(id: 'r1', date: today, occurredAt: today),
+        HabitRecordListItem(id: 'r1', date: today, occurredAt: today, status: HabitRecordStatus.complete),
       ];
 
       await pumpWidget(tester, habit: habit, habitRecords: records);
@@ -121,8 +122,8 @@ void main() {
       final habit = HabitListItem(id: '1', name: 'Water', dailyTarget: 5, hasGoal: true);
       final today = DateTime.now();
       final records = [
-        HabitRecordListItem(id: 'r1', date: today, occurredAt: today),
-        HabitRecordListItem(id: 'r2', date: today, occurredAt: today),
+        HabitRecordListItem(id: 'r1', date: today, occurredAt: today, status: HabitRecordStatus.complete),
+        HabitRecordListItem(id: 'r2', date: today, occurredAt: today, status: HabitRecordStatus.complete),
       ];
 
       await pumpWidget(tester, habit: habit, habitRecords: records);

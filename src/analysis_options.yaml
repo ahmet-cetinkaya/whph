@@ -12,6 +12,7 @@ include: package:flutter_lints/flutter.yaml
 exclude:
   - "**/*.g.dart"
   - "lib/main.mapper.g.dart"
+  - "lib/infrastructure/persistence/shared/contexts/drift/migrations/**"
 
 linter:
   # The lint rules applied to this project can be customized in the

@@ -1190,6 +1190,8 @@ class AppUsageTimeRecordTable extends Table with TableInfo<AppUsageTimeRecordTab
       type: DriftSqlType.string, requiredDuringInsert: true);
   late final GeneratedColumn<int> duration =
       GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> usageDate = GeneratedColumn<DateTime>('usage_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
@@ -1197,7 +1199,7 @@ class AppUsageTimeRecordTable extends Table with TableInfo<AppUsageTimeRecordTab
   late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [id, appUsageId, duration, createdDate, modifiedDate, deletedDate];
+  List<GeneratedColumn> get $columns => [id, appUsageId, duration, usageDate, createdDate, modifiedDate, deletedDate];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1212,6 +1214,7 @@ class AppUsageTimeRecordTable extends Table with TableInfo<AppUsageTimeRecordTab
       id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       appUsageId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_usage_id'])!,
       duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
+      usageDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}usage_date'])!,
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
@@ -1228,6 +1231,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
   final String id;
   final String appUsageId;
   final int duration;
+  final DateTime usageDate;
   final DateTime createdDate;
   final DateTime? modifiedDate;
   final DateTime? deletedDate;
@@ -1235,6 +1239,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
       {required this.id,
       required this.appUsageId,
       required this.duration,
+      required this.usageDate,
       required this.createdDate,
       this.modifiedDate,
       this.deletedDate});
@@ -1244,6 +1249,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
     map['id'] = Variable<String>(id);
     map['app_usage_id'] = Variable<String>(appUsageId);
     map['duration'] = Variable<int>(duration);
+    map['usage_date'] = Variable<DateTime>(usageDate);
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || modifiedDate != null) {
       map['modified_date'] = Variable<DateTime>(modifiedDate);
@@ -1259,6 +1265,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
       id: Value(id),
       appUsageId: Value(appUsageId),
       duration: Value(duration),
+      usageDate: Value(usageDate),
       createdDate: Value(createdDate),
       modifiedDate: modifiedDate == null && nullToAbsent ? const Value.absent() : Value(modifiedDate),
       deletedDate: deletedDate == null && nullToAbsent ? const Value.absent() : Value(deletedDate),
@@ -1271,6 +1278,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
       id: serializer.fromJson<String>(json['id']),
       appUsageId: serializer.fromJson<String>(json['appUsageId']),
       duration: serializer.fromJson<int>(json['duration']),
+      usageDate: serializer.fromJson<DateTime>(json['usageDate']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       modifiedDate: serializer.fromJson<DateTime?>(json['modifiedDate']),
       deletedDate: serializer.fromJson<DateTime?>(json['deletedDate']),
@@ -1283,6 +1291,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
       'id': serializer.toJson<String>(id),
       'appUsageId': serializer.toJson<String>(appUsageId),
       'duration': serializer.toJson<int>(duration),
+      'usageDate': serializer.toJson<DateTime>(usageDate),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'modifiedDate': serializer.toJson<DateTime?>(modifiedDate),
       'deletedDate': serializer.toJson<DateTime?>(deletedDate),
@@ -1293,6 +1302,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
           {String? id,
           String? appUsageId,
           int? duration,
+          DateTime? usageDate,
           DateTime? createdDate,
           Value<DateTime?> modifiedDate = const Value.absent(),
           Value<DateTime?> deletedDate = const Value.absent()}) =>
@@ -1300,6 +1310,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
         id: id ?? this.id,
         appUsageId: appUsageId ?? this.appUsageId,
         duration: duration ?? this.duration,
+        usageDate: usageDate ?? this.usageDate,
         createdDate: createdDate ?? this.createdDate,
         modifiedDate: modifiedDate.present ? modifiedDate.value : this.modifiedDate,
         deletedDate: deletedDate.present ? deletedDate.value : this.deletedDate,
@@ -1309,6 +1320,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
       id: data.id.present ? data.id.value : this.id,
       appUsageId: data.appUsageId.present ? data.appUsageId.value : this.appUsageId,
       duration: data.duration.present ? data.duration.value : this.duration,
+      usageDate: data.usageDate.present ? data.usageDate.value : this.usageDate,
       createdDate: data.createdDate.present ? data.createdDate.value : this.createdDate,
       modifiedDate: data.modifiedDate.present ? data.modifiedDate.value : this.modifiedDate,
       deletedDate: data.deletedDate.present ? data.deletedDate.value : this.deletedDate,
@@ -1321,6 +1333,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
           ..write('id: $id, ')
           ..write('appUsageId: $appUsageId, ')
           ..write('duration: $duration, ')
+          ..write('usageDate: $usageDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate')
@@ -1329,7 +1342,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
   }
 
   @override
-  int get hashCode => Object.hash(id, appUsageId, duration, createdDate, modifiedDate, deletedDate);
+  int get hashCode => Object.hash(id, appUsageId, duration, usageDate, createdDate, modifiedDate, deletedDate);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1337,6 +1350,7 @@ class AppUsageTimeRecordTableData extends DataClass implements Insertable<AppUsa
           other.id == this.id &&
           other.appUsageId == this.appUsageId &&
           other.duration == this.duration &&
+          other.usageDate == this.usageDate &&
           other.createdDate == this.createdDate &&
           other.modifiedDate == this.modifiedDate &&
           other.deletedDate == this.deletedDate);
@@ -1346,6 +1360,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
   final Value<String> id;
   final Value<String> appUsageId;
   final Value<int> duration;
+  final Value<DateTime> usageDate;
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
@@ -1354,6 +1369,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
     this.id = const Value.absent(),
     this.appUsageId = const Value.absent(),
     this.duration = const Value.absent(),
+    this.usageDate = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
@@ -1363,6 +1379,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
     required String id,
     required String appUsageId,
     required int duration,
+    required DateTime usageDate,
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
@@ -1370,11 +1387,13 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
   })  : id = Value(id),
         appUsageId = Value(appUsageId),
         duration = Value(duration),
+        usageDate = Value(usageDate),
         createdDate = Value(createdDate);
   static Insertable<AppUsageTimeRecordTableData> custom({
     Expression<String>? id,
     Expression<String>? appUsageId,
     Expression<int>? duration,
+    Expression<DateTime>? usageDate,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
@@ -1384,6 +1403,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
       if (id != null) 'id': id,
       if (appUsageId != null) 'app_usage_id': appUsageId,
       if (duration != null) 'duration': duration,
+      if (usageDate != null) 'usage_date': usageDate,
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
@@ -1395,6 +1415,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
       {Value<String>? id,
       Value<String>? appUsageId,
       Value<int>? duration,
+      Value<DateTime>? usageDate,
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
@@ -1403,6 +1424,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
       id: id ?? this.id,
       appUsageId: appUsageId ?? this.appUsageId,
       duration: duration ?? this.duration,
+      usageDate: usageDate ?? this.usageDate,
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
@@ -1421,6 +1443,9 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
     }
     if (duration.present) {
       map['duration'] = Variable<int>(duration.value);
+    }
+    if (usageDate.present) {
+      map['usage_date'] = Variable<DateTime>(usageDate.value);
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
@@ -1443,6 +1468,7 @@ class AppUsageTimeRecordTableCompanion extends UpdateCompanion<AppUsageTimeRecor
           ..write('id: $id, ')
           ..write('appUsageId: $appUsageId, ')
           ..write('duration: $duration, ')
+          ..write('usageDate: $usageDate, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
@@ -1467,10 +1493,10 @@ class HabitRecordTable extends Table with TableInfo<HabitRecordTable, HabitRecor
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   late final GeneratedColumn<String> habitId =
       GeneratedColumn<String>('habit_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
-  late final GeneratedColumn<DateTime> date =
-      GeneratedColumn<DateTime>('date', aliasedName, false, type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> occurredAt = GeneratedColumn<DateTime>('occurred_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, date];
+  List<GeneratedColumn> get $columns => [id, createdDate, modifiedDate, deletedDate, habitId, occurredAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1487,7 +1513,7 @@ class HabitRecordTable extends Table with TableInfo<HabitRecordTable, HabitRecor
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
       habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
-      date: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      occurredAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}occurred_at'])!,
     );
   }
 
@@ -1503,14 +1529,14 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
   final DateTime? modifiedDate;
   final DateTime? deletedDate;
   final String habitId;
-  final DateTime date;
+  final DateTime occurredAt;
   const HabitRecordTableData(
       {required this.id,
       required this.createdDate,
       this.modifiedDate,
       this.deletedDate,
       required this.habitId,
-      required this.date});
+      required this.occurredAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1523,7 +1549,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       map['deleted_date'] = Variable<DateTime>(deletedDate);
     }
     map['habit_id'] = Variable<String>(habitId);
-    map['date'] = Variable<DateTime>(date);
+    map['occurred_at'] = Variable<DateTime>(occurredAt);
     return map;
   }
 
@@ -1534,7 +1560,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       modifiedDate: modifiedDate == null && nullToAbsent ? const Value.absent() : Value(modifiedDate),
       deletedDate: deletedDate == null && nullToAbsent ? const Value.absent() : Value(deletedDate),
       habitId: Value(habitId),
-      date: Value(date),
+      occurredAt: Value(occurredAt),
     );
   }
 
@@ -1546,7 +1572,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       modifiedDate: serializer.fromJson<DateTime?>(json['modifiedDate']),
       deletedDate: serializer.fromJson<DateTime?>(json['deletedDate']),
       habitId: serializer.fromJson<String>(json['habitId']),
-      date: serializer.fromJson<DateTime>(json['date']),
+      occurredAt: serializer.fromJson<DateTime>(json['occurredAt']),
     );
   }
   @override
@@ -1558,7 +1584,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       'modifiedDate': serializer.toJson<DateTime?>(modifiedDate),
       'deletedDate': serializer.toJson<DateTime?>(deletedDate),
       'habitId': serializer.toJson<String>(habitId),
-      'date': serializer.toJson<DateTime>(date),
+      'occurredAt': serializer.toJson<DateTime>(occurredAt),
     };
   }
 
@@ -1568,14 +1594,14 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
           Value<DateTime?> modifiedDate = const Value.absent(),
           Value<DateTime?> deletedDate = const Value.absent(),
           String? habitId,
-          DateTime? date}) =>
+          DateTime? occurredAt}) =>
       HabitRecordTableData(
         id: id ?? this.id,
         createdDate: createdDate ?? this.createdDate,
         modifiedDate: modifiedDate.present ? modifiedDate.value : this.modifiedDate,
         deletedDate: deletedDate.present ? deletedDate.value : this.deletedDate,
         habitId: habitId ?? this.habitId,
-        date: date ?? this.date,
+        occurredAt: occurredAt ?? this.occurredAt,
       );
   HabitRecordTableData copyWithCompanion(HabitRecordTableCompanion data) {
     return HabitRecordTableData(
@@ -1584,7 +1610,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
       modifiedDate: data.modifiedDate.present ? data.modifiedDate.value : this.modifiedDate,
       deletedDate: data.deletedDate.present ? data.deletedDate.value : this.deletedDate,
       habitId: data.habitId.present ? data.habitId.value : this.habitId,
-      date: data.date.present ? data.date.value : this.date,
+      occurredAt: data.occurredAt.present ? data.occurredAt.value : this.occurredAt,
     );
   }
 
@@ -1596,13 +1622,13 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('habitId: $habitId, ')
-          ..write('date: $date')
+          ..write('occurredAt: $occurredAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdDate, modifiedDate, deletedDate, habitId, date);
+  int get hashCode => Object.hash(id, createdDate, modifiedDate, deletedDate, habitId, occurredAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1612,7 +1638,7 @@ class HabitRecordTableData extends DataClass implements Insertable<HabitRecordTa
           other.modifiedDate == this.modifiedDate &&
           other.deletedDate == this.deletedDate &&
           other.habitId == this.habitId &&
-          other.date == this.date);
+          other.occurredAt == this.occurredAt);
 }
 
 class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
@@ -1621,7 +1647,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
   final Value<String> habitId;
-  final Value<DateTime> date;
+  final Value<DateTime> occurredAt;
   final Value<int> rowid;
   const HabitRecordTableCompanion({
     this.id = const Value.absent(),
@@ -1629,7 +1655,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.habitId = const Value.absent(),
-    this.date = const Value.absent(),
+    this.occurredAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitRecordTableCompanion.insert({
@@ -1638,19 +1664,19 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     required String habitId,
-    required DateTime date,
+    required DateTime occurredAt,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
         habitId = Value(habitId),
-        date = Value(date);
+        occurredAt = Value(occurredAt);
   static Insertable<HabitRecordTableData> custom({
     Expression<String>? id,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
     Expression<String>? habitId,
-    Expression<DateTime>? date,
+    Expression<DateTime>? occurredAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1659,7 +1685,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (habitId != null) 'habit_id': habitId,
-      if (date != null) 'date': date,
+      if (occurredAt != null) 'occurred_at': occurredAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1670,7 +1696,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
       Value<String>? habitId,
-      Value<DateTime>? date,
+      Value<DateTime>? occurredAt,
       Value<int>? rowid}) {
     return HabitRecordTableCompanion(
       id: id ?? this.id,
@@ -1678,7 +1704,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
       habitId: habitId ?? this.habitId,
-      date: date ?? this.date,
+      occurredAt: occurredAt ?? this.occurredAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1701,8 +1727,8 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
     if (habitId.present) {
       map['habit_id'] = Variable<String>(habitId.value);
     }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (occurredAt.present) {
+      map['occurred_at'] = Variable<DateTime>(occurredAt.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1718,7 +1744,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecordTableData> {
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('habitId: $habitId, ')
-          ..write('date: $date, ')
+          ..write('occurredAt: $occurredAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1755,6 +1781,19 @@ class HabitTable extends Table with TableInfo<HabitTable, HabitTableData> {
       type: DriftSqlType.string, requiredDuringInsert: false);
   late final GeneratedColumn<String> reminderDays = GeneratedColumn<String>('reminder_days', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: const CustomExpression('\'\''));
+  late final GeneratedColumn<bool> hasGoal = GeneratedColumn<bool>('has_goal', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("has_goal" IN (0, 1))'),
+      defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<int> targetFrequency = GeneratedColumn<int>('target_frequency', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const CustomExpression('1'));
+  late final GeneratedColumn<int> periodDays = GeneratedColumn<int>('period_days', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const CustomExpression('7'));
+  late final GeneratedColumn<int> dailyTarget =
+      GeneratedColumn<int>('daily_target', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  late final GeneratedColumn<double> order = GeneratedColumn<double>('order', aliasedName, false,
+      type: DriftSqlType.double, requiredDuringInsert: false, defaultValue: const CustomExpression('0.0'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1767,7 +1806,12 @@ class HabitTable extends Table with TableInfo<HabitTable, HabitTableData> {
         archivedDate,
         hasReminder,
         reminderTime,
-        reminderDays
+        reminderDays,
+        hasGoal,
+        targetFrequency,
+        periodDays,
+        dailyTarget,
+        order
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1791,6 +1835,11 @@ class HabitTable extends Table with TableInfo<HabitTable, HabitTableData> {
       hasReminder: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_reminder'])!,
       reminderTime: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_time']),
       reminderDays: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}reminder_days'])!,
+      hasGoal: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_goal'])!,
+      targetFrequency: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}target_frequency'])!,
+      periodDays: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}period_days'])!,
+      dailyTarget: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}daily_target']),
+      order: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}order'])!,
     );
   }
 
@@ -1812,6 +1861,11 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
   final bool hasReminder;
   final String? reminderTime;
   final String reminderDays;
+  final bool hasGoal;
+  final int targetFrequency;
+  final int periodDays;
+  final int? dailyTarget;
+  final double order;
   const HabitTableData(
       {required this.id,
       required this.createdDate,
@@ -1823,7 +1877,12 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       this.archivedDate,
       required this.hasReminder,
       this.reminderTime,
-      required this.reminderDays});
+      required this.reminderDays,
+      required this.hasGoal,
+      required this.targetFrequency,
+      required this.periodDays,
+      this.dailyTarget,
+      required this.order});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1848,6 +1907,13 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       map['reminder_time'] = Variable<String>(reminderTime);
     }
     map['reminder_days'] = Variable<String>(reminderDays);
+    map['has_goal'] = Variable<bool>(hasGoal);
+    map['target_frequency'] = Variable<int>(targetFrequency);
+    map['period_days'] = Variable<int>(periodDays);
+    if (!nullToAbsent || dailyTarget != null) {
+      map['daily_target'] = Variable<int>(dailyTarget);
+    }
+    map['order'] = Variable<double>(order);
     return map;
   }
 
@@ -1864,6 +1930,11 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       hasReminder: Value(hasReminder),
       reminderTime: reminderTime == null && nullToAbsent ? const Value.absent() : Value(reminderTime),
       reminderDays: Value(reminderDays),
+      hasGoal: Value(hasGoal),
+      targetFrequency: Value(targetFrequency),
+      periodDays: Value(periodDays),
+      dailyTarget: dailyTarget == null && nullToAbsent ? const Value.absent() : Value(dailyTarget),
+      order: Value(order),
     );
   }
 
@@ -1881,6 +1952,11 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       hasReminder: serializer.fromJson<bool>(json['hasReminder']),
       reminderTime: serializer.fromJson<String?>(json['reminderTime']),
       reminderDays: serializer.fromJson<String>(json['reminderDays']),
+      hasGoal: serializer.fromJson<bool>(json['hasGoal']),
+      targetFrequency: serializer.fromJson<int>(json['targetFrequency']),
+      periodDays: serializer.fromJson<int>(json['periodDays']),
+      dailyTarget: serializer.fromJson<int?>(json['dailyTarget']),
+      order: serializer.fromJson<double>(json['order']),
     );
   }
   @override
@@ -1898,6 +1974,11 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       'hasReminder': serializer.toJson<bool>(hasReminder),
       'reminderTime': serializer.toJson<String?>(reminderTime),
       'reminderDays': serializer.toJson<String>(reminderDays),
+      'hasGoal': serializer.toJson<bool>(hasGoal),
+      'targetFrequency': serializer.toJson<int>(targetFrequency),
+      'periodDays': serializer.toJson<int>(periodDays),
+      'dailyTarget': serializer.toJson<int?>(dailyTarget),
+      'order': serializer.toJson<double>(order),
     };
   }
 
@@ -1912,7 +1993,12 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           Value<DateTime?> archivedDate = const Value.absent(),
           bool? hasReminder,
           Value<String?> reminderTime = const Value.absent(),
-          String? reminderDays}) =>
+          String? reminderDays,
+          bool? hasGoal,
+          int? targetFrequency,
+          int? periodDays,
+          Value<int?> dailyTarget = const Value.absent(),
+          double? order}) =>
       HabitTableData(
         id: id ?? this.id,
         createdDate: createdDate ?? this.createdDate,
@@ -1925,6 +2011,11 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
         hasReminder: hasReminder ?? this.hasReminder,
         reminderTime: reminderTime.present ? reminderTime.value : this.reminderTime,
         reminderDays: reminderDays ?? this.reminderDays,
+        hasGoal: hasGoal ?? this.hasGoal,
+        targetFrequency: targetFrequency ?? this.targetFrequency,
+        periodDays: periodDays ?? this.periodDays,
+        dailyTarget: dailyTarget.present ? dailyTarget.value : this.dailyTarget,
+        order: order ?? this.order,
       );
   HabitTableData copyWithCompanion(HabitTableCompanion data) {
     return HabitTableData(
@@ -1939,6 +2030,11 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       hasReminder: data.hasReminder.present ? data.hasReminder.value : this.hasReminder,
       reminderTime: data.reminderTime.present ? data.reminderTime.value : this.reminderTime,
       reminderDays: data.reminderDays.present ? data.reminderDays.value : this.reminderDays,
+      hasGoal: data.hasGoal.present ? data.hasGoal.value : this.hasGoal,
+      targetFrequency: data.targetFrequency.present ? data.targetFrequency.value : this.targetFrequency,
+      periodDays: data.periodDays.present ? data.periodDays.value : this.periodDays,
+      dailyTarget: data.dailyTarget.present ? data.dailyTarget.value : this.dailyTarget,
+      order: data.order.present ? data.order.value : this.order,
     );
   }
 
@@ -1955,14 +2051,19 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           ..write('archivedDate: $archivedDate, ')
           ..write('hasReminder: $hasReminder, ')
           ..write('reminderTime: $reminderTime, ')
-          ..write('reminderDays: $reminderDays')
+          ..write('reminderDays: $reminderDays, ')
+          ..write('hasGoal: $hasGoal, ')
+          ..write('targetFrequency: $targetFrequency, ')
+          ..write('periodDays: $periodDays, ')
+          ..write('dailyTarget: $dailyTarget, ')
+          ..write('order: $order')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, createdDate, modifiedDate, deletedDate, name, description, estimatedTime,
-      archivedDate, hasReminder, reminderTime, reminderDays);
+      archivedDate, hasReminder, reminderTime, reminderDays, hasGoal, targetFrequency, periodDays, dailyTarget, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1977,7 +2078,12 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           other.archivedDate == this.archivedDate &&
           other.hasReminder == this.hasReminder &&
           other.reminderTime == this.reminderTime &&
-          other.reminderDays == this.reminderDays);
+          other.reminderDays == this.reminderDays &&
+          other.hasGoal == this.hasGoal &&
+          other.targetFrequency == this.targetFrequency &&
+          other.periodDays == this.periodDays &&
+          other.dailyTarget == this.dailyTarget &&
+          other.order == this.order);
 }
 
 class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
@@ -1992,6 +2098,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
   final Value<bool> hasReminder;
   final Value<String?> reminderTime;
   final Value<String> reminderDays;
+  final Value<bool> hasGoal;
+  final Value<int> targetFrequency;
+  final Value<int> periodDays;
+  final Value<int?> dailyTarget;
+  final Value<double> order;
   final Value<int> rowid;
   const HabitTableCompanion({
     this.id = const Value.absent(),
@@ -2005,6 +2116,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     this.hasReminder = const Value.absent(),
     this.reminderTime = const Value.absent(),
     this.reminderDays = const Value.absent(),
+    this.hasGoal = const Value.absent(),
+    this.targetFrequency = const Value.absent(),
+    this.periodDays = const Value.absent(),
+    this.dailyTarget = const Value.absent(),
+    this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitTableCompanion.insert({
@@ -2019,6 +2135,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     this.hasReminder = const Value.absent(),
     this.reminderTime = const Value.absent(),
     this.reminderDays = const Value.absent(),
+    this.hasGoal = const Value.absent(),
+    this.targetFrequency = const Value.absent(),
+    this.periodDays = const Value.absent(),
+    this.dailyTarget = const Value.absent(),
+    this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
@@ -2036,6 +2157,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     Expression<bool>? hasReminder,
     Expression<String>? reminderTime,
     Expression<String>? reminderDays,
+    Expression<bool>? hasGoal,
+    Expression<int>? targetFrequency,
+    Expression<int>? periodDays,
+    Expression<int>? dailyTarget,
+    Expression<double>? order,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2050,6 +2176,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       if (hasReminder != null) 'has_reminder': hasReminder,
       if (reminderTime != null) 'reminder_time': reminderTime,
       if (reminderDays != null) 'reminder_days': reminderDays,
+      if (hasGoal != null) 'has_goal': hasGoal,
+      if (targetFrequency != null) 'target_frequency': targetFrequency,
+      if (periodDays != null) 'period_days': periodDays,
+      if (dailyTarget != null) 'daily_target': dailyTarget,
+      if (order != null) 'order': order,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2066,6 +2197,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       Value<bool>? hasReminder,
       Value<String?>? reminderTime,
       Value<String>? reminderDays,
+      Value<bool>? hasGoal,
+      Value<int>? targetFrequency,
+      Value<int>? periodDays,
+      Value<int?>? dailyTarget,
+      Value<double>? order,
       Value<int>? rowid}) {
     return HabitTableCompanion(
       id: id ?? this.id,
@@ -2079,6 +2215,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       hasReminder: hasReminder ?? this.hasReminder,
       reminderTime: reminderTime ?? this.reminderTime,
       reminderDays: reminderDays ?? this.reminderDays,
+      hasGoal: hasGoal ?? this.hasGoal,
+      targetFrequency: targetFrequency ?? this.targetFrequency,
+      periodDays: periodDays ?? this.periodDays,
+      dailyTarget: dailyTarget ?? this.dailyTarget,
+      order: order ?? this.order,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2119,6 +2260,21 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     if (reminderDays.present) {
       map['reminder_days'] = Variable<String>(reminderDays.value);
     }
+    if (hasGoal.present) {
+      map['has_goal'] = Variable<bool>(hasGoal.value);
+    }
+    if (targetFrequency.present) {
+      map['target_frequency'] = Variable<int>(targetFrequency.value);
+    }
+    if (periodDays.present) {
+      map['period_days'] = Variable<int>(periodDays.value);
+    }
+    if (dailyTarget.present) {
+      map['daily_target'] = Variable<int>(dailyTarget.value);
+    }
+    if (order.present) {
+      map['order'] = Variable<double>(order.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2139,6 +2295,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
           ..write('hasReminder: $hasReminder, ')
           ..write('reminderTime: $reminderTime, ')
           ..write('reminderDays: $reminderDays, ')
+          ..write('hasGoal: $hasGoal, ')
+          ..write('targetFrequency: $targetFrequency, ')
+          ..write('periodDays: $periodDays, ')
+          ..write('dailyTarget: $dailyTarget, ')
+          ..write('order: $order, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2412,6 +2573,338 @@ class HabitTagTableCompanion extends UpdateCompanion<HabitTagTableData> {
           ..write('deletedDate: $deletedDate, ')
           ..write('habitId: $habitId, ')
           ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class HabitTimeRecordTable extends Table with TableInfo<HabitTimeRecordTable, HabitTimeRecordTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  HabitTimeRecordTable(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<DateTime> deletedDate = GeneratedColumn<DateTime>('deleted_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<String> habitId = GeneratedColumn<String>('habit_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES habit_table (id) ON DELETE CASCADE'));
+  late final GeneratedColumn<int> duration =
+      GeneratedColumn<int>('duration', aliasedName, false, type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> occurredAt = GeneratedColumn<DateTime>('occurred_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<bool> isEstimated = GeneratedColumn<bool>('is_estimated', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_estimated" IN (0, 1))'),
+      defaultValue: const CustomExpression('0'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, createdDate, modifiedDate, deletedDate, habitId, duration, occurredAt, isEstimated];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'habit_time_record_table';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HabitTimeRecordTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HabitTimeRecordTableData(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
+      modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
+      deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
+      habitId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
+      duration: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}duration'])!,
+      occurredAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}occurred_at']),
+      isEstimated: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_estimated'])!,
+    );
+  }
+
+  @override
+  HabitTimeRecordTable createAlias(String alias) {
+    return HabitTimeRecordTable(attachedDatabase, alias);
+  }
+}
+
+class HabitTimeRecordTableData extends DataClass implements Insertable<HabitTimeRecordTableData> {
+  final String id;
+  final DateTime createdDate;
+  final DateTime? modifiedDate;
+  final DateTime? deletedDate;
+  final String habitId;
+  final int duration;
+  final DateTime? occurredAt;
+  final bool isEstimated;
+  const HabitTimeRecordTableData(
+      {required this.id,
+      required this.createdDate,
+      this.modifiedDate,
+      this.deletedDate,
+      required this.habitId,
+      required this.duration,
+      this.occurredAt,
+      required this.isEstimated});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_date'] = Variable<DateTime>(createdDate);
+    if (!nullToAbsent || modifiedDate != null) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate);
+    }
+    if (!nullToAbsent || deletedDate != null) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate);
+    }
+    map['habit_id'] = Variable<String>(habitId);
+    map['duration'] = Variable<int>(duration);
+    if (!nullToAbsent || occurredAt != null) {
+      map['occurred_at'] = Variable<DateTime>(occurredAt);
+    }
+    map['is_estimated'] = Variable<bool>(isEstimated);
+    return map;
+  }
+
+  HabitTimeRecordTableCompanion toCompanion(bool nullToAbsent) {
+    return HabitTimeRecordTableCompanion(
+      id: Value(id),
+      createdDate: Value(createdDate),
+      modifiedDate: modifiedDate == null && nullToAbsent ? const Value.absent() : Value(modifiedDate),
+      deletedDate: deletedDate == null && nullToAbsent ? const Value.absent() : Value(deletedDate),
+      habitId: Value(habitId),
+      duration: Value(duration),
+      occurredAt: occurredAt == null && nullToAbsent ? const Value.absent() : Value(occurredAt),
+      isEstimated: Value(isEstimated),
+    );
+  }
+
+  factory HabitTimeRecordTableData.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HabitTimeRecordTableData(
+      id: serializer.fromJson<String>(json['id']),
+      createdDate: serializer.fromJson<DateTime>(json['createdDate']),
+      modifiedDate: serializer.fromJson<DateTime?>(json['modifiedDate']),
+      deletedDate: serializer.fromJson<DateTime?>(json['deletedDate']),
+      habitId: serializer.fromJson<String>(json['habitId']),
+      duration: serializer.fromJson<int>(json['duration']),
+      occurredAt: serializer.fromJson<DateTime?>(json['occurredAt']),
+      isEstimated: serializer.fromJson<bool>(json['isEstimated']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdDate': serializer.toJson<DateTime>(createdDate),
+      'modifiedDate': serializer.toJson<DateTime?>(modifiedDate),
+      'deletedDate': serializer.toJson<DateTime?>(deletedDate),
+      'habitId': serializer.toJson<String>(habitId),
+      'duration': serializer.toJson<int>(duration),
+      'occurredAt': serializer.toJson<DateTime?>(occurredAt),
+      'isEstimated': serializer.toJson<bool>(isEstimated),
+    };
+  }
+
+  HabitTimeRecordTableData copyWith(
+          {String? id,
+          DateTime? createdDate,
+          Value<DateTime?> modifiedDate = const Value.absent(),
+          Value<DateTime?> deletedDate = const Value.absent(),
+          String? habitId,
+          int? duration,
+          Value<DateTime?> occurredAt = const Value.absent(),
+          bool? isEstimated}) =>
+      HabitTimeRecordTableData(
+        id: id ?? this.id,
+        createdDate: createdDate ?? this.createdDate,
+        modifiedDate: modifiedDate.present ? modifiedDate.value : this.modifiedDate,
+        deletedDate: deletedDate.present ? deletedDate.value : this.deletedDate,
+        habitId: habitId ?? this.habitId,
+        duration: duration ?? this.duration,
+        occurredAt: occurredAt.present ? occurredAt.value : this.occurredAt,
+        isEstimated: isEstimated ?? this.isEstimated,
+      );
+  HabitTimeRecordTableData copyWithCompanion(HabitTimeRecordTableCompanion data) {
+    return HabitTimeRecordTableData(
+      id: data.id.present ? data.id.value : this.id,
+      createdDate: data.createdDate.present ? data.createdDate.value : this.createdDate,
+      modifiedDate: data.modifiedDate.present ? data.modifiedDate.value : this.modifiedDate,
+      deletedDate: data.deletedDate.present ? data.deletedDate.value : this.deletedDate,
+      habitId: data.habitId.present ? data.habitId.value : this.habitId,
+      duration: data.duration.present ? data.duration.value : this.duration,
+      occurredAt: data.occurredAt.present ? data.occurredAt.value : this.occurredAt,
+      isEstimated: data.isEstimated.present ? data.isEstimated.value : this.isEstimated,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitTimeRecordTableData(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('habitId: $habitId, ')
+          ..write('duration: $duration, ')
+          ..write('occurredAt: $occurredAt, ')
+          ..write('isEstimated: $isEstimated')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, createdDate, modifiedDate, deletedDate, habitId, duration, occurredAt, isEstimated);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HabitTimeRecordTableData &&
+          other.id == this.id &&
+          other.createdDate == this.createdDate &&
+          other.modifiedDate == this.modifiedDate &&
+          other.deletedDate == this.deletedDate &&
+          other.habitId == this.habitId &&
+          other.duration == this.duration &&
+          other.occurredAt == this.occurredAt &&
+          other.isEstimated == this.isEstimated);
+}
+
+class HabitTimeRecordTableCompanion extends UpdateCompanion<HabitTimeRecordTableData> {
+  final Value<String> id;
+  final Value<DateTime> createdDate;
+  final Value<DateTime?> modifiedDate;
+  final Value<DateTime?> deletedDate;
+  final Value<String> habitId;
+  final Value<int> duration;
+  final Value<DateTime?> occurredAt;
+  final Value<bool> isEstimated;
+  final Value<int> rowid;
+  const HabitTimeRecordTableCompanion({
+    this.id = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    this.habitId = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.occurredAt = const Value.absent(),
+    this.isEstimated = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HabitTimeRecordTableCompanion.insert({
+    required String id,
+    required DateTime createdDate,
+    this.modifiedDate = const Value.absent(),
+    this.deletedDate = const Value.absent(),
+    required String habitId,
+    required int duration,
+    this.occurredAt = const Value.absent(),
+    this.isEstimated = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        createdDate = Value(createdDate),
+        habitId = Value(habitId),
+        duration = Value(duration);
+  static Insertable<HabitTimeRecordTableData> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdDate,
+    Expression<DateTime>? modifiedDate,
+    Expression<DateTime>? deletedDate,
+    Expression<String>? habitId,
+    Expression<int>? duration,
+    Expression<DateTime>? occurredAt,
+    Expression<bool>? isEstimated,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+      if (deletedDate != null) 'deleted_date': deletedDate,
+      if (habitId != null) 'habit_id': habitId,
+      if (duration != null) 'duration': duration,
+      if (occurredAt != null) 'occurred_at': occurredAt,
+      if (isEstimated != null) 'is_estimated': isEstimated,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HabitTimeRecordTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdDate,
+      Value<DateTime?>? modifiedDate,
+      Value<DateTime?>? deletedDate,
+      Value<String>? habitId,
+      Value<int>? duration,
+      Value<DateTime?>? occurredAt,
+      Value<bool>? isEstimated,
+      Value<int>? rowid}) {
+    return HabitTimeRecordTableCompanion(
+      id: id ?? this.id,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      deletedDate: deletedDate ?? this.deletedDate,
+      habitId: habitId ?? this.habitId,
+      duration: duration ?? this.duration,
+      occurredAt: occurredAt ?? this.occurredAt,
+      isEstimated: isEstimated ?? this.isEstimated,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<DateTime>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<DateTime>(modifiedDate.value);
+    }
+    if (deletedDate.present) {
+      map['deleted_date'] = Variable<DateTime>(deletedDate.value);
+    }
+    if (habitId.present) {
+      map['habit_id'] = Variable<String>(habitId.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<int>(duration.value);
+    }
+    if (occurredAt.present) {
+      map['occurred_at'] = Variable<DateTime>(occurredAt.value);
+    }
+    if (isEstimated.present) {
+      map['is_estimated'] = Variable<bool>(isEstimated.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HabitTimeRecordTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate, ')
+          ..write('deletedDate: $deletedDate, ')
+          ..write('habitId: $habitId, ')
+          ..write('duration: $duration, ')
+          ..write('occurredAt: $occurredAt, ')
+          ..write('isEstimated: $isEstimated, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4267,11 +4760,8 @@ class TaskTable extends Table with TableInfo<TaskTable, TaskTableData> {
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   late final GeneratedColumn<int> estimatedTime =
       GeneratedColumn<int>('estimated_time', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
-  late final GeneratedColumn<bool> isCompleted = GeneratedColumn<bool>('is_completed', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_completed" IN (0, 1))'),
-      defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>('completed_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   late final GeneratedColumn<DateTime> createdDate = GeneratedColumn<DateTime>('created_date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   late final GeneratedColumn<DateTime> modifiedDate = GeneratedColumn<DateTime>('modified_date', aliasedName, true,
@@ -4286,6 +4776,30 @@ class TaskTable extends Table with TableInfo<TaskTable, TaskTableData> {
   late final GeneratedColumn<int> deadlineDateReminderTime = GeneratedColumn<int>(
       'deadline_date_reminder_time', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<int> plannedDateReminderCustomOffset = GeneratedColumn<int>(
+      'planned_date_reminder_custom_offset', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  late final GeneratedColumn<int> deadlineDateReminderCustomOffset = GeneratedColumn<int>(
+      'deadline_date_reminder_custom_offset', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  late final GeneratedColumn<int> recurrenceType = GeneratedColumn<int>('recurrence_type', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const CustomExpression('0'));
+  late final GeneratedColumn<int> recurrenceInterval = GeneratedColumn<int>('recurrence_interval', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  late final GeneratedColumn<String> recurrenceDaysString = GeneratedColumn<String>(
+      'recurrence_days_string', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  late final GeneratedColumn<DateTime> recurrenceStartDate = GeneratedColumn<DateTime>(
+      'recurrence_start_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<DateTime> recurrenceEndDate = GeneratedColumn<DateTime>(
+      'recurrence_end_date', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<int> recurrenceCount =
+      GeneratedColumn<int>('recurrence_count', aliasedName, true, type: DriftSqlType.int, requiredDuringInsert: false);
+  late final GeneratedColumn<String> recurrenceParentId = GeneratedColumn<String>(
+      'recurrence_parent_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -4296,13 +4810,22 @@ class TaskTable extends Table with TableInfo<TaskTable, TaskTableData> {
         plannedDate,
         deadlineDate,
         estimatedTime,
-        isCompleted,
+        completedAt,
         createdDate,
         modifiedDate,
         deletedDate,
         order,
         plannedDateReminderTime,
-        deadlineDateReminderTime
+        deadlineDateReminderTime,
+        plannedDateReminderCustomOffset,
+        deadlineDateReminderCustomOffset,
+        recurrenceType,
+        recurrenceInterval,
+        recurrenceDaysString,
+        recurrenceStartDate,
+        recurrenceEndDate,
+        recurrenceCount,
+        recurrenceParentId
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4323,7 +4846,7 @@ class TaskTable extends Table with TableInfo<TaskTable, TaskTableData> {
       plannedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}planned_date']),
       deadlineDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deadline_date']),
       estimatedTime: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}estimated_time']),
-      isCompleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
+      completedAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}completed_at']),
       createdDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_date'])!,
       modifiedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}modified_date']),
       deletedDate: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_date']),
@@ -4332,6 +4855,22 @@ class TaskTable extends Table with TableInfo<TaskTable, TaskTableData> {
           attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}planned_date_reminder_time'])!,
       deadlineDateReminderTime:
           attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}deadline_date_reminder_time'])!,
+      plannedDateReminderCustomOffset: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}planned_date_reminder_custom_offset']),
+      deadlineDateReminderCustomOffset: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}deadline_date_reminder_custom_offset']),
+      recurrenceType: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}recurrence_type'])!,
+      recurrenceInterval:
+          attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}recurrence_interval']),
+      recurrenceDaysString:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}recurrence_days_string']),
+      recurrenceStartDate:
+          attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}recurrence_start_date']),
+      recurrenceEndDate:
+          attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}recurrence_end_date']),
+      recurrenceCount: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}recurrence_count']),
+      recurrenceParentId:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}recurrence_parent_id']),
     );
   }
 
@@ -4350,13 +4889,22 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
   final DateTime? plannedDate;
   final DateTime? deadlineDate;
   final int? estimatedTime;
-  final bool isCompleted;
+  final DateTime? completedAt;
   final DateTime createdDate;
   final DateTime? modifiedDate;
   final DateTime? deletedDate;
   final double order;
   final int plannedDateReminderTime;
   final int deadlineDateReminderTime;
+  final int? plannedDateReminderCustomOffset;
+  final int? deadlineDateReminderCustomOffset;
+  final int recurrenceType;
+  final int? recurrenceInterval;
+  final String? recurrenceDaysString;
+  final DateTime? recurrenceStartDate;
+  final DateTime? recurrenceEndDate;
+  final int? recurrenceCount;
+  final String? recurrenceParentId;
   const TaskTableData(
       {required this.id,
       this.parentTaskId,
@@ -4366,13 +4914,22 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
       this.plannedDate,
       this.deadlineDate,
       this.estimatedTime,
-      required this.isCompleted,
+      this.completedAt,
       required this.createdDate,
       this.modifiedDate,
       this.deletedDate,
       required this.order,
       required this.plannedDateReminderTime,
-      required this.deadlineDateReminderTime});
+      required this.deadlineDateReminderTime,
+      this.plannedDateReminderCustomOffset,
+      this.deadlineDateReminderCustomOffset,
+      required this.recurrenceType,
+      this.recurrenceInterval,
+      this.recurrenceDaysString,
+      this.recurrenceStartDate,
+      this.recurrenceEndDate,
+      this.recurrenceCount,
+      this.recurrenceParentId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4396,7 +4953,9 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
     if (!nullToAbsent || estimatedTime != null) {
       map['estimated_time'] = Variable<int>(estimatedTime);
     }
-    map['is_completed'] = Variable<bool>(isCompleted);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
     map['created_date'] = Variable<DateTime>(createdDate);
     if (!nullToAbsent || modifiedDate != null) {
       map['modified_date'] = Variable<DateTime>(modifiedDate);
@@ -4407,6 +4966,31 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
     map['order'] = Variable<double>(order);
     map['planned_date_reminder_time'] = Variable<int>(plannedDateReminderTime);
     map['deadline_date_reminder_time'] = Variable<int>(deadlineDateReminderTime);
+    if (!nullToAbsent || plannedDateReminderCustomOffset != null) {
+      map['planned_date_reminder_custom_offset'] = Variable<int>(plannedDateReminderCustomOffset);
+    }
+    if (!nullToAbsent || deadlineDateReminderCustomOffset != null) {
+      map['deadline_date_reminder_custom_offset'] = Variable<int>(deadlineDateReminderCustomOffset);
+    }
+    map['recurrence_type'] = Variable<int>(recurrenceType);
+    if (!nullToAbsent || recurrenceInterval != null) {
+      map['recurrence_interval'] = Variable<int>(recurrenceInterval);
+    }
+    if (!nullToAbsent || recurrenceDaysString != null) {
+      map['recurrence_days_string'] = Variable<String>(recurrenceDaysString);
+    }
+    if (!nullToAbsent || recurrenceStartDate != null) {
+      map['recurrence_start_date'] = Variable<DateTime>(recurrenceStartDate);
+    }
+    if (!nullToAbsent || recurrenceEndDate != null) {
+      map['recurrence_end_date'] = Variable<DateTime>(recurrenceEndDate);
+    }
+    if (!nullToAbsent || recurrenceCount != null) {
+      map['recurrence_count'] = Variable<int>(recurrenceCount);
+    }
+    if (!nullToAbsent || recurrenceParentId != null) {
+      map['recurrence_parent_id'] = Variable<String>(recurrenceParentId);
+    }
     return map;
   }
 
@@ -4420,13 +5004,28 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
       plannedDate: plannedDate == null && nullToAbsent ? const Value.absent() : Value(plannedDate),
       deadlineDate: deadlineDate == null && nullToAbsent ? const Value.absent() : Value(deadlineDate),
       estimatedTime: estimatedTime == null && nullToAbsent ? const Value.absent() : Value(estimatedTime),
-      isCompleted: Value(isCompleted),
+      completedAt: completedAt == null && nullToAbsent ? const Value.absent() : Value(completedAt),
       createdDate: Value(createdDate),
       modifiedDate: modifiedDate == null && nullToAbsent ? const Value.absent() : Value(modifiedDate),
       deletedDate: deletedDate == null && nullToAbsent ? const Value.absent() : Value(deletedDate),
       order: Value(order),
       plannedDateReminderTime: Value(plannedDateReminderTime),
       deadlineDateReminderTime: Value(deadlineDateReminderTime),
+      plannedDateReminderCustomOffset: plannedDateReminderCustomOffset == null && nullToAbsent
+          ? const Value.absent()
+          : Value(plannedDateReminderCustomOffset),
+      deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deadlineDateReminderCustomOffset),
+      recurrenceType: Value(recurrenceType),
+      recurrenceInterval: recurrenceInterval == null && nullToAbsent ? const Value.absent() : Value(recurrenceInterval),
+      recurrenceDaysString:
+          recurrenceDaysString == null && nullToAbsent ? const Value.absent() : Value(recurrenceDaysString),
+      recurrenceStartDate:
+          recurrenceStartDate == null && nullToAbsent ? const Value.absent() : Value(recurrenceStartDate),
+      recurrenceEndDate: recurrenceEndDate == null && nullToAbsent ? const Value.absent() : Value(recurrenceEndDate),
+      recurrenceCount: recurrenceCount == null && nullToAbsent ? const Value.absent() : Value(recurrenceCount),
+      recurrenceParentId: recurrenceParentId == null && nullToAbsent ? const Value.absent() : Value(recurrenceParentId),
     );
   }
 
@@ -4441,13 +5040,22 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
       plannedDate: serializer.fromJson<DateTime?>(json['plannedDate']),
       deadlineDate: serializer.fromJson<DateTime?>(json['deadlineDate']),
       estimatedTime: serializer.fromJson<int?>(json['estimatedTime']),
-      isCompleted: serializer.fromJson<bool>(json['isCompleted']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
       createdDate: serializer.fromJson<DateTime>(json['createdDate']),
       modifiedDate: serializer.fromJson<DateTime?>(json['modifiedDate']),
       deletedDate: serializer.fromJson<DateTime?>(json['deletedDate']),
       order: serializer.fromJson<double>(json['order']),
       plannedDateReminderTime: serializer.fromJson<int>(json['plannedDateReminderTime']),
       deadlineDateReminderTime: serializer.fromJson<int>(json['deadlineDateReminderTime']),
+      plannedDateReminderCustomOffset: serializer.fromJson<int?>(json['plannedDateReminderCustomOffset']),
+      deadlineDateReminderCustomOffset: serializer.fromJson<int?>(json['deadlineDateReminderCustomOffset']),
+      recurrenceType: serializer.fromJson<int>(json['recurrenceType']),
+      recurrenceInterval: serializer.fromJson<int?>(json['recurrenceInterval']),
+      recurrenceDaysString: serializer.fromJson<String?>(json['recurrenceDaysString']),
+      recurrenceStartDate: serializer.fromJson<DateTime?>(json['recurrenceStartDate']),
+      recurrenceEndDate: serializer.fromJson<DateTime?>(json['recurrenceEndDate']),
+      recurrenceCount: serializer.fromJson<int?>(json['recurrenceCount']),
+      recurrenceParentId: serializer.fromJson<String?>(json['recurrenceParentId']),
     );
   }
   @override
@@ -4462,13 +5070,22 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
       'plannedDate': serializer.toJson<DateTime?>(plannedDate),
       'deadlineDate': serializer.toJson<DateTime?>(deadlineDate),
       'estimatedTime': serializer.toJson<int?>(estimatedTime),
-      'isCompleted': serializer.toJson<bool>(isCompleted),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
       'createdDate': serializer.toJson<DateTime>(createdDate),
       'modifiedDate': serializer.toJson<DateTime?>(modifiedDate),
       'deletedDate': serializer.toJson<DateTime?>(deletedDate),
       'order': serializer.toJson<double>(order),
       'plannedDateReminderTime': serializer.toJson<int>(plannedDateReminderTime),
       'deadlineDateReminderTime': serializer.toJson<int>(deadlineDateReminderTime),
+      'plannedDateReminderCustomOffset': serializer.toJson<int?>(plannedDateReminderCustomOffset),
+      'deadlineDateReminderCustomOffset': serializer.toJson<int?>(deadlineDateReminderCustomOffset),
+      'recurrenceType': serializer.toJson<int>(recurrenceType),
+      'recurrenceInterval': serializer.toJson<int?>(recurrenceInterval),
+      'recurrenceDaysString': serializer.toJson<String?>(recurrenceDaysString),
+      'recurrenceStartDate': serializer.toJson<DateTime?>(recurrenceStartDate),
+      'recurrenceEndDate': serializer.toJson<DateTime?>(recurrenceEndDate),
+      'recurrenceCount': serializer.toJson<int?>(recurrenceCount),
+      'recurrenceParentId': serializer.toJson<String?>(recurrenceParentId),
     };
   }
 
@@ -4481,13 +5098,22 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
           Value<DateTime?> plannedDate = const Value.absent(),
           Value<DateTime?> deadlineDate = const Value.absent(),
           Value<int?> estimatedTime = const Value.absent(),
-          bool? isCompleted,
+          Value<DateTime?> completedAt = const Value.absent(),
           DateTime? createdDate,
           Value<DateTime?> modifiedDate = const Value.absent(),
           Value<DateTime?> deletedDate = const Value.absent(),
           double? order,
           int? plannedDateReminderTime,
-          int? deadlineDateReminderTime}) =>
+          int? deadlineDateReminderTime,
+          Value<int?> plannedDateReminderCustomOffset = const Value.absent(),
+          Value<int?> deadlineDateReminderCustomOffset = const Value.absent(),
+          int? recurrenceType,
+          Value<int?> recurrenceInterval = const Value.absent(),
+          Value<String?> recurrenceDaysString = const Value.absent(),
+          Value<DateTime?> recurrenceStartDate = const Value.absent(),
+          Value<DateTime?> recurrenceEndDate = const Value.absent(),
+          Value<int?> recurrenceCount = const Value.absent(),
+          Value<String?> recurrenceParentId = const Value.absent()}) =>
       TaskTableData(
         id: id ?? this.id,
         parentTaskId: parentTaskId.present ? parentTaskId.value : this.parentTaskId,
@@ -4497,13 +5123,26 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
         plannedDate: plannedDate.present ? plannedDate.value : this.plannedDate,
         deadlineDate: deadlineDate.present ? deadlineDate.value : this.deadlineDate,
         estimatedTime: estimatedTime.present ? estimatedTime.value : this.estimatedTime,
-        isCompleted: isCompleted ?? this.isCompleted,
+        completedAt: completedAt.present ? completedAt.value : this.completedAt,
         createdDate: createdDate ?? this.createdDate,
         modifiedDate: modifiedDate.present ? modifiedDate.value : this.modifiedDate,
         deletedDate: deletedDate.present ? deletedDate.value : this.deletedDate,
         order: order ?? this.order,
         plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
         deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+        plannedDateReminderCustomOffset: plannedDateReminderCustomOffset.present
+            ? plannedDateReminderCustomOffset.value
+            : this.plannedDateReminderCustomOffset,
+        deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset.present
+            ? deadlineDateReminderCustomOffset.value
+            : this.deadlineDateReminderCustomOffset,
+        recurrenceType: recurrenceType ?? this.recurrenceType,
+        recurrenceInterval: recurrenceInterval.present ? recurrenceInterval.value : this.recurrenceInterval,
+        recurrenceDaysString: recurrenceDaysString.present ? recurrenceDaysString.value : this.recurrenceDaysString,
+        recurrenceStartDate: recurrenceStartDate.present ? recurrenceStartDate.value : this.recurrenceStartDate,
+        recurrenceEndDate: recurrenceEndDate.present ? recurrenceEndDate.value : this.recurrenceEndDate,
+        recurrenceCount: recurrenceCount.present ? recurrenceCount.value : this.recurrenceCount,
+        recurrenceParentId: recurrenceParentId.present ? recurrenceParentId.value : this.recurrenceParentId,
       );
   TaskTableData copyWithCompanion(TaskTableCompanion data) {
     return TaskTableData(
@@ -4515,7 +5154,7 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
       plannedDate: data.plannedDate.present ? data.plannedDate.value : this.plannedDate,
       deadlineDate: data.deadlineDate.present ? data.deadlineDate.value : this.deadlineDate,
       estimatedTime: data.estimatedTime.present ? data.estimatedTime.value : this.estimatedTime,
-      isCompleted: data.isCompleted.present ? data.isCompleted.value : this.isCompleted,
+      completedAt: data.completedAt.present ? data.completedAt.value : this.completedAt,
       createdDate: data.createdDate.present ? data.createdDate.value : this.createdDate,
       modifiedDate: data.modifiedDate.present ? data.modifiedDate.value : this.modifiedDate,
       deletedDate: data.deletedDate.present ? data.deletedDate.value : this.deletedDate,
@@ -4524,6 +5163,20 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
           data.plannedDateReminderTime.present ? data.plannedDateReminderTime.value : this.plannedDateReminderTime,
       deadlineDateReminderTime:
           data.deadlineDateReminderTime.present ? data.deadlineDateReminderTime.value : this.deadlineDateReminderTime,
+      plannedDateReminderCustomOffset: data.plannedDateReminderCustomOffset.present
+          ? data.plannedDateReminderCustomOffset.value
+          : this.plannedDateReminderCustomOffset,
+      deadlineDateReminderCustomOffset: data.deadlineDateReminderCustomOffset.present
+          ? data.deadlineDateReminderCustomOffset.value
+          : this.deadlineDateReminderCustomOffset,
+      recurrenceType: data.recurrenceType.present ? data.recurrenceType.value : this.recurrenceType,
+      recurrenceInterval: data.recurrenceInterval.present ? data.recurrenceInterval.value : this.recurrenceInterval,
+      recurrenceDaysString:
+          data.recurrenceDaysString.present ? data.recurrenceDaysString.value : this.recurrenceDaysString,
+      recurrenceStartDate: data.recurrenceStartDate.present ? data.recurrenceStartDate.value : this.recurrenceStartDate,
+      recurrenceEndDate: data.recurrenceEndDate.present ? data.recurrenceEndDate.value : this.recurrenceEndDate,
+      recurrenceCount: data.recurrenceCount.present ? data.recurrenceCount.value : this.recurrenceCount,
+      recurrenceParentId: data.recurrenceParentId.present ? data.recurrenceParentId.value : this.recurrenceParentId,
     );
   }
 
@@ -4538,34 +5191,53 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
           ..write('plannedDate: $plannedDate, ')
           ..write('deadlineDate: $deadlineDate, ')
           ..write('estimatedTime: $estimatedTime, ')
-          ..write('isCompleted: $isCompleted, ')
+          ..write('completedAt: $completedAt, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('order: $order, ')
           ..write('plannedDateReminderTime: $plannedDateReminderTime, ')
-          ..write('deadlineDateReminderTime: $deadlineDateReminderTime')
+          ..write('deadlineDateReminderTime: $deadlineDateReminderTime, ')
+          ..write('plannedDateReminderCustomOffset: $plannedDateReminderCustomOffset, ')
+          ..write('deadlineDateReminderCustomOffset: $deadlineDateReminderCustomOffset, ')
+          ..write('recurrenceType: $recurrenceType, ')
+          ..write('recurrenceInterval: $recurrenceInterval, ')
+          ..write('recurrenceDaysString: $recurrenceDaysString, ')
+          ..write('recurrenceStartDate: $recurrenceStartDate, ')
+          ..write('recurrenceEndDate: $recurrenceEndDate, ')
+          ..write('recurrenceCount: $recurrenceCount, ')
+          ..write('recurrenceParentId: $recurrenceParentId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      parentTaskId,
-      title,
-      description,
-      priority,
-      plannedDate,
-      deadlineDate,
-      estimatedTime,
-      isCompleted,
-      createdDate,
-      modifiedDate,
-      deletedDate,
-      order,
-      plannedDateReminderTime,
-      deadlineDateReminderTime);
+  int get hashCode => Object.hashAll([
+        id,
+        parentTaskId,
+        title,
+        description,
+        priority,
+        plannedDate,
+        deadlineDate,
+        estimatedTime,
+        completedAt,
+        createdDate,
+        modifiedDate,
+        deletedDate,
+        order,
+        plannedDateReminderTime,
+        deadlineDateReminderTime,
+        plannedDateReminderCustomOffset,
+        deadlineDateReminderCustomOffset,
+        recurrenceType,
+        recurrenceInterval,
+        recurrenceDaysString,
+        recurrenceStartDate,
+        recurrenceEndDate,
+        recurrenceCount,
+        recurrenceParentId
+      ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4578,13 +5250,22 @@ class TaskTableData extends DataClass implements Insertable<TaskTableData> {
           other.plannedDate == this.plannedDate &&
           other.deadlineDate == this.deadlineDate &&
           other.estimatedTime == this.estimatedTime &&
-          other.isCompleted == this.isCompleted &&
+          other.completedAt == this.completedAt &&
           other.createdDate == this.createdDate &&
           other.modifiedDate == this.modifiedDate &&
           other.deletedDate == this.deletedDate &&
           other.order == this.order &&
           other.plannedDateReminderTime == this.plannedDateReminderTime &&
-          other.deadlineDateReminderTime == this.deadlineDateReminderTime);
+          other.deadlineDateReminderTime == this.deadlineDateReminderTime &&
+          other.plannedDateReminderCustomOffset == this.plannedDateReminderCustomOffset &&
+          other.deadlineDateReminderCustomOffset == this.deadlineDateReminderCustomOffset &&
+          other.recurrenceType == this.recurrenceType &&
+          other.recurrenceInterval == this.recurrenceInterval &&
+          other.recurrenceDaysString == this.recurrenceDaysString &&
+          other.recurrenceStartDate == this.recurrenceStartDate &&
+          other.recurrenceEndDate == this.recurrenceEndDate &&
+          other.recurrenceCount == this.recurrenceCount &&
+          other.recurrenceParentId == this.recurrenceParentId);
 }
 
 class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
@@ -4596,13 +5277,22 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
   final Value<DateTime?> plannedDate;
   final Value<DateTime?> deadlineDate;
   final Value<int?> estimatedTime;
-  final Value<bool> isCompleted;
+  final Value<DateTime?> completedAt;
   final Value<DateTime> createdDate;
   final Value<DateTime?> modifiedDate;
   final Value<DateTime?> deletedDate;
   final Value<double> order;
   final Value<int> plannedDateReminderTime;
   final Value<int> deadlineDateReminderTime;
+  final Value<int?> plannedDateReminderCustomOffset;
+  final Value<int?> deadlineDateReminderCustomOffset;
+  final Value<int> recurrenceType;
+  final Value<int?> recurrenceInterval;
+  final Value<String?> recurrenceDaysString;
+  final Value<DateTime?> recurrenceStartDate;
+  final Value<DateTime?> recurrenceEndDate;
+  final Value<int?> recurrenceCount;
+  final Value<String?> recurrenceParentId;
   final Value<int> rowid;
   const TaskTableCompanion({
     this.id = const Value.absent(),
@@ -4613,13 +5303,22 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
     this.plannedDate = const Value.absent(),
     this.deadlineDate = const Value.absent(),
     this.estimatedTime = const Value.absent(),
-    this.isCompleted = const Value.absent(),
+    this.completedAt = const Value.absent(),
     this.createdDate = const Value.absent(),
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.order = const Value.absent(),
     this.plannedDateReminderTime = const Value.absent(),
     this.deadlineDateReminderTime = const Value.absent(),
+    this.plannedDateReminderCustomOffset = const Value.absent(),
+    this.deadlineDateReminderCustomOffset = const Value.absent(),
+    this.recurrenceType = const Value.absent(),
+    this.recurrenceInterval = const Value.absent(),
+    this.recurrenceDaysString = const Value.absent(),
+    this.recurrenceStartDate = const Value.absent(),
+    this.recurrenceEndDate = const Value.absent(),
+    this.recurrenceCount = const Value.absent(),
+    this.recurrenceParentId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TaskTableCompanion.insert({
@@ -4631,13 +5330,22 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
     this.plannedDate = const Value.absent(),
     this.deadlineDate = const Value.absent(),
     this.estimatedTime = const Value.absent(),
-    this.isCompleted = const Value.absent(),
+    this.completedAt = const Value.absent(),
     required DateTime createdDate,
     this.modifiedDate = const Value.absent(),
     this.deletedDate = const Value.absent(),
     this.order = const Value.absent(),
     this.plannedDateReminderTime = const Value.absent(),
     this.deadlineDateReminderTime = const Value.absent(),
+    this.plannedDateReminderCustomOffset = const Value.absent(),
+    this.deadlineDateReminderCustomOffset = const Value.absent(),
+    this.recurrenceType = const Value.absent(),
+    this.recurrenceInterval = const Value.absent(),
+    this.recurrenceDaysString = const Value.absent(),
+    this.recurrenceStartDate = const Value.absent(),
+    this.recurrenceEndDate = const Value.absent(),
+    this.recurrenceCount = const Value.absent(),
+    this.recurrenceParentId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
@@ -4651,13 +5359,22 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
     Expression<DateTime>? plannedDate,
     Expression<DateTime>? deadlineDate,
     Expression<int>? estimatedTime,
-    Expression<bool>? isCompleted,
+    Expression<DateTime>? completedAt,
     Expression<DateTime>? createdDate,
     Expression<DateTime>? modifiedDate,
     Expression<DateTime>? deletedDate,
     Expression<double>? order,
     Expression<int>? plannedDateReminderTime,
     Expression<int>? deadlineDateReminderTime,
+    Expression<int>? plannedDateReminderCustomOffset,
+    Expression<int>? deadlineDateReminderCustomOffset,
+    Expression<int>? recurrenceType,
+    Expression<int>? recurrenceInterval,
+    Expression<String>? recurrenceDaysString,
+    Expression<DateTime>? recurrenceStartDate,
+    Expression<DateTime>? recurrenceEndDate,
+    Expression<int>? recurrenceCount,
+    Expression<String>? recurrenceParentId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4669,13 +5386,24 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
       if (plannedDate != null) 'planned_date': plannedDate,
       if (deadlineDate != null) 'deadline_date': deadlineDate,
       if (estimatedTime != null) 'estimated_time': estimatedTime,
-      if (isCompleted != null) 'is_completed': isCompleted,
+      if (completedAt != null) 'completed_at': completedAt,
       if (createdDate != null) 'created_date': createdDate,
       if (modifiedDate != null) 'modified_date': modifiedDate,
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (order != null) 'order': order,
       if (plannedDateReminderTime != null) 'planned_date_reminder_time': plannedDateReminderTime,
       if (deadlineDateReminderTime != null) 'deadline_date_reminder_time': deadlineDateReminderTime,
+      if (plannedDateReminderCustomOffset != null)
+        'planned_date_reminder_custom_offset': plannedDateReminderCustomOffset,
+      if (deadlineDateReminderCustomOffset != null)
+        'deadline_date_reminder_custom_offset': deadlineDateReminderCustomOffset,
+      if (recurrenceType != null) 'recurrence_type': recurrenceType,
+      if (recurrenceInterval != null) 'recurrence_interval': recurrenceInterval,
+      if (recurrenceDaysString != null) 'recurrence_days_string': recurrenceDaysString,
+      if (recurrenceStartDate != null) 'recurrence_start_date': recurrenceStartDate,
+      if (recurrenceEndDate != null) 'recurrence_end_date': recurrenceEndDate,
+      if (recurrenceCount != null) 'recurrence_count': recurrenceCount,
+      if (recurrenceParentId != null) 'recurrence_parent_id': recurrenceParentId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4689,13 +5417,22 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
       Value<DateTime?>? plannedDate,
       Value<DateTime?>? deadlineDate,
       Value<int?>? estimatedTime,
-      Value<bool>? isCompleted,
+      Value<DateTime?>? completedAt,
       Value<DateTime>? createdDate,
       Value<DateTime?>? modifiedDate,
       Value<DateTime?>? deletedDate,
       Value<double>? order,
       Value<int>? plannedDateReminderTime,
       Value<int>? deadlineDateReminderTime,
+      Value<int?>? plannedDateReminderCustomOffset,
+      Value<int?>? deadlineDateReminderCustomOffset,
+      Value<int>? recurrenceType,
+      Value<int?>? recurrenceInterval,
+      Value<String?>? recurrenceDaysString,
+      Value<DateTime?>? recurrenceStartDate,
+      Value<DateTime?>? recurrenceEndDate,
+      Value<int?>? recurrenceCount,
+      Value<String?>? recurrenceParentId,
       Value<int>? rowid}) {
     return TaskTableCompanion(
       id: id ?? this.id,
@@ -4706,13 +5443,22 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
       plannedDate: plannedDate ?? this.plannedDate,
       deadlineDate: deadlineDate ?? this.deadlineDate,
       estimatedTime: estimatedTime ?? this.estimatedTime,
-      isCompleted: isCompleted ?? this.isCompleted,
+      completedAt: completedAt ?? this.completedAt,
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       deletedDate: deletedDate ?? this.deletedDate,
       order: order ?? this.order,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
+      plannedDateReminderCustomOffset: plannedDateReminderCustomOffset ?? this.plannedDateReminderCustomOffset,
+      deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset ?? this.deadlineDateReminderCustomOffset,
+      recurrenceType: recurrenceType ?? this.recurrenceType,
+      recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
+      recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
+      recurrenceStartDate: recurrenceStartDate ?? this.recurrenceStartDate,
+      recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
+      recurrenceCount: recurrenceCount ?? this.recurrenceCount,
+      recurrenceParentId: recurrenceParentId ?? this.recurrenceParentId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4744,8 +5490,8 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
     if (estimatedTime.present) {
       map['estimated_time'] = Variable<int>(estimatedTime.value);
     }
-    if (isCompleted.present) {
-      map['is_completed'] = Variable<bool>(isCompleted.value);
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
     }
     if (createdDate.present) {
       map['created_date'] = Variable<DateTime>(createdDate.value);
@@ -4765,6 +5511,33 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
     if (deadlineDateReminderTime.present) {
       map['deadline_date_reminder_time'] = Variable<int>(deadlineDateReminderTime.value);
     }
+    if (plannedDateReminderCustomOffset.present) {
+      map['planned_date_reminder_custom_offset'] = Variable<int>(plannedDateReminderCustomOffset.value);
+    }
+    if (deadlineDateReminderCustomOffset.present) {
+      map['deadline_date_reminder_custom_offset'] = Variable<int>(deadlineDateReminderCustomOffset.value);
+    }
+    if (recurrenceType.present) {
+      map['recurrence_type'] = Variable<int>(recurrenceType.value);
+    }
+    if (recurrenceInterval.present) {
+      map['recurrence_interval'] = Variable<int>(recurrenceInterval.value);
+    }
+    if (recurrenceDaysString.present) {
+      map['recurrence_days_string'] = Variable<String>(recurrenceDaysString.value);
+    }
+    if (recurrenceStartDate.present) {
+      map['recurrence_start_date'] = Variable<DateTime>(recurrenceStartDate.value);
+    }
+    if (recurrenceEndDate.present) {
+      map['recurrence_end_date'] = Variable<DateTime>(recurrenceEndDate.value);
+    }
+    if (recurrenceCount.present) {
+      map['recurrence_count'] = Variable<int>(recurrenceCount.value);
+    }
+    if (recurrenceParentId.present) {
+      map['recurrence_parent_id'] = Variable<String>(recurrenceParentId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4782,13 +5555,22 @@ class TaskTableCompanion extends UpdateCompanion<TaskTableData> {
           ..write('plannedDate: $plannedDate, ')
           ..write('deadlineDate: $deadlineDate, ')
           ..write('estimatedTime: $estimatedTime, ')
-          ..write('isCompleted: $isCompleted, ')
+          ..write('completedAt: $completedAt, ')
           ..write('createdDate: $createdDate, ')
           ..write('modifiedDate: $modifiedDate, ')
           ..write('deletedDate: $deletedDate, ')
           ..write('order: $order, ')
           ..write('plannedDateReminderTime: $plannedDateReminderTime, ')
           ..write('deadlineDateReminderTime: $deadlineDateReminderTime, ')
+          ..write('plannedDateReminderCustomOffset: $plannedDateReminderCustomOffset, ')
+          ..write('deadlineDateReminderCustomOffset: $deadlineDateReminderCustomOffset, ')
+          ..write('recurrenceType: $recurrenceType, ')
+          ..write('recurrenceInterval: $recurrenceInterval, ')
+          ..write('recurrenceDaysString: $recurrenceDaysString, ')
+          ..write('recurrenceStartDate: $recurrenceStartDate, ')
+          ..write('recurrenceEndDate: $recurrenceEndDate, ')
+          ..write('recurrenceCount: $recurrenceCount, ')
+          ..write('recurrenceParentId: $recurrenceParentId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5341,8 +6123,8 @@ class TaskTimeRecordTableCompanion extends UpdateCompanion<TaskTimeRecordTableDa
   }
 }
 
-class DatabaseAtV18 extends GeneratedDatabase {
-  DatabaseAtV18(QueryExecutor e) : super(e);
+class DatabaseAtV29 extends GeneratedDatabase {
+  DatabaseAtV29(QueryExecutor e) : super(e);
   late final AppUsageIgnoreRuleTable appUsageIgnoreRuleTable = AppUsageIgnoreRuleTable(this);
   late final AppUsageTable appUsageTable = AppUsageTable(this);
   late final AppUsageTagRuleTable appUsageTagRuleTable = AppUsageTagRuleTable(this);
@@ -5351,6 +6133,7 @@ class DatabaseAtV18 extends GeneratedDatabase {
   late final HabitRecordTable habitRecordTable = HabitRecordTable(this);
   late final HabitTable habitTable = HabitTable(this);
   late final HabitTagTable habitTagTable = HabitTagTable(this);
+  late final HabitTimeRecordTable habitTimeRecordTable = HabitTimeRecordTable(this);
   late final NoteTable noteTable = NoteTable(this);
   late final NoteTagTable noteTagTable = NoteTagTable(this);
   late final SettingTable settingTable = SettingTable(this);
@@ -5372,6 +6155,7 @@ class DatabaseAtV18 extends GeneratedDatabase {
         habitRecordTable,
         habitTable,
         habitTagTable,
+        habitTimeRecordTable,
         noteTable,
         noteTagTable,
         settingTable,
@@ -5383,5 +6167,5 @@ class DatabaseAtV18 extends GeneratedDatabase {
         taskTimeRecordTable
       ];
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 29;
 }

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card_calendar.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -115,6 +116,7 @@ void main() {
         id: 'r1',
         date: today,
         occurredAt: today,
+        status: HabitRecordStatus.complete,
       );
 
       await pumpWidget(tester, habit: habit, habitRecords: [record]);
