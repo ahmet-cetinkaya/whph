@@ -136,35 +136,10 @@ class ToggleHabitCompletionCommandHandler
     if (!isMultiOccurrence) {
       // Only clear for single occurrence habits where we are replacing the state
       // For multi-occurrence, we might be adding a NEW record, not replacing.
-      // WAIT. The original logic for multi-occurrence was:
-      // if shouldComplete -> Add record.
-      // else -> DELETE ALL records.
 
-      // This implies "reset" behavior when "unchecking" via toggle?
-      // Original code:
-      // else { // Remove all habit records and time records for the day }
-
-      // If dailyTarget is 5, and I have 4. Tapping again makes it 5.
-      // Tapping again (if logic falls to else?)
-      // "shouldComplete = dailyCompletionCount < dailyTarget"
-      // If count is 5, shouldComplete is false. -> DELETE ALL 5 records.
-
-      // So "reset" behavior is standard for the "Calendar behavior" logic?
-      // "Checkbox behavior: increment until target, then reset" -> Yes.
 
       // Always clear existing records for single-occurrence logic to ensure strict 1-to-1 state mapping
-      for (final habitRecord in habitRecords.items.toList()) {
-        await _habitRecordRepository.delete(habitRecord);
-      }
-
-      final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
-        request.habitId,
-        startOfDay,
-        endOfDay,
-      );
-      for (final timeRecord in timeRecords) {
-        await _habitTimeRecordRepository.delete(timeRecord);
-      }
+      await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
       if (nextStatus != HabitRecordStatus.unknown) {
         // Add new record
@@ -210,17 +185,7 @@ class ToggleHabitCompletionCommandHandler
         }
       } else if (nextStatus == HabitRecordStatus.notDone) {
         // Switch to Not Done - Clear all existing attempts first
-        for (final habitRecord in habitRecords.items.toList()) {
-          await _habitRecordRepository.delete(habitRecord);
-        }
-        final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
-          request.habitId,
-          startOfDay,
-          endOfDay,
-        );
-        for (final timeRecord in timeRecords) {
-          await _habitTimeRecordRepository.delete(timeRecord);
-        }
+        await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
         // Add ONE Not Done record
         final habitRecord = HabitRecord(
@@ -233,20 +198,26 @@ class ToggleHabitCompletionCommandHandler
         await _habitRecordRepository.add(habitRecord);
       } else {
         // Reset (Unknown) - Clear all
-        for (final habitRecord in habitRecords.items.toList()) {
-          await _habitRecordRepository.delete(habitRecord);
-        }
-        final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
-          request.habitId,
-          startOfDay,
-          endOfDay,
-        );
-        for (final timeRecord in timeRecords) {
-          await _habitTimeRecordRepository.delete(timeRecord);
-        }
+        await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
       }
     }
 
     return ToggleHabitCompletionCommandResponse();
+  }
+
+  Future<void> _clearAllRecordsForDay(
+      String habitId, DateTime startOfDay, DateTime endOfDay, List<HabitRecord> recordsToDelete) async {
+    for (final habitRecord in recordsToDelete) {
+      await _habitRecordRepository.delete(habitRecord);
+    }
+
+    final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
+      habitId,
+      startOfDay,
+      endOfDay,
+    );
+    for (final timeRecord in timeRecords) {
+      await _habitTimeRecordRepository.delete(timeRecord);
+    }
   }
 }
