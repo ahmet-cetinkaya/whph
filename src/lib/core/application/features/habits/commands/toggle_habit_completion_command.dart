@@ -13,6 +13,7 @@ import 'package:acore/acore.dart';
 
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 class ToggleHabitCompletionCommand implements IRequest<ToggleHabitCompletionCommandResponse> {
   final String habitId;
@@ -50,7 +51,11 @@ class ToggleHabitCompletionCommandHandler
     // Validate that the habit exists and fetch its details
     final habit = await _habitRepository.getById(request.habitId);
     if (habit == null) {
-      throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
+      throw BusinessException(
+        'Habit not found',
+        HabitTranslationKeys.habitNotFoundError,
+        args: {'habitId': request.habitId},
+      );
     }
 
     // Normalize the date to start of day for consistent comparison
@@ -133,74 +138,76 @@ class ToggleHabitCompletionCommandHandler
     final occurredAt = DateTimeHelper.toUtcDateTime(request.date);
 
     // clear existing records and time records first (clean slate approach)
-    if (!isMultiOccurrence) {
-      // Only clear for single occurrence habits where we are replacing the state
-      // For multi-occurrence, we might be adding a NEW record, not replacing.
+    // clear existing records and time records first (clean slate approach)
+    await AppDatabase.instance().transaction(() async {
+      if (!isMultiOccurrence) {
+        // Only clear for single occurrence habits where we are replacing the state
+        // For multi-occurrence, we might be adding a NEW record, not replacing.
 
-
-      // Always clear existing records for single-occurrence logic to ensure strict 1-to-1 state mapping
-      await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
-
-      if (nextStatus != HabitRecordStatus.unknown) {
-        // Add new record
-        final habitRecord = HabitRecord(
-          id: KeyHelper.generateStringId(),
-          createdDate: now,
-          habitId: request.habitId,
-          occurredAt: occurredAt,
-          status: nextStatus,
-        );
-        await _habitRecordRepository.add(habitRecord);
-
-        // Add time record ONLY if complete
-        if (nextStatus == HabitRecordStatus.complete && habit.estimatedTime != null && habit.estimatedTime! > 0) {
-          await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-            repository: _habitTimeRecordRepository,
-            habitId: request.habitId,
-            targetDate: occurredAt,
-            estimatedDuration: (habit.estimatedTime! * 60).toInt(),
-          );
-        }
-      }
-    } else {
-      // Multi-occurrence logic (legacy behavior preserved but adapted structure)
-      if (nextStatus == HabitRecordStatus.complete) {
-        // Add ONE record
-        final habitRecord = HabitRecord(
-          id: KeyHelper.generateStringId(),
-          createdDate: now,
-          habitId: request.habitId,
-          occurredAt: occurredAt,
-          status: HabitRecordStatus.complete,
-        );
-        await _habitRecordRepository.add(habitRecord);
-
-        if (habit.estimatedTime != null && habit.estimatedTime! > 0) {
-          await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-            repository: _habitTimeRecordRepository,
-            habitId: request.habitId,
-            targetDate: occurredAt,
-            estimatedDuration: (habit.estimatedTime! * 60).toInt(),
-          );
-        }
-      } else if (nextStatus == HabitRecordStatus.notDone) {
-        // Switch to Not Done - Clear all existing attempts first
+        // Always clear existing records for single-occurrence logic to ensure strict 1-to-1 state mapping
         await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
-        // Add ONE Not Done record
-        final habitRecord = HabitRecord(
-          id: KeyHelper.generateStringId(),
-          createdDate: now,
-          habitId: request.habitId,
-          occurredAt: occurredAt,
-          status: HabitRecordStatus.notDone,
-        );
-        await _habitRecordRepository.add(habitRecord);
+        if (nextStatus != HabitRecordStatus.unknown) {
+          // Add new record
+          final habitRecord = HabitRecord(
+            id: KeyHelper.generateStringId(),
+            createdDate: now,
+            habitId: request.habitId,
+            occurredAt: occurredAt,
+            status: nextStatus,
+          );
+          await _habitRecordRepository.add(habitRecord);
+
+          // Add time record ONLY if complete
+          if (nextStatus == HabitRecordStatus.complete && habit.estimatedTime != null && habit.estimatedTime! > 0) {
+            await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
+              repository: _habitTimeRecordRepository,
+              habitId: request.habitId,
+              targetDate: occurredAt,
+              estimatedDuration: (habit.estimatedTime! * 60).toInt(),
+            );
+          }
+        }
       } else {
-        // Reset (Unknown) - Clear all
-        await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+        // Multi-occurrence logic (legacy behavior preserved but adapted structure)
+        if (nextStatus == HabitRecordStatus.complete) {
+          // Add ONE record
+          final habitRecord = HabitRecord(
+            id: KeyHelper.generateStringId(),
+            createdDate: now,
+            habitId: request.habitId,
+            occurredAt: occurredAt,
+            status: HabitRecordStatus.complete,
+          );
+          await _habitRecordRepository.add(habitRecord);
+
+          if (habit.estimatedTime != null && habit.estimatedTime! > 0) {
+            await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
+              repository: _habitTimeRecordRepository,
+              habitId: request.habitId,
+              targetDate: occurredAt,
+              estimatedDuration: (habit.estimatedTime! * 60).toInt(),
+            );
+          }
+        } else if (nextStatus == HabitRecordStatus.notDone) {
+          // Switch to Not Done - Clear all existing attempts first
+          await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+
+          // Add ONE Not Done record
+          final habitRecord = HabitRecord(
+            id: KeyHelper.generateStringId(),
+            createdDate: now,
+            habitId: request.habitId,
+            occurredAt: occurredAt,
+            status: HabitRecordStatus.notDone,
+          );
+          await _habitRecordRepository.add(habitRecord);
+        } else {
+          // Reset (Unknown) - Clear all
+          await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+        }
       }
-    }
+    });
 
     return ToggleHabitCompletionCommandResponse();
   }

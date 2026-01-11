@@ -90,7 +90,6 @@ class HabitCalendarColorHelper {
   }
 
   /// Get background color for calendar day based on goal type and achievement
-  /// Get background color for calendar day based on goal type and achievement
   Color getBackgroundColorForDay({
     required bool isCurrentMonth,
     required bool isFutureDate,
@@ -116,14 +115,6 @@ class HabitCalendarColorHelper {
       return _getSimpleHabitBackgroundColor(status);
     }
   }
-
-  // ... (omitted _getGoalBasedBackgroundColor, _getPeriodGoalBackgroundColor, _getDailyTargetBackgroundColor, _getSimpleDailyGoalBackgroundColor)
-  // I must include them if I don't use multi_replace.
-  // Wait, I can use replace_file_content on the whole block or target specific chunks.
-  // I will target _getSimpleHabitBackgroundColor and _buildSimpleDailyIcon specifically later?
-  // No, I need to update the signature of getBackgroundColorForDay which wraps them.
-  // I will just supply the whole getBackgroundColorForDay implementation and downwards.
-
   Color _getGoalBasedBackgroundColor({
     required bool hasRecords,
     required bool isDailyGoalMet,

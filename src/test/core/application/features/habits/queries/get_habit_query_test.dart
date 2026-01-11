@@ -317,4 +317,41 @@ void main() {
     // Score: 2 / 3 = 0.666...
     expect(result.statistics.overallScore, closeTo(0.666, 0.001));
   });
+
+  test('Score handles partial completion for multi-occurrence habit', () async {
+    // Arrange
+    final multiHabit = Habit(
+      id: habitId,
+      name: 'Multi Habit',
+      createdDate: DateTime.now().subtract(const Duration(days: 30)),
+      description: '',
+      dailyTarget: 2,
+    );
+    when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => multiHabit);
+    when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => null);
+
+    final now = DateTime.now();
+    final records = [
+      // Day 0: 1/2 completed (50%)
+      HabitRecord(
+          id: '1', habitId: habitId, status: HabitRecordStatus.complete, occurredAt: now.toUtc(), createdDate: now),
+      // Day 1: 2/2 completed (100%)
+      HabitRecord(
+          id: '2', habitId: habitId, status: HabitRecordStatus.complete, occurredAt: now.subtract(const Duration(days: 1)).toUtc(), createdDate: now),
+      HabitRecord(
+          id: '3', habitId: habitId, status: HabitRecordStatus.complete, occurredAt: now.subtract(const Duration(days: 1)).toUtc(), createdDate: now),
+    ];
+
+    habitRecordRepository.setRecords(records);
+
+    // Act
+    final result = await handler(GetHabitQuery(id: habitId));
+
+    // Assert
+    // Day 0: 0.5
+    // Day 1: 1.0
+    // Total days (strict): 2
+    // Avg: (0.5 + 1.0) / 2 = 0.75
+    expect(result.statistics.overallScore, 0.75);
+  });
 }

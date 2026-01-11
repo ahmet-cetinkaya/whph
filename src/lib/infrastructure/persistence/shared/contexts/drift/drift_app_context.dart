@@ -97,6 +97,12 @@ class AppDatabase extends _$AppDatabase {
     return _instance ??= AppDatabase(_openConnection());
   }
 
+  /// Sets the singleton instance for testing purposes
+  static void setInstanceForTesting(AppDatabase db) {
+    _instance = db;
+    isTestMode = true;
+  }
+
   /// Resets the singleton instance for testing purposes
   static void resetInstance() {
     _instance = null;

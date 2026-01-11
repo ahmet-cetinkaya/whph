@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_add_button.dart';
@@ -131,8 +132,8 @@ class _HabitsPageState extends State<HabitsPage> {
           _isThreeStateEnabled = setting.getValue<bool>();
         });
       }
-    } catch (_) {
-      // Ignore errors, default is false
+    } catch (e, stackTrace) {
+      Logger.error("Failed to load habit settings in HabitsPage", error: e, stackTrace: stackTrace);
     }
   }
 

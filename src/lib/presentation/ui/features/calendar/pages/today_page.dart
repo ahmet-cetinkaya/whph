@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
@@ -162,8 +163,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           });
         }
       }
-    } catch (_) {
-      // Ignore errors
+    } catch (e, stackTrace) {
+      Logger.error("Failed to load habit settings in TodayPage", error: e, stackTrace: stackTrace);
     }
   }
 
