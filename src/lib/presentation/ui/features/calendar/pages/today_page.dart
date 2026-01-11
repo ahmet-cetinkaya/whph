@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
+import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/habits/pages/habit_details_page.dart';
 import 'package:whph/presentation/ui/features/calendar/components/today_page_list_options.dart';
@@ -37,6 +39,9 @@ import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/features/calendar/constants/calendar_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
+import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:mediatr/mediatr.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -51,6 +56,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   final _translationService = container.resolve<ITranslationService>();
   final _confettiAnimationService = container.resolve<IConfettiAnimationService>();
   final _themeService = container.resolve<IThemeService>();
+  final _habitsService = container.resolve<HabitsService>();
 
   final Completer<void> _pageReadyCompleter = Completer<void>();
   int _loadedComponents = 0;
@@ -82,6 +88,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   SortConfig<HabitSortFields> _habitSortConfig = HabitDefaults.sorting;
   bool _habitForceOriginalLayout = false;
   HabitListStyle _habitListStyle = HabitDefaults.defaultListStyle;
+  bool _isThreeStateEnabled = false;
 
   // Time chart options state
   static const String _timeChartOptionsSettingKeySuffix = 'TODAY_PAGE';
@@ -115,6 +122,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     _resetConfettiIfNewDay();
     // Initialize cached date calculations
     _updateDateCalculations();
+    // Load habit settings
+    _habitsService.onSettingsChanged.addListener(_loadHabitSettings);
+    _loadHabitSettings();
     // Auto-start tour if multi-page tour is active
     _checkAndStartTour();
   }
@@ -137,6 +147,23 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     _loadedComponents++;
     if (_loadedComponents >= _totalComponentsToLoad && !_pageReadyCompleter.isCompleted) {
       _pageReadyCompleter.complete();
+    }
+  }
+
+  Future<void> _loadHabitSettings() async {
+    try {
+      final setting = await container.resolve<Mediator>().send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.habitThreeStateEnabled),
+          );
+      if (setting != null && setting.getValue<bool>() == true) {
+        if (mounted) {
+          setState(() {
+            _isThreeStateEnabled = true;
+          });
+        }
+      }
+    } catch (_) {
+      // Ignore errors
     }
   }
 
@@ -327,6 +354,12 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   }
 
   @override
+  void dispose() {
+    _habitsService.onSettingsChanged.removeListener(_loadHabitSettings);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 
@@ -421,7 +454,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
               if (_habitListOptionSettingsLoaded)
                 HabitsList(
                   key: ValueKey(
-                      'habits_list_${_habitListStyle}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}'),
+                      'habits_list_${_habitListStyle}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}_$_isThreeStateEnabled'),
+                  isThreeStateEnabled: _isThreeStateEnabled,
                   pageSize: 5,
                   style: _habitListStyle,
                   filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,

@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 
@@ -13,6 +14,7 @@ class HabitRecordTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get habitId => text()();
   DateTimeColumn get occurredAt => dateTime()();
+  IntColumn get status => intEnum<HabitRecordStatus>().withDefault(const Constant(0))();
 
   @override
   Set<Column>? get primaryKey => {id};
@@ -38,6 +40,7 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
       deletedDate: Value(entity.deletedDate),
       habitId: entity.habitId,
       occurredAt: entity.occurredAt,
+      status: Value(entity.status),
     );
   }
 
@@ -86,5 +89,14 @@ class DriftHabitRecordRepository extends DriftBaseRepository<HabitRecord, String
   @override
   Future<List<HabitRecord>> getByHabitId(String habitId) async {
     return (database.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
+  }
+
+  @override
+  Future<List<HabitRecord>> getByHabitIdAndStatus(String habitId, HabitRecordStatus status) async {
+    final query = database.select(table)
+      ..where((t) => t.habitId.equals(habitId) & t.status.equals(status.index) & t.deletedDate.isNull());
+
+    final result = await query.get();
+    return result;
   }
 }

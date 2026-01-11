@@ -214,15 +214,15 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 padding: const EdgeInsets.only(right: 2),
                 child: HabitRecordsSection.buildDailyRecordButton(
                   context: context,
-                  dailyCompletionCount: _controller.getTodayRecordCount(),
+                  dailyCompletionCount: _controller.getTodayCompletionCount(),
+                  todayStatus: _controller.getTodayStatus(),
                   hasCustomGoals: habit.hasGoal,
                   dailyTarget: habit.hasGoal ? (habit.dailyTarget ?? 1) : 1,
                   isArchived: isArchived,
                   translationService: translationService,
                   themeService: _themeService,
-                  onCreateRecord: () => _controller.createHabitRecord(widget.habitId, DateTime.now().toUtc(), context),
-                  onRemoveRecords: () =>
-                      _controller.deleteAllHabitRecordsForDay(DateTime.now(), widget.habitId, context),
+                  onToggle: () => _controller.toggleHabitRecordForDay(DateTime.now(), widget.habitId, context),
+                  isThreeStateEnabled: _controller.isThreeStateEnabled,
                 ),
               ),
               Expanded(
@@ -362,9 +362,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             HabitCalendarView(
               currentMonth: _controller.currentMonth,
               records: _controller.habitRecords!.items,
-              onDeleteAllRecordsForDay: (date) =>
-                  _controller.deleteAllHabitRecordsForDay(date, widget.habitId, context),
-              onCreateRecord: (habitId, date) => _controller.createHabitRecord(habitId, date, context),
+              onToggle: (date) => _controller.toggleHabitRecordForDay(date, widget.habitId, context),
               onPreviousMonth: () => _controller.previousMonth(widget.habitId, context),
               onNextMonth: () => _controller.nextMonth(widget.habitId, context),
               onRecordChanged: () => _controller.loadHabitRecordsForMonth(
@@ -378,6 +376,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               targetFrequency: habit.targetFrequency,
               periodDays: habit.periodDays,
               dailyTarget: habit.dailyTarget ?? 1,
+              isThreeStateEnabled: _controller.isThreeStateEnabled,
             ),
           ],
         ],

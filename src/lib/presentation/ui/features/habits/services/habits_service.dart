@@ -7,6 +7,7 @@ class HabitsService extends ChangeNotifier {
   final ValueNotifier<String?> onHabitDeleted = ValueNotifier<String?>(null);
   final ValueNotifier<String?> onHabitRecordAdded = ValueNotifier<String?>(null);
   final ValueNotifier<String?> onHabitRecordRemoved = ValueNotifier<String?>(null);
+  final ValueNotifier<void> onSettingsChanged = ValueNotifier<void>(null);
 
   // Notification methods for habit events
   void notifyHabitCreated(String habitId) {
@@ -34,6 +35,10 @@ class HabitsService extends ChangeNotifier {
     onHabitRecordRemoved.notifyListeners();
   }
 
+  void notifySettingsChanged() {
+    onSettingsChanged.notifyListeners();
+  }
+
   @override
   void dispose() {
     onHabitCreated.dispose();
@@ -41,6 +46,7 @@ class HabitsService extends ChangeNotifier {
     onHabitDeleted.dispose();
     onHabitRecordAdded.dispose();
     onHabitRecordRemoved.dispose();
+    onSettingsChanged.dispose();
     super.dispose();
   }
 }

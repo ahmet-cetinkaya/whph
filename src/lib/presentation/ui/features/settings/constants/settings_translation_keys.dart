@@ -82,6 +82,13 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
       'settings.task.default_planned_date_reminder.save_error';
   static const String taskDefaultPlannedDateReminderLoadError =
       'settings.task.default_planned_date_reminder.load_error';
+
+  // Habit Settings
+  static const String habitSettingsTitle = 'settings.habit.title';
+  static const String habitSettingsDescription = 'settings.habit.description';
+  static const String habitThreeStateTitle = 'settings.habit.three_state.title';
+  static const String habitThreeStateDescription = 'settings.habit.three_state.description';
+
   static const String importStrategyTitle = 'settings.import.strategy.title';
   static const String importSuccess = 'settings.import.success';
   static const String importTitle = 'settings.import.title';

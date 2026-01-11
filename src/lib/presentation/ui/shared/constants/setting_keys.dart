@@ -64,6 +64,9 @@ class SettingKeys {
   static const String taskDefaultPlannedDateReminder = "TASK_DEFAULT_PLANNED_DATE_REMINDER";
   static const String taskDefaultPlannedDateReminderCustomOffset = "TASK_DEFAULT_PLANNED_DATE_REMINDER_CUSTOM_OFFSET";
 
+  // Habit Settings
+  static const String habitThreeStateEnabled = "HABIT_THREE_STATE_ENABLED";
+
   // Changelog Settings
   static const String lastShownChangelogVersion = 'LAST_SHOWN_CHANGELOG_VERSION';
 }

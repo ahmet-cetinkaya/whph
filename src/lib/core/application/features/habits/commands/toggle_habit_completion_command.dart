@@ -8,7 +8,11 @@ import 'package:whph/core/application/features/habits/constants/habit_translatio
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:acore/acore.dart';
+
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 
 class ToggleHabitCompletionCommand implements IRequest<ToggleHabitCompletionCommandResponse> {
   final String habitId;
@@ -29,14 +33,17 @@ class ToggleHabitCompletionCommandHandler
   final IHabitRepository _habitRepository;
   final IHabitRecordRepository _habitRecordRepository;
   final IHabitTimeRecordRepository _habitTimeRecordRepository;
+  final ISettingRepository _settingsRepository;
 
   ToggleHabitCompletionCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitRecordRepository habitRecordRepository,
     required IHabitTimeRecordRepository habitTimeRecordRepository,
+    required ISettingRepository settingsRepository,
   })  : _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
-        _habitTimeRecordRepository = habitTimeRecordRepository;
+        _habitTimeRecordRepository = habitTimeRecordRepository,
+        _settingsRepository = settingsRepository;
 
   @override
   Future<ToggleHabitCompletionCommandResponse> call(ToggleHabitCompletionCommand request) async {
@@ -70,58 +77,173 @@ class ToggleHabitCompletionCommandHandler
     final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
 
     // Determine action based on current completion status
-    bool shouldComplete = false;
-    if (hasCustomGoals && dailyTarget > 1) {
-      // Multi-occurrence habit logic
-      if (request.useIncrementalBehavior) {
-        // Checkbox behavior: increment until target, then reset
-        shouldComplete = dailyCompletionCount < dailyTarget;
+    HabitRecordStatus nextStatus = HabitRecordStatus.complete;
+    bool isMultiOccurrence = hasCustomGoals && dailyTarget > 1;
+
+    final setting = await _settingsRepository.getByKey(SettingKeys.habitThreeStateEnabled);
+    // Fix: Check for null and cast strictly to bool if value exists, otherwise default to false
+    final isThreeStateEnabled = setting != null && setting.getValue<bool>() == true;
+
+    if (isMultiOccurrence) {
+      // Check if explicitly marked as Not Done
+      // Check if explicitly marked as Not Done for this specific day
+      final isCurrentlyNotDone = habitRecords.items.any((r) =>
+          r.status == HabitRecordStatus.notDone &&
+          DateTimeHelper.isSameDay(
+              DateTimeHelper.toLocalDateTime(r.occurredAt), DateTimeHelper.toLocalDateTime(request.date)));
+
+      if (isCurrentlyNotDone) {
+        // If currently Not Done, toggle to Unknown (Reset)
+        nextStatus = HabitRecordStatus.unknown;
+      } else if (dailyCompletionCount < dailyTarget) {
+        // If target not reached, Increment (Add Complete)
+        nextStatus = HabitRecordStatus.complete;
       } else {
-        // Calendar behavior: toggle between complete/incomplete
-        shouldComplete = dailyCompletionCount < dailyTarget;
+        // Target met/exceeded. Next step depends on setting.
+        // If 3-state enabled: Go to Not Done.
+        // Else: Go to Unknown (Reset).
+        // Note: We already checked isCurrentlyNotDone above, so we know we are NOT currently NotDone.
+        nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.unknown;
       }
     } else {
-      // Traditional habit: simple toggle
-      shouldComplete = dailyCompletionCount == 0;
+      // Single occurrence habit: 3-state cycle (if enabled)
+      // Find the existing record for today (if any)
+      final existingRecord = habitRecords.items
+          .where((record) => DateTimeHelper.isSameDay(
+              DateTimeHelper.toLocalDateTime(record.occurredAt), DateTimeHelper.toLocalDateTime(request.date)))
+          .firstOrNull;
+
+      final currentStatus = existingRecord?.status ?? HabitRecordStatus.unknown;
+
+      switch (currentStatus) {
+        case HabitRecordStatus.unknown:
+          nextStatus = HabitRecordStatus.complete;
+          break;
+        case HabitRecordStatus.complete:
+          nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.unknown;
+          break;
+        case HabitRecordStatus.notDone:
+          nextStatus = HabitRecordStatus.unknown;
+          break;
+      }
     }
 
-    if (shouldComplete) {
-      // Add habit record
-      final now = DateTime.now().toUtc();
-      final occurredAt = DateTimeHelper.toUtcDateTime(request.date);
+    // Prepare common variables
+    final now = DateTime.now().toUtc();
+    final occurredAt = DateTimeHelper.toUtcDateTime(request.date);
 
-      final habitRecord = HabitRecord(
-        id: KeyHelper.generateStringId(),
-        createdDate: now,
-        habitId: request.habitId,
-        occurredAt: occurredAt,
-      );
-      await _habitRecordRepository.add(habitRecord);
+    // clear existing records and time records first (clean slate approach)
+    if (!isMultiOccurrence) {
+      // Only clear for single occurrence habits where we are replacing the state
+      // For multi-occurrence, we might be adding a NEW record, not replacing.
+      // WAIT. The original logic for multi-occurrence was:
+      // if shouldComplete -> Add record.
+      // else -> DELETE ALL records.
 
-      // Add estimated time if habit has it
-      if (habit.estimatedTime != null && habit.estimatedTime! > 0) {
-        await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-          repository: _habitTimeRecordRepository,
-          habitId: request.habitId,
-          targetDate: occurredAt,
-          estimatedDuration: (habit.estimatedTime! * 60).toInt(),
-        );
-      }
-    } else {
-      // Remove all habit records and time records for the day
-      for (final habitRecord in habitRecords.items) {
+      // This implies "reset" behavior when "unchecking" via toggle?
+      // Original code:
+      // else { // Remove all habit records and time records for the day }
+
+      // If dailyTarget is 5, and I have 4. Tapping again makes it 5.
+      // Tapping again (if logic falls to else?)
+      // "shouldComplete = dailyCompletionCount < dailyTarget"
+      // If count is 5, shouldComplete is false. -> DELETE ALL 5 records.
+
+      // So "reset" behavior is standard for the "Calendar behavior" logic?
+      // "Checkbox behavior: increment until target, then reset" -> Yes.
+
+      // Always clear existing records for single-occurrence logic to ensure strict 1-to-1 state mapping
+      for (final habitRecord in habitRecords.items.toList()) {
         await _habitRecordRepository.delete(habitRecord);
       }
 
-      // Remove all time records for the day
       final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
         request.habitId,
         startOfDay,
         endOfDay,
       );
-
       for (final timeRecord in timeRecords) {
         await _habitTimeRecordRepository.delete(timeRecord);
+      }
+
+      if (nextStatus != HabitRecordStatus.unknown) {
+        // Add new record
+        final habitRecord = HabitRecord(
+          id: KeyHelper.generateStringId(),
+          createdDate: now,
+          habitId: request.habitId,
+          occurredAt: occurredAt,
+          status: nextStatus,
+        );
+        await _habitRecordRepository.add(habitRecord);
+
+        // Add time record ONLY if complete
+        if (nextStatus == HabitRecordStatus.complete && habit.estimatedTime != null && habit.estimatedTime! > 0) {
+          await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
+            repository: _habitTimeRecordRepository,
+            habitId: request.habitId,
+            targetDate: occurredAt,
+            estimatedDuration: (habit.estimatedTime! * 60).toInt(),
+          );
+        }
+      }
+    } else {
+      // Multi-occurrence logic (legacy behavior preserved but adapted structure)
+      if (nextStatus == HabitRecordStatus.complete) {
+        // Add ONE record
+        final habitRecord = HabitRecord(
+          id: KeyHelper.generateStringId(),
+          createdDate: now,
+          habitId: request.habitId,
+          occurredAt: occurredAt,
+          status: HabitRecordStatus.complete,
+        );
+        await _habitRecordRepository.add(habitRecord);
+
+        if (habit.estimatedTime != null && habit.estimatedTime! > 0) {
+          await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
+            repository: _habitTimeRecordRepository,
+            habitId: request.habitId,
+            targetDate: occurredAt,
+            estimatedDuration: (habit.estimatedTime! * 60).toInt(),
+          );
+        }
+      } else if (nextStatus == HabitRecordStatus.notDone) {
+        // Switch to Not Done - Clear all existing attempts first
+        for (final habitRecord in habitRecords.items.toList()) {
+          await _habitRecordRepository.delete(habitRecord);
+        }
+        final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
+          request.habitId,
+          startOfDay,
+          endOfDay,
+        );
+        for (final timeRecord in timeRecords) {
+          await _habitTimeRecordRepository.delete(timeRecord);
+        }
+
+        // Add ONE Not Done record
+        final habitRecord = HabitRecord(
+          id: KeyHelper.generateStringId(),
+          createdDate: now,
+          habitId: request.habitId,
+          occurredAt: occurredAt,
+          status: HabitRecordStatus.notDone,
+        );
+        await _habitRecordRepository.add(habitRecord);
+      } else {
+        // Reset (Unknown) - Clear all
+        for (final habitRecord in habitRecords.items.toList()) {
+          await _habitRecordRepository.delete(habitRecord);
+        }
+        final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
+          request.habitId,
+          startOfDay,
+          endOfDay,
+        );
+        for (final timeRecord in timeRecords) {
+          await _habitTimeRecordRepository.delete(timeRecord);
+        }
       }
     }
 

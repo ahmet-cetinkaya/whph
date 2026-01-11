@@ -21,6 +21,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_record_re
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 
 void registerHabitsFeature(
   IContainer container,
@@ -30,6 +31,7 @@ void registerHabitsFeature(
   IHabitTagsRepository habitTagRepository,
   IHabitTimeRecordRepository habitTimeRecordRepository,
   ITagRepository tagRepository,
+  ISettingRepository settingsRepository,
 ) {
   mediator
     ..registerHandler<SaveHabitCommand, SaveHabitCommandResponse, SaveHabitCommandHandler>(
@@ -53,6 +55,7 @@ void registerHabitsFeature(
       () => GetHabitQueryHandler(
         habitRepository: habitRepository,
         habitRecordRepository: habitRecordRepository,
+        settingsRepository: settingsRepository,
       ),
     )
     ..registerHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse, AddHabitRecordCommandHandler>(
@@ -106,6 +109,7 @@ void registerHabitsFeature(
         habitRepository: habitRepository,
         habitRecordRepository: habitRecordRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
+        settingsRepository: settingsRepository,
       ),
     );
 }

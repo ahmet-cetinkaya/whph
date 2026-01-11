@@ -7,10 +7,14 @@ import 'package:whph/core/application/features/habits/commands/save_habit_comman
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
+import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -43,6 +47,8 @@ class HabitDetailsController extends ChangeNotifier {
   bool _forceTagsRefresh = false;
   int _totalDuration = 0;
   DateTime _currentMonth = DateTime.now();
+  bool _isThreeStateEnabled = false;
+  bool _isDisposed = false;
 
   // Optional field visibility
   final Set<String> _visibleOptionalFields = {};
@@ -94,6 +100,7 @@ class HabitDetailsController extends ChangeNotifier {
   bool get isDescriptionFieldActive => _isDescriptionFieldActive;
   int get totalDuration => _totalDuration;
   DateTime get currentMonth => _currentMonth;
+  bool get isThreeStateEnabled => _isThreeStateEnabled;
   ITranslationService get translationService => _translationService;
   HabitsService get habitsService => _habitsService;
 
@@ -103,7 +110,23 @@ class HabitDetailsController extends ChangeNotifier {
     if (context.mounted) await loadHabitRecordsForMonth(_currentMonth, habitId, context);
     if (context.mounted) await loadHabitTags(habitId, context);
     if (context.mounted) await refreshTotalDuration(habitId);
+    if (context.mounted) await _loadSettings();
     if (context.mounted) _setupEventListeners(habitId, context);
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final setting = await _mediator.send<GetSettingQuery, Setting?>(
+        GetSettingQuery(key: SettingKeys.habitThreeStateEnabled),
+      );
+      if (_isDisposed) return;
+      if (setting != null) {
+        _isThreeStateEnabled = setting.getValue<bool>();
+      }
+      notifyListeners();
+    } catch (_) {
+      // Ignore errors, default is false
+    }
   }
 
   void _setupEventListeners(String habitId, BuildContext context) {
@@ -131,11 +154,13 @@ class HabitDetailsController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _isDisposed = true;
     _debounce?.cancel();
     super.dispose();
   }
 
   void setNameFieldActive(bool active) {
+    if (_isDisposed) return;
     _isNameFieldActive = active;
     notifyListeners();
   }
@@ -148,6 +173,8 @@ class HabitDetailsController extends ChangeNotifier {
   // Data loading methods (delegated to helper)
   Future<void> loadHabit(String habitId, BuildContext context) async {
     final result = await _dataLoader.loadHabit(habitId, context);
+    if (_isDisposed) return;
+
     if (result != null) {
       // Check if fields became active during the async operation
       if (_isNameFieldActive || _isDescriptionFieldActive) return;
@@ -178,6 +205,7 @@ class HabitDetailsController extends ChangeNotifier {
 
   Future<void> loadHabitStatisticsOnly(String habitId, BuildContext context) async {
     final result = await _dataLoader.loadHabit(habitId, context);
+    if (_isDisposed) return;
     if (result != null && _habit != null) {
       _updateHabitFields(result);
       notifyListeners();
@@ -186,6 +214,7 @@ class HabitDetailsController extends ChangeNotifier {
 
   Future<void> loadHabitRecordsForMonth(DateTime month, String habitId, BuildContext context) async {
     final result = await _dataLoader.loadHabitRecordsForMonth(month, habitId, context);
+    if (_isDisposed) return;
     if (result != null) {
       _habitRecords = result;
       notifyListeners();
@@ -195,6 +224,7 @@ class HabitDetailsController extends ChangeNotifier {
   Future<void> loadHabitTags(String habitId, BuildContext context) async {
     final existingTagIds = _habitTags?.items.map((tag) => tag.tagId).toSet() ?? <String>{};
     final result = await _dataLoader.loadHabitTags(habitId, context);
+    if (_isDisposed) return;
 
     if (result != null) {
       final newTagIds = result.items.map((tag) => tag.tagId).toSet();
@@ -216,6 +246,7 @@ class HabitDetailsController extends ChangeNotifier {
 
   Future<void> refreshTotalDuration(String habitId) async {
     final newDuration = await _dataLoader.refreshTotalDuration(habitId);
+    if (_isDisposed) return;
     if (_totalDuration != newDuration) {
       _totalDuration = newDuration;
       _processFieldVisibility();
@@ -397,6 +428,19 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   // Record operations (delegated to helper)
+  Future<void> toggleHabitRecordForDay(DateTime date, String habitId, BuildContext context) async {
+    await _recordOperations.toggleHabitRecord(
+      habitId: habitId,
+      date: date,
+      context: context,
+      onSuccess: () {
+        loadHabitRecordsForMonth(_currentMonth, habitId, context);
+        loadHabitStatisticsOnly(habitId, context);
+        onHabitUpdated?.call();
+      },
+    );
+  }
+
   Future<void> createHabitRecord(String habitId, DateTime date, BuildContext context) async {
     await _recordOperations.createHabitRecord(
       habitId: habitId,
@@ -463,9 +507,21 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  int getTodayRecordCount() {
+  int getTodayCompletionCount() {
     if (_habitRecords == null) return 0;
-    return _habitRecords!.items.where((record) => DateTimeHelper.isSameDay(record.date, DateTime.now())).length;
+    return _habitRecords!.items
+        .where((record) =>
+            DateTimeHelper.isSameDay(record.date, DateTime.now()) && record.status == HabitRecordStatus.complete)
+        .length;
+  }
+
+  HabitRecordStatus getTodayStatus() {
+    if (_habitRecords == null) return HabitRecordStatus.unknown;
+    final today = DateTime.now();
+    final todayRecord = _habitRecords!.items
+        .cast<HabitRecordListItem?>()
+        .firstWhere((record) => DateTimeHelper.isSameDay(record!.date, today), orElse: () => null);
+    return todayRecord?.status ?? HabitRecordStatus.unknown;
   }
 
   // Dialog operations (delegated to helper)

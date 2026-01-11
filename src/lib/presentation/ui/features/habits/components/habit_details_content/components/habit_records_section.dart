@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
@@ -9,16 +10,18 @@ class HabitRecordsSection {
   static Widget buildDailyRecordButton({
     required BuildContext context,
     required int dailyCompletionCount,
+    required HabitRecordStatus todayStatus,
     required bool hasCustomGoals,
     required int dailyTarget,
     required bool isArchived,
     required ITranslationService translationService,
     required IThemeService themeService,
-    required VoidCallback? onCreateRecord,
-    required VoidCallback? onRemoveRecords,
+    required VoidCallback? onToggle,
+    bool isThreeStateEnabled = false,
   }) {
-    final bool isDailyGoalMet = dailyCompletionCount >= dailyTarget;
-    final bool hasRecords = dailyCompletionCount > 0;
+    final bool isDailyGoalMet =
+        hasCustomGoals ? (dailyCompletionCount >= dailyTarget) : (todayStatus == HabitRecordStatus.complete);
+    final bool hasRecords = dailyCompletionCount > 0 || todayStatus != HabitRecordStatus.unknown;
 
     final tooltipText = isArchived
         ? translationService.translate(HabitTranslationKeys.archivedStatus)
@@ -35,16 +38,36 @@ class HabitRecordsSection {
     } else if (hasCustomGoals && isDailyGoalMet) {
       icon = Icons.link;
       iconColor = Colors.green;
-    } else if (hasCustomGoals && dailyTarget > 1 && hasRecords) {
+    } else if (hasCustomGoals && dailyTarget > 1 && dailyCompletionCount > 0) {
       icon = Icons.add;
       iconColor = Colors.blue;
-    } else if (hasRecords) {
-      icon = Icons.link;
-      iconColor = hasCustomGoals ? Colors.orange : Colors.green;
     } else {
-      icon = Icons.close;
-      iconColor = Colors.red;
+      // Simple habit or goal not started/met
+      switch (todayStatus) {
+        case HabitRecordStatus.complete:
+          icon = Icons.link;
+          iconColor = Colors.green;
+          break;
+        case HabitRecordStatus.notDone:
+          icon = Icons.close;
+          iconColor = Colors.red;
+          break;
+        case HabitRecordStatus.unknown:
+          // Standardize on using Question Mark for unknown/start state
+          if (isThreeStateEnabled) {
+            icon = Icons.question_mark;
+            iconColor = themeService.textColor.withValues(alpha: 0.5);
+          } else {
+            icon = Icons.close;
+            iconColor = Colors.red.withValues(alpha: 0.7);
+          }
+          break;
+      }
     }
+
+    // Override for old behavior compatibility if needed?
+    // If hasCustomGoals and no records, it fell through to Red Close.
+    // Now falls to switch. unknown -> fiber_manual_record_outlined.
 
     return Stack(
       alignment: Alignment.center,
@@ -63,36 +86,37 @@ class HabitRecordsSection {
             onPressed: isArchived
                 ? null
                 : () {
-                    if (hasCustomGoals && isDailyGoalMet) {
-                      onRemoveRecords?.call();
-                    } else if (!hasCustomGoals && hasRecords) {
-                      onRemoveRecords?.call();
-                    } else {
-                      onCreateRecord?.call();
-                    }
+                    onToggle?.call();
                   },
             tooltip: tooltipText,
           ),
         ),
         if (hasCustomGoals && dailyTarget > 1 && !isArchived && dailyCompletionCount > 0)
           Positioned(
-            bottom: 4,
-            right: 4,
+            top: 0,
+            left: 0,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               decoration: BoxDecoration(
                 color: isDailyGoalMet
                     ? Colors.green
                     : hasRecords
                         ? Colors.orange
                         : Colors.red.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
               child: Text(
                 '$dailyCompletionCount',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 8,
+                  fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
               ),

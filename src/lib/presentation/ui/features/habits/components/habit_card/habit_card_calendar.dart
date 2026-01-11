@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart'; // For HabitRecordListItem
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_color_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
@@ -16,6 +18,7 @@ class HabitCardCalendar extends StatelessWidget {
   final DateTime? archivedDate;
   final Function(DateTime) onDayTap;
   final IThemeService themeService;
+  final bool isThreeStateEnabled;
 
   const HabitCardCalendar({
     super.key,
@@ -27,6 +30,7 @@ class HabitCardCalendar extends StatelessWidget {
     required this.onDayTap,
     required this.themeService,
     this.archivedDate,
+    this.isThreeStateEnabled = false,
   });
 
   @override
@@ -67,7 +71,9 @@ class HabitCardCalendar extends StatelessWidget {
     final isDisabled = _isDateDisabled(date);
     final localDate = acore.DateTimeHelper.toLocalDateTime(date);
     final isToday = acore.DateTimeHelper.isSameDay(localDate, DateTime.now());
-    final hasRecord = _hasRecordForDate(date);
+    final record = _getRecordForDate(date);
+    final status = record?.status ?? HabitRecordStatus.unknown;
+    final hasRecord = status == HabitRecordStatus.complete;
 
     // Support for daily targets
     final dailyCompletionCount = _countRecordsForDate(date);
@@ -109,6 +115,13 @@ class HabitCardCalendar extends StatelessWidget {
       isPeriodGoalMet = periodCompletionCount >= habit.targetFrequency;
     }
 
+    final colorHelper = HabitCalendarColorHelper(
+      hasGoal: hasCustomGoals,
+      targetFrequency: habit.targetFrequency,
+      periodDays: habit.periodDays,
+      dailyTarget: dailyTarget,
+    );
+
     // Determine icon based on completion state
     IconData icon;
     Color iconColor;
@@ -120,52 +133,108 @@ class HabitCardCalendar extends StatelessWidget {
       // Period-based frequency behavior
       if (dailyTarget > 1) {
         // Both daily target AND period goal
-        if (isDailyGoalMet && isPeriodGoalMet) {
-          icon = HabitUiConstants.recordIcon;
-          iconColor = Colors.green;
-        } else if (isDailyGoalMet) {
-          icon = HabitUiConstants.recordIcon;
-          iconColor = Colors.green;
-        } else if (isPeriodGoalMet && dailyCompletionCount == 0) {
+        if (hasRecord && status != HabitRecordStatus.notDone) {
+          if (isDailyGoalMet && isPeriodGoalMet) {
+            icon = HabitUiConstants.recordIcon;
+            iconColor = Colors.green;
+          } else if (isDailyGoalMet) {
+            icon = HabitUiConstants.recordIcon;
+            iconColor = Colors.green;
+          } else {
+            icon = Icons.add;
+            iconColor = Colors.blue;
+          }
+        } else if (status == HabitRecordStatus.notDone) {
+          icon = Icons.close;
+          iconColor = Colors.red;
+        } else if (isPeriodGoalMet) {
           icon = HabitUiConstants.recordIcon;
           iconColor = Colors.grey;
-        } else if (dailyCompletionCount > 0) {
-          icon = Icons.add;
-          iconColor = Colors.blue;
+        } else if (periodCompletionCount > 0) {
+          icon = HabitUiConstants.recordIcon;
+          iconColor = Colors.orange;
         } else {
-          icon = HabitUiConstants.noRecordIcon;
-          iconColor = Colors.red;
+          // Unknown
+          if (isThreeStateEnabled) {
+            icon = Icons.question_mark;
+            iconColor = Colors.grey;
+          } else {
+            icon = HabitUiConstants.noRecordIcon;
+            iconColor = Colors.red;
+          }
         }
       } else {
         // Period-based goal with daily target = 1
-        if (isPeriodGoalMet && dailyCompletionCount == 0) {
-          // Period goal is met and this day has no record - show satisfied state with link icon
-          icon = HabitUiConstants.recordIcon;
-          iconColor = HabitUiConstants.skippedColor;
-        } else if (hasRecord) {
-          // This day has a record - show completed
+        if (hasRecord && status != HabitRecordStatus.notDone) {
           icon = HabitUiConstants.recordIcon;
           iconColor = Colors.green;
+        } else if (status == HabitRecordStatus.notDone) {
+          icon = Icons.close;
+          iconColor = Colors.red;
+        } else if (isPeriodGoalMet) {
+          icon = HabitUiConstants.recordIcon;
+          iconColor = Colors.grey; // Grey check for period satisfied
+        } else if (periodCompletionCount > 0) {
+          icon = HabitUiConstants.recordIcon;
+          iconColor = Colors.orange;
         } else {
-          // Period goal not met and this day has no record - show incomplete
-          icon = HabitUiConstants.noRecordIcon;
-          iconColor = Colors.red.withValues(alpha: 0.7);
+          // Unknown
+          if (isThreeStateEnabled) {
+            icon = Icons.question_mark;
+            iconColor = Colors.grey;
+          } else {
+            icon = HabitUiConstants.noRecordIcon;
+            iconColor = Colors.red.withValues(alpha: 0.7);
+          }
         }
       }
     } else if (hasCustomGoals && dailyTarget > 1) {
       if (isDailyGoalMet) {
         icon = HabitUiConstants.recordIcon;
         iconColor = Colors.green;
+      } else if (status == HabitRecordStatus.notDone) {
+        icon = Icons.close;
+        iconColor = Colors.red;
       } else if (dailyCompletionCount > 0) {
         icon = Icons.add;
         iconColor = Colors.blue;
       } else {
-        icon = HabitUiConstants.noRecordIcon;
-        iconColor = Colors.red.withValues(alpha: 0.7);
+        // Unknown
+        if (isThreeStateEnabled) {
+          icon = Icons.question_mark;
+          iconColor = Colors.grey;
+        } else {
+          icon = HabitUiConstants.noRecordIcon;
+          iconColor = Colors.red.withValues(alpha: 0.7);
+        }
       }
     } else {
-      icon = hasRecord ? HabitUiConstants.recordIcon : HabitUiConstants.noRecordIcon;
-      iconColor = _getRecordStateColor(hasRecord, isDisabled);
+      final isSkipped = status == HabitRecordStatus.unknown &&
+          (_isSkipped(date) ||
+              (hasCustomGoals && habit.periodDays > 1 && isPeriodGoalMet && dailyCompletionCount == 0));
+
+      switch (status) {
+        case HabitRecordStatus.complete:
+          icon = HabitUiConstants.recordIcon;
+          iconColor = Colors.green;
+          break;
+        case HabitRecordStatus.notDone:
+          icon = Icons.close;
+          iconColor = Colors.red;
+          break;
+        case HabitRecordStatus.unknown:
+          if (isSkipped) {
+            icon = HabitUiConstants.recordIcon;
+            iconColor = HabitUiConstants.skippedColor;
+          } else if (isThreeStateEnabled) {
+            icon = Icons.question_mark;
+            iconColor = Colors.grey;
+          } else {
+            icon = HabitUiConstants.noRecordIcon;
+            iconColor = _getRecordStateColor(false, isDisabled);
+          }
+          break;
+      }
     }
 
     // Use passed context for screen size check, or pass isMobileCalendar as param
@@ -227,12 +296,53 @@ class HabitCardCalendar extends StatelessWidget {
               child: InkWell(
                 onTap: isDisabled ? null : () => onDayTap(date),
                 borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
-                child: Icon(
-                  icon,
-                  size: isMobileCalendar
-                      ? AppTheme.iconSizeMedium
-                      : (isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium),
-                  color: iconColor,
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Icon(
+                        icon,
+                        size: isMobileCalendar
+                            ? AppTheme.iconSizeMedium
+                            : (isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium),
+                        color: iconColor,
+                      ),
+                    ),
+                    if (hasCustomGoals &&
+                        colorHelper.shouldShowBadge() &&
+                        colorHelper.shouldShowBadgeForThisDay(
+                          hasRecords: dailyCompletionCount > 0 || status != HabitRecordStatus.unknown,
+                          isPeriodGoalMet: isPeriodGoalMet,
+                          dailyCompletionCount: dailyCompletionCount,
+                        ) &&
+                        !isDisabled)
+                      Positioned(
+                        top: 1,
+                        left: 1,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: colorHelper.getBadgeColor(
+                              isDailyGoalMet: isDailyGoalMet,
+                              isPeriodGoalMet: isPeriodGoalMet,
+                              hasRecords: dailyCompletionCount > 0 || status != HabitRecordStatus.unknown,
+                              periodCompletionCount: periodCompletionCount,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            colorHelper.getBadgeText(
+                              dailyCompletionCount: dailyCompletionCount,
+                              periodCompletionCount: periodCompletionCount,
+                            ),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -242,25 +352,69 @@ class HabitCardCalendar extends StatelessWidget {
     );
   }
 
+  // Helper method to get record for a specific date
+  HabitRecordListItem? _getRecordForDate(DateTime date) {
+    if (habitRecords == null) return null;
+    return habitRecords!
+        .where((record) => acore.DateTimeHelper.isSameDay(
+            acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
+        .firstOrNull;
+  }
+
   // Helper method to check if a date is disabled for habit recording
   bool _isDateDisabled(DateTime date) {
     return date.isAfter(DateTime.now()) ||
         (archivedDate != null && date.isAfter(acore.DateTimeHelper.toLocalDateTime(archivedDate!)));
   }
 
-  // Helper method to check if there's a record for a specific date
-  bool _hasRecordForDate(DateTime date) {
-    if (habitRecords == null) return false;
-    return habitRecords!.any((record) => acore.DateTimeHelper.isSameDay(
-        acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)));
+  bool _isSkipped(DateTime date) {
+    if (!habit.hasGoal || habit.periodDays <= 1) {
+      return false;
+    }
+
+    final targetFrequency = habit.targetFrequency;
+    final periodDays = habit.periodDays;
+    final dailyTarget = habit.dailyTarget ?? 1;
+
+    final periodStartDate = date.subtract(Duration(days: periodDays - 1));
+
+    final recordsInPeriod = habitRecords?.where((record) {
+          final recordDate = acore.DateTimeHelper.toLocalDateTime(record.occurredAt);
+          final compareDate = DateTime(recordDate.year, recordDate.month, recordDate.day);
+          final startDate = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
+          final endDate = DateTime(date.year, date.month, date.day);
+
+          return !compareDate.isBefore(startDate) && !compareDate.isAfter(endDate);
+        }).toList() ??
+        [];
+
+    final recordsByDate = <DateTime, int>{};
+    for (final record in recordsInPeriod) {
+      if (record.status != HabitRecordStatus.complete) continue;
+
+      final recordDate = acore.DateTimeHelper.toLocalDateTime(record.occurredAt);
+      final dateKey = DateTime(recordDate.year, recordDate.month, recordDate.day);
+      recordsByDate[dateKey] = (recordsByDate[dateKey] ?? 0) + 1;
+    }
+
+    int completedDaysInPeriod = 0;
+    for (final count in recordsByDate.values) {
+      if (count >= dailyTarget) {
+        completedDaysInPeriod++;
+      }
+    }
+
+    return completedDaysInPeriod >= targetFrequency;
   }
 
   // Helper method to count records for a specific date
   int _countRecordsForDate(DateTime date) {
     if (habitRecords == null) return 0;
     return habitRecords!
-        .where((record) => acore.DateTimeHelper.isSameDay(
-            acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
+        .where((record) =>
+            record.status == HabitRecordStatus.complete &&
+            acore.DateTimeHelper.isSameDay(
+                acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
         .length;
   }
 
