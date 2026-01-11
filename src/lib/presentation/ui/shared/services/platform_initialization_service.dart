@@ -128,16 +128,28 @@ class PlatformInitializationService {
       final singleInstanceService = container.resolve<ISingleInstanceService>();
       final windowManager = container.resolve<IWindowManager>();
 
-      // Set up focus listener for when other instances try to launch
-      await singleInstanceService.startListeningForFocusCommands(() async {
-        Logger.info('Focus request received from another instance');
+      // Set up listener for IPC commands (Focus, Sync, etc.)
+      await singleInstanceService.startListeningForCommands((command) async {
+        Logger.info('IPC command received: $command');
 
-        try {
-          // Show and focus the window
-          await windowManager.show();
-          await windowManager.focus();
-        } catch (e) {
-          Logger.error('Failed to focus window: $e');
+        if (command == 'SYNC') {
+          // Handle remote sync trigger
+          Logger.info('Triggering manual sync from IPC command');
+          try {
+            final syncService = container.resolve<ISyncService>();
+            await syncService.runSync(isManual: true);
+          } catch (e) {
+            Logger.error('Failed to run sync from IPC: $e');
+          }
+        } else {
+          // Default behavior: Focus the window (for 'FOCUS' or unknown commands)
+          try {
+            // Show and focus the window
+            await windowManager.show();
+            await windowManager.focus();
+          } catch (e) {
+            Logger.error('Failed to focus window: $e');
+          }
         }
       });
 

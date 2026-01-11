@@ -67,12 +67,22 @@ void main(List<String> args) async {
         final singleInstanceService = container.resolve<ISingleInstanceService>();
 
         if (await singleInstanceService.isAnotherInstanceRunning()) {
+          // Check if we just want to trigger a sync
+          if (DesktopStartupService.shouldStartSync) {
+            debugPrint('Triggering remote sync...');
+            await singleInstanceService.sendCommandToExistingInstance('SYNC');
+            exit(0);
+          }
+
           // Try to focus the existing instance
-          await singleInstanceService.sendFocusToExistingInstance();
+          await singleInstanceService.sendCommandToExistingInstance('FOCUS');
 
           // Exit gracefully without showing any windows
           exit(0);
         }
+
+        // If no other instance is running, we proceed to lock and start normally.
+        // Starting normally effectively performs a sync, so no special handling needed if --sync passed.
 
         // Lock this instance
         if (!await singleInstanceService.lockInstance()) {

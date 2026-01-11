@@ -8,16 +8,16 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class DesktopSingleInstanceService implements ISingleInstanceService {
   static const String _lockFileName = 'whph.lock';
-  static const String _focusFileName = 'whph.focus';
-  static const int _focusCheckIntervalMs = 500;
+  static const String _ipcFileName = 'whph.ipc';
+  static const int _ipcCheckIntervalMs = 500;
 
   File? _lockFile;
-  File? _focusFile;
+  File? _ipcFile;
   RandomAccessFile? _lockHandle;
-  Isolate? _focusListenerIsolate;
-  ReceivePort? _focusReceivePort;
-  SendPort? _focusListenerSendPort;
-  Function()? _onFocusRequested;
+  Isolate? _ipcListenerIsolate;
+  ReceivePort? _ipcReceivePort;
+  SendPort? _ipcListenerSendPort;
+  Function(String)? _onCommandReceived;
 
   @override
   Future<bool> isAnotherInstanceRunning() async {
@@ -84,7 +84,7 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         _lockFile = null;
       }
 
-      await stopListeningForFocusCommands();
+      await stopListeningForCommands();
 
       Logger.info('Single instance lock released');
     } catch (e) {
@@ -93,96 +93,96 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   }
 
   @override
-  Future<bool> sendFocusToExistingInstance() async {
+  Future<bool> sendCommandToExistingInstance(String command) async {
     try {
-      final focusFile = await _getFocusFile();
+      final ipcFile = await _getIPCFile();
 
-      // Write focus request with timestamp
-      await focusFile.writeAsString(
-        '${DateTime.now().millisecondsSinceEpoch}\n$pid',
+      // Write command with timestamp and pid
+      await ipcFile.writeAsString(
+        '${DateTime.now().millisecondsSinceEpoch}\n$pid\n$command',
         mode: FileMode.write,
       );
 
-      Logger.info('Focus request sent to existing instance');
+      Logger.info('Command "$command" sent to existing instance');
       return true;
     } catch (e) {
-      Logger.error('Failed to send focus request: $e');
+      Logger.error('Failed to send command: $e');
       return false;
     }
   }
 
   @override
-  Future<void> startListeningForFocusCommands(Function() onFocusRequested) async {
-    _onFocusRequested = onFocusRequested;
+  Future<void> startListeningForCommands(Function(String) onCommandReceived) async {
+    _onCommandReceived = onCommandReceived;
 
     try {
-      // Create focus file if it doesn't exist
-      _focusFile = await _getFocusFile();
-      if (!await _focusFile!.exists()) {
-        await _focusFile!.create(recursive: true);
+      // Create IPC file if it doesn't exist
+      _ipcFile = await _getIPCFile();
+      if (!await _ipcFile!.exists()) {
+        await _ipcFile!.create(recursive: true);
       }
 
-      // Start the isolate to monitor focus requests
-      _focusReceivePort = ReceivePort();
+      // Start the isolate to monitor IPC requests
+      _ipcReceivePort = ReceivePort();
       final commandReceivePort = ReceivePort();
 
-      _focusListenerIsolate = await Isolate.spawn(
-        _focusListenerIsolateEntry,
+      _ipcListenerIsolate = await Isolate.spawn(
+        _ipcListenerIsolateEntry,
         {
-          'focusSendPort': _focusReceivePort!.sendPort,
+          'ipcSendPort': _ipcReceivePort!.sendPort,
           'commandSendPort': commandReceivePort.sendPort,
-          'focusFilePath': _focusFile!.path,
-          'intervalMs': _focusCheckIntervalMs,
+          'ipcFilePath': _ipcFile!.path,
+          'intervalMs': _ipcCheckIntervalMs,
           'currentPid': pid,
         },
       );
 
       // Get the send port for communicating with the isolate
-      _focusListenerSendPort = await commandReceivePort.first;
+      _ipcListenerSendPort = await commandReceivePort.first;
       commandReceivePort.close();
 
-      // Listen for focus requests from the isolate
-      _focusReceivePort!.listen((message) {
-        if (message == 'focus_requested' && _onFocusRequested != null) {
-          _onFocusRequested!();
+      // Listen for commands from the isolate
+      _ipcReceivePort!.listen((message) {
+        if (message is String && _onCommandReceived != null) {
+          _onCommandReceived!(message);
         }
       });
 
-      Logger.info('Started listening for focus commands');
+      Logger.info('Started listening for IPC commands');
     } catch (e) {
-      Logger.error('Failed to start focus listener: $e');
+      Logger.error('Failed to start IPC listener: $e');
     }
   }
 
   @override
-  Future<void> stopListeningForFocusCommands() async {
+  Future<void> stopListeningForCommands() async {
     try {
       // Signal the isolate to shut down gracefully
-      if (_focusListenerSendPort != null) {
-        _focusListenerSendPort!.send('shutdown');
-        _focusListenerSendPort = null;
+      if (_ipcListenerSendPort != null) {
+        _ipcListenerSendPort!.send('shutdown');
+        _ipcListenerSendPort = null;
       }
 
-      if (_focusListenerIsolate != null) {
+      if (_ipcListenerIsolate != null) {
         // Give the isolate a moment to shut down gracefully
         await Future.delayed(Duration(milliseconds: 100));
-        _focusListenerIsolate!.kill();
-        _focusListenerIsolate = null;
+        _ipcListenerIsolate!.kill();
+        _ipcListenerIsolate = null;
       }
 
-      if (_focusReceivePort != null) {
-        _focusReceivePort!.close();
-        _focusReceivePort = null;
+      if (_ipcReceivePort != null) {
+        _ipcReceivePort!.close();
+        _ipcReceivePort = null;
       }
 
-      if (_focusFile != null && await _focusFile!.exists()) {
-        await _focusFile!.delete();
-        _focusFile = null;
+      if (_ipcFile != null && await _ipcFile!.exists()) {
+        await _ipcFile!.delete();
+        _ipcFile = null;
       }
 
-      Logger.info('Stopped listening for focus commands');
+      Logger.info('Stopped listening for IPC commands');
     } catch (e) {
-      Logger.error('Error stopping focus listener: $e');
+      Logger.error('Error stopping IPC listener: $e');
     }
   }
 
@@ -191,15 +191,15 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
     return File(path.join(tempDir.path, _lockFileName));
   }
 
-  Future<File> _getFocusFile() async {
+  Future<File> _getIPCFile() async {
     final tempDir = await getTemporaryDirectory();
-    return File(path.join(tempDir.path, _focusFileName));
+    return File(path.join(tempDir.path, _ipcFileName));
   }
 
-  static void _focusListenerIsolateEntry(Map<String, dynamic> params) async {
-    final SendPort focusSendPort = params['focusSendPort'];
+  static void _ipcListenerIsolateEntry(Map<String, dynamic> params) async {
+    final SendPort ipcSendPort = params['ipcSendPort'];
     final SendPort commandSendPort = params['commandSendPort'];
-    final String focusFilePath = params['focusFilePath'];
+    final String ipcFilePath = params['ipcFilePath'];
     final int intervalMs = params['intervalMs'];
     final int currentPid = params['currentPid'];
 
@@ -215,39 +215,38 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       }
     });
 
-    final focusFile = File(focusFilePath);
+    final ipcFile = File(ipcFilePath);
     DateTime lastModified = DateTime.fromMillisecondsSinceEpoch(0);
 
     while (!shouldExit) {
       try {
         await Future.delayed(Duration(milliseconds: intervalMs));
 
-        if (!await focusFile.exists()) continue;
+        if (!await ipcFile.exists()) continue;
 
-        final stat = await focusFile.stat();
+        final stat = await ipcFile.stat();
         if (stat.modified.isAfter(lastModified)) {
           lastModified = stat.modified;
 
-          final content = await focusFile.readAsString();
+          final content = await ipcFile.readAsString();
           final lines = content.trim().split('\n');
 
           if (lines.length >= 2) {
             final requestPid = int.tryParse(lines[1]);
+            // Default to FOCUS if no 3rd line
+            final command = lines.length >= 3 ? lines[2] : 'FOCUS';
 
             // Don't respond to our own requests
             if (requestPid != null && requestPid != currentPid) {
-              focusSendPort.send('focus_requested');
+              ipcSendPort.send(command);
 
-              // Clear the focus file after processing
-              await focusFile.writeAsString('', mode: FileMode.write);
+              // Clear the IPC file after processing
+              await ipcFile.writeAsString('', mode: FileMode.write);
             }
           }
         }
       } catch (e, s) {
-        // Log errors in the isolate to aid debugging, instead of swallowing them.
-        // Use print instead of Logger since this is in an isolate
-        // Use debugPrint for consistent logging in isolates
-        debugPrint('Error in focus listener isolate: $e\n$s');
+        debugPrint('Error in IPC listener isolate: $e\n$s');
       }
     }
   }

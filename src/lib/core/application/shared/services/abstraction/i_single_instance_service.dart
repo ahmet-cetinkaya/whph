@@ -9,12 +9,12 @@ abstract class ISingleInstanceService {
   /// Release the instance lock
   Future<void> releaseInstance();
 
-  /// Send a focus command to the existing instance
-  Future<bool> sendFocusToExistingInstance();
+  /// Send a command to the existing instance
+  Future<bool> sendCommandToExistingInstance(String command);
 
-  /// Start listening for focus commands from new instances
-  Future<void> startListeningForFocusCommands(Function() onFocusRequested);
+  /// Start listening for commands from new instances
+  Future<void> startListeningForCommands(Function(String command) onCommandReceived);
 
-  /// Stop listening for focus commands
-  Future<void> stopListeningForFocusCommands();
+  /// Stop listening for commands
+  Future<void> stopListeningForCommands();
 }
