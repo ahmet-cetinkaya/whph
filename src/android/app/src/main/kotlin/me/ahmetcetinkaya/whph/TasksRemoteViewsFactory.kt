@@ -4,94 +4,94 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import es.antonborri.home_widget.HomeWidgetPlugin
 import org.json.JSONObject
 
-class TasksRemoteViewsFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
-    companion object {
-        private const val TAG = "TasksRemoteViewsFactory"
-    }
-    private var tasks: org.json.JSONArray? = null
+class TasksRemoteViewsFactory(private val context: Context) :
+  RemoteViewsService.RemoteViewsFactory {
+  companion object {
+    private const val TAG = "TasksRemoteViewsFactory"
+  }
 
-    override fun onCreate() {
-        // Data is loaded in onDataSetChanged
-    }
+  private var tasks: org.json.JSONArray? = null
 
-    override fun onDataSetChanged() {
-        val widgetData = HomeWidgetPlugin.getData(context)
-        val dataString = widgetData?.getString("widget_data", null)
+  override fun onCreate() {
+    // Data is loaded in onDataSetChanged
+  }
 
-        if (dataString != null) {
-            try {
-                val data = JSONObject(dataString)
-                tasks = data.optJSONArray("tasks")
-            } catch (e: Exception) {
-                tasks = null
-            }
-        }
-    }
+  override fun onDataSetChanged() {
+    val widgetData = HomeWidgetPlugin.getData(context)
+    val dataString = widgetData?.getString("widget_data", null)
 
-    override fun onDestroy() {
+    if (dataString != null) {
+      try {
+        val data = JSONObject(dataString)
+        tasks = data.optJSONArray("tasks")
+      } catch (e: Exception) {
         tasks = null
+      }
+    }
+  }
+
+  override fun onDestroy() {
+    tasks = null
+  }
+
+  override fun getCount(): Int {
+    return tasks?.length() ?: 0
+  }
+
+  override fun getViewAt(position: Int): RemoteViews {
+    val views = RemoteViews(context.packageName, R.layout.widget_task_item)
+
+    val currentTasks = tasks ?: return views
+    if (position >= currentTasks.length()) return views
+
+    try {
+      val task = currentTasks.getJSONObject(position)
+      val taskId = task.optString("id", "")
+      val title = task.optString("title", "Unknown task")
+      val isCompleted = task.optBoolean("isCompleted", false)
+
+      views.setTextViewText(R.id.task_title, title)
+
+      if (isCompleted) {
+        views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box)
+      } else {
+        views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box_outline)
+      }
+
+      // Fill Intent
+      val fillInIntent = Intent()
+      val uri = Uri.parse("whph://widget?action=toggle_task&itemId=$taskId")
+      fillInIntent.data = uri
+      views.setOnClickFillInIntent(R.id.task_checkbox, fillInIntent)
+    } catch (e: Exception) {
+      Log.e(TAG, "Error processing task at position $position", e)
     }
 
-    override fun getCount(): Int {
-        return tasks?.length() ?: 0
+    return views
+  }
+
+  override fun getLoadingView(): RemoteViews? {
+    return null
+  }
+
+  override fun getViewTypeCount(): Int {
+    return 1
+  }
+
+  override fun getItemId(position: Int): Long {
+    return try {
+      tasks?.getJSONObject(position)?.getString("id")?.hashCode()?.toLong() ?: position.toLong()
+    } catch (e: Exception) {
+      position.toLong()
     }
+  }
 
-    override fun getViewAt(position: Int): RemoteViews {
-        val views = RemoteViews(context.packageName, R.layout.widget_task_item)
-
-        val currentTasks = tasks ?: return views
-        if (position >= currentTasks.length()) return views
-
-        try {
-            val task = currentTasks.getJSONObject(position)
-            val taskId = task.optString("id", "")
-            val title = task.optString("title", "Unknown task")
-            val isCompleted = task.optBoolean("isCompleted", false)
-
-            views.setTextViewText(R.id.task_title, title)
-
-            if (isCompleted) {
-                views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box)
-            } else {
-                views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box_outline)
-            }
-
-            // Fill Intent
-            val fillInIntent = Intent()
-            val uri = Uri.parse("whph://widget?action=toggle_task&itemId=$taskId")
-            fillInIntent.data = uri
-            views.setOnClickFillInIntent(R.id.task_checkbox, fillInIntent)
-            
-        } catch (e: Exception) {
-            Log.e(TAG, "Error processing task at position $position", e)
-        }
-
-        return views
-    }
-
-    override fun getLoadingView(): RemoteViews? {
-        return null
-    }
-
-    override fun getViewTypeCount(): Int {
-        return 1
-    }
-
-    override fun getItemId(position: Int): Long {
-        return try {
-            tasks?.getJSONObject(position)?.getString("id")?.hashCode()?.toLong() ?: position.toLong()
-        } catch (e: Exception) {
-            position.toLong()
-        }
-    }
-
-    override fun hasStableIds(): Boolean {
-        return true
-    }
+  override fun hasStableIds(): Boolean {
+    return true
+  }
 }
