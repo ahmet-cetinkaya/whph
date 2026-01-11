@@ -466,6 +466,17 @@ class MockHabitsService extends _i1.Mock implements _i14.HabitsService {
           as _i4.ValueNotifier<String?>);
 
   @override
+  _i4.ValueNotifier<void> get onSettingsChanged =>
+      (super.noSuchMethod(
+            Invocation.getter(#onSettingsChanged),
+            returnValue: _FakeValueNotifier_2<void>(
+              this,
+              Invocation.getter(#onSettingsChanged),
+            ),
+          )
+          as _i4.ValueNotifier<void>);
+
+  @override
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
@@ -497,6 +508,12 @@ class MockHabitsService extends _i1.Mock implements _i14.HabitsService {
   @override
   void notifyHabitRecordRemoved(String? habitId) => super.noSuchMethod(
     Invocation.method(#notifyHabitRecordRemoved, [habitId]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void notifySettingsChanged() => super.noSuchMethod(
+    Invocation.method(#notifySettingsChanged, []),
     returnValueForMissingStub: null,
   );
 

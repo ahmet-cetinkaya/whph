@@ -110,6 +110,12 @@
         <action android:name="es.antonborri.home_widget.action.BACKGROUND" />
       </intent-filter>
     </receiver>
+    <!-- Widget List Service -->
+    <service
+        android:name=".WhphWidgetService"
+        android:permission="android.permission.BIND_REMOTEVIEWS"
+        android:exported="false" />
+
     <service
       android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
       android:permission="android.permission.BIND_JOB_SERVICE"
@@ -126,6 +132,13 @@
         android:resource="@xml/file_saver_paths"
       />
     </provider>
+    <!-- Default Notification Icon -->
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@drawable/ic_notification" />
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_color"
+        android:resource="@color/accent" />
   </application>
   <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

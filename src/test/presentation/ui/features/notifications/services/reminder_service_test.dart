@@ -120,4 +120,102 @@ void main() {
       payload: anyNamed('payload'),
     )).called(1);
   });
+
+  test('scheduleTaskReminder cancels existing reminder when scheduling a new future one', () async {
+    // Arrange
+    final futureDate = DateTime.now().add(const Duration(days: 1));
+    final task = Task(
+      id: 'task-1',
+      title: 'Test Task',
+      createdDate: DateTime.now(),
+      plannedDate: futureDate,
+      plannedDateReminderTime: ReminderTime.atTime,
+    );
+
+    // Mock calculation to return a future date
+    when(mockReminderCalculationService.calculateReminderDateTime(
+      baseDate: anyNamed('baseDate'),
+      reminderTime: anyNamed('reminderTime'),
+      customOffset: anyNamed('customOffset'),
+    )).thenReturn(futureDate);
+
+    // Act
+    await reminderService.scheduleTaskReminder(task);
+
+    // Assert
+    // Should cancel the specific reminder ID before scheduling
+    verify(mockReminderService.cancelReminders(equals: 'task_planned_${task.id}')).called(1);
+
+    // Should schedule the new one
+    verify(mockReminderService.scheduleReminder(
+      id: 'task_planned_${task.id}',
+      title: anyNamed('title'),
+      body: anyNamed('body'),
+      scheduledDate: anyNamed('scheduledDate'),
+      payload: anyNamed('payload'),
+    )).called(1);
+  });
+
+  test('scheduleTaskReminder does NOT cancel existing reminder when reminder time is in the past', () async {
+    // Arrange
+    final pastDate = DateTime.now().subtract(const Duration(hours: 1));
+    final task = Task(
+      id: 'task-1',
+      title: 'Test Task',
+      createdDate: DateTime.now().subtract(const Duration(days: 1)),
+      plannedDate: pastDate,
+      plannedDateReminderTime: ReminderTime.atTime,
+    );
+
+    // Mock calculation to return a past date
+    when(mockReminderCalculationService.calculateReminderDateTime(
+      baseDate: anyNamed('baseDate'),
+      reminderTime: anyNamed('reminderTime'),
+      customOffset: anyNamed('customOffset'),
+    )).thenReturn(pastDate);
+
+    // Act
+    await reminderService.scheduleTaskReminder(task);
+
+    // Assert
+    // Should NOT cancel the reminder (preserving the notification in tray)
+    verifyNever(mockReminderService.cancelReminders(equals: 'task_planned_${task.id}'));
+
+    // Should NOT schedule a new reminder
+    verifyNever(mockReminderService.scheduleReminder(
+      id: anyNamed('id'),
+      title: anyNamed('title'),
+      body: anyNamed('body'),
+      scheduledDate: anyNamed('scheduledDate'),
+      payload: anyNamed('payload'),
+    ));
+  });
+
+  test('scheduleTaskReminder cancels existing reminder when reminder is disabled', () async {
+    // Arrange - Task with NO reminder
+    final futureDate = DateTime.now().add(const Duration(days: 1));
+    final task = Task(
+      id: 'task-1',
+      title: 'Test Task',
+      createdDate: DateTime.now(),
+      plannedDate: futureDate,
+      plannedDateReminderTime: ReminderTime.none, // DISABLED
+    );
+
+    // Act
+    await reminderService.scheduleTaskReminder(task);
+
+    // Assert
+    // Should explicitly cancel the reminder
+    verify(mockReminderService.cancelReminders(equals: 'task_planned_${task.id}')).called(1);
+
+    // Should NOT schedule anything
+    verifyNever(mockReminderService.scheduleReminder(
+      id: anyNamed('id'),
+      title: anyNamed('title'),
+      body: anyNamed('body'),
+      scheduledDate: anyNamed('scheduledDate'),
+      payload: anyNamed('payload'),
+    ));
+  });
 }

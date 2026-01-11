@@ -5,6 +5,7 @@
 
     <!-- App Theme Colors (from app_theme.dart) -->
     <color name="primary_color">#F4D03E</color>
+    <color name="accent">@color/primary_color</color>
     <color name="surface0">#000000</color>
     <color name="surface1">#121212</color>
     <color name="surface2">#181818</color>

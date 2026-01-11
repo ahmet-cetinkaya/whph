@@ -9,4 +9,5 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:description="@string/tasks_widget_description"
-    android:previewImage="@drawable/widget_preview" />
+    android:previewImage="@drawable/widget_preview"
+    android:previewLayout="@layout/whph_tasks_widget_preview" />

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/task_item_layout"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal"
+  android:gravity="center_vertical"
+  android:paddingVertical="3dp"
+  android:paddingHorizontal="2dp"
+>
+    <!-- Checkbox/Action Icon -->
+    <ImageView
+      android:id="@+id/task_checkbox"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:src="@drawable/ic_check_box_outline"
+      android:layout_marginEnd="8dp"
+      android:clickable="true"
+      android:background="@drawable/widget_checkbox_background"
+      android:padding="6dp"
+      android:contentDescription="Complete task"
+    />
+    
+    <!-- Title -->
+    <TextView
+      android:id="@+id/task_title"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:textSize="13sp"
+      android:textColor="@color/widget_text_primary"
+      android:maxLines="2"
+      android:ellipsize="end"
+      android:lineSpacingExtra="1dp"
+      android:fontFamily="sans-serif"
+    />
+</LinearLayout>
