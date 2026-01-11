@@ -149,7 +149,7 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   // Status
   static const String statusComplete = 'habits.status.complete';
   static const String statusNotDone = 'habits.status.not_done';
-  static const String statusUnknown = 'habits.status.unknown';
+  static const String statusSkipped = 'habits.status.skipped';
 
   // Actions
   static const String actionMarkComplete = 'habits.actions.mark_complete';

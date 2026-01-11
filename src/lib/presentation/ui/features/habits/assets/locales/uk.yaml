@@ -367,4 +367,4 @@ habits:
   status:
     complete: Виконано
     not_done: Не виконано
-    unknown: Невідомо
+    skipped: Пропущено

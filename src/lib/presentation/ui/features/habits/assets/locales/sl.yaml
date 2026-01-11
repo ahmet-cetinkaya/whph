@@ -389,4 +389,4 @@ habits:
   status:
     complete: Dokončano
     not_done: Nedokončano
-    unknown: Neznano
+    skipped: Preskočeno

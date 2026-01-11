@@ -397,4 +397,4 @@ habits:
   status:
     complete: Concluído
     not_done: Não feito
-    unknown: Desconhecido
+    skipped: Pulado

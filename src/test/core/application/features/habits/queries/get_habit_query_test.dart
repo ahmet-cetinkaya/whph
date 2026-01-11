@@ -263,7 +263,7 @@ void main() {
           status: HabitRecordStatus.complete,
           occurredAt: now.subtract(const Duration(days: 0)).toUtc(),
           createdDate: now),
-      // Day 1: Unknown (Empty)
+      // Day 1: Skipped (Empty)
       HabitRecord(
           id: '3',
           habitId: habitId,
@@ -297,7 +297,7 @@ void main() {
           status: HabitRecordStatus.complete,
           occurredAt: now.subtract(const Duration(days: 0)).toUtc(),
           createdDate: now),
-      // Day 1: Unknown (Empty) -> Counts as Not Done
+      // Day 1: Skipped (Empty) -> Counts as Not Done
       HabitRecord(
           id: '3',
           habitId: habitId,
@@ -337,9 +337,17 @@ void main() {
           id: '1', habitId: habitId, status: HabitRecordStatus.complete, occurredAt: now.toUtc(), createdDate: now),
       // Day 1: 2/2 completed (100%)
       HabitRecord(
-          id: '2', habitId: habitId, status: HabitRecordStatus.complete, occurredAt: now.subtract(const Duration(days: 1)).toUtc(), createdDate: now),
+          id: '2',
+          habitId: habitId,
+          status: HabitRecordStatus.complete,
+          occurredAt: now.subtract(const Duration(days: 1)).toUtc(),
+          createdDate: now),
       HabitRecord(
-          id: '3', habitId: habitId, status: HabitRecordStatus.complete, occurredAt: now.subtract(const Duration(days: 1)).toUtc(), createdDate: now),
+          id: '3',
+          habitId: habitId,
+          status: HabitRecordStatus.complete,
+          occurredAt: now.subtract(const Duration(days: 1)).toUtc(),
+          createdDate: now),
     ];
 
     habitRecordRepository.setRecords(records);

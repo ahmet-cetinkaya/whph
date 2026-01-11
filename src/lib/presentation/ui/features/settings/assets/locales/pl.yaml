@@ -315,4 +315,4 @@ settings:
     description: Dostosuj zachowanie i preferencje śledzenia nawyków
     three_state:
       title: Włącz śledzenie 3 stanów
-      description: Przełączaj między stanami Brak, Nieznane i Ukończone.
+      description: Przełączaj między stanami Nieukończone, Pominięto i Ukończone.

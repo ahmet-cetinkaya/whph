@@ -315,4 +315,4 @@ settings:
     description: Tilpas vaneadfærd og præferencer
     three_state:
       title: Aktivér 3-tilstandssporing
-      description: Skift mellem tilstandene Ingen, Ukendt og Færdig.
+      description: Skift mellem tilstandene Ikke gjort, Sprunget over og Færdig.

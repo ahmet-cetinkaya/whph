@@ -396,4 +396,4 @@ habits:
   status:
     complete: Voltooid
     not_done: Niet gedaan
-    unknown: Onbekend
+    skipped: Overgeslagen

@@ -315,4 +315,4 @@ settings:
     description: Přizpůsobte sledování návyků a předvolby
     three_state:
       title: Povolit 3-stavové sledování
-      description: Přepínání mezi stavy Žádný, Neznámý a Hotovo.
+      description: Přepínání mezi stavy Nedokončeno, Přeskočeno a Hotovo.

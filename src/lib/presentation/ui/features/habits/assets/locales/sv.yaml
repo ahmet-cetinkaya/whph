@@ -256,4 +256,4 @@ habits:
   status:
     complete: Slutförd
     not_done: Ej klar
-    unknown: Okänd
+    skipped: Överhoppad

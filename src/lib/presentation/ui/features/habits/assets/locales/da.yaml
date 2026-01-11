@@ -379,4 +379,4 @@ habits:
   status:
     complete: Fuldført
     not_done: Ikke udført
-    unknown: Ukendt
+    skipped: Sprunget over

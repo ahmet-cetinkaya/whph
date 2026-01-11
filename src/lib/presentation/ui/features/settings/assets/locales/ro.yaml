@@ -315,4 +315,4 @@ settings:
     description: Personalizați comportamentul și preferințele de urmărire a obiceiurilor
     three_state:
       title: Activați urmărirea cu 3 stări
-      description: Comutați între stările Fără, Necunoscut și Finalizat.
+      description: Comutați între stările Nefinalizat, Sărit și Finalizat.

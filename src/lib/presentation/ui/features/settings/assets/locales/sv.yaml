@@ -315,4 +315,4 @@ settings:
     description: Anpassa vanebeteende och inställningar
     three_state:
       title: Aktivera 3-tillståndsspårning
-      description: Växla mellan tillstånden Inget, Okänd och Klar.
+      description: Växla mellan tillstånden Ej klar, Överhoppad och Klar.

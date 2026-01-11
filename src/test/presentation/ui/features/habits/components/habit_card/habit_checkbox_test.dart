@@ -84,7 +84,7 @@ void main() {
       final habit = HabitListItem(id: '1', name: 'Exercise');
       await pumpWidget(tester, habit: habit, habitRecords: [], style: HabitListStyle.list);
 
-      expect(find.byType(IconButton), findsOneWidget); // Visual representation
+      expect(find.byIcon(Icons.close), findsOneWidget); // Visual representation (Close icon for not done/empty)
     });
 
     testWidgets('shows completed state when records meet target', (tester) async {

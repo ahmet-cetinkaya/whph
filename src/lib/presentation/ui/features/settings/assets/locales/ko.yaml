@@ -315,4 +315,4 @@ settings:
     description: 습관 추적 동작 및 기본 설정 사용자 지정
     three_state:
       title: 3상 추적 사용
-      description: 없음, 알 수 없음, 완료 상태 간 전환.
+      description: 미완료, 건너뜀, 완료 상태 간 전환.

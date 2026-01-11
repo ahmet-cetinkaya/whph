@@ -315,4 +315,4 @@ settings:
     description: Personalizar comportamento e preferências de rastreamento de hábitos
     three_state:
       title: Ativar rastreamento de 3 estados
-      description: Alterne entre os estados Nenhum, Desconhecido e Concluído.
+      description: Alterne entre os estados Não feito, Pulado e Concluído.

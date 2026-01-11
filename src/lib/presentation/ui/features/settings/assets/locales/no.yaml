@@ -315,4 +315,4 @@ settings:
     description: Tilpass vaneoppførsel og innstillinger
     three_state:
       title: Aktiver 3-tilstandssporing
-      description: Bytt mellom tilstandene Ingen, Ukjent og Fullført.
+      description: Bytt mellom tilstandene Ikke gjort, Overhoppet og Fullført.

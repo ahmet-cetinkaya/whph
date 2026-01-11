@@ -315,4 +315,4 @@ settings:
     description: Alışkanlık takip davranışını ve tercihlerini özelleştir
     three_state:
       title: 3 Durak Takipini Etkinleştir
-      description: Yok, Bilinmiyor ve Yapıldı durumları arasında geçiş yap.
+      description: Tamamlanmadı, Atlandı ve Tamamlandı durumları arasında geçiş yap.

@@ -400,4 +400,4 @@ habits:
   status:
     complete: Terminé
     not_done: Non fait
-    unknown: Inconnu
+    skipped: Passé

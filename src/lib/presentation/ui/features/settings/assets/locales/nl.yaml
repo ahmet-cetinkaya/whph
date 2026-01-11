@@ -315,4 +315,4 @@ settings:
     description: Gewoontegedrag en voorkeuren aanpassen
     three_state:
       title: 3-status tracking inschakelen
-      description: Wissel tussen de statussen Geen, Onbekend en Voltooid.
+      description: Wissel tussen de statussen Niet gedaan, Overgeslagen en Voltooid.

@@ -398,4 +398,4 @@ habits:
   status:
     complete: Ολοκληρωμένο
     not_done: Μη ολοκληρωμένο
-    unknown: Άγνωστο
+    skipped: Παραλείφθηκε

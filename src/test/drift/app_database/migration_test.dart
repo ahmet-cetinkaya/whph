@@ -44,7 +44,6 @@ void main() {
     }
   });
 
-
   group('specific migration scenarios', () {
     test('migration from v29 to v30 sets default status to 0 (Complete)', () async {
       final schema29 = await verifier.schemaAt(29);

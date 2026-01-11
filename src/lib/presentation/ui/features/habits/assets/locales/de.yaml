@@ -378,4 +378,4 @@ habits:
   status:
     complete: Abgeschlossen
     not_done: Nicht erledigt
-    unknown: Unbekannt
+    skipped: Übersprungen

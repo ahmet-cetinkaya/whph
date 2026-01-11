@@ -31,8 +31,8 @@ class HabitCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     final today = DateTime.now();
     final todayRecord = _getRecordForDate(today);
-    final status = todayRecord?.status ?? HabitRecordStatus.unknown;
-    final isSkipped = status == HabitRecordStatus.unknown && _isSkipped(today);
+    final status = todayRecord?.status ?? HabitRecordStatus.skipped;
+    final isSkipped = status == HabitRecordStatus.skipped && _isSkipped(today);
     final isDisabled = _isDateDisabled(today);
     final todayCount = _countRecordsForDate(today);
     final hasCustomGoals = habit.hasGoal;
@@ -53,7 +53,7 @@ class HabitCheckbox extends StatelessWidget {
         onTap: onTap,
         useLargeSize: isMobileCalendar, // Use mobile calendar flag as proxy for large size preference
         isThreeStateEnabled: isThreeStateEnabled,
-        status: status, // Pass status to handle Unknown vs Not Done
+        status: status, // Pass status to handle Skipped vs Not Done
       );
     }
 
@@ -73,14 +73,20 @@ class HabitCheckbox extends StatelessWidget {
           icon = Icons.close;
           color = Colors.red;
           break;
-        case HabitRecordStatus.unknown:
-          if (isSkipped) {
-            icon = Icons.question_mark;
-            color = HabitUiConstants.skippedColor;
+        case HabitRecordStatus.skipped:
+          if (isThreeStateEnabled) {
+            if (isSkipped) {
+              icon = Icons.question_mark;
+              color = HabitUiConstants.skippedColor;
+            } else {
+              // "Skipped" state should always be neutral (?) by default
+              icon = Icons.question_mark;
+              color = Colors.grey;
+            }
           } else {
-            // "Unknown" state should always be neutral (?) by default, regardless of 3-state setting
-            icon = Icons.question_mark;
-            color = Colors.grey;
+            // If 3-state disabled, Skipped/Empty acts like Not Done (visual only)
+            icon = Icons.close;
+            color = Colors.red;
           }
           break;
       }

@@ -315,4 +315,4 @@ settings:
     description: 習慣の追跡動作と設定をカスタマイズ
     three_state:
       title: 3状態追跡を有効にする
-      description: なし、不明、完了の状態を切り替えます。
+      description: 未完了、スキップ済み、完了の状態を切り替えます。

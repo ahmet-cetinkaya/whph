@@ -315,4 +315,4 @@ settings:
     description: Personaliza el comportamiento y preferencias de seguimiento de hábitos
     three_state:
       title: Activar seguimiento de 3 estados
-      description: Alterna entre los estados Ninguno, Desconocido y Completado.
+      description: Alterna entre los estados No hecho, Saltado y Completado.

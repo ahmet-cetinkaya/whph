@@ -321,7 +321,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       final periodEnd = endDate;
       final periodStart = periodEnd.subtract(Duration(days: habit.periodDays - 1));
 
-
       final recordsInCurrentPeriod = records
           .where((record) =>
               record.status == HabitRecordStatus.complete &&

@@ -348,4 +348,4 @@ habits:
   status:
     complete: Tamamlandı
     not_done: Tamamlanmadı
-    unknown: Bilinmiyor
+    skipped: Atlandı

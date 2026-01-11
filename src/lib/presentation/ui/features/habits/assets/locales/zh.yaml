@@ -309,4 +309,4 @@ habits:
   status:
     complete: 已完成
     not_done: 未完成
-    unknown: 未知
+    skipped: 已跳过

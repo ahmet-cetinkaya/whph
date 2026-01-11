@@ -98,17 +98,17 @@ class ToggleHabitCompletionCommandHandler
               DateTimeHelper.toLocalDateTime(r.occurredAt), DateTimeHelper.toLocalDateTime(request.date)));
 
       if (isCurrentlyNotDone) {
-        // If currently Not Done, toggle to Unknown (Reset)
-        nextStatus = HabitRecordStatus.unknown;
+        // If currently Not Done, toggle to Skipped (Reset)
+        nextStatus = HabitRecordStatus.skipped;
       } else if (dailyCompletionCount < dailyTarget) {
         // If target not reached, Increment (Add Complete)
         nextStatus = HabitRecordStatus.complete;
       } else {
         // Target met/exceeded. Next step depends on setting.
         // If 3-state enabled: Go to Not Done.
-        // Else: Go to Unknown (Reset).
+        // Else: Go to Skipped (Reset).
         // Note: We already checked isCurrentlyNotDone above, so we know we are NOT currently NotDone.
-        nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.unknown;
+        nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.skipped;
       }
     } else {
       // Single occurrence habit: 3-state cycle (if enabled)
@@ -118,17 +118,17 @@ class ToggleHabitCompletionCommandHandler
               DateTimeHelper.toLocalDateTime(record.occurredAt), DateTimeHelper.toLocalDateTime(request.date)))
           .firstOrNull;
 
-      final currentStatus = existingRecord?.status ?? HabitRecordStatus.unknown;
+      final currentStatus = existingRecord?.status ?? HabitRecordStatus.skipped;
 
       switch (currentStatus) {
-        case HabitRecordStatus.unknown:
+        case HabitRecordStatus.skipped:
           nextStatus = HabitRecordStatus.complete;
           break;
         case HabitRecordStatus.complete:
-          nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.unknown;
+          nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.skipped;
           break;
         case HabitRecordStatus.notDone:
-          nextStatus = HabitRecordStatus.unknown;
+          nextStatus = HabitRecordStatus.skipped;
           break;
       }
     }
@@ -147,7 +147,7 @@ class ToggleHabitCompletionCommandHandler
         // Always clear existing records for single-occurrence logic to ensure strict 1-to-1 state mapping
         await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
-        if (nextStatus != HabitRecordStatus.unknown) {
+        if (nextStatus != HabitRecordStatus.skipped) {
           // Add new record
           final habitRecord = HabitRecord(
             id: KeyHelper.generateStringId(),
@@ -203,7 +203,7 @@ class ToggleHabitCompletionCommandHandler
           );
           await _habitRecordRepository.add(habitRecord);
         } else {
-          // Reset (Unknown) - Clear all
+          // Reset (Skipped) - Clear all
           await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
         }
       }

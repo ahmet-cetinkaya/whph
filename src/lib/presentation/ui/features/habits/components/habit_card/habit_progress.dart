@@ -19,7 +19,7 @@ class HabitProgress extends StatelessWidget {
     required this.onTap,
     this.useLargeSize = false,
     this.isThreeStateEnabled = false,
-    this.status = HabitRecordStatus.unknown,
+    this.status = HabitRecordStatus.skipped,
   });
 
   @override
@@ -49,10 +49,17 @@ class HabitProgress extends StatelessWidget {
       mainColor = Colors.blue;
       badgeColor = Colors.orange;
     } else {
-      // Unknown status - Default to Question Mark
-      mainIcon = Icons.question_mark;
-      mainColor = Colors.grey;
-      badgeColor = Colors.grey;
+      // Skipped status - Check 3-state setting
+      if (isThreeStateEnabled) {
+        mainIcon = Icons.question_mark;
+        mainColor = Colors.grey;
+        badgeColor = Colors.grey;
+      } else {
+        // If 3-state disabled, Skipped/Empty acts like Not Done (visual only)
+        mainIcon = Icons.close;
+        mainColor = Colors.red.withValues(alpha: 0.7);
+        badgeColor = Colors.transparent;
+      }
     }
 
     return SizedBox(

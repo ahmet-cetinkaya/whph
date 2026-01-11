@@ -386,4 +386,4 @@ habits:
   status:
     complete: Hotovo
     not_done: Nehotovo
-    unknown: Neznámý
+    skipped: Přeskočeno

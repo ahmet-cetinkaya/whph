@@ -315,4 +315,4 @@ settings:
     description: Mukauta tottumusten seurantaa ja asetuksia
     three_state:
       title: Ota 3 tilan seuranta käyttöön
-      description: Vaihda tilojen Ei mitään, Tuntematon ja Valmis välillä.
+      description: Vaihda tilojen Tekemättä, Ohitettu ja Valmis välillä.

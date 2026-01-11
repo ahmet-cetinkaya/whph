@@ -315,4 +315,4 @@ settings:
     description: Personnaliser le comportement et les préférences de suivi des habitudes
     three_state:
       title: Activer le suivi à 3 états
-      description: Basculer entre les états Aucun, Inconnu et Terminé.
+      description: Basculer entre les états Non fait, Passé et Terminé.

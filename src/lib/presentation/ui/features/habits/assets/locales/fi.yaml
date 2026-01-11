@@ -390,4 +390,4 @@ habits:
   status:
     complete: Valmis
     not_done: Tekemättä
-    unknown: Tuntematon
+    skipped: Ohitettu

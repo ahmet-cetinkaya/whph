@@ -372,4 +372,4 @@ habits:
   status:
     complete: Complete
     not_done: Not Done
-    unknown: Unknown
+    skipped: Skipped

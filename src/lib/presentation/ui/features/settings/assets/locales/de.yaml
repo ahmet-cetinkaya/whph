@@ -315,4 +315,4 @@ settings:
     description: Gewohnheitsverhalten und Einstellungen anpassen
     three_state:
       title: 3-Status-Tracking aktivieren
-      description: Wechseln Sie zwischen den Status Keiner, Unbekannt und Erledigt.
+      description: Wechseln Sie zwischen den Status Nicht erledigt, Übersprungen und Erledigt.

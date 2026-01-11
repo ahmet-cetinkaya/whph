@@ -315,4 +315,4 @@ settings:
     description: 自定义习惯跟踪行为和偏好设置
     three_state:
       title: 启用三态跟踪
-      description: 在无、未知和已完成状态之间切换。
+      description: 在未完成、已跳过和已完成状态之间切换。

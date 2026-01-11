@@ -315,4 +315,4 @@ settings:
     description: Personalizza il comportamento e le preferenze di tracciamento delle abitudini
     three_state:
       title: Attiva tracciamento a 3 stati
-      description: Alterna tra gli stati Nessuno, Sconosciuto e Completato.
+      description: Alterna tra gli stati Non fatto, Saltato e Completato.

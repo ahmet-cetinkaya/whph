@@ -250,8 +250,8 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     // Get daily records
     final dailyRecords = widget.records.where((record) => _isSameDay(record.date, date)).toList();
 
-    // Status (use first record's status or Unknown)
-    final HabitRecordStatus status = dailyRecords.firstOrNull?.status ?? HabitRecordStatus.unknown;
+    // Status (use first record's status or Skipped)
+    final HabitRecordStatus status = dailyRecords.firstOrNull?.status ?? HabitRecordStatus.skipped;
 
     // Only Complete counts towards goal
     final int dailyCompletionCount = dailyRecords.where((r) => r.status == HabitRecordStatus.complete).length;

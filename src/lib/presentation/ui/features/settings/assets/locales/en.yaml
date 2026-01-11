@@ -300,7 +300,7 @@ settings:
     load_error: Error loading habit settings
     three_state:
       title: Enable 3-State Tracking
-      description: Toggle between "None", "Unknown", and "Done" states.
+      description: Toggle between "Not Done", "Skipped", and "Complete" states.
   section:
     general: General
     appearance: Appearance

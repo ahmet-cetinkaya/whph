@@ -72,7 +72,7 @@ class HabitCardCalendar extends StatelessWidget {
     final localDate = acore.DateTimeHelper.toLocalDateTime(date);
     final isToday = acore.DateTimeHelper.isSameDay(localDate, DateTime.now());
     final record = _getRecordForDate(date);
-    final status = record?.status ?? HabitRecordStatus.unknown;
+    final status = record?.status ?? HabitRecordStatus.skipped;
     final hasRecord = status == HabitRecordStatus.complete;
 
     // Support for daily targets
@@ -154,7 +154,7 @@ class HabitCardCalendar extends StatelessWidget {
           icon = HabitUiConstants.recordIcon;
           iconColor = Colors.orange;
         } else {
-          // Unknown
+          // Skipped
           if (isThreeStateEnabled) {
             icon = Icons.question_mark;
             iconColor = Colors.grey;
@@ -178,7 +178,7 @@ class HabitCardCalendar extends StatelessWidget {
           icon = HabitUiConstants.recordIcon;
           iconColor = Colors.orange;
         } else {
-          // Unknown
+          // Skipped
           if (isThreeStateEnabled) {
             icon = Icons.question_mark;
             iconColor = Colors.grey;
@@ -199,7 +199,7 @@ class HabitCardCalendar extends StatelessWidget {
         icon = Icons.add;
         iconColor = Colors.blue;
       } else {
-        // Unknown
+        // Skipped
         if (isThreeStateEnabled) {
           icon = Icons.question_mark;
           iconColor = Colors.grey;
@@ -209,7 +209,7 @@ class HabitCardCalendar extends StatelessWidget {
         }
       }
     } else {
-      final isSkipped = status == HabitRecordStatus.unknown &&
+      final isSkipped = status == HabitRecordStatus.skipped &&
           (_isSkipped(date) ||
               (hasCustomGoals && habit.periodDays > 1 && isPeriodGoalMet && dailyCompletionCount == 0));
 
@@ -222,7 +222,7 @@ class HabitCardCalendar extends StatelessWidget {
           icon = Icons.close;
           iconColor = Colors.red;
           break;
-        case HabitRecordStatus.unknown:
+        case HabitRecordStatus.skipped:
           if (isSkipped) {
             icon = HabitUiConstants.recordIcon;
             iconColor = HabitUiConstants.skippedColor;
@@ -310,7 +310,7 @@ class HabitCardCalendar extends StatelessWidget {
                     if (hasCustomGoals &&
                         colorHelper.shouldShowBadge() &&
                         colorHelper.shouldShowBadgeForThisDay(
-                          hasRecords: dailyCompletionCount > 0 || status != HabitRecordStatus.unknown,
+                          hasRecords: dailyCompletionCount > 0 || status != HabitRecordStatus.skipped,
                           isPeriodGoalMet: isPeriodGoalMet,
                           dailyCompletionCount: dailyCompletionCount,
                         ) &&
@@ -324,7 +324,7 @@ class HabitCardCalendar extends StatelessWidget {
                             color: colorHelper.getBadgeColor(
                               isDailyGoalMet: isDailyGoalMet,
                               isPeriodGoalMet: isPeriodGoalMet,
-                              hasRecords: dailyCompletionCount > 0 || status != HabitRecordStatus.unknown,
+                              hasRecords: dailyCompletionCount > 0 || status != HabitRecordStatus.skipped,
                               periodCompletionCount: periodCompletionCount,
                             ),
                             borderRadius: BorderRadius.circular(6),

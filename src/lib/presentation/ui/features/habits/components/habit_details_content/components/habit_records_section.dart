@@ -21,7 +21,7 @@ class HabitRecordsSection {
   }) {
     final bool isDailyGoalMet =
         hasCustomGoals ? (dailyCompletionCount >= dailyTarget) : (todayStatus == HabitRecordStatus.complete);
-    final bool hasRecords = dailyCompletionCount > 0 || todayStatus != HabitRecordStatus.unknown;
+    final bool hasRecords = dailyCompletionCount > 0 || todayStatus != HabitRecordStatus.skipped;
 
     final tooltipText = isArchived
         ? translationService.translate(HabitTranslationKeys.archivedStatus)
@@ -52,8 +52,8 @@ class HabitRecordsSection {
           icon = Icons.close;
           iconColor = Colors.red;
           break;
-        case HabitRecordStatus.unknown:
-          // Standardize on using Question Mark for unknown/start state
+        case HabitRecordStatus.skipped:
+          // Standardize on using Question Mark for skipped/start state
           if (isThreeStateEnabled) {
             icon = Icons.question_mark;
             iconColor = themeService.textColor.withValues(alpha: 0.5);
@@ -67,7 +67,7 @@ class HabitRecordsSection {
 
     // Override for old behavior compatibility if needed?
     // If hasCustomGoals and no records, it fell through to Red Close.
-    // Now falls to switch. unknown -> fiber_manual_record_outlined.
+    // Now falls to switch. skipped -> fiber_manual_record_outlined.
 
     return Stack(
       alignment: Alignment.center,

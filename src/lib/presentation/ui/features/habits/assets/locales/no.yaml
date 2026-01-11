@@ -380,4 +380,4 @@ habits:
   status:
     complete: Fullført
     not_done: Ikke gjort
-    unknown: Ukjent
+    skipped: Overhoppet

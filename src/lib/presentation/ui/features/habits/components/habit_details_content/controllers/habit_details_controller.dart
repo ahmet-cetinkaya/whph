@@ -516,12 +516,12 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   HabitRecordStatus getTodayStatus() {
-    if (_habitRecords == null) return HabitRecordStatus.unknown;
+    if (_habitRecords == null) return HabitRecordStatus.skipped;
     final today = DateTime.now();
     final todayRecord = _habitRecords!.items
         .cast<HabitRecordListItem?>()
         .firstWhere((record) => DateTimeHelper.isSameDay(record!.date, today), orElse: () => null);
-    return todayRecord?.status ?? HabitRecordStatus.unknown;
+    return todayRecord?.status ?? HabitRecordStatus.skipped;
   }
 
   // Dialog operations (delegated to helper)

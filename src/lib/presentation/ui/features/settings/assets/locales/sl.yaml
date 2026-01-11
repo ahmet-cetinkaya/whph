@@ -315,4 +315,4 @@ settings:
     description: Prilagodi obnašanje in nastavitve sledenja navad
     three_state:
       title: Omogoči sledenje 3 stanj
-      description: Preklapljaj med stanji Brez, Neznano in Končano.
+      description: Preklapljaj med stanji Nedokončano, Preskočeno in Končano.

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
-import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
@@ -57,7 +56,7 @@ class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepo
 
   @override
   Future<void> delete(HabitTimeRecord record) async {}
-  
+
   @override
   Future<void> add(HabitTimeRecord record) async {}
 }
@@ -104,7 +103,7 @@ void main() {
       settingsRepository: fakeSettingRepository,
     );
   });
-  
+
   tearDown(() async {
     await AppDatabase.instance().close();
     AppDatabase.resetInstance();
@@ -113,7 +112,7 @@ void main() {
   group('Single Occurrence Habit', () {
     final habitId = 'habit-single';
     final date = DateTime(2026, 1, 11);
-    
+
     final singleHabit = Habit(
       id: habitId,
       createdDate: DateTime.now(),
@@ -122,10 +121,10 @@ void main() {
       hasGoal: false,
     );
 
-    test('Unknown -> Complete', () async {
+    test('Skipped -> Complete', () async {
       fakeHabitRepository.setHabit(singleHabit);
       // No records initially
-      
+
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
@@ -137,8 +136,11 @@ void main() {
       fakeSettingRepository.threeStateEnabled = true;
       fakeHabitRepository.setHabit(singleHabit);
       fakeHabitRecordRepository.records.add(HabitRecord(
-        id: 'r1', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.complete, createdDate: DateTime.now()
-      ));
+          id: 'r1',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.complete,
+          createdDate: DateTime.now()));
 
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
@@ -150,12 +152,15 @@ void main() {
       expect(fakeHabitRecordRepository.records.first.status, HabitRecordStatus.notDone);
     });
 
-    test('Complete -> Unknown (3-state disabled)', () async {
-       fakeSettingRepository.threeStateEnabled = false;
+    test('Complete -> Skipped (3-state disabled)', () async {
+      fakeSettingRepository.threeStateEnabled = false;
       fakeHabitRepository.setHabit(singleHabit);
       fakeHabitRecordRepository.records.add(HabitRecord(
-        id: 'r1', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.complete, createdDate: DateTime.now()
-      ));
+          id: 'r1',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.complete,
+          createdDate: DateTime.now()));
 
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
@@ -165,11 +170,14 @@ void main() {
       expect(fakeHabitRecordRepository.records.isEmpty, true);
     });
 
-    test('NotDone -> Unknown', () async {
+    test('NotDone -> Skipped', () async {
       fakeHabitRepository.setHabit(singleHabit);
       fakeHabitRecordRepository.records.add(HabitRecord(
-        id: 'r1', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.notDone, createdDate: DateTime.now()
-      ));
+          id: 'r1',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.notDone,
+          createdDate: DateTime.now()));
 
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
@@ -209,8 +217,11 @@ void main() {
     test('Increment: 1 -> 2 (Complete)', () async {
       fakeHabitRepository.setHabit(multiHabit);
       fakeHabitRecordRepository.records.add(HabitRecord(
-        id: 'r1', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.complete, createdDate: DateTime.now()
-      ));
+          id: 'r1',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.complete,
+          createdDate: DateTime.now()));
 
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
@@ -223,8 +234,18 @@ void main() {
       fakeSettingRepository.threeStateEnabled = true;
       fakeHabitRepository.setHabit(multiHabit);
       // Add 2 records
-      fakeHabitRecordRepository.records.add(HabitRecord(id: 'r1', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.complete, createdDate: DateTime.now()));
-      fakeHabitRecordRepository.records.add(HabitRecord(id: 'r2', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.complete, createdDate: DateTime.now()));
+      fakeHabitRecordRepository.records.add(HabitRecord(
+          id: 'r1',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.complete,
+          createdDate: DateTime.now()));
+      fakeHabitRecordRepository.records.add(HabitRecord(
+          id: 'r2',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.complete,
+          createdDate: DateTime.now()));
 
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
@@ -235,13 +256,22 @@ void main() {
       expect(fakeHabitRecordRepository.records.first.status, HabitRecordStatus.notDone);
     });
 
-    test('Target Met (2) -> Unknown/Reset (3-state disabled)', () async {
+    test('Target Met (2) -> Skipped/Reset (3-state disabled)', () async {
       fakeSettingRepository.threeStateEnabled = false;
       fakeHabitRepository.setHabit(multiHabit);
-       // Add 2 records
-      fakeHabitRecordRepository.records.add(HabitRecord(id: 'r1', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.complete, createdDate: DateTime.now()));
-      fakeHabitRecordRepository.records.add(HabitRecord(id: 'r2', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.complete, createdDate: DateTime.now()));
-
+      // Add 2 records
+      fakeHabitRecordRepository.records.add(HabitRecord(
+          id: 'r1',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.complete,
+          createdDate: DateTime.now()));
+      fakeHabitRecordRepository.records.add(HabitRecord(
+          id: 'r2',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.complete,
+          createdDate: DateTime.now()));
 
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
@@ -250,17 +280,22 @@ void main() {
       expect(fakeHabitRecordRepository.deleteCalled, true);
       expect(fakeHabitRecordRepository.records.isEmpty, true);
     });
-    
-    test('Currently NotDone -> Unknown/Reset', () async {
+
+    test('Currently NotDone -> Skipped/Reset', () async {
       fakeHabitRepository.setHabit(multiHabit);
-      fakeHabitRecordRepository.records.add(HabitRecord(id: 'r1', habitId: habitId, occurredAt: date.toUtc(), status: HabitRecordStatus.notDone, createdDate: DateTime.now()));
+      fakeHabitRecordRepository.records.add(HabitRecord(
+          id: 'r1',
+          habitId: habitId,
+          occurredAt: date.toUtc(),
+          status: HabitRecordStatus.notDone,
+          createdDate: DateTime.now()));
 
       final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       // Should clear records
-       expect(fakeHabitRecordRepository.deleteCalled, true);
-       expect(fakeHabitRecordRepository.records.isEmpty, true);
+      expect(fakeHabitRecordRepository.deleteCalled, true);
+      expect(fakeHabitRecordRepository.records.isEmpty, true);
     });
   });
 }

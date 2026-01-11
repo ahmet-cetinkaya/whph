@@ -320,4 +320,4 @@ habits:
   status:
     complete: Finalizat
     not_done: Nefinalizat
-    unknown: Necunoscut
+    skipped: Sărit
