@@ -13,9 +13,7 @@ settings:
     csv_description: Excel ve benzeri uygulamalarda görüntülemek için kullanabilirsiniz.
     error: Dışa aktarma başarısız
     in_progress: Veriler dışa aktarılıyor, lütfen bekleyin...
-    json_description:
-      Geliştirme ve hata ayıklama amaçları için okunabilir JSON formatında
-      veri dışa aktarın.
+    json_description: Geliştirme ve hata ayıklama amaçları için okunabilir JSON formatında veri dışa aktarın.
     select_directory: Dışa aktarma dizinini seç
     select_path: Kayıt konumu seçin
     select_type: Dışa aktarma formatını seçin
@@ -28,9 +26,7 @@ settings:
     error: İçe aktarma başarısız
     error.entity: Hata oluşan veri türü
     in_progress: Veriler içe aktarılıyor, lütfen bekleyin...
-    migration_failed:
-      İçeri aktarma başarısız oldu. Lütfen uygulamanın en son sürümünü
-      yüklediğinizden emin olun.
+    migration_failed: İçeri aktarma başarısız oldu. Lütfen uygulamanın en son sürümünü yüklediğinizden emin olun.
     select_file: Dosya seçin
     strategy:
       merge: Mevcut Verilerle Birleştir
@@ -41,9 +37,7 @@ settings:
     unsupported_version: Desteklenmeyen sürüm
     version_mismatch: Sürüm bulunamadı
   import_export:
-    description:
-      Verilerinizi çeşitli formatlarda dışa aktarın veya yedek dosyalarından
-      veri içe aktarın
+    description: Verilerinizi çeşitli formatlarda dışa aktarın veya yedek dosyalarından veri içe aktarın
     select_action: İç/Dışa aktarma işlemi seçin
     title: İçe/Dışa Aktar
   language:
@@ -69,59 +63,42 @@ settings:
     settings: Ses Ayarları
   permissions:
     app_usage:
-      description:
-        Bu uygulama, uygulama kullanım istatistiklerinizi doğru bir şekilde
-        takip edebilmek için uygulama kullanım verilerine erişim izni gerektirir.
+      description: Bu uygulama, uygulama kullanım istatistiklerinizi doğru bir şekilde takip edebilmek için uygulama kullanım verilerine erişim izni gerektirir.
       instructions: "Talimatlar:"
       steps:
         step1: '"Ayarı Aç" butonuna basın'
         step2: Açılan kullanım erişimi ayarları ekranında listede "{appName}"'yi bulun
         step3: '"{appName}"''ye dokunun'
-        step4:
-          '"Kullanım erişimine izin ver"i etkinleştirin veya anahtarı AÇIK konumuna
-          getirin'
+        step4: '"Kullanım erişimine izin ver"i etkinleştirin veya anahtarı AÇIK konumuna getirin'
       title: Uygulama Kullanım İzni
     battery_optimization:
-      description:
-        Güvenilir bildirimler için, bu uygulamanın pil optimizasyonundan
-        hariç tutulması gerekiyor. Bu olmadan, hatırlatıcılar gecikebilir veya hiç
-        teslim edilmeyebilir.
+      description: Güvenilir bildirimler için, bu uygulamanın pil optimizasyonundan hariç tutulması gerekiyor. Bu olmadan, hatırlatıcılar gecikebilir veya hiç teslim edilmeyebilir.
       importance: Bu ayarın konumu cihaz üreticinize bağlı olarak değişebilir.
       instructions: "Talimatlar:"
-      not_disabled:
-        Pil optimizasyonu hala etkin. İlgili işlevin doğru çalışabilmesi
-        için izni verin.
+      not_disabled: Pil optimizasyonu hala etkin. İlgili işlevin doğru çalışabilmesi için izni verin.
       steps:
         step1: '"Ayarı Aç" butonuna basın'
         step2: Açılan ayarlar ekranında "{appName}"'yi bulun
         step3: '"{appName}"''a tıklayın'
-        step4:
-          Açılan sayfada "Arka Plan Kullanımına İzin Ver"in etkin olduğundan
-          emin olun
+        step4: Açılan sayfada "Arka Plan Kullanımına İzin Ver"in etkin olduğundan emin olun
         step5: '"Arka Plan Kullanımına İzin Ver"e dokunun'
         step6: '"Kısıtlanmamış"ı seçin'
       title: Pil Optimizasyonu
     exact_alarm:
-      description:
-        Android 12+ için hatırlatıcıların düzgün çalışması için tam alarm
-        planlama izni gerektirir.
+      description: Android 12+ için hatırlatıcıların düzgün çalışması için tam alarm planlama izni gerektirir.
       instructions: "Talimatlar:"
       steps:
         android12plus:
           step2: Alarmlar ve hatırlatıcılar bölümüne gidin ve izni etkinleştirin
           step3: Tam alarm iznini onaylayın
         step1: '"Ayarı Aç" butonuna basın'
-        step2:
-          Açılan {appName} uygulamasına ait Alarmlar ve hatırlatıcılar sayfasında
-          "Alarm ve hatırlatıcı ayarlamaya izin ver" seçeneğini etkinleştirin
+        step2: Açılan {appName} uygulamasına ait Alarmlar ve hatırlatıcılar sayfasında "Alarm ve hatırlatıcı ayarlamaya izin ver" seçeneğini etkinleştirin
       title: Tam Alarm İzni
     fix_it: Düzelt
     granted: İzin verildi
     instructions: Talimatlar
     notification:
-      description:
-        Hatırlatıcıları almak için bildirim izni gereklidir. Bu izin olmadan,
-        hiçbir bildirim almazsınız.
+      description: Hatırlatıcıları almak için bildirim izni gereklidir. Bu izin olmadan, hiçbir bildirim almazsınız.
       instructions: "Talimatlar:"
       steps:
         android:
@@ -135,24 +112,15 @@ settings:
     open_terminal: Terminali Aç
     firewall:
       title: Güvenlik Duvarı İzni
-      description:
-        Cihaz senkronizasyonu için WHPH uygulamasının {platform} güvenlik
-        duvarı üzerinden 44040 portunda iletişim kurmasına izin verin.
-      dialog_description:
-        WHPH, diğer cihazların senkronizasyon için bağlanabilmesi
-        için güvenlik duvarı iznine ihtiyaç duyar. {platform} güvenlik duvarınızı
-        yapılandırmak için aşağıdaki komutları izleyin. Bu adımları ayrıca yardım
-        menüsünde de bulabilirsiniz.
+      description: Cihaz senkronizasyonu için WHPH uygulamasının {platform} güvenlik duvarı üzerinden 44040 portunda iletişim kurmasına izin verin.
+      dialog_description: WHPH, diğer cihazların senkronizasyon için bağlanabilmesi için güvenlik duvarı iznine ihtiyaç duyar. {platform} güvenlik duvarınızı yapılandırmak için aşağıdaki komutları izleyin. Bu adımları ayrıca yardım menüsünde de bulabilirsiniz.
       dialog_info_text: "Not: Bu adımları ayrıca yardım menüsünde de bulabilirsiniz."
       linux_manual_confirmation_button: Yapılandırdım
       save_confirmation_error: Güvenlik duvarı onay ayarı kaydedilemedi
       rule_added_success: Güvenlik duvarı kuralı başarıyla eklendi
       rule_add_error: Güvenlik duvarı kuralı eklenemedi. Manuel adımları deneyin.
       add_rule_button: Güvenlik Duvarı Kuralı Ekle
-      windows_auto_description:
-        "UAC izin isteğiyle güvenlik duvarı kuralını otomatik
-        olarak eklemek için 'Güvenlik Duvarı Kuralı Ekle'ye tıklayın. Manuel eklemeyi
-        tercih ederseniz, aşağıdaki adımları izleyin:"
+      windows_auto_description: "UAC izin isteğiyle güvenlik duvarı kuralını otomatik olarak eklemek için 'Güvenlik Duvarı Kuralı Ekle'ye tıklayın. Manuel eklemeyi tercih ederseniz, aşağıdaki adımları izleyin:"
       instructions:
         linux:
           step1: Bir terminal açın
@@ -168,23 +136,13 @@ settings:
           step5: Port'u seçin ve İleri'ye tıklayın
           step6: TCP'yi seçin ve belirli yerel bağlantı noktaları alanına 44040 girin
           step7: Bağlantıya izin ver'i seçin ve İleri'ye tıklayın
-          step8:
-            Tüm profilleri (Etki Alanı, Özel, Genel) işaretleyin ve İleri'ye
-            tıklayın
+          step8: Tüm profilleri (Etki Alanı, Özel, Genel) işaretleyin ve İleri'ye tıklayın
           step9: WHPH Sync Port 44040 gibi bir ad girin ve Son'a tıklayın
           method_gui_title: "Yöntem 1: Windows Güvenlik Duvarı GUI"
           method_command_title: "Yöntem 2: Komut İstemi"
-          step_open_defender:
-            Windows Defender Güvenlik Duvarını → Gelişmiş ayarlar
-            açın
-          step_create_inbound_rule:
-            'Gelen kuralı oluşturun: Gelen Kurallar → Yeni
-            Kural → Port → TCP → 44040 → İzin Ver → Tüm profiller → Ad: "WHPH Sync
-            (Gelen)"'
-          step_create_outbound_rule:
-            'Giden kuralı oluşturun: Giden Kurallar → Yeni
-            Kural → Port → TCP → 44040 → İzin Ver → Tüm profiller → Ad: "WHPH Sync
-            (Giden)"'
+          step_open_defender: Windows Defender Güvenlik Duvarını → Gelişmiş ayarlar açın
+          step_create_inbound_rule: 'Gelen kuralı oluşturun: Gelen Kurallar → Yeni Kural → Port → TCP → 44040 → İzin Ver → Tüm profiller → Ad: "WHPH Sync (Gelen)"'
+          step_create_outbound_rule: 'Giden kuralı oluşturun: Giden Kurallar → Yeni Kural → Port → TCP → 44040 → İzin Ver → Tüm profiller → Ad: "WHPH Sync (Giden)"'
           alternative_command_prompt:
             title: "Alternatif: Komut İstemi Kullan"
             steps:
@@ -194,44 +152,29 @@ settings:
         step_run_commands: "2. Bu komutları çalıştırın:"
         step_open_terminal: 1. Bir terminal açın
         step_run_command: "2. Bu komutu çalıştırın (sudo hakları gerektirir):"
-        step_click_confirmation:
-          3. Komutu çalıştırdıktan sonra, aşağıdaki onay butonuna
-          tıklayın
-      manual_configure_instruction:
-        "Senkronizasyon için güvenlik duvarı kurallarını
-        manuel olarak yapılandırın (yönetici hakları gerektirir):"
+        step_click_confirmation: 3. Komutu çalıştırdıktan sonra, aşağıdaki onay butonuna tıklayın
+      manual_configure_instruction: "Senkronizasyon için güvenlik duvarı kurallarını manuel olarak yapılandırın (yönetici hakları gerektirir):"
     startup:
-      description:
-        Uygulamanın cihazınızla birlikte otomatik olarak başlaması için
-        otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra
-        bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
-      importance:
-        Otomatik başlatma ayarının konumu cihaz üreticisine göre değişiklik
-        gösterebilir veya olmayabilir.
+      description: Uygulamanın cihazınızla birlikte otomatik olarak başlaması için otomatik başlatma izni gereklidir. Bu, cihaz yeniden başlatıldıktan sonra bile hatırlatıcıların ve bildirimlerin düzgün çalışmasını sağlar.
+      importance: Otomatik başlatma ayarının konumu cihaz üreticisine göre değişiklik gösterebilir veya olmayabilir.
       instructions: "Talimatlar:"
       steps:
         step1: '"Ayarı Aç" butonuna basın'
         step2: Açılan ayarlar ekranında "{appName}" uygulamasını bulun
-        step3:
-          '"Otomatik başlatma", "Otomatik çalıştır", "Başlangıçta başlat" veya
-          "Auto-start" seçeneğini etkinleştirin'
+        step3: '"Otomatik başlatma", "Otomatik çalıştır", "Başlangıçta başlat" veya "Auto-start" seçeneğini etkinleştirin'
       title: Otomatik Başlatma İzni
     title: İzinler
   startup:
     disable_error: Başlangıç ayarı devre dışı bırakılamadı
     enable_error: Başlangıç ayarı etkinleştirilemedi
-    subtitle:
-      Uygulama için otomatik başlatma iznini etkinleştirmek üzere sistem ayarlarını
-      açmak için dokunun
+    subtitle: Uygulama için otomatik başlatma iznini etkinleştirmek üzere sistem ayarlarını açmak için dokunun
     title: Başlangıçta Başlat
   sync_devices:
     title: Cihazları Senkronize Et
   title: Ayarlar
   backup:
     title: Yedekleme
-    description:
-      Güvenli .whph formatını kullanarak uygulama verilerinizin sıkıştırılmış
-      yedeklerini oluşturun ve geri yükleyin
+    description: Güvenli .whph formatını kullanarak uygulama verilerinizin sıkıştırılmış yedeklerini oluşturun ve geri yükleyin
     export:
       title: Yedek Oluştur
       description: Tüm verilerinizi sıkıştırılmış .whph yedek dosyasına aktarın
@@ -269,22 +212,16 @@ settings:
         description: Sistem tema ayarlarını takip et
     dynamic_accent:
       title: Dinamik Vurgu Rengi
-      description:
-        Sisteminiz destekliyorsa, ana renk sistem dinamik renk şemasına
-        göre uyarlanacaktır
+      description: Sisteminiz destekliyorsa, ana renk sistem dinamik renk şemasına göre uyarlanacaktır
       feature: Dinamik
     custom_accent:
       title: Özel Vurgu Rengi
-      description:
-        Uygulamanızın görünümünü kişiselleştirmek için özel bir vurgu rengi
-        seçin
+      description: Uygulamanızın görünümünü kişiselleştirmek için özel bir vurgu rengi seçin
       feature: Özel
     error: Tema ayarları yüklenemedi
   ui_density:
     title: Yoğunluk
-    description:
-      Yüksek DPI ekranlarda okunabilirliği artırmak için metin ve UI elemanlarının
-      boyutunu ayarlayın
+    description: Yüksek DPI ekranlarda okunabilirliği artırmak için metin ve UI elemanlarının boyutunu ayarlayın
     compact: Kompakt
     normal: Normal
     large: Büyük
@@ -304,33 +241,21 @@ settings:
       restart_screen:
         completed_title: Veritabanı başarıyla sıfırlandı
         desktop_message: Uygulama {seconds} saniye içinde yeniden başlatılacak.
-        mobile_message:
-          İşlemi tamamlamak için lütfen uygulamayı manuel olarak yeniden
-          başlatın.
+        mobile_message: İşlemi tamamlamak için lütfen uygulamayı manuel olarak yeniden başlatın.
         restart_now_button: Şimdi Yeniden Başlat
       error:
         title: Sıfırlama Başarısız
-        message:
-          Veritabanı sıfırlanamadı. Lütfen tekrar deneyin veya sorun devam
-          ederse destek ile iletişime geçin.
+        message: Veritabanı sıfırlanamadı. Lütfen tekrar deneyin veya sorun devam ederse destek ile iletişime geçin.
         cancel: İptal
         retry: Tekrar Dene
-        help_text:
-          Sorun devam ederse, uygulamayı yeniden başlatmayı veya yeterli
-          depolama alanına ve izinlere sahip olup olmadığınızı kontrol edin.
-        permission_denied:
-          İzin reddedildi. Uygulamanın depolama alanına yazma erişimi
-          olup olmadığını kontrol edin.
+        help_text: Sorun devam ederse, uygulamayı yeniden başlatmayı veya yeterli depolama alanına ve izinlere sahip olup olmadığınızı kontrol edin.
+        permission_denied: İzin reddedildi. Uygulamanın depolama alanına yazma erişimi olup olmadığını kontrol edin.
         disk_full: Cihazda alan kalmadı. Lütfen depolama alanı açın ve tekrar deneyin.
         file_not_found: Veritabanı dosyası bulunamadı. Bu yeni bir kurulumda beklenmektedir.
         file_access: Dosya erişim hatası
         sqlite: Veritabanı hatası
-        database_locked:
-          Veritabanı kilitli. Lütfen uygulamanın diğer örneklerini
-          kapatın.
-        state_error:
-          Uygulama durumu hatası. Lütfen uygulamayı yeniden başlatın ve
-          tekrar deneyin.
+        database_locked: Veritabanı kilitli. Lütfen uygulamanın diğer örneklerini kapatın.
+        state_error: Uygulama durumu hatası. Lütfen uygulamayı yeniden başlatın ve tekrar deneyin.
         timeout: İşlem zaman aşımına uğradı. Lütfen tekrar deneyin.
   debug_logs:
     title: Hata Ayıklama Günlükleri
@@ -342,22 +267,15 @@ settings:
       description: Mevcut hata ayıklama günlüklerini görüntüle ve dışa aktar
     page:
       title: Hata ayıklama günlükleri
-      description:
-        Mevcut hata ayıklama günlük girişlerini görüntüleyin. Günlükler
-        aşırı disk kullanımını önlemek için otomatik olarak temizlenir ve döndürülür.
+      description: Mevcut hata ayıklama günlük girişlerini görüntüleyin. Günlükler aşırı disk kullanımını önlemek için otomatik olarak temizlenir ve döndürülür.
       content: Günlük içeriği
       refresh: Günlükleri yenile
       copy: Panoya kopyala
       save_as: Dosya olarak kaydet
       copied: Hata ayıklama günlükleri panoya kopyalandı
       load_error: Hata ayıklama günlükleri yüklenirken hata
-      not_enabled:
-        Hata ayıklama günlük kaydı etkin değil. Günlük toplamaya başlamak
-        için Gelişmiş Ayarlar'da etkinleştirin.
-      no_file:
-        Hata ayıklama günlük dosyası bulunamadı. Günlükler hata ayıklama günlük
-        kaydı etkinleştirildikten ve uygulama günlük girişleri oluşturduktan sonra
-        oluşturulacak.
+      not_enabled: Hata ayıklama günlük kaydı etkin değil. Günlük toplamaya başlamak için Gelişmiş Ayarlar'da etkinleştirin.
+      no_file: Hata ayıklama günlük dosyası bulunamadı. Günlükler hata ayıklama günlük kaydı etkinleştirildikten ve uygulama günlük girişleri oluşturduktan sonra oluşturulacak.
       empty: Hata ayıklama günlük dosyası boş. Henüz herhangi bir günlük girişi kaydedilmedi.
       toggle_auto_scroll: Otomatik kaydırmayı değiştir
     export:
@@ -365,9 +283,7 @@ settings:
       error: Günlükleri dışa aktarırken hata
       success: Günlük dosyası başarıyla dışa aktarıldı
       no_logs_available: Dışa aktarılacak günlük yok
-      file_not_exist:
-        Günlük dosyası mevcut değil. Hata ayıklama günlük kaydını etkinleştirin
-        ve bazı günlükler oluşturun.
+      file_not_exist: Günlük dosyası mevcut değil. Hata ayıklama günlük kaydını etkinleştirin ve bazı günlükler oluşturun.
   task:
     title: Görev Ayarları
     preferences:
@@ -375,9 +291,7 @@ settings:
       description: Görev davranışını ve varsayılan ayarları özelleştirin
     default_estimated_time:
       title: Varsayılan Tahmini Süre
-      description:
-        Yeni görevler için varsayılan tahmini süreyi ayarlayın. Otomatik
-        zaman tahminlerinden kaçınmak için bunu devre dışı bırakabilirsiniz.
+      description: Yeni görevler için varsayılan tahmini süreyi ayarlayın. Otomatik zaman tahminlerinden kaçınmak için bunu devre dışı bırakabilirsiniz.
       disabled: Devre Dışı
       minutes: "{minutes} dakika"
       load_error: Varsayılan tahmini süre yüklenirken hata
@@ -385,9 +299,7 @@ settings:
       key_not_found: Varsayılan tahmini süre anahtarı bulunamadı
     default_planned_date_reminder:
       title: Varsayılan Hatırlatıcı
-      description:
-        Planlanan bir tarih seçildiğinde otomatik olarak bir hatırlatıcı
-        ayarlayın.
+      description: Planlanan bir tarih seçildiğinde otomatik olarak bir hatırlatıcı ayarlayın.
       save_error: Varsayılan hatırlatıcı ayarı kaydedilirken hata oluştu
       load_error: Varsayılan hatırlatıcı ayarı yüklenirken hata oluştu
   section:
@@ -398,3 +310,9 @@ settings:
     advanced: Gelişmiş
     about: Hakkında
     flow: Akış
+  habit:
+    title: Alışkanlık Ayarları
+    description: Alışkanlık takip davranışını ve tercihlerini özelleştir
+    three_state:
+      title: 3 Durak Takipini Etkinleştir
+      description: Yok, Bilinmiyor ve Yapıldı durumları arasında geçiş yap.

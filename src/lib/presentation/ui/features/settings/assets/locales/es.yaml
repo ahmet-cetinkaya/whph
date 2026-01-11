@@ -13,9 +13,7 @@ settings:
     csv_description: Puedes usar esto para ver en Excel y aplicaciones similares.
     error: Falló la exportación
     in_progress: Exportando datos, por favor espera...
-    json_description:
-      Exportar datos en formato JSON legible para propósitos de desarrollo
-      y depuración.
+    json_description: Exportar datos en formato JSON legible para propósitos de desarrollo y depuración.
     select_directory: Seleccionar directorio de exportación
     select_path: Seleccionar ubicación de guardado
     select_type: Seleccionar formato de exportación
@@ -28,9 +26,7 @@ settings:
     error: Falló la importación
     error.entity: Error en el tipo
     in_progress: Importando datos, por favor espera...
-    migration_failed:
-      Falló la importación. Por favor asegúrate de tener instalada
-      la última versión de la aplicación.
+    migration_failed: Falló la importación. Por favor asegúrate de tener instalada la última versión de la aplicación.
     select_file: Seleccionar archivo
     strategy:
       merge: Fusionar con datos existentes
@@ -41,9 +37,7 @@ settings:
     unsupported_version: Versión no soportada
     version_mismatch: Versión no encontrada
   import_export:
-    description:
-      Exporta tus datos en varios formatos o importa datos desde archivos
-      de copia de seguridad
+    description: Exporta tus datos en varios formatos o importa datos desde archivos de copia de seguridad
     select_action: Seleccionar acción de importar/exportar
     title: Importar/Exportar
   language:
@@ -69,62 +63,42 @@ settings:
     settings: Configuración de sonido
   permissions:
     app_usage:
-      description:
-        Esta aplicación necesita permiso para acceder a las estadísticas
-        de uso de aplicaciones para rastrear tus patrones de uso de aplicaciones con
-        precisión.
+      description: Esta aplicación necesita permiso para acceder a las estadísticas de uso de aplicaciones para rastrear tus patrones de uso de aplicaciones con precisión.
       instructions: "Instrucciones:"
       steps:
         step1: Presiona el botón "Abrir configuración"
-        step2:
-          En la pantalla de configuración de acceso de uso que se abre, encuentra
-          "{appName}" en la lista
+        step2: En la pantalla de configuración de acceso de uso que se abre, encuentra "{appName}" en la lista
         step3: Toca en "{appName}"
         step4: Habilita "Permitir acceso de uso" o cambia el interruptor a ENCENDIDO
       title: Permiso de uso de aplicación
     battery_optimization:
-      description:
-        Para notificaciones confiables, esta aplicación necesita ser excluida
-        de la optimización de batería. Sin esto, los recordatorios pueden retrasarse
-        o no entregarse en absoluto.
-      importance:
-        La ubicación de esta configuración puede variar dependiendo del
-        fabricante de tu dispositivo.
+      description: Para notificaciones confiables, esta aplicación necesita ser excluida de la optimización de batería. Sin esto, los recordatorios pueden retrasarse o no entregarse en absoluto.
+      importance: La ubicación de esta configuración puede variar dependiendo del fabricante de tu dispositivo.
       instructions: "Instrucciones:"
-      not_disabled:
-        La optimización de batería aún está habilitada. Proporciona permiso
-        para que la función relevante funcione correctamente.
+      not_disabled: La optimización de batería aún está habilitada. Proporciona permiso para que la función relevante funcione correctamente.
       steps:
         step1: Presiona el botón "Abrir configuración"
         step2: En la pantalla de configuración que se abre, encuentra "{appName}"
         step3: Toca en "{appName}"
-        step4:
-          Asegúrate de que "Permitir uso en segundo plano" esté habilitado en
-          la página que se abre
+        step4: Asegúrate de que "Permitir uso en segundo plano" esté habilitado en la página que se abre
         step5: Toca en "Permitir uso en segundo plano"
         step6: Selecciona "Sin restricciones"
       title: Optimización de batería
     exact_alarm:
-      description:
-        Android 12+ requiere permiso para programar alarmas exactas para
-        que los recordatorios funcionen correctamente.
+      description: Android 12+ requiere permiso para programar alarmas exactas para que los recordatorios funcionen correctamente.
       instructions: "Instrucciones:"
       steps:
         android12plus:
           step2: Ve a Alarmas y recordatorios y habilita el permiso
           step3: Confirma el permiso de alarma exacta
         step1: Presiona el botón "Abrir configuración"
-        step2:
-          En la página de Alarmas y recordatorios de la aplicación {appName}
-          que se abre, habilita "Permitir configurar alarmas y recordatorios"
+        step2: En la página de Alarmas y recordatorios de la aplicación {appName} que se abre, habilita "Permitir configurar alarmas y recordatorios"
       title: Permiso de alarma exacta
     fix_it: Arreglarlo
     granted: Permiso otorgado
     instructions: Instrucciones
     notification:
-      description:
-        El permiso de notificación es requerido para recibir recordatorios.
-        Sin este permiso, no recibirás ninguna notificación.
+      description: El permiso de notificación es requerido para recibir recordatorios. Sin este permiso, no recibirás ninguna notificación.
       instructions: "Instrucciones:"
       steps:
         android:
@@ -138,26 +112,15 @@ settings:
     open_terminal: Abrir terminal
     firewall:
       title: Permiso de firewall
-      description:
-        Permitir que WHPH se comunique a través del firewall de {platform}
-        en el puerto 44040 para la sincronización de dispositivos.
-      dialog_description:
-        WHPH necesita permiso de firewall para permitir que otros
-        dispositivos se conecten para la sincronización. Siga los comandos a continuación
-        para configurar su firewall de {platform}. También puede encontrar estos pasos
-        en el menú de ayuda.
+      description: Permitir que WHPH se comunique a través del firewall de {platform} en el puerto 44040 para la sincronización de dispositivos.
+      dialog_description: WHPH necesita permiso de firewall para permitir que otros dispositivos se conecten para la sincronización. Siga los comandos a continuación para configurar su firewall de {platform}. También puede encontrar estos pasos en el menú de ayuda.
       dialog_info_text: "Nota: También puede encontrar estos pasos en el menú de ayuda."
       linux_manual_confirmation_button: He configurado
-      save_confirmation_error:
-        Error al guardar la configuración de confirmación del
-        firewall
+      save_confirmation_error: Error al guardar la configuración de confirmación del firewall
       rule_added_success: Regla de firewall añadida exitosamente
       rule_add_error: Error al añadir la regla de firewall. Intente los pasos manuales.
       add_rule_button: Añadir regla de firewall
-      windows_auto_description:
-        "Haga clic en 'Añadir regla de firewall' para añadir
-        automáticamente la regla de firewall con solicitud de permiso UAC. Si prefiere
-        añadir manualmente, siga los pasos a continuación:"
+      windows_auto_description: "Haga clic en 'Añadir regla de firewall' para añadir automáticamente la regla de firewall con solicitud de permiso UAC. Si prefiere añadir manualmente, siga los pasos a continuación:"
       instructions:
         linux:
           step1: Abra una terminal
@@ -171,25 +134,15 @@ settings:
           step3: En el panel izquierdo, haga clic en Reglas de entrada
           step4: En el panel derecho, haga clic en Nueva regla...
           step5: Seleccione Puerto y haga clic en Siguiente
-          step6:
-            Seleccione TCP e introduzca 44040 en el campo de puertos locales
-            específicos
+          step6: Seleccione TCP e introduzca 44040 en el campo de puertos locales específicos
           step7: Seleccione Permitir la conexión y haga clic en Siguiente
-          step8:
-            Marque todos los perfiles (Dominio, Privado, Público) y haga clic
-            en Siguiente
+          step8: Marque todos los perfiles (Dominio, Privado, Público) y haga clic en Siguiente
           step9: Introduzca un nombre como WHPH Sync Port 44040 y haga clic en Finalizar
           method_gui_title: "Método 1: GUI de Firewall de Windows"
           method_command_title: "Método 2: Símbolo del sistema"
           step_open_defender: Abra Windows Defender Firewall → Configuración avanzada
-          step_create_inbound_rule:
-            'Crear regla entrante: Reglas de entrada → Nueva
-            regla → Puerto → TCP → 44040 → Permitir → Todos los perfiles → Nombre:
-            "WHPH Sync (Entrante)"'
-          step_create_outbound_rule:
-            'Crear regla saliente: Reglas de salida → Nueva
-            regla → Puerto → TCP → 44040 → Permitir → Todos los perfiles → Nombre:
-            "WHPH Sync (Saliente)"'
+          step_create_inbound_rule: 'Crear regla entrante: Reglas de entrada → Nueva regla → Puerto → TCP → 44040 → Permitir → Todos los perfiles → Nombre: "WHPH Sync (Entrante)"'
+          step_create_outbound_rule: 'Crear regla saliente: Reglas de salida → Nueva regla → Puerto → TCP → 44040 → Permitir → Todos los perfiles → Nombre: "WHPH Sync (Saliente)"'
           alternative_command_prompt:
             title: "Alternativa: Usar Símbolo del sistema"
             steps:
@@ -199,61 +152,39 @@ settings:
         step_run_commands: "2. Ejecute estos comandos:"
         step_open_terminal: 1. Abra una terminal
         step_run_command: "2. Ejecute este comando (requiere privilegios de sudo):"
-        step_click_confirmation:
-          3. Después de ejecutar el comando, haga clic en el
-          botón de confirmación a continuación
-      manual_configure_instruction:
-        "Configure manualmente las reglas del firewall
-        para la sincronización (requiere privilegios de administrador):"
+        step_click_confirmation: 3. Después de ejecutar el comando, haga clic en el botón de confirmación a continuación
+      manual_configure_instruction: "Configure manualmente las reglas del firewall para la sincronización (requiere privilegios de administrador):"
     startup:
-      description:
-        Para que la aplicación inicie automáticamente con tu dispositivo,
-        se requiere permiso de inicio automático. Esto asegura que los recordatorios
-        y notificaciones funcionen correctamente incluso después de reinicios del
-        dispositivo.
-      importance:
-        La ubicación de la configuración de inicio automático varía o puede
-        no estar presente según el fabricante del dispositivo.
+      description: Para que la aplicación inicie automáticamente con tu dispositivo, se requiere permiso de inicio automático. Esto asegura que los recordatorios y notificaciones funcionen correctamente incluso después de reinicios del dispositivo.
+      importance: La ubicación de la configuración de inicio automático varía o puede no estar presente según el fabricante del dispositivo.
       instructions: "Instrucciones:"
       steps:
         step1: Presiona el botón "Abrir configuración"
-        step2:
-          En la pantalla de configuración que se abre, encuentra la aplicación
-          "{appName}"
-        step3:
-          Habilita "Inicio automático", "Ejecución automática", "Iniciar al arrancar"
-          o permiso similar
+        step2: En la pantalla de configuración que se abre, encuentra la aplicación "{appName}"
+        step3: Habilita "Inicio automático", "Ejecución automática", "Iniciar al arrancar" o permiso similar
       title: Permiso de inicio automático
     title: Permisos
   startup:
     disable_error: No se pudo desactivar la configuración de inicio
     enable_error: No se pudo activar la configuración de inicio
-    subtitle:
-      Toca para abrir la configuración del sistema y habilitar el permiso
-      de inicio automático para la aplicación
+    subtitle: Toca para abrir la configuración del sistema y habilitar el permiso de inicio automático para la aplicación
     title: Iniciar al arranque
   sync_devices:
     title: Sincronizar dispositivos
   title: Configuración
   backup:
     title: Copia de seguridad
-    description:
-      Crear y restaurar copias de seguridad comprimidas de los datos de
-      su aplicación usando el formato seguro .whph
+    description: Crear y restaurar copias de seguridad comprimidas de los datos de su aplicación usando el formato seguro .whph
     export:
       title: Crear copia de seguridad
-      description:
-        Exportar todos sus datos a un archivo de copia de seguridad .whph
-        comprimido
+      description: Exportar todos sus datos a un archivo de copia de seguridad .whph comprimido
       in_progress: Creando copia de seguridad, por favor espere...
       success: "Copia de seguridad creada exitosamente. Ubicación del archivo:"
       error: Error al crear la copia de seguridad
       select_path: Seleccionar ubicación para guardar la copia de seguridad
     import:
       title: Restaurar copia de seguridad
-      description:
-        Importar datos desde un archivo de copia de seguridad .whph creado
-        previamente
+      description: Importar datos desde un archivo de copia de seguridad .whph creado previamente
       in_progress: Restaurando copia de seguridad, por favor espere...
       success: Copia de seguridad restaurada exitosamente
       error: Error al restaurar la copia de seguridad
@@ -268,9 +199,7 @@ settings:
     invalid_format: Formato de archivo de copia de seguridad inválido
     invalid_format_error: Formato de archivo de copia de seguridad inválido
     corrupted: El archivo de copia de seguridad está corrupto o dañado
-    export_description:
-      Crear un archivo de copia de seguridad comprimido que contenga
-      todos sus datos
+    export_description: Crear un archivo de copia de seguridad comprimido que contenga todos sus datos
   theme:
     title: Tema
     description: Personalizar la apariencia de WHPH
@@ -283,22 +212,16 @@ settings:
         description: Seguir la configuración del tema del sistema
     dynamic_accent:
       title: Color de acento dinámico
-      description:
-        Si tu sistema lo admite, el color primario se adaptará basándose
-        en el esquema de colores dinámico del sistema
+      description: Si tu sistema lo admite, el color primario se adaptará basándose en el esquema de colores dinámico del sistema
       feature: Dinámico
     custom_accent:
       title: Color de acento personalizado
-      description:
-        Elige un color de acento personalizado para personalizar la apariencia
-        de tu aplicación
+      description: Elige un color de acento personalizado para personalizar la apariencia de tu aplicación
       feature: Personalizado
     error: Error al cargar la configuración del tema
   ui_density:
     title: Densidad
-    description:
-      Ajusta el tamaño del texto y elementos de la interfaz para mejorar
-      la legibilidad en pantallas de alta resolución
+    description: Ajusta el tamaño del texto y elementos de la interfaz para mejorar la legibilidad en pantallas de alta resolución
     compact: Compacto
     normal: Normal
     large: Grande
@@ -312,51 +235,31 @@ settings:
       description: Eliminar todos los datos y restablecer la aplicación
       dialog:
         title: Restablecer Base de Datos
-        warning:
-          "Advertencia: Esta acción no se puede deshacer. Todos sus datos serán
-          eliminados permanentemente."
+        warning: "Advertencia: Esta acción no se puede deshacer. Todos sus datos serán eliminados permanentemente."
         confirm_text: Desliza para confirmar
         resetting: Restableciendo base de datos...
       restart_screen:
         completed_title: La base de datos ha sido restablecida exitosamente
         desktop_message: La aplicación se reiniciará en {seconds} segundos.
-        mobile_message:
-          Por favor reinicie manualmente la aplicación para completar
-          el proceso.
+        mobile_message: Por favor reinicie manualmente la aplicación para completar el proceso.
         restart_now_button: Reiniciar Ahora
       error:
         title: Restablecimiento fallido
-        message:
-          No se pudo restablecer la base de datos. Inténtelo de nuevo o contacte
-          con soporte si el problema persiste.
+        message: No se pudo restablecer la base de datos. Inténtelo de nuevo o contacte con soporte si el problema persiste.
         cancel: Cancelar
         retry: Reintentar
-        help_text:
-          Si el problema persiste, intente reiniciar la aplicación o verifique
-          si tiene suficiente espacio de almacenamiento y permisos.
-        permission_denied:
-          Permiso denegado. Verifique si la aplicación tiene acceso
-          para escribir en el almacenamiento.
-        disk_full:
-          No queda espacio en el dispositivo. Libere espacio de almacenamiento
-          e inténtelo de nuevo.
-        file_not_found:
-          Archivo de base de datos no encontrado. Esto es esperado en
-          una instalación nueva.
+        help_text: Si el problema persiste, intente reiniciar la aplicación o verifique si tiene suficiente espacio de almacenamiento y permisos.
+        permission_denied: Permiso denegado. Verifique si la aplicación tiene acceso para escribir en el almacenamiento.
+        disk_full: No queda espacio en el dispositivo. Libere espacio de almacenamiento e inténtelo de nuevo.
+        file_not_found: Archivo de base de datos no encontrado. Esto es esperado en una instalación nueva.
         file_access: Error de acceso a archivo
         sqlite: Error de base de datos
-        database_locked:
-          La base de datos está bloqueada. Cierre otras instancias
-          de la aplicación.
-        state_error:
-          Error de estado de la aplicación. Reinicie la aplicación e inténtelo
-          de nuevo.
+        database_locked: La base de datos está bloqueada. Cierre otras instancias de la aplicación.
+        state_error: Error de estado de la aplicación. Reinicie la aplicación e inténtelo de nuevo.
         timeout: Operación agotada. Inténtelo de nuevo.
   debug_logs:
     title: Registros de depuración
-    description:
-      Habilitar registro detallado en archivo para solución de problemas
-      y soporte
+    description: Habilitar registro detallado en archivo para solución de problemas y soporte
     load_settings_error: Error al cargar la configuración de registros de depuración
     update_settings_error: Error al actualizar la configuración de registros de depuración
     view:
@@ -364,48 +267,31 @@ settings:
       description: Ver y exportar registros de depuración actuales
     page:
       title: Registros de depuración
-      description:
-        Ver entradas actuales del registro de depuración. Los registros
-        se vacían y rotan automáticamente para evitar uso excesivo del disco.
+      description: Ver entradas actuales del registro de depuración. Los registros se vacían y rotan automáticamente para evitar uso excesivo del disco.
       content: Contenido del registro
       refresh: Actualizar registros
       copy: Copiar al portapapeles
       save_as: Guardar como archivo
       copied: Registros de depuración copiados al portapapeles
       load_error: Error al cargar registros de depuración
-      not_enabled:
-        El registro de depuración no está habilitado. Actívalo en Configuración
-        avanzada para comenzar a recopilar registros.
-      no_file:
-        No se encontró archivo de registro de depuración. Los registros se
-        crearán después de habilitar el registro de depuración y que la aplicación
-        genere entradas de registro.
-      empty:
-        El archivo de registro de depuración está vacío. Aún no se han registrado
-        entradas de registro.
+      not_enabled: El registro de depuración no está habilitado. Actívalo en Configuración avanzada para comenzar a recopilar registros.
+      no_file: No se encontró archivo de registro de depuración. Los registros se crearán después de habilitar el registro de depuración y que la aplicación genere entradas de registro.
+      empty: El archivo de registro de depuración está vacío. Aún no se han registrado entradas de registro.
       toggle_auto_scroll: Alternar desplazamiento automático
     export:
       dialog_title: Exportar registros de depuración
       error: Error al exportar registros
       success: Archivo de registro exportado exitosamente
-      no_logs_available:
-        No hay registros disponibles para exportar. Genere algunos
-        registros primero.
-      file_not_exist:
-        El archivo de registro no existe. Habilite el registro de depuración
-        y genere algunos registros.
+      no_logs_available: No hay registros disponibles para exportar. Genere algunos registros primero.
+      file_not_exist: El archivo de registro no existe. Habilite el registro de depuración y genere algunos registros.
   task:
     title: Configuración de tareas
     preferences:
       title: Preferencias de tareas
-      description:
-        Personalizar el comportamiento de las tareas y la configuración
-        predeterminada
+      description: Personalizar el comportamiento de las tareas y la configuración predeterminada
     default_estimated_time:
       title: Tiempo estimado predeterminado
-      description:
-        Establecer el tiempo estimado predeterminado para nuevas tareas.
-        Puede desactivar esto para evitar estimaciones de tiempo automáticas.
+      description: Establecer el tiempo estimado predeterminado para nuevas tareas. Puede desactivar esto para evitar estimaciones de tiempo automáticas.
       disabled: Desactivado
       minutes: "{minutes} minutos"
       load_error: Error al cargar el tiempo estimado predeterminado
@@ -413,9 +299,7 @@ settings:
       key_not_found: Clave de tiempo estimado predeterminado no encontrada
     default_planned_date_reminder:
       title: Recordatorio predeterminado
-      description:
-        Establecer automáticamente un recordatorio cuando se selecciona
-        una fecha planificada.
+      description: Establecer automáticamente un recordatorio cuando se selecciona una fecha planificada.
       save_error: Error al guardar la configuración de recordatorio predeterminado
       load_error: Error al cargar la configuración de recordatorio predeterminado
   section:
@@ -426,3 +310,9 @@ settings:
     advanced: Avanzado
     about: Acerca de
     flow: Flujo
+  habit:
+    title: Configuración de hábitos
+    description: Personaliza el comportamiento y preferencias de seguimiento de hábitos
+    three_state:
+      title: Activar seguimiento de 3 estados
+      description: Alterna entre los estados Ninguno, Desconocido y Completado.

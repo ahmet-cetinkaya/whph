@@ -30,48 +30,95 @@ habits:
     estimated_time: Szacowany czas
     estimated_time_not_set: Nie ustawiono
     help:
-      content: |
-        Buduj zrównoważone codzienne rutyny poprzez systematyczne śledzenie nawyków, które przekształcają twoje intencje w konsekwentne działania i mierzalny postęp w kierunku twoich celów.
+      content:
+        "Buduj zrównoważone codzienne rutyny poprzez systematyczne śledzenie
+        nawyków, które przekształcają twoje intencje w konsekwentne działania i mierzalny
+        postęp w kierunku twoich celów.
+
 
         ## ⚡ Dlaczego to ważne?
 
-        Formowanie nawyków to kamień węgielny rozwoju osobistego i trwałych osiągnięć. Konsekwentne codzienne działania kumulują się w czasie, tworząc niezwykłe rezultaty, podczas gdy systematyczne śledzenie zapewnia utrzymanie tempa i ciągłe doskonalenie rutyn.
+
+        Formowanie nawyków to kamień węgielny rozwoju osobistego i trwałych osiągnięć.
+        Konsekwentne codzienne działania kumulują się w czasie, tworząc niezwykłe
+        rezultaty, podczas gdy systematyczne śledzenie zapewnia utrzymanie tempa i
+        ciągłe doskonalenie rutyn.
+
 
         ## ⚙️ Strategiczne projektowanie nawyków
 
-        Twórz nawyki, które płynnie integrują się z twoim życiem i wspierają długoterminowe cele. Dobrze zaprojektowane nawyki stają się automatycznymi zachowaniami, które wymagają minimalnej siły woli do utrzymania.
+
+        Twórz nawyki, które płynnie integrują się z twoim życiem i wspierają długoterminowe
+        cele. Dobrze zaprojektowane nawyki stają się automatycznymi zachowaniami,
+        które wymagają minimalnej siły woli do utrzymania.
+
 
         - 📝 Projektuj jasne, konkretne nawyki z wykonalnymi opisami
+
         - 📅 Ustalaj konsekwentne harmonogramy zgodne z twoimi naturalnymi rytmami
+
         - 🏷️ Organizuj podobne nawyki w spójne grupy dla systematycznego śledzenia
+
         - 🎯 Łącz każdy nawyk z znaczącymi rezultatami i osobistymi wartościami
+
 
         ## ⏱️ Monitorowanie wydajności
 
-        Śledź wykonywanie nawyków, aby zrozumieć wzorce, mierzyć postęp i optymalizować podejście dla maksymalnej efektywności i zrównoważonego wzrostu.
+
+        Śledź wykonywanie nawyków, aby zrozumieć wzorce, mierzyć postęp i optymalizować
+        podejście dla maksymalnej efektywności i zrównoważonego wzrostu.
+
 
         - ⏳ Rejestruj czasy ukończenia, aby zrozumieć czas trwania i efektywność nawyku
+
         - 📊 Analizuj inwestycje czasowe w kategoriach nawyków dla zrównoważonego rozwoju
-        - 📈 Monitoruj trendy wydajności, aby zidentyfikować możliwości poprawy i optymalne terminy
-        - 🔄 Używaj wglądów z danych do udoskonalania trudności nawyku i planowania dla trwałego sukcesu
+
+        - 📈 Monitoruj trendy wydajności, aby zidentyfikować możliwości poprawy i optymalne
+        terminy
+
+        - 🔄 Używaj wglądów z danych do udoskonalania trudności nawyku i planowania
+        dla trwałego sukcesu
+
 
         ## 📅 Konsekwencja i momentum
 
-        Buduj i utrzymuj konsekwencję potrzebną do trwałej zmiany behawioralnej poprzez systematyczne śledzenie i strategiczny przegląd wzorców postępu.
 
-        - 📚 Przeglądaj historię ukończeń, aby ocenić postęp i zidentyfikować wzorce sukcesu
-        - 🔗 Śledź codzienne serie, aby budować i utrzymywać momentum dla długoterminowego sukcesu
+        Buduj i utrzymuj konsekwencję potrzebną do trwałej zmiany behawioralnej poprzez
+        systematyczne śledzenie i strategiczny przegląd wzorców postępu.
+
+
+        - 📚 Przeglądaj historię ukończeń, aby ocenić postęp i zidentyfikować wzorce
+        sukcesu
+
+        - 🔗 Śledź codzienne serie, aby budować i utrzymywać momentum dla długoterminowego
+        sukcesu
+
         - 📌 Monitoruj metryki konsekwencji, aby zwiększyć motywację i zaangażowanie
+
         - 🎯 Świętuj kamienie milowe i osiągnięcia, aby wzmocnić pozytywną zmianę behawioralną
+
 
         ## 🚀 Strategie optymalizacji
 
-        Stosuj sprawdzone techniki optymalizacji nawyków, które przyspieszają postęp i zapewniają, że twoje wysiłki przekładają się na znaczące, trwałe ulepszenia w życiu i produktywności.
 
-        - 🐾 **Zacznij od małego:** Rozpocznij od wykonalnych nawyków, które gwarantują wczesne zwycięstwa
-        - 🏷️ **Strategiczne grupowanie:** Organizuj nawyki według obszaru życia lub pory dnia
-        - 📊 **Dostosowania oparte na danych:** Używaj wglądów ze śledzenia do optymalizacji czasu i podejścia
-        - 🌅 **Skupienie na najlepszym czasie:** Planuj ważne nawyki podczas szczytowych okresów energii
+        Stosuj sprawdzone techniki optymalizacji nawyków, które przyspieszają postęp
+        i zapewniają, że twoje wysiłki przekładają się na znaczące, trwałe ulepszenia
+        w życiu i produktywności.
+
+
+        - 🐾 **Zacznij od małego:** Rozpocznij od wykonalnych nawyków, które gwarantują
+        wczesne zwycięstwa
+
+        - 🏷️ **Strategiczne grupowanie:** Organizuj nawyki według obszaru życia lub
+        pory dnia
+
+        - 📊 **Dostosowania oparte na danych:** Używaj wglądów ze śledzenia do optymalizacji
+        czasu i podejścia
+
+        - 🌅 **Skupienie na najlepszym czasie:** Planuj ważne nawyki podczas szczytowych
+        okresów energii
+
+        "
       description: Opis pomocy
       title: Przewodnik formowania nawyków i śledzenia wydajności
     records: Rekordy
@@ -113,6 +160,7 @@ habits:
     removing_tag: Nie udało się usunąć tagu
     saving_details: Nie udało się zapisać nawyku
     saving_habit: Nie udało się zapisać nawyku
+    update_habit: Nie udało się zaktualizować nawyku
     tag_already_exists: Ten tag został już dodany
     toggling_archive: Nie udało się przełączyć statusu archiwum
   goals:
@@ -139,54 +187,111 @@ habits:
   overview:
     filter_by_tags_tooltip: Filtruj według tagów
     help:
-      content: |
-        Opanuj swoje codzienne rutyny poprzez systematyczne śledzenie nawyków, które buduje konsekwencję, tworzy pozytywne momentum i napędza znaczący postęp w kierunku długoterminowych celów.
+      content:
+        "Opanuj swoje codzienne rutyny poprzez systematyczne śledzenie nawyków,
+        które buduje konsekwencję, tworzy pozytywne momentum i napędza znaczący postęp
+        w kierunku długoterminowych celów.
+
 
         ## ⚡ Dlaczego to ważne?
 
-        Codzienne zarządzanie nawykami to podstawa osobistej doskonałości i zrównoważonego wzrostu. Konsekwentne wykonywanie dobrze zaplanowanych nawyków tworzy złożone korzyści w czasie, podczas gdy systematyczne śledzenie zapewnia utrzymanie odpowiedzialności i wprowadzanie ulepszeń opartych na danych do rutyn.
+
+        Codzienne zarządzanie nawykami to podstawa osobistej doskonałości i zrównoważonego
+        wzrostu. Konsekwentne wykonywanie dobrze zaplanowanych nawyków tworzy złożone
+        korzyści w czasie, podczas gdy systematyczne śledzenie zapewnia utrzymanie
+        odpowiedzialności i wprowadzanie ulepszeń opartych na danych do rutyn.
+
 
         ## 📅 Codzienne wykonywanie i śledzenie
 
-        Rozwijaj niezawodny system wykonywania i monitorowania nawyków, który tworzy konsekwencję i buduje niepowstrzymane momentum w kierunku twoich celów.
 
-        - ✅ **Codzienne ukończenie:** Oznaczaj nawyki jako ukończone, aby budować łańcuchy konsekwencji
-        - 📆 **Widok wielodniowy:** Monitoruj wzorce w ciągu dni i tygodni dla kompleksowych wglądów
-        - 🔄 **Budowanie serii:** Utrzymuj kolejne dni ukończenia, aby zmaksymalizować motywacyjne momentum
+        Rozwijaj niezawodny system wykonywania i monitorowania nawyków, który tworzy
+        konsekwencję i buduje niepowstrzymane momentum w kierunku twoich celów.
+
+
+        - ✅ **Codzienne ukończenie:** Oznaczaj nawyki jako ukończone, aby budować
+        łańcuchy konsekwencji
+
+        - 📆 **Widok wielodniowy:** Monitoruj wzorce w ciągu dni i tygodni dla kompleksowych
+        wglądów
+
+        - 🔄 **Budowanie serii:** Utrzymuj kolejne dni ukończenia, aby zmaksymalizować
+        motywacyjne momentum
+
         - 📊 **Wizualizacja postępu:** Śledź wskaźniki ukończenia i wzorce w czasie
+
 
         ## ⏱️ Analiza czasu i optymalizacja
 
-        Monitoruj inwestycje czasowe w swoje nawyki, aby zoptymalizować codzienny harmonogram i zapewnić zrównoważony rozwój we wszystkich ważnych obszarach życia.
 
-        - ⏳ **Śledzenie czasu trwania:** Rejestruj rzeczywisty czas spędzony, aby zrozumieć wymagania nawyku
-        - 🏷️ **Analiza kategorii:** Grupuj nawyki według tagów, aby zobaczyć alokację czasu w obszarach życia
-        - ⏰ **Optymalizacja harmonogramu:** Równoważ czas nawyków dla zrównoważonego codziennego wykonywania
-        - 📈 **Poprawa efektywności:** Identyfikuj możliwości usprawnienia wykonywania nawyków
+        Monitoruj inwestycje czasowe w swoje nawyki, aby zoptymalizować codzienny
+        harmonogram i zapewnić zrównoważony rozwój we wszystkich ważnych obszarach
+        życia.
+
+
+        - ⏳ **Śledzenie czasu trwania:** Rejestruj rzeczywisty czas spędzony, aby
+        zrozumieć wymagania nawyku
+
+        - 🏷️ **Analiza kategorii:** Grupuj nawyki według tagów, aby zobaczyć alokację
+        czasu w obszarach życia
+
+        - ⏰ **Optymalizacja harmonogramu:** Równoważ czas nawyków dla zrównoważonego
+        codziennego wykonywania
+
+        - 📈 **Poprawa efektywności:** Identyfikuj możliwości usprawnienia wykonywania
+        nawyków
+
 
         ## 🗂️ Strategiczna organizacja
 
-        Stwórz system organizacyjny, który wspiera konsekwentne wykonywanie, jednocześnie zapewniając elastyczność dostosowania się do zmieniających się celów i okoliczności.
 
-        - 🏷️ **Znacząca kategoryzacja:** Grupuj nawyki według obszaru życia, czasu lub poziomu priorytetu
-        - ⚙️ **Elastyczne planowanie:** Projektuj czas nawyków, który współpracuje z twoim stylem życia i wzorcami energii
-        - 🎯 **Skupienie na priorytetach:** Zapewnij, że twoje najważniejsze nawyki otrzymują odpowiednią uwagę i energię
+        Stwórz system organizacyjny, który wspiera konsekwentne wykonywanie, jednocześnie
+        zapewniając elastyczność dostosowania się do zmieniających się celów i okoliczności.
+
+
+        - 🏷️ **Znacząca kategoryzacja:** Grupuj nawyki według obszaru życia, czasu
+        lub poziomu priorytetu
+
+        - ⚙️ **Elastyczne planowanie:** Projektuj czas nawyków, który współpracuje
+        z twoim stylem życia i wzorcami energii
+
+        - 🎯 **Skupienie na priorytetach:** Zapewnij, że twoje najważniejsze nawyki
+        otrzymują odpowiednią uwagę i energię
+
 
         ## 💡 Zasady mistrzostwa
 
-        Stosuj sprawdzone strategie mistrzostwa nawyków, które zapewniają, że twoje wysiłki kumulują się w trwałą zmianę behawioralną i mierzalne ulepszenia życia.
 
-        - 🐾 **Zacznij od małego:** Rozpocznij od nawyków, które możesz wykonywać konsekwentnie, następnie stopniowo zwiększaj trudność
-        - 🏷️ **Strategiczne grupowanie:** Organizuj nawyki, aby tworzyć logiczne sekwencje i systemy wsparcia
-        - 📊 **Przegląd wydajności:** Używaj danych śledzenia czasu, aby zrozumieć wzorce i zoptymalizować podejście
-        - 🌅 **Wykonywanie w najlepszym czasie:** Planuj najważniejsze nawyki podczas szczytowych okresów energii
+        Stosuj sprawdzone strategie mistrzostwa nawyków, które zapewniają, że twoje
+        wysiłki kumulują się w trwałą zmianę behawioralną i mierzalne ulepszenia życia.
+
+
+        - 🐾 **Zacznij od małego:** Rozpocznij od nawyków, które możesz wykonywać konsekwentnie,
+        następnie stopniowo zwiększaj trudność
+
+        - 🏷️ **Strategiczne grupowanie:** Organizuj nawyki, aby tworzyć logiczne sekwencje
+        i systemy wsparcia
+
+        - 📊 **Przegląd wydajności:** Używaj danych śledzenia czasu, aby zrozumieć
+        wzorce i zoptymalizować podejście
+
+        - 🌅 **Wykonywanie w najlepszym czasie:** Planuj najważniejsze nawyki podczas
+        szczytowych okresów energii
+
 
         ### 📊 Używanie widoku kalendarza
+
         - 📅 Przeglądaj wiele dni jednocześnie w widoku kalendarza.
+
         - ✅ Wizualnie śledź swoje wzorce ukończenia.
+
         - ⚡ Oszczędzaj czas dzięki szybkiemu oznaczaniu ukończenia.
+
         - 🎯 Zwiększaj motywację dzięki wizualnemu śledzeniu serii.
+
         - 🔄 Eksploruj przeszłe i przyszłe nawyki z elastyczną nawigacją dat.
+
+        "
       title: Przewodnik codziennego zarządzania nawykami i optymalizacji rutyn
     title: Nawyki
   reminder:
@@ -217,19 +322,33 @@ habits:
   tour:
     habit_building:
       title: Tworzenie nawyków
-      description: Buduj trwałe nawyki, śledząc codzienne aktywności. Ustawiaj przypomnienia, monitoruj swoje serie i wizualizuj postęp za pomocą szczegółowych statystyk.
+      description:
+        Buduj trwałe nawyki, śledząc codzienne aktywności. Ustawiaj przypomnienia,
+        monitoruj swoje serie i wizualizuj postęp za pomocą szczegółowych statystyk.
     create_habits:
       title: Tworzenie nowych nawyków
-      description: Zacznij budować nowe nawyki klikając ten przycisk. Ustaw cele, częstotliwości, przypomnienia i śledź wiele ukończeń dziennie dla elastycznego śledzenia nawyków.
+      description:
+        Zacznij budować nowe nawyki klikając ten przycisk. Ustaw cele,
+        częstotliwości, przypomnienia i śledź wiele ukończeń dziennie dla elastycznego
+        śledzenia nawyków.
     your_habits:
       title: Twoje nawyki
-      description: Przeglądaj i zarządzaj wszystkimi swoimi nawykami tutaj. Kliknij dowolny nawyk, aby zobaczyć szczegóły, statystyki i historię ukończenia. Oznaczaj nawyki jako ukończone codziennie, aby budować serie i śledzić postęp.
+      description:
+        Przeglądaj i zarządzaj wszystkimi swoimi nawykami tutaj. Kliknij
+        dowolny nawyk, aby zobaczyć szczegóły, statystyki i historię ukończenia. Oznaczaj
+        nawyki jako ukończone codziennie, aby budować serie i śledzić postęp.
     calendar_view:
       title: Widok kalendarza
-      description: Wizualizuj historię ukończeń nawyków na przestrzeni kilku dni. Zielony oznacza ukończone nawyki. Śledź swoją konsekwencję i obserwuj wzorce postępu w czasie.
+      description:
+        Wizualizuj historię ukończeń nawyków na przestrzeni kilku dni.
+        Zielony oznacza ukończone nawyki. Śledź swoją konsekwencję i obserwuj wzorce
+        postępu w czasie.
     filter_search:
       title: Filtr i wyszukiwanie
-      description: Znajdź konkretne nawyki przy użyciu tagów, fraz wyszukiwania lub filtrowania według statusu archiwum. Organizuj i zarządzaj swoimi nawykami efektywnie, aby pozostać skoncentrowanym na tym, co się liczy.
+      description:
+        Znajdź konkretne nawyki przy użyciu tagów, fraz wyszukiwania lub
+        filtrowania według statusu archiwum. Organizuj i zarządzaj swoimi nawykami
+        efektywnie, aby pozostać skoncentrowanym na tym, co się liczy.
   list_options:
     view_style_tooltip: Zmień styl widoku
   accessibility:
@@ -237,3 +356,11 @@ habits:
     open_details_hint: Otwórz szczegóły nawyku
     complete_habit_hint: Ukończ nawyk
     completion_status_hint: Status completion nawyku
+  actions:
+    mark_complete: Oznacz jako ukończone
+    mark_not_done: Oznacz jako nieukończone
+    clear_status: Wyczyść status
+  status:
+    complete: Ukończone
+    not_done: Nieukończone
+    unknown: Nieznany

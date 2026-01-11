@@ -10,14 +10,10 @@ settings:
     setting_not_found: Einstellung nicht gefunden
     version_mismatch: Version nicht gefunden
   export:
-    csv_description:
-      Sie können dies verwenden, um in Excel und ähnlichen Anwendungen
-      anzuzeigen.
+    csv_description: Sie können dies verwenden, um in Excel und ähnlichen Anwendungen anzuzeigen.
     error: Export fehlgeschlagen
     in_progress: Daten werden exportiert, bitte warten...
-    json_description:
-      Daten im lesbaren JSON-Format für Entwicklungs- und Debugging-Zwecke
-      exportieren.
+    json_description: Daten im lesbaren JSON-Format für Entwicklungs- und Debugging-Zwecke exportieren.
     select_directory: Export-Verzeichnis auswählen
     select_path: Speicherort auswählen
     select_type: Export-Format auswählen
@@ -30,9 +26,7 @@ settings:
     error: Import fehlgeschlagen
     error.entity: Fehler im Typ
     in_progress: Daten werden importiert, bitte warten...
-    migration_failed:
-      Import fehlgeschlagen. Bitte stellen Sie sicher, dass Sie die
-      neueste Version der App installiert haben.
+    migration_failed: Import fehlgeschlagen. Bitte stellen Sie sicher, dass Sie die neueste Version der App installiert haben.
     select_file: Datei auswählen
     strategy:
       merge: Mit vorhandenen Daten zusammenführen
@@ -43,9 +37,7 @@ settings:
     unsupported_version: Nicht unterstützte Version
     version_mismatch: Version nicht gefunden
   import_export:
-    description:
-      Exportieren Sie Ihre Daten in verschiedenen Formaten oder importieren
-      Sie Daten aus Backup-Dateien
+    description: Exportieren Sie Ihre Daten in verschiedenen Formaten oder importieren Sie Daten aus Backup-Dateien
     select_action: Import-/Export-Aktion auswählen
     title: Import/Export
   language:
@@ -71,61 +63,42 @@ settings:
     settings: Sound-Einstellungen
   permissions:
     app_usage:
-      description:
-        Diese App benötigt die Berechtigung zum Zugriff auf App-Nutzungsstatistiken,
-        um Ihre App-Nutzungsmuster genau zu verfolgen.
+      description: Diese App benötigt die Berechtigung zum Zugriff auf App-Nutzungsstatistiken, um Ihre App-Nutzungsmuster genau zu verfolgen.
       instructions: "Anweisungen:"
       steps:
         step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
-        step2:
-          Finden Sie im sich öffnenden Nutzungszugriff-Einstellungsbildschirm
-          "{appName}" in der Liste
+        step2: Finden Sie im sich öffnenden Nutzungszugriff-Einstellungsbildschirm "{appName}" in der Liste
         step3: Tippen Sie auf "{appName}"
-        step4:
-          Aktivieren Sie "Nutzungszugriff erlauben" oder schalten Sie den Schalter
-          auf EIN
+        step4: Aktivieren Sie "Nutzungszugriff erlauben" oder schalten Sie den Schalter auf EIN
       title: App-Nutzungsberechtigung
     battery_optimization:
-      description:
-        Für zuverlässige Benachrichtigungen muss diese App von der Batterieoptimierung
-        ausgeschlossen werden. Ohne dies können Erinnerungen verzögert oder gar nicht
-        zugestellt werden.
+      description: Für zuverlässige Benachrichtigungen muss diese App von der Batterieoptimierung ausgeschlossen werden. Ohne dies können Erinnerungen verzögert oder gar nicht zugestellt werden.
       importance: Die Position dieser Einstellung kann je nach Gerätehersteller variieren.
       instructions: "Anweisungen:"
-      not_disabled:
-        Batterieoptimierung ist noch aktiviert. Erteilen Sie die Berechtigung,
-        damit die entsprechende Funktion korrekt funktioniert.
+      not_disabled: Batterieoptimierung ist noch aktiviert. Erteilen Sie die Berechtigung, damit die entsprechende Funktion korrekt funktioniert.
       steps:
         step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
         step2: Finden Sie im sich öffnenden Einstellungsbildschirm "{appName}"
         step3: Tippen Sie auf "{appName}"
-        step4:
-          Stellen Sie sicher, dass "Hintergrundnutzung erlauben" auf der sich
-          öffnenden Seite aktiviert ist
+        step4: Stellen Sie sicher, dass "Hintergrundnutzung erlauben" auf der sich öffnenden Seite aktiviert ist
         step5: Tippen Sie auf "Hintergrundnutzung erlauben"
         step6: Wählen Sie "Uneingeschränkt"
       title: Batterieoptimierung
     exact_alarm:
-      description:
-        Android 12+ erfordert die Berechtigung, exakte Alarme zu planen,
-        damit Erinnerungen ordnungsgemäß funktionieren.
+      description: Android 12+ erfordert die Berechtigung, exakte Alarme zu planen, damit Erinnerungen ordnungsgemäß funktionieren.
       instructions: "Anweisungen:"
       steps:
         android12plus:
           step2: Gehen Sie zu Alarme & Erinnerungen und aktivieren Sie die Berechtigung
           step3: Bestätigen Sie die exakte Alarmberechtigung
         step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
-        step2:
-          Aktivieren Sie auf der sich öffnenden {appName} App-Seite für Alarme
-          & Erinnerungen "Alarme und Erinnerungen setzen erlauben"
+        step2: Aktivieren Sie auf der sich öffnenden {appName} App-Seite für Alarme & Erinnerungen "Alarme und Erinnerungen setzen erlauben"
       title: Exakte Alarmberechtigung
     fix_it: Reparieren
     granted: Berechtigung erteilt
     instructions: Anweisungen
     notification:
-      description:
-        Benachrichtigungsberechtigung ist erforderlich, um Erinnerungen
-        zu erhalten. Ohne diese Berechtigung erhalten Sie keine Benachrichtigungen.
+      description: Benachrichtigungsberechtigung ist erforderlich, um Erinnerungen zu erhalten. Ohne diese Berechtigung erhalten Sie keine Benachrichtigungen.
       instructions: "Anweisungen:"
       steps:
         android:
@@ -139,27 +112,15 @@ settings:
     open_terminal: Terminal öffnen
     firewall:
       title: Firewall-Berechtigung
-      description:
-        Erlauben Sie WHPH, über die {platform}-Firewall auf Port 44040
-        für die Gerätesynchronisierung zu kommunizieren.
-      dialog_description:
-        WHPH benötigt Firewall-Berechtigungen, damit andere Geräte
-        für die Synchronisierung eine Verbindung herstellen können. Folgen Sie den
-        unten stehenden Befehlen, um Ihre {platform}-Firewall zu konfigurieren. Sie
-        finden diese Schritte auch im Hilfe-Menü.
+      description: Erlauben Sie WHPH, über die {platform}-Firewall auf Port 44040 für die Gerätesynchronisierung zu kommunizieren.
+      dialog_description: WHPH benötigt Firewall-Berechtigungen, damit andere Geräte für die Synchronisierung eine Verbindung herstellen können. Folgen Sie den unten stehenden Befehlen, um Ihre {platform}-Firewall zu konfigurieren. Sie finden diese Schritte auch im Hilfe-Menü.
       dialog_info_text: "Hinweis: Sie finden diese Schritte auch im Hilfe-Menü."
       linux_manual_confirmation_button: Ich habe konfiguriert
-      save_confirmation_error:
-        Firewall-Bestätigungseinstellung konnte nicht gespeichert
-        werden
+      save_confirmation_error: Firewall-Bestätigungseinstellung konnte nicht gespeichert werden
       rule_added_success: Firewall-Regel erfolgreich hinzugefügt
-      rule_add_error:
-        Firewall-Regel konnte nicht hinzugefügt werden. Bitte versuchen
-        Sie es manuell.
+      rule_add_error: Firewall-Regel konnte nicht hinzugefügt werden. Bitte versuchen Sie es manuell.
       add_rule_button: Firewall-Regel hinzufügen
-      windows_auto_description: "Klicken Sie auf 'Firewall-Regel hinzufügen', um
-        die Firewall-Regel automatisch mit UAC-Berechtigungsanforderung hinzuzufügen.
-        Wenn Sie es vorziehen, manuell hinzuzufügen, folgen Sie den Schritten unten:"
+      windows_auto_description: "Klicken Sie auf 'Firewall-Regel hinzufügen', um die Firewall-Regel automatisch mit UAC-Berechtigungsanforderung hinzuzufügen. Wenn Sie es vorziehen, manuell hinzuzufügen, folgen Sie den Schritten unten:"
       instructions:
         linux:
           step1: Öffnen Sie ein Terminal
@@ -173,29 +134,15 @@ settings:
           step3: Klicken Sie im linken Bereich auf Eingehende Regeln
           step4: Klicken Sie im rechten Bereich auf Neue Regel...
           step5: Wählen Sie Port aus und klicken Sie auf Weiter
-          step6:
-            Wählen Sie TCP aus und geben Sie 44040 in das Feld für bestimmte
-            lokale Ports ein
+          step6: Wählen Sie TCP aus und geben Sie 44040 in das Feld für bestimmte lokale Ports ein
           step7: Wählen Sie Verbindung zulassen und klicken Sie auf Weiter
-          step8:
-            Aktivieren Sie alle Profile (Domäne, Privat, Öffentlich) und klicken
-            Sie auf Weiter
-          step9:
-            Geben Sie einen Namen wie WHPH Sync Port 44040 ein und klicken Sie
-            auf Fertig stellen
+          step8: Aktivieren Sie alle Profile (Domäne, Privat, Öffentlich) und klicken Sie auf Weiter
+          step9: Geben Sie einen Namen wie WHPH Sync Port 44040 ein und klicken Sie auf Fertig stellen
           method_gui_title: "Methode 1: Windows Firewall GUI"
           method_command_title: "Methode 2: Eingabeaufforderung"
-          step_open_defender:
-            Öffnen Sie die Windows Defender Firewall → Erweiterte
-            Einstellungen
-          step_create_inbound_rule:
-            'Eingehende Regel erstellen: Eingehende Regeln
-            → Neue Regel → Port → TCP → 44040 → Zulassen → Alle Profile → Name: "WHPH
-            Sync (Eingehend)"'
-          step_create_outbound_rule:
-            'Ausgehende Regel erstellen: Ausgehende Regeln
-            → Neue Regel → Port → TCP → 44040 → Zulassen → Alle Profile → Name: "WHPH
-            Sync (Ausgehend)"'
+          step_open_defender: Öffnen Sie die Windows Defender Firewall → Erweiterte Einstellungen
+          step_create_inbound_rule: 'Eingehende Regel erstellen: Eingehende Regeln → Neue Regel → Port → TCP → 44040 → Zulassen → Alle Profile → Name: "WHPH Sync (Eingehend)"'
+          step_create_outbound_rule: 'Ausgehende Regel erstellen: Ausgehende Regeln → Neue Regel → Port → TCP → 44040 → Zulassen → Alle Profile → Name: "WHPH Sync (Ausgehend)"'
           alternative_command_prompt:
             title: "Alternative: Verwenden Sie die Eingabeaufforderung"
             steps:
@@ -205,46 +152,29 @@ settings:
         step_run_commands: "2. Führen Sie diese Befehle aus:"
         step_open_terminal: 1. Öffnen Sie ein Terminal
         step_run_command: "2. Führen Sie diesen Befehl aus (erfordert sudo-Rechte):"
-        step_click_confirmation:
-          3. Klicken Sie nach Ausführung des Befehls auf die
-          Bestätigungsschaltfläche unten
-      manual_configure_instruction:
-        "Konfigurieren Sie die Firewall-Regeln manuell
-        für die Synchronisierung (erfordert Administratorrechte):"
+        step_click_confirmation: 3. Klicken Sie nach Ausführung des Befehls auf die Bestätigungsschaltfläche unten
+      manual_configure_instruction: "Konfigurieren Sie die Firewall-Regeln manuell für die Synchronisierung (erfordert Administratorrechte):"
     startup:
-      description:
-        Damit die App automatisch mit Ihrem Gerät startet, ist eine Autostart-Berechtigung
-        erforderlich. Dies stellt sicher, dass Erinnerungen und Benachrichtigungen
-        auch nach Geräteneustarts ordnungsgemäß funktionieren.
-      importance:
-        Die Position der Autostart-Einstellung variiert oder ist möglicherweise
-        nicht vorhanden, je nach Gerätehersteller.
+      description: Damit die App automatisch mit Ihrem Gerät startet, ist eine Autostart-Berechtigung erforderlich. Dies stellt sicher, dass Erinnerungen und Benachrichtigungen auch nach Geräteneustarts ordnungsgemäß funktionieren.
+      importance: Die Position der Autostart-Einstellung variiert oder ist möglicherweise nicht vorhanden, je nach Gerätehersteller.
       instructions: "Anweisungen:"
       steps:
         step1: Drücken Sie die Schaltfläche "Einstellung öffnen"
-        step2:
-          Finden Sie im sich öffnenden Einstellungsbildschirm die "{appName}"
-          App
-        step3:
-          Aktivieren Sie "Autostart", "Automatisch ausführen", "Beim Booten starten"
-          oder ähnliche Berechtigung
+        step2: Finden Sie im sich öffnenden Einstellungsbildschirm die "{appName}" App
+        step3: Aktivieren Sie "Autostart", "Automatisch ausführen", "Beim Booten starten" oder ähnliche Berechtigung
       title: Autostart-Berechtigung
     title: Berechtigungen
   startup:
     disable_error: Startup-Einstellung konnte nicht deaktiviert werden
     enable_error: Startup-Einstellung konnte nicht aktiviert werden
-    subtitle:
-      Tippen Sie, um die Systemeinstellungen zu öffnen und die Autostart-Berechtigung
-      für die App zu aktivieren
+    subtitle: Tippen Sie, um die Systemeinstellungen zu öffnen und die Autostart-Berechtigung für die App zu aktivieren
     title: Beim Start starten
   sync_devices:
     title: Geräte synchronisieren
   title: Einstellungen
   backup:
     title: Sicherung
-    description:
-      Erstellen und wiederherstellen Sie komprimierte Sicherungen Ihrer
-      Anwendungsdaten im sicheren .whph-Format
+    description: Erstellen und wiederherstellen Sie komprimierte Sicherungen Ihrer Anwendungsdaten im sicheren .whph-Format
     export:
       title: Sicherung erstellen
       description: Exportieren Sie alle Ihre Daten in eine komprimierte .whph-Sicherungsdatei
@@ -269,9 +199,7 @@ settings:
     invalid_format: Ungültiges Sicherungsdateiformat
     invalid_format_error: Ungültiges Sicherungsdateiformat
     corrupted: Sicherungsdatei ist beschädigt oder defekt
-    export_description:
-      Erstellen Sie eine komprimierte Sicherungsdatei mit all Ihren
-      Daten
+    export_description: Erstellen Sie eine komprimierte Sicherungsdatei mit all Ihren Daten
   theme:
     title: Design
     description: Passen Sie das Erscheinungsbild von WHPH an
@@ -284,22 +212,16 @@ settings:
         description: Systemdesign-Einstellungen folgen
     dynamic_accent:
       title: Dynamische Akzentfarbe
-      description:
-        Falls Ihr System es unterstützt, wird sich die Primärfarbe basierend
-        auf dem dynamischen Farbschema des Systems anpassen
+      description: Falls Ihr System es unterstützt, wird sich die Primärfarbe basierend auf dem dynamischen Farbschema des Systems anpassen
       feature: Dynamisch
     custom_accent:
       title: Benutzerdefinierte Akzentfarbe
-      description:
-        Wählen Sie eine benutzerdefinierte Akzentfarbe, um das Erscheinungsbild
-        Ihrer App zu personalisieren
+      description: Wählen Sie eine benutzerdefinierte Akzentfarbe, um das Erscheinungsbild Ihrer App zu personalisieren
       feature: Benutzerdefiniert
     error: Fehler beim Laden der Design-Einstellungen
   ui_density:
     title: Dichte
-    description:
-      Anpassung der Größe von Text und UI-Elementen zur Verbesserung der
-      Lesbarkeit auf hochauflösenden Displays
+    description: Anpassung der Größe von Text und UI-Elementen zur Verbesserung der Lesbarkeit auf hochauflösenden Displays
     compact: Kompakt
     normal: Normal
     large: Groß
@@ -313,47 +235,27 @@ settings:
       description: Alle Daten löschen und Anwendung zurücksetzen
       dialog:
         title: Datenbank zurücksetzen
-        warning:
-          "Warnung: Diese Aktion kann nicht rückgängig gemacht werden. Alle
-          Ihre Daten werden permanent gelöscht."
+        warning: "Warnung: Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Daten werden permanent gelöscht."
         confirm_text: Wischen Sie zum Bestätigen
         resetting: Datenbank wird zurückgesetzt...
       restart_screen:
         completed_title: Datenbank wurde erfolgreich zurückgesetzt
         desktop_message: Die Anwendung wird in {seconds} Sekunden neu gestartet.
-        mobile_message:
-          Bitte starten Sie die Anwendung manuell neu, um den Vorgang
-          abzuschließen.
+        mobile_message: Bitte starten Sie die Anwendung manuell neu, um den Vorgang abzuschließen.
         restart_now_button: Jetzt neu starten
       error:
         title: Zurücksetzen fehlgeschlagen
-        message:
-          Datenbank konnte nicht zurückgesetzt werden. Bitte versuchen Sie
-          es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin
-          besteht.
+        message: Datenbank konnte nicht zurückgesetzt werden. Bitte versuchen Sie es erneut oder kontaktieren Sie den Support, wenn das Problem weiterhin besteht.
         cancel: Abbrechen
         retry: Wiederholen
-        help_text:
-          Wenn das Problem weiterhin besteht, versuchen Sie bitte, die Anwendung
-          neu zu starten oder überprüfen Sie, ob Sie genügend Speicherplatz und Berechtigungen
-          haben.
-        permission_denied:
-          Zugriff verweigert. Bitte prüfen Sie, ob die Anwendung
-          Schreibzugriff auf den Speicher hat.
-        disk_full:
-          Kein Speicherplatz mehr auf dem Gerät. Bitte Speicherplatz freigeben
-          und erneut versuchen.
-        file_not_found:
-          Datenbankdatei nicht gefunden. Dies ist bei einer Neuinstallation
-          erwartet.
+        help_text: Wenn das Problem weiterhin besteht, versuchen Sie bitte, die Anwendung neu zu starten oder überprüfen Sie, ob Sie genügend Speicherplatz und Berechtigungen haben.
+        permission_denied: Zugriff verweigert. Bitte prüfen Sie, ob die Anwendung Schreibzugriff auf den Speicher hat.
+        disk_full: Kein Speicherplatz mehr auf dem Gerät. Bitte Speicherplatz freigeben und erneut versuchen.
+        file_not_found: Datenbankdatei nicht gefunden. Dies ist bei einer Neuinstallation erwartet.
         file_access: Dateizugriffsfehler
         sqlite: Datenbankfehler
-        database_locked:
-          Datenbank ist gesperrt. Bitte schließen Sie andere Instanzen
-          der Anwendung.
-        state_error:
-          Anwendungsstatusfehler. Bitte starten Sie die Anwendung neu und
-          versuchen Sie es erneut.
+        database_locked: Datenbank ist gesperrt. Bitte schließen Sie andere Instanzen der Anwendung.
+        state_error: Anwendungsstatusfehler. Bitte starten Sie die Anwendung neu und versuchen Sie es erneut.
         timeout: Operation abgelaufen. Bitte versuchen Sie es erneut.
   debug_logs:
     title: Debug-Protokolle
@@ -365,35 +267,23 @@ settings:
       description: Aktuelle Debug-Protokolle anzeigen und exportieren
     page:
       title: Debug-Protokolle
-      description:
-        Aktuelle Debug-Protokolleinträge anzeigen. Protokolle werden automatisch
-        geleert und rotiert, um übermäßige Festplattennutzung zu vermeiden.
+      description: Aktuelle Debug-Protokolleinträge anzeigen. Protokolle werden automatisch geleert und rotiert, um übermäßige Festplattennutzung zu vermeiden.
       content: Protokollinhalt
       refresh: Protokolle aktualisieren
       copy: In Zwischenablage kopieren
       save_as: Als Datei speichern
       copied: Debug-Protokolle in Zwischenablage kopiert
       load_error: Fehler beim Laden der Debug-Protokolle
-      not_enabled:
-        Debug-Protokollierung ist nicht aktiviert. Aktivieren Sie sie in
-        den erweiterten Einstellungen, um mit der Sammlung von Protokollen zu beginnen.
-      no_file:
-        Keine Debug-Protokolldatei gefunden. Protokolle werden erstellt, nachdem
-        die Debug-Protokollierung aktiviert wurde und die App Protokolleinträge generiert.
-      empty:
-        Debug-Protokolldatei ist leer. Es wurden noch keine Protokolleinträge
-        aufgezeichnet.
+      not_enabled: Debug-Protokollierung ist nicht aktiviert. Aktivieren Sie sie in den erweiterten Einstellungen, um mit der Sammlung von Protokollen zu beginnen.
+      no_file: Keine Debug-Protokolldatei gefunden. Protokolle werden erstellt, nachdem die Debug-Protokollierung aktiviert wurde und die App Protokolleinträge generiert.
+      empty: Debug-Protokolldatei ist leer. Es wurden noch keine Protokolleinträge aufgezeichnet.
       toggle_auto_scroll: Automatisches Scrollen umschalten
     export:
       dialog_title: Debug-Protokolle exportieren
       error: Fehler beim Exportieren der Protokolle
       success: Protokolldatei erfolgreich exportiert
-      no_logs_available:
-        Keine Protokolle zum Exportieren verfügbar. Generieren Sie
-        zuerst einige Protokolle.
-      file_not_exist:
-        Protokolldatei existiert nicht. Aktivieren Sie die Debug-Protokollierung
-        und generieren Sie einige Protokolle.
+      no_logs_available: Keine Protokolle zum Exportieren verfügbar. Generieren Sie zuerst einige Protokolle.
+      file_not_exist: Protokolldatei existiert nicht. Aktivieren Sie die Debug-Protokollierung und generieren Sie einige Protokolle.
   task:
     title: Aufgabeneinstellungen
     preferences:
@@ -401,9 +291,7 @@ settings:
       description: Aufgabeverhalten und Standardeinstellungen anpassen
     default_estimated_time:
       title: Standardmäßige geschätzte Zeit
-      description:
-        Standardmäßige geschätzte Zeit für neue Aufgaben festlegen. Sie
-        können dies deaktivieren, um automatische Zeitschätzungen zu vermeiden.
+      description: Standardmäßige geschätzte Zeit für neue Aufgaben festlegen. Sie können dies deaktivieren, um automatische Zeitschätzungen zu vermeiden.
       disabled: Deaktiviert
       minutes: "{minutes} Minuten"
       load_error: Fehler beim Laden der Standard-Zeitschätzung
@@ -411,9 +299,7 @@ settings:
       key_not_found: Standard-Zeitschätzung-Schlüssel nicht gefunden
     default_planned_date_reminder:
       title: Standarderinnerung
-      description:
-        Automatisch eine Erinnerung festlegen, wenn ein geplantes Datum
-        ausgewählt wird.
+      description: Automatisch eine Erinnerung festlegen, wenn ein geplantes Datum ausgewählt wird.
       save_error: Fehler beim Speichern der Standarderinnerungseinstellung
       load_error: Fehler beim Laden der Standarderinnerungseinstellung
   section:
@@ -424,3 +310,9 @@ settings:
     advanced: Erweitert
     about: Über
     flow: Ablauf
+  habit:
+    title: Gewohnheiteneinstellungen
+    description: Gewohnheitsverhalten und Einstellungen anpassen
+    three_state:
+      title: 3-Status-Tracking aktivieren
+      description: Wechseln Sie zwischen den Status Keiner, Unbekannt und Erledigt.

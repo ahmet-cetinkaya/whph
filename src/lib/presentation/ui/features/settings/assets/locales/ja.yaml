@@ -141,12 +141,8 @@ settings:
           method_gui_title: 方法1：WindowsファイアウォールGUI
           method_command_title: 方法2：コマンドプロンプト
           step_open_defender: Windows Defenderファイアウォール→詳細設定を開く
-          step_create_inbound_rule:
-            受信ルールを作成：受信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH
-            Sync（受信）」
-          step_create_outbound_rule:
-            送信ルールを作成：送信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH
-            Sync（送信）」
+          step_create_inbound_rule: 受信ルールを作成：受信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH Sync（受信）」
+          step_create_outbound_rule: 送信ルールを作成：送信ルール→新しいルール→ポート→TCP→44040→許可→すべてのプロファイル→名前：「WHPH Sync（送信）」
           alternative_command_prompt:
             title: 代替：コマンドプロンプトを使用
             steps:
@@ -314,3 +310,9 @@ settings:
     advanced: 詳細
     about: について
     flow: フロー
+  habit:
+    title: 習慣設定
+    description: 習慣の追跡動作と設定をカスタマイズ
+    three_state:
+      title: 3状態追跡を有効にする
+      description: なし、不明、完了の状態を切り替えます。

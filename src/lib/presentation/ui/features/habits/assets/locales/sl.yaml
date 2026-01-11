@@ -31,48 +31,95 @@ habits:
     estimated_time: Približan Čas
     estimated_time_not_set: Ni nastavljeno
     help:
-      content: |
-        Zgradite trajnostne dnevne rutine z sistematičnim sledenjem navadam, ki pretvorijo vaše namere v dosledne akcije in merljiv napredek proti vašim ciljem.
+      content:
+        "Zgradite trajnostne dnevne rutine z sistematičnim sledenjem navadam,
+        ki pretvorijo vaše namere v dosledne akcije in merljiv napredek proti vašim
+        ciljem.
+
 
         ## ⚡ Zakaj Je Pomembno?
 
-        Ustanavljanje navad je temelj osebne rasti in trajnih dosežkov. Dosledne dnevne akcije se nabirajo s časom, da ustvarijo opazne rezultate, medtem ko sistematično sledenje zagotavlja, da ohranite zagon in naredite kontinuirane izboljšave v vaših rutinah.
+
+        Ustanavljanje navad je temelj osebne rasti in trajnih dosežkov. Dosledne dnevne
+        akcije se nabirajo s časom, da ustvarijo opazne rezultate, medtem ko sistematično
+        sledenje zagotavlja, da ohranite zagon in naredite kontinuirane izboljšave
+        v vaših rutinah.
+
 
         ## ⚙️ Strategično Načrtovanje Navad
 
-        Ustvarite navade, ki se brezhibno integrirajo v vaše življenje in podpirajo vaše dolgoročne cilje. Dobro načrtovane navade postanejo avtomatske vedenjske, ki zahtevajo minimalno voljo za vzdrževanje.
+
+        Ustvarite navade, ki se brezhibno integrirajo v vaše življenje in podpirajo
+        vaše dolgoročne cilje. Dobro načrtovane navade postanejo avtomatske vedenjske,
+        ki zahtevajo minimalno voljo za vzdrževanje.
+
 
         - 📝 Načrtujte jasne, specifične navade z akcionimi opisi
+
         - 📅 Ustanovite dosledne urnike, ki se ujemajo z vašimi naravnimi ritmi
+
         - 🏷️ Organizirajte podobne navade v koherentne skupine za sistematično sledenje
+
         - 🎯 Povežite vsako navado z smiselnimi izidi in osebnimi vrednotami
+
 
         ## ⏱️ Spremljanje Učinkovitosti
 
-        Spremljajte izvajanje vaših navad, da razumete vzorce, merite napredek in optimizirate pristop za maksimalno učinkovitost in trajnostno rast.
+
+        Spremljajte izvajanje vaših navad, da razumete vzorce, merite napredek in
+        optimizirate pristop za maksimalno učinkovitost in trajnostno rast.
+
 
         - ⏳ Zabeležite čase dokončanja, da razumete trajanje in učinkovitost navade
+
         - 📊 Analizirajte časovne naložbe v kategorije navad za uravnotežen razvoj
-        - 📈 Spremljajte trende učinkovitosti za identifikacijo priložnosti za izboljšave in optimalen čas
-        - 🔄 Uporabite vpoglede iz podatkov za rafiniranje težavnosti navade in urnika za trajnostni uspeh
+
+        - 📈 Spremljajte trende učinkovitosti za identifikacijo priložnosti za izboljšave
+        in optimalen čas
+
+        - 🔄 Uporabite vpoglede iz podatkov za rafiniranje težavnosti navade in urnika
+        za trajnostni uspeh
+
 
         ## 📅 Doslednost & Zagon
 
-        Zgradite in ohranite doslednost, potrebno za trajno vedenjsko spremembo z sistematičnim sledenjem in strateško pregledom vaših vzorcev napredka.
 
-        - 📚 Preglejte zgodovino dokončanj za oceno napredka in identifikacijo vzorcev uspeha
-        - 🔗 Spremljajte dnevne serije za gradnjo in ohranjanje zagona za dolgoročni uspeh
+        Zgradite in ohranite doslednost, potrebno za trajno vedenjsko spremembo z
+        sistematičnim sledenjem in strateško pregledom vaših vzorcev napredka.
+
+
+        - 📚 Preglejte zgodovino dokončanj za oceno napredka in identifikacijo vzorcev
+        uspeha
+
+        - 🔗 Spremljajte dnevne serije za gradnjo in ohranjanje zagona za dolgoročni
+        uspeh
+
         - 📌 Spremljajte metrike doslednosti za izboljšanje motivacije in predanosti
+
         - 🎯 Proslavite mejnike in dosežke za krepitev pozitivne vedenjske spremembe
+
 
         ## 🚀 Strategije Optimizacije
 
-        Uporabite preverjene tehnike za optimizacijo navad, ki pospešijo napredek in zagotovijo, da se vaši napori pretvorijo v smiselne, trajne izboljšave v vašem življenju in produktivnosti.
 
-        - 🐾 **Začnite Majhno:** Začnite z upravljivimi navadami, ki zagotavljajo zgodnje zmage
-        - 🏷️ **Strategično Grupiranje:** Organizirajte navade po področju življenja ali času dneva
-        - 📊 **Prilagoditve na Podlagi Podatkov:** Uporabite vpoglede sledenja za optimizacijo časa in pristopa
-        - 🌅 **Fokus na Vrhunski Čas:** Načrtujte pomembne navade v vaših vrhunskih obdobjih energije
+        Uporabite preverjene tehnike za optimizacijo navad, ki pospešijo napredek
+        in zagotovijo, da se vaši napori pretvorijo v smiselne, trajne izboljšave
+        v vašem življenju in produktivnosti.
+
+
+        - 🐾 **Začnite Majhno:** Začnite z upravljivimi navadami, ki zagotavljajo zgodnje
+        zmage
+
+        - 🏷️ **Strategično Grupiranje:** Organizirajte navade po področju življenja
+        ali času dneva
+
+        - 📊 **Prilagoditve na Podlagi Podatkov:** Uporabite vpoglede sledenja za optimizacijo
+        časa in pristopa
+
+        - 🌅 **Fokus na Vrhunski Čas:** Načrtujte pomembne navade v vaših vrhunskih
+        obdobjih energije
+
+        "
       description: Opis pomoči
       title: Vodnik za Ustanavljanje Navad & Spremljanje Učinkovitosti
     records: Zabeležke
@@ -80,7 +127,9 @@ habits:
     statistics:
       archived_note: "Arhivirano na:"
       archived_on: Arhivirano
-      archived_warning: Statistike so prikazane do datuma arhiviranja. {startDate} - {archivedDate}
+      archived_warning:
+        Statistike so prikazane do datuma arhiviranja. {startDate}
+        - {archivedDate}
       completed: Dokončano
       completions: dokončanja
       from: Od
@@ -117,14 +166,17 @@ habits:
     removing_tag: Napaka pri odstranjevanju oznake
     saving_details: Napaka pri shranjevanju navade
     saving_habit: Napaka pri shranjevanju navade
+    update_habit: Posodobitev navade ni uspela
     tag_already_exists: Ta oznaka je že dodana
     toggling_archive: Napaka pri preklopu stanja arhiva
   goals:
     current_goal: Cilj
     days_unit: Dni v tem obdobju
-    description: |
-      Želite vaditi navado z določeno frekvenco namesto
+    description: "Želite vaditi navado z določeno frekvenco namesto
+
       vsak dan? Nato nastavite prilagojen cilj.
+
+      "
     enable: Omogoči Prilagojene Cilje
     goal: Prilagojen Cilj
     goal_format: "{count} krat v {dayCount} dneh"
@@ -143,54 +195,110 @@ habits:
   overview:
     filter_by_tags_tooltip: Filtriraj po oznakah
     help:
-      content: |
-        Opravite svoje dnevne rutine z sistematičnim sledenjem navadam, ki gradi doslednost, ustvarja pozitiven zagon in spodbuja smiseln napredek proti vašim dolgoročnim ciljem.
+      content:
+        "Opravite svoje dnevne rutine z sistematičnim sledenjem navadam, ki
+        gradi doslednost, ustvarja pozitiven zagon in spodbuja smiseln napredek proti
+        vašim dolgoročnim ciljem.
+
 
         ## ⚡ Zakaj Je Pomembno?
 
-        Dnevno upravljanje navad je temelj osebne odličnosti in trajnostne rasti. Dosledna izvedba dobro načrtovanih navad ustvarja sestavljene koristi s časom, medtem ko sistematično sledenje zagotavlja, da ohranite odgovornost in naredite izboljšave na podlagi podatkov v vaših rutinah.
+
+        Dnevno upravljanje navad je temelj osebne odličnosti in trajnostne rasti.
+        Dosledna izvedba dobro načrtovanih navad ustvarja sestavljene koristi s časom,
+        medtem ko sistematično sledenje zagotavlja, da ohranite odgovornost in naredite
+        izboljšave na podlagi podatkov v vaših rutinah.
+
 
         ## 📅 Dnevna Izvedba & Sledenje
 
-        Razvijte zanesljiv sistem za izvajanje in spremljanje vaših navad, ki ustvarja doslednost in gradi neustavljiv zagon proti vašim ciljem.
+
+        Razvijte zanesljiv sistem za izvajanje in spremljanje vaših navad, ki ustvarja
+        doslednost in gradi neustavljiv zagon proti vašim ciljem.
+
 
         - ✅ **Dnevno Dokončanje:** Oznaci navade kot dokončane za gradnjo verig doslednosti
-        - 📆 **Multi-Dnevni Pogled:** Spremljajte vzorce čez dneve in tedne za celovite vpoglede
-        - 🔄 **Gradnja Serij:** Ohranite zaporedne dneve dokončanja za maksimaliziranje motiva za zagon
-        - 📊 **Vizualizacija Napredka:** Spremljajte stopnje in vzorce dokončanja s časom
+
+        - 📆 **Multi-Dnevni Pogled:** Spremljajte vzorce čez dneve in tedne za celovite
+        vpoglede
+
+        - 🔄 **Gradnja Serij:** Ohranite zaporedne dneve dokončanja za maksimaliziranje
+        motiva za zagon
+
+        - 📊 **Vizualizacija Napredka:** Spremljajte stopnje in vzorce dokončanja s
+        časom
+
 
         ## ⏱️ Analiza Časa & Optimizacija
 
-        Spremljajte naložbe časa v vaše navade za optimizacijo vašega dnevnega urnika in zagotavljanje uravnoteženega razvoja čez vse pomembne življenjske področja.
 
-        - ⏳ **Sledenje Trajanja:** Zabeležite dejanski porabljen čas za razumevanje zahtev navade
-        - 🏷️ **Analiza Kategorije:** Grupirajte navade po oznakah za ogled razporeditve časa čez življenjska področja
+        Spremljajte naložbe časa v vaše navade za optimizacijo vašega dnevnega urnika
+        in zagotavljanje uravnoteženega razvoja čez vse pomembne življenjske področja.
+
+
+        - ⏳ **Sledenje Trajanja:** Zabeležite dejanski porabljen čas za razumevanje
+        zahtev navade
+
+        - 🏷️ **Analiza Kategorije:** Grupirajte navade po oznakah za ogled razporeditve
+        časa čez življenjska področja
+
         - ⏰ **Optimizacija Urnika:** Uravnotežite čas navad za trajnostno dnevno izvedbo
-        - 📈 **Izboljšava Učinkovitosti:** Identificirajte priložnosti za poenostavitev izvedbe navad
+
+        - 📈 **Izboljšava Učinkovitosti:** Identificirajte priložnosti za poenostavitev
+        izvedbe navad
+
 
         ## 🗂️ Strategična Organizacija
 
-        Ustvarite organizacijski sistem, ki podpira dosledno izvedbo, medtem ko zagotavlja fleksibilnost za prilagajanje, ko se vaši cilji in okoliščine razvijajo.
 
-        - 🏷️ **Smiselna Kategorizacija:** Grupirajte navade po življenjskem področju, času ali ravni prioritete
-        - ⚙️ **Fleksibilno Načrtovanje:** Načrtujte čas navad, ki deluje z vašim življenjskim slogom in vzorci energije
-        - 🎯 **Fokus Prioritete:** Zagotovite, da vaše najpomembnejše navade dobijo ustrezno pozornost in energijo
+        Ustvarite organizacijski sistem, ki podpira dosledno izvedbo, medtem ko zagotavlja
+        fleksibilnost za prilagajanje, ko se vaši cilji in okoliščine razvijajo.
+
+
+        - 🏷️ **Smiselna Kategorizacija:** Grupirajte navade po življenjskem področju,
+        času ali ravni prioritete
+
+        - ⚙️ **Fleksibilno Načrtovanje:** Načrtujte čas navad, ki deluje z vašim življenjskim
+        slogom in vzorci energije
+
+        - 🎯 **Fokus Prioritete:** Zagotovite, da vaše najpomembnejše navade dobijo
+        ustrezno pozornost in energijo
+
 
         ## 💡 Principi Mojstrstva
 
-        Uporabite preverjene strategije za mojstrstvo navad, ki zagotavljajo, da se vaši napori nabirajo v trajno vedenjsko spremembo in merljivih izboljšavah življenja.
 
-        - 🐾 **Začnite Majhno:** Začnite z navadami, ki jih lahko izvedete dosledno, nato postopoma povečajte težavnost
-        - 🏷️ **Strategično Grupiranje:** Organizirajte navade za ustvarjanje logičnih sekvenc in sistemov podpore
-        - 📊 **Pregled Učinkovitosti:** Uporabite podatke sledenja časa za razumevanje vzorcev in optimizacijo pristopa
-        - 🌅 **Izvedba Vrhunskega Časa:** Načrtujte vaše najpomembnejše navade v obdobjih vrhunec energije
+        Uporabite preverjene strategije za mojstrstvo navad, ki zagotavljajo, da se
+        vaši napori nabirajo v trajno vedenjsko spremembo in merljivih izboljšavah
+        življenja.
+
+
+        - 🐾 **Začnite Majhno:** Začnite z navadami, ki jih lahko izvedete dosledno,
+        nato postopoma povečajte težavnost
+
+        - 🏷️ **Strategično Grupiranje:** Organizirajte navade za ustvarjanje logičnih
+        sekvenc in sistemov podpore
+
+        - 📊 **Pregled Učinkovitosti:** Uporabite podatke sledenja časa za razumevanje
+        vzorcev in optimizacijo pristopa
+
+        - 🌅 **Izvedba Vrhunskega Časa:** Načrtujte vaše najpomembnejše navade v obdobjih
+        vrhunec energije
+
 
         ### 📊 Uporaba Pogleda Koledarja
+
         - 📅 Poglejte več dni hkrati v pogledu koledarja.
+
         - ✅ Vizualno spremljajte vaše vzorce dokončanja.
+
         - ⚡ Prihranite čas z hitro označevanjem dokončanja.
+
         - 🎯 Povečajte motivacijo z vizualnim sledenjem serij.
+
         - 🔄 Raziskujte pretekle in prihodnje navade z fleksibilno navigacijo datuma.
+
+        "
       title: Dnevno Upravljanje Navad & Vodnik Optimizacije Rutine
     title: Navade
   reminder:
@@ -239,19 +347,34 @@ habits:
   tour:
     habit_building:
       title: Gradnja Navad
-      description: Gradite trajne navade z sledenjem dnevnih dejavnosti. Nastavite opomnike, spremljajte svoje serije in vizualizirajte napredek s podrobnimi statistikami.
+      description:
+        Gradite trajne navade z sledenjem dnevnih dejavnosti. Nastavite
+        opomnike, spremljajte svoje serije in vizualizirajte napredek s podrobnimi
+        statistikami.
     create_habits:
       title: Ustvarjanje Novih Navad
-      description: Začnite graditi nove navade s klikom na to gumb. Nastavite cilje, frekvence, opomnike in sledite več dokončanjem na dan za fleksibilno sledenje navad.
+      description:
+        Začnite graditi nove navade s klikom na to gumb. Nastavite cilje,
+        frekvence, opomnike in sledite več dokončanjem na dan za fleksibilno sledenje
+        navad.
     your_habits:
       title: Vaše Navade
-      description: Tukaj si oglejte in upravljajte vse svoje navade. Kliknite katerokoli navado, da vidite podrobnosti, statistike in zgodovino dokončanja. Dnevno označujte navade kot dokončane za gradnjo serij in sledenje svojemu napredku.
+      description:
+        Tukaj si oglejte in upravljajte vse svoje navade. Kliknite katerokoli
+        navado, da vidite podrobnosti, statistike in zgodovino dokončanja. Dnevno
+        označujte navade kot dokončane za gradnjo serij in sledenje svojemu napredku.
     calendar_view:
       title: Pogled Koledarja
-      description: Vizualizirajte zgodovino dokončanja svojih navad čez več dni. Zelena pomeni dokončane navade. Spremljajte svojo doslednost in si oglejte svoje vzorce napredka s časom.
+      description:
+        Vizualizirajte zgodovino dokončanja svojih navad čez več dni. Zelena
+        pomeni dokončane navade. Spremljajte svojo doslednost in si oglejte svoje
+        vzorce napredka s časom.
     filter_search:
       title: Filter in Iskanje
-      description: Poiščite določene navade z uporabo oznak, iskalnih izrazov ali filtrirajte po arhivskem statusu. Učinkovito organizirajte in upravljajte svoje navade, da ostanete usmerjeni na pomembno.
+      description:
+        Poiščite določene navade z uporabo oznak, iskalnih izrazov ali
+        filtrirajte po arhivskem statusu. Učinkovito organizirajte in upravljajte
+        svoje navade, da ostanete usmerjeni na pomembno.
   list_options:
     view_style_tooltip: Spremeni slog prikaza
   accessibility:
@@ -259,3 +382,11 @@ habits:
     open_details_hint: Odpri podrobnosti navade
     complete_habit_hint: Dokončaj navado
     completion_status_hint: Status dokončanja navade
+  actions:
+    mark_complete: Označi kot dokončano
+    mark_not_done: Označi kot nedokončano
+    clear_status: Počisti stanje
+  status:
+    complete: Dokončano
+    not_done: Nedokončano
+    unknown: Neznano

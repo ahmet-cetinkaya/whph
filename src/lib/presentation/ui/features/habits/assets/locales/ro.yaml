@@ -31,48 +31,100 @@ habits:
     estimated_time: Timp Estimat
     estimated_time_not_set: Nesetat
     help:
-      content: |
-        Construiește rutine zilnice sustenabile prin urmărirea sistematică a obiceiurilor care transformă intențiile tale în acțiuni consistente și progres măsurabil către obiectivele tale.
+      content:
+        "Construiește rutine zilnice sustenabile prin urmărirea sistematică
+        a obiceiurilor care transformă intențiile tale în acțiuni consistente și progres
+        măsurabil către obiectivele tale.
+
 
         ## ⚡ De Ce Este Important?
 
-        Formarea obiceiurilor este piatra de temelie a dezvoltării personale și a realizărilor sustenabile. Acțiunile zilnice consistente se acumulează în timp pentru a crea rezultate remarcabile, în timp ce urmărirea sistematică asigură că menții momentumul și faci îmbunătățiri continue în rutinele tale.
+
+        Formarea obiceiurilor este piatra de temelie a dezvoltării personale și a
+        realizărilor sustenabile. Acțiunile zilnice consistente se acumulează în timp
+        pentru a crea rezultate remarcabile, în timp ce urmărirea sistematică asigură
+        că menții momentumul și faci îmbunătățiri continue în rutinele tale.
+
 
         ## ⚙️ Design Strategic al Obiceiurilor
 
-        Creează obiceiuri care se integrează perfect în viața ta și susțin obiectivele tale pe termen lung. Obiceiurile bine proiectate devin comportamente automate care necesită voință minimă pentru a fi menținute.
+
+        Creează obiceiuri care se integrează perfect în viața ta și susțin obiectivele
+        tale pe termen lung. Obiceiurile bine proiectate devin comportamente automate
+        care necesită voință minimă pentru a fi menținute.
+
 
         - 📝 Proiectează obiceiuri clare, specifice cu descrieri acționabile
+
         - 📅 Stabilește programări consistente care se aliniază cu ritmurile tale naturale
+
         - 🏷️ Organizează obiceiuri similare în grupuri coerente pentru urmărire sistematică
+
         - 🎯 Conectează fiecare obicei la rezultate semnificative și valori personale
+
 
         ## ⏱️ Monitorizare Performanță
 
-        Urmărește execuția obiceiurilor tale pentru a înțelege modele, a măsura progresul și a optimiza abordarea pentru eficiență maximă și creștere sustenabilă.
 
-        - ⏳ Înregistrează timpii de finalizare pentru a înțelege durata și eficiența obiceiului
-        - 📊 Analizează investițiile de timp în categorii de obiceiuri pentru dezvoltare echilibrată
-        - 📈 Monitorizează tendințe de performanță pentru a identifica oportunități de îmbunătățire și timing optim
-        - 🔄 Folosește insights din date pentru a rafina dificultatea obiceiului și planificarea pentru succes sustenabil
+        Urmărește execuția obiceiurilor tale pentru a înțelege modele, a măsura progresul
+        și a optimiza abordarea pentru eficiență maximă și creștere sustenabilă.
+
+
+        - ⏳ Înregistrează timpii de finalizare pentru a înțelege durata și eficiența
+        obiceiului
+
+        - 📊 Analizează investițiile de timp în categorii de obiceiuri pentru dezvoltare
+        echilibrată
+
+        - 📈 Monitorizează tendințe de performanță pentru a identifica oportunități
+        de îmbunătățire și timing optim
+
+        - 🔄 Folosește insights din date pentru a rafina dificultatea obiceiului și
+        planificarea pentru succes sustenabil
+
 
         ## 📅 Consistență & Momentum
 
-        Construiește și menține consistența necesară pentru schimbare comportamentală durabilă prin urmărire sistematică și revizuire strategică a modelelor tale de progres.
 
-        - 📚 Revizuiește istoricul finalizărilor pentru a evalua progresul și a identifica modele de succes
-        - 🔗 Urmărește serii zilnice pentru a construi și menține momentum pentru succes pe termen lung
-        - 📌 Monitorizează metrici de consistență pentru a îmbunătăți motivația și angajamentul
-        - 🎯 Sărbătorește milepietre și realizări pentru a întări schimbarea comportamentală pozitivă
+        Construiește și menține consistența necesară pentru schimbare comportamentală
+        durabilă prin urmărire sistematică și revizuire strategică a modelelor tale
+        de progres.
+
+
+        - 📚 Revizuiește istoricul finalizărilor pentru a evalua progresul și a identifica
+        modele de succes
+
+        - 🔗 Urmărește serii zilnice pentru a construi și menține momentum pentru succes
+        pe termen lung
+
+        - 📌 Monitorizează metrici de consistență pentru a îmbunătăți motivația și
+        angajamentul
+
+        - 🎯 Sărbătorește milepietre și realizări pentru a întări schimbarea comportamentală
+        pozitivă
+
 
         ## 🚀 Strategii de Optimizare
 
-        Aplică tehnici dovedite de optimizare a obiceiurilor care accelerează progresul și asigură că eforturile tale se traduc în îmbunătățiri semnificative și durabile în viața și productivitatea ta.
 
-        - 🐾 **Începe Mic:** Începe cu obiceiuri gestionabile care garantează victorii timpurii
-        - 🏷️ **Grupare Strategică:** Organizează obiceiuri după aria de viață sau oră a zilei
-        - 📊 **Ajustări Bazate pe Date:** Folosește insights din urmărire pentru a optimiza timingul și abordarea
-        - 🌅 **Focus pe Timp Principal:** Planifică obiceiuri importante în perioadele tale de vârf de energie
+        Aplică tehnici dovedite de optimizare a obiceiurilor care accelerează progresul
+        și asigură că eforturile tale se traduc în îmbunătățiri semnificative și durabile
+        în viața și productivitatea ta.
+
+
+        - 🐾 **Începe Mic:** Începe cu obiceiuri gestionabile care garantează victorii
+        timpurii
+
+        - 🏷️ **Grupare Strategică:** Organizează obiceiuri după aria de viață sau
+        oră a zilei
+
+        - 📊 **Ajustări Bazate pe Date:** Folosește insights din urmărire pentru a
+        optimiza timingul și abordarea
+
+        - 🌅 **Focus pe Timp Principal:** Planifică obiceiuri importante în perioadele
+        tale de vârf de energie
+
+        "
       description: Descriere ajutor
       title: Ghid Formare Obiceiuri & Urmărire Performanță
     records: Înregistrări
@@ -80,7 +132,9 @@ habits:
     statistics:
       archived_note: "Arhivat la:"
       archived_on: Arhivat la
-      archived_warning: Statisticile sunt afișate până la data arhivării. {startDate} - {archivedDate}
+      archived_warning:
+        Statisticile sunt afișate până la data arhivării. {startDate}
+        - {archivedDate}
       completions: finalizări
       from: De la
       monthly: Lunar
@@ -118,14 +172,17 @@ habits:
     removing_tag: Eșec la eliminarea etichetei
     saving_details: Eșec la salvarea obiceiului
     saving_habit: Eșec la salvarea obiceiului
+    update_habit: Eroare la actualizarea obiceiului
     tag_already_exists: Această etichetă a fost deja adăugată
     toggling_archive: Eșec la comutarea stării de arhivare
   goals:
     current_goal: Țintă
     days_unit: Zile în această perioadă
-    description: |
-      Vrei să practici obiceiul cu o frecvență specifică în loc de
+    description: "Vrei să practici obiceiul cu o frecvență specifică în loc de
+
       în fiecare zi? Atunci setează o țintă personalizată.
+
+      "
     enable: Activează Ținte Personalizate
     goal: Țintă Personalizată
     goal_format: "{count} ori în {dayCount} zile"
@@ -146,41 +203,68 @@ habits:
     filter_by_tags_tooltip: Filtrează după etichete
     help:
       title: Ghid pentru Gestionarea Obiceiurilor Zilnice și Optimizarea Rutinei
-      content: |
-        Stăpânește-ți rutinele zilnice prin urmărirea sistematică a obiceiurilor care construiește consistență, creează momentum pozitiv și impulsionează progres semnificativ către obiectivele tale pe termen lung.
+      content:
+        "Stăpânește-ți rutinele zilnice prin urmărirea sistematică a obiceiurilor
+        care construiește consistență, creează momentum pozitiv și impulsionează progres
+        semnificativ către obiectivele tale pe termen lung.
+
 
         ## ⚡ De Ce Este Important?
 
-        Gestionarea zilnică a obiceiurilor este baza excelenței personale și a creșterii sustenabile. Execuția consistentă a obiceiurilor bine planificate creează beneficii compuse în timp, în timp ce urmărirea sistematică asigură că menții responsabilitatea și faci îmbunătățiri bazate pe date în rutinele tale.
+
+        Gestionarea zilnică a obiceiurilor este baza excelenței personale și a creșterii
+        sustenabile. Execuția consistentă a obiceiurilor bine planificate creează
+        beneficii compuse în timp, în timp ce urmărirea sistematică asigură că menții
+        responsabilitatea și faci îmbunătățiri bazate pe date în rutinele tale.
+
 
         ## 📅 Execuție Zilnică & Urmărire
 
-        Dezvoltă un sistem fiabil pentru execuția și monitorizarea obiceiurilor tale care creează consistență și construiește momentum de neoprit către obiectivele tale.
 
-        - ✅ **Finalizare Zilnică:** Marchează obiceiurile ca finalizate pentru a construi lanțuri de consistență
-        - 📆 **Vizualizare Multi-Zile:** Monitorizează modelele în zile și săptămâni pentru insights cuprinzătoare
-        - 🔄 **Construire Serie:** Menține zile consecutive de finalizare pentru a maximiza momentumul motivațional
-        - 📊 **Vizualizare Progres:** Urmărește ratele și modelele de finalizare în timp
+        Dezvoltă un sistem fiabil pentru execuția și monitorizarea obiceiurilor tale
+        care creează consistență și construiește momentum de neoprit către obiectivele
+        tale.
+
+
+        - ✅ **Finalizare Zilnică:** Marchează obiceiurile ca finalizate pentru a construi
+        lanțuri de consistență
+
+        - 📆 **Vizualizare Multi-Zile:** Monitorizează modelele în zile și săptămâni
+        pentru insights cuprinzătoare
+
+        - 🔄 **Construire Serie:** Menține zile consecutive de finalizare pentru a
+        maximiza momentumul motivațional
+
+        - 📊 **Vizualizare Progres:** Urmărește ratele și modelele de finalizare în
+        timp
+
 
         ## ⏱️ Analiză & Optimizare Timp
 
-        Monitorizează investițiile de timp în obiceiurile tale pentru a optimiza programul zilnic și a asigura dezvoltare echilibrată în toate ariile importante ale vieții.
 
-        - ⏳ **Urmărire Durată:** Înregistrează timpul real petrecut pentru a înțelege cerințele obiceiului
-        - 🏷️ **Analiză Categorie:** Grupează obiceiurile după etichete pentru a vedea alocarea timpului în arii de viață
+        Monitorizează investițiile de timp în obiceiurile tale pentru a optimiza programul
+        zilnic și a asigura dezvoltare echilibrată în toate ariile importante ale
+        vieții.
+
+
+        - ⏳ **Urmărire Durată:** Înregistrează timpul real petrecut pentru a înțelege
+        cerințele obiceiului
+
+        - 🏷️ **Analiză Categorie:** Grupează obiceiurile după etichete pentru a vedea
+        alocarea timpului în arii de viață
+
         - ⏰ **Optimizare Program:** E
 
+        "
   reminders:
     enable: Activează mementouri
     select_days_warning: Vă rugăm să selectați cel puțin o zi pentru mementouri
-
   reminder:
     reminderSettings: Setări Memento
     reminderTime: Ora mementoului
     reminderDays: Zilele mementoului
     noReminder: Niciun memento setat
     everyDay: În fiecare zi
-
   tooltips:
     edit_name: Editează Numele
     decrease_estimated_time: Scade timpul estimat
@@ -191,20 +275,34 @@ habits:
   tour:
     habit_building:
       title: Construirea Obiceiurilor
-      description: Construiește obiceiuri durabile prin urmărirea activităților zilnice. Setează mementouri, monitorizează-ți seriile și vizualizează-ți progresul cu statistici detaliate.
+      description:
+        Construiește obiceiuri durabile prin urmărirea activităților zilnice.
+        Setează mementouri, monitorizează-ți seriile și vizualizează-ți progresul
+        cu statistici detaliate.
     create_habits:
       title: Crearea de Noi Obiceiuri
-      description: Începe să construiești noi obiceiuri făcând click pe acest buton. Setează ținte, frecvențe, mementouri și urmărește mai multe finalizări pe zi pentru o urmărire flexibilă a obiceiurilor.
+      description:
+        Începe să construiești noi obiceiuri făcând click pe acest buton.
+        Setează ținte, frecvențe, mementouri și urmărește mai multe finalizări pe
+        zi pentru o urmărire flexibilă a obiceiurilor.
     your_habits:
       title: Obiceiurile Tale
-      description: Vezi și gestionează toate obiceiurile tale aici. Fă click pe orice obicei pentru a vedea detalii, statistici și istoricul finalizărilor. Marchează obiceiurile ca finalizate zilnic pentru a construi serii și a urmări progresul.
+      description:
+        Vezi și gestionează toate obiceiurile tale aici. Fă click pe orice
+        obicei pentru a vedea detalii, statistici și istoricul finalizărilor. Marchează
+        obiceiurile ca finalizate zilnic pentru a construi serii și a urmări progresul.
     calendar_view:
       title: Vizualizarea Calendarului
-      description: Vizualizează-ți istoricul finalizărilor de obiceiuri pe mai multe zile. Verde indică obiceiuri finalizate. Urmărește-ți consistența și vezi-ți modelele de progres în timp.
+      description:
+        Vizualizează-ți istoricul finalizărilor de obiceiuri pe mai multe
+        zile. Verde indică obiceiuri finalizate. Urmărește-ți consistența și vezi-ți
+        modelele de progres în timp.
     filter_search:
       title: Filtrare & Căutare
-      description: Găsește obiceiuri specifice folosind etichete, termeni de căutare sau filtrează după starea de arhivare. Organizează și gestionează-ți obiceiurile eficient pentru a rămâne concentrat pe ceea ce contează.
-
+      description:
+        Găsește obiceiuri specifice folosind etichete, termeni de căutare
+        sau filtrează după starea de arhivare. Organizează și gestionează-ți obiceiurile
+        eficient pentru a rămâne concentrat pe ceea ce contează.
   tags:
     add_tooltip: Adaugă etichetă
     select_tooltip: Selectați etichetă
@@ -215,3 +313,11 @@ habits:
     open_details_hint: Deschide detalii obicei
     complete_habit_hint: Completează obiceiul
     completion_status_hint: Starea de completion a obiceiului
+  actions:
+    mark_complete: Marchează ca finalizat
+    mark_not_done: Marchează ca nefinalizat
+    clear_status: Șterge starea
+  status:
+    complete: Finalizat
+    not_done: Nefinalizat
+    unknown: Necunoscut

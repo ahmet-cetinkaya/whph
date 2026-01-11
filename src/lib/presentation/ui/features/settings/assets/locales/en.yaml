@@ -10,9 +10,7 @@ settings:
     csv_description: You can use this to view in Excel and similar applications.
     error: Export failed
     in_progress: Exporting data, please wait...
-    json_description:
-      Export data in readable JSON format for development and debugging
-      purposes.
+    json_description: Export data in readable JSON format for development and debugging purposes.
     select_directory: Select export directory
     select_path: Select save location
     select_type: Select export format
@@ -25,9 +23,7 @@ settings:
     error: Import failed
     error.entity: Error in type
     in_progress: Importing data, please wait...
-    migration_failed:
-      Import failed. Please ensure you have the latest version of
-      the app installed.
+    migration_failed: Import failed. Please ensure you have the latest version of the app installed.
     select_file: Select file
     strategy:
       merge: Merge with Existing Data
@@ -64,28 +60,19 @@ settings:
     settings: Sound Settings
   permissions:
     app_usage:
-      description:
-        This app needs permission to access app usage statistics to track
-        your app usage patterns accurately.
+      description: This app needs permission to access app usage statistics to track your app usage patterns accurately.
       instructions: "Instructions:"
       steps:
         step1: Press the "Open Setting" button
-        step2:
-          In the usage access settings screen that opens, find "{appName}" in
-          the list
+        step2: In the usage access settings screen that opens, find "{appName}" in the list
         step3: Tap on "{appName}"
         step4: Enable "Allow usage access" or toggle the switch to ON
       title: App Usage Permission
     battery_optimization:
-      description:
-        For reliable notifications, this app needs to be excluded from
-        battery optimization. Without this, reminders may be delayed or not delivered
-        at all.
+      description: For reliable notifications, this app needs to be excluded from battery optimization. Without this, reminders may be delayed or not delivered at all.
       importance: The location of this setting may vary depending on your device manufacturer.
       instructions: "Instructions:"
-      not_disabled:
-        Battery optimization is still enabled. Provide permission for
-        the relevant function to work correctly.
+      not_disabled: Battery optimization is still enabled. Provide permission for the relevant function to work correctly.
       steps:
         step1: Press the "Open Setting" button
         step2: In the settings screen that opens, find "{appName}"
@@ -95,26 +82,20 @@ settings:
         step6: Select "Unrestricted"
       title: Battery Optimization
     exact_alarm:
-      description:
-        Android 12+ requires permission to schedule exact alarms for reminders
-        to work properly.
+      description: Android 12+ requires permission to schedule exact alarms for reminders to work properly.
       instructions: "Instructions:"
       steps:
         android12plus:
           step2: Go to Alarms & reminders and enable permission
           step3: Confirm exact alarm permission
         step1: Press the "Open Setting" button
-        step2:
-          In the opened {appName} app's Alarms & reminders page, enable "Allow
-          setting alarms and reminders"
+        step2: In the opened {appName} app's Alarms & reminders page, enable "Allow setting alarms and reminders"
       title: Exact Alarm Permission
     fix_it: Fix It
     granted: Permission granted
     instructions: Instructions
     notification:
-      description:
-        Notification permission is required to receive reminders. Without
-        this permission, you will not receive any notifications.
+      description: Notification permission is required to receive reminders. Without this permission, you will not receive any notifications.
       instructions: "Instructions:"
       steps:
         android:
@@ -128,22 +109,15 @@ settings:
     open_terminal: Open Terminal
     firewall:
       title: Firewall Permission
-      description:
-        Allow WHPH to communicate through the {platform} firewall on port
-        44040 for device synchronization.
-      dialog_description:
-        WHPH needs firewall permission to allow other devices to
-        connect for synchronization. Follow the commands below to configure your {platform}
-        firewall. You can also find these steps in the help menu.
+      description: Allow WHPH to communicate through the {platform} firewall on port 44040 for device synchronization.
+      dialog_description: WHPH needs firewall permission to allow other devices to connect for synchronization. Follow the commands below to configure your {platform} firewall. You can also find these steps in the help menu.
       dialog_info_text: "Note: You can also find these steps in the help menu."
       linux_manual_confirmation_button: I configured
       save_confirmation_error: Failed to save firewall confirmation setting
       rule_added_success: Firewall rule added successfully
       rule_add_error: Failed to add firewall rule. Please try manual steps.
       add_rule_button: Add Firewall Rule
-      windows_auto_description: "Click 'Add Firewall Rule' to automatically add
-        the firewall rule with UAC permission request. If you prefer to add manually,
-        follow the steps below:"
+      windows_auto_description: "Click 'Add Firewall Rule' to automatically add the firewall rule with UAC permission request. If you prefer to add manually, follow the steps below:"
       instructions:
         linux:
           step1: Open a terminal
@@ -155,42 +129,25 @@ settings:
         step_run_commands: "2. Run these commands:"
         step_open_terminal: 1. Open a terminal
         step_run_command: "2. Run this command (requires sudo privileges):"
-        step_click_confirmation:
-          3. After running the command, click the confirmation
-          button below
+        step_click_confirmation: 3. After running the command, click the confirmation button below
         windows:
           step1: Open Windows Defender Firewall → Advanced settings
-          step2:
-            'Create Inbound Rule: Inbound Rules → New Rule → Port → TCP → 44040
-            → Allow → All profiles → Name: "WHPH Sync (Inbound)"'
-          step3:
-            'Create Outbound Rule: Outbound Rules → New Rule → Port → TCP → 44040
-            → Allow → All profiles → Name: "WHPH Sync (Outbound)"'
+          step2: 'Create Inbound Rule: Inbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Inbound)"'
+          step3: 'Create Outbound Rule: Outbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Outbound)"'
           method_gui_title: "Method 1: Windows Firewall GUI"
           method_command_title: "Method 2: Command Prompt"
           step_open_defender: Open Windows Defender Firewall → Advanced settings
-          step_create_inbound_rule:
-            'Create Inbound Rule: Inbound Rules → New Rule
-            → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Inbound)"'
-          step_create_outbound_rule:
-            'Create Outbound Rule: Outbound Rules → New Rule
-            → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Outbound)"'
+          step_create_inbound_rule: 'Create Inbound Rule: Inbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Inbound)"'
+          step_create_outbound_rule: 'Create Outbound Rule: Outbound Rules → New Rule → Port → TCP → 44040 → Allow → All profiles → Name: "WHPH Sync (Outbound)"'
           alternative_command_prompt:
             title: "Alternative: Use Command Prompt"
             steps:
               cmd_step1: Open Command Prompt as Administrator
               cmd_step2: "Add firewall rule:"
-      manual_configure_instruction:
-        "Manually configure firewall rules for sync (requires
-        administrator privileges):"
+      manual_configure_instruction: "Manually configure firewall rules for sync (requires administrator privileges):"
     startup:
-      description:
-        For the app to start automatically with your device, auto-start
-        permission is required. This ensures reminders and notifications work properly
-        even after device restarts.
-      importance:
-        Auto-start setting location varies or may not be present by device
-        manufacturer.
+      description: For the app to start automatically with your device, auto-start permission is required. This ensures reminders and notifications work properly even after device restarts.
+      importance: Auto-start setting location varies or may not be present by device manufacturer.
       instructions: "Instructions:"
       steps:
         step1: Press the "Open Setting" button
@@ -201,18 +158,14 @@ settings:
   startup:
     disable_error: Failed to disable startup setting
     enable_error: Failed to enable startup setting
-    subtitle:
-      Tap to open system settings and enable auto-start permission for the
-      app
+    subtitle: Tap to open system settings and enable auto-start permission for the app
     title: Start at Startup
   sync_devices:
     title: Sync Devices
   title: Settings
   backup:
     title: Backup
-    description:
-      Create and restore compressed backups of your application data using
-      the secure .whph format
+    description: Create and restore compressed backups of your application data using the secure .whph format
     export:
       title: Create Backup
       description: Export all your data to a compressed .whph backup file
@@ -250,9 +203,7 @@ settings:
         description: Follow system theme settings
     dynamic_accent:
       title: Dynamic Accent Color
-      description:
-        If your system supports it, the primary color will adapt based
-        on the system's dynamic color scheme
+      description: If your system supports it, the primary color will adapt based on the system's dynamic color scheme
       feature: Dynamic
     custom_accent:
       title: Custom Accent Color
@@ -261,9 +212,7 @@ settings:
     error: Failed to load theme settings
   ui_density:
     title: Density
-    description:
-      Adjust the size of text and UI elements to improve readability on
-      high DPI displays
+    description: Adjust the size of text and UI elements to improve readability on high DPI displays
     compact: Compact
     normal: Normal
     large: Large
@@ -282,22 +231,22 @@ settings:
         resetting: Resetting database...
       error:
         title: Reset Failed
-        message: "Failed to reset database. Please try again or contact support if the issue persists."
-        help_text: "If the problem persists, try restarting the application or check if you have sufficient storage space and permissions."
-        permission_denied: "Permission denied. Please check if the application has access to write to storage."
-        disk_full: "No space left on device. Please free up storage space and try again."
-        file_not_found: "Database file not found. This is expected for a fresh installation."
-        file_access: "File access error"
-        sqlite: "Database error"
-        database_locked: "Database is locked. Please close any other instances of the application."
-        state_error: "Application state error. Please restart the application and try again."
-        timeout: "Operation timed out. Please try again."
+        message: Failed to reset database. Please try again or contact support if the issue persists.
+        help_text: If the problem persists, try restarting the application or check if you have sufficient storage space and permissions.
+        permission_denied: Permission denied. Please check if the application has access to write to storage.
+        disk_full: No space left on device. Please free up storage space and try again.
+        file_not_found: Database file not found. This is expected for a fresh installation.
+        file_access: File access error
+        sqlite: Database error
+        database_locked: Database is locked. Please close any other instances of the application.
+        state_error: Application state error. Please restart the application and try again.
+        timeout: Operation timed out. Please try again.
         cancel: Cancel
         retry: Retry
       restart_screen:
         completed_title: Database has been reset successfully
-        desktop_message: "The application will restart in {seconds} seconds."
-        mobile_message: "Please manually restart the application to complete the process."
+        desktop_message: The application will restart in {seconds} seconds.
+        mobile_message: Please manually restart the application to complete the process.
         restart_now_button: Restart Now
   debug_logs:
     title: Debug Logs
@@ -309,9 +258,7 @@ settings:
       description: View and export current debug logs
     page:
       title: Debug Logs
-      description:
-        View current debug log entries. Logs are automatically flushed
-        and rotated to prevent excessive disk usage.
+      description: View current debug log entries. Logs are automatically flushed and rotated to prevent excessive disk usage.
       content: Log Contents
       refresh: Refresh Logs
       copy: Copy to Clipboard
@@ -319,21 +266,15 @@ settings:
       copied: Debug logs copied to clipboard
       toggle_auto_scroll: Toggle Auto-scroll
       load_error: Error loading debug logs
-      not_enabled:
-        Debug logging is not enabled. Enable it in Advanced Settings to
-        start collecting logs.
-      no_file:
-        No debug log file found. Logs will be created after debug logging is
-        enabled and the app generates log entries.
+      not_enabled: Debug logging is not enabled. Enable it in Advanced Settings to start collecting logs.
+      no_file: No debug log file found. Logs will be created after debug logging is enabled and the app generates log entries.
       empty: Debug log file is empty. No log entries have been recorded yet.
     export:
       dialog_title: Export Debug Logs
       error: Error exporting logs
       success: Log file exported successfully
       no_logs_available: No logs available to export. Generate some logs first.
-      file_not_exist:
-        Log file does not exist. Enable debug logging and generate some
-        logs first.
+      file_not_exist: Log file does not exist. Enable debug logging and generate some logs first.
   task:
     title: Task Settings
     preferences:
@@ -341,9 +282,7 @@ settings:
       description: Customize task behavior and default settings
     default_estimated_time:
       title: Default Estimated Time
-      description:
-        Set the default estimated time for new tasks. You can disable this
-        to avoid automatic time estimates.
+      description: Set the default estimated time for new tasks. You can disable this to avoid automatic time estimates.
       disabled: Disabled
       minutes: "{minutes} minutes"
       load_error: Error loading default estimated time setting
@@ -354,6 +293,14 @@ settings:
       description: Automatically set a reminder when a planned date is selected.
       save_error: Error saving default reminder setting
       load_error: Error loading default reminder setting
+  habit:
+    title: Habit Settings
+    description: Customize habit tracking behavior and preferences
+    save_error: Error saving habit settings
+    load_error: Error loading habit settings
+    three_state:
+      title: Enable 3-State Tracking
+      description: Toggle between "None", "Unknown", and "Done" states.
   section:
     general: General
     appearance: Appearance

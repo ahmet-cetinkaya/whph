@@ -31,48 +31,94 @@ habits:
     estimated_time: Estimeret tid
     estimated_time_not_set: Ikke sat
     help:
-      content: |
-        Byg bæredygtige daglige rutiner gennem systematisk vane-sporing, der transformerer dine intentioner til konsistente handlinger og målbart fremskridt mod dine mål.
+      content:
+        "Byg bæredygtige daglige rutiner gennem systematisk vane-sporing, der
+        transformerer dine intentioner til konsistente handlinger og målbart fremskridt
+        mod dine mål.
+
 
         ## ⚡ Hvorfor er det vigtigt?
 
-        Vaneformering er grundstenen i personlig udvikling og vedvarende præstation. Konsekvente daglige handlinger akkumulerer over tid for at skabe bemærkelsesværdige resultater, mens systematisk sporing sikrer, at du opretholder momentum og laver kontinuerlige forbedringer til dine rutiner.
+
+        Vaneformering er grundstenen i personlig udvikling og vedvarende præstation.
+        Konsekvente daglige handlinger akkumulerer over tid for at skabe bemærkelsesværdige
+        resultater, mens systematisk sporing sikrer, at du opretholder momentum og
+        laver kontinuerlige forbedringer til dine rutiner.
+
 
         ## ⚙️ Strategisk vane-design
 
-        Opret vaner, der integreres sømløst i dit liv og understøtter dine langsigtede mål. Vel-designede vaner bliver automatiske adfærd, der kræver minimal viljestyrke at opretholde.
+
+        Opret vaner, der integreres sømløst i dit liv og understøtter dine langsigtede
+        mål. Vel-designede vaner bliver automatiske adfærd, der kræver minimal viljestyrke
+        at opretholde.
+
 
         - 📝 Design klare, specifikke vaner med handlingsrettede beskrivelser
+
         - 📅 Etabler konsistente tidsplaner, der passer til dine naturlige rytmer
+
         - 🏷️ Organiser lignende vaner i sammenhængende grupper for systematisk sporing
+
         - 🎯 Forbind hver vane med meningsfulde resultater og personlige værdier
+
 
         ## ⏱️ Ydelsesmonitorering
 
-        Spor din vaneudførelse for at forstå mønstre, måle fremskridt og optimere din tilgang for maksimal effektivitet og bæredygtig vækst.
+
+        Spor din vaneudførelse for at forstå mønstre, måle fremskridt og optimere
+        din tilgang for maksimal effektivitet og bæredygtig vækst.
+
 
         - ⏳ Indtast afslutningstider for at forstå vanevarighed og effektivitet
-        - 📊 Analyser tidsinvesteringer på tværs af vane kategorier for balanceret udvikling
-        - 📈 Overvåg ydelserstrends for at identificere forbedringsmuligheder og optimal timing
-        - 🔄 Brug data-insights til at forfine vane-sværhed og tidsplanlægning for vedvarende succes
+
+        - 📊 Analyser tidsinvesteringer på tværs af vane kategorier for balanceret
+        udvikling
+
+        - 📈 Overvåg ydelserstrends for at identificere forbedringsmuligheder og optimal
+        timing
+
+        - 🔄 Brug data-insights til at forfine vane-sværhed og tidsplanlægning for
+        vedvarende succes
+
 
         ## 📅 Konsistens & Momentum
 
-        Byg og oprethold den konsistens, der er nødvendig for varig adfærdsændring gennem systematisk sporing og strategisk gennemgang af dine fremskridtsmønstre.
 
-        - 📚 Gennemgå afslutningshistorik for at vurdere fremskridt og identificere succesmønstre
-        - 🔗 Spor daglige streaks for at bygge og opretholde momentum for langsigtede succes
+        Byg og oprethold den konsistens, der er nødvendig for varig adfærdsændring
+        gennem systematisk sporing og strategisk gennemgang af dine fremskridtsmønstre.
+
+
+        - 📚 Gennemgå afslutningshistorik for at vurdere fremskridt og identificere
+        succesmønstre
+
+        - 🔗 Spor daglige streaks for at bygge og opretholde momentum for langsigtede
+        succes
+
         - 📌 Overvåg konsistensmetrikker for at forbedre motivation og engagement
+
         - 🎯 Fejr milepæle og præstationer for at forstærke positiv adfærdsændring
+
 
         ## 🚀 Optimeringstrategier
 
-        Anvend beviste teknikker for vaneoptimering, der accelererer fremskridt og sikrer, at dine anstrengelser oversættes til meningsfulde, varige forbedringer i dit liv og din produktivitet.
+
+        Anvend beviste teknikker for vaneoptimering, der accelererer fremskridt og
+        sikrer, at dine anstrengelser oversættes til meningsfulde, varige forbedringer
+        i dit liv og din produktivitet.
+
 
         - 🐾 **Start småt:** Begynd med hanterbare vaner, der garanterer tidlige sejre
-        - 🏷️ **Strategisk gruppering:** Organiser vaner efter livsområde eller tid på dagen
-        - 📊 **Datadrevne justeringer:** Brug sporing insights til at optimere timing og tilgang
+
+        - 🏷️ **Strategisk gruppering:** Organiser vaner efter livsområde eller tid
+        på dagen
+
+        - 📊 **Datadrevne justeringer:** Brug sporing insights til at optimere timing
+        og tilgang
+
         - 🌅 **Prime Time Fokus:** Planlæg vigtige vaner under dine peak energiperioder
+
+        "
       description: Hjælpebeskrivelse
       title: Vaneformering & Ydelses sporing Guide
     records: Optagelser
@@ -117,12 +163,15 @@ habits:
     removing_tag: Mislykkedes at fjerne tag
     saving_details: Mislykkedes at gemme vane
     saving_habit: Mislykkedes at gemme vane
+    update_habit: Kunne ikke opdatere vane
     tag_already_exists: Denne tag er allerede tilføjet
     toggling_archive: Mislykkedes at skifte arkivstatus
   goals:
     current_goal: Mål
     days_unit: Dage i denne periode
-    description: Vil du øve vanen med en specifik frekvens frem for hver dag? Så indstil et brugerdefineret mål.
+    description:
+      Vil du øve vanen med en specifik frekvens frem for hver dag? Så indstil
+      et brugerdefineret mål.
     enable: Aktivér brugerdefinerede mål
     goal: Brugerdefineret mål
     goal_format: "{count} gange i {dayCount} dage"
@@ -141,54 +190,107 @@ habits:
   overview:
     filter_by_tags_tooltip: Filtrer efter tags
     help:
-      content: |
-        Mestre dine daglige rutiner gennem systematisk vane-sporing der bygger konsistens, skaber positiv momentum og driver meningsfuld fremskridt mod dine langsigtede mål.
+      content:
+        "Mestre dine daglige rutiner gennem systematisk vane-sporing der bygger
+        konsistens, skaber positiv momentum og driver meningsfuld fremskridt mod dine
+        langsigtede mål.
+
 
         ## ⚡ Hvorfor er det vigtigt?
 
-        Daglig vanehåndtering er grundlaget for personlig excellence og bæredygtig vækst. Konsekvent udførelse af velplanlagte vaner skaber kumulative fordele over tid, mens systematisk sporing sikrer, at du opretholder ansvarlighed og laver datadrevne forbedringer til dine rutiner.
+
+        Daglig vanehåndtering er grundlaget for personlig excellence og bæredygtig
+        vækst. Konsekvent udførelse af velplanlagte vaner skaber kumulative fordele
+        over tid, mens systematisk sporing sikrer, at du opretholder ansvarlighed
+        og laver datadrevne forbedringer til dine rutiner.
+
 
         ## 📅 Daglig udførelse & Sporing
 
-        Udvikl et pålideligt system for udførelse og overvågning af vaner der skaber konsistens og bygger u stoppeligt momentum mod dine mål.
+
+        Udvikl et pålideligt system for udførelse og overvågning af vaner der skaber
+        konsistens og bygger u stoppeligt momentum mod dine mål.
+
 
         - ✅ **Daglig afslutning:** Marker vaner som fuldført for at bygge konsistenskæder
-        - 📆 **Multi-dag visning:** Overvåg mønstre på tværs af dage og uger for omfattende indsigter
-        - 🔄 **Streak bygning:** Oprethold på hinanden følgende dage afslutning for at maksimere motiva tional momentum
+
+        - 📆 **Multi-dag visning:** Overvåg mønstre på tværs af dage og uger for omfattende
+        indsigter
+
+        - 🔄 **Streak bygning:** Oprethold på hinanden følgende dage afslutning for
+        at maksimere motiva tional momentum
+
         - 📊 **Fremskridtsvisualisering:** Spor afslutningsrater og mønstre over tid
+
 
         ## ⏱️ Tidsanalyse & Optimalisering
 
-        Overvåg tidsinvesteringer i dine vaner for at optimere din daglige tidsplan og sikre balanceret udvikling på tværs af alle vigtige livsområder.
+
+        Overvåg tidsinvesteringer i dine vaner for at optimere din daglige tidsplan
+        og sikre balanceret udvikling på tværs af alle vigtige livsområder.
+
 
         - ⏳ **Varighedssporing:** Indtast faktisk tid brugt for at forstå vane krav
-        - 🏷️ **Kategorianalyse:** Grupér vaner efter tags for at se tidsallokering på tværs af livsområder
-        - ⏰ **Tidsplanoptimalisering:** Balancer vane timing for bæredygtig daglig udførelse
-        - 📈 **Effektivitetsforbedring:** Identificer muligheder for at strømlinem vaneudførelse
+
+        - 🏷️ **Kategorianalyse:** Grupér vaner efter tags for at se tidsallokering
+        på tværs af livsområder
+
+        - ⏰ **Tidsplanoptimalisering:** Balancer vane timing for bæredygtig daglig
+        udførelse
+
+        - 📈 **Effektivitetsforbedring:** Identificer muligheder for at strømlinem
+        vaneudførelse
+
 
         ## 🗂️ Strategisk organisering
 
-        Opret et organisatorisk system der understøtter konsistent udførelse mens det giver fleksibilitet til at tilpasse sig dine mål og omstændigheder.
 
-        - 🏷️ **Meningsfuld kategorisering:** Grupér vaner efter livsområde, tid eller prioritet sniveau
-        - ⚙️ **Fleksibelt tidsplanlægning:** Design vane timing der fungerer med din livsstil og energimønstre
-        - 🎯 **Prioritetsfokus:** Sørg for at dine vigtigste vaner modtager passende opmærksomhed og energi
+        Opret et organisatorisk system der understøtter konsistent udførelse mens
+        det giver fleksibilitet til at tilpasse sig dine mål og omstændigheder.
+
+
+        - 🏷️ **Meningsfuld kategorisering:** Grupér vaner efter livsområde, tid eller
+        prioritet sniveau
+
+        - ⚙️ **Fleksibelt tidsplanlægning:** Design vane timing der fungerer med din
+        livsstil og energimønstre
+
+        - 🎯 **Prioritetsfokus:** Sørg for at dine vigtigste vaner modtager passende
+        opmærksomhed og energi
+
 
         ## 💡 Mesterprincipper
 
-        Anvend beviste strategier for vanemesteri der sikrer, at dine anstrengelser akkumulerer til varig adfærdsændring og målbare livsforbedringer.
 
-        - 🐾 **Start småt:** Begynd med vaner du kan udføre konsistent, derefter gradvist øg sværhedsgrad
-        - 🏷️ **Strategisk gruppering:** Organiser vaner for at skabe logiske sekvenser og støttesystemer
-        - 📊 **Ydelsesgennemgang:** Brug tidssporingdata til at forstå mønstre og optimere din tilgang
+        Anvend beviste strategier for vanemesteri der sikrer, at dine anstrengelser
+        akkumulerer til varig adfærdsændring og målbare livsforbedringer.
+
+
+        - 🐾 **Start småt:** Begynd med vaner du kan udføre konsistent, derefter gradvist
+        øg sværhedsgrad
+
+        - 🏷️ **Strategisk gruppering:** Organiser vaner for at skabe logiske sekvenser
+        og støttesystemer
+
+        - 📊 **Ydelsesgennemgang:** Brug tidssporingdata til at forstå mønstre og optimere
+        din tilgang
+
         - 🌅 **Prime Time Udførelse:** Planlæg dine vigtigste vaner under peak energiperioder
 
+
         ### 📊 Brug af kalender visning
+
         - 📅 Vis flere dage samtidigt i kalender visningen.
+
         - ✅ Visuelt spor dine afslutningsmønstre.
+
         - ⚡ Spar tid med hurtig afslutningsmarkering.
+
         - 🎯 Øg motivation med visuel streak sporing.
+
         - 🔄 Udforsk fortid og fremtid vaner med fleksibel dato navigation.
+
+        "
       title: Daglig vanehåndtering & Rutine optimaliseringsguide
     title: Vaner
   reminder:
@@ -237,19 +339,32 @@ habits:
   tour:
     habit_building:
       title: Vanebygning
-      description: Byg holdbare vaner ved at spore daglige aktiviteter. Indstil påmindelser, overvåg dine streaks og visualiser dit fremskridt med detaljerede statistikker.
+      description:
+        Byg holdbare vaner ved at spore daglige aktiviteter. Indstil påmindelser,
+        overvåg dine streaks og visualiser dit fremskridt med detaljerede statistikker.
     create_habits:
       title: Opret nye vaner
-      description: Start med at bygge nye vaner ved at klikke på denne knap. Sæt mål, frekvenser, påmindelser og spor flere afslutninger om dagen for fleksibel vanesporing.
+      description:
+        Start med at bygge nye vaner ved at klikke på denne knap. Sæt mål,
+        frekvenser, påmindelser og spor flere afslutninger om dagen for fleksibel
+        vanesporing.
     your_habits:
       title: Dine vaner
-      description: Se og administrer alle dine vaner her. Klik på en vilkårlig vane for at se detaljer, statistikker og afslutningshistorik. Markér vaner som fuldført dagligt for at bygge streaks og spore dit fremskridt.
+      description:
+        Se og administrer alle dine vaner her. Klik på en vilkårlig vane
+        for at se detaljer, statistikker og afslutningshistorik. Markér vaner som
+        fuldført dagligt for at bygge streaks og spore dit fremskridt.
     calendar_view:
       title: Kalendervisning
-      description: Visualisér din vaneafslutningshistorik over flere dage. Grøn betyder afsluttede vaner. Spor din konsekvens og se dine fremskridtsmønstre over tid.
+      description:
+        Visualisér din vaneafslutningshistorik over flere dage. Grøn betyder
+        afsluttede vaner. Spor din konsekvens og se dine fremskridtsmønstre over tid.
     filter_search:
       title: Filter & søg
-      description: Find specifikke vaner ved hjælp af tags, søgeord eller filtrér efter arkiveringsstatus. Organisér og håndtér dine vaner effektivt for at forblive fokuseret på det, der betyder noget.
+      description:
+        Find specifikke vaner ved hjælp af tags, søgeord eller filtrér
+        efter arkiveringsstatus. Organisér og håndtér dine vaner effektivt for at
+        forblive fokuseret på det, der betyder noget.
   list_options:
     view_style_tooltip: Skift visningstil
   accessibility:
@@ -257,3 +372,11 @@ habits:
     open_details_hint: Åbn vanedetaljer
     complete_habit_hint: Fuldfør vane
     completion_status_hint: Fuldførelsesstatus for vane
+  actions:
+    mark_complete: Marker som fuldført
+    mark_not_done: Marker som ikke udført
+    clear_status: Ryd status
+  status:
+    complete: Fuldført
+    not_done: Ikke udført
+    unknown: Ukendt

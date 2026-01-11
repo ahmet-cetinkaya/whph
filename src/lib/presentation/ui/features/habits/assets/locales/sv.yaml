@@ -31,48 +31,91 @@ habits:
     estimated_time: Uppskattad tid
     estimated_time_not_set: Inte inställd
     help:
-      content: |
-        Bygg hållbara dagliga rutiner genom systematisk vanetracking som förvandlar dina avsikter till konsekventa handlingar och mätbart framsteg mot dina mål.
+      content:
+        "Bygg hållbara dagliga rutiner genom systematisk vanetracking som förvandlar
+        dina avsikter till konsekventa handlingar och mätbart framsteg mot dina mål.
+
 
         ## ⚡ Varför Är Det Viktigt?
 
-        Vaneföring är hörnstenen i personlig utveckling och hållbara prestationer. Konsekventa dagliga handlingar ackumuleras över tid för att skapa anmärkningsvärda resultat, medan systematisk spårning säkerställer att du behåller momentum och gör kontinuerliga förbättringar i dina rutiner.
+
+        Vaneföring är hörnstenen i personlig utveckling och hållbara prestationer.
+        Konsekventa dagliga handlingar ackumuleras över tid för att skapa anmärkningsvärda
+        resultat, medan systematisk spårning säkerställer att du behåller momentum
+        och gör kontinuerliga förbättringar i dina rutiner.
+
 
         ## ⚙️ Strategisk Vanedesign
 
-        Skapa vanor som integreras sömlöst i ditt liv och stöder dina långsiktiga mål. Väl utformade vanor blir automatiska beteenden som kräver minimal viljestyrka att upprätthålla.
+
+        Skapa vanor som integreras sömlöst i ditt liv och stöder dina långsiktiga
+        mål. Väl utformade vanor blir automatiska beteenden som kräver minimal viljestyrka
+        att upprätthålla.
+
 
         - 📝 Designa tydliga, specifika vanor med handlingsbara beskrivningar
+
         - 📅 Etablera konsekventa scheman som passar dina naturliga rytmer
+
         - 🏷️ Organisera liknande vanor i sammanhängande grupper för systematisk spårning
+
         - 🎯 Koppla varje vana till meningsfulla utfall och personliga värden
+
 
         ## ⏱️ Prestationsövervakning
 
-        Spåra dina vanors utförande för att förstå mönster, mäta framsteg och optimera din approach för maximal effektivitet och hållbar tillväxt.
+
+        Spåra dina vanors utförande för att förstå mönster, mäta framsteg och optimera
+        din approach för maximal effektivitet och hållbar tillväxt.
+
 
         - ⏳ Registrera slutförandetider för att förstå vanans varaktighet och effektivitet
+
         - 📊 Analysera tidsinvesteringar över vanekategorier för balanserad utveckling
-        - 📈 Övervaka prestandatrender för att identifiera förbättringsmöjligheter och optimal timing
-        - 🔄 Använd data-insikter för att förfina vanans svårighetsgrad och schemaläggning för hållbar framgång
+
+        - 📈 Övervaka prestandatrender för att identifiera förbättringsmöjligheter
+        och optimal timing
+
+        - 🔄 Använd data-insikter för att förfina vanans svårighetsgrad och schemaläggning
+        för hållbar framgång
+
 
         ## 📅 Konsekvens & Momentum
 
-        Bygg och behåll konsistensen som behövs för varaktig beteendeförändring genom systematisk spårning och strategisk granskning av dina framstegsmönster.
+
+        Bygg och behåll konsistensen som behövs för varaktig beteendeförändring genom
+        systematisk spårning och strategisk granskning av dina framstegsmönster.
+
 
         - 📚 Granska slutförandeshistorik för att bedöma framsteg och identifiera framgångsmönster
-        - 🔗 Spåra dagliga strecks för att bygga och behålla momentum för långsiktig framgång
+
+        - 🔗 Spåra dagliga strecks för att bygga och behålla momentum för långsiktig
+        framgång
+
         - 📌 Övervaka konsistensmått för att förbättra motivation och engagemang
+
         - 🎯 Fira milstolpar och prestationer för att förstärka positiv beteendeförändring
+
 
         ## 🚀 Optimiseringsstrategier
 
-        Tillämpa beprövade tekniker för vaneoptimering som accelererar framsteg och säkerställer att dina ansträngningar översätts till meningsfulla, bestående förbättringar i ditt liv och din produktivitet.
+
+        Tillämpa beprövade tekniker för vaneoptimering som accelererar framsteg och
+        säkerställer att dina ansträngningar översätts till meningsfulla, bestående
+        förbättringar i ditt liv och din produktivitet.
+
 
         - 🐾 **Börja Litet:** Börja med hanterbara vanor som garanterar tidiga vinster
-        - 🏷️ **Strategisk Gruppering:** Organisera vanor efter livsområde eller tid på dagen
-        - 📊 **Datadrivna Justeringar:** Använd spårningsinsikter för att optimera timing och approach
+
+        - 🏷️ **Strategisk Gruppering:** Organisera vanor efter livsområde eller tid
+        på dagen
+
+        - 📊 **Datadrivna Justeringar:** Använd spårningsinsikter för att optimera
+        timing och approach
+
         - 🌅 **Topptid Fokus:** Schemalägg viktiga vanor under dina toppenergiperioder
+
+        "
       description: Hjälpbeskrivning
       title: Vaneföring & Prestationsspårningsguide
     records: Poster
@@ -93,7 +136,7 @@ habits:
       to: Till
       archived_note: "Arkiverat den:"
       archived_on: Arkiverad den
-      archived_warning: "Statistiken visas upp till arkiveringsdatum. {startDate}"
+      archived_warning: Statistiken visas upp till arkiveringsdatum. {startDate}
       completed: Slutförd
       last_month: Förra månaden
       last_week: Förra veckan
@@ -113,13 +156,14 @@ habits:
     removing_tag: Misslyckades med att ta bort tagg
     loading_habit: Misslyckades med att ladda vana
     saving_habit: Misslyckades med att spara vana
+    update_habit: Misslyckades med att uppdatera vanan
     loading_habits: Misslyckades med att ladda vanor
     loading_archive_status: Misslyckades med att ladda arkivstatus
     toggling_archive: Misslyckades med att växla arkiv
-    habit_not_found: "Vanan hittades inte"
-    habit_tag_not_found: "Vanans tagg hittades inte"
-    habit_record_not_found: "Vanans registrering hittades inte"
-    tag_already_exists: "Taggen finns redan"
+    habit_not_found: Vanan hittades inte
+    habit_tag_not_found: Vanans tagg hittades inte
+    habit_record_not_found: Vanans registrering hittades inte
+    tag_already_exists: Taggen finns redan
   goals:
     goal: Mål
     target_frequency: Målfrekvens
@@ -138,13 +182,15 @@ habits:
   name_placeholder: Vad är vanans namn?
   notifications:
     reminder_title: "Påminnelse: {name}"
-    reminder_message: "Tid att göra din vana {name}"
+    reminder_message: Tid att göra din vana {name}
   overview:
     title: Översikt
     help:
       title: Hjälp
-      content: |
-        Bygg och hantera dina vanor effektivt med detta översiktsverktyg.
+      content:
+        "Bygg och hantera dina vanor effektivt med detta översiktsverktyg.
+
+        "
     filter_by_tags_tooltip: Filtrera efter taggar
   reminders:
     enable: Aktivera påminnelser
@@ -168,19 +214,34 @@ habits:
   tour:
     habit_building:
       title: Vaneföring
-      description: Bygg hållbara vanor genom att spåra dagliga aktiviteter. Ställ in påminnelser, övervaka dina streaks och visualisera ditt framsteg med detaljerad statistik.
+      description:
+        Bygg hållbara vanor genom att spåra dagliga aktiviteter. Ställ
+        in påminnelser, övervaka dina streaks och visualisera ditt framsteg med detaljerad
+        statistik.
     create_habits:
       title: Skapa Nya Vanor
-      description: Börja bygga nya vanor genom att klicka på denna knapp. Ställ in mål, frekvenser, påminnelser och spåra flera slutföranden per dag för flexibel vanespårning.
+      description:
+        Börja bygga nya vanor genom att klicka på denna knapp. Ställ in
+        mål, frekvenser, påminnelser och spåra flera slutföranden per dag för flexibel
+        vanespårning.
     your_habits:
       title: Dina Vanor
-      description: Se och hantera alla dina vanor här. Klicka på valfri vana för att se detaljer, statistik och slutförandehistorik. Markera vanor som slutförda dagligen för att bygga streaks och spåra ditt framsteg.
+      description:
+        Se och hantera alla dina vanor här. Klicka på valfri vana för att
+        se detaljer, statistik och slutförandehistorik. Markera vanor som slutförda
+        dagligen för att bygga streaks och spåra ditt framsteg.
     calendar_view:
       title: Kalendervy
-      description: Visualisera din vane-slutförandehistorik över flera dagar. Grönt indikerar slutförda vanor. Spåra din konsekvens och se dina framstegsmönster över tid.
+      description:
+        Visualisera din vane-slutförandehistorik över flera dagar. Grönt
+        indikerar slutförda vanor. Spåra din konsekvens och se dina framstegsmönster
+        över tid.
     filter_search:
       title: Filter & Sök
-      description: Hitta specifika vanor med taggar, söktermer eller filtrera efter arkiverad status. Organisera och hantera dina vanor effektivt för att förbli fokuserad på det som är viktigt.
+      description:
+        Hitta specifika vanor med taggar, söktermer eller filtrera efter
+        arkiverad status. Organisera och hantera dina vanor effektivt för att förbli
+        fokuserad på det som är viktigt.
   list_options:
     view_style_tooltip: Ändra visningsstil
   accessibility:
@@ -188,3 +249,11 @@ habits:
     open_details_hint: Öppna vana detaljer
     complete_habit_hint: Slutför vana
     completion_status_hint: Vanans completion status
+  actions:
+    mark_complete: Markera som slutförd
+    mark_not_done: Markera som ej klar
+    clear_status: Rensa status
+  status:
+    complete: Slutförd
+    not_done: Ej klar
+    unknown: Okänd
