@@ -282,7 +282,7 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         client.write(data);
       } catch (e) {
         Logger.debug('Failed to write to client: $e');
-        _connectedClients.remove(client);
+        client.destroy();
       }
     }
   }
