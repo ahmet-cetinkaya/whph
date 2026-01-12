@@ -7,6 +7,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_time_reco
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
+import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:acore/acore.dart';
@@ -144,58 +145,48 @@ class ToggleHabitCompletionCommandHandler
 
         if (nextStatus != HabitRecordStatus.skipped) {
           // Add new record
-          final habitRecord = HabitRecord(
-            id: KeyHelper.generateStringId(),
-            createdDate: now,
-            habitId: request.habitId,
-            occurredAt: occurredAt,
-            status: nextStatus,
+          await _addHabitRecord(
+            request.habitId,
+            occurredAt,
+            nextStatus,
+            now,
           );
-          await _habitRecordRepository.add(habitRecord);
 
           // Add time record ONLY if complete
-          if (nextStatus == HabitRecordStatus.complete && habit.estimatedTime != null && habit.estimatedTime! > 0) {
-            await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-              repository: _habitTimeRecordRepository,
-              habitId: request.habitId,
-              targetDate: occurredAt,
-              estimatedDuration: (habit.estimatedTime! * 60).toInt(),
-            );
-          }
+          await _addTimeRecordIfComplete(
+            habit,
+            request.habitId,
+            occurredAt,
+            nextStatus,
+          );
         }
       } else {
         if (nextStatus == HabitRecordStatus.complete) {
           // Add ONE record
-          final habitRecord = HabitRecord(
-            id: KeyHelper.generateStringId(),
-            createdDate: now,
-            habitId: request.habitId,
-            occurredAt: occurredAt,
-            status: HabitRecordStatus.complete,
+          await _addHabitRecord(
+            request.habitId,
+            occurredAt,
+            HabitRecordStatus.complete,
+            now,
           );
-          await _habitRecordRepository.add(habitRecord);
 
-          if (habit.estimatedTime != null && habit.estimatedTime! > 0) {
-            await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-              repository: _habitTimeRecordRepository,
-              habitId: request.habitId,
-              targetDate: occurredAt,
-              estimatedDuration: (habit.estimatedTime! * 60).toInt(),
-            );
-          }
+          await _addTimeRecordIfComplete(
+            habit,
+            request.habitId,
+            occurredAt,
+            HabitRecordStatus.complete,
+          );
         } else if (nextStatus == HabitRecordStatus.notDone) {
           // Switch to Not Done - Clear all existing attempts first
           await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
           // Add ONE Not Done record
-          final habitRecord = HabitRecord(
-            id: KeyHelper.generateStringId(),
-            createdDate: now,
-            habitId: request.habitId,
-            occurredAt: occurredAt,
-            status: HabitRecordStatus.notDone,
+          await _addHabitRecord(
+            request.habitId,
+            occurredAt,
+            HabitRecordStatus.notDone,
+            now,
           );
-          await _habitRecordRepository.add(habitRecord);
         } else {
           // Reset (Skipped) - Clear all
           await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
@@ -204,6 +195,40 @@ class ToggleHabitCompletionCommandHandler
     });
 
     return ToggleHabitCompletionCommandResponse();
+  }
+
+  Future<void> _addHabitRecord(
+    String habitId,
+    DateTime occurredAt,
+    HabitRecordStatus status,
+    DateTime createdDate,
+  ) async {
+    final habitRecord = HabitRecord(
+      id: KeyHelper.generateStringId(),
+      createdDate: createdDate,
+      habitId: habitId,
+      occurredAt: occurredAt,
+      status: status,
+    );
+    await _habitRecordRepository.add(habitRecord);
+  }
+
+  Future<void> _addTimeRecordIfComplete(
+    Habit habit,
+    String habitId,
+    DateTime occurredAt,
+    HabitRecordStatus status,
+  ) async {
+    if (status == HabitRecordStatus.complete &&
+        habit.estimatedTime != null &&
+        habit.estimatedTime! > 0) {
+      await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
+        repository: _habitTimeRecordRepository,
+        habitId: habitId,
+        targetDate: occurredAt,
+        estimatedDuration: (habit.estimatedTime! * 60).toInt(),
+      );
+    }
   }
 
   Future<void> _clearAllRecordsForDay(

@@ -194,15 +194,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       int daysFromFirstRecord;
 
       if (isThreeStateEnabled) {
-        daysFromFirstRecord = sortedRecords
-            .where((r) =>
-                (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
-                !r.recordDate.isBefore(firstRecordDate) &&
-                !r.recordDate.isAfter(endDate))
-            .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
-            .toSet()
-            .length;
-
+        daysFromFirstRecord = _countActiveDaysInRange(sortedRecords, firstRecordDate, endDate);
         if (daysFromFirstRecord == 0) daysFromFirstRecord = 1;
       } else {
         daysFromFirstRecord = endDate.difference(firstRecordDate).inDays + 1;
@@ -216,15 +208,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     // Calculate monthly score based on daily scores
     int daysInCurrentMonth;
     if (isThreeStateEnabled) {
-      daysInCurrentMonth = records
-          .where((r) =>
-              (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
-              r.recordDate.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
-              !r.recordDate.isAfter(endDate))
-          .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
-          .toSet()
-          .length;
-
+      daysInCurrentMonth = _countActiveDaysInRange(records, startOfMonth, endDate);
       if (daysInCurrentMonth == 0) daysInCurrentMonth = 1;
     } else {
       daysInCurrentMonth = endDate.difference(startOfMonth).inDays + 1;
@@ -241,15 +225,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     // Calculate yearly score based on daily scores
     int daysInCurrentYear;
     if (isThreeStateEnabled) {
-      daysInCurrentYear = records
-          .where((r) =>
-              (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
-              r.recordDate.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
-              !r.recordDate.isAfter(endDate))
-          .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
-          .toSet()
-          .length;
-
+      daysInCurrentYear = _countActiveDaysInRange(records, startOfYear, endDate);
       if (daysInCurrentYear == 0) daysInCurrentYear = 1;
     } else {
       daysInCurrentYear = endDate.difference(startOfYear).inDays + 1;
@@ -278,14 +254,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
       int daysInMonth;
       if (isThreeStateEnabled) {
-        daysInMonth = records
-            .where((r) =>
-                (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
-                !r.recordDate.isBefore(month) &&
-                !r.recordDate.isAfter(monthEnd))
-            .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
-            .toSet()
-            .length;
+        daysInMonth = _countActiveDaysInRange(records, month, monthEnd);
         if (daysInMonth == 0) daysInMonth = 1; // Avoid division by zero if no records (score 0 anyway)
       } else {
         daysInMonth = monthEnd.difference(month).inDays + 1;
@@ -343,6 +312,19 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       daysGoalMet: daysGoalMet,
       totalDaysWithGoal: totalDaysWithGoal,
     );
+  }
+
+  /// Counts the number of unique days with records matching the specified status
+  /// within the given date range (inclusive).
+  int _countActiveDaysInRange(List<HabitRecord> records, DateTime startDate, DateTime endDate) {
+    return records
+        .where((r) =>
+            (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
+            !r.recordDate.isBefore(startDate) &&
+            !r.recordDate.isAfter(endDate))
+        .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
+        .toSet()
+        .length;
   }
 
   List<HabitStreak> _calculateStreaks(List<HabitRecord> records,
