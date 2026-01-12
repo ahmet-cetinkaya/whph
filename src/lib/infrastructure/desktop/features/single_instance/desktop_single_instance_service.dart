@@ -223,7 +223,6 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
               // If it's just a focus command, we can close connection immediately
               if (message == 'FOCUS') {
                 socket.destroy();
-                _connectedClients.remove(socket);
               }
             }
           },
