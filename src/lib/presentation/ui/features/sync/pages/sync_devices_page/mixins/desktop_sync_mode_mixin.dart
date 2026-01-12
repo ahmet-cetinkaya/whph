@@ -67,6 +67,13 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
           _desktopSyncMode = mode;
           isServerMode = mode == DesktopSyncMode.server;
         });
+      } else {
+        // Default to server mode if no setting exists
+        await desktopSyncService!.switchToMode(DesktopSyncMode.server);
+        setState(() {
+          _desktopSyncMode = DesktopSyncMode.server;
+          isServerMode = true;
+        });
       }
     } catch (e) {
       Logger.error('Failed to load desktop sync mode preference: $e');
