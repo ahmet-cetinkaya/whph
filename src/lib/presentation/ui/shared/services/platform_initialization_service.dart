@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/presentation/api/api.dart';
@@ -137,16 +140,18 @@ class PlatformInitializationService {
           Logger.info('Triggering manual sync from IPC command');
           singleInstanceService.broadcastMessage('Initializing remote sync...');
 
+          StreamSubscription<SyncStatus>? statusSub;
+          StreamSubscription<SyncProgress>? progressSub;
           try {
             final syncService = container.resolve<ISyncService>();
 
             // Listen to sync status changes
-            final statusSub = syncService.syncStatusStream.listen((status) {
+            statusSub = syncService.syncStatusStream.listen((status) {
               singleInstanceService.broadcastMessage('[Status] ${status.state.name}');
             });
 
             // Listen to detailed progress
-            final progressSub = syncService.progressStream.listen((progress) {
+            progressSub = syncService.progressStream.listen((progress) {
               final percentage = '${progress.progressPercentage.toStringAsFixed(0)}%';
               final msg = '${progress.operation} ${progress.currentEntity}'.trim();
               if (msg.isNotEmpty || percentage != '0%') {
@@ -156,15 +161,13 @@ class PlatformInitializationService {
 
             await syncService.runSync(isManual: true);
 
-            // Cleanup listeners
-            await statusSub.cancel();
-            await progressSub.cancel();
-
             singleInstanceService.broadcastMessage('Sync operation completed.');
-            singleInstanceService.broadcastMessage('DONE');
           } catch (e) {
             Logger.error('Failed to run sync from IPC: $e');
             singleInstanceService.broadcastMessage('Error: Sync failed - $e');
+          } finally {
+            await statusSub?.cancel();
+            await progressSub?.cancel();
             singleInstanceService.broadcastMessage('DONE');
           }
         } else {
