@@ -157,7 +157,7 @@ class DatabaseIntegrityService {
           SELECT COUNT(*) as count
           FROM sync_device_table
           WHERE deleted_date IS NULL
-          AND created_date < datetime('now', '-5 years')
+          AND created_date < CAST(strftime('%s', 'now', '-5 years') AS INTEGER)
         ''').getSingleOrNull();
 
         // Then, get sample records for debugging
@@ -165,7 +165,7 @@ class DatabaseIntegrityService {
           SELECT id, created_date
           FROM sync_device_table
           WHERE deleted_date IS NULL
-          AND created_date < datetime('now', '-5 years')
+          AND created_date < CAST(strftime('%s', 'now', '-5 years') AS INTEGER)
           LIMIT 3
         ''').get();
 
@@ -311,7 +311,7 @@ class DatabaseIntegrityService {
         UPDATE sync_device_table
         SET deleted_date = CURRENT_TIMESTAMP
         WHERE deleted_date IS NULL
-        AND created_date < datetime('now', '-5 years')
+        AND created_date < CAST(strftime('%s', 'now', '-5 years') AS INTEGER)
       ''');
       Logger.debug('Soft-deleted ancient sync device records (older than 5 years)');
 
