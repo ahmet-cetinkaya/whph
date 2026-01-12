@@ -177,8 +177,8 @@ class DatabaseIntegrityService {
 
             // Log sample devices for debugging
             for (final device in ancientDeviceSamples) {
-              final deviceId = device.data['id'] as String?;
-              final createdDate = device.data['created_date'] as String?;
+              final deviceId = device.data['id']?.toString();
+              final createdDate = device.data['created_date']?.toString();
               Logger.warning('- Device ID: $deviceId, Created: $createdDate');
             }
           }
