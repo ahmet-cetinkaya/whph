@@ -146,8 +146,8 @@ class DatabaseIntegrityService {
 
       if (oldSyncDevices != null) {
         final totalCount = oldSyncDevices.data['count'] as int? ?? 0;
-        final oldestDate = oldSyncDevices.data['oldest_date'] as String?;
-        final newestDate = oldSyncDevices.data['newest_date'] as String?;
+        final oldestDate = oldSyncDevices.data['oldest_date']?.toString();
+        final newestDate = oldSyncDevices.data['newest_date']?.toString();
 
         Logger.debug('Sync device date analysis: count=$totalCount, oldest=$oldestDate, newest=$newestDate');
 
