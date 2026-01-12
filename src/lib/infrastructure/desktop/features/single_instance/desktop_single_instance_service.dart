@@ -204,18 +204,27 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       _serverSocket!.listen((socket) {
         _connectedClients.add(socket);
 
+        String buffer = '';
+
         socket.listen(
           (data) {
-            final message = String.fromCharCodes(data).trim();
-            Logger.debug('Received IPC message: $message');
-            if (_onCommandReceived != null && message.isNotEmpty) {
-              _onCommandReceived!(message);
-            }
+            buffer += String.fromCharCodes(data);
 
-            // If it's just a focus command, we can close connection immediately
-            if (message == 'FOCUS') {
-              socket.destroy();
-              _connectedClients.remove(socket);
+            int newlineIndex;
+            while ((newlineIndex = buffer.indexOf('\n')) != -1) {
+              final message = buffer.substring(0, newlineIndex).trim();
+              buffer = buffer.substring(newlineIndex + 1);
+
+              Logger.debug('Received IPC message: $message');
+              if (_onCommandReceived != null && message.isNotEmpty) {
+                _onCommandReceived!(message);
+              }
+
+              // If it's just a focus command, we can close connection immediately
+              if (message == 'FOCUS') {
+                socket.destroy();
+                _connectedClients.remove(socket);
+              }
             }
           },
           onError: (error) {
