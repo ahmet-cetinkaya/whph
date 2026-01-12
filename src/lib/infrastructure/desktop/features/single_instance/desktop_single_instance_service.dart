@@ -19,8 +19,17 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   Future<bool> isAnotherInstanceRunning() async {
     try {
       final portFile = await _getPortFile();
+      final lockFile = await _getLockFile();
+
       if (!await portFile.exists()) {
-        Logger.debug('Port file not found, assuming no instance running');
+        // If port file missing but lock file exists, another instance is starting or assumed running
+        if (await lockFile.exists()) {
+          Logger.debug('Lock file exists but port file missing. Instance might be starting.');
+          // Give it a small moment to write the port file? Or just assume it's running.
+          // Safety: return true to let lockInstance handle the final arbitrating if it's dead.
+          return true;
+        }
+        Logger.debug('Port and lock files not found, assuming no instance running');
         return false;
       }
 
@@ -28,6 +37,8 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       final port = int.tryParse(portContent);
       if (port == null) {
         Logger.warning('Invalid port file content');
+        // If content invalid but lock exists, assume running/bad state.
+        if (await lockFile.exists()) return true;
         return false;
       }
 
@@ -39,6 +50,8 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         return true;
       } catch (e) {
         Logger.debug('Failed to connect to existing port, instance likely dead: $e');
+        // If connection failed, but lock exists, it might be zombie or hung.
+        // If we return false, we proceed to try to take lock.
         return false;
       }
     } catch (e) {
@@ -124,7 +137,13 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         return;
       }
 
-      final port = int.parse(await portFile.readAsString());
+      final portContent = await portFile.readAsString();
+      final port = int.tryParse(portContent);
+      if (port == null) {
+        onOutput('Error: Invalid port file content.');
+        return;
+      }
+
       final socket = await Socket.connect(InternetAddress.loopbackIPv4, port);
 
       // Send command
@@ -133,15 +152,21 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
 
       // Listen for updates
       final Completer<void> completer = Completer<void>();
+      String buffer = '';
 
       socket.listen(
         (data) {
-          final message = String.fromCharCodes(data).trim();
-          final lines = message.split('\n');
-          for (final line in lines) {
+          buffer += String.fromCharCodes(data);
+
+          int newlineIndex;
+          while ((newlineIndex = buffer.indexOf('\n')) != -1) {
+            final line = buffer.substring(0, newlineIndex).trim();
+            buffer = buffer.substring(newlineIndex + 1);
+
             if (line == 'DONE') {
               socket.destroy();
               if (!completer.isCompleted) completer.complete();
+              return;
             } else if (line.isNotEmpty) {
               onOutput(line);
             }

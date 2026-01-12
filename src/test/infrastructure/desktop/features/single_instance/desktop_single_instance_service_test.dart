@@ -22,8 +22,10 @@ void main() {
   group('DesktopSingleInstanceService', () {
     late DesktopSingleInstanceService service;
     late Directory tempDir;
+    late PathProviderPlatform originalPathProviderPlatform;
 
     setUp(() async {
+      originalPathProviderPlatform = PathProviderPlatform.instance;
       tempDir = await Directory.systemTemp.createTemp('whph_test');
       PathProviderPlatform.instance = MockPathProviderPlatform(tempDir);
       service = DesktopSingleInstanceService();
@@ -35,6 +37,7 @@ void main() {
       if (await tempDir.exists()) {
         await tempDir.delete(recursive: true);
       }
+      PathProviderPlatform.instance = originalPathProviderPlatform;
     });
 
     test('isAnotherInstanceRunning should return false initially', () async {
