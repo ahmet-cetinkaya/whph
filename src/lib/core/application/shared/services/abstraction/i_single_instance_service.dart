@@ -12,6 +12,15 @@ abstract class ISingleInstanceService {
   /// Send a command to the existing instance
   Future<bool> sendCommandToExistingInstance(String command);
 
+  /// Send a command to the existing instance and stream the output
+  Future<void> sendCommandAndStreamOutput(
+    String command, {
+    required Function(String) onOutput,
+  });
+
+  /// Broadcast a message to all connected clients
+  void broadcastMessage(String message);
+
   /// Start listening for commands from new instances
   Future<void> startListeningForCommands(Function(String command) onCommandReceived);
 

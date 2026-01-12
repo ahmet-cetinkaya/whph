@@ -191,7 +191,23 @@ static void my_application_activate(GApplication* application) {
 
   gtk_window_set_default_size(window, 1280, 720);
   
-  // Always show the window - minimized handling is done by Flutter layer
+  // Conditionally show the window based on arguments to prevent flashing for CLI/minimized starts
+  gboolean should_show = TRUE;
+  if (self->dart_entrypoint_arguments != nullptr) {
+    for (int i = 0; self->dart_entrypoint_arguments[i] != nullptr; i++) {
+      if (g_strcmp0(self->dart_entrypoint_arguments[i], "--minimized") == 0 ||
+          g_strcmp0(self->dart_entrypoint_arguments[i], "--sync") == 0) {
+        should_show = FALSE;
+        break;
+      }
+    }
+  }
+
+  if (!should_show) {
+    // Iconify before show to prevent flash. Engine needs show to start Dart.
+    gtk_window_iconify(window);
+  }
+  
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
@@ -208,8 +224,8 @@ static void my_application_activate(GApplication* application) {
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
   
-  // Note: Minimized startup is now handled by Flutter's PlatformInitializationService
-  // which will hide the window using window_manager if --minimized argument is present
+  // Note: Minimized startup logic is duplicated in Flutter's PlatformInitializationService
+  // but it's important to prevent the show in C++ to avoid any flash.
 }
 
 

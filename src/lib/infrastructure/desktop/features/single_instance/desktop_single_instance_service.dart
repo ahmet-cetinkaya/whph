@@ -1,6 +1,5 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
@@ -8,36 +7,39 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class DesktopSingleInstanceService implements ISingleInstanceService {
   static const String _lockFileName = 'whph.lock';
-  static const String _ipcFileName = 'whph.ipc';
-  static const int _ipcCheckIntervalMs = 500;
+  static const String _portFileName = 'whph.port';
 
   File? _lockFile;
-  File? _ipcFile;
   RandomAccessFile? _lockHandle;
-  Isolate? _ipcListenerIsolate;
-  ReceivePort? _ipcReceivePort;
-  SendPort? _ipcListenerSendPort;
+  ServerSocket? _serverSocket;
+  final List<Socket> _connectedClients = [];
   Function(String)? _onCommandReceived;
 
   @override
   Future<bool> isAnotherInstanceRunning() async {
     try {
-      final lockFile = await _getLockFile();
-
-      // Try to open the lock file exclusively
-      try {
-        final handle = await lockFile.open(mode: FileMode.write);
-
-        // Try to get an exclusive lock
-        await handle.lock(FileLock.exclusive);
-        await handle.unlock();
-        await handle.close();
-
-        // If we got here, no other instance is running
+      final portFile = await _getPortFile();
+      if (!await portFile.exists()) {
+        Logger.debug('Port file not found, assuming no instance running');
         return false;
-      } catch (e) {
-        // Lock failed, another instance is running
+      }
+
+      final portContent = await portFile.readAsString();
+      final port = int.tryParse(portContent);
+      if (port == null) {
+        Logger.warning('Invalid port file content');
+        return false;
+      }
+
+      // Try to connect to the existing instance
+      try {
+        final socket =
+            await Socket.connect(InternetAddress.loopbackIPv4, port, timeout: const Duration(milliseconds: 500));
+        socket.destroy();
         return true;
+      } catch (e) {
+        Logger.debug('Failed to connect to existing port, instance likely dead: $e');
+        return false;
       }
     } catch (e) {
       Logger.error('Error checking for existing instance: $e');
@@ -95,13 +97,15 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   @override
   Future<bool> sendCommandToExistingInstance(String command) async {
     try {
-      final ipcFile = await _getIPCFile();
+      final portFile = await _getPortFile();
+      if (!await portFile.exists()) return false;
 
-      // Write command with timestamp and pid
-      await ipcFile.writeAsString(
-        '${DateTime.now().millisecondsSinceEpoch}\n$pid\n$command',
-        mode: FileMode.write,
-      );
+      final port = int.parse(await portFile.readAsString());
+      final socket = await Socket.connect(InternetAddress.loopbackIPv4, port);
+
+      socket.write('$command\n');
+      await socket.flush();
+      socket.destroy();
 
       Logger.info('Command "$command" sent to existing instance');
       return true;
@@ -112,43 +116,93 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   }
 
   @override
+  Future<void> sendCommandAndStreamOutput(String command, {required Function(String) onOutput}) async {
+    try {
+      final portFile = await _getPortFile();
+      if (!await portFile.exists()) {
+        onOutput('Error: No running instance found.');
+        return;
+      }
+
+      final port = int.parse(await portFile.readAsString());
+      final socket = await Socket.connect(InternetAddress.loopbackIPv4, port);
+
+      // Send command
+      socket.write('$command\n');
+      await socket.flush();
+
+      // Listen for updates
+      final Completer<void> completer = Completer<void>();
+
+      socket.listen(
+        (data) {
+          final message = String.fromCharCodes(data).trim();
+          final lines = message.split('\n');
+          for (final line in lines) {
+            if (line == 'DONE') {
+              socket.destroy();
+              if (!completer.isCompleted) completer.complete();
+            } else if (line.isNotEmpty) {
+              onOutput(line);
+            }
+          }
+        },
+        onError: (error) {
+          onOutput('Error: Connection error $error');
+          if (!completer.isCompleted) completer.complete();
+        },
+        onDone: () {
+          if (!completer.isCompleted) completer.complete();
+        },
+      );
+
+      await completer.future;
+    } catch (e) {
+      onOutput('Failed to send command: $e');
+    }
+  }
+
+  @override
   Future<void> startListeningForCommands(Function(String) onCommandReceived) async {
     _onCommandReceived = onCommandReceived;
 
     try {
-      // Create IPC file if it doesn't exist
-      _ipcFile = await _getIPCFile();
-      if (!await _ipcFile!.exists()) {
-        await _ipcFile!.create(recursive: true);
-      }
+      // Bind to any available port on loopback
+      _serverSocket = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
 
-      // Start the isolate to monitor IPC requests
-      _ipcReceivePort = ReceivePort();
-      final commandReceivePort = ReceivePort();
+      // Write port to file
+      final portFile = await _getPortFile();
+      await portFile.writeAsString(_serverSocket!.port.toString());
 
-      _ipcListenerIsolate = await Isolate.spawn(
-        _ipcListenerIsolateEntry,
-        {
-          'ipcSendPort': _ipcReceivePort!.sendPort,
-          'commandSendPort': commandReceivePort.sendPort,
-          'ipcFilePath': _ipcFile!.path,
-          'intervalMs': _ipcCheckIntervalMs,
-          'currentPid': pid,
-        },
-      );
+      Logger.info('Listening for IPC commands on port ${_serverSocket!.port}');
 
-      // Get the send port for communicating with the isolate
-      _ipcListenerSendPort = await commandReceivePort.first;
-      commandReceivePort.close();
+      _serverSocket!.listen((socket) {
+        _connectedClients.add(socket);
 
-      // Listen for commands from the isolate
-      _ipcReceivePort!.listen((message) {
-        if (message is String && _onCommandReceived != null) {
-          _onCommandReceived!(message);
-        }
+        socket.listen(
+          (data) {
+            final message = String.fromCharCodes(data).trim();
+            Logger.debug('Received IPC message: $message');
+            if (_onCommandReceived != null && message.isNotEmpty) {
+              _onCommandReceived!(message);
+            }
+
+            // If it's just a focus command, we can close connection immediately
+            if (message == 'FOCUS') {
+              socket.destroy();
+              _connectedClients.remove(socket);
+            }
+          },
+          onError: (error) {
+            Logger.error('IPC Client error: $error');
+            _connectedClients.remove(socket);
+            socket.destroy();
+          },
+          onDone: () {
+            _connectedClients.remove(socket);
+          },
+        );
       });
-
-      Logger.info('Started listening for IPC commands');
     } catch (e) {
       Logger.error('Failed to start IPC listener: $e');
     }
@@ -157,27 +211,18 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   @override
   Future<void> stopListeningForCommands() async {
     try {
-      // Signal the isolate to shut down gracefully
-      if (_ipcListenerSendPort != null) {
-        _ipcListenerSendPort!.send('shutdown');
-        _ipcListenerSendPort = null;
+      final clients = List<Socket>.from(_connectedClients);
+      for (final client in clients) {
+        client.destroy();
       }
+      _connectedClients.clear();
 
-      if (_ipcListenerIsolate != null) {
-        // Give the isolate a moment to shut down gracefully
-        await Future.delayed(Duration(milliseconds: 100));
-        _ipcListenerIsolate!.kill();
-        _ipcListenerIsolate = null;
-      }
+      await _serverSocket?.close();
+      _serverSocket = null;
 
-      if (_ipcReceivePort != null) {
-        _ipcReceivePort!.close();
-        _ipcReceivePort = null;
-      }
-
-      if (_ipcFile != null && await _ipcFile!.exists()) {
-        await _ipcFile!.delete();
-        _ipcFile = null;
+      final portFile = await _getPortFile();
+      if (await portFile.exists()) {
+        await portFile.delete();
       }
 
       Logger.info('Stopped listening for IPC commands');
@@ -186,68 +231,31 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
     }
   }
 
+  @override
+  void broadcastMessage(String message) {
+    if (_connectedClients.isEmpty) return;
+
+    final data = '$message\n';
+    // Create a copy list to iterate safely
+    final clients = List<Socket>.from(_connectedClients);
+
+    for (final client in clients) {
+      try {
+        client.write(data);
+      } catch (e) {
+        Logger.debug('Failed to write to client: $e');
+        _connectedClients.remove(client);
+      }
+    }
+  }
+
   Future<File> _getLockFile() async {
     final tempDir = await getTemporaryDirectory();
     return File(path.join(tempDir.path, _lockFileName));
   }
 
-  Future<File> _getIPCFile() async {
+  Future<File> _getPortFile() async {
     final tempDir = await getTemporaryDirectory();
-    return File(path.join(tempDir.path, _ipcFileName));
-  }
-
-  static void _ipcListenerIsolateEntry(Map<String, dynamic> params) async {
-    final SendPort ipcSendPort = params['ipcSendPort'];
-    final SendPort commandSendPort = params['commandSendPort'];
-    final String ipcFilePath = params['ipcFilePath'];
-    final int intervalMs = params['intervalMs'];
-    final int currentPid = params['currentPid'];
-
-    // Set up command listener
-    final commandReceivePort = ReceivePort();
-    commandSendPort.send(commandReceivePort.sendPort);
-
-    bool shouldExit = false;
-    commandReceivePort.listen((message) {
-      if (message == 'shutdown') {
-        shouldExit = true;
-        commandReceivePort.close();
-      }
-    });
-
-    final ipcFile = File(ipcFilePath);
-    DateTime lastModified = DateTime.fromMillisecondsSinceEpoch(0);
-
-    while (!shouldExit) {
-      try {
-        await Future.delayed(Duration(milliseconds: intervalMs));
-
-        if (!await ipcFile.exists()) continue;
-
-        final stat = await ipcFile.stat();
-        if (stat.modified.isAfter(lastModified)) {
-          lastModified = stat.modified;
-
-          final content = await ipcFile.readAsString();
-          final lines = content.trim().split('\n');
-
-          if (lines.length >= 2) {
-            final requestPid = int.tryParse(lines[1]);
-            // Default to FOCUS if no 3rd line
-            final command = lines.length >= 3 ? lines[2] : 'FOCUS';
-
-            // Don't respond to our own requests
-            if (requestPid != null && requestPid != currentPid) {
-              ipcSendPort.send(command);
-
-              // Clear the IPC file after processing
-              await ipcFile.writeAsString('', mode: FileMode.write);
-            }
-          }
-        }
-      } catch (e, s) {
-        debugPrint('Error in IPC listener isolate: $e\n$s');
-      }
-    }
+    return File(path.join(tempDir.path, _portFileName));
   }
 }

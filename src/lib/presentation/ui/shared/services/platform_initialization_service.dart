@@ -135,11 +135,37 @@ class PlatformInitializationService {
         if (command == 'SYNC') {
           // Handle remote sync trigger
           Logger.info('Triggering manual sync from IPC command');
+          singleInstanceService.broadcastMessage('Initializing remote sync...');
+
           try {
             final syncService = container.resolve<ISyncService>();
+
+            // Listen to sync status changes
+            final statusSub = syncService.syncStatusStream.listen((status) {
+              singleInstanceService.broadcastMessage('[Status] ${status.state.name}');
+            });
+
+            // Listen to detailed progress
+            final progressSub = syncService.progressStream.listen((progress) {
+              final percentage = '${progress.progressPercentage.toStringAsFixed(0)}%';
+              final msg = '${progress.operation} ${progress.currentEntity}'.trim();
+              if (msg.isNotEmpty || percentage != '0%') {
+                singleInstanceService.broadcastMessage('[Progress] $msg $percentage'.trim());
+              }
+            });
+
             await syncService.runSync(isManual: true);
+
+            // Cleanup listeners
+            await statusSub.cancel();
+            await progressSub.cancel();
+
+            singleInstanceService.broadcastMessage('Sync operation completed.');
+            singleInstanceService.broadcastMessage('DONE');
           } catch (e) {
             Logger.error('Failed to run sync from IPC: $e');
+            singleInstanceService.broadcastMessage('Error: Sync failed - $e');
+            singleInstanceService.broadcastMessage('DONE');
           }
         } else {
           // Default behavior: Focus the window (for 'FOCUS' or unknown commands)

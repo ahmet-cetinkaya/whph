@@ -30,36 +30,66 @@ void main() {
     });
 
     tearDown(() async {
+      await service.stopListeningForCommands();
+      await service.releaseInstance();
       if (await tempDir.exists()) {
         await tempDir.delete(recursive: true);
       }
     });
 
     test('isAnotherInstanceRunning should return false initially', () async {
-      // Since no file exists, it should return false
-      // Note: This relies on file locking which might behave differently in test env,
-      // but simpler check is just: can we run it?
       final isRunning = await service.isAnotherInstanceRunning();
       expect(isRunning, false);
     });
 
-    test('sendCommandToExistingInstance should write to IPC file', () async {
-      final success = await service.sendCommandToExistingInstance('TEST_COMMAND');
+    test('startListeningForCommands should create port file', () async {
+      await service.startListeningForCommands((cmd) {});
 
-      // It might pass because it just writes to a file
-      expect(success, true);
+      final portFile = File('${tempDir.path}/whph.port');
+      expect(await portFile.exists(), true);
 
-      final ipcFile = File('${tempDir.path}/whph.ipc');
-      expect(await ipcFile.exists(), true);
-
-      final content = await ipcFile.readAsString();
-      final lines = content.split('\n');
-      expect(lines.length, greaterThanOrEqualTo(3)); // ts, pid, command
-      expect(lines[2], 'TEST_COMMAND');
+      final content = await portFile.readAsString();
+      final port = int.tryParse(content);
+      expect(port, isNotNull);
+      expect(port, greaterThan(0));
     });
 
-    // Testing lockInstance might be flaky due to file locks in same process,
-    // but we can try.
+    test('sendCommandToExistingInstance should connect to listener', () async {
+      String? receivedCommand;
+
+      // Start listener
+      await service.startListeningForCommands((cmd) {
+        receivedCommand = cmd;
+      });
+
+      // Send command
+      final success = await service.sendCommandToExistingInstance('TEST_COMMAND');
+      expect(success, true);
+
+      // Wait a bit for async socket
+      await Future.delayed(Duration(milliseconds: 100));
+      expect(receivedCommand, 'TEST_COMMAND');
+    });
+
+    test('sendCommandAndStreamOutput should receive streamed data', () async {
+      // Start listener that echoes back logic
+      await service.startListeningForCommands((cmd) {
+        if (cmd == 'STREAM') {
+          service.broadcastMessage('Line 1');
+          service.broadcastMessage('Line 2');
+          service.broadcastMessage('DONE');
+        }
+      });
+
+      final receivedLines = <String>[];
+      await service.sendCommandAndStreamOutput('STREAM', onOutput: (line) {
+        receivedLines.add(line);
+      });
+
+      expect(receivedLines, contains('Line 1'));
+      expect(receivedLines, contains('Line 2'));
+    });
+
     test('lockInstance should create lock file', () async {
       final success = await service.lockInstance();
       expect(success, true);

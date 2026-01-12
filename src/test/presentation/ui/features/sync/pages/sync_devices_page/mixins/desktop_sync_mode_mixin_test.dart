@@ -7,7 +7,6 @@ import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/desktop_sync_mode_mixin.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:acore/acore.dart' hide Container;
 
 // Mocks
 import 'package:whph/core/domain/features/settings/setting.dart';
@@ -140,6 +139,6 @@ void main() {
 
 extension TesterExtensions on WidgetTester {
   T? stateLike<T>(Finder finder) {
-    return this.state(finder) as T?;
+    return state(finder) as T?;
   }
 }

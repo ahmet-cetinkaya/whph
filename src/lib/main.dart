@@ -70,7 +70,10 @@ void main(List<String> args) async {
           // Check if we just want to trigger a sync
           if (DesktopStartupService.shouldStartSync) {
             debugPrint('Triggering remote sync...');
-            await singleInstanceService.sendCommandToExistingInstance('SYNC');
+            await singleInstanceService.sendCommandAndStreamOutput(
+              'SYNC',
+              onOutput: (message) => stdout.writeln(message),
+            );
             exit(0);
           }
 
