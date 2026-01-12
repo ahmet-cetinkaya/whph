@@ -301,6 +301,9 @@ settings:
     three_state:
       title: Enable 3-State Tracking
       description: Toggle between "Not Done", "Skipped", and "Complete" states.
+    reverse_day_order:
+      title: Reverse order of days on listing
+      description: Show most recent days first (left to right) in the habits list.
   section:
     general: General
     appearance: Appearance

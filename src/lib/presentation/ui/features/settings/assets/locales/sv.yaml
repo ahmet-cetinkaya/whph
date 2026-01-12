@@ -26,7 +26,9 @@ settings:
     error: Import misslyckades
     error.entity: Fel i typ
     in_progress: Importerar data, var god vänta...
-    migration_failed: Import misslyckades. Se till att du har installerat den senaste versionen av appen.
+    migration_failed:
+      Import misslyckades. Se till att du har installerat den senaste
+      versionen av appen.
     select_file: Välj fil
     strategy:
       merge: Slå samman med befintliga data
@@ -63,42 +65,62 @@ settings:
     settings: Ljudinställningar
   permissions:
     app_usage:
-      description: Denna app behöver behörighet för att komma åt app-användningsstatistik för att spåra dina app-användningsmönster korrekt.
+      description:
+        Denna app behöver behörighet för att komma åt app-användningsstatistik
+        för att spåra dina app-användningsmönster korrekt.
       instructions: "Instruktioner:"
       steps:
         step1: Tryck på "Öppna Inställning"-knappen
-        step2: På skärmen för åtkomst till användning som öppnas, hitta "{appName}" i listan
+        step2:
+          På skärmen för åtkomst till användning som öppnas, hitta "{appName}"
+          i listan
         step3: Tryck på "{appName}"
-        step4: Aktivera "Tillåt åtkomst till användning" eller växla strömbrytaren till PÅ
+        step4:
+          Aktivera "Tillåt åtkomst till användning" eller växla strömbrytaren
+          till PÅ
       title: App-användningsbehörighet
     battery_optimization:
-      description: För pålitliga notiser måste denna app exkluderas från batterioptimering. Utan detta kan påminnelser försenas eller inte levereras alls.
-      importance: Platsen för denna inställning kan variera beroende på tillverkaren av din enhet.
+      description:
+        För pålitliga notiser måste denna app exkluderas från batterioptimering.
+        Utan detta kan påminnelser försenas eller inte levereras alls.
+      importance:
+        Platsen för denna inställning kan variera beroende på tillverkaren
+        av din enhet.
       instructions: "Instruktioner:"
-      not_disabled: Batterioptimering är fortfarande aktiverat. Ge behörighet så att den relevanta funktionen fungerar korrekt.
+      not_disabled:
+        Batterioptimering är fortfarande aktiverat. Ge behörighet så att
+        den relevanta funktionen fungerar korrekt.
       steps:
         step1: Tryck på "Öppna Inställning"-knappen
         step2: På inställningsskärmen som öppnas, hitta "{appName}"
         step3: Tryck på "{appName}"
-        step4: Se till att "Tillåt bakgrundsanvändning" är aktiverat på sidan som öppnas
+        step4:
+          Se till att "Tillåt bakgrundsanvändning" är aktiverat på sidan som
+          öppnas
         step5: Tryck på "Tillåt bakgrundsanvändning"
         step6: Välj "Obegränsad"
       title: Batterioptimering
     exact_alarm:
-      description: Android 12+ kräver behörighet för att schemalägga exakta alarm för att påminnelser ska fungera korrekt.
+      description:
+        Android 12+ kräver behörighet för att schemalägga exakta alarm
+        för att påminnelser ska fungera korrekt.
       instructions: "Instruktioner:"
       steps:
         android12plus:
           step2: Gå till Alarm & påminnelser och aktivera behörighet
           step3: Bekräfta exakt alarmbehörighet
         step1: Tryck på "Öppna Inställning"-knappen
-        step2: På den öppnade {appName}-appens Alarm & påminnelser-sida, aktivera "Tillåt att ställa in alarm och påminnelser"
+        step2:
+          På den öppnade {appName}-appens Alarm & påminnelser-sida, aktivera
+          "Tillåt att ställa in alarm och påminnelser"
       title: Exakt alarmbehörighet
     fix_it: Åtgärda det
     granted: Behörighet beviljad
     instructions: Instruktioner
     notification:
-      description: Notisbehörighet krävs för att ta emot påminnelser. Utan denna behörighet får du inga notiser.
+      description:
+        Notisbehörighet krävs för att ta emot påminnelser. Utan denna behörighet
+        får du inga notiser.
       instructions: "Instruktioner:"
       steps:
         android:
@@ -112,15 +134,25 @@ settings:
     open_terminal: Öppna terminal
     firewall:
       title: Brandväggsbehörighet
-      description: Tillåt WHPH att kommunicera via {platform}s brandvägg på port 44040 för enhetssynkronisering.
-      dialog_description: WHPH behöver brandväggsbehörighet för att tillåta andra enheter att ansluta för synkronisering. Följ kommandona nedan för att konfigurera din {platform} brandvägg. Du kan också hitta dessa steg i hjälpmenyn.
+      description:
+        Tillåt WHPH att kommunicera via {platform}s brandvägg på port 44040
+        för enhetssynkronisering.
+      dialog_description:
+        WHPH behöver brandväggsbehörighet för att tillåta andra
+        enheter att ansluta för synkronisering. Följ kommandona nedan för att konfigurera
+        din {platform} brandvägg. Du kan också hitta dessa steg i hjälpmenyn.
       dialog_info_text: "Obs: Du kan också hitta dessa steg i hjälpmenyn."
       linux_manual_confirmation_button: Jag har konfigurerat
       save_confirmation_error: Det gick inte att spara brandväggsbehörighet
       rule_added_success: Brandväggsregel tillagd framgångsrikt
-      rule_add_error: Det gick inte att lägga till brandväggsregel. Prova manuella steg.
+      rule_add_error:
+        Det gick inte att lägga till brandväggsregel. Prova manuella
+        steg.
       add_rule_button: Lägg till brandväggsregel
-      windows_auto_description: "Klicka på 'Lägg till brandväggsregel' för att automatiskt lägga till brandväggsregeln med UAC-behörighetsbegäran. Om du föredrar att lägga till manuellt, följ stegen nedan:"
+      windows_auto_description:
+        "Klicka på 'Lägg till brandväggsregel' för att automatiskt
+        lägga till brandväggsregeln med UAC-behörighetsbegäran. Om du föredrar att
+        lägga till manuellt, följ stegen nedan:"
       instructions:
         linux:
           step1: Öppna en terminal
@@ -141,8 +173,13 @@ settings:
           method_gui_title: "Metod 1: Windows Brandvägg GUI"
           method_command_title: "Metod 2: Kommandotolk"
           step_open_defender: Öppna Windows Defender Brandvägg → Avancerade inställningar
-          step_create_inbound_rule: 'Skapa inkommande regel: Inkommande regler → Ny regel → Port → TCP → 44040 → Tillåt → Alla profiler → Namn: "WHPH Sync (Inkommande)"'
-          step_create_outbound_rule: 'Skapa utgående regel: Utgående regler → Ny regel → Port → TCP → 44040 → Tillåt → Alla profiler → Namn: "WHPH Sync (Utgående)"'
+          step_create_inbound_rule:
+            'Skapa inkommande regel: Inkommande regler → Ny
+            regel → Port → TCP → 44040 → Tillåt → Alla profiler → Namn: "WHPH Sync
+            (Inkommande)"'
+          step_create_outbound_rule:
+            'Skapa utgående regel: Utgående regler → Ny regel
+            → Port → TCP → 44040 → Tillåt → Alla profiler → Namn: "WHPH Sync (Utgående)"'
           alternative_command_prompt:
             title: "Alternativ: Använd Kommandotolk"
             steps:
@@ -152,29 +189,44 @@ settings:
         step_run_commands: "2. Kör dessa kommandon:"
         step_open_terminal: 1. Öppna en terminal
         step_run_command: "2. Kör detta kommando (kräver sudo-rättigheter):"
-        step_click_confirmation: 3. Efter att ha kört kommandot, klicka på bekräftelseknappen nedan
-      manual_configure_instruction: "Konfigurera brandväggsregler manuellt för synkronisering (kräver administratörsrättigheter):"
+        step_click_confirmation:
+          3. Efter att ha kört kommandot, klicka på bekräftelseknappen
+          nedan
+      manual_configure_instruction:
+        "Konfigurera brandväggsregler manuellt för synkronisering
+        (kräver administratörsrättigheter):"
     startup:
-      description: För att appen ska starta automatiskt med din enhet krävs auto-start-behörighet. Detta säkerställer att påminnelser och notiser fungerar korrekt även efter enhetsåterstarter.
-      importance: Platsen för auto-start-inställningen varierar eller kan saknas beroende på tillverkaren av din enhet.
+      description:
+        För att appen ska starta automatiskt med din enhet krävs auto-start-behörighet.
+        Detta säkerställer att påminnelser och notiser fungerar korrekt även efter
+        enhetsåterstarter.
+      importance:
+        Platsen för auto-start-inställningen varierar eller kan saknas beroende
+        på tillverkaren av din enhet.
       instructions: "Instruktioner:"
       steps:
         step1: Tryck på "Öppna Inställning"-knappen
         step2: På inställningsskärmen som öppnas, hitta "{appName}" app
-        step3: Aktivera "Auto-start", "Autorun", "Start vid uppstart" eller liknande behörighet
+        step3:
+          Aktivera "Auto-start", "Autorun", "Start vid uppstart" eller liknande
+          behörighet
       title: Auto-start-behörighet
     title: Behörigheter
   startup:
     disable_error: Misslyckades med att inaktivera startinställning
     enable_error: Misslyckades med att aktivera startinställning
-    subtitle: Tryck för att öppna systeminställningar och aktivera auto-start-behörighet för appen
+    subtitle:
+      Tryck för att öppna systeminställningar och aktivera auto-start-behörighet
+      för appen
     title: Start vid uppstart
   sync_devices:
     title: Synkronisera enheter
   title: Inställningar
   backup:
     title: Säkerhetskopia
-    description: Skapa och återställ komprimerade säkerhetskopior av dina appdata med det säkra .whph-formatet
+    description:
+      Skapa och återställ komprimerade säkerhetskopior av dina appdata
+      med det säkra .whph-formatet
     export:
       title: Skapa säkerhetskopia
       description: Exportera alla dina data till en komprimerad .whph-säkerhetskopi
@@ -199,7 +251,9 @@ settings:
     invalid_format: Ogiltigt säkerhetskopia-filformat
     invalid_format_error: Ogiltigt säkerhetskopia-filformat
     corrupted: Säkerhetskopia-filen är korrupt eller skadad
-    export_description: Skapa en komprimerad säkerhetskopia-fil som innehåller alla dina data
+    export_description:
+      Skapa en komprimerad säkerhetskopia-fil som innehåller alla
+      dina data
   theme:
     title: Tema
     description: Anpassa WHPH:s utseende
@@ -212,7 +266,9 @@ settings:
         description: Följ systemets tema-inställningar
     dynamic_accent:
       title: Dynamisk accentfärg
-      description: Om ditt system stödjer det anpassas primärfärgen baserat på systemets dynamiska färgschema
+      description:
+        Om ditt system stödjer det anpassas primärfärgen baserat på systemets
+        dynamiska färgschema
       feature: Dynamisk
     custom_accent:
       title: Anpassad accentfärg
@@ -221,7 +277,9 @@ settings:
     error: Misslyckades med att ladda temainställningar
   ui_density:
     title: Täthet
-    description: Justera storleken på text och UI-element för att förbättra läsbarheten på skärmar med hög DPI
+    description:
+      Justera storleken på text och UI-element för att förbättra läsbarheten
+      på skärmar med hög DPI
     compact: Kompakt
     normal: Normal
     large: Stor
@@ -235,22 +293,34 @@ settings:
       description: Ta bort all data och återställ applikationen
       dialog:
         title: Återställ Databas
-        warning: "Varning: Denna åtgärd kan inte ångras. Alla dina data kommer att raderas permanent."
+        warning:
+          "Varning: Denna åtgärd kan inte ångras. Alla dina data kommer att
+          raderas permanent."
         confirm_text: Svep för att bekräfta
         resetting: Återställer databas...
       restart_screen:
         completed_title: Databasen har återställts framgångsrikt
         desktop_message: Applikationen kommer att starta om om {seconds} sekunder.
-        mobile_message: Vänligen starta om applikationen manuellt för att slutföra processen.
+        mobile_message:
+          Vänligen starta om applikationen manuellt för att slutföra
+          processen.
         restart_now_button: Starta Om Nu
       error:
         title: Återställning misslyckades
-        message: Kunde inte återställa databasen. Försök igen eller kontakta support om problemet kvarstår.
+        message:
+          Kunde inte återställa databasen. Försök igen eller kontakta support
+          om problemet kvarstår.
         cancel: Avbryt
         retry: Försök igen
-        help_text: Om problemet kvarstår, försök starta om applikationen eller kontrollera om du har tillräckligt med lagringsutrymme och behörigheter.
-        permission_denied: Åtkomst nekad. Kontrollera om applikationen har skrivåtkomst till lagring.
-        disk_full: Inget utrymme kvar på enheten. Frigör lagringsutrymme och försök igen.
+        help_text:
+          Om problemet kvarstår, försök starta om applikationen eller kontrollera
+          om du har tillräckligt med lagringsutrymme och behörigheter.
+        permission_denied:
+          Åtkomst nekad. Kontrollera om applikationen har skrivåtkomst
+          till lagring.
+        disk_full:
+          Inget utrymme kvar på enheten. Frigör lagringsutrymme och försök
+          igen.
         file_not_found: Databasfil hittades inte. Detta förväntas vid en ny installation.
         file_access: Filåtkomstfel
         sqlite: Databasfel
@@ -267,23 +337,33 @@ settings:
       description: Visa och exportera aktuella felsökningsloggar
     page:
       title: Felsökningsloggar
-      description: Visa aktuella felsökningsloggposter. Loggar rensas och roteras automatiskt för att förhindra överdriven diskanvändning.
+      description:
+        Visa aktuella felsökningsloggposter. Loggar rensas och roteras
+        automatiskt för att förhindra överdriven diskanvändning.
       content: Logginnehåll
       refresh: Uppdatera loggar
       copy: Kopiera till urklipp
       save_as: Spara som fil
       copied: Felsökningsloggar kopierade till urklipp
       load_error: Fel vid inläsning av felsökningsloggar
-      not_enabled: Felsökningsloggning är inte aktiverat. Aktivera det i Avancerade inställningar för att börja samla loggar.
-      no_file: Ingen felsökningsloggfil hittades. Loggar kommer att skapas efter aktivering av felsökningsloggning och när appen genererar loggposter.
+      not_enabled:
+        Felsökningsloggning är inte aktiverat. Aktivera det i Avancerade
+        inställningar för att börja samla loggar.
+      no_file:
+        Ingen felsökningsloggfil hittades. Loggar kommer att skapas efter aktivering
+        av felsökningsloggning och när appen genererar loggposter.
       empty: Felsökningsloggfilen är tom. Inga loggposter har registrerats ännu.
       toggle_auto_scroll: Växla automatisk rullning
     export:
       dialog_title: Exportera felsökningsloggar
       error: Fel vid export av loggar
       success: Loggfil exporterad framgångsrikt
-      no_logs_available: Inga loggar tillgängliga för export. Generera några loggar först.
-      file_not_exist: Loggfilen existerar inte. Aktivera debug logging och generera loggar.
+      no_logs_available:
+        Inga loggar tillgängliga för export. Generera några loggar
+        först.
+      file_not_exist:
+        Loggfilen existerar inte. Aktivera debug logging och generera
+        loggar.
   task:
     title: Uppgiftsinställningar
     preferences:
@@ -291,7 +371,9 @@ settings:
       description: Anpassa uppgiftsbeteende och standardinställningar
     default_estimated_time:
       title: Standard uppskattad tid
-      description: Ställ in standard uppskattad tid för nya uppgifter. Du kan inaktivera detta för att undvika automatiska tidsestimat.
+      description:
+        Ställ in standard uppskattad tid för nya uppgifter. Du kan inaktivera
+        detta för att undvika automatiska tidsestimat.
       disabled: Inaktiverad
       minutes: "{minutes} minuter"
       load_error: Fel vid inläsning av standard uppskattad tid
@@ -316,3 +398,6 @@ settings:
     three_state:
       title: Aktivera 3-tillståndsspårning
       description: Växla mellan tillstånden Ej klar, Överhoppad och Klar.
+    reverse_day_order:
+      title: Omvänd ordning på dagar i listan
+      description: Visa de senaste dagarna först (från vänster till höger) i vanor-listan.

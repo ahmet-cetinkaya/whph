@@ -72,7 +72,9 @@ settings:
         step4: '"사용 액세스 허용"을 활성화하거나 스위치를 ON으로 전환하세요'
       title: 앱 사용 권한
     battery_optimization:
-      description: 신뢰할 수 있는 알림을 위해 이 앱을 배터리 최적화에서 제외해야 합니다. 이것이 없으면 알림이 지연되거나 전혀 전달되지 않을 수 있습니다.
+      description:
+        신뢰할 수 있는 알림을 위해 이 앱을 배터리 최적화에서 제외해야 합니다. 이것이 없으면 알림이 지연되거나 전혀 전달되지
+        않을 수 있습니다.
       importance: 이 설정의 위치는 기기 제조업체에 따라 다를 수 있습니다.
       instructions: "지침:"
       not_disabled: 배터리 최적화가 여전히 활성화되어 있습니다. 관련 기능이 올바르게 작동하도록 권한을 제공하세요.
@@ -113,14 +115,18 @@ settings:
     firewall:
       title: 방화벽 권한
       description: 기기 동기화를 위해 WHPH가 {platform} 방화벽의 포트 44040을 통해 통신할 수 있도록 허용합니다.
-      dialog_description: WHPH는 동기화를 위해 다른 기기가 연결할 수 있도록 방화벽 권한이 필요합니다. 아래 명령에 따라 {platform} 방화벽을 설정하세요. 이 단계는 도움말 메뉴에서도 찾을 수 있습니다.
+      dialog_description:
+        WHPH는 동기화를 위해 다른 기기가 연결할 수 있도록 방화벽 권한이 필요합니다. 아래 명령에 따라
+        {platform} 방화벽을 설정하세요. 이 단계는 도움말 메뉴에서도 찾을 수 있습니다.
       dialog_info_text: "참고: 이 단계는 도움말 메뉴에서도 찾을 수 있습니다."
       linux_manual_confirmation_button: 설정했습니다
       save_confirmation_error: 방화벽 확인 설정 저장에 실패했습니다
       rule_added_success: 방화벽 규칙이 성공적으로 추가되었습니다
       rule_add_error: 방화벽 규칙 추가에 실패했습니다. 수동 단계를 시도하세요.
       add_rule_button: 방화벽 규칙 추가
-      windows_auto_description: "UAC 권한 요청으로 방화벽 규칙을 자동으로 추가하려면 '방화벽 규칙 추가'를 클릭하세요. 수동으로 추가하려면 아래 단계를 따르세요:"
+      windows_auto_description:
+        "UAC 권한 요청으로 방화벽 규칙을 자동으로 추가하려면 '방화벽 규칙 추가'를 클릭하세요.
+        수동으로 추가하려면 아래 단계를 따르세요:"
       instructions:
         linux:
           step1: 터미널 열기
@@ -141,8 +147,12 @@ settings:
           method_gui_title: "방법 1: Windows 방화벽 GUI"
           method_command_title: "방법 2: 명령 프롬프트"
           step_open_defender: Windows Defender 방화벽 → 고급 설정 열기
-          step_create_inbound_rule: '인바운드 규칙 생성: 인바운드 규칙 → 새 규칙 → 포트 → TCP → 44040 → 허용 → 모든 프로파일 → 이름: "WHPH Sync (인바운드)"'
-          step_create_outbound_rule: '아웃바운드 규칙 생성: 아웃바운드 규칙 → 새 규칙 → 포트 → TCP → 44040 → 허용 → 모든 프로파일 → 이름: "WHPH Sync (아웃바운드)"'
+          step_create_inbound_rule:
+            '인바운드 규칙 생성: 인바운드 규칙 → 새 규칙 → 포트 → TCP → 44040
+            → 허용 → 모든 프로파일 → 이름: "WHPH Sync (인바운드)"'
+          step_create_outbound_rule:
+            '아웃바운드 규칙 생성: 아웃바운드 규칙 → 새 규칙 → 포트 → TCP → 44040
+            → 허용 → 모든 프로파일 → 이름: "WHPH Sync (아웃바운드)"'
           alternative_command_prompt:
             title: "대안: 명령 프롬프트 사용"
             steps:
@@ -155,7 +165,9 @@ settings:
         step_click_confirmation: 3. 명령어 실행 후 아래 확인 버튼 클릭
       manual_configure_instruction: "동기화를 위해 방화벽 규칙을 수동으로 구성 (관리자 권한 필요):"
     startup:
-      description: 앱이 기기와 함께 자동으로 시작되려면 자동 시작 권한이 필요합니다. 이렇게 하면 기기 재시작 후에도 알림과 알림이 제대로 작동합니다.
+      description:
+        앱이 기기와 함께 자동으로 시작되려면 자동 시작 권한이 필요합니다. 이렇게 하면 기기 재시작 후에도 알림과 알림이
+        제대로 작동합니다.
       importance: 자동 시작 설정 위치는 기기 제조업체에 따라 다르거나 존재하지 않을 수 있습니다.
       instructions: "지침:"
       steps:
@@ -316,3 +328,6 @@ settings:
     three_state:
       title: 3상 추적 사용
       description: 미완료, 건너뜀, 완료 상태 간 전환.
+    reverse_day_order:
+      title: 목록의 날짜 순서 반전
+      description: 습관 목록에서 최근 날짜를 먼저 (왼쪽에서 오른쪽으로) 표시합니다.

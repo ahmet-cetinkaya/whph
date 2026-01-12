@@ -13,7 +13,9 @@ settings:
     csv_description: Puoi usare questo per visualizzare in Excel e applicazioni simili.
     error: Esportazione fallita
     in_progress: Esportazione dati in corso, attendere...
-    json_description: Esporta i dati in formato JSON leggibile per scopi di sviluppo e debug.
+    json_description:
+      Esporta i dati in formato JSON leggibile per scopi di sviluppo
+      e debug.
     select_directory: Seleziona directory di esportazione
     select_path: Seleziona posizione di salvataggio
     select_type: Seleziona formato di esportazione
@@ -26,7 +28,9 @@ settings:
     error: Importazione fallita
     error.entity: Errore nel tipo
     in_progress: Importazione dati in corso, attendere...
-    migration_failed: Importazione fallita. Assicurati di avere l'ultima versione dell'app installata.
+    migration_failed:
+      Importazione fallita. Assicurati di avere l'ultima versione
+      dell'app installata.
     select_file: Seleziona file
     strategy:
       merge: Unisci con dati esistenti
@@ -63,42 +67,61 @@ settings:
     settings: Impostazioni audio
   permissions:
     app_usage:
-      description: Questa app ha bisogno del permesso per accedere alle statistiche di utilizzo app per tracciare accuratamente i tuoi pattern di utilizzo app.
+      description:
+        Questa app ha bisogno del permesso per accedere alle statistiche
+        di utilizzo app per tracciare accuratamente i tuoi pattern di utilizzo app.
       instructions: "Istruzioni:"
       steps:
         step1: Premi il pulsante "Apri impostazioni"
-        step2: Nella schermata impostazioni accesso utilizzo che si apre, trova "{appName}" nell'elenco
+        step2:
+          Nella schermata impostazioni accesso utilizzo che si apre, trova "{appName}"
+          nell'elenco
         step3: Tocca su "{appName}"
         step4: Abilita "Consenti accesso utilizzo" o attiva l'interruttore su ON
       title: Permesso utilizzo app
     battery_optimization:
-      description: Per notifiche affidabili, questa app deve essere esclusa dall'ottimizzazione batteria. Senza questo, i promemoria potrebbero essere ritardati o non consegnati affatto.
-      importance: La posizione di questa impostazione può variare a seconda del produttore del dispositivo.
+      description:
+        Per notifiche affidabili, questa app deve essere esclusa dall'ottimizzazione
+        batteria. Senza questo, i promemoria potrebbero essere ritardati o non consegnati
+        affatto.
+      importance:
+        La posizione di questa impostazione può variare a seconda del produttore
+        del dispositivo.
       instructions: "Istruzioni:"
-      not_disabled: L'ottimizzazione batteria è ancora abilitata. Fornisci il permesso perché la funzione pertinente funzioni correttamente.
+      not_disabled:
+        L'ottimizzazione batteria è ancora abilitata. Fornisci il permesso
+        perché la funzione pertinente funzioni correttamente.
       steps:
         step1: Premi il pulsante "Apri impostazioni"
         step2: Nella schermata impostazioni che si apre, trova "{appName}"
         step3: Tocca su "{appName}"
-        step4: Assicurati che "Consenti utilizzo in background" sia abilitato nella pagina che si apre
+        step4:
+          Assicurati che "Consenti utilizzo in background" sia abilitato nella
+          pagina che si apre
         step5: Tocca su "Consenti utilizzo in background"
         step6: Seleziona "Senza restrizioni"
       title: Ottimizzazione batteria
     exact_alarm:
-      description: Android 12+ richiede il permesso per programmare allarmi esatti perché i promemoria funzionino correttamente.
+      description:
+        Android 12+ richiede il permesso per programmare allarmi esatti
+        perché i promemoria funzionino correttamente.
       instructions: "Istruzioni:"
       steps:
         android12plus:
           step2: Vai a Allarmi e promemoria e abilita il permesso
           step3: Conferma il permesso allarme esatto
         step1: Premi il pulsante "Apri impostazioni"
-        step2: Nella pagina Allarmi e promemoria dell'app {appName} aperta, abilita "Consenti impostazione allarmi e promemoria"
+        step2:
+          Nella pagina Allarmi e promemoria dell'app {appName} aperta, abilita
+          "Consenti impostazione allarmi e promemoria"
       title: Permesso allarme esatto
     fix_it: Risolvi
     granted: Permesso concesso
     instructions: Istruzioni
     notification:
-      description: Il permesso notifiche è richiesto per ricevere promemoria. Senza questo permesso, non riceverai alcuna notifica.
+      description:
+        Il permesso notifiche è richiesto per ricevere promemoria. Senza
+        questo permesso, non riceverai alcuna notifica.
       instructions: "Istruzioni:"
       steps:
         android:
@@ -112,15 +135,28 @@ settings:
     open_terminal: Apri terminale
     firewall:
       title: Permesso firewall
-      description: Consenti a WHPH di comunicare tramite il firewall {platform} sulla porta 44040 per la sincronizzazione dei dispositivi.
-      dialog_description: WHPH ha bisogno del permesso del firewall per consentire ad altri dispositivi di connettersi per la sincronizzazione. Segui i comandi qui sotto per configurare il tuo firewall {platform}. Puoi anche trovare questi passaggi nel menu di aiuto.
+      description:
+        Consenti a WHPH di comunicare tramite il firewall {platform} sulla
+        porta 44040 per la sincronizzazione dei dispositivi.
+      dialog_description:
+        WHPH ha bisogno del permesso del firewall per consentire
+        ad altri dispositivi di connettersi per la sincronizzazione. Segui i comandi
+        qui sotto per configurare il tuo firewall {platform}. Puoi anche trovare questi
+        passaggi nel menu di aiuto.
       dialog_info_text: "Nota: Puoi anche trovare questi passaggi nel menu di aiuto."
       linux_manual_confirmation_button: Ho configurato
-      save_confirmation_error: Impossibile salvare l'impostazione di conferma del firewall
+      save_confirmation_error:
+        Impossibile salvare l'impostazione di conferma del
+        firewall
       rule_added_success: Regola del firewall aggiunta con successo
-      rule_add_error: Impossibile aggiungere la regola del firewall. Prova i passaggi manuali.
+      rule_add_error:
+        Impossibile aggiungere la regola del firewall. Prova i passaggi
+        manuali.
       add_rule_button: Aggiungi regola firewall
-      windows_auto_description: "Fai clic su 'Aggiungi regola firewall' per aggiungere automaticamente la regola del firewall con richiesta di permesso UAC. Se preferisci aggiungere manualmente, segui i passaggi qui sotto:"
+      windows_auto_description:
+        "Fai clic su 'Aggiungi regola firewall' per aggiungere
+        automaticamente la regola del firewall con richiesta di permesso UAC. Se preferisci
+        aggiungere manualmente, segui i passaggi qui sotto:"
       instructions:
         linux:
           step1: Apri un terminale
@@ -136,13 +172,21 @@ settings:
           step5: Seleziona Porta e fai clic su Avanti
           step6: Seleziona TCP e inserisci 44040 nel campo delle porte locali specifiche
           step7: Seleziona Consenti la connessione e fai clic su Avanti
-          step8: Seleziona tutti i profili (Dominio, Privato, Pubblico) e fai clic su Avanti
+          step8:
+            Seleziona tutti i profili (Dominio, Privato, Pubblico) e fai clic
+            su Avanti
           step9: Inserisci un nome come WHPH Sync Port 44040 e fai clic su Fine
           method_gui_title: "Metodo 1: Interfaccia grafica di Windows Firewall"
           method_command_title: "Metodo 2: Prompt dei comandi"
           step_open_defender: Apri Windows Defender Firewall → Impostazioni avanzate
-          step_create_inbound_rule: 'Crea regola in entrata: Regole in entrata → Nuova regola → Porta → TCP → 44040 → Consenti → Tutti i profili → Nome: "WHPH Sync (In entrata)"'
-          step_create_outbound_rule: 'Crea regola in uscita: Regole in uscita → Nuova regola → Porta → TCP → 44040 → Consenti → Tutti i profili → Nome: "WHPH Sync (In uscita)"'
+          step_create_inbound_rule:
+            'Crea regola in entrata: Regole in entrata → Nuova
+            regola → Porta → TCP → 44040 → Consenti → Tutti i profili → Nome: "WHPH
+            Sync (In entrata)"'
+          step_create_outbound_rule:
+            'Crea regola in uscita: Regole in uscita → Nuova
+            regola → Porta → TCP → 44040 → Consenti → Tutti i profili → Nome: "WHPH
+            Sync (In uscita)"'
           alternative_command_prompt:
             title: "Alternativa: Usa Prompt dei comandi"
             steps:
@@ -152,29 +196,44 @@ settings:
         step_run_commands: "2. Esegui questi comandi:"
         step_open_terminal: 1. Apri un terminale
         step_run_command: "2. Esegui questo comando (richiede privilegi sudo):"
-        step_click_confirmation: 3. Dopo aver eseguito il comando, fai clic sul pulsante di conferma qui sotto
-      manual_configure_instruction: "Configura manualmente le regole del firewall per la sincronizzazione (richiede privilegi di amministratore):"
+        step_click_confirmation:
+          3. Dopo aver eseguito il comando, fai clic sul pulsante
+          di conferma qui sotto
+      manual_configure_instruction:
+        "Configura manualmente le regole del firewall
+        per la sincronizzazione (richiede privilegi di amministratore):"
     startup:
-      description: Perché l'app si avvii automaticamente con il tuo dispositivo, è richiesto il permesso di avvio automatico. Questo assicura che promemoria e notifiche funzionino correttamente anche dopo i riavvii del dispositivo.
-      importance: La posizione dell'impostazione avvio automatico varia o potrebbe non essere presente per produttore del dispositivo.
+      description:
+        Perché l'app si avvii automaticamente con il tuo dispositivo, è
+        richiesto il permesso di avvio automatico. Questo assicura che promemoria
+        e notifiche funzionino correttamente anche dopo i riavvii del dispositivo.
+      importance:
+        La posizione dell'impostazione avvio automatico varia o potrebbe
+        non essere presente per produttore del dispositivo.
       instructions: "Istruzioni:"
       steps:
         step1: Premi il pulsante "Apri impostazioni"
         step2: Nella schermata impostazioni che si apre, trova l'app "{appName}"
-        step3: Abilita "Avvio automatico", "Autorun", "Avvia all'avvio" o permesso simile
+        step3:
+          Abilita "Avvio automatico", "Autorun", "Avvia all'avvio" o permesso
+          simile
       title: Permesso avvio automatico
     title: Permessi
   startup:
     disable_error: Impossibile disabilitare l'impostazione di avvio
     enable_error: Impossibile abilitare l'impostazione di avvio
-    subtitle: Tocca per aprire le impostazioni di sistema e abilitare il permesso di avvio automatico per l'app
+    subtitle:
+      Tocca per aprire le impostazioni di sistema e abilitare il permesso
+      di avvio automatico per l'app
     title: Avvia all'avvio
   sync_devices:
     title: Sincronizza dispositivi
   title: Impostazioni
   backup:
     title: Backup
-    description: Crea e ripristina backup compressi dei dati della tua applicazione utilizzando il formato sicuro .whph
+    description:
+      Crea e ripristina backup compressi dei dati della tua applicazione
+      utilizzando il formato sicuro .whph
     export:
       title: Crea backup
       description: Esporta tutti i tuoi dati in un file di backup .whph compresso
@@ -212,16 +271,22 @@ settings:
         description: Segui le impostazioni del tema di sistema
     dynamic_accent:
       title: Colore accento dinamico
-      description: Se il tuo sistema lo supporta, il colore primario si adatterà in base allo schema di colori dinamico del sistema
+      description:
+        Se il tuo sistema lo supporta, il colore primario si adatterà in
+        base allo schema di colori dinamico del sistema
       feature: Dinamico
     custom_accent:
       title: Colore accento personalizzato
-      description: Scegli un colore accento personalizzato per personalizzare l'aspetto della tua applicazione
+      description:
+        Scegli un colore accento personalizzato per personalizzare l'aspetto
+        della tua applicazione
       feature: Personalizzato
     error: Errore nel caricamento delle impostazioni del tema
   ui_density:
     title: Densità
-    description: Regola la dimensione del testo e degli elementi dell'interfaccia per migliorare la leggibilità su schermi ad alto DPI
+    description:
+      Regola la dimensione del testo e degli elementi dell'interfaccia
+      per migliorare la leggibilità su schermi ad alto DPI
     compact: Compatta
     normal: Normale
     large: Grande
@@ -235,7 +300,9 @@ settings:
       description: Elimina tutti i dati e reimposta l'applicazione
       dialog:
         title: Reimposta Database
-        warning: "Attenzione: Questa azione non può essere annullata. Tutti i tuoi dati verranno eliminati permanentemente."
+        warning:
+          "Attenzione: Questa azione non può essere annullata. Tutti i tuoi
+          dati verranno eliminati permanentemente."
         confirm_text: Scorri per confermare
         resetting: Reimpostazione database in corso...
       restart_screen:
@@ -245,53 +312,85 @@ settings:
         restart_now_button: Riavvia Ora
       error:
         title: Reimpostazione fallita
-        message: Impossibile reimpostare il database. Riprovare o contattare il supporto se il problema persiste.
+        message:
+          Impossibile reimpostare il database. Riprovare o contattare il supporto
+          se il problema persiste.
         cancel: Annulla
         retry: Riprova
-        help_text: Se il problema persiste, provare a riavviare l'applicazione o verificare di avere spazio di archiviazione e permessi sufficienti.
-        permission_denied: Autorizzazione negata. Verificare se l'applicazione ha accesso in scrittura all'archiviazione.
-        disk_full: Spazio insufficiente sul dispositivo. Liberare spazio di archiviazione e riprovare.
-        file_not_found: File database non trovato. Ciò è previsto per un'installazione nuova.
+        help_text:
+          Se il problema persiste, provare a riavviare l'applicazione o verificare
+          di avere spazio di archiviazione e permessi sufficienti.
+        permission_denied:
+          Autorizzazione negata. Verificare se l'applicazione ha
+          accesso in scrittura all'archiviazione.
+        disk_full:
+          Spazio insufficiente sul dispositivo. Liberare spazio di archiviazione
+          e riprovare.
+        file_not_found:
+          File database non trovato. Ciò è previsto per un'installazione
+          nuova.
         file_access: Errore di accesso al file
         sqlite: Errore del database
         database_locked: Database bloccato. Chiudere le altre istanze dell'applicazione.
-        state_error: Errore di stato dell'applicazione. Riavviare l'applicazione e riprovare.
+        state_error:
+          Errore di stato dell'applicazione. Riavviare l'applicazione e
+          riprovare.
         timeout: Operazione scaduta. Riprovare.
   debug_logs:
     title: Log di debug
-    description: Abilita la registrazione dettagliata su file per risoluzione dei problemi e supporto
+    description:
+      Abilita la registrazione dettagliata su file per risoluzione dei
+      problemi e supporto
     load_settings_error: Errore nel caricamento delle impostazioni dei log di debug
-    update_settings_error: Errore nell'aggiornamento delle impostazioni dei log di debug
+    update_settings_error:
+      Errore nell'aggiornamento delle impostazioni dei log di
+      debug
     view:
       title: Visualizza log di debug
       description: Visualizza ed esporta i log di debug correnti
     page:
       title: Log di debug
-      description: Visualizza le voci correnti del log di debug. I log vengono automaticamente svuotati e ruotati per evitare un uso eccessivo del disco.
+      description:
+        Visualizza le voci correnti del log di debug. I log vengono automaticamente
+        svuotati e ruotati per evitare un uso eccessivo del disco.
       content: Contenuto del log
       refresh: Aggiorna log
       copy: Copia negli appunti
       save_as: Salva come file
       copied: Log di debug copiati negli appunti
       load_error: Errore nel caricamento dei log di debug
-      not_enabled: La registrazione di debug non è abilitata. Abilitala nelle Impostazioni avanzate per iniziare a raccogliere i log.
-      no_file: Nessun file di log di debug trovato. I log verranno creati dopo aver abilitato la registrazione di debug e l'app genererà voci di log.
-      empty: Il file di log di debug è vuoto. Non sono ancora state registrate voci di log.
+      not_enabled:
+        La registrazione di debug non è abilitata. Abilitala nelle Impostazioni
+        avanzate per iniziare a raccogliere i log.
+      no_file:
+        Nessun file di log di debug trovato. I log verranno creati dopo aver
+        abilitato la registrazione di debug e l'app genererà voci di log.
+      empty:
+        Il file di log di debug è vuoto. Non sono ancora state registrate voci
+        di log.
       toggle_auto_scroll: Attiva/disattiva scorrimento automatico
     export:
       dialog_title: Esporta log di debug
       error: Errore nell'esportazione dei log
       success: File di log esportato con successo
-      no_logs_available: Nessun log disponibile per l'esportazione. Genera prima alcuni log.
-      file_not_exist: Il file di log non esiste. Abilita il debug logging e genera alcuni log.
+      no_logs_available:
+        Nessun log disponibile per l'esportazione. Genera prima alcuni
+        log.
+      file_not_exist:
+        Il file di log non esiste. Abilita il debug logging e genera
+        alcuni log.
   task:
     title: Impostazioni attività
     preferences:
       title: Preferenze attività
-      description: Personalizza il comportamento delle attività e le impostazioni predefinite
+      description:
+        Personalizza il comportamento delle attività e le impostazioni
+        predefinite
     default_estimated_time:
       title: Tempo stimato predefinito
-      description: Imposta il tempo stimato predefinito per nuove attività. Puoi disabilitare questo per evitare stime di tempo automatiche.
+      description:
+        Imposta il tempo stimato predefinito per nuove attività. Puoi disabilitare
+        questo per evitare stime di tempo automatiche.
       disabled: Disabilitato
       minutes: "{minutes} minuti"
       load_error: Errore nel caricamento del tempo stimato predefinito
@@ -299,7 +398,9 @@ settings:
       key_not_found: Chiave tempo stimato predefinito non trovata
     default_planned_date_reminder:
       title: Promemoria predefinito
-      description: Imposta automaticamente un promemoria quando viene selezionata una data pianificata.
+      description:
+        Imposta automaticamente un promemoria quando viene selezionata
+        una data pianificata.
       save_error: Errore nel salvataggio dell'impostazione del promemoria predefinito
       load_error: Errore nel caricamento dell'impostazione del promemoria predefinito
   section:
@@ -312,7 +413,14 @@ settings:
     flow: Flusso
   habit:
     title: Impostazioni abitudini
-    description: Personalizza il comportamento e le preferenze di tracciamento delle abitudini
+    description:
+      Personalizza il comportamento e le preferenze di tracciamento delle
+      abitudini
     three_state:
       title: Attiva tracciamento a 3 stati
       description: Alterna tra gli stati Non fatto, Saltato e Completato.
+    reverse_day_order:
+      title: Inverti l'ordine dei giorni nell'elenco
+      description:
+        Mostra i giorni più recenti prima (da sinistra a destra) nell'elenco
+        delle abitudini.

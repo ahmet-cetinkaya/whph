@@ -19,6 +19,7 @@ class HabitCardCalendar extends StatelessWidget {
   final Function(DateTime) onDayTap;
   final IThemeService themeService;
   final bool isThreeStateEnabled;
+  final bool isReverseDayOrder;
 
   const HabitCardCalendar({
     super.key,
@@ -31,6 +32,7 @@ class HabitCardCalendar extends StatelessWidget {
     required this.themeService,
     this.archivedDate,
     this.isThreeStateEnabled = false,
+    this.isReverseDayOrder = false,
   });
 
   @override
@@ -51,8 +53,8 @@ class HabitCardCalendar extends StatelessWidget {
       (index) => referenceDate.subtract(Duration(days: index)),
     );
 
-    // Reverse to show Oldest -> Newest (Left -> Right) to match typical calendar flow
-    final orderedDays = days.reversed.toList();
+    // Reverse to show Oldest -> Newest (Left -> Right) by default
+    final orderedDays = isReverseDayOrder ? days : days.reversed.toList();
 
     final dayWidgets = <Widget>[];
     for (int i = 0; i < orderedDays.length; i++) {

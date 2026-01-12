@@ -35,6 +35,7 @@ class HabitCard extends StatefulWidget {
   final bool showDragHandle;
   final int? dragIndex;
   final bool isThreeStateEnabled;
+  final bool isReverseDayOrder;
 
   const HabitCard({
     super.key,
@@ -47,6 +48,7 @@ class HabitCard extends StatefulWidget {
     this.showDragHandle = false,
     this.dragIndex,
     this.isThreeStateEnabled = false,
+    this.isReverseDayOrder = false,
   });
 
   @override
@@ -421,6 +423,7 @@ class _HabitCardState extends State<HabitCard> {
             themeService: _themeService,
             archivedDate: _archivedDate,
             isThreeStateEnabled: widget.isThreeStateEnabled,
+            isReverseDayOrder: widget.isReverseDayOrder,
           ),
         ),
       );

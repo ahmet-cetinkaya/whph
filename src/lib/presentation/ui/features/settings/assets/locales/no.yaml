@@ -26,7 +26,9 @@ settings:
     error: Import mislyktes
     error.entity: Feil i type
     in_progress: Importerer data, vennligst vent...
-    migration_failed: Import mislyktes. Sørg for at du har installert den nyeste versjonen av appen.
+    migration_failed:
+      Import mislyktes. Sørg for at du har installert den nyeste versjonen
+      av appen.
     select_file: Velg fil
     strategy:
       merge: Slå sammen med eksisterende data
@@ -63,19 +65,29 @@ settings:
     settings: Lyinnstillinger
   permissions:
     app_usage:
-      description: Denne appen trenger tillatelse til å få tilgang til app-bruksstatistikk for å spore app-bruksmønstrene dine nøyaktig.
+      description:
+        Denne appen trenger tillatelse til å få tilgang til app-bruksstatistikk
+        for å spore app-bruksmønstrene dine nøyaktig.
       instructions: "Instruksjoner:"
       steps:
         step1: Trykk på "Åpne Innstilling"-knappen
-        step2: På brukstilgang-innstillingsskjermen som åpnes, finn "{appName}" i listen
+        step2:
+          På brukstilgang-innstillingsskjermen som åpnes, finn "{appName}" i
+          listen
         step3: Trykk på "{appName}"
         step4: Aktiver "Tillat brukstilgang" eller veksle bryteren til PÅ
       title: App-brukstillatelse
     battery_optimization:
-      description: For pålitelige varsler må denne appen ekskluderes fra batterioptimalisering. Uten dette kan påminnelser forsinkes eller ikke leveres i det hele tatt.
-      importance: Plasseringen av denne innstillingen kan variere avhengig av enhetsprodusenten din.
+      description:
+        For pålitelige varsler må denne appen ekskluderes fra batterioptimalisering.
+        Uten dette kan påminnelser forsinkes eller ikke leveres i det hele tatt.
+      importance:
+        Plasseringen av denne innstillingen kan variere avhengig av enhetsprodusenten
+        din.
       instructions: "Instruksjoner:"
-      not_disabled: Batterioptimalisering er fortsatt aktivert. Gi tillatelse slik at den relevante funksjonen fungerer riktig.
+      not_disabled:
+        Batterioptimalisering er fortsatt aktivert. Gi tillatelse slik
+        at den relevante funksjonen fungerer riktig.
       steps:
         step1: Trykk på "Åpne Innstilling"-knappen
         step2: På innstillingsskjermen som åpnes, finn "{appName}"
@@ -85,20 +97,26 @@ settings:
         step6: Velg "Ubegrenset"
       title: Batterioptimalisering
     exact_alarm:
-      description: Android 12+ krever tillatelse til å planlegge eksakte alarmer for at påminnelser skal fungere riktig.
+      description:
+        Android 12+ krever tillatelse til å planlegge eksakte alarmer for
+        at påminnelser skal fungere riktig.
       instructions: "Instruksjoner:"
       steps:
         android12plus:
           step2: Gå til Alarmer & påminnelser og aktiver tillatelse
           step3: Bekreft eksakt alarmtillatelse
         step1: Trykk på "Åpne Innstilling"-knappen
-        step2: På den åpne {appName}-appen Alarmer & påminnelser-side, aktiver "Tillat å sette alarmer og påminnelser"
+        step2:
+          På den åpne {appName}-appen Alarmer & påminnelser-side, aktiver "Tillat
+          å sette alarmer og påminnelser"
       title: Eksakt alarmtillatelse
     fix_it: Fiks det
     granted: Tillatelse gitt
     instructions: Instruksjoner
     notification:
-      description: Varseltillatelse kreves for å motta påminnelser. Uten denne tillatelsen vil du ikke motta noen varsler.
+      description:
+        Varseltillatelse kreves for å motta påminnelser. Uten denne tillatelsen
+        vil du ikke motta noen varsler.
       instructions: "Instruksjoner:"
       steps:
         android:
@@ -112,15 +130,23 @@ settings:
     open_terminal: Åpne Terminal
     firewall:
       title: Brannmur-tillatelse
-      description: Tillat WHPH å kommunisere gjennom {platform} brannmuren på port 44040 for enhetssynkronisering.
-      dialog_description: WHPH trenger brannmur-tillatelse for å tillate andre enheter å koble til for synkronisering. Følg kommandoene nedenfor for å konfigurere din {platform} brannmur. Du kan også finne disse trinnene i hjelpemenyen.
+      description:
+        Tillat WHPH å kommunisere gjennom {platform} brannmuren på port
+        44040 for enhetssynkronisering.
+      dialog_description:
+        WHPH trenger brannmur-tillatelse for å tillate andre enheter
+        å koble til for synkronisering. Følg kommandoene nedenfor for å konfigurere
+        din {platform} brannmur. Du kan også finne disse trinnene i hjelpemenyen.
       dialog_info_text: "Merk: Du kan også finne disse trinnene i hjelpemenyen."
       linux_manual_confirmation_button: Jeg har konfigurert
       save_confirmation_error: Kunne ikke lagre brannmur-bekreftelsesinnstilling
       rule_added_success: Brannmur-regel lagt til vellykket
       rule_add_error: Kunne ikke legge til brannmur-regel. Prøv manuelle trinn.
       add_rule_button: Legg til brannmur-regel
-      windows_auto_description: "Klikk på 'Legg til brannmur-regel' for å automatisk legge til brannmur-regelen med UAC-tillatelsesforespørsel. Hvis du foretrekker å legge til manuelt, følg trinnene nedenfor:"
+      windows_auto_description:
+        "Klikk på 'Legg til brannmur-regel' for å automatisk
+        legge til brannmur-regelen med UAC-tillatelsesforespørsel. Hvis du foretrekker
+        å legge til manuelt, følg trinnene nedenfor:"
       instructions:
         linux:
           step1: Åpne en terminal
@@ -141,8 +167,14 @@ settings:
           method_gui_title: "Metode 1: Windows Brannmur GUI"
           method_command_title: "Metode 2: Kommandoprompt"
           step_open_defender: Åpne Windows Defender Brannmur → Avanserte innstillinger
-          step_create_inbound_rule: 'Opprett innkommende regel: Innkommende regler → Ny regel → Port → TCP → 44040 → Tillat → Alle profiler → Navn: "WHPH Sync (Innkommende)"'
-          step_create_outbound_rule: 'Opprett utgående regel: Utgående regler → Ny regel → Port → TCP → 44040 → Tillat → Alle profiler → Navn: "WHPH Sync (Utgående)"'
+          step_create_inbound_rule:
+            'Opprett innkommende regel: Innkommende regler
+            → Ny regel → Port → TCP → 44040 → Tillat → Alle profiler → Navn: "WHPH
+            Sync (Innkommende)"'
+          step_create_outbound_rule:
+            'Opprett utgående regel: Utgående regler → Ny
+            regel → Port → TCP → 44040 → Tillat → Alle profiler → Navn: "WHPH Sync
+            (Utgående)"'
           alternative_command_prompt:
             title: "Alternativ: Bruk kommandoprompt"
             steps:
@@ -152,29 +184,43 @@ settings:
         step_run_commands: "2. Kjør disse kommandoene:"
         step_open_terminal: 1. Åpne en terminal
         step_run_command: "2. Kjør denne kommandoen (krever sudo-rettigheter):"
-        step_click_confirmation: 3. Etter kjøring av kommandoen, klikk på bekreftelsesknappen nedenfor
-      manual_configure_instruction: "Konfigurer brannmurregler manuelt for synkronisering (krever administratorrettigheter):"
+        step_click_confirmation:
+          3. Etter kjøring av kommandoen, klikk på bekreftelsesknappen
+          nedenfor
+      manual_configure_instruction:
+        "Konfigurer brannmurregler manuelt for synkronisering
+        (krever administratorrettigheter):"
     startup:
-      description: For at appen skal starte automatisk med enheten din kreves auto-start-tillatelse. Dette sikrer at påminnelser og varsler fungerer riktig selv etter enhetsgenstarter.
-      importance: Plasseringen av auto-start-innstillingen varierer eller kan mangle avhengig av enhetsprodusent.
+      description:
+        For at appen skal starte automatisk med enheten din kreves auto-start-tillatelse.
+        Dette sikrer at påminnelser og varsler fungerer riktig selv etter enhetsgenstarter.
+      importance:
+        Plasseringen av auto-start-innstillingen varierer eller kan mangle
+        avhengig av enhetsprodusent.
       instructions: "Instruksjoner:"
       steps:
         step1: Trykk på "Åpne Innstilling"-knappen
         step2: På innstillingsskjermen som åpnes, finn "{appName}" app
-        step3: Aktiver "Auto-start", "Autorun", "Start ved oppstart" eller lignende tillatelse
+        step3:
+          Aktiver "Auto-start", "Autorun", "Start ved oppstart" eller lignende
+          tillatelse
       title: Auto-start-tillatelse
     title: Tillatelser
   startup:
     disable_error: Kunne ikke deaktivere oppstartsinnstilling
     enable_error: Kunne ikke aktivere oppstartsinnstilling
-    subtitle: Trykk for å åpne systeminnstillinger og aktivere auto-start-tillatelse for appen
+    subtitle:
+      Trykk for å åpne systeminnstillinger og aktivere auto-start-tillatelse
+      for appen
     title: Start ved oppstart
   sync_devices:
     title: Synkroniser enheter
   title: Innstillinger
   backup:
     title: Sikkerhetskopi
-    description: Opprett og gjenopprett komprimerte sikkerhetskopier av applikasjonsdataene dine ved bruk av det sikre .whph-formatet
+    description:
+      Opprett og gjenopprett komprimerte sikkerhetskopier av applikasjonsdataene
+      dine ved bruk av det sikre .whph-formatet
     export:
       title: Opprett sikkerhetskopi
       description: Eksporter alle dataene dine til en komprimert .whph-sikkerhetskopifil
@@ -199,7 +245,9 @@ settings:
     invalid_format: Ugyldig sikkerhetskopifilformat
     invalid_format_error: Ugyldig sikkerhetskopifilformat
     corrupted: Sikkerhetskopifilen er korrupt eller skadet
-    export_description: Opprett en komprimert sikkerhetskopifil som inneholder alle dataene dine
+    export_description:
+      Opprett en komprimert sikkerhetskopifil som inneholder alle
+      dataene dine
   theme:
     title: Tema
     description: Tilpass utseendet til WHPH
@@ -212,7 +260,9 @@ settings:
         description: Følg systemtema-innstillinger
     dynamic_accent:
       title: Dynamisk aksentfarge
-      description: Hvis systemet ditt støtter det, vil primærfargen tilpasse seg basert på systemets dynamiske fargeskjema
+      description:
+        Hvis systemet ditt støtter det, vil primærfargen tilpasse seg basert
+        på systemets dynamiske fargeskjema
       feature: Dynamisk
     custom_accent:
       title: Egendefinert aksentfarge
@@ -221,7 +271,9 @@ settings:
     error: Kunne ikke laste temainnstillinger
   ui_density:
     title: Tetthet
-    description: Juster størrelsen på tekst og UI-elementer for å forbedre lesbarheten på skjermer med høy DPI
+    description:
+      Juster størrelsen på tekst og UI-elementer for å forbedre lesbarheten
+      på skjermer med høy DPI
     compact: Kompakt
     normal: Normal
     large: Stor
@@ -235,27 +287,39 @@ settings:
       description: Slett alle data og tilbakestill applikasjonen
       dialog:
         title: Tilbakestill Database
-        warning: "Advarsel: Denne handlingen kan ikke angres. Alle dine data vil bli slettet permanent."
+        warning:
+          "Advarsel: Denne handlingen kan ikke angres. Alle dine data vil bli
+          slettet permanent."
         confirm_text: Sveip for å bekrefte
         resetting: Tilbakestiller database...
       restart_screen:
         completed_title: Databasen har blitt tilbakestilt med suksess
         desktop_message: Applikasjonen vil starte på nytt om {seconds} sekunder.
-        mobile_message: Vennligst start applikasjonen på nytt manuelt for å fullføre prosessen.
+        mobile_message:
+          Vennligst start applikasjonen på nytt manuelt for å fullføre
+          prosessen.
         restart_now_button: Start på Nytt Nå
       error:
         title: Tilbakestilling feilet
-        message: Kunne ikke tilbakestille databasen. Prøv igjen eller kontakt support hvis problemet vedvarer.
+        message:
+          Kunne ikke tilbakestille databasen. Prøv igjen eller kontakt support
+          hvis problemet vedvarer.
         cancel: Avbryt
         retry: Prøv igjen
-        help_text: Hvis problemet vedvarer, prøv å starte applikasjonen på nytt eller sjekk om du har nok lagringsplass og tillatelser.
-        permission_denied: Tilgang nektet. Sjekk om applikasjonen har tilgang til å skrive til lagring.
+        help_text:
+          Hvis problemet vedvarer, prøv å starte applikasjonen på nytt eller
+          sjekk om du har nok lagringsplass og tillatelser.
+        permission_denied:
+          Tilgang nektet. Sjekk om applikasjonen har tilgang til
+          å skrive til lagring.
         disk_full: Ikke mer plass på enheten. Frigjør lagringsplass og prøv igjen.
         file_not_found: Databasefil ikke funnet. Dette er forventet ved en ny installasjon.
         file_access: Filtilgangsfeil
         sqlite: Databasefeil
         database_locked: Database er låst. Lukk andre instanser av applikasjonen.
-        state_error: Applikasjonstilstandsfeil. Start applikasjonen på nytt og prøv igjen.
+        state_error:
+          Applikasjonstilstandsfeil. Start applikasjonen på nytt og prøv
+          igjen.
         timeout: Operasjonen tok for lang tid. Prøv igjen.
   debug_logs:
     title: Feilsøkingslogger
@@ -267,23 +331,35 @@ settings:
       description: Vis og eksporter gjeldende feilsøkingslogger
     page:
       title: Feilsøkingslogger
-      description: Vis gjeldende feilsøkingsloggoppføringer. Logger tømmes og roteres automatisk for å forhindre overdreven diskbruk.
+      description:
+        Vis gjeldende feilsøkingsloggoppføringer. Logger tømmes og roteres
+        automatisk for å forhindre overdreven diskbruk.
       content: Logginnhold
       refresh: Oppdater logger
       copy: Kopier til utklippstavle
       save_as: Lagre som fil
       copied: Feilsøkingslogger kopiert til utklippstavle
       load_error: Feil ved lasting av feilsøkingslogger
-      not_enabled: Feilsøkingslogging er ikke aktivert. Aktiver det i Avanserte innstillinger for å begynne å samle logger.
-      no_file: Ingen feilsøkingsloggfil funnet. Logger vil bli opprettet etter aktivering av feilsøkingslogging og appen genererer loggoppføringer.
-      empty: Feilsøkingsloggfil er tom. Ingen loggoppføringer har blitt registrert ennå.
+      not_enabled:
+        Feilsøkingslogging er ikke aktivert. Aktiver det i Avanserte innstillinger
+        for å begynne å samle logger.
+      no_file:
+        Ingen feilsøkingsloggfil funnet. Logger vil bli opprettet etter aktivering
+        av feilsøkingslogging og appen genererer loggoppføringer.
+      empty:
+        Feilsøkingsloggfil er tom. Ingen loggoppføringer har blitt registrert
+        ennå.
       toggle_auto_scroll: Bytt automatisk rulling
     export:
       dialog_title: Eksporter feilsøkingslogger
       error: Feil ved eksport av logger
       success: Loggfil eksportert vellykket
-      no_logs_available: Ingen logger tilgjengelig for eksport. Generer noen logger først.
-      file_not_exist: Loggfilen eksisterer ikke. Aktiver feilsøkingslogging og generer logger.
+      no_logs_available:
+        Ingen logger tilgjengelig for eksport. Generer noen logger
+        først.
+      file_not_exist:
+        Loggfilen eksisterer ikke. Aktiver feilsøkingslogging og generer
+        logger.
   task:
     title: Oppgaveinnstillinger
     preferences:
@@ -291,7 +367,9 @@ settings:
       description: Tilpass oppførsel og standardinnstillinger for oppgaver
     default_estimated_time:
       title: Standard estimert tid
-      description: Sett standard estimert tid for nye oppgaver. Du kan deaktivere dette for å unngå automatiske tidsestimater.
+      description:
+        Sett standard estimert tid for nye oppgaver. Du kan deaktivere
+        dette for å unngå automatiske tidsestimater.
       disabled: Deaktivert
       minutes: "{minutes} minutter"
       load_error: Feil ved lasting av standard estimert tid
@@ -316,3 +394,6 @@ settings:
     three_state:
       title: Aktiver 3-tilstandssporing
       description: Bytt mellom tilstandene Ikke gjort, Overhoppet og Fullført.
+    reverse_day_order:
+      title: Rekkefølge på dager i listen snu
+      description: Vis nyeste dager først (fra venstre mot høyre) i vaner-listen.

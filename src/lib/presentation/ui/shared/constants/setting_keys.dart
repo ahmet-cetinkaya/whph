@@ -66,6 +66,7 @@ class SettingKeys {
 
   // Habit Settings
   static const String habitThreeStateEnabled = "HABIT_THREE_STATE_ENABLED";
+  static const String habitReverseDayOrder = "HABIT_REVERSE_DAY_ORDER";
 
   // Changelog Settings
   static const String lastShownChangelogVersion = 'LAST_SHOWN_CHANGELOG_VERSION';

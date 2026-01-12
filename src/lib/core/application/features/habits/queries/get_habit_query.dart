@@ -352,10 +352,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     );
   }
 
-  bool _isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
-  }
-
   List<HabitStreak> _calculateStreaks(List<HabitRecord> records,
       {required Habit habit,
       DateTime? endDate,

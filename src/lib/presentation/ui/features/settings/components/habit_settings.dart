@@ -10,6 +10,7 @@ import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/settings/components/habit_settings/habit_three_state_setting.dart';
+import 'package:whph/presentation/ui/features/settings/components/habit_settings/habit_reverse_day_order_setting.dart';
 
 class HabitSettings extends StatefulWidget {
   final VoidCallback? onLoaded;
@@ -29,6 +30,7 @@ class _HabitSettingsState extends State<HabitSettings> {
 
   bool _isLoading = true;
   bool _threeStateEnabled = false;
+  bool _reverseDayOrder = false;
 
   @override
   void initState() {
@@ -54,8 +56,19 @@ class _HabitSettingsState extends State<HabitSettings> {
           } else {
             _threeStateEnabled = false; // Default to false
           }
+
+          final reverseOrderSetting = await _mediator.send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.habitReverseDayOrder),
+          );
+
+          if (reverseOrderSetting != null) {
+            _reverseDayOrder = reverseOrderSetting.getValue<bool>();
+          } else {
+            _reverseDayOrder = false; // Default to false
+          }
         } catch (_) {
           _threeStateEnabled = false;
+          _reverseDayOrder = false;
         }
 
         setState(() {});
@@ -82,6 +95,10 @@ class _HabitSettingsState extends State<HabitSettings> {
             children: [
               HabitThreeStateSetting(
                 initialValue: _threeStateEnabled,
+              ),
+              const SizedBox(height: 16),
+              HabitReverseDayOrderSetting(
+                initialValue: _reverseDayOrder,
               ),
             ],
           ),

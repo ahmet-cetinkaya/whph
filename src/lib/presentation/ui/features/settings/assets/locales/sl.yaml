@@ -13,7 +13,9 @@ settings:
     csv_description: To lahko uporabite za ogled v Excelu in podobnih aplikacijah.
     error: Izvoz je spodletel
     in_progress: Izvažam podatke, počakajte...
-    json_description: Izvoz podatkov v berljivem JSON-formata za namene razvoja in odpravljanja napak.
+    json_description:
+      Izvoz podatkov v berljivem JSON-formata za namene razvoja in
+      odpravljanja napak.
     select_directory: Izberite mapo za izvoz
     select_path: Izberite lokacijo shranjevanja
     select_type: Izberite format izvoza
@@ -26,7 +28,9 @@ settings:
     error: Uvoz je spodletel
     error.entity: Napaka v vrsti
     in_progress: Uvažam podatke, počakajte...
-    migration_failed: Uvoz je spodletel. Prepričajte se, da imate nameščeno najnovejšo različico aplikacije.
+    migration_failed:
+      Uvoz je spodletel. Prepričajte se, da imate nameščeno najnovejšo
+      različico aplikacije.
     select_file: Izberite datoteko
     strategy:
       merge: Združi z obstoječimi podatki
@@ -37,7 +41,9 @@ settings:
     unsupported_version: Nepodprana različica
     version_mismatch: Različica ni bila najdena
   import_export:
-    description: Izvozite svoje podatke v različnih formatih ali uvozite podatke iz datotek za varnostno kopijo
+    description:
+      Izvozite svoje podatke v različnih formatih ali uvozite podatke iz
+      datotek za varnostno kopijo
     select_action: Izberite dejanje uvoza/izvoza
     title: Uvoz/Izvoz
   language:
@@ -63,42 +69,60 @@ settings:
     settings: Nastavitve zvoka
   permissions:
     app_usage:
-      description: Ta aplikacija potrebuje dovoljenje za dostop do statistik uporabe aplikacije, da natančno spremlja vzorce uporabe aplikacije.
+      description:
+        Ta aplikacija potrebuje dovoljenje za dostop do statistik uporabe
+        aplikacije, da natančno spremlja vzorce uporabe aplikacije.
       instructions: "Navodila:"
       steps:
         step1: Pritisnite gumb "Odpri nastavitve"
-        step2: Na zaslonu z nastavitvami dostopa do uporabe, ki se odpre, poiščite "{appName}" na seznamu
+        step2:
+          Na zaslonu z nastavitvami dostopa do uporabe, ki se odpre, poiščite
+          "{appName}" na seznamu
         step3: Tapnite na "{appName}"
         step4: Omogočite "Dovoli dostop do uporabe" ali preklopite stikalo na VKL
       title: Dovoljenje za uporabo aplikacije
     battery_optimization:
-      description: Za zanesljiva obvestila mora ta aplikacija biti izvzeta iz optimizacije baterije. Brez tega lahko opomnike dobite zamujene ali sploh ne.
-      importance: Lokacija te nastavitve se lahko razlikuje glede na proizvajalca naprave.
+      description:
+        Za zanesljiva obvestila mora ta aplikacija biti izvzeta iz optimizacije
+        baterije. Brez tega lahko opomnike dobite zamujene ali sploh ne.
+      importance:
+        Lokacija te nastavitve se lahko razlikuje glede na proizvajalca
+        naprave.
       instructions: "Navodila:"
-      not_disabled: Optimizacija baterije je še vedno omogočena. Opravite dovoljenje, da bo prizadeta funkcija delovala pravilno.
+      not_disabled:
+        Optimizacija baterije je še vedno omogočena. Opravite dovoljenje,
+        da bo prizadeta funkcija delovala pravilno.
       steps:
         step1: Pritisnite gumb "Odpri nastavitve"
         step2: Na zaslonu z nastavitvami, ki se odpre, poiščite "{appName}"
         step3: Tapnite na "{appName}"
-        step4: Prepričajte se, da je "Dovoli uporabo v ozadju" omogočeno na strani, ki se odpre
+        step4:
+          Prepričajte se, da je "Dovoli uporabo v ozadju" omogočeno na strani,
+          ki se odpre
         step5: Tapnite na "Dovoli uporabo v ozadju"
         step6: Izberite "Neomejeno"
       title: Optimizacija baterije
     exact_alarm:
-      description: Android 12+ zahteva dovoljenje za razporejanje natančnih alarmov, da opomnike delujejo pravilno.
+      description:
+        Android 12+ zahteva dovoljenje za razporejanje natančnih alarmov,
+        da opomnike delujejo pravilno.
       instructions: "Navodila:"
       steps:
         android12plus:
           step2: Pojdite na Alarmi & opomnike in omogočite dovoljenje
           step3: Potrdite dovoljenje za natančen alarm
         step1: Pritisnite gumb "Odpri nastavitve"
-        step2: Na strani Alarmi & opomnike odprte aplikacije {appName} omogočite "Dovoli nastavitev alarmov in opomnikov"
+        step2:
+          Na strani Alarmi & opomnike odprte aplikacije {appName} omogočite "Dovoli
+          nastavitev alarmov in opomnikov"
       title: Dovoljenje za natančen alarm
     fix_it: Popravi
     granted: Dovoljenje podeljeno
     instructions: Navodila
     notification:
-      description: Dovoljenje za obvestila je potrebno za prejemanje opomnikov. Brez tega dovoljenja ne boste prejeli nobenih obvestil.
+      description:
+        Dovoljenje za obvestila je potrebno za prejemanje opomnikov. Brez
+        tega dovoljenja ne boste prejeli nobenih obvestil.
       instructions: "Navodila:"
       steps:
         android:
@@ -112,15 +136,27 @@ settings:
     open_terminal: Odpri terminal
     firewall:
       title: Dovoljenje požarnega zidu
-      description: Dovolite WHPH, da komunicira prek požarnega zidu {platform} na vratih 44040 za sinhronizacijo naprav.
-      dialog_description: WHPH potrebuje dovoljenje požarnega zidu, da omogoči povezavo drugih naprav za sinhronizacijo. Sledite spodnjim ukazom za konfiguracijo vašega požarnega zidu {platform}. Te korake lahko najdete tudi v meniju pomoči.
+      description:
+        Dovolite WHPH, da komunicira prek požarnega zidu {platform} na
+        vratih 44040 za sinhronizacijo naprav.
+      dialog_description:
+        WHPH potrebuje dovoljenje požarnega zidu, da omogoči povezavo
+        drugih naprav za sinhronizacijo. Sledite spodnjim ukazom za konfiguracijo
+        vašega požarnega zidu {platform}. Te korake lahko najdete tudi v meniju pomoči.
       dialog_info_text: "Opomba: Te korake lahko najdete tudi v meniju pomoči."
       linux_manual_confirmation_button: Konfiguriral sem
-      save_confirmation_error: Shranjevanje nastavitve potrditve požarnega zidu ni uspelo
+      save_confirmation_error:
+        Shranjevanje nastavitve potrditve požarnega zidu ni
+        uspelo
       rule_added_success: Pravilo požarnega zidu je bilo uspešno dodano
-      rule_add_error: Dodajanje pravila požarnega zidu ni uspelo. Poskusite ročne korake.
+      rule_add_error:
+        Dodajanje pravila požarnega zidu ni uspelo. Poskusite ročne
+        korake.
       add_rule_button: Dodaj pravilo požarnega zidu
-      windows_auto_description: "Kliknite 'Dodaj pravilo požarnega zidu' za samodejno dodajanje pravila požarnega zidu z zahtevo za dovoljenje UAC. Če raje dodate ročno, sledite spodnjim korakom:"
+      windows_auto_description:
+        "Kliknite 'Dodaj pravilo požarnega zidu' za samodejno
+        dodajanje pravila požarnega zidu z zahtevo za dovoljenje UAC. Če raje dodate
+        ročno, sledite spodnjim korakom:"
       instructions:
         linux:
           step1: Odprite terminal
@@ -141,8 +177,14 @@ settings:
           method_gui_title: "Metoda 1: Grafični vmesnik Windows Firewalla"
           method_command_title: "Metoda 2: Ukazni poziv"
           step_open_defender: Odprite Windows Defender Firewall → Napredne nastavitve
-          step_create_inbound_rule: 'Ustvarite vhodno pravilo: Vhodna pravila → Novo pravilo → Vrata → TCP → 44040 → Dovoli → Vsi profili → Ime: "WHPH Sync (Vhodno)"'
-          step_create_outbound_rule: 'Ustvarite izhodno pravilo: Izhodna pravila → Novo pravilo → Vrata → TCP → 44040 → Dovoli → Vsi profili → Ime: "WHPH Sync (Izhodno)"'
+          step_create_inbound_rule:
+            'Ustvarite vhodno pravilo: Vhodna pravila → Novo
+            pravilo → Vrata → TCP → 44040 → Dovoli → Vsi profili → Ime: "WHPH Sync
+            (Vhodno)"'
+          step_create_outbound_rule:
+            'Ustvarite izhodno pravilo: Izhodna pravila →
+            Novo pravilo → Vrata → TCP → 44040 → Dovoli → Vsi profili → Ime: "WHPH
+            Sync (Izhodno)"'
           alternative_command_prompt:
             title: "Alternativa: Uporabite ukazni poziv"
             steps:
@@ -153,31 +195,46 @@ settings:
         step_open_terminal: 1. Odprite terminal
         step_run_command: "2. Izvedite ta ukaz (zahtevajo sudo dovoljenja):"
         step_click_confirmation: 3. Po izvedbi ukaza kliknite gumb za potrditev spodaj
-      manual_configure_instruction: "Ročno konfigurirajte pravila požarnega zidu za sinhronizacijo (zahtevajo skrbniška dovoljenja):"
+      manual_configure_instruction:
+        "Ročno konfigurirajte pravila požarnega zidu za
+        sinhronizacijo (zahtevajo skrbniška dovoljenja):"
     startup:
-      description: Za samodejni zagon aplikacije z vašo napravo je potrebno dovoljenje za samodejni zagon. To zagotavlja, da opomnike in obvestila delujejo pravilno tudi po ponovnem zagonu naprave.
-      importance: Lokacija nastavitve samodejnega zagona se razlikuje ali morda ni prisotna glede na proizvajalca naprave.
+      description:
+        Za samodejni zagon aplikacije z vašo napravo je potrebno dovoljenje
+        za samodejni zagon. To zagotavlja, da opomnike in obvestila delujejo pravilno
+        tudi po ponovnem zagonu naprave.
+      importance:
+        Lokacija nastavitve samodejnega zagona se razlikuje ali morda ni
+        prisotna glede na proizvajalca naprave.
       instructions: "Navodila:"
       steps:
         step1: Pritisnite gumb "Odpri nastavitve"
         step2: Na zaslonu z nastavitvami, ki se odpre, poiščite aplikacijo "{appName}"
-        step3: Omogočite "Samodejni zagon", "Autorun", "Zagon pri zagonu" ali podobno dovoljenje
+        step3:
+          Omogočite "Samodejni zagon", "Autorun", "Zagon pri zagonu" ali podobno
+          dovoljenje
       title: Dovoljenje za samodejni zagon
     title: Dovoljenja
   startup:
     disable_error: Spodletelo je pri onemogočanju nastavitve zagona
     enable_error: Spodletelo je pri omogočanju nastavitve zagona
-    subtitle: Tapnite za odpiranje sistemskih nastavitev in omogočanje dovoljenja za samodejni zagon aplikacije
+    subtitle:
+      Tapnite za odpiranje sistemskih nastavitev in omogočanje dovoljenja
+      za samodejni zagon aplikacije
     title: Zagon pri zagonu
   sync_devices:
     title: Sinhroniziraj naprave
   title: Nastavitve
   backup:
     title: Varnostna kopija
-    description: Ustvarite in obnovite stisnjene varnostne kopije podatkov vaše aplikacije z uporabo varnega formata .whph
+    description:
+      Ustvarite in obnovite stisnjene varnostne kopije podatkov vaše aplikacije
+      z uporabo varnega formata .whph
     export:
       title: Ustvari varnostno kopijo
-      description: Izvozite vse vaše podatke v stisnjeno datoteko varnostne kopije .whph
+      description:
+        Izvozite vse vaše podatke v stisnjeno datoteko varnostne kopije
+        .whph
       in_progress: Ustvarjam varnostno kopijo, počakajte...
       success: "Varnostna kopija ustvarjena uspešno. Lokacija datoteke:"
       error: Ustvarjanje varnostne kopije je spodletelo
@@ -199,7 +256,9 @@ settings:
     invalid_format: Neveljaven format datoteke varnostne kopije
     invalid_format_error: Neveljaven format datoteke varnostne kopije
     corrupted: Datoteka varnostne kopije je okvarjena ali poškodovana
-    export_description: Ustvarite stisnjeno datoteko varnostne kopije, ki vsebuje vse vaše podatke
+    export_description:
+      Ustvarite stisnjeno datoteko varnostne kopije, ki vsebuje
+      vse vaše podatke
   theme:
     title: Tema
     description: Prilagajanje videza WHPH
@@ -212,16 +271,22 @@ settings:
         description: Sledi sistemskim nastavitvam teme
     dynamic_accent:
       title: Dinamična barva naglasnega tona
-      description: Če vaš sistem to podpira, se primarna barva prilagodi na podlagi dinamične barvne sheme sistema
+      description:
+        Če vaš sistem to podpira, se primarna barva prilagodi na podlagi
+        dinamične barvne sheme sistema
       feature: Dinamično
     custom_accent:
       title: Lastna barva naglasnega tona
-      description: Izberite lastno barvo naglasnega tona za personalizacijo videza aplikacije
+      description:
+        Izberite lastno barvo naglasnega tona za personalizacijo videza
+        aplikacije
       feature: Lastno
     error: Nalaganje nastavitev teme je spodletelo
   ui_density:
     title: Gostota
-    description: Prilagodite velikost besedila in elementov vmesnika za boljšo čitljivost na zaslonih z visoko gostoto
+    description:
+      Prilagodite velikost besedila in elementov vmesnika za boljšo čitljivost
+      na zaslonih z visoko gostoto
     compact: Kompaktno
     normal: Normalno
     large: Veliko
@@ -235,7 +300,9 @@ settings:
       description: Izbriši vse podatke in ponastavi aplikacijo
       dialog:
         title: Ponastavi Zbirko Podatkov
-        warning: "Opozorilo: Tega dejanja ni mogoče razveljaviti. Vsi vaši podatki bodo trajno izbrisani."
+        warning:
+          "Opozorilo: Tega dejanja ni mogoče razveljaviti. Vsi vaši podatki
+          bodo trajno izbrisani."
         confirm_text: Povlecite za potrditev
         resetting: Ponastavljanje zbirke podatkov...
       restart_screen:
@@ -245,21 +312,35 @@ settings:
         restart_now_button: Ponovno Zaženi Zdaj
       error:
         title: Ponastavljanje ni uspelo
-        message: Zbirke podatkov ni bilo mogoče ponastaviti. Poskusite znova ali se obrnite na podporo, če se problem nadaljuje.
+        message:
+          Zbirke podatkov ni bilo mogoče ponastaviti. Poskusite znova ali se
+          obrnite na podporo, če se problem nadaljuje.
         cancel: Prekliči
         retry: Poskusi znova
-        help_text: Če se problem nadaljuje, poskusite znova zagnati aplikacijo ali preverite, ali imate dovolj prostora za shranjevanje in dovoljenj.
-        permission_denied: Dostop zavrnjen. Preverite, ali ima aplikacija dostop do pisanja v shrambo.
-        disk_full: Na napravi ni prostora. Sprostite prostor za shranjevanje in poskusite znova.
-        file_not_found: Datoteke baze podatkov ni mogoče najti. To je pričakovano pri novi namestitvi.
+        help_text:
+          Če se problem nadaljuje, poskusite znova zagnati aplikacijo ali
+          preverite, ali imate dovolj prostora za shranjevanje in dovoljenj.
+        permission_denied:
+          Dostop zavrnjen. Preverite, ali ima aplikacija dostop do
+          pisanja v shrambo.
+        disk_full:
+          Na napravi ni prostora. Sprostite prostor za shranjevanje in poskusite
+          znova.
+        file_not_found:
+          Datoteke baze podatkov ni mogoče najti. To je pričakovano
+          pri novi namestitvi.
         file_access: Napaka pri dostopu do datoteke
         sqlite: Napaka baze podatkov
         database_locked: Baza podatkov je zaklenjena. Zaprite druge instance aplikacije.
-        state_error: Napaka stanja aplikacije. Znova zaženite aplikacijo in poskusite znova.
+        state_error:
+          Napaka stanja aplikacije. Znova zaženite aplikacijo in poskusite
+          znova.
         timeout: Operacija je potekla. Poskusite znova.
   debug_logs:
     title: Dnevniki razhroščevanja
-    description: Omogočite podrobno beleženje v datoteko za odpravljanje napak in podporo
+    description:
+      Omogočite podrobno beleženje v datoteko za odpravljanje napak in
+      podporo
     load_settings_error: Napaka pri nalaganju nastavitev dnevnikov razhroščevanja
     update_settings_error: Napaka pri posodabljanju nastavitev dnevnikov razhroščevanja
     view:
@@ -267,23 +348,35 @@ settings:
       description: Poglej in izvozi trenutne dnevnike razhroščevanja
     page:
       title: Dnevniki razhroščevanja
-      description: Poglej trenutne vnose dnevnika razhroščevanja. Dnevniki se samodejno počistijo in obrnejo, da preprečijo prekomerno uporabo diska.
+      description:
+        Poglej trenutne vnose dnevnika razhroščevanja. Dnevniki se samodejno
+        počistijo in obrnejo, da preprečijo prekomerno uporabo diska.
       content: Vsebina dnevnika
       refresh: Osveži dnevnike
       copy: Kopiraj v odložišče
       save_as: Shrani kot datoteko
       copied: Dnevniki razhroščevanja so kopirani v odložišče
       load_error: Napaka pri nalaganju dnevnikov razhroščevanja
-      not_enabled: Beleženje razhroščevanja ni omogočeno. Omogočite ga v naprednih nastavitvah, da začnete zbirati dnevnike.
-      no_file: Datoteka dnevnika razhroščevanja ni bila najdena. Dnevniki bodo ustvarjeni po omogočitvi beleženja razhroščevanja in ko aplikacija ustvari vnose dnevnika.
-      empty: Datoteka dnevnika razhroščevanja je prazna. Še ni bilo zabeleženih vnosov dnevnika.
+      not_enabled:
+        Beleženje razhroščevanja ni omogočeno. Omogočite ga v naprednih
+        nastavitvah, da začnete zbirati dnevnike.
+      no_file:
+        Datoteka dnevnika razhroščevanja ni bila najdena. Dnevniki bodo ustvarjeni
+        po omogočitvi beleženja razhroščevanja in ko aplikacija ustvari vnose dnevnika.
+      empty:
+        Datoteka dnevnika razhroščevanja je prazna. Še ni bilo zabeleženih vnosov
+        dnevnika.
       toggle_auto_scroll: Preklopi samodejno pomikanje
     export:
       dialog_title: Izvoz dnevnikov razhroščevanja
       error: Napaka pri izvozu dnevnikov
       success: Datoteka dnevnika je bila uspešno izvožena
-      no_logs_available: Ni razpoložljivih dnevnikov za izvoz. Najprej ustvarite nekaj dnevnikov.
-      file_not_exist: Datoteka dnevnika ne obstaja. Omogočite debug logging in ustvarite dnevike.
+      no_logs_available:
+        Ni razpoložljivih dnevnikov za izvoz. Najprej ustvarite nekaj
+        dnevnikov.
+      file_not_exist:
+        Datoteka dnevnika ne obstaja. Omogočite debug logging in ustvarite
+        dnevike.
   task:
     title: Nastavitve Opravil
     preferences:
@@ -291,7 +384,9 @@ settings:
       description: Prilagodite obnašanje opravil in privzete nastavitve
     default_estimated_time:
       title: Privzeti Ocenjen Čas
-      description: Nastavite privzeti ocenjen čas za nove opravke. To lahko onemogočite, da izognete samodejnim ocenam časa.
+      description:
+        Nastavite privzeti ocenjen čas za nove opravke. To lahko onemogočite,
+        da izognete samodejnim ocenam časa.
       disabled: Onemogočeno
       minutes: "{minutes} minut"
       load_error: Napaka pri nalaganju privzetega ocenjenega časa
@@ -316,3 +411,8 @@ settings:
     three_state:
       title: Omogoči sledenje 3 stanj
       description: Preklapljaj med stanji Nedokončano, Preskočeno in Končano.
+    reverse_day_order:
+      title: Obrni vrstni red dni na seznamu
+      description:
+        Prikaži najnovejše dni na začetku (z leve proti desni) na seznamu
+        navad.

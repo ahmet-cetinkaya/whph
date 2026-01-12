@@ -43,6 +43,7 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final bool useParentScroll;
   final bool useSliver;
   final bool isThreeStateEnabled;
+  final bool isReverseDayOrder;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -69,6 +70,7 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
     this.useParentScroll = true,
     this.useSliver = false,
     this.isThreeStateEnabled = false,
+    this.isReverseDayOrder = false,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -502,6 +504,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               onOpenDetails: () => widget.onClickHabit(habit),
               isDense: true,
               isThreeStateEnabled: widget.isThreeStateEnabled,
+              isReverseDayOrder: widget.isReverseDayOrder,
             ),
           ),
         );
@@ -728,6 +731,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                             showDragHandle: true,
                             dragIndex: !habit.isArchived ? i : null,
                             isThreeStateEnabled: widget.isThreeStateEnabled,
+                            isReverseDayOrder: widget.isReverseDayOrder,
                           ),
                         ),
                       );
@@ -755,6 +759,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                             showDragHandle: false,
                             isThreeStateEnabled: widget.isThreeStateEnabled,
+                            isReverseDayOrder: widget.isReverseDayOrder,
                           ),
                         ),
                       );
@@ -877,6 +882,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           showDragHandle: _isCustomOrderActive,
           dragIndex: _isCustomOrderActive && !habit.isArchived ? index : null,
+          isReverseDayOrder: widget.isReverseDayOrder,
         ),
       );
     } else if (item is VisualItemRow<HabitListItem>) {
@@ -896,6 +902,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                       dateRange: widget.dateRange,
                       onOpenDetails: () => widget.onClickHabit(habit),
                       isDense: true,
+                      isReverseDayOrder: widget.isReverseDayOrder,
                     ),
                   ),
                 )),

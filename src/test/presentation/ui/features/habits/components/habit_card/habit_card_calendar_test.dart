@@ -70,6 +70,7 @@ void main() {
     List<HabitRecordListItem>? habitRecords,
     int dateRange = 7,
     bool isDense = false,
+    bool isReverseDayOrder = false,
     Function(DateTime)? onDayTap,
   }) async {
     await tester.pumpWidget(
@@ -80,6 +81,7 @@ void main() {
           dateRange: dateRange,
           isDense: isDense,
           isDateLabelShowing: true,
+          isReverseDayOrder: isReverseDayOrder,
           onDayTap: onDayTap ?? (_) {},
           themeService: mockThemeService,
         ),
@@ -150,6 +152,38 @@ void main() {
       await tester.tap(iconFinder);
 
       expect(tapped, isTrue);
+    });
+
+    testWidgets('respects reverse day order', (tester) async {
+      await pumpWidget(
+        tester,
+        habit: habit,
+        habitRecords: [],
+        dateRange: 3,
+        isReverseDayOrder: true,
+      );
+
+      // Verify widget render
+      expect(find.byType(HabitCardCalendar), findsOneWidget);
+
+      final today = DateTime.now();
+      final todayDayString = today.day.toString();
+
+      // Verify today's day number is present
+      expect(find.text(todayDayString), findsOneWidget);
+
+      final todayTextFinder = find.text(todayDayString);
+      final todayCenter = tester.getCenter(todayTextFinder);
+
+      final yesterday = today.subtract(const Duration(days: 1));
+      final yesterdayDayString = yesterday.day.toString();
+      final yesterdayTextFinder = find.text(yesterdayDayString);
+      final yesterdayCenter = tester.getCenter(yesterdayTextFinder);
+
+      // In Reverse Order (Newest to Oldest), Today should be left of Yesterday
+
+      expect(todayCenter.dx, lessThan(yesterdayCenter.dx),
+          reason: "Today should be left of Yesterday in Reverse Order (Newest to Oldest)");
     });
   });
 }

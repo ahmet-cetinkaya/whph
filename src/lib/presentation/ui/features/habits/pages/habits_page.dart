@@ -111,6 +111,7 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _isHabitDataLoaded = false;
   final HabitListStyle _habitListStyle = HabitListStyle.calendar;
   bool _isThreeStateEnabled = false;
+  bool _reverseDayOrder = false;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -127,9 +128,18 @@ class _HabitsPageState extends State<HabitsPage> {
       final setting = await container.resolve<Mediator>().send<GetSettingQuery, Setting?>(
             GetSettingQuery(key: SettingKeys.habitThreeStateEnabled),
           );
-      if (setting != null && mounted) {
+      final reverseOrderSetting = await container.resolve<Mediator>().send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.habitReverseDayOrder),
+          );
+
+      if (mounted) {
         setState(() {
-          _isThreeStateEnabled = setting.getValue<bool>();
+          if (setting != null) {
+            _isThreeStateEnabled = setting.getValue<bool>();
+          }
+          if (reverseOrderSetting != null) {
+            _reverseDayOrder = reverseOrderSetting.getValue<bool>();
+          }
         });
       }
     } catch (e, stackTrace) {
@@ -370,11 +380,10 @@ class _HabitsPageState extends State<HabitsPage> {
 
                     return SizedBox(
                       key: _calendarKey,
-                      // width: _calculateCalendarHeaderWidth(daysToShow, daySize, spacing), // Removed to rely on intrinsic sizing
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ...lastDays.reversed.toList().asMap().entries.expand((entry) {
+                          ...(_reverseDayOrder ? lastDays : lastDays.reversed.toList()).asMap().entries.expand((entry) {
                             final index = entry.key;
                             final date = entry.value;
                             return [
@@ -410,6 +419,7 @@ class _HabitsPageState extends State<HabitsPage> {
                   forceOriginalLayout: _forceOriginalLayout,
                   useParentScroll: false,
                   isThreeStateEnabled: _isThreeStateEnabled,
+                  isReverseDayOrder: _reverseDayOrder,
                   paginationMode: PaginationMode.infinityScroll,
                   onClickHabit: (item) {
                     _openDetails(item.id, context);
