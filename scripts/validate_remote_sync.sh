@@ -2,6 +2,11 @@
 
 # Validation Script for Remote Sync Trigger
 
+# Get script directory and project root for location-independent execution
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+SRC_DIR="$PROJECT_ROOT/src"
+
 # 1. Ensure the app is running (you must launch it manually first)
 echo "Please ensure WHPH is running separately."
 echo "If not, start it with: fvm flutter run -d linux"
@@ -18,11 +23,11 @@ echo "Triggering sync..."
 # No, flutter run args are for flutter.
 # Effective test: Build the app.
 
-cd src/
+cd "$SRC_DIR"
 echo "Building Linux debug bundle (fast)..."
 fvm flutter build linux --debug
 
 echo "Running trigger..."
-./build/linux/x64/debug/bundle/whph --sync
+"$SRC_DIR/build/linux/x64/debug/bundle/whph" --sync
 
 echo "Done. Check the logs of the MAIN app instance."
