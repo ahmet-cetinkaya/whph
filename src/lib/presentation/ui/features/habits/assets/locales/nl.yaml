@@ -31,48 +31,97 @@ habits:
     estimated_time: Geschatte Tijd
     estimated_time_not_set: Niet ingesteld
     help:
-      content: |
-        Bouw duurzame dagelijkse routines op door systematische gewoontetracking die je intenties omzet in consistente acties en meetbare vooruitgang naar je doelen.
+      content:
+        "Bouw duurzame dagelijkse routines op door systematische gewoontetracking
+        die je intenties omzet in consistente acties en meetbare vooruitgang naar
+        je doelen.
+
 
         ## ⚡ Waarom Is Het Belangrijk?
 
-        Gewoontevorming is de hoeksteen van persoonlijke ontwikkeling en duurzame prestaties. Consistente dagelijkse acties stapelen zich op in de tijd om opmerkelijke resultaten te creëren, terwijl systematische tracking ervoor zorgt dat je momentum behoudt en continue verbeteringen aanbrengt in je routines.
+
+        Gewoontevorming is de hoeksteen van persoonlijke ontwikkeling en duurzame
+        prestaties. Consistente dagelijkse acties stapelen zich op in de tijd om opmerkelijke
+        resultaten te creëren, terwijl systematische tracking ervoor zorgt dat je
+        momentum behoudt en continue verbeteringen aanbrengt in je routines.
+
 
         ## ⚙️ Strategisch Gewoonteontwerp
 
-        Creëer gewoontes die naadloos integreren in je leven en je langetermijndoelen ondersteunen. Goed ontworpen gewoontes worden automatische gedragingen die minimale wilskracht vereisen om te behouden.
+
+        Creëer gewoontes die naadloos integreren in je leven en je langetermijndoelen
+        ondersteunen. Goed ontworpen gewoontes worden automatische gedragingen die
+        minimale wilskracht vereisen om te behouden.
+
 
         - 📝 Ontwerp duidelijke, specifieke gewoontes met actiegerichte beschrijvingen
+
         - 📅 Vestig consistente schema's die aansluiten bij je natuurlijke ritmes
-        - 🏷️ Organiseer vergelijkbare gewoontes in coherente groepen voor systematische tracking
+
+        - 🏷️ Organiseer vergelijkbare gewoontes in coherente groepen voor systematische
+        tracking
+
         - 🎯 Verbind elke gewoonte met betekenisvolle uitkomsten en persoonlijke waarden
+
 
         ## ⏱️ Prestatietracking
 
-        Volg de uitvoering van je gewoontes om patronen te begrijpen, vooruitgang te meten en je aanpak te optimaliseren voor maximale effectiviteit en duurzame groei.
 
-        - ⏳ Registreer voltooiingstijden om de duur en efficiëntie van de gewoonte te begrijpen
-        - 📊 Analyseer tijdsinvesteringen over gewoonte-categorieën voor gebalanceerde ontwikkeling
-        - 📈 Monitor prestatie-trends om verbeteringsmogelijkheden en optimale timing te identificeren
-        - 🔄 Gebruik data-inzichten om gewoonte-moeilijkheid en planning te verfijnen voor duurzame succes
+        Volg de uitvoering van je gewoontes om patronen te begrijpen, vooruitgang
+        te meten en je aanpak te optimaliseren voor maximale effectiviteit en duurzame
+        groei.
+
+
+        - ⏳ Registreer voltooiingstijden om de duur en efficiëntie van de gewoonte
+        te begrijpen
+
+        - 📊 Analyseer tijdsinvesteringen over gewoonte-categorieën voor gebalanceerde
+        ontwikkeling
+
+        - 📈 Monitor prestatie-trends om verbeteringsmogelijkheden en optimale timing
+        te identificeren
+
+        - 🔄 Gebruik data-inzichten om gewoonte-moeilijkheid en planning te verfijnen
+        voor duurzame succes
+
 
         ## 📅 Consistentie & Momentum
 
-        Bouw en behoud de consistentie die nodig is voor blijvende gedragsverandering door systematische tracking en strategische beoordeling van je voortgangspatronen.
 
-        - 📚 Bekijk voltooiingsgeschiedenis om vooruitgang te beoordelen en succespatronen te identificeren
+        Bouw en behoud de consistentie die nodig is voor blijvende gedragsverandering
+        door systematische tracking en strategische beoordeling van je voortgangspatronen.
+
+
+        - 📚 Bekijk voltooiingsgeschiedenis om vooruitgang te beoordelen en succespatronen
+        te identificeren
+
         - 🔗 Volg dagelijkse streaks om momentum op te bouwen en te behouden voor langetermijnsucces
+
         - 📌 Monitor consistentiemetrics om motivatie en toewijding te versterken
+
         - 🎯 Vier mijlpalen en prestaties om positieve gedragsverandering te versterken
+
 
         ## 🚀 Optimalisatiestrategieën
 
-        Pas bewezen technieken toe voor gewoonte-optimalisatie die vooruitgang versnellen en ervoor zorgen dat je inspanningen leiden tot betekenisvolle, blijvende verbeteringen in je leven en productiviteit.
 
-        - 🐾 **Begin Klein:** Begin met beheersbare gewoontes die vroege successen garanderen
-        - 🏷️ **Strategische Groepering:** Organiseer gewoontes per levensgebied of tijd van de dag
-        - 📊 **Data-Gedreven Aanpassingen:** Gebruik tracking-inzichten om timing en aanpak te optimaliseren
+        Pas bewezen technieken toe voor gewoonte-optimalisatie die vooruitgang versnellen
+        en ervoor zorgen dat je inspanningen leiden tot betekenisvolle, blijvende
+        verbeteringen in je leven en productiviteit.
+
+
+        - 🐾 **Begin Klein:** Begin met beheersbare gewoontes die vroege successen
+        garanderen
+
+        - 🏷️ **Strategische Groepering:** Organiseer gewoontes per levensgebied of
+        tijd van de dag
+
+        - 📊 **Data-Gedreven Aanpassingen:** Gebruik tracking-inzichten om timing en
+        aanpak te optimaliseren
+
         - 🌅 **Piek Tijd Focus:** Plan belangrijke gewoontes tijdens je piek energieperiodes
+
+        "
       description: Help beschrijving
       title: Gewoontevorming & Prestatie Tracking Gids
     records: Records
@@ -80,7 +129,9 @@ habits:
     statistics:
       archived_note: "Gearchiveerd op:"
       archived_on: Gearchiveerd op
-      archived_warning: Statistieken worden getoond tot archiefdatum. {startDate} - {archivedDate}
+      archived_warning:
+        Statistieken worden getoond tot archiefdatum. {startDate}
+        - {archivedDate}
       completions: voltooiingen
       completed: Voltooid
       from: Van
@@ -117,14 +168,19 @@ habits:
     removing_tag: Verwijderen tag mislukt
     saving_details: Opslaan gewoonte mislukt
     saving_habit: Opslaan gewoonte mislukt
+    update_habit: Bijwerken van gewoonte mislukt
     tag_already_exists: Deze tag is al toegevoegd
     toggling_archive: Schakelen archief status mislukt
   goals:
     current_goal: Doel
     days_unit: Dagen in deze periode
-    description: |
-      Wil je de gewoonte oefenen met een specifieke frequentie in plaats van
+    description:
+      "Wil je de gewoonte oefenen met een specifieke frequentie in plaats
+      van
+
       elke dag? Stel dan een aangepast doel in.
+
+      "
     enable: Inschakelen Aangepaste Doelen
     goal: Aangepast Doel
     goal_format: "{count} keer in {dayCount} dagen"
@@ -143,54 +199,113 @@ habits:
   overview:
     filter_by_tags_tooltip: Filteren op tags
     help:
-      content: |
-        Beheers je dagelijkse routines door systematische gewoontetracking die consistentie opbouwt, positieve momentum creëert en betekenisvolle vooruitgang drijft naar je langetermijndoelen.
+      content:
+        "Beheers je dagelijkse routines door systematische gewoontetracking
+        die consistentie opbouwt, positieve momentum creëert en betekenisvolle vooruitgang
+        drijft naar je langetermijndoelen.
+
 
         ## ⚡ Waarom Is Het Belangrijk?
 
-        Dagelijkse gewoontebeheer is de basis van persoonlijke excellentie en duurzame groei. Consistente uitvoering van goed geplande gewoontes creëert samengestelde voordelen over tijd, terwijl systematische tracking ervoor zorgt dat je verantwoordelijkheid behoudt en data-gedreven verbeteringen aanbrengt in je routines.
+
+        Dagelijkse gewoontebeheer is de basis van persoonlijke excellentie en duurzame
+        groei. Consistente uitvoering van goed geplande gewoontes creëert samengestelde
+        voordelen over tijd, terwijl systematische tracking ervoor zorgt dat je verantwoordelijkheid
+        behoudt en data-gedreven verbeteringen aanbrengt in je routines.
+
 
         ## 📅 Dagelijkse Uitvoering & Tracking
 
-        Ontwikkel een betrouwbaar systeem voor het uitvoeren en monitoren van je gewoontes dat consistentie creëert en onstuitbare momentum opbouwt naar je doelstellingen.
 
-        - ✅ **Dagelijkse Voltooiing:** Markeer gewoontes als voltooid om consistentie-ketens op te bouwen
-        - 📆 **Multi-Dag Weergave:** Monitor patronen over dagen en weken voor uitgebreide inzichten
-        - 🔄 **Streak Bouwen:** Behoud opeenvolgende voltooiingsdagen om motivationele momentum te maximaliseren
-        - 📊 **Vooruitgang Visualisatie:** Volg voltooiingspercentages en patronen over tijd
+        Ontwikkel een betrouwbaar systeem voor het uitvoeren en monitoren van je gewoontes
+        dat consistentie creëert en onstuitbare momentum opbouwt naar je doelstellingen.
+
+
+        - ✅ **Dagelijkse Voltooiing:** Markeer gewoontes als voltooid om consistentie-ketens
+        op te bouwen
+
+        - 📆 **Multi-Dag Weergave:** Monitor patronen over dagen en weken voor uitgebreide
+        inzichten
+
+        - 🔄 **Streak Bouwen:** Behoud opeenvolgende voltooiingsdagen om motivationele
+        momentum te maximaliseren
+
+        - 📊 **Vooruitgang Visualisatie:** Volg voltooiingspercentages en patronen
+        over tijd
+
 
         ## ⏱️ Tijd Analyse & Optimalisatie
 
-        Monitor tijdsinvesteringen in je gewoontes om je dagelijkse schema te optimaliseren en gebalanceerde ontwikkeling te verzekeren over alle belangrijke levensgebieden.
 
-        - ⏳ **Duur Tracking:** Registreer werkelijke bestede tijd om gewoonte-eisen te begrijpen
-        - 🏷️ **Categorie Analyse:** Groepeer gewoontes op tags om tijdstoewijzing over levensgebieden te zien
-        - ⏰ **Schema Optimalisatie:** Balanceer gewoonte-timing voor duurzame dagelijkse uitvoering
-        - 📈 **Efficiëntie Verbetering:** Identificeer kansen om gewoonte-uitvoering te stroomlijnen
+        Monitor tijdsinvesteringen in je gewoontes om je dagelijkse schema te optimaliseren
+        en gebalanceerde ontwikkeling te verzekeren over alle belangrijke levensgebieden.
+
+
+        - ⏳ **Duur Tracking:** Registreer werkelijke bestede tijd om gewoonte-eisen
+        te begrijpen
+
+        - 🏷️ **Categorie Analyse:** Groepeer gewoontes op tags om tijdstoewijzing
+        over levensgebieden te zien
+
+        - ⏰ **Schema Optimalisatie:** Balanceer gewoonte-timing voor duurzame dagelijkse
+        uitvoering
+
+        - 📈 **Efficiëntie Verbetering:** Identificeer kansen om gewoonte-uitvoering
+        te stroomlijnen
+
 
         ## 🗂️ Strategische Organisatie
 
-        Creëer een organisatiesysteem dat consistente uitvoering ondersteunt terwijl het flexibiliteit biedt om aan te passen naarmate je doelen en omstandigheden evolueren.
 
-        - 🏷️ **Betekenisvolle Categorie:** Groepeer gewoontes per levensgebied, tijd of prioriteitsniveau
-        - ⚙️ **Flexibele Planning:** Ontwerp gewoonte-timing die past bij je levensstijl en energiepatronen
-        - 🎯 **Prioriteit Focus:** Zorg ervoor dat je belangrijkste gewoontes passende aandacht en energie krijgen
+        Creëer een organisatiesysteem dat consistente uitvoering ondersteunt terwijl
+        het flexibiliteit biedt om aan te passen naarmate je doelen en omstandigheden
+        evolueren.
+
+
+        - 🏷️ **Betekenisvolle Categorie:** Groepeer gewoontes per levensgebied, tijd
+        of prioriteitsniveau
+
+        - ⚙️ **Flexibele Planning:** Ontwerp gewoonte-timing die past bij je levensstijl
+        en energiepatronen
+
+        - 🎯 **Prioriteit Focus:** Zorg ervoor dat je belangrijkste gewoontes passende
+        aandacht en energie krijgen
+
 
         ## 💡 Meester Principes
 
-        Pas bewezen strategieën toe voor gewoonte-meesterschap die ervoor zorgen dat je inspanningen cumulatief leiden tot blijvende gedragsverandering en meetbare levensverbeteringen.
 
-        - 🐾 **Begin Klein:** Begin met gewoontes die je consistent kunt uitvoeren, verhoog dan geleidelijk moeilijkheid
-        - 🏷️ **Strategische Groepering:** Organiseer gewoontes om logische sequenties en ondersteunende systemen te creëren
-        - 📊 **Prestatie Beoordeling:** Gebruik tijd-tracking data om patronen te begrijpen en je aanpak te optimaliseren
-        - 🌅 **Piek Tijd Uitvoering:** Plan je belangrijkste gewoontes tijdens piek energieperiodes
+        Pas bewezen strategieën toe voor gewoonte-meesterschap die ervoor zorgen dat
+        je inspanningen cumulatief leiden tot blijvende gedragsverandering en meetbare
+        levensverbeteringen.
+
+
+        - 🐾 **Begin Klein:** Begin met gewoontes die je consistent kunt uitvoeren,
+        verhoog dan geleidelijk moeilijkheid
+
+        - 🏷️ **Strategische Groepering:** Organiseer gewoontes om logische sequenties
+        en ondersteunende systemen te creëren
+
+        - 📊 **Prestatie Beoordeling:** Gebruik tijd-tracking data om patronen te begrijpen
+        en je aanpak te optimaliseren
+
+        - 🌅 **Piek Tijd Uitvoering:** Plan je belangrijkste gewoontes tijdens piek
+        energieperiodes
+
 
         ### 📊 Kalenderweergave Gebruiken
+
         - 📅 Bekijk meerdere dagen tegelijk in de kalenderweergave.
+
         - ✅ Volg visueel je voltooiingspatronen.
+
         - ⚡ Bespaar tijd met snelle voltooiingsmarkering.
+
         - 🎯 Verhoog motivatie met visuele streak tracking.
+
         - 🔄 Verken verleden en toekomstige gewoontes met flexibele datum navigatie.
+
+        "
       title: Dagelijks Gewoontebeheer & Routine Optimalisatie Gids
     title: Gewoontes
   reminder:
@@ -239,19 +354,34 @@ habits:
   tour:
     habit_building:
       title: Gewoontevorming
-      description: Bouw duurzame gewoontes door dagelijkse activiteiten te volgen. Stel herinneringen in, houd je streaks bij en visualiseer je vooruitgang met gedetailleerde statistieken.
+      description:
+        Bouw duurzame gewoontes door dagelijkse activiteiten te volgen.
+        Stel herinneringen in, houd je streaks bij en visualiseer je vooruitgang met
+        gedetailleerde statistieken.
     create_habits:
       title: Nieuwe Gewoontes Maken
-      description: Begin met het bouwen van nieuwe gewoontes door op deze knop te klikken. Stel doelen, frequenties, herinneringen in en volg meerdere voltooiingen per dag voor flexibele gewoontetracking.
+      description:
+        Begin met het bouwen van nieuwe gewoontes door op deze knop te
+        klikken. Stel doelen, frequenties, herinneringen in en volg meerdere voltooiingen
+        per dag voor flexibele gewoontetracking.
     your_habits:
       title: Jouw Gewoontes
-      description: Bekijk en beheer al je gewoontes hier. Klik op een gewoonte om details, statistieken en voltooiingsgeschiedenis te zien. Markeer gewoontes dagelijks als voltooid om streaks te bouwen en je vooruitgang bij te houden.
+      description:
+        Bekijk en beheer al je gewoontes hier. Klik op een gewoonte om
+        details, statistieken en voltooiingsgeschiedenis te zien. Markeer gewoontes
+        dagelijks als voltooid om streaks te bouwen en je vooruitgang bij te houden.
     calendar_view:
       title: Kalenderweergave
-      description: Visualiseer je gewoontevoltooiingsgeschiedenis over meerdere dagen. Groen geeft voltooide gewoontes aan. Volg je consistentie en zie je vooruitgangspatronen in de tijd.
+      description:
+        Visualiseer je gewoontevoltooiingsgeschiedenis over meerdere dagen.
+        Groen geeft voltooide gewoontes aan. Volg je consistentie en zie je vooruitgangspatronen
+        in de tijd.
     filter_search:
       title: Filteren & Zoeken
-      description: Vind specifieke gewoontes met tags, zoektermen of filter op gearchiveerde status. Organiseer en beheer je gewoontes efficiënt om gefocust te blijven op wat er toe doet.
+      description:
+        Vind specifieke gewoontes met tags, zoektermen of filter op gearchiveerde
+        status. Organiseer en beheer je gewoontes efficiënt om gefocust te blijven
+        op wat er toe doet.
   list_options:
     view_style_tooltip: Weergavestijl wijzigen
   accessibility:
@@ -259,3 +389,11 @@ habits:
     open_details_hint: Gewoontedetails openen
     complete_habit_hint: Gewoonte voltooien
     completion_status_hint: Gewoonte completion status
+  actions:
+    mark_complete: Markeren als voltooid
+    mark_not_done: Markeren als niet gedaan
+    clear_status: Status wissen
+  status:
+    complete: Voltooid
+    not_done: Niet gedaan
+    skipped: Overgeslagen

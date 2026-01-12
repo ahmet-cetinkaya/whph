@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card_calendar.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -69,6 +70,7 @@ void main() {
     List<HabitRecordListItem>? habitRecords,
     int dateRange = 7,
     bool isDense = false,
+    bool isReverseDayOrder = false,
     Function(DateTime)? onDayTap,
   }) async {
     await tester.pumpWidget(
@@ -79,6 +81,7 @@ void main() {
           dateRange: dateRange,
           isDense: isDense,
           isDateLabelShowing: true,
+          isReverseDayOrder: isReverseDayOrder,
           onDayTap: onDayTap ?? (_) {},
           themeService: mockThemeService,
         ),
@@ -115,6 +118,7 @@ void main() {
         id: 'r1',
         date: today,
         occurredAt: today,
+        status: HabitRecordStatus.complete,
       );
 
       await pumpWidget(tester, habit: habit, habitRecords: [record]);
@@ -148,6 +152,38 @@ void main() {
       await tester.tap(iconFinder);
 
       expect(tapped, isTrue);
+    });
+
+    testWidgets('respects reverse day order', (tester) async {
+      await pumpWidget(
+        tester,
+        habit: habit,
+        habitRecords: [],
+        dateRange: 3,
+        isReverseDayOrder: true,
+      );
+
+      // Verify widget render
+      expect(find.byType(HabitCardCalendar), findsOneWidget);
+
+      final today = DateTime.now();
+      final todayDayString = today.day.toString();
+
+      // Verify today's day number is present
+      expect(find.text(todayDayString), findsOneWidget);
+
+      final todayTextFinder = find.text(todayDayString);
+      final todayCenter = tester.getCenter(todayTextFinder);
+
+      final yesterday = today.subtract(const Duration(days: 1));
+      final yesterdayDayString = yesterday.day.toString();
+      final yesterdayTextFinder = find.text(yesterdayDayString);
+      final yesterdayCenter = tester.getCenter(yesterdayTextFinder);
+
+      // In Reverse Order (Newest to Oldest), Today should be left of Yesterday
+
+      expect(todayCenter.dx, lessThan(yesterdayCenter.dx),
+          reason: "Today should be left of Yesterday in Reverse Order (Newest to Oldest)");
     });
   });
 }

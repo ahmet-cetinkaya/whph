@@ -310,3 +310,12 @@ settings:
     advanced: 高级
     about: 关于
     flow: 流程
+  habit:
+    title: 习惯设置
+    description: 自定义习惯跟踪行为和偏好设置
+    three_state:
+      title: 启用三态跟踪
+      description: 在未完成、已跳过和已完成状态之间切换。
+    reverse_day_order:
+      title: 列表中日期的倒序
+      description: 在习惯列表中最先显示最近的日期（从左到右）。

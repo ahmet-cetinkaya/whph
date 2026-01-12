@@ -14,6 +14,7 @@ import 'package:whph/core/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/domain/features/habits/habit_tag.dart';
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/core/domain/features/notes/note.dart';
@@ -96,6 +97,12 @@ class AppDatabase extends _$AppDatabase {
     return _instance ??= AppDatabase(_openConnection());
   }
 
+  /// Sets the singleton instance for testing purposes
+  static void setInstanceForTesting(AppDatabase db) {
+    _instance = db;
+    isTestMode = true;
+  }
+
   /// Resets the singleton instance for testing purposes
   static void resetInstance() {
     _instance = null;
@@ -119,7 +126,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 29;
+  int get schemaVersion => 30;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {

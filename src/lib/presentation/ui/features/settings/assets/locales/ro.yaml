@@ -408,3 +408,14 @@ settings:
     advanced: Avansat
     about: Despre
     flow: Flux
+  habit:
+    title: Setări obiceiuri
+    description: Personalizați comportamentul și preferințele de urmărire a obiceiurilor
+    three_state:
+      title: Activați urmărirea cu 3 stări
+      description: Comutați între stările Nefinalizat, Sărit și Finalizat.
+    reverse_day_order:
+      title: Inversează ordinea zilelor în listă
+      description:
+        Afișează cele mai recente zile prima dată (de la stânga la dreapta)
+        în lista de obiceiuri.

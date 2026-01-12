@@ -7,6 +7,7 @@ import 'package:whph/presentation/ui/features/settings/components/permission_set
 import 'package:whph/presentation/ui/features/settings/components/sound_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/sync_devices_tile.dart';
 import 'package:whph/presentation/ui/features/settings/components/tasks_tile.dart';
+import 'package:whph/presentation/ui/features/settings/components/habits_tile.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/features/settings/components/startup_settings.dart';
@@ -104,7 +105,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 // Flow Section
                 SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionFlow)),
                 const SizedBox(height: AppTheme.sizeSmall),
-                const TasksTile(),
+                Column(
+                  spacing: AppTheme.sizeSmall,
+                  children: const [
+                    TasksTile(),
+                    HabitsTile(),
+                  ],
+                ),
                 const SizedBox(height: AppTheme.sizeLarge),
 
                 // Appearance Section

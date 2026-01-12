@@ -19,6 +19,8 @@ import 'package:whph/core/application/features/habits/services/i_habit_record_re
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
     as _i5;
 import 'package:whph/core/domain/features/habits/habit_record.dart' as _i14;
+import 'package:whph/core/domain/features/habits/habit_record_status.dart'
+    as _i15;
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart'
     as _i12;
 
@@ -318,6 +320,19 @@ class MockIHabitRecordRepository extends _i1.Mock
             returnValue: _i3.Future<int>.value(0),
           )
           as _i3.Future<int>);
+
+  @override
+  _i3.Future<List<_i14.HabitRecord>> getByHabitIdAndStatus(
+    String? habitId,
+    _i15.HabitRecordStatus? status,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getByHabitIdAndStatus, [habitId, status]),
+            returnValue: _i3.Future<List<_i14.HabitRecord>>.value(
+              <_i14.HabitRecord>[],
+            ),
+          )
+          as _i3.Future<List<_i14.HabitRecord>>);
 
   @override
   _i3.Future<_i5.PaginatedSyncData<_i14.HabitRecord>> getPaginatedSyncData(

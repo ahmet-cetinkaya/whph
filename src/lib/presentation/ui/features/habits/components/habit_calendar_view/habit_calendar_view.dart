@@ -9,14 +9,14 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constant
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_color_helper.dart';
 
 class HabitCalendarView extends StatefulWidget {
   final String habitId;
   final DateTime currentMonth;
   final List<HabitRecordListItem> records;
-  final Function(String, DateTime) onCreateRecord;
-  final Function(DateTime) onDeleteAllRecordsForDay;
+  final Function(DateTime) onToggle;
   final Function() onPreviousMonth;
   final Function() onNextMonth;
   final VoidCallback? onRecordChanged;
@@ -25,14 +25,14 @@ class HabitCalendarView extends StatefulWidget {
   final int targetFrequency;
   final int periodDays;
   final int dailyTarget;
+  final bool isThreeStateEnabled;
 
   const HabitCalendarView({
     super.key,
     required this.habitId,
     required this.currentMonth,
     required this.records,
-    required this.onCreateRecord,
-    required this.onDeleteAllRecordsForDay,
+    required this.onToggle,
     required this.onPreviousMonth,
     required this.onNextMonth,
     this.onRecordChanged,
@@ -41,6 +41,7 @@ class HabitCalendarView extends StatefulWidget {
     this.targetFrequency = 1,
     this.periodDays = 7,
     this.dailyTarget = 1,
+    this.isThreeStateEnabled = false,
   });
 
   @override
@@ -246,9 +247,20 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     bool isFutureDate = date.isAfter(maxDate);
     bool isCurrentMonth = date.month == widget.currentMonth.month;
 
-    final int dailyCompletionCount = widget.records.where((record) => _isSameDay(record.date, date)).length;
-    final bool hasRecords = dailyCompletionCount > 0;
-    final bool isDailyGoalMet = widget.hasGoal ? (dailyCompletionCount >= widget.dailyTarget) : hasRecords;
+    // Get daily records
+    final dailyRecords = widget.records.where((record) => _isSameDay(record.date, date)).toList();
+
+    // Status (use first record's status or Skipped)
+    final HabitRecordStatus status = dailyRecords.firstOrNull?.status ?? HabitRecordStatus.skipped;
+
+    // Only Complete counts towards goal
+    final int dailyCompletionCount = dailyRecords.where((r) => r.status == HabitRecordStatus.complete).length;
+
+    // hasRecords implies visually there is something.
+    final bool hasRecords = dailyRecords.isNotEmpty;
+
+    final bool isDailyGoalMet =
+        widget.hasGoal ? (dailyCompletionCount >= widget.dailyTarget) : (status == HabitRecordStatus.complete);
 
     int periodCompletionCount = 0;
     bool isPeriodGoalMet = false;
@@ -258,6 +270,8 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
 
       Map<String, int> dailyRecordCounts = {};
       for (final record in widget.records) {
+        if (record.status != HabitRecordStatus.complete) continue;
+
         final recordDate = DateTime(record.date.year, record.date.month, record.date.day);
         if ((recordDate.isAfter(periodStart.subtract(const Duration(days: 1))) ||
                 recordDate.isAtSameMomentAs(periodStart)) &&
@@ -278,6 +292,7 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       isPeriodGoalMet: isPeriodGoalMet,
       dailyCompletionCount: dailyCompletionCount,
       periodCompletionCount: periodCompletionCount,
+      status: status,
     );
 
     Color borderColor = AppTheme.dividerColor.withValues(alpha: 0.3);
@@ -285,7 +300,7 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     if (isFutureDate) borderColor = AppTheme.dividerColor.withValues(alpha: 0.1);
 
     return OutlinedButton(
-      onPressed: isFutureDate ? null : () => _handleDayTap(date, hasRecords, dailyCompletionCount),
+      onPressed: isFutureDate ? null : () => _handleDayTap(date),
       style: OutlinedButton.styleFrom(
         backgroundColor: backgroundColor,
         disabledBackgroundColor:
@@ -306,10 +321,16 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
                         dailyCompletionCount: dailyCompletionCount,
                         periodCompletionCount: periodCompletionCount,
                         hasRecords: hasRecords,
+                        status: status,
+                        isThreeStateEnabled: widget.isThreeStateEnabled,
                       )
-                    : (hasRecords
+                    : (status == HabitRecordStatus.complete
                         ? const Icon(Icons.link, color: Colors.green, size: 20)
-                        : const Icon(Icons.close, color: Colors.red, size: 16)),
+                        : status == HabitRecordStatus.notDone
+                            ? const Icon(Icons.close, color: Colors.red, size: 16)
+                            : widget.isThreeStateEnabled
+                                ? const Icon(Icons.question_mark, color: Colors.grey, size: 16) // Show ? if enabled
+                                : const Icon(Icons.close, color: Colors.red, size: 16)), // Show X if disabled
           ),
           if (widget.hasGoal &&
               _colorHelper.shouldShowBadge() &&
@@ -356,24 +377,10 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     );
   }
 
-  Future<void> _handleDayTap(DateTime date, bool hasRecords, int dailyCompletionCount) async {
-    if (widget.hasGoal) {
-      if (dailyCompletionCount > 0 && dailyCompletionCount >= widget.dailyTarget) {
-        await widget.onDeleteAllRecordsForDay(date);
-        _soundManagerService.playHabitCompletion();
-      } else {
-        await widget.onCreateRecord(widget.habitId, date);
-        _soundManagerService.playHabitCompletion();
-      }
-    } else {
-      if (hasRecords) {
-        await widget.onDeleteAllRecordsForDay(date);
-      } else {
-        await widget.onCreateRecord(widget.habitId, date);
-        _soundManagerService.playHabitCompletion();
-      }
-    }
+  Future<void> _handleDayTap(DateTime date) async {
+    await widget.onToggle(date);
     widget.onRecordChanged?.call();
+    _soundManagerService.playHabitCompletion();
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {

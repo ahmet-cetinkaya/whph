@@ -314,3 +314,12 @@ settings:
     advanced: 詳細
     about: について
     flow: フロー
+  habit:
+    title: 習慣設定
+    description: 習慣の追跡動作と設定をカスタマイズ
+    three_state:
+      title: 3状態追跡を有効にする
+      description: 未完了、スキップ済み、完了の状態を切り替えます。
+    reverse_day_order:
+      title: リストの日付順を逆にする
+      description: 習慣リストで最新の日付を最初（左から右へ）に表示します。

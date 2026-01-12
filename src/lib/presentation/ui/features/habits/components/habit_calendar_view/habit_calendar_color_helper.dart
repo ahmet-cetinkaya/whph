@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 
 /// Helper class for calculating colors and badge properties in habit calendar view.
 /// Extracts complex color logic based on goal types and completion status.
@@ -97,6 +98,7 @@ class HabitCalendarColorHelper {
     required bool isPeriodGoalMet,
     required int dailyCompletionCount,
     required int periodCompletionCount,
+    HabitRecordStatus? status,
   }) {
     if (isFutureDate) return AppTheme.surface1;
     if (!isCurrentMonth) return AppTheme.surface1.withValues(alpha: 0.5);
@@ -110,7 +112,7 @@ class HabitCalendarColorHelper {
         periodCompletionCount: periodCompletionCount,
       );
     } else {
-      return _getSimpleHabitBackgroundColor(hasRecords);
+      return _getSimpleHabitBackgroundColor(status);
     }
   }
 
@@ -198,8 +200,16 @@ class HabitCalendarColorHelper {
     return hasRecords ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.05);
   }
 
-  Color _getSimpleHabitBackgroundColor(bool hasRecords) {
-    return hasRecords ? Colors.green.withValues(alpha: 0.2) : Colors.red.withValues(alpha: 0.05);
+  Color _getSimpleHabitBackgroundColor(HabitRecordStatus? status) {
+    switch (status) {
+      case HabitRecordStatus.complete:
+        return Colors.green.withValues(alpha: 0.2);
+      case HabitRecordStatus.notDone:
+        return Colors.red.withValues(alpha: 0.2); // More visible than 0.05
+      case HabitRecordStatus.skipped:
+      default:
+        return Colors.grey.withValues(alpha: 0.1); // Neutral
+    }
   }
 
   /// Build appropriate icon based on goal type and completion status
@@ -209,6 +219,8 @@ class HabitCalendarColorHelper {
     required int dailyCompletionCount,
     required int periodCompletionCount,
     required bool hasRecords,
+    HabitRecordStatus? status,
+    bool isThreeStateEnabled = false,
   }) {
     if (periodDays > 1) {
       return _buildPeriodGoalIcon(
@@ -216,14 +228,19 @@ class HabitCalendarColorHelper {
         isPeriodGoalMet: isPeriodGoalMet,
         periodCompletionCount: periodCompletionCount,
         hasRecords: hasRecords,
+        isThreeStateEnabled: isThreeStateEnabled,
+        status: status,
       );
     } else if (dailyTarget > 1) {
       return _buildDailyTargetIcon(
         isDailyGoalMet: isDailyGoalMet,
         dailyCompletionCount: dailyCompletionCount,
+        hasRecords: hasRecords,
+        isThreeStateEnabled: isThreeStateEnabled,
+        status: status,
       );
     } else {
-      return _buildSimpleDailyIcon(hasRecords: hasRecords);
+      return _buildSimpleDailyIcon(status: status, isThreeStateEnabled: isThreeStateEnabled);
     }
   }
 
@@ -232,9 +249,21 @@ class HabitCalendarColorHelper {
     required bool isPeriodGoalMet,
     required int periodCompletionCount,
     required bool hasRecords,
+    required bool isThreeStateEnabled,
+    HabitRecordStatus? status,
   }) {
+    // Helper to get Skipped/NotDone icon
+    Widget getSkippedOrNotDoneIcon() {
+      if (hasRecords && status == HabitRecordStatus.notDone) {
+        return const Icon(Icons.close, color: Colors.red, size: 16);
+      }
+      return isThreeStateEnabled
+          ? const Icon(Icons.question_mark, color: Colors.grey, size: 16)
+          : const Icon(Icons.close, color: Colors.red, size: 16);
+    }
+
     if (dailyTarget > 1) {
-      if (hasRecords) {
+      if (hasRecords && status != HabitRecordStatus.notDone) {
         if (isDailyGoalMet) {
           return const Icon(Icons.link, color: Colors.green, size: 20);
         } else {
@@ -245,17 +274,17 @@ class HabitCalendarColorHelper {
       } else if (periodCompletionCount > 0) {
         return const Icon(Icons.link, color: Colors.orange, size: 18);
       } else {
-        return const Icon(Icons.close, color: Colors.red, size: 16);
+        return getSkippedOrNotDoneIcon();
       }
     } else {
-      if (hasRecords) {
+      if (hasRecords && status != HabitRecordStatus.notDone) {
         return const Icon(Icons.link, color: Colors.green, size: 20);
       } else if (isPeriodGoalMet) {
         return Icon(Icons.link, color: Colors.grey.withValues(alpha: 0.6), size: 18);
       } else if (periodCompletionCount > 0) {
         return const Icon(Icons.link, color: Colors.orange, size: 18);
       } else {
-        return const Icon(Icons.close, color: Colors.red, size: 16);
+        return getSkippedOrNotDoneIcon();
       }
     }
   }
@@ -263,21 +292,38 @@ class HabitCalendarColorHelper {
   Widget _buildDailyTargetIcon({
     required bool isDailyGoalMet,
     required int dailyCompletionCount,
+    required bool hasRecords,
+    required bool isThreeStateEnabled,
+    HabitRecordStatus? status,
   }) {
     if (isDailyGoalMet) {
       return const Icon(Icons.link, color: Colors.green, size: 20);
     } else if (dailyCompletionCount > 0) {
+      // Must verify it's not a NotDone record (though dailyCompletionCount comes from 'complete' records)
       return const Icon(Icons.add, color: Colors.blue, size: 18);
     } else {
-      return const Icon(Icons.close, color: Colors.red, size: 16);
+      if (hasRecords && status == HabitRecordStatus.notDone) {
+        return const Icon(Icons.close, color: Colors.red, size: 16);
+      }
+      // Skipped (no records)
+      return isThreeStateEnabled
+          ? const Icon(Icons.question_mark, color: Colors.grey, size: 16)
+          : const Icon(Icons.close, color: Colors.red, size: 16);
     }
   }
 
-  Widget _buildSimpleDailyIcon({required bool hasRecords}) {
-    if (hasRecords) {
-      return const Icon(Icons.link, color: Colors.green, size: 20);
-    } else {
-      return const Icon(Icons.close, color: Colors.red, size: 16);
+  Widget _buildSimpleDailyIcon({HabitRecordStatus? status, required bool isThreeStateEnabled}) {
+    switch (status) {
+      case HabitRecordStatus.complete:
+        return const Icon(Icons.link, color: Colors.green, size: 20);
+      case HabitRecordStatus.notDone:
+        return const Icon(Icons.close, color: Colors.red, size: 16);
+      case HabitRecordStatus.skipped:
+      default:
+        // Use consistent ? if enabled
+        return isThreeStateEnabled
+            ? const Icon(Icons.question_mark, color: Colors.grey, size: 16)
+            : const Icon(Icons.close, color: Colors.red, size: 16);
     }
   }
 }

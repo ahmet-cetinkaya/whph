@@ -31,48 +31,94 @@ habits:
     estimated_time: Odhadovaný čas
     estimated_time_not_set: Není nastaveno
     help:
-      content: |
-        Vytvořte udržitelné denní rutiny prostřednictvím systematického sledování návyků, které promění vaše záměry v konzistentní akce a měřitelný pokrok směrem k vašim cílům.
+      content:
+        "Vytvořte udržitelné denní rutiny prostřednictvím systematického sledování
+        návyků, které promění vaše záměry v konzistentní akce a měřitelný pokrok směrem
+        k vašim cílům.
+
 
         ## ⚡ Proč je to důležité?
 
-        Formování návyků je základem osobního rozvoje a udržitelného úspěchu. Konzistentní denní akce se kumulují v čase a vytvářejí pozoruhodné výsledky, zatímco systematické sledování zajišťuje, že udržíte hybnost a neustále zlepšujete své rutiny.
+
+        Formování návyků je základem osobního rozvoje a udržitelného úspěchu. Konzistentní
+        denní akce se kumulují v čase a vytvářejí pozoruhodné výsledky, zatímco systematické
+        sledování zajišťuje, že udržíte hybnost a neustále zlepšujete své rutiny.
+
 
         ## ⚙️ Strategické navržení návyků
 
-        Vytvářejte návyky, které se bezproblémově integrují do vašeho života a podporují vaše dlouhodobé cíle. Dobře navržené návyky se stávají automatickými chováními, která vyžadují minimální sílu vůle k udržení.
+
+        Vytvářejte návyky, které se bezproblémově integrují do vašeho života a podporují
+        vaše dlouhodobé cíle. Dobře navržené návyky se stávají automatickými chováními,
+        která vyžadují minimální sílu vůle k udržení.
+
 
         - 📝 Navrhněte jasné, specifické návyky s akčními popisy
+
         - 📅 Zřiďte konzistentní plány, které se shodují s vašimi přirozenými rytmy
+
         - 🏷️ Organizujte podobné návyky do koherentních skupin pro systematické sledování
+
         - 🎯 Spojte každý návyk s smysluplnými výsledky a osobními hodnotami
+
 
         ## ⏱️ Monitorování výkonu
 
-        Sledujte provádění vašich návyků, abyste pochopili vzorce, změřili pokrok a optimalizovali svůj přístup pro maximální efektivitu a udržitelný růst.
+
+        Sledujte provádění vašich návyků, abyste pochopili vzorce, změřili pokrok
+        a optimalizovali svůj přístup pro maximální efektivitu a udržitelný růst.
+
 
         - ⏳ Zaznamenávejte časy dokončení, abyste pochopili délku a efektivitu návyků
+
         - 📊 Analyzujte investice času napříč kategoriemi návyků pro vyvážený rozvoj
-        - 📈 Sledujte trendy výkonu, abyste identifikovali příležitosti k zlepšení a optimální časování
-        - 🔄 Používejte data k vylepšení obtížnosti a plánování návyků pro udržitelný úspěch
+
+        - 📈 Sledujte trendy výkonu, abyste identifikovali příležitosti k zlepšení
+        a optimální časování
+
+        - 🔄 Používejte data k vylepšení obtížnosti a plánování návyků pro udržitelný
+        úspěch
+
 
         ## 📅 Konzistence a hybnost
 
-        Vytvářejte a udržujte konzistenci potřebnou pro trvalou změnu chování prostřednictvím systematického sledování a strategického přezkoumání vašich vzorců pokroku.
 
-        - 📚 Přezkoumejte historii dokončení, abyste vyhodnotili pokrok a identifikovali úspěšné vzorce
-        - 🔗 Sledujte denní série, abyste budovali a udržovali hybnost pro dlouhodobý úspěch
+        Vytvářejte a udržujte konzistenci potřebnou pro trvalou změnu chování prostřednictvím
+        systematického sledování a strategického přezkoumání vašich vzorců pokroku.
+
+
+        - 📚 Přezkoumejte historii dokončení, abyste vyhodnotili pokrok a identifikovali
+        úspěšné vzorce
+
+        - 🔗 Sledujte denní série, abyste budovali a udržovali hybnost pro dlouhodobý
+        úspěch
+
         - 📌 Monitorujte metriky konzistence, abyste zvýšili motivaci a závazek
+
         - 🎯 Oslavte milníky a úspěchy, abyste posílili pozitivní změnu chování
+
 
         ## 🚀 Strategie optimalizace
 
-        Aplikovat osvědčené techniky pro optimalizaci návyků, které urychlují pokrok a zajišťují, že vaše úsilí se promění v smysluplná, trvalá zlepšení ve vašem životě a produktivitě.
 
-        - 🐾 **Začněte malými:** Začněte s návyky, které můžete konzistentně provádět, pak postupně zvyšujte obtížnost
-        - 🏷️ **Strategické seskupení:** Organizujte návyky podle oblasti života nebo času dne
-        - 📊 **Úpravy na základě dat:** Používejte insights ze sledování k optimalizaci časování a přístupu
-        - 🌅 **Fokus na prime time:** Plánujte důležité návyky během vašich špičkových energetických období
+        Aplikovat osvědčené techniky pro optimalizaci návyků, které urychlují pokrok
+        a zajišťují, že vaše úsilí se promění v smysluplná, trvalá zlepšení ve vašem
+        životě a produktivitě.
+
+
+        - 🐾 **Začněte malými:** Začněte s návyky, které můžete konzistentně provádět,
+        pak postupně zvyšujte obtížnost
+
+        - 🏷️ **Strategické seskupení:** Organizujte návyky podle oblasti života nebo
+        času dne
+
+        - 📊 **Úpravy na základě dat:** Používejte insights ze sledování k optimalizaci
+        časování a přístupu
+
+        - 🌅 **Fokus na prime time:** Plánujte důležité návyky během vašich špičkových
+        energetických období
+
+        "
       description: Popis pomoci
       title: Průvodce formováním návyků a sledováním výkonu
     records: Záznamy
@@ -80,7 +126,9 @@ habits:
     statistics:
       archived_note: "Archivováno:"
       archived_on: Archivováno dne
-      archived_warning: Statistiky jsou zobrazeny až do data archivace. {startDate} - {archivedDate}
+      archived_warning:
+        Statistiky jsou zobrazeny až do data archivace. {startDate}
+        - {archivedDate}
       completions: dokončení
       completed: Dokončeno
       from: Od
@@ -117,12 +165,15 @@ habits:
     removing_tag: Selhalo odstranění značky
     saving_details: Selhalo uložení detailů návyku
     saving_habit: Selhalo uložení návyku
+    update_habit: Aktualizace návyku se nezdařila
     tag_already_exists: Tato značka je již přidána
     toggling_archive: Selhalo přepnutí stavu archivace
   goals:
     current_goal: Cíl
     days_unit: Dny v tomto období
-    description: Chcete cvičit návyk s určitou frekvencí spíše než každý den? Pak nastavte vlastní cíl.
+    description:
+      Chcete cvičit návyk s určitou frekvencí spíše než každý den? Pak
+      nastavte vlastní cíl.
     enable: Povolit vlastní cíle
     goal: Vlastní cíl
     goal_format: "{count} krát za {dayCount} dní"
@@ -141,54 +192,110 @@ habits:
   overview:
     filter_by_tags_tooltip: Filtrovat podle značek
     help:
-      content: |
-        Ovládněte své denní rutiny systematickým sledováním návyků, které buduje konzistenci, vytváří pozitivní hybnost a pohání smysluplný pokrok směrem k vašim dlouhodobým cílům.
+      content:
+        "Ovládněte své denní rutiny systematickým sledováním návyků, které
+        buduje konzistenci, vytváří pozitivní hybnost a pohání smysluplný pokrok směrem
+        k vašim dlouhodobým cílům.
+
 
         ## ⚡ Proč je to důležité?
 
-        Denní správa návyků je základem osobní excellence a udržitelného růstu. Konzistentní provádění dobře naplánovaných návyků vytváří kumulativní výhody v čase, zatímco systematické sledování zajišťuje, že udržíte odpovědnost a provádíte zlepšení na základě dat ve vašich rutinách.
+
+        Denní správa návyků je základem osobní excellence a udržitelného růstu. Konzistentní
+        provádění dobře naplánovaných návyků vytváří kumulativní výhody v čase, zatímco
+        systematické sledování zajišťuje, že udržíte odpovědnost a provádíte zlepšení
+        na základě dat ve vašich rutinách.
+
 
         ## 📅 Denní provádění a sledování
 
-        Vyvíjejte spolehlivý systém pro provádění a monitorování vašich návyků, který vytváří konzistenci a buduje nezastavitelnou hybnost směrem k vašim cílům.
 
-        - ✅ **Denní dokončení:** Označte návyky jako dokončené k vytvoření řetězců konzistence
-        - 📆 **Pohled na více dní:** Monitorujte vzorce napříč dny a týdny pro komplexní insights
-        - 🔄 **Budování série:** Udržujte po sobě jdoucí dny dokončení k maximalizaci motivační hybnosti
+        Vyvíjejte spolehlivý systém pro provádění a monitorování vašich návyků, který
+        vytváří konzistenci a buduje nezastavitelnou hybnost směrem k vašim cílům.
+
+
+        - ✅ **Denní dokončení:** Označte návyky jako dokončené k vytvoření řetězců
+        konzistence
+
+        - 📆 **Pohled na více dní:** Monitorujte vzorce napříč dny a týdny pro komplexní
+        insights
+
+        - 🔄 **Budování série:** Udržujte po sobě jdoucí dny dokončení k maximalizaci
+        motivační hybnosti
+
         - 📊 **Vizualizace pokroku:** Sledujte míry dokončení a vzorce v čase
+
 
         ## ⏱️ Analýza a optimalizace času
 
-        Monitorujte investice času do vašich návyků k optimalizaci vašeho denního plánu a zajištění vyváženého rozvoje napříč všemi důležitými oblastmi života.
 
-        - ⏳ **Sledování délky:** Zaznamenávejte skutečný čas strávený k pochopení požadavků návyků
-        - 🏷️ **Analýza kategorií:** Grupujte návyky podle značek k vidění alokace času napříč oblastmi života
-        - ⏰ **Optimalizace plánu:** Vyvažte časování návyků pro udržitelnou denní exekuci
-        - 📈 **Zlepšení efektivity:** Identifikujte příležitosti k zjednodušení provádění návyků
+        Monitorujte investice času do vašich návyků k optimalizaci vašeho denního
+        plánu a zajištění vyváženého rozvoje napříč všemi důležitými oblastmi života.
+
+
+        - ⏳ **Sledování délky:** Zaznamenávejte skutečný čas strávený k pochopení
+        požadavků návyků
+
+        - 🏷️ **Analýza kategorií:** Grupujte návyky podle značek k vidění alokace
+        času napříč oblastmi života
+
+        - ⏰ **Optimalizace plánu:** Vyvažte časování návyků pro udržitelnou denní
+        exekuci
+
+        - 📈 **Zlepšení efektivity:** Identifikujte příležitosti k zjednodušení provádění
+        návyků
+
 
         ## 🗂️ Strategická organizace
 
-        Vytvořte organizační systém, který podporuje konzistentní provádění, přičemž poskytuje flexibilitu k adaptaci s vašimi cíli a okolnostmi.
 
-        - 🏷️ **Smysluplná kategorizace:** Grupujte návyky podle oblasti života, času nebo úrovně priority
-        - ⚙️ **Flexibilní plánování:** Navrhněte časování návyků, které funguje s vaším životním stylem a energetickými vzorci
-        - 🎯 **Fokus na priority:** Zajistěte, že vaše nejdůležitější návyky dostávají vhodnou pozornost a energii
+        Vytvořte organizační systém, který podporuje konzistentní provádění, přičemž
+        poskytuje flexibilitu k adaptaci s vašimi cíli a okolnostmi.
+
+
+        - 🏷️ **Smysluplná kategorizace:** Grupujte návyky podle oblasti života, času
+        nebo úrovně priority
+
+        - ⚙️ **Flexibilní plánování:** Navrhněte časování návyků, které funguje s
+        vaším životním stylem a energetickými vzorci
+
+        - 🎯 **Fokus na priority:** Zajistěte, že vaše nejdůležitější návyky dostávají
+        vhodnou pozornost a energii
+
 
         ## 💡 Principy mistrovství
 
-        Aplikovat osvědčené strategie pro mistrovství návyků, které zajišťují, že vaše úsilí se kumuluje v trvalou změnu chování a měřitelná zlepšení života.
 
-        - 🐾 **Začněte malými:** Začněte s návyky, které můžete provádět konzistentně, pak postupně zvyšujte obtížnost
-        - 🏷️ **Strategické seskupení:** Organizujte návyky k vytvoření logických sekvencí a podpůrných systémů
-        - 📊 **Přezkoumání výkonu:** Používejte data ze sledování času k pochopení vzorců a optimalizaci přístupu
-        - 🌅 **Exekuce v prime time:** Plánujte vaše nejdůležitější návyky během špičkových energetických období
+        Aplikovat osvědčené strategie pro mistrovství návyků, které zajišťují, že
+        vaše úsilí se kumuluje v trvalou změnu chování a měřitelná zlepšení života.
+
+
+        - 🐾 **Začněte malými:** Začněte s návyky, které můžete provádět konzistentně,
+        pak postupně zvyšujte obtížnost
+
+        - 🏷️ **Strategické seskupení:** Organizujte návyky k vytvoření logických sekvencí
+        a podpůrných systémů
+
+        - 📊 **Přezkoumání výkonu:** Používejte data ze sledování času k pochopení
+        vzorců a optimalizaci přístupu
+
+        - 🌅 **Exekuce v prime time:** Plánujte vaše nejdůležitější návyky během špičkových
+        energetických období
+
 
         ### 📊 Používání pohledu kalendáře
+
         - 📅 Zobrazte více dní současně v pohledu kalendáře.
+
         - ✅ Vizualně sledujte vaše vzorce dokončení.
+
         - ⚡ Ušetřete čas s rychlým označením dokončení.
+
         - 🎯 Zvyšte motivaci s vizuálním sledováním sérií.
+
         - 🔄 Prozkoumávejte minulé a budoucí návyky s flexibilní navigací dat.
+
+        "
       title: Denní správa návyků a optimalizace rutiny
     title: Zvyky
   reminder:
@@ -237,19 +344,34 @@ habits:
   tour:
     habit_building:
       title: Budování návyků
-      description: Vytvářejte trvalé návyky sledováním každodenních aktivit. Nastavte si připomínky, sledujte své série a vizualizujte svůj pokrok s podrobnými statistikami.
+      description:
+        Vytvářejte trvalé návyky sledováním každodenních aktivit. Nastavte
+        si připomínky, sledujte své série a vizualizujte svůj pokrok s podrobnými
+        statistikami.
     create_habits:
       title: Vytvořit nové návyky
-      description: Začněte budovat nové návyky kliknutím na toto tlačítko. Nastavte si cíle, frekvence, připomínky a sledujte více splnění za den pro flexibilní sledování návyků.
+      description:
+        Začněte budovat nové návyky kliknutím na toto tlačítko. Nastavte
+        si cíle, frekvence, připomínky a sledujte více splnění za den pro flexibilní
+        sledování návyků.
     your_habits:
       title: Vaše návyky
-      description: Zde si prohlédněte a spravujte všechny své návyky. Kliknutím na libovolný návyk zobrazíte podrobnosti, statistiky a historii splnění. Denně označujte návyky jako splněné, abyste budovali série a sledovali svůj pokrok.
+      description:
+        Zde si prohlédněte a spravujte všechny své návyky. Kliknutím na
+        libovolný návyk zobrazíte podrobnosti, statistiky a historii splnění. Denně
+        označujte návyky jako splněné, abyste budovali série a sledovali svůj pokrok.
     calendar_view:
       title: Zobrazení kalendáře
-      description: Vizualizujte svou historii splnění návyků v průběhu několika dní. Zelená označuje splněné návyky. Sledujte konzistenci a sledujte své vzory postupu v průběhu času.
+      description:
+        Vizualizujte svou historii splnění návyků v průběhu několika dní.
+        Zelená označuje splněné návyky. Sledujte konzistenci a sledujte své vzory
+        postupu v průběhu času.
     filter_search:
       title: Filtr a vyhledávání
-      description: Najděte specifické návyky pomocí štítků, hledacích výrazů nebo filtrujte podle archivovaného stavu. Efektivně organizujte a spravujte své návyky, abyste zůstali zaměřeni na to, co je důležité.
+      description:
+        Najděte specifické návyky pomocí štítků, hledacích výrazů nebo
+        filtrujte podle archivovaného stavu. Efektivně organizujte a spravujte své
+        návyky, abyste zůstali zaměřeni na to, co je důležité.
   list_options:
     view_style_tooltip: Změnit styl zobrazení
   accessibility:
@@ -257,3 +379,11 @@ habits:
     open_details_hint: Otevřít podrobnosti zvyku
     complete_habit_hint: Dokončit zvyk
     completion_status_hint: Stav dokončení zvyku
+  actions:
+    mark_complete: Označit jako hotové
+    mark_not_done: Označit jako nehotové
+    clear_status: Vymazat stav
+  status:
+    complete: Hotovo
+    not_done: Nehotovo
+    skipped: Přeskočeno

@@ -26,6 +26,29 @@ class HabitRecordOperations {
         _soundManagerService = soundManagerService,
         _habitsService = habitsService;
 
+  /// Toggles habit record status for a specific date.
+  Future<void> toggleHabitRecord({
+    required String habitId,
+    required DateTime date,
+    required BuildContext context,
+    VoidCallback? onSuccess,
+  }) async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(HabitTranslationKeys.updateHabitError),
+      operation: () async {
+        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
+      },
+      onSuccess: () {
+        _soundManagerService.playHabitCompletion();
+        // Notify both added/removed as status might change
+        _habitsService.notifyHabitRecordAdded(habitId);
+        onSuccess?.call();
+      },
+    );
+  }
+
   /// Creates a habit record for a specific date.
   Future<void> createHabitRecord({
     required String habitId,

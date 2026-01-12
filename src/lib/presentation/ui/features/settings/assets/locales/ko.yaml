@@ -322,3 +322,12 @@ settings:
     advanced: 고급
     about: 정보
     flow: 흐름
+  habit:
+    title: 습관 설정
+    description: 습관 추적 동작 및 기본 설정 사용자 지정
+    three_state:
+      title: 3상 추적 사용
+      description: 미완료, 건너뜀, 완료 상태 간 전환.
+    reverse_day_order:
+      title: 목록의 날짜 순서 반전
+      description: 습관 목록에서 최근 날짜를 먼저 (왼쪽에서 오른쪽으로) 표시합니다.

@@ -398,3 +398,12 @@ settings:
     advanced: Gelişmiş
     about: Hakkında
     flow: Akış
+  habit:
+    title: Alışkanlık Ayarları
+    description: Alışkanlık takip davranışını ve tercihlerini özelleştir
+    three_state:
+      title: 3 Durak Takipini Etkinleştir
+      description: Tamamlanmadı, Atlandı ve Tamamlandı durumları arasında geçiş yap.
+    reverse_day_order:
+      title: Listedeki günlerin sırasını tersine çevir
+      description: Alışkanlıklar listesinde en son günleri önce (soldan sağa) göster.

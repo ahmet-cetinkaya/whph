@@ -405,3 +405,14 @@ settings:
     advanced: Napredno
     about: O programu
     flow: Tok
+  habit:
+    title: Nastavitve navad
+    description: Prilagodi obnašanje in nastavitve sledenja navad
+    three_state:
+      title: Omogoči sledenje 3 stanj
+      description: Preklapljaj med stanji Nedokončano, Preskočeno in Končano.
+    reverse_day_order:
+      title: Obrni vrstni red dni na seznamu
+      description:
+        Prikaži najnovejše dni na začetku (z leve proti desni) na seznamu
+        navad.

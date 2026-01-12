@@ -31,48 +31,96 @@ habits:
     estimated_time: Arvioitu aika
     estimated_time_not_set: Ei asetettu
     help:
-      content: |
-        Rakenna kestäviä päivittäisiä rutiineja systemaattisen tavanseurannan avulla, joka muuttaa aikomuksesi johdonmukaisiksi toimiksi ja mitattavaksi edistymiseksi kohti tavoitteitasi.
+      content:
+        "Rakenna kestäviä päivittäisiä rutiineja systemaattisen tavanseurannan
+        avulla, joka muuttaa aikomuksesi johdonmukaisiksi toimiksi ja mitattavaksi
+        edistymiseksi kohti tavoitteitasi.
+
 
         ## ⚡ Miksi Se On Tärkeää?
 
-        Tavojen muodostaminen on henkilökohtaisen kehityksen ja kestävän saavutuksen kulmakivi. Johdonmukaiset päivittäiset toimet kumuloituvat ajan myötä luoden huomattavia tuloksia, kun taas systemaattinen seuranta varmistaa, että ylläpidät vauhtia ja teet jatkuvia parannuksia rutiineihisi.
+
+        Tavojen muodostaminen on henkilökohtaisen kehityksen ja kestävän saavutuksen
+        kulmakivi. Johdonmukaiset päivittäiset toimet kumuloituvat ajan myötä luoden
+        huomattavia tuloksia, kun taas systemaattinen seuranta varmistaa, että ylläpidät
+        vauhtia ja teet jatkuvia parannuksia rutiineihisi.
+
 
         ## ⚙️ Strateginen Tavansuunnittelu
 
-        Luo tapoja, jotka integroituvat saumattomasti elämääsi ja tukevat pitkän aikavälin tavoitteitasi. Hyvin suunnitellut tavat muuttuvat automaattisiksi käyttäytymisiksi, jotka vaativat minimaalista tahdonvoimaa ylläpitääkseen.
+
+        Luo tapoja, jotka integroituvat saumattomasti elämääsi ja tukevat pitkän aikavälin
+        tavoitteitasi. Hyvin suunnitellut tavat muuttuvat automaattisiksi käyttäytymisiksi,
+        jotka vaativat minimaalista tahdonvoimaa ylläpitääkseen.
+
 
         - 📝 Suunnittele selkeät, spesifiset tavat toiminnallisilla kuvauksilla
+
         - 📅 Vahvista johdonmukaiset aikataulut, jotka sopivat luonnollisiin rytmeihisi
-        - 🏷️ Järjestä samankaltaisia tapoja koherentteihin ryhmiin systemaattista seurantaa varten
+
+        - 🏷️ Järjestä samankaltaisia tapoja koherentteihin ryhmiin systemaattista
+        seurantaa varten
+
         - 🎯 Yhdistä kukin tapa merkittäviin tuloksiin ja henkilökohtaisiin arvoihin
+
 
         ## ⏱️ Suorituskyvyn Seuranta
 
-        Seuraa tavojesi toteutusta ymmärtääksesi kuvioita, mitataksesi edistymistä ja optimoidaksesi lähestymistapasi maksimaalisen tehokkuuden ja kestävän kasvun saavuttamiseksi.
+
+        Seuraa tavojesi toteutusta ymmärtääksesi kuvioita, mitataksesi edistymistä
+        ja optimoidaksesi lähestymistapasi maksimaalisen tehokkuuden ja kestävän kasvun
+        saavuttamiseksi.
+
 
         - ⏳ Kirjaa suoritusajat ymmärtääksesi tavan kestoa ja tehokkuutta
-        - 📊 Analysoi aikainvestointeja eri tapakategorioissa tasapainoisen kehityksen saavuttamiseksi
-        - 📈 Seuraa suorituskyvyn trendejä tunnistaaksesi parannusmahdollisuuksia ja optimaalista ajoitusta
-        - 🔄 Käytä data-analyysia tavan vaikeuden ja aikataulun hienosäätöön kestävän menestyksen saavuttamiseksi
+
+        - 📊 Analysoi aikainvestointeja eri tapakategorioissa tasapainoisen kehityksen
+        saavuttamiseksi
+
+        - 📈 Seuraa suorituskyvyn trendejä tunnistaaksesi parannusmahdollisuuksia ja
+        optimaalista ajoitusta
+
+        - 🔄 Käytä data-analyysia tavan vaikeuden ja aikataulun hienosäätöön kestävän
+        menestyksen saavuttamiseksi
+
 
         ## 📅 Johdonmukaisuus & Vauhti
 
-        Rakenna ja ylläpidä johdonmukaisuutta, joka tarvitaan pysyvään käyttäytymismuutokseen systemaattisen seurannan ja strategisen edistymiskuvioiden tarkastelun avulla.
 
-        - 📚 Tarkastele suoritus historiaa arvioidaksesi edistymistä ja tunnistaaksesi menestyskuvioita
-        - 🔗 Seuraa päivittäisiä sarjoja rakentaaksesi ja ylläpitääksesi vauhtia pitkän aikavälin menestyksen saavuttamiseksi
+        Rakenna ja ylläpidä johdonmukaisuutta, joka tarvitaan pysyvään käyttäytymismuutokseen
+        systemaattisen seurannan ja strategisen edistymiskuvioiden tarkastelun avulla.
+
+
+        - 📚 Tarkastele suoritus historiaa arvioidaksesi edistymistä ja tunnistaaksesi
+        menestyskuvioita
+
+        - 🔗 Seuraa päivittäisiä sarjoja rakentaaksesi ja ylläpitääksesi vauhtia pitkän
+        aikavälin menestyksen saavuttamiseksi
+
         - 📌 Seuraa johdonmukaisuuden mittareita motivoinnin ja sitoutumisen parantamiseksi
+
         - 🎯 Juhli virstanpylväitä ja saavutuksia vahvistaaksesi positiivista käyttäytymismuutosta
+
 
         ## 🚀 Optimointistrategiat
 
-        Sovella todistettuja tekniikoita tavan optimointiin, jotka nopeuttavat edistymistä ja varmistavat, että ponnistelusi kääntyvät merkittäviksi, pysyviksi parannuksiksi elämässäsi ja tuottavuudessasi.
 
-        - 🐾 **Aloita Pienestä:** Aloita hallittavilla tavoilla, jotka takaavat varhaiset voitot
+        Sovella todistettuja tekniikoita tavan optimointiin, jotka nopeuttavat edistymistä
+        ja varmistavat, että ponnistelusi kääntyvät merkittäviksi, pysyviksi parannuksiksi
+        elämässäsi ja tuottavuudessasi.
+
+
+        - 🐾 **Aloita Pienestä:** Aloita hallittavilla tavoilla, jotka takaavat varhaiset
+        voitot
+
         - 🏷️ **Strateginen Ryhmittely:** Järjestä tavat elämänalueen tai ajan mukaan
-        - 📊 **Dataohjatut Säädöt:** Käytä seuranta-analyysia ajoituksen ja lähestymistavan optimointiin
+
+        - 📊 **Dataohjatut Säädöt:** Käytä seuranta-analyysia ajoituksen ja lähestymistavan
+        optimointiin
+
         - 🌅 **Huippuaikakeskeisyys:** Aikatauluta tärkeät tavat huipp ener giajaksoillesi
+
+        "
       description: Ohjeen kuvaus
       title: Tavojen Muodostus & Suorituskyvyn Seurantaopas
     records: Tietueet
@@ -80,7 +128,9 @@ habits:
     statistics:
       archived_note: "Arkistoitu:"
       archived_on: Arkistoitu
-      archived_warning: Tilastot näytetään arkistointipäivään asti. {startDate} - {archivedDate}
+      archived_warning:
+        Tilastot näytetään arkistointipäivään asti. {startDate} -
+        {archivedDate}
       completions: suoritukset
       completed: Valmis
       from: Alkaen
@@ -117,14 +167,17 @@ habits:
     removing_tag: Tunnisteen poisto epäonnistui
     saving_details: Tavan tallennus epäonnistui
     saving_habit: Tavan tallennus epäonnistui
+    update_habit: Tavan päivitys epäonnistui
     tag_already_exists: Tämä tunniste on jo lisätty
     toggling_archive: Arkistointitilan vaihto epäonnistui
   goals:
     current_goal: Tavoite
     days_unit: Päivää tässä jaksossa
-    description: |
-      Haluatko harjoitella tapaasi tiettyllä taajuudella sen sijaan
+    description: "Haluatko harjoitella tapaasi tiettyllä taajuudella sen sijaan
+
       että joka päivä? Aseta sitten mukautettu tavoite.
+
+      "
     enable: Ota käyttöön mukautetut tavoitteet
     goal: Mukautettu Tavoite
     goal_format: "{count} kertaa {dayCount} päivässä"
@@ -143,54 +196,110 @@ habits:
   overview:
     filter_by_tags_tooltip: Suodata tunnisteilla
     help:
-      content: |
-        Hallitse päivittäisiä rutiinejasi systemaattisen tavanseurannan avulla, joka rakentaa johdonmukaisuutta, luo positiivista vauhtia ja ajaa merkittävää edistymistä kohti pitkän aikavälin tavoitteitasi.
+      content:
+        "Hallitse päivittäisiä rutiinejasi systemaattisen tavanseurannan avulla,
+        joka rakentaa johdonmukaisuutta, luo positiivista vauhtia ja ajaa merkittävää
+        edistymistä kohti pitkän aikavälin tavoitteitasi.
+
 
         ## ⚡ Miksi Se On Tärkeää?
 
-        Päivittäinen tavanhallinta on henkilökohtaisen erinomaisuuden ja kestävän kasvun perusta. Johdonmukainen hyvin suunniteltujen tapojen suorittaminen luo kumuloituvia etuja ajan myötä, kun taas systemaattinen seuranta varmistaa, että ylläpidät vastuullisuutta ja teet dataohjattuja parannuksia rutiineihisi.
+
+        Päivittäinen tavanhallinta on henkilökohtaisen erinomaisuuden ja kestävän
+        kasvun perusta. Johdonmukainen hyvin suunniteltujen tapojen suorittaminen
+        luo kumuloituvia etuja ajan myötä, kun taas systemaattinen seuranta varmistaa,
+        että ylläpidät vastuullisuutta ja teet dataohjattuja parannuksia rutiineihisi.
+
 
         ## 📅 Päivittäinen Suoritus & Seuranta
 
-        Kehitä luotettava järjestelmä tapojen suorittamiseen ja seurantaan, joka luo johdonmukaisuutta ja rakentaa pysäyttämätöntä vauhtia kohti tavoitteitasi.
 
-        - ✅ **Päivittäinen Suoritus:** Merkitse tavat suoritetuiksi johdonmukaisuussarjojen rakentamiseksi
-        - 📆 **Monipäiväinen Näkymä:** Seuraa kuvioita päivien ja viikkojen yli kattavien oivallusten saavuttamiseksi
-        - 🔄 **Sarjojen Rakentaminen:** Pidä peräkkäiset suorituspäivät ylläpitääksesi motivaationopeinta
-        - 📊 **Edistymisen Visualisointi:** Seuraa suoritusprosentteja ja kuvioita ajan myötä
+        Kehitä luotettava järjestelmä tapojen suorittamiseen ja seurantaan, joka luo
+        johdonmukaisuutta ja rakentaa pysäyttämätöntä vauhtia kohti tavoitteitasi.
+
+
+        - ✅ **Päivittäinen Suoritus:** Merkitse tavat suoritetuiksi johdonmukaisuussarjojen
+        rakentamiseksi
+
+        - 📆 **Monipäiväinen Näkymä:** Seuraa kuvioita päivien ja viikkojen yli kattavien
+        oivallusten saavuttamiseksi
+
+        - 🔄 **Sarjojen Rakentaminen:** Pidä peräkkäiset suorituspäivät ylläpitääksesi
+        motivaationopeinta
+
+        - 📊 **Edistymisen Visualisointi:** Seuraa suoritusprosentteja ja kuvioita
+        ajan myötä
+
 
         ## ⏱️ Aika-analyysi & Optimointi
 
-        Seuraa aikainvestointeja tavoissasi optimoidaksesi päivittäistä aikatauluasi ja varmistaaksesi tasapainoisen kehityksen kaikilla tärkeillä elämänalueilla.
 
-        - ⏳ **Keston Seuranta:** Kirjaa todellinen kulutettu aika tavan vaatimusten ymmärtämiseksi
-        - 🏷️ **Kategoria-analyysi:** Ryhmittele tavat tunnisteilla nähdäksesi aikajakauman elämänalueilla
-        - ⏰ **Aikataulun Optimointi:** Tasapainota tapojen ajoitusta kestävän päivittäisen suorituksen saavuttamiseksi
-        - 📈 **Tehokkuuden Parantaminen:** Tunnista mahdollisuuksia suoritusvirtojen virtaviivaistamiseksi
+        Seuraa aikainvestointeja tavoissasi optimoidaksesi päivittäistä aikatauluasi
+        ja varmistaaksesi tasapainoisen kehityksen kaikilla tärkeillä elämänalueilla.
+
+
+        - ⏳ **Keston Seuranta:** Kirjaa todellinen kulutettu aika tavan vaatimusten
+        ymmärtämiseksi
+
+        - 🏷️ **Kategoria-analyysi:** Ryhmittele tavat tunnisteilla nähdäksesi aikajakauman
+        elämänalueilla
+
+        - ⏰ **Aikataulun Optimointi:** Tasapainota tapojen ajoitusta kestävän päivittäisen
+        suorituksen saavuttamiseksi
+
+        - 📈 **Tehokkuuden Parantaminen:** Tunnista mahdollisuuksia suoritusvirtojen
+        virtaviivaistamiseksi
+
 
         ## 🗂️ Strateginen Järjestäminen
 
-        Luo järjestelmä, joka tukee johdonmukaista suoritusta tarjoamalla joustavuutta sopeutumiseen, kun tavoitteesi ja olosuhteesi kehittyvät.
 
-        - 🏷️ **Merkityksellinen Luokittelu:** Ryhmittele tavat elämänalueen, ajan tai prioriteettitason mukaan
-        - ⚙️ **Joustava Aikataulutus:** Suunnittele tapojen ajoitus sopien elämäntyyliisi ja energiarytmeihisi
-        - 🎯 **Prioriteettikeskeisyys:** Varmista, että tärkeimmät tavasi saavat asianmukaista huomiota ja energiaa
+        Luo järjestelmä, joka tukee johdonmukaista suoritusta tarjoamalla joustavuutta
+        sopeutumiseen, kun tavoitteesi ja olosuhteesi kehittyvät.
+
+
+        - 🏷️ **Merkityksellinen Luokittelu:** Ryhmittele tavat elämänalueen, ajan
+        tai prioriteettitason mukaan
+
+        - ⚙️ **Joustava Aikataulutus:** Suunnittele tapojen ajoitus sopien elämäntyyliisi
+        ja energiarytmeihisi
+
+        - 🎯 **Prioriteettikeskeisyys:** Varmista, että tärkeimmät tavasi saavat asianmukaista
+        huomiota ja energiaa
+
 
         ## 💡 Hallinnan Periaatteet
 
-        Sovella todistettuja strategioita tavanhallintaan, jotka varmistavat, että ponnistelusi kumuloituvat pysyvään käyttäytymismuutokseen ja mitattaviin elämänparannuksiin.
 
-        - 🐾 **Aloita Pienestä:** Aloita tavoilla, jotka voit suorittaa johdonmukaisesti, sitten nosta vaikeutta vähitellen
-        - 🏷️ **Strateginen Ryhmittely:** Järjestä tavat luodaksesi loogisia sekvenssejä ja tukijärjestelmiä
-        - 📊 **Suorituskyvyn Tarkastelu:** Käytä aikaseurannan dataa kuvioiden ymmärtämiseen ja lähestymistavan optimointiin
+        Sovella todistettuja strategioita tavanhallintaan, jotka varmistavat, että
+        ponnistelusi kumuloituvat pysyvään käyttäytymismuutokseen ja mitattaviin elämänparannuksiin.
+
+
+        - 🐾 **Aloita Pienestä:** Aloita tavoilla, jotka voit suorittaa johdonmukaisesti,
+        sitten nosta vaikeutta vähitellen
+
+        - 🏷️ **Strateginen Ryhmittely:** Järjestä tavat luodaksesi loogisia sekvenssejä
+        ja tukijärjestelmiä
+
+        - 📊 **Suorituskyvyn Tarkastelu:** Käytä aikaseurannan dataa kuvioiden ymmärtämiseen
+        ja lähestymistavan optimointiin
+
         - 🌅 **Huippuaikasuoritus:** Aikatauluta tärkeimmät tavasi huipp ener giajaksoillesi
 
+
         ### 📊 Kalenterinäkymän Käyttö
+
         - 📅 Näytä useita päiviä samanaikaisesti kalenterinäkymässä.
+
         - ✅ Seuraa visuaalisesti suorituskuvioitasi.
+
         - ⚡ Säästä aikaa nopealla suoritusmerkinnällä.
+
         - 🎯 Lisää motivaatiota visuaalisella sarjaseurannalla.
+
         - 🔄 Tutki menneitä ja tulevia tapoja joustavalla päivämääränavigoinnilla.
+
+        "
       title: Päivittäinen Tavanhallinta & Rutiinioptimointiopas
     title: Tavot
   reminder:
@@ -239,19 +348,34 @@ habits:
   tour:
     habit_building:
       title: Tavojen Rakentaminen
-      description: Rakenna kestäviä tapoja seuraamalla päivittäisiä toimia. Aseta muistutuksia, seuraa sarjojasi ja visualisoi edistymistäsi yksityiskohtaisilla tilastoilla.
+      description:
+        Rakenna kestäviä tapoja seuraamalla päivittäisiä toimia. Aseta
+        muistutuksia, seuraa sarjojasi ja visualisoi edistymistäsi yksityiskohtaisilla
+        tilastoilla.
     create_habits:
       title: Luo Uusia Tavoja
-      description: Aloita uusien tapojen rakentaminen klikkaamalla tätä painiketta. Aseta tavoitteita, taajuuksia, muistutuksia ja seuraa useita suorituksia päivässä joustavamman tavanseurannan vuoksi.
+      description:
+        Aloita uusien tapojen rakentaminen klikkaamalla tätä painiketta.
+        Aseta tavoitteita, taajuuksia, muistutuksia ja seuraa useita suorituksia päivässä
+        joustavamman tavanseurannan vuoksi.
     your_habits:
       title: Sinun Tavasi
-      description: Näytä ja hallitse kaikkia tapojasi täällä. Klikkaa mitä tahansa tapaa nähdäksesi tiedot, tilastot ja suoritushistorian. Merkitse tavat suoritetuiksi päivittäin rakentaaksesi sarjoja ja seurataksesi edistymistäsi.
+      description:
+        Näytä ja hallitse kaikkia tapojasi täällä. Klikkaa mitä tahansa
+        tapaa nähdäksesi tiedot, tilastot ja suoritushistorian. Merkitse tavat suoritetuiksi
+        päivittäin rakentaaksesi sarjoja ja seurataksesi edistymistäsi.
     calendar_view:
       title: Kalenterinäkymä
-      description: Visualisoi tavojesi suoritushistoria useiden päivien ajan. Vihreä ilmaisee suoritetut tavat. Seuraa johdonmukaisuuttasi ja tarkkaile edistymiskuvioitasi ajan myötä.
+      description:
+        Visualisoi tavojesi suoritushistoria useiden päivien ajan. Vihreä
+        ilmaisee suoritetut tavat. Seuraa johdonmukaisuuttasi ja tarkkaile edistymiskuvioitasi
+        ajan myötä.
     filter_search:
       title: Suodatin & Haku
-      description: Etsi tiettyjä tapoja tunnisteiden, hakusanojen tai arkistointitilan perusteella. Järjestä ja hallitse tapojasi tehokkaasti pysyäksesi keskittyneenä olennaiseen.
+      description:
+        Etsi tiettyjä tapoja tunnisteiden, hakusanojen tai arkistointitilan
+        perusteella. Järjestä ja hallitse tapojasi tehokkaasti pysyäksesi keskittyneenä
+        olennaiseen.
   list_options:
     view_style_tooltip: Vaihda näkymän tyyliä
   accessibility:
@@ -259,3 +383,11 @@ habits:
     open_details_hint: Avaa tavan tiedot
     complete_habit_hint: Tee tapa valmiiksi
     completion_status_hint: Tavan completion status
+  actions:
+    mark_complete: Merkitse valmiiksi
+    mark_not_done: Merkitse tekemättömäksi
+    clear_status: Tyhjennä tila
+  status:
+    complete: Valmis
+    not_done: Tekemättä
+    skipped: Ohitettu

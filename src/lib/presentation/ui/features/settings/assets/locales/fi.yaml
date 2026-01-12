@@ -391,3 +391,12 @@ settings:
     advanced: Lisäasetukset
     about: Tietoja
     flow: Flow
+  habit:
+    title: Tottumusasetukset
+    description: Mukauta tottumusten seurantaa ja asetuksia
+    three_state:
+      title: Ota 3 tilan seuranta käyttöön
+      description: Vaihda tilojen Tekemättä, Ohitettu ja Valmis välillä.
+    reverse_day_order:
+      title: Käännä päivien järjestys luettelossa
+      description: Näytä uusimmat päivät ensin (vasemmalta oikealle) tottumusluettelossa.

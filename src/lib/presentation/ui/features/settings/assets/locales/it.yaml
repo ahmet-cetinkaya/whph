@@ -411,3 +411,16 @@ settings:
     advanced: Avanzate
     about: Informazioni
     flow: Flusso
+  habit:
+    title: Impostazioni abitudini
+    description:
+      Personalizza il comportamento e le preferenze di tracciamento delle
+      abitudini
+    three_state:
+      title: Attiva tracciamento a 3 stati
+      description: Alterna tra gli stati Non fatto, Saltato e Completato.
+    reverse_day_order:
+      title: Inverti l'ordine dei giorni nell'elenco
+      description:
+        Mostra i giorni più recenti prima (da sinistra a destra) nell'elenco
+        delle abitudini.

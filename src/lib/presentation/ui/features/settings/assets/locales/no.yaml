@@ -388,3 +388,12 @@ settings:
     advanced: Avansert
     about: Om
     flow: Flyt
+  habit:
+    title: Vanerinnstillinger
+    description: Tilpass vaneoppførsel og innstillinger
+    three_state:
+      title: Aktiver 3-tilstandssporing
+      description: Bytt mellom tilstandene Ikke gjort, Overhoppet og Fullført.
+    reverse_day_order:
+      title: Rekkefølge på dager i listen snu
+      description: Vis nyeste dager først (fra venstre mot høyre) i vaner-listen.

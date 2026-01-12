@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_add_button.dart';
@@ -21,6 +23,9 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
+import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
@@ -51,8 +56,20 @@ class _HabitsPageState extends State<HabitsPage> {
   @override
   void initState() {
     super.initState();
+    _loadSettings();
     // Auto-start tour if multi-page tour is active
     _checkAndStartTour();
+    _habitsService.onSettingsChanged.addListener(_onHabitSettingsChanged);
+  }
+
+  @override
+  void dispose() {
+    _habitsService.onSettingsChanged.removeListener(_onHabitSettingsChanged);
+    super.dispose();
+  }
+
+  void _onHabitSettingsChanged() {
+    _loadSettings();
   }
 
   void _checkAndStartTour() async {
@@ -93,6 +110,8 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _isHabitListVisible = false;
   bool _isHabitDataLoaded = false;
   final HabitListStyle _habitListStyle = HabitListStyle.calendar;
+  bool _isThreeStateEnabled = false;
+  bool _reverseDayOrder = false;
 
   Future<void> _openDetails(String habitId, BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
@@ -102,6 +121,30 @@ class _HabitsPageState extends State<HabitsPage> {
       ),
       size: DialogSize.max,
     );
+  }
+
+  Future<void> _loadSettings() async {
+    try {
+      final setting = await container.resolve<Mediator>().send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.habitThreeStateEnabled),
+          );
+      final reverseOrderSetting = await container.resolve<Mediator>().send<GetSettingQuery, Setting?>(
+            GetSettingQuery(key: SettingKeys.habitReverseDayOrder),
+          );
+
+      if (mounted) {
+        setState(() {
+          if (setting != null) {
+            _isThreeStateEnabled = setting.getValue<bool>();
+          }
+          if (reverseOrderSetting != null) {
+            _reverseDayOrder = reverseOrderSetting.getValue<bool>();
+          }
+        });
+      }
+    } catch (e, stackTrace) {
+      Logger.error("Failed to load habit settings in HabitsPage", error: e, stackTrace: stackTrace);
+    }
   }
 
   void _onFilterTagsSelect(List<DropdownOption<String>> tagOptions, bool isNoneSelected) {
@@ -337,11 +380,10 @@ class _HabitsPageState extends State<HabitsPage> {
 
                     return SizedBox(
                       key: _calendarKey,
-                      // width: _calculateCalendarHeaderWidth(daysToShow, daySize, spacing), // Removed to rely on intrinsic sizing
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ...lastDays.reversed.toList().asMap().entries.expand((entry) {
+                          ...(_reverseDayOrder ? lastDays : lastDays.reversed.toList()).asMap().entries.expand((entry) {
                             final index = entry.key;
                             final date = entry.value;
                             return [
@@ -376,6 +418,8 @@ class _HabitsPageState extends State<HabitsPage> {
                   enableReordering: _sortConfig.useCustomOrder,
                   forceOriginalLayout: _forceOriginalLayout,
                   useParentScroll: false,
+                  isThreeStateEnabled: _isThreeStateEnabled,
+                  isReverseDayOrder: _reverseDayOrder,
                   paginationMode: PaginationMode.infinityScroll,
                   onClickHabit: (item) {
                     _openDetails(item.id, context);

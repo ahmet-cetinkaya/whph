@@ -42,6 +42,8 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final bool forceOriginalLayout;
   final bool useParentScroll;
   final bool useSliver;
+  final bool isThreeStateEnabled;
+  final bool isReverseDayOrder;
 
   final void Function(HabitListItem habit) onClickHabit;
   final void Function(int count)? onList;
@@ -67,6 +69,8 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
     this.forceOriginalLayout = false,
     this.useParentScroll = true,
     this.useSliver = false,
+    this.isThreeStateEnabled = false,
+    this.isReverseDayOrder = false,
     required this.onClickHabit,
     this.onList,
     this.onHabitCompleted,
@@ -149,7 +153,15 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
   void _handleHabitRecordChange() {
     if (!mounted) return;
-    refresh();
+
+    // When 3-state tracking is enabled, delay the refresh (which hides completed items)
+    // by 1 minute to allow the user to toggle through states (Undo/Not Done) without the item vanishing.
+    if (widget.isThreeStateEnabled) {
+      refresh(delay: const Duration(minutes: 1));
+    } else {
+      refresh();
+    }
+
     widget.onHabitCompleted?.call();
   }
 
@@ -250,17 +262,18 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     });
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({Duration? delay}) async {
     if (!mounted) return;
 
     _saveScrollPosition();
     _refreshDebounce?.cancel();
 
-    if (_pendingRefresh) {
+    if (_pendingRefresh && delay == null) {
+      // If immediate refresh requested while pending, allow it
       return;
     }
 
-    _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
+    _refreshDebounce = Timer(delay ?? const Duration(milliseconds: 100), () async {
       await _getHabits(isRefresh: true);
       _backLastScrollPosition();
 
@@ -490,6 +503,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               dateRange: widget.dateRange,
               onOpenDetails: () => widget.onClickHabit(habit),
               isDense: true,
+              isThreeStateEnabled: widget.isThreeStateEnabled,
+              isReverseDayOrder: widget.isReverseDayOrder,
             ),
           ),
         );
@@ -715,6 +730,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                             showDragHandle: true,
                             dragIndex: !habit.isArchived ? i : null,
+                            isThreeStateEnabled: widget.isThreeStateEnabled,
+                            isReverseDayOrder: widget.isReverseDayOrder,
                           ),
                         ),
                       );
@@ -741,6 +758,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                             isDateLabelShowing: false,
                             isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                             showDragHandle: false,
+                            isThreeStateEnabled: widget.isThreeStateEnabled,
+                            isReverseDayOrder: widget.isReverseDayOrder,
                           ),
                         ),
                       );
@@ -863,6 +882,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           showDragHandle: _isCustomOrderActive,
           dragIndex: _isCustomOrderActive && !habit.isArchived ? index : null,
+          isReverseDayOrder: widget.isReverseDayOrder,
         ),
       );
     } else if (item is VisualItemRow<HabitListItem>) {
@@ -882,6 +902,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                       dateRange: widget.dateRange,
                       onOpenDetails: () => widget.onClickHabit(habit),
                       isDense: true,
+                      isReverseDayOrder: widget.isReverseDayOrder,
                     ),
                   ),
                 )),

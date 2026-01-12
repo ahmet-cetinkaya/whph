@@ -34,6 +34,8 @@ class HabitCard extends StatefulWidget {
   final bool isDense;
   final bool showDragHandle;
   final int? dragIndex;
+  final bool isThreeStateEnabled;
+  final bool isReverseDayOrder;
 
   const HabitCard({
     super.key,
@@ -45,6 +47,8 @@ class HabitCard extends StatefulWidget {
     this.isDense = false,
     this.showDragHandle = false,
     this.dragIndex,
+    this.isThreeStateEnabled = false,
+    this.isReverseDayOrder = false,
   });
 
   @override
@@ -319,6 +323,7 @@ class _HabitCardState extends State<HabitCard> {
           style: widget.style,
           onTap: _onCheckboxTap,
           archivedDate: _archivedDate,
+          isThreeStateEnabled: widget.isThreeStateEnabled,
         ),
         // Only show drag handle if enabled and index is present
         if (widget.showDragHandle && widget.dragIndex != null)
@@ -352,6 +357,7 @@ class _HabitCardState extends State<HabitCard> {
         style: widget.style,
         onTap: _onCheckboxTap,
         archivedDate: _archivedDate,
+        isThreeStateEnabled: widget.isThreeStateEnabled,
       ),
     );
 
@@ -416,6 +422,8 @@ class _HabitCardState extends State<HabitCard> {
             onDayTap: _onCalendarDayTap,
             themeService: _themeService,
             archivedDate: _archivedDate,
+            isThreeStateEnabled: widget.isThreeStateEnabled,
+            isReverseDayOrder: widget.isReverseDayOrder,
           ),
         ),
       );

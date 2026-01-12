@@ -407,3 +407,12 @@ settings:
     advanced: Geavanceerd
     about: Over
     flow: Stroom
+  habit:
+    title: Gewoonte-instellingen
+    description: Gewoontegedrag en voorkeuren aanpassen
+    three_state:
+      title: 3-status tracking inschakelen
+      description: Wissel tussen de statussen Niet gedaan, Overgeslagen en Voltooid.
+    reverse_day_order:
+      title: Volgorde van dagen in lijst omdraaien
+      description: Toon recentste dagen eerst (van links naar rechts) in de gewoontenlijst.

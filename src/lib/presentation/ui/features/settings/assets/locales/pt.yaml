@@ -406,3 +406,14 @@ settings:
     advanced: Avançado
     about: Sobre
     flow: Fluxo
+  habit:
+    title: Configurações de Hábitos
+    description: Personalizar comportamento e preferências de rastreamento de hábitos
+    three_state:
+      title: Ativar rastreamento de 3 estados
+      description: Alterne entre os estados Não feito, Pulado e Concluído.
+    reverse_day_order:
+      title: Inverter ordem dos dias na listagem
+      description:
+        Mostrar os dias mais recentes primeiro (da esquerda para a direita)
+        na lista de hábitos.

@@ -410,3 +410,14 @@ settings:
     advanced: Zaawansowane
     about: O aplikacji
     flow: Przepływ
+  habit:
+    title: Ustawienia nawyków
+    description: Dostosuj zachowanie i preferencje śledzenia nawyków
+    three_state:
+      title: Włącz śledzenie 3 stanów
+      description: Przełączaj między stanami Nieukończone, Pominięto i Ukończone.
+    reverse_day_order:
+      title: Odwróć kolejność dni na liście
+      description:
+        Pokaż najnowsze dni jako pierwsze (od lewej do prawej) na liście
+        nawyków.

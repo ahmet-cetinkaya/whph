@@ -392,3 +392,12 @@ settings:
     advanced: Avancerat
     about: Om
     flow: Flöde
+  habit:
+    title: Vanainställningar
+    description: Anpassa vanebeteende och inställningar
+    three_state:
+      title: Aktivera 3-tillståndsspårning
+      description: Växla mellan tillstånden Ej klar, Överhoppad och Klar.
+    reverse_day_order:
+      title: Omvänd ordning på dagar i listan
+      description: Visa de senaste dagarna först (från vänster till höger) i vanor-listan.

@@ -30,48 +30,100 @@ habits:
     estimated_time: Tempo stimato
     estimated_time_not_set: Non impostato
     help:
-      content: |
-        Costruisci routine quotidiane sostenibili attraverso il tracciamento sistematico delle abitudini che trasforma le tue intenzioni in azioni coerenti e progressi misurabili verso i tuoi obiettivi.
+      content:
+        "Costruisci routine quotidiane sostenibili attraverso il tracciamento
+        sistematico delle abitudini che trasforma le tue intenzioni in azioni coerenti
+        e progressi misurabili verso i tuoi obiettivi.
+
 
         ## ⚡ Perché è importante?
 
-        La formazione delle abitudini è la pietra angolare dello sviluppo personale e del successo sostenuto. Azioni quotidiane coerenti si compongono nel tempo per creare risultati straordinari, mentre il tracciamento sistematico assicura che tu mantenga il momentum e faccia miglioramenti continui alle tue routine.
+
+        La formazione delle abitudini è la pietra angolare dello sviluppo personale
+        e del successo sostenuto. Azioni quotidiane coerenti si compongono nel tempo
+        per creare risultati straordinari, mentre il tracciamento sistematico assicura
+        che tu mantenga il momentum e faccia miglioramenti continui alle tue routine.
+
 
         ## ⚙️ Design strategico delle abitudini
 
-        Crea abitudini che si integrano perfettamente nella tua vita e supportano i tuoi obiettivi a lungo termine. Abitudini ben progettate diventano comportamenti automatici che richiedono forza di volontà minima per essere mantenute.
+
+        Crea abitudini che si integrano perfettamente nella tua vita e supportano
+        i tuoi obiettivi a lungo termine. Abitudini ben progettate diventano comportamenti
+        automatici che richiedono forza di volontà minima per essere mantenute.
+
 
         - 📝 Progetta abitudini chiare e specifiche con descrizioni attuabili
+
         - 📅 Stabilisci programmi coerenti che si allineano con i tuoi ritmi naturali
+
         - 🏷️ Organizza abitudini simili in gruppi coerenti per tracciamento sistematico
+
         - 🎯 Connetti ogni abitudine a risultati significativi e valori personali
+
 
         ## ⏱️ Monitoraggio prestazioni
 
-        Traccia l'esecuzione delle tue abitudini per comprendere i pattern, misurare i progressi e ottimizzare il tuo approccio per la massima efficacia e crescita sostenibile.
 
-        - ⏳ Registra i tempi di completamento per comprendere durata ed efficienza delle abitudini
-        - 📊 Analizza gli investimenti di tempo tra categorie di abitudini per sviluppo bilanciato
-        - 📈 Monitora i trend delle prestazioni per identificare opportunità di miglioramento e timing ottimale
-        - 🔄 Usa insight dei dati per raffinare difficoltà e programmazione delle abitudini per successo sostenuto
+        Traccia l'esecuzione delle tue abitudini per comprendere i pattern, misurare
+        i progressi e ottimizzare il tuo approccio per la massima efficacia e crescita
+        sostenibile.
+
+
+        - ⏳ Registra i tempi di completamento per comprendere durata ed efficienza
+        delle abitudini
+
+        - 📊 Analizza gli investimenti di tempo tra categorie di abitudini per sviluppo
+        bilanciato
+
+        - 📈 Monitora i trend delle prestazioni per identificare opportunità di miglioramento
+        e timing ottimale
+
+        - 🔄 Usa insight dei dati per raffinare difficoltà e programmazione delle abitudini
+        per successo sostenuto
+
 
         ## 📅 Coerenza e momentum
 
-        Costruisci e mantieni la coerenza necessaria per cambiamenti comportamentali duraturi attraverso tracciamento sistematico e revisione strategica dei tuoi pattern di progresso.
 
-        - 📚 Rivedi la cronologia di completamento per valutare i progressi e identificare pattern di successo
-        - 🔗 Traccia le serie quotidiane per costruire e mantenere momentum per successo a lungo termine
+        Costruisci e mantieni la coerenza necessaria per cambiamenti comportamentali
+        duraturi attraverso tracciamento sistematico e revisione strategica dei tuoi
+        pattern di progresso.
+
+
+        - 📚 Rivedi la cronologia di completamento per valutare i progressi e identificare
+        pattern di successo
+
+        - 🔗 Traccia le serie quotidiane per costruire e mantenere momentum per successo
+        a lungo termine
+
         - 📌 Monitora le metriche di coerenza per migliorare motivazione e impegno
-        - 🎯 Celebra traguardi e risultati per rinforzare cambiamenti comportamentali positivi
+
+        - 🎯 Celebra traguardi e risultati per rinforzare cambiamenti comportamentali
+        positivi
+
 
         ## 🚀 Strategie di ottimizzazione
 
-        Applica tecniche comprovate per l'ottimizzazione delle abitudini che accelerano i progressi e assicurano che i tuoi sforzi si traducano in miglioramenti significativi e duraturi nella tua vita e produttività.
 
-        - 🐾 **Inizia piccolo:** Inizia con abitudini gestibili che garantiscono vittorie precoci
-        - 🏷️ **Raggruppamento strategico:** Organizza le abitudini per area di vita o momento della giornata
-        - 📊 **Aggiustamenti basati sui dati:** Usa insight di tracciamento per ottimizzare timing e approccio
-        - 🌅 **Focus tempo principale:** Programma abitudini importanti durante i tuoi periodi di energia di picco
+        Applica tecniche comprovate per l'ottimizzazione delle abitudini che accelerano
+        i progressi e assicurano che i tuoi sforzi si traducano in miglioramenti significativi
+        e duraturi nella tua vita e produttività.
+
+
+        - 🐾 **Inizia piccolo:** Inizia con abitudini gestibili che garantiscono vittorie
+        precoci
+
+        - 🏷️ **Raggruppamento strategico:** Organizza le abitudini per area di vita
+        o momento della giornata
+
+        - 📊 **Aggiustamenti basati sui dati:** Usa insight di tracciamento per ottimizzare
+        timing e approccio
+
+        - 🌅 **Focus tempo principale:** Programma abitudini importanti durante i tuoi
+        periodi di energia di picco
+
+        "
       description: Descrizione aiuto
       title: Guida alla formazione abitudini e tracciamento prestazioni
     records: Record
@@ -119,6 +171,7 @@ habits:
     removing_tag: Impossibile rimuovere il tag
     saving_details: Impossibile salvare abitudine
     saving_habit: Impossibile salvare abitudine
+    update_habit: Impossibile aggiornare l'abitudine
     tag_already_exists: Questo tag è già stato aggiunto
     toggling_archive: Impossibile cambiare stato archivio
   goals:
@@ -145,54 +198,114 @@ habits:
   overview:
     filter_by_tags_tooltip: Filtra per tag
     help:
-      content: |
-        Padroneggia le tue routine quotidiane attraverso il tracciamento sistematico delle abitudini che costruisce coerenza, crea momentum positivo e guida progressi significativi verso i tuoi obiettivi a lungo termine.
+      content:
+        "Padroneggia le tue routine quotidiane attraverso il tracciamento sistematico
+        delle abitudini che costruisce coerenza, crea momentum positivo e guida progressi
+        significativi verso i tuoi obiettivi a lungo termine.
+
 
         ## ⚡ Perché è importante?
 
-        La gestione quotidiana delle abitudini è la base dell'eccellenza personale e della crescita sostenibile. L'esecuzione coerente di abitudini ben pianificate crea benefici composti nel tempo, mentre il tracciamento sistematico assicura che tu mantenga la responsabilità e faccia miglioramenti basati sui dati alle tue routine.
+
+        La gestione quotidiana delle abitudini è la base dell'eccellenza personale
+        e della crescita sostenibile. L'esecuzione coerente di abitudini ben pianificate
+        crea benefici composti nel tempo, mentre il tracciamento sistematico assicura
+        che tu mantenga la responsabilità e faccia miglioramenti basati sui dati alle
+        tue routine.
+
 
         ## 📅 Esecuzione e tracciamento quotidiano
 
-        Sviluppa un sistema affidabile per eseguire e monitorare le tue abitudini che crea coerenza e costruisce momentum inarrestabile verso i tuoi obiettivi.
 
-        - ✅ **Completamento quotidiano:** Segna le abitudini come completate per costruire catene di coerenza
-        - 📆 **Vista multi-giorno:** Monitora i pattern attraverso giorni e settimane per insight completi
-        - 🔄 **Costruzione serie:** Mantieni giorni di completamento consecutivi per massimizzare il momentum motivazionale
-        - 📊 **Visualizzazione progressi:** Traccia tassi di completamento e pattern nel tempo
+        Sviluppa un sistema affidabile per eseguire e monitorare le tue abitudini
+        che crea coerenza e costruisce momentum inarrestabile verso i tuoi obiettivi.
+
+
+        - ✅ **Completamento quotidiano:** Segna le abitudini come completate per costruire
+        catene di coerenza
+
+        - 📆 **Vista multi-giorno:** Monitora i pattern attraverso giorni e settimane
+        per insight completi
+
+        - 🔄 **Costruzione serie:** Mantieni giorni di completamento consecutivi per
+        massimizzare il momentum motivazionale
+
+        - 📊 **Visualizzazione progressi:** Traccia tassi di completamento e pattern
+        nel tempo
+
 
         ## ⏱️ Analisi e ottimizzazione tempo
 
-        Monitora gli investimenti di tempo nelle tue abitudini per ottimizzare il tuo programma quotidiano e assicurare sviluppo bilanciato in tutte le aree di vita importanti.
 
-        - ⏳ **Tracciamento durata:** Registra il tempo effettivo speso per comprendere i requisiti delle abitudini
-        - 🏷️ **Analisi categorie:** Raggruppa le abitudini per tag per vedere l'allocazione del tempo tra aree di vita
-        - ⏰ **Ottimizzazione programma:** Bilancia il timing delle abitudini per esecuzione quotidiana sostenibile
-        - 📈 **Miglioramento efficienza:** Identifica opportunità per semplificare l'esecuzione delle abitudini
+        Monitora gli investimenti di tempo nelle tue abitudini per ottimizzare il
+        tuo programma quotidiano e assicurare sviluppo bilanciato in tutte le aree
+        di vita importanti.
+
+
+        - ⏳ **Tracciamento durata:** Registra il tempo effettivo speso per comprendere
+        i requisiti delle abitudini
+
+        - 🏷️ **Analisi categorie:** Raggruppa le abitudini per tag per vedere l'allocazione
+        del tempo tra aree di vita
+
+        - ⏰ **Ottimizzazione programma:** Bilancia il timing delle abitudini per esecuzione
+        quotidiana sostenibile
+
+        - 📈 **Miglioramento efficienza:** Identifica opportunità per semplificare
+        l'esecuzione delle abitudini
+
 
         ## 🗂️ Organizzazione strategica
 
-        Crea un sistema organizzativo che supporta l'esecuzione coerente fornendo la flessibilità per adattarsi mentre i tuoi obiettivi e circostanze evolvono.
 
-        - 🏷️ **Categorizzazione significativa:** Raggruppa le abitudini per area di vita, tempo o livello di priorità
-        - ⚙️ **Programmazione flessibile:** Progetta il timing delle abitudini che funziona con il tuo stile di vita e pattern di energia
-        - 🎯 **Focus priorità:** Assicura che le tue abitudini più importanti ricevano attenzione ed energia appropriate
+        Crea un sistema organizzativo che supporta l'esecuzione coerente fornendo
+        la flessibilità per adattarsi mentre i tuoi obiettivi e circostanze evolvono.
+
+
+        - 🏷️ **Categorizzazione significativa:** Raggruppa le abitudini per area di
+        vita, tempo o livello di priorità
+
+        - ⚙️ **Programmazione flessibile:** Progetta il timing delle abitudini che
+        funziona con il tuo stile di vita e pattern di energia
+
+        - 🎯 **Focus priorità:** Assicura che le tue abitudini più importanti ricevano
+        attenzione ed energia appropriate
+
 
         ## 💡 Principi di padronanza
 
-        Applica strategie comprovate per la padronanza delle abitudini che assicurano che i tuoi sforzi si compongano in cambiamenti comportamentali duraturi e miglioramenti di vita misurabili.
 
-        - 🐾 **Inizia piccolo:** Inizia con abitudini che puoi eseguire coerentemente, poi aumenta gradualmente la difficoltà
-        - 🏷️ **Raggruppamento strategico:** Organizza le abitudini per creare sequenze logiche e sistemi di supporto
-        - 📊 **Revisione prestazioni:** Usa i dati di tracciamento del tempo per comprendere i pattern e ottimizzare il tuo approccio
-        - 🌅 **Esecuzione tempo principale:** Programma le tue abitudini più importanti durante i periodi di energia di picco
+        Applica strategie comprovate per la padronanza delle abitudini che assicurano
+        che i tuoi sforzi si compongano in cambiamenti comportamentali duraturi e
+        miglioramenti di vita misurabili.
+
+
+        - 🐾 **Inizia piccolo:** Inizia con abitudini che puoi eseguire coerentemente,
+        poi aumenta gradualmente la difficoltà
+
+        - 🏷️ **Raggruppamento strategico:** Organizza le abitudini per creare sequenze
+        logiche e sistemi di supporto
+
+        - 📊 **Revisione prestazioni:** Usa i dati di tracciamento del tempo per comprendere
+        i pattern e ottimizzare il tuo approccio
+
+        - 🌅 **Esecuzione tempo principale:** Programma le tue abitudini più importanti
+        durante i periodi di energia di picco
+
 
         ### 📊 Uso della vista calendario
+
         - 📅 Visualizza più giorni simultaneamente nella vista calendario.
+
         - ✅ Traccia visivamente i tuoi pattern di completamento.
+
         - ⚡ Risparmia tempo con marcatura rapida di completamento.
+
         - 🎯 Aumenta la motivazione con tracciamento visivo delle serie.
+
         - 🔄 Esplora abitudini passate e future con navigazione date flessibile.
+
+        "
       title: Guida alla gestione abitudini quotidiane e ottimizzazione routine
     title: Abitudini
   reminder:
@@ -241,19 +354,35 @@ habits:
   tour:
     habit_building:
       title: Costruzione di abitudini
-      description: Sviluppa abitudini durature tracciando le attività quotidiane. Imposta promemoria, monitora le tue serie e visualizza i tuoi progressi con statistiche dettagliate.
+      description:
+        Sviluppa abitudini durature tracciando le attività quotidiane.
+        Imposta promemoria, monitora le tue serie e visualizza i tuoi progressi con
+        statistiche dettagliate.
     create_habits:
       title: Crea nuove abitudini
-      description: Inizia a costruire nuove abitudini cliccando su questo pulsante. Imposta obiettivi, frequenze, promemoria e traccia più completamenti al giorno per un monitoraggio flessibile delle abitudini.
+      description:
+        Inizia a costruire nuove abitudini cliccando su questo pulsante.
+        Imposta obiettivi, frequenze, promemoria e traccia più completamenti al giorno
+        per un monitoraggio flessibile delle abitudini.
     your_habits:
       title: Le tue abitudini
-      description: Visualizza e gestisci tutte le tue abitudini qui. Clicca su qualsiasi abitudine per vedere dettagli, statistiche e cronologia di completamento. Contrassegna le abitudini come completate quotidianamente per costruire serie e tracciare i tuoi progressi.
+      description:
+        Visualizza e gestisci tutte le tue abitudini qui. Clicca su qualsiasi
+        abitudine per vedere dettagli, statistiche e cronologia di completamento.
+        Contrassegna le abitudini come completate quotidianamente per costruire serie
+        e tracciare i tuoi progressi.
     calendar_view:
       title: Vista calendario
-      description: Visualizza la cronologia di completamento delle tue abitudini su più giorni. Il verde indica le abitudini completate. Traccia la tua coerenza e osserva i tuoi modelli di progresso nel tempo.
+      description:
+        Visualizza la cronologia di completamento delle tue abitudini su
+        più giorni. Il verde indica le abitudini completate. Traccia la tua coerenza
+        e osserva i tuoi modelli di progresso nel tempo.
     filter_search:
       title: Filtra e cerca
-      description: Trova abitudini specifiche utilizzando tag, termini di ricerca o filtra per stato archiviato. Organizza e gestisci le tue abitudini in modo efficiente per rimanere concentrato su ciò che conta.
+      description:
+        Trova abitudini specifiche utilizzando tag, termini di ricerca
+        o filtra per stato archiviato. Organizza e gestisci le tue abitudini in modo
+        efficiente per rimanere concentrato su ciò che conta.
   list_options:
     view_style_tooltip: Cambia stile di visualizzazione
   accessibility:
@@ -261,3 +390,11 @@ habits:
     open_details_hint: Apri dettagli abitudine
     complete_habit_hint: Completa abitudine
     completion_status_hint: Stato di completion dell''abitudine
+  actions:
+    mark_complete: Segna come completato
+    mark_not_done: Segna come non fatto
+    clear_status: Cancella stato
+  status:
+    complete: Completato
+    not_done: Non fatto
+    skipped: Saltato

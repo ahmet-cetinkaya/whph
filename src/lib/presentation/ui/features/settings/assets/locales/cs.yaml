@@ -394,3 +394,12 @@ settings:
     advanced: Pokročilé
     about: O aplikaci
     flow: Flow
+  habit:
+    title: Nastavení návyků
+    description: Přizpůsobte sledování návyků a předvolby
+    three_state:
+      title: Povolit 3-stavové sledování
+      description: Přepínání mezi stavy Nedokončeno, Přeskočeno a Hotovo.
+    reverse_day_order:
+      title: Obrátit pořadí dnů v seznamu
+      description: Zobrazit nejnovější dny jako první (zleva doprava) v seznamu návyků.

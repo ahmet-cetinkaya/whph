@@ -151,23 +151,39 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
 
   @override
   Future<void> add(TEntity item) async {
-    item.createdDate = DateTime.now().toUtc();
-    TEntity insertedItem = await database.into(table).insertReturning(toCompanion(item));
-    item.id = insertedItem.id;
+    try {
+      item.createdDate = DateTime.now().toUtc();
+      TEntity insertedItem = await database.into(table).insertReturning(toCompanion(item));
+      item.id = insertedItem.id;
+      Logger.debug('Successfully added ${table.actualTableName} with id ${item.id}');
+    } catch (e, stackTrace) {
+      Logger.error('Database error adding to ${table.actualTableName}: $e\n$stackTrace');
+      rethrow;
+    }
   }
 
   @override
   Future<void> update(TEntity item) async {
-    item.modifiedDate = DateTime.now().toUtc();
-    final companion = toCompanion(item);
-    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    try {
+      item.modifiedDate = DateTime.now().toUtc();
+      final companion = toCompanion(item);
+      await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    } catch (e, stackTrace) {
+      Logger.error('Database error updating ${table.actualTableName}: $e\n$stackTrace');
+      rethrow;
+    }
   }
 
   @override
   Future<void> delete(TEntity item) async {
-    item.deletedDate = DateTime.now().toUtc();
-    final companion = toCompanion(item);
-    await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    try {
+      item.deletedDate = DateTime.now().toUtc();
+      final companion = toCompanion(item);
+      await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+    } catch (e, stackTrace) {
+      Logger.error('Database error deleting from ${table.actualTableName}: $e\n$stackTrace');
+      rethrow;
+    }
   }
 
   @override

@@ -30,6 +30,7 @@ import 'migration_v25_to_v26.dart';
 import 'migration_v26_to_v27.dart';
 import 'migration_v27_to_v28.dart';
 import 'migration_v28_to_v29.dart';
+import 'migration_v29_to_v30.dart';
 
 /// Extension on AppDatabase to run all migration steps.
 extension MigrationRunner on AppDatabase {
@@ -64,6 +65,7 @@ extension MigrationRunner on AppDatabase {
       from26To27: (m, schema) => migrateV26ToV27(this, m, schema),
       from27To28: (m, schema) => migrateV27ToV28(this, m, schema),
       from28To29: (m, schema) => migrateV28ToV29(this, m, schema),
+      from29To30: (m, schema) => migrateV29ToV30(this, m, schema),
     )(m, from, to);
   }
 }

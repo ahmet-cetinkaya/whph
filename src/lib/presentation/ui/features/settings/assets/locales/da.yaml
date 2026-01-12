@@ -384,3 +384,14 @@ settings:
     advanced: Avanceret
     about: Om
     flow: Flow
+  habit:
+    title: Vaneindstillinger
+    description: Tilpas vaneadfærd og præferencer
+    three_state:
+      title: Aktivér 3-tilstandssporing
+      description: Skift mellem tilstandene Ikke gjort, Sprunget over og Færdig.
+    reverse_day_order:
+      title: Omvendt rækkefølge af dage i listen
+      description:
+        Vis de nyeste dage først (fra venstre mod højre) i oversigten over
+        vaner.

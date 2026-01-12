@@ -1314,8 +1314,16 @@ class $HabitRecordTableTable extends HabitRecordTable
       'occurred_at', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
+  late final GeneratedColumnWithTypeConverter<HabitRecordStatus, int> status =
+      GeneratedColumn<int>('status', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
+          .withConverter<HabitRecordStatus>(
+              $HabitRecordTableTable.$converterstatus);
+  @override
   List<GeneratedColumn> get $columns =>
-      [id, createdDate, modifiedDate, deletedDate, habitId, occurredAt];
+      [id, createdDate, modifiedDate, deletedDate, habitId, occurredAt, status];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1386,6 +1394,9 @@ class $HabitRecordTableTable extends HabitRecordTable
           .read(DriftSqlType.string, data['${effectivePrefix}habit_id'])!,
       occurredAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}occurred_at'])!,
+      status: $HabitRecordTableTable.$converterstatus.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}status'])!),
     );
   }
 
@@ -1393,6 +1404,9 @@ class $HabitRecordTableTable extends HabitRecordTable
   $HabitRecordTableTable createAlias(String alias) {
     return $HabitRecordTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<HabitRecordStatus, int, int> $converterstatus =
+      const EnumIndexConverter<HabitRecordStatus>(HabitRecordStatus.values);
 }
 
 class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
@@ -1402,6 +1416,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
   final Value<DateTime?> deletedDate;
   final Value<String> habitId;
   final Value<DateTime> occurredAt;
+  final Value<HabitRecordStatus> status;
   final Value<int> rowid;
   const HabitRecordTableCompanion({
     this.id = const Value.absent(),
@@ -1410,6 +1425,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     this.deletedDate = const Value.absent(),
     this.habitId = const Value.absent(),
     this.occurredAt = const Value.absent(),
+    this.status = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HabitRecordTableCompanion.insert({
@@ -1419,6 +1435,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     this.deletedDate = const Value.absent(),
     required String habitId,
     required DateTime occurredAt,
+    this.status = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         createdDate = Value(createdDate),
@@ -1431,6 +1448,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     Expression<DateTime>? deletedDate,
     Expression<String>? habitId,
     Expression<DateTime>? occurredAt,
+    Expression<int>? status,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1440,6 +1458,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
       if (deletedDate != null) 'deleted_date': deletedDate,
       if (habitId != null) 'habit_id': habitId,
       if (occurredAt != null) 'occurred_at': occurredAt,
+      if (status != null) 'status': status,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1451,6 +1470,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
       Value<DateTime?>? deletedDate,
       Value<String>? habitId,
       Value<DateTime>? occurredAt,
+      Value<HabitRecordStatus>? status,
       Value<int>? rowid}) {
     return HabitRecordTableCompanion(
       id: id ?? this.id,
@@ -1459,6 +1479,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
       deletedDate: deletedDate ?? this.deletedDate,
       habitId: habitId ?? this.habitId,
       occurredAt: occurredAt ?? this.occurredAt,
+      status: status ?? this.status,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1484,6 +1505,10 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
     if (occurredAt.present) {
       map['occurred_at'] = Variable<DateTime>(occurredAt.value);
     }
+    if (status.present) {
+      map['status'] = Variable<int>(
+          $HabitRecordTableTable.$converterstatus.toSql(status.value));
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1499,6 +1524,7 @@ class HabitRecordTableCompanion extends UpdateCompanion<HabitRecord> {
           ..write('deletedDate: $deletedDate, ')
           ..write('habitId: $habitId, ')
           ..write('occurredAt: $occurredAt, ')
+          ..write('status: $status, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6399,6 +6425,7 @@ typedef $$HabitRecordTableTableCreateCompanionBuilder
   Value<DateTime?> deletedDate,
   required String habitId,
   required DateTime occurredAt,
+  Value<HabitRecordStatus> status,
   Value<int> rowid,
 });
 typedef $$HabitRecordTableTableUpdateCompanionBuilder
@@ -6409,6 +6436,7 @@ typedef $$HabitRecordTableTableUpdateCompanionBuilder
   Value<DateTime?> deletedDate,
   Value<String> habitId,
   Value<DateTime> occurredAt,
+  Value<HabitRecordStatus> status,
   Value<int> rowid,
 });
 
@@ -6438,6 +6466,11 @@ class $$HabitRecordTableTableFilterComposer
 
   ColumnFilters<DateTime> get occurredAt => $composableBuilder(
       column: $table.occurredAt, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<HabitRecordStatus, HabitRecordStatus, int>
+      get status => $composableBuilder(
+          column: $table.status,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$HabitRecordTableTableOrderingComposer
@@ -6467,6 +6500,9 @@ class $$HabitRecordTableTableOrderingComposer
 
   ColumnOrderings<DateTime> get occurredAt => $composableBuilder(
       column: $table.occurredAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
 }
 
 class $$HabitRecordTableTableAnnotationComposer
@@ -6495,6 +6531,9 @@ class $$HabitRecordTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get occurredAt => $composableBuilder(
       column: $table.occurredAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HabitRecordStatus, int> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
 }
 
 class $$HabitRecordTableTableTableManager extends RootTableManager<
@@ -6530,6 +6569,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             Value<DateTime?> deletedDate = const Value.absent(),
             Value<String> habitId = const Value.absent(),
             Value<DateTime> occurredAt = const Value.absent(),
+            Value<HabitRecordStatus> status = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitRecordTableCompanion(
@@ -6539,6 +6579,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             deletedDate: deletedDate,
             habitId: habitId,
             occurredAt: occurredAt,
+            status: status,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -6548,6 +6589,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             Value<DateTime?> deletedDate = const Value.absent(),
             required String habitId,
             required DateTime occurredAt,
+            Value<HabitRecordStatus> status = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               HabitRecordTableCompanion.insert(
@@ -6557,6 +6599,7 @@ class $$HabitRecordTableTableTableManager extends RootTableManager<
             deletedDate: deletedDate,
             habitId: habitId,
             occurredAt: occurredAt,
+            status: status,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

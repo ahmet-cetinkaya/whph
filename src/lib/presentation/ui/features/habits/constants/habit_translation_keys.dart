@@ -41,6 +41,7 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String removingTagError = 'habits.errors.removing_tag';
   static const String loadingHabitError = 'habits.errors.loading_habit';
   static const String savingHabitError = 'habits.errors.saving_habit';
+  static const String updateHabitError = 'habits.errors.update_habit';
   static const String loadingHabitsError = 'habits.errors.loading_habits';
 
   static const String weekDays = 'habits.calendar.week_days';
@@ -144,4 +145,14 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String openDetailsHint = 'habits.accessibility.open_details_hint';
   static const String completeHabitHint = 'habits.accessibility.complete_habit_hint';
   static const String completionStatusHint = 'habits.accessibility.completion_status_hint';
+
+  // Status
+  static const String statusComplete = 'habits.status.complete';
+  static const String statusNotDone = 'habits.status.not_done';
+  static const String statusSkipped = 'habits.status.skipped';
+
+  // Actions
+  static const String actionMarkComplete = 'habits.actions.mark_complete';
+  static const String actionMarkNotDone = 'habits.actions.mark_not_done';
+  static const String actionClearStatus = 'habits.actions.clear_status';
 }

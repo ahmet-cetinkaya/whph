@@ -31,49 +31,94 @@ habits:
     estimated_time: Tahmini Süre
     estimated_time_not_set: Ayarlanmadı
     help:
-      content: |
-        🔄 Alışkanlıklarınızı düzenleyerek günlük rutininizde istikrar sağlayın ve ilerlemenizi kolayca takip edin.
+      content:
+        "🔄 Alışkanlıklarınızı düzenleyerek günlük rutininizde istikrar sağlayın
+        ve ilerlemenizi kolayca takip edin.
+
 
         ## ⚙️ Temel Ayarlar
 
+
         - 📝 Alışkanlıklarınıza anlamlı ve motive edici isimler verin.
+
         - 📅 Düzenli programlar oluşturarak alışkanlıkların takibini kolaylaştırın.
+
         - 🏷️ Etiket gruplarıyla benzer alışkanlıkları bir araya getirerek düzen oluşturun.
+
 
         ## ⏱️ Zaman Takibi
 
+
         - ⏳ Her tamamlanma zamanını kaydedin ve gelişiminizi görün.
-        - 📊 Etiketlere göre zaman takibi yaparak hangi alışkanlıkların daha fazla zaman aldığını analiz edin.
-        - 📈 Zaman desenlerinizi inceleyerek verimliliğinizi artıracak düzenlemeler yapın.
+
+        - 📊 Etiketlere göre zaman takibi yaparak hangi alışkanlıkların daha fazla
+        zaman aldığını analiz edin.
+
+        - 📈 Zaman desenlerinizi inceleyerek verimliliğinizi artıracak düzenlemeler
+        yapın.
+
 
         ## 📅 Geçmiş ve Tutarlılık
 
+
         - 📚 Tamamlanma geçmişinizi görüntüleyerek ilerlemenizi değerlendirin.
+
         - 🔗 Günlük serileri takip ederek alışkanlıklarınızın sürekliliğini ölçün.
+
         - 📌 Tutarlılığınızı izleyerek motivasyonunuzu artırın.
-        - 🔄 Veri içgörülerini kullanarak sürdürülebilir başarı için alışkanlık zorluğunu ve zamanlamasını iyileştirin
+
+        - 🔄 Veri içgörülerini kullanarak sürdürülebilir başarı için alışkanlık zorluğunu
+        ve zamanlamasını iyileştirin
+
 
         ## 📅 Tutarlılık ve Momentum
 
-        Sistematik takip ve ilerleme kalıplarınızın stratejik gözden geçirilmesi yoluyla kalıcı davranış değişikliği için gereken tutarlılığı oluşturun ve sürdürün.
 
-        - 📚 İlerlemeyi değerlendirmek ve başarı kalıplarını belirlemek için tamamlanma geçmişini gözden geçirin
-        - 🔗 Uzun vadeli başarı için momentum oluşturmak ve sürdürmek amacıyla günlük serileri takip edin
+        Sistematik takip ve ilerleme kalıplarınızın stratejik gözden geçirilmesi yoluyla
+        kalıcı davranış değişikliği için gereken tutarlılığı oluşturun ve sürdürün.
+
+
+        - 📚 İlerlemeyi değerlendirmek ve başarı kalıplarını belirlemek için tamamlanma
+        geçmişini gözden geçirin
+
+        - 🔗 Uzun vadeli başarı için momentum oluşturmak ve sürdürmek amacıyla günlük
+        serileri takip edin
+
         - 📌 Motivasyon ve kararlılığı artırmak için tutarlılık metriklerini izleyin
-        - 🎯 Pozitif davranış değişikliğini güçlendirmek için dönüm noktalarını ve başarıları kutlayın
+
+        - 🎯 Pozitif davranış değişikliğini güçlendirmek için dönüm noktalarını ve
+        başarıları kutlayın
+
 
         ## 🚀 Optimizasyon Stratejileri
 
-        İlerlemeyi hızlandıran ve çabalarınızın yaşamınız ve verimliliğinizde anlamlı, kalıcı iyileştirmelere dönüştürülmesini sağlayan alışkanlık optimizasyonu için kanıtlanmış teknikleri uygulayın.
 
-        - 🐾 **Küçük Başlayın:** Erken kazanımları garanti eden yönetilebilir alışkanlıklarla başlayın
-        - 🏷️ **Stratejik Gruplama:** Alışkanlıkları yaşam alanı veya günün saatine göre organize edin
-        - 📊 **Veri Odaklı Ayarlamalar:** Zamanlama ve yaklaşımı optimize etmek için takip içgörülerini kullanın
-        - 🌅 **Ana Zaman Odağı:** Önemli alışkanlıkları en yüksek enerji dönemlerinizde planlayın
+        İlerlemeyi hızlandıran ve çabalarınızın yaşamınız ve verimliliğinizde anlamlı,
+        kalıcı iyileştirmelere dönüştürülmesini sağlayan alışkanlık optimizasyonu
+        için kanıtlanmış teknikleri uygulayın.
+
+
+        - 🐾 **Küçük Başlayın:** Erken kazanımları garanti eden yönetilebilir alışkanlıklarla
+        başlayın
+
+        - 🏷️ **Stratejik Gruplama:** Alışkanlıkları yaşam alanı veya günün saatine
+        göre organize edin
+
+        - 📊 **Veri Odaklı Ayarlamalar:** Zamanlama ve yaklaşımı optimize etmek için
+        takip içgörülerini kullanın
+
+        - 🌅 **Ana Zaman Odağı:** Önemli alışkanlıkları en yüksek enerji dönemlerinizde
+        planlayın
+
 
         ———
 
-        🔑 Bu özellikleri kullanarak alışkanlıklarınızı düzenli takip etmek, hedeflerinize ulaşmada size büyük kolaylık sağlar. Düzenli gözden geçirme ve ayarlamalar, sürdürülebilir başarı için çok önemlidir.
+
+        🔑 Bu özellikleri kullanarak alışkanlıklarınızı düzenli takip etmek, hedeflerinize
+        ulaşmada size büyük kolaylık sağlar. Düzenli gözden geçirme ve ayarlamalar,
+        sürdürülebilir başarı için çok önemlidir.
+
+        "
       description: Yardım açıklaması
       title: Alışkanlık Takibi ve Yönetimi Rehberi
     records: Kayıtlar
@@ -123,6 +168,7 @@ habits:
     removing_tag: Etiket kaldırılamadı
     saving_details: Alışkanlık kaydedilemedi
     saving_habit: Alışkanlık kaydedilemedi
+    update_habit: Alışkanlık güncellenemedi
     tag_already_exists: Bu etiket zaten eklenmiş
     toggling_archive: Arşiv durumu değiştirilemedi
   goals:
@@ -149,39 +195,69 @@ habits:
   overview:
     filter_by_tags_tooltip: Etiketlere göre filtrele
     help:
-      content: |
-        🔄 **Alışkanlıklar**, günlük rutinlerinizi oluşturup sürdürürken zaman yönetimini kolaylaştırır. Bu rehber, alışkanlıklarınızı etkin kullanmanız için adım adım yol gösterir.
+      content:
+        "🔄 **Alışkanlıklar**, günlük rutinlerinizi oluşturup sürdürürken zaman
+        yönetimini kolaylaştırır. Bu rehber, alışkanlıklarınızı etkin kullanmanız
+        için adım adım yol gösterir.
+
 
         ### 📅 Günlük Takip ve Tamamlama
+
         - ✅ Alışkanlıklarınızı her gün kontrol edin ve tamamladıklarınızı işaretleyin.
-        - 📆 Birden fazla günü görüntüleyerek, alışkanlıklarınızın düzenini ve tutarlılığını takip edin.
+
+        - 📆 Birden fazla günü görüntüleyerek, alışkanlıklarınızın düzenini ve tutarlılığını
+        takip edin.
+
         - 🔄 Uzun seriler oluşturarak motivasyonunuzu artırın.
 
+
         ### ⏱️ Zaman Takibi ve Analiz
+
         - ⏳ Alışkanlıklarınıza harcadığınız zamanı kaydedin ve günlük analiz yapın.
-        - 🏷️ Etiketler kullanarak benzer alışkanlıkların zamanlarını toplayın ve hangi alanlara daha çok zaman ayırdığınızı görün.
+
+        - 🏷️ Etiketler kullanarak benzer alışkanlıkların zamanlarını toplayın ve hangi
+        alanlara daha çok zaman ayırdığınızı görün.
+
         - ⏰ Düzenli takip ile alışkanlık sürelerinizi dengeleyin.
 
+
         ### 🗂️ Organizasyon ve Programlama
+
         - 🏷️ Alışkanlıklarınızı anlamlı etiket gruplarına ayırın.
+
         - ⚙️ Esnek programlama sayesinde alışkanlıklarınızı ihtiyaçlarınıza göre planlayın.
 
+
         ### 💡 Alışkanlıklarınızı Güçlendirme İpuçları
+
         - 🐾 Başlangıçta küçük ve yönetilebilir alışkanlıklar seçin.
+
         - 🏷️ Alışkanlıklarınızı etiketlerle gruplayarak organizasyonu kolaylaştırın.
-        - 📊 Alışkanlıklarınızdaki desenleri ve eğilimleri anlamak için zaman takibini kullanın.
+
+        - 📊 Alışkanlıklarınızdaki desenleri ve eğilimleri anlamak için zaman takibini
+        kullanın.
+
         - 🌅 Önemli alışkanlıkları günün erken saatlerinde tamamlayın.
-        - 🔍✏️ Düzenli aralıklarla alışkanlık geçmişinizi gözden geçirin ve gerekirse ayarlamalar yapın.
+
+        - 🔍✏️ Düzenli aralıklarla alışkanlık geçmişinizi gözden geçirin ve gerekirse
+        ayarlamalar yapın.
+
 
         ### 📊 Takvim Görünümü Kullanımı
+
         - 📅 Takvim görünümünde birden çok günü aynı anda görüntüleyin.
+
         - ✅ Tamamlama desenlerinizi görsel olarak takip edin.
+
         - ⚡ Hızlı tamamlama işaretleme ile zaman kazanın.
+
         - 🎯 Görsel seri takibi sayesinde motivasyonunuzu artırın.
+
         - 🔄 Esnek tarih gezinme ile geçmiş ve gelecekteki alışkanlıklarınızı inceleyin.
+
+        "
       title: Alışkanlıklar Genel Bakış Rehberi
     title: Alışkanlıklar
-
   reminder:
     enableReminders: Hatırlatıcıları Etkinleştir
     everyDay: Her gün
@@ -229,19 +305,35 @@ habits:
   tour:
     habit_building:
       title: Alışkanlık Oluşturma
-      description: Günlük etkinlikleri takip ederek kalıcı alışkanlıklar oluşturun. Hatırlatıcılar ayarlayın, serilerinizi izleyin ve detaylı istatistiklerle ilerlemenizi görselleştirin.
+      description:
+        Günlük etkinlikleri takip ederek kalıcı alışkanlıklar oluşturun.
+        Hatırlatıcılar ayarlayın, serilerinizi izleyin ve detaylı istatistiklerle
+        ilerlemenizi görselleştirin.
     create_habits:
       title: Yeni Alışkanlıklar Oluştur
-      description: Bu butona tıklayarak yeni alışkanlıklar oluşturarak başlayın. Hedefler, sıklıklar, hatırlatıcılar belirleyin ve esnek alışkanlık takibi için günde birden fazla tamamlama kaydedin.
+      description:
+        Bu butona tıklayarak yeni alışkanlıklar oluşturarak başlayın. Hedefler,
+        sıklıklar, hatırlatıcılar belirleyin ve esnek alışkanlık takibi için günde
+        birden fazla tamamlama kaydedin.
     your_habits:
       title: Alışkanlıklarınız
-      description: Burada tüm alışkanlıklarınızı görüntüleyin ve yönetin. Ayrıntıları, istatistikleri ve tamamlanma geçmişini görmek için herhangi bir alışkanlıkya tıklayın. Seri oluşturmak ve ilerleme kaydınızı takip etmek için alışkanlıkları günlük olarak tamamlandı olarak işaretleyin.
+      description:
+        Burada tüm alışkanlıklarınızı görüntüleyin ve yönetin. Ayrıntıları,
+        istatistikleri ve tamamlanma geçmişini görmek için herhangi bir alışkanlıkya
+        tıklayın. Seri oluşturmak ve ilerleme kaydınızı takip etmek için alışkanlıkları
+        günlük olarak tamamlandı olarak işaretleyin.
     calendar_view:
       title: Takvim Görünümü
-      description: Alışkanlık tamamlanma geçmişinizi birkaç gün boyunca görselleştirin. Yeşil, tamamlanan alışkanlıkları gösterir. Tutarlılığınızı takip edin ve zaman içindeki ilerleme modellerinizi görün.
+      description:
+        Alışkanlık tamamlanma geçmişinizi birkaç gün boyunca görselleştirin.
+        Yeşil, tamamlanan alışkanlıkları gösterir. Tutarlılığınızı takip edin ve zaman
+        içindeki ilerleme modellerinizi görün.
     filter_search:
       title: Filtreleme ve Arama
-      description: Etiketleri, arama terimlerini kullanarak veya arşivlenmiş duruma göre belirli alışkanlıkları bulun. Alışkanlıklarınızı etkili bir şekilde organize edin ve yönetin, önemli olan şeye odaklanmaya devam edin.
+      description:
+        Etiketleri, arama terimlerini kullanarak veya arşivlenmiş duruma
+        göre belirli alışkanlıkları bulun. Alışkanlıklarınızı etkili bir şekilde organize
+        edin ve yönetin, önemli olan şeye odaklanmaya devam edin.
   list_options:
     view_style_tooltip: Görünüm stilini değiştir
   accessibility:
@@ -249,3 +341,11 @@ habits:
     open_details_hint: Alışkanlık detaylarını aç
     complete_habit_hint: Alışkanlığı tamamla
     completion_status_hint: Alışkanlık tamamlanma durumu
+  actions:
+    mark_complete: Tamamlandı Olarak İşaretle
+    mark_not_done: Tamamlanmadı Olarak İşaretle
+    clear_status: Durumu Temizle
+  status:
+    complete: Tamamlandı
+    not_done: Tamamlanmadı
+    skipped: Atlandı

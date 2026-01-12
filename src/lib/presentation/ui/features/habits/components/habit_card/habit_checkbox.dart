@@ -7,12 +7,14 @@ import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dar
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 
 class HabitCheckbox extends StatelessWidget {
   final HabitListItem habit;
   final List<HabitRecordListItem>? habitRecords;
   final HabitListStyle style;
   final DateTime? archivedDate;
+  final bool isThreeStateEnabled;
   final VoidCallback onTap;
 
   const HabitCheckbox({
@@ -22,20 +24,16 @@ class HabitCheckbox extends StatelessWidget {
     required this.style,
     required this.onTap,
     this.archivedDate,
+    this.isThreeStateEnabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (habitRecords == null) {
-      return const SizedBox(
-        width: AppTheme.buttonSizeMedium,
-        height: AppTheme.buttonSizeMedium,
-      );
-    }
-
     final today = DateTime.now();
+    final todayRecord = _getRecordForDate(today);
+    final status = todayRecord?.status ?? HabitRecordStatus.skipped;
+    final isSkipped = status == HabitRecordStatus.skipped && _isSkipped(today);
     final isDisabled = _isDateDisabled(today);
-    final hasRecordToday = _hasRecordForDate(today);
     final todayCount = _countRecordsForDate(today);
     final hasCustomGoals = habit.hasGoal;
     final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
@@ -54,43 +52,79 @@ class HabitCheckbox extends StatelessWidget {
         isDisabled: isDisabled,
         onTap: onTap,
         useLargeSize: isMobileCalendar, // Use mobile calendar flag as proxy for large size preference
+        isThreeStateEnabled: isThreeStateEnabled,
+        status: status, // Pass status to handle Skipped vs Not Done
       );
     }
 
-    final isSkipped = !hasRecordToday && _isSkipped(today);
+    IconData icon;
+    Color color;
+
+    if (isDisabled) {
+      icon = Icons.close; // Or block icon? Keeping logic similar to before for now
+      color = AppTheme.textColor.withValues(alpha: 0.3);
+    } else {
+      switch (status) {
+        case HabitRecordStatus.complete:
+          icon = HabitUiConstants.recordIcon;
+          color = Colors.green;
+          break;
+        case HabitRecordStatus.notDone:
+          icon = Icons.close;
+          color = Colors.red;
+          break;
+        case HabitRecordStatus.skipped:
+          if (isThreeStateEnabled) {
+            if (isSkipped) {
+              icon = Icons.question_mark;
+              color = HabitUiConstants.skippedColor;
+            } else {
+              // "Skipped" state should always be neutral (?) by default
+              icon = Icons.question_mark;
+              color = Colors.grey;
+            }
+          } else {
+            // If 3-state disabled, Skipped/Empty acts like Not Done (visual only)
+            icon = Icons.close;
+            color = Colors.red;
+          }
+          break;
+      }
+    }
 
     // For habits without custom goals, show traditional icon
     return SizedBox(
       width: buttonSize,
       height: buttonSize,
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        constraints: BoxConstraints(minWidth: buttonSize, minHeight: buttonSize),
-        onPressed: isDisabled ? null : onTap,
-        icon: Icon(
-          hasRecordToday || isSkipped ? HabitUiConstants.recordIcon : Icons.close,
-          size: iconSize,
-          color: isDisabled
-              ? AppTheme.textColor.withValues(alpha: 0.3)
-              : hasRecordToday
-                  ? Colors.green
-                  : isSkipped
-                      ? HabitUiConstants.skippedColor
-                      : Colors.red,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: isDisabled ? null : onTap,
+          child: Center(
+            child: Icon(
+              icon,
+              size: iconSize,
+              color: color,
+            ),
+          ),
         ),
       ),
     );
   }
 
+  HabitRecordListItem? _getRecordForDate(DateTime date) {
+    if (habitRecords == null) return null;
+    return habitRecords!
+        .where((record) => acore.DateTimeHelper.isSameDay(
+            acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)))
+        .firstOrNull;
+  }
+
   bool _isDateDisabled(DateTime date) {
     return date.isAfter(DateTime.now()) ||
         (archivedDate != null && date.isAfter(acore.DateTimeHelper.toLocalDateTime(archivedDate!)));
-  }
-
-  bool _hasRecordForDate(DateTime date) {
-    if (habitRecords == null) return false;
-    return habitRecords!.any((record) => acore.DateTimeHelper.isSameDay(
-        acore.DateTimeHelper.toLocalDateTime(record.occurredAt), acore.DateTimeHelper.toLocalDateTime(date)));
   }
 
   int _countRecordsForDate(DateTime date) {

@@ -31,48 +31,92 @@ habits:
     estimated_time: Estimated Time
     estimated_time_not_set: Not set
     help:
-      content: |
-        Build sustainable daily routines through systematic habit tracking that transforms your intentions into consistent actions and measurable progress toward your goals.
+      content:
+        "Build sustainable daily routines through systematic habit tracking
+        that transforms your intentions into consistent actions and measurable progress
+        toward your goals.
+
 
         ## ⚡ Why Is It Important?
 
-        Habit formation is the cornerstone of personal development and sustained achievement. Consistent daily actions compound over time to create remarkable results, while systematic tracking ensures you maintain momentum and make continuous improvements to your routines.
+
+        Habit formation is the cornerstone of personal development and sustained achievement.
+        Consistent daily actions compound over time to create remarkable results,
+        while systematic tracking ensures you maintain momentum and make continuous
+        improvements to your routines.
+
 
         ## ⚙️ Strategic Habit Design
 
-        Create habits that integrate seamlessly into your life and support your long-term objectives. Well-designed habits become automatic behaviors that require minimal willpower to maintain.
+
+        Create habits that integrate seamlessly into your life and support your long-term
+        objectives. Well-designed habits become automatic behaviors that require minimal
+        willpower to maintain.
+
 
         - 📝 Design clear, specific habits with actionable descriptions
+
         - 📅 Establish consistent schedules that align with your natural rhythms
+
         - 🏷️ Organize similar habits into coherent groups for systematic tracking
+
         - 🎯 Connect each habit to meaningful outcomes and personal values
+
 
         ## ⏱️ Performance Monitoring
 
-        Track your habit execution to understand patterns, measure progress, and optimize your approach for maximum effectiveness and sustainable growth.
+
+        Track your habit execution to understand patterns, measure progress, and optimize
+        your approach for maximum effectiveness and sustainable growth.
+
 
         - ⏳ Record completion times to understand habit duration and efficiency
+
         - 📊 Analyze time investments across habit categories for balanced development
-        - 📈 Monitor performance trends to identify improvement opportunities and optimal timing
-        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained success
+
+        - 📈 Monitor performance trends to identify improvement opportunities and optimal
+        timing
+
+        - 🔄 Use data insights to refine habit difficulty and scheduling for sustained
+        success
+
 
         ## 📅 Consistency & Momentum
 
-        Build and maintain the consistency needed for lasting behavioral change through systematic tracking and strategic review of your progress patterns.
+
+        Build and maintain the consistency needed for lasting behavioral change through
+        systematic tracking and strategic review of your progress patterns.
+
 
         - 📚 Review completion history to assess progress and identify success patterns
+
         - 🔗 Track daily streaks to build and maintain momentum for long-term success
+
         - 📌 Monitor consistency metrics to enhance motivation and commitment
-        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral change
+
+        - 🎯 Celebrate milestones and achievements to reinforce positive behavioral
+        change
+
 
         ## 🚀 Optimization Strategies
 
-        Apply proven techniques for habit optimization that accelerate progress and ensure your efforts translate into meaningful, lasting improvements in your life and productivity.
+
+        Apply proven techniques for habit optimization that accelerate progress and
+        ensure your efforts translate into meaningful, lasting improvements in your
+        life and productivity.
+
 
         - 🐾 **Start Small:** Begin with manageable habits that guarantee early wins
+
         - 🏷️ **Strategic Grouping:** Organize habits by life area or time of day
-        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing and approach
-        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy periods
+
+        - 📊 **Data-Driven Adjustments:** Use tracking insights to optimize timing
+        and approach
+
+        - 🌅 **Prime Time Focus:** Schedule important habits during your peak energy
+        periods
+
+        "
       description: Help description
       title: Habit Formation & Performance Tracking Guide
     records: Records
@@ -111,6 +155,7 @@ habits:
     removing_tag: Failed to remove tag
     saving_details: Failed to save habit
     saving_habit: Failed to save habit
+    update_habit: Failed to update habit
     tag_already_exists: This tag is already added
     toggling_archive: Failed to toggle archive status
   goals:
@@ -137,54 +182,108 @@ habits:
   overview:
     filter_by_tags_tooltip: Filter by tags
     help:
-      content: |
-        Master your daily routines through systematic habit tracking that builds consistency, creates positive momentum, and drives meaningful progress toward your long-term goals.
+      content:
+        "Master your daily routines through systematic habit tracking that
+        builds consistency, creates positive momentum, and drives meaningful progress
+        toward your long-term goals.
+
 
         ## ⚡ Why Is It Important?
 
-        Daily habit management is the foundation of personal excellence and sustainable growth. Consistent execution of well-planned habits creates compound benefits over time, while systematic tracking ensures you maintain accountability and make data-driven improvements to your routines.
+
+        Daily habit management is the foundation of personal excellence and sustainable
+        growth. Consistent execution of well-planned habits creates compound benefits
+        over time, while systematic tracking ensures you maintain accountability and
+        make data-driven improvements to your routines.
+
 
         ## 📅 Daily Execution & Tracking
 
-        Develop a reliable system for executing and monitoring your habits that creates consistency and builds unstoppable momentum toward your objectives.
+
+        Develop a reliable system for executing and monitoring your habits that creates
+        consistency and builds unstoppable momentum toward your objectives.
+
 
         - ✅ **Daily Completion:** Mark habits as completed to build consistency chains
-        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive insights
-        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize motivational momentum
+
+        - 📆 **Multi-Day View:** Monitor patterns across days and weeks for comprehensive
+        insights
+
+        - 🔄 **Streak Building:** Maintain consecutive completion days to maximize
+        motivational momentum
+
         - 📊 **Progress Visualization:** Track completion rates and patterns over time
+
 
         ## ⏱️ Time Analysis & Optimization
 
-        Monitor time investments in your habits to optimize your daily schedule and ensure balanced development across all important life areas.
+
+        Monitor time investments in your habits to optimize your daily schedule and
+        ensure balanced development across all important life areas.
+
 
         - ⏳ **Duration Tracking:** Record actual time spent to understand habit requirements
-        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across life areas
-        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily execution
-        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit execution
+
+        - 🏷️ **Category Analysis:** Group habits by tags to see time allocation across
+        life areas
+
+        - ⏰ **Schedule Optimization:** Balance habit timing for sustainable daily
+        execution
+
+        - 📈 **Efficiency Improvement:** Identify opportunities to streamline habit
+        execution
+
 
         ## 🗂️ Strategic Organization
 
-        Create an organizational system that supports consistent execution while providing the flexibility to adapt as your goals and circumstances evolve.
 
-        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority level
-        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle and energy patterns
-        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate attention and energy
+        Create an organizational system that supports consistent execution while providing
+        the flexibility to adapt as your goals and circumstances evolve.
+
+
+        - 🏷️ **Meaningful Categorization:** Group habits by life area, time, or priority
+        level
+
+        - ⚙️ **Flexible Scheduling:** Design habit timing that works with your lifestyle
+        and energy patterns
+
+        - 🎯 **Priority Focus:** Ensure your most important habits receive appropriate
+        attention and energy
+
 
         ## 💡 Mastery Principles
 
-        Apply proven strategies for habit mastery that ensure your efforts compound into lasting behavioral change and measurable life improvements.
 
-        - 🐾 **Start Small:** Begin with habits you can execute consistently, then gradually increase difficulty
-        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and support systems
-        - 📊 **Performance Review:** Use time tracking data to understand patterns and optimize your approach
-        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak energy periods
+        Apply proven strategies for habit mastery that ensure your efforts compound
+        into lasting behavioral change and measurable life improvements.
+
+
+        - 🐾 **Start Small:** Begin with habits you can execute consistently, then
+        gradually increase difficulty
+
+        - 🏷️ **Strategic Grouping:** Organize habits to create logical sequences and
+        support systems
+
+        - 📊 **Performance Review:** Use time tracking data to understand patterns
+        and optimize your approach
+
+        - 🌅 **Prime Time Execution:** Schedule your most important habits during peak
+        energy periods
+
 
         ### 📊 Using the Calendar View
+
         - 📅 View multiple days simultaneously in the calendar view.
+
         - ✅ Visually track your completion patterns.
+
         - ⚡ Save time with quick completion marking.
+
         - 🎯 Increase motivation with visual streak tracking.
+
         - 🔄 Explore past and future habits with flexible date navigation.
+
+        "
       title: Daily Habit Management & Routine Optimization Guide
     title: Habits
   reminder:
@@ -233,19 +332,32 @@ habits:
   tour:
     habit_building:
       title: Habit Building
-      description: Build lasting habits by tracking daily activities. Set reminders, monitor your streaks, and visualize your progress with detailed statistics.
+      description:
+        Build lasting habits by tracking daily activities. Set reminders,
+        monitor your streaks, and visualize your progress with detailed statistics.
     create_habits:
       title: Create New Habits
-      description: Start building new habits by clicking this button. Set goals, frequencies, reminders, and track multiple completions per day for flexible habit tracking.
+      description:
+        Start building new habits by clicking this button. Set goals, frequencies,
+        reminders, and track multiple completions per day for flexible habit tracking.
     your_habits:
       title: Your Habits
-      description: View and manage all your habits here. Click any habit to see details, statistics, and completion history. Mark habits complete daily to build streaks and track your progress.
+      description:
+        View and manage all your habits here. Click any habit to see details,
+        statistics, and completion history. Mark habits complete daily to build streaks
+        and track your progress.
     calendar_view:
       title: Calendar View
-      description: Visualize your habit completion history across multiple days. Green indicates completed habits. Track your consistency and see your progress patterns over time.
+      description:
+        Visualize your habit completion history across multiple days. Green
+        indicates completed habits. Track your consistency and see your progress patterns
+        over time.
     filter_search:
       title: Filter & Search
-      description: Find specific habits using tags, search terms, or filter by archived status. Organize and manage your habits efficiently to stay focused on what matters.
+      description:
+        Find specific habits using tags, search terms, or filter by archived
+        status. Organize and manage your habits efficiently to stay focused on what
+        matters.
   list_options:
     view_style_tooltip: Change view style
   accessibility:
@@ -253,3 +365,11 @@ habits:
     open_details_hint: Open habit details
     complete_habit_hint: Complete habit
     completion_status_hint: Habit completion status
+  actions:
+    mark_complete: Mark as Complete
+    mark_not_done: Mark as Not Done
+    clear_status: Clear Status
+  status:
+    complete: Complete
+    not_done: Not Done
+    skipped: Skipped

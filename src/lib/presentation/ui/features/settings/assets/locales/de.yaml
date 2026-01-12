@@ -424,3 +424,16 @@ settings:
     advanced: Erweitert
     about: Über
     flow: Ablauf
+  habit:
+    title: Gewohnheiteneinstellungen
+    description: Gewohnheitsverhalten und Einstellungen anpassen
+    three_state:
+      title: 3-Status-Tracking aktivieren
+      description:
+        Wechseln Sie zwischen den Status Nicht erledigt, Übersprungen und
+        Erledigt.
+    reverse_day_order:
+      title: Tagesreihenfolge in der Liste umkehren
+      description:
+        Zeigen Sie die neuesten Tage zuerst (von links nach rechts) in
+        der Gewohnheitenliste an.

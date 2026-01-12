@@ -2,6 +2,7 @@ import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/demo/constants/demo_translation_keys.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 
 /// Demo habit data generator
 class DemoHabits {
@@ -146,6 +147,15 @@ class DemoHabits {
           habitId: habit.id,
           occurredAt: recordDate,
           createdDate: recordDate,
+          status: HabitRecordStatus.complete,
+        ));
+      } else if (i % 5 == 0) {
+        records.add(HabitRecord(
+          id: KeyHelper.generateStringId(),
+          habitId: habit.id,
+          occurredAt: recordDate,
+          createdDate: recordDate,
+          status: HabitRecordStatus.notDone,
         ));
       }
     }
@@ -176,6 +186,15 @@ class DemoHabits {
           habitId: habit.id,
           occurredAt: recordDate,
           createdDate: recordDate,
+          status: HabitRecordStatus.complete,
+        ));
+      } else if (i % 14 == 0) {
+        records.add(HabitRecord(
+          id: KeyHelper.generateStringId(),
+          habitId: habit.id,
+          occurredAt: recordDate,
+          createdDate: recordDate,
+          status: HabitRecordStatus.notDone,
         ));
       }
     }
@@ -208,7 +227,18 @@ class DemoHabits {
           habitId: habit.id,
           occurredAt: recordDate,
           createdDate: recordDate,
+          status: HabitRecordStatus.complete,
         ));
+      } else if (weekday == 1 || weekday == 3 || weekday == 5) {
+        if (i % 4 == 0) {
+          records.add(HabitRecord(
+            id: KeyHelper.generateStringId(),
+            habitId: habit.id,
+            occurredAt: recordDate,
+            createdDate: recordDate,
+            status: HabitRecordStatus.notDone,
+          ));
+        }
       }
     }
   }
@@ -231,6 +261,16 @@ class DemoHabits {
           habitId: habit.id,
           occurredAt: recordDate,
           createdDate: recordDate,
+          status: HabitRecordStatus.complete,
+        ));
+      } else if (i % (skipInterval * 2) == 0) {
+        // Every other skipped day is marked as Not Done
+        records.add(HabitRecord(
+          id: KeyHelper.generateStringId(),
+          habitId: habit.id,
+          occurredAt: recordDate,
+          createdDate: recordDate,
+          status: HabitRecordStatus.notDone,
         ));
       }
     }
