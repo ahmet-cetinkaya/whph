@@ -19,7 +19,8 @@ abstract class ISingleInstanceService {
   });
 
   /// Broadcast a message to all connected clients
-  void broadcastMessage(String message);
+  /// Returns true if message was successfully sent to at least one client
+  Future<bool> broadcastMessage(String message);
 
   /// Start listening for commands from new instances
   Future<void> startListeningForCommands(Function(String command) onCommandReceived);

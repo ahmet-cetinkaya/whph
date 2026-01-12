@@ -70,10 +70,33 @@ void main(List<String> args) async {
           // Check if we just want to trigger a sync
           if (DesktopStartupService.shouldStartSync) {
             debugPrint('Triggering remote sync...');
+            bool success = false;
+            String? errorMessage;
+
             await singleInstanceService.sendCommandAndStreamOutput(
               'SYNC',
-              onOutput: (message) => stdout.writeln(message),
+              onOutput: (message) {
+                try {
+                  stdout.writeln(message);
+                  if (message.contains('Sync operation completed')) {
+                    success = true;
+                  }
+                } catch (e) {
+                  errorMessage = 'Failed to write output: $e';
+                }
+              },
             );
+
+            if (errorMessage != null) {
+              stderr.writeln('Error: $errorMessage');
+              exit(1);
+            }
+
+            if (!success) {
+              stderr.writeln('Error: Sync did not complete successfully');
+              exit(1);
+            }
+
             exit(0);
           }
 

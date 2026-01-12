@@ -109,6 +109,7 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
 
   @override
   Future<bool> sendCommandToExistingInstance(String command) async {
+    Socket? socket;
     try {
       final portFile = await _getPortFile();
       if (!await portFile.exists()) return false;
@@ -119,7 +120,11 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         Logger.error('Invalid port file content');
         return false;
       }
-      final socket = await Socket.connect(InternetAddress.loopbackIPv4, port);
+      socket = await Socket.connect(
+        InternetAddress.loopbackIPv4,
+        port,
+        timeout: const Duration(milliseconds: 500),
+      );
 
       socket.write('$command\n');
       await socket.flush();
@@ -127,14 +132,23 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
 
       Logger.info('Command "$command" sent to existing instance');
       return true;
+    } on SocketException catch (e) {
+      Logger.error('Socket error sending command: $e');
+      return false;
+    } on TimeoutException catch (e) {
+      Logger.error('Timeout sending command: $e');
+      return false;
     } catch (e) {
       Logger.error('Failed to send command: $e');
       return false;
+    } finally {
+      socket?.destroy();
     }
   }
 
   @override
   Future<void> sendCommandAndStreamOutput(String command, {required Function(String) onOutput}) async {
+    Socket? socket;
     try {
       final portFile = await _getPortFile();
       if (!await portFile.exists()) {
@@ -149,7 +163,11 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         return;
       }
 
-      final socket = await Socket.connect(InternetAddress.loopbackIPv4, port);
+      socket = await Socket.connect(
+        InternetAddress.loopbackIPv4,
+        port,
+        timeout: const Duration(milliseconds: 500),
+      );
 
       // Send command
       socket.write('$command\n');
@@ -169,7 +187,7 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
             buffer = buffer.substring(newlineIndex + 1);
 
             if (line == 'DONE') {
-              socket.destroy();
+              socket?.destroy();
               if (!completer.isCompleted) completer.complete();
               return;
             } else if (line.isNotEmpty) {
@@ -187,8 +205,17 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       );
 
       await completer.future;
+    } on SocketException catch (e) {
+      onOutput('Error: Could not connect to running instance. Is WHPH running?');
+      Logger.error('Socket error in sendCommandAndStreamOutput: $e');
+    } on TimeoutException catch (e) {
+      onOutput('Error: Connection timed out. The instance may be busy.');
+      Logger.error('Timeout in sendCommandAndStreamOutput: $e');
     } catch (e) {
       onOutput('Failed to send command: $e');
+      Logger.error('Unexpected error in sendCommandAndStreamOutput: $e');
+    } finally {
+      socket?.destroy();
     }
   }
 
@@ -270,21 +297,34 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   }
 
   @override
-  void broadcastMessage(String message) {
-    if (_connectedClients.isEmpty) return;
+  Future<bool> broadcastMessage(String message) async {
+    if (_connectedClients.isEmpty) {
+      Logger.warning('Attempted to broadcast but no clients connected');
+      return false;
+    }
 
     final data = '$message\n';
     // Create a copy list to iterate safely
     final clients = List<Socket>.from(_connectedClients);
+    bool success = false;
 
     for (final client in clients) {
       try {
         client.write(data);
+        await client.flush();
+        success = true;
       } catch (e) {
-        Logger.debug('Failed to write to client: $e');
+        Logger.error('Failed to write to client: $e');
+        _connectedClients.remove(client);
         client.destroy();
       }
     }
+
+    if (!success) {
+      Logger.error('Failed to broadcast message to any client: $message');
+    }
+
+    return success;
   }
 
   Future<File> _getLockFile() async {

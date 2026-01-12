@@ -16,6 +16,10 @@ struct _MyApplication {
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
+// CLI argument constants
+constexpr const char* ARG_MINIMIZED = "--minimized";
+constexpr const char* ARG_SYNC = "--sync";
+
 // Global variable to store the main window for later access
 static GtkWindow* main_window = nullptr;
 
@@ -195,8 +199,8 @@ static void my_application_activate(GApplication* application) {
   gboolean should_show = TRUE;
   if (self->dart_entrypoint_arguments != nullptr) {
     for (int i = 0; self->dart_entrypoint_arguments[i] != nullptr; i++) {
-      if (g_strcmp0(self->dart_entrypoint_arguments[i], "--minimized") == 0 ||
-          g_strcmp0(self->dart_entrypoint_arguments[i], "--sync") == 0) {
+      if (g_strcmp0(self->dart_entrypoint_arguments[i], ARG_MINIMIZED) == 0 ||
+          g_strcmp0(self->dart_entrypoint_arguments[i], ARG_SYNC) == 0) {
         should_show = FALSE;
         break;
       }

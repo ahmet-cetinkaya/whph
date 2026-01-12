@@ -78,6 +78,7 @@ void main() {
       // Start listener that echoes back logic
       await service.startListeningForCommands((cmd) {
         if (cmd == 'STREAM') {
+          // Fire-and-forget broadcasts in test
           service.broadcastMessage('Line 1');
           service.broadcastMessage('Line 2');
           service.broadcastMessage('DONE');

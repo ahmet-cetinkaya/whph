@@ -138,37 +138,74 @@ class PlatformInitializationService {
         if (command == 'SYNC') {
           // Handle remote sync trigger
           Logger.info('Triggering manual sync from IPC command');
-          singleInstanceService.broadcastMessage('Initializing remote sync...');
+          await singleInstanceService.broadcastMessage('Initializing remote sync...');
 
           StreamSubscription<SyncStatus>? statusSub;
           StreamSubscription<SyncProgress>? progressSub;
           try {
             final syncService = container.resolve<ISyncService>();
 
-            // Listen to sync status changes
+            // Listen to sync status changes (fire-and-forget)
             statusSub = syncService.syncStatusStream.listen((status) {
-              singleInstanceService.broadcastMessage('[Status] ${status.state.name}');
+              // Unawaited broadcast - status updates are fire-and-forget
+              singleInstanceService.broadcastMessage('[Status] ${status.state.name}').catchError((e) {
+                Logger.error('Failed to broadcast status: $e');
+                return false;
+              });
             });
 
-            // Listen to detailed progress
+            // Listen to detailed progress (fire-and-forget)
             progressSub = syncService.progressStream.listen((progress) {
               final percentage = '${progress.progressPercentage.toStringAsFixed(0)}%';
               final msg = '${progress.operation} ${progress.currentEntity}'.trim();
               if (msg.isNotEmpty || percentage != '0%') {
-                singleInstanceService.broadcastMessage('[Progress] $msg $percentage'.trim());
+                // Unawaited broadcast - progress updates are fire-and-forget
+                singleInstanceService.broadcastMessage('[Progress] $msg $percentage'.trim()).catchError((e) {
+                  Logger.error('Failed to broadcast progress: $e');
+                  return false;
+                });
               }
             });
 
             await syncService.runSync(isManual: true);
 
-            singleInstanceService.broadcastMessage('Sync operation completed.');
+            await singleInstanceService.broadcastMessage('Sync operation completed.');
           } catch (e) {
             Logger.error('Failed to run sync from IPC: $e');
-            singleInstanceService.broadcastMessage('Error: Sync failed - $e');
+            try {
+              await singleInstanceService.broadcastMessage('Error: Sync failed - $e');
+            } catch (broadcastError) {
+              Logger.error('Failed to broadcast error message: $broadcastError');
+            }
           } finally {
-            await statusSub?.cancel();
-            await progressSub?.cancel();
-            singleInstanceService.broadcastMessage('DONE');
+            // Cancel each subscription independently to ensure both are attempted
+            final errors = <Exception>[];
+
+            if (statusSub != null) {
+              try {
+                await statusSub.cancel();
+              } catch (e) {
+                errors.add(Exception('Failed to cancel status subscription: $e'));
+              }
+            }
+
+            if (progressSub != null) {
+              try {
+                await progressSub.cancel();
+              } catch (e) {
+                errors.add(Exception('Failed to cancel progress subscription: $e'));
+              }
+            }
+
+            if (errors.isNotEmpty) {
+              Logger.error('Errors during stream cleanup: ${errors.map((e) => e.toString()).join(', ')}');
+            }
+
+            try {
+              await singleInstanceService.broadcastMessage('DONE');
+            } catch (e) {
+              Logger.error('Failed to send DONE message: $e');
+            }
           }
         } else {
           // Default behavior: Focus the window (for 'FOCUS' or unknown commands)
