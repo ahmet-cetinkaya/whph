@@ -197,7 +197,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
         daysFromFirstRecord = sortedRecords
             .where((r) =>
                 (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
-                (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
                 !r.recordDate.isBefore(firstRecordDate) &&
                 !r.recordDate.isAfter(endDate))
             .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
@@ -221,8 +220,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
           .where((r) =>
               (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
               r.recordDate.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
-              (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
-              r.recordDate.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
               !r.recordDate.isAfter(endDate))
           .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
           .toSet()
@@ -236,7 +233,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     final monthlyDailyScores = dailyScores.entries
         .where((entry) =>
             entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
-            entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
             !entry.key.isAfter(endDate))
         .map((entry) => entry.value);
     final monthlyTotalScore = monthlyDailyScores.fold(0.0, (sum, score) => sum + score);
@@ -247,8 +243,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     if (isThreeStateEnabled) {
       daysInCurrentYear = records
           .where((r) =>
-              (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
-              r.recordDate.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
               (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
               r.recordDate.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
               !r.recordDate.isAfter(endDate))
@@ -263,7 +257,6 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
     final yearlyDailyScores = dailyScores.entries
         .where((entry) =>
-            entry.key.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
             entry.key.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
             !entry.key.isAfter(endDate))
         .map((entry) => entry.value);
@@ -342,7 +335,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       overallScore: overallScore,
       monthlyScore: monthlyScore,
       yearlyScore: yearlyScore,
-      totalRecords: records.where((r) => r.status == HabitRecordStatus.complete).length, // Update logic
+      totalRecords: records.where((r) => r.status == HabitRecordStatus.complete).length,
       monthlyScores: monthlyScores,
       topStreaks: topStreaks,
       yearlyFrequency: yearlyFrequency,

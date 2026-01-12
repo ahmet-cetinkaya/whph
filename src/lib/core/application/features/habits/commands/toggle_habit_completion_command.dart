@@ -86,7 +86,6 @@ class ToggleHabitCompletionCommandHandler
     bool isMultiOccurrence = hasCustomGoals && dailyTarget > 1;
 
     final setting = await _settingsRepository.getByKey(SettingKeys.habitThreeStateEnabled);
-    // Fix: Check for null and cast strictly to bool if value exists, otherwise default to false
     final isThreeStateEnabled = setting != null && setting.getValue<bool>() == true;
 
     if (isMultiOccurrence) {
@@ -107,7 +106,6 @@ class ToggleHabitCompletionCommandHandler
         // Target met/exceeded. Next step depends on setting.
         // If 3-state enabled: Go to Not Done.
         // Else: Go to Skipped (Reset).
-        // Note: We already checked isCurrentlyNotDone above, so we know we are NOT currently NotDone.
         nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.skipped;
       }
     } else {
@@ -138,12 +136,9 @@ class ToggleHabitCompletionCommandHandler
     final occurredAt = DateTimeHelper.toUtcDateTime(request.date);
 
     // clear existing records and time records first (clean slate approach)
-    // clear existing records and time records first (clean slate approach)
     await AppDatabase.instance().transaction(() async {
       if (!isMultiOccurrence) {
         // Only clear for single occurrence habits where we are replacing the state
-        // For multi-occurrence, we might be adding a NEW record, not replacing.
-
         // Always clear existing records for single-occurrence logic to ensure strict 1-to-1 state mapping
         await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
@@ -169,7 +164,6 @@ class ToggleHabitCompletionCommandHandler
           }
         }
       } else {
-        // Multi-occurrence logic (legacy behavior preserved but adapted structure)
         if (nextStatus == HabitRecordStatus.complete) {
           // Add ONE record
           final habitRecord = HabitRecord(
