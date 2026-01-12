@@ -113,7 +113,12 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       final portFile = await _getPortFile();
       if (!await portFile.exists()) return false;
 
-      final port = int.parse(await portFile.readAsString());
+      final portContent = await portFile.readAsString();
+      final port = int.tryParse(portContent);
+      if (port == null) {
+        Logger.error('Invalid port file content');
+        return false;
+      }
       final socket = await Socket.connect(InternetAddress.loopbackIPv4, port);
 
       socket.write('$command\n');
