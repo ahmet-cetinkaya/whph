@@ -146,8 +146,8 @@ class DatabaseIntegrityService {
 
       if (oldSyncDevices != null) {
         final totalCount = oldSyncDevices.data['count'] as int? ?? 0;
-        final oldestDate = oldSyncDevices.data['oldest_date'] as String?;
-        final newestDate = oldSyncDevices.data['newest_date'] as String?;
+        final oldestDate = oldSyncDevices.data['oldest_date']?.toString();
+        final newestDate = oldSyncDevices.data['newest_date']?.toString();
 
         Logger.debug('Sync device date analysis: count=$totalCount, oldest=$oldestDate, newest=$newestDate');
 
@@ -177,8 +177,8 @@ class DatabaseIntegrityService {
 
             // Log sample devices for debugging
             for (final device in ancientDeviceSamples) {
-              final deviceId = device.data['id'] as String?;
-              final createdDate = device.data['created_date'] as String?;
+              final deviceId = device.data['id']?.toString();
+              final createdDate = device.data['created_date']?.toString();
               Logger.warning('- Device ID: $deviceId, Created: $createdDate');
             }
           }

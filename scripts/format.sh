@@ -180,6 +180,7 @@ if [[ $KOTLIN_COUNT -gt 0 ]]; then
     if [[ -n "$KTFMT_CMD" ]]; then
         print_info "🔧 Using ktfmt for Kotlin formatting..."
         # Convert relative paths to absolute
+        # shellcheck disable=SC2086  # Word splitting intentional for xargs command with args
         sed "s|^\.|$SRC_DIR|" "$KOTLIN_FILES_LIST" | xargs $KTFMT_CMD --google-style || {
             print_warning "⚠️ ktfmt formatting encountered some issues (continuing...)"
         }

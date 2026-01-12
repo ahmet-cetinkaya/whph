@@ -4,6 +4,7 @@ import 'package:whph/presentation/ui/shared/constants/app_args.dart';
 /// Service to handle desktop application startup behavior
 class DesktopStartupService {
   static bool _startMinimized = false;
+  static bool _startSync = false;
   static List<String> _mainArgs = [];
 
   /// Initialize with direct arguments from main()
@@ -14,14 +15,21 @@ class DesktopStartupService {
 
     _mainArgs = args;
     _startMinimized = args.contains(AppArgs.minimized);
+    _startSync = args.contains(AppArgs.sync);
   }
 
   /// Check if the application should start minimized
   static bool get shouldStartMinimized => _startMinimized;
 
+  /// Check if the application should only trigger sync
+  static bool get shouldStartSync => _startSync;
+
   /// Get all startup-related arguments from command line
   static List<String> getStartupArguments() {
-    return _startMinimized ? [AppArgs.minimized] : [];
+    final args = <String>[];
+    if (_startMinimized) args.add(AppArgs.minimized);
+    if (_startSync) args.add(AppArgs.sync);
+    return args;
   }
 
   /// Check if a specific startup argument is present

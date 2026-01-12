@@ -8,7 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import es.antonborri.home_widget.HomeWidgetPlugin
 import java.text.SimpleDateFormat
 import java.util.*
@@ -63,119 +62,88 @@ class WhphTasksWidgetProvider : AppWidgetProvider() {
     try {
       val views = RemoteViews(context.packageName, R.layout.whph_tasks_widget)
 
-      // Get widget data from HomeWidget plugin
+      // Bind the widget to the RemoteViewsService
+      val intent =
+        Intent(context, WhphWidgetService::class.java).apply {
+          putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+          putExtra("is_habits_widget", false)
+          data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
+        }
+      views.setRemoteAdapter(R.id.tasks_widget_list, intent)
+
+      // Flutter sends only pending tasks to the widget. Empty list means all tasks are completed.
       val widgetData = HomeWidgetPlugin.getData(context)
       val dataString = widgetData?.getString("widget_data", null)
 
+      var showCompletedIcon = false
       if (dataString != null) {
         val data = JSONObject(dataString)
         val tasks = data.optJSONArray("tasks")
         val taskCount = tasks?.length() ?: 0
 
-        setupTaskItems(context, views, tasks, taskCount)
-
-        // Show/hide completed icon
-        var showCompletedIcon = false
         if (taskCount == 0) {
-          // No tasks at all: show completed icon
           showCompletedIcon = true
-        } else {
-          // Check if all tasks are completed
-          var allCompleted = true
-          if (tasks != null) {
-            for (i in 0 until taskCount) {
-              val task = tasks.getJSONObject(i)
-              if (!task.optBoolean("isCompleted", false)) {
-                allCompleted = false
-                break
-              }
-            }
-          } else {
-            allCompleted = false
-          }
-          if (allCompleted) {
-            showCompletedIcon = true
-          }
         }
-    }
+      }
 
-    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        try {
-            val views = RemoteViews(context.packageName, R.layout.whph_tasks_widget)
+      if (showCompletedIcon) {
+        views.setViewVisibility(R.id.tasks_empty_state_container, android.view.View.VISIBLE)
+        views.setViewVisibility(R.id.tasks_widget_list, android.view.View.GONE)
+      } else {
+        views.setViewVisibility(R.id.tasks_empty_state_container, android.view.View.GONE)
+        views.setViewVisibility(R.id.tasks_widget_list, android.view.View.VISIBLE)
+      }
 
-            // Bind the widget to the RemoteViewsService
-            val intent = Intent(context, WhphWidgetService::class.java).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                putExtra("is_habits_widget", false)
-                data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
-            }
-            views.setRemoteAdapter(R.id.tasks_widget_list, intent)
+      // Set up click to open app only on header area
+      val mainIntent = Intent(context, MainActivity::class.java)
+      val pendingIntent =
+        PendingIntent.getActivity(
+          context,
+          0,
+          mainIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+      views.setOnClickPendingIntent(R.id.tasks_widget_header, pendingIntent)
 
-
-            // Flutter sends only pending tasks to the widget. Empty list means all tasks are completed.
-            val widgetData = HomeWidgetPlugin.getData(context)
-            val dataString = widgetData?.getString("widget_data", null)
-
-            var showCompletedIcon = false
-            if (dataString != null) {
-                val data = JSONObject(dataString)
-                val tasks = data.optJSONArray("tasks")
-                val taskCount = tasks?.length() ?: 0
-
-                if (taskCount == 0) {
-                     showCompletedIcon = true
-                }
-            }
-
-            if (showCompletedIcon) {
-                views.setViewVisibility(R.id.tasks_empty_state_container, android.view.View.VISIBLE)
-                views.setViewVisibility(R.id.tasks_widget_list, android.view.View.GONE)
-            } else {
-                views.setViewVisibility(R.id.tasks_empty_state_container, android.view.View.GONE)
-                views.setViewVisibility(R.id.tasks_widget_list, android.view.View.VISIBLE)
-            }
-            
-            // Set up click to open app only on header area
-            val mainIntent = Intent(context, MainActivity::class.java)
-            val pendingIntent = PendingIntent.getActivity(
-                context, 0, mainIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.tasks_widget_header, pendingIntent)
-            
-            // Set up refresh button click listener
-            val refreshIntent = Intent(context, WhphTasksWidgetProvider::class.java).apply {
-                action = "REFRESH_TASKS_WIDGET"
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val refreshPendingIntent = PendingIntent.getBroadcast(
-                context, appWidgetId, refreshIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.tasks_widget_refresh_button, refreshPendingIntent)
-
-            // Set up item click template - the PendingIntent template targets HomeWidgetBackgroundReceiver
-            // and the fillInIntent in the factory will provide the specific data URI.
-            val bgIntent = Intent(context, es.antonborri.home_widget.HomeWidgetBackgroundReceiver::class.java)
-            bgIntent.action = "es.antonborri.home_widget.action.BACKGROUND"
-            
-            val pendingIntentTemplate = PendingIntent.getBroadcast(
-                context,
-                0,
-                bgIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
-            views.setPendingIntentTemplate(R.id.tasks_widget_list, pendingIntentTemplate)
-
-            // Set timestamp
-            val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-            views.setTextViewText(R.id.tasks_widget_timestamp, currentTime)
-            
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.tasks_widget_list)
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Error updating tasks widget $appWidgetId", e)
+      // Set up refresh button click listener
+      val refreshIntent =
+        Intent(context, WhphTasksWidgetProvider::class.java).apply {
+          action = "REFRESH_TASKS_WIDGET"
+          putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         }
+      val refreshPendingIntent =
+        PendingIntent.getBroadcast(
+          context,
+          appWidgetId,
+          refreshIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+      views.setOnClickPendingIntent(R.id.tasks_widget_refresh_button, refreshPendingIntent)
+
+      // Set up item click template - the PendingIntent template targets
+      // HomeWidgetBackgroundReceiver
+      // and the fillInIntent in the factory will provide the specific data URI.
+      val bgIntent =
+        Intent(context, es.antonborri.home_widget.HomeWidgetBackgroundReceiver::class.java)
+      bgIntent.action = "es.antonborri.home_widget.action.BACKGROUND"
+
+      val pendingIntentTemplate =
+        PendingIntent.getBroadcast(
+          context,
+          0,
+          bgIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
+        )
+      views.setPendingIntentTemplate(R.id.tasks_widget_list, pendingIntentTemplate)
+
+      // Set timestamp
+      val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+      views.setTextViewText(R.id.tasks_widget_timestamp, currentTime)
+
+      appWidgetManager.updateAppWidget(appWidgetId, views)
+      appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.tasks_widget_list)
+    } catch (e: Exception) {
+      Log.e(TAG, "Error updating tasks widget $appWidgetId", e)
     }
+  }
 }

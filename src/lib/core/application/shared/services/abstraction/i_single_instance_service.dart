@@ -9,12 +9,22 @@ abstract class ISingleInstanceService {
   /// Release the instance lock
   Future<void> releaseInstance();
 
-  /// Send a focus command to the existing instance
-  Future<bool> sendFocusToExistingInstance();
+  /// Send a command to the existing instance
+  Future<bool> sendCommandToExistingInstance(String command);
 
-  /// Start listening for focus commands from new instances
-  Future<void> startListeningForFocusCommands(Function() onFocusRequested);
+  /// Send a command to the existing instance and stream the output
+  Future<void> sendCommandAndStreamOutput(
+    String command, {
+    required Function(String) onOutput,
+  });
 
-  /// Stop listening for focus commands
-  Future<void> stopListeningForFocusCommands();
+  /// Broadcast a message to all connected clients
+  /// Returns true if message was successfully sent to at least one client
+  Future<bool> broadcastMessage(String message);
+
+  /// Start listening for commands from new instances
+  Future<void> startListeningForCommands(Function(String command) onCommandReceived);
+
+  /// Stop listening for commands
+  Future<void> stopListeningForCommands();
 }

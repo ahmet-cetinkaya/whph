@@ -1,6 +1,5 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
@@ -8,36 +7,52 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class DesktopSingleInstanceService implements ISingleInstanceService {
   static const String _lockFileName = 'whph.lock';
-  static const String _focusFileName = 'whph.focus';
-  static const int _focusCheckIntervalMs = 500;
+  static const String _portFileName = 'whph.port';
 
   File? _lockFile;
-  File? _focusFile;
   RandomAccessFile? _lockHandle;
-  Isolate? _focusListenerIsolate;
-  ReceivePort? _focusReceivePort;
-  SendPort? _focusListenerSendPort;
-  Function()? _onFocusRequested;
+  ServerSocket? _serverSocket;
+  final List<Socket> _connectedClients = [];
+  Function(String)? _onCommandReceived;
 
   @override
   Future<bool> isAnotherInstanceRunning() async {
     try {
+      final portFile = await _getPortFile();
       final lockFile = await _getLockFile();
 
-      // Try to open the lock file exclusively
-      try {
-        final handle = await lockFile.open(mode: FileMode.write);
-
-        // Try to get an exclusive lock
-        await handle.lock(FileLock.exclusive);
-        await handle.unlock();
-        await handle.close();
-
-        // If we got here, no other instance is running
+      if (!await portFile.exists()) {
+        // If port file missing but lock file exists, another instance is starting or assumed running
+        if (await lockFile.exists()) {
+          Logger.debug('Lock file exists but port file missing. Instance might be starting.');
+          // Give it a small moment to write the port file? Or just assume it's running.
+          // Safety: return true to let lockInstance handle the final arbitrating if it's dead.
+          return true;
+        }
+        Logger.debug('Port and lock files not found, assuming no instance running');
         return false;
-      } catch (e) {
-        // Lock failed, another instance is running
+      }
+
+      final portContent = await portFile.readAsString();
+      final port = int.tryParse(portContent);
+      if (port == null) {
+        Logger.warning('Invalid port file content');
+        // If content invalid but lock exists, assume running/bad state.
+        if (await lockFile.exists()) return true;
+        return false;
+      }
+
+      // Try to connect to the existing instance
+      try {
+        final socket =
+            await Socket.connect(InternetAddress.loopbackIPv4, port, timeout: const Duration(milliseconds: 500));
+        socket.destroy();
         return true;
+      } catch (e) {
+        Logger.debug('Failed to connect to existing port, instance likely dead: $e');
+        // If connection failed, but lock exists, it might be zombie or hung.
+        // If we return false, we proceed to try to take lock.
+        return false;
       }
     } catch (e) {
       Logger.error('Error checking for existing instance: $e');
@@ -84,7 +99,7 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         _lockFile = null;
       }
 
-      await stopListeningForFocusCommands();
+      await stopListeningForCommands();
 
       Logger.info('Single instance lock released');
     } catch (e) {
@@ -93,97 +108,223 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
   }
 
   @override
-  Future<bool> sendFocusToExistingInstance() async {
+  Future<bool> sendCommandToExistingInstance(String command) async {
+    Socket? socket;
     try {
-      final focusFile = await _getFocusFile();
+      final portFile = await _getPortFile();
+      if (!await portFile.exists()) return false;
 
-      // Write focus request with timestamp
-      await focusFile.writeAsString(
-        '${DateTime.now().millisecondsSinceEpoch}\n$pid',
-        mode: FileMode.write,
+      final portContent = await portFile.readAsString();
+      final port = int.tryParse(portContent);
+      if (port == null) {
+        Logger.error('Invalid port file content');
+        return false;
+      }
+      socket = await Socket.connect(
+        InternetAddress.loopbackIPv4,
+        port,
+        timeout: const Duration(milliseconds: 500),
       );
 
-      Logger.info('Focus request sent to existing instance');
+      socket.write('$command\n');
+      await socket.flush();
+      socket.destroy();
+
+      Logger.info('Command "$command" sent to existing instance');
       return true;
-    } catch (e) {
-      Logger.error('Failed to send focus request: $e');
+    } on SocketException catch (e) {
+      Logger.error('Socket error sending command: $e');
       return false;
+    } on TimeoutException catch (e) {
+      Logger.error('Timeout sending command: $e');
+      return false;
+    } catch (e) {
+      Logger.error('Failed to send command: $e');
+      return false;
+    } finally {
+      socket?.destroy();
     }
   }
 
   @override
-  Future<void> startListeningForFocusCommands(Function() onFocusRequested) async {
-    _onFocusRequested = onFocusRequested;
-
+  Future<void> sendCommandAndStreamOutput(String command, {required Function(String) onOutput}) async {
+    Socket? socket;
     try {
-      // Create focus file if it doesn't exist
-      _focusFile = await _getFocusFile();
-      if (!await _focusFile!.exists()) {
-        await _focusFile!.create(recursive: true);
+      final portFile = await _getPortFile();
+      if (!await portFile.exists()) {
+        onOutput('Error: No running instance found.');
+        return;
       }
 
-      // Start the isolate to monitor focus requests
-      _focusReceivePort = ReceivePort();
-      final commandReceivePort = ReceivePort();
+      final portContent = await portFile.readAsString();
+      final port = int.tryParse(portContent);
+      if (port == null) {
+        onOutput('Error: Invalid port file content.');
+        return;
+      }
 
-      _focusListenerIsolate = await Isolate.spawn(
-        _focusListenerIsolateEntry,
-        {
-          'focusSendPort': _focusReceivePort!.sendPort,
-          'commandSendPort': commandReceivePort.sendPort,
-          'focusFilePath': _focusFile!.path,
-          'intervalMs': _focusCheckIntervalMs,
-          'currentPid': pid,
+      socket = await Socket.connect(
+        InternetAddress.loopbackIPv4,
+        port,
+        timeout: const Duration(milliseconds: 500),
+      );
+
+      // Send command
+      socket.write('$command\n');
+      await socket.flush();
+
+      // Listen for updates
+      final Completer<void> completer = Completer<void>();
+      String buffer = '';
+
+      socket.listen(
+        (data) {
+          buffer += String.fromCharCodes(data);
+
+          int newlineIndex;
+          while ((newlineIndex = buffer.indexOf('\n')) != -1) {
+            final line = buffer.substring(0, newlineIndex).trim();
+            buffer = buffer.substring(newlineIndex + 1);
+
+            if (line == 'DONE') {
+              socket?.destroy();
+              if (!completer.isCompleted) completer.complete();
+              return;
+            } else if (line.isNotEmpty) {
+              onOutput(line);
+            }
+          }
+        },
+        onError: (error) {
+          onOutput('Error: Connection error $error');
+          if (!completer.isCompleted) completer.complete();
+        },
+        onDone: () {
+          if (!completer.isCompleted) completer.complete();
         },
       );
 
-      // Get the send port for communicating with the isolate
-      _focusListenerSendPort = await commandReceivePort.first;
-      commandReceivePort.close();
-
-      // Listen for focus requests from the isolate
-      _focusReceivePort!.listen((message) {
-        if (message == 'focus_requested' && _onFocusRequested != null) {
-          _onFocusRequested!();
-        }
-      });
-
-      Logger.info('Started listening for focus commands');
+      await completer.future;
+    } on SocketException catch (e) {
+      onOutput('Error: Could not connect to running instance. Is WHPH running?');
+      Logger.error('Socket error in sendCommandAndStreamOutput: $e');
+    } on TimeoutException catch (e) {
+      onOutput('Error: Connection timed out. The instance may be busy.');
+      Logger.error('Timeout in sendCommandAndStreamOutput: $e');
     } catch (e) {
-      Logger.error('Failed to start focus listener: $e');
+      onOutput('Failed to send command: $e');
+      Logger.error('Unexpected error in sendCommandAndStreamOutput: $e');
+    } finally {
+      socket?.destroy();
     }
   }
 
   @override
-  Future<void> stopListeningForFocusCommands() async {
+  Future<void> startListeningForCommands(Function(String) onCommandReceived) async {
+    _onCommandReceived = onCommandReceived;
+
     try {
-      // Signal the isolate to shut down gracefully
-      if (_focusListenerSendPort != null) {
-        _focusListenerSendPort!.send('shutdown');
-        _focusListenerSendPort = null;
-      }
+      // Bind to any available port on loopback
+      _serverSocket = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
 
-      if (_focusListenerIsolate != null) {
-        // Give the isolate a moment to shut down gracefully
-        await Future.delayed(Duration(milliseconds: 100));
-        _focusListenerIsolate!.kill();
-        _focusListenerIsolate = null;
-      }
+      // Write port to file
+      final portFile = await _getPortFile();
+      await portFile.writeAsString(_serverSocket!.port.toString());
 
-      if (_focusReceivePort != null) {
-        _focusReceivePort!.close();
-        _focusReceivePort = null;
-      }
+      Logger.info('Listening for IPC commands on port ${_serverSocket!.port}');
 
-      if (_focusFile != null && await _focusFile!.exists()) {
-        await _focusFile!.delete();
-        _focusFile = null;
-      }
+      _serverSocket!.listen((socket) {
+        _connectedClients.add(socket);
 
-      Logger.info('Stopped listening for focus commands');
+        String buffer = '';
+
+        socket.listen(
+          (data) {
+            buffer += String.fromCharCodes(data);
+
+            int newlineIndex;
+            while ((newlineIndex = buffer.indexOf('\n')) != -1) {
+              final message = buffer.substring(0, newlineIndex).trim();
+              buffer = buffer.substring(newlineIndex + 1);
+
+              Logger.debug('Received IPC message: $message');
+              if (_onCommandReceived != null && message.isNotEmpty) {
+                _onCommandReceived!(message);
+              }
+
+              // If it's just a focus command, we can close connection immediately
+              if (message == 'FOCUS') {
+                socket.destroy();
+              }
+            }
+          },
+          onError: (error) {
+            Logger.error('IPC Client error: $error');
+            _connectedClients.remove(socket);
+            socket.destroy();
+          },
+          onDone: () {
+            _connectedClients.remove(socket);
+          },
+        );
+      });
     } catch (e) {
-      Logger.error('Error stopping focus listener: $e');
+      Logger.error('Failed to start IPC listener: $e');
     }
+  }
+
+  @override
+  Future<void> stopListeningForCommands() async {
+    try {
+      final clients = List<Socket>.from(_connectedClients);
+      for (final client in clients) {
+        client.destroy();
+      }
+      _connectedClients.clear();
+
+      await _serverSocket?.close();
+      _serverSocket = null;
+
+      final portFile = await _getPortFile();
+      if (await portFile.exists()) {
+        await portFile.delete();
+      }
+
+      Logger.info('Stopped listening for IPC commands');
+    } catch (e) {
+      Logger.error('Error stopping IPC listener: $e');
+    }
+  }
+
+  @override
+  Future<bool> broadcastMessage(String message) async {
+    if (_connectedClients.isEmpty) {
+      Logger.warning('Attempted to broadcast but no clients connected');
+      return false;
+    }
+
+    final data = '$message\n';
+    // Create a copy list to iterate safely
+    final clients = List<Socket>.from(_connectedClients);
+    bool success = false;
+
+    for (final client in clients) {
+      try {
+        client.write(data);
+        await client.flush();
+        success = true;
+      } catch (e) {
+        Logger.error('Failed to write to client: $e');
+        _connectedClients.remove(client);
+        client.destroy();
+      }
+    }
+
+    if (!success) {
+      Logger.error('Failed to broadcast message to any client: $message');
+    }
+
+    return success;
   }
 
   Future<File> _getLockFile() async {
@@ -191,64 +332,8 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
     return File(path.join(tempDir.path, _lockFileName));
   }
 
-  Future<File> _getFocusFile() async {
+  Future<File> _getPortFile() async {
     final tempDir = await getTemporaryDirectory();
-    return File(path.join(tempDir.path, _focusFileName));
-  }
-
-  static void _focusListenerIsolateEntry(Map<String, dynamic> params) async {
-    final SendPort focusSendPort = params['focusSendPort'];
-    final SendPort commandSendPort = params['commandSendPort'];
-    final String focusFilePath = params['focusFilePath'];
-    final int intervalMs = params['intervalMs'];
-    final int currentPid = params['currentPid'];
-
-    // Set up command listener
-    final commandReceivePort = ReceivePort();
-    commandSendPort.send(commandReceivePort.sendPort);
-
-    bool shouldExit = false;
-    commandReceivePort.listen((message) {
-      if (message == 'shutdown') {
-        shouldExit = true;
-        commandReceivePort.close();
-      }
-    });
-
-    final focusFile = File(focusFilePath);
-    DateTime lastModified = DateTime.fromMillisecondsSinceEpoch(0);
-
-    while (!shouldExit) {
-      try {
-        await Future.delayed(Duration(milliseconds: intervalMs));
-
-        if (!await focusFile.exists()) continue;
-
-        final stat = await focusFile.stat();
-        if (stat.modified.isAfter(lastModified)) {
-          lastModified = stat.modified;
-
-          final content = await focusFile.readAsString();
-          final lines = content.trim().split('\n');
-
-          if (lines.length >= 2) {
-            final requestPid = int.tryParse(lines[1]);
-
-            // Don't respond to our own requests
-            if (requestPid != null && requestPid != currentPid) {
-              focusSendPort.send('focus_requested');
-
-              // Clear the focus file after processing
-              await focusFile.writeAsString('', mode: FileMode.write);
-            }
-          }
-        }
-      } catch (e, s) {
-        // Log errors in the isolate to aid debugging, instead of swallowing them.
-        // Use print instead of Logger since this is in an isolate
-        // Use debugPrint for consistent logging in isolates
-        debugPrint('Error in focus listener isolate: $e\n$s');
-      }
-    }
+    return File(path.join(tempDir.path, _portFileName));
   }
 }
