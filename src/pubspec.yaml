@@ -115,7 +115,6 @@ dev_dependencies:
   path_provider_platform_interface: ^2.1.2
   plugin_platform_interface: ^2.1.8
 
-
 flutter:
   uses-material-design: true
   assets:
