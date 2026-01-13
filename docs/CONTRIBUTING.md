@@ -41,6 +41,12 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
   fvm flutter pub get
   ```
 
+- **Generate code files:**
+
+  ```bash
+  rps gen
+  ```
+
 - **Start the application:**
 
   ```bash
@@ -139,7 +145,7 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
   rps test          # Run tests
   rps clean         # Clean build artifacts
   rps format        # Format code
-  rps gen           # Generate code
+  rps gen           # Generate code (required after making changes to code generators, models, or other generated code)
   rps run           # Run the app
   rps run:demo      # Run in demo mode
   ```
