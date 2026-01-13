@@ -27,6 +27,12 @@ jobs:
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps
 
+      - name: Install RPS
+        run: dart pub global activate rps
+
+      - name: Generate code
+        run: rps gen
+
       - name: Install dependencies
         run: |
           sudo apt-get update && sudo apt-get upgrade -y

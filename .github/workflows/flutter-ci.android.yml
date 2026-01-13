@@ -27,6 +27,12 @@ jobs:
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps
 
+      - name: Install RPS
+        run: dart pub global activate rps
+
+      - name: Generate code
+        run: rps gen
+
       - name: Install OpenJDK 17 from apt
         run: |
           sudo apt-get update -y

@@ -47,6 +47,14 @@ jobs:
         with:
           enable-platform: windows-desktop
 
+      - name: Install RPS
+        shell: bash
+        run: dart pub global activate rps
+
+      - name: Generate code
+        shell: bash
+        run: rps gen
+
       - name: Check plugin compatibility
         run: |
           Write-Host "Checking for plugin compatibility..."
