@@ -113,7 +113,12 @@ class ChangelogService implements IChangelogService {
       }
 
       Logger.debug('Loaded changelog from $url');
-      return response.body.trim().replaceAll('• ', '- ');
+      // Replace • with - for markdown syntax, ensuring each list item is properly formatted
+      // First replace '• ' (bullet with space) then handle edge case of bullet without space
+      return response.body
+          .trim()
+          .replaceAll('• ', '- ')
+          .replaceAll('•', '- ');
     } catch (e) {
       Logger.warning('Failed to fetch changelog from $url: $e');
       return null;
