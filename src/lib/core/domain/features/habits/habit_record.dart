@@ -32,6 +32,31 @@ class HabitRecord extends BaseEntity<String> {
       };
 
   factory HabitRecord.fromJson(Map<String, dynamic> json) {
+    // Handle status field that can be either String (from JSON) or int (from database)
+    final dynamic statusValue = json['status'];
+    HabitRecordStatus status;
+
+    if (statusValue != null) {
+      if (statusValue is int) {
+        // Status is stored as int in database (enum index: 0=complete, 1=notDone, 2=skipped)
+        final statusIndex = statusValue as int;
+        if (statusIndex >= 0 && statusIndex < HabitRecordStatus.values.length) {
+          status = HabitRecordStatus.values[statusIndex];
+        } else {
+          // Invalid index, use default
+          status = HabitRecordStatus.complete;
+        }
+      } else if (statusValue is String) {
+        // Status is a String from JSON serialization
+        status = HabitRecordStatus.fromString(statusValue as String);
+      } else {
+        // Fallback to default for any other type
+        status = HabitRecordStatus.complete;
+      }
+    } else {
+      status = HabitRecordStatus.complete;
+    }
+
     return HabitRecord(
       id: json['id'] as String,
       createdDate: DateTime.parse(json['createdDate'] as String),
@@ -39,8 +64,7 @@ class HabitRecord extends BaseEntity<String> {
       deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
       habitId: json['habitId'] as String,
       occurredAt: DateTime.parse(json['occurredAt'] as String),
-      status:
-          json['status'] != null ? HabitRecordStatus.fromString(json['status'] as String) : HabitRecordStatus.complete,
+      status: status,
     );
   }
 }
