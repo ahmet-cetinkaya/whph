@@ -53,9 +53,11 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
           return true;
         case RecurrenceEndCondition.date:
           if (config.endDate == null) {
-            // If end condition is 'date' but no date provided, this is an invalid configuration
-            // Treat as 'never' end condition to prevent accidental infinite recurrence
-            return true;
+            throw StateError(
+              'RecurrenceConfiguration has endCondition set to "date" but endDate is null. '
+              'This is an invalid configuration state that indicates data corruption or incomplete migration. '
+              'Task ID: ${task.id}, RecurrenceConfiguration: $config',
+            );
           }
           // If the end date has already passed, we cannot create more instances
           if (config.endDate!.isBefore(DateTime.now().toUtc())) {
@@ -80,8 +82,11 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
             return configCountLimit > 0;
           }
           // Both limits are null - this is an invalid configuration
-          // Prevent infinite recurrence by returning false
-          return false;
+          throw StateError(
+            'RecurrenceConfiguration has endCondition set to "count" but both task.recurrenceCount and config.occurrenceCount are null. '
+            'This is an invalid configuration state that indicates data corruption or incomplete migration. '
+            'Task ID: ${task.id}, RecurrenceConfiguration: $config',
+          );
       }
     }
 
@@ -221,12 +226,26 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         }
 
       case RecurrenceFrequency.yearly:
-        // Basic yearly + logic for "The 2nd Tuesday of September" if we want advanced yearly.
-        // For now, simple yearly
+        // Yearly recurrence with optional monthOfYear specification
+        // If monthOfYear is set, use that month; otherwise use current month
+        final targetMonth = config.monthOfYear ?? currentDate.month;
+        int targetYear = currentDate.year + config.interval;
+
+        // If we're targeting a specific month and the current month is after that month,
+        // we need to advance to the next interval year
+        if (config.monthOfYear != null && currentDate.month > config.monthOfYear!) {
+          targetYear += config.interval;
+        }
+
+        // Handle day validation - if target day doesn't exist in target month (e.g., Feb 31),
+        // clamp to last day of month
+        final lastDayOfTargetMonth = DateTime(targetYear, targetMonth + 1, 0).day;
+        final targetDay = currentDate.day > lastDayOfTargetMonth ? lastDayOfTargetMonth : currentDate.day;
+
         return DateTime(
-          currentDate.year + config.interval,
-          currentDate.month,
-          currentDate.day,
+          targetYear,
+          targetMonth,
+          targetDay,
           currentDate.hour,
           currentDate.minute,
         );

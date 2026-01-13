@@ -11,6 +11,9 @@ import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_s
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_monthly_pattern_selector.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 
 class RecurrenceSettingsDialog extends StatefulWidget {
   final RecurrenceType initialRecurrenceType;
@@ -218,8 +221,8 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
                   icon: Icons.timer,
                   content: NumericInput(
                     value: _configuration!.interval,
-                    minValue: 1,
-                    maxValue: 999,
+                    minValue: RecurrenceConfigurationValidation.minInterval,
+                    maxValue: RecurrenceConfigurationValidation.maxInterval,
                     onValueChanged: (value) {
                       setState(() => _configuration = _configuration!.copyWith(interval: value));
                     },
@@ -470,31 +473,50 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
         onTap: () async {
           if (!context.mounted) return;
 
-          final config = DatePickerConfig(
-            selectionMode: DateSelectionMode.single,
-            initialDate: _startDate,
-            minDate: DateTime(2000),
-            maxDate: DateTime(2100),
-            formatType: DateFormatType.date,
-            showTime: false,
-            enableManualInput: true,
-            titleText: _translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
-            translations: {
-              DateTimePickerTranslationKey.title:
-                  _translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
-              DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
-              DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
-            },
-          );
+          try {
+            final config = DatePickerConfig(
+              selectionMode: DateSelectionMode.single,
+              initialDate: _startDate,
+              minDate: DateTime(2000),
+              maxDate: DateTime(2100),
+              formatType: DateFormatType.date,
+              showTime: false,
+              enableManualInput: true,
+              titleText: _translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
+              translations: {
+                DateTimePickerTranslationKey.title:
+                    _translationService.translate(TaskTranslationKeys.recurrenceStartLabel),
+                DateTimePickerTranslationKey.confirm: _translationService.translate(SharedTranslationKeys.doneButton),
+                DateTimePickerTranslationKey.cancel: _translationService.translate(SharedTranslationKeys.cancelButton),
+              },
+            );
 
-          final result = await DatePickerDialog.show(context: context, config: config);
+            final result = await DatePickerDialog.show(context: context, config: config);
 
-          if (result != null && !result.wasCancelled && result.selectedDate != null && mounted) {
-            final selectedDate = result.selectedDate!;
-            setState(() {
-              _startDate = selectedDate;
-            });
-            _updateControllers();
+            if (!mounted) return;
+
+            if (result != null && !result.wasCancelled && result.selectedDate != null) {
+              final selectedDate = result.selectedDate!;
+              setState(() {
+                _startDate = selectedDate;
+              });
+              _updateControllers();
+            }
+          } catch (e, stackTrace) {
+            Logger.error(
+              'RecurrenceSettingsDialog: Error showing date picker [$TaskErrorIds.datePickerShowFailed]',
+              error: e,
+              stackTrace: stackTrace,
+              component: DomainLogComponents.task,
+            );
+
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(_translationService.translate(SharedTranslationKeys.unexpectedError)),
+                ),
+              );
+            }
           }
         },
         borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),

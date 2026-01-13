@@ -28,6 +28,10 @@ class DateHelper {
   ) {
     const maxSearchDays = 90;
 
+    if (targetWeekdays.isEmpty) {
+      throw ArgumentError('targetWeekdays cannot be empty');
+    }
+
     for (int daysFromNow = 1; daysFromNow <= maxSearchDays; daysFromNow++) {
       final candidateDate = startDate.add(Duration(days: daysFromNow));
       final candidateWeekday = candidateDate.weekday;
@@ -44,7 +48,11 @@ class DateHelper {
       }
     }
 
-    return startDate.add(const Duration(days: 7));
+    throw StateError(
+      'Could not find next weekday occurrence after $maxSearchDays days. '
+      'targetWeekdays: $targetWeekdays, intervalInWeeks: $intervalInWeeks, '
+      'referenceDate: $referenceDate',
+    );
   }
 
   static DateTime calculateNextMonthDate(DateTime currentDate, int intervalInMonths) {

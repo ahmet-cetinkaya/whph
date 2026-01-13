@@ -73,7 +73,7 @@ class RecurrenceConfiguration {
   RecurrenceConfiguration({
     required this.frequency,
     this.interval = 1,
-    this.daysOfWeek,
+    List<int>? daysOfWeek,
     this.monthlyPatternType,
     this.dayOfMonth,
     this.weekOfMonth,
@@ -83,7 +83,7 @@ class RecurrenceConfiguration {
     this.endDate,
     this.occurrenceCount,
     this.fromPolicy = RecurrenceFromPolicy.plannedDate,
-  }) {
+  }) : daysOfWeek = daysOfWeek != null ? List.unmodifiable(daysOfWeek) : null {
     _validate();
   }
 
@@ -297,45 +297,58 @@ class RecurrenceConfiguration {
     };
   }
 
-  factory RecurrenceConfiguration.fromJson(Map<String, dynamic> json) {
-    // Helper function to deserialize enum from both name (new) and index (old)
-    T deserializeEnum<T extends Enum>(List<T> values, dynamic value, T defaultValue) {
-      if (value == null) return defaultValue;
+  /// Helper function to deserialize enum from both name (new) and index (old)
+  static T _deserializeEnum<T extends Enum>(List<T> values, dynamic value, T defaultValue) {
+    if (value == null) return defaultValue;
 
-      // Try name first (new format)
-      if (value is String) {
-        try {
-          return values.firstWhere((e) => e.name == value);
-        } catch (_) {
-          // Fall back to index if name lookup fails
-        }
+    // Try name first (new format)
+    if (value is String) {
+      try {
+        return values.firstWhere((e) => e.name == value);
+      } catch (_) {
+        // Fall back to index if name lookup fails
       }
-
-      // Try index (old format) for backward compatibility
-      if (value is int) {
-        if (value >= 0 && value < values.length) {
-          return values[value];
-        }
-      }
-
-      return defaultValue;
     }
 
+    // Try index (old format) for backward compatibility
+    if (value is int) {
+      if (value >= 0 && value < values.length) {
+        return values[value];
+      }
+    }
+
+    return defaultValue;
+  }
+
+  /// Helper function to parse endDate with better error messages
+  static DateTime? _parseEndDate(dynamic value) {
+    if (value == null) return null;
+    try {
+      return DateTime.parse(value as String);
+    } on FormatException {
+      throw FormatException(
+        'Invalid endDate format: "$value". Expected ISO8601 format (e.g., "2024-12-31T23:59:59Z")',
+        value,
+      );
+    }
+  }
+
+  factory RecurrenceConfiguration.fromJson(Map<String, dynamic> json) {
     return RecurrenceConfiguration(
-      frequency: deserializeEnum(RecurrenceFrequency.values, json['frequency'], RecurrenceFrequency.daily),
+      frequency: _deserializeEnum(RecurrenceFrequency.values, json['frequency'], RecurrenceFrequency.daily),
       interval: json['interval'] as int? ?? 1,
       daysOfWeek: (json['daysOfWeek'] as List<dynamic>?)?.map((e) => e as int).toList(),
       monthlyPatternType: json['monthlyPatternType'] != null
-          ? deserializeEnum(MonthlyPatternType.values, json['monthlyPatternType'], MonthlyPatternType.specificDay)
+          ? _deserializeEnum(MonthlyPatternType.values, json['monthlyPatternType'], MonthlyPatternType.specificDay)
           : null,
       dayOfMonth: json['dayOfMonth'] as int?,
       weekOfMonth: json['weekOfMonth'] as int?,
       dayOfWeek: json['dayOfWeek'] as int?,
       monthOfYear: json['monthOfYear'] as int?,
-      endCondition: deserializeEnum(RecurrenceEndCondition.values, json['endCondition'], RecurrenceEndCondition.never),
-      endDate: json['endDate'] != null ? DateTime.parse(json['endDate'] as String) : null,
+      endCondition: _deserializeEnum(RecurrenceEndCondition.values, json['endCondition'], RecurrenceEndCondition.never),
+      endDate: _parseEndDate(json['endDate']),
       occurrenceCount: json['occurrenceCount'] as int?,
-      fromPolicy: deserializeEnum(RecurrenceFromPolicy.values, json['fromPolicy'], RecurrenceFromPolicy.plannedDate),
+      fromPolicy: _deserializeEnum(RecurrenceFromPolicy.values, json['fromPolicy'], RecurrenceFromPolicy.plannedDate),
     );
   }
 }
