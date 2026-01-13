@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
@@ -12,6 +13,8 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -36,6 +39,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final DateTime? recurrenceEndDate;
   final int? recurrenceCount;
   final String? recurrenceParentId;
+  final RecurrenceConfiguration? recurrenceConfiguration;
 
   SaveTaskCommand({
     this.id,
@@ -60,6 +64,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     DateTime? recurrenceEndDate,
     this.recurrenceCount,
     this.recurrenceParentId,
+    this.recurrenceConfiguration,
   })  : plannedDate = plannedDate != null ? DateTimeHelper.toUtcDateTime(plannedDate) : null,
         deadlineDate = deadlineDate != null ? DateTimeHelper.toUtcDateTime(deadlineDate) : null,
         completedAt = completedAt != null ? DateTimeHelper.toUtcDateTime(completedAt) : null,
@@ -108,38 +113,81 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       final value = setting.getValue<int?>();
       // Return null if user set to 0 (disabled), otherwise return the value
       return value == 0 ? null : value;
-    } on FormatException catch (e, s) {
+    } on FormatException catch (e, stackTrace) {
       // Handle parsing errors specifically
-      Logger.warning('Failed to parse default estimated time setting. Error: $e\n$s');
+      Logger.error(
+        'SaveTaskCommand: Failed to parse default estimated time setting [$TaskErrorIds.saveCommandDefaultEstimatedTimeFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
       return TaskConstants.defaultEstimatedTime;
-    } catch (e, s) {
-      // Handle any other unexpected errors
-      Logger.error('Unexpected error getting default estimated time: $e\n$s');
+    } catch (e, stackTrace) {
+      // Handle any other unexpected errors (database errors, etc.)
+      Logger.error(
+        'SaveTaskCommand: Unexpected error getting default estimated time [$TaskErrorIds.saveCommandDefaultEstimatedTimeFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
       return TaskConstants.defaultEstimatedTime;
     }
   }
 
   Future<(ReminderTime, int?)> _getDefaultPlannedDateReminder() async {
+    String? value; // Declare outside try block for error logging
     try {
       final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder);
       if (setting == null) return (TaskConstants.defaultReminderTime, null);
 
-      final value = setting.getValue<String>();
+      value = setting.getValue<String>();
+      if (value.isEmpty) {
+        Logger.warning(
+          'SaveTaskCommand: Empty reminder time value, using default [$TaskErrorIds.saveCommandDefaultPlannedDateReminderFailed]',
+        );
+        return (TaskConstants.defaultReminderTime, null);
+      }
+
       final reminderTime = ReminderTimeExtension.fromString(value);
 
       // Fetch custom offset if type is custom
       if (reminderTime == ReminderTime.custom) {
         final offset = await _getDefaultPlannedDateReminderCustomOffset();
         if (offset == null) {
-          Logger.warning('Default planned date reminder is custom without offset, treating as none');
+          Logger.warning(
+            'SaveTaskCommand: Default planned date reminder is custom without offset, treating as none. Check setting: ${SettingKeys.taskDefaultPlannedDateReminderCustomOffset}',
+          );
           return (ReminderTime.none, null);
         }
         return (reminderTime, offset);
       }
 
       return (reminderTime, null);
-    } catch (e, s) {
-      Logger.error('Error getting default planned date reminder: $e\n$s');
+    } on ArgumentError catch (e, stackTrace) {
+      // Handle invalid enum values specifically
+      Logger.error(
+        'SaveTaskCommand: Invalid reminder time value: "$value" [$TaskErrorIds.saveCommandDefaultPlannedDateReminderFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
+      return (TaskConstants.defaultReminderTime, null);
+    } on FormatException catch (e, stackTrace) {
+      // Handle parsing errors for reminder time string
+      Logger.error(
+        'SaveTaskCommand: Failed to parse default planned date reminder setting [$TaskErrorIds.saveCommandDefaultPlannedDateReminderFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
+      return (TaskConstants.defaultReminderTime, null);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'SaveTaskCommand: Error getting default planned date reminder [$TaskErrorIds.saveCommandDefaultPlannedDateReminderFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
       return (TaskConstants.defaultReminderTime, null);
     }
   }
@@ -155,8 +203,22 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         return null;
       }
       return value;
-    } catch (e, s) {
-      Logger.error('Error getting default planned date reminder custom offset: $e\n$s');
+    } on FormatException catch (e, stackTrace) {
+      // Handle parsing errors specifically
+      Logger.error(
+        'SaveTaskCommand: Failed to parse default reminder custom offset setting [$TaskErrorIds.saveCommandDefaultReminderCustomOffsetFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
+      return null;
+    } catch (e, stackTrace) {
+      Logger.error(
+        'SaveTaskCommand: Error getting default planned date reminder custom offset [$TaskErrorIds.saveCommandDefaultReminderCustomOffsetFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
       return null;
     }
   }
@@ -229,12 +291,17 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.recurrenceStartDate = null;
         task.recurrenceEndDate = null;
         task.recurrenceCount = null;
+        task.recurrenceConfiguration = null;
       }
 
       // Only update recurrenceParentId if explicitly provided in the request.
       // This preserves the existing value when updating for completion toggle or other changes.
       if (request.recurrenceParentId != null) {
         task.recurrenceParentId = request.recurrenceParentId;
+      }
+
+      if (request.recurrenceConfiguration != null) {
+        task.recurrenceConfiguration = request.recurrenceConfiguration;
       }
 
       await _taskRepository.update(task);
@@ -291,7 +358,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           recurrenceStartDate: request.recurrenceStartDate,
           recurrenceEndDate: request.recurrenceEndDate,
           recurrenceCount: request.recurrenceCount,
-          recurrenceParentId: request.recurrenceParentId);
+          recurrenceParentId: request.recurrenceParentId,
+          recurrenceConfiguration: request.recurrenceConfiguration);
 
       if (request.recurrenceDays != null) {
         task.setRecurrenceDays(request.recurrenceDays);

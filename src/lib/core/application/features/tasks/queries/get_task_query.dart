@@ -44,7 +44,8 @@ class GetTaskQueryResponse extends Task {
       super.recurrenceStartDate,
       super.recurrenceEndDate,
       super.recurrenceCount,
-      super.recurrenceParentId});
+      super.recurrenceParentId,
+      super.recurrenceConfiguration});
 }
 
 class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryResponse> {
@@ -108,6 +109,7 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
       recurrenceEndDate: task.recurrenceEndDate,
       recurrenceCount: task.recurrenceCount,
       recurrenceParentId: task.recurrenceParentId,
+      recurrenceConfiguration: task.recurrenceConfiguration,
       deletedDate: task.deletedDate,
     );
   }

@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show DateFormatService, DateFormatType, WeekDays;
+import 'package:acore/acore.dart' show DateFormatService, DateFormatType;
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_dates_section.dart';
@@ -280,20 +281,17 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         initialRecurrenceEndDate: task.recurrenceEndDate,
         initialRecurrenceCount: task.recurrenceCount,
         plannedDate: task.plannedDate,
+        initialConfiguration: task.recurrenceConfiguration,
       ),
     );
 
     if (result != null && mounted) {
-      final recurrenceType = result['recurrenceType'] as RecurrenceType;
-      final List<dynamic>? daysList = result['recurrenceDays'] as List<dynamic>?;
+      final config = result['recurrenceConfiguration'] as RecurrenceConfiguration?;
+      final startDate = result['recurrenceStartDate'] as DateTime?;
 
       _controller.updateRecurrence(
-        recurrenceType: recurrenceType,
-        recurrenceInterval: result['recurrenceInterval'] as int?,
-        recurrenceDays: daysList?.cast<WeekDays>(),
-        recurrenceStartDate: result['recurrenceStartDate'] as DateTime?,
-        recurrenceEndDate: result['recurrenceEndDate'] as DateTime?,
-        recurrenceCount: result['recurrenceCount'] as int?,
+        recurrenceConfiguration: config,
+        recurrenceStartDate: startDate,
       );
     }
   }

@@ -4296,6 +4296,13 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       GeneratedColumn<String>('recurrence_parent_id', aliasedName, true,
           type: DriftSqlType.string, requiredDuringInsert: false);
   @override
+  late final GeneratedColumnWithTypeConverter<RecurrenceConfiguration?, String>
+      recurrenceConfiguration = GeneratedColumn<String>(
+              'recurrence_configuration', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<RecurrenceConfiguration?>(
+              $TaskTableTable.$converterrecurrenceConfigurationn);
+  @override
   List<GeneratedColumn> get $columns => [
         id,
         parentTaskId,
@@ -4320,7 +4327,8 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
         recurrenceStartDate,
         recurrenceEndDate,
         recurrenceCount,
-        recurrenceParentId
+        recurrenceParentId,
+        recurrenceConfiguration
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4519,6 +4527,10 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
           .read(DriftSqlType.int, data['${effectivePrefix}recurrence_count']),
       recurrenceParentId: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}recurrence_parent_id']),
+      recurrenceConfiguration: $TaskTableTable
+          .$converterrecurrenceConfigurationn
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}recurrence_configuration'])),
     );
   }
 
@@ -4539,6 +4551,12 @@ class $TaskTableTable extends TaskTable with TableInfo<$TaskTableTable, Task> {
       const EnumIndexConverter<ReminderTime>(ReminderTime.values);
   static JsonTypeConverter2<RecurrenceType, int, int> $converterrecurrenceType =
       const EnumIndexConverter<RecurrenceType>(RecurrenceType.values);
+  static TypeConverter<RecurrenceConfiguration, String>
+      $converterrecurrenceConfiguration =
+      const RecurrenceConfigurationConverter();
+  static TypeConverter<RecurrenceConfiguration?, String?>
+      $converterrecurrenceConfigurationn =
+      NullAwareTypeConverter.wrap($converterrecurrenceConfiguration);
 }
 
 class TaskTableCompanion extends UpdateCompanion<Task> {
@@ -4566,6 +4584,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
   final Value<DateTime?> recurrenceEndDate;
   final Value<int?> recurrenceCount;
   final Value<String?> recurrenceParentId;
+  final Value<RecurrenceConfiguration?> recurrenceConfiguration;
   final Value<int> rowid;
   const TaskTableCompanion({
     this.id = const Value.absent(),
@@ -4592,6 +4611,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.recurrenceEndDate = const Value.absent(),
     this.recurrenceCount = const Value.absent(),
     this.recurrenceParentId = const Value.absent(),
+    this.recurrenceConfiguration = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TaskTableCompanion.insert({
@@ -4619,6 +4639,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     this.recurrenceEndDate = const Value.absent(),
     this.recurrenceCount = const Value.absent(),
     this.recurrenceParentId = const Value.absent(),
+    this.recurrenceConfiguration = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
@@ -4648,6 +4669,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     Expression<DateTime>? recurrenceEndDate,
     Expression<int>? recurrenceCount,
     Expression<String>? recurrenceParentId,
+    Expression<String>? recurrenceConfiguration,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4683,6 +4705,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       if (recurrenceCount != null) 'recurrence_count': recurrenceCount,
       if (recurrenceParentId != null)
         'recurrence_parent_id': recurrenceParentId,
+      if (recurrenceConfiguration != null)
+        'recurrence_configuration': recurrenceConfiguration,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4712,6 +4736,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       Value<DateTime?>? recurrenceEndDate,
       Value<int?>? recurrenceCount,
       Value<String?>? recurrenceParentId,
+      Value<RecurrenceConfiguration?>? recurrenceConfiguration,
       Value<int>? rowid}) {
     return TaskTableCompanion(
       id: id ?? this.id,
@@ -4742,6 +4767,8 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
       recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
       recurrenceCount: recurrenceCount ?? this.recurrenceCount,
       recurrenceParentId: recurrenceParentId ?? this.recurrenceParentId,
+      recurrenceConfiguration:
+          recurrenceConfiguration ?? this.recurrenceConfiguration,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4831,6 +4858,11 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
     if (recurrenceParentId.present) {
       map['recurrence_parent_id'] = Variable<String>(recurrenceParentId.value);
     }
+    if (recurrenceConfiguration.present) {
+      map['recurrence_configuration'] = Variable<String>($TaskTableTable
+          .$converterrecurrenceConfigurationn
+          .toSql(recurrenceConfiguration.value));
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4866,6 +4898,7 @@ class TaskTableCompanion extends UpdateCompanion<Task> {
           ..write('recurrenceEndDate: $recurrenceEndDate, ')
           ..write('recurrenceCount: $recurrenceCount, ')
           ..write('recurrenceParentId: $recurrenceParentId, ')
+          ..write('recurrenceConfiguration: $recurrenceConfiguration, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8805,6 +8838,7 @@ typedef $$TaskTableTableCreateCompanionBuilder = TaskTableCompanion Function({
   Value<DateTime?> recurrenceEndDate,
   Value<int?> recurrenceCount,
   Value<String?> recurrenceParentId,
+  Value<RecurrenceConfiguration?> recurrenceConfiguration,
   Value<int> rowid,
 });
 typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
@@ -8832,6 +8866,7 @@ typedef $$TaskTableTableUpdateCompanionBuilder = TaskTableCompanion Function({
   Value<DateTime?> recurrenceEndDate,
   Value<int?> recurrenceCount,
   Value<String?> recurrenceParentId,
+  Value<RecurrenceConfiguration?> recurrenceConfiguration,
   Value<int> rowid,
 });
 
@@ -8931,6 +8966,12 @@ class $$TaskTableTableFilterComposer
   ColumnFilters<String> get recurrenceParentId => $composableBuilder(
       column: $table.recurrenceParentId,
       builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<RecurrenceConfiguration?,
+          RecurrenceConfiguration, String>
+      get recurrenceConfiguration => $composableBuilder(
+          column: $table.recurrenceConfiguration,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$TaskTableTableOrderingComposer
@@ -9030,6 +9071,10 @@ class $$TaskTableTableOrderingComposer
   ColumnOrderings<String> get recurrenceParentId => $composableBuilder(
       column: $table.recurrenceParentId,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get recurrenceConfiguration => $composableBuilder(
+      column: $table.recurrenceConfiguration,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$TaskTableTableAnnotationComposer
@@ -9119,6 +9164,10 @@ class $$TaskTableTableAnnotationComposer
 
   GeneratedColumn<String> get recurrenceParentId => $composableBuilder(
       column: $table.recurrenceParentId, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<RecurrenceConfiguration?, String>
+      get recurrenceConfiguration => $composableBuilder(
+          column: $table.recurrenceConfiguration, builder: (column) => column);
 }
 
 class $$TaskTableTableTableManager extends RootTableManager<
@@ -9168,6 +9217,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<DateTime?> recurrenceEndDate = const Value.absent(),
             Value<int?> recurrenceCount = const Value.absent(),
             Value<String?> recurrenceParentId = const Value.absent(),
+            Value<RecurrenceConfiguration?> recurrenceConfiguration =
+                const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion(
@@ -9195,6 +9246,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             recurrenceEndDate: recurrenceEndDate,
             recurrenceCount: recurrenceCount,
             recurrenceParentId: recurrenceParentId,
+            recurrenceConfiguration: recurrenceConfiguration,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -9222,6 +9274,8 @@ class $$TaskTableTableTableManager extends RootTableManager<
             Value<DateTime?> recurrenceEndDate = const Value.absent(),
             Value<int?> recurrenceCount = const Value.absent(),
             Value<String?> recurrenceParentId = const Value.absent(),
+            Value<RecurrenceConfiguration?> recurrenceConfiguration =
+                const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               TaskTableCompanion.insert(
@@ -9249,6 +9303,7 @@ class $$TaskTableTableTableManager extends RootTableManager<
             recurrenceEndDate: recurrenceEndDate,
             recurrenceCount: recurrenceCount,
             recurrenceParentId: recurrenceParentId,
+            recurrenceConfiguration: recurrenceConfiguration,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

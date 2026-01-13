@@ -26,7 +26,11 @@ class TaskTagsSection {
         label: translationService.translate(TaskTranslationKeys.tagsLabel),
         icon: TagUiConstants.tagIcon,
         widget: Padding(
-          padding: const EdgeInsets.only(top: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall, left: AppTheme.sizeSmall),
+          padding: const EdgeInsets.only(
+            top: AppTheme.sizeSmall,
+            bottom: AppTheme.sizeSmall,
+            left: AppTheme.sizeSmall + AppTheme.sizeMedium, // 20px to match TextFormField alignment
+          ),
           child: TagSelectDropdown(
             key: ValueKey(taskTags.items.length),
             isMultiSelect: true,

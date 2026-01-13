@@ -215,9 +215,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     final monthlyDailyScores = dailyScores.entries
-        .where((entry) =>
-            entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
-            !entry.key.isAfter(endDate))
+        .where(
+            (entry) => entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) && !entry.key.isAfter(endDate))
         .map((entry) => entry.value);
     final monthlyTotalScore = monthlyDailyScores.fold(0.0, (sum, score) => sum + score);
     final monthlyScore = monthlyTotalScore / daysInCurrentMonth;
@@ -232,9 +231,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     final yearlyDailyScores = dailyScores.entries
-        .where((entry) =>
-            entry.key.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
-            !entry.key.isAfter(endDate))
+        .where(
+            (entry) => entry.key.isAfter(startOfYear.subtract(const Duration(days: 1))) && !entry.key.isAfter(endDate))
         .map((entry) => entry.value);
     final yearlyTotalScore = yearlyDailyScores.fold(0.0, (sum, score) => sum + score);
     final yearlyScore = yearlyTotalScore / daysInCurrentYear;

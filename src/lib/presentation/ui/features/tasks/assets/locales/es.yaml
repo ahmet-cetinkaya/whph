@@ -402,6 +402,8 @@ tasks:
         months: mes(es)
         weeks: semana(s)
         years: año(s)
+        hours: hora(s)
+        minutes: minuto(s)
     label: Recurrencia
     monthSuffix: mes(es)
     monthly: Mensual
@@ -425,6 +427,23 @@ tasks:
     weeks_plural: semanas
     months_plural: meses
     years_plural: años
+    hourly: Cada hora
+    minutely: Cada minuto
+    monthly_pattern_label: Patrón mensual
+    advanced_label: Configuración avanzada
+    regenerate_label: Regenerar después de la finalización
+    regenerate_description:
+      Cuando está activado, la siguiente ocurrencia se programará
+      desde la fecha de finalización, en lugar de la fecha planeada.
+    on_specific_day: Día específico
+    on_relative_day: Día relativo
+    on_the: El
+    week_modifiers:
+      first: Primero
+      second: Segundo
+      third: Tercero
+      fourth: Cuarto
+      last: Último
   reminder:
     at_time: A la hora programada
     deadline_reminder_label: Recordatorio de fecha límite

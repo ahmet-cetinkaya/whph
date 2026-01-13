@@ -322,6 +322,8 @@ tasks:
         months: mês(es)
         weeks: semana(s)
         years: ano(s)
+        hours: hora(s)
+        minutes: minuto(s)
     label: Recorrência
     monthSuffix: mês(es)
     monthly: Mensal
@@ -345,6 +347,23 @@ tasks:
     weeks_plural: semanas
     months_plural: meses
     years_plural: anos
+    hourly: A cada hora
+    minutely: A cada minuto
+    monthly_pattern_label: Padrão mensal
+    advanced_label: Configurações avançadas
+    regenerate_label: Regenerar após conclusão
+    regenerate_description:
+      Quando ativado, a próxima ocorrência será agendada a partir
+      da data de conclusão, em vez da data planejada.
+    on_specific_day: Dia específico
+    on_relative_day: Dia relativo
+    on_the: Em
+    week_modifiers:
+      first: Primeiro
+      second: Segundo
+      third: Terceiro
+      fourth: Quarto
+      last: Último
   reminder:
     at_time: No horário agendado
     deadline_reminder_label: Lembrete de prazo

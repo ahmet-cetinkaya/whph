@@ -367,6 +367,8 @@ tasks:
         months: 개월
         weeks: 주
         years: 년
+        hours: 시간
+        minutes: 분
     label: 반복
     monthSuffix: 개월
     monthly: 매월
@@ -390,6 +392,21 @@ tasks:
     weeks_plural: 주간
     months_plural: 개월간
     years_plural: 년간
+    hourly: 매시
+    minutely: 매분
+    monthly_pattern_label: 월간 패턴
+    advanced_label: 고급 설정
+    regenerate_label: 완료 후 재생성
+    regenerate_description: 활성화되면 다음 발생은 계획된 날짜 대신 완료 날짜부터 예약됩니다.
+    on_specific_day: 특정 요일
+    on_relative_day: 상대 날짜
+    on_the: ""
+    week_modifiers:
+      first: 첫 번째
+      second: 두 번째
+      third: 세 번째
+      fourth: 네 번째
+      last: 마지막
   reminder:
     at_time: 예정된 시간에
     deadline_reminder_label: 마감일 알림

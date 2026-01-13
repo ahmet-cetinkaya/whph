@@ -28,7 +28,7 @@ class TaskRecurrenceSection {
             borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+              padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
               child: Row(
                 children: [
                   Expanded(

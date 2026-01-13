@@ -23,7 +23,7 @@ echo "Triggering sync..."
 # No, flutter run args are for flutter.
 # Effective test: Build the app.
 
-cd "$PROJECT_ROOT"
+cd "$PROJECT_ROOT" || exit 1
 echo "Building Linux debug bundle (fast)..."
 fvm flutter build linux --debug --project-directory "$SRC_DIR"
 

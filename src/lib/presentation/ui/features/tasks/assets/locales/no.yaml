@@ -319,6 +319,8 @@ tasks:
         months: måned(er)
         weeks: uke(r)
         years: år
+        hours: time(r)
+        minutes: minutt(er)
     label: Gjentakelse
     monthSuffix: måned(er)
     monthly: Månedlig
@@ -342,6 +344,23 @@ tasks:
     weeks_plural: uker
     months_plural: måneder
     years_plural: år
+    hourly: Hver time
+    minutely: Hvert minutt
+    monthly_pattern_label: Månedlig mønster
+    advanced_label: Avanserte innstillinger
+    regenerate_label: Regenerer etter fullføring
+    regenerate_description:
+      Når aktivert, vil neste forekomst bli planlagt fra fullføringsdatoen,
+      i stedet for den planlagte datoen.
+    on_specific_day: Bestemt dag
+    on_relative_day: Relativ dag
+    on_the: Den
+    week_modifiers:
+      first: Første
+      second: Andre
+      third: Tredje
+      fourth: Fjerde
+      last: Siste
   reminder:
     at_time: På det planlagte tidspunktet
     deadline_reminder_label: Påminnelse om tidsfrist

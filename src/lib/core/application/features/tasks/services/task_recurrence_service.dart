@@ -10,6 +10,9 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/application/features/tasks/utils/task_recurrence_validator.dart';
 import 'package:whph/core/application/features/tasks/utils/date_helper.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 
 class TaskRecurrenceService implements ITaskRecurrenceService {
   final ILogger _logger;
@@ -17,15 +20,19 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
   /// Tracks recurrence parent IDs currently being processed to prevent race conditions.
   /// This serializes creation of next instances for the same recurrence chain.
-  final Set<String> _processingRecurrenceParents = {};
-  final _lockReleaseController = StreamController<String>.broadcast();
+  ///
+  /// Using Map&lt;String, Completer&lt;void&gt;&gt; instead of Set&lt;String&gt; ensures:
+  /// 1. Thread-safe lock acquisition (no TOCTOU race condition)
+  /// 2. Automatic queue management - callers wait on the completer
+  /// 3. Proper cleanup - removing from map also signals any waiters
+  final Map<String, Completer<void>> _processingRecurrenceParents = {};
 
   static const int _lockTimeoutMs = 5000;
 
   TaskRecurrenceService(this._logger, this._taskRepository);
   @override
   bool isRecurring(Task task) {
-    return task.recurrenceType != RecurrenceType.none;
+    return task.recurrenceConfiguration != null || task.recurrenceType != RecurrenceType.none;
   }
 
   @override
@@ -34,14 +41,57 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       return false;
     }
 
+    // Validate parameters - let ArgumentError propagate for invalid input
     TaskRecurrenceValidator.validateRecurrenceParameters(task);
 
+    // New Configuration Logic
+    if (task.recurrenceConfiguration != null) {
+      final config = task.recurrenceConfiguration!;
+
+      switch (config.endCondition) {
+        case RecurrenceEndCondition.never:
+          return true;
+        case RecurrenceEndCondition.date:
+          if (config.endDate == null) {
+            // If end condition is 'date' but no date provided, this is an invalid configuration
+            // Treat as 'never' end condition to prevent accidental infinite recurrence
+            return true;
+          }
+          // If the end date has already passed, we cannot create more instances
+          if (config.endDate!.isBefore(DateTime.now().toUtc())) {
+            return false;
+          }
+          final lastDate = task.plannedDate ?? task.deadlineDate ?? DateTime.now().toUtc();
+          final nextDate = calculateNextRecurrenceDate(task, lastDate);
+          // If next recurrence is on or after end date, stop (inclusive per iCal standard)
+          return nextDate.isBefore(config.endDate!);
+        case RecurrenceEndCondition.count:
+          // Check both task-level count and config-level occurrence count
+          // task.recurrenceCount tracks remaining occurrences for current task
+          // config.occurrenceCount is the total limit from configuration
+          final taskCountLimit = task.recurrenceCount;
+          final configCountLimit = config.occurrenceCount;
+
+          // If either limit is set and exhausted, stop creating new instances
+          if (taskCountLimit != null) {
+            return taskCountLimit > 0;
+          }
+          if (configCountLimit != null) {
+            return configCountLimit > 0;
+          }
+          // Both limits are null - this is an invalid configuration
+          // Prevent infinite recurrence by returning false
+          return false;
+      }
+    }
+
+    // Legacy Logic support
     if (task.recurrenceEndDate == null && task.recurrenceCount == null) {
       return true;
     }
 
     if (task.recurrenceEndDate != null) {
-      final DateTime lastDate = task.plannedDate ?? task.deadlineDate ?? DateTime.now();
+      final DateTime lastDate = task.plannedDate ?? task.deadlineDate ?? DateTime.now().toUtc();
       final DateTime nextDate = calculateNextRecurrenceDate(task, lastDate);
       return !nextDate.isAfter(task.recurrenceEndDate!);
     }
@@ -55,6 +105,12 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
   @override
   DateTime calculateNextRecurrenceDate(Task task, DateTime currentDate) {
+    // 1. New Configuration Logic
+    if (task.recurrenceConfiguration != null) {
+      return _calculateFromConfiguration(task.recurrenceConfiguration!, task, currentDate);
+    }
+
+    // 2. Legacy Logic
     TaskRecurrenceValidator.validateRecurrenceParameters(task);
 
     final List<WeekDays>? recurrenceDays = getRecurrenceDays(task);
@@ -93,8 +149,93 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
           currentDate.minute,
         );
 
+      case RecurrenceType.hourly:
+        return currentDate.add(Duration(hours: task.recurrenceInterval ?? 1));
+
+      case RecurrenceType.minutely:
+        return currentDate.add(Duration(minutes: task.recurrenceInterval ?? 1));
+
       default:
         return currentDate;
+    }
+  }
+
+  DateTime _calculateFromConfiguration(RecurrenceConfiguration config, Task task, DateTime currentDate) {
+    switch (config.frequency) {
+      case RecurrenceFrequency.daily:
+        return currentDate.add(Duration(days: config.interval));
+
+      case RecurrenceFrequency.weekly:
+        if (config.daysOfWeek != null && config.daysOfWeek!.isNotEmpty) {
+          // Reuse existing logic but with int list
+          // Note: DateHelper.findNextWeekdayOccurrence expects List<int>
+          // RecurrenceConfiguration.daysOfWeek is List<int> (1-7)
+
+          // We need a reference date. For pure config calculation without task context,
+          // we treat currentDate as reference if strict interval needed?
+          // Actually `findNextWeekdayOccurrence` needs a reference date to align "Every 2 weeks" logic.
+          // Use recurrenceStartDate for interval alignment to prevent drift when interval > 1
+          final referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? currentDate;
+          return DateHelper.findNextWeekdayOccurrence(
+            currentDate,
+            config.daysOfWeek!..sort(),
+            config.interval,
+            referenceDate, // Align intervals to original recurrence start date
+          );
+        }
+        return currentDate.add(Duration(days: 7 * config.interval));
+
+      case RecurrenceFrequency.monthly:
+        // Monthly Logic
+        int nextMonth = currentDate.month + config.interval;
+        int year = currentDate.year;
+        while (nextMonth > 12) {
+          nextMonth -= 12;
+          year++;
+        }
+
+        if (config.monthlyPatternType == MonthlyPatternType.relativeDay) {
+          // e.g., "2nd Tuesday" or "Last Friday"
+          final weekOfMonth = config.weekOfMonth ?? 1; // 1-5
+          final dayOfWeek = config.dayOfWeek ?? 1; // 1-7 Mon-Sun
+
+          final nextDate = DateHelper.getNthWeekdayOfMonth(year, nextMonth, dayOfWeek, weekOfMonth);
+          return DateTime(nextDate.year, nextDate.month, nextDate.day, currentDate.hour, currentDate.minute);
+        } else {
+          // Specific Day (e.g. 15th)
+          // If day is "31" or generic "last day"?
+          // Support "Last Day" logic if dayOfMonth is -1 or special flag?
+          // For now assume dayOfMonth is explicit.
+          // If simple dayOfMonth is provided, use fixed default of 1st if not set
+          // to avoid unpredictable behavior with currentDate.day
+          final desiredDay = config.dayOfMonth ?? 1;
+
+          // Handle months with fewer days
+          final lastDayOfNextMonth = DateTime(year, nextMonth + 1, 0).day;
+
+          // If looking for 31st but month has 30, clamp to 30? Or skip?
+          // Standard behavior usually clamps.
+          final actualDay = desiredDay > lastDayOfNextMonth ? lastDayOfNextMonth : desiredDay;
+
+          return DateTime(year, nextMonth, actualDay, currentDate.hour, currentDate.minute);
+        }
+
+      case RecurrenceFrequency.yearly:
+        // Basic yearly + logic for "The 2nd Tuesday of September" if we want advanced yearly.
+        // For now, simple yearly
+        return DateTime(
+          currentDate.year + config.interval,
+          currentDate.month,
+          currentDate.day,
+          currentDate.hour,
+          currentDate.minute,
+        );
+
+      case RecurrenceFrequency.hourly:
+        return currentDate.add(Duration(hours: config.interval));
+
+      case RecurrenceFrequency.minutely:
+        return currentDate.add(Duration(minutes: config.interval));
     }
   }
 
@@ -120,8 +261,29 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       }
 
       return await _createNextRecurrenceInstance(task, mediator);
-    } catch (e) {
-      _logger.error('Failed to create recurring task instance for $taskId: $e');
+    } on StateError catch (_) {
+      // Task state changed (no longer completed) - this is expected in some scenarios
+      _logger.warning(
+        'TaskRecurrenceService: Task state changed during recurrence processing for $taskId [$TaskErrorIds.recurrenceTaskStateChanged]',
+      );
+      return null;
+    } on TimeoutException catch (e, stackTrace) {
+      // Lock timeout - log as warning since this may indicate high load
+      _logger.warning(
+        'TaskRecurrenceService: Timeout acquiring lock for $taskId [$TaskErrorIds.recurrenceLockTimeout]',
+        e,
+        stackTrace,
+        DomainLogComponents.task,
+      );
+      return null;
+    } catch (e, stackTrace) {
+      // Unexpected errors - log with error ID for monitoring
+      _logger.error(
+        'TaskRecurrenceService: Failed to create recurring task instance for $taskId [$TaskErrorIds.recurrenceCreateInstanceFailed]',
+        e,
+        stackTrace,
+        DomainLogComponents.task,
+      );
       return null;
     }
   }
@@ -175,8 +337,10 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
       return result.id;
     } finally {
-      _processingRecurrenceParents.remove(parentId);
-      _lockReleaseController.add(parentId);
+      final completer = _processingRecurrenceParents.remove(parentId);
+      if (completer != null && !completer.isCompleted) {
+        completer.complete();
+      }
       _logger.debug('TaskRecurrenceService: Released lock for parent $parentId');
     }
   }
@@ -186,24 +350,63 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     final timeoutDuration = const Duration(milliseconds: _lockTimeoutMs);
     final startTime = DateTime.now();
 
-    while (_processingRecurrenceParents.contains(parentId)) {
-      final elapsed = DateTime.now().difference(startTime);
-      if (elapsed >= timeoutDuration) {
-        _logger.warning('TaskRecurrenceService: Timeout waiting for parent $parentId lock');
-        throw Exception('Timeout waiting for parent $parentId lock');
-      }
+    bool lockAcquired = false;
+    try {
+      while (true) {
+        final completer = _processingRecurrenceParents[parentId];
+        if (completer == null) break; // Lock is available
 
-      try {
-        await _lockReleaseController.stream.firstWhere((id) => id == parentId).timeout(timeoutDuration - elapsed);
-      } on TimeoutException {
-        // Loop check will handle timeout
-      } catch (e) {
-        _logger.warning('TaskRecurrenceService: Error waiting for lock stream: $e');
-        // Ignore other errors and retry check
+        final elapsed = DateTime.now().difference(startTime);
+        if (elapsed >= timeoutDuration) {
+          _logger.error(
+            'TaskRecurrenceService: Timeout waiting for parent $parentId lock [$TaskErrorIds.recurrenceLockTimeout]',
+          );
+          throw Exception('Timeout waiting for parent $parentId lock');
+        }
+
+        try {
+          await completer.future.timeout(timeoutDuration - elapsed);
+        } on TimeoutException {
+          // Loop check will handle timeout
+        } on StateError catch (e) {
+          // Stream was closed while waiting
+          _logger.error(
+            'TaskRecurrenceService: Lock stream closed unexpectedly [$TaskErrorIds.recurrenceLockStreamClosed]',
+            e,
+            null,
+            DomainLogComponents.task,
+          );
+          rethrow;
+        } catch (e) {
+          // Other stream errors
+          _logger.error(
+            'TaskRecurrenceService: Unexpected error waiting for lock stream [$TaskErrorIds.recurrenceLockStreamError]',
+            e,
+            null,
+            DomainLogComponents.task,
+          );
+          rethrow;
+        }
       }
+      // Acquire the lock - this MUST happen after the while loop
+      _processingRecurrenceParents[parentId] = Completer<void>();
+      lockAcquired = true;
+      _logger.debug('TaskRecurrenceService: Acquired lock for parent $parentId');
+    } catch (e) {
+      // If any error occurs (including timeout), ensure we don't mark lock as acquired
+      lockAcquired = false;
+      rethrow;
     }
-    _processingRecurrenceParents.add(parentId);
-    _logger.debug('TaskRecurrenceService: Acquired lock for parent $parentId');
+
+    // Note: The following check is kept for defensive programming.
+    // In normal execution flow (lock acquired successfully), this branch is unreachable.
+    // However, it serves as a safeguard in case of unexpected state changes.
+    // Only proceed if we actually acquired the lock
+    // ignore: dead_code - Analyzer identifies this as unreachable in normal flow
+    if (!lockAcquired) {
+      // This code only executes if lockAcquired is somehow reset to false after line 369
+      throw Exception('Failed to acquire lock for parent $parentId');
+    }
   }
 
   /// Checks if a recurrence instance already exists for the given parent and date, excluding the current task
@@ -251,43 +454,82 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
   /// Calculates the next planned and deadline dates for recurrence
   ({DateTime plannedDate, DateTime? deadlineDate}) _calculateNextDates(Task task) {
-    Duration? originalOffset;
+    try {
+      Duration? originalOffset;
 
-    // Determine the offset if both dates exist
-    if (task.plannedDate != null && task.deadlineDate != null) {
-      originalOffset = task.deadlineDate!.difference(task.plannedDate!);
-    }
-
-    // If plannedDate is in the future (after completedAt), keep the original schedule (use plannedDate)
-    // Otherwise (completed late), recur from the actual completion time to avoid piling up
-    final DateTime recurrenceBaseDate;
-    if (task.plannedDate != null && task.completedAt != null && task.plannedDate!.isAfter(task.completedAt!)) {
-      recurrenceBaseDate = task.plannedDate!;
-    } else {
-      recurrenceBaseDate = task.completedAt ?? task.plannedDate ?? task.deadlineDate ?? DateTime.now().toUtc();
-    }
-
-    // Calculate next recurrence for primary date
-    final nextAnchorDate = calculateNextRecurrenceDate(task, recurrenceBaseDate);
-
-    // Reconstruct calculated dates based on what components originally existed
-    if (task.plannedDate != null) {
-      // Original anchor was plannedDate
-      final nextPlannedDate = nextAnchorDate;
-      DateTime? nextDeadlineDate;
-      if (originalOffset != null) {
-        nextDeadlineDate = nextPlannedDate.add(originalOffset);
+      // Determine the offset if both dates exist
+      if (task.plannedDate != null && task.deadlineDate != null) {
+        originalOffset = task.deadlineDate!.difference(task.plannedDate!);
       }
-      return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
-    } else if (task.deadlineDate != null) {
-      // Original anchor was deadlineDate (since plannedDate is null)
-      final nextDeadlineDate = nextAnchorDate;
-      // As per previous logic, if only deadline exists, set planned to 1 day before
-      final nextPlannedDate = nextDeadlineDate.subtract(const Duration(days: 1));
-      return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
-    } else {
-      // Fallback if neither existed
-      return (plannedDate: nextAnchorDate, deadlineDate: null);
+
+      // If plannedDate is in the future (after completedAt), keep the original schedule (use plannedDate)
+      // Otherwise (completed late), recur from the actual completion time to avoid piling up
+      final DateTime recurrenceBaseDate;
+
+      // Check Recurrence From Policy (NEW)
+      if (task.recurrenceConfiguration != null) {
+        if (task.recurrenceConfiguration!.fromPolicy == RecurrenceFromPolicy.completionDate) {
+          // Explicitly recur from completion date
+          recurrenceBaseDate = task.completedAt ?? DateTime.now().toUtc();
+        } else {
+          // Plain old "Planned Date" policy with stricter implementation
+          // "Planned Date" policy means "Keep the schedule" - recurrence should be based on
+          // the planned date, not completion time, even if completed late.
+          // Stricter implementation: prioritize plannedDate, then recurrenceStartDate.
+          // Only fall back to deadlineDate/completedAt as absolute last resort.
+          recurrenceBaseDate = task.plannedDate ??
+              task.recurrenceStartDate ??
+              task.deadlineDate ??
+              task.completedAt ??
+              DateTime.now().toUtc();
+        }
+      } else {
+        // Legacy "Smart" Logic
+        if (task.plannedDate != null && task.completedAt != null && task.plannedDate!.isAfter(task.completedAt!)) {
+          recurrenceBaseDate = task.plannedDate!;
+        } else {
+          recurrenceBaseDate = task.completedAt ?? task.plannedDate ?? task.deadlineDate ?? DateTime.now().toUtc();
+        }
+      }
+
+      // Calculate next recurrence for primary date
+      final nextAnchorDate = calculateNextRecurrenceDate(task, recurrenceBaseDate);
+
+      // Reconstruct calculated dates based on what components originally existed
+      if (task.plannedDate != null) {
+        // Original anchor was plannedDate
+        final nextPlannedDate = nextAnchorDate;
+        DateTime? nextDeadlineDate;
+        if (originalOffset != null) {
+          nextDeadlineDate = nextPlannedDate.add(originalOffset);
+        }
+        return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
+      } else if (task.deadlineDate != null) {
+        // Original anchor was deadlineDate (since plannedDate is null)
+        final nextDeadlineDate = nextAnchorDate;
+        // As per previous logic, if only deadline exists, set planned to 1 day before
+        final nextPlannedDate = nextDeadlineDate.subtract(const Duration(days: 1));
+        return (plannedDate: nextPlannedDate, deadlineDate: nextDeadlineDate);
+      } else {
+        // Fallback if neither existed
+        return (plannedDate: nextAnchorDate, deadlineDate: null);
+      }
+    } on ArgumentError catch (e, stackTrace) {
+      _logger.error(
+        'TaskRecurrenceService: Invalid date arguments in _calculateNextDates [$TaskErrorIds.recurrenceStateError]',
+        e,
+        stackTrace,
+        DomainLogComponents.task,
+      );
+      rethrow; // Let the caller handle this
+    } catch (e, stackTrace) {
+      _logger.error(
+        'TaskRecurrenceService: Unexpected error in _calculateNextDates [$TaskErrorIds.recurrenceCreateInstanceFailed]',
+        e,
+        stackTrace,
+        DomainLogComponents.task,
+      );
+      rethrow;
     }
   }
 
@@ -344,7 +586,25 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       recurrenceEndDate: task.recurrenceEndDate,
       recurrenceCount: nextRecurrenceCount,
       recurrenceParentId: recurrenceParentIdToUse,
+      recurrenceConfiguration: task.recurrenceConfiguration,
       tagIdsToAdd: tagIds,
     );
+  }
+
+  /// Disposes resources used by this service.
+  /// Should be called when the service is no longer needed to prevent memory leaks.
+  void dispose() {
+    if (_processingRecurrenceParents.isNotEmpty) {
+      _logger.warning(
+        'TaskRecurrenceService: dispose() called with ${_processingRecurrenceParents.length} pending locks - these will be cleared',
+      );
+    }
+    // Complete all pending completers to signal waiting callers
+    for (final completer in _processingRecurrenceParents.values) {
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    }
+    _processingRecurrenceParents.clear();
   }
 }

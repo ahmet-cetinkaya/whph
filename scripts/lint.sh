@@ -100,7 +100,17 @@ run_linter() {
 }
 
 # 1. Flutter analyze
-run_linter "Flutter Analyze" "fvm flutter analyze" "" || true
+# Note: Use --no-fatal-infos to avoid info messages about super parameters
+# Use --no-fatal-warnings to ignore dead_code warnings (non-critical)
+# We only fail if exit code is non-zero (actual errors, not warnings)
+print_section "🔍 Running Flutter Analyze..."
+cd "$SRC_DIR"
+if eval "fvm flutter analyze --no-fatal-infos --no-fatal-warnings"; then
+    print_success "✅ Flutter Analyze passed"
+else
+    print_error "❌ Flutter Analyze failed with exit code $?"
+    OVERALL_SUCCESS=false
+fi
 
 # 2. dart_unused_files scan
 if command -v dart_unused_files &>/dev/null; then

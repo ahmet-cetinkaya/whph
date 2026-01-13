@@ -316,6 +316,8 @@ tasks:
         months: kuukausi(tta)
         weeks: viikko(a)
         years: vuosi/vuotta
+        hours: tunti(a)
+        minutes: minuuttia
     label: Toisto
     monthSuffix: kuukausi(tta)
     monthly: Kuukausittain
@@ -339,6 +341,23 @@ tasks:
     weeks_plural: viikot
     months_plural: kuukaudet
     years_plural: vuodet
+    hourly: Tunneittain
+    minutely: Minuutteittain
+    monthly_pattern_label: Kuukausittainen malli
+    advanced_label: Lisäasetukset
+    regenerate_label: Luo uudelleen valmistumisen jälkeen
+    regenerate_description:
+      Kun käytössä, seuraava toistoa aikataulutetaan valmistumispäivästä
+      käsin suunnitellun päivän sijaan.
+    on_specific_day: Tietty päivä
+    on_relative_day: Suhteellinen päivä
+    on_the: ""
+    week_modifiers:
+      first: Ensimmäinen
+      second: Toinen
+      third: Kolmas
+      fourth: Neljäs
+      last: Viimeinen
   reminder:
     at_time: Suunniteltuna ajankohtana
     deadline_reminder_label: Määräajan muistutus

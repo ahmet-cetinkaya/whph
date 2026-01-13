@@ -295,7 +295,9 @@ tasks:
     count: Number of occurrences
     custom: Custom
     daily: Daily
-    daySuffix: day(s)
+    hourly: Hourly
+    minutely: Minutely
+    daySuffix: "."
     daysOfWeek: Days of week
     endDate: End date
     ends:
@@ -309,11 +311,13 @@ tasks:
       prefix: every
       suffix:
         days: day(s)
+        hours: hour(s)
+        minutes: minute(s)
         months: month(s)
         weeks: week(s)
         years: year(s)
     label: Recurrence
-    monthSuffix: month(s)
+    monthSuffix: ""
     monthly: Monthly
     none: No recurrence
     range: Range
@@ -328,13 +332,26 @@ tasks:
       starts: Starts
       "on": "on"
     weekDays: Days of week
-    weekSuffix: week(s)
+    weekSuffix: ""
     weekly: Weekly
-    yearSuffix: year(s)
+    yearSuffix: ""
     yearly: Yearly
     weeks_plural: weeks
     months_plural: months
     years_plural: years
+    monthly_pattern_label: Monthly Pattern
+    advanced_label: "Advanced Settings"
+    regenerate_label: "Regenerate after completion"
+    regenerate_description: "When enabled, the next occurrence will be scheduled from the date of completion, instead of the planned date."
+    on_specific_day: Specific Day
+    on_relative_day: Relative Day
+    on_the: On the
+    week_modifiers:
+      first: First
+      second: Second
+      third: Third
+      fourth: Fourth
+      last: Last
   reminder:
     at_time: At the scheduled time
     deadline_reminder_label: Deadline Reminder

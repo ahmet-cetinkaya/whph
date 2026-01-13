@@ -11,6 +11,7 @@ import 'package:whph/core/application/features/tasks/commands/save_task_time_rec
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
@@ -293,6 +294,7 @@ class TaskDetailsController extends ChangeNotifier {
       recurrenceStartDate: recurrenceStartDate,
       recurrenceEndDate: recurrenceEndDate,
       recurrenceCount: _task!.recurrenceCount,
+      recurrenceConfiguration: _task!.recurrenceConfiguration,
     );
   }
 
@@ -508,28 +510,60 @@ class TaskDetailsController extends ChangeNotifier {
 
   // Recurrence operations
   void updateRecurrence({
-    required RecurrenceType recurrenceType,
-    int? recurrenceInterval,
-    List<WeekDays>? recurrenceDays,
+    RecurrenceConfiguration? recurrenceConfiguration,
     DateTime? recurrenceStartDate,
-    DateTime? recurrenceEndDate,
-    int? recurrenceCount,
   }) {
-    _task!.recurrenceType = recurrenceType;
+    _task!.recurrenceConfiguration = recurrenceConfiguration;
+    _task!.recurrenceStartDate = recurrenceStartDate;
 
-    if (recurrenceType == RecurrenceType.none) {
+    // Sync legacy fields for backward compatibility
+    if (recurrenceConfiguration == null) {
+      _task!.recurrenceType = RecurrenceType.none;
       _task!.recurrenceInterval = null;
       _task!.setRecurrenceDays(null);
-      _task!.recurrenceStartDate = null;
       _task!.recurrenceEndDate = null;
       _task!.recurrenceCount = null;
       _visibleOptionalFields.remove(keyRecurrence);
     } else {
-      _task!.recurrenceInterval = recurrenceInterval;
-      _task!.setRecurrenceDays(recurrenceDays);
-      _task!.recurrenceStartDate = recurrenceStartDate;
-      _task!.recurrenceEndDate = recurrenceEndDate;
-      _task!.recurrenceCount = recurrenceCount;
+      switch (recurrenceConfiguration.frequency) {
+        case RecurrenceFrequency.daily:
+          _task!.recurrenceType = RecurrenceType.daily;
+          break;
+        case RecurrenceFrequency.weekly:
+          if (recurrenceConfiguration.daysOfWeek != null && recurrenceConfiguration.daysOfWeek!.isNotEmpty) {
+            _task!.recurrenceType = RecurrenceType.daysOfWeek;
+          } else {
+            _task!.recurrenceType = RecurrenceType.weekly;
+          }
+          break;
+        case RecurrenceFrequency.monthly:
+          _task!.recurrenceType = RecurrenceType.monthly;
+          break;
+        case RecurrenceFrequency.yearly:
+          _task!.recurrenceType = RecurrenceType.yearly;
+          break;
+        case RecurrenceFrequency.hourly:
+          _task!.recurrenceType = RecurrenceType.hourly;
+          break;
+        case RecurrenceFrequency.minutely:
+          _task!.recurrenceType = RecurrenceType.minutely;
+          break;
+      }
+
+      _task!.recurrenceInterval = recurrenceConfiguration.interval;
+
+      if (recurrenceConfiguration.daysOfWeek != null) {
+        final days = recurrenceConfiguration.daysOfWeek!.map((d) => WeekDays.values[d - 1]).toList();
+        _task!.setRecurrenceDays(days);
+      } else {
+        // If generic weekly without specific days, we might want null or empty string.
+        // Legacy 'weekly' means every X weeks. Legacy 'daysOfWeek' means every X weeks on [days].
+        // setRecurrenceDays(null) clears it.
+        _task!.setRecurrenceDays(null);
+      }
+
+      _task!.recurrenceEndDate = recurrenceConfiguration.endDate;
+      _task!.recurrenceCount = recurrenceConfiguration.occurrenceCount;
       _visibleOptionalFields.add(keyRecurrence);
     }
 
@@ -575,7 +609,29 @@ class TaskDetailsController extends ChangeNotifier {
         }
         break;
       case RecurrenceType.monthly:
-        summary = _translationService.translate(TaskTranslationKeys.recurrenceMonthly);
+        if (_task!.recurrenceConfiguration?.monthlyPatternType == MonthlyPatternType.relativeDay) {
+          final config = _task!.recurrenceConfiguration!;
+          final weekModifierKey = switch (config.weekOfMonth) {
+            1 => TaskTranslationKeys.recurrenceWeekModifierFirst,
+            2 => TaskTranslationKeys.recurrenceWeekModifierSecond,
+            3 => TaskTranslationKeys.recurrenceWeekModifierThird,
+            4 => TaskTranslationKeys.recurrenceWeekModifierFourth,
+            _ => TaskTranslationKeys.recurrenceWeekModifierLast,
+          };
+
+          final dayName = _translationService
+              .translate(SharedTranslationKeys.getWeekDayTranslationKey(config.dayOfWeek!, short: false));
+
+          summary =
+              '${_translationService.translate(TaskTranslationKeys.recurrenceOnThe)} ${_translationService.translate(weekModifierKey)} $dayName';
+        } else if (_task!.recurrenceConfiguration?.monthlyPatternType == MonthlyPatternType.specificDay &&
+            _task!.recurrenceConfiguration!.dayOfMonth != null) {
+          summary =
+              '${_translationService.translate(TaskTranslationKeys.recurrenceOnThe)} ${_task!.recurrenceConfiguration!.dayOfMonth}${_translationService.translate(TaskTranslationKeys.recurrenceDaySuffix)}';
+        } else {
+          summary = _translationService.translate(TaskTranslationKeys.recurrenceMonthly);
+        }
+
         if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
           summary +=
               ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixMonths)})';
@@ -586,6 +642,20 @@ class TaskDetailsController extends ChangeNotifier {
         if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
           summary +=
               ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixYears)})';
+        }
+        break;
+      case RecurrenceType.hourly:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceHourly);
+        if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
+          summary +=
+              ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixHours)})';
+        }
+        break;
+      case RecurrenceType.minutely:
+        summary = _translationService.translate(TaskTranslationKeys.recurrenceMinutely);
+        if (_task!.recurrenceInterval != null && _task!.recurrenceInterval! > 1) {
+          summary +=
+              ' (${_translationService.translate(TaskTranslationKeys.recurrenceIntervalPrefix)} ${_task!.recurrenceInterval} ${_translationService.translate(TaskTranslationKeys.recurrenceIntervalSuffixMinutes)})';
         }
         break;
       default:

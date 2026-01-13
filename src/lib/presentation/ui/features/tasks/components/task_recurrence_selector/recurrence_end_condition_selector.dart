@@ -30,40 +30,61 @@ class RecurrenceEndConditionSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        ToggleButtons(
-          isSelected: [
-            endDate == null && count == null, // Forever
-            endDate != null, // Until Date
-            count != null, // Count
-          ],
-          onPressed: (index) => _handleTogglePress(index, context),
-          renderBorder: false,
-          borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-          constraints: const BoxConstraints(minHeight: 44, minWidth: 44),
-          color: AppTheme.textColor,
-          selectedColor: theme.colorScheme.onPrimary,
-          fillColor: theme.colorScheme.primary,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          crossAxisAlignment: constraints.hasBoundedWidth ? CrossAxisAlignment.stretch : CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-              child: Text(translationService.translate(TaskTranslationKeys.recurrenceEndsNever)),
+            ToggleButtons(
+              isSelected: [
+                endDate == null && count == null, // Forever
+                endDate != null, // Until Date
+                count != null, // Count
+              ],
+              onPressed: (index) => _handleTogglePress(index, context),
+              renderBorder: false,
+              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+              constraints: BoxConstraints(
+                minHeight: 44,
+                minWidth: (constraints.hasBoundedWidth && constraints.maxWidth != double.infinity)
+                    ? (constraints.maxWidth - 4) / 3
+                    : 120, // Improved fallback for unconstrained or infinite width
+              ),
+              color: AppTheme.textColor,
+              selectedColor: theme.colorScheme.onPrimary,
+              fillColor: theme.colorScheme.primary,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(
+                    translationService.translate(TaskTranslationKeys.recurrenceEndsNever),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(
+                    translationService.translate(TaskTranslationKeys.recurrenceEndsOnDate),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(
+                    translationService.translate(TaskTranslationKeys.recurrenceEndsAfter),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-              child: Text(translationService.translate(TaskTranslationKeys.recurrenceEndsOnDate)),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
-              child: Text(translationService.translate(TaskTranslationKeys.recurrenceEndsAfter)),
-            ),
+            if (endDate != null) Align(alignment: Alignment.centerLeft, child: _buildDatePicker(context)),
+            if (count != null) _buildCountInput(),
           ],
-        ),
-        if (endDate != null) _buildDatePicker(context),
-        if (count != null) _buildCountInput(),
-      ],
+        );
+      },
     );
   }
 
@@ -136,14 +157,17 @@ class RecurrenceEndConditionSelector extends StatelessWidget {
   }
 
   Widget _buildCountInput() {
-    return Padding(
-      padding: const EdgeInsets.only(top: AppTheme.sizeMedium),
-      child: NumericInput(
-        value: count ?? 1,
-        minValue: 1,
-        maxValue: 999,
-        onValueChanged: onCountChanged,
-        style: NumericInputStyle.contained,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(top: AppTheme.sizeMedium),
+        child: NumericInput(
+          value: count ?? 1,
+          minValue: 1,
+          maxValue: 999,
+          onValueChanged: onCountChanged,
+          style: NumericInputStyle.contained,
+        ),
       ),
     );
   }
