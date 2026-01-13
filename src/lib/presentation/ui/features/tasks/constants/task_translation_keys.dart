@@ -181,6 +181,8 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String recurrenceLabel = 'tasks.recurrence.label';
   static const String recurrenceNone = 'tasks.recurrence.none';
   static const String recurrenceDaily = 'tasks.recurrence.daily';
+  static const String recurrenceHourly = 'tasks.recurrence.hourly';
+  static const String recurrenceMinutely = 'tasks.recurrence.minutely';
   static const String recurrenceWeekly = 'tasks.recurrence.weekly';
   static const String recurrenceDaysOfWeek = 'tasks.recurrence.daysOfWeek';
   static const String recurrenceMonthly = 'tasks.recurrence.monthly';
@@ -189,6 +191,8 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String recurrenceIntervalLabel = 'tasks.recurrence.interval.label';
   static const String recurrenceIntervalPrefix = 'tasks.recurrence.interval.prefix';
   static const String recurrenceIntervalSuffixDays = 'tasks.recurrence.interval.suffix.days';
+  static const String recurrenceIntervalSuffixHours = 'tasks.recurrence.interval.suffix.hours';
+  static const String recurrenceIntervalSuffixMinutes = 'tasks.recurrence.interval.suffix.minutes';
   static const String recurrenceIntervalSuffixWeeks = 'tasks.recurrence.interval.suffix.weeks';
   static const String recurrenceIntervalSuffixMonths = 'tasks.recurrence.interval.suffix.months';
   static const String recurrenceIntervalSuffixYears = 'tasks.recurrence.interval.suffix.years';
@@ -208,6 +212,18 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String recurrenceWeekSuffix = 'tasks.recurrence.weekSuffix';
   static const String recurrenceMonthSuffix = 'tasks.recurrence.monthSuffix';
   static const String recurrenceYearSuffix = 'tasks.recurrence.yearSuffix';
+  static const String recurrenceMonthlyPatternLabel = 'tasks.recurrence.monthly_pattern_label';
+  static const String recurrenceAdvancedLabel = 'tasks.recurrence.advanced_label';
+  static const String recurrenceRegenerateLabel = 'tasks.recurrence.regenerate_label';
+  static const String recurrenceRegenerateDescription = 'tasks.recurrence.regenerate_description';
+  static const String recurrenceOnSpecificDay = 'tasks.recurrence.on_specific_day';
+  static const String recurrenceOnRelativeDay = 'tasks.recurrence.on_relative_day';
+  static const String recurrenceOnThe = 'tasks.recurrence.on_the';
+  static const String recurrenceWeekModifierFirst = 'tasks.recurrence.week_modifiers.first';
+  static const String recurrenceWeekModifierSecond = 'tasks.recurrence.week_modifiers.second';
+  static const String recurrenceWeekModifierThird = 'tasks.recurrence.week_modifiers.third';
+  static const String recurrenceWeekModifierFourth = 'tasks.recurrence.week_modifiers.fourth';
+  static const String recurrenceWeekModifierLast = 'tasks.recurrence.week_modifiers.last';
   // Recurrence Summary
   static const String on = 'tasks.recurrence.summary.on';
   static const String starts = 'tasks.recurrence.summary.starts';

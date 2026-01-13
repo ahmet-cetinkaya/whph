@@ -47,7 +47,8 @@ void main() {
   group('specific migration scenarios', () {
     test('migration from v29 to v30 sets default status to 0 (Complete)', () async {
       final schema29 = await verifier.schemaAt(29);
-      final db = AppDatabase(schema29.newConnection());
+      // Use TestAppDatabase to enforce schema version 30 during this test
+      final db = TestAppDatabase(schema29.newConnection(), 30);
 
       // Create a dummy record in v29.
       final habitId = 'habit_1';
@@ -76,4 +77,13 @@ void main() {
       await db.close();
     });
   });
+}
+
+class TestAppDatabase extends AppDatabase {
+  final int _targetVersion;
+
+  TestAppDatabase(super.e, this._targetVersion);
+
+  @override
+  int get schemaVersion => _targetVersion;
 }

@@ -3,8 +3,6 @@ import 'package:acore/time/week_days.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
 /// A widget for selecting weekdays in recurrence configuration
 class RecurrenceWeekdaySelector extends StatelessWidget {
@@ -42,76 +40,49 @@ class RecurrenceWeekdaySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(AppTheme.sizeLarge),
-          decoration: BoxDecoration(
-            color: AppTheme.surface1,
-            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const StyledIcon(Icons.calendar_view_week, isActive: true),
-                  const SizedBox(width: AppTheme.sizeLarge),
-                  Expanded(
-                    child: Text(
-                      translationService.translate(TaskTranslationKeys.recurrenceWeekDaysLabel),
-                      style: AppTheme.labelLarge,
-                    ),
-                  ),
-                ],
+    return Wrap(
+      spacing: AppTheme.sizeSmall,
+      runSpacing: AppTheme.sizeSmall,
+      alignment: WrapAlignment.start,
+      children: WeekDays.values.map((day) {
+        final isSelected = selectedDays?.contains(day) ?? false;
+        return InkWell(
+          onTap: () {
+            // Create a new list instead of mutating the existing one
+            List<WeekDays> currentDays;
+            if (isSelected) {
+              if (selectedDays != null || selectedDays!.length > 1) {
+                currentDays = selectedDays!.where((d) => d != day).toList();
+              } else {
+                currentDays = [];
+              }
+            } else {
+              currentDays = [...(selectedDays ?? []), day];
+            }
+            onDaysChanged(currentDays);
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isSelected ? theme.colorScheme.primary : Colors.transparent,
+              border: Border.all(
+                color: isSelected ? theme.colorScheme.primary : AppTheme.borderColor,
               ),
-              const SizedBox(height: AppTheme.sizeLarge),
-              Wrap(
-                spacing: AppTheme.sizeSmall,
-                runSpacing: AppTheme.sizeSmall,
-                alignment: WrapAlignment.center,
-                children: WeekDays.values.map((day) {
-                  final isSelected = selectedDays?.contains(day) ?? false;
-                  return InkWell(
-                    onTap: () {
-                      final currentDays = List<WeekDays>.from(selectedDays ?? []);
-                      if (isSelected) {
-                        if (currentDays.length > 1) {
-                          currentDays.remove(day);
-                        }
-                      } else {
-                        currentDays.add(day);
-                      }
-                      onDaysChanged(currentDays);
-                    },
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: isSelected ? theme.colorScheme.primary : Colors.transparent,
-                        border: Border.all(
-                          color: isSelected ? theme.colorScheme.primary : AppTheme.borderColor,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        _getWeekDayLabel(day).substring(0, 1),
-                        style: TextStyle(
-                          color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              _getWeekDayLabel(day).substring(0, 1),
+              style: TextStyle(
+                color: isSelected ? theme.colorScheme.onPrimary : AppTheme.textColor,
+                fontWeight: FontWeight.bold,
               ),
-            ],
+            ),
           ),
-        ),
-        const SizedBox(height: AppTheme.sizeLarge),
-      ],
+        );
+      }).toList(),
     );
   }
 }

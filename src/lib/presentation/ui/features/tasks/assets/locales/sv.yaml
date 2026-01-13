@@ -317,6 +317,8 @@ tasks:
         months: månad(er)
         weeks: vecka(or)
         years: år
+        hours: timme(ar)
+        minutes: minut(er)
     label: Upprepning
     monthSuffix: månad(er)
     monthly: Månadsvis
@@ -340,6 +342,23 @@ tasks:
     weeks_plural: veckor
     months_plural: månader
     years_plural: år
+    hourly: Varje timme
+    minutely: Varje minut
+    monthly_pattern_label: Månatligt mönster
+    advanced_label: Avancerade inställningar
+    regenerate_label: Regenerera efter slutförande
+    regenerate_description:
+      När aktiverat kommer nästa förekomst att schemaläggas
+      från slutförandet datumet, istället för det planerade datumet.
+    on_specific_day: Specifik dag
+    on_relative_day: Relativt dag
+    on_the: Den
+    week_modifiers:
+      first: Första
+      second: Andra
+      third: Tredje
+      fourth: Fjärde
+      last: Sista
   reminder:
     at_time: Vid den planerade tiden
     deadline_reminder_label: Påminnelse om tidsfrist

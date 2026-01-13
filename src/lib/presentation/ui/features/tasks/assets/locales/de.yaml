@@ -403,6 +403,8 @@ tasks:
         months: Monat(e)
         weeks: Woche(n)
         years: Jahr(e)
+        hours: Stunde(n)
+        minutes: Minute(n)
     label: Wiederholung
     monthSuffix: Monat(e)
     monthly: Monatlich
@@ -426,6 +428,23 @@ tasks:
     weeks_plural: Wochen
     months_plural: Monate
     years_plural: Jahre
+    hourly: Stündlich
+    minutely: Minütlich
+    monthly_pattern_label: Monatliches Muster
+    advanced_label: Erweiterte Einstellungen
+    regenerate_label: Nach Abschluss neu generieren
+    regenerate_description:
+      Wenn aktiviert, wird das nächste Vorkommen ab dem Abschlussdatum
+      geplant, anstatt vom geplanten Datum.
+    on_specific_day: Bestimmter Tag
+    on_relative_day: Relativer Tag
+    on_the: Am
+    week_modifiers:
+      first: Erste
+      second: Zweite
+      third: Dritte
+      fourth: Vierte
+      last: Letzte
   reminder:
     at_time: Zur geplanten Zeit
     deadline_reminder_label: Frist-Erinnerung

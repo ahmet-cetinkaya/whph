@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
@@ -12,6 +13,9 @@ import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/task_data_mapper.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/task_query_builder.dart';
 
@@ -51,6 +55,48 @@ class TaskTable extends Table {
   DateTimeColumn get recurrenceEndDate => dateTime().nullable()();
   IntColumn get recurrenceCount => integer().nullable()();
   TextColumn get recurrenceParentId => text().nullable()();
+  TextColumn get recurrenceConfiguration => text().map(const RecurrenceConfigurationConverter()).nullable()();
+}
+
+class RecurrenceConfigurationConverter extends TypeConverter<RecurrenceConfiguration, String> {
+  const RecurrenceConfigurationConverter();
+
+  @override
+  RecurrenceConfiguration fromSql(String fromDb) {
+    try {
+      return RecurrenceConfiguration.fromJson(jsonDecode(fromDb) as Map<String, dynamic>);
+    } on FormatException catch (e, stackTrace) {
+      Logger.error(
+        'Invalid JSON in recurrence_configuration column - returning safe default. Task ID context not available at this layer [$TaskErrorIds.recurrenceConfigInvalidJson]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
+      // Return a safe default configuration instead of crashing
+      return RecurrenceConfiguration.safeDefault();
+    } on TypeError catch (e, stackTrace) {
+      Logger.error(
+        'Invalid recurrence_configuration data structure - returning safe default [$TaskErrorIds.recurrenceConfigInvalidStructure]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
+      return RecurrenceConfiguration.safeDefault();
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Unexpected error deserializing RecurrenceConfiguration - returning safe default [$TaskErrorIds.recurrenceConfigDeserializeError]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
+      return RecurrenceConfiguration.safeDefault();
+    }
+  }
+
+  @override
+  String toSql(RecurrenceConfiguration value) {
+    return jsonEncode(value.toJson());
+  }
 }
 
 class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
@@ -159,9 +205,14 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         rowIds.map((id) => Variable.withInt(id)).toList(),
       );
       Logger.info('Cleaned up ${rowIds.length} duplicate tasks for ID $taskId.');
-    } catch (e) {
+    } on Exception catch (e, stackTrace) {
       // Log the error but don't throw - this is a background cleanup operation
-      Logger.warning('Failed to cleanup duplicate tasks for ID $taskId: $e');
+      Logger.error(
+        'Repository: Failed to cleanup duplicate tasks for ID $taskId [$TaskErrorIds.repositoryDuplicateCleanupFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
     }
   }
 
@@ -476,6 +527,10 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
       deadlineDateReminderTime: task.deadlineDateReminderTime,
       deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
+      recurrenceEndDate: task.recurrenceEndDate,
+      recurrenceCount: task.recurrenceCount,
+      recurrenceParentId: task.recurrenceParentId,
+      recurrenceConfiguration: task.recurrenceConfiguration,
       createdDate: task.createdDate,
       modifiedDate: task.modifiedDate,
       deletedDate: task.deletedDate,

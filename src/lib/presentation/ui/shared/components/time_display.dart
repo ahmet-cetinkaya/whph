@@ -59,7 +59,7 @@ class _TimeDisplayState extends State<TimeDisplay> {
         (widget.totalSeconds > 0) ? theme.colorScheme.onSurface : theme.colorScheme.onSurface.withValues(alpha: 0.7);
 
     final textWidget = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+      padding: const EdgeInsets.only(left: AppTheme.sizeMedium, right: AppTheme.sizeSmall),
       child: Text(
         _getDisplayText(),
         style: TextStyle(

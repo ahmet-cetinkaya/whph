@@ -360,6 +360,8 @@ tasks:
         months: ヶ月
         weeks: 週
         years: 年
+        hours: 時間
+        minutes: 分
     label: 繰り返し
     monthSuffix: ヶ月
     monthly: 毎月
@@ -383,6 +385,21 @@ tasks:
     weeks_plural: 週間
     months_plural: ヶ月間
     years_plural: 年間
+    hourly: 毎時
+    minutely: 毎分
+    monthly_pattern_label: 月次パターン
+    advanced_label: 詳細設定
+    regenerate_label: 完了後に再生成
+    regenerate_description: 有効にすると、次の予定日は完了日からスケジュールされ、予定された日ではなくなります。
+    on_specific_day: 特定の日
+    on_relative_day: 相対的な日
+    on_the: ""
+    week_modifiers:
+      first: 第1
+      second: 第2
+      third: 第3
+      fourth: 第4
+      last: 最後
   reminder:
     at_time: 予定時刻
     deadline_reminder_label: 期限のリマインダー

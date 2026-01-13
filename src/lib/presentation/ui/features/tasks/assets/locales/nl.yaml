@@ -321,6 +321,8 @@ tasks:
         months: maand(en)
         weeks: week(en)
         years: jaar(en)
+        hours: uur/uren
+        minutes: minuten
     label: Herhaling
     monthSuffix: maand(en)
     monthly: Maandelijks
@@ -344,6 +346,23 @@ tasks:
     weeks_plural: weken
     months_plural: maanden
     years_plural: jaren
+    hourly: Elk uur
+    minutely: Elke minuut
+    monthly_pattern_label: Maandelijks patroon
+    advanced_label: Geavanceerde instellingen
+    regenerate_label: Regenereren na voltooiing
+    regenerate_description:
+      Wanneer ingeschakeld, wordt de volgende gebeurtenis gepland
+      vanaf de voltooiingsdatum, in plaats van de geplande datum.
+    on_specific_day: Specifieke dag
+    on_relative_day: Relatieve dag
+    on_the: De
+    week_modifiers:
+      first: Eerste
+      second: Tweede
+      third: Derde
+      fourth: Vierde
+      last: Laatste
   reminder:
     at_time: Op de geplande tijd
     deadline_reminder_label: Deadline Herinnering

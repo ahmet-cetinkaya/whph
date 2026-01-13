@@ -346,7 +346,7 @@ tasks:
     count: Tekrarlama sayısı
     custom: Özel
     daily: Günlük
-    daySuffix: gün
+    daySuffix: "."
     daysOfWeek: Haftanın günleri
     endDate: Bitiş tarihi
     ends:
@@ -360,11 +360,13 @@ tasks:
       prefix: her
       suffix:
         days: gün
+        hours: saat
+        minutes: dakika
         months: ay
         weeks: hafta
         years: yıl
     label: Tekrarlama
-    monthSuffix: ay
+    monthSuffix: "."
     monthly: Aylık
     none: Tekrarlama yok
     range: Aralık
@@ -379,13 +381,30 @@ tasks:
       starts: Başlangıç
       "on": de
     weekDays: Haftanın günleri
-    weekSuffix: hafta
+    weekSuffix: "."
     weekly: Haftalık
-    yearSuffix: yıl
+    yearSuffix: "."
     yearly: Yıllık
     weeks_plural: haftalar
     months_plural: aylar
     years_plural: yıllar
+    hourly: Saatlik
+    minutely: Dakikalık
+    monthly_pattern_label: Aylık Desen
+    advanced_label: Gelişmiş Ayarlar
+    regenerate_label: Tamamlandıktan sonra yeniden oluştur
+    regenerate_description:
+      Etkinleştirildiğinde, bir sonraki oluşum planlanan tarih
+      yerine tamamlanma tarihinden itibaren planlanacaktır.
+    on_specific_day: Belirli Gün
+    on_relative_day: Göreceli Gün
+    on_the: ""
+    week_modifiers:
+      first: İlk
+      second: İkinci
+      third: Üçüncü
+      fourth: Dördüncü
+      last: Son
   reminder:
     at_time: Zamanında
     deadline_reminder_label: Son Tarih Hatırlatıcısı

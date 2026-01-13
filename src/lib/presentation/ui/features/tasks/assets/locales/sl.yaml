@@ -318,6 +318,8 @@ tasks:
         months: mesec(e)
         weeks: teden(ek)
         years: leto(a)
+        hours: ura/ure
+        minutes: minuta/minute
     label: Ponavljanje
     monthSuffix: mesec(e)
     monthly: Mesečno
@@ -341,6 +343,23 @@ tasks:
     weeks_plural: tedni
     months_plural: meseci
     years_plural: leta
+    hourly: Vsako uro
+    minutely: Vsako minuto
+    monthly_pattern_label: Mesečni vzorec
+    advanced_label: Napredne nastavitve
+    regenerate_label: Ponovno ustvari po zaključku
+    regenerate_description:
+      Ko je omogočeno, bo naslednje ponovitev načrtovano od
+      datuma zaključka namesto od načrtovanega datuma.
+    on_specific_day: Določen dan
+    on_relative_day: Relativen dan
+    on_the: ""
+    week_modifiers:
+      first: Prvi
+      second: Drugi
+      third: Tretji
+      fourth: Četrti
+      last: Zadnji
   reminder:
     at_time: Ob načrtovanem času
     deadline_reminder_label: Opomnik za rok

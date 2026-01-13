@@ -14,6 +14,7 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 import 'save_task_command_test.mocks.dart';
 
@@ -510,6 +511,79 @@ void main() {
             task.recurrenceStartDate == null &&
             task.recurrenceEndDate == null &&
             task.recurrenceCount == null),
+      ))).called(1);
+    });
+
+    test('should save recurrenceConfiguration correctly', () async {
+      // Arrange
+      const taskId = 'task-1';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Test Task',
+        recurrenceType: RecurrenceType.none,
+      );
+
+      final recurrenceConfiguration = RecurrenceConfiguration(
+        frequency: RecurrenceFrequency.monthly,
+        interval: 1,
+        monthlyPatternType: MonthlyPatternType.relativeDay,
+        weekOfMonth: 2,
+        dayOfWeek: 2,
+      );
+
+      final command = SaveTaskCommand(
+        id: taskId,
+        title: 'Test Task',
+        recurrenceConfiguration: recurrenceConfiguration,
+        recurrenceType: RecurrenceType.monthly,
+      );
+
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) =>
+            task.id == taskId &&
+            task.recurrenceType == RecurrenceType.monthly &&
+            task.recurrenceConfiguration == recurrenceConfiguration),
+      ))).called(1);
+    });
+
+    test('should clear recurrenceConfiguration when recurrence type is none', () async {
+      // Arrange
+      const taskId = 'task-1';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Test Task',
+        recurrenceType: RecurrenceType.monthly,
+        recurrenceConfiguration: RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.monthly,
+          interval: 1,
+        ),
+      );
+
+      final command = SaveTaskCommand(
+        id: taskId,
+        title: 'Test Task',
+        recurrenceType: RecurrenceType.none,
+      );
+
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await handler(command);
+
+      // Assert
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) =>
+            task.id == taskId && task.recurrenceType == RecurrenceType.none && task.recurrenceConfiguration == null),
       ))).called(1);
     });
   });

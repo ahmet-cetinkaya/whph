@@ -329,6 +329,8 @@ tasks:
         months: μήνα(ες)
         weeks: εβδομάδα(ες)
         years: χρόνο(υς)
+        hours: ώρα/ώρες
+        minutes: λεπτά
     label: Επανάληψη
     monthSuffix: μήνα(ες)
     monthly: Μηνιαία
@@ -352,6 +354,23 @@ tasks:
     weeks_plural: εβδομάδες
     months_plural: μήνες
     years_plural: έτη
+    hourly: Κάθε ώρα
+    minutely: Κάθε λεπτό
+    monthly_pattern_label: Μηνιαίο μοτίβο
+    advanced_label: Ρυθμίσεις για προχωρημένους
+    regenerate_label: Αναδημιουργία μετά την ολοκλήρωση
+    regenerate_description:
+      Όταν είναι ενεργοποιημένο, η επόμενη εμφάνιση θα προγραμματιστεί
+      από την ημερομηνία ολοκλήρωσης αντί για την προγραμματισμένη ημερομηνία.
+    on_specific_day: Συγκεκριμένη ημέρα
+    on_relative_day: Σχετική ημέρα
+    on_the: Στις
+    week_modifiers:
+      first: Πρώτη
+      second: Δεύτερη
+      third: Τρίτη
+      fourth: Τέταρτη
+      last: Τελευταία
   reminder:
     at_time: Την προγραμματισμένη ώρα
     deadline_reminder_label: Υπενθύμιση προθεσμίας

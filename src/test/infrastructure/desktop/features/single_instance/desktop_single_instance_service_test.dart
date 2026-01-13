@@ -76,12 +76,12 @@ void main() {
 
     test('sendCommandAndStreamOutput should receive streamed data', () async {
       // Start listener that echoes back logic
-      await service.startListeningForCommands((cmd) {
+      await service.startListeningForCommands((cmd) async {
         if (cmd == 'STREAM') {
-          // Fire-and-forget broadcasts in test
-          service.broadcastMessage('Line 1');
-          service.broadcastMessage('Line 2');
-          service.broadcastMessage('DONE');
+          // Broadcast messages sequentially and wait for them to be written
+          await service.broadcastMessage('Line 1');
+          await service.broadcastMessage('Line 2');
+          await service.broadcastMessage('DONE');
         }
       });
 

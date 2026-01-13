@@ -325,6 +325,8 @@ tasks:
         months: lună(luni)
         weeks: săptămână(ă)
         years: an(i)
+        hours: oră/ori
+        minutes: minut(e)
     label: Recurență
     monthSuffix: lună(luni)
     monthly: Lunar
@@ -348,6 +350,23 @@ tasks:
     weeks_plural: săptămâni
     months_plural: luni
     years_plural: ani
+    hourly: Fiecare oră
+    minutely: Fiecare minut
+    monthly_pattern_label: Model lunar
+    advanced_label: Setări avansate
+    regenerate_label: Regenerați după finalizare
+    regenerate_description:
+      Când este activat, următoarea apariție va fi programată
+      din data de finalizare, în loc de data planificată.
+    on_specific_day: Zi specifică
+    on_relative_day: Zi relativă
+    on_the: ""
+    week_modifiers:
+      first: Primul
+      second: Al doilea
+      third: Al treilea
+      fourth: Al patrulea
+      last: Ultimul
   reminder:
     at_time: La ora planificată
     deadline_reminder_label: Memento termen limită

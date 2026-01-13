@@ -2,6 +2,8 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_remi
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 
 class ReminderCalculationService extends IReminderCalculationService {
   final ITaskRecurrenceService _recurrenceService;
@@ -50,8 +52,21 @@ class ReminderCalculationService extends IReminderCalculationService {
         case ReminderTime.none:
           return null;
       }
-    } catch (e) {
-      Logger.error('ReminderCalculationService: Error calculating reminder datetime: $e');
+    } on ArgumentError catch (e) {
+      // Invalid argument (e.g., negative duration, overflow)
+      Logger.error(
+        'ReminderCalculationService: Invalid argument for reminder calculation [$TaskErrorIds.reminderCalculateDateTimeFailed]',
+        error: e,
+        component: DomainLogComponents.task,
+      );
+      return null;
+    } catch (e, stackTrace) {
+      Logger.error(
+        'ReminderCalculationService: Error calculating reminder datetime [$TaskErrorIds.reminderCalculateDateTimeFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
       return null;
     }
   }
@@ -143,8 +158,21 @@ class ReminderCalculationService extends IReminderCalculationService {
             ? task.plannedDateReminderCustomOffset
             : task.deadlineDateReminderCustomOffset,
       );
-    } catch (e) {
-      Logger.error('ReminderCalculationService: Error getting next reminder occurrence: $e');
+    } on StateError catch (e) {
+      // Task state error (e.g., invalid recurrence configuration)
+      Logger.error(
+        'ReminderCalculationService: Task state error in getNextReminderOccurrence [$TaskErrorIds.reminderGetNextOccurrenceFailed]',
+        error: e,
+        component: DomainLogComponents.task,
+      );
+      return null;
+    } catch (e, stackTrace) {
+      Logger.error(
+        'ReminderCalculationService: Error getting next reminder occurrence [$TaskErrorIds.reminderGetNextOccurrenceFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
       return null;
     }
   }
@@ -182,8 +210,21 @@ class ReminderCalculationService extends IReminderCalculationService {
 
       final timeDifference = nextReminder.difference(currentTime).abs();
       return timeDifference.inMinutes <= 1;
-    } catch (e) {
-      Logger.error('ReminderCalculationService: Error checking if reminder should trigger: $e');
+    } on ArgumentError catch (e) {
+      // Invalid argument (e.g., null date in difference calculation)
+      Logger.error(
+        'ReminderCalculationService: Invalid argument in shouldReminderTrigger [$TaskErrorIds.reminderShouldTriggerCheckFailed]',
+        error: e,
+        component: DomainLogComponents.task,
+      );
+      return false;
+    } catch (e, stackTrace) {
+      Logger.error(
+        'ReminderCalculationService: Error checking if reminder should trigger [$TaskErrorIds.reminderShouldTriggerCheckFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
       return false;
     }
   }

@@ -1,11 +1,16 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'dart:convert';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 /// Handles conversion between database rows and Task entities.
 class TaskDataMapper {
   /// Converts a dynamic value to DateTime, handling various storage formats.
-  DateTime? convertToDateTime(dynamic value) {
+  DateTime? convertToDateTime(dynamic value, {String? fieldName}) {
     if (value == null) return null;
     if (value is DateTime) return value.toUtc();
     if (value is int) {
@@ -17,8 +22,16 @@ class TaskDataMapper {
     if (value is String) {
       // Try to parse ISO 8601 string and ensure UTC
       final dateTime = DateTime.tryParse(value);
-      return dateTime?.toUtc();
+      if (dateTime != null) return dateTime.toUtc();
+      Logger.warning(
+        'TaskDataMapper: Failed to parse DateTime from string: "$value"${fieldName != null ? " for field $fieldName" : ""}',
+      );
+      return null;
     }
+
+    Logger.warning(
+      'TaskDataMapper: Unexpected DateTime value type: ${value.runtimeType} with value "$value"${fieldName != null ? " for field $fieldName" : ""}',
+    );
     return null;
   }
 
@@ -77,6 +90,23 @@ class TaskDataMapper {
     task.recurrenceCount = data['recurrence_count'] as int?;
     task.recurrenceParentId = data['recurrence_parent_id'] as String?;
 
+    // RecurrenceConfiguration
+    if (data['recurrence_configuration'] != null && (data['recurrence_configuration'] as String).isNotEmpty) {
+      try {
+        task.recurrenceConfiguration = RecurrenceConfiguration.fromJson(
+            jsonDecode(data['recurrence_configuration'] as String) as Map<String, dynamic>);
+      } catch (e, stackTrace) {
+        Logger.error(
+          'Failed to deserialize RecurrenceConfiguration for task ${data['id']} - task will be loaded without recurrence configuration [$TaskErrorIds.recurrenceConfigInvalidJson]',
+          error: e,
+          stackTrace: stackTrace,
+          component: DomainLogComponents.task,
+        );
+        // Continue loading the task without recurrence configuration
+        // The task can still be viewed and edited, just won't recur
+      }
+    }
+
     return task;
   }
 
@@ -113,6 +143,7 @@ class TaskDataMapper {
       recurrenceEndDate: Value(recurrenceEndDate),
       recurrenceCount: Value(entity.recurrenceCount),
       recurrenceParentId: Value(entity.recurrenceParentId),
+      recurrenceConfiguration: Value(entity.recurrenceConfiguration),
     );
   }
 }

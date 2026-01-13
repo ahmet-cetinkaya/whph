@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 enum EisenhowerPriority {
   notUrgentNotImportant,
@@ -42,6 +45,8 @@ enum RecurrenceType {
   weekly,
   monthly,
   yearly,
+  hourly,
+  minutely,
 }
 
 @jsonSerializable
@@ -88,6 +93,9 @@ class Task extends BaseEntity<String> {
   // ID of the parent recurring task if this is an instance of a recurring task
   String? recurrenceParentId;
 
+  // Advanced Recurrence Configuration
+  RecurrenceConfiguration? recurrenceConfiguration;
+
   // Computed getter for backward compatibility
   bool get isCompleted => completedAt != null;
 
@@ -126,6 +134,7 @@ class Task extends BaseEntity<String> {
     this.recurrenceEndDate,
     this.recurrenceCount,
     this.recurrenceParentId,
+    this.recurrenceConfiguration,
   });
 
   /// Set recurrence days from a list of WeekDay enum values
@@ -161,6 +170,8 @@ class Task extends BaseEntity<String> {
         'recurrenceEndDate': recurrenceEndDate?.toIso8601String(),
         'recurrenceCount': recurrenceCount,
         'recurrenceParentId': recurrenceParentId,
+        'recurrenceConfiguration':
+            recurrenceConfiguration != null ? JsonMapper.serialize(recurrenceConfiguration) : null,
       };
 
   /// Creates a copy of this Task with specified fields replaced by the new values.
@@ -190,6 +201,7 @@ class Task extends BaseEntity<String> {
     DateTime? recurrenceEndDate,
     int? recurrenceCount,
     String? recurrenceParentId,
+    RecurrenceConfiguration? recurrenceConfiguration,
   }) {
     return Task(
       id: id ?? this.id,
@@ -216,6 +228,7 @@ class Task extends BaseEntity<String> {
       recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
       recurrenceCount: recurrenceCount ?? this.recurrenceCount,
       recurrenceParentId: recurrenceParentId ?? this.recurrenceParentId,
+      recurrenceConfiguration: recurrenceConfiguration ?? this.recurrenceConfiguration,
     );
   }
 
@@ -316,6 +329,44 @@ class Task extends BaseEntity<String> {
                 : DateTime.now();
       }
 
+      // Handle recurrence configuration deserialization manually
+      RecurrenceConfiguration? recurrenceConfiguration;
+      if (json['recurrenceConfiguration'] != null) {
+        try {
+          if (json['recurrenceConfiguration'] is String && (json['recurrenceConfiguration'] as String).isNotEmpty) {
+            final Map<String, dynamic> decodedJson = jsonDecode(json['recurrenceConfiguration'] as String);
+            recurrenceConfiguration = RecurrenceConfiguration.fromJson(decodedJson);
+          } else if (json['recurrenceConfiguration'] is Map) {
+            recurrenceConfiguration =
+                RecurrenceConfiguration.fromJson(json['recurrenceConfiguration'] as Map<String, dynamic>);
+          }
+        } on FormatException catch (e, stackTrace) {
+          Logger.error(
+            'Invalid JSON in task recurrenceConfiguration [$TaskErrorIds.recurrenceConfigInvalidJson]',
+            error: e,
+            stackTrace: stackTrace,
+            component: DomainLogComponents.task,
+          );
+          rethrow;
+        } on TypeError catch (e, stackTrace) {
+          Logger.error(
+            'Invalid task recurrenceConfiguration data structure [$TaskErrorIds.recurrenceConfigInvalidStructure]',
+            error: e,
+            stackTrace: stackTrace,
+            component: DomainLogComponents.task,
+          );
+          rethrow;
+        } catch (e, stackTrace) {
+          Logger.error(
+            'Unexpected error deserializing task recurrenceConfiguration [$TaskErrorIds.recurrenceConfigDeserializeError]',
+            error: e,
+            stackTrace: stackTrace,
+            component: DomainLogComponents.task,
+          );
+          rethrow;
+        }
+      }
+
       return Task(
         id: json['id'] as String,
         createdDate: DateTime.parse(json['createdDate'] as String),
@@ -343,6 +394,7 @@ class Task extends BaseEntity<String> {
             json['recurrenceEndDate'] != null ? DateTime.parse(json['recurrenceEndDate'] as String) : null,
         recurrenceCount: recurrenceCount,
         recurrenceParentId: json['recurrenceParentId'] as String?,
+        recurrenceConfiguration: recurrenceConfiguration,
       );
     } catch (e, stackTrace) {
       Logger.error('CRITICAL ERROR in Task.fromJson. JSON data keys: ${json.keys.toList()}',

@@ -359,6 +359,8 @@ tasks:
         months: 月
         weeks: 周
         years: 年
+        hours: 小时
+        minutes: 分钟
     label: 重复
     monthSuffix: 月
     monthly: 每月
@@ -382,6 +384,21 @@ tasks:
     weeks_plural: 周
     months_plural: 个月
     years_plural: 年
+    hourly: 每小时
+    minutely: 每分钟
+    monthly_pattern_label: 每月模式
+    advanced_label: 高级设置
+    regenerate_label: 完成后重新生成
+    regenerate_description: 启用后，下一次出现将从完成日期开始安排，而不是计划日期。
+    on_specific_day: 特定日期
+    on_relative_day: 相对日期
+    on_the: ""
+    week_modifiers:
+      first: 第一
+      second: 第二
+      third: 第三
+      fourth: 第四
+      last: 最后
   reminder:
     at_time: 在预定时间
     deadline_reminder_label: 截止日期提醒

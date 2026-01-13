@@ -62,7 +62,7 @@ class PrioritySelectField extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: Container(
         height: 36,
-        padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+        padding: const EdgeInsets.only(left: AppTheme.sizeMedium),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
         ),

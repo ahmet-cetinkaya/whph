@@ -33,3 +33,4 @@ export 'migration_v26_to_v27.dart';
 export 'migration_v27_to_v28.dart';
 export 'migration_v28_to_v29.dart';
 export 'migration_v29_to_v30.dart';
+export 'migration_v30_to_v31.dart';

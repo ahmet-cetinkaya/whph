@@ -399,6 +399,8 @@ tasks:
         months: měsíc(ů)
         weeks: týden(ů)
         years: rok(y)
+        hours: hodin
+        minutes: minut
     label: Opakování
     monthSuffix: měsíc(ů)
     monthly: Měsíčně
@@ -422,6 +424,23 @@ tasks:
     weeks_plural: týdny
     months_plural: měsíce
     years_plural: roky
+    hourly: Hodinově
+    minutely: Minutově
+    monthly_pattern_label: Měsíční vzor
+    advanced_label: Pokročilá nastavení
+    regenerate_label: Regenerovat po dokončení
+    regenerate_description:
+      Pokud je povoleno, další výskyt bude naplánován od data
+      dokončení místo plánovaného data.
+    on_specific_day: Konkrétní den
+    on_relative_day: Relativní den
+    on_the: V
+    week_modifiers:
+      first: První
+      second: Druhý
+      third: Třetí
+      fourth: Čtvrtý
+      last: Poslední
   reminder:
     at_time: V naplánovaném čase
     deadline_reminder_label: Připomenutí termínu

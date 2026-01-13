@@ -401,6 +401,8 @@ tasks:
         months: месяц(ы)
         weeks: неделя(и)
         years: год(ы)
+        hours: час(а/ов)
+        minutes: минут(а/ы)
     label: Повторение
     monthSuffix: месяц(ы)
     monthly: Ежемесячно
@@ -424,6 +426,23 @@ tasks:
     weeks_plural: недели
     months_plural: месяцы
     years_plural: годы
+    hourly: Ежечасно
+    minutely: Ежеминутно
+    monthly_pattern_label: Ежемесячный шаблон
+    advanced_label: Расширенные настройки
+    regenerate_label: Пересоздать после завершения
+    regenerate_description:
+      Если включено, следующее вхождение будет запланировано
+      от даты завершения, а не от запланированной даты.
+    on_specific_day: Конкретный день
+    on_relative_day: Относительный день
+    on_the: ""
+    week_modifiers:
+      first: Первый
+      second: Второй
+      third: Третий
+      fourth: Четвертый
+      last: Последний
   reminder:
     at_time: В запланированное время
     deadline_reminder_label: Напоминание о дедлайне

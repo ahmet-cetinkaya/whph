@@ -400,6 +400,8 @@ tasks:
         months: місяць/місяці
         weeks: тиждень/тижні
         years: рік/роки
+        hours: годин
+        minutes: хвилин
     label: Повторення
     monthSuffix: місяць/місяці
     monthly: Щомісяця
@@ -423,6 +425,23 @@ tasks:
     weeks_plural: тижні
     months_plural: місяці
     years_plural: роки
+    hourly: Щогодини
+    minutely: Щохвилини
+    monthly_pattern_label: Щомісячний шаблон
+    advanced_label: Розширені налаштування
+    regenerate_label: Регенерувати після завершення
+    regenerate_description:
+      Коли увімкнено, наступний випадок буде запланований від
+      дати завершення замість запланованої дати.
+    on_specific_day: Конкретний день
+    on_relative_day: Відносний день
+    on_the: ""
+    week_modifiers:
+      first: Перший
+      second: Другий
+      third: Третій
+      fourth: Четвертий
+      last: Останній
   reminder:
     at_time: У запланований час
     deadline_reminder_label: Нагадування про термін

@@ -403,6 +403,8 @@ tasks:
         months: mese/i
         weeks: settimana/e
         years: anno/i
+        hours: ora/e
+        minutes: minuto/i
     label: Ricorrenza
     monthSuffix: mese/i
     monthly: Mensile
@@ -426,6 +428,23 @@ tasks:
     weeks_plural: settimane
     months_plural: mesi
     years_plural: anni
+    hourly: Ogni ora
+    minutely: Ogni minuto
+    monthly_pattern_label: Modello mensile
+    advanced_label: Impostazioni avanzate
+    regenerate_label: Rigenera dopo il completamento
+    regenerate_description:
+      Quando abilitato, la successiva ricorrenza verrà pianificata
+      dalla data di completamento, invece della data pianificata.
+    on_specific_day: Giorno specifico
+    on_relative_day: Giorno relativo
+    on_the: Il
+    week_modifiers:
+      first: Primo
+      second: Secondo
+      third: Terzo
+      fourth: Quarto
+      last: Ultimo
   reminder:
     at_time: All'orario programmato
     deadline_reminder_label: Promemoria scadenza

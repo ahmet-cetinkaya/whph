@@ -219,9 +219,7 @@ class ToggleHabitCompletionCommandHandler
     DateTime occurredAt,
     HabitRecordStatus status,
   ) async {
-    if (status == HabitRecordStatus.complete &&
-        habit.estimatedTime != null &&
-        habit.estimatedTime! > 0) {
+    if (status == HabitRecordStatus.complete && habit.estimatedTime != null && habit.estimatedTime! > 0) {
       await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
         repository: _habitTimeRecordRepository,
         habitId: habitId,

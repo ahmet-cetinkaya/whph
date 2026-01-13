@@ -23,7 +23,8 @@ class TaskTimeSection {
         label: translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
         icon: TaskUiConstants.estimatedTimeIcon,
         widget: Padding(
-          padding: const EdgeInsets.only(top: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall, left: AppTheme.sizeSmall),
+          padding: const EdgeInsets.only(
+              top: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall, left: AppTheme.sizeSmall + AppTheme.sizeMedium),
           child: NumericInput(
             initialValue: estimatedTime ?? 0,
             minValue: 0,
