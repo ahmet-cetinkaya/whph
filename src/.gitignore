@@ -47,3 +47,10 @@ migrate_working_dir/
 key.properties
 *.jks
 *.keystore
+
+# Code generation
+*.g.dart
+*.mocks.dart
+
+# Drift ORM generated files
+test/drift/app_database/generated/
