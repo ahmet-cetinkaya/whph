@@ -32,7 +32,7 @@ class ShareDisambiguationDialog extends StatelessWidget {
   });
 
   /// Shows the disambiguation dialog and handles the item creation
-  /// Returns true if an item was successfully created, false otherwise
+  /// Returns true if an item was successfully created, false if dialog was dismissed or creation failed
   static Future<bool> show({
     required BuildContext context,
     required String sharedText,
@@ -40,6 +40,8 @@ class ShareDisambiguationDialog extends StatelessWidget {
     required ITranslationService translationService,
     required ShareItemResultCallback onItemSelected,
   }) async {
+    bool itemCreated = false;
+
     await ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
       isDismissible: true,
@@ -54,6 +56,7 @@ class ShareDisambiguationDialog extends StatelessWidget {
             // Execute the callback first (which creates item and shows notification)
             // while dialog context (and Overlay) is still available
             final result = await onItemSelected(type);
+            itemCreated = result;
             // Close the dialog after callback completes
             if (context.mounted) {
               Navigator.of(context).pop();
@@ -63,7 +66,7 @@ class ShareDisambiguationDialog extends StatelessWidget {
         ),
       ),
     );
-    return true; // Dialog was shown
+    return itemCreated;
   }
 
   @override
