@@ -24,7 +24,7 @@ scripts:
   pub:get: cd src && fvm flutter pub get
   run: cd src && fvm flutter run
   run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
-  clean: bash scripts/clean.sh
+  clean: bash src/scripts/clean.sh
   clean:db: bash src/scripts/clean_db.sh
   format: bash scripts/format.sh
   lint: ./scripts/lint.sh
