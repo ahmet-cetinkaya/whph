@@ -178,12 +178,16 @@ void main(List<String> args) async {
         try {
           Logger.debug('ShareService: Received shared text: text="$text", subject="$subject"');
 
-          // Wait for the app context to be available
-          await Future.delayed(Duration(milliseconds: 500));
-
-          final context = navigatorKey.currentContext;
+          // Wait for the app context to be available with polling mechanism
+          final context = await _waitForContext();
           if (context == null) {
-            Logger.warning('ShareService: No context available, cannot show disambiguation dialog');
+            Logger.warning('ShareService: No context available after timeout, cannot show disambiguation dialog');
+            return;
+          }
+
+          // Check if context is still mounted
+          if (!context.mounted) {
+            Logger.warning('ShareService: Context not mounted, cannot show disambiguation dialog');
             return;
           }
 
@@ -194,10 +198,6 @@ void main(List<String> args) async {
           Logger.debug('ShareService: Extracted title: "$title", description: "$description"');
 
           // Show disambiguation dialog with callback that handles item creation
-          if (!context.mounted) {
-            Logger.warning('ShareService: Context not mounted, cannot show disambiguation dialog');
-            return;
-          }
           await ShareDisambiguationDialog.show(
             context: context,
             sharedText: text,
@@ -321,4 +321,21 @@ Future<void> _cleanupOnExit() async {
   } catch (e) {
     debugPrint('Error during cleanup: $e');
   }
+}
+
+/// Waits for the app context to be available with a polling mechanism
+/// Returns null if context is not available within the timeout period
+Future<BuildContext?> _waitForContext({Duration timeout = const Duration(seconds: 5)}) async {
+  final deadline = DateTime.now().add(timeout);
+  const checkInterval = Duration(milliseconds: 100);
+
+  while (DateTime.now().isBefore(deadline)) {
+    final context = navigatorKey.currentContext;
+    if (context != null && context.mounted) {
+      return context;
+    }
+    await Future.delayed(checkInterval);
+  }
+
+  return null;
 }
