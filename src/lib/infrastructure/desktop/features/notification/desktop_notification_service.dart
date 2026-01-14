@@ -6,30 +6,24 @@ import 'package:mediatr/mediatr.dart';
 
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/windows/constants/windows_app_constants.dart';
-import 'package:whph/main.dart' show container;
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
-import 'package:acore/acore.dart' show DateTimeHelper;
 
 class DesktopNotificationService implements INotificationService {
   final Mediator _mediatr;
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
   final IWindowManager _windowManager;
   final INotificationPayloadHandler _payloadHandler;
-  final ITaskRecurrenceService _recurrenceService;
-  final TasksService _tasksService;
 
   DesktopNotificationService(
     Mediator mediatr,
@@ -38,9 +32,7 @@ class DesktopNotificationService implements INotificationService {
   )   : _flutterLocalNotifications = FlutterLocalNotificationsPlugin(),
         _mediatr = mediatr,
         _windowManager = windowManager,
-        _payloadHandler = payloadHandler,
-        _recurrenceService = container.resolve<ITaskRecurrenceService>(),
-        _tasksService = container.resolve<TasksService>();
+        _payloadHandler = payloadHandler;
 
   @override
   Future<void> init() async {
@@ -271,40 +263,14 @@ class DesktopNotificationService implements INotificationService {
     try {
       Logger.info('DesktopNotificationService: Completing task from notification: $taskId');
 
-      // Get current task details
-      final task = await _mediatr.send<GetTaskQuery, GetTaskQueryResponse>(
-        GetTaskQuery(id: taskId),
+      await _mediatr.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
       );
-
-      // Mark as completed - following the same pattern as TaskCompleteButton
-      final command = SaveTaskCommand(
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
-        deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
-        estimatedTime: task.estimatedTime,
-        completedAt: DateTime.now().toUtc(),
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        recurrenceType: task.recurrenceType,
-        recurrenceInterval: task.recurrenceInterval,
-        recurrenceDays: _recurrenceService.getRecurrenceDays(task),
-        recurrenceStartDate: task.recurrenceStartDate,
-        recurrenceEndDate: task.recurrenceEndDate,
-        recurrenceCount: task.recurrenceCount,
-      );
-
-      await _mediatr.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-      // Notify listeners that the task was completed (triggers UI refresh)
-      _tasksService.notifyTaskCompleted(taskId);
 
       Logger.info('DesktopNotificationService: Task completed successfully from notification');
     } catch (e, stackTrace) {
       Logger.error(
-        'DesktopNotificationService: Failed to complete task from notification',
+        '[$TaskErrorIds.notificationActionFailed] DesktopNotificationService: Failed to complete task from notification',
         error: e,
         stackTrace: stackTrace,
       );

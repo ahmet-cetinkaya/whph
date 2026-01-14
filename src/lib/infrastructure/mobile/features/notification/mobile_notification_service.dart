@@ -1,31 +1,25 @@
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:acore/acore.dart' show PlatformUtils, DateTimeHelper;
+import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart' as shared;
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/main.dart' show container;
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
-  final ITaskRecurrenceService _recurrenceService;
-  final TasksService _tasksService;
 
-  MobileNotificationService(this._mediator, [ITaskRecurrenceService? recurrenceService, TasksService? tasksService])
-      : _flutterLocalNotifications = FlutterLocalNotificationsPlugin(),
-        _recurrenceService = recurrenceService ?? container.resolve<ITaskRecurrenceService>(),
-        _tasksService = tasksService ?? container.resolve<TasksService>();
+  MobileNotificationService(
+    this._mediator,
+  ) : _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
 
   @override
   Future<void> init() async {
@@ -42,40 +36,14 @@ class MobileNotificationService implements INotificationService {
     try {
       Logger.info('MobileNotificationService: Completing task from notification: $taskId');
 
-      // Get current task details
-      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
-        GetTaskQuery(id: taskId),
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
       );
-
-      // Mark as completed - following the same pattern as TaskCompleteButton
-      final command = SaveTaskCommand(
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
-        deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
-        estimatedTime: task.estimatedTime,
-        completedAt: DateTime.now().toUtc(),
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        recurrenceType: task.recurrenceType,
-        recurrenceInterval: task.recurrenceInterval,
-        recurrenceDays: _recurrenceService.getRecurrenceDays(task),
-        recurrenceStartDate: task.recurrenceStartDate,
-        recurrenceEndDate: task.recurrenceEndDate,
-        recurrenceCount: task.recurrenceCount,
-      );
-
-      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-      // Notify listeners that the task was completed (triggers UI refresh)
-      _tasksService.notifyTaskCompleted(taskId);
 
       Logger.info('MobileNotificationService: Task completed successfully from notification');
     } catch (e, stackTrace) {
       Logger.error(
-        'MobileNotificationService: Failed to complete task from notification',
+        '[$TaskErrorIds.notificationActionFailed] MobileNotificationService: Failed to complete task from notification',
         error: e,
         stackTrace: stackTrace,
       );

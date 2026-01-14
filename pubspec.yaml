@@ -31,7 +31,8 @@ scripts:
   check: rps format && rps lint && rps test
 
   # Testing
-  test: cd src && fvm flutter test
+  test: cd src && fvm flutter test --fail-fast
+  test:all: cd src && fvm flutter test
   test:locale: cd src && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
   test:migrate: cd src && fvm flutter test test/drift/app_database/migration_test.dart
 

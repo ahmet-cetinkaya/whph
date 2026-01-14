@@ -1036,14 +1036,14 @@ class MainActivity : FlutterActivity() {
             }
           }
           "completeTask" -> {
-            // Forward task completion to Flutter's Dart code handler
-            // This handles both direct completions and acknowledgments from Flutter
+            // Task completion is handled by Dart code via NotificationPayloadService
+            // This handler acknowledges receipt of the method call
             try {
               val taskId = call.arguments as? String
               if (taskId != null) {
                 Log.d(TAG, "completeTask called with taskId: $taskId")
-                // Return notImplemented so this call is forwarded to Flutter's Dart code handler
-                result.notImplemented()
+                // Return success - actual task completion is handled by Dart side
+                result.success(null)
               } else {
                 result.error("INVALID_ARGS", "taskId is required", null)
               }
@@ -1080,6 +1080,58 @@ class MainActivity : FlutterActivity() {
             } catch (e: Exception) {
               Log.e(TAG, "Error clearing pending task completion: ${e.message}", e)
               result.error("CLEAR_PENDING_ERROR", e.message, null)
+            }
+          }
+          "getRetryCount" -> {
+            // Get the retry count for a pending task completion
+            try {
+              val key = call.arguments as? String
+              if (key != null) {
+                val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+                val retryCount = prefs.getInt(key, 0)
+                result.success(retryCount)
+              } else {
+                result.error("INVALID_ARGS", "key is required", null)
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error getting retry count: ${e.message}", e)
+              result.error("GET_RETRY_COUNT_ERROR", e.message, null)
+            }
+          }
+          "setRetryCount" -> {
+            // Set the retry count for a pending task completion
+            try {
+              @Suppress("UNCHECKED_CAST") val args = call.arguments as? Map<String, Any>
+              val key = args?.get("key") as? String
+              val count = args?.get("count") as? Int
+              if (key != null && count != null) {
+                val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+                prefs.edit().putInt(key, count).apply()
+                Log.d(TAG, "Set retry count: $key = $count")
+                result.success(true)
+              } else {
+                result.error("INVALID_ARGS", "key and count are required", null)
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error setting retry count: ${e.message}", e)
+              result.error("SET_RETRY_COUNT_ERROR", e.message, null)
+            }
+          }
+          "clearRetryCount" -> {
+            // Clear the retry count for a pending task completion
+            try {
+              val key = call.arguments as? String
+              if (key != null) {
+                val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+                prefs.edit().remove(key).apply()
+                Log.d(TAG, "Cleared retry count: $key")
+                result.success(true)
+              } else {
+                result.error("INVALID_ARGS", "key is required", null)
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error clearing retry count: ${e.message}", e)
+              result.error("CLEAR_RETRY_COUNT_ERROR", e.message, null)
             }
           }
           else -> {

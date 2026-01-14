@@ -24,11 +24,9 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:acore/acore.dart' show DateTimeHelper;
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -42,9 +40,7 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
-  final _tasksService = container.resolve<TasksService>();
   final _mediator = container.resolve<Mediator>();
-  final _recurrenceService = container.resolve<ITaskRecurrenceService>();
 
   // Tour keys
   final GlobalKey _addTaskButtonKey = GlobalKey();
@@ -257,38 +253,15 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
 
   Future<void> _onTaskCompleted(String taskId) async {
     try {
-      // Get current task details
-      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
-        GetTaskQuery(id: taskId),
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
       );
-
-      // Mark as completed - following the same pattern as TaskCompleteButton
-      final command = SaveTaskCommand(
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
-        deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
-        estimatedTime: task.estimatedTime,
-        completedAt: DateTime.now().toUtc(),
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        recurrenceType: task.recurrenceType,
-        recurrenceInterval: task.recurrenceInterval,
-        recurrenceDays: _recurrenceService.getRecurrenceDays(task),
-        recurrenceStartDate: task.recurrenceStartDate,
-        recurrenceEndDate: task.recurrenceEndDate,
-        recurrenceCount: task.recurrenceCount,
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.swipeGestureFailed] Failed to complete task from swipe',
+        error: e,
+        stackTrace: stackTrace,
       );
-
-      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-      // Notify listeners that the task was completed (triggers UI refresh and recurrence handling)
-      _tasksService.notifyTaskCompleted(taskId);
-    } catch (e) {
-      // Log error but don't crash - the task completion can be retried
-      debugPrint('Error completing task: $e');
     }
   }
 

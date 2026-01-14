@@ -23,9 +23,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:acore/acore.dart' show DateTimeHelper;
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -56,7 +55,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   final _themeService = container.resolve<IThemeService>();
   final _tasksService = container.resolve<TasksService>();
   final _mediator = container.resolve<Mediator>();
-  final _recurrenceService = container.resolve<ITaskRecurrenceService>();
 
   // Task filter options
   String? _searchQuery;
@@ -193,43 +191,20 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
 
   Future<void> _onSubTaskCompleted(String taskId) async {
     try {
-      // Get current subtask details
-      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
-        GetTaskQuery(id: taskId),
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
       );
-
-      // Mark as completed - following the same pattern as TaskCompleteButton
-      final command = SaveTaskCommand(
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
-        deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
-        estimatedTime: task.estimatedTime,
-        completedAt: DateTime.now().toUtc(),
-        plannedDateReminderTime: task.plannedDateReminderTime,
-        deadlineDateReminderTime: task.deadlineDateReminderTime,
-        recurrenceType: task.recurrenceType,
-        recurrenceInterval: task.recurrenceInterval,
-        recurrenceDays: _recurrenceService.getRecurrenceDays(task),
-        recurrenceStartDate: task.recurrenceStartDate,
-        recurrenceEndDate: task.recurrenceEndDate,
-        recurrenceCount: task.recurrenceCount,
-      );
-
-      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-      // Notify listeners that the task was completed (triggers UI refresh and recurrence handling)
-      _tasksService.notifyTaskCompleted(taskId);
 
       // Hide completed tasks and reload details
       _hideCompletedTasks();
       // TasksList will auto-refresh, just update completion percentage
       _loadTaskDetails();
-    } catch (e) {
-      // Log error but don't crash - the task completion can be retried
-      Logger.error('Error completing subtask: $e');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.swipeGestureFailed] Failed to complete subtask',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 

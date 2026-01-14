@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 
 /// Callback type for handling task completion from notification
@@ -14,6 +15,10 @@ class NotificationPayloadService {
   static const Duration _retryDelay = Duration(milliseconds: 500);
   static const Duration _platformHandlerDelay = Duration(milliseconds: 500);
   static const int _maxRetries = 3;
+
+  // Retry count tracking constants
+  static const String _retryCountPrefix = 'retry_count_';
+  static const int _maxPendingRetries = 5;
 
   /// Sets up notification click listener for Android platform
   static void setupNotificationListener(
@@ -166,32 +171,87 @@ class NotificationPayloadService {
       // Process each pending task completion
       for (final taskId in pendingTaskIds) {
         if (taskId is String && taskId.isNotEmpty) {
-          try {
-            // First, complete the task
-            await onTaskCompletion(taskId);
-
-            // Only clear the pending action if completion succeeded
-            // This prevents lost actions if completion fails
-            await platform.invokeMethod('clearPendingTaskCompletion', taskId);
-
-            Logger.debug('NotificationPayloadService: Processed pending task completion: $taskId');
-          } catch (e, stackTrace) {
-            // Log the error but DON'T clear the pending action
-            // It will be retried on next app startup
-            Logger.error(
-              'NotificationPayloadService: Failed to process pending task $taskId - will retry on next startup',
-              error: e,
-              stackTrace: stackTrace,
-            );
-          }
+          await _processPendingTaskWithRetry(platform, taskId, onTaskCompletion);
         }
       }
     } catch (e, stackTrace) {
       Logger.error(
-        'NotificationPayloadService: Critical error processing pending task completions',
+        '[$TaskErrorIds.pendingTaskProcessingFailed] NotificationPayloadService: Critical error processing pending task completions',
         error: e,
         stackTrace: stackTrace,
       );
+    }
+  }
+
+  /// Process a single pending task with retry limit enforcement
+  static Future<void> _processPendingTaskWithRetry(
+    MethodChannel platform,
+    String taskId,
+    TaskCompletionCallback onTaskCompletion,
+  ) async {
+    // Get current retry count from SharedPreferences
+    final retryCountKey = '$_retryCountPrefix$taskId';
+    final currentRetryCount = await _getRetryCount(platform, retryCountKey);
+
+    // Check if max retries exceeded
+    if (currentRetryCount >= _maxPendingRetries) {
+      Logger.error(
+        '[$TaskErrorIds.pendingTaskMaxRetriesExceeded] NotificationPayloadService: Max retries ($_maxPendingRetries) exceeded for task $taskId, clearing pending entry',
+      );
+      // Clear both the pending task and the retry count
+      await platform.invokeMethod('clearPendingTaskCompletion', taskId);
+      await _clearRetryCount(platform, retryCountKey);
+      return;
+    }
+
+    try {
+      // Complete the task
+      await onTaskCompletion(taskId);
+
+      // Success: clear the pending action and retry count
+      await platform.invokeMethod('clearPendingTaskCompletion', taskId);
+      await _clearRetryCount(platform, retryCountKey);
+
+      Logger.debug('NotificationPayloadService: Processed pending task completion: $taskId');
+    } catch (e, stackTrace) {
+      // Increment retry count
+      final newRetryCount = currentRetryCount + 1;
+      await _setRetryCount(platform, retryCountKey, newRetryCount);
+
+      Logger.error(
+        '[$TaskErrorIds.pendingTaskProcessingFailed] NotificationPayloadService: Failed to process pending task $taskId (attempt $newRetryCount/$_maxPendingRetries) - will retry on next startup',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  /// Get the retry count for a task from SharedPreferences
+  static Future<int> _getRetryCount(MethodChannel platform, String key) async {
+    try {
+      final result = await platform.invokeMethod<int>('getRetryCount', key);
+      return result ?? 0;
+    } catch (e) {
+      Logger.warning('NotificationPayloadService: Failed to get retry count for $key, assuming 0: $e');
+      return 0;
+    }
+  }
+
+  /// Set the retry count for a task in SharedPreferences
+  static Future<void> _setRetryCount(MethodChannel platform, String key, int count) async {
+    try {
+      await platform.invokeMethod('setRetryCount', {'key': key, 'count': count});
+    } catch (e) {
+      Logger.error('NotificationPayloadService: Failed to set retry count for $key: $e');
+    }
+  }
+
+  /// Clear the retry count for a task from SharedPreferences
+  static Future<void> _clearRetryCount(MethodChannel platform, String key) async {
+    try {
+      await platform.invokeMethod('clearRetryCount', key);
+    } catch (e) {
+      Logger.warning('NotificationPayloadService: Failed to clear retry count for $key: $e');
     }
   }
 }
