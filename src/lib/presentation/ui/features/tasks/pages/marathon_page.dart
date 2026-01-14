@@ -29,6 +29,9 @@ import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -102,10 +105,30 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     super.dispose();
   }
 
-  void _onTasksChanged() {
+  void _onTasksChanged([String? taskId]) {
     if (mounted) {
       setState(() {});
       _refreshSelectedTaskIfNeeded();
+    }
+  }
+
+  Future<void> _onTaskCompleted(String taskId) async {
+    try {
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
+      );
+
+      // After completion, select next task and refresh
+      await Future.delayed(const Duration(milliseconds: 500), () {
+        _selectNextTask();
+        _onTasksChanged();
+      });
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.swipeGestureFailed] Failed to complete task in marathon mode',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -487,12 +510,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                 key: ValueKey(_selectedTask!.id),
                                 taskItem: _selectedTask!,
                                 onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                                onCompleted: () {
-                                  Future.delayed(const Duration(milliseconds: 500), () {
-                                    _selectNextTask();
-                                    _onTasksChanged();
-                                  });
-                                },
+                                onCompleted: _onTaskCompleted,
                                 showScheduleButton: false,
                               ),
                             ),
@@ -569,7 +587,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                   _showCompletedTasks ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999) : null,
                               search: _taskSearchQuery,
                               includeSubTasks: _showSubTasks,
-                              onTaskCompleted: _onTasksChanged,
+                              onTaskCompleted: _onTaskCompleted,
                               onClickTask: (task) => _showTaskDetails(task.id),
                               onSelectTask: _onSelectTask,
                               onScheduleTask: (_, __) => _onTasksChanged(),

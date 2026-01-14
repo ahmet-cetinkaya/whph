@@ -34,4 +34,9 @@ abstract class INotificationService {
   /// Request permission to display notifications from the user
   /// Returns true if permission is granted, false otherwise
   Future<bool> requestPermission();
+
+  /// Handle task completion from notification action button
+  /// Mobile platforms (Android/iOS) should implement this to process task completions
+  /// Desktop platforms provide a no-op implementation
+  Future<void> handleNotificationTaskCompletion(String taskId);
 }

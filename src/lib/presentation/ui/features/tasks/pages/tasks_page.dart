@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_list_options.dart';
@@ -23,6 +24,9 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -36,6 +40,7 @@ class TasksPage extends StatefulWidget {
 class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixin {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
+  final _mediator = container.resolve<Mediator>();
 
   // Tour keys
   final GlobalKey _addTaskButtonKey = GlobalKey();
@@ -246,6 +251,20 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     }
   }
 
+  Future<void> _onTaskCompleted(String taskId) async {
+    try {
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
+      );
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.swipeGestureFailed] Failed to complete task from swipe',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
   bool get _isPageFullyLoaded {
     return _isTaskListVisible && _isDataLoaded;
   }
@@ -411,6 +430,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                   includeSubTasks: _showSubTasks,
                   onClickTask: (task) => _openDetails(task.id),
                   onList: _onDataListed,
+                  onTaskCompleted: _onTaskCompleted,
                   enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
                   forceOriginalLayout: _forceOriginalLayout,
                   sortConfig: _sortConfig,

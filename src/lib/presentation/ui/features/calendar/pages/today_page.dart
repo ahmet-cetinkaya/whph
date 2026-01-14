@@ -43,6 +43,8 @@ import 'package:whph/presentation/ui/shared/components/section_header.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';
@@ -58,6 +60,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   final _confettiAnimationService = container.resolve<IConfettiAnimationService>();
   final _themeService = container.resolve<IThemeService>();
   final _habitsService = container.resolve<HabitsService>();
+  final _mediator = container.resolve<Mediator>();
 
   final Completer<void> _pageReadyCompleter = Completer<void>();
   int _loadedComponents = 0;
@@ -153,9 +156,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
   Future<void> _loadHabitSettings() async {
     try {
-      final setting = await container.resolve<Mediator>().send<GetSettingQuery, Setting?>(
-            GetSettingQuery(key: SettingKeys.habitThreeStateEnabled),
-          );
+      final setting = await _mediator.send<GetSettingQuery, Setting?>(
+        GetSettingQuery(key: SettingKeys.habitThreeStateEnabled),
+      );
       if (setting != null && setting.getValue<bool>() == true) {
         if (mounted) {
           setState(() {
@@ -306,9 +309,21 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     _checkIfLastItemCompleted();
   }
 
-  void _onTaskCompleted() {
-    // When a task is completed, check if this was the last remaining item
-    _checkIfLastItemCompleted();
+  Future<void> _onTaskCompleted(String taskId) async {
+    try {
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
+      );
+
+      // When a task is completed, check if this was the last remaining item
+      _checkIfLastItemCompleted();
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.swipeGestureFailed] Failed to complete task from today page',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   void _onHabitsListed(int incompleteHabitCount) {

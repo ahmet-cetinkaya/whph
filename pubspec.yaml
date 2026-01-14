@@ -1,6 +1,10 @@
 name: whph
 description: WHPH (Work Hard Play Hard) - A comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
 publish_to: "none"
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
 topics:
   - productivity
   - task-management
@@ -20,14 +24,15 @@ scripts:
   pub:get: cd src && fvm flutter pub get
   run: cd src && fvm flutter run
   run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
-  clean: bash scripts/clean.sh
+  clean: bash src/scripts/clean.sh
   clean:db: bash src/scripts/clean_db.sh
   format: bash scripts/format.sh
   lint: ./scripts/lint.sh
   check: rps format && rps lint && rps test
 
   # Testing
-  test: cd src && fvm flutter test
+  test: cd src && fvm flutter test --fail-fast
+  test:all: cd src && fvm flutter test
   test:locale: cd src && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
   test:migrate: cd src && fvm flutter test test/drift/app_database/migration_test.dart
 

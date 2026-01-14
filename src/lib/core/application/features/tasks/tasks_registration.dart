@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
@@ -20,6 +21,7 @@ import 'package:whph/core/application/features/tasks/services/task_recurrence_se
 import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:whph/core/application/features/tasks/services/reminder_calculation_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 
 void registerTasksFeature(
   IContainer container,
@@ -43,7 +45,20 @@ void registerTasksFeature(
     (container) => ReminderCalculationService(container.resolve<ITaskRecurrenceService>()),
   );
 
+  // Register the CompleteTaskCommandHandler
+  container.registerSingleton<CompleteTaskCommandHandler>(
+    (container) => CompleteTaskCommandHandler(
+      taskRepository,
+      taskTimeRecordRepository,
+      container.resolve<ITaskRecurrenceService>(),
+      container.resolve<TasksService>(),
+    ),
+  );
+
   mediator
+    ..registerHandler<CompleteTaskCommand, CompleteTaskCommandResponse, CompleteTaskCommandHandler>(
+      () => container.resolve<CompleteTaskCommandHandler>(),
+    )
     ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
       () => SaveTaskCommandHandler(
         taskService: taskRepository,

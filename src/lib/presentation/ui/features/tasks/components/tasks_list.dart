@@ -57,7 +57,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
 
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
-  final void Function()? onTaskCompleted;
+  final void Function(String taskId)? onTaskCompleted;
   final void Function(TaskListItem task)? onSelectTask;
   final void Function(TaskListItem task, DateTime date)? onScheduleTask;
   final void Function(List<TaskListItem> tasks)? onTasksLoaded;
@@ -780,7 +780,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
                             key: ValueKey('task_card_${task.id}'),
                             taskItem: task,
                             onOpenDetails: () => widget.onClickTask(task),
-                            onCompleted: widget.onTaskCompleted,
+                            onCompleted:
+                                widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
                             onScheduled: (task.isCompleted || widget.onScheduleTask == null)
                                 ? null
                                 : () => widget.onScheduleTask!(task, DateTime.now()),
@@ -910,7 +911,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           key: ValueKey('task_card_${task.id}'),
           taskItem: task,
           onOpenDetails: () => widget.onClickTask(task),
-          onCompleted: widget.onTaskCompleted,
+          onCompleted: widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
           onScheduled: (task.isCompleted || widget.onScheduleTask == null)
               ? null
               : () => widget.onScheduleTask!(task, DateTime.now()),

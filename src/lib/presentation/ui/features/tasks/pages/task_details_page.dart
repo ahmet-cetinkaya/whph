@@ -23,6 +23,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';
@@ -52,6 +54,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
   final _tasksService = container.resolve<TasksService>();
+  final _mediator = container.resolve<Mediator>();
 
   // Task filter options
   String? _searchQuery;
@@ -186,10 +189,23 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
     Navigator.of(context).pop();
   }
 
-  void _onSubTaskCompleted() {
-    _hideCompletedTasks();
-    // TasksList will auto-refresh, just update completion percentage
-    _loadTaskDetails();
+  Future<void> _onSubTaskCompleted(String taskId) async {
+    try {
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
+      );
+
+      // Hide completed tasks and reload details
+      _hideCompletedTasks();
+      // TasksList will auto-refresh, just update completion percentage
+      _loadTaskDetails();
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.swipeGestureFailed] Failed to complete subtask',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   void _onScheduleTask(TaskListItem task, DateTime date) {

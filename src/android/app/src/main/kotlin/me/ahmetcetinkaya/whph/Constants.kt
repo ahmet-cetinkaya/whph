@@ -40,6 +40,8 @@ object Constants {
     const val NOTIFICATION_CLICKED = "$PACKAGE_NAME.NOTIFICATION_CLICKED"
     const val NOTIFICATION_CLICK = "$PACKAGE_NAME.NOTIFICATION_CLICK"
     const val ALARM_TRIGGERED = "$PACKAGE_NAME.ALARM_TRIGGERED"
+    const val TASK_COMPLETE_ACTION = "$PACKAGE_NAME.TASK_COMPLETE"
+    const val TASK_COMPLETE_BROADCAST = "$PACKAGE_NAME.TASK_COMPLETE_BROADCAST"
   }
 
   // Intent Extras
@@ -49,5 +51,6 @@ object Constants {
     const val PAYLOAD = "payload"
     const val TITLE = "title"
     const val BODY = "body"
+    const val TASK_ID = "task_id"
   }
 }

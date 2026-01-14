@@ -23,6 +23,9 @@ PROJECT_INDEX.json
 # FVM Version Cache
 .fvm/
 
+# Dart tool
+.dart_tool/
+
 # Other
 *.log
 .temp/

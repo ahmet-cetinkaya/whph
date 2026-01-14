@@ -6,11 +6,13 @@ import 'package:mediatr/mediatr.dart';
 
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/windows/constants/windows_app_constants.dart';
@@ -23,8 +25,11 @@ class DesktopNotificationService implements INotificationService {
   final IWindowManager _windowManager;
   final INotificationPayloadHandler _payloadHandler;
 
-  DesktopNotificationService(Mediator mediatr, IWindowManager windowManager, INotificationPayloadHandler payloadHandler)
-      : _flutterLocalNotifications = FlutterLocalNotificationsPlugin(),
+  DesktopNotificationService(
+    Mediator mediatr,
+    IWindowManager windowManager,
+    INotificationPayloadHandler payloadHandler,
+  )   : _flutterLocalNotifications = FlutterLocalNotificationsPlugin(),
         _mediatr = mediatr,
         _windowManager = windowManager,
         _payloadHandler = payloadHandler;
@@ -57,15 +62,27 @@ class DesktopNotificationService implements INotificationService {
     await _flutterLocalNotifications.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        if (response.payload == null) return;
-        await _handleNotificationResponse(response.payload!);
+        await _handleNotificationResponse(response);
       },
     );
   }
 
   /// Handle notification click events using the notification payload handler
-  Future<void> _handleNotificationResponse(String payload) async {
-    if (payload.isEmpty) return;
+  Future<void> _handleNotificationResponse(NotificationResponse response) async {
+    // Handle action button clicks (e.g., complete task)
+    if (response.actionId == 'complete_task') {
+      final payload = response.payload;
+      if (payload != null) {
+        final taskId = _extractTaskIdFromPayload(payload);
+        if (taskId != null) {
+          await handleNotificationTaskCompletion(taskId);
+        }
+      }
+      return;
+    }
+
+    // Handle default notification click (navigate to task)
+    if (response.payload == null || response.payload!.isEmpty) return;
 
     // Ensure the app window is visible and focused
     if (!await _windowManager.isVisible()) {
@@ -76,7 +93,21 @@ class DesktopNotificationService implements INotificationService {
     }
 
     // Use the injected notification payload handler to process the payload
-    await _payloadHandler.handlePayload(payload);
+    await _payloadHandler.handlePayload(response.payload!);
+  }
+
+  /// Extract task ID from notification payload
+  String? _extractTaskIdFromPayload(String payload) {
+    try {
+      // Payload format: {"route":"/tasks","arguments":{"taskId":"xxx"}}
+      // Use regex to extract taskId
+      final taskIdRegex = RegExp(r'"taskId"\s*:\s*"([^"]+)"');
+      final match = taskIdRegex.firstMatch(payload);
+      return match?.group(1);
+    } catch (e) {
+      Logger.error('Error extracting task ID from payload: $e');
+      return null;
+    }
   }
 
   @override
@@ -89,13 +120,23 @@ class DesktopNotificationService implements INotificationService {
     if (!await isEnabled()) return;
 
     try {
+      final isTaskNotification = payload != null && _isTaskCompletionPayload(payload);
+
       // Define platform-specific notification details
       final notificationDetails = NotificationDetails(
-        // For Linux
+        // For Linux - add action button for task completion
         linux: LinuxNotificationDetails(
           urgency: LinuxNotificationUrgency.critical,
+          actions: isTaskNotification
+              ? [
+                  LinuxNotificationAction(
+                    key: 'complete_task',
+                    label: 'Complete',
+                  ),
+                ]
+              : const [],
         ),
-        // For Windows
+        // For Windows - add action button for task completion
         windows: WindowsNotificationDetails(),
         // For macOS
         macOS: const DarwinNotificationDetails(
@@ -116,6 +157,13 @@ class DesktopNotificationService implements INotificationService {
     } catch (e) {
       Logger.error('Error showing notification: $e');
     }
+  }
+
+  /// Check if the payload indicates a task completion notification
+  bool _isTaskCompletionPayload(String payload) {
+    // Task completion payloads have format like: {"route":"/tasks","arguments":{"taskId":"xxx"}}
+    // or contain taskId in the JSON
+    return payload.contains('taskId');
   }
 
   @override
@@ -208,5 +256,24 @@ class DesktopNotificationService implements INotificationService {
     }
 
     return permissionGranted;
+  }
+
+  @override
+  Future<void> handleNotificationTaskCompletion(String taskId) async {
+    try {
+      Logger.info('DesktopNotificationService: Completing task from notification: $taskId');
+
+      await _mediatr.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
+      );
+
+      Logger.info('DesktopNotificationService: Task completed successfully from notification');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.notificationActionFailed] DesktopNotificationService: Failed to complete task from notification',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 }

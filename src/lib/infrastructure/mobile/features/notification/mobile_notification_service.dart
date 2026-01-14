@@ -4,18 +4,22 @@ import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/application/shared/utils/key_helper.dart' as shared;
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
 
-  MobileNotificationService(this._mediator) : _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
+  MobileNotificationService(
+    this._mediator,
+  ) : _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
 
   @override
   Future<void> init() async {
@@ -25,6 +29,25 @@ class MobileNotificationService implements INotificationService {
         iOS: DarwinInitializationSettings(),
       ),
     );
+  }
+
+  @override
+  Future<void> handleNotificationTaskCompletion(String taskId) async {
+    try {
+      Logger.info('MobileNotificationService: Completing task from notification: $taskId');
+
+      await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+        CompleteTaskCommand(id: taskId),
+      );
+
+      Logger.info('MobileNotificationService: Task completed successfully from notification');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.notificationActionFailed] MobileNotificationService: Failed to complete task from notification',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   @override
@@ -40,7 +63,7 @@ class MobileNotificationService implements INotificationService {
     if (permissionGranted != true) return;
 
     await _flutterLocalNotifications.show(
-      id ?? KeyHelper.generateNumericId(),
+      id ?? shared.KeyHelper.generateNumericId(),
       title,
       body,
       NotificationDetails(
