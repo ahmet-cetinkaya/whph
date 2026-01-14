@@ -58,6 +58,37 @@ class MainActivity : FlutterActivity() {
       }
     }
 
+  // Broadcast receiver for task completions from notification action buttons
+  private val taskCompletionReceiver =
+    object : BroadcastReceiver() {
+      override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent?.action == Constants.IntentActions.TASK_COMPLETE_BROADCAST) {
+          val taskId = intent.getStringExtra(Constants.IntentExtras.TASK_ID)
+          Log.d(TAG, "Task completion broadcast received: $taskId")
+
+          if (taskId != null) {
+            // Send task completion to Flutter via MethodChannel
+            val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+            if (binaryMessenger != null) {
+              val channel = MethodChannel(binaryMessenger, Constants.Channels.NOTIFICATION)
+              channel.invokeMethod("completeTask", taskId)
+              Log.d(TAG, "Successfully sent task completion to Flutter: $taskId")
+
+              // Clear the pending entry since we successfully sent it to Flutter
+              val prefs = context?.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+              prefs?.edit()?.remove("complete_task_$taskId")?.apply()
+              Log.d(TAG, "Cleared pending task completion entry: $taskId")
+            } else {
+              Log.w(
+                TAG,
+                "Flutter engine not ready for task completion - already stored as pending by NotificationReceiver",
+              )
+            }
+          }
+        }
+      }
+    }
+
   // Define constants for notification actions
   companion object {
     const val ACTION_NOTIFICATION_CLICK = "${Constants.PACKAGE_NAME}.NOTIFICATION_CLICK"
@@ -82,6 +113,15 @@ class MainActivity : FlutterActivity() {
       registerReceiver(syncTriggerReceiver, filter)
     }
     Log.d(TAG, "Registered sync trigger broadcast receiver")
+
+    // Register broadcast receiver for task completions from notification actions
+    val taskCompletionFilter = IntentFilter(Constants.IntentActions.TASK_COMPLETE_BROADCAST)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      registerReceiver(taskCompletionReceiver, taskCompletionFilter, Context.RECEIVER_NOT_EXPORTED)
+    } else {
+      registerReceiver(taskCompletionReceiver, taskCompletionFilter)
+    }
+    Log.d(TAG, "Registered task completion broadcast receiver")
 
     // Process the intent that started this activity
     processIntent(startIntent)
@@ -291,11 +331,18 @@ class MainActivity : FlutterActivity() {
     Log.d(TAG, "onDestroy called - cleaning up persistent notifications")
 
     try {
-      // Unregister broadcast receiver
+      // Unregister broadcast receivers
       unregisterReceiver(syncTriggerReceiver)
       Log.d(TAG, "Unregistered sync trigger broadcast receiver")
     } catch (e: Exception) {
       Log.e(TAG, "Error unregistering sync trigger receiver: ${e.message}")
+    }
+
+    try {
+      unregisterReceiver(taskCompletionReceiver)
+      Log.d(TAG, "Unregistered task completion broadcast receiver")
+    } catch (e: Exception) {
+      Log.e(TAG, "Error unregistering task completion receiver: ${e.message}")
     }
 
     try {
@@ -543,7 +590,7 @@ class MainActivity : FlutterActivity() {
               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-                // Only check using the AlarmManager API - this is the reliable way
+                // Only check using the AlarmManager API - this is the most reliable test
                 val canScheduleExactAlarms = alarmManager.canScheduleExactAlarms()
 
                 // If we don't have permission, return false immediately
@@ -988,6 +1035,53 @@ class MainActivity : FlutterActivity() {
               result.error("GET_ACTIVE_IDS_ERROR", e.message, null)
             }
           }
+          "completeTask" -> {
+            // Forward task completion to Flutter's Dart code handler
+            // This handles both direct completions and acknowledgments from Flutter
+            try {
+              val taskId = call.arguments as? String
+              if (taskId != null) {
+                Log.d(TAG, "completeTask called with taskId: $taskId")
+                // Return notImplemented so this call is forwarded to Flutter's Dart code handler
+                result.notImplemented()
+              } else {
+                result.error("INVALID_ARGS", "taskId is required", null)
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error processing task completion: ${e.message}", e)
+              result.error("TASK_COMPLETION_ERROR", e.message, null)
+            }
+          }
+          "getPendingTaskCompletions" -> {
+            // Retrieve all pending task completions from SharedPreferences
+            try {
+              val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+              val allKeys = prefs.all.keys.filter { it.startsWith("complete_task_") }
+              val taskIds = allKeys.map { it.removePrefix("complete_task_") }
+              Log.d(TAG, "Found ${taskIds.size} pending task completions: $taskIds")
+              result.success(taskIds)
+            } catch (e: Exception) {
+              Log.e(TAG, "Error getting pending task completions: ${e.message}", e)
+              result.error("GET_PENDING_ERROR", e.message, null)
+            }
+          }
+          "clearPendingTaskCompletion" -> {
+            // Clear a processed pending task completion from SharedPreferences
+            try {
+              val taskId = call.arguments as? String
+              if (taskId != null) {
+                val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+                prefs.edit().remove("complete_task_$taskId").apply()
+                Log.d(TAG, "Cleared pending task completion: $taskId")
+                result.success(true)
+              } else {
+                result.error("INVALID_ARGS", "taskId is required", null)
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error clearing pending task completion: ${e.message}", e)
+              result.error("CLEAR_PENDING_ERROR", e.message, null)
+            }
+          }
           else -> {
             result.notImplemented()
           }
@@ -1192,11 +1286,11 @@ class MainActivity : FlutterActivity() {
                 sharedPreferences.edit().putBoolean("should_collect_usage", false).apply()
 
                 // Trigger collection via method channel to Flutter
-                MethodChannel(
-                    flutterEngine.dartExecutor.binaryMessenger,
-                    Constants.Channels.APP_USAGE_STATS,
-                  )
-                  .invokeMethod("triggerCollection", null)
+                val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+                if (binaryMessenger != null) {
+                  val channel = MethodChannel(binaryMessenger, Constants.Channels.APP_USAGE_STATS)
+                  channel.invokeMethod("triggerCollection", null)
+                }
               }
 
               result.success(shouldCollect)

@@ -112,6 +112,28 @@ class NotificationHelper(private val context: Context) {
         Constants.NotificationChannels.TASK_CHANNEL_ID
       }
 
+    // Extract taskId from payload for action button (only for task notifications)
+    val taskId = extractTaskId(payload)
+    val isTaskNotification =
+      channelId == Constants.NotificationChannels.TASK_CHANNEL_ID && taskId != null
+
+    // Create complete action intent (only for task notifications)
+    val completePendingIntent =
+      if (isTaskNotification) {
+        val completeIntent =
+          Intent(context, NotificationReceiver::class.java).apply {
+            action = Constants.IntentActions.TASK_COMPLETE_ACTION
+            putExtra(Constants.IntentExtras.TASK_ID, taskId)
+            putExtra(Constants.IntentExtras.NOTIFICATION_ID, id)
+          }
+        PendingIntent.getBroadcast(
+          context,
+          id + 1000, // Unique request code for action
+          completeIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+      } else null
+
     // Build the notification
     val builder =
       NotificationCompat.Builder(context, channelId)
@@ -124,12 +146,32 @@ class NotificationHelper(private val context: Context) {
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setCategory(NotificationCompat.CATEGORY_REMINDER)
 
+    // Add action button if available
+    completePendingIntent?.let {
+      builder.addAction(
+        R.drawable.ic_done_all,
+        context.getString(R.string.notification_action_mark_done),
+        it,
+      )
+    }
+
     try {
       // Show the notification
       NotificationManagerCompat.from(context).notify(id, builder.build())
       Log.d(TAG, "Successfully showed notification with ID: $id")
     } catch (e: SecurityException) {
       Log.e(TAG, "Failed to show notification: ${e.message}")
+    }
+  }
+
+  private fun extractTaskId(payload: String?): String? {
+    if (payload == null) return null
+    return try {
+      val jsonPayload = JSONObject(payload)
+      jsonPayload.getJSONObject("arguments")?.optString("taskId")
+    } catch (e: Exception) {
+      Log.d(TAG, "Failed to extract taskId from payload: ${e.message}")
+      null
     }
   }
 }

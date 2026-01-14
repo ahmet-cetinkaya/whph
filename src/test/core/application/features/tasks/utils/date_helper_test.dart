@@ -49,7 +49,7 @@ void main() {
         expect(result.day, 16); // January 16th (2 weeks later)
       });
 
-      test('should handle edge case where no match is found within bounds', () {
+      test('should handle large intervals correctly', () {
         final startDate = DateTime(2024, 1, 1); // Monday
         final targetWeekdays = [1]; // Monday
         const interval = 52; // Every 52 weeks (1 year)
@@ -57,8 +57,8 @@ void main() {
 
         final result = DateHelper.findNextWeekdayOccurrence(startDate, targetWeekdays, interval, referenceDate);
 
-        // Should fallback to simple interval calculation
-        expect(result, DateTime(2024, 1, 8)); // Monday + 7 days * 1 (since interval is too large to find match)
+        // Should find the correct date 52 weeks later
+        expect(result, DateTime(2024, 12, 30));
       });
     });
 

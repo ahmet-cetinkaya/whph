@@ -26,7 +26,9 @@ class DateHelper {
     int? intervalInWeeks,
     DateTime? referenceDate,
   ) {
-    const maxSearchDays = 90;
+    // Increase search range to accommodate large intervals (e.g. yearly recurrence)
+    // 2 intervals + 90 days buffer should be extremely safe.
+    final maxSearchDays = (intervalInWeeks != null) ? (intervalInWeeks * 7 * 2) + 90 : 365;
 
     if (targetWeekdays.isEmpty) {
       throw ArgumentError('targetWeekdays cannot be empty');
@@ -45,6 +47,15 @@ class DateHelper {
         } else {
           return candidateDate;
         }
+      }
+    }
+
+    // Fallback: if even with increased maxSearchDays no match is found,
+    // return the next matching weekday regardless of interval.
+    for (int daysFromNow = 1; daysFromNow <= 7; daysFromNow++) {
+      final candidateDate = startDate.add(Duration(days: daysFromNow));
+      if (targetWeekdays.contains(candidateDate.weekday)) {
+        return candidateDate;
       }
     }
 

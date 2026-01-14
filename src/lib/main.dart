@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/app.dart';
@@ -148,7 +149,16 @@ void main(List<String> args) async {
 
     // Set up notification handling
     final payloadHandler = tempContainer.resolve<INotificationPayloadHandler>();
-    NotificationPayloadService.setupNotificationListener(payloadHandler);
+    final notificationService = tempContainer.resolve<INotificationService>();
+    NotificationPayloadService.setupNotificationListener(
+      payloadHandler,
+      onTaskCompletion: notificationService.handleNotificationTaskCompletion,
+    );
+
+    // Process any pending task completions from notifications that arrived while app was closed
+    await NotificationPayloadService.processPendingTaskCompletions(
+      notificationService.handleNotificationTaskCompletion,
+    );
 
     // Get translation service for app wrapper
     final translationService = tempContainer.resolve<ITranslationService>();

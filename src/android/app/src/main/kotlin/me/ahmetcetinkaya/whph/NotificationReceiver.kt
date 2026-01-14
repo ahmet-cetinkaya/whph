@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.core.app.NotificationManagerCompat
 
 class NotificationReceiver : BroadcastReceiver() {
   private val TAG = "NotificationReceiver"
@@ -54,6 +55,18 @@ class NotificationReceiver : BroadcastReceiver() {
           context.startActivity(launchIntent)
         } catch (e: Exception) {
           Log.e(TAG, "Error starting MainActivity: ${e.message}")
+        }
+      }
+      Constants.IntentActions.TASK_COMPLETE_ACTION -> {
+        val taskId = intent.getStringExtra(Constants.IntentExtras.TASK_ID)
+        val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
+
+        Log.d(TAG, "Task complete action: taskId=$taskId, notificationId=$notificationId")
+
+        if (taskId != null) {
+          handleTaskCompleteAction(context, taskId, notificationId)
+        } else {
+          Log.e(TAG, "Task ID is null in TASK_COMPLETE_ACTION")
         }
       }
       Constants.IntentActions.ALARM_TRIGGERED -> {
@@ -193,6 +206,44 @@ class NotificationReceiver : BroadcastReceiver() {
       context.startActivity(intent)
     } catch (e: Exception) {
       Log.e(TAG, "Error notifying Flutter about boot completed: ${e.message}")
+    }
+  }
+
+  /** Handle task complete action from notification button */
+  private fun handleTaskCompleteAction(context: Context, taskId: String, notificationId: Int) {
+    try {
+      // Cancel the notification
+      val notificationManager = NotificationManagerCompat.from(context)
+      notificationManager.cancel(notificationId)
+
+      Log.d(TAG, "Task completion triggered: $taskId")
+
+      // Always store as pending first (in case broadcast fails or app not running)
+      storePendingTaskCompletion(context, taskId)
+
+      // Send a broadcast to check if the app is running
+      // MainActivity will handle this and send to Flutter, then clear the pending entry
+      val broadcastIntent =
+        Intent(Constants.IntentActions.TASK_COMPLETE_BROADCAST).apply {
+          putExtra(Constants.IntentExtras.TASK_ID, taskId)
+          setPackage(context.packageName) // Local broadcast within the app
+        }
+
+      context.sendBroadcast(broadcastIntent)
+      Log.d(TAG, "Sent task completion broadcast for: $taskId")
+    } catch (e: Exception) {
+      Log.e(TAG, "Error handling task complete action: ${e.message}", e)
+    }
+  }
+
+  /** Store task completion as pending for processing when app starts */
+  private fun storePendingTaskCompletion(context: Context, taskId: String) {
+    try {
+      val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+      prefs.edit().putString("complete_task_$taskId", taskId).apply()
+      Log.d(TAG, "Stored pending task completion for processing on app startup: $taskId")
+    } catch (e: Exception) {
+      Log.e(TAG, "Error storing pending task completion: ${e.message}", e)
     }
   }
 }

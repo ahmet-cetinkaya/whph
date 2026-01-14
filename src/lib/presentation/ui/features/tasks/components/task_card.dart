@@ -19,6 +19,10 @@ import 'package:whph/presentation/ui/shared/utils/tag_display_utils.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/presentation/ui/features/tasks/components/schedule_button.dart';
+import 'package:flutter/widgets.dart' as widgets;
+
+/// Dismiss threshold as fraction of widget width (0.4 = 40% swipe required)
+const double _kSwipeCompleteThreshold = 0.4;
 
 class TaskCard extends StatelessWidget {
   final _mediator = container.resolve<Mediator>();
@@ -32,9 +36,10 @@ class TaskCard extends StatelessWidget {
   final bool showScheduleButton;
   final bool isDense;
   final bool isCustomOrder;
+  final bool enableSwipeToComplete;
 
   final VoidCallback onOpenDetails;
-  final VoidCallback? onCompleted;
+  final void Function(String taskId)? onCompleted;
   final VoidCallback? onScheduled;
 
   TaskCard({
@@ -49,6 +54,7 @@ class TaskCard extends StatelessWidget {
     this.showScheduleButton = true,
     this.isDense = false,
     this.isCustomOrder = false,
+    this.enableSwipeToComplete = true,
   });
 
   Future<void> _handleSchedule(DateTime date) async {
@@ -78,7 +84,7 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasCurrentReminder = _hasReminder;
 
-    return DecoratedBox(
+    final cardContent = DecoratedBox(
       decoration: BoxDecoration(
         color: transparent ? Colors.transparent : AppTheme.surface1,
         borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
@@ -99,7 +105,7 @@ class TaskCard extends StatelessWidget {
           leading: TaskCompleteButton(
             taskId: taskItem.id,
             isCompleted: taskItem.isCompleted,
-            onToggleCompleted: onCompleted,
+            onToggleCompleted: onCompleted != null ? () => onCompleted!(taskItem.id) : null,
             color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
             subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
             size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
@@ -153,6 +159,43 @@ class TaskCard extends StatelessWidget {
         ),
       ),
     );
+
+    // Only enable swipe to complete if task is not completed and callback is provided
+    if (enableSwipeToComplete && !taskItem.isCompleted && onCompleted != null) {
+      return Dismissible(
+        key: Key('task_${taskItem.id}'),
+        direction: DismissDirection.startToEnd,
+        // Swiping 40% of the widget width to the right completes the task
+        dismissThresholds: const {
+          DismissDirection.startToEnd: _kSwipeCompleteThreshold,
+        },
+        // Use confirmDismiss to handle async operation properly
+        // This keeps the widget visible during completion and prevents the error
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.startToEnd) {
+            // Execute the completion callback
+            onCompleted!(taskItem.id);
+            // Return false to keep the widget in the tree
+            // The parent will rebuild and filter out completed tasks
+            return false;
+          }
+          return false;
+        },
+        background: widgets.Container(
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: AppTheme.sizeLarge),
+          child: Icon(
+            Icons.check_circle,
+            color: Theme.of(context).colorScheme.primary,
+            size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+          ),
+        ),
+        child: cardContent,
+      );
+    }
+
+    return cardContent;
   }
 
   Widget _buildTitleAndMetadata(BuildContext context) => Column(
@@ -260,7 +303,8 @@ class TaskCard extends StatelessWidget {
           trailingButtons: trailingButtons,
           transparent: true,
           showSubTasks: showSubTasks,
-          isDense: isDense, // Pass isDense to subtasks
+          isDense: isDense,
+          enableSwipeToComplete: false, // Disable swipe on subtasks to avoid accidental completion
         ),
       );
     }).toList();

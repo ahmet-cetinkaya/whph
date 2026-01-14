@@ -29,6 +29,9 @@ import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:acore/acore.dart' show DateTimeHelper;
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';
@@ -42,6 +45,8 @@ class MarathonPage extends StatefulWidget {
 class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClientMixin {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _tasksService = container.resolve<TasksService>();
+  final _recurrenceService = container.resolve<ITaskRecurrenceService>();
   TaskListItem? _selectedTask;
   List<TaskListItem> _availableTasks = [];
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
@@ -102,10 +107,53 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     super.dispose();
   }
 
-  void _onTasksChanged() {
+  void _onTasksChanged([String? taskId]) {
     if (mounted) {
       setState(() {});
       _refreshSelectedTaskIfNeeded();
+    }
+  }
+
+  Future<void> _onTaskCompleted(String taskId) async {
+    try {
+      // Get current task details
+      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+        GetTaskQuery(id: taskId),
+      );
+
+      // Mark as completed - following the same pattern as TaskCompleteButton
+      final command = SaveTaskCommand(
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
+        deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
+        estimatedTime: task.estimatedTime,
+        completedAt: DateTime.now().toUtc(),
+        plannedDateReminderTime: task.plannedDateReminderTime,
+        deadlineDateReminderTime: task.deadlineDateReminderTime,
+        recurrenceType: task.recurrenceType,
+        recurrenceInterval: task.recurrenceInterval,
+        recurrenceDays: _recurrenceService.getRecurrenceDays(task),
+        recurrenceStartDate: task.recurrenceStartDate,
+        recurrenceEndDate: task.recurrenceEndDate,
+        recurrenceCount: task.recurrenceCount,
+      );
+
+      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
+
+      // Notify listeners that the task was completed (triggers UI refresh and recurrence handling)
+      _tasksService.notifyTaskCompleted(taskId);
+
+      // After completion, select next task and refresh
+      await Future.delayed(const Duration(milliseconds: 500), () {
+        _selectNextTask();
+        _onTasksChanged();
+      });
+    } catch (e) {
+      // Log error but don't crash - the task completion can be retried
+      debugPrint('Error completing task: $e');
     }
   }
 
@@ -487,12 +535,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                 key: ValueKey(_selectedTask!.id),
                                 taskItem: _selectedTask!,
                                 onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
-                                onCompleted: () {
-                                  Future.delayed(const Duration(milliseconds: 500), () {
-                                    _selectNextTask();
-                                    _onTasksChanged();
-                                  });
-                                },
+                                onCompleted: _onTaskCompleted,
                                 showScheduleButton: false,
                               ),
                             ),
@@ -569,7 +612,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                   _showCompletedTasks ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999) : null,
                               search: _taskSearchQuery,
                               includeSubTasks: _showSubTasks,
-                              onTaskCompleted: _onTasksChanged,
+                              onTaskCompleted: _onTaskCompleted,
                               onClickTask: (task) => _showTaskDetails(task.id),
                               onSelectTask: _onSelectTask,
                               onScheduleTask: (_, __) => _onTasksChanged(),

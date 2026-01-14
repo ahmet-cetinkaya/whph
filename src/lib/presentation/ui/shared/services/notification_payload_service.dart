@@ -5,6 +5,9 @@ import 'package:whph/infrastructure/android/constants/android_app_constants.dart
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 
+/// Callback type for handling task completion from notification
+typedef TaskCompletionCallback = Future<void> Function(String taskId);
+
 /// Service responsible for handling notification payloads and platform channel communication
 class NotificationPayloadService {
   static const Duration _initialPayloadDelay = Duration(milliseconds: 1500);
@@ -13,7 +16,10 @@ class NotificationPayloadService {
   static const int _maxRetries = 3;
 
   /// Sets up notification click listener for Android platform
-  static void setupNotificationListener(INotificationPayloadHandler payloadHandler) {
+  static void setupNotificationListener(
+    INotificationPayloadHandler payloadHandler, {
+    TaskCompletionCallback? onTaskCompletion,
+  }) {
     if (!Platform.isAndroid) {
       Logger.debug('NotificationPayloadService: Not Android platform, skipping notification listener setup');
       return;
@@ -23,11 +29,19 @@ class NotificationPayloadService {
 
     final platform = MethodChannel(AndroidAppConstants.channels.notification);
     platform.setMethodCallHandler((call) async {
-      if (call.method == 'onNotificationClicked') {
-        final payload = call.arguments as String?;
-        if (payload != null) {
-          await _handleNotificationPayload(payload, payloadHandler, platform);
-        }
+      switch (call.method) {
+        case 'onNotificationClicked':
+          final payload = call.arguments as String?;
+          if (payload != null) {
+            await _handleNotificationPayload(payload, payloadHandler, platform);
+          }
+          break;
+        case 'completeTask':
+          final taskId = call.arguments as String?;
+          if (taskId != null && onTaskCompletion != null) {
+            await onTaskCompletion(taskId);
+          }
+          break;
       }
       return null;
     });
@@ -126,6 +140,58 @@ class NotificationPayloadService {
       }
     } catch (e) {
       Logger.error('NotificationPayloadService: Error acknowledging payload: $e');
+    }
+  }
+
+  /// Processes any pending task completions that were stored while app was not running
+  /// Should be called on app startup after the task completion callback is registered
+  static Future<void> processPendingTaskCompletions(TaskCompletionCallback onTaskCompletion) async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
+    try {
+      Logger.debug('NotificationPayloadService: Checking for pending task completions...');
+
+      final platform = MethodChannel(AndroidAppConstants.channels.notification);
+      final pendingTaskIds = await platform.invokeMethod<List<dynamic>>('getPendingTaskCompletions');
+
+      if (pendingTaskIds == null || pendingTaskIds.isEmpty) {
+        Logger.debug('NotificationPayloadService: No pending task completions found');
+        return;
+      }
+
+      Logger.debug('NotificationPayloadService: Found ${pendingTaskIds.length} pending task completions');
+
+      // Process each pending task completion
+      for (final taskId in pendingTaskIds) {
+        if (taskId is String && taskId.isNotEmpty) {
+          try {
+            // First, complete the task
+            await onTaskCompletion(taskId);
+
+            // Only clear the pending action if completion succeeded
+            // This prevents lost actions if completion fails
+            await platform.invokeMethod('clearPendingTaskCompletion', taskId);
+
+            Logger.debug('NotificationPayloadService: Processed pending task completion: $taskId');
+          } catch (e, stackTrace) {
+            // Log the error but DON'T clear the pending action
+            // It will be retried on next app startup
+            Logger.error(
+              'NotificationPayloadService: Failed to process pending task $taskId - will retry on next startup',
+              error: e,
+              stackTrace: stackTrace,
+            );
+          }
+        }
+      }
+    } catch (e, stackTrace) {
+      Logger.error(
+        'NotificationPayloadService: Critical error processing pending task completions',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 }
