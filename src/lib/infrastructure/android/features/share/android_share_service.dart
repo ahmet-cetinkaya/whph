@@ -38,7 +38,8 @@ class AndroidShareService {
             Logger.warning('AndroidShareService: Unknown method call: ${call.method}');
         }
       } catch (e, stackTrace) {
-        Logger.error('AndroidShareService: Error handling platform call: ${call.method}', error: e, stackTrace: stackTrace);
+        Logger.error('AndroidShareService: Error handling platform call: ${call.method}',
+            error: e, stackTrace: stackTrace);
       }
       return null;
     });
