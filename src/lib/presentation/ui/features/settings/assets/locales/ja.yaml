@@ -323,3 +323,9 @@ settings:
     reverse_day_order:
       title: リストの日付順を逆にする
       description: 習慣リストで最新の日付を最初（左から右へ）に表示します。
+  import_source:
+    title: インポートソースの選択
+    backup_title: インポートバックアップ
+    backup_description: .whph バックアップ ファイルからアプリケーション データを復元する
+    external_apps_title: タスクのインポート(CSV)
+    external_apps_description: CSV ファイル経由で他のアプリケーションからタスクをインポートする

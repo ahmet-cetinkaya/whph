@@ -27,9 +27,7 @@ tasks:
     deadline_date:
       label: Deadline Datum
     description:
-      context:
-        Voeg gedetailleerde informatie over uw taak toe om u te helpen belangrijke
-        details te onthouden en de voortgang te volgen.
+      context: Voeg gedetailleerde informatie over uw taak toe om u te helpen belangrijke details te onthouden en de voortgang te volgen.
       hint: Beschrijving toevoegen...
       label: Beschrijving
     elapsed_time:
@@ -69,9 +67,7 @@ tasks:
     task_tag_already_exists: Deze taak tag bestaat al
     task_tag_not_found: Taak tag niet gevonden
   estimated_time:
-    description:
-      Stel realistische tijdschattingen in om uw taak effectief te plannen
-      en productiviteit te volgen.
+    description: Stel realistische tijdschattingen in om uw taak effectief te plannen en productiviteit te volgen.
     label: Geschatte Tijd
   filters:
     completion: Op Voltooiingsstatus
@@ -85,53 +81,24 @@ tasks:
   help:
     details:
       content:
-        "Beheers je taakmanagement en maximaliseer productiviteit door werk\
-        \ effectief te organiseren, prioriteren en bij te houden.\n\n## ⚡ Waarom Is\
-        \ Het Belangrijk?\n\nEffectief taakmanagement is de basis van productiviteit.\
-        \ Goed gestructureerde taken met duidelijke prioriteiten en deadlines helpen\
-        \ je te focussen op wat het belangrijkste is en voorkomen dat belangrijk werk\
-        \ door de vingers glipt.\n\n## \U0001F4DD Taakorganisatie\n\nStructureer je\
-        \ taken met uitgebreide details om duidelijkheid en focus te behouden. Gebruik\
-        \ tags, prioriteiten en tijdsschattingen om een systematische aanpak van je\
-        \ werklast te creëren.\n\n- \U0001F3F7️ Categoriseer taken met betekenisvolle\
-        \ tags\n- ⚖️ Stel prioriteiten in met bewezen frameworks\n- ⏱️ Schat tijdvereisten\
-        \ nauwkeurig in\n- \U0001F4C5 Plan realistische deadlines en schema's\n\n\
-        ## ⏰ Tijdmanagement\n\nVolg je tijdsinvesteringen om je werkpatronen te begrijpen\
-        \ en efficiëntie te verbeteren. Goed tijdmanagement transformeert verspreide\
-        \ inspanningen in gefocuste productiviteit.\n\n- \U0001F4CA Monitor werkelijke\
-        \ vs geschatte tijd\n- \U0001F3AF Focus op activiteiten met hoge impact\n\
-        - \U0001F4C8 Analyseer productiviteitspatronen in de loop van de tijd\n- ⏳\
-        \ Balanseer urgente en belangrijke taken\n\n## \U0001F4CA Prioriteitsframework\
-        \ (Eisenhower Matrix)\n\nOrganiseer je taken met deze bewezen prioriteringsmethode\
-        \ om te zorgen dat je altijd aan de juiste dingen werkt op het juiste moment.\n\
-        \n- \U0001F525 **Dringend & Belangrijk:** Behandel onmiddellijk - crisismanagement\
-        \ en deadlines\n- \U0001F4C8 **Belangrijk, Niet Dringend:** Plan strategisch\
-        \ - planning en vaardigheidsontwikkeling  \n- ⚡ **Dringend, Niet Belangrijk:**\
-        \ Delegeren indien mogelijk - onderbrekingen en sommige vergaderingen\n- \U0001F5D1\
-        ️ **Noch Dringend noch Belangrijk:** Elimineer - tijdverspillers en activiteiten\
-        \ met lage waarde\n"
+        "Beheers je taakmanagement en maximaliseer productiviteit door werk effectief te organiseren, prioriteren en bij te houden.\n\n## ⚡ Waarom Is Het Belangrijk?\n\nEffectief taakmanagement is de basis van productiviteit. Goed gestructureerde taken met duidelijke prioriteiten en deadlines helpen je te focussen op wat het belangrijkste is en voorkomen dat belangrijk werk door de vingers glipt.\n\n## \U0001F4DD Taakorganisatie\n\nStructureer je taken met uitgebreide details om duidelijkheid en focus te behouden. Gebruik tags, prioriteiten en tijdsschattingen om een systematische aanpak van je werklast te creëren.\n\n- \U0001F3F7️ Categoriseer taken met betekenisvolle tags\n- ⚖️ Stel prioriteiten in met bewezen frameworks\n- ⏱️ Schat tijdvereisten nauwkeurig in\n- \U0001F4C5 Plan realistische deadlines en schema's\n\n## ⏰ Tijdmanagement\n\nVolg je tijdsinvesteringen om je werkpatronen te begrijpen en efficiëntie te verbeteren. Goed tijdmanagement transformeert verspreide inspanningen\
+        \ in gefocuste productiviteit.\n\n- \U0001F4CA Monitor werkelijke vs geschatte tijd\n- \U0001F3AF Focus op activiteiten met hoge impact\n- \U0001F4C8 Analyseer productiviteitspatronen in de loop van de tijd\n- ⏳ Balanseer urgente en belangrijke taken\n\n## \U0001F4CA Prioriteitsframework (Eisenhower Matrix)\n\nOrganiseer je taken met deze bewezen prioriteringsmethode om te zorgen dat je altijd aan de juiste dingen werkt op het juiste moment.\n\n- \U0001F525 **Dringend & Belangrijk:** Behandel onmiddellijk - crisismanagement en deadlines\n- \U0001F4C8 **Belangrijk, Niet Dringend:** Plan strategisch - planning en vaardigheidsontwikkeling  \n- ⚡ **Dringend, Niet Belangrijk:** Delegeren indien mogelijk - onderbrekingen en sommige vergaderingen\n- \U0001F5D1️ **Noch Dringend noch Belangrijk:** Elimineer - tijdverspillers en activiteiten met lage waarde\n"
       title: Taakmanagement & Productiviteitsgids
     overview:
       content:
-        "Transformeer je productiviteit met systematisch taakmanagement dat
-        helpt georganiseerd, gefocust en in controle van je werklast te blijven.
+        "Transformeer je productiviteit met systematisch taakmanagement dat helpt georganiseerd, gefocust en in controle van je werklast te blijven.
 
 
         ## ⚡ Waarom Is Het Belangrijk?
 
 
-        Effectief taakmanagement is de hoeksteen van persoonlijk en professioneel
-        succes. Door je werk systematisch te organiseren, verminder je stress, houd
-        je deadlines en creëer je ruimte voor betekenisvolle vooruitgang op belangrijke
-        doelen.
+        Effectief taakmanagement is de hoeksteen van persoonlijk en professioneel succes. Door je werk systematisch te organiseren, verminder je stress, houd je deadlines en creëer je ruimte voor betekenisvolle vooruitgang op belangrijke doelen.
 
 
         ## 📋 Taakorganisatie
 
 
-        Creëer een gestructureerde aanpak voor het beheren van je verantwoordelijkheden.
-        Goed georganiseerde taken leiden tot duidelijke prioriteiten en efficiënte
-        uitvoering van je dagelijkse werk.
+        Creëer een gestructureerde aanpak voor het beheren van je verantwoordelijkheden. Goed georganiseerde taken leiden tot duidelijke prioriteiten en efficiënte uitvoering van je dagelijkse werk.
 
 
         - ✅ Creëer en categoriseer taken systematisch
@@ -146,9 +113,7 @@ tasks:
         ## ⏱️ Tijdtracking & Focus
 
 
-        Monitor je tijdsinvesteringen om productiviteitspatronen te begrijpen en je
-        workflow te optimaliseren. Tijdbesef leidt tot betere planning en verbeterde
-        prestaties.
+        Monitor je tijdsinvesteringen om productiviteitspatronen te begrijpen en je workflow te optimaliseren. Tijdbesef leidt tot betere planning en verbeterde prestaties.
 
 
         - ⏰ Volg werkelijke tijd per taak
@@ -163,8 +128,7 @@ tasks:
         ## 📈 Voortgangsmonitoring
 
 
-        Houd je prestaties bij en leer van je werkpatronen. Regelmatige herziening
-        en reflectie drijven continue verbetering in je productiviteitssysteem.
+        Houd je prestaties bij en leer van je werkpatronen. Regelmatige herziening en reflectie drijven continue verbetering in je productiviteitssysteem.
 
 
         - 📈 Monitor taakvoltooiingspercentages
@@ -182,31 +146,8 @@ tasks:
       title: Taakdetails
     help:
       content:
-        "Maximaliseer je focus en productiviteit met gestructureerde werksessies\
-        \ die je helpen diepe concentratie te behouden terwijl burnout wordt voorkomen.\n\
-        \n## ⚡ Waarom Is Het Belangrijk?\n\nGefocuste werksessies zijn essentieel\
-        \ voor diep werk en hoogwaardige output. Door te werken in gestructureerde\
-        \ intervallen met regelmatige pauzes, behoud je piek mentale prestaties terwijl\
-        \ je vermoeidheid vermijdt van langdurige, ongefocuste werkperiodes.\n\n##\
-        \ ⏰ Tijdsgebonden Focus Sessies\n\nGebruik bewezen tijdmanagementtechnieken\
-        \ om je werk te structureren voor maximale efficiëntie. Gestructureerde sessies\
-        \ helpen je concentratie te behouden en taken effectiever te voltooien.\n\n\
-        - \U0001F3AF **Klassieke Focus:** 25 minuten werk / 5 minuten pauze\n- \U0001F4C8\
-        \ **Uitgebreide Focus:** 50 minuten werk / 10 minuten pauze  \n- \U0001F504\
-        \ **Lange Pauze:** 15-30 minuten na 4 sessies\n- ⚖️ **Aangepaste Timing:**\
-        \ Pas intervallen aan aan je natuurlijke ritme\n\n## \U0001F9E0 Cognitieve\
-        \ Voordelen\n\nGestructureerde werksessies benutten de natuurlijke aandachtscycli\
-        \ van je hersenen om prestaties te optimaliseren en mentale vermoeidheid te\
-        \ voorkomen die kwaliteit en creativiteit vermindert.\n\n- \U0001F3AF Verbeterde\
-        \ focus en diepe concentratie\n- \U0001F50B Verminderde mentale vermoeidheid\
-        \ en burnout\n- \U0001F4AA Volgehouden motivatie door regelmatige prestaties\n\
-        - ⚡ Verbeterde tijdwaarneming en planningsnauwkeurigheid\n\n## \U0001F4CA\
-        \ Prestatieoptimalisatie\n\nVolg je gefocuste werkpatronen om je piekproductiviteitstijden\
-        \ te begrijpen en je schema te optimaliseren voor maximale effectiviteit.\n\
-        \n- \U0001F3F7️ Categoriseer focus sessies met tags voor analyse\n- \U0001F4C8\
-        \ Monitor productiviteitspatronen over verschillende tijden\n- \U0001F6AB\
-        \ Elimineer afleidingen voor het starten van sessies\n- \U0001F6B6 Gebruik\
-        \ pauzes voor fysieke beweging en mentale reset\n"
+        "Maximaliseer je focus en productiviteit met gestructureerde werksessies die je helpen diepe concentratie te behouden terwijl burnout wordt voorkomen.\n\n## ⚡ Waarom Is Het Belangrijk?\n\nGefocuste werksessies zijn essentieel voor diep werk en hoogwaardige output. Door te werken in gestructureerde intervallen met regelmatige pauzes, behoud je piek mentale prestaties terwijl je vermoeidheid vermijdt van langdurige, ongefocuste werkperiodes.\n\n## ⏰ Tijdsgebonden Focus Sessies\n\nGebruik bewezen tijdmanagementtechnieken om je werk te structureren voor maximale efficiëntie. Gestructureerde sessies helpen je concentratie te behouden en taken effectiever te voltooien.\n\n- \U0001F3AF **Klassieke Focus:** 25 minuten werk / 5 minuten pauze\n- \U0001F4C8 **Uitgebreide Focus:** 50 minuten werk / 10 minuten pauze  \n- \U0001F504 **Lange Pauze:** 15-30 minuten na 4 sessies\n- ⚖️ **Aangepaste Timing:** Pas intervallen aan aan je natuurlijke ritme\n\n## \U0001F9E0 Cognitieve Voordelen\n\
+        \nGestructureerde werksessies benutten de natuurlijke aandachtscycli van je hersenen om prestaties te optimaliseren en mentale vermoeidheid te voorkomen die kwaliteit en creativiteit vermindert.\n\n- \U0001F3AF Verbeterde focus en diepe concentratie\n- \U0001F50B Verminderde mentale vermoeidheid en burnout\n- \U0001F4AA Volgehouden motivatie door regelmatige prestaties\n- ⚡ Verbeterde tijdwaarneming en planningsnauwkeurigheid\n\n## \U0001F4CA Prestatieoptimalisatie\n\nVolg je gefocuste werkpatronen om je piekproductiviteitstijden te begrijpen en je schema te optimaliseren voor maximale effectiviteit.\n\n- \U0001F3F7️ Categoriseer focus sessies met tags voor analyse\n- \U0001F4C8 Monitor productiviteitspatronen over verschillende tijden\n- \U0001F6AB Elimineer afleidingen voor het starten van sessies\n- \U0001F6B6 Gebruik pauzes voor fysieke beweging en mentale reset\n"
       title: Gefocuste Werksessies & Tijdmanagement Gids
       tooltip: Marathon hulp tooltip
     label: Marathon Mode
@@ -218,6 +159,18 @@ tasks:
     deadline_title: "Taak Deadline: {title}"
     planned_message: Je taak is gepland voor {time}
     reminder_title: "Taak Herinnering: {title}"
+  import:
+    title: Taken importeren
+    format_label: Importformaat
+    formats:
+      generic: Algemene CSV
+      todoist: Todoist CSV
+    select_file: CSV-bestand selecteren
+    button: Importeren
+    success: "{count} taken succesvol geïmporteerd."
+    partial_success: "{success} taken geïmporteerd. {failure} taken mislukt."
+    error: "Kon taken niet importeren: {error}"
+    no_tasks: Geen taken gevonden in het bestand.
   page:
     completed_tasks_title: Voltooide taken
     title: Taken
@@ -258,9 +211,7 @@ tasks:
     urgent_important: Dringend en Belangrijk
     urgent_not_important: Dringend maar Niet Belangrijk
   priority:
-    description:
-      Stel taakprioriteit in met de Eisenhower-matrix - Dringend/Belangrijk-classificatie
-      voor effectieve taakbeheer
+    description: Stel taakprioriteit in met de Eisenhower-matrix - Dringend/Belangrijk-classificatie voor effectieve taakbeheer
     selection:
       title: Selecteer Prioriteit
     tooltips:
@@ -277,16 +228,11 @@ tasks:
       urgent_not_important: Dringend maar Niet Belangrijk
   quick_task:
     create_error: Fout bij creëren taak
-    lock_description:
-      Lock eigenschappen om hun waarden te behouden bij het creëren
-      van meerdere vergelijkbare taken. Gelockte eigenschappen worden niet gewist
-      bij het resetten van het formulier.
+    lock_description: Lock eigenschappen om hun waarden te behouden bij het creëren van meerdere vergelijkbare taken. Gelockte eigenschappen worden niet gewist bij het resetten van het formulier.
     lock_settings: Lock Instellingen
     reset_all: Reset alle velden
     reset_confirm:
-      message:
-        Weet je zeker dat je alle velden wilt resetten? Deze actie kan niet
-        ongedaan gemaakt worden.
+      message: Weet je zeker dat je alle velden wilt resetten? Deze actie kan niet ongedaan gemaakt worden.
       title: Reset Alle Velden
     task_added_successfully: Taak succesvol toegevoegd
     title: Snelle Taak
@@ -351,9 +297,7 @@ tasks:
     monthly_pattern_label: Maandelijks patroon
     advanced_label: Geavanceerde instellingen
     regenerate_label: Regenereren na voltooiing
-    regenerate_description:
-      Wanneer ingeschakeld, wordt de volgende gebeurtenis gepland
-      vanaf de voltooiingsdatum, in plaats van de geplande datum.
+    regenerate_description: Wanneer ingeschakeld, wordt de volgende gebeurtenis gepland vanaf de voltooiingsdatum, in plaats van de geplande datum.
     on_specific_day: Specifieke dag
     on_relative_day: Relatieve dag
     on_the: De
@@ -407,9 +351,7 @@ tasks:
     edit_title: Titel bewerken
     increase_estimated_time: Geschatte tijd verhogen
     reminder_date_required: Stel eerst een datum in om herinneringen te configureren
-    reminder_help_text:
-      Stel een herinnering in om te worden gewaarschuwd voor de
-      taakdatum
+    reminder_help_text: Stel een herinnering in om te worden gewaarschuwd voor de taakdatum
     set_reminder: Herinnering instellen
     set_reminder_with_status: Herinnering instellen - Geen herinnering
     show_completed_tasks: Gefilterde voltooide taken
@@ -417,52 +359,29 @@ tasks:
     show_subtasks: Subtaken tonen
   tour:
     add_tasks:
-      description:
-        Creëer snel nieuwe taken met deze knop. Stel titels, prioriteiten,
-        deadlines, tags en meer in. Voeg subtaken en herinneringen toe om up-to-date
-        te blijven met je werk.
+      description: Creëer snel nieuwe taken met deze knop. Stel titels, prioriteiten, deadlines, tags en meer in. Voeg subtaken en herinneringen toe om up-to-date te blijven met je werk.
       title: Nieuwe taken toevoegen
     filter_search:
-      description:
-        Krachtige filteropties om precies te vinden wat je nodig hebt.
-        Filter op tags, datums, voltooiingsstatus of gebruik de zoekfunctie. Sorteer
-        taken en schakel subtaken voor betere organisatie.
+      description: Krachtige filteropties om precies te vinden wat je nodig hebt. Filter op tags, datums, voltooiingsstatus of gebruik de zoekfunctie. Sorteer taken en schakel subtaken voor betere organisatie.
       title: Filteren & Zoeken
     marathon:
       app_usage:
-        description:
-          Monitor app-gebruikspatronen en analyseer de tijd die je besteedt
-          aan verschillende activiteiten. Verkrijg inzicht in je digitale gewoonten
-          en optimaliseer je productiviteit.
+        description: Monitor app-gebruikspatronen en analyseer de tijd die je besteedt aan verschillende activiteiten. Verkrijg inzicht in je digitale gewoonten en optimaliseer je productiviteit.
         title: App-gebruik & Tijdanalyse
       filter_sort:
-        description:
-          Filter app-gebruiksgegevens op datumbereik, tags of specifieke
-          apparaten. Sorteer en organiseer je gebruiksstatistieken voor betere inzichten
-          in tijdsbeheer.
+        description: Filter app-gebruiksgegevens op datumbereik, tags of specifieke apparaten. Sorteer en organiseer je gebruiksstatistieken voor betere inzichten in tijdsbeheer.
         title: Filteren & Sorteren
       tracking_settings:
-        description:
-          Configureer app-trackingregels, stel automatische tagging in
-          en beheer welke applicaties je wilt volgen. Pas tracking aan op je productiviteitsbehoeften.
+        description: Configureer app-trackingregels, stel automatische tagging in en beheer welke applicaties je wilt volgen. Pas tracking aan op je productiviteitsbehoeften.
         title: Tracking-instellingen
       usage_statistics:
-        description:
-          Bekijk gedetailleerde app-gebruiksgegevens en tijdsverdeling.
-          Analyseer je productiviteitspatronen, volg de tijd die je besteedt aan verschillende
-          applicaties en identificeer verbeterpunten.
+        description: Bekijk gedetailleerde app-gebruiksgegevens en tijdsverdeling. Analyseer je productiviteitspatronen, volg de tijd die je besteedt aan verschillende applicaties en identificeer verbeterpunten.
         title: Gebruiksstatistieken
     task_management:
-      description:
-        Creëer en organiseer taken met prioriteiten, deadlines en herinneringen.
-        Gebruik de Pomodoro-timer om gefocust te blijven en je voortgang bij te houden
-        op belangrijke taken.
+      description: Creëer en organiseer taken met prioriteiten, deadlines en herinneringen. Gebruik de Pomodoro-timer om gefocust te blijven en je voortgang bij te houden op belangrijke taken.
       title: Taakbeheer
     your_tasks:
-      description:
-        Bekijk en beheer al je taken op één plek. Klik op elke taak om
-        details te bekijken, als voltooid te markeren, informatie te bewerken of te
-        verwijderen. Blijf georganiseerd en volg je voortgang.
+      description: Bekijk en beheer al je taken op één plek. Klik op elke taak om details te bekijken, als voltooid te markeren, informatie te bewerken of te verwijderen. Blijf georganiseerd en volg je voortgang.
       title: Jouw taken
   validation:
     deadline_cannot_be_before_planned: Deadline moet na de geplande datum zijn

@@ -395,3 +395,9 @@ settings:
       description:
         Vis de nyeste dage først (fra venstre mod højre) i oversigten over
         vaner.
+  import_source:
+    title: Vælg Importer kilde
+    backup_title: Importer sikkerhedskopi
+    backup_description: Gendan dine applikationsdata fra en .whph backup-fil
+    external_apps_title: Importer opgaver (CSV)
+    external_apps_description: Importer opgaver fra andre applikationer via CSV-fil

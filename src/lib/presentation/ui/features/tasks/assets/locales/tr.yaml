@@ -263,6 +263,18 @@ tasks:
     deadline_title: "Görev Son Tarih: {title}"
     planned_message: "Göreviniz için planlanan zaman: {time}"
     reminder_title: "Görev Hatırlatıcı: {title}"
+  import:
+    title: Görevleri İçe Aktar
+    format_label: İçe Aktarma Formatı
+    formats:
+      generic: Genel CSV
+      todoist: Todoist CSV
+    select_file: CSV Dosyası Seç
+    button: İçe Aktar
+    success: "{count} görev başarıyla içe aktarıldı."
+    partial_success: "{success} görev içe aktarıldı. {failure} görev başarısız oldu."
+    error: "Görevler içe aktarılamadı: {error}"
+    no_tasks: Dosyada görev bulunamadı.
   page:
     completed_tasks_title: Tamamlanan görevler
     title: Görevler

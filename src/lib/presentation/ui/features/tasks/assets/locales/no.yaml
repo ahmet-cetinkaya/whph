@@ -27,9 +27,7 @@ tasks:
     deadline_date:
       label: Fristdato
     description:
-      context:
-        Legg til detaljert informasjon om oppgaven din for å hjelpe deg med
-        å huske nøkkeldetaljer og spore fremdrift.
+      context: Legg til detaljert informasjon om oppgaven din for å hjelpe deg med å huske nøkkeldetaljer og spore fremdrift.
       hint: Legg til beskrivelse...
       label: Beskrivelse
     elapsed_time:
@@ -70,9 +68,7 @@ tasks:
     task_tag_already_exists: Denne oppgavtaggen finnes allerede
     task_tag_not_found: Oppgavtag ikke funnet
   estimated_time:
-    description:
-      Sett en realistisk tidsvurdering for å planlegge oppgaven din effektivt
-      og spore produktivitet.
+    description: Sett en realistisk tidsvurdering for å planlegge oppgaven din effektivt og spore produktivitet.
     label: Estimert Tid
   filters:
     completion: Etter Fullføringsstatus
@@ -86,51 +82,24 @@ tasks:
   help:
     details:
       content:
-        "Mestre oppgavehåndteringen din og maksimer produktiviteten ved å organisere,\
-        \ prioritere og spore arbeidet ditt effektivt.\n\n## ⚡ Hvorfor Er Det Viktig?\n\
-        \nEffektiv oppgavehåndtering er grunnlaget for produktivitet. Riktig strukturerte\
-        \ oppgaver med klare prioriteringer og frister hjelper deg med å fokusere\
-        \ på det som betyr mest og forhindrer viktig arbeid i å falle gjennom sprekkene.\n\
-        \n## \U0001F4DD Oppgaveorganisering\n\nStrukturer oppgavene dine med omfattende\
-        \ detaljer for å opprettholde klarhet og fokus. Bruk tags, prioriteringer\
-        \ og tidsestimater for å skape en systematisk tilnærming til arbeidsbelastningen\
-        \ din.\n\n- \U0001F3F7️ Kategoriser oppgaver med meningsfulle tags\n- ⚖️ Sett\
-        \ prioriteringer ved bruk av beviste rammeverk\n- ⏱️ Estimer tidsbehov nøyaktig\n\
-        - \U0001F4C5 Planlegg realistiske frister og tidsplaner\n\n## ⏰ Tidsstyring\n\
-        \nSpor tidsinvesteringene dine for å forstå arbeidsmønstrene dine og forbedre\
-        \ effektiviteten. Riktig tidsstyring transformerer spredte anstrengelser til\
-        \ fokusert produktivitet.\n\n- \U0001F4CA Overvåk faktisk vs estimert tid\n\
-        - \U0001F3AF Fokuser på høyimpact-aktiviteter\n- \U0001F4C8 Analyser produktivitetsmønstre\
-        \ over tid\n- ⏳ Balanser presserende og viktige oppgaver\n\n## \U0001F4CA\
-        \ Prioriteringsrammeverk (Eisenhower Matrise)\n\nOrganiser oppgavene dine\
-        \ ved bruk av denne beviste prioriteringsmetoden for å sikre at du alltid\
-        \ jobber med de riktige tingene på rett tid.\n\n- \U0001F525 **Presserende\
-        \ & Viktig:** Håndter umiddelbart - krisehåndtering og frister\n- \U0001F4C8\
-        \ **Viktig, Ikke Presserende:** Planlegg strategisk - planlegging og ferdighetsutvikling\
-        \  \n- ⚡ **Presserende, Ikke Viktig:** Deleger når mulig - avbrytelser og\
-        \ noen møter\n- \U0001F5D1️ **Verken Presserende eller Viktig:** Eliminer\
-        \ - tidstyver og lavverdi-aktiviteter\n"
+        "Mestre oppgavehåndteringen din og maksimer produktiviteten ved å organisere, prioritere og spore arbeidet ditt effektivt.\n\n## ⚡ Hvorfor Er Det Viktig?\n\nEffektiv oppgavehåndtering er grunnlaget for produktivitet. Riktig strukturerte oppgaver med klare prioriteringer og frister hjelper deg med å fokusere på det som betyr mest og forhindrer viktig arbeid i å falle gjennom sprekkene.\n\n## \U0001F4DD Oppgaveorganisering\n\nStrukturer oppgavene dine med omfattende detaljer for å opprettholde klarhet og fokus. Bruk tags, prioriteringer og tidsestimater for å skape en systematisk tilnærming til arbeidsbelastningen din.\n\n- \U0001F3F7️ Kategoriser oppgaver med meningsfulle tags\n- ⚖️ Sett prioriteringer ved bruk av beviste rammeverk\n- ⏱️ Estimer tidsbehov nøyaktig\n- \U0001F4C5 Planlegg realistiske frister og tidsplaner\n\n## ⏰ Tidsstyring\n\nSpor tidsinvesteringene dine for å forstå arbeidsmønstrene dine og forbedre effektiviteten. Riktig tidsstyring transformerer spredte\
+        \ anstrengelser til fokusert produktivitet.\n\n- \U0001F4CA Overvåk faktisk vs estimert tid\n- \U0001F3AF Fokuser på høyimpact-aktiviteter\n- \U0001F4C8 Analyser produktivitetsmønstre over tid\n- ⏳ Balanser presserende og viktige oppgaver\n\n## \U0001F4CA Prioriteringsrammeverk (Eisenhower Matrise)\n\nOrganiser oppgavene dine ved bruk av denne beviste prioriteringsmetoden for å sikre at du alltid jobber med de riktige tingene på rett tid.\n\n- \U0001F525 **Presserende & Viktig:** Håndter umiddelbart - krisehåndtering og frister\n- \U0001F4C8 **Viktig, Ikke Presserende:** Planlegg strategisk - planlegging og ferdighetsutvikling  \n- ⚡ **Presserende, Ikke Viktig:** Deleger når mulig - avbrytelser og noen møter\n- \U0001F5D1️ **Verken Presserende eller Viktig:** Eliminer - tidstyver og lavverdi-aktiviteter\n"
       title: Oppgavehåndtering & Produktivitetsguide
     overview:
       content:
-        "Transformer produktiviteten din med systematisk oppgavehåndtering
-        som hjelper deg å holde deg organisert, fokusert og i kontroll over arbeidsbelastningen
-        din.
+        "Transformer produktiviteten din med systematisk oppgavehåndtering som hjelper deg å holde deg organisert, fokusert og i kontroll over arbeidsbelastningen din.
 
 
         ## ⚡ Hvorfor Er Det Viktig?
 
 
-        Effektiv oppgavehåndtering er hjørnesteinen i personlig og profesjonell suksess.
-        Ved å organisere arbeidet ditt systematisk reduserer du stress, holder frister
-        konsekvent og skaper plass til meningsfull fremgang på viktige mål.
+        Effektiv oppgavehåndtering er hjørnesteinen i personlig og profesjonell suksess. Ved å organisere arbeidet ditt systematisk reduserer du stress, holder frister konsekvent og skaper plass til meningsfull fremgang på viktige mål.
 
 
         ## 📋 Oppgaveorganisering
 
 
-        Skap en strukturert tilnærming til håndtering av ansvarsområdene dine. Velorganiserte
-        oppgaver fører til klare prioriteringer og effektiv utførelse av daglig arbeid.
+        Skap en strukturert tilnærming til håndtering av ansvarsområdene dine. Velorganiserte oppgaver fører til klare prioriteringer og effektiv utførelse av daglig arbeid.
 
 
         - ✅ Opprett og kategoriser oppgaver systematisk
@@ -145,9 +114,7 @@ tasks:
         ## ⏱️ Tidssporing & Fokus
 
 
-        Overvåk tidsinvesteringene dine for å forstå produktivitetsmønstre og optimalisere
-        arbeidsflyten din. Tidsbevissthet fører til bedre planlegging og forbedret
-        ytelse.
+        Overvåk tidsinvesteringene dine for å forstå produktivitetsmønstre og optimalisere arbeidsflyten din. Tidsbevissthet fører til bedre planlegging og forbedret ytelse.
 
 
         - ⏰ Spor faktisk tid brukt per oppgave
@@ -162,9 +129,7 @@ tasks:
         ## 📈 Fremdriftssporing
 
 
-        Hold styr på prestasjonene dine og lær av arbeidsmønstrene dine. Regelmessig
-        gjennomgang og refleksjon driver kontinuerlig forbedring i produktivitetssystemet
-        ditt.
+        Hold styr på prestasjonene dine og lær av arbeidsmønstrene dine. Regelmessig gjennomgang og refleksjon driver kontinuerlig forbedring i produktivitetssystemet ditt.
 
 
         - 📈 Overvåk oppgavefullføringsrater
@@ -182,30 +147,8 @@ tasks:
       title: Oppgavedetaljer
     help:
       content:
-        "Maksimer fokuset og produktiviteten din med strukturerte arbeidsøkter\
-        \ som hjelper deg å opprettholde dyp konsentrasjon mens du forhindrer utbrenthet.\n\
-        \n## ⚡ Hvorfor Er Det Viktig?\n\nFokuserte arbeidsøkter er essensielle for\
-        \ dyp arbeid og høy kvalitet output. Ved å jobbe i strukturerte intervaller\
-        \ med regelmessige pauser opprettholder du topp mental ytelse mens du unngår\
-        \ tretthet fra forlenget, uoppmerksom arbeidstid.\n\n## ⏰ Tidsbegrensede Fokusøkter\n\
-        \nBruk beviste tidsstyringsteknikker for å strukturere arbeidet ditt for maksimal\
-        \ effektivitet. Strukturerte økter hjelper deg å opprettholde konsentrasjon\
-        \ og fullføre oppgaver mer effektivt.\n\n- \U0001F3AF **Klassisk Fokus:**\
-        \ 25 minutter arbeid / 5 minutter pause\n- \U0001F4C8 **Utvidet Fokus:** 50\
-        \ minutter arbeid / 10 minutter pause  \n- \U0001F504 **Lang Pause:** 15-30\
-        \ minutter etter 4 økter\n- ⚖️ **Tilpasset Timing:** Juster intervaller for\
-        \ å matche din naturlige rytme\n\n## \U0001F9E0 Kognitive Fordeler\n\nStrukturerte\
-        \ arbeidsøkter utnytter hjernens naturlige oppmerksomhetssykluser for å optimalisere\
-        \ ytelse og forhindre mental tretthet som reduserer kvalitet og kreativitet.\n\
-        \n- \U0001F3AF Forbedret fokus og dyp konsentrasjon\n- \U0001F50B Redusert\
-        \ mental tretthet og utbrenthet\n- \U0001F4AA Vedvarende motivasjon gjennom\
-        \ regelmessige prestasjoner\n- ⚡ Forbedret tidsbevissthet og planleggingsnøyaktighet\n\
-        \n## \U0001F4CA Ytelsesoptimalisering\n\nSpor dine fokuserte arbeidsmønstre\
-        \ for å forstå dine topp produktivitetstider og optimaliser tidsplanen din\
-        \ for maksimal effektivitet.\n\n- \U0001F3F7️ Kategoriser fokusøkter med tags\
-        \ for analyse\n- \U0001F4C8 Overvåk produktivitetsmønstre på tvers av forskjellige\
-        \ tider\n- \U0001F6AB Eliminer distraksjoner før du starter økter\n- \U0001F6B6\
-        \ Bruk pauser for fysisk bevegelse og mental reset\n"
+        "Maksimer fokuset og produktiviteten din med strukturerte arbeidsøkter som hjelper deg å opprettholde dyp konsentrasjon mens du forhindrer utbrenthet.\n\n## ⚡ Hvorfor Er Det Viktig?\n\nFokuserte arbeidsøkter er essensielle for dyp arbeid og høy kvalitet output. Ved å jobbe i strukturerte intervaller med regelmessige pauser opprettholder du topp mental ytelse mens du unngår tretthet fra forlenget, uoppmerksom arbeidstid.\n\n## ⏰ Tidsbegrensede Fokusøkter\n\nBruk beviste tidsstyringsteknikker for å strukturere arbeidet ditt for maksimal effektivitet. Strukturerte økter hjelper deg å opprettholde konsentrasjon og fullføre oppgaver mer effektivt.\n\n- \U0001F3AF **Klassisk Fokus:** 25 minutter arbeid / 5 minutter pause\n- \U0001F4C8 **Utvidet Fokus:** 50 minutter arbeid / 10 minutter pause  \n- \U0001F504 **Lang Pause:** 15-30 minutter etter 4 økter\n- ⚖️ **Tilpasset Timing:** Juster intervaller for å matche din naturlige rytme\n\n## \U0001F9E0 Kognitive Fordeler\n\nStrukturerte\
+        \ arbeidsøkter utnytter hjernens naturlige oppmerksomhetssykluser for å optimalisere ytelse og forhindre mental tretthet som reduserer kvalitet og kreativitet.\n\n- \U0001F3AF Forbedret fokus og dyp konsentrasjon\n- \U0001F50B Redusert mental tretthet og utbrenthet\n- \U0001F4AA Vedvarende motivasjon gjennom regelmessige prestasjoner\n- ⚡ Forbedret tidsbevissthet og planleggingsnøyaktighet\n\n## \U0001F4CA Ytelsesoptimalisering\n\nSpor dine fokuserte arbeidsmønstre for å forstå dine topp produktivitetstider og optimaliser tidsplanen din for maksimal effektivitet.\n\n- \U0001F3F7️ Kategoriser fokusøkter med tags for analyse\n- \U0001F4C8 Overvåk produktivitetsmønstre på tvers av forskjellige tider\n- \U0001F6AB Eliminer distraksjoner før du starter økter\n- \U0001F6B6 Bruk pauser for fysisk bevegelse og mental reset\n"
       title: Fokuserte Arbeidsøkter & Tidsstyringsguide
       tooltip: Marathon hjelp tooltip
     label: Marathon Modus
@@ -217,6 +160,18 @@ tasks:
     deadline_title: "Oppgave Frist: {title}"
     planned_message: Oppgaven din er planlagt for {time}
     reminder_title: "Oppgave Påminnelse: {title}"
+  import:
+    title: Importer oppgaver
+    format_label: Importformat
+    formats:
+      generic: Generisk CSV
+      todoist: Todoist CSV
+    select_file: Velg CSV-fil
+    button: Importer
+    success: "{count} oppgaver importert vellykket."
+    partial_success: "{success} oppgaver importert. {failure} oppgaver feilet."
+    error: "Kunne ikke importere oppgaver: {error}"
+    no_tasks: Ingen oppgaver funnet i filen.
   page:
     completed_tasks_title: Fullførte oppgaver
     title: Oppgaver
@@ -257,9 +212,7 @@ tasks:
     urgent_important: Presserende og Viktig
     urgent_not_important: Presserende men Ikke Viktig
   priority:
-    description:
-      Angi oppgaveprioritet ved hjelp av Eisenhowers matrise - Haster/Viktig-klassifisering
-      for effektiv oppgavebehandling
+    description: Angi oppgaveprioritet ved hjelp av Eisenhowers matrise - Haster/Viktig-klassifisering for effektiv oppgavebehandling
     selection:
       title: Velg Prioritet
     tooltips:
@@ -276,15 +229,11 @@ tasks:
       urgent_not_important: Presserende men Ikke Viktig
   quick_task:
     create_error: Feil ved oppretting av oppgave
-    lock_description:
-      Lås egenskaper for å beholde verdiene deres når du oppretter
-      flere lignende oppgaver. Låste egenskaper tømmes ikke når du nullstiller skjemaet.
+    lock_description: Lås egenskaper for å beholde verdiene deres når du oppretter flere lignende oppgaver. Låste egenskaper tømmes ikke når du nullstiller skjemaet.
     lock_settings: Lås Innstillinger
     reset_all: Nullstill alle felt
     reset_confirm:
-      message:
-        Er du sikker på at du vil nullstille alle felt? Denne handlingen kan
-        ikke angres.
+      message: Er du sikker på at du vil nullstille alle felt? Denne handlingen kan ikke angres.
       title: Nullstill Alle Felt
     task_added_successfully: Oppgave lagt til med suksess
     title: Rask Oppgave
@@ -349,9 +298,7 @@ tasks:
     monthly_pattern_label: Månedlig mønster
     advanced_label: Avanserte innstillinger
     regenerate_label: Regenerer etter fullføring
-    regenerate_description:
-      Når aktivert, vil neste forekomst bli planlagt fra fullføringsdatoen,
-      i stedet for den planlagte datoen.
+    regenerate_description: Når aktivert, vil neste forekomst bli planlagt fra fullføringsdatoen, i stedet for den planlagte datoen.
     on_specific_day: Bestemt dag
     on_relative_day: Relativ dag
     on_the: Den
@@ -405,9 +352,7 @@ tasks:
     edit_title: Rediger tittel
     increase_estimated_time: Øk estimert tid
     reminder_date_required: Still inn en dato først for å konfigurere påminnelser
-    reminder_help_text:
-      Still inn en påminnelse for å bli varslet før oppgavedato
-      dato
+    reminder_help_text: Still inn en påminnelse for å bli varslet før oppgavedato dato
     set_reminder: Sett påminnelse
     set_reminder_with_status: Angi påminnelse - Ingen påminnelse
     show_completed_tasks: Filtrer fullførte oppgaver
@@ -415,51 +360,29 @@ tasks:
     show_subtasks: Vis underoppgaver
   tour:
     add_tasks:
-      description:
-        Opprett raskt nye oppgaver med denne knappen. Sett titler, prioriteter,
-        frister, tagger og mer. Legg til underoppgaver og påminnelser for å holde
-        deg oppdatert på arbeidet ditt.
+      description: Opprett raskt nye oppgaver med denne knappen. Sett titler, prioriteter, frister, tagger og mer. Legg til underoppgaver og påminnelser for å holde deg oppdatert på arbeidet ditt.
       title: Legg til nye oppgaver
     filter_search:
-      description:
-        Kraftige filteralternativer for å finne akkurat det du trenger.
-        Filtrer etter tagger, datoer, fullføringsstatus eller bruk søk. Sorter oppgaver
-        og veksle underoppgaver for bedre organisering.
+      description: Kraftige filteralternativer for å finne akkurat det du trenger. Filtrer etter tagger, datoer, fullføringsstatus eller bruk søk. Sorter oppgaver og veksle underoppgaver for bedre organisering.
       title: Filtrer & Søk
     marathon:
       app_usage:
-        description:
-          Overvåk app-brukmønstre og analyser tiden du bruker på ulike
-          aktiviteter. Få innsikt i dine digitale vaner og optimaliser produktiviteten
-          din.
+        description: Overvåk app-brukmønstre og analyser tiden du bruker på ulike aktiviteter. Få innsikt i dine digitale vaner og optimaliser produktiviteten din.
         title: App-bruk & Tidsanalyse
       filter_sort:
-        description:
-          Filtrer app-brukdata etter datoområde, tagger eller spesifikke
-          enheter. Sorter og organiser bruksstatistikken din for bedre innsikt i tidsstyring.
+        description: Filtrer app-brukdata etter datoområde, tagger eller spesifikke enheter. Sorter og organiser bruksstatistikken din for bedre innsikt i tidsstyring.
         title: Filtrer & Sorter
       tracking_settings:
-        description:
-          Konfigurer app-sporingsregler, sett opp automatisk tagging og
-          administrer hvilke applikasjoner som skal spores. Tilpass sporingen etter
-          dine produktivitetsbehov.
+        description: Konfigurer app-sporingsregler, sett opp automatisk tagging og administrer hvilke applikasjoner som skal spores. Tilpass sporingen etter dine produktivitetsbehov.
         title: Sporingsinnstillinger
       usage_statistics:
-        description:
-          Vis detaljert app-brukdata og tidsfordeling. Analyser produktivitetsmønstre,
-          spor tiden du bruker på ulike applikasjoner og identifiser forbedringsområder.
+        description: Vis detaljert app-brukdata og tidsfordeling. Analyser produktivitetsmønstre, spor tiden du bruker på ulike applikasjoner og identifiser forbedringsområder.
         title: Bruksstatistikk
     task_management:
-      description:
-        Opprett og organiser oppgaver med prioriteter, frister og påminnelser.
-        Bruk Pomodoro-timeren for å holde fokus og spore fremgangen din på viktige
-        oppgaver.
+      description: Opprett og organiser oppgaver med prioriteter, frister og påminnelser. Bruk Pomodoro-timeren for å holde fokus og spore fremgangen din på viktige oppgaver.
       title: Oppgavehåndtering
     your_tasks:
-      description:
-        Se og administrer alle oppgavene dine på ett sted. Klikk på hvilken
-        som helst oppgave for å se detaljer, merke som fullført, redigere informasjon
-        eller slette. Hold deg organisert og spor fremgangen din.
+      description: Se og administrer alle oppgavene dine på ett sted. Klikk på hvilken som helst oppgave for å se detaljer, merke som fullført, redigere informasjon eller slette. Hold deg organisert og spor fremgangen din.
       title: Dine oppgaver
   validation:
     deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen

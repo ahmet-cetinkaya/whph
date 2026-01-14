@@ -263,6 +263,18 @@ tasks:
     deadline_title: 任务截止：{title}
     planned_message: 您的任务计划在 {time}
     reminder_title: 任务提醒：{title}
+  import:
+    title: 导入任务
+    format_label: 导入格式
+    formats:
+      generic: 通用 CSV
+      todoist: Todoist CSV
+    select_file: 选择 CSV 文件
+    button: 导入
+    success: 成功导入 {count} 个任务。
+    partial_success: 导入了 {success} 个任务。{failure} 个任务失败。
+    error: 导入任务失败：{error}
+    no_tasks: 文件中未找到任务。
   page:
     completed_tasks_title: 已完成任务
     title: 任务

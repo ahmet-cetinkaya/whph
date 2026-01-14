@@ -17,6 +17,8 @@ import 'dart:typed_data';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
+import 'package:whph/core/application/features/tasks/commands/import_tasks_command.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 
 class ImportExportSettings extends StatelessWidget {
   const ImportExportSettings({super.key});
@@ -61,15 +63,30 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   final _themeService = container.resolve<IThemeService>();
   final PageController _pageController = PageController();
   String? _selectedFilePath;
+  String? _selectedTaskFilePath;
+  TaskImportType _taskImportType = TaskImportType.generic;
   ExportDataFileOptions? _selectedExportOption;
   bool _isProcessing = false;
 
-  void _navigateToPage(int page) {
+  void _goToPage(int page) {
+    if (!_pageController.hasClients) return;
     _pageController.animateToPage(
       page,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  void _goBack() {
+    if (!_pageController.hasClients) return;
+    final currentPage = _pageController.page?.round() ?? 0;
+    if (currentPage == 0) {
+      Navigator.of(context).pop();
+    } else if (currentPage == 2 || currentPage == 3) {
+      _goToPage(1);
+    } else {
+      _goToPage(0);
+    }
   }
 
   @override
@@ -93,13 +110,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
               ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  if (_pageController.hasClients && _pageController.page! > 0) {
-                    _navigateToPage(0);
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                },
+                onPressed: _goBack,
               ),
               elevation: 0,
             ),
@@ -109,8 +120,10 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _buildMainPage(context),
-                  if (_selectedFilePath != null) _buildImportStrategyPage(context),
-                  if (_selectedExportOption == null) _buildExportOptionsPage(context),
+                  _buildImportSourceSelectionPage(context),
+                  _buildImportStrategyPage(context),
+                  _buildExternalImportPage(context),
+                  _buildExportOptionsPage(context),
                 ],
               ),
             ),
@@ -145,8 +158,113 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           _ImportExportActionTile(
             icon: Icons.upload,
             titleKey: SettingsTranslationKeys.exportTitle,
-            onTap: () => _navigateToPage(2),
+            onTap: () => _goToPage(4),
             isDisabled: _isProcessing,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImportSourceSelectionPage(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.sizeLarge),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _translationService.translate(SettingsTranslationKeys.importSourceTitle),
+            style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: AppTheme.sizeLarge),
+          _ImportOptionTile(
+            icon: Icons.settings_backup_restore,
+            titleKey: SettingsTranslationKeys.importSourceBackupTitle,
+            descriptionKey: SettingsTranslationKeys.importSourceBackupDescription,
+            onSelect: () => _handleBackupImport(context),
+            isDisabled: _isProcessing,
+          ),
+          const SizedBox(height: AppTheme.sizeMedium),
+          _ImportOptionTile(
+            icon: Icons.apps,
+            titleKey: SettingsTranslationKeys.importSourceExternalAppsTitle,
+            descriptionKey: SettingsTranslationKeys.importSourceExternalAppsDescription,
+            onSelect: () => _goToPage(3),
+            isDisabled: _isProcessing,
+          ),
+          const SizedBox(height: AppTheme.sizeXLarge),
+          TextButton.icon(
+            onPressed: () => _goToPage(0),
+            icon: const Icon(Icons.arrow_back),
+            label: Text(_translationService.translate(SharedTranslationKeys.backButton)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExternalImportPage(BuildContext context) {
+    final theme = Theme.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.sizeLarge),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _translationService.translate(TaskTranslationKeys.importTasksTitle),
+            style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: AppTheme.sizeLarge),
+          DropdownButtonFormField<TaskImportType>(
+            value: _taskImportType,
+            decoration: InputDecoration(
+              labelText: _translationService.translate(TaskTranslationKeys.importFormatLabel),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+            ),
+            items: [
+              DropdownMenuItem(
+                value: TaskImportType.generic,
+                child: Text(_translationService.translate(TaskTranslationKeys.importFormatsGeneric)),
+              ),
+              DropdownMenuItem(
+                value: TaskImportType.todoist,
+                child: Text(_translationService.translate(TaskTranslationKeys.importFormatsTodoist)),
+              ),
+            ],
+            onChanged: (value) {
+              if (value != null) setState(() => _taskImportType = value);
+            },
+          ),
+          const SizedBox(height: AppTheme.sizeLarge),
+          _ImportExportActionTile(
+            icon: Icons.file_present,
+            titleKey: _selectedTaskFilePath != null
+                ? _selectedTaskFilePath!.split('/').last
+                : TaskTranslationKeys.importSelectFile,
+            onTap: () => _handleTaskFilePick(context),
+            isDisabled: _isProcessing,
+          ),
+          const SizedBox(height: AppTheme.sizeXLarge),
+          Row(
+            children: [
+              TextButton.icon(
+                onPressed: () => _goToPage(1),
+                icon: const Icon(Icons.arrow_back),
+                label: Text(_translationService.translate(SharedTranslationKeys.backButton)),
+              ),
+              const Spacer(),
+              ElevatedButton(
+                onPressed: _selectedTaskFilePath != null && !_isProcessing
+                    ? () => _handleExternalImportExecute(context)
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                ),
+                child: Text(_translationService.translate(TaskTranslationKeys.importButton)),
+              ),
+            ],
           ),
         ],
       ),
@@ -200,7 +318,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
                       setState(() {
                         _selectedFilePath = null;
                       });
-                      _navigateToPage(0);
+                      _goToPage(1);
                     },
               icon: const Icon(Icons.arrow_back),
               label: Text(
@@ -265,7 +383,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
-              onPressed: () => _navigateToPage(0),
+              onPressed: () => _goToPage(0),
               icon: const Icon(Icons.arrow_back),
               label: Text(
                 _translationService.translate(SharedTranslationKeys.backButton),
@@ -277,19 +395,21 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
     );
   }
 
-  Future<void> _handleImport(BuildContext context) async {
+  void _handleImport(BuildContext context) {
+    _goToPage(1);
+  }
+
+  Future<void> _handleBackupImport(BuildContext context) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
       errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
       operation: () async {
-        // Pick backup file (.whph only) - show all files since .whph is not supported by file picker
         final filePath = await _fileService.pickFile(
-          allowedExtensions: null, // Show all files
+          allowedExtensions: null,
           dialogTitle: _translationService.translate(SettingsTranslationKeys.importSelectFile),
         );
 
         if (filePath != null && mounted) {
-          // Validate that the selected file is a .whph backup file
           if (!filePath.toLowerCase().endsWith('.whph')) {
             if (context.mounted) {
               OverlayNotificationHelper.showError(
@@ -304,8 +424,66 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           setState(() {
             _selectedFilePath = filePath;
           });
-          _navigateToPage(1);
+          _goToPage(2);
         }
+      },
+    );
+  }
+
+  Future<void> _handleTaskFilePick(BuildContext context) async {
+    final filePath = await _fileService.pickFile(
+      allowedExtensions: ['csv'],
+      dialogTitle: _translationService.translate(TaskTranslationKeys.importSelectFile),
+    );
+
+    if (filePath != null && mounted) {
+      setState(() {
+        _selectedTaskFilePath = filePath;
+      });
+    }
+  }
+
+  Future<void> _handleExternalImportExecute(BuildContext context) async {
+    if (_selectedTaskFilePath == null || _isProcessing) return;
+
+    setState(() => _isProcessing = true);
+    OverlayNotificationHelper.showLoading(
+      context: context,
+      message: _translationService.translate(SettingsTranslationKeys.importInProgress),
+      duration: const Duration(minutes: 2),
+    );
+
+    await AsyncErrorHandler.execute<ImportTasksCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
+      operation: () async {
+        final mediator = container.resolve<Mediator>();
+        return await mediator.send<ImportTasksCommand, ImportTasksCommandResponse>(
+          ImportTasksCommand(
+            filePath: _selectedTaskFilePath!,
+            importType: _taskImportType,
+          ),
+        );
+      },
+      onSuccess: (response) {
+        OverlayNotificationHelper.hideNotification();
+        final message = response.failureCount == 0
+            ? _translationService
+                .translate(TaskTranslationKeys.importSuccess, namedArgs: {'count': response.successCount.toString()})
+            : _translationService.translate(TaskTranslationKeys.importPartialSuccess,
+                namedArgs: {'success': response.successCount.toString(), 'failure': response.failureCount.toString()});
+
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: message,
+          duration: const Duration(seconds: 4),
+        );
+        Navigator.of(context).pop();
+      },
+      onError: (e) {
+        OverlayNotificationHelper.hideNotification();
+        ErrorHelper.showUnexpectedError(context, e, StackTrace.current);
+        setState(() => _isProcessing = false);
       },
     );
   }
@@ -379,7 +557,8 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           });
 
           // Navigate back to main page instead of closing modal
-          _navigateToPage(0);
+          // Navigate back to source selection page instead of closing modal
+          _goToPage(1);
         }
       },
     );
@@ -629,6 +808,64 @@ class _ExportOptionTile extends StatelessWidget {
         ),
         title: Text(
           displayTitle,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4.0),
+          child: Text(
+            translationService.translate(descriptionKey),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+        ),
+        onTap: !isDisabled ? onSelect : null,
+        enabled: !isDisabled,
+      ),
+    );
+  }
+}
+
+class _ImportOptionTile extends StatelessWidget {
+  final IconData icon;
+  final String titleKey;
+  final String descriptionKey;
+  final VoidCallback onSelect;
+  final bool isDisabled;
+
+  const _ImportOptionTile({
+    required this.icon,
+    required this.titleKey,
+    required this.descriptionKey,
+    required this.onSelect,
+    this.isDisabled = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 0,
+      color: AppTheme.surface1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(AppTheme.sizeMedium),
+        leading: StyledIcon(
+          icon,
+          isActive: !isDisabled,
+        ),
+        title: Text(
+          translationService.translate(titleKey),
           style: theme.textTheme.bodyLarge?.copyWith(
             color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
             fontWeight: FontWeight.bold,

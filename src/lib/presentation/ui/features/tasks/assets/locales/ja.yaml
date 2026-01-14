@@ -264,6 +264,18 @@ tasks:
     deadline_title: "タスクの期限: {title}"
     planned_message: タスクは{time}に予定されています
     reminder_title: "タスクリマインダー: {title}"
+  import:
+    title: タスクをインポート
+    format_label: インポート形式
+    formats:
+      generic: 汎用CSV
+      todoist: Todoist CSV
+    select_file: CSVファイルを選択
+    button: インポート
+    success: "{count}個のタスクを正常にインポートしました。"
+    partial_success: "{success}個のタスクをインポートしました。{failure}個のタスクが失敗しました。"
+    error: "タスクのインポートに失敗しました: {error}"
+    no_tasks: ファイルにタスクが見つかりませんでした。
   page:
     completed_tasks_title: 完了したタスク
     title: タスク

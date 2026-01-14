@@ -407,3 +407,13 @@ settings:
     reverse_day_order:
       title: Listedeki günlerin sırasını tersine çevir
       description: Alışkanlıklar listesinde en son günleri önce (soldan sağa) göster.
+  import_source:
+    title: İçe Aktarma Kaynağını Seçin
+    backup_title: Yedeği İçe Aktar
+    backup_description:
+      Uygulama verilerinizi bir .whph yedekleme dosyasından geri
+      yükleyin
+    external_apps_title: Görevleri İçe Aktarma (CSV)
+    external_apps_description:
+      CSV dosyası aracılığıyla diğer uygulamalardaki görevleri
+      içe aktarın

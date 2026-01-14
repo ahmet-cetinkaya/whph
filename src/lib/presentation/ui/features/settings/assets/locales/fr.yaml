@@ -447,3 +447,13 @@ settings:
       description:
         Afficher les jours les plus récents en premier (de gauche à droite)
         dans la liste des habitudes.
+  import_source:
+    title: Sélectionnez la source d'importation
+    backup_title: Importer une sauvegarde
+    backup_description:
+      Restaurez les données de votre application à partir d'un fichier
+      de sauvegarde .whph
+    external_apps_title: Tâches d'importation (CSV)
+    external_apps_description:
+      Importer des tâches depuis d'autres applications via
+      un fichier CSV

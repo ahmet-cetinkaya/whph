@@ -416,3 +416,9 @@ settings:
     reverse_day_order:
       title: Volgorde van dagen in lijst omdraaien
       description: Toon recentste dagen eerst (van links naar rechts) in de gewoontenlijst.
+  import_source:
+    title: Selecteer Importbron
+    backup_title: Back-up importeren
+    backup_description: Herstel uw applicatiegegevens vanaf een .whph-back-upbestand
+    external_apps_title: Taken importeren (CSV)
+    external_apps_description: Importeer taken uit andere applicaties via CSV-bestand

@@ -212,6 +212,18 @@ tasks:
     deadline_title: "Task Deadline: {title}"
     planned_message: Your task is planned for {time}
     reminder_title: "Task Reminder: {title}"
+  import:
+    title: "Import Tasks"
+    format_label: "Import Format"
+    formats:
+      generic: "Generic CSV"
+      todoist: "Todoist CSV"
+    select_file: "Select CSV File"
+    button: "Import"
+    success: "Imported {count} tasks successfully."
+    partial_success: "Imported {success} tasks. {failure} tasks failed."
+    error: "Failed to import tasks: {error}"
+    no_tasks: "No tasks found in the file."
   page:
     completed_tasks_title: Completed tasks
     title: Tasks

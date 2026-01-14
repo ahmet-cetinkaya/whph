@@ -400,3 +400,9 @@ settings:
     reverse_day_order:
       title: Käännä päivien järjestys luettelossa
       description: Näytä uusimmat päivät ensin (vasemmalta oikealle) tottumusluettelossa.
+  import_source:
+    title: Valitse Tuo lähde
+    backup_title: Tuo varmuuskopio
+    backup_description: Palauta sovellustiedot .whph-varmuuskopiotiedostosta
+    external_apps_title: Tuo tehtävät (CSV)
+    external_apps_description: Tuo tehtäviä muista sovelluksista CSV-tiedoston kautta

@@ -417,3 +417,11 @@ settings:
       description:
         Показывать самые последние дни первыми (слева направо) в списке
         привычек.
+  import_source:
+    title: Выберите источник импорта
+    backup_title: Импортировать резервную копию
+    backup_description: Восстановите данные приложения из файла резервной копии .whph.
+    external_apps_title: Импорт задач (CSV)
+    external_apps_description:
+      Импортируйте задачи из других приложений через файл
+      CSV.

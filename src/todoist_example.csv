@@ -1,0 +1,7 @@
+TYPE,CONTENT,DESCRIPTION,PRIORITY,INDENT,DATE
+task,Buy groceries,Need milk and eggs,1,1,2024-01-20
+task,Call mom,,2,1,2024-01-21
+task,Prepare presentation,Slides for the meeting,3,1,2024-01-22
+task,Sub-task 1,Details of sub-task,4,2,2024-01-22
+task,Sub-task 2,,4,2,2024-01-22
+task,Another main task,,1,1,2024-01-23

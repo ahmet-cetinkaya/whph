@@ -27,9 +27,7 @@ tasks:
     deadline_date:
       label: Data Limite
     description:
-      context:
-        Adicione informações detalhadas sobre sua tarefa para ajudá-lo a lembrar
-        detalhes importantes e acompanhar o progresso.
+      context: Adicione informações detalhadas sobre sua tarefa para ajudá-lo a lembrar detalhes importantes e acompanhar o progresso.
       hint: Adicionar descrição...
       label: Descrição
     elapsed_time:
@@ -69,9 +67,7 @@ tasks:
     task_tag_already_exists: Esta tag da tarefa já existe
     task_tag_not_found: Tag da tarefa não encontrada
   estimated_time:
-    description:
-      Defina estimativas de tempo realistas para planear sua tarefa eficazmente
-      e rastrear a produtividade.
+    description: Defina estimativas de tempo realistas para planear sua tarefa eficazmente e rastrear a produtividade.
     label: Tempo Estimado
   filters:
     completion: Por Status de Conclusão
@@ -85,53 +81,24 @@ tasks:
   help:
     details:
       content:
-        "Domine o gerenciamento de tarefas e maximize a produtividade organizando,\
-        \ priorizando e rastreando seu trabalho de forma eficaz.\n\n## ⚡ Por Que É\
-        \ Importante?\n\nO gerenciamento de tarefas eficaz é a base da produtividade.\
-        \ Tarefas estruturadas corretamente com prioridades e prazos claros ajudam\
-        \ você a focar no que mais importa e impedem que trabalho importante caia\
-        \ no esquecimento.\n\n## \U0001F4DD Organização de Tarefas\n\nEstruture suas\
-        \ tarefas com detalhes abrangentes para manter clareza e foco. Use tags, prioridades\
-        \ e estimativas de tempo para criar uma abordagem sistemática à sua carga\
-        \ de trabalho.\n\n- \U0001F3F7️ Categorize tarefas com tags significativas\n\
-        - ⚖️ Defina prioridades usando frameworks comprovados\n- ⏱️ Estime requisitos\
-        \ de tempo com precisão\n- \U0001F4C5 Planeje prazos e cronogramas realistas\n\
-        \n## ⏰ Gerenciamento de Tempo\n\nRastreie seus investimentos de tempo para\
-        \ entender padrões de trabalho e melhorar a eficiência. O gerenciamento de\
-        \ tempo adequado transforma esforços dispersos em produtividade focada.\n\n\
-        - \U0001F4CA Monitore tempo real vs estimado\n- \U0001F3AF Foque em atividades\
-        \ de alto impacto\n- \U0001F4C8 Analise padrões de produtividade ao longo\
-        \ do tempo\n- ⏳ Equilibre tarefas urgentes e importantes\n\n## \U0001F4CA\
-        \ Framework de Prioridade (Matriz de Eisenhower)\n\nOrganize suas tarefas\
-        \ usando este método de priorização comprovado para garantir que você sempre\
-        \ trabalhe nas coisas certas no momento certo.\n\n- \U0001F525 **Urgente &\
-        \ Importante:** Lide imediatamente - gerenciamento de crises e prazos\n- \U0001F4C8\
-        \ **Importante, Não Urgente:** Agende estrategicamente - planejamento e desenvolvimento\
-        \ de habilidades  \n- ⚡ **Urgente, Não Importante:** Delegue quando possível\
-        \ - interrupções e algumas reuniões\n- \U0001F5D1️ **Nem Urgente nem Importante:**\
-        \ Elimine - desperdiçadores de tempo e atividades de baixo valor\n"
+        "Domine o gerenciamento de tarefas e maximize a produtividade organizando, priorizando e rastreando seu trabalho de forma eficaz.\n\n## ⚡ Por Que É Importante?\n\nO gerenciamento de tarefas eficaz é a base da produtividade. Tarefas estruturadas corretamente com prioridades e prazos claros ajudam você a focar no que mais importa e impedem que trabalho importante caia no esquecimento.\n\n## \U0001F4DD Organização de Tarefas\n\nEstruture suas tarefas com detalhes abrangentes para manter clareza e foco. Use tags, prioridades e estimativas de tempo para criar uma abordagem sistemática à sua carga de trabalho.\n\n- \U0001F3F7️ Categorize tarefas com tags significativas\n- ⚖️ Defina prioridades usando frameworks comprovados\n- ⏱️ Estime requisitos de tempo com precisão\n- \U0001F4C5 Planeje prazos e cronogramas realistas\n\n## ⏰ Gerenciamento de Tempo\n\nRastreie seus investimentos de tempo para entender padrões de trabalho e melhorar a eficiência. O gerenciamento de tempo adequado\
+        \ transforma esforços dispersos em produtividade focada.\n\n- \U0001F4CA Monitore tempo real vs estimado\n- \U0001F3AF Foque em atividades de alto impacto\n- \U0001F4C8 Analise padrões de produtividade ao longo do tempo\n- ⏳ Equilibre tarefas urgentes e importantes\n\n## \U0001F4CA Framework de Prioridade (Matriz de Eisenhower)\n\nOrganize suas tarefas usando este método de priorização comprovado para garantir que você sempre trabalhe nas coisas certas no momento certo.\n\n- \U0001F525 **Urgente & Importante:** Lide imediatamente - gerenciamento de crises e prazos\n- \U0001F4C8 **Importante, Não Urgente:** Agende estrategicamente - planejamento e desenvolvimento de habilidades  \n- ⚡ **Urgente, Não Importante:** Delegue quando possível - interrupções e algumas reuniões\n- \U0001F5D1️ **Nem Urgente nem Importante:** Elimine - desperdiçadores de tempo e atividades de baixo valor\n"
       title: Gerenciamento de Tarefas & Guia de Produtividade
     overview:
       content:
-        "Transforme sua produtividade com gerenciamento de tarefas sistemático
-        que ajuda a manter-se organizado, focado e no controle da sua carga de trabalho.
+        "Transforme sua produtividade com gerenciamento de tarefas sistemático que ajuda a manter-se organizado, focado e no controle da sua carga de trabalho.
 
 
         ## ⚡ Por Que É Importante?
 
 
-        O gerenciamento de tarefas eficaz é a pedra angular do sucesso pessoal e profissional.
-        Ao organizar seu trabalho de forma sistemática, você reduz o estresse, cumpre
-        prazos consistentemente e cria espaço para progresso significativo em metas
-        importantes.
+        O gerenciamento de tarefas eficaz é a pedra angular do sucesso pessoal e profissional. Ao organizar seu trabalho de forma sistemática, você reduz o estresse, cumpre prazos consistentemente e cria espaço para progresso significativo em metas importantes.
 
 
         ## 📋 Organização de Tarefas
 
 
-        Crie uma abordagem estruturada para gerenciar suas responsabilidades. Tarefas
-        bem organizadas levam a prioridades claras e execução eficiente do trabalho
-        diário.
+        Crie uma abordagem estruturada para gerenciar suas responsabilidades. Tarefas bem organizadas levam a prioridades claras e execução eficiente do trabalho diário.
 
 
         - ✅ Crie e categorize tarefas sistematicamente
@@ -146,9 +113,7 @@ tasks:
         ## ⏱️ Rastreamento de Tempo & Foco
 
 
-        Monitore seus investimentos de tempo para entender padrões de produtividade
-        e otimizar seu fluxo de trabalho. A conscientização do tempo leva a um planejamento
-        melhor e desempenho aprimorado.
+        Monitore seus investimentos de tempo para entender padrões de produtividade e otimizar seu fluxo de trabalho. A conscientização do tempo leva a um planejamento melhor e desempenho aprimorado.
 
 
         - ⏰ Rastreie tempo real gasto por tarefa
@@ -163,9 +128,7 @@ tasks:
         ## 📈 Monitoramento de Progresso
 
 
-        Mantenha o controle de suas conquistas e aprenda com seus padrões de trabalho.
-        Revisão e reflexão regulares impulsionam melhoria contínua no seu sistema
-        de produtividade.
+        Mantenha o controle de suas conquistas e aprenda com seus padrões de trabalho. Revisão e reflexão regulares impulsionam melhoria contínua no seu sistema de produtividade.
 
 
         - 📈 Monitore taxas de conclusão de tarefas
@@ -183,32 +146,8 @@ tasks:
       title: Detalhes da Tarefa
     help:
       content:
-        "Maximize seu foco e produtividade com sessões de trabalho estruturadas\
-        \ que ajudam a manter concentração profunda enquanto previnem o burnout.\n\
-        \n## ⚡ Por Que É Importante?\n\nSessões de trabalho focadas são essenciais\
-        \ para trabalho profundo e saída de alta qualidade. Ao trabalhar em intervalos\
-        \ estruturados com pausas regulares, você mantém o desempenho mental de pico\
-        \ enquanto evita a fadiga de períodos de trabalho prolongados e não focados.\n\
-        \n## ⏰ Sessões de Foco Limitadas no Tempo\n\nUse técnicas comprovadas de gerenciamento\
-        \ de tempo para estruturar seu trabalho para máxima eficiência. Sessões estruturadas\
-        \ ajudam a manter a concentração e completar tarefas mais efetivamente.\n\n\
-        - \U0001F3AF **Foco Clássico:** 25 minutos de trabalho / 5 minutos de pausa\n\
-        - \U0001F4C8 **Foco Estendido:** 50 minutos de trabalho / 10 minutos de pausa\
-        \  \n- \U0001F504 **Pausa Longa:** 15-30 minutos após 4 sessões\n- ⚖️ **Tempo\
-        \ Personalizado:** Ajuste intervalos para combinar com seu ritmo natural\n\
-        \n## \U0001F9E0 Benefícios Cognitivos\n\nSessões de trabalho estruturadas\
-        \ aproveitam os ciclos naturais de atenção do seu cérebro para otimizar o\
-        \ desempenho e prevenir fadiga mental que reduz qualidade e criatividade.\n\
-        \n- \U0001F3AF Foco aprimorado e concentração profunda\n- \U0001F50B Fadiga\
-        \ mental reduzida e burnout\n- \U0001F4AA Motivação sustentada através de\
-        \ conquistas regulares\n- ⚡ Conscientização de tempo aprimorada e precisão\
-        \ de planejamento\n\n## \U0001F4CA Otimização de Desempenho\n\nRastreie seus\
-        \ padrões de trabalho focado para entender seus horários de pico de produtividade\
-        \ e otimize seu cronograma para máxima efetividade.\n\n- \U0001F3F7️ Categorize\
-        \ sessões de foco com tags para análise\n- \U0001F4C8 Monitore padrões de\
-        \ produtividade em diferentes horários\n- \U0001F6AB Elimine distrações antes\
-        \ de iniciar sessões\n- \U0001F6B6 Use pausas para movimento físico e reset\
-        \ mental\n"
+        "Maximize seu foco e produtividade com sessões de trabalho estruturadas que ajudam a manter concentração profunda enquanto previnem o burnout.\n\n## ⚡ Por Que É Importante?\n\nSessões de trabalho focadas são essenciais para trabalho profundo e saída de alta qualidade. Ao trabalhar em intervalos estruturados com pausas regulares, você mantém o desempenho mental de pico enquanto evita a fadiga de períodos de trabalho prolongados e não focados.\n\n## ⏰ Sessões de Foco Limitadas no Tempo\n\nUse técnicas comprovadas de gerenciamento de tempo para estruturar seu trabalho para máxima eficiência. Sessões estruturadas ajudam a manter a concentração e completar tarefas mais efetivamente.\n\n- \U0001F3AF **Foco Clássico:** 25 minutos de trabalho / 5 minutos de pausa\n- \U0001F4C8 **Foco Estendido:** 50 minutos de trabalho / 10 minutos de pausa  \n- \U0001F504 **Pausa Longa:** 15-30 minutos após 4 sessões\n- ⚖️ **Tempo Personalizado:** Ajuste intervalos para combinar com seu ritmo natural\n\
+        \n## \U0001F9E0 Benefícios Cognitivos\n\nSessões de trabalho estruturadas aproveitam os ciclos naturais de atenção do seu cérebro para otimizar o desempenho e prevenir fadiga mental que reduz qualidade e criatividade.\n\n- \U0001F3AF Foco aprimorado e concentração profunda\n- \U0001F50B Fadiga mental reduzida e burnout\n- \U0001F4AA Motivação sustentada através de conquistas regulares\n- ⚡ Conscientização de tempo aprimorada e precisão de planejamento\n\n## \U0001F4CA Otimização de Desempenho\n\nRastreie seus padrões de trabalho focado para entender seus horários de pico de produtividade e otimize seu cronograma para máxima efetividade.\n\n- \U0001F3F7️ Categorize sessões de foco com tags para análise\n- \U0001F4C8 Monitore padrões de produtividade em diferentes horários\n- \U0001F6AB Elimine distrações antes de iniciar sessões\n- \U0001F6B6 Use pausas para movimento físico e reset mental\n"
       title: Sessões de Trabalho Focadas & Guia de Gerenciamento de Tempo
       tooltip: Tooltip de ajuda do Maratona
     label: Modo Maratona
@@ -220,6 +159,18 @@ tasks:
     deadline_title: "Data Limite da Tarefa: {title}"
     planned_message: Sua tarefa está planejada para {time}
     reminder_title: "Lembrete de Tarefa: {title}"
+  import:
+    title: Importar tarefas
+    format_label: Formato de importação
+    formats:
+      generic: CSV genérico
+      todoist: CSV Todoist
+    select_file: Selecionar ficheiro CSV
+    button: Importar
+    success: "{count} tarefas importadas com sucesso."
+    partial_success: "{success} tarefas importadas. {failure} tarefas falharam."
+    error: "Falha ao importar tarefas: {error}"
+    no_tasks: Nenhuma tarefa encontrada no ficheiro.
   page:
     completed_tasks_title: Tarefas concluídas
     title: Tarefas
@@ -260,9 +211,7 @@ tasks:
     urgent_important: Urgente e Importante
     urgent_not_important: Urgente mas Não Importante
   priority:
-    description:
-      Defina a prioridade da tarefa usando a Matriz de Eisenhower - classificação
-      Urgente/Importante para gerenciamento eficaz de tarefas
+    description: Defina a prioridade da tarefa usando a Matriz de Eisenhower - classificação Urgente/Importante para gerenciamento eficaz de tarefas
     selection:
       title: Selecionar Prioridade
     tooltips:
@@ -279,15 +228,11 @@ tasks:
       urgent_not_important: Urgente mas Não Importante
   quick_task:
     create_error: Erro ao criar tarefa
-    lock_description:
-      Trave propriedades para reter seus valores ao criar múltiplas
-      tarefas semelhantes. Propriedades travadas não serão limpas ao resetar o formulário.
+    lock_description: Trave propriedades para reter seus valores ao criar múltiplas tarefas semelhantes. Propriedades travadas não serão limpas ao resetar o formulário.
     lock_settings: Configurações de Travamento
     reset_all: Resetar todos os campos
     reset_confirm:
-      message:
-        Tem certeza de que deseja resetar todos os campos? Esta ação não pode
-        ser desfeita.
+      message: Tem certeza de que deseja resetar todos os campos? Esta ação não pode ser desfeita.
       title: Resetar Todos os Campos
     task_added_successfully: Tarefa adicionada com sucesso
     title: Tarefa Rápida
@@ -352,9 +297,7 @@ tasks:
     monthly_pattern_label: Padrão mensal
     advanced_label: Configurações avançadas
     regenerate_label: Regenerar após conclusão
-    regenerate_description:
-      Quando ativado, a próxima ocorrência será agendada a partir
-      da data de conclusão, em vez da data planejada.
+    regenerate_description: Quando ativado, a próxima ocorrência será agendada a partir da data de conclusão, em vez da data planejada.
     on_specific_day: Dia específico
     on_relative_day: Dia relativo
     on_the: Em
@@ -393,9 +336,7 @@ tasks:
     total_time: Tempo Total para o Dia
   timer:
     mode:
-      description:
-        Escolha entre técnica Pomodoro, temporizador de contagem regressiva
-        ou cronômetro
+      description: Escolha entre técnica Pomodoro, temporizador de contagem regressiva ou cronômetro
       normal: Timer Normal
       pomodoro: Pomodoro
       stopwatch: Cronômetro
@@ -418,53 +359,29 @@ tasks:
     show_subtasks: Mostrar subtarefas
   tour:
     add_tasks:
-      description:
-        Crie rapidamente novas tarefas com este botão. Defina títulos,
-        prioridades, prazos, tags e mais. Adicione subtarefas e lembretes para manter-se
-        atualizado com seu trabalho.
+      description: Crie rapidamente novas tarefas com este botão. Defina títulos, prioridades, prazos, tags e mais. Adicione subtarefas e lembretes para manter-se atualizado com seu trabalho.
       title: Adicionar Novas Tarefas
     filter_search:
-      description:
-        Opções poderosas de filtragem para encontrar exatamente o que você
-        precisa. Filtre por tags, datas, status de conclusão ou use a pesquisa. Ordene
-        tarefas e alterne subtarefas para melhor organização.
+      description: Opções poderosas de filtragem para encontrar exatamente o que você precisa. Filtre por tags, datas, status de conclusão ou use a pesquisa. Ordene tarefas e alterne subtarefas para melhor organização.
       title: Filtrar & Pesquisar
     marathon:
       app_usage:
-        description:
-          Monitore padrões de uso de aplicativos e analise o tempo gasto
-          em diferentes atividades. Obtenha insights sobre seus hábitos digitais e
-          otimize sua produtividade.
+        description: Monitore padrões de uso de aplicativos e analise o tempo gasto em diferentes atividades. Obtenha insights sobre seus hábitos digitais e otimize sua produtividade.
         title: Uso de Aplicativos & Análise de Tempo
       filter_sort:
-        description:
-          Filtre dados de uso de aplicativos por intervalo de datas, tags
-          ou dispositivos específicos. Ordene e organize suas estatísticas de uso
-          para obter melhores insights sobre gestão de tempo.
+        description: Filtre dados de uso de aplicativos por intervalo de datas, tags ou dispositivos específicos. Ordene e organize suas estatísticas de uso para obter melhores insights sobre gestão de tempo.
         title: Filtrar & Ordenar
       tracking_settings:
-        description:
-          Configure regras de rastreamento de aplicativos, defina marcação
-          automática e gerencie quais aplicativos monitorar. Personalize o rastreamento
-          de acordo com suas necessidades de produtividade.
+        description: Configure regras de rastreamento de aplicativos, defina marcação automática e gerencie quais aplicativos monitorar. Personalize o rastreamento de acordo com suas necessidades de produtividade.
         title: Configurações de Rastreamento
       usage_statistics:
-        description:
-          Veja dados detalhados de uso de aplicativos e distribuição de
-          tempo. Analise seus padrões de produtividade, acompanhe o tempo gasto em
-          diferentes aplicativos e identifique áreas de melhoria.
+        description: Veja dados detalhados de uso de aplicativos e distribuição de tempo. Analise seus padrões de produtividade, acompanhe o tempo gasto em diferentes aplicativos e identifique áreas de melhoria.
         title: Estatísticas de Uso
     task_management:
-      description:
-        Crie e organize tarefas com prioridades, prazos e lembretes. Use
-        o timer Pomodoro para manter o foco e acompanhar seu progresso em tarefas
-        importantes.
+      description: Crie e organize tarefas com prioridades, prazos e lembretes. Use o timer Pomodoro para manter o foco e acompanhar seu progresso em tarefas importantes.
       title: Gerenciamento de Tarefas
     your_tasks:
-      description:
-        Veja e gerencie todas as suas tarefas em um só lugar. Clique em
-        qualquer tarefa para ver detalhes, marcar como concluída, editar informações
-        ou excluir. Mantenha-se organizado e acompanhe seu progresso.
+      description: Veja e gerencie todas as suas tarefas em um só lugar. Clique em qualquer tarefa para ver detalhes, marcar como concluída, editar informações ou excluir. Mantenha-se organizado e acompanhe seu progresso.
       title: Suas Tarefas
   validation:
     deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada

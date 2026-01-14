@@ -401,3 +401,9 @@ settings:
     reverse_day_order:
       title: Omvänd ordning på dagar i listan
       description: Visa de senaste dagarna först (från vänster till höger) i vanor-listan.
+  import_source:
+    title: Välj Importera källa
+    backup_title: Importera säkerhetskopia
+    backup_description: Återställ dina programdata från en .whph backup-fil
+    external_apps_title: Importera uppgifter (CSV)
+    external_apps_description: Importera uppgifter från andra applikationer via CSV-fil

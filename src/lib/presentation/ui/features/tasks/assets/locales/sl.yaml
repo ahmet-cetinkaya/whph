@@ -27,9 +27,7 @@ tasks:
     deadline_date:
       label: Rok
     description:
-      context:
-        Dodajte podrobne informacije o svoji nalogi, da vam bodo pomagale pri
-        spominjanju ključnih podrobnosti in sledenju napredka.
+      context: Dodajte podrobne informacije o svoji nalogi, da vam bodo pomagale pri spominjanju ključnih podrobnosti in sledenju napredka.
       hint: Dodaj opis...
       label: Opis
     elapsed_time:
@@ -70,9 +68,7 @@ tasks:
     task_tag_already_exists: Ta oznaka naloge že obstaja
     task_tag_not_found: Oznaka naloge ni najdena
   estimated_time:
-    description:
-      Nastavite realistično oceno časa za učinkovito načrtovanje naloge
-      in spremljanje produktivnosti.
+    description: Nastavite realistično oceno časa za učinkovito načrtovanje naloge in spremljanje produktivnosti.
     label: Predviden Čas
   filters:
     completion: Po Statusu Zaključka
@@ -86,50 +82,24 @@ tasks:
   help:
     details:
       content:
-        "Ovládajte upravljanje nalog in maksimizirajte produktivnost z učinkovitim\
-        \ organiziranjem, prioritetiziranjem in sledenjem vašemu delu.\n\n## ⚡ Zakaj\
-        \ Je Pomembno?\n\nUčinkovito upravljanje nalog je osnova produktivnosti. Pravilno\
-        \ strukturirane naloge z jasnimi prioritetami in roki vam pomagajo osredotočiti\
-        \ se na tisto, kar je najbolj pomembno, in preprečijo, da bi pomembno delo\
-        \ padlo skozi razpoke.\n\n## \U0001F4DD Organizacija Nalog\n\nStrukturirajte\
-        \ svoje naloge z obsežnimi podrobnostmi za ohranjanje jasnosti in fokusa.\
-        \ Uporabite oznake, prioritet in ocene časa za ustvarjanje sistematičnega\
-        \ pristopa k vaši obremenitvi.\n\n- \U0001F3F7️ Kategorizirajte naloge z smiselnih\
-        \ oznak\n- ⚖️ Nastavite prioritet z uporabo preverjenih okvirov\n- ⏱️ Oceni\
-        \ zahteve po času natančno\n- \U0001F4C5 Načrtujte realistične roke in urnike\n\
-        \n## ⏰ Upravljanje Časa\n\nSledite svojim naložbam časa za razumevanje vaših\
-        \ vzorcev dela in izboljšanje učinkovitosti. Pravilno upravljanje časa pretvori\
-        \ razpršene napore v osredotočeno produktivnost.\n\n- \U0001F4CA Spremljajte\
-        \ dejanski vs ocenjeni čas\n- \U0001F3AF Osredotočite se na dejavnosti z visokim\
-        \ vplivom\n- \U0001F4C8 Analizirajte vzorce produktivnosti sčasoma\n- ⏳ Uravnotežite\
-        \ nujne in pomembne naloge\n\n## \U0001F4CA Okvir Prioritete (Matrica Eisenhower)\n\
-        \nOrganizirajte svoje naloge z uporabo te preverjene metode prioritetiziranja\
-        \ za zagotovitev, da vedno delate na pravih stvareh ob pravem času.\n\n- \U0001F525\
-        \ **Nujno & Pomembno:** Obravnavajte takoj - upravljanje kriz in roki\n- \U0001F4C8\
-        \ **Pomembno, Ni Nujno:** Načrtujte strateško - načrtovanje in razvoj veščin\
-        \  \n- ⚡ **Nujno, Ni Pomembno:** Delegirajte kadar je mogoče - prekinite in\
-        \ nekatere sestanke\n- \U0001F5D1️ **Niti Nujno niti Pomembno:** Odstranite\
-        \ - zapravljalci časa in dejavnosti nizke vrednosti\n"
+        "Ovládajte upravljanje nalog in maksimizirajte produktivnost z učinkovitim organiziranjem, prioritetiziranjem in sledenjem vašemu delu.\n\n## ⚡ Zakaj Je Pomembno?\n\nUčinkovito upravljanje nalog je osnova produktivnosti. Pravilno strukturirane naloge z jasnimi prioritetami in roki vam pomagajo osredotočiti se na tisto, kar je najbolj pomembno, in preprečijo, da bi pomembno delo padlo skozi razpoke.\n\n## \U0001F4DD Organizacija Nalog\n\nStrukturirajte svoje naloge z obsežnimi podrobnostmi za ohranjanje jasnosti in fokusa. Uporabite oznake, prioritet in ocene časa za ustvarjanje sistematičnega pristopa k vaši obremenitvi.\n\n- \U0001F3F7️ Kategorizirajte naloge z smiselnih oznak\n- ⚖️ Nastavite prioritet z uporabo preverjenih okvirov\n- ⏱️ Oceni zahteve po času natančno\n- \U0001F4C5 Načrtujte realistične roke in urnike\n\n## ⏰ Upravljanje Časa\n\nSledite svojim naložbam časa za razumevanje vaših vzorcev dela in izboljšanje učinkovitosti. Pravilno upravljanje časa pretvori\
+        \ razpršene napore v osredotočeno produktivnost.\n\n- \U0001F4CA Spremljajte dejanski vs ocenjeni čas\n- \U0001F3AF Osredotočite se na dejavnosti z visokim vplivom\n- \U0001F4C8 Analizirajte vzorce produktivnosti sčasoma\n- ⏳ Uravnotežite nujne in pomembne naloge\n\n## \U0001F4CA Okvir Prioritete (Matrica Eisenhower)\n\nOrganizirajte svoje naloge z uporabo te preverjene metode prioritetiziranja za zagotovitev, da vedno delate na pravih stvareh ob pravem času.\n\n- \U0001F525 **Nujno & Pomembno:** Obravnavajte takoj - upravljanje kriz in roki\n- \U0001F4C8 **Pomembno, Ni Nujno:** Načrtujte strateško - načrtovanje in razvoj veščin  \n- ⚡ **Nujno, Ni Pomembno:** Delegirajte kadar je mogoče - prekinite in nekatere sestanke\n- \U0001F5D1️ **Niti Nujno niti Pomembno:** Odstranite - zapravljalci časa in dejavnosti nizke vrednosti\n"
       title: Upravljanje Nalog & Vodnik Produktivnosti
     overview:
       content:
-        "Transformirajte svojo produktivnost s sistematičnim upravljanjem nalog,
-        ki vam pomaga ostati organiziran, osredotočen in v nadzoru vaše obremenitve.
+        "Transformirajte svojo produktivnost s sistematičnim upravljanjem nalog, ki vam pomaga ostati organiziran, osredotočen in v nadzoru vaše obremenitve.
 
 
         ## ⚡ Zakaj Je Pomembno?
 
 
-        Učinkovito upravljanje nalog je temelj osebnega in strokovnega uspeha. Z organiziranjem
-        dela sistematično zmanjšate stres, spoštujete roke dosledno in ustvarite prostor
-        za pomenljiv napredek pri pomembnih ciljih.
+        Učinkovito upravljanje nalog je temelj osebnega in strokovnega uspeha. Z organiziranjem dela sistematično zmanjšate stres, spoštujete roke dosledno in ustvarite prostor za pomenljiv napredek pri pomembnih ciljih.
 
 
         ## 📋 Organizacija Nalog
 
 
-        Ustvarite strukturiran pristop k upravljanju odgovornosti. Dobro organizirane
-        naloge vodijo do jasnih prioritet in učinkovite izvedbe dnevnega dela.
+        Ustvarite strukturiran pristop k upravljanju odgovornosti. Dobro organizirane naloge vodijo do jasnih prioritet in učinkovite izvedbe dnevnega dela.
 
 
         - ✅ Ustvarite in kategorizirajte naloge sistematično
@@ -144,9 +114,7 @@ tasks:
         ## ⏱️ Sledenje Času & Fokus
 
 
-        Spremljajte naložbe časa za razumevanje vzorcev produktivnosti in optimizacijo
-        delovnega toka. Zavedanje časa vodi do boljšega načrtovanja in izboljšanega
-        izvajanja.
+        Spremljajte naložbe časa za razumevanje vzorcev produktivnosti in optimizacijo delovnega toka. Zavedanje časa vodi do boljšega načrtovanja in izboljšanega izvajanja.
 
 
         - ⏰ Spremljajte dejanski čas porabljen na nalogo
@@ -161,8 +129,7 @@ tasks:
         ## 📈 Spremljanje Napredka
 
 
-        Vodite evidenco dosežkov in se učite iz vzorcev dela. Redno pregledovanje
-        in refleksija poganjajo kontinuirano izboljšanje vašega sistema produktivnosti.
+        Vodite evidenco dosežkov in se učite iz vzorcev dela. Redno pregledovanje in refleksija poganjajo kontinuirano izboljšanje vašega sistema produktivnosti.
 
 
         - 📈 Spremljajte stopnje zaključka nalog
@@ -180,30 +147,8 @@ tasks:
       title: Podrobnosti Naloge
     help:
       content:
-        "Maksimizirajte fokus in produktivnost z strukturiranimi delovnimi\
-        \ sejami, ki vam pomagajo ohraniti globoko koncentracijo, medtem ko preprečujejo\
-        \ izgorelost.\n\n## ⚡ Zakaj Je Pomembno?\n\nOsredotočene delovne seje so bistvene\
-        \ za globoko delo in visokokakovostni izhod. Z delom v strukturiranih intervalih\
-        \ z rednimi odmori ohranjate vrhunsko mentalno zmogljivost, medtem ko izogibate\
-        \ utrujenosti od podaljšanih, neosredotočenih obdobij dela.\n\n## ⏰ Časovno\
-        \ Omejene Seje Fokus\n\nUporabite preverjene tehnike upravljanja časa za strukturiranje\
-        \ dela za maksimalno učinkovitost. Strukturirane seje vam pomagajo ohraniti\
-        \ koncentracijo in dokončati naloge učinkoviteje.\n\n- \U0001F3AF **Klasik\
-        \ Fokus:** 25 minut dela / 5 minut odmora\n- \U0001F4C8 **Razširjen Fokus:**\
-        \ 50 minut dela / 10 minut odmora  \n- \U0001F504 **Dolg Odmor:** 15-30 minut\
-        \ po 4 sejah\n- ⚖️ **Prilagojen Časovnik:** Prilagodite intervale vašemu naravnemu\
-        \ ritmu\n\n## \U0001F9E0 Kognitivne Prednosti\n\nStrukturirane delovne seje\
-        \ izkoriščajo naravne cikle pozornosti vašega možgan za optimizacijo zmogljivosti\
-        \ in preprečevanje mentalne utrujenosti, ki zmanjšuje kakovost in ustvarjalnost.\n\
-        \n- \U0001F3AF Izboljšan fokus in globoka koncentracija\n- \U0001F50B Zmanjšana\
-        \ mentalna utrujenost in izgorelost\n- \U0001F4AA Trajna motivacija skozi\
-        \ redne dosežke\n- ⚡ Izboljšano zavedanje časa in natančnost načrtovanja\n\
-        \n## \U0001F4CA Optimizacija Zmogljivosti\n\nSledite vzorcem osredotočenega\
-        \ dela za razumevanje vaših vrhunskih časov produktivnosti in optimizacijo\
-        \ urnika za maksimalno učinkovitost.\n\n- \U0001F3F7️ Kategorizirajte seje\
-        \ fokus z oznakami za analizo\n- \U0001F4C8 Spremljajte vzorce produktivnosti\
-        \ čez različne čase\n- \U0001F6AB Odstranite motnje pred začetkom sej\n- \U0001F6B6\
-        \ Uporabite odmore za fizično gibanje in mentalni reset\n"
+        "Maksimizirajte fokus in produktivnost z strukturiranimi delovnimi sejami, ki vam pomagajo ohraniti globoko koncentracijo, medtem ko preprečujejo izgorelost.\n\n## ⚡ Zakaj Je Pomembno?\n\nOsredotočene delovne seje so bistvene za globoko delo in visokokakovostni izhod. Z delom v strukturiranih intervalih z rednimi odmori ohranjate vrhunsko mentalno zmogljivost, medtem ko izogibate utrujenosti od podaljšanih, neosredotočenih obdobij dela.\n\n## ⏰ Časovno Omejene Seje Fokus\n\nUporabite preverjene tehnike upravljanja časa za strukturiranje dela za maksimalno učinkovitost. Strukturirane seje vam pomagajo ohraniti koncentracijo in dokončati naloge učinkoviteje.\n\n- \U0001F3AF **Klasik Fokus:** 25 minut dela / 5 minut odmora\n- \U0001F4C8 **Razširjen Fokus:** 50 minut dela / 10 minut odmora  \n- \U0001F504 **Dolg Odmor:** 15-30 minut po 4 sejah\n- ⚖️ **Prilagojen Časovnik:** Prilagodite intervale vašemu naravnemu ritmu\n\n## \U0001F9E0 Kognitivne Prednosti\n\nStrukturirane delovne\
+        \ seje izkoriščajo naravne cikle pozornosti vašega možgan za optimizacijo zmogljivosti in preprečevanje mentalne utrujenosti, ki zmanjšuje kakovost in ustvarjalnost.\n\n- \U0001F3AF Izboljšan fokus in globoka koncentracija\n- \U0001F50B Zmanjšana mentalna utrujenost in izgorelost\n- \U0001F4AA Trajna motivacija skozi redne dosežke\n- ⚡ Izboljšano zavedanje časa in natančnost načrtovanja\n\n## \U0001F4CA Optimizacija Zmogljivosti\n\nSledite vzorcem osredotočenega dela za razumevanje vaših vrhunskih časov produktivnosti in optimizacijo urnika za maksimalno učinkovitost.\n\n- \U0001F3F7️ Kategorizirajte seje fokus z oznakami za analizo\n- \U0001F4C8 Spremljajte vzorce produktivnosti čez različne čase\n- \U0001F6AB Odstranite motnje pred začetkom sej\n- \U0001F6B6 Uporabite odmore za fizično gibanje in mentalni reset\n"
       title: Osredotočene Delovne Seje & Vodnik Upravljanja Časa
       tooltip: Tooltip pomoči Maraton
     label: Način Maraton
@@ -215,6 +160,18 @@ tasks:
     deadline_title: "Rok Naloge: {title}"
     planned_message: Tvoja naloga je načrtovana za {time}
     reminder_title: "Opomnik Naloge: {title}"
+  import:
+    title: Uvoz nalog
+    format_label: Oblika uvoza
+    formats:
+      generic: Splošni CSV
+      todoist: Todoist CSV
+    select_file: Izberite datoteko CSV
+    button: Uvozi
+    success: Uspešno uvoženih {count} nalog.
+    partial_success: Uvoženih {success} nalog. {failure} nalog ni uspelo.
+    error: "Uvoz nalog je spodletel: {error}"
+    no_tasks: V datoteki ni bilo najdenih nalog.
   page:
     completed_tasks_title: Zaključene naloge
     title: Naloge
@@ -255,9 +212,7 @@ tasks:
     urgent_important: Nujno in Pomembno
     urgent_not_important: Nujno a Ni Pomembno
   priority:
-    description:
-      Nastavite prednost opravila z uporabo Eisenhowerjeve matrice - Kritično/Pomembno
-      razvrščanje za učinkovito upravljanje opravili
+    description: Nastavite prednost opravila z uporabo Eisenhowerjeve matrice - Kritično/Pomembno razvrščanje za učinkovito upravljanje opravili
     selection:
       title: Izberi Prioriteto
     tooltips:
@@ -274,16 +229,11 @@ tasks:
       urgent_not_important: Nujno a Ni Pomembno
   quick_task:
     create_error: Napaka pri ustvarjanju naloge
-    lock_description:
-      Zakleni lastnosti za ohranitev njihovih vrednosti pri ustvarjanju
-      več podobnih nalog. Zaklenjene lastnosti se ne bodo počistile ob ponastavitvi
-      obrazca.
+    lock_description: Zakleni lastnosti za ohranitev njihovih vrednosti pri ustvarjanju več podobnih nalog. Zaklenjene lastnosti se ne bodo počistile ob ponastavitvi obrazca.
     lock_settings: Nastavitve Zaklepanja
     reset_all: Ponastavi vsa polja
     reset_confirm:
-      message:
-        Ste prepričani, da želite ponastaviti vsa polja? Ta akcija ni mogoča
-        za razveljaviti.
+      message: Ste prepričani, da želite ponastaviti vsa polja? Ta akcija ni mogoča za razveljaviti.
       title: Ponastavi Vsa Polja
     task_added_successfully: Naloga uspešno dodana
     title: Hitra Naloga
@@ -348,9 +298,7 @@ tasks:
     monthly_pattern_label: Mesečni vzorec
     advanced_label: Napredne nastavitve
     regenerate_label: Ponovno ustvari po zaključku
-    regenerate_description:
-      Ko je omogočeno, bo naslednje ponovitev načrtovano od
-      datuma zaključka namesto od načrtovanega datuma.
+    regenerate_description: Ko je omogočeno, bo naslednje ponovitev načrtovano od datuma zaključka namesto od načrtovanega datuma.
     on_specific_day: Določen dan
     on_relative_day: Relativen dan
     on_the: ""
@@ -412,53 +360,29 @@ tasks:
     show_subtasks: Pokaži podnaloge
   tour:
     add_tasks:
-      description:
-        Hitro ustvarite nove naloge s tem gumbom. Nastavite naslove, prednosti,
-        roke, oznake in več. Dodajte podnaloge in opomnike, da ostanete na tekočem
-        s svojim delom.
+      description: Hitro ustvarite nove naloge s tem gumbom. Nastavite naslove, prednosti, roke, oznake in več. Dodajte podnaloge in opomnike, da ostanete na tekočem s svojim delom.
       title: Dodaj Nove Naloge
     filter_search:
-      description:
-        Zmogljive možnosti filtriranja za iskanje ravno tistega, kar potrebujete.
-        Filtrirajte po oznakah, datumih, statusu zaključka ali uporabite iskanje.
-        Razvrstite naloge in preklopite podnaloge za boljšo organizacijo.
+      description: Zmogljive možnosti filtriranja za iskanje ravno tistega, kar potrebujete. Filtrirajte po oznakah, datumih, statusu zaključka ali uporabite iskanje. Razvrstite naloge in preklopite podnaloge za boljšo organizacijo.
       title: Filtriraj & Išči
     marathon:
       app_usage:
-        description:
-          Spremljajte vzorce uporabe aplikacij in analizirajte čas, porabljen
-          za različne dejavnosti. Pridobite vpogled v svoje digitalne navade in optimizirajte
-          svojo produktivnost.
+        description: Spremljajte vzorce uporabe aplikacij in analizirajte čas, porabljen za različne dejavnosti. Pridobite vpogled v svoje digitalne navade in optimizirajte svojo produktivnost.
         title: Uporaba Aplikacij & Časovna Analiza
       filter_sort:
-        description:
-          Filtrirajte podatke o uporabi aplikacij po časovnem obdobju,
-          oznakah ali določenih napravah. Razvrstite in organizirajte svojo statistiko
-          uporabe za boljše vpoglede v upravljanje časa.
+        description: Filtrirajte podatke o uporabi aplikacij po časovnem obdobju, oznakah ali določenih napravah. Razvrstite in organizirajte svojo statistiko uporabe za boljše vpoglede v upravljanje časa.
         title: Filtriraj & Razvrsti
       tracking_settings:
-        description:
-          Konfigurirajte pravila sledenja aplikacij, nastavite samodejno
-          označevanje in upravljajte, katere aplikacije naj se spremljajo. Prilagodite
-          sledenje glede na svoje potrebe po produktivnosti.
+        description: Konfigurirajte pravila sledenja aplikacij, nastavite samodejno označevanje in upravljajte, katere aplikacije naj se spremljajo. Prilagodite sledenje glede na svoje potrebe po produktivnosti.
         title: Nastavitve Sledenja
       usage_statistics:
-        description:
-          Ogled podrobnih podatkov o uporabi aplikacij in porazdelitvi
-          časa. Analizirajte svoje vzorce produktivnosti, spremljajte čas, porabljen
-          za različne aplikacije, in prepoznajte področja za izboljšave.
+        description: Ogled podrobnih podatkov o uporabi aplikacij in porazdelitvi časa. Analizirajte svoje vzorce produktivnosti, spremljajte čas, porabljen za različne aplikacije, in prepoznajte področja za izboljšave.
         title: Statistika Uporabe
     task_management:
-      description:
-        Ustvarite in organizirajte naloge s prednostmi, roki in opomniki.
-        Uporabite časovnik Pomodoro, da ostanete osredotočeni in spremljate napredek
-        pri pomembnih nalogah.
+      description: Ustvarite in organizirajte naloge s prednostmi, roki in opomniki. Uporabite časovnik Pomodoro, da ostanete osredotočeni in spremljate napredek pri pomembnih nalogah.
       title: Upravljanje Nalog
     your_tasks:
-      description:
-        Ogledujte in upravljajte vse svoje naloge na enem mestu. Kliknite
-        katerokoli nalogo za ogled podrobnosti, označite kot končano, uredite informacije
-        ali izbrišite. Ostanite organizirani in spremljajte svoj napredek.
+      description: Ogledujte in upravljajte vse svoje naloge na enem mestu. Kliknite katerokoli nalogo za ogled podrobnosti, označite kot končano, uredite informacije ali izbrišite. Ostanite organizirani in spremljajte svoj napredek.
       title: Vaše Naloge
   validation:
     deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
