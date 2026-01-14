@@ -21,27 +21,39 @@ class DatabaseIntegrityService {
   }
 
   /// Automatically fix common integrity issues
-  Future<void> fixIntegrityIssues() async {
+  /// Returns a report containing any repair failures that occurred
+  Future<DatabaseIntegrityReport> fixIntegrityIssues() async {
     Logger.info('Starting database integrity fixes...');
+    final report = DatabaseIntegrityReport();
 
-    await _repairCorruptedTimestamps();
-    await _fixDuplicateIds();
-    await _cleanupOrphanedReferences();
-    await _fixSyncStateIssues();
+    await _repairCorruptedTimestamps(report);
+    await _fixDuplicateIds(report);
+    await _cleanupOrphanedReferences(report);
+    await _fixSyncStateIssues(report);
 
     Logger.info('Database integrity fixes completed');
+    if (report.repairFailures.isNotEmpty) {
+      Logger.warning('${report.repairFailures.length} repair operations failed');
+    }
+    return report;
   }
 
   /// Fix only critical integrity issues (not ancient devices)
-  Future<void> fixCriticalIntegrityIssues() async {
+  /// Returns a report containing any repair failures that occurred
+  Future<DatabaseIntegrityReport> fixCriticalIntegrityIssues() async {
     Logger.info('Starting critical database integrity fixes...');
+    final report = DatabaseIntegrityReport();
 
-    await _repairCorruptedTimestamps();
-    await _fixDuplicateIds();
-    await _cleanupOrphanedReferences();
+    await _repairCorruptedTimestamps(report);
+    await _fixDuplicateIds(report);
+    await _cleanupOrphanedReferences(report);
     // Skip _fixSyncStateIssues() as it includes ancient device cleanup
 
     Logger.info('Critical database integrity fixes completed');
+    if (report.repairFailures.isNotEmpty) {
+      Logger.warning('${report.repairFailures.length} repair operations failed');
+    }
+    return report;
   }
 
   /// Check for fields that represent timestamps but contain text/string values
@@ -94,7 +106,7 @@ class DatabaseIntegrityService {
 
   /// Repair fields that were incorrectly set to string values (e.g. CURRENT_TIMESTAMP)
   /// instead of integer timestamps.
-  Future<void> _repairCorruptedTimestamps() async {
+  Future<void> _repairCorruptedTimestamps(DatabaseIntegrityReport report) async {
     Logger.debug('Checking for corrupted timestamp fields...');
     final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
@@ -146,7 +158,9 @@ class DatabaseIntegrityService {
           }
         } catch (e, stackTrace) {
           // Table or column might not exist, log but continue
-          Logger.error('Failed to repair timestamps for $table.$column: $e', stackTrace: stackTrace);
+          final key = '$table.$column';
+          Logger.error('Failed to repair timestamps for $key: $e', stackTrace: stackTrace);
+          report.repairFailures[key] = 'Timestamp repair failed: $e';
         }
       }
     }
@@ -324,7 +338,7 @@ class DatabaseIntegrityService {
     }
   }
 
-  Future<void> _fixDuplicateIds() async {
+  Future<void> _fixDuplicateIds(DatabaseIntegrityReport report) async {
     final tables = [
       'tag_table',
       'task_tag_table',
@@ -337,47 +351,62 @@ class DatabaseIntegrityService {
     final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
     for (final tableName in tables) {
-      Logger.info('Fixing duplicates in $tableName...');
+      try {
+        Logger.info('Fixing duplicates in $tableName...');
 
-      // Keep the most recent record for each ID, soft-delete the rest
-      await _database.customStatement('''
-        UPDATE $tableName
-        SET deleted_date = ?
-        WHERE rowid NOT IN (
-          SELECT MAX(rowid)
-          FROM $tableName
-          WHERE deleted_date IS NULL
-          GROUP BY id
-        ) AND deleted_date IS NULL
-      ''', [nowTimestamp]);
+        // Keep the most recent record for each ID, soft-delete the rest
+        await _database.customStatement('''
+          UPDATE $tableName
+          SET deleted_date = ?
+          WHERE rowid NOT IN (
+            SELECT MAX(rowid)
+            FROM $tableName
+            WHERE deleted_date IS NULL
+            GROUP BY id
+          ) AND deleted_date IS NULL
+        ''', [nowTimestamp]);
+      } catch (e, stackTrace) {
+        Logger.error('Failed to fix duplicates in $tableName: $e', stackTrace: stackTrace);
+        report.repairFailures['$tableName.duplicates'] = 'Duplicate fix failed: $e';
+      }
     }
   }
 
-  Future<void> _cleanupOrphanedReferences() async {
+  Future<void> _cleanupOrphanedReferences(DatabaseIntegrityReport report) async {
     Logger.info('Cleaning up orphaned references...');
 
     final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-    // Soft-delete task_tags that reference deleted tags
-    await _database.customStatement('''
-      UPDATE task_tag_table
-      SET deleted_date = ?
-      WHERE tag_id NOT IN (
-        SELECT id FROM tag_table WHERE deleted_date IS NULL
-      ) AND deleted_date IS NULL
-    ''', [nowTimestamp]);
+    try {
+      // Soft-delete task_tags that reference deleted tags
+      await _database.customStatement('''
+        UPDATE task_tag_table
+        SET deleted_date = ?
+        WHERE tag_id NOT IN (
+          SELECT id FROM tag_table WHERE deleted_date IS NULL
+        ) AND deleted_date IS NULL
+      ''', [nowTimestamp]);
+    } catch (e, stackTrace) {
+      Logger.error('Failed to cleanup orphaned task tags: $e', stackTrace: stackTrace);
+      report.repairFailures['task_tags.orphans'] = 'Orphan cleanup failed: $e';
+    }
 
-    // Soft-delete habit_tags that reference deleted tags
-    await _database.customStatement('''
-      UPDATE habit_tag_table
-      SET deleted_date = ?
-      WHERE tag_id NOT IN (
-        SELECT id FROM tag_table WHERE deleted_date IS NULL
-      ) AND deleted_date IS NULL
-    ''', [nowTimestamp]);
+    try {
+      // Soft-delete habit_tags that reference deleted tags
+      await _database.customStatement('''
+        UPDATE habit_tag_table
+        SET deleted_date = ?
+        WHERE tag_id NOT IN (
+          SELECT id FROM tag_table WHERE deleted_date IS NULL
+        ) AND deleted_date IS NULL
+      ''', [nowTimestamp]);
+    } catch (e, stackTrace) {
+      Logger.error('Failed to cleanup orphaned habit tags: $e', stackTrace: stackTrace);
+      report.repairFailures['habit_tags.orphans'] = 'Orphan cleanup failed: $e';
+    }
   }
 
-  Future<void> _fixSyncStateIssues() async {
+  Future<void> _fixSyncStateIssues(DatabaseIntegrityReport report) async {
     Logger.info('Fixing sync state issues...');
 
     try {
@@ -396,9 +425,14 @@ class DatabaseIntegrityService {
         AND (from_ip IS NULL OR from_ip = '' OR to_ip IS NULL OR to_ip = '')
       ''');
       Logger.debug('Fixed invalid IP addresses in sync devices');
+    } catch (e, stackTrace) {
+      Logger.error('Failed to fix invalid IP addresses: $e', stackTrace: stackTrace);
+      report.repairFailures['sync_device.invalid_ips'] = 'IP fix failed: $e';
+    }
 
-      final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
+    try {
       // Soft-delete duplicate sync devices, keeping the most recent one
       await _database.customStatement('''
         UPDATE sync_device_table
@@ -411,7 +445,12 @@ class DatabaseIntegrityService {
         ) AND deleted_date IS NULL
       ''', [nowTimestamp]);
       Logger.debug('Soft-deleted duplicate sync device records');
+    } catch (e, stackTrace) {
+      Logger.error('Failed to fix duplicate sync devices: $e', stackTrace: stackTrace);
+      report.repairFailures['sync_device.duplicates'] = 'Duplicate device fix failed: $e';
+    }
 
+    try {
       // Fix sync devices with invalid device IDs by setting them to default values
       await _database.customStatement('''
         UPDATE sync_device_table
@@ -427,10 +466,15 @@ class DatabaseIntegrityService {
         AND (from_device_id IS NULL OR from_device_id = '' OR to_device_id IS NULL OR to_device_id = '')
       ''');
       Logger.debug('Fixed invalid device IDs in sync devices');
+    } catch (e, stackTrace) {
+      Logger.error('Failed to fix invalid device IDs: $e', stackTrace: stackTrace);
+      report.repairFailures['sync_device.invalid_ids'] = 'Device ID fix failed: $e';
+    }
 
-      final cutoffDate = DateTime.now().subtract(const Duration(days: 365 * 5));
-      final cutoffTimestamp = cutoffDate.millisecondsSinceEpoch ~/ 1000;
+    final cutoffDate = DateTime.now().subtract(const Duration(days: 365 * 5));
+    final cutoffTimestamp = cutoffDate.millisecondsSinceEpoch ~/ 1000;
 
+    try {
       // Soft-delete extremely old sync devices (older than 5 years)
       await _database.customStatement('''
         UPDATE sync_device_table
@@ -439,12 +483,12 @@ class DatabaseIntegrityService {
         AND created_date < ?
       ''', [nowTimestamp, cutoffTimestamp]);
       Logger.debug('Soft-deleted ancient sync device records (older than 5 years)');
-
-      Logger.info('Sync state issues fixed');
-    } catch (e) {
-      Logger.error('Error fixing sync state issues: $e');
-      // Don't rethrow - sync state fix failures shouldn't prevent app startup
+    } catch (e, stackTrace) {
+      Logger.error('Failed to cleanup ancient sync devices: $e', stackTrace: stackTrace);
+      report.repairFailures['sync_device.ancient'] = 'Ancient device cleanup failed: $e';
     }
+
+    Logger.info('Sync state issues fixed');
   }
 }
 
@@ -452,6 +496,7 @@ class DatabaseIntegrityReport {
   final Map<String, int> duplicateIds = {};
   final Map<String, int> orphanedReferences = {};
   final Map<String, int> syncStateIssues = {};
+  final Map<String, String> repairFailures = {};
   int softDeleteInconsistencies = 0;
   int timestampInconsistencies = 0;
 
@@ -459,6 +504,7 @@ class DatabaseIntegrityReport {
       duplicateIds.isNotEmpty ||
       orphanedReferences.isNotEmpty ||
       syncStateIssues.isNotEmpty ||
+      repairFailures.isNotEmpty ||
       softDeleteInconsistencies > 0 ||
       timestampInconsistencies > 0;
 
@@ -494,6 +540,13 @@ class DatabaseIntegrityReport {
       buffer.writeln('Sync state issues:');
       syncStateIssues.forEach((type, count) {
         buffer.writeln('  - $type: $count issues');
+      });
+    }
+
+    if (repairFailures.isNotEmpty) {
+      buffer.writeln('Repair failures:');
+      repairFailures.forEach((operation, error) {
+        buffer.writeln('  - $operation: $error');
       });
     }
 

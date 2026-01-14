@@ -118,7 +118,10 @@ class SyncService implements ISyncService {
         // Also auto-fix if we detect corrupted timestamps, as this causes FormatExceptions that block sync completely
         if (isManual || preIntegrityReport.timestampInconsistencies > 0) {
           Logger.info('Auto-fixing database integrity issues...');
-          await integrityService.fixCriticalIntegrityIssues();
+          final repairReport = await integrityService.fixCriticalIntegrityIssues();
+          if (repairReport.repairFailures.isNotEmpty) {
+            Logger.warning('Some repair operations failed: ${repairReport.repairFailures.length} failures');
+          }
         }
       }
 
@@ -140,7 +143,10 @@ class SyncService implements ISyncService {
           Logger.warning(postIntegrityReport.toString());
 
           // Auto-fix issues after sync
-          await integrityService.fixIntegrityIssues();
+          final repairReport = await integrityService.fixIntegrityIssues();
+          if (repairReport.repairFailures.isNotEmpty) {
+            Logger.warning('Some post-sync repair operations failed: ${repairReport.repairFailures.length} failures');
+          }
           Logger.info('Post-sync integrity issues fixed');
         } else {
           Logger.debug('Database integrity validated after sync');

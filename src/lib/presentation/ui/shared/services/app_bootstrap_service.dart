@@ -137,7 +137,10 @@ class AppBootstrapService {
             integrityReport.orphanedReferences.isNotEmpty ||
             integrityReport.softDeleteInconsistencies > 0) {
           Logger.info('Attempting to fix critical database integrity issues automatically...');
-          await databaseIntegrityService.fixCriticalIntegrityIssues();
+          final repairReport = await databaseIntegrityService.fixCriticalIntegrityIssues();
+          if (repairReport.repairFailures.isNotEmpty) {
+            Logger.warning('Some automatic repair operations failed: ${repairReport.repairFailures.length} failures');
+          }
 
           // Re-validate after fixes
           final postFixReport = await databaseIntegrityService.validateIntegrity();
