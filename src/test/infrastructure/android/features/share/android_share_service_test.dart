@@ -33,8 +33,8 @@ void main() {
         const text = '\nSecond line starts here';
         final (title, description) = AndroidShareService.extractTitleFromText(text);
 
-        // When trimmed first line is empty, returns substring of full text (up to maxTitleLength)
-        expect(title, equals('\nSecond line starts here'));
+        // When trimmed first line is empty, finds first non-empty line as title
+        expect(title, equals('Second line starts here'));
         expect(description, isNull);
       });
 
@@ -59,9 +59,9 @@ void main() {
         const text = '  \n  Title with spaces  \n  Description here  ';
         final (title, description) = AndroidShareService.extractTitleFromText(text);
 
-        // When trimmed first line is empty, returns substring of full text
-        expect(title, equals('  \n  Title with spaces  \n  Description here  '));
-        expect(description, isNull);
+        // When trimmed first line is empty, finds first non-empty line as title
+        expect(title, equals('Title with spaces'));
+        expect(description, equals('Description here'));
       });
 
       test('should handle text with multiple consecutive newlines', () {
@@ -96,8 +96,8 @@ void main() {
         const text = '\n';
         final (title, description) = AndroidShareService.extractTitleFromText(text);
 
-        // When first line after trim is empty, it returns substring of original text (up to maxTitleLength)
-        expect(title, equals('\n'));
+        // When first line after trim is empty and no non-empty lines found, returns empty string
+        expect(title, equals(''));
         expect(description, isNull);
       });
 
@@ -105,8 +105,8 @@ void main() {
         const text = '   \n   \n   ';
         final (title, description) = AndroidShareService.extractTitleFromText(text);
 
-        // When first line after trim is empty, it returns the full text (since length < maxTitleLength)
-        expect(title, equals('   \n   \n   ')); // Full 11 character string
+        // When all lines are whitespace-only, returns empty string
+        expect(title, equals(''));
         expect(description, isNull);
       });
 
