@@ -235,13 +235,38 @@ class Task extends BaseEntity<String> {
   // Helper method to parse enums with error handling
   static T _parseEnum<T>(List<T> values, String? value, T defaultValue, String enumName) {
     if (value == null) return defaultValue;
-    try {
-      return values.firstWhere((e) => (e as dynamic).name == value || e.toString() == value);
-    } catch (e) {
-      Logger.warning('Invalid $enumName value "$value", defaulting to $defaultValue',
-          component: DomainLogComponents.task);
-      return defaultValue;
-    }
+    return values.firstWhere(
+      (e) {
+        if (e.toString() == value) return true;
+        try {
+          return (e as dynamic).name == value;
+        } catch (_) {
+          return false;
+        }
+      },
+      orElse: () {
+        // Only log warning if the value is strictly invalid (not just a mismatch that leads to default)
+        // AND it's not one of the expected "empty/none" values that might be passed casually.
+        // For "none" specifically, it's often used as a string equivalent for RecurrenceType.none or ReminderTime.none
+        // so we shouldn't warn if it simply resolves to the default which is also none.
+        bool matchesName = false;
+        try {
+          matchesName = value == (defaultValue as dynamic).name;
+        } catch (_) {}
+
+        final isDefaultOrNone = value == 'none' ||
+            value == 'RecurrenceType.none' ||
+            value == 'ReminderTime.none' ||
+            value == defaultValue.toString() ||
+            matchesName;
+
+        if (!isDefaultOrNone) {
+          Logger.warning('Invalid $enumName value "$value", defaulting to $defaultValue',
+              component: DomainLogComponents.task);
+        }
+        return defaultValue;
+      },
+    );
   }
 
   factory Task.fromJson(Map<String, dynamic> json) {

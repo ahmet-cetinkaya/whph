@@ -115,7 +115,8 @@ class SyncService implements ISyncService {
         Logger.warning(preIntegrityReport.toString());
 
         // Auto-fix critical issues if manual sync (skip ancient device cleanup to preserve recent additions)
-        if (isManual) {
+        // Also auto-fix if we detect corrupted timestamps, as this causes FormatExceptions that block sync completely
+        if (isManual || preIntegrityReport.timestampInconsistencies > 0) {
           Logger.info('Auto-fixing database integrity issues...');
           await integrityService.fixCriticalIntegrityIssues();
         }

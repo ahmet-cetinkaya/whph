@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
@@ -14,6 +15,7 @@ class DatabaseIntegrityService {
     await _checkOrphanedReferences(report);
     await _checkSoftDeletedConsistency(report);
     await _checkSyncStateConsistency(report);
+    await _checkTimestampConsistency(report);
 
     return report;
   }
@@ -22,6 +24,7 @@ class DatabaseIntegrityService {
   Future<void> fixIntegrityIssues() async {
     Logger.info('Starting database integrity fixes...');
 
+    await _repairCorruptedTimestamps();
     await _fixDuplicateIds();
     await _cleanupOrphanedReferences();
     await _fixSyncStateIssues();
@@ -33,11 +36,119 @@ class DatabaseIntegrityService {
   Future<void> fixCriticalIntegrityIssues() async {
     Logger.info('Starting critical database integrity fixes...');
 
+    await _repairCorruptedTimestamps();
     await _fixDuplicateIds();
     await _cleanupOrphanedReferences();
     // Skip _fixSyncStateIssues() as it includes ancient device cleanup
 
     Logger.info('Critical database integrity fixes completed');
+  }
+
+  /// Check for fields that represent timestamps but contain text/string values
+  Future<void> _checkTimestampConsistency(DatabaseIntegrityReport report) async {
+    Logger.debug('Checking timestamp consistency...');
+
+    // Map of table names to their date columns that need checking
+    final tableColumns = {
+      'sync_device_table': ['created_date', 'modified_date', 'deleted_date', 'last_sync_date'],
+      'tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'task_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'habit_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'app_usage_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'note_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'tag_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+    };
+
+    int corruptedCount = 0;
+
+    for (final entry in tableColumns.entries) {
+      final table = entry.key;
+      final columns = entry.value;
+
+      for (final column in columns) {
+        try {
+          final hasTextData = await _database.customSelect('''
+            SELECT COUNT(*) as count 
+            FROM $table 
+            WHERE typeof($column) = 'text'
+          ''').getSingleOrNull();
+
+          if (hasTextData != null) {
+            final count = hasTextData.data['count'] as int? ?? 0;
+            if (count > 0) {
+              corruptedCount += count;
+              Logger.warning('Found $count rows in $table.$column with corrupted text timestamp');
+            }
+          }
+        } catch (e) {
+          // Table or column might not exist, ignore
+        }
+      }
+    }
+
+    if (corruptedCount > 0) {
+      report.timestampInconsistencies = corruptedCount;
+    }
+  }
+
+  /// Repair fields that were incorrectly set to string values (e.g. CURRENT_TIMESTAMP)
+  /// instead of integer timestamps.
+  Future<void> _repairCorruptedTimestamps() async {
+    Logger.debug('Checking for corrupted timestamp fields...');
+    final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+    // Map of table names to their date columns that need checking
+    final tableColumns = {
+      'sync_device_table': ['created_date', 'modified_date', 'deleted_date', 'last_sync_date'],
+      'tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'task_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'habit_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'app_usage_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'note_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+      'tag_tag_table': ['created_date', 'modified_date', 'deleted_date'],
+    };
+
+    for (final entry in tableColumns.entries) {
+      final table = entry.key;
+      final columns = entry.value;
+
+      for (final column in columns) {
+        try {
+          // Check if any rows have text data in this column
+          final hasTextData = await _database.customSelect('''
+            SELECT COUNT(*) as count 
+            FROM $table 
+            WHERE typeof($column) = 'text'
+          ''').getSingleOrNull();
+
+          if (hasTextData != null) {
+            final count = hasTextData.data['count'] as int? ?? 0;
+            if (count > 0) {
+              Logger.warning('Found $count rows in $table.$column with corrupted text timestamp. Repairing...');
+
+              // Repair: Try to parse string date using SQLite's strftime to preserve the date if possible
+              await _database.customStatement('''
+                UPDATE $table
+                SET $column = CAST(strftime('%s', $column) AS INTEGER)
+                WHERE typeof($column) = 'text'
+              ''');
+
+              // Cleanup: If parsing failed (result is null) or somehow still text, reset to now
+              await _database.customStatement('''
+                UPDATE $table
+                SET $column = ?
+                WHERE typeof($column) = 'text' OR $column IS NULL
+              ''', [nowTimestamp]);
+
+              Logger.info('Repaired $table.$column timestamps');
+            }
+          }
+        } catch (e) {
+          // Table or column might not exist, log but continue
+          Logger.warning('Error fixing timestamps for table $table column $column: $e');
+        }
+      }
+    }
   }
 
   Future<void> _checkDuplicateIds(DatabaseIntegrityReport report) async {
@@ -152,22 +263,26 @@ class DatabaseIntegrityService {
         Logger.debug('Sync device date analysis: count=$totalCount, oldest=$oldestDate, newest=$newestDate');
 
         // Check for devices older than 5 years
-        // First, get accurate count
+        // We calculate the cutoff timestamp in seconds (Drift default) to avoid String vs Int comparison issues
+        final cutoffDate = DateTime.now().subtract(const Duration(days: 365 * 5));
+        final cutoffTimestamp = cutoffDate.millisecondsSinceEpoch ~/ 1000;
+
+        // First, get accurate count using integer comparison
         final ancientDeviceCount = await _database.customSelect('''
           SELECT COUNT(*) as count
           FROM sync_device_table
           WHERE deleted_date IS NULL
-          AND created_date < datetime('now', '-5 years')
-        ''').getSingleOrNull();
+          AND created_date < ?
+        ''', variables: [Variable.withInt(cutoffTimestamp)]).getSingleOrNull();
 
         // Then, get sample records for debugging
         final ancientDeviceSamples = await _database.customSelect('''
           SELECT id, created_date
           FROM sync_device_table
           WHERE deleted_date IS NULL
-          AND created_date < datetime('now', '-5 years')
+          AND created_date < ?
           LIMIT 3
-        ''').get();
+        ''', variables: [Variable.withInt(cutoffTimestamp)]).get();
 
         if (ancientDeviceCount != null) {
           final count = ancientDeviceCount.data['count'] as int? ?? 0;
@@ -218,43 +333,47 @@ class DatabaseIntegrityService {
       'tag_tag_table',
     ];
 
+    final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
     for (final tableName in tables) {
       Logger.info('Fixing duplicates in $tableName...');
 
       // Keep the most recent record for each ID, soft-delete the rest
       await _database.customStatement('''
         UPDATE $tableName
-        SET deleted_date = CURRENT_TIMESTAMP
+        SET deleted_date = ?
         WHERE rowid NOT IN (
           SELECT MAX(rowid)
           FROM $tableName
           WHERE deleted_date IS NULL
           GROUP BY id
         ) AND deleted_date IS NULL
-      ''');
+      ''', [nowTimestamp]);
     }
   }
 
   Future<void> _cleanupOrphanedReferences() async {
     Logger.info('Cleaning up orphaned references...');
 
+    final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
     // Soft-delete task_tags that reference deleted tags
     await _database.customStatement('''
       UPDATE task_tag_table
-      SET deleted_date = CURRENT_TIMESTAMP
+      SET deleted_date = ?
       WHERE tag_id NOT IN (
         SELECT id FROM tag_table WHERE deleted_date IS NULL
       ) AND deleted_date IS NULL
-    ''');
+    ''', [nowTimestamp]);
 
     // Soft-delete habit_tags that reference deleted tags
     await _database.customStatement('''
       UPDATE habit_tag_table
-      SET deleted_date = CURRENT_TIMESTAMP
+      SET deleted_date = ?
       WHERE tag_id NOT IN (
         SELECT id FROM tag_table WHERE deleted_date IS NULL
       ) AND deleted_date IS NULL
-    ''');
+    ''', [nowTimestamp]);
   }
 
   Future<void> _fixSyncStateIssues() async {
@@ -277,17 +396,19 @@ class DatabaseIntegrityService {
       ''');
       Logger.debug('Fixed invalid IP addresses in sync devices');
 
+      final nowTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
       // Soft-delete duplicate sync devices, keeping the most recent one
       await _database.customStatement('''
         UPDATE sync_device_table
-        SET deleted_date = CURRENT_TIMESTAMP
+        SET deleted_date = ?
         WHERE rowid NOT IN (
           SELECT MAX(rowid)
           FROM sync_device_table
           WHERE deleted_date IS NULL
           GROUP BY from_device_id, to_device_id
         ) AND deleted_date IS NULL
-      ''');
+      ''', [nowTimestamp]);
       Logger.debug('Soft-deleted duplicate sync device records');
 
       // Fix sync devices with invalid device IDs by setting them to default values
@@ -306,13 +427,16 @@ class DatabaseIntegrityService {
       ''');
       Logger.debug('Fixed invalid device IDs in sync devices');
 
+      final cutoffDate = DateTime.now().subtract(const Duration(days: 365 * 5));
+      final cutoffTimestamp = cutoffDate.millisecondsSinceEpoch ~/ 1000;
+
       // Soft-delete extremely old sync devices (older than 5 years)
       await _database.customStatement('''
         UPDATE sync_device_table
-        SET deleted_date = CURRENT_TIMESTAMP
+        SET deleted_date = ?
         WHERE deleted_date IS NULL
-        AND created_date < datetime('now', '-5 years')
-      ''');
+        AND created_date < ?
+      ''', [nowTimestamp, cutoffTimestamp]);
       Logger.debug('Soft-deleted ancient sync device records (older than 5 years)');
 
       Logger.info('Sync state issues fixed');
@@ -328,18 +452,24 @@ class DatabaseIntegrityReport {
   final Map<String, int> orphanedReferences = {};
   final Map<String, int> syncStateIssues = {};
   int softDeleteInconsistencies = 0;
+  int timestampInconsistencies = 0;
 
   bool get hasIssues =>
       duplicateIds.isNotEmpty ||
       orphanedReferences.isNotEmpty ||
       syncStateIssues.isNotEmpty ||
-      softDeleteInconsistencies > 0;
+      softDeleteInconsistencies > 0 ||
+      timestampInconsistencies > 0;
 
   @override
   String toString() {
     if (!hasIssues) return 'Database integrity: No issues found';
 
     final buffer = StringBuffer('Database integrity issues found:\n');
+
+    if (timestampInconsistencies > 0) {
+      buffer.writeln('Timestamp inconsistencies: $timestampInconsistencies corrupted date fields');
+    }
 
     if (duplicateIds.isNotEmpty) {
       buffer.writeln('Duplicate IDs:');

@@ -1,5 +1,4 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart' as jm;
-import 'package:flutter/foundation.dart';
 
 @jm.jsonSerializable
 enum RecurrenceFrequency {
@@ -90,7 +89,6 @@ class RecurrenceConfiguration {
   /// Creates a RecurrenceConfiguration for testing purposes without validation.
   /// This should ONLY be used in tests to create configurations with intentionally
   /// invalid dates (e.g., past dates) to test edge cases.
-  @visibleForTesting
   factory RecurrenceConfiguration.test({
     required RecurrenceFrequency frequency,
     int interval = 1,
