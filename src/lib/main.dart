@@ -27,6 +27,8 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/components/share_disambiguation_dialog.dart';
 import 'package:whph/presentation/ui/shared/utils/context_manager.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
 
 /// Global navigator key for accessing context throughout the application
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -218,6 +220,10 @@ void main(List<String> args) async {
 
                   Logger.debug('ShareService: Task created successfully with ID: ${response.id}');
 
+                  // Notify tasks service to refresh task lists
+                  final tasksService = container.resolve<TasksService>();
+                  tasksService.notifyTaskCreated(response.id);
+
                   // Show success notification using ContextManager
                   final notificationContext = ContextManager.context ?? navigatorKey.currentContext;
                   if (notificationContext != null && notificationContext.mounted) {
@@ -236,6 +242,10 @@ void main(List<String> args) async {
                   final response = await mediator.send<SaveNoteCommand, SaveNoteCommandResponse>(saveNoteCommand);
 
                   Logger.debug('ShareService: Note created successfully with ID: ${response.id}');
+
+                  // Notify notes service to refresh note lists
+                  final notesService = container.resolve<NotesService>();
+                  notesService.notifyNoteCreated(response.id);
 
                   // Show success notification using ContextManager
                   final notificationContext = ContextManager.context ?? navigatorKey.currentContext;
