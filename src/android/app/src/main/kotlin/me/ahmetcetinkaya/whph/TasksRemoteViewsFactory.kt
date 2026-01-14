@@ -2,6 +2,7 @@ package me.ahmetcetinkaya.whph
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
@@ -57,9 +58,12 @@ class TasksRemoteViewsFactory(private val context: Context) :
 
       views.setTextViewText(R.id.task_title, title)
 
+      // Apply strikethrough to completed tasks
       if (isCompleted) {
+        views.setInt(R.id.task_title, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG)
         views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box)
       } else {
+        views.setInt(R.id.task_title, "setPaintFlags", 0)
         views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box_outline)
       }
 

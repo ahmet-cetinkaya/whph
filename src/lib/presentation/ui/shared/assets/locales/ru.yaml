@@ -12,6 +12,16 @@ shared:
     previous: Предыдущий
     save: Сохранить
     saved: Сохранено
+  share:
+    dialog_title: Создать из общего текста
+    create_task: Создать задачу
+    create_task_description: Создать задачу из общего текста
+    create_note: Создать заметку
+    create_note_description: Создать заметку из общего текста
+    task_created: Задача создана из общего текста
+    note_created: Заметка создана из общего текста
+    failed_to_create: Не удалось создать элемент из общего текста
+    shared_text_preview_label: Общий текст
   calendar:
     months:
       apr: Апрель

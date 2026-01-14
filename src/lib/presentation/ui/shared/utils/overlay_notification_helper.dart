@@ -5,7 +5,6 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'package:acore/acore.dart' hide Container;
-import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Enum for notification position
 enum NotificationPosition { top, bottom }
@@ -30,16 +29,22 @@ class OverlayNotificationHelper {
     // Remove any existing overlay first
     hideNotification();
 
-    // Check if overlay is available before proceeding
-    final overlay = Overlay.maybeOf(context);
-    if (overlay == null) {
-      // Overlay not available, cannot show notification
-      Logger.warning('Cannot show overlay notification - no Overlay widget found in context');
+    // Try to get the overlay state from the Navigator directly
+    OverlayState? overlayState;
+
+    // First try: Get overlay state from the NavigatorState directly
+    final navigatorState = navigatorKey.currentState;
+    if (navigatorState != null) {
+      overlayState = navigatorState.overlay;
+    }
+
+    // If still no overlay state, we can't show the notification
+    if (overlayState == null) {
       return;
     }
 
     _currentOverlay = OverlayEntry(
-      builder: (context) => _NotificationOverlay(
+      builder: (ctx) => _NotificationOverlay(
         message: message,
         backgroundColor: backgroundColor ?? AppTheme.errorColor,
         icon: icon,
@@ -51,7 +56,7 @@ class OverlayNotificationHelper {
       ),
     );
 
-    overlay.insert(_currentOverlay!);
+    overlayState.insert(_currentOverlay!);
   }
 
   /// Shows an error notification with predefined styling

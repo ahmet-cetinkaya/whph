@@ -12,6 +12,16 @@ shared:
     previous: Edellinen
     save: Tallenna
     saved: Tallennettu
+  share:
+    dialog_title: Luo jaetusta tekstistä
+    create_task: Luo tehtävä
+    create_task_description: Luo tehtävä jaetusta tekstistä
+    create_note: Luo muistiinpano
+    create_note_description: Luo muistiinpano jaetusta tekstistä
+    task_created: Tehtävä luotu jaetusta tekstistä
+    note_created: Muistiinpano luotu jaetusta tekstistä
+    failed_to_create: Kohteen luominen jaetusta tekstistä epäonnistui
+    shared_text_preview_label: Jaettu teksti
   calendar:
     months:
       apr: Huhtikuu

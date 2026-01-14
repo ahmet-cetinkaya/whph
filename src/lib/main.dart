@@ -18,6 +18,15 @@ import 'package:whph/core/application/shared/services/abstraction/i_single_insta
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
+import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
+import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/shared/components/share_disambiguation_dialog.dart';
+import 'package:whph/presentation/ui/shared/utils/context_manager.dart';
+import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 
 /// Global navigator key for accessing context throughout the application
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -162,6 +171,101 @@ void main(List<String> args) async {
 
     // Get translation service for app wrapper
     final translationService = tempContainer.resolve<ITranslationService>();
+
+    // Set up share intent handling for Android (must be AFTER initializeCoreServices)
+    AndroidShareService.setupShareListener(
+      onSharedText: (text, subject) async {
+        try {
+          Logger.debug('ShareService: Received shared text: text="$text", subject="$subject"');
+
+          // Wait for the app context to be available
+          await Future.delayed(Duration(milliseconds: 500));
+
+          final context = navigatorKey.currentContext;
+          if (context == null) {
+            Logger.warning('ShareService: No context available, cannot show disambiguation dialog');
+            return;
+          }
+
+          final translationService = container.resolve<ITranslationService>();
+
+          // Extract title and description from shared text
+          final (title, description) = AndroidShareService.extractTitleFromText(text);
+          Logger.debug('ShareService: Extracted title: "$title", description: "$description"');
+
+          // Show disambiguation dialog with callback that handles item creation
+          if (!context.mounted) {
+            Logger.warning('ShareService: Context not mounted, cannot show disambiguation dialog');
+            return;
+          }
+          await ShareDisambiguationDialog.show(
+            context: context,
+            sharedText: text,
+            sharedSubject: subject,
+            translationService: translationService,
+            onItemSelected: (selectedType) async {
+              try {
+                final mediator = container.resolve<Mediator>();
+
+                if (selectedType == ShareItemType.task) {
+                  // Create a Task using Mediator
+                  final saveTaskCommand = SaveTaskCommand(
+                    title: title,
+                    description: description ?? subject,
+                  );
+
+                  final response = await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveTaskCommand);
+
+                  Logger.debug('ShareService: Task created successfully with ID: ${response.id}');
+
+                  // Show success notification using ContextManager
+                  final notificationContext = ContextManager.context ?? navigatorKey.currentContext;
+                  if (notificationContext != null && notificationContext.mounted) {
+                    OverlayNotificationHelper.showSuccess(
+                      context: notificationContext,
+                      message: translationService.translate(SharedTranslationKeys.shareTaskCreated),
+                    );
+                  }
+                } else if (selectedType == ShareItemType.note) {
+                  // Create a Note using Mediator
+                  final saveNoteCommand = SaveNoteCommand(
+                    title: title,
+                    content: description ?? subject ?? text,
+                  );
+
+                  final response = await mediator.send<SaveNoteCommand, SaveNoteCommandResponse>(saveNoteCommand);
+
+                  Logger.debug('ShareService: Note created successfully with ID: ${response.id}');
+
+                  // Show success notification using ContextManager
+                  final notificationContext = ContextManager.context ?? navigatorKey.currentContext;
+                  if (notificationContext != null && notificationContext.mounted) {
+                    OverlayNotificationHelper.showSuccess(
+                      context: notificationContext,
+                      message: translationService.translate(SharedTranslationKeys.shareNoteCreated),
+                    );
+                  }
+                }
+              } catch (e, stackTrace) {
+                Logger.error('ShareService: Error creating item from shared text: $e', stackTrace: stackTrace);
+
+                // Show error notification using ContextManager
+                final notificationContext = ContextManager.context ?? navigatorKey.currentContext;
+                if (notificationContext != null && notificationContext.mounted) {
+                  OverlayNotificationHelper.showError(
+                    context: notificationContext,
+                    message: translationService.translate(SharedTranslationKeys.shareFailedToCreate),
+                  );
+                }
+              }
+              return true;
+            },
+          );
+        } catch (e, stackTrace) {
+          Logger.error('ShareService: Error in share handler: $e', stackTrace: stackTrace);
+        }
+      },
+    );
 
     // Launch the application
     runApp(

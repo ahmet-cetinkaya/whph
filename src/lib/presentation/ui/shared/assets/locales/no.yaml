@@ -12,6 +12,16 @@ shared:
     previous: Forrige
     save: Lagre
     saved: Lagret
+  share:
+    dialog_title: Opprett fra delt tekst
+    create_task: Opprett oppgave
+    create_task_description: Opprett en oppgave fra delt tekst
+    create_note: Opprett notat
+    create_note_description: Opprett et notat fra delt tekst
+    task_created: Oppgave opprettet fra delt tekst
+    note_created: Notat opprettet fra delt tekst
+    failed_to_create: Kunne ikke opprette element fra delt tekst
+    shared_text_preview_label: Delt tekst
   calendar:
     months:
       apr: April

@@ -12,6 +12,16 @@ shared:
     previous: Forrige
     save: Gem
     saved: Gemt
+  share:
+    dialog_title: Opret fra delt tekst
+    create_task: Opret opgave
+    create_task_description: Opret en opgave fra delt tekst
+    create_note: Opret note
+    create_note_description: Opret en note fra delt tekst
+    task_created: Opgave oprettet fra delt tekst
+    note_created: Note oprettet fra delt tekst
+    failed_to_create: Kunne ikke oprette element fra delt tekst
+    shared_text_preview_label: Delt tekst
   calendar:
     months:
       apr: April

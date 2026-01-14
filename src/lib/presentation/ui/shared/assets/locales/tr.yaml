@@ -12,6 +12,16 @@ shared:
     previous: Önceki
     save: Kaydet
     saved: Kaydedildi
+  share:
+    dialog_title: Paylaşılan Metinden Oluştur
+    create_task: Görev Oluştur
+    create_task_description: Paylaşılan metinden görev oluştur
+    create_note: Not Oluştur
+    create_note_description: Paylaşılan metinden not oluştur
+    task_created: Paylaşılan metinden görev oluşturuldu
+    note_created: Paylaşılan metinden not oluşturuldu
+    failed_to_create: Paylaşılan metinden öğe oluşturulamadı
+    shared_text_preview_label: Paylaşılan metin
   calendar:
     months:
       apr: Nisan

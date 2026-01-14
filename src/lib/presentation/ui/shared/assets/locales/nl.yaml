@@ -12,6 +12,16 @@ shared:
     previous: Vorige
     save: Opslaan
     saved: Opgeslagen
+  share:
+    dialog_title: Maken van gedeelde tekst
+    create_task: Taak maken
+    create_task_description: Maak een taak van gedeelde tekst
+    create_note: Notitie maken
+    create_note_description: Maak een notitie van gedeelde tekst
+    task_created: Taak gemaakt van gedeelde tekst
+    note_created: Notitie gemaakt van gedeelde tekst
+    failed_to_create: Kon item niet maken van gedeelde tekst
+    shared_text_preview_label: Gedeelde tekst
   calendar:
     months:
       apr: April

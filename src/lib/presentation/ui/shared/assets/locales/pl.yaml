@@ -12,6 +12,16 @@ shared:
     previous: Poprzedni
     save: Zapisz
     saved: Zapisano
+  share:
+    dialog_title: Utwórz z udostępnionego tekstu
+    create_task: Utwórz zadanie
+    create_task_description: Utwórz zadanie z udostępnionego tekstu
+    create_note: Utwórz notatkę
+    create_note_description: Utwórz notatkę z udostępnionego tekstu
+    task_created: Zadanie utworzone z udostępnionego tekstu
+    note_created: Notatka utworzona z udostępnionego tekstu
+    failed_to_create: Nie udało się utworzyć elementu z udostępnionego tekstu
+    shared_text_preview_label: Udostępniony tekst
   calendar:
     months:
       apr: Kwiecień

@@ -12,6 +12,16 @@ shared:
     previous: Vorherige
     save: Speichern
     saved: Gespeichert
+  share:
+    dialog_title: Aus freigegebenem Text erstellen
+    create_task: Aufgabe erstellen
+    create_task_description: Eine Aufgabe aus freigegebenem Text erstellen
+    create_note: Notiz erstellen
+    create_note_description: Eine Notiz aus freigegebenem Text erstellen
+    task_created: Aufgabe aus freigegebenem Text erstellt
+    note_created: Notiz aus freigegebenem Text erstellt
+    failed_to_create: Element konnte nicht aus freigegebenem Text erstellt werden
+    shared_text_preview_label: Geteilter Text
   calendar:
     months:
       apr: April

@@ -12,6 +12,16 @@ shared:
     previous: 이전
     save: 저장
     saved: 저장됨
+  share:
+    dialog_title: 공유 텍스트에서 만들기
+    create_task: 작업 만들기
+    create_task_description: 공유 텍스트에서 작업 만들기
+    create_note: 메모 만들기
+    create_note_description: 공유 텍스트에서 메모 만들기
+    task_created: 공유 텍스트에서 작업을 만들었습니다
+    note_created: 공유 텍스트에서 메모를 만들었습니다
+    failed_to_create: 공유 텍스트에서 항목 만들기 실패
+    shared_text_preview_label: 공유 텍스트
   calendar:
     months:
       apr: 4월

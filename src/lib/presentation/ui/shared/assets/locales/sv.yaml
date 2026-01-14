@@ -12,6 +12,16 @@ shared:
     previous: Föregående
     save: Spara
     saved: Sparad
+  share:
+    dialog_title: Skapa från delad text
+    create_task: Skapa uppgift
+    create_task_description: Skapa en uppgift från delad text
+    create_note: Skapa anteckning
+    create_note_description: Skapa en anteckning från delad text
+    task_created: Uppgift skapad från delad text
+    note_created: Anteckning skapad från delad text
+    failed_to_create: Kunde inte skapa objekt från delad text
+    shared_text_preview_label: Delad text
   calendar:
     months:
       apr: April

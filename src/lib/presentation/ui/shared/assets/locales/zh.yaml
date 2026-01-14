@@ -12,6 +12,16 @@ shared:
     previous: 上一个
     save: 保存
     saved: 已保存
+  share:
+    dialog_title: 从共享文本创建
+    create_task: 创建任务
+    create_task_description: 从共享文本创建任务
+    create_note: 创建笔记
+    create_note_description: 从共享文本创建笔记
+    task_created: 已从共享文本创建任务
+    note_created: 已从共享文本创建笔记
+    failed_to_create: 无法从共享文本创建项目
+    shared_text_preview_label: 共享文本
   calendar:
     months:
       apr: 四月

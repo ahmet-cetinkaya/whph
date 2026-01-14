@@ -16,6 +16,7 @@ object Constants {
     const val BOOT_COMPLETED = "$PACKAGE_NAME/boot_completed"
     const val WORK_MANAGER = "$PACKAGE_NAME/work_manager"
     const val SYNC = "$PACKAGE_NAME/sync"
+    const val SHARE = "$PACKAGE_NAME/share"
   }
 
   // WorkManager

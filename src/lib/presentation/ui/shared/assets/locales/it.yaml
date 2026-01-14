@@ -12,6 +12,16 @@ shared:
     previous: Precedente
     save: Salva
     saved: Salvato
+  share:
+    dialog_title: Crea da testo condiviso
+    create_task: Crea attività
+    create_task_description: Crea un'attività da testo condiviso
+    create_note: Crea nota
+    create_note_description: Crea una nota da testo condiviso
+    task_created: Attività creata da testo condiviso
+    note_created: Nota creata da testo condiviso
+    failed_to_create: Impossibile creare l'elemento da testo condiviso
+    shared_text_preview_label: Testo condiviso
   calendar:
     months:
       apr: Aprile

@@ -12,6 +12,16 @@ shared:
     previous: Předchozí
     save: Uložit
     saved: Uloženo
+  share:
+    dialog_title: Vytvořit ze sdíleného textu
+    create_task: Vytvořit úkol
+    create_task_description: Vytvořit úkol ze sdíleného textu
+    create_note: Vytvořit poznámku
+    create_note_description: Vytvořit poznámku ze sdíleného textu
+    task_created: Úkol vytvořen ze sdíleného textu
+    note_created: Poznámka vytvořena ze sdíleného textu
+    failed_to_create: Nepodařilo se vytvořit položku ze sdíleného textu
+    shared_text_preview_label: Sdílený text
   calendar:
     months:
       apr: Duben
