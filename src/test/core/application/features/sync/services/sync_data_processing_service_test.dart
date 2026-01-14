@@ -351,8 +351,8 @@ void main() {
           deleteSync: [],
         );
 
-        when(mockSyncDeviceRepository.getById('device2')).thenAnswer((_) async => null);
-        when(mockSyncDeviceRepository.getById('device1')).thenAnswer((_) async => existingDevice);
+        when(mockSyncDeviceRepository.getById('device2', includeDeleted: true)).thenAnswer((_) async => null);
+        when(mockSyncDeviceRepository.getById('device1', includeDeleted: true)).thenAnswer((_) async => existingDevice);
         when(mockSyncDeviceRepository.getAll()).thenAnswer((_) async => [existingDevice]);
         when(mockSyncDeviceRepository.update(any)).thenAnswer((_) async {});
 
@@ -370,7 +370,7 @@ void main() {
 
         // Assert - The service should detect the existing device and handle it
         expect(result, greaterThanOrEqualTo(0));
-        verify(mockSyncDeviceRepository.getById('device2')).called(1);
+        verify(mockSyncDeviceRepository.getById('device2', includeDeleted: true)).called(1);
       });
     });
 

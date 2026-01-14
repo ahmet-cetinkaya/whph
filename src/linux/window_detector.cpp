@@ -64,6 +64,19 @@ std::string CleanQuotes(const std::string& input) {
     return result;
 }
 
+#include <glib.h>
+// Helper function to validate and clean UTF-8 strings
+std::string ValidateUtf8(const std::string& input) {
+    if (g_utf8_validate(input.c_str(), -1, nullptr)) {
+        return input;
+    }
+    
+    gchar* valid_str = g_utf8_make_valid(input.c_str(), -1);
+    std::string result(valid_str);
+    g_free(valid_str);
+    return result;
+}
+
 #ifdef HAVE_X11
 WindowInfo X11WindowDetector::GetActiveWindow() {
     WindowInfo info{"unknown", "unknown"};
@@ -92,7 +105,7 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
         if (XGetWindowProperty(display, active_window, wm_name, 0, 1024, False,
                               AnyPropertyType, &actual_type, &actual_format,
                               &nitems, &bytes_after, &prop) == Success && prop) {
-            info.title = std::string(reinterpret_cast<char*>(prop));
+            info.title = ValidateUtf8(std::string(reinterpret_cast<char*>(prop)));
             XFree(prop);
         }
         
@@ -109,6 +122,7 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
             std::ifstream comm_file(comm_path);
             if (comm_file.is_open()) {
                 std::getline(comm_file, info.application);
+                info.application = ValidateUtf8(info.application);
                 comm_file.close();
             }
         }
@@ -137,17 +151,17 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
     }
     
     std::string title_cmd = "xprop -id " + window_id + " | grep '^WM_NAME' | cut -d '\"' -f 2";
-    info.title = ExecuteCommand(title_cmd);
+    info.title = ValidateUtf8(ExecuteCommand(title_cmd));
     
     std::string pid_cmd = "xprop -id " + window_id + " | grep '^_NET_WM_PID' | awk -F '= ' '{print $2}'";
     std::string pid_str = ExecuteCommand(pid_cmd);
     
     if (!pid_str.empty()) {
         std::string comm_cmd = "cat /proc/" + pid_str + "/comm 2>/dev/null";
-        info.application = ExecuteCommand(comm_cmd);
+        info.application = ValidateUtf8(ExecuteCommand(comm_cmd));
         if (info.application.empty()) {
             std::string ps_cmd = "ps -p " + pid_str + " -o comm= 2>/dev/null";
-            info.application = ExecuteCommand(ps_cmd);
+            info.application = ValidateUtf8(ExecuteCommand(ps_cmd));
         }
     }
     
@@ -202,7 +216,7 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
             start += 7; // Length of "(true, "
             size_t end = title_result.find(")", start);
             if (end != std::string::npos) {
-                info.title = CleanQuotes(title_result.substr(start, end - start));
+                info.title = ValidateUtf8(CleanQuotes(title_result.substr(start, end - start)));
             }
         }
     }
@@ -217,7 +231,7 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
             start += 7;
             size_t end = app_result.find(")", start);
             if (end != std::string::npos) {
-                info.application = CleanQuotes(app_result.substr(start, end - start));
+                info.application = ValidateUtf8(CleanQuotes(app_result.substr(start, end - start)));
             }
         }
     }
@@ -241,11 +255,11 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
     if (!result.empty()) {
         // Extract title
         std::string title_cmd = "echo '" + result + "' | jq -r '.name' 2>/dev/null";
-        info.title = ExecuteCommand(title_cmd);
+        info.title = ValidateUtf8(ExecuteCommand(title_cmd));
         
         // Extract app_id
         std::string app_cmd = "echo '" + result + "' | jq -r '.app_id // .window_properties.class' 2>/dev/null";
-        info.application = ExecuteCommand(app_cmd);
+        info.application = ValidateUtf8(ExecuteCommand(app_cmd));
         
         // Fallback to PID if app_id is null
         if (info.application == "null" || info.application.empty()) {
@@ -253,7 +267,7 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
             std::string pid = ExecuteCommand(pid_cmd);
             if (!pid.empty() && pid != "null") {
                 std::string comm_cmd = "cat /proc/" + pid + "/comm 2>/dev/null";
-                info.application = ExecuteCommand(comm_cmd);
+                info.application = ValidateUtf8(ExecuteCommand(comm_cmd));
             }
         }
     }
@@ -304,8 +318,8 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
             std::string app_class = ExecuteCommand(class_cmd);
             
             if (!title.empty() && title != "unknown") {
-                info.title = title;
-                info.application = !app_class.empty() ? app_class : title;
+                info.title = ValidateUtf8(title);
+                info.application = ValidateUtf8(!app_class.empty() ? app_class : title);
                 return info;
             }
         }
@@ -323,8 +337,8 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
                 std::getline(iss, title);
                 if (!title.empty()) {
                     title = title.substr(1); // Remove leading space
-                    info.title = title;
-                    info.application = title; // Use title as application name
+                    info.title = ValidateUtf8(title);
+                    info.application = ValidateUtf8(title); // Use title as application name
                     return info;
                 }
             }
@@ -356,8 +370,8 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
                 }
                 
                 if (!comm.empty() && comm != "unknown") {
-                    info.application = comm;
-                    info.title = comm;
+                    info.application = ValidateUtf8(comm);
+                    info.title = ValidateUtf8(comm);
                     return info;
                 }
             }
@@ -377,10 +391,10 @@ WindowInfo WaylandWindowDetector::TryWlrootsWayland() {
         
         if (!result.empty() && !ExecuteCommand("which jq").empty()) {
             std::string title_cmd = "echo '" + result + "' | jq -r '.title' 2>/dev/null";
-            info.title = ExecuteCommand(title_cmd);
+            info.title = ValidateUtf8(ExecuteCommand(title_cmd));
             
             std::string class_cmd = "echo '" + result + "' | jq -r '.class' 2>/dev/null";
-            info.application = ExecuteCommand(class_cmd);
+            info.application = ValidateUtf8(ExecuteCommand(class_cmd));
             
             if (info.title != "null" && info.application != "null") {
                 return info;
@@ -390,8 +404,8 @@ WindowInfo WaylandWindowDetector::TryWlrootsWayland() {
     
     // Try wayinfo for river and other wlroots compositors
     if (!ExecuteCommand("which wayinfo").empty()) {
-        info.title = ExecuteCommand("wayinfo active-window-title 2>/dev/null");
-        info.application = ExecuteCommand("wayinfo active-window-app-id 2>/dev/null");
+        info.title = ValidateUtf8(ExecuteCommand("wayinfo active-window-title 2>/dev/null"));
+        info.application = ValidateUtf8(ExecuteCommand("wayinfo active-window-app-id 2>/dev/null"));
     }
     
     return info;
@@ -408,8 +422,8 @@ WindowInfo FallbackWindowDetector::GetActiveWindow() {
         std::istringstream iss(result);
         std::string pid, pcpu, comm;
         if (iss >> pid >> pcpu >> comm) {
-            info.application = comm;
-            info.title = comm; // Use process name as title fallback
+            info.application = ValidateUtf8(comm);
+            info.title = ValidateUtf8(comm); // Use process name as title fallback
             
             // Try to get more descriptive name from cmdline
             std::string cmdline_cmd = "tr '\\0' ' ' < /proc/" + pid + "/cmdline 2>/dev/null";
@@ -424,7 +438,7 @@ WindowInfo FallbackWindowDetector::GetActiveWindow() {
                         filename = filename.substr(0, space_pos);
                     }
                     if (!filename.empty()) {
-                        info.title = filename;
+                        info.title = ValidateUtf8(filename);
                     }
                 }
             }

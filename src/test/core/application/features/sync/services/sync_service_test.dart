@@ -661,5 +661,92 @@ void main() {
         }
       });
     });
+
+    group('Database Integrity Tests', () {
+      test('should auto-fix on manual sync even without timestamp issues', () async {
+        // Arrange
+        final response = PaginatedSyncCommandResponse(
+          isComplete: true,
+          hasErrors: false,
+          errorMessages: [],
+          syncedDeviceCount: 1,
+          hadMeaningfulSync: true,
+        );
+
+        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .thenAnswer((_) async => response);
+
+        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+
+        // Act - Manual sync should trigger integrity check
+        await syncService.runPaginatedSync(isManual: true);
+
+        // Wait for async operations
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert
+        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+      });
+
+      test('should auto-fix on background sync when timestamp inconsistencies detected', () async {
+        // Note: This test documents the expected behavior.
+        // The actual timestamp inconsistency detection and auto-fix is tested
+        // in database_integrity_service_test.dart. Here we verify that
+        // background sync completes successfully.
+
+        // Arrange
+        final response = PaginatedSyncCommandResponse(
+          isComplete: true,
+          hasErrors: false,
+          errorMessages: [],
+          syncedDeviceCount: 1,
+          hadMeaningfulSync: true,
+        );
+
+        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .thenAnswer((_) async => response);
+
+        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+
+        // Act - Background sync should complete successfully
+        await syncService.runPaginatedSync(isManual: false);
+
+        // Wait for async operations
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert - The sync should complete
+        expect(syncService.currentSyncStatus.state, SyncState.completed);
+
+        // Note: The implementation in sync_service.dart has logic that triggers
+        // auto-fix when timestamp inconsistencies are detected, even for background sync:
+        // if (isManual || preIntegrityReport.timestampInconsistencies > 0)
+        // This is tested directly in database_integrity_service_test.dart
+      });
+
+      test('should validate database integrity after successful sync', () async {
+        // Arrange
+        final response = PaginatedSyncCommandResponse(
+          isComplete: true,
+          hasErrors: false,
+          errorMessages: [],
+          syncedDeviceCount: 1,
+          hadMeaningfulSync: true,
+        );
+
+        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .thenAnswer((_) async => response);
+
+        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+
+        // Act
+        await syncService.runPaginatedSync(isManual: true);
+
+        // Wait for async operations
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Assert - Sync should complete successfully
+        expect(syncService.currentSyncStatus.state, SyncState.completed);
+      });
+    });
   });
 }

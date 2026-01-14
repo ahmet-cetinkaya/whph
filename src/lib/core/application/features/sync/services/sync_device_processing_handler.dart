@@ -48,7 +48,7 @@ class SyncDeviceProcessingHandler {
     await onYieldToUI();
 
     // First check if the exact same device record exists
-    SyncDevice? existingDeviceById = await repository.getById(syncDevice.id);
+    SyncDevice? existingDeviceById = await repository.getById(syncDevice.id, includeDeleted: true);
 
     // Check for existing device pair relationship
     final allDevices = await repository.getAll();
@@ -81,11 +81,15 @@ class SyncDeviceProcessingHandler {
 
   Future<int> _handleUpdate(SyncDevice syncDevice, IRepository<SyncDevice, String> repository) async {
     await onYieldToUI();
-    SyncDevice? existingDevice = await repository.getById(syncDevice.id);
+    // CRITICAL FIX: Must include soft-deleted items in lookup.
+    // Otherwise, if the item exists but is soft-deleted, getById returns null,
+    // leading to an attempt to .add() (INSERT) which violates the UNIQUE ID constraint.
+    SyncDevice? existingDevice = await repository.getById(syncDevice.id, includeDeleted: true);
     await onYieldToUI();
 
     if (existingDevice != null) {
       Logger.debug('Updating SyncDevice: ${syncDevice.id}');
+      // If it was soft-deleted, this update will revive it if deletedDate is null in syncDevice
       await repository.update(syncDevice);
       await onYieldToUI();
       await _verifyUpdate(repository, syncDevice);
@@ -104,7 +108,8 @@ class SyncDeviceProcessingHandler {
 
   Future<int> _handleDelete(SyncDevice syncDevice, IRepository<SyncDevice, String> repository) async {
     await onYieldToUI();
-    SyncDevice? existingDevice = await repository.getById(syncDevice.id);
+    // Also include soft-deleted here for consistency
+    SyncDevice? existingDevice = await repository.getById(syncDevice.id, includeDeleted: true);
     await onYieldToUI();
 
     if (existingDevice != null) {
@@ -170,7 +175,8 @@ class SyncDeviceProcessingHandler {
   }
 
   Future<void> _verifyUpdate(IRepository<SyncDevice, String> repository, SyncDevice syncDevice) async {
-    final verificationDevice = await repository.getById(syncDevice.id);
+    // Also check soft-deleted during verification to be safe
+    final verificationDevice = await repository.getById(syncDevice.id, includeDeleted: true);
     if (verificationDevice != null) {
       Logger.debug(
           'Verification: SyncDevice ${syncDevice.id} re-read from DB with lastSyncDate=${verificationDevice.lastSyncDate}');
@@ -186,7 +192,8 @@ class SyncDeviceProcessingHandler {
   }
 
   Future<void> _verifyCreate(IRepository<SyncDevice, String> repository, SyncDevice syncDevice) async {
-    final verificationDevice = await repository.getById(syncDevice.id);
+    // Also check soft-deleted here
+    final verificationDevice = await repository.getById(syncDevice.id, includeDeleted: true);
     if (verificationDevice != null) {
       Logger.debug(
           'Verification: Created SyncDevice ${syncDevice.id} re-read from DB with lastSyncDate=${verificationDevice.lastSyncDate}');

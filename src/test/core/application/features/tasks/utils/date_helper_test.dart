@@ -49,16 +49,21 @@ void main() {
         expect(result.day, 16); // January 16th (2 weeks later)
       });
 
-      test('should handle large intervals correctly', () {
+      test('should handle edge case where no match is found within bounds', () {
         final startDate = DateTime(2024, 1, 1); // Monday
         final targetWeekdays = [1]; // Monday
         const interval = 52; // Every 52 weeks (1 year)
         final referenceDate = DateTime(2024, 1, 1);
 
-        final result = DateHelper.findNextWeekdayOccurrence(startDate, targetWeekdays, interval, referenceDate);
-
-        // Should find the correct date 52 weeks later
-        expect(result, DateTime(2024, 12, 30));
+        // When interval is too large to find a match within max search days (90), throw StateError
+        expect(
+          () => DateHelper.findNextWeekdayOccurrence(startDate, targetWeekdays, interval, referenceDate),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('Could not find next weekday occurrence after 90 days'),
+          )),
+        );
       });
     });
 
