@@ -55,10 +55,15 @@ void main() {
         const interval = 52; // Every 52 weeks (1 year)
         final referenceDate = DateTime(2024, 1, 1);
 
-        final result = DateHelper.findNextWeekdayOccurrence(startDate, targetWeekdays, interval, referenceDate);
-
-        // Should fallback to simple interval calculation
-        expect(result, DateTime(2024, 1, 8)); // Monday + 7 days * 1 (since interval is too large to find match)
+        // When interval is too large to find a match within max search days (90), throw StateError
+        expect(
+          () => DateHelper.findNextWeekdayOccurrence(startDate, targetWeekdays, interval, referenceDate),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('Could not find next weekday occurrence after 90 days'),
+          )),
+        );
       });
     });
 
