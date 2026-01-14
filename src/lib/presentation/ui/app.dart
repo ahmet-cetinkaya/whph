@@ -63,6 +63,7 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     _lifecycleService.dispose();
+    ContextManager.clearContext();
     super.dispose();
   }
 
