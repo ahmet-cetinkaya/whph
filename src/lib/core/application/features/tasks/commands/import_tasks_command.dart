@@ -151,16 +151,21 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
 
   SaveTaskCommand? _mapTodoistRow(List<dynamic> row, Map<String, int> idx, String? parentId) {
     final typeIdx = idx['TYPE']!;
-    if (typeIdx >= 0 && row[typeIdx].toString().toLowerCase() != 'task') return null;
+    if (typeIdx >= 0 && typeIdx < row.length && row[typeIdx].toString().toLowerCase() != 'task') return null;
 
-    final title = row[idx['CONTENT']!].toString();
-    final description = idx['DESCRIPTION']! >= 0 ? row[idx['DESCRIPTION']!]?.toString() : null;
-    final priorityValue = int.tryParse(row[idx['PRIORITY']!]?.toString() ?? '') ?? 4;
+    final contentIdx = idx['CONTENT']!;
+    if (contentIdx < 0 || contentIdx >= row.length) return null;
+    final title = row[contentIdx].toString();
+    if (title.isEmpty) return null;
 
-    // Todoist 1 (Highest) -> WHPH urgentImportant (3)
-    // Todoist 2 -> WHPH urgentNotImportant (1)
-    // Todoist 3 -> WHPH notUrgentImportant (2)
-    // Todoist 4 -> WHPH notUrgentNotImportant (0)
+    final descIdx = idx['DESCRIPTION']!;
+    final description = (descIdx >= 0 && descIdx < row.length) ? row[descIdx]?.toString() : null;
+
+    final priorityIdx = idx['PRIORITY']!;
+    final priorityValue = (priorityIdx >= 0 && priorityIdx < row.length)
+        ? (int.tryParse(row[priorityIdx]?.toString() ?? '') ?? 4)
+        : 4;
+
     final priority = _mapTodoistPriority(priorityValue);
 
     return SaveTaskCommand(
@@ -168,7 +173,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       description: description,
       priority: priority,
       parentTaskId: parentId,
-      // Date parsing would go here if needed
     );
   }
 
@@ -187,13 +191,49 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
   }
 
   SaveTaskCommand? _mapGenericRow(List<dynamic> row, Map<String, int> idx) {
-    final title = row[idx['CONTENT']!].toString();
+    final contentIdx = idx['CONTENT']!;
+    if (contentIdx < 0 || contentIdx >= row.length) return null;
+    final title = row[contentIdx].toString();
     if (title.isEmpty) return null;
+
+    EisenhowerPriority? priority;
+    final priorityIdx = idx['PRIORITY']!;
+    if (priorityIdx >= 0 && priorityIdx < row.length) {
+      final pVal = int.tryParse(row[priorityIdx].toString());
+      if (pVal != null && pVal >= 0 && pVal <= 3) {
+        priority = EisenhowerPriority.values[pVal];
+      }
+    }
+
+    DateTime? plannedDate;
+    final plannedIdx = idx['PLANNED_DATE']!;
+    if (plannedIdx >= 0 && plannedIdx < row.length) {
+      plannedDate = _parseDate(row[plannedIdx].toString());
+    }
+
+    DateTime? deadlineDate;
+    final deadlineIdx = idx['DEADLINE_DATE']!;
+    if (deadlineIdx >= 0 && deadlineIdx < row.length) {
+      deadlineDate = _parseDate(row[deadlineIdx].toString());
+    }
 
     return SaveTaskCommand(
       title: title,
-      description: idx['DESCRIPTION']! < row.length ? row[idx['DESCRIPTION']!]?.toString() : null,
-      // Add other fields mapping for generic
+      description: (idx['DESCRIPTION']! >= 0 && idx['DESCRIPTION']! < row.length)
+          ? row[idx['DESCRIPTION']!]?.toString()
+          : null,
+      priority: priority,
+      plannedDate: plannedDate,
+      deadlineDate: deadlineDate,
     );
+  }
+
+  DateTime? _parseDate(String dateStr) {
+    if (dateStr.isEmpty) return null;
+    try {
+      return DateTime.parse(dateStr);
+    } catch (_) {
+      return null;
+    }
   }
 }

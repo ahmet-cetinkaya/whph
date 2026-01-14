@@ -224,6 +224,8 @@ tasks:
     partial_success: "Imported {success} tasks. {failure} tasks failed."
     error: "Failed to import tasks: {error}"
     no_tasks: "No tasks found in the file."
+    generic_info_title: "Generic CSV Format"
+    generic_info_description: "To import tasks correctly, your CSV should follow this format:\n\n- **Column 1**: Title (Required)\n- **Column 2**: Description (Optional)\n- **Column 3**: Priority (0-3, Optional)\n- **Column 4**: Planned Date (YYYY-MM-DD, Optional)\n- **Column 5**: Deadline Date (YYYY-MM-DD, Optional)\n\nNote: The first row is treated as a header and will be skipped."
   page:
     completed_tasks_title: Completed tasks
     title: Tasks

@@ -276,6 +276,23 @@ tasks:
     partial_success: "{success}개의 작업을 가져왔습니다. {failure}개의 작업이 실패했습니다."
     error: "작업 가져오기 실패: {error}"
     no_tasks: 파일에서 작업을 찾을 수 없습니다.
+    generic_info_title: 일반 CSV 형식
+    generic_info_description:
+      "작업을 올바르게 가져오려면 CSV가 다음 형식을 따라야 합니다:
+
+
+      - **열 1**: 제목(필수)
+
+      - **열 2**: 설명(선택 사항)
+
+      - **열 3**: 우선순위(0-3, 선택 사항)
+
+      - **열 4**: 계획된 날짜(YYYY-MM-DD, 선택 사항)
+
+      - **열 5**: 마감 날짜(YYYY-MM-DD, 선택 사항)
+
+
+      참고: 첫 번째 행은 헤더로 처리되며 건너뜁니다."
   page:
     completed_tasks_title: 완료된 작업
     title: 작업

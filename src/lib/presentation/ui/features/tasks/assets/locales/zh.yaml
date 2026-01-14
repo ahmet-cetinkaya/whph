@@ -275,6 +275,22 @@ tasks:
     partial_success: 导入了 {success} 个任务。{failure} 个任务失败。
     error: 导入任务失败：{error}
     no_tasks: 文件中未找到任务。
+    generic_info_title: 通用 CSV 格式
+    generic_info_description: "要正确导入任务，您的 CSV 应遵循以下格式：
+
+
+      - **第 1 列**：标题（必填）
+
+      - **第 2 列**：描述（可选）
+
+      - **第 3 列**：优先级（0-3，可选）
+
+      - **第 4 列**：计划日期（YYYY-MM-DD，可选）
+
+      - **第 5 列**：截止日期（YYYY-MM-DD，可选）
+
+
+      注意：第一行将被视为标题并跳过。"
   page:
     completed_tasks_title: 已完成任务
     title: 任务

@@ -276,6 +276,23 @@ tasks:
     partial_success: "{success} tâches importées. {failure} tâches ont échoué."
     error: "Échec de l'importation des tâches : {error}"
     no_tasks: Aucune tâche trouvée dans le fichier.
+    generic_info_title: Format CSV générique
+    generic_info_description:
+      "Pour importer correctement les tâches, votre CSV doit suivre ce format :
+
+
+      - **Colonne 1** : Titre (Obligatoire)
+
+      - **Colonne 2** : Description (Facultatif)
+
+      - **Colonne 3** : Priorité (0-3, Facultatif)
+
+      - **Colonne 4** : Date planifiée (AAAA-MM-JJ, Facultatif)
+
+      - **Colonne 5** : Date limite (AAAA-MM-JJ, Facultatif)
+
+
+      Remarque : La première ligne est traitée comme un en-tête et sera ignorée."
   page:
     completed_tasks_title: Tâches terminées
     title: Tâches

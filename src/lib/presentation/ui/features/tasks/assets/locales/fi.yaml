@@ -172,6 +172,23 @@ tasks:
     partial_success: Tuotiin {success} tehtävää. {failure} tehtävää epäonnistui.
     error: "Tehtävien tuonti epäonnistui: {error}"
     no_tasks: Tiedostosta ei löytynyt tehtäviä.
+    generic_info_title: Yleinen CSV-muoto
+    generic_info_description:
+      "Tehtävien oikeaa tuontia varten CSV-tiedostosi on noudatettava tätä muotoa:
+
+
+      - **Sarake 1**: Otsikko (Vaadittu)
+
+      - **Sarake 2**: Kuvaus (Valinnainen)
+
+      - **Sarake 3**: Prioriteetti (0-3, Valinnainen)
+
+      - **Sarake 4**: Suunniteltu päivämäärä (VVVV-KK-PP, Valinnainen)
+
+      - **Sarake 5**: Määräpäivä (VVVV-KK-PP, Valinnainen)
+
+
+      Huom: Ensimmäinen rivi käsitellään otsikkona ja ohitetaan."
   page:
     completed_tasks_title: Valmistuneet tehtävät
     title: Tehtävät

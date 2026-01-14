@@ -172,6 +172,23 @@ tasks:
     partial_success: "{success} sarcini importate. {failure} sarcini au eșuat."
     error: "Importul sarcinilor a eșuat: {error}"
     no_tasks: Nu s-au găsit sarcini în fișier.
+    generic_info_title: Format CSV generic
+    generic_info_description:
+      "Pentru a importa sarcini corect, CSV-ul trebuie să urmeze acest format:
+
+
+      - **Coloana 1**: Titlu (Obligatoriu)
+
+      - **Coloana 2**: Descriere (Opțional)
+
+      - **Coloana 3**: Prioritate (0-3, Opțional)
+
+      - **Coloana 4**: Data planificată (YYYY-MM-DD, Opțional)
+
+      - **Coloana 5**: Data limită (YYYY-MM-DD, Opțional)
+
+
+      Notă: Primul rând este tratat ca antet și va fi sărit."
   page:
     completed_tasks_title: Sarcini finalizate
     title: Sarcini

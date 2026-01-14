@@ -276,6 +276,23 @@ tasks:
     partial_success: Importerede {success} opgaver. {failure} opgaver fejlede.
     error: "Kunne ikke importere opgaver: {error}"
     no_tasks: Ingen opgaver fundet i filen.
+    generic_info_title: Generisk CSV-format
+    generic_info_description:
+      "For at importere opgaver korrekt skal din CSV følge dette format:
+
+
+      - **Kolonne 1**: Titlen (Påkrævet)
+
+      - **Kolonne 2**: Beskrivelse (Valgfri)
+
+      - **Kolonne 3**: Prioritet (0-3, Valgfri)
+
+      - **Kolonne 4**: Planlagt dato (YYYY-MM-DD, Valgfri)
+
+      - **Kolonne 5**: Frist dato (YYYY-MM-DD, Valgfri)
+
+
+      Bemærk: Første række betragtes som en overskrift og vil blive sprunget over."
   page:
     completed_tasks_title: Færdige opgaver
     title: Opgaver

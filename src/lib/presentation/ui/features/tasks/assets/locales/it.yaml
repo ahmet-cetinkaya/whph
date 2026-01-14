@@ -276,6 +276,23 @@ tasks:
     partial_success: "{success} attività importate. {failure} attività non riuscite."
     error: "Impossibile importare le attività: {error}"
     no_tasks: Nessuna attività trovata nel file.
+    generic_info_title: Formato CSV generico
+    generic_info_description:
+      "Per importare correttamente le attività, il tuo CSV deve seguire questo formato:
+
+
+      - **Colonna 1**: Titolo (Obbligatorio)
+
+      - **Colonna 2**: Descrizione (Facoltativo)
+
+      - **Colonna 3**: Priorità (0-3, Facoltativo)
+
+      - **Colonna 4**: Data pianificata (YYYY-MM-DD, Facoltativo)
+
+      - **Colonna 5**: Data di scadenza (YYYY-MM-DD, Facoltativo)
+
+
+      Nota: La prima riga viene trattata come intestazione e verrà saltata."
   page:
     completed_tasks_title: Attività completate
     title: Attività

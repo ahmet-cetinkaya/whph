@@ -299,4 +299,6 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String importPartialSuccess = 'tasks.import.partial_success';
   static const String importError = 'tasks.import.error';
   static const String importNoTasks = 'tasks.import.no_tasks';
+  static const String importGenericInfoTitle = 'tasks.import.generic_info_title';
+  static const String importGenericInfoDescription = 'tasks.import.generic_info_description';
 }

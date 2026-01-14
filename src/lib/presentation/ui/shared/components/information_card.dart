@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:acore/acore.dart' show ColorContrastHelper;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
@@ -7,6 +8,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 class InformationCard extends StatelessWidget {
   final IconData icon;
   final String text;
+  final bool isMarkdown;
   final Color? iconColor;
   final Color? textColor;
   final EdgeInsetsGeometry? padding;
@@ -19,6 +21,7 @@ class InformationCard extends StatelessWidget {
     super.key,
     required this.icon,
     required this.text,
+    this.isMarkdown = false,
     this.iconColor,
     this.textColor,
     this.padding,
@@ -34,12 +37,14 @@ class InformationCard extends StatelessWidget {
     required BuildContext context,
     required IconData icon,
     required String text,
+    bool isMarkdown = false,
     TextStyle? textStyle,
   }) {
     final theme = Theme.of(context);
     return InformationCard(
       icon: icon,
       text: text,
+      isMarkdown: isMarkdown,
       backgroundColor: theme.colorScheme.surfaceContainerHighest,
       border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       iconColor: ColorContrastHelper.getContrastingTextColor(theme.colorScheme.surfaceContainerHighest),
@@ -50,35 +55,47 @@ class InformationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final effectiveTextColor = textColor ??
+        ColorContrastHelper.getContrastingTextColor(
+          backgroundColor ?? theme.colorScheme.surfaceContainerHighest,
+        );
+
     return Container(
       padding: padding ?? EdgeInsets.all(AppTheme.sizeSmall),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: borderRadius ?? BorderRadius.circular(12),
-        border: border ?? Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2)),
+        border: border ?? Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: iconColor ??
-                ColorContrastHelper.getContrastingTextColor(
-                  backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
-                ),
+          Padding(
+            padding: const EdgeInsets.only(top: 2.0),
+            child: Icon(
+              icon,
+              size: 20,
+              color: iconColor ?? effectiveTextColor,
+            ),
           ),
           SizedBox(width: AppTheme.sizeSmall),
           Expanded(
-            child: Text(
-              text,
-              style: textStyle ??
-                  Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: textColor ??
-                            ColorContrastHelper.getContrastingTextColor(
-                              backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHighest,
-                            ),
-                      ),
-            ),
+            child: isMarkdown
+                ? MarkdownBody(
+                    data: text,
+                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                      p: textStyle ?? theme.textTheme.bodySmall?.copyWith(color: effectiveTextColor),
+                      listBullet: theme.textTheme.bodySmall?.copyWith(color: effectiveTextColor),
+                    ),
+                  )
+                : Text(
+                    text,
+                    style: textStyle ??
+                        theme.textTheme.bodySmall?.copyWith(
+                          color: effectiveTextColor,
+                        ),
+                  ),
           ),
         ],
       ),

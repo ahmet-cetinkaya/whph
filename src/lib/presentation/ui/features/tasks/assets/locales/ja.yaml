@@ -276,6 +276,23 @@ tasks:
     partial_success: "{success}個のタスクをインポートしました。{failure}個のタスクが失敗しました。"
     error: "タスクのインポートに失敗しました: {error}"
     no_tasks: ファイルにタスクが見つかりませんでした。
+    generic_info_title: 汎用CSV形式
+    generic_info_description:
+      "タスクを正しくインポートするには、CSVが次の形式に従っている必要があります：
+
+
+      - **列1**: タイトル（必須）
+
+      - **列2**: 説明（オプション）
+
+      - **列3**: 優先度（0-3、オプション）
+
+      - **列4**: 計画日（YYYY-MM-DD、オプション）
+
+      - **列5**: 期限日（YYYY-MM-DD、オプション）
+
+
+      注：最初の行はヘッダーとして扱われ、スキップされます。"
   page:
     completed_tasks_title: 完了したタスク
     title: タスク

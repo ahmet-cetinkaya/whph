@@ -172,6 +172,23 @@ tasks:
     partial_success: Uvoženih {success} nalog. {failure} nalog ni uspelo.
     error: "Uvoz nalog je spodletel: {error}"
     no_tasks: V datoteki ni bilo najdenih nalog.
+    generic_info_title: Splošna oblika CSV
+    generic_info_description:
+      "Za pravilen uvoz nalogov mora vaš CSV slediti tej obliki:
+
+
+      - **Stolpec 1**: Naslov (Obvezno)
+
+      - **Stolpec 2**: Opis (Izbirno)
+
+      - **Stolpec 3**: Prednost (0-3, Izbirno)
+
+      - **Stolpec 4**: Načrtovan datum (YYYY-MM-DD, Izbirno)
+
+      - **Stolpec 5**: Rok (YYYY-MM-DD, Izbirno)
+
+
+      Opomba: Prva vrstica se obravnava kot naslov in bo preskočena."
   page:
     completed_tasks_title: Zaključene naloge
     title: Naloge

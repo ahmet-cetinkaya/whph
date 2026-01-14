@@ -171,6 +171,23 @@ tasks:
     partial_success: "{success} uppgifter importerade. {failure} uppgifter misslyckades."
     error: "Kunde inte importera uppgifter: {error}"
     no_tasks: Inga uppgifter hittades i filen.
+    generic_info_title: Allmänt CSV-format
+    generic_info_description:
+      "För att importera uppgifter korrekt måste din CSV följa detta format:
+
+
+      - **Kolumn 1**: Titel (Obligatoriskt)
+
+      - **Kolumn 2**: Beskrivning (Valfritt)
+
+      - **Kolumn 3**: Prioritet (0-3, Valfritt)
+
+      - **Kolumn 4**: Planerat datum (YYYY-MM-DD, Valfritt)
+
+      - **Kolumn 5**: Förfallodatum (YYYY-MM-DD, Valfritt)
+
+
+      Obs: Första raden behandlas som en rubrik och kommer att hoppas över."
   page:
     completed_tasks_title: Slutförda uppgifter
     title: Uppgifter

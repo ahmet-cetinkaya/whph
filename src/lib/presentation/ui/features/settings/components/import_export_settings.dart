@@ -235,6 +235,15 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
               if (value != null) setState(() => _taskImportType = value);
             },
           ),
+          if (_taskImportType == TaskImportType.generic) ...[
+            const SizedBox(height: AppTheme.sizeLarge),
+            InformationCard.themed(
+              context: context,
+              icon: Icons.info_outline,
+              text: _translationService.translate(TaskTranslationKeys.importGenericInfoDescription),
+              isMarkdown: true,
+            ),
+          ],
           const SizedBox(height: AppTheme.sizeLarge),
           _ImportExportActionTile(
             icon: Icons.file_present,

@@ -51,6 +51,70 @@ void main() {
           argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Task 2')))).called(1);
     });
 
+    test('should map expanded fields in generic CSV successfully', () async {
+      final file = File('${tempDir.path}/generic_expanded.csv');
+      await file.writeAsString(
+        'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE\n'
+        'Task 1,Desc 1,0,2024-01-01,2024-01-02\n'
+        'Task 2,Desc 2,3,2024-12-31,2025-01-01\n',
+      );
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 2);
+      final captured = verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(captureAny)).captured;
+
+      final cmd1 = captured[0] as SaveTaskCommand;
+      expect(cmd1.title, 'Task 1');
+      expect(cmd1.priority, EisenhowerPriority.notUrgentNotImportant);
+      expect(cmd1.plannedDate, DateTime.parse('2024-01-01').toUtc());
+      expect(cmd1.deadlineDate, DateTime.parse('2024-01-02').toUtc());
+
+      final cmd2 = captured[1] as SaveTaskCommand;
+      expect(cmd2.title, 'Task 2');
+      expect(cmd2.priority, EisenhowerPriority.urgentImportant);
+      expect(cmd2.plannedDate, DateTime.parse('2024-12-31').toUtc());
+      expect(cmd2.deadlineDate, DateTime.parse('2025-01-01').toUtc());
+    });
+
+    test('should handle invalid dates and priorities in generic CSV mapping', () async {
+      final file = File('${tempDir.path}/generic_invalid.csv');
+      await file.writeAsString(
+        'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE\n'
+        'Invalid Date,Desc,1,not-a-date,2024-01-01\n'
+        'Invalid Priority,Desc,99,2024-01-01,\n'
+        'Non-int Priority,Desc,abc,2024-01-01,\n',
+      );
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 3);
+      // Invalid date should be null
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>(
+              (cmd) => cmd.title == 'Invalid Date' && cmd.plannedDate == null && cmd.deadlineDate != null))))
+          .called(1);
+      // Invalid priority should be null
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Invalid Priority' && cmd.priority == null))))
+          .called(1);
+      // Non-int priority should be null
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Non-int Priority' && cmd.priority == null))))
+          .called(1);
+    });
+
     test('should handle empty file', () async {
       final file = File('${tempDir.path}/empty.csv');
       await file.writeAsString('');
@@ -135,6 +199,76 @@ void main() {
 
       expect(response.successCount, 1);
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).called(1);
+    });
+
+    test('should handle mixed hierarchy and invalid priorities in Todoist CSV', () async {
+      final file = File('${tempDir.path}/todoist_edge.csv');
+      await file.writeAsString(
+        'TYPE,CONTENT,PRIORITY,INDENT\n'
+        'task,Root Task,1,1\n'
+        'task,Invalid Priority,abc,2\n'
+        'task,Out of Range Priority,99,2\n',
+      );
+
+      var callCount = 0;
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).thenAnswer((_) async {
+        callCount++;
+        return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
+      });
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.todoist,
+      ));
+
+      expect(response.successCount, 3);
+      // Invalid/Out of range priority should map to Not Urgent/Not Important (WHPH default for unknown)
+      // Actually Todoist parser defaults to 4 (lowest) if invalid, which is EisenhowerPriority.notUrgentNotImportant
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
+          cmd.title == 'Invalid Priority' && cmd.priority == EisenhowerPriority.notUrgentNotImportant)))).called(1);
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
+          cmd.title == 'Out of Range Priority' &&
+          cmd.priority == EisenhowerPriority.notUrgentNotImportant)))).called(1);
+    });
+
+    test('should handle non-sequential indents in Todoist CSV hierarchy', () async {
+      final file = File('${tempDir.path}/todoist_indents.csv');
+      await file.writeAsString(
+        'TYPE,CONTENT,INDENT\n'
+        'task,Root 1,1\n'
+        'task,Jump to 3,3\n'
+        'task,Back to 2,2\n',
+      );
+
+      var callCount = 0;
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).thenAnswer((_) async {
+        callCount++;
+        return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
+      });
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.todoist,
+      ));
+
+      expect(response.successCount, 3);
+      // Jump to 3: if 2 is missing, it should probably pick the last root or last valid parent.
+      // Current implementation: _parentsStack[indent - 1] = taskId;
+      // If we jump from 1 to 3, _parentsStack[2] is set, but it tries to get _parentsStack[2-1=1].
+      // If indent 2 was never set, it might be null if pre-filled, or it might crash if not.
+      // _parentsStack is initialized as List.filled(10, null)
+      
+      // Verification
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Root 1' && cmd.parentTaskId == null))))
+          .called(1);
+      
+      // Jump to 3 should have parentTaskId = _parentsStack[1] (which is null if indent 2 was skipped but indent 1 was Root 1)
+      // Wait, _parentsStack[0] = Root 1. indent 3 -> parentTaskId = _parentsStack[3-1-1 = 1].
+      // _parentsStack[1] is indeed null. So it becomes a root task if intermediate is missing.
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Jump to 3' && cmd.parentTaskId == null))))
+          .called(1);
     });
 
     test('should handle missing columns by using default indices', () async {

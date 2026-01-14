@@ -276,6 +276,23 @@ tasks:
     partial_success: Importováno {success} úkolů. {failure} úkolů selhalo.
     error: "Import úkolů selhal: {error}"
     no_tasks: V souboru nebyly nalezeny žádné úkoly.
+    generic_info_title: Obecný formát CSV
+    generic_info_description:
+      "Pro správný import úkolů musí váš CSV soubor odpovídat tomuto formátu:
+
+
+      - **Sloupec 1**: Název (Povinné)
+
+      - **Sloupec 2**: Popis (Volitelné)
+
+      - **Sloupec 3**: Priorita (0-3, Volitelné)
+
+      - **Sloupec 4**: Plánované datum (YYYY-MM-DD, Volitelné)
+
+      - **Sloupec 5**: Datum termínu (YYYY-MM-DD, Volitelné)
+
+
+      Poznámka: První řádek je považován za záhlaví a bude přeskočen."
   page:
     completed_tasks_title: Dokončené úkoly
     title: Úkoly

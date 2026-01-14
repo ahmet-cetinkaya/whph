@@ -275,6 +275,23 @@ tasks:
     partial_success: "{success} Aufgaben importiert. {failure} Aufgaben fehlgeschlagen."
     error: "Fehler beim Importieren von Aufgaben: {error}"
     no_tasks: Keine Aufgaben in der Datei gefunden.
+    generic_info_title: Allgemeines CSV-Format
+    generic_info_description:
+      "Für den korrekten Import von Aufgaben muss Ihre CSV diesem Format folgen:
+
+
+      - **Spalte 1**: Titel (Erforderlich)
+
+      - **Spalte 2**: Beschreibung (Optional)
+
+      - **Spalte 3**: Priorität (0-3, Optional)
+
+      - **Spalte 4**: Geplantes Datum (YYYY-MM-DD, Optional)
+
+      - **Spalte 5**: Fälligkeitsdatum (YYYY-MM-DD, Optional)
+
+
+      Hinweis: Die erste Zeile wird als Kopfzeile behandelt und übersprungen."
   page:
     completed_tasks_title: Erledigte Aufgaben
     title: Aufgaben

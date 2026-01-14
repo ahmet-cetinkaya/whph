@@ -172,6 +172,23 @@ tasks:
     partial_success: "{success} oppgaver importert. {failure} oppgaver feilet."
     error: "Kunne ikke importere oppgaver: {error}"
     no_tasks: Ingen oppgaver funnet i filen.
+    generic_info_title: Generisk CSV-format
+    generic_info_description:
+      "For å importere oppgaver riktig må CSV-en din følge dette formatet:
+
+
+      - **Kolonne 1**: Tittel (Påkrevd)
+
+      - **Kolonne 2**: Beskrivelse (Valgfritt)
+
+      - **Kolonne 3**: Prioritet (0-3, Valgfritt)
+
+      - **Kolonne 4**: Planlagt dato (YYYY-MM-DD, Valgfritt)
+
+      - **Kolonne 5**: Fristdato (YYYY-MM-DD, Valgfritt)
+
+
+      Merk: Første rad behandles som en overskrift og vil bli hoppet over."
   page:
     completed_tasks_title: Fullførte oppgaver
     title: Oppgaver

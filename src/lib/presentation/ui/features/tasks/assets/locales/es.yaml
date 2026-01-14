@@ -276,6 +276,23 @@ tasks:
     partial_success: Se importaron {success} tareas. {failure} tareas fallaron.
     error: "Error al importar tareas: {error}"
     no_tasks: No se encontraron tareas en el archivo.
+    generic_info_title: Formato CSV genérico
+    generic_info_description:
+      "Para importar tareas correctamente, su CSV debe seguir este formato:
+
+
+      - **Columna 1**: Título (Requerido)
+
+      - **Columna 2**: Descripción (Opcional)
+
+      - **Columna 3**: Prioridad (0-3, Opcional)
+
+      - **Columna 4**: Fecha planificada (YYYY-MM-DD, Opcional)
+
+      - **Columna 5**: Fecha límite (YYYY-MM-DD, Opcional)
+
+
+      Nota: La primera fila se trata como encabezado y se omitirá."
   page:
     completed_tasks_title: Tareas completadas
     title: Tareas

@@ -276,6 +276,23 @@ tasks:
     partial_success: Zaimportowano {success} zadań. {failure} zadań nie powiodło się.
     error: "Nie udało się zaimportować zadań: {error}"
     no_tasks: Nie znaleziono zadań w pliku.
+    generic_info_title: Ogólny format CSV
+    generic_info_description:
+      "Aby poprawnie importować zadania, plik CSV musi zgodnie z tym formatem:
+
+
+      - **Kolumna 1**: Tytuł (Wymagane)
+
+      - **Kolumna 2**: Opis (Opcjonalne)
+
+      - **Kolumna 3**: Priorytet (0-3, Opcjonalne)
+
+      - **Kolumna 4**: Planowana data (YYYY-MM-DD, Opcjonalne)
+
+      - **Kolumna 5**: Termin końcowy (YYYY-MM-DD, Opcjonalne)
+
+
+      Uwaga: Pierwszy wiersz jest traktowany jako nagłówek i zostanie pominięty."
   page:
     completed_tasks_title: Ukończone zadania
     title: Zadania

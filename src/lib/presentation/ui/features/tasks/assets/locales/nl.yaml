@@ -171,6 +171,23 @@ tasks:
     partial_success: "{success} taken geïmporteerd. {failure} taken mislukt."
     error: "Kon taken niet importeren: {error}"
     no_tasks: Geen taken gevonden in het bestand.
+    generic_info_title: Algemeen CSV-formaat
+    generic_info_description:
+      "Om taken correct te importeren, moet uw CSV dit formaat volgen:
+
+
+      - **Kolom 1**: Titel (Verplicht)
+
+      - **Kolom 2**: Beschrijving (Optioneel)
+
+      - **Kolom 3**: Prioriteit (0-3, Optioneel)
+
+      - **Kolom 4**: Geplande datum (YYYY-MM-DD, Optioneel)
+
+      - **Kolom 5**: Uiterste datum (YYYY-MM-DD, Optioneel)
+
+
+      Opmerking: De eerste rij wordt behandeld als koptekst en wordt overgeslagen."
   page:
     completed_tasks_title: Voltooide taken
     title: Taken
