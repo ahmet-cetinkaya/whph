@@ -86,8 +86,8 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     // Skip header row
     final dataRows = rows.skip(1);
 
-    for (var i = 0; i < dataRows.length; i++) {
-      final row = dataRows.elementAt(i);
+    var i = 0;
+    for (final row in dataRows) {
       try {
         final indent = _getIndent(row, colIndices['INDENT'], request.importType);
         final parentId = indent > 1 ? parentIdsByIndent[indent - 1] : null;
@@ -103,6 +103,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
         errors.add('Row ${i + 2}: $e');
         Logger.error('Failed to import task at row ${i + 2}: $e');
       }
+      i++;
     }
 
     return ImportTasksCommandResponse(
@@ -124,12 +125,13 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       };
     }
     // Generic WHPH format: TITLE, DESCRIPTION, PRIORITY, PLANNED_DATE, DEADLINE_DATE
+    // Use header-based lookup to support flexible column order
     return {
-      'CONTENT': 0,
-      'DESCRIPTION': 1,
-      'PRIORITY': 2,
-      'PLANNED_DATE': 3,
-      'DEADLINE_DATE': 4,
+      'CONTENT': header.indexOf('TITLE'),
+      'DESCRIPTION': header.indexOf('DESCRIPTION'),
+      'PRIORITY': header.indexOf('PRIORITY'),
+      'PLANNED_DATE': header.indexOf('PLANNED_DATE'),
+      'DEADLINE_DATE': header.indexOf('DEADLINE_DATE'),
     };
   }
 
@@ -150,19 +152,30 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
   }
 
   SaveTaskCommand? _mapTodoistRow(List<dynamic> row, Map<String, int> idx, String? parentId) {
-    final typeIdx = idx['TYPE']!;
-    if (typeIdx >= 0 && typeIdx < row.length && row[typeIdx].toString().toLowerCase() != 'task') return null;
+    // TYPE column: if missing, assume all rows are tasks (don't filter)
+    final typeIdx = idx['TYPE'];
+    if (typeIdx != null && typeIdx >= 0 && typeIdx < row.length) {
+      if (row[typeIdx].toString().toLowerCase() != 'task') return null;
+    }
 
-    final contentIdx = idx['CONTENT']!;
-    if (contentIdx < 0 || contentIdx >= row.length) return null;
+    // CONTENT column is required - throw if missing from header
+    final contentIdx = idx['CONTENT'];
+    if (contentIdx == null || contentIdx < 0) {
+      throw Exception("Required column 'CONTENT' is missing in CSV header.");
+    }
+    if (contentIdx >= row.length) return null;
     final title = row[contentIdx].toString();
     if (title.isEmpty) return null;
 
-    final descIdx = idx['DESCRIPTION']!;
-    final description = (descIdx >= 0 && descIdx < row.length) ? row[descIdx]?.toString() : null;
+    // DESCRIPTION is optional
+    final descIdx = idx['DESCRIPTION'];
+    final description = (descIdx != null && descIdx >= 0 && descIdx < row.length)
+        ? row[descIdx]?.toString()
+        : null;
 
-    final priorityIdx = idx['PRIORITY']!;
-    final priorityValue = (priorityIdx >= 0 && priorityIdx < row.length)
+    // PRIORITY: default to 4 (lowest) if column missing
+    final priorityIdx = idx['PRIORITY'];
+    final priorityValue = (priorityIdx != null && priorityIdx >= 0 && priorityIdx < row.length)
         ? (int.tryParse(row[priorityIdx]?.toString() ?? '') ?? 4)
         : 4;
 
