@@ -80,8 +80,9 @@ class DatabaseIntegrityService {
               Logger.warning('Found $count rows in $table.$column with corrupted text timestamp');
             }
           }
-        } catch (e) {
-          // Table or column might not exist, ignore
+        } catch (e, stackTrace) {
+          // Table or column might not exist during schema migrations
+          Logger.debug('Table or column not found during timestamp check: $table.$column - $e', stackTrace: stackTrace);
         }
       }
     }
@@ -143,9 +144,9 @@ class DatabaseIntegrityService {
               Logger.info('Repaired $table.$column timestamps');
             }
           }
-        } catch (e) {
+        } catch (e, stackTrace) {
           // Table or column might not exist, log but continue
-          Logger.warning('Error fixing timestamps for table $table column $column: $e');
+          Logger.error('Failed to repair timestamps for $table.$column: $e', stackTrace: stackTrace);
         }
       }
     }
@@ -317,8 +318,8 @@ class DatabaseIntegrityService {
       }
 
       Logger.debug('Sync state consistency check completed');
-    } catch (e) {
-      Logger.warning('Error during sync state consistency check: $e');
+    } catch (e, stackTrace) {
+      Logger.warning('Error during sync state consistency check: $e', stackTrace: stackTrace);
       // Don't let sync state check failures prevent other integrity checks
     }
   }
