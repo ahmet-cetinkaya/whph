@@ -38,6 +38,9 @@ class OverlayNotificationHelper {
       overlayState = navigatorState.overlay;
     }
 
+    // Fallback: if navigator overlay is not available yet, try from the passed-in context
+    overlayState ??= Overlay.maybeOf(context);
+
     // If still no overlay state, we can't show the notification
     if (overlayState == null) {
       return;
