@@ -191,3 +191,6 @@ app_usages:
     duration: Продолжительность
     name: Имя
     device: Устройство
+  list_options:
+    use_tag_color_for_bars: Использовать цвета тегов
+    use_tag_color_for_bars_tooltip: Показывать полосы цветом их тегов вместо их собственного цвета

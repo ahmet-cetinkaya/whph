@@ -191,3 +191,6 @@ app_usages:
     duration: Duration
     name: Name
     device: Device
+  list_options:
+    use_tag_color_for_bars: Use tag colors
+    use_tag_color_for_bars_tooltip: Show bars with the color of their tags instead of their own colors

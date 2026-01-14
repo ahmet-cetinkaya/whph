@@ -33,6 +33,7 @@ class AppUsageFilterState {
   final List<String>? devices;
   final bool showComparison;
   final SortConfig<AppUsageSortFields>? sortConfig;
+  final bool useTagColorForBars;
 
   const AppUsageFilterState({
     this.tags,
@@ -43,6 +44,7 @@ class AppUsageFilterState {
     this.devices,
     this.showComparison = false,
     this.sortConfig,
+    this.useTagColorForBars = false,
   });
 
   AppUsageFilterState copyWith({
@@ -54,6 +56,7 @@ class AppUsageFilterState {
     List<String>? devices,
     bool? showComparison,
     SortConfig<AppUsageSortFields>? sortConfig,
+    bool? useTagColorForBars,
   }) {
     return AppUsageFilterState(
       tags: tags ?? this.tags,
@@ -64,6 +67,7 @@ class AppUsageFilterState {
       devices: devices ?? this.devices,
       showComparison: showComparison ?? this.showComparison,
       sortConfig: sortConfig ?? this.sortConfig,
+      useTagColorForBars: useTagColorForBars ?? this.useTagColorForBars,
     );
   }
 }
@@ -132,6 +136,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
         devices: settings.devices,
         showComparison: settings.showComparison,
         sortConfig: settings.sortConfig,
+        useTagColorForBars: settings.useTagColorForBars,
       );
 
       if (mounted) {
@@ -165,6 +170,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
           devices: _currentState.devices,
           showComparison: _currentState.showComparison,
           sortConfig: _currentState.sortConfig,
+          useTagColorForBars: _currentState.useTagColorForBars,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -195,6 +201,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
       devices: _currentState.devices,
       showComparison: _currentState.showComparison,
       sortConfig: _currentState.sortConfig,
+      useTagColorForBars: _currentState.useTagColorForBars,
     );
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -385,6 +392,23 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
             onPressed: () {
               final newState = _currentState.copyWith(
                 showComparison: !_currentState.showComparison,
+              );
+              if (mounted) {
+                setState(() => _currentState = newState);
+              }
+              widget.onFiltersChanged(newState);
+              handleFilterChange();
+            },
+          ),
+
+          // Use Tag Color For Bars Toggle
+          IconButton(
+            icon: const Icon(Icons.palette),
+            color: _currentState.useTagColorForBars ? _themeService.primaryColor : Colors.grey,
+            tooltip: _translationService.translate(AppUsageTranslationKeys.useTagColorForBarsTooltip),
+            onPressed: () {
+              final newState = _currentState.copyWith(
+                useTagColorForBars: !_currentState.useTagColorForBars,
               );
               if (mounted) {
                 setState(() => _currentState = newState);

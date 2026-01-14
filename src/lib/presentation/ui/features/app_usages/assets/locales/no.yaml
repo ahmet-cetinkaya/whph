@@ -191,3 +191,6 @@ app_usages:
     duration: Varighet
     name: Navn
     device: Enhet
+  list_options:
+    use_tag_color_for_bars: Bruk merkefarger
+    use_tag_color_for_bars_tooltip: Vis stolper med fargen til merkene deres i stedet for deres egne farger

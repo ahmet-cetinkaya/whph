@@ -27,6 +27,9 @@ class AppUsageFilterSettings {
   /// Current sort configuration
   final SortConfig<AppUsageSortFields>? sortConfig;
 
+  /// Flag to indicate if bar colors should follow tag colors
+  final bool useTagColorForBars;
+
   /// Default constructor
   AppUsageFilterSettings({
     this.tags,
@@ -37,6 +40,7 @@ class AppUsageFilterSettings {
     this.devices,
     this.showComparison = false,
     this.sortConfig,
+    this.useTagColorForBars = false,
   });
 
   /// Create settings from a JSON map
@@ -85,6 +89,7 @@ class AppUsageFilterSettings {
               ),
             )
           : null,
+      useTagColorForBars: json['useTagColorForBars'] as bool? ?? false,
     );
   }
 
@@ -119,6 +124,8 @@ class AppUsageFilterSettings {
       json['sortConfig'] = sortConfig!.toJson((v) => v.toString());
     }
 
+    json['useTagColorForBars'] = useTagColorForBars;
+
     return json;
   }
 
@@ -132,6 +139,7 @@ class AppUsageFilterSettings {
     List<String>? devices,
     bool? showComparison,
     SortConfig<AppUsageSortFields>? sortConfig,
+    bool? useTagColorForBars,
   }) {
     return AppUsageFilterSettings(
       tags: tags ?? this.tags,
@@ -142,6 +150,7 @@ class AppUsageFilterSettings {
       devices: devices ?? this.devices,
       showComparison: showComparison ?? this.showComparison,
       sortConfig: sortConfig ?? this.sortConfig,
+      useTagColorForBars: useTagColorForBars ?? this.useTagColorForBars,
     );
   }
 }

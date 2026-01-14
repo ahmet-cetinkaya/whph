@@ -191,3 +191,6 @@ app_usages:
     duration: Süre
     name: Ad
     device: Cihaz
+  list_options:
+    use_tag_color_for_bars: Etiket renklerini kullan
+    use_tag_color_for_bars_tooltip: Çubukları kendi renkleri yerine etiketlerinin renkleriyle göster

@@ -191,3 +191,6 @@ app_usages:
     duration: Тривалість
     name: Ім'я
     device: Пристрій
+  list_options:
+    use_tag_color_for_bars: Використовувати кольори тегів
+    use_tag_color_for_bars_tooltip: Показувати смужки кольором їх тегів замість їх власного кольору

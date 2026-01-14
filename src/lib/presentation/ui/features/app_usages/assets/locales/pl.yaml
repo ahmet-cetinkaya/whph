@@ -191,3 +191,6 @@ app_usages:
     duration: Czas trwania
     name: Nazwa
     device: Urządzenie
+  list_options:
+    use_tag_color_for_bars: Użyj kolorów tagów
+    use_tag_color_for_bars_tooltip: Pokaż paski z kolorem ich tagów zamiast ich własnych kolorów

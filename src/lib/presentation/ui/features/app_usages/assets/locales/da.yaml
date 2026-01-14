@@ -191,3 +191,6 @@ app_usages:
     duration: Varighed
     name: Navn
     device: Enhed
+  list_options:
+    use_tag_color_for_bars: Brug mærkefarver
+    use_tag_color_for_bars_tooltip: Vis søjler med farven fra deres mærker i stedet for deres egne farver

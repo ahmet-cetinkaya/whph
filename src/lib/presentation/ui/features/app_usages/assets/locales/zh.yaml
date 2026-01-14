@@ -191,3 +191,6 @@ app_usages:
     duration: 时长
     name: 名称
     device: 设备
+  list_options:
+    use_tag_color_for_bars: 使用标签颜色
+    use_tag_color_for_bars_tooltip: 使用标签的颜色而非其自己的颜色显示条形
