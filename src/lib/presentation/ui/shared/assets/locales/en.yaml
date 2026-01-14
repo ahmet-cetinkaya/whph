@@ -12,6 +12,16 @@ shared:
     previous: Previous
     save: Save
     saved: Saved
+  share:
+    dialog_title: Create from Shared Text
+    create_task: Create Task
+    create_task_description: Create a task from shared text
+    create_note: Create Note
+    create_note_description: Create a note from shared text
+    task_created: Task created from shared text
+    note_created: Note created from shared text
+    failed_to_create: Failed to create item from shared text
+    shared_text_preview_label: Shared text
   calendar:
     months:
       apr: April

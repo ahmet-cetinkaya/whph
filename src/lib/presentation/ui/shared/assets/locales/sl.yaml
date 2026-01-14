@@ -12,6 +12,16 @@ shared:
     previous: Prejšnji
     save: Shrani
     saved: Shranjeno
+  share:
+    dialog_title: Ustvari iz souporabe besedila
+    create_task: Ustvari nalogo
+    create_task_description: Ustvari nalogo iz souporabe besedila
+    create_note: Ustvari zapis
+    create_note_description: Ustvari zapis iz souporabe besedila
+    task_created: Naloga ustvarjena iz souporabe besedila
+    note_created: Zapis ustvarjen iz souporabe besedila
+    failed_to_create: Ni bilo mogoče ustvariti elementa iz souporabe besedila
+    shared_text_preview_label: Souporabno besedilo
   calendar:
     months:
       apr: April

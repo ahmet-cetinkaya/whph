@@ -12,6 +12,16 @@ shared:
     previous: Anterior
     save: Salvează
     saved: Salvat
+  share:
+    dialog_title: Creare din text partajat
+    create_task: Creare sarcină
+    create_task_description: Creează o sarcină din text partajat
+    create_note: Creare notă
+    create_note_description: Creează o notă din text partajat
+    task_created: Sarcină creată din text partajat
+    note_created: Notă creată din text partajat
+    failed_to_create: Nu s-a putut crea elementul din text partajat
+    shared_text_preview_label: Text partajat
   calendar:
     months:
       apr: Aprilie

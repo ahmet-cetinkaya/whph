@@ -12,6 +12,16 @@ shared:
     previous: Προηγούμενο
     save: Αποθήκευση
     saved: Αποθηκεύτηκε
+  share:
+    dialog_title: Δημιουργία από κείμενο κοινής χρήσης
+    create_task: Δημιουργία εργασίας
+    create_task_description: Δημιουργία εργασίας από κείμενο κοινής χρήσης
+    create_note: Δημιουργία σημείωσης
+    create_note_description: Δημιουργία σημείωσης από κείμενο κοινής χρήσης
+    task_created: Εργασία δημιουργήθηκε από κείμενο κοινής χρήσης
+    note_created: Σημείωση δημιουργήθηκε από κείμενο κοινής χρήσης
+    failed_to_create: Απέτυχε η δημιουργία στοιχείου από κείμενο κοινής χρήσης
+    shared_text_preview_label: Κοινόχρηστο κείμενο
   calendar:
     months:
       apr: Απρίλιος

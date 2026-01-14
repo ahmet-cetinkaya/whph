@@ -12,6 +12,16 @@ shared:
     previous: Précédent
     save: Enregistrer
     saved: Enregistré
+  share:
+    dialog_title: Créer à partir du texte partagé
+    create_task: Créer une tâche
+    create_task_description: Créer une tâche à partir du texte partagé
+    create_note: Créer une note
+    create_note_description: Créer une note à partir du texte partagé
+    task_created: Tâche créée à partir du texte partagé
+    note_created: Note créée à partir du texte partagé
+    failed_to_create: Échec de la création de l'élément à partir du texte partagé
+    shared_text_preview_label: Texte partagé
   calendar:
     months:
       apr: Avril

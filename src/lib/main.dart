@@ -18,6 +18,9 @@ import 'package:whph/core/application/shared/services/abstraction/i_single_insta
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
+import 'package:whph/infrastructure/android/features/share/share_to_create_service.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Global navigator key for accessing context throughout the application
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -163,6 +166,33 @@ void main(List<String> args) async {
     // Get translation service for app wrapper
     final translationService = tempContainer.resolve<ITranslationService>();
 
+    // Set up share intent handling for Android (must be AFTER initializeCoreServices)
+    AndroidShareService.setupShareListener(
+      onSharedText: (text, subject) async {
+        try {
+          Logger.debug('ShareService: Received shared text: text="$text", subject="$subject"');
+
+          final context = await _waitForContext();
+          if (context == null || !context.mounted) {
+            Logger.warning('ShareService: No valid context available');
+            return;
+          }
+
+          final translationService = container.resolve<ITranslationService>();
+          final shareService = ShareToCreateService(container);
+
+          await shareService.handleShareFlow(
+            sharedText: text,
+            sharedSubject: subject,
+            context: context,
+            translationService: translationService,
+          );
+        } catch (e, stackTrace) {
+          Logger.error('ShareService: Error in share handler: $e', stackTrace: stackTrace);
+        }
+      },
+    );
+
     // Launch the application
     runApp(
       translationService.wrapWithTranslations(
@@ -217,4 +247,21 @@ Future<void> _cleanupOnExit() async {
   } catch (e) {
     debugPrint('Error during cleanup: $e');
   }
+}
+
+/// Waits for the app context to be available with a polling mechanism
+/// Returns null if context is not available within the timeout period
+Future<BuildContext?> _waitForContext({Duration timeout = const Duration(seconds: 5)}) async {
+  final deadline = DateTime.now().add(timeout);
+  const checkInterval = Duration(milliseconds: 100);
+
+  while (DateTime.now().isBefore(deadline)) {
+    final context = navigatorKey.currentContext;
+    if (context != null && context.mounted) {
+      return context;
+    }
+    await Future.delayed(checkInterval);
+  }
+
+  return null;
 }

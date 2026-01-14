@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/shared/services/background_translation_serv
 import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
 import 'package:whph/presentation/ui/shared/widgets/startup_error_screen.dart';
 import 'package:whph/presentation/ui/shared/services/startup_error_reporter_service.dart';
+import 'package:whph/presentation/ui/shared/utils/context_manager.dart';
 
 class App extends StatefulWidget {
   const App({
@@ -62,6 +63,7 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     _lifecycleService.dispose();
+    ContextManager.clearContext();
     super.dispose();
   }
 
@@ -96,6 +98,11 @@ class _AppState extends State<App> {
 
   /// Run initialization once context is available
   Future<void> _runInitialization() async {
+    // Store the app context for global access (for overlay notifications, etc.)
+    final navContext = widget.navigatorKey.currentContext;
+    if (navContext != null) {
+      ContextManager.setContext(navContext);
+    }
     await _initializationService.initializeApp(widget.navigatorKey);
     await _saveCurrentLocaleForNotifications();
   }

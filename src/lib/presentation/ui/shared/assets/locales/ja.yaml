@@ -12,6 +12,16 @@ shared:
     previous: 前へ
     save: 保存
     saved: 保存済み
+  share:
+    dialog_title: 共有テキストから作成
+    create_task: タスクを作成
+    create_task_description: 共有テキストからタスクを作成
+    create_note: メモを作成
+    create_note_description: 共有テキストからメモを作成
+    task_created: 共有テキストからタスクを作成しました
+    note_created: 共有テキストからメモを作成しました
+    failed_to_create: 共有テキストからのアイテム作成に失敗しました
+    shared_text_preview_label: 共有テキスト
   calendar:
     months:
       apr: 4月

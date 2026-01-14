@@ -30,4 +30,14 @@ class SharedTranslationKeys {
   static const String timeHour = 'shared.time.hour';
   static const String timeDay = 'shared.time.day';
   static const String timeWeek = 'shared.time.week';
+
+  // Share related keys
+  static const String shareDialogTitle = 'shared.share.dialog_title';
+  static const String shareCreateTask = 'shared.share.create_task';
+  static const String shareCreateTaskDescription = 'shared.share.create_task_description';
+  static const String shareCreateNote = 'shared.share.create_note';
+  static const String shareCreateNoteDescription = 'shared.share.create_note_description';
+  static const String shareTaskCreated = 'shared.share.task_created';
+  static const String shareNoteCreated = 'shared.share.note_created';
+  static const String shareFailedToCreate = 'shared.share.failed_to_create';
 }

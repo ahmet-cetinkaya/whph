@@ -28,6 +28,7 @@ class _Channels {
   String get bootCompleted => "${AndroidAppConstants.packageName}/boot_completed";
   String get workManager => "${AndroidAppConstants.packageName}/work_manager";
   String get sync => "${AndroidAppConstants.packageName}/sync";
+  String get share => "${AndroidAppConstants.packageName}/share";
 }
 
 /// Notification channel constants

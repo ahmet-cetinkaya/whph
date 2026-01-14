@@ -15,6 +15,16 @@ shared:
     previous: Попередній
     save: Зберегти
     saved: Збережено
+  share:
+    dialog_title: Створити зі спільного тексту
+    create_task: Створити завдання
+    create_task_description: Створити завдання зі спільного тексту
+    create_note: Створити нотатку
+    create_note_description: Створити нотатку зі спільного тексту
+    task_created: Завдання створено зі спільного тексту
+    note_created: Нотатку створено зі спільного тексту
+    failed_to_create: Не вдалося створити елемент зі спільного тексту
+    shared_text_preview_label: Спільний текст
   calendar:
     months:
       apr: Квітень
