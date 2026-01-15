@@ -289,4 +289,137 @@ void main() {
       expect(response.successCount, 1);
     });
   });
+
+  group('ImportTasksCommandHandler Error Handling Tests', () {
+    test('should handle file not found error', () async {
+      final response = await handler.call(ImportTasksCommand(
+        filePath: '/nonexistent/path/to/file.csv',
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 0);
+      expect(response.failureCount, 1);
+      expect(response.errors.first, contains('File not found'));
+    });
+
+    test('should handle mediator exception during task save', () async {
+      final file = File('${tempDir.path}/mediator_error.csv');
+      await file.writeAsString(
+        'TITLE,DESCRIPTION\n'
+        'Task 1,Desc 1\n',
+      );
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+          .thenThrow(Exception('Mediator error'));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 0);
+      expect(response.failureCount, 1);
+      expect(response.errors.first, contains('Failed to import row'));
+    });
+
+    test('should handle missing CONTENT column in generic CSV', () async {
+      final file = File('${tempDir.path}/missing_content.csv');
+      await file.writeAsString(
+        'DESCRIPTION,PRIORITY\n'
+        'Desc 1,1\n',
+      );
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 0);
+      expect(response.failureCount, 1);
+      expect(response.errors.first, contains("Required column 'TITLE' is missing"));
+    });
+
+    test('should handle missing CONTENT column in Todoist CSV', () async {
+      final file = File('${tempDir.path}/todoist_missing_content.csv');
+      await file.writeAsString(
+        'TYPE,PRIORITY,INDENT\n'
+        'task,1,1\n',
+      );
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.todoist,
+      ));
+
+      expect(response.successCount, 0);
+      expect(response.failureCount, 1);
+      expect(response.errors.first, contains("Required column 'CONTENT' is missing"));
+    });
+
+    test('should reject empty file path in constructor', () {
+      expect(
+        () => ImportTasksCommand(filePath: '', importType: TaskImportType.generic),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('should reject file path with only whitespace in constructor', () {
+      expect(
+        () => ImportTasksCommand(filePath: '   ', importType: TaskImportType.generic),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('should reject negative success count in response', () {
+      expect(
+        () => ImportTasksCommandResponse(successCount: -1, failureCount: 0, errors: []),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('should reject negative failure count in response', () {
+      expect(
+        () => ImportTasksCommandResponse(successCount: 0, failureCount: -1, errors: []),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('should detect path traversal in file path', () async {
+      final response = await handler.call(ImportTasksCommand(
+        filePath: '../../../etc/passwd',
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 0);
+      expect(response.failureCount, 1);
+      expect(response.errors.first, 'Invalid file path');
+    });
+
+    test('should bound error list to maximum 100 errors', () async {
+      final file = File('${tempDir.path}/many_errors.csv');
+      final rows = ['TITLE,DESCRIPTION'] +
+          List.generate(150, (i) => 'Task $i,Desc $i,invalid_date'); // Invalid dates cause errors
+      await file.writeAsString(rows.join('\n'));
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.generic,
+      ));
+
+      // Errors should be capped at 101 (100 actual errors + 1 truncation message)
+      expect(response.errors.length, lessThanOrEqualTo(101));
+      if (response.errors.length > 100) {
+        expect(response.errors.last, contains('additional errors omitted'));
+      }
+    });
+  });
 }
