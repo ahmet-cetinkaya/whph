@@ -191,3 +191,6 @@ app_usages:
     duration: Durată
     name: Nume
     device: Dispozitiv
+  list_options:
+    use_tag_color_for_bars: Folosește culorile etichetelor
+    use_tag_color_for_bars_tooltip: Afișează barele cu culoarea etichetelor lor în loc de propriile lor culori

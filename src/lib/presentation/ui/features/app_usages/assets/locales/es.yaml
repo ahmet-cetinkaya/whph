@@ -191,3 +191,6 @@ app_usages:
     duration: Duración
     name: Nombre
     device: Dispositivo
+  list_options:
+    use_tag_color_for_bars: Usar colores de etiquetas
+    use_tag_color_for_bars_tooltip: Mostrar barras con el color de sus etiquetas en lugar de sus propios colores

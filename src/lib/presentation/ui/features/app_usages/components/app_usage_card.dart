@@ -14,6 +14,7 @@ class AppUsageCard extends StatelessWidget {
   final double maxDurationInListing;
   final double? maxCompareDurationInListing;
   final VoidCallback? onTap;
+  final bool useTagColorForBars;
 
   const AppUsageCard({
     super.key,
@@ -21,14 +22,40 @@ class AppUsageCard extends StatelessWidget {
     required this.maxDurationInListing,
     this.maxCompareDurationInListing,
     this.onTap,
+    this.useTagColorForBars = false,
   });
 
   static final _translationService = container.resolve<ITranslationService>();
 
+  Color _getBarColor(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
+    // If toggle is ON and app usage has tags, use first tag's color
+    if (useTagColorForBars && appUsage.tags.isNotEmpty) {
+      final firstTag = appUsage.tags.first;
+      if (firstTag.tagColor != null) {
+        try {
+          return AppUsageUiConstants.getTagColor(firstTag.tagColor!);
+        } catch (e) {
+          // Invalid color format, fall through to the next option.
+        }
+      }
+    }
+
+    // Otherwise use app usage's own color
+    if (appUsage.color != null) {
+      try {
+        return AppUsageUiConstants.getTagColor(appUsage.color!);
+      } catch (e) {
+        // Invalid color format, fall back to primary color.
+      }
+    }
+    return primaryColor;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
-    final barColor = appUsage.color != null ? AppUsageUiConstants.getTagColor(appUsage.color) : primaryColor;
+    final barColor = _getBarColor(context);
 
     final duration = appUsage.duration.toDouble() / 60;
     // Use 1.0 as minimum maxDuration to avoid division by zero

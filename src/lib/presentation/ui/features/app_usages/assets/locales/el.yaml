@@ -191,3 +191,6 @@ app_usages:
     duration: Διάρκεια
     name: Όνομα
     device: Συσκευή
+  list_options:
+    use_tag_color_for_bars: Χρήση χρωμάτων ετικετών
+    use_tag_color_for_bars_tooltip: Εμφάνιση ράβδων με το χρώμα των ετικετών τους αντί για τα δικά τους χρώματα

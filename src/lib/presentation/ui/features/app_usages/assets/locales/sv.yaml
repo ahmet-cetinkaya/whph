@@ -191,3 +191,6 @@ app_usages:
     duration: Varaktighet
     name: Namn
     device: Enhet
+  list_options:
+    use_tag_color_for_bars: Använd taggfärger
+    use_tag_color_for_bars_tooltip: Visa staplar med färgen från sina taggar istället för sina egna färger

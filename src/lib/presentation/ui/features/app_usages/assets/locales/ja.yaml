@@ -191,3 +191,6 @@ app_usages:
     duration: 期間
     name: 名前
     device: デバイス
+  list_options:
+    use_tag_color_for_bars: タグの色を使用
+    use_tag_color_for_bars_tooltip: 独自の色の代わりにタグの色でバーを表示します

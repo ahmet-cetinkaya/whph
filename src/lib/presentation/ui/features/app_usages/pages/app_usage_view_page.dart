@@ -324,6 +324,7 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                       filterByDevices: _filterState.devices,
                       showComparison: _filterState.showComparison,
                       sortConfig: _filterState.sortConfig,
+                      useTagColorForBars: _filterState.useTagColorForBars,
                       paginationMode: PaginationMode.infinityScroll),
                 ),
             ],

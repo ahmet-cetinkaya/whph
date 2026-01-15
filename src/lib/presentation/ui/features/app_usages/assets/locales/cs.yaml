@@ -191,3 +191,6 @@ app_usages:
     duration: Trvání
     name: Název
     device: Zařízení
+  list_options:
+    use_tag_color_for_bars: Použít barvy značek
+    use_tag_color_for_bars_tooltip: Zobrazit pruhy s barvou jejich značek místo jejich vlastních barev

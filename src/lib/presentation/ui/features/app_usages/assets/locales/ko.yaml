@@ -191,3 +191,6 @@ app_usages:
     duration: 기간
     name: 이름
     device: 장치
+  list_options:
+    use_tag_color_for_bars: 태그 색상 사용
+    use_tag_color_for_bars_tooltip: 자체 색상 대신 태그의 색상으로 막대를 표시합니다

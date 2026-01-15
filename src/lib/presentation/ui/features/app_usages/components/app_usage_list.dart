@@ -50,6 +50,7 @@ class FilterContext {
   final List<String>? filterByDevices;
   final bool showComparison;
   final SortConfig<AppUsageSortFields>? sortConfig;
+  final bool useTagColorForBars;
 
   const FilterContext({
     this.filterByTags,
@@ -59,11 +60,12 @@ class FilterContext {
     this.filterByDevices,
     this.showComparison = false,
     this.sortConfig,
+    this.useTagColorForBars = false,
   });
 
   @override
   String toString() =>
-      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices, showComparison: $showComparison, sortConfig: $sortConfig)';
+      'FilterContext(tags: $filterByTags, showNoTags: $showNoTagsFilter, startDate: $filterStartDate, endDate: $filterEndDate, devices: $filterByDevices, showComparison: $showComparison, sortConfig: $sortConfig, useTagColorForBars: $useTagColorForBars)';
 }
 
 class AppUsageList extends StatefulWidget implements IPaginatedWidget {
@@ -77,6 +79,7 @@ class AppUsageList extends StatefulWidget implements IPaginatedWidget {
   final List<String>? filterByDevices;
   final bool showComparison;
   final SortConfig<AppUsageSortFields>? sortConfig;
+  final bool useTagColorForBars;
 
   @override
   final PaginationMode paginationMode;
@@ -93,6 +96,7 @@ class AppUsageList extends StatefulWidget implements IPaginatedWidget {
     this.filterByDevices,
     this.showComparison = false,
     this.sortConfig,
+    this.useTagColorForBars = false,
     this.paginationMode = PaginationMode.loadMore,
   });
 
@@ -155,6 +159,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
         filterByDevices: widget.filterByDevices,
         showComparison: widget.showComparison,
         sortConfig: widget.sortConfig,
+        useTagColorForBars: widget.useTagColorForBars,
       );
 
   bool _filtersChanged({required FilterContext oldFilters, required FilterContext newFilters}) {
@@ -166,6 +171,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       'filterByDevices': oldFilters.filterByDevices,
       'showComparison': oldFilters.showComparison,
       'sortConfig': oldFilters.sortConfig,
+      'useTagColorForBars': oldFilters.useTagColorForBars,
     };
 
     final newMap = {
@@ -176,6 +182,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
       'filterByDevices': newFilters.filterByDevices,
       'showComparison': newFilters.showComparison,
       'sortConfig': newFilters.sortConfig,
+      'useTagColorForBars': newFilters.useTagColorForBars,
     };
 
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
@@ -408,6 +415,7 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
                   maxDurationInListing: _maxDuration,
                   maxCompareDurationInListing: _maxCompareDuration,
                   onTap: () => widget.onOpenDetails?.call(item.appUsage.id),
+                  useTagColorForBars: widget.useTagColorForBars,
                 ),
               ),
             _SeparatorItem() => SizedBox(

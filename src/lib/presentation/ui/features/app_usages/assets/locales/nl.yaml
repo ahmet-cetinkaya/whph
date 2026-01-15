@@ -191,3 +191,6 @@ app_usages:
     duration: Duur
     name: Naam
     device: Apparaat
+  list_options:
+    use_tag_color_for_bars: Tag-kleuren gebruiken
+    use_tag_color_for_bars_tooltip: Balken weergeven met de kleur van hun tags in plaats van hun eigen kleuren

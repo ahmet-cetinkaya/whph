@@ -97,4 +97,8 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   static const String sortDuration = 'app_usages.sort.duration';
   static const String sortName = 'app_usages.sort.name';
   static const String sortDevice = 'app_usages.sort.device';
+
+  // List Options
+  static const String useTagColorForBars = 'app_usages.list_options.use_tag_color_for_bars';
+  static const String useTagColorForBarsTooltip = 'app_usages.list_options.use_tag_color_for_bars_tooltip';
 }
