@@ -47,10 +47,9 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // Sort days to match week order
-    final sortedDays = List<WeekDays>.from(selectedDays)
-      ..sort((a, b) => a.index.compareTo(b.index));
+    final sortedDays = List<WeekDays>.from(selectedDays)..sort((a, b) => a.index.compareTo(b.index));
 
     if (sortedDays.isEmpty) {
       return const SizedBox.shrink();
@@ -60,18 +59,12 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
       children: sortedDays.map((day) {
         final dayNumber = DateHelper.weekDayToNumber(day);
         final currentSchedule = schedule?.firstWhere(
-          (s) => s.dayOfWeek == dayNumber,
-          orElse: () => WeeklySchedule(
-            dayOfWeek: dayNumber, 
-            hour: 9, 
-            minute: 0
-          ),
-        ) ?? WeeklySchedule(dayOfWeek: dayNumber, hour: 9, minute: 0);
-        
-        final time = TimeOfDay(
-          hour: currentSchedule.hour, 
-          minute: currentSchedule.minute
-        );
+              (s) => s.dayOfWeek == dayNumber,
+              orElse: () => WeeklySchedule(dayOfWeek: dayNumber, hour: 9, minute: 0),
+            ) ??
+            WeeklySchedule(dayOfWeek: dayNumber, hour: 9, minute: 0);
+
+        final time = TimeOfDay(hour: currentSchedule.hour, minute: currentSchedule.minute);
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
@@ -122,11 +115,7 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
     );
   }
 
-  Future<void> _selectTime(
-    BuildContext context, 
-    int dayNumber, 
-    TimeOfDay initialTime
-  ) async {
+  Future<void> _selectTime(BuildContext context, int dayNumber, TimeOfDay initialTime) async {
     final picked = await showTimePicker(
       context: context,
       initialTime: initialTime,
@@ -134,10 +123,10 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
 
     if (picked != null) {
       final newSchedule = List<WeeklySchedule>.from(schedule ?? []);
-      
+
       // Remove existing schedule for this day
       newSchedule.removeWhere((s) => s.dayOfWeek == dayNumber);
-      
+
       // Add new schedule
       newSchedule.add(WeeklySchedule(
         dayOfWeek: dayNumber,

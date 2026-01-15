@@ -8,7 +8,7 @@ import 'package:acore/time/week_days.dart';
 class FakeITranslationService implements ITranslationService {
   @override
   String translate(String key, {Map<String, String>? namedArgs}) {
-    return key.split('.').last; 
+    return key.split('.').last;
   }
 
   // Implement other members if necessary, or just throw UnimplementedError
@@ -50,7 +50,7 @@ void main() {
 
   testWidgets('renders rows for selected days', (tester) async {
     final days = [WeekDays.monday, WeekDays.friday];
-    
+
     await tester.pumpWidget(createWidget(
       selectedDays: days,
       onScheduleChanged: (_) {},
@@ -60,7 +60,7 @@ void main() {
     expect(find.text('monday'), findsOneWidget);
     expect(find.text('friday'), findsOneWidget);
     // Default time check
-    expect(find.text('9:00 AM'), findsNWidgets(2)); 
+    expect(find.text('9:00 AM'), findsNWidgets(2));
   });
 
   testWidgets('renders specific times from schedule', (tester) async {

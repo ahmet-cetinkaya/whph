@@ -118,9 +118,9 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
     } else {
       _configuration = null;
     }
-    
+
     _showSpecificTimes = _configuration?.weeklySchedule != null && _configuration!.weeklySchedule!.isNotEmpty;
-    
+
     if (_showSpecificTimes && _configuration?.daysOfWeek != null) {
       _syncScheduleWithDays();
     }
@@ -145,7 +145,7 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
         ));
       }
     }
-    
+
     currentSchedule.sort((a, b) => a.dayOfWeek.compareTo(b.dayOfWeek));
 
     _configuration = _configuration!.copyWith(
