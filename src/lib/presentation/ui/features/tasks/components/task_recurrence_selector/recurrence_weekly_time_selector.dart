@@ -40,11 +40,8 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
     }
   }
 
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
-    return '$hour:$minute $period';
+  String _formatTime(BuildContext context, TimeOfDay time) {
+    return time.format(context);
   }
 
   @override
@@ -108,7 +105,7 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
                       ),
                       const SizedBox(width: AppTheme.sizeSmall),
                       Text(
-                        _formatTime(time),
+                        _formatTime(context, time),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w600,
@@ -133,12 +130,6 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
     final picked = await showTimePicker(
       context: context,
       initialTime: initialTime,
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-          child: child!,
-        );
-      },
     );
 
     if (picked != null) {

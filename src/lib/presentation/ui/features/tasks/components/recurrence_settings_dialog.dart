@@ -304,7 +304,7 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
                             ),
                             const SizedBox(width: AppTheme.sizeSmall),
                             Text(
-                              'Different times per day',
+                              _translationService.translate(TaskTranslationKeys.recurrenceWeeklyScheduleLabel),
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],

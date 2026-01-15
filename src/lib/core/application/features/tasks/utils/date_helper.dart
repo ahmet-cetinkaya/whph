@@ -27,7 +27,9 @@ class DateHelper {
     int? intervalInWeeks,
     DateTime? referenceDate,
   ) {
-    const maxSearchDays = 90;
+    // Calculate maxSearchDays based on interval to handle long recurrence periods
+    // Ensure at least two full cycles plus a week to find the next occurrence
+    final maxSearchDays = (intervalInWeeks ?? 1) * 7 * 2 + 7;
 
     if (targetWeekdays.isEmpty) {
       throw ArgumentError('targetWeekdays cannot be empty');
@@ -38,12 +40,17 @@ class DateHelper {
       final candidateWeekday = candidateDate.weekday;
 
       if (targetWeekdays.contains(candidateWeekday)) {
+        bool isValid = false;
         if (intervalInWeeks != null && intervalInWeeks > 1 && referenceDate != null) {
           final weeksFromStart = (candidateDate.difference(referenceDate).inDays / 7).floor();
           if (weeksFromStart % intervalInWeeks == 0) {
-            return candidateDate;
+            isValid = true;
           }
         } else {
+          isValid = true;
+        }
+
+        if (isValid) {
           return candidateDate;
         }
       }
@@ -66,7 +73,9 @@ class DateHelper {
     int? intervalInWeeks,
     DateTime? referenceDate,
   ) {
-    const maxSearchDays = 90;
+    // Calculate maxSearchDays based on interval to handle long recurrence periods
+    // Ensure at least two full cycles plus a week to find the next occurrence
+    final maxSearchDays = (intervalInWeeks ?? 1) * 7 * 2 + 7;
 
     if (weeklySchedule.isEmpty) {
       throw ArgumentError('weeklySchedule cannot be empty');
@@ -80,20 +89,17 @@ class DateHelper {
       final candidateWeekday = candidateDate.weekday;
 
       if (validDays.contains(candidateWeekday)) {
+        bool isValid = false;
         if (intervalInWeeks != null && intervalInWeeks > 1 && referenceDate != null) {
           final weeksFromStart = (candidateDate.difference(referenceDate).inDays / 7).floor();
           if (weeksFromStart % intervalInWeeks == 0) {
-            // Find the schedule for this day and apply its time
-            final schedule = weeklySchedule.firstWhere((s) => s.dayOfWeek == candidateWeekday);
-            return DateTime(
-              candidateDate.year,
-              candidateDate.month,
-              candidateDate.day,
-              schedule.hour,
-              schedule.minute,
-            );
+            isValid = true;
           }
         } else {
+          isValid = true;
+        }
+
+        if (isValid) {
           // Find the schedule for this day and apply its time
           final schedule = weeklySchedule.firstWhere((s) => s.dayOfWeek == candidateWeekday);
           return DateTime(
