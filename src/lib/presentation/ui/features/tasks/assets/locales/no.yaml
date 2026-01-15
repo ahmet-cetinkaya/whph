@@ -325,6 +325,12 @@ tasks:
       third: Tredje
       fourth: Fjerde
       last: Siste
+    weekly_schedule:
+      label: Forskjellige tider per dag
+      description: Sett en spesifikk tid for hver dag i uken
+      hint: Velg dager og angi tidene deres
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: På det planlagte tidspunktet
     deadline_reminder_label: Påminnelse om tidsfrist
@@ -333,7 +339,7 @@ tasks:
     none: Ingen påminnelse
     one_day_before: 1 dag før
     one_hour_before: 1 time før
-    label: Dato
+    label: Forskjellige tider per dag
     section_title: Påminnelser
     custom: Tilpasset
     custom_title: Tilpasset påminnelse
@@ -354,7 +360,7 @@ tasks:
     total_time: Total Tid for Dag
   timer:
     mode:
-      description: Velg mellom Pomodoro teknikk, nedtellingstimer eller stoppur
+      description: Sett en spesifikk tid for hver dag i uken
       normal: Normal Timer
       pomodoro: Pomodoro
       stopwatch: Stoppur
@@ -377,29 +383,29 @@ tasks:
     show_subtasks: Vis underoppgaver
   tour:
     add_tasks:
-      description: Opprett raskt nye oppgaver med denne knappen. Sett titler, prioriteter, frister, tagger og mer. Legg til underoppgaver og påminnelser for å holde deg oppdatert på arbeidet ditt.
+      description: Sett en spesifikk tid for hver dag i uken
       title: Legg til nye oppgaver
     filter_search:
-      description: Kraftige filteralternativer for å finne akkurat det du trenger. Filtrer etter tagger, datoer, fullføringsstatus eller bruk søk. Sorter oppgaver og veksle underoppgaver for bedre organisering.
+      description: Sett en spesifikk tid for hver dag i uken
       title: Filtrer & Søk
     marathon:
       app_usage:
-        description: Overvåk app-brukmønstre og analyser tiden du bruker på ulike aktiviteter. Få innsikt i dine digitale vaner og optimaliser produktiviteten din.
+        description: Sett en spesifikk tid for hver dag i uken
         title: App-bruk & Tidsanalyse
       filter_sort:
-        description: Filtrer app-brukdata etter datoområde, tagger eller spesifikke enheter. Sorter og organiser bruksstatistikken din for bedre innsikt i tidsstyring.
+        description: Sett en spesifikk tid for hver dag i uken
         title: Filtrer & Sorter
       tracking_settings:
-        description: Konfigurer app-sporingsregler, sett opp automatisk tagging og administrer hvilke applikasjoner som skal spores. Tilpass sporingen etter dine produktivitetsbehov.
+        description: Sett en spesifikk tid for hver dag i uken
         title: Sporingsinnstillinger
       usage_statistics:
-        description: Vis detaljert app-brukdata og tidsfordeling. Analyser produktivitetsmønstre, spor tiden du bruker på ulike applikasjoner og identifiser forbedringsområder.
+        description: Sett en spesifikk tid for hver dag i uken
         title: Bruksstatistikk
     task_management:
-      description: Opprett og organiser oppgaver med prioriteter, frister og påminnelser. Bruk Pomodoro-timeren for å holde fokus og spore fremgangen din på viktige oppgaver.
+      description: Sett en spesifikk tid for hver dag i uken
       title: Oppgavehåndtering
     your_tasks:
-      description: Se og administrer alle oppgavene dine på ett sted. Klikk på hvilken som helst oppgave for å se detaljer, merke som fullført, redigere informasjon eller slette. Hold deg organisert og spor fremgangen din.
+      description: Sett en spesifikk tid for hver dag i uken
       title: Dine oppgaver
   validation:
     deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen

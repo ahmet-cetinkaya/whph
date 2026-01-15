@@ -325,6 +325,12 @@ tasks:
       third: Kolmas
       fourth: Neljäs
       last: Viimeinen
+    weekly_schedule:
+      label: Eri ajat jokaiselle päivälle
+      description: Aseta tietty aika jokaista viikonpäivää varten
+      hint: Valitse päivät ja aseta niiden ajat
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: Suunniteltuna ajankohtana
     deadline_reminder_label: Määräajan muistutus
@@ -333,7 +339,7 @@ tasks:
     none: Ei muistutusta
     one_day_before: 1 päivä ennen
     one_hour_before: 1 tunti ennen
-    label: Muistutus
+    label: Eri ajat jokaiselle päivälle
     section_title: Muistutukset
     custom: Mukautettu
     custom_title: Mukautettu muistutus
@@ -354,7 +360,7 @@ tasks:
     total_time: Kokonaisaika Päivälle
   timer:
     mode:
-      description: Valitse Pomodoro-tekniikan, laskurin tai sekuntikellon välillä
+      description: Aseta tietty aika jokaista viikonpäivää varten
       normal: Normaali Ajastin
       pomodoro: Pomodoro
       stopwatch: Sekuntikello
@@ -377,29 +383,29 @@ tasks:
     show_subtasks: Näytä alitehtävät
   tour:
     add_tasks:
-      description: Luo uusia tehtäviä nopeasti tällä painikkeella. Aseta otsikot, prioriteetit, määräajat, tunnisteet ja paljon muuta. Lisää alitehtäviä ja muistutuksia pysyäksesi työssä mukana.
+      description: Aseta tietty aika jokaista viikonpäivää varten
       title: Lisää uusia tehtäviä
     filter_search:
-      description: Tehokkaat suodatusvaihtoehdot löytääksesi juuri sen, mitä tarvitset. Suodata tunnisteiden, päivämäärien, valmiustilan tai hakutoiminnon mukaan. Lajittele tehtäviä ja vaihda alitehtäviä paremman järjestelyn vuoksi.
+      description: Aseta tietty aika jokaista viikonpäivää varten
       title: Suodatus & Haku
     marathon:
       app_usage:
-        description: Seuraa sovelluksen käyttötapoja ja analysoi aikaa, joka kuluu eri toimintoihin. Hanki tietoa digitaalisista tavoista ja optimoi tuottavuuttasi.
+        description: Aseta tietty aika jokaista viikonpäivää varten
         title: Sovelluksen käyttö ja aika-analytiikka
       filter_sort:
-        description: Suodata sovelluksen käyttötietoja aikavälin, tunnisteiden tai tiettyjen laitteiden mukaan. Lajittele ja järjestä käyttötilastoja saadaksesi parempia oivalluksia ajanhallinnasta.
+        description: Aseta tietty aika jokaista viikonpäivää varten
         title: Suodatus & Lajittelu
       tracking_settings:
-        description: Määritä sovelluksen seurantasäännöt, aseta automaattinen merkintä ja hallitse seurattavia sovelluksia. Mukauta seurantaa tuottavuustarpeidesi mukaan.
+        description: Aseta tietty aika jokaista viikonpäivää varten
         title: Seuranta-asetukset
       usage_statistics:
-        description: Näytä yksityiskohtaiset sovelluksen käyttötiedot ja ajanjakauma. Analysoi tuottavuusmalleja, seuraa aikaa, joka kuluu eri sovelluksiin, ja tunnista parannusmahdollisuuksia.
+        description: Aseta tietty aika jokaista viikonpäivää varten
         title: Käyttötilastot
     task_management:
-      description: Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla. Käytä Pomodoro-ajastinta pysyäksesi keskittyneenä ja seurataksesi edistymistäsi tärkeissä tehtävissä.
+      description: Aseta tietty aika jokaista viikonpäivää varten
       title: Tehtävien hallinta
     your_tasks:
-      description: Katso ja hallitse kaikkia tehtäviäsi yhdessä paikassa. Klikkaa mitä tahansa tehtävää nähdäksesi tiedot, merkataksesi valmiiksi, muokataksesi tietoja tai poistaaksesi. Pysy järjestettynä ja seuraa edistymistäsi.
+      description: Aseta tietty aika jokaista viikonpäivää varten
       title: Sinun tehtäväsi
   validation:
     deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen

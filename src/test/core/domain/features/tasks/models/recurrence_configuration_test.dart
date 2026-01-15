@@ -646,4 +646,373 @@ void main() {
       });
     });
   });
+
+  group('WeeklySchedule Tests', () {
+    group('Constructor Validation', () {
+      test('should create WeeklySchedule with valid parameters', () {
+        const schedule = WeeklySchedule(
+          dayOfWeek: 1,
+          hour: 9,
+          minute: 0,
+        );
+
+        expect(schedule.dayOfWeek, 1);
+        expect(schedule.hour, 9);
+        expect(schedule.minute, 0);
+      });
+
+      test('should accept all valid day of week values (1-7)', () {
+        for (int day = 1; day <= 7; day++) {
+          final schedule = WeeklySchedule(
+            dayOfWeek: day,
+            hour: 12,
+            minute: 0,
+          );
+          expect(schedule.dayOfWeek, day);
+        }
+      });
+
+      test('should accept all valid hour values (0-23)', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 1, hour: 0, minute: 0);
+        const schedule2 = WeeklySchedule(dayOfWeek: 1, hour: 23, minute: 59);
+
+        expect(schedule1.hour, 0);
+        expect(schedule2.hour, 23);
+      });
+
+      test('should accept all valid minute values (0-59)', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 1, hour: 12, minute: 0);
+        const schedule2 = WeeklySchedule(dayOfWeek: 1, hour: 12, minute: 59);
+
+        expect(schedule1.minute, 0);
+        expect(schedule2.minute, 59);
+      });
+
+      test('should create WeeklySchedule for Monday morning', () {
+        const schedule = WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0);
+        expect(schedule.dayOfWeek, DateTime.monday);
+        expect(schedule.hour, 9);
+        expect(schedule.minute, 0);
+      });
+
+      test('should create WeeklySchedule for Tuesday afternoon', () {
+        const schedule = WeeklySchedule(dayOfWeek: 2, hour: 14, minute: 30);
+        expect(schedule.dayOfWeek, DateTime.tuesday);
+        expect(schedule.hour, 14);
+        expect(schedule.minute, 30);
+      });
+
+      test('should create WeeklySchedule for Friday evening', () {
+        const schedule = WeeklySchedule(dayOfWeek: 5, hour: 17, minute: 0);
+        expect(schedule.dayOfWeek, DateTime.friday);
+        expect(schedule.hour, 17);
+        expect(schedule.minute, 0);
+      });
+
+      test('should create WeeklySchedule for Sunday night', () {
+        const schedule = WeeklySchedule(dayOfWeek: 7, hour: 20, minute: 0);
+        expect(schedule.dayOfWeek, DateTime.sunday);
+        expect(schedule.hour, 20);
+        expect(schedule.minute, 0);
+      });
+    });
+
+    group('JSON Serialization', () {
+      test('should serialize WeeklySchedule to JSON correctly', () {
+        const schedule = WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 30);
+        final json = schedule.toJson();
+
+        expect(json['dayOfWeek'], 3);
+        expect(json['hour'], 10);
+        expect(json['minute'], 30);
+      });
+
+      test('should deserialize WeeklySchedule from JSON correctly', () {
+        final json = {'dayOfWeek': 5, 'hour': 14, 'minute': 0};
+        final schedule = WeeklySchedule.fromJson(json);
+
+        expect(schedule.dayOfWeek, 5);
+        expect(schedule.hour, 14);
+        expect(schedule.minute, 0);
+      });
+
+      test('should round-trip WeeklySchedule through JSON', () {
+        const original = WeeklySchedule(dayOfWeek: 2, hour: 8, minute: 45);
+        final json = original.toJson();
+        final deserialized = WeeklySchedule.fromJson(json);
+
+        expect(deserialized.dayOfWeek, original.dayOfWeek);
+        expect(deserialized.hour, original.hour);
+        expect(deserialized.minute, original.minute);
+      });
+
+      test('should handle all boundary values in serialization', () {
+        const schedules = [
+          WeeklySchedule(dayOfWeek: 1, hour: 0, minute: 0),
+          WeeklySchedule(dayOfWeek: 7, hour: 23, minute: 59),
+          WeeklySchedule(dayOfWeek: 4, hour: 12, minute: 30),
+        ];
+
+        for (final schedule in schedules) {
+          final json = schedule.toJson();
+          final deserialized = WeeklySchedule.fromJson(json);
+
+          expect(deserialized, equals(schedule));
+        }
+      });
+    });
+
+    group('Equality and HashCode', () {
+      test('should be equal when all properties match', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 30);
+        const schedule2 = WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 30);
+
+        expect(schedule1, equals(schedule2));
+        expect(schedule1 == schedule2, isTrue);
+      });
+
+      test('should not be equal when dayOfWeek differs', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0);
+        const schedule2 = WeeklySchedule(dayOfWeek: 2, hour: 9, minute: 0);
+
+        expect(schedule1, isNot(equals(schedule2)));
+      });
+
+      test('should not be equal when hour differs', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0);
+        const schedule2 = WeeklySchedule(dayOfWeek: 1, hour: 10, minute: 0);
+
+        expect(schedule1, isNot(equals(schedule2)));
+      });
+
+      test('should not be equal when minute differs', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0);
+        const schedule2 = WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 30);
+
+        expect(schedule1, isNot(equals(schedule2)));
+      });
+
+      test('should have same hashCode for equal instances', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 3, hour: 14, minute: 30);
+        const schedule2 = WeeklySchedule(dayOfWeek: 3, hour: 14, minute: 30);
+
+        expect(schedule1.hashCode, equals(schedule2.hashCode));
+      });
+
+      test('should have different hashCodes for different instances', () {
+        const schedule1 = WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0);
+        const schedule2 = WeeklySchedule(dayOfWeek: 2, hour: 9, minute: 0);
+
+        expect(schedule1.hashCode, isNot(equals(schedule2.hashCode)));
+      });
+
+      test('should be identical when comparing same instance', () {
+        const schedule = WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 30);
+        expect(identical(schedule, schedule), isTrue);
+      });
+    });
+  });
+
+  group('RecurrenceConfiguration weeklySchedule Tests', () {
+    group('Constructor with weeklySchedule', () {
+      test('should accept weeklySchedule parameter', () {
+        final schedule = [
+          const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+          const WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 0),
+          const WeeklySchedule(dayOfWeek: 5, hour: 9, minute: 0),
+        ];
+
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: schedule,
+        );
+
+        expect(config.weeklySchedule, isNotEmpty);
+        expect(config.weeklySchedule!.length, 3);
+        expect(config.weeklySchedule![0].dayOfWeek, 1);
+        expect(config.weeklySchedule![1].hour, 10);
+      });
+
+      test('should accept null weeklySchedule', () {
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: null,
+        );
+
+        expect(config.weeklySchedule, isNull);
+      });
+
+      test('should accept empty weeklySchedule list', () {
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: [],
+        );
+
+        expect(config.weeklySchedule, isEmpty);
+      });
+
+      test('should store weeklySchedule as unmodifiable list', () {
+        final schedule = [
+          const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+        ];
+
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: schedule,
+        );
+
+        // Try to modify the stored list - should throw or have no effect
+        expect(() => config.weeklySchedule!.add(const WeeklySchedule(dayOfWeek: 2, hour: 10, minute: 0)),
+            throwsA(isA<UnsupportedError>()));
+      });
+    });
+
+    group('JSON Serialization with weeklySchedule', () {
+      test('should serialize RecurrenceConfiguration with weeklySchedule', () {
+        final schedule = [
+          const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+          const WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 30),
+        ];
+
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: schedule,
+        );
+
+        final json = config.toJson();
+
+        expect(json['weeklySchedule'], isNotNull);
+        expect(json['weeklySchedule'], isA<List>());
+        expect(json['weeklySchedule'].length, 2);
+        expect(json['weeklySchedule'][0]['dayOfWeek'], 1);
+        expect(json['weeklySchedule'][1]['hour'], 10);
+      });
+
+      test('should deserialize RecurrenceConfiguration with weeklySchedule', () {
+        final json = {
+          'frequency': 'weekly',
+          'interval': 1,
+          'endCondition': 'never',
+          'fromPolicy': 'plannedDate',
+          'weeklySchedule': [
+            {'dayOfWeek': 2, 'hour': 14, 'minute': 0},
+            {'dayOfWeek': 4, 'hour': 16, 'minute': 30},
+          ],
+        };
+
+        final config = RecurrenceConfiguration.fromJson(json);
+
+        expect(config.weeklySchedule, isNotNull);
+        expect(config.weeklySchedule!.length, 2);
+        expect(config.weeklySchedule![0].dayOfWeek, 2);
+        expect(config.weeklySchedule![0].hour, 14);
+        expect(config.weeklySchedule![1].dayOfWeek, 4);
+        expect(config.weeklySchedule![1].minute, 30);
+      });
+
+      test('should round-trip RecurrenceConfiguration with weeklySchedule', () {
+        final original = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          interval: 1,
+          weeklySchedule: [
+            const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+            const WeeklySchedule(dayOfWeek: 2, hour: 10, minute: 0),
+            const WeeklySchedule(dayOfWeek: 5, hour: 14, minute: 0),
+          ],
+          endCondition: RecurrenceEndCondition.count,
+          occurrenceCount: 10,
+        );
+
+        final json = original.toJson();
+        final deserialized = RecurrenceConfiguration.fromJson(json);
+
+        expect(deserialized.frequency, original.frequency);
+        expect(deserialized.interval, original.interval);
+        expect(deserialized.weeklySchedule!.length, original.weeklySchedule!.length);
+
+        for (int i = 0; i < original.weeklySchedule!.length; i++) {
+          expect(deserialized.weeklySchedule![i].dayOfWeek, original.weeklySchedule![i].dayOfWeek);
+          expect(deserialized.weeklySchedule![i].hour, original.weeklySchedule![i].hour);
+          expect(deserialized.weeklySchedule![i].minute, original.weeklySchedule![i].minute);
+        }
+
+        expect(deserialized.endCondition, original.endCondition);
+        expect(deserialized.occurrenceCount, original.occurrenceCount);
+      });
+
+      test('should handle null weeklySchedule in serialization', () {
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.daily,
+          weeklySchedule: null,
+        );
+
+        final json = config.toJson();
+
+        expect(json['weeklySchedule'], isNull);
+      });
+
+      test('should handle null weeklySchedule in deserialization', () {
+        final json = {
+          'frequency': 'daily',
+          'interval': 1,
+          'endCondition': 'never',
+          'fromPolicy': 'plannedDate',
+          'weeklySchedule': null,
+        };
+
+        final config = RecurrenceConfiguration.fromJson(json);
+
+        expect(config.weeklySchedule, isNull);
+      });
+    });
+
+    group('copyWith with weeklySchedule', () {
+      test('should copy with new weeklySchedule', () {
+        final original = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: [
+            const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+          ],
+        );
+
+        final newSchedule = [
+          const WeeklySchedule(dayOfWeek: 2, hour: 10, minute: 0),
+          const WeeklySchedule(dayOfWeek: 4, hour: 14, minute: 0),
+        ];
+
+        final copied = original.copyWith(weeklySchedule: newSchedule);
+
+        expect(copied.weeklySchedule, isNot(equals(original.weeklySchedule)));
+        expect(copied.weeklySchedule!.length, 2);
+        expect(copied.weeklySchedule![0].dayOfWeek, 2);
+      });
+
+      test('should preserve weeklySchedule when not specified in copyWith', () {
+        final original = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: [
+            const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+          ],
+        );
+
+        final copied = original.copyWith(interval: 2);
+
+        expect(copied.weeklySchedule, equals(original.weeklySchedule));
+        expect(copied.interval, 2);
+      });
+
+      test('should be able to clear weeklySchedule with copyWith', () {
+        final original = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.weekly,
+          weeklySchedule: [
+            const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+          ],
+        );
+
+        final copied = original.copyWith(weeklySchedule: []);
+
+        expect(copied.weeklySchedule, isEmpty);
+      });
+    });
+  });
 }

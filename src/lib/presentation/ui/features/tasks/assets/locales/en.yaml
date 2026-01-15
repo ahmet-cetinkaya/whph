@@ -366,6 +366,12 @@ tasks:
       third: Third
       fourth: Fourth
       last: Last
+    weekly_schedule:
+      label: Different times per day
+      description: Set a specific time for each day of the week
+      hint: Select days and set their times
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: At the scheduled time
     deadline_reminder_label: Deadline Reminder

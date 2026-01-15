@@ -232,6 +232,13 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String everyDay = 'tasks.recurrence.summary.everyDay';
   static const String occurrences = 'tasks.recurrence.summary.occurrences';
 
+  // Weekly Schedule (Per-day times for weekly recurrence)
+  static const String recurrenceWeeklyScheduleLabel = 'tasks.recurrence.weekly_schedule.label';
+  static const String recurrenceWeeklyScheduleDescription = 'tasks.recurrence.weekly_schedule.description';
+  static const String recurrenceWeeklyScheduleHint = 'tasks.recurrence.weekly_schedule.hint';
+  static const String recurrenceSelectTimeHint = 'tasks.recurrence.weekly_schedule.select_time';
+  static const String recurrenceWeeklyScheduleAddTime = 'tasks.recurrence.weekly_schedule.add_time';
+
   // Recurrence End Options
   static const String recurrenceEndsLabel = 'tasks.recurrence.ends.label';
   static const String recurrenceEndsNever = 'tasks.recurrence.ends.never';

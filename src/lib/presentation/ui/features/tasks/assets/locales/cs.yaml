@@ -432,6 +432,12 @@ tasks:
       third: Třetí
       fourth: Čtvrtý
       last: Poslední
+    weekly_schedule:
+      label: Různé časy pro každý den
+      description: Nastavte konkrétní čas pro každý den v týdnu
+      hint: Vyberte dny a nastavte jejich časy
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: V naplánovaném čase
     deadline_reminder_label: Připomenutí termínu
@@ -440,7 +446,7 @@ tasks:
     none: Bez připomenutí
     one_day_before: 1 den předem
     one_hour_before: 1 hodinu předem
-    label: Data
+    label: Různé časy pro každý den
     section_title: Připomenutí
     custom: Vlastní
     custom_title: Vlastní připomenutí
@@ -461,7 +467,7 @@ tasks:
     total_time: Celkový čas pro den
   timer:
     mode:
-      description: Vyberte si mezi technikou Pomodoro, odpočítávacím časovačem nebo stopkami
+      description: Nastavte konkrétní čas pro každý den v týdnu
       normal: Normální časovač
       pomodoro: Pomodoro
       stopwatch: Stopky
@@ -484,29 +490,29 @@ tasks:
     show_subtasks: Zobrazit podúkoly
   tour:
     add_tasks:
-      description: Rychle vytvářejte nové úkoly pomocí tohoto tlačítka. Nastavujte titulky, priority, termíny, štítky a další. Přidávejte podúkoly a připomínky pro zůstání na chodu.
+      description: Nastavte konkrétní čas pro každý den v týdnu
       title: Přidání nových úkolů
     filter_search:
-      description: Výkonné možnosti filtrování pro nalezení přesně toho, co potřebujete. Filtrujte podle štítků, dat, stavu dokončení nebo použijte vyhledávání. Řaďte úkoly a přepínejte podúkoly pro lepší organizaci.
+      description: Nastavte konkrétní čas pro každý den v týdnu
       title: Filtr a vyhledávání
     marathon:
       app_usage:
-        description: Monitorujte vzorce využití aplikace a analyzujte čas strávený různými aktivitami. Získejte poznatky o svých digitálních návycích a optimalizujte svou produktivitu.
+        description: Nastavte konkrétní čas pro každý den v týdnu
         title: Využití aplikace a časové poznatky
       filter_sort:
-        description: Filtrování dat o využití aplikace podle časového rozsahu, štítků nebo konkrétních zařízení. Řaďte a organizujte statistiky využití pro získání lepších poznatků o správě času.
+        description: Nastavte konkrétní čas pro každý den v týdnu
         title: Filtr a řazení
       tracking_settings:
-        description: Nakonfigurujte pravidla sledování aplikací, nastavte automatické štítkování a spravujte, které aplikace sledovat. Přizpůsobte sledování potřebám vaší produktivity.
+        description: Nastavte konkrétní čas pro každý den v týdnu
         title: Nastavení sledování
       usage_statistics:
-        description: Zobrazujte detailní data o využití aplikace a distribuci času. Analyzujte své produktivní vzorce, sledujte čas strávený různými aplikacemi a identifikujte oblasti pro zlepšení.
+        description: Nastavte konkrétní čas pro každý den v týdnu
         title: Statistiky využití
     task_management:
-      description: Vytvářejte a organizujte úkoly s prioritami, termíny a připomínkami. Používejte Pomodoro časovač pro zůstání soustředění a sledování pokroku na důležitých úkolech.
+      description: Nastavte konkrétní čas pro každý den v týdnu
       title: Management úkolů
     your_tasks:
-      description: Zobrazujte a spravujte všechny své úkoly na jednom místě. Klikněte na libovolný úkol pro zobrazení detailů, označení jako dokončený, úpravu informací nebo smazání. Zůstaňte organizovaní a sledujte svůj pokrok.
+      description: Nastavte konkrétní čas pro každý den v týdnu
       title: Vaše úkoly
   validation:
     deadline_cannot_be_before_planned: Datum splatnosti musí být po plánovaném datu

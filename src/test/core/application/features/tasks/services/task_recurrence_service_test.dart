@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 
@@ -1056,6 +1057,572 @@ void main() {
         expect(nextDate.year, 2023);
         expect(nextDate.month, 2);
         expect(nextDate.day, 28);
+      });
+    });
+
+    group('weeklySchedule (Per-Day Times) Tests', () {
+      group('Basic Per-Day Time Calculation', () {
+        test('should calculate next recurrence with different times for different days', () {
+          // Arrange: Monday 9AM, Tuesday 10AM, Wednesday 9AM
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Varied Time Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8, 9, 0), // Monday 9:00 AM
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Monday 9:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 10, minute: 0), // Tuesday 10:00
+                const WeeklySchedule(dayOfWeek: 3, hour: 9, minute: 0), // Wednesday 9:00
+              ],
+            ),
+          );
+
+          // Act: Calculate from Monday 9:00 AM
+          final currentDate = DateTime(2024, 1, 8, 9, 30); // Monday 9:30 AM
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert: Next should be Tuesday at 10:00 AM (not 9:00 AM)
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 9); // Tuesday
+          expect(nextDate.hour, 10);
+          expect(nextDate.minute, 0);
+        });
+
+        test('should sequence through week with per-day times correctly', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Work Schedule Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8, 9, 0), // Monday 9:00
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Mon 9:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 10, minute: 0), // Tue 10:00
+                const WeeklySchedule(dayOfWeek: 3, hour: 9, minute: 0), // Wed 9:00
+                const WeeklySchedule(dayOfWeek: 4, hour: 14, minute: 0), // Thu 14:00
+                const WeeklySchedule(dayOfWeek: 5, hour: 9, minute: 0), // Fri 9:00
+              ],
+            ),
+          );
+
+          // After Monday, next is Tuesday at 10:00
+          final result1 = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 8, 9, 30),
+          );
+          expect(result1, DateTime(2024, 1, 9, 10, 0)); // Tuesday 10:00
+
+          // After Tuesday, next is Wednesday at 9:00
+          final result2 = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 9, 10, 30),
+          );
+          expect(result2, DateTime(2024, 1, 10, 9, 0)); // Wednesday 9:00
+
+          // After Wednesday, next is Thursday at 14:00
+          final result3 = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 10, 9, 30),
+          );
+          expect(result3, DateTime(2024, 1, 11, 14, 0)); // Thursday 14:00
+        });
+
+        test('should wrap to next week with correct time', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'End of Week Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 12, 17, 0), // Friday
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Monday 9:00
+                const WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 0), // Wednesday 10:00
+              ],
+            ),
+          );
+
+          // From Friday, next is Monday at 9:00
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 12, 17, 30),
+          );
+
+          expect(result, DateTime(2024, 1, 15, 9, 0)); // Next Monday 9:00
+        });
+
+        test('should handle weekend with different times', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Weekend Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 13, 10, 0), // Saturday
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 6, hour: 10, minute: 0), // Saturday 10:00
+                const WeeklySchedule(dayOfWeek: 7, hour: 12, minute: 0), // Sunday 12:00
+              ],
+            ),
+          );
+
+          // From Saturday 11:00, next is Sunday 12:00
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 13, 11, 0),
+          );
+
+          expect(result, DateTime(2024, 1, 14, 12, 0)); // Sunday 12:00
+        });
+      });
+
+      group('weeklySchedule with Interval', () {
+        test('should respect biweekly interval with per-day times', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Biweekly Task',
+            completedAt: null,
+            recurrenceStartDate: DateTime(2024, 1, 2), // Tuesday (reference)
+            plannedDate: DateTime(2024, 1, 2, 10, 0),
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              interval: 2, // Every 2 weeks
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 2, hour: 10, minute: 0), // Tuesday 10:00
+              ],
+            ),
+          );
+
+          // From Tuesday (1 week later), next should be Tuesday in 2 weeks
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 9, 10, 0), // 1 week after reference
+          );
+
+          expect(result, DateTime(2024, 1, 16, 10, 0)); // 2 weeks from reference
+        });
+
+        test('should handle multiple days with biweekly interval', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Biweekly Multi-Day Task',
+            completedAt: null,
+            recurrenceStartDate: DateTime(2024, 1, 1), // Monday reference
+            plannedDate: DateTime(2024, 1, 1, 9, 0),
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              interval: 2, // Every 2 weeks
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Monday 9:00
+                const WeeklySchedule(dayOfWeek: 3, hour: 14, minute: 0), // Wednesday 14:00
+              ],
+            ),
+          );
+
+          // From Wednesday of week 2, should skip to Monday of week 3
+          // (week 2 Wednesday is not on interval, so next is Monday of week 3)
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 10, 14, 30), // Wednesday Jan 10 (week 2)
+          );
+
+          // Week 1: Jan 1 (Mon), Jan 3 (Wed)
+          // Week 2: Jan 8 (Mon), Jan 10 (Wed) - not on interval from reference
+          // Week 3: Jan 15 (Mon) - this is 2 weeks from Jan 1
+          expect(result, DateTime(2024, 1, 15, 9, 0)); // Monday Jan 15
+        });
+      });
+
+      group('weeklySchedule Edge Cases', () {
+        test('should fall back to daysOfWeek when weeklySchedule is null', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Legacy Days Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8), // Monday
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              daysOfWeek: [1, 3, 5], // Monday, Wednesday, Friday
+              weeklySchedule: null, // No per-day times
+            ),
+          );
+
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 8, 10, 0),
+          );
+
+          // Should use daysOfWeek logic (same time)
+          expect(result, DateTime(2024, 1, 10, 10, 0)); // Wednesday same time
+        });
+
+        test('should fall back to daysOfWeek when weeklySchedule is empty', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Empty Schedule Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8), // Monday
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              daysOfWeek: [2, 4], // Tuesday, Thursday
+              weeklySchedule: [], // Empty list
+            ),
+          );
+
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 8, 10, 0),
+          );
+
+          // Should use daysOfWeek logic
+          expect(result, DateTime(2024, 1, 9, 10, 0)); // Tuesday same time
+        });
+
+        test('should prefer weeklySchedule over daysOfWeek when both exist', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Dual Schedule Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8, 9, 0), // Monday 9:00
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              daysOfWeek: [1, 2, 3], // Monday, Tuesday, Wednesday (same time)
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Monday 9:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 14, minute: 0), // Tuesday 14:00 (different!)
+                const WeeklySchedule(dayOfWeek: 3, hour: 9, minute: 0), // Wednesday 9:00
+              ],
+            ),
+          );
+
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 8, 9, 30), // Monday 9:30
+          );
+
+          // Should use weeklySchedule (Tuesday at 14:00, not same time)
+          expect(result, DateTime(2024, 1, 9, 14, 0)); // Tuesday 14:00
+        });
+      });
+
+      group('weeklySchedule with End Conditions', () {
+        test('should respect end date with weeklySchedule', () {
+          final futureEndDate = DateTime.now().add(const Duration(days: 30));
+          final futurePlannedDate = DateTime.now().add(const Duration(days: 1));
+
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Date Limited Task',
+            completedAt: null,
+            plannedDate: futurePlannedDate,
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                WeeklySchedule(dayOfWeek: futurePlannedDate.weekday, hour: 9, minute: 0),
+              ],
+              endCondition: RecurrenceEndCondition.date,
+              endDate: futureEndDate,
+            ),
+          );
+
+          // Should allow since there are occurrences before end date
+          final canCreate = service.canCreateNextInstance(task);
+          expect(canCreate, isTrue);
+        });
+
+        test('should stop when next occurrence is after end date', () {
+          final futureEndDate = DateTime.now().add(const Duration(hours: 2));
+          final futurePlannedDate = DateTime.now().add(const Duration(hours: 1));
+
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Ending Task',
+            completedAt: null,
+            plannedDate: futurePlannedDate,
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                WeeklySchedule(dayOfWeek: futurePlannedDate.weekday, hour: futurePlannedDate.hour, minute: 0),
+              ],
+              endCondition: RecurrenceEndCondition.date,
+              endDate: futureEndDate,
+            ),
+          );
+
+          // End date is soon, so next occurrence would be after end date
+          final canCreate = service.canCreateNextInstance(task);
+          expect(canCreate, isFalse);
+        });
+
+        test('should track occurrence count with weeklySchedule', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Count Limited Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8, 9, 0),
+            recurrenceCount: 5, // 5 remaining
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0),
+                const WeeklySchedule(dayOfWeek: 3, hour: 10, minute: 0),
+              ],
+              endCondition: RecurrenceEndCondition.count,
+              occurrenceCount: 10,
+            ),
+          );
+
+          // Should allow since count > 0
+          final canCreate = service.canCreateNextInstance(task);
+          expect(canCreate, isTrue);
+        });
+      });
+
+      group('weeklySchedule Real-World Scenarios', () {
+        test('should handle work week with meeting at different time', () {
+          // Mon-Fri 9AM, but Wednesday meeting at 2PM
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Work Week Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8, 9, 0),
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Mon 9:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 9, minute: 0), // Tue 9:00
+                const WeeklySchedule(dayOfWeek: 3, hour: 14, minute: 0), // Wed 14:00 (meeting)
+                const WeeklySchedule(dayOfWeek: 4, hour: 9, minute: 0), // Thu 9:00
+                const WeeklySchedule(dayOfWeek: 5, hour: 9, minute: 0), // Fri 9:00
+              ],
+            ),
+          );
+
+          // From Tuesday 10:00, next is Wednesday 14:00
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 9, 10, 0),
+          );
+
+          expect(result, DateTime(2024, 1, 10, 14, 0)); // Wednesday 14:00
+        });
+
+        test('should handle exercise schedule: morning weekdays, evening weekends', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Exercise Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8, 7, 0), // Monday 7:00
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 7, minute: 0), // Mon 7:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 7, minute: 0), // Tue 7:00
+                const WeeklySchedule(dayOfWeek: 3, hour: 7, minute: 0), // Wed 7:00
+                const WeeklySchedule(dayOfWeek: 4, hour: 7, minute: 0), // Thu 7:00
+                const WeeklySchedule(dayOfWeek: 5, hour: 7, minute: 0), // Fri 7:00
+                const WeeklySchedule(dayOfWeek: 6, hour: 18, minute: 0), // Sat 18:00
+                const WeeklySchedule(dayOfWeek: 7, hour: 18, minute: 0), // Sun 18:00
+              ],
+            ),
+          );
+
+          // From Friday 8:00, next is Saturday 18:00
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 12, 8, 0),
+          );
+
+          expect(result, DateTime(2024, 1, 13, 18, 0)); // Saturday 18:00
+        });
+
+        test('should handle medication schedule: different times on different days', () {
+          // Morning meds on Mon/Wed/Fri, evening meds on Tue/Thu
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Medication Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 8, 8, 0), // Monday 8:00
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 8, minute: 0), // Mon 8:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 20, minute: 0), // Tue 20:00
+                const WeeklySchedule(dayOfWeek: 3, hour: 8, minute: 0), // Wed 8:00
+                const WeeklySchedule(dayOfWeek: 4, hour: 20, minute: 0), // Thu 20:00
+                const WeeklySchedule(dayOfWeek: 5, hour: 8, minute: 0), // Fri 8:00
+              ],
+            ),
+          );
+
+          // After Monday 9:00, next is Tuesday 20:00
+          final result1 = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 8, 9, 0),
+          );
+          expect(result1, DateTime(2024, 1, 9, 20, 0)); // Tuesday 20:00
+
+          // After Tuesday 21:00, next is Wednesday 8:00
+          final result2 = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 9, 21, 0),
+          );
+          expect(result2, DateTime(2024, 1, 10, 8, 0)); // Wednesday 8:00
+        });
+      });
+
+      group('weeklySchedule with From Policy', () {
+        test('should use planned date as base when fromPolicy is plannedDate', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Planned Date Task',
+            completedAt: DateTime(2024, 1, 8, 10, 0), // Completed at 10:00
+            plannedDate: DateTime(2024, 1, 8, 9, 0), // Planned for 9:00
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              fromPolicy: RecurrenceFromPolicy.plannedDate,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Mon 9:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 14, minute: 0), // Tue 14:00
+              ],
+            ),
+          );
+
+          // Should base calculation on planned date (9:00), not completion (10:00)
+          // From Monday 9:00, next is Tuesday 14:00
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 8, 10, 0), // Completed at 10:00
+          );
+
+          expect(result, DateTime(2024, 1, 9, 14, 0)); // Tuesday 14:00
+        });
+
+        test('should use completion date as base when fromPolicy is completionDate', () {
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Completion Date Task',
+            completedAt: DateTime(2024, 1, 8, 10, 0), // Completed at 10:00
+            plannedDate: DateTime(2024, 1, 8, 9, 0), // Planned for 9:00
+            recurrenceConfiguration: RecurrenceConfiguration(
+              frequency: RecurrenceFrequency.weekly,
+              fromPolicy: RecurrenceFromPolicy.completionDate,
+              weeklySchedule: [
+                const WeeklySchedule(dayOfWeek: 1, hour: 9, minute: 0), // Mon 9:00
+                const WeeklySchedule(dayOfWeek: 2, hour: 14, minute: 0), // Tue 14:00
+              ],
+            ),
+          );
+
+          // Should base calculation on completion date (10:00)
+          // From Monday 10:00, next is Tuesday 14:00
+          final result = service.calculateNextRecurrenceDate(
+            task,
+            DateTime(2024, 1, 8, 10, 0), // Completed at 10:00
+          );
+
+          expect(result, DateTime(2024, 1, 9, 14, 0)); // Tuesday 14:00
+        });
+      });
+    });
+
+    group('Data Corruption Error Handling', () {
+      test('should throw StateError when endCondition is date but endDate is null', () {
+        final task = Task(
+          id: 'task-corrupted-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Corrupted Task - Missing End Date',
+          plannedDate: DateTime(2024, 1, 8, 9, 0),
+          // Use .test() factory to create invalid configuration without validation
+          recurrenceConfiguration: RecurrenceConfiguration.test(
+            frequency: RecurrenceFrequency.daily,
+            endCondition: RecurrenceEndCondition.date,
+            endDate: null, // Invalid: endCondition is date but endDate is null
+          ),
+        );
+
+        expect(
+          () => service.canCreateNextInstance(task),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('endCondition set to "date" but endDate is null'),
+          )),
+        );
+      });
+
+      test('should throw StateError when endCondition is count but both counts are null', () {
+        final task = Task(
+          id: 'task-corrupted-2',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Corrupted Task - Missing Count Limit',
+          plannedDate: DateTime(2024, 1, 8, 9, 0),
+          // Use .test() factory to create invalid configuration without validation
+          recurrenceConfiguration: RecurrenceConfiguration.test(
+            frequency: RecurrenceFrequency.daily,
+            endCondition: RecurrenceEndCondition.count,
+            occurrenceCount: null, // Invalid: endCondition is count but no limit set
+          ),
+          // Also ensure task-level count is null
+          recurrenceCount: null,
+        );
+
+        expect(
+          () => service.canCreateNextInstance(task),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('endCondition set to "count" but both'),
+          )),
+        );
+      });
+
+      test('should throw StateError with task ID in error message', () {
+        const taskId = 'corrupted-task-123';
+        final task = Task(
+          id: taskId,
+          createdDate: DateTime.now().toUtc(),
+          title: 'Corrupted Task',
+          plannedDate: DateTime(2024, 1, 8, 9, 0),
+          recurrenceConfiguration: RecurrenceConfiguration.test(
+            frequency: RecurrenceFrequency.weekly,
+            endCondition: RecurrenceEndCondition.date,
+            endDate: null,
+          ),
+        );
+
+        expect(
+          () => service.canCreateNextInstance(task),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            allOf([
+              contains('Task ID:'),
+              contains(taskId),
+            ]),
+          )),
+        );
       });
     });
   });

@@ -48,5 +48,11 @@ class TaskErrorIds {
   // Repository Errors
   static const String repositoryDuplicateCleanupFailed = 'task_repository_duplicate_cleanup_failed';
 
+  // Date Helper Errors
+  static const String dateHelperMaxSearchDaysExceeded = 'task_date_helper_max_search_days_exceeded';
+  static const String dateHelperMaxSearchDaysWithTimesExceeded = 'task_date_helper_max_search_days_with_times_exceeded';
+  static const String dateHelperInvalidScheduleHour = 'task_date_helper_invalid_schedule_hour';
+  static const String dateHelperInvalidScheduleMinute = 'task_date_helper_invalid_schedule_minute';
+
   TaskErrorIds._();
 }

@@ -171,6 +171,17 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         return currentDate.add(Duration(days: config.interval));
 
       case RecurrenceFrequency.weekly:
+        // Check if weeklySchedule is provided for per-day times
+        if (config.weeklySchedule != null && config.weeklySchedule!.isNotEmpty) {
+          final referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? currentDate;
+          return DateHelper.findNextWeekdayOccurrenceWithTimes(
+            currentDate,
+            config.weeklySchedule!,
+            config.interval,
+            referenceDate,
+          );
+        }
+        // Fall back to existing logic for daysOfWeek
         if (config.daysOfWeek != null && config.daysOfWeek!.isNotEmpty) {
           // Reuse existing logic but with int list
           // Note: DateHelper.findNextWeekdayOccurrence expects List<int>
@@ -183,7 +194,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
           final referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? currentDate;
           return DateHelper.findNextWeekdayOccurrence(
             currentDate,
-            config.daysOfWeek!..sort(),
+            config.daysOfWeek!.toList()..sort(),
             config.interval,
             referenceDate, // Align intervals to original recurrence start date
           );

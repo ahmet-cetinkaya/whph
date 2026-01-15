@@ -429,6 +429,12 @@ tasks:
       third: 第3
       fourth: 第4
       last: 最後
+    weekly_schedule:
+      label: 曜日ごとの異なる時間
+      description: 曜日ごとに特定の時間を設定する
+      hint: 曜日を選択して時間を設定
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: 予定時刻
     deadline_reminder_label: 期限のリマインダー
@@ -437,7 +443,7 @@ tasks:
     none: リマインダーなし
     one_day_before: 1日前
     one_hour_before: 1時間前
-    label: 予定日のリマインダー
+    label: 曜日ごとの異なる時間
     section_title: リマインダー
     custom: カスタム
     custom_title: カスタムリマインダー
@@ -458,7 +464,7 @@ tasks:
     total_time: その日の合計時間
   timer:
     mode:
-      description: ポモドーロ・テクニック、カウントダウンタイマー、またはストップウォッチから選択してください
+      description: 曜日ごとに特定の時間を設定する
       normal: 通常のタイマー
       pomodoro: ポモドーロ
       stopwatch: ストップウォッチ
@@ -481,29 +487,29 @@ tasks:
     show_subtasks: サブタスクを表示
   tour:
     add_tasks:
-      description: このボタンで素早く新しいタスクを作成できます。タイトル、優先度、期限、タグなどを設定しましょう。サブタスクやリマインダーを追加して作業の最新情報を維持できます。
+      description: 曜日ごとに特定の時間を設定する
       title: 新しいタスクを追加
     filter_search:
-      description: 必要なものを見つけるための強力なフィルターオプション。タグ、日付、完了状況でフィルターしたり、検索を使用できます。タスクを並べ替え、サブタスクを切り替えてより良い整理ができます。
+      description: 曜日ごとに特定の時間を設定する
       title: フィルターと検索
     marathon:
       app_usage:
-        description: アプリの使用パターンを監視し、さまざまな活動に費やした時間を分析します。デジタル習慣に関する洞察を得て、生産性を最適化しましょう。
+        description: 曜日ごとに特定の時間を設定する
         title: アプリ使用状況と時間分析
       filter_sort:
-        description: 期間、タグ、または特定のデバイスでアプリの使用データをフィルターします。使用統計を並べ替え・整理して、時間管理についてのより良い洞察を得ましょう。
+        description: 曜日ごとに特定の時間を設定する
         title: フィルターと並べ替え
       tracking_settings:
-        description: アプリの追跡ルールを設定し、自動タグ付けを構成し、監視するアプリケーションを管理します。生産性ニーズに合わせて追跡をカスタマイズしましょう。
+        description: 曜日ごとに特定の時間を設定する
         title: 追跡設定
       usage_statistics:
-        description: アプリの使用データと時間配分の詳細を表示します。生産性パターンを分析し、さまざまなアプリケーションに費やした時間を追跡し、改善領域を特定します。
+        description: 曜日ごとに特定の時間を設定する
         title: 使用統計
     task_management:
-      description: 優先度、期限、リマインダー付きのタスクを作成・整理します。ポモドーロタイマーを使用して集中力を維持し、重要なタスクの進捗を追跡しましょう。
+      description: 曜日ごとに特定の時間を設定する
       title: タスク管理
     your_tasks:
-      description: すべてのタスクを一か所で表示・管理できます。任意のタスクをクリックして詳細を表示、完了としてマーク、情報の編集、削除が可能です。整理された状態を維持し、進捗を追跡しましょう。
+      description: 曜日ごとに特定の時間を設定する
       title: あなたのタスク
   validation:
     deadline_cannot_be_before_planned: 期限は予定日より後でなければなりません

@@ -378,6 +378,12 @@ tasks:
       third: Üçüncü
       fourth: Dördüncü
       last: Son
+    weekly_schedule:
+      label: Güne göre farklı zamanlar
+      description: Haftanın her günü için belirli bir saat ayarlayın
+      hint: Günleri seçin ve saatlerini ayarlayın
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: Zamanında
     deadline_reminder_label: Son Tarih Hatırlatıcısı
@@ -386,7 +392,7 @@ tasks:
     none: Hatırlatıcı yok
     one_day_before: 1 gün önce
     one_hour_before: 1 saat önce
-    label: Hatırlatıcı
+    label: Güne göre farklı zamanlar
     section_title: Hatırlatıcılar
     custom: Özel
     custom_title: Özel Hatırlatıcı
@@ -407,7 +413,7 @@ tasks:
     total_time: Günlük Toplam Süre
   timer:
     mode:
-      description: Pomodoro tekniği, geri sayım sayacı veya kronometre arasında seçim yapın
+      description: Haftanın her günü için belirli bir saat ayarlayın
       normal: Normal Zamanlayıcı
       pomodoro: Pomodoro
       stopwatch: Kronometre
@@ -430,29 +436,29 @@ tasks:
     show_subtasks: Alt görevleri göster
   tour:
     add_tasks:
-      description: Bu düğmeyle hızlıca yeni görevler oluşturun. Başlıklar, öncelikler, son tarihler, etiketler ve daha fazlasını ayarlayın. İşlerinizde güncel kalmak için alt görevler ve hatırlatıcılar ekleyin.
+      description: Haftanın her günü için belirli bir saat ayarlayın
       title: Yeni Görevler Ekle
     filter_search:
-      description: Tam olarak ihtiyacınız olan şeyi bulmak için güçlü filtre seçenekleri. Etiketlere, tarihlere, tamamlanma durumuna göre filtreleyin veya arama kullanın. Daha iyi organizasyon için görevleri sıralayın ve alt görevleri değiştirin.
+      description: Haftanın her günü için belirli bir saat ayarlayın
       title: Filtrele & Ara
     marathon:
       app_usage:
-        description: Uygulama kullanım modellerini izleyin ve farklı etkinliklere harcadığınız zamanı analiz edin. Dijital alışkanlıklarınız hakkında içgörüler elde edin ve verimliliğinizi optimize edin.
+        description: Haftanın her günü için belirli bir saat ayarlayın
         title: Uygulama Kullanımı & Zaman Analizi
       filter_sort:
-        description: Uygulama kullanım verilerini tarih aralığına, etiketlere veya belirli cihazlara göre filtreleyin. Zaman yönetimiyle ilgili daha iyi içgörüler için kullanım istatistiklerinizi sıralayın ve düzenleyin.
+        description: Haftanın her günü için belirli bir saat ayarlayın
         title: Filtrele & Sırala
       tracking_settings:
-        description: Uygulama takip kurallarını yapılandırın, otomatik etiketlemeyi ayarlayın ve hangi uygulamaların takip edileceğini yönetin. Verimlilik ihtiyaçlarınıza göre takibi özelleştirin.
+        description: Haftanın her günü için belirli bir saat ayarlayın
         title: Takip Ayarları
       usage_statistics:
-        description: Detaylı uygulama kullanım verilerini ve zaman dağılımını görüntüleyin. Verimlilik modellerinizi analiz edin, farklı uygulamalara harcadığınız zamanı takip edin ve iyileştirme alanlarını belirleyin.
+        description: Haftanın her günü için belirli bir saat ayarlayın
         title: Kullanım İstatistikleri
     task_management:
-      description: Öncelikler, son tarihler ve hatırlatıcılarla görevler oluşturun ve düzenleyin. Pomodoro zamanlayıcısını kullanarak odaklanmanızı koruyun ve önemli görevlerde ilerlemenizi takip edin.
+      description: Haftanın her günü için belirli bir saat ayarlayın
       title: Görev Yönetimi
     your_tasks:
-      description: Tüm görevlerinizi tek bir yerde görüntüleyin ve yönetin. Ayrıntıları görmek, tamamlandı olarak işaretlemek, bilgileri düzenlemek veya silmek için herhangi bir göreve tıklayın. Organize kalın ve ilerlemenizi takip edin.
+      description: Haftanın her günü için belirli bir saat ayarlayın
       title: Görevleriniz
   validation:
     deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır

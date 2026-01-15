@@ -7,6 +7,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_weekday_selector.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_weekly_time_selector.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_end_condition_selector.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_monthly_pattern_selector.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -44,6 +45,7 @@ class RecurrenceSettingsDialog extends StatefulWidget {
 class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
   RecurrenceConfiguration? _configuration;
   DateTime? _startDate;
+  bool _showSpecificTimes = false;
 
   final _translationService = container.resolve<ITranslationService>();
   final TextEditingController _intervalController = TextEditingController();
@@ -116,6 +118,39 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
     } else {
       _configuration = null;
     }
+
+    _showSpecificTimes = _configuration?.weeklySchedule != null && _configuration!.weeklySchedule!.isNotEmpty;
+
+    if (_showSpecificTimes && _configuration?.daysOfWeek != null) {
+      _syncScheduleWithDays();
+    }
+  }
+
+  void _syncScheduleWithDays() {
+    if (_configuration?.daysOfWeek == null) return;
+
+    final currentSchedule = List<WeeklySchedule>.from(_configuration!.weeklySchedule ?? []);
+    final days = _configuration!.daysOfWeek!;
+
+    // Remove days no longer selected
+    currentSchedule.removeWhere((s) => !days.contains(s.dayOfWeek));
+
+    // Add missing days with default time (9:00 AM)
+    for (final day in days) {
+      if (!currentSchedule.any((s) => s.dayOfWeek == day)) {
+        currentSchedule.add(WeeklySchedule(
+          dayOfWeek: day,
+          hour: 9,
+          minute: 0,
+        ));
+      }
+    }
+
+    currentSchedule.sort((a, b) => a.dayOfWeek.compareTo(b.dayOfWeek));
+
+    _configuration = _configuration!.copyWith(
+      weeklySchedule: currentSchedule,
+    );
   }
 
   @override
@@ -233,16 +268,63 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
                   _buildSection(
                     label: _translationService.translate(TaskTranslationKeys.recurrenceWeekDaysLabel),
                     icon: Icons.calendar_view_week,
-                    content: RecurrenceWeekdaySelector(
-                      selectedDays: _configuration!.daysOfWeek?.map((d) => WeekDays.values[d - 1]).toList() ?? [],
-                      onDaysChanged: (days) {
-                        setState(() {
-                          _configuration = _configuration!.copyWith(
-                            daysOfWeek: days.map((d) => d.index + 1).toList(),
-                          );
-                        });
-                      },
-                      translationService: _translationService,
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RecurrenceWeekdaySelector(
+                          selectedDays: _configuration!.daysOfWeek?.map((d) => WeekDays.values[d - 1]).toList() ?? [],
+                          onDaysChanged: (days) {
+                            setState(() {
+                              final newDays = days.map((d) => d.index + 1).toList();
+                              _configuration = _configuration!.copyWith(
+                                daysOfWeek: newDays,
+                              );
+                              if (_showSpecificTimes) {
+                                _syncScheduleWithDays();
+                              }
+                            });
+                          },
+                          translationService: _translationService,
+                        ),
+                        const SizedBox(height: AppTheme.sizeMedium),
+                        Row(
+                          children: [
+                            Switch(
+                              value: _showSpecificTimes,
+                              onChanged: (value) {
+                                setState(() {
+                                  _showSpecificTimes = value;
+                                  if (!value) {
+                                    _configuration = _configuration!.copyWith(weeklySchedule: []);
+                                  } else {
+                                    _syncScheduleWithDays();
+                                  }
+                                });
+                              },
+                            ),
+                            const SizedBox(width: AppTheme.sizeSmall),
+                            Text(
+                              _translationService.translate(TaskTranslationKeys.recurrenceWeeklyScheduleLabel),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        if (_showSpecificTimes) ...[
+                          const SizedBox(height: AppTheme.sizeMedium),
+                          RecurrenceWeeklyTimeSelector(
+                            selectedDays: _configuration!.daysOfWeek?.map((d) => WeekDays.values[d - 1]).toList() ?? [],
+                            schedule: _configuration!.weeklySchedule,
+                            onScheduleChanged: (schedule) {
+                              setState(() {
+                                _configuration = _configuration!.copyWith(
+                                  weeklySchedule: schedule,
+                                );
+                              });
+                            },
+                            translationService: _translationService,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 if (_configuration!.frequency == RecurrenceFrequency.monthly)
